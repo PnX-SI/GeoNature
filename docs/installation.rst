@@ -4,7 +4,8 @@ INSTALLATION
 
 Texte d'intro.
 
-Les auteurs  :ref:`Auteurs <auteurs>`.
+Les auteurs  :ref:`Auteurs <auteurs-section>`.
+
 
 Prérequis
 ---------
