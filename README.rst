@@ -15,4 +15,14 @@ Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 Installation
 -----------
 
-**En gras** :
+Consulter la documentation : 
+
+License
+-------
+
+* OpenSource - BSD
+* Copyright (c) 2014 - Parc National des Écrins
+
+
+.. image:: http://geotrek.fr/images/logo-pne.png
+    :target: http://www.ecrins-parcnational.fr
