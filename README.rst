@@ -17,7 +17,7 @@ Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 Installation
 -----------
 
-Consulter la documentation : 
+Consulter la documentation :  `<http://ff-synthese.rtfd.org>`_
 
 License
 -------
