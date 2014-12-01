@@ -8,5 +8,5 @@ Parc national des Ecrins
 * Gil Deluermoz
 * Camille Monchicourt
 
-.. image:: http://depot.makina-corpus.org/public/logo.gif
-    :target: http://www.makina-corpus.com
+.. image:: http://geotrek.fr/images/logo-pne.png
+    :target: http://www.ecrins-parcnational.fr
