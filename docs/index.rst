@@ -1,5 +1,5 @@
-Bienvenue dans la documentation de Faune-Flore Synthese!
-========================================================
+Bienvenue dans la doc de Faune-Flore Synthese
+=============================================
 
 Contents:
 
