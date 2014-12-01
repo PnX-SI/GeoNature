@@ -12,6 +12,8 @@ Présentation
 
 Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 
+.. image :: docs/images/capture-application.png
+
 Installation
 -----------
 
