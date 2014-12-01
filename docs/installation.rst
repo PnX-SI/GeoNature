@@ -2,7 +2,8 @@
 INSTALLATION
 ============
 
-Texte d'intro
+Texte d'intro.
+
 Les auteurs  :ref:`Auteurs <auteurs>`.
 
 Prérequis
