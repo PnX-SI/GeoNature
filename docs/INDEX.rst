@@ -7,7 +7,7 @@ Contents:
    :maxdepth: 2
 
    installation
-   autheurs
+   auteurs
    changelog
 
 
