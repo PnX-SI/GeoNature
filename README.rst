@@ -1,7 +1,9 @@
 FF-synthese
 ===========
 
-Application de synthèse des observations faune et flore
+Application de synthèse des observations faune et flore.
+
+Elle regroupe toutes les données des différents protocoles FAUNE et FLORE en les limitant au niveau QUI QUOI QUAND OU.
 
 Présentation
 -----------
