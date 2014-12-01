@@ -10,7 +10,7 @@ Présentation
 
 .. image :: docs/images/schema-general.jpg
 
-`Pour quoi faire ?  <http://dev.ecrins-parcnational.fr/docs/protocoles-locaux-echanges-nationaux.pdf>`_
+Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 
 Installation
 -----------
