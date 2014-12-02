@@ -63,7 +63,7 @@ Création de la base de données
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_sig_pne_2154.sql 
     exit
     
-* * Pour postgis 2, il peut être nécessaire de passer le script legacy.sql sur la base
+* Pour postgis 2, il peut être nécessaire de passer le script legacy.sql sur la base
   
   ::
 
