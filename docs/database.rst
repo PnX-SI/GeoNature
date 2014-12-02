@@ -52,13 +52,13 @@ Création de la base de données
 
     su postgres
     createdb -O cartopnx -T templategis synthesepn
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthesepn -f /home/cartodev/grant.sql
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/synthese_2154.sql
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/data_synthese_2154.sql
+    export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthesepn -f /home/monuser/grant.sql
+    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/synthese_2154.sql
+    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_synthese_2154.sql
 
 * si besoin l'exemple des données sig du PN Ecrins pour les tables du schéma layers
   
   ::
 
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_sig_pne_2154.sql 
     exit
