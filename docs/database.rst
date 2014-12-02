@@ -52,7 +52,7 @@ Création de la base de données
 
     su postgres
     createdb -O cartopnx -T templategis synthesepn
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthesepn -f /home/monuser/grant.sql
+    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/grant.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/synthese_2154.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_synthese_2154.sql
 
@@ -62,3 +62,9 @@ Création de la base de données
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_sig_pne_2154.sql 
     exit
+    
+* * Pour postgis 2, il peut être nécessaire de passer le script legacy.sql sur la base
+  
+  ::
+
+    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/legacy.sql
