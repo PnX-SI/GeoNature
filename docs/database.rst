@@ -38,10 +38,10 @@ Création de la base de données
 ------------------------------
 
 * transférer les 2 fichiers sql sur le serveur 
-par exemple dans le répertoire /home/monuser/
+    par exemple dans le répertoire /home/monuser/
 
 * créer une base postgis nommée synthesepn
-se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
+    se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
   ::
 
     su postgres
@@ -49,7 +49,8 @@ se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthesepn -f /home/cartodev/grant.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/synthese_2154.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/data_synthese_2154.sql
-si besoin un exemple de données sig pour les tables du schéma layers
+
+* si besoin l'exemple des données sig du PN Ecrins pour les tables du schéma layers
   ::
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/data_sig_pne_2154.sql 
