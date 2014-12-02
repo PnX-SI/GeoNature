@@ -7,5 +7,6 @@ Contenu :
    :maxdepth: 2
 
    installation
+   database
    auteurs
    changelog
