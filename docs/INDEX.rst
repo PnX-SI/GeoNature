@@ -7,7 +7,6 @@ Contents:
    :maxdepth: 2
 
    installation
-   database
    autheurs
    changelog
 
