@@ -5,11 +5,11 @@
 BASE DE DONNEES
 ===============
 
-Pré-requis
+PrÃ©-requis
 ----------
 
-* postgres 9.1, postgis 1.5, disposer d'une base template postgis ici nommée 'templategis'
-* installer postgres et postgis puis la créer le template 'templategis'
+* postgres 9.1, postgis 1.5, disposer d'une base template postgis ici nommÃ©e 'templategis'
+* installer postgres et postgis puis la crÃ©er le template 'templategis'
 
   ::
 
@@ -19,12 +19,12 @@ Pré-requis
     sudo -u postgres psql -d templategis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
     sudo -u postgres psql -d templategis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
 
-création de l'utilisateur
+CrÃ©ation de l'utilisateur
 -------------------------
 
-* créer un utilisateur postgres nommé 'cartopnx'. 
-Il sera le propriétaire de la base synthesepn et sera utilisé par l'application pour se connecté à la base.
-l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
+* crÃ©er un utilisateur postgres nommÃ© 'cartopnx'. 
+Il sera le propriÃ©taire de la base synthesepn et sera utilisÃ© par l'application pour se connectÃ© Ã  la base.
+l'application fonctionne avec le pass 'monpassachanger' mais il est conseillÃ© de l'adapter !
   ::
 
     su postgres
@@ -34,12 +34,13 @@ l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de
     \q
     exit
 
-Création de la base de données
+CrÃ©ation de la base de donnÃ©es
 ------------------------------
 
-* transférer les 2 fichiers sql sur le serveur 
-par exemple dans le répertoire /home/monuser/
-* création d'une base postgis nommée synthesepn
+* transfÃ©rer les 2 fichiers sql sur le serveur 
+par exemple dans le rÃ©pertoire /home/monuser/
+
+* crÃ©er une base postgis nommÃ©e synthesepn
 se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
   ::
 
@@ -48,7 +49,7 @@ se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthesepn -f /home/cartodev/grant.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/synthese_2154.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/data_synthese_2154.sql
-si besoin un exemple de données sig pour les tables du schéma layers
+si besoin un exemple de donnÃ©es sig pour les tables du schÃ©ma layers
   ::
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/cartodev/data_sig_pne_2154.sql 
