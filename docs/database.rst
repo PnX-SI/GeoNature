@@ -25,6 +25,7 @@ Création de l'utilisateur
 * créer un utilisateur postgres nommé 'cartopnx'
 
   Il sera le propriétaire de la base synthesepn et sera utilisé par l'application pour se connecté à la base. 
+    
     L'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
     
   ::
