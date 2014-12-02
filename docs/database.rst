@@ -23,8 +23,7 @@ Création de l'utilisateur
 -------------------------
 
 * créer un utilisateur postgres nommé 'cartopnx'
-  Il sera le propriétaire de la base synthesepn et sera utilisé par l'application pour se connecté à la base.
-l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
+    Il sera le propriétaire de la base synthesepn et sera utilisé par l'application pour se connecté à la base. L'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
   ::
 
     su postgres
@@ -38,10 +37,10 @@ Création de la base de données
 ------------------------------
 
 * transférer les 2 fichiers sql sur le serveur
-  par exemple dans le répertoire /home/monuser/
+    par exemple dans le répertoire /home/monuser/
 
 * créer une base postgis nommée synthesepn
-  se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
+    se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
 
   ::
 
