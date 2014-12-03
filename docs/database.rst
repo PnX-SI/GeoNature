@@ -8,8 +8,8 @@ BASE DE DONNEES
 Pré-requis
 ----------
 
-* postgres 9.1, postgis 1.5, disposer d'une base template postgis ici nommée 'templategis'
-* installer postgres et postgis puis la créer le template 'templategis'
+* PostgreSQL 9.1, PostGIS 1.5, disposer d'une base ``template postgis``, ici nommée ``templategis``
+* Installer PostgreSQL et PostGIS puis créer le template ``templategis``
 
   ::
 
@@ -22,11 +22,11 @@ Pré-requis
 Création de l'utilisateur
 -------------------------
 
-* créer un utilisateur postgres nommé 'cartopnx'
+* Créer un utilisateur de base de données PostgreSQL nommé ``cartopnx``
 
-  Il sera le propriétaire de la base synthesepn et sera utilisé par l'application pour se connecté à la base. 
+  Il sera le propriétaire de la base ``synthesepn`` et sera utilisé par l'application pour se connecter à la base. 
     
-    L'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
+    L'application fonctionne avec le pass ``monpassachanger`` mais il est conseillé de l'adapter !
     
   ::
 
@@ -40,13 +40,13 @@ Création de l'utilisateur
 Création de la base de données
 ------------------------------
 
-* transférer les 2 fichiers sql sur le serveur
+* Transférer les 2 fichiers SQL sur le serveur
 
     par exemple dans le répertoire /home/monuser/
 
-* créer une base postgis nommée synthesepn
+* Créer une base postgis nommée synthesepn
 
-    se loguer en root sur le serveur (pour debian sinon utiliser sudo sur ubuntu)
+    se loguer en ``root`` sur le serveur (pour Debian sinon utiliser sudo sur Ubuntu)
 
   ::
 
@@ -56,14 +56,14 @@ Création de la base de données
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/synthese_2154.sql
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_synthese_2154.sql
 
-* si besoin l'exemple des données sig du PN Ecrins pour les tables du schéma layers
+* Si besoin l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
   
   ::
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/data_sig_pne_2154.sql 
     exit
     
-* Pour postgis 2, il peut être nécessaire de passer le script legacy.sql sur la base
+* Pour PostGIS 2, il peut être nécessaire de passer le script ``legacy.sql`` sur la base
   
   ::
 
