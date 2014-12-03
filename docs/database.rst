@@ -44,7 +44,7 @@ Création de la base de données
 
     par exemple dans le répertoire /home/monuser/
 
-* Créer une base postgis nommée synthesepn
+* Créer une base PostGIS nommée ``synthesepn``
 
     se loguer en ``root`` sur le serveur (pour Debian sinon utiliser sudo sur Ubuntu)
 
