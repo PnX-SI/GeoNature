@@ -1,7 +1,7 @@
 Bienvenue dans la doc de Faune-Flore Synthese
 =============================================
 
-Contenu :
+Contenu:
 
 .. toctree::
    :maxdepth: 2
