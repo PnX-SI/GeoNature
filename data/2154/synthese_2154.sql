@@ -85,19 +85,6 @@ CREATE SCHEMA taxonomie;
 CREATE SCHEMA utilisateurs;
 
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 SET search_path = public, pg_catalog;
 
 -- Function: public.periode(date, date, date)
@@ -1557,11 +1544,11 @@ CREATE TABLE t_fiches_cf (
     the_geom_3857 public.geometry,
     the_geom_2154 public.geometry,
     CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.ndims(the_geom_3857) = 2)),
+    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_3857 CHECK (((public.geometrytype(the_geom_3857) = 'POINT'::text) OR (the_geom_3857 IS NULL))),
     CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.srid(the_geom_3857) = 3857))
+    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
 
@@ -1961,11 +1948,11 @@ CREATE TABLE t_fiches_inv (
     id_milieu_inv integer,
     the_geom_2154 public.geometry,
     CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.ndims(the_geom_3857) = 2)),
+    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_3857 CHECK (((public.geometrytype(the_geom_3857) = 'POINT'::text) OR (the_geom_3857 IS NULL))),
     CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.srid(the_geom_3857) = 3857))
+    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
 
@@ -2290,13 +2277,13 @@ CREATE TABLE synthesefaune (
     determinateur character varying(255),
     the_geom_2154 public.geometry,
     CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_dims_the_geom_point CHECK ((public.ndims(the_geom_point) = 2)),
+    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
+    CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
     CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
     CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.srid(the_geom_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_point CHECK ((public.srid(the_geom_point) = 3857))
+    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
+    CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
 );
 
 

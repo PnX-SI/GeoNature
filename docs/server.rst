@@ -14,7 +14,12 @@ installation pour debian 7.
   
     su - 
     apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo
+    usermod -g www-data synthese
+    usermod -a -G root synthese
+    adduser synthese sudo
     exit
+    
+    Fermer la console et la réouvrir pour que les modifications soient prises en compte
     
 * activer le mod_rewrite pour symfony et redémarrer apache
 
