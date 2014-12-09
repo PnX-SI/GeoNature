@@ -1,0 +1,344 @@
+/*
+ * FileUploadField component styles
+ */
+.x-form-file-wrap {
+    position: relative;
+    height: 22px;
+    ba
+}
+.x-form-file-wrap .x-form-file {
+	position: absolute;
+	right: 0;
+	-moz-opacity: 0;
+	filter:alpha(opacity: 0);
+	opacity: 0;
+	z-index: 2;
+    height: 22px;
+}
+.x-form-file-wrap .x-form-file-btn {
+	position: absolute;
+	right: 0;
+	z-index: 1;
+}
+.x-form-file-wrap .x-form-file-text {
+    position: absolute;
+    left: 0;
+    z-index: 3;
+    color: #777;
+}
+.upload-icon { 
+	background: url(../images/image_add.png) 
+	no-repeat 0 0 !important; 
+	}
+/*fin pour le  FileUploadField component styles*/
+.x-panel-body p {
+    margin:5px;
+    font-family:arial,tahoma,helvetica,sans-serif;
+    font-size:11px;
+}
+.x-toolbar button {
+    color: #15428B !important;
+    font-weight: bold !important;
+}
+.x-form-item {
+	font: 11px tahoma,arial,helvetica,sans-serif !important;
+    color: #15428B !important;
+}
+
+.application-cigales-header {
+  background: transparent url(../images/bandeau_cigales.png) no-repeat  !important;
+}
+
+.application-cf-header {
+  background: transparent url(../images/bandeau_faune.jpg) no-repeat  !important;
+}
+
+.pInfo div{
+  padding-left: 29px !important;
+  background: #fff url(../images/information.png) 5px 17px no-repeat !important;
+}
+  
+.action-recenter {
+    background-image:  url(../images/shape_square_go.png) !important;
+    width: 16px;
+    height: 16px;
+}
+.action-detail {
+    background-image:  url(../images/page_white_magnify.gif) !important;
+/*    width: 16px;*/
+/*    height: 16px;*/
+}
+.action-edit {
+    background-image:  url(../images/table_edit.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+
+.action-link {
+   background-image:  url(../images/link_icone.png) !important;
+   width: 16px;
+   height: 16px;
+}
+.un-validate {
+    background-image: url(../images/flag_red.png) !important;
+}
+
+.validate {
+    background-image: url(../images/tick-green.gif) !important;
+}
+.unvalidate {
+    background-image: url(../images/tick-red.gif) !important;
+}
+.fr {
+    background-image: url(../images/fr.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+
+.search {
+    background-image: url(../images/search.png) !important;
+}
+.import_shape {
+    background-image: url(../images/import_shape.png) !important;
+}
+.export_shape {
+    background-image: url(../images/export_shape.png) !important;
+    width: 16px;
+    height: 16px;
+}
+.loupe {
+    background-image: url(../images/loupe.png) !important;
+}
+.tetras{
+  background-image:url(../images/tetras.png) !important;
+}
+.add {
+  background-image: url(../images/add.gif) !important;
+}
+.annuler {
+  background-image: url(../images/annuler.png) !important;
+}
+.modify{
+  background-image:url(../images/table_edit.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+
+.delete{
+  background-image:url(../images/cross.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+
+.logo_pne{
+  background-image:url(../images/logo_pne.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+.logo_pne_mini{
+  background-image:url(../images/logo_pne_mini.gif) !important;
+  width: 16px;
+    height: 16px;
+}
+
+.xls{
+  background-image:url(../images/excel.png) !important;
+}
+
+.word{
+  background-image:url(../images/word.png) !important;
+}
+
+.btbandeau {
+  margin:5px !important;
+}
+
+.home{
+  background-image:url(../images/home.png) !important;
+    width: 16px;
+    height: 16px;
+}
+.home_mini{
+  background-image:url(../images/home_mini.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+.logout{
+  background-image:url(../images/logout.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+
+.redbold {
+    color: red;
+    font: bold 11px tahoma,arial,helvetica,sans-serif !important;  
+}
+.bluebold {
+	color: #15428B;
+	font:bold 11px tahoma,arial,helvetica,sans-serif !important;
+}
+.graybold {
+    color:#909090 !important;
+    font:bold 11px tahoma,arial,helvetica,sans-serif !important;
+}
+
+.greentext {
+    color:green !important;
+}
+.redtext {
+    color:red !important;
+}
+.bluetext {
+    color:#15428B !important;
+    font: 11px tahoma,arial,helvetica,sans-serif !important;
+}
+.graytext {
+    color:#909090 !important;
+}
+.orangetext {
+    color:#ff7200 !important;
+}
+.gras  {
+  font-weight:bold !important;
+}
+
+.grey table{
+  color: #cdcdcd !important;
+}
+
+.errormsg {
+    color:red !important;
+    font:bold 11px tahoma,arial,helvetica,sans-serif !important;
+}
+
+.row-patri-backbold  table{
+  background-color:#eaddf2 !important;
+}
+.row-patri-backlight  table{
+  background-color:#e8e1ed !important;
+}
+.row-patri-backbold {
+  border-color: #faf3ff #d3c4dd #d3c4dd !important;
+}
+.row-patri-backlight {
+  border-color: #fcf7ff #d3c4dd #d3c4dd !important;
+}
+
+.pInfo {
+  font-size:12px !important;
+  padding: 10px 10px 10px 29px !important;
+  margin-top : 50px; 
+  background: #fff url(../images/information.png) 5px 3px no-repeat !important;
+  border:3px solid #f00;
+}
+
+.bg_red {
+  background: #f55e73 !important;
+}
+.bg_green{
+  background:url(../images/bg_green.png) repeat-x !important;
+}
+
+.txt_blue {
+  color: blue !important;
+}
+
+.txt_green {
+  color: green !important;
+}
+
+.txt_orange {
+  color: orange !important;
+}
+
+.txt_red {
+  color: red !important;
+}
+
+.transparent {
+  background: transparent !important;
+}
+
+.floatright{
+  float:right !important;
+  margin: 15px;
+}
+.floatleft{
+  float:left !important;
+}
+.previous {
+  background: url(../images/resultset_previous.png) top left no-repeat !important;
+  height:20px !important;
+  width:20px !important;
+}
+.zoomin {
+  background-image:url(../images/icon_zoomin.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.zoomout {
+  background-image:url(../images/icon_zoomout.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.zoomfull {
+  background-image:url(../images/icon_zoomfull.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.pan {
+  background-image:url(../images/icon_pan.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.drawpoint {
+  background-image:url(../images/draw_point_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.drawline {
+  background-image:url(../images/draw_line_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.drawpolygon {
+  background-image:url(../images/draw_polygon_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.dragpoint {
+  background-image:url(../images/move_feature_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.modifyfeature {
+  background-image:url(../images/move_vertex_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.legend {
+    background-image: url(../images/application_view_list.gif) !important;
+}
+.erase {
+    background-image: url(../images/btn_erase.gif) !important;
+}
+
+.hrdashed {
+    border: 1px dashed #909090;
+    margin: 10px 10px;
+}
+.action-remove {
+    background-image: url(../images/cross.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+#transect-description-col0 div div {
+  background: transparent !important;
+}
+
+#releve-description-col0 div div {
+  background: transparent !important;
+}
+#releve-description-col1 div div{
+  background: transparent !important;
+}

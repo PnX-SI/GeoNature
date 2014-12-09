@@ -1,0 +1,339 @@
+MAP
+  STATUS ON
+  EXTENT 872150 1942230 943685 2030790 #(PNE à vérifier)
+  SIZE 800 500
+  #SHAPEPATH "/var/local"
+  IMAGECOLOR 255 255 255
+  SYMBOLSET "symbols.txt"
+  FONTSET "fonts.txt"
+  IMAGETYPE png
+
+  PROJECTION
+    "init=epsg:2154"
+  END
+
+  CONFIG "MS_ERRORFILE" "/tmp/ms_error.txt"
+
+  OUTPUTFORMAT
+    NAME "png"
+    DRIVER "AGG/PNG"
+    #DRIVER "GD/PNG"
+    MIMETYPE "image/png"
+    IMAGEMODE RGBA
+    TRANSPARENT ON
+    EXTENSION "png"
+    FORMATOPTION "INTERLACE=OFF"
+  END
+
+  LEGEND
+    STATUS ON
+    KEYSIZE 15 10
+    IMAGECOLOR 255 255 255
+    LABEL
+      TYPE TRUETYPE
+      SIZE 8
+      COLOR 0 0 0
+      FONT vera
+    END
+  END
+
+
+  WEB
+    METADATA
+      wms_title "WMS SYNTHESE PN"
+      wms_onlinesource "http://%FQDN%/%PROJECT%/%VERSION%/faun/faun"
+      "ows_enable_request" "*"
+      wms_srs "EPSG:4326 EPSG:3857 EPSG:4171 EPSG:32622 EPSG:2154"
+  END
+  IMAGEPATH "/tmp/"
+  END
+
+##### Start zones PN #######
+
+LAYER
+  NAME "communes"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_communes"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "communes"
+    STYLE
+      OUTLINECOLOR 50 50 50
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "unitesgeo"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_unites_geo"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "unitesgeo"
+    STYLE
+      OUTLINECOLOR 255 170 0
+      WIDTH 3
+    END
+  END
+END
+
+LAYER
+  NAME "secteurs"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_secteurs"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "secteurs"
+    STYLE
+      OUTLINECOLOR 200 75 255
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "aoa"
+  STATUS ON
+  TYPE LINE
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_aireadhesion"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "aoa"
+    STYLE
+      OUTLINECOLOR 157 0 26
+      WIDTH 2
+    END
+  END
+END
+######## End Zones PN #########
+
+############# START ZONES A STATUT PN #####################
+LAYER
+  NAME "znieff2"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=2"
+  CLASS
+    NAME "znieff2"
+    STYLE
+      OUTLINECOLOR 80 80 255
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "znieff1"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=3"
+  CLASS
+    NAME "znieff1"
+    STYLE
+      OUTLINECOLOR 80 80 235
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "coeur"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=4"
+  CLASS
+    NAME "coeur"
+    STYLE
+      OUTLINECOLOR 190 14 45
+      WIDTH 3
+    END
+  END
+END
+
+LAYER
+  NAME "n2000"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=5"
+  CLASS
+    NAME "n2000"
+    STYLE
+      OUTLINECOLOR 80 80 195
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "reserveschasse"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=6"
+  CLASS
+    NAME "reserveschasse"
+    STYLE
+      OUTLINECOLOR 80 80 175
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "sitesclasses"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=8"
+  CLASS
+    NAME "sitesclasses"
+    STYLE
+      OUTLINECOLOR 80 80 135
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "sitesinscrits"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=9"
+  CLASS
+    NAME "sitesinscrits"
+    STYLE
+      OUTLINECOLOR 80 80 115
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "reservesnat"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=11"
+  CLASS
+    NAME "reservesnat"
+    STYLE
+      OUTLINECOLOR 80 80 75
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "reservesint"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=13"
+  CLASS
+    NAME "reservesint"
+    STYLE
+      OUTLINECOLOR 80 80 55
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "ab"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=synthese user=cartopnx password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=12"
+  CLASS
+    NAME "ab"
+    STYLE
+      OUTLINECOLOR 80 80 35
+      WIDTH 2
+    END
+  END
+END
+############# END ZONES A STATUT PN #####################
+
+
+
+######## End Elements #########
+
+
+# End of LAYERS DEFINITIONS
+
+END # end of map file/object

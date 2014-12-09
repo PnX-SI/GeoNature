@@ -25,9 +25,3 @@ BASE DE DONNEES
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
     exit
-    
-* Pour PostGIS 2, il peut être nécessaire de passer le script ``legacy.sql`` sur la base
-  
-  ::
-
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthesepn -f /home/monuser/legacy.sql

@@ -1,0 +1,180 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/10-Routing
+
+getSynthese:
+  url: /synthese/get
+  param: { module: synthese, action: get }
+xlsObsSynthese:
+  url: /synthese/xlsobs
+  param: { module: synthese, action: xlsObs }
+xlsStatusSynthese:
+  url: /synthese/xlsstatuts
+  param: { module: synthese, action: xlsStatuts }
+shpSynthese:
+  url: /synthese/shp
+  param: { module: synthese, action: shp }
+kmlSynthese:
+  url: /synthese/gml
+  param: { module: synthese, action: kml }
+UploadGml:
+  url: /synthese/uploadshp
+  param: { module: synthese, action: uploadFileShp }
+  
+saveFicheCf:
+  url: /cf/save
+  param: { module: cf, action: saveCf }
+saveFicheMortalite:
+  url: /cf/savemortalite
+  param: { module: cf, action: saveMortalite }
+deleteFicheCf:
+  url: /cf/deletefiche
+  param: { module: cf, action: deleteFicheCf }
+deleteReleveCf:
+  url: /cf/deletereleve
+  param: { module: cf, action: deleteReleveCf }
+getZCf:
+  url: /cf/getz
+  param: { module: cf, action: getZ }
+getOneFicheCf:
+  url: /cf/getone/:id_cf
+  param: { module: cf, action: getOneFiche }
+getListRelevesCf:
+  url: /cf/listreleves/:id_cf
+  param: { module: cf, action: getListRelevesCf }
+
+saveFicheInv:
+  url: /invertebre/save
+  param: { module: invertebre, action: saveInv }
+deleteFicheInv:
+  url: /invertebre/deletefiche
+  param: { module: invertebre, action: deleteFicheInv }
+deleteReleveInv:
+  url: /invertebre/deletereleve
+  param: { module: invertebre, action: deleteReleveInv }
+getZInv:
+  url: /invertebre/getz
+  param: { module: invertebre, action: getZ }
+getOneFicheInv:
+  url: /invertebre/getone/:id_inv
+  param: { module: invertebre, action: getOneFiche }
+getListRelevesInv:
+  url: /invertebre/listreleves/:id_inv
+  param: { module: invertebre, action: getListRelevesInv }
+
+getCriteresCfClasse:
+  url: /bibs/criterescf/:id_classe
+  param: { module: bibs, action: ListCritereCf }
+getCriteresCf:
+  url: /bibs/criterescf
+  param: { module: bibs, action: ListCritereCf }
+getCriteresInv:
+  url: /bibs/criteresinv
+  param: { module: bibs, action: ListCritereInv }
+getMilieuxInv:
+  url: /bibs/milieuxinv
+  param: { module: bibs, action: listMilieuxInv }
+getTaxons:
+  url: /bibs/taxons
+  param: { module: bibs, action: listTaxons }
+getObservateursCfAdd:
+  url: /bibs/observateurscfadd
+  param: { module: bibs, action: listObservateursCfAdd }
+getObservateursInvAdd:
+  url: /bibs/observateursinvadd
+  param: { module: bibs, action: listObservateursInvAdd }
+getTaxonsCf:
+  url: /bibs/taxonscf
+  param: { module: bibs, action: listTaxonsCf }
+getTaxonsInv:
+  url: /bibs/taxonsinv
+  param: { module: bibs, action: listTaxonsInv }
+getTaxonsInvUnite:
+  url: /bibs/taxonsinvu
+  param: { module: bibs, action: listTaxonsInvu }
+getTaxonsCfUnite:
+  url: /bibs/taxonscfu
+  param: { module: bibs, action: listTaxonsCfu }
+getAnneesSynthese:
+  url: /bibs/listannee
+  param: { module: bibs, action: listAnneesSynthese }
+getTreeTaxonsSynthese:
+  url: /bibs/taxonstree
+  param: { module: bibs, action: listTaxonsTreeSynthese }
+getTaxonsSynthese:
+  url: /bibs/taxonssynthese
+  param: { module: bibs, action: listTaxonsSynthese }
+getCommunesSynthese:
+  url: /bibs/communessynthese
+  param: { module: bibs, action: listCommunes }
+getCommunesSyntheseSecteur:
+  url: /bibs/communessynthese/:secteur
+  param: { module: bibs, action: listCommunes }
+getSecteursSynthese:
+  url: /bibs/secteurssynthese
+  param: { module: bibs, action: listSecteurs }
+getProtocoles:
+  url: /bibs/protocoles
+  param: { module: bibs, action: listProtocoles }
+getProgrammes:
+  url: /bibs/programmes
+  param: { module: bibs, action: listProgrammes }
+getReserves:
+  url: /bibs/reserves
+  param: { module: bibs, action: listReserves }
+getN2000:
+  url: /bibs/n2000
+  param: { module: bibs, action: listN2000 }
+
+#statfaune
+datasNbObsCf:
+  url: /datasnbobscf
+  param: { module: home, action: datasNbObsCf }
+datasNbObsInv:
+  url: /datasnbobsinv
+  param: { module: home, action: datasNbObsInv } 
+datasColorsCf:
+  url: /datascolorscf
+  param: { module: home, action: datasColorsCf } 
+datasColorsInv:
+  url: /datascolorsinv
+  param: { module: home, action: datasColorsInv } 
+
+#admin
+majChiros:
+  url: /admin/majchiros
+  param: { module: admin, action: majChiropteres }  
+
+#autres
+getStatus:
+  url: /getstatus
+  param: { module: home, action: getStatus }
+Cf:
+  url: /cf
+  param: { module: home, action: indexCf }
+Mortalite:
+  url: /mortalite
+  param: { module: home, action: indexMortalite }
+Invertebre:
+  url: /invertebre
+  param: { module: home, action: indexInvertebre }
+Synthese:
+  url: /synthese
+  param: { module: home, action: indexSynthese }
+logout: 
+  url: /deconnexion
+  param: { module: home, action: logout }
+login: 
+  url: /login
+  param: { module: home, action: login }
+# default rules
+homepage:
+  url: /
+  param: { module: home, action: index }
+# generic rules
+# please, remove them by adding more specific rules
+default_index:
+  url:   /:module
+  param: { action: index }
+
+default:
+  url:   /:module/:action/*

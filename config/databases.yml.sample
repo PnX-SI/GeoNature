@@ -1,0 +1,7 @@
+all:
+  doctrine:
+    class: sfDoctrineDatabase
+    param:
+      dsn: 'pgsql:host=databases;dbname=synthese'
+      username: cartopnx
+      password: monpassachanger

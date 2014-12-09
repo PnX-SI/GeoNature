@@ -1,0 +1,9 @@
+xlsSynthese:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
+shpSynthese:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
+gmlSynthese:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true

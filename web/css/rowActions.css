@@ -1,0 +1,78 @@
+/** vim: ts=4:sw=4:nu:fdc=4:nospell 
+ *
+ * Ext.ux.grid.RowActions.css 
+ *
+ * Style sheets for Grid RowActions Plugin
+ *
+ * @author   Ing. Jozef Sakáloš
+ * @date     27. March 2008
+ * @verson   $Id: Ext.ux.grid.RowActions.css 753 2009-10-28 02:17:34Z jozo $
+ *
+ * @license Ext.ux.grid.RowActions.css is licensed under the terms of
+ * the Open Source LGPL 3.0 license.  Commercial use is permitted to the extent
+ * that the code/component(s) do NOT become part of another Open Source or Commercially
+ * licensed development library or toolkit without explicit permission.
+ * 
+ * License details: http://www.gnu.org/licenses/lgpl.html
+ */
+
+/* styles for rows */
+.ux-row-action-cell .x-grid3-cell-inner {
+	padding:1px 0 0 0;
+}
+.ux-row-action-item {
+	float:left;
+	min-width:16px;
+	height:16px;
+	background-repeat:no-repeat;
+	margin: 0 3px 0 2px;
+/*	margin: 1px 5px 0 2px; */
+	cursor:pointer;
+	overflow:hidden;
+}
+.ext-ie .ux-row-action-item {
+	width:16px;
+}
+.ext-ie .ux-row-action-text {
+	width:auto;
+}
+.ux-row-action-item span {
+	vertical-align:middle;
+	padding:0 0 0 20px;
+	line-height:18px;
+}
+.ext-ie .ux-row-action-item span {
+	width:auto;
+}
+
+/* styles for groups */
+.x-grid-group-hd div {
+	position:relative;
+	height:16px;
+}
+.ux-grow-action-item {
+	min-width:16px;
+	height:16px;
+	background-repeat:no-repeat;
+	background-position: 0 50% ! important;
+	margin: 0 0 0 4px;
+	padding: 0 ! important;
+	cursor:pointer;
+	float:left;
+}
+.ext-ie .ux-grow-action-item {
+	width:16px;
+}
+.ux-action-right {
+	float:right;
+	margin: 0 3px 0 2px;
+	padding: 0 ! important;
+}
+.ux-grow-action-text {
+	padding: 0 ! important;
+	margin:0 ! important;
+	background:transparent none ! important;
+	float:left;
+}
+
+/* eof */ 

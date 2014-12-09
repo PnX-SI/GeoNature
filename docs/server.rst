@@ -5,6 +5,36 @@
 SERVEUR
 =======
 
+Les auteurs  :ref:`Auteurs <auteurs-section>`.
+
+
+Prérequis
+=========
+
+* Ressources minimum serveur :
+
+** 1 Go RAM
+** 10 Go disk space
+
+* disposer d'un utilisateur linux nommé 'synthese'. Le répertoire de cet utilisateur 'synthese' doit être dans /home/synthese
+
+    :: 
+    
+        sudo adduser --home /home/synthese synthese
+
+
+* récupérer le zip sur le github
+
+    ::
+    
+        cd /tmp
+        wget https://github.com/PnEcrins/FF-synthese/archive/vX.Y.Z.zip
+        unzip vX.Y.Z.zip
+        mkdir -p /home/synthese/dev/FF-synthese
+        cp FF-synthese-X.Y.Z/* /home/synthese/dev/FF-synthese
+        cd /home/synthese
+
+
 Installation et configuration du serveur
 ========================================
 
@@ -13,7 +43,7 @@ installation pour debian 7.
   ::
   
     su - 
-    apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo
+    apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo gdal-bin
     usermod -g www-data synthese
     usermod -a -G root synthese
     adduser synthese sudo
@@ -21,15 +51,22 @@ installation pour debian 7.
     
     Fermer la console et la réouvrir pour que les modifications soient prises en compte
     
-* activer le mod_rewrite pour symfony et redémarrer apache
+* Activer le mod_rewrite et les configurations requises pour symfony et redémarrer apache
 
   ::  
         
         sudo a2enmod rewrite
+        sudo sh -c 'echo "Include /home/synthese/dev/FF-synthese/apache/*.conf" >> /etc/apache2/apache2.conf'
+        sudo apache2ctl restart
+
+* Ajouter un alias du serveur de base de données dans le fichier /etc/host
+
+  ::  
+        
+        sudo sh -c 'echo "127.0.1.1       databases" >> /etc/hosts'
         sudo apache2ctl restart
 
 * Vérifier que le répertoire /tmp existe et que l'utilisateur www-data y ait accès en lecture/écriture
-
 
 mise en place de la base de données
 ===================================
@@ -53,7 +90,7 @@ mise en place de la base de données
 
 * Création des utilisateurs postgres
 
-Cet utilisateur sera le propriétaire de la base synthesepn et sera utilisé par l'application pour se connecté à la base.
+Cet utilisateur sera le propriétaire de la base synthese et sera utilisé par l'application pour se connecté à la base.
 l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
 
     ::

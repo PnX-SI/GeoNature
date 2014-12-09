@@ -1,0 +1,17 @@
+.olControlAttribution {
+        bottom:15px;
+}
+.gpControlPermanentLogo {
+    bottom:10px;
+    left:45%;
+    padding:0px;
+}
+.gpControlPermanentLogo img {
+    margin:0px;
+    padding:0px;
+    border:0px none;
+}
+.gpControlTermsOfService {
+    left:45%;
+    padding:0px;
+}

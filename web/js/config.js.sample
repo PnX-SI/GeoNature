@@ -1,0 +1,30 @@
+usage = 'prod';//valeur possible : demo (limit 100 sur les exports), prod
+host_uri = 'mon-domaine.fr';
+app_uri = 'synthese'; //nom du lien symbolique réalisé dans le répertoire apache
+wms_uri = 'http://mon-domaine.fr/faun/faun/';
+
+ign_api_key = 'ma_cle_api_ign'; //clef site http://professionnels.ign.fr
+
+ign_resolutions=[156543.03392804103,78271.5169640205,39135.75848201024,19567.879241005125,9783.939620502562,4891.969810251281,2445.9849051256406,1222.9924525628203,611.4962262814101,305.74811314070485,152.87405657035254,76.43702828517625,38.218514142588134,19.109257071294063,9.554628535647034,4.777314267823517,2.3886571339117584,1.1943285669558792,0.5971642834779396,0.29858214173896974,0.14929107086948493,0.07464553543474241];
+//**************Pour la configuration de l'outil de pointage GPS***************************
+// gps_user_projection = new OpenLayers.Projection("EPSG:2154");
+gps_user_projection = new OpenLayers.Projection("EPSG:4326");
+// gps_user_projection = new OpenLayers.Projection("EPSG:32622");
+// gps_user_projection = new OpenLayers.Projection("EPSG:32630");
+// gps_user_projection = new OpenLayers.Projection("EPSG:32631");
+// gps_user_projection = new OpenLayers.Projection("EPSG:32632");
+
+fuseauUTM = 22;
+x_min = 90000;
+x_max = 390000;
+y_min = 230000;
+y_max = 655000;
+x_exemple = 151230;
+y_exemple = 290560;
+pn_name_long = 'Parc nationaux de France';
+
+// -------extent metropole dans la projection 3857---------------
+extent_max = new OpenLayers.Bounds(-575000, 5000000,1070000, 6640000);
+centre_map = new OpenLayers.LonLat(700000, 5594000)
+resolution_max = 2445.9849051256406;
+num_zoom_levels = 16;

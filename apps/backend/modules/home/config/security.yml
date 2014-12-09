@@ -1,0 +1,12 @@
+indexSynthese:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
+indexCf:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
+indexCigales:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
+index:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
