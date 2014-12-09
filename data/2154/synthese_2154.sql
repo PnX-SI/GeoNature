@@ -186,7 +186,7 @@ ELSE
 		-- pas d'info sur le srid utilisé, cas des importations à gérer manuellement. Ne devrait pas exister.
 	END IF;
 -------gestion des divers control avec attributions des secteurs + communes : dans le cas d'un insert depuis le nomade uniquement via the_geom !!!!
-	IF isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune
 		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
@@ -198,10 +198,10 @@ ELSE
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -542,7 +542,7 @@ IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is 
 		new.srid_dessin = 2154;
 	END IF;
 -------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
-	IF isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
 		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
@@ -554,10 +554,10 @@ IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is 
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -666,7 +666,7 @@ ELSE
 		-- pas d'info sur le srid utilisé, cas des importations à gérer manuellement. Ne devrait pas exister.
 	END IF;
 -------gestion des divers control avec attributions des secteurs + communes : dans le cas d'un insert depuis le nomade uniquement via the_geom !!!!
-	IF isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
 		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
@@ -678,10 +678,10 @@ ELSE
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -1025,7 +1025,7 @@ IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is 
 	END IF;
 
 -------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
-	IF isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
 		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
@@ -1037,10 +1037,10 @@ IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is 
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(st_box2d(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
