@@ -59,10 +59,5 @@ l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé d
         CREATE ROLE cartoadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
         
-* Création de la base de données et chargement des données initiales
-
-    ::
-    
-        createdb -O cartopnx synthese
-        psql -d synthese -c "CREATE EXTENSION postgis;"
+Voir la partie database dans la doc
         
