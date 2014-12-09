@@ -10,9 +10,7 @@ class homeActions extends sfFauneActions
     {
         slot('title', "Synthese PN");
         //affichage du formulaire
-        print 'zerzerzezezzerzer';
         $this->form = new LoginForm();
-        print 'zerzerzezezzerzer';
         
         if ($request->isMethod('post')) //sinon (premier accès à la page) tout ce bloc n'est pas executé et on  ne fait que affiché le formulaire
         {
