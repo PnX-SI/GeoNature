@@ -26,8 +26,8 @@ installation pour debian 7.
 * Vérifier que le répertoire /tmp existe et que l'utilisateur www-data y ait accès en lecture/écriture
 
 
-mise en place de la base de données
-===================================
+mise en place du serveur de bases de données
+============================================
 
 * Sur debian 7 configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et Postgis (2.1)
 (http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html)
@@ -58,11 +58,6 @@ l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé d
         CREATE ROLE cartopnx WITH LOGIN PASSWORD 'monpassachanger';
         CREATE ROLE cartoadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
-        
-* Création de la base de données et chargement des données initiales
-
-    ::
+        exit
     
-        createdb -O cartopnx synthese
-        psql -d synthese -c "CREATE EXTENSION postgis;"
         
