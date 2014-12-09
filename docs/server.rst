@@ -8,16 +8,20 @@ SERVEUR
 Installation et configuration du serveur
 ========================================
 
-  ::
+installation pour debian 7.
 
+  ::
+  
+    su -
     apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo
+    exit
     
 * activer le mod_rewrite pour symfony et redémarrer apache
 
   ::  
-  
-        a2enmod rewrite
-        apache2ctl restart
+        
+        sudo a2enmod rewrite
+        sudo apache2ctl restart
 
 * Vérifier que le répertoire /tmp existe et que l'utilisateur www-data y ait accès en lecture/écriture
 
@@ -30,16 +34,16 @@ mise en place de la base de données
 
   ::  
   
-        sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" >> /etc/apt/sources.list'
-        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-        apt-get update
+        sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" >> /etc/apt/sources.list'
+        sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+        sudo apt-get update
 
 * Installation de PostreSQL/PostGIS 
 
     ::
     
-        apt-get install postgresql-9.3 postgresql-client-9.3
-        apt-get install postgresql-9.3-postgis-2.1
+        sudo apt-get install postgresql-9.3 postgresql-client-9.3
+        sudo apt-get install postgresql-9.3-postgis-2.1
         
 
 * Création des utilisateurs postgres
