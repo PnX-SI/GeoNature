@@ -12,7 +12,7 @@ installation pour debian 7.
 
   ::
   
-    su -
+    su - 
     apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo
     exit
     
