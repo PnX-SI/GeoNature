@@ -59,7 +59,7 @@ class bibsActions extends sfFauneActions
     public function executeListTaxonsCf(sfRequest $request)
     {
         $val = BibTaxonsFaunePnTable::listCf();
-        return 'dswfsdfsdfsfd'; //$this->renderText(json_encode($val));
+        return $this->renderText(json_encode($val));
     }
 
     public function executeListTaxonsCfu(sfRequest $request)

@@ -306,7 +306,7 @@ application.synthese = function() {
                 }
                 var l0= new Geoportal.Layer.WMTS(
                         'Ortho-imagerie',
-                        'https://'+((ign_api_dev_username) ? ign_api_dev_username +':'+ign_api_dev_password +'@' : '')+'gpp3-wxs.ign.fr/'+ign_api_key+'/geoportail/wmts',
+                        'https://gpp3-wxs.ign.fr/'+ign_api_key+'/geoportail/wmts',
                         {
                           layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
                           style: 'normal',
@@ -376,7 +376,7 @@ application.synthese = function() {
                 }
                 var l0= new Geoportal.Layer.WMTS(
                         'Cartes ign',
-                        'https://'+((ign_api_dev_username) ? ign_api_dev_username +':'+ign_api_dev_password +'@' : '')+'gpp3-wxs.ign.fr/'+ign_api_key+'/geoportail/wmts',
+                        'https://gpp3-wxs.ign.fr/'+ign_api_key+'/geoportail/wmts',
                         {
                           layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
                           style: 'normal',
