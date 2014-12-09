@@ -239,7 +239,7 @@ class SynthesefauneTable extends Doctrine_Table
                 $obs['no_protection'] = ($obs['protection_stricte']=='t')?false:true;
                 $obs['taxon_francais'] = ($obs['taxon_francais'] == '' || $obs['taxon_francais'] == null )?$obs['taxon_latin']:$obs['taxon_francais'];
                //pour l'affichage ou non du bouton edit; 
-               if ((preg_match("/".$userNom."/i", $obs['observateurs']) && preg_match("/".$userPrenom."/i", $obs['observateurs'])&&($obs['id_source']==6 || $obs['id_source']==7))||($statuscode==6 && ($obs['id_source']==6 || $obs['id_source']==7))) {$obs['edit_ok']='true';}
+               if ((preg_match("/".$userNom."/i", $obs['observateurs']) && preg_match("/".$userPrenom."/i", $obs['observateurs'])&&($obs['id_source']==sfSyntheseConfig::$id_source_cf || $obs['id_source']==sfSyntheseConfig::$id_source_inv))||($statuscode==6 && ($obs['id_source']==sfSyntheseConfig::$id_source_cf || $obs['id_source']==sfSyntheseConfig::$id_source_inv))) {$obs['edit_ok']='true';}
                 // if($obs['id_source']==6 OR $obs['id_source']==7){$obs['edit_ok']='false';}
                 else{$obs['edit_ok']='false';}
                 if($compt>0){$geojson .= ',';}

@@ -684,9 +684,9 @@ application.synthese.search = function() {
                             var tableau=code.split(reg);
                             var id_fiche = tableau[0].substr(1,20);
                             var id_releve = tableau[1].substr(1,20);
-                            if(record.data.id_source==6&&record.data.id_protocole==140){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==6&&record.data.id_protocole==142){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==7){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_cf){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_lot_inv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
                         }
                     }
                 }]
@@ -718,9 +718,9 @@ application.synthese.search = function() {
                                         var tableau=code.split(reg);
                                         var id_fiche = tableau[0].substr(1,20);
                                         var id_releve = tableau[1].substr(1,20);
-                                        if(record.data.id_source==6&&record.data.id_protocole==140){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==6&&record.data.id_protocole==142){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==7){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
+                                        if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_cf){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                        if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                        if(record.data.id_source==id_lot_inv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
                                     }
                                 }
                             }
@@ -802,19 +802,19 @@ application.synthese.search = function() {
                     if(record){
                         var code = record.data.code_fiche_source;
                         var id_source = record.data.id_source;
-                        if(code!='' && code!=null && (id_source==7 || id_source==6)){
+                        if(code!='' && code!=null && (id_source==id_lot_inv || id_source==id_lot_cf)){
                             var reg=new RegExp("[-]+", "g");
                             var tableau=code.split(reg);
                             var id_fiche = tableau[0].substr(1,20);
                             var id_releve = tableau[1].substr(1,20);
                             var id_protocole = record.data.id_protocole;
-                            if(id_source==6&&id_protocole==140&&record.data.edit_ok){
+                            if(id_source==id_lot_cf&&id_protocole==id_protocole_cf&&record.data.edit_ok){
                                 application.synthese.editCf.loadFiche(id_fiche,'update',null);
                             }
-                            if(id_source==6&&id_protocole==142&&record.data.edit_ok){
+                            if(id_source==id_lot_cf&&id_protocole==id_protocole_mortalite&&record.data.edit_ok){
                                 application.synthese.editMortalite.loadFiche(id_fiche,'update',null);
                             }
-                            if(id_source==7&&id_protocole==141&&record.data.edit_ok){
+                            if(id_source==id_lot_inv&&id_protocole==id_protocole_inv&&record.data.edit_ok){
                                 application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);
                             }
                             if(!record.data.edit_ok){Ext.ux.Toast.msg('Non, non, non !', 'Vous devez être l\'auteur de cette observation ou administrateur pour la modifier.');}  
