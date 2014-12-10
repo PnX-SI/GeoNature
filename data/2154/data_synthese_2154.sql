@@ -291,9 +291,8 @@ SET search_path = synthese, pg_catalog;
 -- Data for Name: bib_sources; Type: TABLE DATA; Schema: synthese; Owner: cartopnx
 --
 
-INSERT INTO bib_sources VALUES (1, 'Contact faune', 'contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'synthese', 'contactfaune', 't_releves_cf', 'id_releve_cf');
-INSERT INTO bib_sources VALUES (2, 'Contact invertébrés', 'contenu des tables t_fiches_inv et t_releves_inv de la base faune postgres', 'localhost', 22, NULL, NULL, 'synthese', 'contactinv', 't_releves_inv', 'id_releve_inv');
-
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field) VALUES (1, 'Contact faune', 'contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'synthese', 'contactfaune', 't_releves_cf', 'id_releve_cf');
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field) VALUES (3, 'Contact invertébrés', 'contenu des tables t_fiches_inv et t_releves_inv de la base faune postgres', 'localhost', 22, NULL, NULL, 'synthese', 'contactinv', 't_releves_inv', 'id_releve_inv');
 
 SET search_path = taxonomie, pg_catalog;
 
@@ -630,18 +629,18 @@ INSERT INTO t_precisions (id_precision, nom_precision, desc_precision) VALUES (3
 -- Data for Name: bib_programmes; Type: TABLE DATA; Schema: meta; Owner: -
 --
 
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (1, 'inventaire de la faune vertébrée', 'inventaire de la faune vertébrée', true, NULL);
-
-
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (3, 'Contact invertébrés', 'Contact aléatoire de la faune invertébrée.', true, 'Contact aléatoire de la faune invertébrée.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (1, 'Contact vertébrés', 'Contact aléatoire de la faune vertébrée.', true, 'Contact aléatoire de la faune vertébrée.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (2, 'Mortalité', 'Données issue du protocole mortalité.', true, 'Données issue du protocole mortalité.');
 --
 -- TOC entry 3138 (class 0 OID 126890)
 -- Dependencies: 223
 -- Data for Name: bib_lots; Type: TABLE DATA; Schema: meta; Owner: -
 --
 
-
-INSERT INTO bib_lots VALUES (1, 'contact vertébrés', 'contact vertébrés', true, true, false, 1);
-INSERT INTO bib_lots VALUES (2, 'contact invertébrés', 'contact invertébrés', true, true, false, 1);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (1, 'Contact vertébrés', 'Contact vertébrés', true, true, false, 1);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (2, 'Mortalité', 'Mortalité', true, true, false, 2);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (3, 'Contact invertébrés', 'Contact invertébrés', true, true, false, 3);
 
 --
 -- TOC entry 3140 (class 0 OID 126911)
