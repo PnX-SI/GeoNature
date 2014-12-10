@@ -21,7 +21,7 @@ class mfQuery extends Doctrine_Query
    * @var array
    */
   private static $__format = array(
-    'BINARY' => ", encode(asbinary(%s), 'hex') %s"
+    'BINARY' => ", encode(st_asbinary(%s), 'hex') %s"
   );
   
   /**
@@ -30,7 +30,7 @@ class mfQuery extends Doctrine_Query
    * @param string $column
    * @return mfQuery 
    */
-  public static function create($column='the_geom')
+  public static function create( $column='the_geom', $conn = NULL, $class = NULL)
   {
     $instance = new self();
     $instance->__geoColumn = $column;
@@ -45,7 +45,7 @@ class mfQuery extends Doctrine_Query
    * @param mixed $append false or string : way to transform the geom 
    * @return mfQuery
    */
-  public function select($string, $append='BINARY')
+  public function select($string=NULL, $append='BINARY')
   {
     if ($append!==false){
         $string .= sprintf(self::$__format[$append], $this->__geoColumn, $this->__geoColumn);
@@ -93,12 +93,12 @@ class mfQuery extends Doctrine_Query
   public function intersect($geometry)
   {
     $srid = sfConfigSynthese::$srid_local;
-    $pg_geometry = 'GEOMETRYFROMTEXT(?, '.$srid .')';
+    $pg_geometry = 'st_GEOMETRYFROMTEXT(?, '.$srid .')';
     $the_geom = $this->__geoColumn;
 
     $this
       ->addWhere("$the_geom && $pg_geometry", $geometry)
-      ->andWhere("DISTANCE($pg_geometry, $the_geom) <= 0", $geometry);
+      ->andWhere("st_DISTANCE($pg_geometry, $the_geom) <= 0", $geometry);
       
     return $this;
   }

@@ -36,11 +36,11 @@ class Search
         // if requested i/o epsg code ($epsg) and data in db ($this->epsg) match
         $geom_field = ($epsg == $this->epsg) ? 
                             'm.' . $this->geomColumn : 
-                            'transform(m.' . $this->geomColumn . ', '.$epsg.')';
+                            'st_transform(m.' . $this->geomColumn . ', '.$epsg.')';
 
         $select_string = ($this->extended) ? 
-                            "ashexewkb($geom_field) " . $this->geomColumn:
-                            "encode(asbinary($geom_field), 'hex') " . $this->geomColumn;
+                            "st_ashexewkb($geom_field) " . $this->geomColumn:
+                            "encode(st_asbinary($geom_field), 'hex') " . $this->geomColumn;
         
         $q = new Doctrine_Query();
         Doctrine_Manager::getInstance()->getCurrentConnection()
@@ -55,20 +55,20 @@ class Search
             $radius = floatval($paramHolder->get('radius'));
             
             $point = ($epsg == $this->epsg) ? 
-                            " (GeometryFromText('POINT($lon $lat)', $epsg ))" :
-                            " (Transform(GeometryFromText('POINT($lon $lat)', $epsg ), " . $this->epsg . '))';
+                            " (st_GeometryFromText('POINT($lon $lat)', $epsg ))" :
+                            " (st_Transform(st_GeometryFromText('POINT($lon $lat)', $epsg ), " . $this->epsg . '))';
                             
             $sql = 'SELECT ' . $this->idColumn . ' FROM ' . $table_name;
             if ($radius > 0)
             {
                 if ($this->units == 'degrees') 
-                    $sql .= " WHERE distance_sphere( $point, " . $this->geomColumn . " ) < $radius";
+                    $sql .= " WHERE st_distance_sphere( $point, " . $this->geomColumn . " ) < $radius";
                 else
-                    $sql .= " WHERE distance( $point, " . $this->geomColumn . " ) < $radius";
+                    $sql .= " WHERE st_distance( $point, " . $this->geomColumn . " ) < $radius";
             }
             else
             {
-                $sql .= " WHERE within( $point, " . $this->geomColumn . ' )';
+                $sql .= " WHERE st_within( $point, " . $this->geomColumn . ' )';
             }
             
             $results = Doctrine_Manager::connection()->standaloneQuery($sql)->fetchAll();
@@ -94,8 +94,8 @@ class Search
             
             $sql = 'SELECT ' . $this->idColumn . ' FROM ' . $table_name . ' WHERE '. $this->geomColumn;
             $sql .= ($epsg == $this->epsg) ? 
-                            " && (GeometryFromText('$polygon', $epsg ))" :
-                            " && (Transform(GeometryFromText('$polygon', $epsg ), " . $this->epsg . '))';
+                            " && (st_GeometryFromText('$polygon', $epsg ))" :
+                            " && (st_Transform(st_GeometryFromText('$polygon', $epsg ), " . $this->epsg . '))';
                          
             $results = Doctrine_Manager::connection()
                         ->standaloneQuery($sql)
