@@ -142,7 +142,6 @@ application.synthese.editMortalite = function() {
             ,modal: true
             ,plain: true
             ,plugins: [new Ext.ux.plugins.ProportionalWindows()]
-            //,aspect: true
             ,width: 800
             ,height: 600
             ,percentage: 0.92
@@ -194,7 +193,6 @@ application.synthese.editMortalite = function() {
                     ,width: 180
                     ,anchor:'-15'
                 }
-                // ,labelAlign: 'left'
                 ,monitorValid:true
                 ,items: [getFormItems(),getFormTaxons()]
                 //pour version Extjs 3.4
@@ -287,8 +285,6 @@ application.synthese.editMortalite = function() {
         ,collapsible: true
         ,autoHeight:true
         ,anchor:'98%'
-        //,defaults: {anchor: '-20' // leave room for error icon}
-        // ,defaultType: 'textfield'
         ,items :[comboObservateurs
             ,{
                 xtype: 'compositefield'
@@ -304,7 +300,6 @@ application.synthese.editMortalite = function() {
                     ,altFormats:'Y-m-d'
                     ,allowBlank: false
                     ,blankText:'La date de l\'observation est obligatoire'
-                    // ,value: new Date()
                     ,listeners: {
                         render: function(c) {
                             Ext.QuickTips.register({
@@ -321,7 +316,6 @@ application.synthese.editMortalite = function() {
                     ,xtype:'numberfield'
                     ,allowDecimals :false
                     ,allowNegative: false
-                    // ,fieldLabel: 'Altitude '
                     ,name: 'altitude_saisie'
                     ,anchor: '40%'
                     ,listeners: {
@@ -338,34 +332,6 @@ application.synthese.editMortalite = function() {
                 ,xtype: 'displayfield'
                 ,value: 'Commune : inconnue'
             }
-            // ,{
-                // id:'combo-fiche-lots'
-                // ,xtype:'twintriggercombo'
-                // ,fieldLabel: 'Lots de données '
-                // ,name: 'id_lot_cf'
-                // ,hiddenName:'id_lot'
-                // ,store: application.synthese.storeLotsCf
-                // ,valueField: "id_lot"
-                // ,displayField: "nom_lot"
-                // ,allowBlank:false
-                // ,typeAhead: true
-                // ,forceSelection: true
-                // ,selectOnFocus: true
-                // ,editable: true
-                // ,resizable:true
-                // ,triggerAction: 'all'
-                // ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
-                // ,mode: 'local'
-                // ,value:4
-                // ,listeners: {
-                    // select: function(combo, record) {
-
-                    // }
-                    // ,change: function(combo, record) {
-
-                    // }
-                // }
-            // }
             ]
         } //fin du groupe 1  
         ];//fin du return
@@ -419,7 +385,6 @@ application.synthese.editMortalite = function() {
                     var sexeage;
                     if(Ext.getCmp('radiogroup-sexeage').getValue()){sexeage = Ext.getCmp('radiogroup-sexeage').getValue().initialConfig.boxLabel;}
                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo',sexeage);
-                    // Ext.getCmp('combo-fiche-taxon').fireEvent('change');
                 }
             }
         });
@@ -618,7 +583,6 @@ application.synthese.editMortalite = function() {
         };
         this.addNewIndividu = function(){
             Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('add');
-            // resetSexeAgeValue();
             relevesStore.add(new blankRecord({
                 //attention l'ordre des champs est important
                 id_releve_cf:null
@@ -686,7 +650,6 @@ application.synthese.editMortalite = function() {
             Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('yearling',0);
             Ext.getCmp('edit-fiche-form').getForm().findField('sai').setValue(0);
             Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sai',0);
-            // Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo','Saisie en cours');
         };
 
         if(application.synthese.user.statuscode >= 2){
@@ -764,9 +727,7 @@ application.synthese.editMortalite = function() {
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
-                // ,layout: 'form'
                 ,labelWidth: 80
-                // ,title:'Détails de l\'observation'
                 ,defaults: {
                     width: 305
                     ,border:false
@@ -1220,7 +1181,6 @@ application.synthese.editMortalite = function() {
                         id:'cb-prelevement'
                         ,xtype:'checkbox'
                         ,fieldLabel: 'Prélèvement'
-                        // ,boxLabel: 'Prelevement'
                         ,name: 'prelevement'
                         ,inputValue: true
                         ,checked: false                                   
@@ -1319,13 +1279,6 @@ application.synthese.editMortalite = function() {
                                         Ext.getCmp('fieldset-commentaire').collapse();
                                     }
                                     else{Ext.getCmp('fieldset-sexeage').expand();}
-                                    // if(Ext.getCmp('combo-fiche-critere').getValue()==null){
-                                        // Ext.getCmp('fieldset-commentaire').collapse();
-                                    // }
-                                    // else{
-                                        // if(Ext.getCmp('ta-fiche-commentaire').getValue()==''){Ext.getCmp('fieldset-commentaire').collapse();}
-                                        // else{Ext.getCmp('fieldset-commentaire').expand();}
-                                    // }
                                 }
                                 else{
                                     Ext.getCmp('fieldset-sexeage').expand();
@@ -1409,6 +1362,7 @@ application.synthese.editMortalite = function() {
                     return false; //la fonction s'arrête là
                 }
                 if(vectorLayer.features[1]){vectorLayer.removeFeatures(vectorLayer.features[0]);}//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                activateControls(true);
                 updateGeometryField(feature);
                 Ext.getCmp('edit-fiche-form').enable();
                 Ext.getCmp('edit-fiche-form').ownerCt.ownerCt.doLayout();
@@ -1458,15 +1412,6 @@ application.synthese.editMortalite = function() {
                     toggleGroup: this.id
                 }
             );
-            
-            // toolbar.add({
-                // id: 'edit-fiche-zoomtopne'
-                // ,iconCls: 'logo_pne_mini'
-                // ,tooltip: 'Zoomer directement sur le Parc national des Ecrins'
-                // ,handler: function() {
-                    // map.setCenter(new OpenLayers.LonLat(700000, 5594000),9);
-                // }
-            // });
 
             application.synthese.utils.addSeparator(toolbar);
 
@@ -1477,7 +1422,6 @@ application.synthese.editMortalite = function() {
                 ,toggleGroup: 'navigation'
                 ,tooltip: 'Etendue précédente'
                 ,handler: function() {
-                    // application.synthese.search.changeGridCss();
                     syntheseListGrid.getView().refresh();
                 }
             });
@@ -1655,7 +1599,6 @@ application.synthese.editMortalite = function() {
      */
     var resetWindow = function() {
         id_cf = null;
-        // map.zoomToMaxExtent();
         vectorLayer.removeFeatures(vectorLayer.features);
         Ext.getCmp('edit-fiche-form').getForm().reset();
         Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
@@ -1710,7 +1653,6 @@ application.synthese.editMortalite = function() {
             params.id_cf = id_cf;
         }
         params.sting_taxons = constructStringTaxons();
-        // params.array_keys = constructStringKeys();
         Ext.getCmp('edit-fiche-form').getForm().submit({
             url: 'cf/savemortalite'
             ,params: params
@@ -1781,7 +1723,6 @@ application.synthese.editMortalite = function() {
                     wmslayer.mergeNewParams({
                       id_cf: id_cf
                     });
-                    // wmslayer.setOpacity(0.25);
                     var options = {
                         url: 'cf/getone/'+id_cf
                         ,params: {format: 'geoJSON'}
@@ -1789,20 +1730,6 @@ application.synthese.editMortalite = function() {
                     eventProtocol.read(options);
                     myProxyReleves.url = 'cf/listreleves/'+id_cf;
                     Ext.getCmp('grid-taxons').getStore().reload();
-                    // Ext.getCmp('grid-taxons').getSelectionModel().selectRow(0);
-                    //si l'évenement load a un listener on le supprime
-                    // if(gridStoreTaxons.hasListener('load')){gridStoreTaxons.events['load'].clearListeners();}
-                    //si on passe un cd_nom à modifier, on ajout un listener sur load pour mettre ce taxon en édition
-                    // if(cd>0){
-                        // gridStoreTaxons.addListener('load',function(){
-                            // var monIndex = gridStoreTaxons.findExact('cd_nom',cd);
-                            // old_taxon = cd;
-                            // Ext.getCmp('grid-edit-taxon').getSelectionModel().selectRow(monIndex);
-                            // Ext.getCmp('grid-edit-taxon').plugins[0].startEditing(monIndex,1);
-                        // });
-                    // }
-                    // gridStoreTaxonsLoad(id_cf);
-                    // Ext.getCmp('taxons-liste-panel').show();
                 }
             }
         }

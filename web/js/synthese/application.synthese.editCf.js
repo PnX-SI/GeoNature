@@ -141,7 +141,6 @@ application.synthese.editCf = function() {
             ,modal: true
             ,plain: true
             ,plugins: [new Ext.ux.plugins.ProportionalWindows()]
-            //,aspect: true
             ,width: 800
             ,height: 600
             ,percentage: 0.92
@@ -193,7 +192,6 @@ application.synthese.editCf = function() {
                     ,width: 180
                     ,anchor:'-15'
                 }
-                // ,labelAlign: 'left'
                 ,monitorValid:true
                 ,items: [getFormItems(),getFormTaxons()]
                 //pour version Extjs 3.4
@@ -286,8 +284,6 @@ application.synthese.editCf = function() {
         ,collapsible: true
         ,autoHeight:true
         ,anchor:'98%'
-        //,defaults: {anchor: '-20' // leave room for error icon}
-        // ,defaultType: 'textfield'
         ,items :[comboObservateurs
             ,{
                 xtype: 'compositefield'
@@ -303,7 +299,6 @@ application.synthese.editCf = function() {
                     ,altFormats:'Y-m-d'
                     ,allowBlank: false
                     ,blankText:'La date de l\'observation est obligatoire'
-                    // ,value: new Date()
                     ,listeners: {
                         render: function(c) {
                             Ext.QuickTips.register({
@@ -320,7 +315,6 @@ application.synthese.editCf = function() {
                     ,xtype:'numberfield'
                     ,allowDecimals :false
                     ,allowNegative: false
-                    // ,fieldLabel: 'Altitude '
                     ,name: 'altitude_saisie'
                     ,anchor: '40%'
                     ,listeners: {
@@ -337,34 +331,6 @@ application.synthese.editCf = function() {
                 ,xtype: 'displayfield'
                 ,value: 'Commune : inconnue'
             }
-            // ,{
-                // id:'combo-fiche-lots'
-                // ,xtype:'twintriggercombo'
-                // ,fieldLabel: 'Lots de données '
-                // ,name: 'id_lot_cf'
-                // ,hiddenName:'id_lot'
-                // ,store: application.synthese.storeLotsCf
-                // ,valueField: "id_lot"
-                // ,displayField: "nom_lot"
-                // ,allowBlank:false
-                // ,typeAhead: true
-                // ,forceSelection: true
-                // ,selectOnFocus: true
-                // ,editable: true
-                // ,resizable:true
-                // ,triggerAction: 'all'
-                // ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
-                // ,mode: 'local'
-                // ,value:4
-                // ,listeners: {
-                    // select: function(combo, record) {
-
-                    // }
-                    // ,change: function(combo, record) {
-
-                    // }
-                // }
-            // }
             ]
         } //fin du groupe 1  
         ];//fin du return
@@ -553,11 +519,9 @@ application.synthese.editCf = function() {
         myProxyTaxons = new Ext.data.HttpProxy({
             id:'store-taxon-proxy'
             ,url: 'bibs/taxonscf'
-            // ,url: 'bibs/taxonscfu?point=POINT(462648 5003392)'
             ,method: 'GET'
         });
         var comboTaxonsFiltre = function(){
-            // Ext.getCmp('combo-fiche-taxon').clearValue();
             var orange = Ext.getCmp('cb-orange-cf').getValue();
             var red = Ext.getCmp('cb-red-cf').getValue();
             var gray = Ext.getCmp('cb-gray-cf').getValue();
@@ -770,7 +734,6 @@ application.synthese.editCf = function() {
                         Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('grid-taxons').getSelectionModel().getSelected().data.id_taxon);
                     }
                     comboTaxonsFiltre();
-                    // Ext.getCmp('combo-fiche-taxon').update();
                 }
             }
         });
@@ -790,9 +753,7 @@ application.synthese.editCf = function() {
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
-                // ,layout: 'form'
                 ,labelWidth: 80
-                // ,title:'Détails de l\'observation'
                 ,defaults: {
                     width: 305
                     ,border:false
@@ -1418,7 +1379,6 @@ application.synthese.editCf = function() {
                 ,items:[{
                     xtype: 'grid'
                     ,id:'grid-taxons'
-                    // ,ds: ds
                     ,store: relevesStore
                     ,cm: colModel
                     ,stripeRows: true
@@ -1465,7 +1425,6 @@ application.synthese.editCf = function() {
                         }
                     })
                     ,viewConfig: {
-                        //forceFit: true,
                         // Return CSS class to apply to rows depending upon data values
                         getRowClass: function(r, index) {
                             var patri = r.get('patrimonial');
@@ -1540,18 +1499,13 @@ application.synthese.editCf = function() {
                     return false; //la fonction s'arrête là
                 }
                 if(vectorLayer.features[1]){vectorLayer.removeFeatures(vectorLayer.features[0])};//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
-                // if (this.id_cf==null) {
-                    activateControls(true);
-                // } else {
-                    // deactivateAllEditingControls();
-                // }
+                activateControls(true);
                 updateGeometryField(feature);
                 Ext.getCmp('edit-fiche-form').enable();
                 Ext.getCmp('edit-fiche-form').ownerCt.ownerCt.doLayout();
                 Ext.getCmp('edit-fiche-form').getForm().findField('ids_observateurs').setValue(Ext.getCmp('combo-fiche-observateurs').getValue());
                 myProxyTaxons.url = 'bibs/taxonscfu?point='+Ext.getCmp('edit-fiche-form').getForm().findField('geometry').getValue();
                 Ext.getCmp('combo-fiche-taxon').getStore().reload();
-                // if(Ext.getCmp('edit-fiche-form').getForm().findField('monaction').getValue() =='add'){application.synthese.editCf.findZ();}
                 application.synthese.editCf.findZ();
             }
             ,featuremodified: function(obj) {
@@ -1599,15 +1553,6 @@ application.synthese.editCf = function() {
                     toggleGroup: this.id
                 }
             );
-            
-            // toolbar.add({
-                // id: 'edit-fiche-zoomtopne'
-                // ,iconCls: 'logo_pne_mini'
-                // ,tooltip: 'Zoomer directement sur le Parc national des Ecrins'
-                // ,handler: function() {
-                    // map.setCenter(new OpenLayers.LonLat(700000, 5594000),9);
-                // }
-            // });
 
             application.synthese.utils.addSeparator(toolbar);
             
@@ -1618,7 +1563,6 @@ application.synthese.editCf = function() {
                 ,toggleGroup: 'navigation'
                 ,tooltip: 'Etendue précédente'
                 ,handler: function() {
-                    // application.synthese.search.changeGridCss();
                     syntheseListGrid.getView().refresh();
                 }
             });
@@ -1673,43 +1617,6 @@ application.synthese.editCf = function() {
                     application.synthese.editCf.initGpsWindow();
                 }
             });
-            
-            // toolbar.addControl(
-                // dragPointControl = new OpenLayers.Control.DragFeature(vectorLayer, {
-                    // title: 'Déplacer le pointage'
-                    // ,onComplete:function(feature) {
-                        // updateGeometryField(feature);
-                        // myProxyTaxons.url = 'bibs/taxonscfu?point='+Ext.getCmp('edit-fiche-form').getForm().findField('geometry').getValue();
-                        // Ext.getCmp('combo-fiche-taxon').getStore().reload();
-                        // application.synthese.editCf.findZ();
-                    // }
-                // }), {
-                    // iconCls: 'dragpoint'
-                    // ,toggleGroup: this.id
-                    // ,disabled: true
-                // }
-            // );
-
-            // application.synthese.utils.addSeparator(toolbar);
-
-            // toolbar.add({
-                // text: 'Effacer le pointage'
-                // ,id: 'edit-fiche-geometry-erase'
-                // ,disabled: true
-                // ,iconCls: 'erase'
-                // ,tooltip: 'Permet de supprimer le pointage pour en créer un nouveau'
-                // ,handler: function() {
-                    // Ext.Msg.confirm('Attention'
-                        // ,'Cela supprimera définitivement le pointage existant !<br />Confirmer ?'
-                        // ,function(btn) {
-                            // if (btn == 'yes') {
-                                // activateControls(true);
-                                // vectorLayer.removeFeatures(vectorLayer.features[0]);
-                            // }
-                        // }
-                    // )
-                // }
-            // });
 
             layerTreeTip = application.synthese.createLayerWindow(map);
             layerTreeTip.render(Ext.getCmp('edit-fiche-mapcomponent').body);
@@ -1745,14 +1652,6 @@ application.synthese.editCf = function() {
      * activateDrawControls - {Boolean} true to activate / enable the draw controls
      */
     var activateControls = function(activateDrawControls) {
-        // Ext.getCmp('edit-fiche-geometry-erase').setDisabled(false);
-        // toolbar.getButtonForControl(dragPointControl).setDisabled(activateDrawControls);
-        // if (activateDrawControls) {
-            // dragPointControl.deactivate();
-        // } else {
-            // dragPointControl.activate();
-        // }
-
         Ext.each([drawPointControl]
             ,function(control) {
                /*** SOLUTION ATOL ***/
@@ -1771,9 +1670,6 @@ application.synthese.editCf = function() {
      * Method: deactivateAllEditingControls
      */
     var deactivateAllEditingControls = function() {
-        // Ext.getCmp('edit-fiche-geometry-erase').setDisabled(true);
-        // toolbar.getButtonForControl(dragPointControl).setDisabled(true);
-        // dragPointControl.deactivate();
         toolbar.getButtonForControl(drawPointControl).setDisabled(true);
         drawPointControl.deactivate();
     };
@@ -1844,7 +1740,6 @@ application.synthese.editCf = function() {
      */
     var resetWindow = function() {
         id_cf = null;
-        // map.zoomToMaxExtent();
         vectorLayer.removeFeatures(vectorLayer.features);
         Ext.getCmp('edit-fiche-form').getForm().reset();
         Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
@@ -1876,17 +1771,7 @@ application.synthese.editCf = function() {
         var taxons = arrayGlobal.join("|")
         return taxons;
     };
-    
-    /**
-     * Method: constructStringKeys
-     * Construct a multidimentional Array with all taxon informations
-     */
-    var constructStringKeys = function(){
-        var arrayKeys =  Ext.getCmp('grid-taxons').getStore().fields.keys;     
-        var keys = arrayKeys.join("|")
-        return keys;
-    };
-
+ 
     /**
      * Method: submitForm
      * Submits the form
@@ -1898,7 +1783,6 @@ application.synthese.editCf = function() {
             params.id_cf = id_cf;
         }
         params.sting_taxons = constructStringTaxons();
-        // params.array_keys = constructStringKeys();
         Ext.getCmp('edit-fiche-form').getForm().submit({
             url: 'cf/save'
             ,params: params
@@ -1969,7 +1853,6 @@ application.synthese.editCf = function() {
                     wmslayer.mergeNewParams({
                       id_cf: id_cf
                     });
-                    // wmslayer.setOpacity(0.75);
                     var options = {
                         url: 'cf/getone/'+id_cf
                         ,params: {format: 'geoJSON'}
@@ -1978,7 +1861,6 @@ application.synthese.editCf = function() {
                     myProxyReleves.url = 'cf/listreleves/'+id_cf;
                     Ext.getCmp('grid-taxons').getStore().reload();
                     Ext.getCmp('grid-taxons').getSelectionModel().selectRow(0);
-                    // map.zoomTo();
                 }
             }
         }
