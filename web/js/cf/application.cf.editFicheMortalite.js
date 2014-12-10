@@ -204,7 +204,6 @@ application.cf.editFicheMortalite = function() {
                     ,width: 180
                     ,anchor:'-15'
                 }
-                // ,labelAlign: 'left'
                 ,monitorValid:true
                 ,items: [getFormItems(),getFormTaxons()]
                 //pour version Extjs 3.4
@@ -294,7 +293,6 @@ application.cf.editFicheMortalite = function() {
         });
         var todayButton = new Ext.Button({
             id:'bt-today'
-            // ,iconCls: ''
             ,text: 'aujourd\'hui'
             ,handler: function() {
                 var d = new Date();
@@ -304,7 +302,6 @@ application.cf.editFicheMortalite = function() {
         });
         var yesterdayButton = new Ext.Button({
             id:'bt-yesterday'
-            // ,iconCls: ''
             ,text: 'hier'
             ,handler: function() {
                 var d = new Date();
@@ -336,8 +333,6 @@ application.cf.editFicheMortalite = function() {
         ,collapsible: true
         ,autoHeight:true
         ,anchor:'98%'
-        //,defaults: {anchor: '-20' // leave room for error icon}
-        // ,defaultType: 'textfield'
         ,items :[comboObservateurs
             ,{
                 xtype: 'compositefield'
@@ -390,30 +385,6 @@ application.cf.editFicheMortalite = function() {
                 ,xtype: 'displayfield'
                 ,value: 'Commune : inconnue'
             }
-            // ,{
-                // id:'combo-fiche-lots'
-                // ,xtype:'twintriggercombo'
-                // ,fieldLabel: 'Lots de données '
-                // ,name: 'id_lot_cf'
-                // ,hiddenName:'id_lot'
-                // ,store: application.cf.storeLotsCf
-                // ,valueField: "id_lot"
-                // ,displayField: "nom_lot"
-                // ,allowBlank:false
-                // ,typeAhead: true
-                // ,forceSelection: true
-                // ,selectOnFocus: true
-                // ,editable: true
-                // ,resizable:true
-                // ,triggerAction: 'all'
-                // ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
-                // ,mode: 'local'
-                // ,value:4
-                // ,listeners: {
-                    // select: function(combo, record) {}
-                    // ,change: function(combo, record) {}
-                // }
-            // }
             ]
         } //fin du groupe 1  
         ] //fin du return
@@ -667,7 +638,6 @@ application.cf.editFicheMortalite = function() {
         }
         this.addNewIndividu = function(){
             Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('add');
-            // resetSexeAgeValue();
             relevesStore.add(new blankRecord({
                 //attention l'ordre des champs est important
                 id_releve_cf:null
@@ -735,7 +705,6 @@ application.cf.editFicheMortalite = function() {
             Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('yearling',0);
             Ext.getCmp('edit-fiche-form').getForm().findField('sai').setValue(0);
             Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sai',0);
-            // Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo','Saisie en cours');
         }    
         if(application.cf.user.statuscode >= 2){
             var validTaxonButton = new Ext.Button({
@@ -1369,13 +1338,6 @@ application.cf.editFicheMortalite = function() {
                                         Ext.getCmp('fieldset-commentaire').collapse();
                                     }
                                     else{Ext.getCmp('fieldset-sexeage').expand();}
-                                    // if(Ext.getCmp('combo-fiche-critere').getValue()==null){
-                                        // Ext.getCmp('fieldset-commentaire').collapse();
-                                    // }
-                                    // else{
-                                        // if(Ext.getCmp('ta-fiche-commentaire').getValue()==''){Ext.getCmp('fieldset-commentaire').collapse();}
-                                        // else{Ext.getCmp('fieldset-commentaire').expand();}
-                                    // }
                                 }
                                 else{
                                     Ext.getCmp('fieldset-sexeage').expand();
@@ -1508,15 +1470,6 @@ application.cf.editFicheMortalite = function() {
                     toggleGroup: this.id
                 }
             );
-            
-            // toolbar.add({
-                // id: 'edit-fiche-zoomtopne'
-                // ,iconCls: 'logo_pne_mini'
-                // ,tooltip: 'Zoomer directement sur le Parc national des Ecrins'
-                // ,handler: function() {
-                    // map.setCenter(new OpenLayers.LonLat(700000, 5594000),9);
-                // }
-            // });
 
             application.cf.utils.addSeparator(toolbar);
             
@@ -1755,7 +1708,6 @@ application.cf.editFicheMortalite = function() {
             params.id_cf = id_cf;
         }
         params.sting_taxons = constructStringTaxons();
-        // params.array_keys = constructStringKeys();
         Ext.getCmp('edit-fiche-form').getForm().submit({
             url: 'cf/savemortalite'
             ,params: params
@@ -1832,8 +1784,6 @@ application.cf.editFicheMortalite = function() {
                 ,iconCls:'search'
                 ,handler: function(){
                     window.location.href = 'synthese';
-                    // application.cf.editFicheMortalite.viewport.destroy();
-                    // Ext.ux.Toast.msg('todo !', 'oui oui ça vient !');
                 }
             },{
                 text:'Quitter'
@@ -1841,7 +1791,6 @@ application.cf.editFicheMortalite = function() {
                 ,handler: function(){
                     Ext.getCmp('window-save').destroy();
                     application.cf.editFicheMortalite.viewport.destroy();
-                    // Ext.ux.Toast.msg('todo !', 'oui oui ça vient !');
                 }
             }]
             ,items: [{

@@ -205,7 +205,6 @@ application.invertebre.editFiche = function() {
                     ,width: 180
                     ,anchor:'-15'
                 }
-                // ,labelAlign: 'left'
                 ,monitorValid:true
                 ,items: [getFormItems(),getFormTaxons()]
                 //pour version Extjs 3.4
@@ -294,7 +293,6 @@ application.invertebre.editFiche = function() {
         });
         var todayButton = new Ext.Button({
             id:'bt-today'
-            // ,iconCls: ''
             ,text: 'aujourd\'hui'
             ,handler: function() {
                 var d = new Date();
@@ -304,7 +302,6 @@ application.invertebre.editFiche = function() {
         });
         var yesterdayButton = new Ext.Button({
             id:'bt-yesterday'
-            // ,iconCls: ''
             ,text: 'hier'
             ,handler: function() {
                 var d = new Date();
@@ -336,8 +333,6 @@ application.invertebre.editFiche = function() {
         ,collapsible: true
         ,autoHeight:true
         ,anchor:'98%'
-        //,defaults: {anchor: '-20' // leave room for error icon}
-        // ,defaultType: 'textfield'
         ,items :[comboObservateurs
             ,{
                 xtype: 'compositefield'
@@ -352,7 +347,6 @@ application.invertebre.editFiche = function() {
                     ,altFormats:'Y-m-d'
                     ,allowBlank: false
                     ,blankText:'La date de l\'observation est obligatoire'
-                    // ,value: new Date()
                     ,listeners: {
                         render: function(c) {
                             Ext.QuickTips.register({
@@ -373,7 +367,6 @@ application.invertebre.editFiche = function() {
                     ,allowDecimals :false
                     ,allowNegative: false
                     ,maxValue:23
-                    // ,fieldLabel: 'Heure '
                     ,name: 'heure'
                     ,anchor: '40%'
                     ,allowBlank: false
@@ -411,23 +404,6 @@ application.invertebre.editFiche = function() {
                     ,mode: 'local'
                     ,value:0
                 }
-                // {
-                    // id: 'fieldfiche-codemilieu'
-                    // ,xtype:'numberfield'
-                    // ,allowDecimals :false
-                    // ,allowNegative: false
-                    // ,fieldLabel: 'Code milieu'
-                    // ,name: 'codemilieu'
-                    // ,anchor: '40%'
-                    // ,listeners: {
-                        // render: function(c) {
-                            // Ext.QuickTips.register({
-                                // target: c.getEl(),
-                                // text: 'Le code milieu est celui indiqué au dos des fiches invertébrés.'
-                            // });
-                        // }
-                    // }
-                // }
                 ,{
                     xtype: 'displayfield',
                     value: '  Altitude :'
@@ -436,7 +412,6 @@ application.invertebre.editFiche = function() {
                     ,xtype:'numberfield'
                     ,allowDecimals :false
                     ,allowNegative: false
-                    // ,fieldLabel: 'Altitude '
                     ,name: 'altitude_saisie'
                     ,anchor: '20%'
                     ,listeners: {
@@ -454,30 +429,6 @@ application.invertebre.editFiche = function() {
                 ,xtype: 'displayfield'
                 ,value: 'Commune : inconnue'
             }
-            // ,{
-                // id:'combo-fiche-lots'
-                // ,xtype:'twintriggercombo'
-                // ,fieldLabel: 'Lots de données '
-                // ,name: 'id_lot_inv'
-                // ,hiddenName:'id_lot'
-                // ,store: application.invertebre.storeLotsInv
-                // ,valueField: "id_lot"
-                // ,displayField: "nom_lot"
-                // ,allowBlank:false
-                // ,typeAhead: true
-                // ,forceSelection: true
-                // ,selectOnFocus: true
-                // ,editable: true
-                // ,resizable:true
-                // ,triggerAction: 'all'
-                // ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
-                // ,mode: 'local'
-                // ,value:14
-                // ,listeners: {
-                    // select: function(combo, record) {}
-                    // ,change: function(combo, record) {}
-                // }
-            // }
             ]
         } //fin du groupe 1  
         ] //fin du return
@@ -641,7 +592,6 @@ application.invertebre.editFiche = function() {
             ,method: 'GET'
         });
         var comboTaxonsFiltre = function(){
-            // Ext.getCmp('combo-fiche-taxon').clearValue();
             var orange = Ext.getCmp('cb-orange-inv').getValue();
             var red = Ext.getCmp('cb-red-inv').getValue();
             var gray = Ext.getCmp('cb-gray-inv').getValue();
@@ -864,9 +814,7 @@ application.invertebre.editFiche = function() {
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
-                // ,layout: 'form'
                 ,labelWidth: 80
-                // ,title:'Détails de l\'observation'
                 ,defaults: {
                     width: 305
                     ,border:false
@@ -1392,7 +1340,6 @@ application.invertebre.editFiche = function() {
                 ,items:[{
                     xtype: 'grid'
                     ,id:'grid-taxons'
-                    // ,ds: ds
                     ,store: relevesStore
                     ,cm: colModel
                     ,stripeRows: true
@@ -1510,18 +1457,12 @@ application.invertebre.editFiche = function() {
                     return false; //la fonction s'arrête là
                 }
                 if(vectorLayer.features[1]){vectorLayer.removeFeatures(vectorLayer.features[0])};//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
-                // if (this.id_inv==null) {
-                    // activateControls(false);
-                // } else {
-                    // deactivateAllEditingControls();
-                // }
                 updateGeometryField(feature);
                 Ext.getCmp('edit-fiche-form').enable();
                 Ext.getCmp('edit-fiche-form').ownerCt.ownerCt.doLayout();
                 Ext.getCmp('edit-fiche-form').getForm().findField('ids_observateurs').setValue(Ext.getCmp('combo-fiche-observateurs').getValue());
                 myProxyTaxons.url = 'bibs/taxonsinvu?point='+Ext.getCmp('edit-fiche-form').getForm().findField('geometry').getValue();
                 Ext.getCmp('combo-fiche-taxon').getStore().reload();
-                // if(Ext.getCmp('edit-fiche-form').getForm().findField('monaction').getValue() =='add'){application.invertebre.editFiche.findZ();}
                 application.invertebre.editFiche.findZ();
             }
             ,featuremodified: function(obj) {
@@ -1569,16 +1510,7 @@ application.invertebre.editFiche = function() {
                     toggleGroup: this.id
                 }
             );
-            
-            // toolbar.add({
-                // id: 'edit-fiche-zoomtopne'
-                // ,iconCls: 'logo_pne_mini'
-                // ,tooltip: 'Zoomer directement sur le Parc national des Ecrins'
-                // ,handler: function() {
-                    // map.setCenter(new OpenLayers.LonLat(700000, 5594000),9);
-                // }
-            // });
-
+  
             application.invertebre.utils.addSeparator(toolbar);
 
             var history = new OpenLayers.Control.NavigationHistory();
@@ -1588,7 +1520,6 @@ application.invertebre.editFiche = function() {
                 ,toggleGroup: 'navigation'
                 ,tooltip: 'Etendue précédente'
                 ,handler: function() {
-                    // application.synthese.search.changeGridCss();
                     syntheseListGrid.getView().refresh();
                 }
             });
@@ -1643,43 +1574,6 @@ application.invertebre.editFiche = function() {
                     application.invertebre.editFiche.initGpsWindow();
                 }
             });
-            
-            // toolbar.addControl(
-                // dragPointControl = new OpenLayers.Control.DragFeature(vectorLayer, {
-                    // title: 'Déplacer le pointage'
-                    // ,onComplete:function(feature) {
-                        // updateGeometryField(feature);
-                        // myProxyTaxons.url = 'bibs/taxonsinvu?point='+Ext.getCmp('edit-fiche-form').getForm().findField('geometry').getValue();
-                        // Ext.getCmp('combo-fiche-taxon').getStore().reload();
-                        // application.invertebre.editFiche.findZ();
-                    // }
-                // }), {
-                    // iconCls: 'dragpoint'
-                    // ,toggleGroup: this.id
-                    // ,disabled: true
-                // }
-            // );
-
-            // application.invertebre.utils.addSeparator(toolbar);
-
-            // toolbar.add({
-                // text: 'Effacer le pointage'
-                // ,id: 'edit-fiche-geometry-erase'
-                // ,disabled: true
-                // ,iconCls: 'erase'
-                // ,tooltip: 'Permet de supprimer le pointage pour en créer un nouveau'
-                // ,handler: function() {
-                    // Ext.Msg.confirm('Attention'
-                        // ,'Cela supprimera définitivement le pointage existant !<br />Confirmer ?'
-                        // ,function(btn) {
-                            // if (btn == 'yes') {
-                                // activateControls(true);
-                                // vectorLayer.removeFeatures(vectorLayer.features[0]);
-                            // }
-                        // }
-                    // )
-                // }
-            // });
 
             layerTreeTip = application.invertebre.createLayerWindow(map);
             layerTreeTip.render(Ext.getCmp('edit-fiche-mapcomponent').body);
@@ -1715,13 +1609,6 @@ application.invertebre.editFiche = function() {
      * activateDrawControls - {Boolean} true to activate / enable the draw controls
      */
     var activateControls = function(activateDrawControls) {
-        // Ext.getCmp('edit-fiche-geometry-erase').setDisabled(false);
-        // toolbar.getButtonForControl(dragPointControl).setDisabled(activateDrawControls);
-        // if (activateDrawControls) {
-            // dragPointControl.deactivate();
-        // } else {
-            // dragPointControl.activate();
-        // }
         Ext.each([drawPointControl]
             ,function(control) {
                 toolbar.getButtonForControl(control).setDisabled(!activateDrawControls);
@@ -1736,9 +1623,6 @@ application.invertebre.editFiche = function() {
      * Method: deactivateAllEditingControls
      */
     var deactivateAllEditingControls = function() {
-        // Ext.getCmp('edit-fiche-geometry-erase').setDisabled(true);
-        // toolbar.getButtonForControl(dragPointControl).setDisabled(true);
-        // dragPointControl.deactivate();
         toolbar.getButtonForControl(drawPointControl).setDisabled(true);
         drawPointControl.deactivate();
     };
@@ -1810,7 +1694,6 @@ application.invertebre.editFiche = function() {
      */
     var resetViewport = function() {
         id_inv = null;
-        // map.zoomToMaxExtent();
         vectorLayer.removeFeatures(vectorLayer.features);
         Ext.getCmp('edit-fiche-form').getForm().reset();
         Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
@@ -1842,16 +1725,6 @@ application.invertebre.editFiche = function() {
         var taxons = arrayGlobal.join("|")
         return taxons;
     };
-    
-    /**
-     * Method: constructStringKeys
-     * Construct a multidimentional Array with all taxon informations
-     */
-    var constructStringKeys = function(){
-        var arrayKeys =  Ext.getCmp('grid-taxons').getStore().fields.keys;     
-        var keys = arrayKeys.join("|")
-        return keys;
-    };
 
     /**
      * Method: submitForm
@@ -1864,7 +1737,6 @@ application.invertebre.editFiche = function() {
             params.id_inv = id_inv;
         }
         params.sting_taxons = constructStringTaxons();
-        // params.array_keys = constructStringKeys();
         Ext.getCmp('edit-fiche-form').getForm().submit({
             url: 'invertebre/save'
             ,params: params
@@ -1948,7 +1820,6 @@ application.invertebre.editFiche = function() {
                 ,handler: function(){
                     Ext.getCmp('window-save').destroy();
                     application.invertebre.editFiche.viewport.destroy();
-                    // Ext.ux.Toast.msg('todo !', 'oui oui ça vient !');
                 }
             }]
             ,items: [{
