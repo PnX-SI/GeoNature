@@ -291,8 +291,8 @@ SET search_path = synthese, pg_catalog;
 -- Data for Name: bib_sources; Type: TABLE DATA; Schema: synthese; Owner: cartopnx
 --
 
-INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field) VALUES (6, 'Contact faune', 'contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'appli_faune', 'contactfaune', 't_releves_cf', 'id_releve_cf');
-INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field) VALUES (7, 'Contact invertébrés', 'contenu des tables t_fiches_inv et t_releves_inv de la base faune postgres', 'localhost', 22, NULL, NULL, 'appli_faune', 'contactinv', 't_releves_inv', 'id_releve_inv');
+INSERT INTO bib_sources VALUES (1, 'Contact faune', 'contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'synthese', 'contactfaune', 't_releves_cf', 'id_releve_cf');
+INSERT INTO bib_sources VALUES (2, 'Contact invertébrés', 'contenu des tables t_fiches_inv et t_releves_inv de la base faune postgres', 'localhost', 22, NULL, NULL, 'synthese', 'contactinv', 't_releves_inv', 'id_releve_inv');
 
 
 SET search_path = taxonomie, pg_catalog;
@@ -639,8 +639,9 @@ INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, 
 -- Data for Name: bib_lots; Type: TABLE DATA; Schema: meta; Owner: -
 --
 
-INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (1, 'test cf', 'test contact faune', true, true, false, 1);
 
+INSERT INTO bib_lots VALUES (1, 'contact vertébrés', 'contact vertébrés', true, true, false, 1);
+INSERT INTO bib_lots VALUES (2, 'contact invertébrés', 'contact invertébrés', true, true, false, 1);
 
 --
 -- TOC entry 3140 (class 0 OID 126911)
@@ -648,8 +649,9 @@ INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_progr
 -- Data for Name: t_protocoles; Type: TABLE DATA; Schema: meta; Owner: -
 --
 
-INSERT INTO t_protocoles (id_protocole, nom_protocole, question, objectifs, methode, avancement, date_debut, date_fin) VALUES (1, 'test', '?', 'aucun', 'aucune', 'non', NULL, NULL);
-
+INSERT INTO t_protocoles VALUES (1, 'contact faune', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+INSERT INTO t_protocoles VALUES (2, 'contact invertébrés', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+INSERT INTO t_protocoles VALUES (3, 'mortalité', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 
 
 -- Completed on 2014-09-04 15:12:51
