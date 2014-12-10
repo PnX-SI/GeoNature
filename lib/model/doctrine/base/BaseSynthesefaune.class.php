@@ -28,7 +28,7 @@
  * @property string $derniere_action
  * @property boolean $supprime
  * @property integer $effectif_total
- * @property blob $the_geom_32622
+ * @property blob $the_geom_2154
  * @property blob $the_geom_3857
  * @property blob $the_geom_point
  * @property LCommunes $LCommunes
@@ -67,7 +67,7 @@
  * @method string              getDerniereAction()         Returns the current record's "derniere_action" value
  * @method boolean             getSupprime()               Returns the current record's "supprime" value
  * @method integer             getEffectifTotal()          Returns the current record's "effectif_total" value
- * @method blob                getTheGeom32622()           Returns the current record's "the_geom_32622" value
+ * @method blob                getTheGeom2154()            Returns the current record's "the_geom_2154" value
  * @method blob                getTheGeom3857()            Returns the current record's "the_geom_3857" value
  * @method blob                getTheGeomPoint()           Returns the current record's "the_geom_point" value
  * @method LCommunes           getLCommunes()              Returns the current record's "LCommunes" value
@@ -105,7 +105,7 @@
  * @method Synthesefaune       setDerniereAction()         Sets the current record's "derniere_action" value
  * @method Synthesefaune       setSupprime()               Sets the current record's "supprime" value
  * @method Synthesefaune       setEffectifTotal()          Sets the current record's "effectif_total" value
- * @method Synthesefaune       setTheGeom32622()           Sets the current record's "the_geom_32622" value
+ * @method Synthesefaune       setTheGeom2154()            Sets the current record's "the_geom_2154" value
  * @method Synthesefaune       setTheGeom3857()            Sets the current record's "the_geom_3857" value
  * @method Synthesefaune       setTheGeomPoint()           Sets the current record's "the_geom_point" value
  * @method Synthesefaune       setLCommunes()              Sets the current record's "LCommunes" value
@@ -225,7 +225,7 @@ abstract class BaseSynthesefaune extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('the_geom_32622', 'blob', null, array(
+        $this->hasColumn('the_geom_2154', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

@@ -20,7 +20,7 @@
  * @property integer $pdop
  * @property integer $srid_dessin
  * @property string $saisie_initiale
- * @property blob $the_geom_32622
+ * @property blob $the_geom_2154
  * @property blob $the_geom_3857
  * @property LCommunes $LCommunes
  * @property TProtocoles $TProtocoles
@@ -43,7 +43,7 @@
  * @method integer             getPdop()             Returns the current record's "pdop" value
  * @method integer             getSridDessin()       Returns the current record's "srid_dessin" value
  * @method string              getSaisieInitiale()   Returns the current record's "saisie_initiale" value
- * @method blob                getTheGeom32622()     Returns the current record's "the_geom_32622" value
+ * @method blob                getTheGeom2154()      Returns the current record's "the_geom_2154" value
  * @method blob                getTheGeom3857()      Returns the current record's "the_geom_3857" value
  * @method LCommunes           getLCommunes()        Returns the current record's "LCommunes" value
  * @method TProtocoles         getTProtocoles()      Returns the current record's "TProtocoles" value
@@ -65,7 +65,7 @@
  * @method TFichesCf           setPdop()             Sets the current record's "pdop" value
  * @method TFichesCf           setSridDessin()       Sets the current record's "srid_dessin" value
  * @method TFichesCf           setSaisieInitiale()   Sets the current record's "saisie_initiale" value
- * @method TFichesCf           setTheGeom32622()     Sets the current record's "the_geom_32622" value
+ * @method TFichesCf           setTheGeom2154()      Sets the current record's "the_geom_2154" value
  * @method TFichesCf           setTheGeom3857()      Sets the current record's "the_geom_3857" value
  * @method TFichesCf           setLCommunes()        Sets the current record's "LCommunes" value
  * @method TFichesCf           setTProtocoles()      Sets the current record's "TProtocoles" value
@@ -145,7 +145,7 @@ abstract class BaseTFichesCf extends sfDoctrineRecord
              'type' => 'string',
              'length' => 20,
              ));
-        $this->hasColumn('the_geom_32622', 'blob', null, array(
+        $this->hasColumn('the_geom_2154', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

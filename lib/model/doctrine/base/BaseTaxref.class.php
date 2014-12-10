@@ -22,47 +22,44 @@
  * @property string $nom_vern
  * @property string $nom_vern_eng
  * @property Doctrine_Collection $BibTaxonsFaunePn
- * @property Doctrine_Collection $CorProtectionEspecesTaxref
  * @property Doctrine_Collection $Synthesefaune
  * 
- * @method integer             getCdNom()                      Returns the current record's "cd_nom" value
- * @method string              getIdStatut()                   Returns the current record's "id_statut" value
- * @method integer             getIdHabitat()                  Returns the current record's "id_habitat" value
- * @method string              getIdRang()                     Returns the current record's "id_rang" value
- * @method string              getRegne()                      Returns the current record's "regne" value
- * @method string              getPhylum()                     Returns the current record's "phylum" value
- * @method string              getClasse()                     Returns the current record's "classe" value
- * @method string              getOrdre()                      Returns the current record's "ordre" value
- * @method string              getFamille()                    Returns the current record's "famille" value
- * @method integer             getCdTaxsup()                   Returns the current record's "cd_taxsup" value
- * @method integer             getCdRef()                      Returns the current record's "cd_ref" value
- * @method string              getLbNom()                      Returns the current record's "lb_nom" value
- * @method string              getLbAuteur()                   Returns the current record's "lb_auteur" value
- * @method string              getNomComplet()                 Returns the current record's "nom_complet" value
- * @method string              getNomVern()                    Returns the current record's "nom_vern" value
- * @method string              getNomVernEng()                 Returns the current record's "nom_vern_eng" value
- * @method Doctrine_Collection getBibTaxonsFaunePn()           Returns the current record's "BibTaxonsFaunePn" collection
- * @method Doctrine_Collection getCorProtectionEspecesTaxref() Returns the current record's "CorProtectionEspecesTaxref" collection
- * @method Doctrine_Collection getSynthesefaune()              Returns the current record's "Synthesefaune" collection
- * @method Taxref              setCdNom()                      Sets the current record's "cd_nom" value
- * @method Taxref              setIdStatut()                   Sets the current record's "id_statut" value
- * @method Taxref              setIdHabitat()                  Sets the current record's "id_habitat" value
- * @method Taxref              setIdRang()                     Sets the current record's "id_rang" value
- * @method Taxref              setRegne()                      Sets the current record's "regne" value
- * @method Taxref              setPhylum()                     Sets the current record's "phylum" value
- * @method Taxref              setClasse()                     Sets the current record's "classe" value
- * @method Taxref              setOrdre()                      Sets the current record's "ordre" value
- * @method Taxref              setFamille()                    Sets the current record's "famille" value
- * @method Taxref              setCdTaxsup()                   Sets the current record's "cd_taxsup" value
- * @method Taxref              setCdRef()                      Sets the current record's "cd_ref" value
- * @method Taxref              setLbNom()                      Sets the current record's "lb_nom" value
- * @method Taxref              setLbAuteur()                   Sets the current record's "lb_auteur" value
- * @method Taxref              setNomComplet()                 Sets the current record's "nom_complet" value
- * @method Taxref              setNomVern()                    Sets the current record's "nom_vern" value
- * @method Taxref              setNomVernEng()                 Sets the current record's "nom_vern_eng" value
- * @method Taxref              setBibTaxonsFaunePn()           Sets the current record's "BibTaxonsFaunePn" collection
- * @method Taxref              setCorProtectionEspecesTaxref() Sets the current record's "CorProtectionEspecesTaxref" collection
- * @method Taxref              setSynthesefaune()              Sets the current record's "Synthesefaune" collection
+ * @method integer             getCdNom()            Returns the current record's "cd_nom" value
+ * @method string              getIdStatut()         Returns the current record's "id_statut" value
+ * @method integer             getIdHabitat()        Returns the current record's "id_habitat" value
+ * @method string              getIdRang()           Returns the current record's "id_rang" value
+ * @method string              getRegne()            Returns the current record's "regne" value
+ * @method string              getPhylum()           Returns the current record's "phylum" value
+ * @method string              getClasse()           Returns the current record's "classe" value
+ * @method string              getOrdre()            Returns the current record's "ordre" value
+ * @method string              getFamille()          Returns the current record's "famille" value
+ * @method integer             getCdTaxsup()         Returns the current record's "cd_taxsup" value
+ * @method integer             getCdRef()            Returns the current record's "cd_ref" value
+ * @method string              getLbNom()            Returns the current record's "lb_nom" value
+ * @method string              getLbAuteur()         Returns the current record's "lb_auteur" value
+ * @method string              getNomComplet()       Returns the current record's "nom_complet" value
+ * @method string              getNomVern()          Returns the current record's "nom_vern" value
+ * @method string              getNomVernEng()       Returns the current record's "nom_vern_eng" value
+ * @method Doctrine_Collection getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" collection
+ * @method Doctrine_Collection getSynthesefaune()    Returns the current record's "Synthesefaune" collection
+ * @method Taxref              setCdNom()            Sets the current record's "cd_nom" value
+ * @method Taxref              setIdStatut()         Sets the current record's "id_statut" value
+ * @method Taxref              setIdHabitat()        Sets the current record's "id_habitat" value
+ * @method Taxref              setIdRang()           Sets the current record's "id_rang" value
+ * @method Taxref              setRegne()            Sets the current record's "regne" value
+ * @method Taxref              setPhylum()           Sets the current record's "phylum" value
+ * @method Taxref              setClasse()           Sets the current record's "classe" value
+ * @method Taxref              setOrdre()            Sets the current record's "ordre" value
+ * @method Taxref              setFamille()          Sets the current record's "famille" value
+ * @method Taxref              setCdTaxsup()         Sets the current record's "cd_taxsup" value
+ * @method Taxref              setCdRef()            Sets the current record's "cd_ref" value
+ * @method Taxref              setLbNom()            Sets the current record's "lb_nom" value
+ * @method Taxref              setLbAuteur()         Sets the current record's "lb_auteur" value
+ * @method Taxref              setNomComplet()       Sets the current record's "nom_complet" value
+ * @method Taxref              setNomVern()          Sets the current record's "nom_vern" value
+ * @method Taxref              setNomVernEng()       Sets the current record's "nom_vern_eng" value
+ * @method Taxref              setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" collection
+ * @method Taxref              setSynthesefaune()    Sets the current record's "Synthesefaune" collection
  * 
  * @package    faune
  * @subpackage model
@@ -147,10 +144,6 @@ abstract class BaseTaxref extends sfDoctrineRecord
         $this->hasMany('BibTaxonsFaunePn', array(
              'local' => 'cd_nom',
              'foreign' => 'cd_nom'));
-
-        $this->hasMany('CorProtectionEspecesTaxref', array(
-             'local' => 'cd_nom',
-             'foreign' => 'cd_ref'));
 
         $this->hasMany('Synthesefaune', array(
              'local' => 'cd_nom',

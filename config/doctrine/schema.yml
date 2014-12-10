@@ -642,7 +642,7 @@ Synthesefaune:
       type: boolean(1)
       notnull: true
     effectif_total: integer(4)
-    the_geom_32622: blob()
+    the_geom_2154: blob()
     the_geom_3857: blob()
     the_geom_point: blob()
   relations:
@@ -782,7 +782,7 @@ TFichesCf:
     pdop: integer(4)
     srid_dessin: integer(8)
     saisie_initiale: string(20)
-    the_geom_32622: blob()
+    the_geom_2154: blob()
     the_geom_3857: blob()
   relations:
     LCommunes:
@@ -829,7 +829,7 @@ TFichesInv:
     pdop: integer(4)
     srid_dessin: integer(8)
     saisie_initiale: string(20)
-    the_geom_32622: blob()
+    the_geom_2154: blob()
     the_geom_3857: blob()
   relations:
     LCommunes:
