@@ -58,50 +58,10 @@ indexSyntheseSuccess:
     - synthese/application.synthese.editInvertebre.js
     - synthese/application.synthese.editMortalite.js
     
-indexSyntheseAlert:
-  stylesheets:
-    - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
-    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-purple.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
-    - main.css
-    - superboxselect.css
-    - geoportail.css
-  javascripts:
-    - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
-    - client/mfbase/ext-3.4.0/ext-all.js
-    - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
-    # - client/mfbase/openlayers/lib/OpenLayers.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
-    - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    # - "http://api.ign.fr/geoportail/api/js/2.0.0/lib/geoportal/lib/GeoportalMin.js"
-    # - client/mfbase/mapfish/SingleFile.js
-    - client/mfbase/mapfish/MapFish.js
-    # - client/mfbase/mapfish/MapFish_min.js
-    - "http://maps.google.com/maps/api/js?sensor=false"
-    # - client/mfbase/proj4js/lib/proj4js.js
-    - config.js
-    - accents.js
-    - Ext.ux.form.TwinTriggerComboBox.js
-    - Ext.ux.Toast.js
-    - Ext.ux.plugins.ProportionalWindows.js
-    - mapfish.ux.Searcher.Form.Ext.js
-    - SuperBoxSelect.js
-    - RowExpander.js
-    - FileUploadField.js
-    - BufferView.js
-    - synthese/application.synthese.js
-    - synthese/application.synthese.layout.js
-    - synthese/application.synthese.layerWindowFactory.js
-    - synthese/application.synthese.search.js
-    - synthese/application.synthese.editCf.js
-    - synthese/application.synthese.editInvertebre.js
-    - synthese/application.synthese.editMortalite.js
-
 indexCfSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
-    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-purple.css
+    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
     - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
@@ -130,7 +90,7 @@ indexCfSuccess:
 indexMortaliteSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
-    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-purple.css
+    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
     - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
@@ -159,7 +119,7 @@ indexMortaliteSuccess:
 indexInvertebreSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
-    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-purple.css
+    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
     - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
