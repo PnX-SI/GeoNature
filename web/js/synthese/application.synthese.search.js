@@ -147,7 +147,6 @@ application.synthese.search = function() {
                             }
                         }
                     }
-                    // else{application.synthese.checklog();}
                 }
                 ,clear: function() {}
             }
@@ -321,16 +320,12 @@ application.synthese.search = function() {
 	        fiche.data.reproducteur = rec.data.reproducteur;
 	        fiche.data.protections = rec.data.protections;
 	        fiche.data.protection_stricte = rec.data.protection_stricte;
-	        // fiche.data.no_protection = rec.data.no_protection;
 	        
 	        for (i = 0; i <= 2; i++) {
 	            var el = Ext.getCmp('description-col' + i);
 	            var tpl = tplZpDescriptionCols[i];
-	            //var tpl = eval(tplZpDescriptionCols[i]);
 	            el.body.update(tpl.apply(fiche.data));
 	        }
-	        // this.find('region', 'north')[0].doLayout();
-	        // Ext.getCmp('north-synthese-panel').expand();
 	        Ext.getCmp('north-synthese-panel').doLayout();
         }
         else{
@@ -348,7 +343,6 @@ application.synthese.search = function() {
             ,layout: 'border'
             ,iconCls: 'tetras'
             ,defaults: {
-                //split: true
                 border: false
             }
             ,items: [
@@ -379,7 +373,6 @@ application.synthese.search = function() {
                     map.events.on({
                         move: function(e) { 
                             Ext.getCmp('hidden-zoom').setValue(map.zoom);
-                            // application.synthese.search.changeGridCss();
                             syntheseListGrid.getView().refresh();                            
                         }
                     });
@@ -398,8 +391,8 @@ application.synthese.search = function() {
             ,bodyStyle:"background-color:#efefef"
             ,layout: 'column'
             ,autoScroll: true
-            // ,collapsed:true
-            // ,collapsible:true
+            ,collapsed:false
+            ,collapsible:true
             ,defaults: {
                 border: false
             }
@@ -450,7 +443,6 @@ application.synthese.search = function() {
                         mapBoundsSearch = false;
                     }
                     formSearcher.triggerSearch();
-                    // Ext.getCmp('hidden-geom').setValue(null);
                 }
             },{
                 id:'btn-raz'
@@ -516,31 +508,6 @@ application.synthese.search = function() {
         createMediator();
         createTemplates();
         
-        // var tplTaxonDetail = new Ext.XTemplate(
-            // '<tpl if="observateurs"><p><b>Observation de : </b>{observateurs} à {altitude} m</p></tpl>'
-            // ,'<tpl if="nom_critere_synthese"><p><b>Critère d\'observation : </b>{nom_critere_synthese}</p></tpl>'
-            // ,'<tpl if="remarques"><p><b>Remarques : </b>{remarques}</p></tpl>'
-            // ,'<tpl><p><b>Informations concernant le taxon : </b></p></tpl>'
-            // ,'<tpl if="famille"><p style="color:grey;"><b>Classe :</b> {classe} - <b>Ordre :</b> {ordre} - <b>Famille :</b> {famille}</p></tpl>'
-            // ,'<tpl if="nom_valide"><p style="color:grey;"><b>Nom valide : </b>{nom_valide}</p></tpl>'
-            // ,'<tpl if="taxon_francais"><p style="color:grey;"><b>Nom français : </b>{taxon_francais}</p></tpl>'
-            // ,'<tpl if="patrimonial==true"><p style="color:grey;"><b>Patrimonial pour le PNE : oui</b></p></tpl>'
-            // ,'<tpl if="reproducteur==true"><p style="color:grey;"><b>Reproducteur dans le PNE : oui</b></p></tpl>'
-            // ,'<tpl if="nom_responsabilite_pne"><p style="color:grey;"><b>Responsabilité du PNE : </b>{nom_responsabilite_pne}</p></tpl>'
-            // ,'<tpl if="nom_statut_migration"><p style="color:grey;"><b>Statut de migrateur : </b>{nom_statut_migration}</p></tpl>'
-            // ,'<tpl if="nom_importance_population"><p style="color:grey;"><b>Part de la population dans le PNE : </b>{nom_importance_population}</p></tpl>'
-            // ,'<tpl if="no_protection==false"><p style="color:grey;"><b>Réglementation</b></p>'
-                // ,'<tpl for="protections">'
-                    // ,'<tpl if="url==\'pas de version \u00e0 jour\'">'
-                        // ,'<p style="color:grey;">{texte}</p>'
-                    // ,'</tpl>'
-                    // ,'<tpl if="url!=\'pas de version \u00e0 jour\'">'
-                        // ,'<p><a href="{url}" target="_blank">{texte}</a></p>'
-                    // ,'</tpl>'
-                // ,'</tpl>'
-            // ,'</tpl>'
-        // );
-        
         toolbarItems =  new Ext.Toolbar({items:[]});
         if(application.synthese.user.statuscode >= 2){
             var addFicheCfButton = new Ext.Button({
@@ -552,7 +519,6 @@ application.synthese.search = function() {
                 }
                 ,scope: this
             });
-            // toolbarItems.add(addFicheCfButton);
             var addFicheInvButton = new Ext.Button({
                 iconCls: 'add'
                 ,text: 'Invertébré'
@@ -562,7 +528,6 @@ application.synthese.search = function() {
                 }
                 ,scope: this
             });
-            // toolbarItems.add(addFicheInvButton);
             
             var exportXlsObsButton = new Ext.Button({
                 iconCls: 'xls'
@@ -609,7 +574,6 @@ application.synthese.search = function() {
                     });
                 }
             });
-            // toolbarItems.add(exportKmlButton); //activer pour les tests.
         }
          toolbarItems.add('->');
          toolbarItems.add({xtype: 'label',id: 'result_count',text:'les 50 dernières observations'});
@@ -649,7 +613,6 @@ application.synthese.search = function() {
             ,{header: "Id",  width: 50, sortable: true, dataIndex: 'id_synthese',hidden: true}
             ,{header: "Id source",  width: 50, sortable: true, dataIndex: 'id_source',hidden: true}
             ,{header: "Id propriétaire",  width: 50, sortable: true, dataIndex: 'id_organisme',hidden: true}
-            // ,{header: "Id releve",  width: 50, sortable: true, dataIndex: 'id_fiche_source',hidden: true}
             ,{header: "Code fiche",  width: 50, sortable: true, dataIndex: 'code_fiche_source',hidden: true}
             ,{header: "cd nom", width: 45, sortable: true, dataIndex: 'cd_nom',hidden: true}
             ,{header: "Latin", width: 100, sortable: true, dataIndex: 'taxon_latin',hidden: true}
@@ -684,9 +647,9 @@ application.synthese.search = function() {
                             var tableau=code.split(reg);
                             var id_fiche = tableau[0].substr(1,20);
                             var id_releve = tableau[1].substr(1,20);
-                            if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_cf){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==id_lot_inv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_source_contactinv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
                         }
                     }
                 }]
@@ -718,9 +681,9 @@ application.synthese.search = function() {
                                         var tableau=code.split(reg);
                                         var id_fiche = tableau[0].substr(1,20);
                                         var id_releve = tableau[1].substr(1,20);
-                                        if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_cf){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==id_lot_cf&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==id_lot_inv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
+                                        if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                        if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                        if(record.data.id_source==id_source_contactinv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
                                     }
                                 }
                             }
@@ -774,8 +737,6 @@ application.synthese.search = function() {
             ,viewConfig: new Ext.ux.grid.BufferView({
                 emptyText:'<span class="pInfo" >Aucune donnée ne peut être affichée. Voir message ci-dessus.</span>'
                 ,forceFit:true
-                // ,enableRowBody:true
-                // ,selectedRowClass: 'x-grid3-row-expanded'
                 //Return CSS class to apply to rows depending upon data values
                 ,getRowClass: function(r, index,rp,ds) {
                     //pour éviter un bug quand il y a trop de réponses, on doit tester s'il y a bien des données
@@ -783,11 +744,6 @@ application.synthese.search = function() {
                         var s;
                         if(vectorLayer.getFeatureByFid(r.data.id_synthese)){s = vectorLayer.getFeatureByFid(r.data.id_synthese).onScreen();}
                         else{s = r.get('onscreen');}
-                        // var p = r.get('patrimonial');
-                        // if (s && !p) {return '';}
-                        // else if (s && p) {return 'row-patri-backbold';}
-                        // else if (!s && !p) {return 'grey';}
-                        // else if (!s && p) {return 'grey row-patri-backlight';}
                         if (s) {return '';}
                         return 'grey';
                     }
@@ -802,19 +758,19 @@ application.synthese.search = function() {
                     if(record){
                         var code = record.data.code_fiche_source;
                         var id_source = record.data.id_source;
-                        if(code!='' && code!=null && (id_source==id_lot_inv || id_source==id_lot_cf)){
+                        if(code!='' && code!=null && (id_source==id_source_contactfaune || id_source==id_source_contactinv)){
                             var reg=new RegExp("[-]+", "g");
                             var tableau=code.split(reg);
                             var id_fiche = tableau[0].substr(1,20);
                             var id_releve = tableau[1].substr(1,20);
                             var id_protocole = record.data.id_protocole;
-                            if(id_source==id_lot_cf&&id_protocole==id_protocole_cf&&record.data.edit_ok){
+                            if(id_source==id_source_contactfaune&&id_protocole==id_protocole_contact_vertebre&&record.data.edit_ok){
                                 application.synthese.editCf.loadFiche(id_fiche,'update',null);
                             }
-                            if(id_source==id_lot_cf&&id_protocole==id_protocole_mortalite&&record.data.edit_ok){
+                            if(id_source==id_source_contactfaune&&id_protocole==id_protocole_mortalite&&record.data.edit_ok){
                                 application.synthese.editMortalite.loadFiche(id_fiche,'update',null);
                             }
-                            if(id_source==id_lot_inv&&id_protocole==id_protocole_inv&&record.data.edit_ok){
+                            if(id_source==id_source_contactinv&&id_protocole==id_protocole_inv&&record.data.edit_ok){
                                 application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);
                             }
                             if(!record.data.edit_ok){Ext.ux.Toast.msg('Non, non, non !', 'Vous devez être l\'auteur de cette observation ou administrateur pour la modifier.');}  
@@ -836,7 +792,6 @@ application.synthese.search = function() {
     var zoomToRecord = function(record) {
         var extent = record.data.extent.split(',');
         var bounds = new OpenLayers.Bounds(extent[0], extent[1], extent[2], extent[3]);
-        // map.zoomToExtent(bounds);
         var zoomLevel = map.getZoomForExtent(bounds);
         var centerGeom = bounds.getCenterLonLat();
         if (zoomLevel > 16){zoomLevel = 16;}
@@ -912,7 +867,6 @@ application.synthese.search = function() {
                             params:params,
                             success: function(form, action){
                                 if(action.result.success==true){
-                                        // application.synthese.search.createGmlLayer();
                                         application.synthese.search.addGmlFeatures();
                                         Ext.ux.Toast.msg('Téléchargement !', 'Fichier zip de la shape a été téléchargé et ajouté comme zone de recherche.');
                                     }
@@ -968,22 +922,11 @@ application.synthese.search = function() {
                     iconCls: 'zoomfull',
                     toggleGroup: this.id 
                     ,handler: function() {
-                        // application.synthese.search.changeGridCss();
                         syntheseListGrid.getView().refresh();
                     }
                 }
             );
             
-            // toolbar.add({
-                // id: 'edit-fiche-zoomtopne'
-                // ,iconCls: 'logo_pne_mini'
-                // ,tooltip: 'Zoomer directement sur le Parc national des Ecrins'
-                // ,handler: function() {
-                    // map.setCenter(new OpenLayers.LonLat(700000, 5594000),9);
-                    // syntheseListGrid.getView().refresh();
-                // }
-            // });
-
             application.synthese.utils.addSeparator(toolbar);
 
             var history = new OpenLayers.Control.NavigationHistory();
@@ -993,7 +936,6 @@ application.synthese.search = function() {
                 ,toggleGroup: 'navigation'
                 ,tooltip: 'Etendue précédente'
                 ,handler: function() {
-                    // application.synthese.search.changeGridCss();
                     syntheseListGrid.getView().refresh();
                 }
             });
@@ -1025,7 +967,6 @@ application.synthese.search = function() {
                     iconCls: 'pan',
                     toggleGroup: this.id
                     ,handler: function() {
-                        // map.getControl('vectorselect').activate();
                         selectControl.activate();
                     }   
                 }
@@ -1035,9 +976,7 @@ application.synthese.search = function() {
 
             toolbar.add({
                 text: 'shp'
-                // ,title: 'Télécharger un fichier shape de polygone(s) (format zip) comme zone(s) de recherche'
                 ,id: 'edit-synthese-shp'
-                //,disabled: true
                 ,iconCls: 'import_shape'
                 ,tooltip: 'Télécharger un fichier shape de polygone(s) au format zip comme zone(s) de recherche. Projection Lambert 93 uniquement.'
                 ,handler: function() {
@@ -1102,7 +1041,6 @@ application.synthese.search = function() {
             );
             toolbar.add({
                 id: 'edit-observation-geometry-erase'
-                //,disabled: true
                 ,iconCls: 'erase'
                 ,tooltip: 'Supprimer la zone de recherche'
                 ,handler: function() {
@@ -1110,10 +1048,8 @@ application.synthese.search = function() {
                         ,'Voulez vous supprimer la zone de recherche existante ?'
                         ,function(btn) {
                             if (btn == 'yes') {
-                                // activateControls(true);
                                 Ext.getCmp('hidden-geom').setValue(null);
                                 application.synthese.searchVectorLayer.removeAllFeatures();
-                                // formSearcher.triggerSearch();
                             }
                         }
                     );
@@ -1132,92 +1068,6 @@ application.synthese.search = function() {
             });
 
             toolbar.add('->');
-            
-            // toolbar.add({
-                // xtype:"twintriggercombo"
-                // ,id: 'combo-fs-secteur'
-                // ,fieldLabel:"Secteur"
-                // ,emptyText: "Secteur"
-                // ,name:"nomsecteur"
-                // ,hiddenName:"secteur"
-                // ,store: application.synthese.secteurStore
-                // ,valueField: "id_secteur"
-                // ,displayField: "nom_secteur"
-                // ,typeAhead: true
-                // ,width: 150
-                // ,forceSelection: true
-                // ,selectOnFocus: true
-                // ,editable: false
-                // ,mode: 'local'
-                // ,triggerAction: 'all'
-                // ,trigger3Class: 'x-hidden'
-                // ,listeners: {
-                    // select: function(combo, record) {
-                        // Ext.getCmp('combo_commune').clearValue();
-                        // Ext.getCmp('hidden-extent').setValue(record.data.extent);
-                        // myProxyCommunes.url = 'bibs/communes?secteur='+combo.getValue();
-                        // communeStore.reload();
-                        // zoomToRecord(record);
-                    // }
-                    // ,clear: function(combo) {
-                        // myProxyCommunes.url = 'bibs/communes'
-                        // communeStore.reload();
-                        // Ext.getCmp('hidden-extent').setValue('');
-                    // }
-                    // ,trigger3Click: function(combo) {
-                        // var index = combo.view.getSelectedIndexes()[0];
-                        // var record = combo.store.getAt(index);
-                        // zoomToRecord(record);
-                    // }
-                // }
-            // });
-            // var myProxyCommunes = new Ext.data.HttpProxy({
-                // id:'store-communes-proxy'
-                // ,url: 'bibs/communes'
-                // ,method: 'GET'
-            // });
-            // var communeStore= new Ext.data.JsonStore({
-                // url: myProxyCommunes
-                // ,sortInfo: {
-                    // field: 'nomcommune'
-                    // ,direction: 'ASC'
-                // }
-                // ,fields: [
-                    // 'insee'
-                    // ,'nomcommune'
-                    // ,'extent'
-                // ]
-                // ,autoLoad: true
-            // })
-            // toolbar.add({
-                // xtype:"twintriggercombo"
-                // ,id: 'combo_commune'
-                // ,fieldLabel:"Commune"
-                // ,emptyText: "Commune"
-                // ,name:"nomcommune"
-                // ,hiddenName:"commune"
-                // ,store: communeStore
-                // ,valueField: "insee"
-                // ,displayField: "nomcommune"
-                // ,typeAhead: true
-                // ,forceSelection: true
-                // ,selectOnFocus: true
-                // ,mode: 'local'
-                // ,triggerAction: 'all'
-                // ,trigger3Class: 'x-hidden'
-                // ,listeners: {
-                    // select: function(combo, record) {
-                        // zoomToRecord(record);
-                    // }
-                    // ,clear: function(combo) {
-                    // }
-                    // ,trigger3Click: function(combo) {
-                        // var index = combo.view.getSelectedIndexes()[0];
-                        // var record = combo.store.getAt(index);
-                        // zoomToRecord(record)
-                    // }
-                // }
-            // });
             toolbar.activate();
             toolbarInitializedOnce = true;
         }
@@ -1434,9 +1284,6 @@ application.synthese.search = function() {
                         ,select: function(){
                             if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}   
                         }
-                        // ,clear: function(){
-                            // if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}
-                        // }
                     }
                 },{
                     xtype:"twintriggercombo"
@@ -1479,10 +1326,6 @@ application.synthese.search = function() {
                             if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}
                             Ext.getCmp('label-choix-taxons').setText('');
                         }
-                        // ,clear: function(){
-                            // if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}
-                            // Ext.getCmp('label-choix-taxons').setText('');
-                        // }
                     }
                 },{
                     xtype: 'button'
@@ -1505,7 +1348,6 @@ application.synthese.search = function() {
             ,collapsible: true
             ,autoHeight:true
             ,anchor:'98%'
-            // ,layout:'absolute'
             ,defaults: {
                 anchor: '-20' // leave room for error icon}
                 ,hideLabel: true
@@ -1529,10 +1371,7 @@ application.synthese.search = function() {
                                 target: c.getEl()
                                 ,text: 'Date de début'
                             });
-                        }
-                        // ,change:function(df,date){
-                            // Ext.getCmp('hidden-startdate-aa').setValue(date);
-                        // }                        
+                        }                        
                     }
                 },{
                     id: 'datefin'
@@ -1552,10 +1391,7 @@ application.synthese.search = function() {
                                 target: c.getEl()
                                 ,text: 'Date de fin'
                             });
-                        }
-                        // ,change:function(df,date){
-                            // Ext.getCmp('hidden-enddate').setValue(date);
-                        // }                        
+                        }                        
                     }
                 }
                 ,{xtype:'label',text: 'Limiter la recherche à une période',cls:'bluebold'}
@@ -1565,7 +1401,6 @@ application.synthese.search = function() {
                     ,fieldLabel: 'Période début'
                     ,emptyText: 'Période début'
                     ,name: 'periodedebut'
-                    // ,maxValue: new Date()
                     ,format: 'd/m'
                     ,value: new Date(2000,0,1)
                     //function pour cacher ou afficher les label en même temps que le champ de saisie
@@ -1578,9 +1413,6 @@ application.synthese.search = function() {
                                 ,text: 'Saisir une date de début de période, sans l\'année, au format 19/11'
                             });
                         }
-                        // ,change:function(df,date){
-                            // Ext.getCmp('hidden-startperiode').setValue(date);
-                        // }
                     }
                 },{
                     id: 'periodefin'
@@ -1588,7 +1420,6 @@ application.synthese.search = function() {
                     ,fieldLabel: 'Période fin'
                     ,emptyText: 'Période fin'
                     ,name: 'periodefin'
-                    // ,maxValue: new Date()
                     ,format: 'd/m'
                     ,value: new Date(2000,11,31)
                     //function pour cacher ou afficher les label en même temps que le champ de saisie
@@ -1601,9 +1432,6 @@ application.synthese.search = function() {
                                 ,text: 'Saisir une date de fin de période, sans l\'année, au format 19/11'
                             });
                         }
-                        // ,change:function(df,date){
-                            // Ext.getCmp('hidden-endperiode').setValue(date);
-                        // }
                     }
                 }
             ]
@@ -1625,7 +1453,6 @@ application.synthese.search = function() {
                 {
                     xtype:"twintriggercombo"
                     ,id: 'combo-secteurs'
-                    // ,fieldLabel:"Secteur"
                     ,emptyText: "Délégations"
                     ,name:"nom_secteur"
                     ,hiddenName:"id_secteur"
@@ -1674,15 +1501,10 @@ application.synthese.search = function() {
                             myProxyCommunes.url = 'bibs/communessynthese';
                             communesStore.reload();
                         }
-                        // ,trigger3Click: function(combo) {
-                            // var index = combo.view.getSelectedIndexes()[0];
-                            // var record = combo.store.getAt(index);
-                        // }
                     }
                 },{
                     xtype:"twintriggercombo"
                     ,id: 'combo-communes'
-                    // ,fieldLabel:"Commune"
                     ,emptyText: "Commune"
                     ,name:"nom_commune"
                     ,hiddenName:"insee"
@@ -1875,7 +1697,6 @@ application.synthese.search = function() {
             ,collapsed:true
             ,autoHeight:true
             ,anchor:'98%'
-            // ,layout:'absolute'
             ,defaults: {
                 anchor: '-20' // leave room for error icon}
                 ,hideLabel: true
@@ -1901,18 +1722,6 @@ application.synthese.search = function() {
             ]
         }//fin du fieldset
         ];//fin de mesItems        
-        // Ext.each(columns, function(column) {
-            // Ext.each(column.items, function(item) {
-                // item.listeners = (item.listeners || {});
-                // Ext.apply(item.listeners, {
-                    // specialkey: function(field, evt) {
-                        // if (Ext.EventObject.getKey(evt) == Ext.EventObject.ENTER) {
-                            // formSearcher.triggerSearch();
-                        // }
-                    // }
-                // });
-            // });
-        // });
         return mesItems;
     };
 
@@ -1925,14 +1734,6 @@ application.synthese.search = function() {
      */
     var createLayer = function() {
         var syntheseDefaultStyle = new OpenLayers.Style(
-            // {
-            // fillColor:'#FF9922'
-            // ,pointRadius: 5
-            // ,strokeColor:'#f00'
-            // ,strokeWidth:2
-            // ,fillOpacity:0.4
-            // ,graphicZIndex:1
-        // }
         );
         //règles de coloration des points selon patrimonialité
     var rule0 = new OpenLayers.Rule({
@@ -1990,7 +1791,6 @@ application.synthese.search = function() {
                 ,format: OpenLayers.Format.GeoJSON
                 ,projection : map.getProjection()
                 ,units: map.getProjection().getUnits()
-                // ,maxResolution: resolution_max //limite l'affichage des points selon le niveau de zoom
                 ,maxExtent: extent_max
             }
         );
@@ -2134,7 +1934,6 @@ application.synthese.search = function() {
             if(nouvelEmbranchement){ //on crée le groupe
                 embranchement = {
                     text: emb
-                    // ,leaf:true
                     ,checked:false
                     ,children:childrensEmbranchement
                 };
@@ -2207,43 +2006,7 @@ application.synthese.search = function() {
                 }
                 ,listeners:{
                     checkchange:function(node,checked){
-
-/****** MIS EN COMMANTAIRE PAR NICOLAS 
-
-                        var label =  Ext.getCmp('label-patience-tree');
-                        label.setText('La machine travaille mais y\'a du boulot, patience...');
-                        Ext.getCmp('windows-taxons-tree').doLayout();
-                        treeMask.show();
-
                         node.getOwnerTree().suspendEvents();
-
-                        if(checked){node.expand(true);} else {node.collapse(true);}
-
-                        Ext.each(node.childNodes, function(eNode) {
-                            if(checked){eNode.expand();}else{eNode.collapse();}
-                            eNode.getUI().toggleCheck(checked);
-                            Ext.each(eNode.childNodes, function(cNode) {
-                                if(checked){cNode.expand();}else{cNode.collapse();}
-                                cNode.getUI().toggleCheck(checked);
-                                Ext.each(cNode.childNodes, function(oNode) {
-                                    if(checked){oNode.expand();}else{oNode.collapse();}
-                                    oNode.getUI().toggleCheck(checked);
-                                    Ext.each(oNode.childNodes, function(fNode) {
-                                        if(checked){fNode.expand();}else{fNode.collapse();}
-                                        fNode.getUI().toggleCheck(checked);
-                                    });
-                                });
-                            });
-                        });
-
-                        application.synthese.search.manageTree();
-                        node.getOwnerTree().resumeEvents();
-                        Ext.getCmp('label-patience-tree').setText('Vous pouvez choisir par espèce ou par groupe d\'espèces');
-                        treeMask.hide();
-
-******************************/
-                        node.getOwnerTree().suspendEvents();
-
                         var label =  Ext.getCmp('label-patience-tree');
                         label.setText('La machine travaille mais y\'a du boulot, patience...');
                         treeMask.show();
@@ -2337,7 +2100,6 @@ application.synthese.search = function() {
         ,initWindowTaxons: function() {
                 this.windowTaxons = initFormTaxons();
                 treeMask = new Ext.LoadMask(Ext.getBody(), {msg:"Patience ça bosse..."});
-                // treeMask.show();
         }
         ,choiseTaxons: function() {
             if (!this.windowTaxons) {this.initWindowTaxons();}
@@ -2393,7 +2155,6 @@ application.synthese.search = function() {
 
         }
         ,resetTree: function(){
-            // Ext.getCmp('tree-taxons').suspendEvents();
             Ext.getCmp('tree-taxons').getRootNode().setText('Taxons (0)');
             Ext.each(Ext.getCmp('tree-taxons').getRootNode(), function(node){
                 var args=[false];
@@ -2406,7 +2167,6 @@ application.synthese.search = function() {
             Ext.getCmp('tree-taxons').getRootNode().setText('taxons');
             Ext.getCmp('label-choix-taxons').setText('');
             Ext.getCmp('search-form').getForm().findField('idstaxons').setValue('');
-            // Ext.getCmp('tree-taxons').resumeEvents();
             treeMask.hide();
         }
         ,zoomTo: function(extent) {
@@ -2534,7 +2294,6 @@ application.synthese.search = function() {
                 ,params: params
                 ,success: function (result, request) {
                     Ext.ux.Toast.msg('Suppression !', 'L\'observation de "'+taxon+'" a été supprimée.');
-                    // Ext.getCmp('synthese_list_grid').getStore().remove(record);
                     formSearcher.triggerSearch();
                 }
                 ,failure: function (result, request) { 
@@ -2586,9 +2345,8 @@ application.synthese.search = function() {
                 success: function (result, request) {
                     var featurecollection= result.responseText;
                     var gml_format = new OpenLayers.Format.GML({
-                        externalProjection : new OpenLayers.Projection("EPSG:32622")
+                        externalProjection : new OpenLayers.Projection(gps_user_projection)
                         ,internalProjection : new OpenLayers.Projection("EPSG:3857")
-                        // ,internalProjection : new OpenLayers.Projection(map.getProjection())
                     });
                     application.synthese.searchVectorLayer.addFeatures(gml_format.read(featurecollection));
                 },
@@ -2647,12 +2405,11 @@ application.synthese.search = function() {
             vectorGmlLayer = new OpenLayers.Layer.Vector("gml",{
                 protocol: new OpenLayers.Protocol.HTTP({
                     url: host_uri+"/"+app_uri+"/uploads/shapes/"+gmlFile+"_"+randomnumber+".gml"
-                    // url: host_uri+"/"+app_uri+"/uploads/shapes/mongml.gml"
                     ,format: new OpenLayers.Format.GML()
                 })
                 ,strategies: [new OpenLayers.Strategy.Fixed()]
                 ,styleMap: styleMap
-                ,projection: new OpenLayers.Projection("EPSG:32622")      
+                ,projection: new OpenLayers.Projection(gps_user_projection)      
             });
             // This will perform the autozoom as soon as the GPX file is loaded.
             vectorGmlLayer.events.register("loadend", vectorGmlLayer, setExtent);

@@ -3,12 +3,13 @@
 class sfSyntheseConfig extends sfActions
 {
 	public static $id_lot_cf = 1;
-	public static $id_lot_inv = 2;
+	public static $id_lot_inv = 3;
+	public static $id_lot_mortalite = 2;
 	public static $id_protocole_cf = 1;
-	public static $id_protocole_inv = 2;
-	public static $id_protocole_mortalite = 3;
+	public static $id_protocole_inv = 3;
+	public static $id_protocole_mortalite = 2;
 	public static $id_source_cf = 1;
-	public static $id_source_inv = 2;
+	public static $id_source_inv = 3;
 	public static $default_pdop = -1;
     //organisme producteur et propriétaire des données
 	public static $id_organisme = 2;

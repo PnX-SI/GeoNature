@@ -342,7 +342,7 @@ class cfActions extends sfFauneActions
             $fiche->srid_dessin = sfSyntheseConfig::$srid_dessin;
             $fiche->id_organisme = sfSyntheseConfig::$id_organisme;
             $fiche->id_protocole = sfSyntheseConfig::$id_protocole_mortalite;
-            $fiche->id_lot = sfSyntheseConfig::$id_lot_cf;
+            $fiche->id_lot = sfSyntheseConfig::$id_lot_mortalite;
             // $fiche->id_lot = $request->getParameter('id_lot');
             $fiche->save();//enregistrement avec la methode save de symfony
             // ensuite on commence par supprimer tout ce qui concerne cette fiche si on est en update
