@@ -17,6 +17,7 @@ BASE DE DONNEES
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthese -f grant.sql
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/synthese_2154.sql
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
         exit
 
 * Si besoin l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
