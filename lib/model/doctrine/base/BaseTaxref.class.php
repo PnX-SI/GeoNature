@@ -21,6 +21,8 @@
  * @property string $nom_complet
  * @property string $nom_vern
  * @property string $nom_vern_eng
+ * @property string $group1_inpn
+ * @property string $group2_inpn
  * @property Doctrine_Collection $BibTaxonsFaunePn
  * @property Doctrine_Collection $Synthesefaune
  * 
@@ -40,6 +42,8 @@
  * @method string              getNomComplet()       Returns the current record's "nom_complet" value
  * @method string              getNomVern()          Returns the current record's "nom_vern" value
  * @method string              getNomVernEng()       Returns the current record's "nom_vern_eng" value
+ * @method string              getGroup1Inpn()       Returns the current record's "group1_inpn" value
+ * @method string              getGroup2Inpn()       Returns the current record's "group2_inpn" value
  * @method Doctrine_Collection getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" collection
  * @method Doctrine_Collection getSynthesefaune()    Returns the current record's "Synthesefaune" collection
  * @method Taxref              setCdNom()            Sets the current record's "cd_nom" value
@@ -58,6 +62,8 @@
  * @method Taxref              setNomComplet()       Sets the current record's "nom_complet" value
  * @method Taxref              setNomVern()          Sets the current record's "nom_vern" value
  * @method Taxref              setNomVernEng()       Sets the current record's "nom_vern_eng" value
+ * @method Taxref              setGroup1Inpn()       Sets the current record's "group1_inpn" value
+ * @method Taxref              setGroup2Inpn()       Sets the current record's "group2_inpn" value
  * @method Taxref              setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" collection
  * @method Taxref              setSynthesefaune()    Sets the current record's "Synthesefaune" collection
  * 
@@ -120,9 +126,9 @@ abstract class BaseTaxref extends sfDoctrineRecord
              'type' => 'string',
              'length' => 100,
              ));
-        $this->hasColumn('lb_auteur', 'string', 150, array(
+        $this->hasColumn('lb_auteur', 'string', 500, array(
              'type' => 'string',
-             'length' => 150,
+             'length' => 500,
              ));
         $this->hasColumn('nom_complet', 'string', 255, array(
              'type' => 'string',
@@ -135,6 +141,14 @@ abstract class BaseTaxref extends sfDoctrineRecord
         $this->hasColumn('nom_vern_eng', 'string', 100, array(
              'type' => 'string',
              'length' => 100,
+             ));
+        $this->hasColumn('group1_inpn', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('group2_inpn', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
              ));
     }
 

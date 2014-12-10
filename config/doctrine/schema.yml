@@ -713,10 +713,12 @@ Taxref:
     cd_taxsup: integer(8)
     cd_ref: integer(8)
     lb_nom: string(100)
-    lb_auteur: string(150)
+    lb_auteur: string(500)
     nom_complet: string(255)
     nom_vern: string(255)
     nom_vern_eng: string(100)
+    group1_inpn: string(255)
+    group2_inpn: string(255)
 TaxrefProtectionArticles:
   tableName: taxonomie.taxref_protection_articles
   columns:
@@ -725,12 +727,18 @@ TaxrefProtectionArticles:
       primary: true
     article: string(100)
     intitule: string()
+    protection: string()
     arrete: string()
-    url_inpn: string(255)
-    cd_doc: integer(8)
+    fichier: string()
+    fg_afprot: integer(8)
+    niveau: string(255)
+    cd_arrete: integer(8)
     url: string(255)
     date_arrete: integer(8)
-    type_juridique: string(255)
+    rang_niveau: integer(8)
+    lb_article: string()
+    type_protection: string(255)
+    pn: boolean(1)    
 TaxrefProtectionEspeces:
   tableName: taxonomie.taxref_protection_especes
   columns:

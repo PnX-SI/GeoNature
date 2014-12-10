@@ -1845,7 +1845,9 @@ CREATE TABLE taxref (
     nom_complet character varying(255),
     nom_valide character varying(255),
     nom_vern character varying(255),
-    nom_vern_eng character varying(255)
+    nom_vern_eng character varying(255),
+	group1_inpn character varying(255),
+	group2_inpn character varying(255)
 );
 
 
@@ -2561,13 +2563,6 @@ CREATE TABLE bib_embranchements (
 
 SET search_path = synthese, pg_catalog;
 
---
--- Name: v_tree_taxons_synthese; Type: VIEW; Schema: synthese; Owner: -
---
-
-CREATE VIEW v_tree_taxons_synthese AS
-    SELECT t.id_taxon, taxonomie.find_cdref(tx.cd_nom) AS cd_ref, t.nom_latin, t.nom_francais, e.id_embranchement, e.nom_embranchement, c.id_classe, c.nom_classe, c.desc_classe, o.id_ordre, o.nom_ordre, f.id_famille, f.nom_famille, t.patrimonial, t.protection_stricte FROM (((((taxonomie.bib_taxons_faune_pn t JOIN taxonomie.bib_familles f ON ((f.id_famille = t.id_famille))) JOIN taxonomie.bib_ordres o ON ((o.id_ordre = f.id_ordre))) JOIN taxonomie.bib_classes c ON ((c.id_classe = o.id_classe))) JOIN taxonomie.bib_embranchements e ON ((e.id_embranchement = c.id_embranchement))) JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom))) WHERE (t.id_taxon IN (SELECT DISTINCT synthesefaune.id_taxon FROM synthesefaune ORDER BY synthesefaune.id_taxon));
-
 
 SET search_path = taxonomie, pg_catalog;
 
@@ -2649,40 +2644,40 @@ CREATE TABLE bib_taxref_statuts (
 --
 
 CREATE TABLE import_taxref (
-    regne character varying(20),
-    phylum character varying(50),
-    classe character varying(50),
-    ordre character varying(50),
-    famille character varying(50),
-    GROUP1_INPN character varying(50),
-    GROUP2_INPN character varying(50),
-    cd_nom integer NOT NULL,
-    cd_taxsup integer,
-    cd_ref integer,
-    rang character varying(10),
-    lb_nom character varying(100),
-    lb_auteur character varying(250),
-    nom_complet character varying(255),
-    nom_valide character varying(255),
-    nom_vern character varying(500),
-    nom_vern_eng character varying(500),
-    habitat character varying(10),
-    fr character varying(10),
-    gf character varying(10),
-    mar character varying(10),
-    gua character varying(10),
-    sm character varying(10),
-    sb character varying(10),
-    spm character varying(10),
-    may character varying(10),
-    epa character varying(10),
-    reu character varying(10),
-    taaf character varying(10),
-    pf character varying(10),
-    nc character varying(10),
-    wf character varying(10),
-    cli character varying(10),
-    url text
+	regne character varying(20),
+	phylum character varying(50),
+	classe character varying(50),
+	ordre character varying(50),
+	famille character varying(50),
+	group1_inpn character varying(50),
+	group2_inpn character varying(50),
+	cd_nom integer NOT NULL,
+	cd_taxsup integer,
+	cd_ref integer,
+	rang character varying(10),
+	lb_nom character varying(100),
+	lb_auteur character varying(250),
+	nom_complet character varying(255),
+	nom_valide character varying(255),
+	nom_vern character varying(500),
+	nom_vern_eng character varying(500),
+	habitat character varying(10),
+	fr character varying(10),
+	gf character varying(10),
+	mar character varying(10),
+	gua character varying(10),
+	sm character varying(10),
+	sb character varying(10),
+	spm character varying(10),
+	may character varying(10),
+	epa character varying(10),
+	reu character varying(10),
+	taaf character varying(10),
+	pf character varying(10),
+	nc character varying(10),
+	wf character varying(10),
+	cli character varying(10),
+	url text
 );
 
 
@@ -2706,21 +2701,21 @@ CREATE TABLE taxref_changes (
 --
 
 CREATE TABLE taxref_protection_articles (
-    cd_protection character varying(20) NOT NULL,
-    article character varying(100),
-    intitule text,
-    protection text,
-    arrete text,
-    fichier text, 
-    fg_afprot int, 
-    niveau varchar(250),
-    cd_arrete int, 
-    url varchar(250),
-    date_arrete int, 
-    rang_niveau int, 
-    lb_article text, 
-    type_protection varchar(250),
-    pn boolean
+  cd_protection character varying(20) NOT NULL,
+  article character varying(100),
+  intitule text,
+  protection text,
+  arrete text,
+  fichier text,
+  fg_afprot integer,
+  niveau character varying(250),
+  cd_arrete integer,
+  url character varying(250),
+  date_arrete integer,
+  rang_niveau integer,
+  lb_article text,
+  type_protection character varying(250),
+  pn boolean
 );
 
 
@@ -2737,6 +2732,48 @@ CREATE TABLE taxref_protection_especes (
     precisions text,
     cd_nom_cite character varying(255) NOT NULL
 );
+
+
+--
+-- Name: v_tree_taxons_synthese; Type: VIEW; Schema: synthese; Owner: -
+--
+
+CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS 
+WITH taxon AS (
+  SELECT tx.id_taxon, tx.nom_latin,tx.nom_francais, tx.patrimonial, tx.protection_stricte , taxref.*
+  FROM (
+      SELECT id_taxon, cd_nom,  taxonomie.find_cdref(tx.cd_nom) AS cd_ref, nom_latin, nom_francais, patrimonial, protection_stricte
+      FROM taxonomie.bib_taxons_faune_pn tx
+      WHERE (tx.id_taxon IN ( SELECT DISTINCT synthesefaune.id_taxon FROM synthese.synthesefaune  ORDER BY synthesefaune.id_taxon))
+  ) tx
+  JOIN taxonomie.taxref taxref 
+  ON taxref.cd_nom = tx.cd_ref
+) 
+SELECT id_taxon, cd_ref, nom_latin, nom_francais, 
+    id_embranchement, nom_embranchement, 
+    COALESCE(id_classe, id_embranchement) as id_classe, COALESCE(nom_classe, ' No class in taxref') as nom_classe, COALESCE(desc_classe, ' No class in taxref') as desc_classe, 
+    COALESCE(id_ordre, id_classe) as id_ordre, COALESCE(nom_ordre, ' No order in taxref') as nom_ordre, 
+    COALESCE(id_famille, id_ordre) as id_famille, COALESCE(nom_famille, ' No family in taxref') as nom_famille,
+    patrimonial, protection_stricte
+FROM (
+  SELECT DISTINCT 
+    t.id_taxon,  t.cd_ref,  t.nom_latin, t.nom_francais,
+    (SELECT cd_nom  FROM taxonomie.taxref WHERE id_rang ='PH' and lb_nom = t.phylum) as id_embranchement,
+    t.phylum as nom_embranchement,
+    CASE WHEN t.classe  IS NULL THEN NULL 
+      ELSE (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang ='CL' and lb_nom = t.classe AND cd_nom =cd_ref) END as id_classe,
+    t.classe  as nom_classe,
+    t.classe as desc_classe,
+    CASE WHEN t.ordre  IS NULL THEN NULL 
+      ELSE (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang ='OR' and lb_nom = t.ordre AND cd_nom =cd_ref) END as id_ordre,
+    t.ordre  as nom_ordre,
+    CASE WHEN t.famille  IS NULL THEN NULL 
+      ELSE (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang ='FM' and lb_nom = t.famille AND phylum = t.phylum AND cd_nom =cd_ref) END as id_famille,
+    famille as nom_famille,
+    t.patrimonial,
+    t.protection_stricte
+  FROM taxon t
+) t;
 
 
 SET search_path = utilisateurs, pg_catalog;
@@ -3815,6 +3852,11 @@ CREATE INDEX i_fk_taxref_bib_taxref_rangs ON taxref USING btree (id_rang);
 --
 
 CREATE INDEX i_fk_taxref_bib_taxref_statuts ON taxref USING btree (id_statut);
+
+
+CREATE INDEX i_taxref_cd_nom ON taxonomie.taxref USING btree (cd_nom );
+
+CREATE INDEX i_taxref_cd_ref ON taxonomie.taxref USING btree (cd_ref );
 
 
 SET search_path = contactfaune, pg_catalog;
