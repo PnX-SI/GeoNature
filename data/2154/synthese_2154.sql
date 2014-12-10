@@ -261,21 +261,24 @@ CREATE FUNCTION synthese_delete_releve_cf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
+    idsource integer;
 BEGIN
     --SUPRESSION EN SYNTHESE
-	DELETE FROM synthese.synthesefaune WHERE id_source = 6 AND id_fiche_source = old.id_releve_cf::text; 
+    
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
+    
+	DELETE FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text; 
     RETURN OLD; 
 END;
 $$;
 
+-- Function: contactfaune.synthese_insert_releve_cf()
 
---
--- Name: synthese_insert_releve_cf(); Type: FUNCTION; Schema: contactfaune; Owner: -
---
+-- DROP FUNCTION contactfaune.synthese_insert_releve_cf();
 
-CREATE FUNCTION synthese_insert_releve_cf() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactfaune.synthese_insert_releve_cf()
+  RETURNS trigger AS
+$$
 DECLARE
 	fiche RECORD;
 	test integer;
@@ -283,7 +286,12 @@ DECLARE
 	criteresynthese integer;
 	danslecoeur boolean;
 	unite integer;
+	idsource integer;
 BEGIN
+
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf';
+	
 	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
 	SELECT INTO fiche * FROM contactfaune.t_fiches_cf WHERE id_cf = new.id_cf;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
@@ -329,7 +337,7 @@ BEGIN
 		coeur
 	)
 	VALUES(
-	6,
+	idsource,
 	new.id_releve_cf,
 	'f'||new.id_cf||'-r'||new.id_releve_cf,
 	fiche.id_organisme,
@@ -356,7 +364,14 @@ BEGIN
 	);
 	RETURN NEW; 			
 END;
-$$;
+$$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION contactfaune.synthese_insert_releve_cf()
+  OWNER TO cartopnx;
+GRANT EXECUTE ON FUNCTION contactfaune.synthese_insert_releve_cf() TO cartopnx;
+GRANT EXECUTE ON FUNCTION contactfaune.synthese_insert_releve_cf() TO public;
+
 
 
 --
@@ -370,15 +385,19 @@ DECLARE
 	releves RECORD;
 	test integer;
 	mesobservateurs character varying(255);
+    idsource integer;
 BEGIN
 	--
 	--CE TRIGGER NE DEVRAIT SERVIR QU'EN CAS DE MISE A JOUR MANUELLE SUR CETTE TABLE cor_role_fiche_cf
 	--L'APPLI WEB ET LE PDA NE FONT QUE DES INSERTS QUI SONT GERER PAR LE TRIGGER INSERT DE t_releves_cf
 	--
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
+    
 	--Récupération des enregistrements de la table t_releves_cf avec l'id_cf de la table cor_role_fiche_cf
 	FOR releves IN SELECT * FROM contactfaune.t_releves_cf WHERE id_cf = new.id_cf LOOP
 		--test si on a bien l'enregistrement dans la table synthesefaune avant de le mettre à jour
-		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = 6 AND id_fiche_source = releves.id_releve_cf::text;
+		SELECT INTO test id_fiche_source FROM synthese.synthesefaune 
+            WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
 		IF test ISNULL THEN
 		RETURN null;
 		ELSE
@@ -394,7 +413,7 @@ BEGIN
 			--mise à jour de l'enregistrement correspondant dans synthesefaune ; uniquement le champ observateurs ici
 			UPDATE synthese.synthesefaune SET
 				observateurs = mesobservateurs
-			WHERE id_source = 6 AND id_fiche_source = releves.id_releve_cf::text; 
+			WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text; 
 		END IF;
 	END LOOP;
 	RETURN NEW; 			
@@ -414,13 +433,18 @@ DECLARE
 	test integer;
 	mesobservateurs character varying(255);
 	danslecoeur boolean;
+    idsource integer;
 BEGIN
+
+    
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
+
 	--Récupération des données de la table t_releves_cf avec l'id_cf de la fiche modifié
 	-- Ici on utilise le OLD id_cf pour être sur qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_fiches_cf
 	--le trigger met à jour avec le NEW --> SET code_fiche_source =  ....
 	FOR releves IN SELECT * FROM contactfaune.t_releves_cf WHERE id_cf = old.id_cf LOOP
 		--test si on a bien l'enregistrement dans la table synthesefaune avant de le mettre à jour
-		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = 6 AND id_fiche_source = releves.id_releve_cf::text;
+		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
 		IF test IS NOT NULL THEN
 			SELECT INTO mesobservateurs o.observateurs FROM contactfaune.t_releves_cf r
 			JOIN contactfaune.t_fiches_cf f ON f.id_cf = r.id_cf
@@ -455,7 +479,7 @@ BEGIN
 				the_geom_point = new.the_geom_3857,
 				id_lot = new.id_lot,
 				coeur = danslecoeur
-				WHERE id_source = 6 AND id_fiche_source = releves.id_releve_cf::text;
+				WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
 			ELSE
 				--mise à jour de l'enregistrement correspondant dans synthesefaune mais on ne change rien pour le champ coeur
 				UPDATE synthese.synthesefaune SET
@@ -473,7 +497,7 @@ BEGIN
 				the_geom_2154 = new.the_geom_2154,
 				the_geom_point = new.the_geom_3857,
 				id_lot = new.id_lot
-			    WHERE id_source = 6 AND id_fiche_source = releves.id_releve_cf::text;
+			    WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
 			END IF;
 		END IF;
 	END LOOP;
@@ -492,9 +516,13 @@ CREATE FUNCTION synthese_update_releve_cf() RETURNS trigger
 DECLARE
 	test integer;
 	criteresynthese integer;
+    idsource integer;
 BEGIN
+    
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
+
 	--test si on a bien l'enregistrement dans la table synthesefaune avant de le mettre à jour
-	SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = 6 AND id_fiche_source = old.id_releve_cf::text;
+	SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text;
 	IF test IS NOT NULL THEN
 		SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
 		-- on ne calcule pas si on est dans le coeur car ce travail est déjà fait par le trigger sur la fiche qui comporte la géométrie
@@ -510,7 +538,7 @@ BEGIN
 			supprime = new.supprime,
 			id_critere_synthese = criteresynthese,
 			effectif_total = new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai
-		WHERE id_source = 6 AND id_fiche_source = old.id_releve_cf::text; -- Ici on utilise le OLD id_releve_cf pour être sur 
+		WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text; -- Ici on utilise le OLD id_releve_cf pour être sur 
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cf
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cf
 	END IF;
@@ -741,21 +769,24 @@ CREATE FUNCTION synthese_delete_releve_inv() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
+    idsource integer;
 BEGIN
+    
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv' ;
+    
     --SUPRESSION EN SYNTHESE
-	DELETE FROM synthese.synthesefaune WHERE id_source = 6 AND id_fiche_source = old.id_releve_inv::text; 
+	DELETE FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text; 
     RETURN OLD; 
 END;
 $$;
 
+-- Function: contactinv.synthese_insert_releve_inv()
 
---
--- Name: synthese_insert_releve_inv(); Type: FUNCTION; Schema: contactinv; Owner: -
---
+-- DROP FUNCTION contactinv.synthese_insert_releve_inv();
 
-CREATE FUNCTION synthese_insert_releve_inv() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactinv.synthese_insert_releve_inv()
+  RETURNS trigger AS
+$$
 DECLARE
 	fiche RECORD;
 	test integer;
@@ -763,7 +794,12 @@ DECLARE
 	mesobservateurs character varying(255);
 	danslecoeur boolean;
 	unite integer;
+	idsource integer;
 BEGIN
+
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
+	
 	--Récupération des données dans la table t_fiches_inv et de la liste des observateurs
 	SELECT INTO fiche * FROM contactinv.t_fiches_inv WHERE id_inv = new.id_inv;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactinv.bib_criteres_inv WHERE id_critere_inv = new.id_critere_inv;
@@ -776,12 +812,14 @@ BEGIN
                 GROUP BY id_inv
             ) o ON o.id_inv = f.id_inv
 	WHERE r.id_releve_inv = new.id_releve_inv;
-	-- on calcul si on est dans le coeur
+    
+	--On calcul si on est dans le coeur
 	IF st_intersects((SELECT the_geom FROM layers.l_zonesstatut WHERE id_zone = 3249), fiche.the_geom_2154) THEN 
 	    danslecoeur = true;
 	ELSE
 	    danslecoeur = false;
 	END IF;
+    
 	--On fait le INSERT dans synthesefaune
 	INSERT INTO synthese.synthesefaune (
 		id_source,
@@ -810,7 +848,7 @@ BEGIN
 		coeur
 	)
 	VALUES(
-	7,
+	idsource,
 	new.id_releve_inv,
 	'f'||new.id_inv||'-r'||new.id_releve_inv,
 	fiche.id_organisme,
@@ -837,7 +875,14 @@ BEGIN
 	);
 	RETURN NEW; 			
 END;
-$$;
+$$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION contactinv.synthese_insert_releve_inv()
+  OWNER TO cartopnx;
+GRANT EXECUTE ON FUNCTION contactinv.synthese_insert_releve_inv() TO cartopnx;
+GRANT EXECUTE ON FUNCTION contactinv.synthese_insert_releve_inv() TO public;
+
 
 
 --
@@ -851,15 +896,20 @@ DECLARE
 	releves RECORD;
 	test integer;
 	mesobservateurs character varying(255);
+    idsource integer;
 BEGIN
 	--
 	--CE TRIGGER NE DEVRAIT SERVIR QU'EN CAS DE MISE A JOUR MANUELLE SUR CETTE TABLE cor_role_fiche_inv
 	--L'APPLI WEB ET LE PDA NE FONT QUE DES INSERTS QUI SONT GERER PAR LE TRIGGER INSERT DE t_releves_inv
 	--
+    
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
+    
 	--Récupération des enregistrements de la table t_releves_inv avec l'id_inv de la table cor_role_fiche_inv
 	FOR releves IN SELECT * FROM contactinv.t_releves_inv WHERE id_inv = new.id_inv LOOP
 		--test si on a bien l'enregistrement dans la table synthesefaune avant de le mettre à jour
-		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = 7 AND id_fiche_source = releves.id_releve_inv::text;
+		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = releves.id_releve_inv::text;
 		IF test ISNULL THEN
 		RETURN null;
 		ELSE
@@ -875,7 +925,7 @@ BEGIN
 			--mise à jour de l'enregistrement correspondant dans synthesefaune ; uniquement le champ observateurs ici
 			UPDATE synthese.synthesefaune SET
 				observateurs = mesobservateurs
-			WHERE id_source = 7 AND id_fiche_source = releves.id_releve_inv::text; 
+			WHERE id_source = idsource AND id_fiche_source = releves.id_releve_inv::text; 
 		END IF;
 	END LOOP;
 	RETURN NEW; 			
@@ -895,13 +945,19 @@ DECLARE
 	test integer;
 	mesobservateurs character varying(255);
 	danslecoeur boolean;
+    idsource integer;
 BEGIN
+
+    
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
+    
 	--Récupération des données de la table t_releves_inv avec l'id_inv de la fiche modifié
 	-- Ici on utilise le OLD id_inv pour être sur qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_fiches_inv
 	--le trigger met à jour avec le NEW --> SET code_fiche_source =  ....
 	FOR releves IN SELECT * FROM contactinv.t_releves_inv WHERE id_inv = old.id_inv LOOP
 		--test si on a bien l'enregistrement dans la table synthesefaune avant de le mettre à jour
-		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = 7 AND id_fiche_source = releves.id_releve_inv::text;
+		SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = releves.id_releve_inv::text;
 		IF test IS NOT NULL THEN
 			SELECT INTO mesobservateurs o.observateurs FROM contactinv.t_releves_inv r
 			JOIN contactinv.t_fiches_inv f ON f.id_inv = r.id_inv
@@ -936,7 +992,7 @@ BEGIN
 					the_geom_point = new.the_geom_3857,
 					id_lot = new.id_lot,
 					coeur = danslecoeur
-				WHERE id_source = 7 AND id_fiche_source = releves.id_releve_inv::text;
+				WHERE id_source = idsource AND id_fiche_source = releves.id_releve_inv::text;
 			ELSE
 			--mise à jour de l'enregistrement correspondant dans synthesefaune mais sans le coeur
 				UPDATE synthese.synthesefaune SET
@@ -954,7 +1010,7 @@ BEGIN
 					the_geom_2154 = new.the_geom_2154,
 					the_geom_point = new.the_geom_3857,
 					id_lot = new.id_lot
-				WHERE id_source = 7 AND id_fiche_source = releves.id_releve_inv::text;
+				WHERE id_source = idsource AND id_fiche_source = releves.id_releve_inv::text;
 			END IF;
 		END IF;
 	END LOOP;
@@ -974,9 +1030,14 @@ DECLARE
 	test integer;
 	criteresynthese integer;
 	mesobservateurs character varying(255);
+    idsource integer;
 BEGIN
+
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
+    
 	--test si on a bien l'enregistrement dans la table synthesefaune avant de le mettre à jour
-	SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = 7 AND id_fiche_source = old.id_releve_inv::text;
+	SELECT INTO test id_fiche_source FROM synthese.synthesefaune WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text;
 	IF test IS NOT NULL THEN
 		--Récupération des données dans la table t_fiches_inv et de la liste des observateurs
 		SELECT INTO criteresynthese id_critere_synthese FROM contactinv.bib_criteres_inv WHERE id_critere_inv = new.id_critere_inv;
@@ -992,7 +1053,7 @@ BEGIN
 			supprime = new.supprime,
 			id_critere_synthese = criteresynthese,
 			effectif_total = new.am+new.af+new.ai+new.na
-		WHERE id_source = 7 AND id_fiche_source = old.id_releve_inv::text; -- Ici on utilise le OLD id_releve_inv pour être sur 
+		WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text; -- Ici on utilise le OLD id_releve_inv pour être sur 
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_inv
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_inv
 	END IF;
