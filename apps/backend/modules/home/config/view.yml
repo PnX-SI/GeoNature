@@ -15,7 +15,7 @@ indexSuccess:
 indexSyntheseSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
-    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-purple.css
+    - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
     - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css

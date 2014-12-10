@@ -395,7 +395,7 @@ application.synthese.search = function() {
             ,region:"north"
             ,height:110
             ,split:true
-            ,bodyStyle:"background-color:#f9f4ff"
+            ,bodyStyle:"background-color:#efefef"
             ,layout: 'column'
             ,autoScroll: true
             // ,collapsed:true
@@ -406,15 +406,15 @@ application.synthese.search = function() {
             ,items: [{
                 columnWidth: 0.4
                 ,id: 'description-col0'
-                ,bodyStyle:"background-color:#f9f4ff"
+                ,bodyStyle:"background-color:#efefef"
             },{
                 columnWidth: 0.3
                 ,id: 'description-col1'
-                ,bodyStyle:"background-color:#f9f4ff"
+                ,bodyStyle:"background-color:#efefef"
             },{
                 columnWidth: 0.3
                 ,id: 'description-col2'
-                ,bodyStyle:"background-color:#f9f4ff"
+                ,bodyStyle:"background-color:#efefef"
             }]
         };
     };
@@ -480,12 +480,12 @@ application.synthese.search = function() {
             ,autoScroll: true
             ,defaults: {
                 border: false
-                ,bodyStyle:"padding:3px;background-color:#cdc0fe"
+                ,bodyStyle:"padding:3px;background-color:#eeeeee"
             }
             ,items: [{
                 id: 'search-form'
                 ,xtype: 'form'
-                ,bodyStyle: 'padding: 5px;background-color:#cdc0fe'
+                ,bodyStyle: 'padding: 5px;background-color:#eeeeee'
                 ,disabled: false
                 ,labelAlign: 'left'
                 ,monitorValid:true
