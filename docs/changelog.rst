@@ -2,13 +2,22 @@
 CHANGELOG
 =========
 
-0.2.0 (UNRELEASED YET)
+1.0.0 (2014-12-10)
 ------------------
 
-* Ajout des fichiers source de l'application
-* Ajout des fichiers SQL permettant de créer la base de données
-* Migration des scripts SQL de PostGIS 1.5 à PostGIS 2
-* Documentation de la création de la base de données et du serveur
+Version fonctionnelle des applications : visualisation de la synthèse faune, saisie d'une donnée de contact (vertébrés, invertébrés, mortalité)
+
+## Changements
+ - Documentation de l'installation d'un serveur Debian wheezy pas à pas
+ - Documentation de la mise en place de la base de données
+ - Documentation de la mise en place de l'application et de son paramétrage
+ - Script d'insertion d'un jeu de données test
+ - Passage à PostGIS v2
+ - Mise en paramètre de la notion de lot, protocole et source
+
+## Prochaines évolutions
+ - Script d'import de taxref v7
+ - Utilisation préférentielle de la taxonomie de taxref plutôt que les tables de hiérarchie taxonomique
 
 
 0.1.0 (2014-12-01)
