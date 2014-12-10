@@ -1831,7 +1831,7 @@ application.cf.editFicheMortalite = function() {
                 text:'Accéder à la synthèse'
                 ,iconCls:'search'
                 ,handler: function(){
-                    window.location.href = host_uri+'/'+app_uri+'/synthese';
+                    window.location.href = 'synthese';
                     // application.cf.editFicheMortalite.viewport.destroy();
                     // Ext.ux.Toast.msg('todo !', 'oui oui ça vient !');
                 }

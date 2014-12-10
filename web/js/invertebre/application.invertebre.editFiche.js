@@ -1940,7 +1940,7 @@ application.invertebre.editFiche = function() {
                 text:'Accéder à la synthèse'
                 ,iconCls:'search'
                 ,handler: function(){
-                    window.location.href = host_uri+'/'+app_uri+'/synthese';
+                    window.location.href = 'synthese';
                 }
             },{
                 text:'Quitter'
