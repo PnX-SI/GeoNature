@@ -352,39 +352,12 @@ INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, de
 
 
 --
--- TOC entry 3141 (class 0 OID 126978)
--- Dependencies: 241
--- Data for Name: bib_embranchements; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_embranchements (id_embranchement, nom_embranchement, desc_embranchement) VALUES (1, 'Vertébrés', 'Oiseaux, mammifères, reptiles, amphibiens, poissons');
-
-
---
 -- TOC entry 3134 (class 0 OID 126691)
 -- Dependencies: 184
--- Data for Name: bib_classes; Type: TABLE DATA; Schema: taxonomie; Owner: -
+-- Data for Name: bib_groupes; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_classes (id_classe, id_embranchement, nom_classe, desc_classe, nom_clade, desc_clade, nom_classe_fr) VALUES (13, 1, 'Ostéichthyens', 'Poissons', 'Actinoptéringiens', 'Poissons à squelette osseux et nageoires rayonnées : perches, bars, maquereaux …', 'poissons');
-
-
---
--- TOC entry 3136 (class 0 OID 126726)
--- Dependencies: 193
--- Data for Name: bib_ordres; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_ordres (id_ordre, id_classe, nom_ordre, id_clade) VALUES (27, 13, 'Cypriniformes', 13);
-
-
---
--- TOC entry 3135 (class 0 OID 126723)
--- Dependencies: 192
--- Data for Name: bib_familles; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_familles (id_famille, id_ordre, nom_famille, cd_nom, temp_famille) VALUES (59, 27, 'Cyprinidés', NULL, NULL);
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(13,'poissons');
 
 
 --
@@ -393,7 +366,7 @@ INSERT INTO bib_familles (id_famille, id_ordre, nom_famille, cd_nom, temp_famill
 -- Data for Name: bib_taxons_faune_pn; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_famille, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', NULL, NULL, 1, 59, NULL, NULL, false, 1, 1, 2, true, false, 'Alburnus alburnus', 'Ablette', 67111);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', NULL, NULL, 1, 13, NULL, NULL, false, 1, 1, 2, true, false, 'Alburnus alburnus', 'Ablette', 67111);
 
 
 SET search_path = contactfaune, pg_catalog;
@@ -401,14 +374,14 @@ SET search_path = contactfaune, pg_catalog;
 --
 -- TOC entry 3121 (class 0 OID 126644)
 -- Dependencies: 175
--- Data for Name: cor_critere_classe; Type: TABLE DATA; Schema: contactfaune; Owner: -
+-- Data for Name: cor_critere_groupe; Type: TABLE DATA; Schema: contactfaune; Owner: -
 --
 
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (5, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (35, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (36, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (37, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (38, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (35, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (36, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (37, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (38, 13);
 
 
 SET search_path = utilisateurs, pg_catalog;
