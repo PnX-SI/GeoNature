@@ -6,6 +6,7 @@ Contenu:
 .. toctree::
    :maxdepth: 2
 
+   server
    installation
    database
    auteurs
