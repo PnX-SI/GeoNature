@@ -9,6 +9,7 @@ BASE DE DONNEES
 * Création de la base de données et chargement des données initiales
 
     ::
+    
         cd /home/synthese/dev/FF-synthese/data/inpn
         tar -xzvf data_inpn_v7.tar.gz 
         
@@ -31,4 +32,3 @@ BASE DE DONNEES
   ::
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
-    exit
