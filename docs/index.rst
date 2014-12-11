@@ -8,6 +8,5 @@ Contenu:
 
    server
    installation
-   database
    auteurs
    changelog
