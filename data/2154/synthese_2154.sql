@@ -1831,14 +1831,14 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
  SELECT g.id_groupe AS id_classe,
     g.nom_groupe AS nom_classe_fr,
     g.desc_groupe AS desc_classe
-   FROM ( SELECT g_1.id_groupe,
-            g_1.nom_groupe,
-            g_1.desc_groupe,
-            g_1.filtre_sql,
-            taxonomie.find_cdref(tx.cd_nom) AS cd_ref
-           FROM taxonomie.bib_groupes g_1
-             JOIN taxonomie.bib_taxons_faune_pn tx ON g_1.id_groupe = tx.id_groupe
-         LIMIT 1) g
+   FROM ( SELECT gr.id_groupe,
+            gr.nom_groupe,
+            gr.desc_groupe,
+            gr.filtre_sql,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_groupes gr
+             JOIN taxonomie.bib_taxons_faune_pn tx ON gr.id_groupe = tx.id_groupe
+          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.phylum::text = 'Chordata'::text;
 
@@ -2077,19 +2077,18 @@ ALTER SEQUENCE t_releves_inv_gid_seq OWNED BY t_releves_inv.gid;
 --
 
 CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS 
-SELECT 
-  g.id_groupe as id_classe,
-  g.nom_groupe as nom_classe,
-  g.desc_groupe as desc_classe
-FROM (
-  SELECT g.*, taxonomie.find_cdref(tx.cd_nom) as cd_ref
-  FROM taxonomie.bib_groupes g
-  JOIN taxonomie.bib_taxons_faune_pn tx
-  ON g.id_groupe = tx.id_groupe
-  LIMIT 1
-) g
-JOIN taxonomie.taxref t
-ON t.cd_nom= g.cd_ref
+ SELECT g.id_groupe AS id_classe,
+    g.nom_groupe AS nom_classe,
+    g.desc_groupe AS desc_classe
+   FROM ( SELECT gr.id_groupe,
+            gr.nom_groupe,
+            gr.desc_groupe,
+            gr.filtre_sql,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_groupes gr
+             JOIN taxonomie.bib_taxons_faune_pn tx ON gr.id_groupe = tx.id_groupe
+          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
 WHERE NOT  phylum = 'Chordata';
 
 --

@@ -391,11 +391,50 @@ SET search_path = contactfaune, pg_catalog;
 -- Data for Name: cor_critere_groupe; Type: TABLE DATA; Schema: contactfaune; Owner: -
 --
 
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (31, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (32, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (33, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (34, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (21, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (22, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (23, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (24, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (25, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (26, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (6, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (7, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (8, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (9, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (10, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (11, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (12, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (13, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (14, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (15, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (16, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (17, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (18, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (19, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (20, 12);
 INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (35, 13);
 INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (36, 13);
 INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (37, 13);
 INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (38, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (27, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (28, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (29, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (30, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 14);
 
 
 SET search_path = utilisateurs, pg_catalog;
