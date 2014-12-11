@@ -1247,7 +1247,7 @@ application.synthese.search = function() {
                 },{
                     xtype:"twintriggercombo"
                     ,id:'combo-synthese-taxons-fr'
-                    ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="images/classe{id_classe}.gif" width=20 height=20/> {nom_francais}</div></tpl></tpl>'
+                    ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="images/classe{id_groupe}.gif" width=20 height=20/> {nom_francais}</div></tpl></tpl>'
                     ,emptyText: "Taxons français"
                     ,name:"taxonfr"
                     ,hiddenName:"taxonfr"
@@ -1288,7 +1288,7 @@ application.synthese.search = function() {
                 },{
                     xtype:"twintriggercombo"
                     ,id:'combo-synthese-taxons-latin'
-                    ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="images/classe{id_classe}.gif" width=20 height=20/> {nom_latin}</div></tpl></tpl>'
+                    ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="images/classe{id_groupe}.gif" width=20 height=20/> {nom_latin}</div></tpl></tpl>'
                     ,emptyText: "Taxons latin"
                     ,name:"taxonl"
                     ,hiddenName:"taxonl"

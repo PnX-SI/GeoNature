@@ -230,7 +230,7 @@ application.synthese = function() {
                 'id_taxon'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
                 ,'nom_latin'
-                ,'id_classe'
+                ,'id_groupe'
                 ,'patrimonial'
                 ,'protection_stricte'
                 ,'cd_ref'

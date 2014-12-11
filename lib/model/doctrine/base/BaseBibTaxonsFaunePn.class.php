@@ -7,7 +7,7 @@
  * 
  * @property integer $id_taxon
  * @property integer $cd_nom
- * @property integer $id_famille
+ * @property integer $id_groupe
  * @property string $id_frequence
  * @property integer $id_importance_population
  * @property integer $id_responsabilite_pn
@@ -22,7 +22,7 @@
  * @property boolean $patrimonial
  * @property boolean $protection_stricte
  * @property boolean $reproducteur
- * @property BibFamilles $BibFamilles
+ * @property BibGroupes $BibGroupes
  * @property Taxref $Taxref
  * @property BibImportancesPopulation $BibImportancesPopulation
  * @property BibResponsabilitesPn $BibResponsabilitesPn
@@ -40,7 +40,7 @@
  * 
  * @method integer                  getIdTaxon()                  Returns the current record's "id_taxon" value
  * @method integer                  getCdNom()                    Returns the current record's "cd_nom" value
- * @method integer                  getIdFamille()                Returns the current record's "id_famille" value
+ * @method integer                  getIdGroupe()                 Returns the current record's "id_groupe" value
  * @method string                   getIdFrequence()              Returns the current record's "id_frequence" value
  * @method integer                  getIdImportancePopulation()   Returns the current record's "id_importance_population" value
  * @method integer                  getIdResponsabilitePn()       Returns the current record's "id_responsabilite_pn" value
@@ -55,7 +55,7 @@
  * @method boolean                  getPatrimonial()              Returns the current record's "patrimonial" value
  * @method boolean                  getProtectionStricte()        Returns the current record's "protection_stricte" value
  * @method boolean                  getReproducteur()             Returns the current record's "reproducteur" value
- * @method BibFamilles              getBibFamilles()              Returns the current record's "BibFamilles" value
+ * @method BibGroupes               getBibGroupes()               Returns the current record's "BibGroupes" value
  * @method Taxref                   getTaxref()                   Returns the current record's "Taxref" value
  * @method BibImportancesPopulation getBibImportancesPopulation() Returns the current record's "BibImportancesPopulation" value
  * @method BibResponsabilitesPn     getBibResponsabilitesPn()     Returns the current record's "BibResponsabilitesPn" value
@@ -72,7 +72,7 @@
  * @method Doctrine_Collection      getVTreeTaxonsSynthese()      Returns the current record's "VTreeTaxonsSynthese" collection
  * @method BibTaxonsFaunePn         setIdTaxon()                  Sets the current record's "id_taxon" value
  * @method BibTaxonsFaunePn         setCdNom()                    Sets the current record's "cd_nom" value
- * @method BibTaxonsFaunePn         setIdFamille()                Sets the current record's "id_famille" value
+ * @method BibTaxonsFaunePn         setIdGroupe()                 Sets the current record's "id_groupe" value
  * @method BibTaxonsFaunePn         setIdFrequence()              Sets the current record's "id_frequence" value
  * @method BibTaxonsFaunePn         setIdImportancePopulation()   Sets the current record's "id_importance_population" value
  * @method BibTaxonsFaunePn         setIdResponsabilitePn()       Sets the current record's "id_responsabilite_pn" value
@@ -87,7 +87,7 @@
  * @method BibTaxonsFaunePn         setPatrimonial()              Sets the current record's "patrimonial" value
  * @method BibTaxonsFaunePn         setProtectionStricte()        Sets the current record's "protection_stricte" value
  * @method BibTaxonsFaunePn         setReproducteur()             Sets the current record's "reproducteur" value
- * @method BibTaxonsFaunePn         setBibFamilles()              Sets the current record's "BibFamilles" value
+ * @method BibTaxonsFaunePn         setBibGroupes()               Sets the current record's "BibGroupes" value
  * @method BibTaxonsFaunePn         setTaxref()                   Sets the current record's "Taxref" value
  * @method BibTaxonsFaunePn         setBibImportancesPopulation() Sets the current record's "BibImportancesPopulation" value
  * @method BibTaxonsFaunePn         setBibResponsabilitesPn()     Sets the current record's "BibResponsabilitesPn" value
@@ -122,7 +122,7 @@ abstract class BaseBibTaxonsFaunePn extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('id_famille', 'integer', 4, array(
+        $this->hasColumn('id_groupe', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              ));
@@ -187,9 +187,9 @@ abstract class BaseBibTaxonsFaunePn extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibFamilles', array(
-             'local' => 'id_famille',
-             'foreign' => 'id_famille'));
+        $this->hasOne('BibGroupes', array(
+             'local' => 'id_groupe',
+             'foreign' => 'id_groupe'));
 
         $this->hasOne('Taxref', array(
              'local' => 'cd_nom',

@@ -1,18 +1,12 @@
-BibClasses:
-  tableName: taxonomie.bib_classes
+BibGroupes:
+  tableName: taxonomie.bib_groupes
   columns:
-    id_classe:
+    id_groupe:
       type: integer(4)
       primary: true
-    id_embranchement: integer(4)
-    nom_classe: string(17)
-    desc_classe: string(57)
-  relations:
-    BibEmbranchements:
-      class: BibEmbranchements
-      local: id_embranchement
-      foreign: id_embranchement
-      foreignAlias: BibClasses
+    nom_groupe: string(255)
+    desc_group: string()
+    filtre_sql: string()
 BibCriteresCf:
   tableName: contactfaune.bib_criteres_cf
   columns:
@@ -42,28 +36,6 @@ BibCriteresSynthese:
     code_critere_synthese: string(3)
     nom_critere_synthese: string(90)
     tri: integer(4)
-BibEmbranchements:
-  tableName: taxonomie.bib_embranchements
-  columns:
-    id_embranchement:
-      type: integer(4)
-      primary: true
-    nom_embranchement: string(12)
-    desc_embranchement: string(51)
-BibFamilles:
-  tableName: taxonomie.bib_familles
-  columns:
-    id_famille:
-      type: integer(4)
-      primary: true
-    id_ordre: integer(4)
-    nom_famille: string(40)
-  relations:
-    BibOrdres:
-      class: BibOrdres
-      local: id_ordre
-      foreign: id_ordre
-      foreignAlias: BibFamilles
 BibDroits:
   tableName: utilisateurs.bib_droits
   columns:
@@ -119,20 +91,6 @@ BibMilieuxInv:
       type: integer(4)
       primary: true
     nom_milieu_inv: string(50)
-BibOrdres:
-  tableName: taxonomie.bib_ordres
-  columns:
-    id_ordre:
-      type: integer(4)
-      primary: true
-    id_classe: integer(4)
-    nom_orde: string(40)
-  relations:
-    BibClasses:
-      class: BibClasses
-      local: id_classe
-      foreign: id_classe
-      foreignAlias: BibOrdres
 BibOrganismes:
   tableName: utilisateurs.bib_organismes
   columns:
@@ -201,7 +159,7 @@ BibTaxonsFaunePn:
       type: integer(4)
       primary: true
     cd_nom: integer(4)
-    id_famille: integer(4)
+    id_groupe: integer(4)
     id_frequence: string(1)
     id_importance_population: integer(4)
     id_responsabilite_pn: integer(4)
@@ -217,10 +175,10 @@ BibTaxonsFaunePn:
     protection_stricte: boolean(1)
     reproducteur: boolean(1)
   relations:
-    BibFamilles:
-      class: BibFamilles
-      local: id_famille
-      foreign: id_famille
+    BibGroupes:
+      class: BibGroupes
+      local: id_groupe
+      foreign: id_groupe
       foreignAlias: BibTaxonsFaunePn
     Taxref:
       class: Taxref
@@ -316,26 +274,26 @@ CorMessageTaxonInv:
       local: id_message_inv
       foreign: id_message_inv
       foreignAlias: CorMessageTaxonInv
-CorCritereClasse:
-  tableName: contactfaune.cor_critere_classe
+CorCritereGroupe:
+  tableName: contactfaune.cor_critere_groupe
   columns:
     id_critere_cf:
       type: integer(4)
       primary: true
-    id_classe:
+    id_groupe:
       type: integer(4)
       primary: true
   relations:
-    BibClasses:
-      class: BibClasses
-      local: id_classe
-      foreign: id_classe
-      foreignAlias: CorCritereClasse
+    BibGroupes:
+      class: BibGroupes
+      local: id_groupe
+      foreign: id_groupe
+      foreignAlias: CorCritereGroupe
     BibCriteresCf:
       class: BibCriteresCf
       local: id_critere_cf
       foreign: id_critere_cf
-      foreignAlias: CorCritereClasse
+      foreignAlias: CorCritereGroupe
 CorRoleDroitApplication:
   tableName: utilisateurs.cor_role_droit_application
   columns:
