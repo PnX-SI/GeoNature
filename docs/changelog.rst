@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.1.0 (2014-12-11)
+------------------
+
+## Changements
+
+ * Modification du schéma de la base pour être compatible taxref v7
+ * Import automatisé de taxref v7
+ * Suppression des tables de hiérarchie taxonomique (famille, ordre, ...) afin de simplifier l'utilisation de la taxonomie.
+ * Création de la notion de groupe (para-taxonomique) à la place de l'utilisation des classes.
+ * Ajout de données pour pouvoir tester de façon complète l'application (invertébrés, vertébrés)
+ * Ajout de données exemples
+ * Bugs fix
+
+
 1.0.0 (2014-12-10)
 ------------------
 
