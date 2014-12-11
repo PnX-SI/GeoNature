@@ -32,4 +32,4 @@ BASE DE DONNEES
   ::
 
     export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
-    exit
+
