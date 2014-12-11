@@ -29,13 +29,13 @@ application.synthese.createLayerWindow = function(map) {
             ,checked: false
             ,layerName: "Ortho-imagerie"
         }
-        // ,{
-            // text: "Parcelles cadastrales"
-            // ,id:'layer_cadastre'
-            // ,leaf: true
-            // ,checked: false
-            // ,layerName: "Parcelles cadastrales"
-        // }
+        ,{
+            text: "Parcelles cadastrales"
+            ,id:'layer_cadastre'
+            ,leaf: true
+            ,checked: false
+            ,layerName: "Parcelles cadastrales"
+        }
         ,{
             text: "Communes"
             ,id:'layer_communes'

@@ -331,40 +331,40 @@ application.synthese = function() {
                       map.addLayer(l0);
             };
             createOrthoLayer();
-            // var createCadastralLayer = function() {
-                // var i;
-                // var matrixIds3857= new Array(22);
-                // for (i= 0; i<22; i++) {
-                    // matrixIds3857[i]= {
-                        // identifier    : i.toString(),
-                        // topLeftCorner : new OpenLayers.LonLat(-20037508,20037508)
-                    // };
-                // }
-                // var l0= new Geoportal.Layer.WMTS(
-                        // 'Parcelles cadastrales',
-                        // 'http://gpp3-wxs.ign.fr/'+ign_api_key+'/geoportail/wmts',
-                        // {
-                          // layer: 'CADASTRALPARCELS.PARCELS',
-                          // style: 'bdparcellaire_o',
-                          // matrixSet: "PM",
-                          // matrixIds: matrixIds3857,
-                          // format:'image/png',
-                          // exceptions:"text/xml"
-                        // },
-                        // {
-                          // tileOrigin: new OpenLayers.LonLat(0,0),
-                          // isBaseLayer: false,
-                          // maxResolution: resolution_max,
-                          // alwaysInRange: false,
-                          // projection: wm,
-                          // maxExtent: extent_max,
-                          // units: wm.getUnits(),
-                          // attribution: 'provided by IGN'
-                        // }
-                      // );
-                      // map.addLayer(l0);
-            // };
-            // createCadastralLayer();
+            var createCadastralLayer = function() {
+                var i;
+                var matrixIds3857= new Array(22);
+                for (i= 0; i<22; i++) {
+                    matrixIds3857[i]= {
+                        identifier    : i.toString(),
+                        topLeftCorner : new OpenLayers.LonLat(-20037508,20037508)
+                    };
+                }
+                var l0= new Geoportal.Layer.WMTS(
+                        'Parcelles cadastrales',
+                        'http://gpp3-wxs.ign.fr/'+ign_api_key+'/geoportail/wmts',
+                        {
+                          layer: 'CADASTRALPARCELS.PARCELS',
+                          style: 'bdparcellaire_o',
+                          matrixSet: "PM",
+                          matrixIds: matrixIds3857,
+                          format:'image/png',
+                          exceptions:"text/xml"
+                        },
+                        {
+                          tileOrigin: new OpenLayers.LonLat(0,0),
+                          isBaseLayer: false,
+                          maxResolution: resolution_max,
+                          alwaysInRange: false,
+                          projection: wm,
+                          maxExtent: extent_max,
+                          units: wm.getUnits(),
+                          attribution: 'provided by IGN'
+                        }
+                      );
+                      map.addLayer(l0);
+            };
+            createCadastralLayer();
             var createBaseLayer = function() {
                 var i;
                 var matrixIds3857= new Array(22);
