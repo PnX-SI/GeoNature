@@ -357,7 +357,16 @@ INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, de
 -- Data for Name: bib_groupes; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(13,'poissons');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1,'Amphibiens');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(11,'Mammifères');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(12,'Oiseaux');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(13,'Poissons');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(14,'Reptiles');
+
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(5,'Ecrevisses');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(9,'Insectes');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(15,'Myriapodes');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(16,'Arachnides');
 
 
 --
@@ -367,6 +376,11 @@ INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(13,'poissons');
 --
 
 INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', NULL, NULL, 1, 13, NULL, NULL, false, 1, 1, 2, true, false, 'Alburnus alburnus', 'Ablette', 67111);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)', NULL, NULL, 0, 11, NULL, NULL, true, 9, 1, 2, false, true, 'Lynx lynx', 'Lynx', 60612);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758', NULL, NULL, 1, 1, NULL, NULL, false, 2, 1, 6, true, true, 'Rana temporaria', 'Grenouille rousse', 351);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758', NULL, NULL, 0, 9, NULL, NULL, false, 9, 9, 9, NULL, false, 'Cicindela hybrida', NULL, 8326);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', NULL, NULL, 0, 9, 'z', NULL, false, 9, 9, 9, NULL, false, NULL, NULL, NULL);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', NULL, NULL, 0, 5, NULL, NULL, false, 9, 9, 9, NULL, true, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', 18437);
 
 
 SET search_path = contactfaune, pg_catalog;
