@@ -1348,13 +1348,11 @@ monembranchement integer;
 BEGIN
 IF (TG_OP = 'DELETE') THEN
 	--calcul de l'embranchement du taxon supprimé
-		SELECT INTO monembranchement c.id_embranchement FROM taxonomie.bib_taxons_faune_pn t
-		JOIN taxonomie.bib_familles f ON f.id_famille = t.id_famille
-		JOIN taxonomie.bib_ordres o ON o.id_ordre = f.id_ordre
-		JOIN taxonomie.bib_classes c ON c.id_classe = o.id_classe
+		SELECT tx.phylum FROM taxonomie.bib_taxons_faune_pn t
+        JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
 		WHERE t.id_taxon = old.id_taxon;
 		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-		IF monembranchement = 1 THEN
+		IF monembranchement = 'Chordata' THEN
 			IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE id_taxon = old.id_taxon AND id_unite_geo = old.id_unite_geo)= 0 THEN
 				DELETE FROM contactfaune.cor_unite_taxon WHERE id_taxon = old.id_taxon AND id_unite_geo = old.id_unite_geo;
 			ELSE
@@ -1370,17 +1368,15 @@ IF (TG_OP = 'DELETE') THEN
 		RETURN OLD;		
 ELSIF (TG_OP = 'INSERT') THEN
 	--calcul de l'embranchement du taxon inséré
-	SELECT INTO monembranchement c.id_embranchement FROM taxonomie.bib_taxons_faune_pn t
-	JOIN taxonomie.bib_familles f ON f.id_famille = t.id_famille
-	JOIN taxonomie.bib_ordres o ON o.id_ordre = f.id_ordre
-	JOIN taxonomie.bib_classes c ON c.id_classe = o.id_classe
-	WHERE t.id_taxon = new.id_taxon;
+        SELECT tx.phylum FROM taxonomie.bib_taxons_faune_pn t
+        JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+        WHERE t.id_taxon = new.id_taxon;
 	-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-	IF monembranchement = 1 THEN
-		PERFORM synthese.calcul_cor_unite_taxon_cf(new.id_taxon, new.id_unite_geo);
-	ELSE
-		PERFORM synthese.calcul_cor_unite_taxon_inv(new.id_taxon, new.id_unite_geo);
-	END IF;
+        IF monembranchement = 'Chordata' THEN
+            PERFORM synthese.calcul_cor_unite_taxon_cf(new.id_taxon, new.id_unite_geo);
+        ELSE
+            PERFORM synthese.calcul_cor_unite_taxon_inv(new.id_taxon, new.id_unite_geo);
+        END IF;
 	RETURN NEW;
 END IF;
 END;
@@ -1515,12 +1511,12 @@ CREATE TABLE bib_messages_cf (
 
 
 --
--- Name: cor_critere_classe; Type: TABLE; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: cor_critere_groupe; Type: TABLE; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE TABLE cor_critere_classe (
+CREATE TABLE cor_critere_groupe (
     id_critere_cf integer NOT NULL,
-    id_classe integer NOT NULL
+    id_groupe integer NOT NULL
 );
 
 
@@ -1660,36 +1656,34 @@ ALTER SEQUENCE t_releves_cf_gid_seq OWNED BY t_releves_cf.gid;
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_classes; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: bib_groupes; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE TABLE bib_classes (
-    id_classe integer NOT NULL,
-    id_embranchement integer NOT NULL,
-    nom_classe character varying(50),
-    desc_classe character varying(57),
-    nom_clade character varying(50),
-    desc_clade character varying(255),
-    nom_classe_fr character varying(50)
+CREATE TABLE taxonomie.bib_groupes
+(
+  id_groupe integer NOT NULL,
+  nom_groupe character varying(255),
+  desc_groupe text,
+  filtre_sql text
 );
 
 
 SET search_path = contactfaune, pg_catalog;
-
---
--- Name: v_nomade_classes; Type: VIEW; Schema: contactfaune; Owner: -
---
-
-CREATE VIEW v_nomade_classes AS
-    SELECT bib_classes.id_classe, bib_classes.nom_classe_fr, bib_classes.desc_classe FROM taxonomie.bib_classes;
 
 
 --
 -- Name: v_nomade_criteres_cf; Type: VIEW; Schema: contactfaune; Owner: -
 --
 
-CREATE VIEW v_nomade_criteres_cf AS
-    SELECT c.id_critere_cf, c.nom_critere_cf, c.tri_cf, ccc.id_classe FROM (bib_criteres_cf c JOIN cor_critere_classe ccc ON ((ccc.id_critere_cf = c.id_critere_cf))) ORDER BY ccc.id_classe, c.tri_cf;
+CREATE OR REPLACE VIEW contactfaune.v_nomade_criteres_cf AS 
+SELECT 
+	c.id_critere_cf,
+	c.nom_critere_cf,
+	c.tri_cf,
+	ccc.id_groupe as id_classe
+FROM contactfaune.bib_criteres_cf c
+JOIN contactfaune.cor_critere_groupe ccc ON ccc.id_critere_cf = c.id_critere_cf
+ORDER BY ccc.id_groupe, c.tri_cf;
 
 
 SET search_path = utilisateurs, pg_catalog;
@@ -1772,31 +1766,6 @@ CREATE VIEW v_nomade_observateurs_faune AS
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_familles; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_familles (
-    id_famille integer NOT NULL,
-    id_ordre integer NOT NULL,
-    nom_famille character varying(50),
-    cd_nom integer,
-    temp_famille character varying(255)
-);
-
-
---
--- Name: bib_ordres; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_ordres (
-    id_ordre integer NOT NULL,
-    id_classe integer NOT NULL,
-    nom_ordre character varying(40),
-    id_clade integer
-);
-
-
---
 -- Name: bib_taxons_faune_pn; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
@@ -1809,7 +1778,7 @@ CREATE TABLE bib_taxons_faune_pn (
     syn_fr character varying(80),
     syn_la character varying(200),
     prot_fv integer,
-    id_famille integer,
+    id_groupe integer,
     id_frequence character(1),
     sap boolean,
     patrimonial boolean DEFAULT false NOT NULL,
@@ -1851,14 +1820,49 @@ CREATE TABLE taxref (
 );
 
 
+
 SET search_path = contactfaune, pg_catalog;
+
+--
+-- Name: v_nomade_classes; Type: VIEW; Schema: contactfaune; Owner: -
+--
+
+CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
+ SELECT g.id_groupe AS id_classe,
+    g.nom_groupe AS nom_classe_fr,
+    g.desc_groupe AS desc_classe
+   FROM ( SELECT gr.id_groupe,
+            gr.nom_groupe,
+            gr.desc_groupe,
+            gr.filtre_sql,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_groupes gr
+             JOIN taxonomie.bib_taxons_faune_pn tx ON gr.id_groupe = tx.id_groupe
+          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+  WHERE t.phylum::text = 'Chordata'::text;
 
 --
 -- Name: v_nomade_taxons_faune; Type: VIEW; Schema: contactfaune; Owner: -
 --
-
-CREATE VIEW v_nomade_taxons_faune AS
-    (((SELECT DISTINCT t.id_taxon, taxonomie.find_cdref(tx.cd_nom) AS cd_ref, t.nom_latin, t.nom_francais, c.id_classe, 5 AS denombrement, t.patrimonial, m.texte_message_cf AS message, true AS contactfaune, true AS mortalite FROM ((((((taxonomie.bib_taxons_faune_pn t LEFT JOIN cor_message_taxon cmt ON ((cmt.id_taxon = t.id_taxon))) LEFT JOIN bib_messages_cf m ON ((m.id_message_cf = cmt.id_message_cf))) JOIN taxonomie.bib_familles f ON ((f.id_famille = t.id_famille))) JOIN taxonomie.bib_ordres o ON ((o.id_ordre = f.id_ordre))) JOIN taxonomie.bib_classes c ON ((c.id_classe = o.id_classe))) JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom))) WHERE ((t.id_taxon IN ((SELECT DISTINCT t.id_taxon FROM taxonomie.bib_taxons_faune_pn t WHERE (t.prot_fv = 1) ORDER BY t.id_taxon) UNION (SELECT DISTINCT t.id_taxon FROM (t_releves_cf r JOIN taxonomie.bib_taxons_faune_pn t ON ((r.id_taxon = t.id_taxon))) ORDER BY t.id_taxon))) AND (t.id_taxon <> ALL (ARRAY[61, 64, 54, 51, 50, 63]))) ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, c.id_classe, 5::integer, t.patrimonial, m.texte_message_cf, true::boolean) UNION (SELECT DISTINCT t.id_taxon, taxonomie.find_cdref(tx.cd_nom) AS cd_ref, t.nom_latin, t.nom_francais, c.id_classe, 6 AS denombrement, t.patrimonial, m.texte_message_cf AS message, true AS contactfaune, true AS mortalite FROM ((((((taxonomie.bib_taxons_faune_pn t LEFT JOIN cor_message_taxon cmt ON ((cmt.id_taxon = t.id_taxon))) LEFT JOIN bib_messages_cf m ON ((m.id_message_cf = cmt.id_message_cf))) JOIN taxonomie.bib_familles f ON ((f.id_famille = t.id_famille))) JOIN taxonomie.bib_ordres o ON ((o.id_ordre = f.id_ordre))) JOIN taxonomie.bib_classes c ON ((c.id_classe = o.id_classe))) JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom))) WHERE (t.id_taxon = ANY (ARRAY[54, 51, 50])) ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, c.id_classe, 6::integer, t.patrimonial, m.texte_message_cf, true::boolean)) UNION (SELECT DISTINCT t.id_taxon, taxonomie.find_cdref(tx.cd_nom) AS cd_ref, t.nom_latin, t.nom_francais, c.id_classe, 5 AS denombrement, t.patrimonial, m.texte_message_cf AS message, false AS contactfaune, true AS mortalite FROM ((((((taxonomie.bib_taxons_faune_pn t LEFT JOIN cor_message_taxon cmt ON ((cmt.id_taxon = t.id_taxon))) LEFT JOIN bib_messages_cf m ON ((m.id_message_cf = cmt.id_message_cf))) JOIN taxonomie.bib_familles f ON ((f.id_famille = t.id_famille))) JOIN taxonomie.bib_ordres o ON ((o.id_ordre = f.id_ordre))) JOIN taxonomie.bib_classes c ON ((c.id_classe = o.id_classe))) JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom))) WHERE (t.id_taxon = ANY (ARRAY[61, 64])) ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, c.id_classe, 5::integer, t.patrimonial, m.texte_message_cf, false::boolean, true::boolean)) UNION (SELECT t.id_taxon, taxonomie.find_cdref(tx.cd_nom) AS cd_ref, t.nom_latin, t.nom_francais, 11 AS id_classe, 5 AS denombrement, t.patrimonial, m.texte_message_cf AS message, true AS contactfaune, true AS mortalite FROM (((taxonomie.bib_taxons_faune_pn t LEFT JOIN cor_message_taxon cmt ON ((cmt.id_taxon = t.id_taxon))) LEFT JOIN bib_messages_cf m ON ((m.id_message_cf = cmt.id_message_cf))) JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom))) WHERE (t.id_taxon = 10000) ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, 11::integer, 5::integer, t.patrimonial, m.texte_message_cf, false::boolean, true::boolean);
+CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
+SELECT DISTINCT t.id_taxon,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    t.nom_latin,
+    t.nom_francais,
+    g.id_classe,
+    5 AS denombrement,
+    t.patrimonial,
+    m.texte_message_cf AS message,
+    true AS contactfaune,
+    true AS mortalite
+FROM taxonomie.bib_taxons_faune_pn t
+LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
+LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+JOIN contactfaune.v_nomade_classes g ON g.id_classe = t.id_groupe
+JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE t.prot_fv = 1
+ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, t.patrimonial, m.texte_message_cf;
 
 
 SET search_path = layers, pg_catalog;
@@ -2072,16 +2076,35 @@ ALTER SEQUENCE t_releves_inv_gid_seq OWNED BY t_releves_inv.gid;
 -- Name: v_nomade_classes; Type: VIEW; Schema: contactinv; Owner: -
 --
 
-CREATE VIEW v_nomade_classes AS
-    SELECT bib_classes.id_classe, bib_classes.nom_classe, bib_classes.desc_classe FROM taxonomie.bib_classes WHERE (bib_classes.id_classe = ANY (ARRAY[2, 5, 8, 9, 10, 15, 16]));
-
+CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS 
+ SELECT g.id_groupe AS id_classe,
+    g.nom_groupe AS nom_classe,
+    g.desc_groupe AS desc_classe
+   FROM ( SELECT gr.id_groupe,
+            gr.nom_groupe,
+            gr.desc_groupe,
+            gr.filtre_sql,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_groupes gr
+             JOIN taxonomie.bib_taxons_faune_pn tx ON gr.id_groupe = tx.id_groupe
+          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+WHERE NOT  phylum = 'Chordata';
 
 --
 -- Name: v_nomade_criteres_inv; Type: VIEW; Schema: contactinv; Owner: -
 --
 
-CREATE VIEW v_nomade_criteres_inv AS
-    SELECT c.id_critere_inv, c.nom_critere_inv, c.tri_inv FROM bib_criteres_inv c ORDER BY c.tri_inv;
+CREATE OR REPLACE VIEW contactinv.v_nomade_criteres_inv AS 
+ SELECT c.id_critere_inv,
+    c.nom_critere_inv,
+    c.tri_inv
+   FROM contactinv.bib_criteres_inv c
+  ORDER BY c.tri_inv;
+
+ALTER TABLE contactinv.v_nomade_criteres_inv
+  OWNER TO cartopnx;
+GRANT ALL ON TABLE contactinv.v_nomade_criteres_inv TO cartopnx;
 
 
 --
@@ -2104,8 +2127,20 @@ CREATE VIEW v_nomade_observateurs_inv AS
 -- Name: v_nomade_taxons_inv; Type: VIEW; Schema: contactinv; Owner: -
 --
 
-CREATE VIEW v_nomade_taxons_inv AS
-    SELECT t.id_taxon, taxonomie.find_cdref(tx.cd_nom) AS cd_ref, t.nom_latin, t.nom_francais, c.id_classe, t.patrimonial, m.texte_message_inv AS message FROM ((((((taxonomie.bib_taxons_faune_pn t LEFT JOIN cor_message_taxon cmt ON ((cmt.id_taxon = t.id_taxon))) LEFT JOIN bib_messages_inv m ON ((m.id_message_inv = cmt.id_message_inv))) JOIN taxonomie.bib_familles f ON ((f.id_famille = t.id_famille))) JOIN taxonomie.bib_ordres o ON ((o.id_ordre = f.id_ordre))) JOIN taxonomie.bib_classes c ON ((c.id_classe = o.id_classe))) JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom))) WHERE (((t.id_taxon IN (SELECT DISTINCT t.id_taxon FROM (t_releves_inv r JOIN taxonomie.bib_taxons_faune_pn t ON ((r.id_taxon = t.id_taxon))) ORDER BY t.id_taxon)) OR (t.id_taxon = ANY (ARRAY[2796, 2796, 2797, 2798, 2799, 2800, 2801, 2802, 2803]))) AND (c.id_embranchement <> 1));
+CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
+SELECT 
+    t.id_taxon,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    t.nom_latin,
+    t.nom_francais,
+    g.id_classe,
+    t.patrimonial,
+    m.texte_message_inv AS message
+FROM taxonomie.bib_taxons_faune_pn t
+LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
+LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+JOIN contactinv.v_nomade_classes g ON g.id_classe = t.id_groupe
+JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom;
 
 
 --
@@ -2546,23 +2581,6 @@ CREATE SEQUENCE synthesefaune_id_synthese_seq
 --
 
 ALTER SEQUENCE synthesefaune_id_synthese_seq OWNED BY synthesefaune.id_synthese;
-
-
-SET search_path = taxonomie, pg_catalog;
-
---
--- Name: bib_embranchements; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_embranchements (
-    id_embranchement integer NOT NULL,
-    nom_embranchement character varying(50),
-    desc_embranchement character varying(51)
-);
-
-
-SET search_path = synthese, pg_catalog;
-
 
 SET search_path = taxonomie, pg_catalog;
 
@@ -3010,11 +3028,11 @@ ALTER TABLE ONLY bib_messages_cf
 
 
 --
--- Name: pk_cor_critere_classe; Type: CONSTRAINT; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: pk_cor_critere_groupe; Type: CONSTRAINT; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY cor_critere_classe
-    ADD CONSTRAINT pk_cor_critere_classe PRIMARY KEY (id_critere_cf, id_classe);
+ALTER TABLE ONLY cor_critere_groupe
+    ADD CONSTRAINT pk_cor_critere_groupe PRIMARY KEY (id_critere_cf, id_groupe);
 
 
 --
@@ -3319,27 +3337,11 @@ SET search_path = taxonomie, pg_catalog;
 
 
 --
--- Name: pk_bib_classe; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: pk_bib_groupe; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY bib_classes
-    ADD CONSTRAINT pk_bib_classe PRIMARY KEY (id_classe);
-
-
---
--- Name: pk_bib_embranchement; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_embranchements
-    ADD CONSTRAINT pk_bib_embranchement PRIMARY KEY (id_embranchement);
-
-
---
--- Name: pk_bib_famille; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_familles
-    ADD CONSTRAINT pk_bib_famille PRIMARY KEY (id_famille);
+ALTER TABLE ONLY bib_groupes
+    ADD CONSTRAINT pk_bib_groupe PRIMARY KEY (id_groupe);
 
 
 --
@@ -3356,15 +3358,6 @@ ALTER TABLE ONLY bib_frequences
 
 ALTER TABLE ONLY bib_importances_population
     ADD CONSTRAINT pk_bib_importances_population PRIMARY KEY (id_importance_population);
-
-
---
--- Name: pk_bib_ordre; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_ordres
-    ADD CONSTRAINT pk_bib_ordre PRIMARY KEY (id_ordre);
-
 
 --
 -- Name: pk_bib_responsabilites_pn; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -3538,17 +3531,17 @@ CREATE INDEX fki_ ON bib_criteres_cf USING btree (id_critere_synthese);
 
 
 --
--- Name: i_fk_cor_critere_classe_bib_cl; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: i_fk_cor_critere_groupe_bib_gr; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_critere_classe_bib_cl ON cor_critere_classe USING btree (id_classe);
+CREATE INDEX i_fk_cor_critere_groupe_bib_gr ON cor_critere_groupe USING btree (id_groupe);
 
 
 --
--- Name: i_fk_cor_critere_classe_bib_cr; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: i_fk_cor_critere_groupe_bib_gr; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_critere_classe_bib_cr ON cor_critere_classe USING btree (id_critere_cf);
+CREATE INDEX i_fk_cor_critere_groupe_bib_cr ON cor_critere_groupe USING btree (id_critere_cf);
 
 
 --
@@ -3811,12 +3804,20 @@ CREATE INDEX index_gist_synthese_the_geom_point ON synthesefaune USING gist (the
 
 SET search_path = taxonomie, pg_catalog;
 
-
 --
--- Name: fki_bib_taxons_faune_pn_bib_familles; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+-- Index: taxonomie.i_taxref_hierarchy
 --
 
-CREATE INDEX fki_bib_taxons_faune_pn_bib_familles ON bib_taxons_faune_pn USING btree (id_famille);
+CREATE INDEX i_taxref_hierarchy
+  ON taxonomie.taxref
+  USING btree
+  (regne COLLATE pg_catalog."default" , phylum COLLATE pg_catalog."default" , classe COLLATE pg_catalog."default" , ordre COLLATE pg_catalog."default" , famille COLLATE pg_catalog."default" );
+  
+--
+-- Name: fki_bib_taxons_faune_pn_bib_groupes; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE INDEX fki_bib_taxons_faune_pn_bib_groupes ON bib_taxons_faune_pn USING btree (id_groupe);
 
 
 --
@@ -4053,19 +4054,19 @@ ALTER TABLE ONLY bib_criteres_cf
 
 
 --
--- Name: fk_cor_critere_classe_bib_classe; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
+-- Name: fk_cor_critere_groupe_bib_groupe; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
 --
 
-ALTER TABLE ONLY cor_critere_classe
-    ADD CONSTRAINT fk_cor_critere_classe_bib_classe FOREIGN KEY (id_classe) REFERENCES taxonomie.bib_classes(id_classe) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_critere_groupe
+    ADD CONSTRAINT fk_cor_critere_groupe_bib_groupe FOREIGN KEY (id_groupe) REFERENCES taxonomie.bib_groupes(id_groupe) ON UPDATE CASCADE;
 
 
 --
--- Name: fk_cor_critere_classe_bib_criter; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
+-- Name: fk_cor_critere_groupe_bib_criter; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
 --
 
-ALTER TABLE ONLY cor_critere_classe
-    ADD CONSTRAINT fk_cor_critere_classe_bib_criter FOREIGN KEY (id_critere_cf) REFERENCES bib_criteres_cf(id_critere_cf) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_critere_groupe
+    ADD CONSTRAINT fk_cor_critere_groupe_bib_criter FOREIGN KEY (id_critere_cf) REFERENCES bib_criteres_cf(id_critere_cf) ON UPDATE CASCADE;
 
 
 --
@@ -4375,11 +4376,11 @@ ALTER TABLE ONLY bib_taxons_faune_pn
 
 
 --
--- Name: bib_taxons_faune_pn_id_famille_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: bib_taxons_faune_pn_id_groupe_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
 ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT bib_taxons_faune_pn_id_famille_fkey FOREIGN KEY (id_famille) REFERENCES bib_familles(id_famille) ON UPDATE CASCADE;
+    ADD CONSTRAINT bib_taxons_faune_pn_id_groupe_fkey FOREIGN KEY (id_groupe) REFERENCES bib_groupes(id_groupe) ON UPDATE CASCADE;
 
 
 --
@@ -4396,31 +4397,6 @@ ALTER TABLE ONLY bib_taxons_faune_pn
 
 ALTER TABLE ONLY bib_taxons_faune_pn
     ADD CONSTRAINT bib_taxons_faune_pn_id_migration_fkey FOREIGN KEY (id_statut_migration) REFERENCES bib_statuts_migration(id_statut_migration) ON UPDATE CASCADE;
-
-
---
--- Name: fk_bib_classe_bib_embranchements; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_classes
-    ADD CONSTRAINT fk_bib_classe_bib_embranchements FOREIGN KEY (id_embranchement) REFERENCES bib_embranchements(id_embranchement) ON UPDATE CASCADE;
-
-
---
--- Name: fk_bib_famille_bib_ordres; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_familles
-    ADD CONSTRAINT fk_bib_famille_bib_ordres FOREIGN KEY (id_ordre) REFERENCES bib_ordres(id_ordre) ON UPDATE CASCADE;
-
-
---
--- Name: fk_bib_ordre_bib_classes; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_ordres
-    ADD CONSTRAINT fk_bib_ordre_bib_classes FOREIGN KEY (id_classe) REFERENCES bib_classes(id_classe) ON UPDATE CASCADE;
-
 
 --
 -- Name: fk_bib_taxons_faune_pn_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
@@ -4905,12 +4881,12 @@ GRANT ALL ON TABLE bib_messages_cf TO cartopnx;
 
 
 --
--- Name: cor_critere_classe; Type: ACL; Schema: contactfaune; Owner: -
+-- Name: cor_critere_groupe; Type: ACL; Schema: contactfaune; Owner: -
 --
 
-REVOKE ALL ON TABLE cor_critere_classe FROM PUBLIC;
-REVOKE ALL ON TABLE cor_critere_classe FROM cartopnx;
-GRANT ALL ON TABLE cor_critere_classe TO cartopnx;
+REVOKE ALL ON TABLE cor_critere_groupe FROM PUBLIC;
+REVOKE ALL ON TABLE cor_critere_groupe FROM cartopnx;
+GRANT ALL ON TABLE cor_critere_groupe TO cartopnx;
 
 
 --
@@ -4979,12 +4955,12 @@ GRANT ALL ON TABLE t_releves_cf TO cartopnx;
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_classes; Type: ACL; Schema: taxonomie; Owner: -
+-- Name: bib_groupes; Type: ACL; Schema: taxonomie; Owner: -
 --
 
-REVOKE ALL ON TABLE bib_classes FROM PUBLIC;
-REVOKE ALL ON TABLE bib_classes FROM cartopnx;
-GRANT ALL ON TABLE bib_classes TO cartopnx;
+REVOKE ALL ON TABLE bib_groupes FROM PUBLIC;
+REVOKE ALL ON TABLE bib_groupes FROM cartopnx;
+GRANT ALL ON TABLE bib_groupes TO cartopnx;
 
 
 SET search_path = contactfaune, pg_catalog;
@@ -5060,21 +5036,12 @@ GRANT ALL ON TABLE v_nomade_observateurs_faune TO cartopnx;
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_familles; Type: ACL; Schema: taxonomie; Owner: -
+-- Name: bib_groupes; Type: ACL; Schema: taxonomie; Owner: -
 --
 
-REVOKE ALL ON TABLE bib_familles FROM PUBLIC;
-REVOKE ALL ON TABLE bib_familles FROM cartopnx;
-GRANT ALL ON TABLE bib_familles TO cartopnx;
-
-
---
--- Name: bib_ordres; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_ordres FROM PUBLIC;
-REVOKE ALL ON TABLE bib_ordres FROM cartopnx;
-GRANT ALL ON TABLE bib_ordres TO cartopnx;
+REVOKE ALL ON TABLE bib_groupes FROM PUBLIC;
+REVOKE ALL ON TABLE bib_groupes FROM cartopnx;
+GRANT ALL ON TABLE bib_groupes TO cartopnx;
 
 
 --
@@ -5475,17 +5442,6 @@ GRANT ALL ON TABLE cor_unite_synthese TO cartopnx;
 REVOKE ALL ON TABLE cor_zonesstatut_synthese FROM PUBLIC;
 REVOKE ALL ON TABLE cor_zonesstatut_synthese FROM cartopnx;
 GRANT ALL ON TABLE cor_zonesstatut_synthese TO cartopnx;
-
-
-SET search_path = taxonomie, pg_catalog;
-
---
--- Name: bib_embranchements; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_embranchements FROM PUBLIC;
-REVOKE ALL ON TABLE bib_embranchements FROM cartopnx;
-GRANT ALL ON TABLE bib_embranchements TO cartopnx;
 
 
 SET search_path = synthese, pg_catalog;

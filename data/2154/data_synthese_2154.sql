@@ -352,39 +352,21 @@ INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, de
 
 
 --
--- TOC entry 3141 (class 0 OID 126978)
--- Dependencies: 241
--- Data for Name: bib_embranchements; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_embranchements (id_embranchement, nom_embranchement, desc_embranchement) VALUES (1, 'Vertébrés', 'Oiseaux, mammifères, reptiles, amphibiens, poissons');
-
-
---
 -- TOC entry 3134 (class 0 OID 126691)
 -- Dependencies: 184
--- Data for Name: bib_classes; Type: TABLE DATA; Schema: taxonomie; Owner: -
+-- Data for Name: bib_groupes; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_classes (id_classe, id_embranchement, nom_classe, desc_classe, nom_clade, desc_clade, nom_classe_fr) VALUES (13, 1, 'Ostéichthyens', 'Poissons', 'Actinoptéringiens', 'Poissons à squelette osseux et nageoires rayonnées : perches, bars, maquereaux …', 'poissons');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1,'Amphibiens');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(11,'Mammifères');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(12,'Oiseaux');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(13,'Poissons');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(14,'Reptiles');
 
-
---
--- TOC entry 3136 (class 0 OID 126726)
--- Dependencies: 193
--- Data for Name: bib_ordres; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_ordres (id_ordre, id_classe, nom_ordre, id_clade) VALUES (27, 13, 'Cypriniformes', 13);
-
-
---
--- TOC entry 3135 (class 0 OID 126723)
--- Dependencies: 192
--- Data for Name: bib_familles; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_familles (id_famille, id_ordre, nom_famille, cd_nom, temp_famille) VALUES (59, 27, 'Cyprinidés', NULL, NULL);
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(5,'Ecrevisses');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(9,'Insectes');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(15,'Myriapodes');
+INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(16,'Arachnides');
 
 
 --
@@ -393,7 +375,12 @@ INSERT INTO bib_familles (id_famille, id_ordre, nom_famille, cd_nom, temp_famill
 -- Data for Name: bib_taxons_faune_pn; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_famille, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', NULL, NULL, 1, 59, NULL, NULL, false, 1, 1, 2, true, false, 'Alburnus alburnus', 'Ablette', 67111);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', NULL, NULL, 1, 13, NULL, NULL, false, 1, 1, 2, true, false, 'Alburnus alburnus', 'Ablette', 67111);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)', NULL, NULL, 0, 11, NULL, NULL, true, 9, 1, 2, false, true, 'Lynx lynx', 'Lynx', 60612);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758', NULL, NULL, 1, 1, NULL, NULL, false, 2, 1, 6, true, true, 'Rana temporaria', 'Grenouille rousse', 351);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758', NULL, NULL, 0, 9, NULL, NULL, false, 9, 9, 9, NULL, false, 'Cicindela hybrida', NULL, 8326);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', NULL, NULL, 0, 9, 'z', NULL, false, 9, 9, 9, NULL, false, NULL, NULL, NULL);
+INSERT INTO bib_taxons_faune_pn (id_taxon, cd_nom, nom_latin, nom_francais, auteur, syn_fr, syn_la, prot_fv, id_groupe, id_frequence, sap, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte, nom_latin_avant_v6, nom_francais_avant_v6, cd_nom_avant_v6) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', NULL, NULL, 0, 5, NULL, NULL, false, 9, 9, 9, NULL, true, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', 18437);
 
 
 SET search_path = contactfaune, pg_catalog;
@@ -401,14 +388,53 @@ SET search_path = contactfaune, pg_catalog;
 --
 -- TOC entry 3121 (class 0 OID 126644)
 -- Dependencies: 175
--- Data for Name: cor_critere_classe; Type: TABLE DATA; Schema: contactfaune; Owner: -
+-- Data for Name: cor_critere_groupe; Type: TABLE DATA; Schema: contactfaune; Owner: -
 --
 
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (5, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (35, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (36, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (37, 13);
-INSERT INTO cor_critere_classe (id_critere_cf, id_classe) VALUES (38, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (31, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (32, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (33, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (34, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (21, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (22, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (23, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (24, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (25, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (26, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (6, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (7, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (8, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (9, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (10, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (11, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (12, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (13, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (14, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (15, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (16, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (17, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (18, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (19, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (20, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (35, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (36, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (37, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (38, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (27, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (28, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (29, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (30, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 13);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 14);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 1);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 12);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 11);
+INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 14);
 
 
 SET search_path = utilisateurs, pg_catalog;

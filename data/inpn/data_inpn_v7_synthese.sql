@@ -145,3 +145,16 @@ WHERE cd_protection IN (
   FROM taxref_protection_articles
   WHERE NOT cd_protection IN (SELECT DISTINCT cd_protection FROM  taxref_protection_especes)
 );
+
+
+--- Activation des textes valides pour la structure
+--      Par défaut activation de tous les textes nationaux et internationaux
+--          Pour des considérations locales à faire au cas par cas !!!
+UPDATE  taxonomie.taxref_protection_articles SET pn = true
+WHERE cd_protection IN (
+	SELECT cd_protection
+	FROM  taxonomie.taxref_protection_articles
+	WHERE
+		niveau IN ('international', 'national', 'communautaire')
+		AND type_protection = 'Protection'
+);

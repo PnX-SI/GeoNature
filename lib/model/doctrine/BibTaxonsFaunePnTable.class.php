@@ -22,12 +22,10 @@ class BibTaxonsFaunePnTable extends Doctrine_Table
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         //requ?te optimis?e = moins 2 secondes
         $sql = "select t.id_taxon ,t.nom_latin, t.nom_francais,t.patrimonial,t.protection_stricte,t.reproducteur,
-                o.id_classe,txr.cd_ref,txr.nom_valide,txr.famille,txr.ordre,txr.classe,
+                t.id_groupe,txr.cd_ref,txr.nom_valide,txr.famille,txr.ordre,txr.classe,
                 r.nom_responsabilite_pn,m.nom_statut_migration,i.nom_importance_population,
                 prot.protections
                 FROM taxonomie.bib_taxons_faune_pn t
-                JOIN taxonomie.bib_familles f ON f.id_famille = t.id_famille
-                JOIN taxonomie.bib_ordres o ON o.id_ordre = f.id_ordre
                 JOIN taxonomie.bib_responsabilites_pn r ON r.id_responsabilite_pn = t.id_responsabilite_pn
                 JOIN taxonomie.bib_statuts_migration m ON m.id_statut_migration = t.id_statut_migration
                 JOIN taxonomie.bib_importances_population i ON i.id_importance_population = t.id_importance_population
@@ -57,26 +55,8 @@ class BibTaxonsFaunePnTable extends Doctrine_Table
             $val['protections'] = $reglementations;
             if($val['protection_stricte']=='t'){$val['no_protection']=true;}else{$val['no_protection']=false;}
             if($val['nom_francais']==null || $val['nom_francais']=='null' || $val['nom_francais']==''){$val['nom_francais']=$val['nom_latin'];}
-            // unset($val['0'],$val['1'],$val['2'],$val['3'],$val['4'],$val['5'],$val['6'],$val['7'],$val['8'],$val['9'],$val['10'],$val['11'],$val['12'],$val['13'],$val['14'],$val['15'],$val['16'],$val['17']);
         }
         return json_encode($taxons);
-        //requ?te non optimis?e = au moins 20 secondes
-        // $query= Doctrine_Query::create()
-            // ->select('t.id_taxon, t.nom_latin, t.nom_francais,t.patrimonial,,f.id_famille,o.id_ordre,o.id_classe' )
-            // ->distinct()
-            // ->from('BibTaxonsFaunePn t')
-            // ->innerJoin('t.BibFamilles f')
-            // ->innerJoin('f.BibOrdres o')
-            // ->innerJoin('t.Synthesefaune s')
-            // ->orderBy('t.nom_francais')
-            // ->fetchArray();
-        // foreach ($query as $key => &$val)
-        // {
-            // if($val['nom_francais']==null){$val['nom_francais']=$val['nom_latin'];}
-            // $val['id_classe']=$val['BibFamilles']['BibOrdres']['id_classe'];
-            // unset($val['BibFamilles']);
-        // }
-        // return $query;
     }
     
     public static function listTreeSynthese()
@@ -123,29 +103,7 @@ class BibTaxonsFaunePnTable extends Doctrine_Table
         }
         return $query;
     }
-    // public static function listCfUnite($id_unite_geo = null)
-    // {
-        
-        // $query= Doctrine_Query::create()
-            // ->select('t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,\'dd/mm/yyyy\') derniere_date,cut.nb_obs, t.id_classe, t.denombrement, t.patrimonial, t.message,cut.couleur' )
-            // ->distinct()
-            // ->from('VNomadeTaxonsFaune t')
-            // ->leftJoin('t.CorUniteTaxon cut');
-            // if (!is_null($id_unite_geo)){
-                // $query->where('cut.id_unite_geo=?',$id_unite_geo);
-            // }
-            // $query->orderBy('t.nom_latin');
-            // $taxons = $query->fetchArray();
-    
-            // foreach ($taxons as &$taxon)
-        // {
-            // $taxon['couleur'] = $taxon['CorUniteTaxon']['couleur'];
-            // $taxon['nb_obs'] = $taxon['CorUniteTaxon']['nb_obs'];
-            // unset($taxon['CorUniteTaxon']);
-        // }
 
-        // return $taxons;
-    // }
     public static function listCfUnite($id_unite_geo = null)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();

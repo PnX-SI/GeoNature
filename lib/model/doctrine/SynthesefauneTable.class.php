@@ -26,8 +26,6 @@ class SynthesefauneTable extends Doctrine_Table
           ->from('TaxrefProtectionArticles r')
           ->innerJoin('r.TaxrefProtectionEspeces tpe')
           ->where('tpe.cd_nom=?', $cd_nom)
-          // ->whereIn('r.niveau',array('national','international','communautaire'))
-          // ->orWhereIn('r.cd_protection',array('RV93','DV05','DV38'))
           ->fetchArray();
           $reglementations = array();
           foreach ($reglements as $r)
@@ -49,16 +47,6 @@ class SynthesefauneTable extends Doctrine_Table
           ->fetchArray();
         return $query;
     }
-    // private static function makePolygonBBox(array $box)
-    // {
-        // $box = array_map('floatval', $box);
-        // $A = $box[0].' '.$box[1];
-        // $B = $box[0].' '.$box[3];
-        // $C = $box[2].' '.$box[3];
-        // $D = $box[2].' '.$box[1];   
-        // $polygon_box = "POLYGON(($A, $B, $C, $D, $A))";
-        // return $polygon_box;
-    // }
     
     public static function get($id_cf)
 	{
@@ -182,8 +170,6 @@ class SynthesefauneTable extends Doctrine_Table
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
                 WHERE synt.supprime = false ".$addprefilters;
             $nb = $dbh->query($sql)->fetchAll();
-            // $nb = $dbh->query($sql)->fetchOne();
-            // $nb = $query->fetchOne();
             $nb_res = $nb[0]['nb'];
             return $nb_res;
         }
@@ -193,7 +179,6 @@ class SynthesefauneTable extends Doctrine_Table
     public static function search($params,$nb_res,$userNom,$userPrenom,$statuscode)
     { 
         // On met une limite pour éviter qu'il n'y ait trop de réponses à charger
-        // print_r($nb_res);exit;addTSyntheseFilters
         if($nb_res<10000){
             $zoom = $params['zoom'];
             if($zoom<12){$geom = 'synt.the_geom_point';}
@@ -232,7 +217,6 @@ class SynthesefauneTable extends Doctrine_Table
             foreach ($lesobs as $key => &$obs)
             {
                 $geometry = $obs['g'];
-                // unset($obs['g'],$obs[0], $obs[1],$obs[2], $obs[3],$obs[4], $obs[5],$obs[6], $obs[7],$obs[8], $obs[9],$obs[10], $obs[11],$obs[12], $obs[13],$obs[14], $obs[15],$obs[16],$obs[17], $obs[18],$obs[19],$obs[20],$obs[21]);
                 $obs['patrimonial'] = ($obs['patrimonial']=='t')?true:false;
                 $obs['no_patrimonial'] = ($obs['patrimonial']=='t')?false:true;
                 $obs['protection_stricte'] = ($obs['protection_stricte']=='t')?true:false;
@@ -240,7 +224,6 @@ class SynthesefauneTable extends Doctrine_Table
                 $obs['taxon_francais'] = ($obs['taxon_francais'] == '' || $obs['taxon_francais'] == null )?$obs['taxon_latin']:$obs['taxon_francais'];
                //pour l'affichage ou non du bouton edit; 
                if ((preg_match("/".$userNom."/i", $obs['observateurs']) && preg_match("/".$userPrenom."/i", $obs['observateurs'])&&($obs['id_source']==sfSyntheseConfig::$id_source_cf || $obs['id_source']==sfSyntheseConfig::$id_source_inv))||($statuscode==6 && ($obs['id_source']==sfSyntheseConfig::$id_source_cf || $obs['id_source']==sfSyntheseConfig::$id_source_inv))) {$obs['edit_ok']='true';}
-                // if($obs['id_source']==6 OR $obs['id_source']==7){$obs['edit_ok']='false';}
                 else{$obs['edit_ok']='false';}
                 if($compt>0){$geojson .= ',';}
                 $geojson .= '{"type":"Feature","id":'.$obs['id_synthese'].',"properties":';
@@ -312,10 +295,8 @@ class SynthesefauneTable extends Doctrine_Table
     
     public static function listXlsObs($params)
     {
-        // sfLoader::loadHelpers('Date');
         $srid_local_export = sfSyntheseConfig::$srid_local;
         $addwhere = self::addwhere($params);
-        // print_r('toto : '.$addwhere);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($params['start']=="no"){$from = " FROM synthese.synthesefaune synt ";}
         else{$from = " FROM (SELECT * FROM synthese.synthesefaune WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
@@ -351,7 +332,6 @@ class SynthesefauneTable extends Doctrine_Table
     public static function listXlsStatus($params)
     {
         $addwhere = self::addwhere($params);
-        // print_r('toto : '.$addwhere);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($params['start']=="no"){$from = " FROM synthese.synthesefaune synt ";}
         else{$from = " FROM (SELECT * FROM synthese.synthesefaune WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
@@ -382,7 +362,6 @@ class SynthesefauneTable extends Doctrine_Table
     }
     public static function listShp($params,$typ)
     {
-        // sfLoader::loadHelpers('Date');
         $srid_local_export = sfSyntheseConfig::$srid_local;
         $addwhere = self::addwhere($params);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
@@ -415,8 +394,6 @@ class SynthesefauneTable extends Doctrine_Table
             if($typ!='centroid'){$sql .= "AND ST_geometrytype(synt.the_geom_".$srid_local_export.") = '".$typ."'::text ";}
             $sql .= $addwhere;
             if($params['usage']=="demo"){$sql .= " LIMIT 100 ";}
-
-            // $lesobs = $dbh->query($sql);
             return $sql;
     }
 }
