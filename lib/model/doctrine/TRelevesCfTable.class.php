@@ -201,7 +201,7 @@ class TRelevesCfTable extends Doctrine_Table
     //recherche du max
     $sql = "SELECT max(nbtaxons) FROM contactfaune.log_colors_day WHERE couleur = 'jaune'";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $max = $result[0]['max'];
+    $max = ($result[0]['max'] ==''  ? 0 : $result[0]['max']);
     //valeurs pour les jaunes
     $sql = "SELECT TO_CHAR(jour, 'DD-MM-YYYY') AS dateobs, nbtaxons - $max AS nbtaxons FROM contactfaune.log_colors_day WHERE couleur = 'jaune' ORDER BY jour";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -221,7 +221,7 @@ class TRelevesCfTable extends Doctrine_Table
     //recherche du max
     $sql = "SELECT max(nbtaxons) FROM contactfaune.log_colors_day WHERE couleur = 'red'";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $max = $result[0]['max'];
+    $max = ($result[0]['max'] ==''  ? 0 : $result[0]['max']);
     //valeurs pour les jaunes
     $sql = "SELECT TO_CHAR(jour, 'DD-MM-YYYY') AS dateobs, nbtaxons - $max AS nbtaxons FROM contactfaune.log_colors_day WHERE couleur = 'red' ORDER BY jour";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -239,7 +239,7 @@ class TRelevesCfTable extends Doctrine_Table
     //recherche du min
     $sql = "SELECT min(nbtaxons) FROM contactfaune.log_colors_day WHERE couleur = 'gray'";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $min = $result[0]['min'];
+    $min = ($result[0]['min'] ==''  ? 0 : $result[0]['min']);
     //valeurs pour les jaunes
     $sql = "SELECT TO_CHAR(jour, 'DD-MM-YYYY') AS dateobs, nbtaxons - $min AS nbtaxons FROM contactfaune.log_colors_day WHERE couleur = 'gray' ORDER BY jour";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -267,12 +267,13 @@ class TRelevesCfTable extends Doctrine_Table
     //recherche du max
     $sql = "SELECT max(nbtaxons) FROM contactinv.log_colors_day WHERE couleur = 'jaune'";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $max = $result[0]['max'];
+    $max = ($result[0]['max'] ==''  ? 0 : $result[0]['max']);
+    
     //valeurs pour les jaunes
     $sql = "SELECT TO_CHAR(jour, 'DD-MM-YYYY') AS dateobs, nbtaxons - $max AS nbtaxons FROM contactinv.log_colors_day WHERE couleur = 'jaune' ORDER BY jour";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     //Compter le nombre d'enregistrements renvoyés par la requete
-	$nb = count($result);
+    $nb = count($result);
     $datas_jaune = array();
     // $jours = pg_fetch_all_columns($result,0);
     // $nbtaxons = pg_fetch_all_columns($result,1);
@@ -287,12 +288,13 @@ class TRelevesCfTable extends Doctrine_Table
     //recherche du max
     $sql = "SELECT max(nbtaxons) FROM contactinv.log_colors_day WHERE couleur = 'red'";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $max = $result[0]['max'];
+    $max = ($result[0]['max'] ==''  ? 0 : $result[0]['max']);
+    
     //valeurs pour les jaunes
     $sql = "SELECT TO_CHAR(jour, 'DD-MM-YYYY') AS dateobs, nbtaxons - $max AS nbtaxons FROM contactinv.log_colors_day WHERE couleur = 'red' ORDER BY jour";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     //Compter le nombre d'enregistrements renvoyés par la requete
-	$nb = count($result);
+    $nb = count($result);
     $datas_jaune = array();
     for ($i = 1; $i < $nb; $i++) { 
         $data = array();
@@ -305,7 +307,7 @@ class TRelevesCfTable extends Doctrine_Table
     //recherche du min
     $sql = "SELECT min(nbtaxons) FROM contactinv.log_colors_day WHERE couleur = 'gray'";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $min = $result[0]['min'];
+    $min = ($result[0]['min'] ==''  ? 0 : $result[0]['min']);
     //valeurs pour les jaunes
     $sql = "SELECT TO_CHAR(jour, 'DD-MM-YYYY') AS dateobs, nbtaxons - $min AS nbtaxons FROM contactinv.log_colors_day WHERE couleur = 'gray' ORDER BY jour";
     $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
