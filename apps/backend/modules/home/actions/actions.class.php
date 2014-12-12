@@ -61,7 +61,7 @@ class homeActions extends sfFauneActions
     {
       
         if($this->getUser()->isAuthenticated()){
-            slot('title', "Synthese PN");
+            slot('title', sfSyntheseConfig::$appname_main);
         }
         else{
            # $this->redirect('@login');
@@ -71,7 +71,7 @@ class homeActions extends sfFauneActions
     public function executeIndexSynthese(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', 'Synthese PN');
+            slot('title', sfSyntheseConfig::$appname_synthese);
         }
         else{
            # $this->redirect('@login');
@@ -81,7 +81,7 @@ class homeActions extends sfFauneActions
     public function executeIndexCf(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', 'Contact faune - Synthese PN');
+            slot('title', sfSyntheseConfig::$appname_cf);
         }
         else{
             //~ $this->redirect('@login');
@@ -91,7 +91,7 @@ class homeActions extends sfFauneActions
     public function executeIndexMortalite(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', 'Mortalite faune - Synthese PN');
+            slot('title', sfSyntheseConfig::$appname_mortalite);
         }
         else{
             //~ $this->redirect('@login');
@@ -101,7 +101,7 @@ class homeActions extends sfFauneActions
     public function executeIndexInvertebre(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', 'Contact invertébrés - Synthese PN');
+            slot('title', sfSyntheseConfig::$appname_inv);
         }
         else{
             //~ $this->redirect('@login');

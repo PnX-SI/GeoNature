@@ -1,8 +1,8 @@
 <body style="margin: auto; font-family: Arial; font-size: 14px;">
     <div id="bandeau_accueil"><img src="images/bandeau_faune.jpg" border="0"></div>
+    <h1 style="font-weight: bold; text-align: center; font-size: 4em; margin: 70px 0px;"><?php echo sfSyntheseConfig::$apptitle_main; ?></h1>
     <div id="container" style="width:1024px;margin: auto; ">
-        <p style="font-weight:bold;font-size:2em;margin: 45px 0;">Gestion des données faune</p>
-        
+  
         <div id="bande_consultation" style="color:#FFFFFF;background: linear-gradient(90deg, #f09819 30%, #edde5d 90%) repeat scroll 0 0 rgba(0, 0, 0, 0);letter-spacing:5px;font-weight:bold;text-shadow:0 0 3px #000;height:25px;">
             <div style="vertical-align:middle;display:inline-block;"><img src="images/logo_pag.png" border="0" width="25px" height="25px"></div>
             <div style="vertical-align:middle;display:inline-block;">CONSULTATION</div>
