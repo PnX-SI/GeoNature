@@ -66,7 +66,7 @@ application.synthese.layout = function() {
             region:"south"
             ,height:25
             ,bbar: new Ext.Toolbar({           
-                items: ['&copy; Parc National des Ecrins 2012', '->',
+                items: ['&copy; Parc National des Ecrins 2012-2015', '->',
                 application.synthese.user.nom+' ('+application.synthese.user.status+')',
                 {
                     text: 'Déconnexion'
