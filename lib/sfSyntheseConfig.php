@@ -21,7 +21,7 @@ class sfSyntheseConfig extends sfActions
     //Ce srid est utilisé dans les exports. 
     //Lorsque la base de données est créée avec les scripts sql fournis (synthese_srid.sql), il faut choisir le script correspondant à la valeur portée ci-dessous. 
     //Idem pour le script d'insertion des données (synthese_data_srid.sql)
-    //ATTENTION. Il faut mettre à jour le service wms interne de l'application qui utilise ce script. Fichier /var/www/localhost/private/trunk/synthesepn/wms/faune.map
+    //ATTENTION. Il faut mettre à jour le service wms interne de l'application qui utilise ce script. Fichier ..FF-synthese/wms/faune.map
 	public static $srid_local = 2154;
   
   

@@ -51,6 +51,8 @@ Installation de l'application
         
         chmod -R 777 /home/synthese/dev/FF-synthese/log
         chmod -R 777 /home/synthese/dev/FF-synthese/cache
+        chmod -R 775 /home/synthese/dev/FF-synthese/web/exportshape/
+        chmod -R 775 /home/synthese/dev/FF-synthese/web/uploads/shapes
         
 * Créer les fichiers de configurations
  

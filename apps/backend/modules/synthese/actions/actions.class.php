@@ -161,19 +161,19 @@ class syntheseActions extends sfFauneActions
         //pour les points
         $sql = SynthesefauneTable::listShp($params,'ST_Point'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" /var/www/localhost/private/trunk/faune/web/exportshape/faune_synthese_'.$madate.'_points.shp PG:"host=localhost user=cartopne dbname=appli_faune password=AmaZone973" -sql ';
+        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_points.shp PG:"host=databases user=cartopnx dbname=synthese password=monpassachanger" -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //pour les mailles
         $sql = SynthesefauneTable::listShp($params,'ST_Polygon'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" /var/www/localhost/private/trunk/faune/web/exportshape/faune_synthese_'.$madate.'_mailles.shp PG:"host=localhost user=cartopne dbname=appli_faune password=AmaZone973" -sql ';
+        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_mailles.shp PG:"host=databases user=cartopnx dbname=synthese password=monpassachanger" -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //pour les centroids
         $sql = SynthesefauneTable::listShp($params,'centroid'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" /var/www/localhost/private/trunk/faune/web/exportshape/faune_synthese_'.$madate.'_centroids.shp PG:"host=localhost user=cartopne dbname=appli_faune password=AmaZone973" -sql ';
+        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_centroids.shp PG:"host=databases user=cartopnx dbname=synthese password=monpassachanger" -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //on zipe le tout
