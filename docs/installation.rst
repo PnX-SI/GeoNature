@@ -1,7 +1,7 @@
 ============
 INSTALLATION
 ============
-Mise en place de la base de données
+Création de la base de données
 ===================================
 
 * Création de la base de données et chargement des données initiales
@@ -18,7 +18,7 @@ Mise en place de la base de données
         psql -d synthese -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthese -f grant.sql
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f inpn/data_inpn_v7_synthese.sql
+        export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthese -f inpn/data_inpn_v7_synthese.sql
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
         export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
         exit
@@ -42,6 +42,7 @@ Installation de l'application
 * Configuration du répertoire web de l'application
 
     ::
+    
         cd /var/www/
         sudo ln -s /home/synthese/dev/FF-synthese/web/ synthese
 
