@@ -60,8 +60,8 @@ Installation de l'application
     ::
     
         cp /home/synthese/dev/FF-synthese/config/databases.yml.sample /home/synthese/dev/FF-synthese/config/databases.yml
-        cp /home/synthese/dev/FF-synthese/web/js/config.js.sample /home/synthese/dev/FF-synthese/web/js/config.js.sample
-        cp /home/synthese/dev/FF-synthese/wms/wms.map /home/synthese/dev/FF-synthese/wms/wms.map
+        cp /home/synthese/dev/FF-synthese/web/js/config.js.sample /home/synthese/dev/FF-synthese/web/js/config.js
+        cp /home/synthese/dev/FF-synthese/wms/wms.map.sample /home/synthese/dev/FF-synthese/wms/wms.map
 
         
 * Adapter à vos paramètres de connexion aux bases de données. Normalement seul le paramètre password est à changer
