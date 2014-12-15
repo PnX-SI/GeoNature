@@ -92,6 +92,12 @@ Installation de l'application
   ** Changer mon-domaine.fr par votre propre url (wms_uri, host_uri)
   ** Renseigner sa clé ign du géoportail ainsi que l'emprise spatiale de votre territoire
 
+* Créer le dossier d'export shape
+
+    ::
+        
+        mkdir /home/synthese/dev/FF-synthese/web/exportshape/
+        chmod 775  exportshape/
 
 
 * Vider le contenu du cache symfony : (attention aux chemins de votre serveur)
