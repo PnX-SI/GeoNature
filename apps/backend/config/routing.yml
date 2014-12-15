@@ -8,8 +8,8 @@ xlsObsSynthese:
   url: /synthese/xlsobs
   param: { module: synthese, action: xlsObs }
 xlsStatusSynthese:
-  url: /synthese/xlsstatuts
-  param: { module: synthese, action: xlsStatuts }
+  url: /synthese/xlsstatus
+  param: { module: synthese, action: xlsStatus }
 shpSynthese:
   url: /synthese/shp
   param: { module: synthese, action: shp }

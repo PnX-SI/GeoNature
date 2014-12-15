@@ -2249,7 +2249,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsstatuts?usage='+usage+'&observateur='+ob+'&insee='+c+'&coeur='+coeur+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&coeur='+coeur+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,exportShp : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();

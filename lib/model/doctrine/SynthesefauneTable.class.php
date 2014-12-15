@@ -21,7 +21,7 @@ class SynthesefauneTable extends Doctrine_Table
     private static function listReglementations($cd_nom)
     {
         $reglements = Doctrine_Query::create()
-          ->select("r.cd_protection,r.url, concat(r.intitule, ' ', r.article, ' - ', r.type_juridique) protections")
+          ->select("r.cd_protection,r.url, concat(r.intitule, ' ', r.article, ' - ', r.type_protection) protections")
           ->distinct()
           ->from('TaxrefProtectionArticles r')
           ->innerJoin('r.TaxrefProtectionEspeces tpe')
@@ -336,14 +336,14 @@ class SynthesefauneTable extends Doctrine_Table
         if($params['start']=="no"){$from = " FROM synthese.synthesefaune synt ";}
         else{$from = " FROM (SELECT * FROM synthese.synthesefaune WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "
-                SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,t.patrimonial,tpa.type_juridique,
+                SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,t.patrimonial,tpa.type_protection,
                         txr.nom_valide, txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref, 
-                        tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url_inpn AS url_taxon"
+                        tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
                 .$from.
-                "JOIN taxonomie.bib_taxons_faune_pne t ON t.id_taxon = synt.id_taxon
+                "JOIN taxonomie.bib_taxons_faune_pn t ON t.id_taxon = synt.id_taxon
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref_protection_especes tpe ON tpe.cd_nom = t.cd_nom
-                JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.pne = true
+                JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.pn = true
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
                 LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = synt.id_organisme
@@ -355,7 +355,7 @@ class SynthesefauneTable extends Doctrine_Table
                 WHERE synt.supprime = false"
                 .$addwhere.
                 " GROUP BY t.nom_latin, t.nom_francais,t.patrimonial,t.protection_stricte,txr.nom_valide, txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref, tpe.precisions, 
-                        tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url, tpa.url_inpn ,tpa.type_juridique
+                        tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url, tpa.url ,tpa.type_protection
                 ORDER BY txr.classe, txr.ordre, txr.famille, t.nom_francais";
         $lesstatuts = $dbh->query($sql);
         return $lesstatuts;

@@ -118,11 +118,11 @@ class syntheseActions extends sfFauneActions
         exit;
     }
     
-    public function executeXlsStatuts(sfRequest $request)
+    public function executeXlsStatus(sfRequest $request)
     {
         $params = $request->getParams();
         $statuts = SynthesefauneTable::listXlsStatus($params);
-        $csv_output = "cd_ref\tclasse\tordre\tfamille\ttaxon_francais\ttaxon_latin\ttype_juridique\tpatrimonial\ttaxon_url\tstatut_resume\tstatut_titre\tstatut_article\tdate_texte\turl_texte";
+        $csv_output = "cd_ref\tclasse\tordre\tfamille\ttaxon_francais\ttaxon_latin\ttype_protection\tpatrimonial\ttaxon_url\tstatut_resume\tstatut_titre\tstatut_article\tdate_texte\turl_texte";
         $csv_output .= "\n";
         foreach ($statuts as $statut)
         {  
@@ -133,14 +133,14 @@ class syntheseActions extends sfFauneActions
             $classe = $statut['classe'];
             $cd_ref = $statut['cd_ref'];
             $patrimonial = ($statut['patrimonial']=='t')?'oui':'non';
-            $type_juridique = $statut['type_juridique'];
+            $type_protection = $statut['type_protection'];
             $article = $statut['article'];
             $arrete = str_replace( array( CHR(10), CHR(13), "\n", "\r" ), array( ' - ',' - ',' - ',' - '), $statut['arrete'] );
             $intitule = $statut['intitule'];
             $date_arrete = $statut['date_arrete'];
             $url_texte = $statut['url_texte'];
             $url_taxon = $statut['url_taxon'];
-            $csv_output .= "$cd_ref\t$classe\t$ordre\t$famille\t$taxon_francais\t$taxon_latin\t$type_juridique\t$patrimonial\t$url_taxon\t$intitule\t$arrete\t$article\t$date_arrete\t$url_texte\n";      
+            $csv_output .= "$cd_ref\t$classe\t$ordre\t$famille\t$taxon_francais\t$taxon_latin\t$type_protection\t$patrimonial\t$url_taxon\t$intitule\t$arrete\t$article\t$date_arrete\t$url_texte\n";      
         }
 
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
