@@ -152,6 +152,8 @@ class syntheseActions extends sfFauneActions
     
     public function executeShp(sfRequest $request)
     {
+        //Récupération des paramètres de connexion à la base
+        $ogrConnexionString = $this::getOgrConnexionString();
         $params = $request->getParams(); // récup des paramètres de la requête utilisateur
         $user = str_replace(' ','_',$this->getUser()->getAttribute('nom')); //récup du nom de l'utilisateur connecté
         $user = self::enleveaccents($user); //nettoyage
@@ -161,19 +163,19 @@ class syntheseActions extends sfFauneActions
         //pour les points
         $sql = SynthesefauneTable::listShp($params,'ST_Point'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_points.shp PG:"host=databases user=cartopnx dbname=synthese password=monpassachanger" -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_points.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //pour les mailles
         $sql = SynthesefauneTable::listShp($params,'ST_Polygon'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_mailles.shp PG:"host=databases user=cartopnx dbname=synthese password=monpassachanger" -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_mailles.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //pour les centroids
         $sql = SynthesefauneTable::listShp($params,'centroid'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr -s_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_centroids.shp PG:"host=databases user=cartopnx dbname=synthese password=monpassachanger" -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_centroids.shp '.    $ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //on zipe le tout
@@ -191,8 +193,8 @@ class syntheseActions extends sfFauneActions
         $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_centroids.prj') ;       
         $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_centroids.dbf') ;
         $archive = $zip->file();
-		header('Content-Type: application/x-zip');      
-		header('Content-Disposition: inline; filename=synthese_faune_'.$madate.'.zip') ;
+        header('Content-Type: application/x-zip');      
+        header('Content-Disposition: inline; filename=synthese_faune_'.$madate.'.zip') ;
         echo $archive ; //on retourne le contenu du zip à l'utilisateur
         unlink($path.'faune_synthese_'.$madate.'_points.shp');       
         unlink($path.'faune_synthese_'.$madate.'_points.shx');       
@@ -207,6 +209,17 @@ class syntheseActions extends sfFauneActions
         unlink($path.'faune_synthese_'.$madate.'_centroids.prj');       
         unlink($path.'faune_synthese_'.$madate.'_centroids.dbf');
         exit;
+    }
+    
+    
+    private static function getOgrConnexionString() {
+      
+      $connexion = Doctrine_Manager::getInstance()->getConnections('all');
+      $options = array_pop($connexion)->getOptions();
+      preg_match('/host=(.*);dbname=(.*)$/', $options['dsn'], $host);
+      
+      return 'PG:"host='.$host[1].' user='.$options['username'].' dbname='.$host[2].' password='.$options['password'].'"';
+      
     }
     
     private static function unzip($file, $path='', $newname, $effacer_zip=false)
