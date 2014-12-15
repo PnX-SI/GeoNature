@@ -324,7 +324,8 @@ application.synthese.search = function() {
 	            var tpl = tplZpDescriptionCols[i];
 	            el.body.update(tpl.apply(fiche.data));
 	        }
-	        Ext.getCmp('north-synthese-panel').doLayout();
+	        Ext.getCmp('south-synthese-panel').doLayout();
+	        Ext.getCmp('south-synthese-panel').expand();
         }
         else{
             application.synthese.storeTaxonsSynthese.on('load',function(){
@@ -344,7 +345,7 @@ application.synthese.search = function() {
                 border: false
             }
             ,items: [
-                getViewportNorthItem()
+                getViewportSouthItem()
                 ,getViewportEastItem()
                 ,getViewportWestItem()
                 ,getViewportCenterItem()
@@ -379,17 +380,17 @@ application.synthese.search = function() {
             }
         };
     };
-    var getViewportNorthItem = function() {
+    var getViewportSouthItem = function() {
         return {
-            id:'north-synthese-panel'
+            id:'south-synthese-panel'
             ,title:'Détails concernant l\'observation'
-            ,region:"north"
+            ,region:"south"
             ,height:110
             ,split:true
             ,bodyStyle:"background-color:#efefef"
             ,layout: 'column'
             ,autoScroll: true
-            ,collapsed:false
+            ,collapsed:true
             ,collapsible:true
             ,defaults: {
                 border: false
@@ -410,7 +411,7 @@ application.synthese.search = function() {
         };
     };
     /**
-     * Method: getViewportNorthItem
+     * Method: getViewportWestItem
      */
     var getViewportWestItem = function() {
         var isWhereParam = function(){
