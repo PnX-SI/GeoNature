@@ -91,7 +91,8 @@ Installation de l'application
 * Adapter le contenu du fichier /home/synthese/dev/FF-synthese/web/js/config.js
   ** Changer mon-domaine.fr par votre propre url (wms_uri, host_uri)
   ** Renseigner sa clé ign du géoportail ainsi que l'emprise spatiale de votre territoire
-   
+
+
 
 * Vider le contenu du cache symfony : (attention aux chemins de votre serveur)
   
@@ -106,3 +107,26 @@ Mise à jour de l'application
 ----------------------------
 
 * Suivre les instructions disponibles dans la doc de la release choisie
+
+
+
+Clé IGN
+=======
+Commander une clé IGN de type : Licence géoservices IGN pour usage grand public - gratuite
+Avec les couches suivantes : 
+* WMTS-Géoportail - Orthophotographies
+* WMTS-Géoportail - Parcelles cadastrales
+* WMTS-Géoportail - Plan IGN
+
+Pour cela, il faut que vous disposiez d'un compte IGN pro. (http://professionnels.ign.fr)
+Une fois connecté au site: 
+* aller dans nouvelle commande
+* choisir Géoservices IGN : Pour le web dans la rubrique "LES GÉOSERVICES EN LIGNE"
+* cocher l'option "Pour un site internet grand public"
+* cocher l'option "Licence géoservices IGN pour usage grand public - gratuite"
+* saisir votre url. Attention, l'adresse doit être précédée de http://
+* Finisser votre commande en selectionnant les couches d'intéret et en acceptant les différentes licences.
+
+Une fois que votre commande est prète saisissez la valeur de la clé IGN reçut dans le fichier /home/synthese/dev/FF-synthese/web/js/config.js
+
+
