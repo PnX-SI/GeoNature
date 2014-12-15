@@ -256,9 +256,7 @@ application.synthese.search = function() {
      * Method: createTemplates
      * Créer les templates
      */
-    var createTemplates = function() {
-        console.log("création templates");
-        
+    var createTemplates = function() {     
         tplZpDescriptionCols =[
             new Ext.XTemplate(
                 '<p><b><tpl if="taxon_francais">{taxon_francais} - </tpl><i>{taxon_latin}</i></b> - {effectif_total} individu(s) le {dateobs:date("d/m/Y")}</p>'
