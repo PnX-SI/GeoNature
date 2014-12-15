@@ -28,3 +28,23 @@ extent_max = new OpenLayers.Bounds(-575000, 5000000,1070000, 6640000);
 centre_map = new OpenLayers.LonLat(700000, 5594000)
 resolution_max = 2445.9849051256406;
 num_zoom_levels = 16;
+
+//-----configuration des protocoles et des lots de données-------------
+id_lot_contact_vertebre = 1;
+id_lot_mortalite = 2;
+id_lot_contact_vertebre = 3;
+id_protocole_contact_vertebre = 1;
+id_protocole_mortalite = 2;
+id_protocole_contact_invertebre = 3;
+id_source_contactfaune = 1;
+id_source_contactinv = 3;
+
+
+//-----configuration propre à l'identité de la structure-------------
+pn_name_long = 'Parc nationaux de France';
+struc_abregee = 'PnF';
+
+
+
+
+
