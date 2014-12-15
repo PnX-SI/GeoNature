@@ -1,7 +1,7 @@
 ============
 INSTALLATION
 ============
-Mise en place de la base de données
+Création de la base de données
 ===================================
 
 * Création de la base de données et chargement des données initiales
@@ -42,6 +42,7 @@ Installation de l'application
 * Configuration du répertoire web de l'application
 
     ::
+    
         cd /var/www/
         sudo ln -s /home/synthese/dev/FF-synthese/web/ synthese
 
