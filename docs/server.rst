@@ -66,12 +66,18 @@ installation pour debian 7.
         sudo sh -c 'echo "127.0.1.1       databases" >> /etc/hosts'
         sudo apache2ctl restart
 
-* Vérifier que le répertoire /tmp existe et que l'utilisateur www-data y ait accès en lecture/écriture
+:notes:
 
-mise en place de la base de données
-===================================
+    Cet alias ``databases`` permet d'identifier sur quel host l'application doit rechercher la base de données PostgreSQL
+    Par défaut, PostgreSQL est en localhost (127.0.1.1)
+    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   databases``
+    
+* Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur www-data y ait accès en lecture/écriture
 
-* Sur debian 7 configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et Postgis (2.1)
+Installation et configuration de PosgreSQL
+==========================================
+
+* Sur debian 7 configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et PostGIS (2.1)
 (http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html)
 
   ::  
@@ -88,10 +94,11 @@ mise en place de la base de données
         sudo apt-get install postgresql-9.3-postgis-2.1
         
 
-* Création des utilisateurs postgres
+* Création de 2 utilisateurs PostgreSQL
 
-Cet utilisateur sera le propriétaire de la base synthese et sera utilisé par l'application pour se connecté à la base.
-l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
+L'utilisateur ``cartopnx`` sera le propriétaire de la base de données ``synthese`` et sera utilisé par l'application pour se connecter à celle-ci.
+L'utilisateur ``cartoadmin`` est super utilisateur de PostgreSQL.
+l'application fonctionne avec le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
 
     ::
     
@@ -101,5 +108,5 @@ l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé d
         CREATE ROLE cartoadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
         
-Voir la partie database dans la doc
+Pour la création de la base de données du projet, voir la partie database dans la doc
         
