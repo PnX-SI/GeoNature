@@ -5,25 +5,23 @@
 SERVEUR
 =======
 
-Les auteurs  :ref:`Auteurs <auteurs-section>`.
-
 
 Prérequis
 =========
 
 * Ressources minimum serveur :
 
-** 1 Go RAM
-** 10 Go disk space
+Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
 
-* disposer d'un utilisateur linux nommé 'synthese'. Le répertoire de cet utilisateur 'synthese' doit être dans /home/synthese
+
+* disposer d'un utilisateur linux nommé ``synthese``. Le répertoire de cet utilisateur ``synthese`` doit être dans ``/home/synthese``
 
     :: 
     
         sudo adduser --home /home/synthese synthese
 
 
-* récupérer le zip sur le github
+* récupérer le zip de l'application sur le Github du projet
 
     ::
     
@@ -38,7 +36,13 @@ Prérequis
 Installation et configuration du serveur
 ========================================
 
-installation pour debian 7.
+Installation pour Debian 7.
+
+:notes:
+
+    Cette documentation concerne une installation sur Debian. Pour tout autre environemment les commandes sont à adapter.
+
+.
 
   ::
   
@@ -69,15 +73,17 @@ installation pour debian 7.
 :notes:
 
     Cet alias ``databases`` permet d'identifier sur quel host l'application doit rechercher la base de données PostgreSQL
-    Par défaut, PostgreSQL est en localhost (127.0.1.1)
-    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   databases``
     
-* Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur www-data y ait accès en lecture/écriture
+    Par défaut, PostgreSQL est en localhost (127.0.1.1)
+    
+    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   databases``
+
+* Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur ``www-data`` y ait accès en lecture/écriture
 
 Installation et configuration de PosgreSQL
 ==========================================
 
-* Sur debian 7 configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et PostGIS (2.1)
+* Sur Debian 7, configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et PostGIS (2.1)
 (http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html)
 
   ::  
@@ -97,8 +103,10 @@ Installation et configuration de PosgreSQL
 * Création de 2 utilisateurs PostgreSQL
 
 L'utilisateur ``cartopnx`` sera le propriétaire de la base de données ``synthese`` et sera utilisé par l'application pour se connecter à celle-ci.
+
 L'utilisateur ``cartoadmin`` est super utilisateur de PostgreSQL.
-l'application fonctionne avec le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
+
+L'application fonctionne avec le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
 
     ::
     
@@ -107,6 +115,4 @@ l'application fonctionne avec le mot de passe ``monpassachanger`` mais il est co
         CREATE ROLE cartopnx WITH LOGIN PASSWORD 'monpassachanger';
         CREATE ROLE cartoadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
-        
-Pour la création de la base de données du projet, voir la partie database dans la doc
         
