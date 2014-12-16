@@ -16,11 +16,11 @@ Création de la base de données
         createdb -O cartopnx synthese
         psql -d synthese -c "CREATE EXTENSION postgis;"
         psql -d synthese -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthese -f grant.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthese -f inpn/data_inpn_v7_synthese.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U cartoadmin -d synthese -f grant.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U cartoadmin -d synthese -f inpn/data_inpn_v7_synthese.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
         exit
         
         rm taxref*
@@ -29,7 +29,7 @@ Création de la base de données
   
   ::
 
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
 
 
 
@@ -83,7 +83,7 @@ Installation de l'application
       
     ::
     
-        host=localhost dbname=synthesepn user=cartopnx password=monpassachanger
+        host=databases dbname=synthesepn user=cartopnx password=monpassachanger
         
   adapter les paramètres de connexion à la base postgis partout ou se trouve cette chaine de caratères.
     
