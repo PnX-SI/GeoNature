@@ -125,7 +125,7 @@ Avec les couches suivantes :
 
 * WMTS-Géoportail - Parcelles cadastrales
 
-* WMTS-Géoportail - Plan IGN
+* WMTS-Géoportail - Cartes IGN
 
 Pour cela, il faut que vous disposiez d'un compte IGN pro. (http://professionnels.ign.fr)
 Une fois connecté au site: 
