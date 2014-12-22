@@ -44,7 +44,7 @@ Installation de l'application
     ::
     
         cd /var/www/
-        sudo ln -s /home/synthese/geonature/web/ synthese
+        sudo ln -s /home/synthese/geonature/web/ geonature
 
 * Donner les droits nécessaires pour le bon fonctionnement de l'application (adapter les chemins à votre serveur)
     
