@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+next
+------------------
+
+## Changements
+
+ * Modification du nom de l'application en GeoNature
+ 
+
 1.1.0 (2014-12-11)
 ------------------
 

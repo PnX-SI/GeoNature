@@ -10,11 +10,11 @@ BASE DE DONNEES
 
     ::
     
-        cd /home/synthese/dev/FF-synthese/data/inpn
+        cd /home/synthese/geonature/data/inpn
         tar -xzvf data_inpn_v7.tar.gz 
         
         su postgres
-        cd /home/synthese/dev/FF-synthese/data
+        cd /home/synthese/geonature/data
         createdb -O cartopnx synthese
         psql -d synthese -c "CREATE EXTENSION postgis;"
         psql -d synthese -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"

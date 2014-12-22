@@ -26,10 +26,10 @@ Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
     ::
     
         cd /tmp
-        wget https://github.com/PnEcrins/FF-synthese/archive/vX.Y.Z.zip
+        wget https://github.com/PnEcrins/geonature/archive/vX.Y.Z.zip
         unzip vX.Y.Z.zip
-        mkdir -p /home/synthese/dev/FF-synthese
-        cp FF-synthese-X.Y.Z/* /home/synthese/dev/FF-synthese
+        mkdir -p /home/synthese/geonature
+        cp FF-synthese-X.Y.Z/* /home/synthese/geonature
         cd /home/synthese
 
 
@@ -60,7 +60,7 @@ Installation pour Debian 7.
   ::  
         
         sudo a2enmod rewrite
-        sudo sh -c 'echo "Include /home/synthese/dev/FF-synthese/apache/*.conf" >> /etc/apache2/apache2.conf'
+        sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
         sudo apache2ctl restart
 
 * Ajouter un alias du serveur de base de données dans le fichier /etc/host
