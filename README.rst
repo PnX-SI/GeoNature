@@ -1,5 +1,5 @@
-FF-synthese
-===========
+GeoNature
+=========
 
 Application de synthèse des observations faune et flore.
 
@@ -37,7 +37,7 @@ Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 Installation
 -----------
 
-Consulter la documentation :  `<http://ff-synthese.rtfd.org>`_
+Consulter la documentation :  `<http://geonature.rtfd.org>`_
 
 License
 -------
@@ -46,8 +46,8 @@ License
 * Copyright (c) 2014 - Parc National des Écrins - Parc national des Cévennes
 
 
-.. image:: http://pnecrins.github.io/FF-synthese/img/logo-pne.jpg
+.. image:: http://pnecrins.github.io/GeoNature/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
 
-.. image:: http://pnecrins.github.io/FF-synthese/img/logo-pnc.jpg
+.. image:: http://pnecrins.github.io/GeoNature/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
