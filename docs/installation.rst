@@ -2,7 +2,7 @@
 INSTALLATION
 ============
 Création de la base de données
-===================================
+==============================
 
 * Création de la base de données et chargement des données initiales
 
@@ -13,14 +13,14 @@ Création de la base de données
         
         su postgres
         cd /home/synthese/geonature/data
-        createdb -O cartopnx synthese
-        psql -d synthese -c "CREATE EXTENSION postgis;"
-        psql -d synthese -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartoadmin -d synthese -f grant.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartoadmin -d synthese -f inpn/data_inpn_v7_synthese.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
+        createdb -O geonatuser geonaturedb
+        psql -d geonaturedb -c "CREATE EXTENSION postgis;"
+        psql -d geonaturedb -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatadmin -d geonaturedb -f grant.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatadmin -d geonaturedb -f inpn/data_inpn_v7_synthese.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/data_synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/data_set_synthese_2154.sql
         exit
         
         rm taxref*
@@ -29,7 +29,7 @@ Création de la base de données
   
   ::
 
-    export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
 
 
 
@@ -74,8 +74,8 @@ Installation de l'application
           doctrine:
             class: sfDoctrineDatabase
             param:
-              dsn: 'pgsql:host=databases;dbname=synthese'
-              username: cartopnx
+              dsn: 'pgsql:host=databases;dbname=geonaturedb'
+              username: geonatuser
               password: monpassachanger
               
               
@@ -83,7 +83,7 @@ Installation de l'application
       
     ::
     
-        host=databases dbname=synthesepn user=cartopnx password=monpassachanger
+        host=databases dbname=geonaturedb user=geonatuser password=monpassachanger
         
   adapter les paramètres de connexion à la base postgis partout ou se trouve cette chaine de caratères.
     

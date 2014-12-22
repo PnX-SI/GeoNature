@@ -29,7 +29,7 @@ Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
         wget https://github.com/PnEcrins/geonature/archive/vX.Y.Z.zip
         unzip vX.Y.Z.zip
         mkdir -p /home/synthese/geonature
-        cp FF-synthese-X.Y.Z/* /home/synthese/geonature
+        cp geonature-X.Y.Z/* /home/synthese/geonature
         cd /home/synthese
 
 
@@ -102,9 +102,9 @@ Installation et configuration de PosgreSQL
 
 * Création de 2 utilisateurs PostgreSQL
 
-L'utilisateur ``cartopnx`` sera le propriétaire de la base de données ``synthese`` et sera utilisé par l'application pour se connecter à celle-ci.
+L'utilisateur ``geonatuser`` sera le propriétaire de la base de données ``geonaturedb`` et sera utilisé par l'application pour se connecter à celle-ci.
 
-L'utilisateur ``cartoadmin`` est super utilisateur de PostgreSQL.
+L'utilisateur ``geonatadmin`` est super utilisateur de PostgreSQL.
 
 L'application fonctionne avec le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
 
@@ -112,7 +112,7 @@ L'application fonctionne avec le mot de passe ``monpassachanger`` mais il est co
     
         su postgres
         psql
-        CREATE ROLE cartopnx WITH LOGIN PASSWORD 'monpassachanger';
-        CREATE ROLE cartoadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
+        CREATE ROLE geonatuser WITH LOGIN PASSWORD 'monpassachanger';
+        CREATE ROLE geonatadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
         

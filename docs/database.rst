@@ -15,14 +15,14 @@ BASE DE DONNEES
         
         su postgres
         cd /home/synthese/geonature/data
-        createdb -O cartopnx synthese
-        psql -d synthese -c "CREATE EXTENSION postgis;"
-        psql -d synthese -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartoadmin -d synthese -f grant.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f inpn/data_inpn_v7_synthese.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
+        createdb -O geonatuser geonaturedb
+        psql -d geonaturedb -c "CREATE EXTENSION postgis;"
+        psql -d geonaturedb -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
+        export PGPASSWORD=monpassachanger;psql -h localhost -U geonatadmin -d geonaturedb -f grant.sql
+        export PGPASSWORD=monpassachanger;psql -h localhost -U geonatuser -d geonaturedb -f 2154/synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h localhost -U geonatuser -d geonaturedb -f inpn/data_inpn_v7_synthese.sql
+        export PGPASSWORD=monpassachanger;psql -h localhost -U geonatuser -d geonaturedb -f 2154/data_synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h localhost -U geonatuser -d geonaturedb -f 2154/data_set_synthese_2154.sql
         exit
         
         rm taxref*
@@ -31,7 +31,7 @@ BASE DE DONNEES
   
   ::
 
-    export PGPASSWORD=monpassachanger;psql -h localhost -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger;psql -h localhost -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
 <<<<<<< HEAD
 =======
 >>>>>>> master
