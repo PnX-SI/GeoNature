@@ -61,7 +61,7 @@ class homeActions extends sfFauneActions
     {
       
         if($this->getUser()->isAuthenticated()){
-            slot('title', sfSyntheseConfig::$appname_main);
+            slot('title', sfGeonatureConfig::$appname_main);
         }
         else{
            # $this->redirect('@login');
@@ -71,7 +71,7 @@ class homeActions extends sfFauneActions
     public function executeIndexSynthese(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', sfSyntheseConfig::$appname_synthese);
+            slot('title', sfGeonatureConfig::$appname_synthese);
         }
         else{
            # $this->redirect('@login');
@@ -81,7 +81,7 @@ class homeActions extends sfFauneActions
     public function executeIndexCf(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', sfSyntheseConfig::$appname_cf);
+            slot('title', sfGeonatureConfig::$appname_cf);
         }
         else{
             //~ $this->redirect('@login');
@@ -91,7 +91,7 @@ class homeActions extends sfFauneActions
     public function executeIndexMortalite(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', sfSyntheseConfig::$appname_mortalite);
+            slot('title', sfGeonatureConfig::$appname_mortalite);
         }
         else{
             //~ $this->redirect('@login');
@@ -101,7 +101,7 @@ class homeActions extends sfFauneActions
     public function executeIndexInvertebre(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            slot('title', sfSyntheseConfig::$appname_inv);
+            slot('title', sfGeonatureConfig::$appname_inv);
         }
         else{
             //~ $this->redirect('@login');

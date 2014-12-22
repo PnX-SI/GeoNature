@@ -4,7 +4,10 @@ indexSynthese:
 indexCf:
   credentials: [[ administrateur, redacteur ]]
   is_secure: true
-indexCigales:
+indexInvertebre:
+  credentials: [[ administrateur, redacteur ]]
+  is_secure: true
+indexMortalite:
   credentials: [[ administrateur, redacteur ]]
   is_secure: true
 index:

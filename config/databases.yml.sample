@@ -2,6 +2,6 @@ all:
   doctrine:
     class: sfDoctrineDatabase
     param:
-      dsn: 'pgsql:host=databases;dbname=synthese'
+      dsn: 'pgsql:host=databases;dbname=geonature'
       username: cartopnx
       password: monpassachanger

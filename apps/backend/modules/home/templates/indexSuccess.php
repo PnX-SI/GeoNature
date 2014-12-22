@@ -1,6 +1,6 @@
 <body style="margin: auto; font-family: Arial; font-size: 14px;">
     <div id="bandeau_accueil"><img src="images/bandeau_faune.jpg" border="0"></div>
-    <h1 style="font-weight: bold; text-align: center; font-size: 4em; margin: 70px 0px; line-height: 100%;"><?php echo sfSyntheseConfig::$apptitle_main; ?></h1>
+    <h1 style="font-weight: bold; text-align: center; font-size: 4em; margin: 70px 0px; line-height: 100%;"><?php echo sfGeonatureConfig::$apptitle_main; ?></h1>
     <div id="container" style="width:1024px;margin: auto; ">
   
         <div id="bande_consultation" style="color:#FFFFFF;background: linear-gradient(90deg, #f09819 30%, #edde5d 90%) repeat scroll 0 0 rgba(0, 0, 0, 0);letter-spacing:5px;font-weight:bold;text-shadow:0 0 3px #000;height:25px;">

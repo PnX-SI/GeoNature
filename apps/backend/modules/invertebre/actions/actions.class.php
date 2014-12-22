@@ -156,7 +156,7 @@ class invertebreActions extends sfFauneActions
             $id_inv = $new_id_inv;
             $fiche->id_inv = $id_inv;
             $fiche->saisie_initiale = 'web';
-            $fiche->id_organisme = sfSyntheseConfig::$id_organisme;
+            $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
         }
         //remise au format de la date
         $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
@@ -166,13 +166,13 @@ class invertebreActions extends sfFauneActions
         $fiche->dateobs = $datepg;
         $fiche->heure = $request->getParameter('heure');
         $fiche->id_milieu_inv = $request->getParameter('id_milieu_inv');
-        $fiche->pdop = sfSyntheseConfig::$default_pdop;
+        $fiche->pdop = sfGeonatureConfig::$default_pdop;
         if($request->getParameter('altitude_saisie')=='' OR !$request->hasParameter('altitude_saisie')){$altitude_saisie=-1;} else{$altitude_saisie=$request->getParameter('altitude_saisie');}
         $fiche->altitude_saisie = $altitude_saisie;
         $fiche->supprime = false;
-        $fiche->srid_dessin = sfSyntheseConfig::$srid_dessin;
-        $fiche->id_protocole = sfSyntheseConfig::$id_protocole_inv;
-        $fiche->id_lot = sfSyntheseConfig::$id_lot_inv;
+        $fiche->srid_dessin = sfGeonatureConfig::$srid_dessin;
+        $fiche->id_protocole = sfGeonatureConfig::$id_protocole_inv;
+        $fiche->id_lot = sfGeonatureConfig::$id_lot_inv;
         // $fiche->id_lot = $request->getParameter('id_lot');
         $fiche->save();//enregistrement avec la methode save de symfony
         // ensuite on commence par supprimer tout ce qui concerne cette fiche si on est en update
@@ -220,8 +220,8 @@ class invertebreActions extends sfFauneActions
     public function executeGetZ(sfRequest $request)
     {
         $point = $request->getParameter('point');
-        $srid_layer_commune = sfSyntheseConfig::$srid_local;
-        $srid_layer_isoline = sfSyntheseConfig::$srid_local;
+        $srid_layer_commune = sfGeonatureConfig::$srid_local;
+        $srid_layer_isoline = sfGeonatureConfig::$srid_local;
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "SELECT layers.f_isolines20(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_isoline.")) AS z,
                 layers.f_nomcommune(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_commune.")) AS nom_commune";

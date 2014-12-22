@@ -79,7 +79,7 @@ class syntheseActions extends sfFauneActions
     {
         $params = $request->getParams();
         $lesobs = SynthesefauneTable::listXlsObs($params);
-        $srid_local_export = sfSyntheseConfig::$srid_local;
+        $srid_local_export = sfGeonatureConfig::$srid_local;
         $csv_output = "id_synthese\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tfamille\tordre\tclasse\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tcoeur\tx_".$srid_local_export."\ty_".$srid_local_export."\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source";
         $csv_output .= "\n";
         foreach ($lesobs as $obs)
@@ -159,7 +159,7 @@ class syntheseActions extends sfFauneActions
         $user = self::enleveaccents($user); //nettoyage
         $path = 'exportshape/'; //chemin public pour téléchargement du fichier zip
         $madate = date("Y-m-d_His");
-        $srid_local_export = sfSyntheseConfig::$srid_local;
+        $srid_local_export = sfGeonatureConfig::$srid_local;
         //pour les points
         $sql = SynthesefauneTable::listShp($params,'ST_Point'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr

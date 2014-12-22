@@ -223,7 +223,7 @@ class SynthesefauneTable extends Doctrine_Table
                 $obs['no_protection'] = ($obs['protection_stricte']=='t')?false:true;
                 $obs['taxon_francais'] = ($obs['taxon_francais'] == '' || $obs['taxon_francais'] == null )?$obs['taxon_latin']:$obs['taxon_francais'];
                //pour l'affichage ou non du bouton edit; 
-               if ((preg_match("/".$userNom."/i", $obs['observateurs']) && preg_match("/".$userPrenom."/i", $obs['observateurs'])&&($obs['id_source']==sfSyntheseConfig::$id_source_cf || $obs['id_source']==sfSyntheseConfig::$id_source_inv))||($statuscode==6 && ($obs['id_source']==sfSyntheseConfig::$id_source_cf || $obs['id_source']==sfSyntheseConfig::$id_source_inv))) {$obs['edit_ok']='true';}
+               if ((preg_match("/".$userNom."/i", $obs['observateurs']) && preg_match("/".$userPrenom."/i", $obs['observateurs'])&&($obs['id_source']==sfGeonatureConfig::$id_source_cf || $obs['id_source']==sfGeonatureConfig::$id_source_inv))||($statuscode==6 && ($obs['id_source']==sfGeonatureConfig::$id_source_cf || $obs['id_source']==sfGeonatureConfig::$id_source_inv))) {$obs['edit_ok']='true';}
                 else{$obs['edit_ok']='false';}
                 if($compt>0){$geojson .= ',';}
                 $geojson .= '{"type":"Feature","id":'.$obs['id_synthese'].',"properties":';
@@ -295,7 +295,7 @@ class SynthesefauneTable extends Doctrine_Table
     
     public static function listXlsObs($params)
     {
-        $srid_local_export = sfSyntheseConfig::$srid_local;
+        $srid_local_export = sfGeonatureConfig::$srid_local;
         $addwhere = self::addwhere($params);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($params['start']=="no"){$from = " FROM synthese.synthesefaune synt ";}
@@ -362,7 +362,7 @@ class SynthesefauneTable extends Doctrine_Table
     }
     public static function listShp($params,$typ)
     {
-        $srid_local_export = sfSyntheseConfig::$srid_local;
+        $srid_local_export = sfGeonatureConfig::$srid_local;
         $addwhere = self::addwhere($params);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($params['start']=="no"){$from = " FROM synthese.synthesefaune synt ";}
