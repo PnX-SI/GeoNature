@@ -2,25 +2,25 @@
 INSTALLATION
 ============
 Création de la base de données
-===================================
+==============================
 
 * Création de la base de données et chargement des données initiales
 
     ::
     
-        cd /home/synthese/dev/FF-synthese/data/inpn
+        cd /home/synthese/geonature/data/inpn
         tar -xzvf data_inpn_v7.tar.gz 
         
         su postgres
-        cd /home/synthese/dev/FF-synthese/data
-        createdb -O cartopnx synthese
-        psql -d synthese -c "CREATE EXTENSION postgis;"
-        psql -d synthese -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartoadmin -d synthese -f grant.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartoadmin -d synthese -f inpn/data_inpn_v7_synthese.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/data_synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f 2154/data_set_synthese_2154.sql
+        cd /home/synthese/geonature/data
+        createdb -O geonatuser geonaturedb
+        psql -d geonaturedb -c "CREATE EXTENSION postgis;"
+        psql -d geonaturedb -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatadmin -d geonaturedb -f grant.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatadmin -d geonaturedb -f inpn/data_inpn_v7_synthese.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/data_synthese_2154.sql
+        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/data_set_synthese_2154.sql
         exit
         
         rm taxref*
@@ -29,7 +29,7 @@ Création de la base de données
   
   ::
 
-    export PGPASSWORD=monpassachanger;psql -h databases -U cartopnx -d synthese -f pne/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
 
 
 
@@ -44,29 +44,29 @@ Installation de l'application
     ::
     
         cd /var/www/
-        sudo ln -s /home/synthese/dev/FF-synthese/web/ synthese
+        sudo ln -s /home/synthese/geonature/web/ synthese
 
 * Donner les droits nécessaires pour le bon fonctionnement de l'application (adapter les chemins à votre serveur)
     
     ::
         
-        chmod -R 777 /home/synthese/dev/FF-synthese/log
-        chmod -R 777 /home/synthese/dev/FF-synthese/cache
-        chmod -R 775 /home/synthese/dev/FF-synthese/web/exportshape/
-        chmod -R 775 /home/synthese/dev/FF-synthese/web/uploads/shapes
+        chmod -R 777 /home/synthese/geonature/log
+        chmod -R 777 /home/synthese/geonature/cache
+        chmod -R 775 /home/synthese/geonature/web/exportshape/
+        chmod -R 775 /home/synthese/geonature/web/uploads/shapes
         
 * Créer les fichiers de configurations
  
     ::
     
-        cp /home/synthese/dev/FF-synthese/config/databases.yml.sample /home/synthese/dev/FF-synthese/config/databases.yml
-        cp /home/synthese/dev/FF-synthese/web/js/config.js.sample /home/synthese/dev/FF-synthese/web/js/config.js
-        cp /home/synthese/dev/FF-synthese/wms/wms.map.sample /home/synthese/dev/FF-synthese/wms/wms.map
+        cp /home/synthese/geonature/config/databases.yml.sample /home/synthese/geonature/config/databases.yml
+        cp /home/synthese/geonature/web/js/config.js.sample /home/synthese/geonature/web/js/config.js
+        cp /home/synthese/geonature/wms/wms.map.sample /home/synthese/geonature/wms/wms.map
 
         
 * Adapter à vos paramètres de connexion aux bases de données. Normalement seul le paramètre password est à changer
 
- ** /home/synthese/dev/FF-synthese/config/databases.yml
+ ** /home/synthese/geonature/config/databases.yml
     
     ::
     
@@ -74,21 +74,21 @@ Installation de l'application
           doctrine:
             class: sfDoctrineDatabase
             param:
-              dsn: 'pgsql:host=databases;dbname=synthese'
-              username: cartopnx
+              dsn: 'pgsql:host=databases;dbname=geonaturedb'
+              username: geonatuser
               password: monpassachanger
               
               
- ** /home/synthese/dev/FF-synthese/wms/wms.map
+ ** /home/synthese/geonature/wms/wms.map
       
     ::
     
-        host=databases dbname=synthesepn user=cartopnx password=monpassachanger
+        host=databases dbname=geonaturedb user=geonatuser password=monpassachanger
         
   adapter les paramètres de connexion à la base postgis partout ou se trouve cette chaine de caratères.
     
 
-* Adapter le contenu du fichier /home/synthese/dev/FF-synthese/web/js/config.js
+* Adapter le contenu du fichier /home/synthese/geonature/web/js/config.js
   ** Changer mon-domaine.fr par votre propre url (wms_uri, host_uri)
   ** Renseigner sa clé ign du géoportail ainsi que l'emprise spatiale de votre territoire
 
@@ -96,7 +96,7 @@ Installation de l'application
 
     ::
         
-        mkdir /home/synthese/dev/FF-synthese/web/exportshape/
+        mkdir /home/synthese/geonature/web/exportshape/
         chmod 775  exportshape/
 
 
@@ -104,7 +104,7 @@ Installation de l'application
   
     ::
     
-        cd /home/synthese/dev/FF-synthese/
+        cd /home/synthese/geonature/
         php symfony cc
 
 * Pour tester, se connecter à l'application via http://mon-domaine.fr/synthese et les login et pass admin/admin
@@ -125,7 +125,7 @@ Avec les couches suivantes :
 
 * WMTS-Géoportail - Parcelles cadastrales
 
-* WMTS-Géoportail - Plan IGN
+* WMTS-Géoportail - Cartes IGN
 
 Pour cela, il faut que vous disposiez d'un compte IGN pro. (http://professionnels.ign.fr)
 Une fois connecté au site: 
@@ -143,6 +143,6 @@ Une fois connecté au site:
 * Finisser votre commande en selectionnant les couches d'intéret et en acceptant les différentes licences.
 
 
-Une fois que votre commande est prète saisissez la valeur de la clé IGN reçut dans le fichier /home/synthese/dev/FF-synthese/web/js/config.js
+Une fois que votre commande est prète saisissez la valeur de la clé IGN reçut dans le fichier /home/synthese/geonature/web/js/config.js
 
 

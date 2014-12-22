@@ -1,6 +1,6 @@
 <?php 
 
-class sfSyntheseConfig extends sfActions
+class sfGeonatureConfig extends sfActions
 {
 	public static $id_lot_cf = 1;
 	public static $id_lot_inv = 3;
@@ -26,11 +26,11 @@ class sfSyntheseConfig extends sfActions
   
   
   //Nom des applications et titres affichés
-  public static $appname_main = 'Synthèse PNF';
-  public static $appname_cf = 'Contact faune - Synthese PN';
-  public static $appname_inv = 'Contact invertébrés - Synthese PN';
-  public static $appname_mortalite =  'Mortalite faune - Synthese PN';
-  public static $appname_synthese = 'Synthèse - Synthese PN';
+  public static $appname_main = 'GeoNature PNF';
+  public static $appname_cf = 'Contact faune - GeoNature';
+  public static $appname_inv = 'Contact invertébrés - GeoNature';
+  public static $appname_mortalite =  'Mortalite faune - GeoNature';
+  public static $appname_synthese = 'Synthèse - GeoNature';
   public static $apptitle_main = 'Parc nationaux - Gestion des données faune';
 
 }

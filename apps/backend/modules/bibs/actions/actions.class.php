@@ -64,7 +64,7 @@ class bibsActions extends sfFauneActions
 
     public function executeListTaxonsCfu(sfRequest $request)
     {
-        $srid_loc = sfSyntheseConfig::$srid_local;
+        $srid_loc = sfGeonatureConfig::$srid_local;
         $point = $request->getParameter('point');
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "SELECT DISTINCT id_unite_geo
@@ -108,7 +108,7 @@ class bibsActions extends sfFauneActions
 
     public function executeListTaxonsInvu(sfRequest $request)
     {
-        $srid_loc = sfSyntheseConfig::$srid_local;
+        $srid_loc = sfGeonatureConfig::$srid_local;
         $point = $request->getParameter('point');
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "SELECT DISTINCT id_unite_geo

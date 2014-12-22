@@ -5,40 +5,44 @@
 SERVEUR
 =======
 
-Les auteurs  :ref:`Auteurs <auteurs-section>`.
-
 
 Prérequis
 =========
 
 * Ressources minimum serveur :
 
-** 1 Go RAM
-** 10 Go disk space
+Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
 
-* disposer d'un utilisateur linux nommé 'synthese'. Le répertoire de cet utilisateur 'synthese' doit être dans /home/synthese
+
+* disposer d'un utilisateur linux nommé ``synthese``. Le répertoire de cet utilisateur ``synthese`` doit être dans ``/home/synthese``
 
     :: 
     
         sudo adduser --home /home/synthese synthese
 
 
-* récupérer le zip sur le github
+* récupérer le zip de l'application sur le Github du projet
 
     ::
     
         cd /tmp
-        wget https://github.com/PnEcrins/FF-synthese/archive/vX.Y.Z.zip
+        wget https://github.com/PnEcrins/geonature/archive/vX.Y.Z.zip
         unzip vX.Y.Z.zip
-        mkdir -p /home/synthese/dev/FF-synthese
-        cp FF-synthese-X.Y.Z/* /home/synthese/dev/FF-synthese
+        mkdir -p /home/synthese/geonature
+        cp geonature-X.Y.Z/* /home/synthese/geonature
         cd /home/synthese
 
 
 Installation et configuration du serveur
 ========================================
 
-installation pour debian 7.
+Installation pour Debian 7.
+
+:notes:
+
+    Cette documentation concerne une installation sur Debian. Pour tout autre environemment les commandes sont à adapter.
+
+.
 
   ::
   
@@ -56,7 +60,7 @@ installation pour debian 7.
   ::  
         
         sudo a2enmod rewrite
-        sudo sh -c 'echo "Include /home/synthese/dev/FF-synthese/apache/*.conf" >> /etc/apache2/apache2.conf'
+        sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
         sudo apache2ctl restart
 
 * Ajouter un alias du serveur de base de données dans le fichier /etc/host
@@ -66,12 +70,20 @@ installation pour debian 7.
         sudo sh -c 'echo "127.0.1.1       databases" >> /etc/hosts'
         sudo apache2ctl restart
 
-* Vérifier que le répertoire /tmp existe et que l'utilisateur www-data y ait accès en lecture/écriture
+:notes:
 
-mise en place de la base de données
-===================================
+    Cet alias ``databases`` permet d'identifier sur quel host l'application doit rechercher la base de données PostgreSQL
+    
+    Par défaut, PostgreSQL est en localhost (127.0.1.1)
+    
+    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   databases``
 
-* Sur debian 7 configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et Postgis (2.1)
+* Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur ``www-data`` y ait accès en lecture/écriture
+
+Installation et configuration de PosgreSQL
+==========================================
+
+* Sur Debian 7, configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et PostGIS (2.1)
 (http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html)
 
   ::  
@@ -88,18 +100,19 @@ mise en place de la base de données
         sudo apt-get install postgresql-9.3-postgis-2.1
         
 
-* Création des utilisateurs postgres
+* Création de 2 utilisateurs PostgreSQL
 
-Cet utilisateur sera le propriétaire de la base synthese et sera utilisé par l'application pour se connecté à la base.
-l'application fonctionne avec le pass 'monpassachanger' mais il est conseillé de l'adapter !
+L'utilisateur ``geonatuser`` sera le propriétaire de la base de données ``geonaturedb`` et sera utilisé par l'application pour se connecter à celle-ci.
+
+L'utilisateur ``geonatadmin`` est super utilisateur de PostgreSQL.
+
+L'application fonctionne avec le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
 
     ::
     
         su postgres
         psql
-        CREATE ROLE cartopnx WITH LOGIN PASSWORD 'monpassachanger';
-        CREATE ROLE cartoadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
+        CREATE ROLE geonatuser WITH LOGIN PASSWORD 'monpassachanger';
+        CREATE ROLE geonatadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
-        
-Voir la partie database dans la doc
         

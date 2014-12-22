@@ -6,7 +6,7 @@ SET search_path = taxonomie, pg_catalog;
 --
 -- TOC entry 3270 (class 0 OID 17759)
 -- Dependencies: 242
--- Data for Name: bib_taxref_habitats; Type: TABLE DATA; Schema: taxonomie; Owner: cartopnx
+-- Data for Name: bib_taxref_habitats; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
 --
 
 INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (1, 'Marin');
@@ -23,7 +23,7 @@ INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (8, 'Continenta
 --
 -- TOC entry 3271 (class 0 OID 17762)
 -- Dependencies: 243
--- Data for Name: bib_taxref_rangs; Type: TABLE DATA; Schema: taxonomie; Owner: cartopnx
+-- Data for Name: bib_taxref_rangs; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
 --
 
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('KD  ', 'Règne');
@@ -46,7 +46,7 @@ INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('RACE', 'Race');
 --
 -- TOC entry 3272 (class 0 OID 17765)
 -- Dependencies: 244
--- Data for Name: bib_taxref_statuts; Type: TABLE DATA; Schema: taxonomie; Owner: cartopnx
+-- Data for Name: bib_taxref_statuts; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
 --
 
 INSERT INTO bib_taxref_statuts (id_statut, nom_statut) VALUES ('A', 'Absente');
@@ -77,7 +77,7 @@ COPY import_taxref (regne, phylum, classe, ordre, famille, group1_inpn, group2_i
           cd_nom, cd_taxsup, cd_ref, rang, lb_nom, lb_auteur, nom_complet, 
           nom_valide, nom_vern, nom_vern_eng, habitat, fr, gf, mar, gua, 
           sm, sb, spm, may, epa, reu, taaf, pf, nc, wf, cli, url)
-FROM  '/home/synthese/dev/FF-synthese/data/inpn/taxref_v70.txt'
+FROM  '/home/synthese/geonature/data/inpn/taxref_v70.txt'
 WITH  CSV HEADER 
 DELIMITER E'\t';
 
@@ -100,7 +100,7 @@ cd_protection, article, intitule, protection, arrete, fichier,
 fg_afprot, niveau, cd_arrete, url, date_arrete, rang_niveau, 
 lb_article, type_protection
 )
-FROM  '/home/synthese/dev/FF-synthese/data/inpn/taxref_PROTECTION_ESPECES_TYPES_70_UTF8.csv'
+FROM  '/home/synthese/geonature/data/inpn/taxref_PROTECTION_ESPECES_TYPES_70_UTF8.csv'
 WITH  CSV HEADER 
 DELIMITER ';';
 
@@ -117,7 +117,7 @@ CREATE TABLE import_protection_especes (
 );
 
 COPY import_protection_especes
-FROM  '/home/synthese/dev/FF-synthese/data/inpn/taxref_PROTECTION_ESPECES_70_UTF8.csv'
+FROM  '/home/synthese/geonature/data/inpn/taxref_PROTECTION_ESPECES_70_UTF8.csv'
 WITH  CSV HEADER 
 DELIMITER ';';
 

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+next
+----
+
+## Changements
+
+ * Modification du nom de l'application en GeoNature
+ * Changement du nom des utilisateurs PostgreSQL
+ * Changement du nom de la base de données
+ 
+
 1.1.0 (2014-12-11)
 ------------------
 
