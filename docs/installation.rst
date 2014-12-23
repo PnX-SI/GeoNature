@@ -1,6 +1,19 @@
-============
-INSTALLATION
-============
+===========
+APPLICATION
+===========
+
+Configuration de la base de données PostgreSQL
+==============================================
+
+* mettre à jour le fichier ``config/settings.ini``
+
+    :: nano config/settings.ini
+
+Renseigner le nom de la base de données, les utilisateurs PostgreSQL et les mots de passe. Il est possible mais non conseillé de laisser les valeurs proposées par défaut. 
+
+ATTENTION : Les valeurs renseignées dans ce fichier sont utilisées par le script d'installation de la base de données ``install_db.sh``. Les utilisateurs PostgreSQL doivent être en concordance avec ceux créés lors de la dernière étape de l'installation serveur ``Création de 2 utilisateurs PostgreSQL``. 
+
+
 Création de la base de données
 ==============================
 
@@ -8,112 +21,39 @@ Création de la base de données
 
     ::
     
-        cd /home/synthese/geonature/data/inpn
-        tar -xzvf data_inpn_v7.tar.gz 
-        
-        su postgres
-        cd /home/synthese/geonature/data
-        createdb -O geonatuser geonaturedb
-        psql -d geonaturedb -c "CREATE EXTENSION postgis;"
-        psql -d geonaturedb -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-        export PGPASSWORD=monpassachanger;psql -h databases -U geonatadmin -d geonaturedb -f grant.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U geonatadmin -d geonaturedb -f inpn/data_inpn_v7_synthese.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/data_synthese_2154.sql
-        export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f 2154/data_set_synthese_2154.sql
-        exit
-        
-        rm taxref*
+        cd /home/synthese/geonature
+        sudo ./install_db.sh
 
-* Si besoin l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
+* Si besoin, l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
   
   ::
 
     export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
 
 
-
-Installation de l'application
-=============================
+Configuration de l'application
+==============================
 
 * Se loguer sur le serveur avec l'utilisateur synthese
    
 
-* Configuration du répertoire web de l'application
+* Installation et configuration de l'application
 
     ::
     
-        cd /var/www/
-        sudo ln -s /home/synthese/geonature/web/ geonature
+        cd /home/synthese/geonature
+        ./install_app.sh
 
-* Donner les droits nécessaires pour le bon fonctionnement de l'application (adapter les chemins à votre serveur)
-    
-    ::
-        
-        chmod -R 777 /home/synthese/geonature/log
-        chmod -R 777 /home/synthese/geonature/cache
-        chmod -R 775 /home/synthese/geonature/web/exportshape/
-        chmod -R 775 /home/synthese/geonature/web/uploads/shapes
-        
-* Créer les fichiers de configurations
- 
-    ::
-    
-        cp /home/synthese/geonature/config/databases.yml.sample /home/synthese/geonature/config/databases.yml
-        cp /home/synthese/geonature/web/js/config.js.sample /home/synthese/geonature/web/js/config.js
-        cp /home/synthese/geonature/wms/wms.map.sample /home/synthese/geonature/wms/wms.map
-
-        
-* Adapter à vos paramètres de connexion aux bases de données. Normalement seul le paramètre password est à changer
-
- ** /home/synthese/geonature/config/databases.yml
-    
-    ::
-    
-        all:
-          doctrine:
-            class: sfDoctrineDatabase
-            param:
-              dsn: 'pgsql:host=databases;dbname=geonaturedb'
-              username: geonatuser
-              password: monpassachanger
-              
-              
- ** /home/synthese/geonature/wms/wms.map
-      
-    ::
-    
-        host=databases dbname=geonaturedb user=geonatuser password=monpassachanger
-        
-  adapter les paramètres de connexion à la base postgis partout ou se trouve cette chaine de caratères.
-    
-
-* Adapter le contenu du fichier /home/synthese/geonature/web/js/config.js
+* Adapter le contenu du fichier web/js/config.js
   ** Changer mon-domaine.fr par votre propre url (wms_uri, host_uri)
   ** Renseigner sa clé ign du géoportail ainsi que l'emprise spatiale de votre territoire
 
-* Créer le dossier d'export shape
-
-    ::
-        
-        mkdir /home/synthese/geonature/web/exportshape/
-        chmod 775  exportshape/
-
-
-* Vider le contenu du cache symfony : (attention aux chemins de votre serveur)
-  
-    ::
-    
-        cd /home/synthese/geonature/
-        php symfony cc
-
-* Pour tester, se connecter à l'application via http://mon-domaine.fr/synthese et les login et pass admin/admin
+* Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature et les login et pass admin/admin
 
 Mise à jour de l'application
 ----------------------------
 
 * Suivre les instructions disponibles dans la doc de la release choisie
-
 
 
 Clé IGN
@@ -143,6 +83,6 @@ Une fois connecté au site:
 * Finisser votre commande en selectionnant les couches d'intéret et en acceptant les différentes licences.
 
 
-Une fois que votre commande est prète saisissez la valeur de la clé IGN reçut dans le fichier /home/synthese/geonature/web/js/config.js
+Une fois que votre commande est prète saisissez la valeur de la clé IGN reçue dans le fichier web/js/config.js
 
 

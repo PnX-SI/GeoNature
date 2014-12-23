@@ -98,15 +98,10 @@ Installation et configuration de PosgreSQL
     
         sudo apt-get install postgresql-9.3 postgresql-client-9.3
         sudo apt-get install postgresql-9.3-postgis-2.1
+        sudo adduser postgres sudo
         
 
 * Création de 2 utilisateurs PostgreSQL
-
-L'utilisateur ``geonatuser`` sera le propriétaire de la base de données ``geonaturedb`` et sera utilisé par l'application pour se connecter à celle-ci.
-
-L'utilisateur ``geonatadmin`` est super utilisateur de PostgreSQL.
-
-L'application fonctionne avec le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
 
     ::
     
@@ -116,3 +111,17 @@ L'application fonctionne avec le mot de passe ``monpassachanger`` mais il est co
         CREATE ROLE geonatadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
         
+L'utilisateur ``geonatuser`` sera le propriétaire de la base de données ``geonaturedb`` et sera utilisé par l'application pour se connecter à celle-ci.
+
+L'utilisateur ``geonatadmin`` est super utilisateur de PostgreSQL.
+
+L'application fonctionne avec par default le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
+
+Ce mot de passe, ainsi que les utilisateurs postgres créés ci-dessous ``geonatuser`` et ``geonatadmin`` sont des valeurs par défaut utiliser à plusieurs reprises dans l'application. Ils peuvent cependant être changés. S'ils doivent être changés, ils doivent l'être dans plusieurs fichiers de l'application : 
+
+    config/settings.ini
+    
+    config/databases.yml
+    
+    wms/wms.map
+    
