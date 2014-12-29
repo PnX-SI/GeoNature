@@ -338,7 +338,7 @@ application.synthese.search = function() {
 
     var initPanel = function() {
         return  {
-            title: 'Synthese Faune'
+            title: 'Synthèse des observations'
             ,layout: 'border'
             ,iconCls: 'tetras'
             ,defaults: {
