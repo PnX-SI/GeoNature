@@ -238,10 +238,6 @@ application.synthese = function() {
                 ,'famille'
                 ,'ordre'
                 ,'classe'
-                ,'nom_responsabilite_pne'
-                ,'nom_statut_migration'
-                ,'nom_importance_population'
-                ,'reproducteur'
                 ,'protections'
                 ,'no_protection'
             ]

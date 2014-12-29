@@ -21,14 +21,10 @@ class BibTaxonsTable extends Doctrine_Table
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         //requ?te optimis?e = moins 2 secondes
-        $sql = "select t.id_taxon ,t.nom_latin, t.nom_francais,t.patrimonial,t.protection_stricte,t.reproducteur,
+        $sql = "select t.id_taxon ,t.nom_latin, t.nom_francais,t.patrimonial,t.protection_stricte,
                 t.id_groupe,txr.cd_ref,txr.nom_valide,txr.famille,txr.ordre,txr.classe,
-                r.nom_responsabilite_pn,m.nom_statut_migration,i.nom_importance_population,
                 prot.protections
                 FROM taxonomie.bib_taxons t
-                JOIN taxonomie.bib_responsabilites_pn r ON r.id_responsabilite_pn = t.id_responsabilite_pn
-                JOIN taxonomie.bib_statuts_migration m ON m.id_statut_migration = t.id_statut_migration
-                JOIN taxonomie.bib_importances_population i ON i.id_importance_population = t.id_importance_population
                 JOIN taxonomie.taxref txr ON txr.cd_nom = t.cd_nom
                 LEFT JOIN (
                     SELECT a.cd_nom, array_to_string(array_agg(a.arrete||' '|| a.article||'__'||a.url) , '#'::text)  AS protections

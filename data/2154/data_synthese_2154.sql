@@ -297,48 +297,6 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 SET search_path = taxonomie, pg_catalog;
 
 --
--- TOC entry 3266 (class 0 OID 17738)
--- Dependencies: 236
--- Data for Name: bib_importances_population; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
---
-
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (9, 'inconnue', NULL);
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (1, 'inexistante', NULL);
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (2, 'anecdoctique', NULL);
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (5, 'moyenne', NULL);
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (4, 'faible', NULL);
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (3, 'localisée', NULL);
-INSERT INTO bib_importances_population (id_importance_population, nom_importance_population, desc_importance_population) VALUES (6, 'significative', NULL);
-
-
---
--- TOC entry 3267 (class 0 OID 17747)
--- Dependencies: 239
--- Data for Name: bib_responsabilites_pn; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
---
-
-INSERT INTO bib_responsabilites_pn (id_responsabilite_pn, nom_responsabilite_pn, desc_responsabilite_pn) VALUES (1, 'nulle', NULL);
-INSERT INTO bib_responsabilites_pn (id_responsabilite_pn, nom_responsabilite_pn, desc_responsabilite_pn) VALUES (2, 'faible', NULL);
-INSERT INTO bib_responsabilites_pn (id_responsabilite_pn, nom_responsabilite_pn, desc_responsabilite_pn) VALUES (3, 'moyenne', NULL);
-INSERT INTO bib_responsabilites_pn (id_responsabilite_pn, nom_responsabilite_pn, desc_responsabilite_pn) VALUES (4, 'forte', NULL);
-INSERT INTO bib_responsabilites_pn (id_responsabilite_pn, nom_responsabilite_pn, desc_responsabilite_pn) VALUES (9, 'indéterminée', NULL);
-
-
---
--- TOC entry 3269 (class 0 OID 17756)
--- Dependencies: 241
--- Data for Name: bib_statuts_migration; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
---
-
-INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, desc_statut_migration) VALUES (9, 'inconnu', NULL);
-INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, desc_statut_migration) VALUES (1, 'sédentaire', NULL);
-INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, desc_statut_migration) VALUES (2, 'migrateur-erratique-hivernant', NULL);
-INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, desc_statut_migration) VALUES (3, 'estivant', NULL);
-INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, desc_statut_migration) VALUES (4, 'disparu', NULL);
-INSERT INTO bib_statuts_migration (id_statut_migration, nom_statut_migration, desc_statut_migration) VALUES (5, 'absent', NULL);
-
-
---
 -- TOC entry 3134 (class 0 OID 126691)
 -- Dependencies: 184
 -- Data for Name: bib_groupes; Type: TABLE DATA; Schema: taxonomie; Owner: -
@@ -362,12 +320,12 @@ INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(16,'Arachnides'
 -- Data for Name: bib_taxons; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', 1, 13, false, 1, 1, 2, true, false);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)',  0, 11, true, 9, 1, 2, false, true);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758', 1, 1, false, 2, 1, 6, true, true);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758', 0, 9, false, 9, 9, 9, NULL, false);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', 0, 9, false, 9, 9, 9, NULL, false);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, id_responsabilite_pn, id_statut_migration, id_importance_population, reproducteur, protection_stricte) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', 0, 5, false, 9, 9, 9, NULL, true);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', 1, 13, false, false);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)',  0, 11, true, true);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758', 1, 1, false, true);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758', 0, 9, false, false);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', 0, 9, false, false);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', 0, 5, false, true);
 
 
 SET search_path = contactfaune, pg_catalog;

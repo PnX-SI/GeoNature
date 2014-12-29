@@ -1778,10 +1778,6 @@ CREATE TABLE bib_taxons (
     saisie_autorisee integer,
     id_groupe integer,
     patrimonial boolean DEFAULT false NOT NULL,
-    id_responsabilite_pn integer,
-    id_statut_migration integer,
-    id_importance_population integer,
-    reproducteur boolean,
     protection_stricte boolean
 );
 
@@ -2578,39 +2574,6 @@ ALTER SEQUENCE synthesefaune_id_synthese_seq OWNED BY synthesefaune.id_synthese;
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_importances_population; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_importances_population (
-    id_importance_population integer NOT NULL,
-    nom_importance_population character varying(50),
-    desc_importance_population character varying(255)
-);
-
-
---
--- Name: bib_responsabilites_pn; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_responsabilites_pn (
-    id_responsabilite_pn integer NOT NULL,
-    nom_responsabilite_pn character varying(50),
-    desc_responsabilite_pn character varying(255)
-);
-
-
---
--- Name: bib_statuts_migration; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_statuts_migration (
-    id_statut_migration integer NOT NULL,
-    nom_statut_migration character varying(50),
-    desc_statut_migration character varying(255)
-);
-
-
---
 -- Name: bib_taxref_habitats; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
@@ -3325,30 +3288,7 @@ SET search_path = taxonomie, pg_catalog;
 
 ALTER TABLE ONLY bib_groupes
     ADD CONSTRAINT pk_bib_groupe PRIMARY KEY (id_groupe);
-
-
---
--- Name: pk_bib_importances_population; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_importances_population
-    ADD CONSTRAINT pk_bib_importances_population PRIMARY KEY (id_importance_population);
-
---
--- Name: pk_bib_responsabilites_pn; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_responsabilites_pn
-    ADD CONSTRAINT pk_bib_responsabilites_pn PRIMARY KEY (id_responsabilite_pn);
-
-
---
--- Name: pk_bib_statuts_migration; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_statuts_migration
-    ADD CONSTRAINT pk_bib_statuts_migration PRIMARY KEY (id_statut_migration);
-
+    
 
 --
 -- Name: pk_bib_taxons; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -4343,35 +4283,12 @@ ALTER TABLE ONLY synthesefaune
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_taxons_id_responsabilite_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_taxons
-    ADD CONSTRAINT bib_taxons_id_responsabilite_fkey FOREIGN KEY (id_responsabilite_pn) REFERENCES bib_responsabilites_pn(id_responsabilite_pn) ON UPDATE CASCADE;
-
-
---
 -- Name: bib_taxons_id_groupe_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
 ALTER TABLE ONLY bib_taxons
     ADD CONSTRAINT bib_taxons_id_groupe_fkey FOREIGN KEY (id_groupe) REFERENCES bib_groupes(id_groupe) ON UPDATE CASCADE;
 
-
---
--- Name: bib_taxons_id_importance_pop_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_taxons
-    ADD CONSTRAINT bib_taxons_id_importance_pop_fkey FOREIGN KEY (id_importance_population) REFERENCES bib_importances_population(id_importance_population) ON UPDATE CASCADE;
-
-
---
--- Name: bib_taxons_id_migration_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_taxons
-    ADD CONSTRAINT bib_taxons_id_migration_fkey FOREIGN KEY (id_statut_migration) REFERENCES bib_statuts_migration(id_statut_migration) ON UPDATE CASCADE;
 
 --
 -- Name: fk_bib_taxons_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
@@ -5431,33 +5348,6 @@ GRANT ALL ON TABLE v_tree_taxons_synthese TO geonatuser;
 
 
 SET search_path = taxonomie, pg_catalog;
-
---
--- Name: bib_importances_population; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_importances_population FROM PUBLIC;
-REVOKE ALL ON TABLE bib_importances_population FROM geonatuser;
-GRANT ALL ON TABLE bib_importances_population TO geonatuser;
-
-
---
--- Name: bib_responsabilites_pn; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_responsabilites_pn FROM PUBLIC;
-REVOKE ALL ON TABLE bib_responsabilites_pn FROM geonatuser;
-GRANT ALL ON TABLE bib_responsabilites_pn TO geonatuser;
-
-
---
--- Name: bib_statuts_migration; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_statuts_migration FROM PUBLIC;
-REVOKE ALL ON TABLE bib_statuts_migration FROM geonatuser;
-GRANT ALL ON TABLE bib_statuts_migration TO geonatuser;
-
 
 --
 -- Name: bib_taxref_habitats; Type: ACL; Schema: taxonomie; Owner: -

@@ -276,11 +276,6 @@ application.synthese.search = function() {
                 ,'<tpl if="protection_stricte==true"><p style="color:grey;"><b>L\'espèce dispose d\'un statut de protection</b></tpl>'
                 ,'<tpl if="patrimonial==false"><p style="color:grey;">L\'espèce n\'est pas patrimoniale pour '+struc_abregee+'</tpl>'
                 ,'<tpl if="patrimonial==true"><p style="color:grey;"><b>L\'espèce est patrimoniale pour '+struc_abregee+'</b></tpl>'
-                ,'<tpl if="nom_responsabilite_pne">, la responsabilité du '+struc_abregee+' pour cette espèce est {nom_responsabilite_pne}</tpl>'
-                ,'<tpl if="nom_importance_population">, la part de sa population sur le territoire de '+struc_abregee+' est {nom_importance_population}</tpl>'
-                ,'<tpl if="reproducteur==true">, l\'espèce se reproduit sur le territoire de '+struc_abregee+'</tpl>'
-                ,'<tpl if="reproducteur==false">, l\'espèce ne se reproduit pas sur le territoire de '+struc_abregee+'</tpl>'
-                ,'<tpl if="nom_statut_migration">, son statut de migrateur est : {nom_statut_migration}</tpl>'
                 ,'</p>'
             )
             ,new Ext.XTemplate(
@@ -312,10 +307,6 @@ application.synthese.search = function() {
 	        fiche.data.famille = rec.data.famille;
 	        fiche.data.ordre = rec.data.ordre;
 	        fiche.data.classe = rec.data.classe;
-	        fiche.data.nom_responsabilite_pne = rec.data.nom_responsabilite_pne;
-	        fiche.data.nom_statut_migration = rec.data.nom_statut_migration;
-	        fiche.data.nom_importance_population = rec.data.nom_importance_population;
-	        fiche.data.reproducteur = rec.data.reproducteur;
 	        fiche.data.protections = rec.data.protections;
 	        fiche.data.protection_stricte = rec.data.protection_stricte;
 	        

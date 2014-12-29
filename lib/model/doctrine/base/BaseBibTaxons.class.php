@@ -8,21 +8,14 @@
  * @property integer $id_taxon
  * @property integer $cd_nom
  * @property integer $id_groupe
- * @property integer $id_importance_population
- * @property integer $id_responsabilite_pn
- * @property integer $id_statut_migration
  * @property string $nom_latin
  * @property string $nom_francais
  * @property string $auteur
  * @property integer $saisie_autorisee
  * @property boolean $patrimonial
  * @property boolean $protection_stricte
- * @property boolean $reproducteur
  * @property BibGroupes $BibGroupes
  * @property Taxref $Taxref
- * @property BibImportancesPopulation $BibImportancesPopulation
- * @property BibResponsabilitesPn $BibResponsabilitesPn
- * @property BibStatutsMigration $BibStatutsMigration
  * @property Doctrine_Collection $CorMessageTaxonCf
  * @property Doctrine_Collection $CorMessageTaxonInv
  * @property Doctrine_Collection $CorUniteTaxon
@@ -34,62 +27,48 @@
  * @property Doctrine_Collection $VNomadeTaxonsInv
  * @property Doctrine_Collection $VTreeTaxonsSynthese
  * 
- * @method integer                  getIdTaxon()                  Returns the current record's "id_taxon" value
- * @method integer                  getCdNom()                    Returns the current record's "cd_nom" value
- * @method integer                  getIdGroupe()                 Returns the current record's "id_groupe" value
- * @method integer                  getIdImportancePopulation()   Returns the current record's "id_importance_population" value
- * @method integer                  getIdResponsabilitePn()       Returns the current record's "id_responsabilite_pn" value
- * @method integer                  getIdStatutMigration()        Returns the current record's "id_statut_migration" value
- * @method string                   getNomLatin()                 Returns the current record's "nom_latin" value
- * @method string                   getNomFrancais()              Returns the current record's "nom_francais" value
- * @method string                   getAuteur()                   Returns the current record's "auteur" value
- * @method integer                  getSaisieAutorisee()          Returns the current record's "saisie_autorisee" value
- * @method boolean                  getPatrimonial()              Returns the current record's "patrimonial" value
- * @method boolean                  getProtectionStricte()        Returns the current record's "protection_stricte" value
- * @method boolean                  getReproducteur()             Returns the current record's "reproducteur" value
- * @method BibGroupes               getBibGroupes()               Returns the current record's "BibGroupes" value
- * @method Taxref                   getTaxref()                   Returns the current record's "Taxref" value
- * @method BibImportancesPopulation getBibImportancesPopulation() Returns the current record's "BibImportancesPopulation" value
- * @method BibResponsabilitesPn     getBibResponsabilitesPn()     Returns the current record's "BibResponsabilitesPn" value
- * @method BibStatutsMigration      getBibStatutsMigration()      Returns the current record's "BibStatutsMigration" value
- * @method Doctrine_Collection      getCorMessageTaxonCf()        Returns the current record's "CorMessageTaxonCf" collection
- * @method Doctrine_Collection      getCorMessageTaxonInv()       Returns the current record's "CorMessageTaxonInv" collection
- * @method Doctrine_Collection      getCorUniteTaxon()            Returns the current record's "CorUniteTaxon" collection
- * @method Doctrine_Collection      getCorUniteTaxonInv()         Returns the current record's "CorUniteTaxonInv" collection
- * @method Doctrine_Collection      getSynthesefaune()            Returns the current record's "Synthesefaune" collection
- * @method Doctrine_Collection      getTRelevesCf()               Returns the current record's "TRelevesCf" collection
- * @method Doctrine_Collection      getTRelevesInv()              Returns the current record's "TRelevesInv" collection
- * @method Doctrine_Collection      getVNomadeTaxonsFaune()       Returns the current record's "VNomadeTaxonsFaune" collection
- * @method Doctrine_Collection      getVNomadeTaxonsInv()         Returns the current record's "VNomadeTaxonsInv" collection
- * @method Doctrine_Collection      getVTreeTaxonsSynthese()      Returns the current record's "VTreeTaxonsSynthese" collection
- * @method BibTaxons                setIdTaxon()                  Sets the current record's "id_taxon" value
- * @method BibTaxons                setCdNom()                    Sets the current record's "cd_nom" value
- * @method BibTaxons                setIdGroupe()                 Sets the current record's "id_groupe" value
- * @method BibTaxons                setIdImportancePopulation()   Sets the current record's "id_importance_population" value
- * @method BibTaxons                setIdResponsabilitePn()       Sets the current record's "id_responsabilite_pn" value
- * @method BibTaxons                setIdStatutMigration()        Sets the current record's "id_statut_migration" value
- * @method BibTaxons                setNomLatin()                 Sets the current record's "nom_latin" value
- * @method BibTaxons                setNomFrancais()              Sets the current record's "nom_francais" value
- * @method BibTaxons                setAuteur()                   Sets the current record's "auteur" value
- * @method BibTaxons                setSaisieAutorisee()          Sets the current record's "saisie_autorisee" value
- * @method BibTaxons                setPatrimonial()              Sets the current record's "patrimonial" value
- * @method BibTaxons                setProtectionStricte()        Sets the current record's "protection_stricte" value
- * @method BibTaxons                setReproducteur()             Sets the current record's "reproducteur" value
- * @method BibTaxons                setBibGroupes()               Sets the current record's "BibGroupes" value
- * @method BibTaxons                setTaxref()                   Sets the current record's "Taxref" value
- * @method BibTaxons                setBibImportancesPopulation() Sets the current record's "BibImportancesPopulation" value
- * @method BibTaxons                setBibResponsabilitesPn()     Sets the current record's "BibResponsabilitesPn" value
- * @method BibTaxons                setBibStatutsMigration()      Sets the current record's "BibStatutsMigration" value
- * @method BibTaxons                setCorMessageTaxonCf()        Sets the current record's "CorMessageTaxonCf" collection
- * @method BibTaxons                setCorMessageTaxonInv()       Sets the current record's "CorMessageTaxonInv" collection
- * @method BibTaxons                setCorUniteTaxon()            Sets the current record's "CorUniteTaxon" collection
- * @method BibTaxons                setCorUniteTaxonInv()         Sets the current record's "CorUniteTaxonInv" collection
- * @method BibTaxons                setSynthesefaune()            Sets the current record's "Synthesefaune" collection
- * @method BibTaxons                setTRelevesCf()               Sets the current record's "TRelevesCf" collection
- * @method BibTaxons                setTRelevesInv()              Sets the current record's "TRelevesInv" collection
- * @method BibTaxons                setVNomadeTaxonsFaune()       Sets the current record's "VNomadeTaxonsFaune" collection
- * @method BibTaxons                setVNomadeTaxonsInv()         Sets the current record's "VNomadeTaxonsInv" collection
- * @method BibTaxons                setVTreeTaxonsSynthese()      Sets the current record's "VTreeTaxonsSynthese" collection
+ * @method integer             getIdTaxon()             Returns the current record's "id_taxon" value
+ * @method integer             getCdNom()               Returns the current record's "cd_nom" value
+ * @method integer             getIdGroupe()            Returns the current record's "id_groupe" value
+ * @method string              getNomLatin()            Returns the current record's "nom_latin" value
+ * @method string              getNomFrancais()         Returns the current record's "nom_francais" value
+ * @method string              getAuteur()              Returns the current record's "auteur" value
+ * @method integer             getSaisieAutorisee()     Returns the current record's "saisie_autorisee" value
+ * @method boolean             getPatrimonial()         Returns the current record's "patrimonial" value
+ * @method boolean             getProtectionStricte()   Returns the current record's "protection_stricte" value
+ * @method BibGroupes          getBibGroupes()          Returns the current record's "BibGroupes" value
+ * @method Taxref              getTaxref()              Returns the current record's "Taxref" value
+ * @method Doctrine_Collection getCorMessageTaxonCf()   Returns the current record's "CorMessageTaxonCf" collection
+ * @method Doctrine_Collection getCorMessageTaxonInv()  Returns the current record's "CorMessageTaxonInv" collection
+ * @method Doctrine_Collection getCorUniteTaxon()       Returns the current record's "CorUniteTaxon" collection
+ * @method Doctrine_Collection getCorUniteTaxonInv()    Returns the current record's "CorUniteTaxonInv" collection
+ * @method Doctrine_Collection getSynthesefaune()       Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getTRelevesCf()          Returns the current record's "TRelevesCf" collection
+ * @method Doctrine_Collection getTRelevesInv()         Returns the current record's "TRelevesInv" collection
+ * @method Doctrine_Collection getVNomadeTaxonsFaune()  Returns the current record's "VNomadeTaxonsFaune" collection
+ * @method Doctrine_Collection getVNomadeTaxonsInv()    Returns the current record's "VNomadeTaxonsInv" collection
+ * @method Doctrine_Collection getVTreeTaxonsSynthese() Returns the current record's "VTreeTaxonsSynthese" collection
+ * @method BibTaxons           setIdTaxon()             Sets the current record's "id_taxon" value
+ * @method BibTaxons           setCdNom()               Sets the current record's "cd_nom" value
+ * @method BibTaxons           setIdGroupe()            Sets the current record's "id_groupe" value
+ * @method BibTaxons           setNomLatin()            Sets the current record's "nom_latin" value
+ * @method BibTaxons           setNomFrancais()         Sets the current record's "nom_francais" value
+ * @method BibTaxons           setAuteur()              Sets the current record's "auteur" value
+ * @method BibTaxons           setSaisieAutorisee()     Sets the current record's "saisie_autorisee" value
+ * @method BibTaxons           setPatrimonial()         Sets the current record's "patrimonial" value
+ * @method BibTaxons           setProtectionStricte()   Sets the current record's "protection_stricte" value
+ * @method BibTaxons           setBibGroupes()          Sets the current record's "BibGroupes" value
+ * @method BibTaxons           setTaxref()              Sets the current record's "Taxref" value
+ * @method BibTaxons           setCorMessageTaxonCf()   Sets the current record's "CorMessageTaxonCf" collection
+ * @method BibTaxons           setCorMessageTaxonInv()  Sets the current record's "CorMessageTaxonInv" collection
+ * @method BibTaxons           setCorUniteTaxon()       Sets the current record's "CorUniteTaxon" collection
+ * @method BibTaxons           setCorUniteTaxonInv()    Sets the current record's "CorUniteTaxonInv" collection
+ * @method BibTaxons           setSynthesefaune()       Sets the current record's "Synthesefaune" collection
+ * @method BibTaxons           setTRelevesCf()          Sets the current record's "TRelevesCf" collection
+ * @method BibTaxons           setTRelevesInv()         Sets the current record's "TRelevesInv" collection
+ * @method BibTaxons           setVNomadeTaxonsFaune()  Sets the current record's "VNomadeTaxonsFaune" collection
+ * @method BibTaxons           setVNomadeTaxonsInv()    Sets the current record's "VNomadeTaxonsInv" collection
+ * @method BibTaxons           setVTreeTaxonsSynthese() Sets the current record's "VTreeTaxonsSynthese" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -111,18 +90,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'length' => 4,
              ));
         $this->hasColumn('id_groupe', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             ));
-        $this->hasColumn('id_importance_population', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             ));
-        $this->hasColumn('id_responsabilite_pn', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             ));
-        $this->hasColumn('id_statut_migration', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              ));
@@ -150,10 +117,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'type' => 'boolean',
              'length' => 1,
              ));
-        $this->hasColumn('reproducteur', 'boolean', 1, array(
-             'type' => 'boolean',
-             'length' => 1,
-             ));
     }
 
     public function setUp()
@@ -166,18 +129,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
         $this->hasOne('Taxref', array(
              'local' => 'cd_nom',
              'foreign' => 'cd_nom'));
-
-        $this->hasOne('BibImportancesPopulation', array(
-             'local' => 'id_importance_population',
-             'foreign' => 'id_importance_population'));
-
-        $this->hasOne('BibResponsabilitesPn', array(
-             'local' => 'id_responsabilite_pn',
-             'foreign' => 'id_responsabilite_pn'));
-
-        $this->hasOne('BibStatutsMigration', array(
-             'local' => 'id_statut_migration',
-             'foreign' => 'id_statut_migration'));
 
         $this->hasMany('CorMessageTaxonCf', array(
              'local' => 'id_taxon',

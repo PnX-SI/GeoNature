@@ -44,14 +44,6 @@ BibDroits:
       primary: true
     nom_droit: string(50)
     desc_droit: string
-BibImportancesPopulation:
-  tableName: taxonomie.bib_importances_population
-  columns:
-    id_importance_population:
-      type: integer(4)
-      primary: true
-    nom_importance_population: string(50)
-    desc_importance_population: string(255)
 BibLots:
   tableName: meta.bib_lots
   columns:
@@ -136,22 +128,6 @@ BibSources:
     db_schema: string(50)
     db_table: string(50)
     db_field: string(50)
-BibResponsabilitesPn:
-  tableName: taxonomie.bib_responsabilites_pn
-  columns:
-    id_responsabilite_pn:
-      type: integer(4)
-      primary: true
-    nom_responsabilite_pn: string(50)
-    desc_responsabilite_pn: string(255)
-BibStatutsMigration:
-  tableName: taxonomie.bib_statuts_migration
-  columns:
-    id_statut_migration:
-      type: integer(4)
-      primary: true
-    nom_statut_migration: string(50)
-    desc_statut_migration: string(255)
 BibTaxons:
   tableName: taxonomie.bib_taxons
   columns:
@@ -160,16 +136,12 @@ BibTaxons:
       primary: true
     cd_nom: integer(4)
     id_groupe: integer(4)
-    id_importance_population: integer(4)
-    id_responsabilite_pn: integer(4)
-    id_statut_migration: integer(4)
     nom_latin: string(100)
     nom_francais: string(50)
     auteur: string(50)
     saisie_autorisee: integer(4)
     patrimonial: boolean(1)
     protection_stricte: boolean(1)
-    reproducteur: boolean(1)
   relations:
     BibGroupes:
       class: BibGroupes
@@ -180,21 +152,6 @@ BibTaxons:
       class: Taxref
       local: cd_nom
       foreign: cd_nom
-      foreignAlias: BibTaxons
-    BibImportancesPopulation:
-      class: BibImportancesPopulation
-      local: id_importance_population
-      foreign: id_importance_population
-      foreignAlias: BibTaxons
-    BibResponsabilitesPn:
-      class: BibResponsabilitesPn
-      local: id_responsabilite_pn
-      foreign: id_responsabilite_pn
-      foreignAlias: BibTaxons
-    BibStatutsMigration:
-      class: BibStatutsMigration
-      local: id_statut_migration
-      foreign: id_statut_migration
       foreignAlias: BibTaxons
 BibTaxrefHabitats:
   tableName: taxonomie.bib_taxref_habitats
