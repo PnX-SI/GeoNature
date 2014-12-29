@@ -3,6 +3,8 @@ GeoNature
 
 Application de synthèse des observations faune et flore.
 
+GeoNature est une application permettant de regrouper l'ensemble des données provenant des **protocoles Faune et Flore**, de saisir les protocoles de **contact occasionnel** et de consulter l'ensemble de ces données dans une application de **synthèse**.
+
 Elle regroupe toutes les données des différents protocoles FAUNE et FLORE en les limitant au niveau QUI QUOI QUAND OU.
 
 Présentation
