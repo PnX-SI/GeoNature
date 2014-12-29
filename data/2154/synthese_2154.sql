@@ -1775,21 +1775,14 @@ CREATE TABLE bib_taxons (
     nom_latin character varying(100),
     nom_francais character varying(255),
     auteur character varying(200),
-    syn_fr character varying(80),
-    syn_la character varying(200),
-    prot_fv integer,
+    saisie_autorisee integer,
     id_groupe integer,
-    id_frequence character(1),
-    sap boolean,
     patrimonial boolean DEFAULT false NOT NULL,
     id_responsabilite_pn integer,
     id_statut_migration integer,
     id_importance_population integer,
     reproducteur boolean,
-    protection_stricte boolean,
-    nom_latin_avant_v6 character varying(100),
-    nom_francais_avant_v6 character varying(50),
-    cd_nom_avant_v6 integer
+    protection_stricte boolean
 );
 
 
@@ -1861,7 +1854,7 @@ LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
 LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
 JOIN contactfaune.v_nomade_classes g ON g.id_classe = t.id_groupe
 JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-WHERE t.prot_fv = 1
+WHERE t.saisie_autorisee = 1
 ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, t.patrimonial, m.texte_message_cf;
 
 
@@ -2583,16 +2576,6 @@ CREATE SEQUENCE synthesefaune_id_synthese_seq
 ALTER SEQUENCE synthesefaune_id_synthese_seq OWNED BY synthesefaune.id_synthese;
 
 SET search_path = taxonomie, pg_catalog;
-
---
--- Name: bib_frequences; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_frequences (
-    id_frequence character(1) NOT NULL,
-    frequence character varying(20) NOT NULL
-);
-
 
 --
 -- Name: bib_importances_population; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
@@ -3342,14 +3325,6 @@ SET search_path = taxonomie, pg_catalog;
 
 ALTER TABLE ONLY bib_groupes
     ADD CONSTRAINT pk_bib_groupe PRIMARY KEY (id_groupe);
-
-
---
--- Name: pk_bib_frequence; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_frequences
-    ADD CONSTRAINT pk_bib_frequence PRIMARY KEY (id_frequence);
 
 
 --
@@ -5456,15 +5431,6 @@ GRANT ALL ON TABLE v_tree_taxons_synthese TO geonatuser;
 
 
 SET search_path = taxonomie, pg_catalog;
-
---
--- Name: bib_frequences; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_frequences FROM PUBLIC;
-REVOKE ALL ON TABLE bib_frequences FROM geonatuser;
-GRANT ALL ON TABLE bib_frequences TO geonatuser;
-
 
 --
 -- Name: bib_importances_population; Type: ACL; Schema: taxonomie; Owner: -

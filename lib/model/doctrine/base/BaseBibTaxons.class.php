@@ -8,17 +8,13 @@
  * @property integer $id_taxon
  * @property integer $cd_nom
  * @property integer $id_groupe
- * @property string $id_frequence
  * @property integer $id_importance_population
  * @property integer $id_responsabilite_pn
  * @property integer $id_statut_migration
  * @property string $nom_latin
  * @property string $nom_francais
  * @property string $auteur
- * @property string $syn_fr
- * @property string $syn_la
- * @property integer $prot_fv
- * @property boolean $sap
+ * @property integer $saisie_autorisee
  * @property boolean $patrimonial
  * @property boolean $protection_stricte
  * @property boolean $reproducteur
@@ -41,17 +37,13 @@
  * @method integer                  getIdTaxon()                  Returns the current record's "id_taxon" value
  * @method integer                  getCdNom()                    Returns the current record's "cd_nom" value
  * @method integer                  getIdGroupe()                 Returns the current record's "id_groupe" value
- * @method string                   getIdFrequence()              Returns the current record's "id_frequence" value
  * @method integer                  getIdImportancePopulation()   Returns the current record's "id_importance_population" value
  * @method integer                  getIdResponsabilitePn()       Returns the current record's "id_responsabilite_pn" value
  * @method integer                  getIdStatutMigration()        Returns the current record's "id_statut_migration" value
  * @method string                   getNomLatin()                 Returns the current record's "nom_latin" value
  * @method string                   getNomFrancais()              Returns the current record's "nom_francais" value
  * @method string                   getAuteur()                   Returns the current record's "auteur" value
- * @method string                   getSynFr()                    Returns the current record's "syn_fr" value
- * @method string                   getSynLa()                    Returns the current record's "syn_la" value
- * @method integer                  getProtFv()                   Returns the current record's "prot_fv" value
- * @method boolean                  getSap()                      Returns the current record's "sap" value
+ * @method integer                  getSaisieAutorisee()          Returns the current record's "saisie_autorisee" value
  * @method boolean                  getPatrimonial()              Returns the current record's "patrimonial" value
  * @method boolean                  getProtectionStricte()        Returns the current record's "protection_stricte" value
  * @method boolean                  getReproducteur()             Returns the current record's "reproducteur" value
@@ -73,17 +65,13 @@
  * @method BibTaxons                setIdTaxon()                  Sets the current record's "id_taxon" value
  * @method BibTaxons                setCdNom()                    Sets the current record's "cd_nom" value
  * @method BibTaxons                setIdGroupe()                 Sets the current record's "id_groupe" value
- * @method BibTaxons                setIdFrequence()              Sets the current record's "id_frequence" value
  * @method BibTaxons                setIdImportancePopulation()   Sets the current record's "id_importance_population" value
  * @method BibTaxons                setIdResponsabilitePn()       Sets the current record's "id_responsabilite_pn" value
  * @method BibTaxons                setIdStatutMigration()        Sets the current record's "id_statut_migration" value
  * @method BibTaxons                setNomLatin()                 Sets the current record's "nom_latin" value
  * @method BibTaxons                setNomFrancais()              Sets the current record's "nom_francais" value
  * @method BibTaxons                setAuteur()                   Sets the current record's "auteur" value
- * @method BibTaxons                setSynFr()                    Sets the current record's "syn_fr" value
- * @method BibTaxons                setSynLa()                    Sets the current record's "syn_la" value
- * @method BibTaxons                setProtFv()                   Sets the current record's "prot_fv" value
- * @method BibTaxons                setSap()                      Sets the current record's "sap" value
+ * @method BibTaxons                setSaisieAutorisee()          Sets the current record's "saisie_autorisee" value
  * @method BibTaxons                setPatrimonial()              Sets the current record's "patrimonial" value
  * @method BibTaxons                setProtectionStricte()        Sets the current record's "protection_stricte" value
  * @method BibTaxons                setReproducteur()             Sets the current record's "reproducteur" value
@@ -126,10 +114,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('id_frequence', 'string', 1, array(
-             'type' => 'string',
-             'length' => 1,
-             ));
         $this->hasColumn('id_importance_population', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
@@ -154,21 +138,9 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'type' => 'string',
              'length' => 50,
              ));
-        $this->hasColumn('syn_fr', 'string', 80, array(
-             'type' => 'string',
-             'length' => 80,
-             ));
-        $this->hasColumn('syn_la', 'string', 80, array(
-             'type' => 'string',
-             'length' => 80,
-             ));
-        $this->hasColumn('prot_fv', 'integer', 4, array(
+        $this->hasColumn('saisie_autorisee', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
-             ));
-        $this->hasColumn('sap', 'boolean', 1, array(
-             'type' => 'boolean',
-             'length' => 1,
              ));
         $this->hasColumn('patrimonial', 'boolean', 1, array(
              'type' => 'boolean',
