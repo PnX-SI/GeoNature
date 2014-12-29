@@ -8,18 +8,18 @@
  * @property integer $id_importance_population
  * @property string $nom_importance_population
  * @property string $desc_importance_population
- * @property Doctrine_Collection $BibTaxonsFaunePn
+ * @property Doctrine_Collection $BibTaxons
  * 
  * @method integer                  getIdImportancePopulation()     Returns the current record's "id_importance_population" value
  * @method string                   getNomImportancePopulation()    Returns the current record's "nom_importance_population" value
  * @method string                   getDescImportancePopulation()   Returns the current record's "desc_importance_population" value
- * @method Doctrine_Collection      getBibTaxonsFaunePn()           Returns the current record's "BibTaxonsFaunePn" collection
+ * @method Doctrine_Collection      getBibTaxons()                  Returns the current record's "BibTaxons" collection
  * @method BibImportancesPopulation setIdImportancePopulation()     Sets the current record's "id_importance_population" value
  * @method BibImportancesPopulation setNomImportancePopulation()    Sets the current record's "nom_importance_population" value
  * @method BibImportancesPopulation setDescImportancePopulation()   Sets the current record's "desc_importance_population" value
- * @method BibImportancesPopulation setBibTaxonsFaunePn()           Sets the current record's "BibTaxonsFaunePn" collection
+ * @method BibImportancesPopulation setBibTaxons()                  Sets the current record's "BibTaxons" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -47,7 +47,7 @@ abstract class BaseBibImportancesPopulation extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('BibTaxonsFaunePn', array(
+        $this->hasMany('BibTaxons', array(
              'local' => 'id_importance_population',
              'foreign' => 'id_importance_population'));
     }

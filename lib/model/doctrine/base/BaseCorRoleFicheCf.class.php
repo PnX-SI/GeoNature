@@ -19,7 +19,7 @@
  * @method CorRoleFicheCf setTRoles()    Sets the current record's "TRoles" value
  * @method CorRoleFicheCf setTFichesCf() Sets the current record's "TFichesCf" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

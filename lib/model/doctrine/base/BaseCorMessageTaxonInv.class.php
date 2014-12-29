@@ -7,19 +7,19 @@
  * 
  * @property integer $id_message_inv
  * @property integer $id_taxon
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property BibMessagesInv $BibMessagesCf
  * 
- * @method integer            getIdMessageInv()     Returns the current record's "id_message_inv" value
- * @method integer            getIdTaxon()          Returns the current record's "id_taxon" value
- * @method BibTaxonsFaunePn   getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" value
- * @method BibMessagesInv     getBibMessagesCf()    Returns the current record's "BibMessagesCf" value
- * @method CorMessageTaxonInv setIdMessageInv()     Sets the current record's "id_message_inv" value
- * @method CorMessageTaxonInv setIdTaxon()          Sets the current record's "id_taxon" value
- * @method CorMessageTaxonInv setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" value
- * @method CorMessageTaxonInv setBibMessagesCf()    Sets the current record's "BibMessagesCf" value
+ * @method integer            getIdMessageInv()   Returns the current record's "id_message_inv" value
+ * @method integer            getIdTaxon()        Returns the current record's "id_taxon" value
+ * @method BibTaxons          getBibTaxons()      Returns the current record's "BibTaxons" value
+ * @method BibMessagesInv     getBibMessagesCf()  Returns the current record's "BibMessagesCf" value
+ * @method CorMessageTaxonInv setIdMessageInv()   Sets the current record's "id_message_inv" value
+ * @method CorMessageTaxonInv setIdTaxon()        Sets the current record's "id_taxon" value
+ * @method CorMessageTaxonInv setBibTaxons()      Sets the current record's "BibTaxons" value
+ * @method CorMessageTaxonInv setBibMessagesCf()  Sets the current record's "BibMessagesCf" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -44,7 +44,7 @@ abstract class BaseCorMessageTaxonInv extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

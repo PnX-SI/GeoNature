@@ -28,7 +28,7 @@
  * @method TaxrefProtectionEspeces setPrecisions()        Sets the current record's "precisions" value
  * @method TaxrefProtectionEspeces setCdNomCite()         Sets the current record's "cd_nom_cite" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

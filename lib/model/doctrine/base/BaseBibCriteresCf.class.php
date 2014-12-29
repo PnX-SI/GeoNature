@@ -28,7 +28,7 @@
  * @method BibCriteresCf       setCorCritereGroupe()    Sets the current record's "CorCritereGroupe" collection
  * @method BibCriteresCf       setTRelevesCf()          Sets the current record's "TRelevesCf" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

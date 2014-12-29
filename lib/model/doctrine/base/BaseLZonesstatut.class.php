@@ -22,7 +22,7 @@
  * @method LZonesstatut        setTheGeom()                Sets the current record's "the_geom" value
  * @method LZonesstatut        setCorZonesstatutSynthese() Sets the current record's "CorZonesstatutSynthese" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

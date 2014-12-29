@@ -152,8 +152,8 @@ BibStatutsMigration:
       primary: true
     nom_statut_migration: string(50)
     desc_statut_migration: string(255)
-BibTaxonsFaunePn:
-  tableName: taxonomie.bib_taxons_faune_pn
+BibTaxons:
+  tableName: taxonomie.bib_taxons
   columns:
     id_taxon:
       type: integer(4)
@@ -179,27 +179,27 @@ BibTaxonsFaunePn:
       class: BibGroupes
       local: id_groupe
       foreign: id_groupe
-      foreignAlias: BibTaxonsFaunePn
+      foreignAlias: BibTaxons
     Taxref:
       class: Taxref
       local: cd_nom
       foreign: cd_nom
-      foreignAlias: BibTaxonsFaunePn
+      foreignAlias: BibTaxons
     BibImportancesPopulation:
       class: BibImportancesPopulation
       local: id_importance_population
       foreign: id_importance_population
-      foreignAlias: BibTaxonsFaunePn
+      foreignAlias: BibTaxons
     BibResponsabilitesPn:
       class: BibResponsabilitesPn
       local: id_responsabilite_pn
       foreign: id_responsabilite_pn
-      foreignAlias: BibTaxonsFaunePn
+      foreignAlias: BibTaxons
     BibStatutsMigration:
       class: BibStatutsMigration
       local: id_statut_migration
       foreign: id_statut_migration
-      foreignAlias: BibTaxonsFaunePn
+      foreignAlias: BibTaxons
 BibTaxrefHabitats:
   tableName: taxonomie.bib_taxref_habitats
   columns:
@@ -244,8 +244,8 @@ CorMessageTaxonCf:
       type: integer(4)
       primary: true
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorMessageTaxonCf
@@ -264,8 +264,8 @@ CorMessageTaxonInv:
       type: integer(4)
       primary: true
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorMessageTaxonInv
@@ -411,8 +411,8 @@ CorUniteTaxon:
     couleur: string(10)
     nb_obs: integer(4)
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorUniteTaxon
@@ -434,8 +434,8 @@ CorUniteTaxonInv:
     couleur: string(10)
     nb_obs: integer(4)
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorUniteTaxonInv
@@ -639,8 +639,8 @@ Synthesefaune:
       local: cd_nom
       foreign: cd_nom
       foreignAlias: Synthesefaune
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: Synthesefaune
@@ -854,8 +854,8 @@ TRelevesCf:
       local: id_critere_cf
       foreign: id_critere_cf
       foreignAlias: TRelevesCf
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: TRelevesCf
@@ -892,8 +892,8 @@ TRelevesInv:
       local: id_critere_inv
       foreign: id_critere_inv
       foreignAlias: TRelevesInv
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: TRelevesInv
@@ -998,8 +998,8 @@ VNomadeTaxonsFaune:
     contactfaune: boolean(1)
     mortalite: boolean(1)
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: VNomadeTaxonsFaune
@@ -1026,8 +1026,8 @@ VNomadeTaxonsInv:
     patrimonial: boolean(1)
     message: string(255)
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: VNomadeTaxonsInv
@@ -1062,8 +1062,8 @@ VTreeTaxonsSynthese:
     patrimonial: boolean(1)
     protection_stricte: boolean(1)
   relations:
-    BibTaxonsFaunePn:
-      class: BibTaxonsFaunePn
+    BibTaxons:
+      class: BibTaxons
       local: id_taxon
       foreign: id_taxon
       foreignAlias: VTreeTaxonsSynthese

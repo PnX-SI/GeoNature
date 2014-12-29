@@ -20,7 +20,7 @@
  * @property string $nom_famille
  * @property boolean $patrimonial
  * @property boolean $protection_stricte
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * 
  * @method integer             getIdTaxon()            Returns the current record's "id_taxon" value
  * @method integer             getCdRef()              Returns the current record's "cd_ref" value
@@ -37,7 +37,7 @@
  * @method string              getNomFamille()         Returns the current record's "nom_famille" value
  * @method boolean             getPatrimonial()        Returns the current record's "patrimonial" value
  * @method boolean             getProtectionStricte()  Returns the current record's "protection_stricte" value
- * @method BibTaxonsFaunePn    getBibTaxonsFaunePn()   Returns the current record's "BibTaxonsFaunePn" value
+ * @method BibTaxons           getBibTaxons()          Returns the current record's "BibTaxons" value
  * @method VTreeTaxonsSynthese setIdTaxon()            Sets the current record's "id_taxon" value
  * @method VTreeTaxonsSynthese setCdRef()              Sets the current record's "cd_ref" value
  * @method VTreeTaxonsSynthese setNomLatin()           Sets the current record's "nom_latin" value
@@ -53,9 +53,9 @@
  * @method VTreeTaxonsSynthese setNomFamille()         Sets the current record's "nom_famille" value
  * @method VTreeTaxonsSynthese setPatrimonial()        Sets the current record's "patrimonial" value
  * @method VTreeTaxonsSynthese setProtectionStricte()  Sets the current record's "protection_stricte" value
- * @method VTreeTaxonsSynthese setBibTaxonsFaunePn()   Sets the current record's "BibTaxonsFaunePn" value
+ * @method VTreeTaxonsSynthese setBibTaxons()          Sets the current record's "BibTaxons" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -131,7 +131,7 @@ abstract class BaseVTreeTaxonsSynthese extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
     }

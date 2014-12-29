@@ -19,7 +19,7 @@
  * @method BibProgrammes       setDescProgramme()  Sets the current record's "desc_programme" value
  * @method BibProgrammes       setBibLots()        Sets the current record's "BibLots" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

@@ -15,38 +15,38 @@
  * @property string $message
  * @property boolean $contactfaune
  * @property boolean $mortalite
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property CorUniteTaxon $CorUniteTaxon
  * @property TRelevesCf $TRelevesCf
  * 
- * @method integer            getIdTaxon()          Returns the current record's "id_taxon" value
- * @method integer            getCdRef()            Returns the current record's "cd_ref" value
- * @method string             getNomLatin()         Returns the current record's "nom_latin" value
- * @method string             getNomFrancais()      Returns the current record's "nom_francais" value
- * @method integer            getIdClasse()         Returns the current record's "id_classe" value
- * @method integer            getDenombrement()     Returns the current record's "denombrement" value
- * @method boolean            getPatrimonial()      Returns the current record's "patrimonial" value
- * @method string             getMessage()          Returns the current record's "message" value
- * @method boolean            getContactfaune()     Returns the current record's "contactfaune" value
- * @method boolean            getMortalite()        Returns the current record's "mortalite" value
- * @method BibTaxonsFaunePn   getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" value
- * @method CorUniteTaxon      getCorUniteTaxon()    Returns the current record's "CorUniteTaxon" value
- * @method TRelevesCf         getTRelevesCf()       Returns the current record's "TRelevesCf" value
- * @method VNomadeTaxonsFaune setIdTaxon()          Sets the current record's "id_taxon" value
- * @method VNomadeTaxonsFaune setCdRef()            Sets the current record's "cd_ref" value
- * @method VNomadeTaxonsFaune setNomLatin()         Sets the current record's "nom_latin" value
- * @method VNomadeTaxonsFaune setNomFrancais()      Sets the current record's "nom_francais" value
- * @method VNomadeTaxonsFaune setIdClasse()         Sets the current record's "id_classe" value
- * @method VNomadeTaxonsFaune setDenombrement()     Sets the current record's "denombrement" value
- * @method VNomadeTaxonsFaune setPatrimonial()      Sets the current record's "patrimonial" value
- * @method VNomadeTaxonsFaune setMessage()          Sets the current record's "message" value
- * @method VNomadeTaxonsFaune setContactfaune()     Sets the current record's "contactfaune" value
- * @method VNomadeTaxonsFaune setMortalite()        Sets the current record's "mortalite" value
- * @method VNomadeTaxonsFaune setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" value
- * @method VNomadeTaxonsFaune setCorUniteTaxon()    Sets the current record's "CorUniteTaxon" value
- * @method VNomadeTaxonsFaune setTRelevesCf()       Sets the current record's "TRelevesCf" value
+ * @method integer            getIdTaxon()       Returns the current record's "id_taxon" value
+ * @method integer            getCdRef()         Returns the current record's "cd_ref" value
+ * @method string             getNomLatin()      Returns the current record's "nom_latin" value
+ * @method string             getNomFrancais()   Returns the current record's "nom_francais" value
+ * @method integer            getIdClasse()      Returns the current record's "id_classe" value
+ * @method integer            getDenombrement()  Returns the current record's "denombrement" value
+ * @method boolean            getPatrimonial()   Returns the current record's "patrimonial" value
+ * @method string             getMessage()       Returns the current record's "message" value
+ * @method boolean            getContactfaune()  Returns the current record's "contactfaune" value
+ * @method boolean            getMortalite()     Returns the current record's "mortalite" value
+ * @method BibTaxons          getBibTaxons()     Returns the current record's "BibTaxons" value
+ * @method CorUniteTaxon      getCorUniteTaxon() Returns the current record's "CorUniteTaxon" value
+ * @method TRelevesCf         getTRelevesCf()    Returns the current record's "TRelevesCf" value
+ * @method VNomadeTaxonsFaune setIdTaxon()       Sets the current record's "id_taxon" value
+ * @method VNomadeTaxonsFaune setCdRef()         Sets the current record's "cd_ref" value
+ * @method VNomadeTaxonsFaune setNomLatin()      Sets the current record's "nom_latin" value
+ * @method VNomadeTaxonsFaune setNomFrancais()   Sets the current record's "nom_francais" value
+ * @method VNomadeTaxonsFaune setIdClasse()      Sets the current record's "id_classe" value
+ * @method VNomadeTaxonsFaune setDenombrement()  Sets the current record's "denombrement" value
+ * @method VNomadeTaxonsFaune setPatrimonial()   Sets the current record's "patrimonial" value
+ * @method VNomadeTaxonsFaune setMessage()       Sets the current record's "message" value
+ * @method VNomadeTaxonsFaune setContactfaune()  Sets the current record's "contactfaune" value
+ * @method VNomadeTaxonsFaune setMortalite()     Sets the current record's "mortalite" value
+ * @method VNomadeTaxonsFaune setBibTaxons()     Sets the current record's "BibTaxons" value
+ * @method VNomadeTaxonsFaune setCorUniteTaxon() Sets the current record's "CorUniteTaxon" value
+ * @method VNomadeTaxonsFaune setTRelevesCf()    Sets the current record's "TRelevesCf" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -102,7 +102,7 @@ abstract class BaseVNomadeTaxonsFaune extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

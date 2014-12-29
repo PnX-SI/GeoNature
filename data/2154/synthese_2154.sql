@@ -141,7 +141,7 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
   couleur text;
   patri boolean;
   BEGIN
-	SELECT patrimonial INTO patri FROM taxonomie.bib_taxons_faune_pn WHERE id_taxon = id;
+	SELECT patrimonial INTO patri FROM taxonomie.bib_taxons WHERE id_taxon = id;
 	IF patri = 't' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
@@ -229,7 +229,7 @@ line record;
 fiche record;
 BEGIN
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
-	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons_faune_pn WHERE id_taxon = new.id_taxon;
+	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	new.cd_ref_origine = re;
     -- MAJ de la table cor_unite_taxon, on commence par récupérer l'unité à partir du pointage (table t_fiches_cf)
 	SELECT INTO fiche * FROM contactfaune.t_fiches_cf WHERE id_cf = new.id_cf;
@@ -624,7 +624,7 @@ BEGIN
    -- Si changement de taxon, 
 	IF new.id_taxon<>old.id_taxon THEN
 	   -- Correction du cd_ref_origine
-		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons_faune_pn WHERE id_taxon = new.id_taxon;
+		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 		new.cd_ref_origine = re;
 	END IF;
 RETURN NEW;			
@@ -649,7 +649,7 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
   couleur text;
   patri boolean;
   BEGIN
-	SELECT patrimonial INTO patri FROM taxonomie.bib_taxons_faune_pn WHERE id_taxon = id;
+	SELECT patrimonial INTO patri FROM taxonomie.bib_taxons WHERE id_taxon = id;
 	IF patri = 't' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
@@ -737,7 +737,7 @@ line record;
 fiche record;
 BEGIN
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
-	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons_faune_pn WHERE id_taxon = new.id_taxon;
+	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	new.cd_ref_origine = re;
     -- MAJ de la table cor_unite_taxon_inv, on commence par récupérer l'unité à partir du pointage (table t_fiches_inv)
 	SELECT INTO fiche * FROM contactinv.t_fiches_inv WHERE id_inv = new.id_inv;
@@ -1140,7 +1140,7 @@ BEGIN
    -- Si changement de taxon, 
 	IF new.id_taxon<>old.id_taxon THEN
 	   -- Correction du cd_ref_origine
-		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons_faune_pn WHERE id_taxon = new.id_taxon;
+		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 		new.cd_ref_origine = re;
 	END IF;
 RETURN NEW;			
@@ -1348,7 +1348,7 @@ monembranchement integer;
 BEGIN
 IF (TG_OP = 'DELETE') THEN
 	--calcul de l'embranchement du taxon supprimé
-		SELECT tx.phylum FROM taxonomie.bib_taxons_faune_pn t
+		SELECT tx.phylum FROM taxonomie.bib_taxons t
         JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
 		WHERE t.id_taxon = old.id_taxon;
 		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
@@ -1368,7 +1368,7 @@ IF (TG_OP = 'DELETE') THEN
 		RETURN OLD;		
 ELSIF (TG_OP = 'INSERT') THEN
 	--calcul de l'embranchement du taxon inséré
-        SELECT tx.phylum FROM taxonomie.bib_taxons_faune_pn t
+        SELECT tx.phylum FROM taxonomie.bib_taxons t
         JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
         WHERE t.id_taxon = new.id_taxon;
 	-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
@@ -1766,10 +1766,10 @@ CREATE VIEW v_nomade_observateurs_faune AS
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_taxons_faune_pn; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: bib_taxons; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE TABLE bib_taxons_faune_pn (
+CREATE TABLE bib_taxons (
     id_taxon integer NOT NULL,
     cd_nom integer,
     nom_latin character varying(100),
@@ -1837,7 +1837,7 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
             gr.filtre_sql,
             min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
            FROM taxonomie.bib_groupes gr
-             JOIN taxonomie.bib_taxons_faune_pn tx ON gr.id_groupe = tx.id_groupe
+             JOIN taxonomie.bib_taxons tx ON gr.id_groupe = tx.id_groupe
           GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.phylum::text = 'Chordata'::text;
@@ -1856,7 +1856,7 @@ SELECT DISTINCT t.id_taxon,
     m.texte_message_cf AS message,
     true AS contactfaune,
     true AS mortalite
-FROM taxonomie.bib_taxons_faune_pn t
+FROM taxonomie.bib_taxons t
 LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
 LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
 JOIN contactfaune.v_nomade_classes g ON g.id_classe = t.id_groupe
@@ -2086,7 +2086,7 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS
             gr.filtre_sql,
             min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
            FROM taxonomie.bib_groupes gr
-             JOIN taxonomie.bib_taxons_faune_pn tx ON gr.id_groupe = tx.id_groupe
+             JOIN taxonomie.bib_taxons tx ON gr.id_groupe = tx.id_groupe
           GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
 WHERE NOT  phylum = 'Chordata';
@@ -2136,7 +2136,7 @@ SELECT
     g.id_classe,
     t.patrimonial,
     m.texte_message_inv AS message
-FROM taxonomie.bib_taxons_faune_pn t
+FROM taxonomie.bib_taxons t
 LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
 LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
 JOIN contactinv.v_nomade_classes g ON g.id_classe = t.id_groupe
@@ -2761,7 +2761,7 @@ WITH taxon AS (
   SELECT tx.id_taxon, tx.nom_latin,tx.nom_francais, tx.patrimonial, tx.protection_stricte , taxref.*
   FROM (
       SELECT id_taxon, cd_nom,  taxonomie.find_cdref(tx.cd_nom) AS cd_ref, nom_latin, nom_francais, patrimonial, protection_stricte
-      FROM taxonomie.bib_taxons_faune_pn tx
+      FROM taxonomie.bib_taxons tx
       WHERE (tx.id_taxon IN ( SELECT DISTINCT synthesefaune.id_taxon FROM synthese.synthesefaune  ORDER BY synthesefaune.id_taxon))
   ) tx
   JOIN taxonomie.taxref taxref 
@@ -3376,11 +3376,11 @@ ALTER TABLE ONLY bib_statuts_migration
 
 
 --
--- Name: pk_bib_taxons_faune_pn; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: pk_bib_taxons; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT pk_bib_taxons_faune_pn PRIMARY KEY (id_taxon);
+ALTER TABLE ONLY bib_taxons
+    ADD CONSTRAINT pk_bib_taxons PRIMARY KEY (id_taxon);
 
 
 --
@@ -3814,10 +3814,10 @@ CREATE INDEX i_taxref_hierarchy
   (regne COLLATE pg_catalog."default" , phylum COLLATE pg_catalog."default" , classe COLLATE pg_catalog."default" , ordre COLLATE pg_catalog."default" , famille COLLATE pg_catalog."default" );
   
 --
--- Name: fki_bib_taxons_faune_pn_bib_groupes; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: fki_bib_taxons_bib_groupes; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE INDEX fki_bib_taxons_faune_pn_bib_groupes ON bib_taxons_faune_pn USING btree (id_groupe);
+CREATE INDEX fki_bib_taxons_bib_groupes ON bib_taxons USING btree (id_groupe);
 
 
 --
@@ -3828,10 +3828,10 @@ CREATE INDEX fki_cd_nom_taxref_protection_especes ON taxref_protection_especes U
 
 
 --
--- Name: i_fk_bib_taxons_faune_pn_taxr; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: i_fk_bib_taxons_taxr; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_bib_taxons_faune_pn_taxr ON bib_taxons_faune_pn USING btree (cd_nom);
+CREATE INDEX i_fk_bib_taxons_taxr ON bib_taxons USING btree (cd_nom);
 
 
 --
@@ -4074,7 +4074,7 @@ ALTER TABLE ONLY cor_critere_groupe
 --
 
 ALTER TABLE ONLY cor_message_taxon
-    ADD CONSTRAINT fk_cor_message_taxon_bib_taxons_fa FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_message_taxon_bib_taxons_fa FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 --
@@ -4106,7 +4106,7 @@ ALTER TABLE ONLY cor_role_fiche_cf
 --
 
 ALTER TABLE ONLY cor_unite_taxon
-    ADD CONSTRAINT fk_cor_unite_taxon_bib_taxons_fa FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_unite_taxon_bib_taxons_fa FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 --
@@ -4118,11 +4118,11 @@ ALTER TABLE ONLY t_releves_cf
 
 
 --
--- Name: fk_t_releves_cf_bib_taxons_faune_pn; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
+-- Name: fk_t_releves_cf_bib_taxons; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
 --
 
 ALTER TABLE ONLY t_releves_cf
-    ADD CONSTRAINT fk_t_releves_cf_bib_taxons_faune_pn FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_cf_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 --
@@ -4172,7 +4172,7 @@ ALTER TABLE ONLY bib_criteres_inv
 --
 
 ALTER TABLE ONLY cor_message_taxon
-    ADD CONSTRAINT fk_cor_message_taxon_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_message_taxon_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 --
@@ -4204,7 +4204,7 @@ ALTER TABLE ONLY cor_role_fiche_inv
 --
 
 ALTER TABLE ONLY cor_unite_taxon_inv
-    ADD CONSTRAINT fk_cor_unite_taxon_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_unite_taxon_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 --
@@ -4224,11 +4224,11 @@ ALTER TABLE ONLY t_releves_inv
 
 
 --
--- Name: fk_t_releves_inv_bib_taxons_faune_pn; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
+-- Name: fk_t_releves_inv_bib_taxons; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
 --
 
 ALTER TABLE ONLY t_releves_inv
-    ADD CONSTRAINT fk_t_releves_inv_bib_taxons_faune_pn FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 --
@@ -4362,48 +4362,48 @@ ALTER TABLE ONLY synthesefaune
 --
 
 ALTER TABLE ONLY synthesefaune
-    ADD CONSTRAINT synthese_id_taxon_fkey FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons_faune_pn(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT synthese_id_taxon_fkey FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
 
 
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_taxons_faune_pn_id_responsabilite_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: bib_taxons_id_responsabilite_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT bib_taxons_faune_pn_id_responsabilite_fkey FOREIGN KEY (id_responsabilite_pn) REFERENCES bib_responsabilites_pn(id_responsabilite_pn) ON UPDATE CASCADE;
-
-
---
--- Name: bib_taxons_faune_pn_id_groupe_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT bib_taxons_faune_pn_id_groupe_fkey FOREIGN KEY (id_groupe) REFERENCES bib_groupes(id_groupe) ON UPDATE CASCADE;
+ALTER TABLE ONLY bib_taxons
+    ADD CONSTRAINT bib_taxons_id_responsabilite_fkey FOREIGN KEY (id_responsabilite_pn) REFERENCES bib_responsabilites_pn(id_responsabilite_pn) ON UPDATE CASCADE;
 
 
 --
--- Name: bib_taxons_faune_pn_id_importance_pop_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: bib_taxons_id_groupe_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT bib_taxons_faune_pn_id_importance_pop_fkey FOREIGN KEY (id_importance_population) REFERENCES bib_importances_population(id_importance_population) ON UPDATE CASCADE;
+ALTER TABLE ONLY bib_taxons
+    ADD CONSTRAINT bib_taxons_id_groupe_fkey FOREIGN KEY (id_groupe) REFERENCES bib_groupes(id_groupe) ON UPDATE CASCADE;
 
 
 --
--- Name: bib_taxons_faune_pn_id_migration_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: bib_taxons_id_importance_pop_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT bib_taxons_faune_pn_id_migration_fkey FOREIGN KEY (id_statut_migration) REFERENCES bib_statuts_migration(id_statut_migration) ON UPDATE CASCADE;
+ALTER TABLE ONLY bib_taxons
+    ADD CONSTRAINT bib_taxons_id_importance_pop_fkey FOREIGN KEY (id_importance_population) REFERENCES bib_importances_population(id_importance_population) ON UPDATE CASCADE;
+
 
 --
--- Name: fk_bib_taxons_faune_pn_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: bib_taxons_id_migration_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY bib_taxons_faune_pn
-    ADD CONSTRAINT fk_bib_taxons_faune_pn_taxref FOREIGN KEY (cd_nom) REFERENCES taxref(cd_nom);
+ALTER TABLE ONLY bib_taxons
+    ADD CONSTRAINT bib_taxons_id_migration_fkey FOREIGN KEY (id_statut_migration) REFERENCES bib_statuts_migration(id_statut_migration) ON UPDATE CASCADE;
+
+--
+-- Name: fk_bib_taxons_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY bib_taxons
+    ADD CONSTRAINT fk_bib_taxons_taxref FOREIGN KEY (cd_nom) REFERENCES taxref(cd_nom);
 
 
 --
@@ -5045,12 +5045,12 @@ GRANT ALL ON TABLE bib_groupes TO geonatuser;
 
 
 --
--- Name: bib_taxons_faune_pn; Type: ACL; Schema: taxonomie; Owner: -
+-- Name: bib_taxons; Type: ACL; Schema: taxonomie; Owner: -
 --
 
-REVOKE ALL ON TABLE bib_taxons_faune_pn FROM PUBLIC;
-REVOKE ALL ON TABLE bib_taxons_faune_pn FROM geonatuser;
-GRANT ALL ON TABLE bib_taxons_faune_pn TO geonatuser;
+REVOKE ALL ON TABLE bib_taxons FROM PUBLIC;
+REVOKE ALL ON TABLE bib_taxons FROM geonatuser;
+GRANT ALL ON TABLE bib_taxons TO geonatuser;
 
 
 --

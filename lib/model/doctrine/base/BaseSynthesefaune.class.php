@@ -38,7 +38,7 @@
  * @property BibSources $BibSources
  * @property TPrecisions $TPrecisions
  * @property Taxref $Taxref
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property BibLots $BibLots
  * @property BibCriteresSynthese $BibCriteresSynthese
  * @property Doctrine_Collection $CorUniteSynthese
@@ -77,7 +77,7 @@
  * @method BibSources          getBibSources()             Returns the current record's "BibSources" value
  * @method TPrecisions         getTPrecisions()            Returns the current record's "TPrecisions" value
  * @method Taxref              getTaxref()                 Returns the current record's "Taxref" value
- * @method BibTaxonsFaunePn    getBibTaxonsFaunePn()       Returns the current record's "BibTaxonsFaunePn" value
+ * @method BibTaxons           getBibTaxons()              Returns the current record's "BibTaxons" value
  * @method BibLots             getBibLots()                Returns the current record's "BibLots" value
  * @method BibCriteresSynthese getBibCriteresSynthese()    Returns the current record's "BibCriteresSynthese" value
  * @method Doctrine_Collection getCorUniteSynthese()       Returns the current record's "CorUniteSynthese" collection
@@ -115,13 +115,13 @@
  * @method Synthesefaune       setBibSources()             Sets the current record's "BibSources" value
  * @method Synthesefaune       setTPrecisions()            Sets the current record's "TPrecisions" value
  * @method Synthesefaune       setTaxref()                 Sets the current record's "Taxref" value
- * @method Synthesefaune       setBibTaxonsFaunePn()       Sets the current record's "BibTaxonsFaunePn" value
+ * @method Synthesefaune       setBibTaxons()              Sets the current record's "BibTaxons" value
  * @method Synthesefaune       setBibLots()                Sets the current record's "BibLots" value
  * @method Synthesefaune       setBibCriteresSynthese()    Sets the current record's "BibCriteresSynthese" value
  * @method Synthesefaune       setCorUniteSynthese()       Sets the current record's "CorUniteSynthese" collection
  * @method Synthesefaune       setCorZonesstatutSynthese() Sets the current record's "CorZonesstatutSynthese" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -270,7 +270,7 @@ abstract class BaseSynthesefaune extends sfDoctrineRecord
              'local' => 'cd_nom',
              'foreign' => 'cd_nom'));
 
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

@@ -163,7 +163,7 @@ class SynthesefauneTable extends Doctrine_Table
             $sql = "
                 SELECT count(*) AS nb
                 FROM synthese.synthesefaune synt
-                JOIN taxonomie.bib_taxons_faune_pn t ON t.id_taxon = synt.id_taxon
+                JOIN taxonomie.bib_taxons t ON t.id_taxon = synt.id_taxon
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
@@ -201,7 +201,7 @@ class SynthesefauneTable extends Doctrine_Table
                     com.commune_min AS nom_commune, cri.nom_critere_synthese,
                     ST_ASGEOJSON($geom, 0) AS g"
                 .$from.
-                "JOIN taxonomie.bib_taxons_faune_pn t ON t.id_taxon = synt.id_taxon
+                "JOIN taxonomie.bib_taxons t ON t.id_taxon = synt.id_taxon
                 JOIN synthese.bib_criteres_synthese cri ON cri.id_critere_synthese = synt.id_critere_synthese
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
@@ -311,7 +311,7 @@ class SynthesefauneTable extends Doctrine_Table
                 st_x(st_centroid(st_transform(synt.the_geom_3857,4326))) AS x_wgs84, st_y(st_centroid(st_transform(synt.the_geom_3857,4326))) AS y_wgs84,
                 st_geometrytype(synt.the_geom_3857) AS geom_type"
                 .$from.
-                "JOIN taxonomie.bib_taxons_faune_pn t ON t.id_taxon = synt.id_taxon
+                "JOIN taxonomie.bib_taxons t ON t.id_taxon = synt.id_taxon
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
@@ -340,7 +340,7 @@ class SynthesefauneTable extends Doctrine_Table
                         txr.nom_valide, txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref, 
                         tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
                 .$from.
-                "JOIN taxonomie.bib_taxons_faune_pn t ON t.id_taxon = synt.id_taxon
+                "JOIN taxonomie.bib_taxons t ON t.id_taxon = synt.id_taxon
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref_protection_especes tpe ON tpe.cd_nom = t.cd_nom
                 JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.pn = true
@@ -380,7 +380,7 @@ class SynthesefauneTable extends Doctrine_Table
             }
             else{$sql .= "synt.the_geom_".$srid_local_export." AS the_geom";}
             $sql .= $from;
-            $sql .= "JOIN taxonomie.bib_taxons_faune_pn t ON t.id_taxon = synt.id_taxon ";
+            $sql .= "JOIN taxonomie.bib_taxons t ON t.id_taxon = synt.id_taxon ";
             $sql .= "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = t.cd_nom ";
             $sql .= "LEFT JOIN layers.l_communes com ON com.insee = synt.insee ";
             $sql .= "LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur ";

@@ -8,18 +8,18 @@
  * @property integer $id_responsabilite_pn
  * @property string $nom_responsabilite_pn
  * @property string $desc_responsabilite_pn
- * @property Doctrine_Collection $BibTaxonsFaunePn
+ * @property Doctrine_Collection $BibTaxons
  * 
  * @method integer              getIdResponsabilitePn()     Returns the current record's "id_responsabilite_pn" value
  * @method string               getNomResponsabilitePn()    Returns the current record's "nom_responsabilite_pn" value
  * @method string               getDescResponsabilitePn()   Returns the current record's "desc_responsabilite_pn" value
- * @method Doctrine_Collection  getBibTaxonsFaunePn()       Returns the current record's "BibTaxonsFaunePn" collection
+ * @method Doctrine_Collection  getBibTaxons()              Returns the current record's "BibTaxons" collection
  * @method BibResponsabilitesPn setIdResponsabilitePn()     Sets the current record's "id_responsabilite_pn" value
  * @method BibResponsabilitesPn setNomResponsabilitePn()    Sets the current record's "nom_responsabilite_pn" value
  * @method BibResponsabilitesPn setDescResponsabilitePn()   Sets the current record's "desc_responsabilite_pn" value
- * @method BibResponsabilitesPn setBibTaxonsFaunePn()       Sets the current record's "BibTaxonsFaunePn" collection
+ * @method BibResponsabilitesPn setBibTaxons()              Sets the current record's "BibTaxons" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -47,7 +47,7 @@ abstract class BaseBibResponsabilitesPn extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('BibTaxonsFaunePn', array(
+        $this->hasMany('BibTaxons', array(
              'local' => 'id_responsabilite_pn',
              'foreign' => 'id_responsabilite_pn'));
     }

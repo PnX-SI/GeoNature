@@ -10,7 +10,7 @@
  * @property date $derniere_date
  * @property string $couleur
  * @property integer $nb_obs
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property LUnitesGeo $LUnitesGeo
  * @property Doctrine_Collection $VNomadeTaxonsFaune
  * 
@@ -19,7 +19,7 @@
  * @method date                getDerniereDate()       Returns the current record's "derniere_date" value
  * @method string              getCouleur()            Returns the current record's "couleur" value
  * @method integer             getNbObs()              Returns the current record's "nb_obs" value
- * @method BibTaxonsFaunePn    getBibTaxonsFaunePn()   Returns the current record's "BibTaxonsFaunePn" value
+ * @method BibTaxons           getBibTaxons()          Returns the current record's "BibTaxons" value
  * @method LUnitesGeo          getLUnitesGeo()         Returns the current record's "LUnitesGeo" value
  * @method Doctrine_Collection getVNomadeTaxonsFaune() Returns the current record's "VNomadeTaxonsFaune" collection
  * @method CorUniteTaxon       setIdTaxon()            Sets the current record's "id_taxon" value
@@ -27,11 +27,11 @@
  * @method CorUniteTaxon       setDerniereDate()       Sets the current record's "derniere_date" value
  * @method CorUniteTaxon       setCouleur()            Sets the current record's "couleur" value
  * @method CorUniteTaxon       setNbObs()              Sets the current record's "nb_obs" value
- * @method CorUniteTaxon       setBibTaxonsFaunePn()   Sets the current record's "BibTaxonsFaunePn" value
+ * @method CorUniteTaxon       setBibTaxons()          Sets the current record's "BibTaxons" value
  * @method CorUniteTaxon       setLUnitesGeo()         Sets the current record's "LUnitesGeo" value
  * @method CorUniteTaxon       setVNomadeTaxonsFaune() Sets the current record's "VNomadeTaxonsFaune" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -68,7 +68,7 @@ abstract class BaseCorUniteTaxon extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

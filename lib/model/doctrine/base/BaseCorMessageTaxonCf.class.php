@@ -7,19 +7,19 @@
  * 
  * @property integer $id_message_cf
  * @property integer $id_taxon
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property BibMessagesCf $BibMessagesCf
  * 
- * @method integer           getIdMessageCf()      Returns the current record's "id_message_cf" value
- * @method integer           getIdTaxon()          Returns the current record's "id_taxon" value
- * @method BibTaxonsFaunePn  getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" value
- * @method BibMessagesCf     getBibMessagesCf()    Returns the current record's "BibMessagesCf" value
- * @method CorMessageTaxonCf setIdMessageCf()      Sets the current record's "id_message_cf" value
- * @method CorMessageTaxonCf setIdTaxon()          Sets the current record's "id_taxon" value
- * @method CorMessageTaxonCf setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" value
- * @method CorMessageTaxonCf setBibMessagesCf()    Sets the current record's "BibMessagesCf" value
+ * @method integer           getIdMessageCf()   Returns the current record's "id_message_cf" value
+ * @method integer           getIdTaxon()       Returns the current record's "id_taxon" value
+ * @method BibTaxons         getBibTaxons()     Returns the current record's "BibTaxons" value
+ * @method BibMessagesCf     getBibMessagesCf() Returns the current record's "BibMessagesCf" value
+ * @method CorMessageTaxonCf setIdMessageCf()   Sets the current record's "id_message_cf" value
+ * @method CorMessageTaxonCf setIdTaxon()       Sets the current record's "id_taxon" value
+ * @method CorMessageTaxonCf setBibTaxons()     Sets the current record's "BibTaxons" value
+ * @method CorMessageTaxonCf setBibMessagesCf() Sets the current record's "BibMessagesCf" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -44,7 +44,7 @@ abstract class BaseCorMessageTaxonCf extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

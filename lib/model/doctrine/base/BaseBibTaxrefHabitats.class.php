@@ -13,7 +13,7 @@
  * @method BibTaxrefHabitats setIdHabitat()   Sets the current record's "id_habitat" value
  * @method BibTaxrefHabitats setNomHabitat()  Sets the current record's "nom_habitat" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

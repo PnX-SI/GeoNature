@@ -10,12 +10,12 @@ class bibsActions extends sfFauneActions
     }
     public function executeListTaxonsSynthese(sfRequest $request)
     {
-        $val = BibTaxonsFaunePnTable::listSynthese();
+        $val = BibTaxonsTable::listSynthese();
         return $this->renderText($val);
     }
     public function executeListTaxonsTreeSynthese(sfRequest $request)
     {
-        $val = BibTaxonsFaunePnTable::listTreeSynthese();
+        $val = BibTaxonsTable::listTreeSynthese();
         return $this->renderText(json_encode($val));
     }
     public function executeListCommunes(sfRequest $request)
@@ -58,7 +58,7 @@ class bibsActions extends sfFauneActions
     
     public function executeListTaxonsCf(sfRequest $request)
     {
-        $val = BibTaxonsFaunePnTable::listCf();
+        $val = BibTaxonsTable::listCf();
         return $this->renderText(json_encode($val));
     }
 
@@ -75,8 +75,8 @@ class bibsActions extends sfFauneActions
             $id_unite_geo = $val['id_unite_geo'];
         }
         if($id_unite_geo!=null){
-        $val = BibTaxonsFaunePnTable::listCfUnite($id_unite_geo);}
-        else{$val = BibTaxonsFaunePnTable::listCf();}
+        $val = BibTaxonsTable::listCfUnite($id_unite_geo);}
+        else{$val = BibTaxonsTable::listCf();}
         // print_r(json_encode($val));
         return $this->renderText(json_encode($val));
     }
@@ -102,7 +102,7 @@ class bibsActions extends sfFauneActions
     
     public function executeListTaxonsInv(sfRequest $request)
     {
-        $val = BibTaxonsFaunePnTable::listInv();
+        $val = BibTaxonsTable::listInv();
         return $this->renderText(json_encode($val));
     }
 
@@ -119,8 +119,8 @@ class bibsActions extends sfFauneActions
             $id_unite_geo = $val['id_unite_geo'];
         }
         if($id_unite_geo!=null){
-        $val = BibTaxonsFaunePnTable::listInvUnite($id_unite_geo);}
-        else{$val = BibTaxonsFaunePnTable::listInv();}
+        $val = BibTaxonsTable::listInvUnite($id_unite_geo);}
+        else{$val = BibTaxonsTable::listInv();}
         // print_r(json_encode($val));
         return $this->renderText(json_encode($val));
     }

@@ -12,7 +12,7 @@
  * @property integer $id_classe
  * @property boolean $patrimonial
  * @property string $message
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property CorUniteTaxonInv $CorUniteTaxonInv
  * @property TRelevesInv $TRelevesInv
  * 
@@ -23,7 +23,7 @@
  * @method integer          getIdClasse()         Returns the current record's "id_classe" value
  * @method boolean          getPatrimonial()      Returns the current record's "patrimonial" value
  * @method string           getMessage()          Returns the current record's "message" value
- * @method BibTaxonsFaunePn getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" value
+ * @method BibTaxons        getBibTaxons()        Returns the current record's "BibTaxons" value
  * @method CorUniteTaxonInv getCorUniteTaxonInv() Returns the current record's "CorUniteTaxonInv" value
  * @method TRelevesInv      getTRelevesInv()      Returns the current record's "TRelevesInv" value
  * @method VNomadeTaxonsInv setIdTaxon()          Sets the current record's "id_taxon" value
@@ -33,11 +33,11 @@
  * @method VNomadeTaxonsInv setIdClasse()         Sets the current record's "id_classe" value
  * @method VNomadeTaxonsInv setPatrimonial()      Sets the current record's "patrimonial" value
  * @method VNomadeTaxonsInv setMessage()          Sets the current record's "message" value
- * @method VNomadeTaxonsInv setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" value
+ * @method VNomadeTaxonsInv setBibTaxons()        Sets the current record's "BibTaxons" value
  * @method VNomadeTaxonsInv setCorUniteTaxonInv() Sets the current record's "CorUniteTaxonInv" value
  * @method VNomadeTaxonsInv setTRelevesInv()      Sets the current record's "TRelevesInv" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -81,7 +81,7 @@ abstract class BaseVNomadeTaxonsInv extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

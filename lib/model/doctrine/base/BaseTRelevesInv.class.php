@@ -19,7 +19,7 @@
  * @property boolean $supprime
  * @property boolean $prelevement
  * @property BibCriteresInv $BibCriteresInv
- * @property BibTaxonsFaunePn $BibTaxonsFaunePn
+ * @property BibTaxons $BibTaxons
  * @property TFichesInv $TFichesCf
  * @property Doctrine_Collection $VNomadeTaxonsInv
  * 
@@ -37,7 +37,7 @@
  * @method boolean             getSupprime()         Returns the current record's "supprime" value
  * @method boolean             getPrelevement()      Returns the current record's "prelevement" value
  * @method BibCriteresInv      getBibCriteresInv()   Returns the current record's "BibCriteresInv" value
- * @method BibTaxonsFaunePn    getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" value
+ * @method BibTaxons           getBibTaxons()        Returns the current record's "BibTaxons" value
  * @method TFichesInv          getTFichesCf()        Returns the current record's "TFichesCf" value
  * @method Doctrine_Collection getVNomadeTaxonsInv() Returns the current record's "VNomadeTaxonsInv" collection
  * @method TRelevesInv         setIdReleveInv()      Sets the current record's "id_releve_inv" value
@@ -54,11 +54,11 @@
  * @method TRelevesInv         setSupprime()         Sets the current record's "supprime" value
  * @method TRelevesInv         setPrelevement()      Sets the current record's "prelevement" value
  * @method TRelevesInv         setBibCriteresInv()   Sets the current record's "BibCriteresInv" value
- * @method TRelevesInv         setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" value
+ * @method TRelevesInv         setBibTaxons()        Sets the current record's "BibTaxons" value
  * @method TRelevesInv         setTFichesCf()        Sets the current record's "TFichesCf" value
  * @method TRelevesInv         setVNomadeTaxonsInv() Sets the current record's "VNomadeTaxonsInv" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -132,7 +132,7 @@ abstract class BaseTRelevesInv extends sfDoctrineRecord
              'local' => 'id_critere_inv',
              'foreign' => 'id_critere_inv'));
 
-        $this->hasOne('BibTaxonsFaunePn', array(
+        $this->hasOne('BibTaxons', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

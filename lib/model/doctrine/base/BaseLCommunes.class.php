@@ -70,7 +70,7 @@
  * @method LCommunes           setTFichesCf()     Sets the current record's "TFichesCf" collection
  * @method LCommunes           setTFichesInv()    Sets the current record's "TFichesInv" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

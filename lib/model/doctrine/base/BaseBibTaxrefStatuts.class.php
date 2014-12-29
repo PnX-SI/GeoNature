@@ -13,7 +13,7 @@
  * @method BibTaxrefStatuts setIdStatut()   Sets the current record's "id_statut" value
  * @method BibTaxrefStatuts setNomStatut()  Sets the current record's "nom_statut" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

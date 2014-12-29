@@ -8,18 +8,18 @@
  * @property integer $id_statut_migration
  * @property string $nom_statut_migration
  * @property string $desc_statut_migration
- * @property Doctrine_Collection $BibTaxonsFaunePn
+ * @property Doctrine_Collection $BibTaxons
  * 
  * @method integer             getIdStatutMigration()     Returns the current record's "id_statut_migration" value
  * @method string              getNomStatutMigration()    Returns the current record's "nom_statut_migration" value
  * @method string              getDescStatutMigration()   Returns the current record's "desc_statut_migration" value
- * @method Doctrine_Collection getBibTaxonsFaunePn()      Returns the current record's "BibTaxonsFaunePn" collection
+ * @method Doctrine_Collection getBibTaxons()             Returns the current record's "BibTaxons" collection
  * @method BibStatutsMigration setIdStatutMigration()     Sets the current record's "id_statut_migration" value
  * @method BibStatutsMigration setNomStatutMigration()    Sets the current record's "nom_statut_migration" value
  * @method BibStatutsMigration setDescStatutMigration()   Sets the current record's "desc_statut_migration" value
- * @method BibStatutsMigration setBibTaxonsFaunePn()      Sets the current record's "BibTaxonsFaunePn" collection
+ * @method BibStatutsMigration setBibTaxons()             Sets the current record's "BibTaxons" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -47,7 +47,7 @@ abstract class BaseBibStatutsMigration extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('BibTaxonsFaunePn', array(
+        $this->hasMany('BibTaxons', array(
              'local' => 'id_statut_migration',
              'foreign' => 'id_statut_migration'));
     }

@@ -16,7 +16,7 @@
  * @method BibMessagesInv      setTexteMessageInv()    Sets the current record's "texte_message_inv" value
  * @method BibMessagesInv      setCorMessageTaxonInv() Sets the current record's "CorMessageTaxonInv" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

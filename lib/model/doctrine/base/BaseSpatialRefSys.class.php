@@ -22,7 +22,7 @@
  * @method SpatialRefSys setSrtext()    Sets the current record's "srtext" value
  * @method SpatialRefSys setProj4text() Sets the current record's "proj4text" value
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

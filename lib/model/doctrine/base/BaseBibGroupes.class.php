@@ -9,23 +9,23 @@
  * @property string $nom_groupe
  * @property string $desc_group
  * @property string $filtre_sql
- * @property Doctrine_Collection $BibTaxonsFaunePn
+ * @property Doctrine_Collection $BibTaxons
  * @property Doctrine_Collection $CorCritereGroupe
  * 
  * @method integer             getIdGroupe()         Returns the current record's "id_groupe" value
  * @method string              getNomGroupe()        Returns the current record's "nom_groupe" value
  * @method string              getDescGroup()        Returns the current record's "desc_group" value
  * @method string              getFiltreSql()        Returns the current record's "filtre_sql" value
- * @method Doctrine_Collection getBibTaxonsFaunePn() Returns the current record's "BibTaxonsFaunePn" collection
+ * @method Doctrine_Collection getBibTaxons()        Returns the current record's "BibTaxons" collection
  * @method Doctrine_Collection getCorCritereGroupe() Returns the current record's "CorCritereGroupe" collection
  * @method BibGroupes          setIdGroupe()         Sets the current record's "id_groupe" value
  * @method BibGroupes          setNomGroupe()        Sets the current record's "nom_groupe" value
  * @method BibGroupes          setDescGroup()        Sets the current record's "desc_group" value
  * @method BibGroupes          setFiltreSql()        Sets the current record's "filtre_sql" value
- * @method BibGroupes          setBibTaxonsFaunePn() Sets the current record's "BibTaxonsFaunePn" collection
+ * @method BibGroupes          setBibTaxons()        Sets the current record's "BibTaxons" collection
  * @method BibGroupes          setCorCritereGroupe() Sets the current record's "CorCritereGroupe" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
@@ -57,7 +57,7 @@ abstract class BaseBibGroupes extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('BibTaxonsFaunePn', array(
+        $this->hasMany('BibTaxons', array(
              'local' => 'id_groupe',
              'foreign' => 'id_groupe'));
 

@@ -31,7 +31,7 @@
  * @method TApplications       setConnectPass()      Sets the current record's "connect_pass" value
  * @method TApplications       setTMenus()           Sets the current record's "TMenus" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $

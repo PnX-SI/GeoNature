@@ -25,7 +25,7 @@
  * @method BibCriteresInv      setIdCritereSynthese()   Sets the current record's "id_critere_synthese" value
  * @method BibCriteresInv      setTRelevesInv()         Sets the current record's "TRelevesInv" collection
  * 
- * @package    faune
+ * @package    geonature
  * @subpackage model
  * @author     Gil Deluermoz
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
