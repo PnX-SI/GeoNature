@@ -100,6 +100,13 @@ Installation et configuration de PosgreSQL
         sudo apt-get install postgresql-9.3-postgis-2.1
         sudo adduser postgres sudo
         
+* configuration PostgreSQL - permettre l'écoute de toutes les ip
+
+    ::
+    
+        sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/9.1/main/postgresql.conf
+        sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\tde.la.merde.0\/33\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
+        /etc/init.d/postgresql restart
 
 * Création de 2 utilisateurs PostgreSQL
 
