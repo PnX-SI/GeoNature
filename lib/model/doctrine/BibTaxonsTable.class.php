@@ -45,7 +45,7 @@ class BibTaxonsTable extends Doctrine_Table
             {
                 $p = explode('__',$r);
                 $couple['texte']=$p[0];
-                $couple['url']= $p[1];
+                $couple['url']= (isset($p[1])) ? $p[1] : '';;
                 array_push($reglementations,$couple);
             }
             $val['protections'] = $reglementations;
