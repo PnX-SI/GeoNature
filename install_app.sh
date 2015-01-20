@@ -31,6 +31,7 @@ echo "Création du fichier de configuration de l'application..."
 echo "En pause pour le dev"
 # cp web/js/config.js.sample web/js/config.js
 
+
 echo "Configuration du répertoire web de l'application..."
-sudo ln -s /home/synthese/geonature/web/ /var/www/geonature
+sudo ln -s ${PWD}/web/ /var/www/geonature
 echo "Vous devez maintenant éditer le fichier de configuration de l'application : web/js/config.js et lib/sfGeonatureConfig.php et l'adapter à votre besoin"
