@@ -44,6 +44,12 @@ Installation pour Debian 7.
 
 .
 
+:notes:
+
+    Durant toute la procédure d'installation, travailler avec l'utilisateur ``synthese``. Ne changer d'utilisateur que lorsque la documentation le spécifie.
+
+.
+
   ::
   
     su - 
