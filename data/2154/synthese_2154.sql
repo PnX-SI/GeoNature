@@ -1720,7 +1720,7 @@ CREATE TABLE cor_roles (
 --
 
 CREATE SEQUENCE t_roles_id_seq
-    START WITH 1
+    START WITH 1000000
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -1740,16 +1740,14 @@ CREATE TABLE t_roles (
     desc_role text,
     pass character varying(100),
     email character varying(250),
+    id_organisme integer,
     organisme character(32),
     id_unite integer,
+    remarques text,
     pn boolean,
-    assermentes boolean,
-    enposte boolean,
-    dernieracces timestamp without time zone,
     session_appli character varying(50),
     date_insert timestamp without time zone,
-    date_update timestamp without time zone,
-    id_organisme integer
+    date_update timestamp without time zone
 );
 
 
@@ -2395,7 +2393,7 @@ SET search_path = utilisateurs, pg_catalog;
 --
 
 CREATE SEQUENCE bib_organismes_id_seq
-    START WITH 100
+    START WITH 1000000
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -2758,7 +2756,7 @@ CREATE TABLE bib_droits (
 --
 
 CREATE SEQUENCE bib_unites_id_seq
-    START WITH 1
+    START WITH 1000000
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -2799,11 +2797,7 @@ CREATE TABLE cor_role_droit_application (
 CREATE TABLE t_applications (
     id_application integer NOT NULL,
     nom_application character varying(50) NOT NULL,
-    desc_application text,
-    connect_host character varying(100),
-    connect_database character varying(50),
-    connect_user character varying(50),
-    connect_pass character varying(20)
+    desc_application text
 );
 
 
@@ -2812,7 +2806,7 @@ CREATE TABLE t_applications (
 --
 
 CREATE SEQUENCE t_applications_id_application_seq
-    START WITH 1
+    START WITH 1000000
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -2850,7 +2844,7 @@ COMMENT ON TABLE t_menus IS 'table des menus déroulants des applications. Les r
 --
 
 CREATE SEQUENCE t_menus_id_menu_seq
-    START WITH 1
+    START WITH 1000000
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE

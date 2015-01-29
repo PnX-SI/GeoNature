@@ -384,117 +384,79 @@ INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 14);
 
 SET search_path = utilisateurs, pg_catalog;
 
---
--- TOC entry 3274 (class 0 OID 17813)
--- Dependencies: 254
--- Data for Name: bib_droits; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (5, 'validateur', 'il valide bien sur');
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (4, 'modérateur', 'Actuellement utilisé uniquement pour l''administration des sites dans l''application information patrimoniale');
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (0, 'aucun', 'aucun droit - inutile mais existe dans l''application police.');
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (1, 'utilisateur', 'Equivalent à consultant');
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (2, 'rédacteur', 'voir si on conserve ce terme');
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (6, 'administrateur', 'il a tous les droits');
-INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (3, 'referent', 'utilisateur ayant des droits complémentaires au rédacteur (par exemple exporter des données ou autre)');
-
-
---
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (5, 'validateur', 'Il valide bien sur');
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (4, 'modérateur', 'Peu utilisé');
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (0, 'aucun', 'aucun droit.');
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (1, 'utilisateur', 'Ne peut que consulter');
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (2, 'rédacteur', 'Il possède des droit d''écriture pour créer des enregistrements');
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (6, 'administrateur', 'Il a tous les droits');
+INSERT INTO bib_droits (id_droit, nom_droit, desc_droit) VALUES (3, 'référent', 'utilisateur ayant des droits complémentaires au rédacteur (par exemple exporter des données ou autre)');
+-- 
 -- TOC entry 3275 (class 0 OID 17821)
 -- Dependencies: 256
 -- Data for Name: bib_organismes; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
-INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('ONCFS', NULL, NULL, NULL, NULL, NULL, NULL, 5);
-INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('PNF', NULL, NULL, 'Montpellier', NULL, NULL, NULL, 7);
+-- 
+INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('PNF', NULL, NULL, 'Montpellier', NULL, NULL, NULL, 1);
 INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('Parc National des Ecrins', 'Domaine de Charance', '05000', 'GAP', '04 92 40 20 10', '', '', 2);
-INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('Parc National de la Vanoise', '', '73000', 'CHAMBERY', '', '', '', 8);
-INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('ONF', NULL, NULL, 'PARTOUT', NULL, NULL, NULL, 3);
-INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('Parc Amazonien de Guyane', '1 rue Lederson', '97354', 'Rémire Montjoly', '0594291252', '', '', 200);
 INSERT INTO bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('Autre', '', '', '', '', '', '', 99);
-
-
---
+-- 
 -- TOC entry 3276 (class 0 OID 17827)
 -- Dependencies: 258
 -- Data for Name: bib_unites; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
+-- 
 
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Virtuel', NULL, NULL, NULL, NULL, NULL, NULL, 1);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('personnels partis', NULL, NULL, NULL, NULL, NULL, NULL, 2);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Stagiaires', NULL, NULL, '', '', NULL, NULL, 3);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Secretariat général', '', '', '', '', NULL, NULL, 4);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Service scientifique', '', '', '', '', NULL, NULL, 5);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Service SI', '', '', '', '', NULL, NULL, 6);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Service Communication', '', '', '', '', NULL, NULL, 7);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Conseil scientifique', '', '', '', NULL, NULL, NULL, 8);
+INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Conseil d''administration', '', '', '', NULL, NULL, NULL, 9);
 INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Autres', NULL, NULL, NULL, NULL, NULL, NULL, 99);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('ONF', NULL, NULL, NULL, NULL, NULL, NULL, 14);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('ONCFS', NULL, NULL, NULL, NULL, NULL, NULL, 15);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Virtuel', NULL, NULL, NULL, NULL, NULL, NULL, 20);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Anciens du PN', NULL, NULL, NULL, NULL, NULL, NULL, 9);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Stagiaires PN', NULL, NULL, '', '', NULL, NULL, 21);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Secretariat général', '', '', '', '', NULL, NULL, 13);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Service scientifique', '', '', '', '', NULL, NULL, 11);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Service SI', '', '', '', '', NULL, NULL, 17);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Conseil d''administration du PN', '', '', '', NULL, NULL, NULL, 18);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Service COM', '', '', '', '', NULL, NULL, 12);
-INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_unite, fax_unite, email_unite, id_unite) VALUES ('Conseil scientifique PN', '', '', '', NULL, NULL, NULL, 19);
-
-
---
+-- 
 -- TOC entry 3278 (class 0 OID 17837)
 -- Dependencies: 261
 -- Data for Name: t_applications; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
+-- 
+INSERT INTO t_applications (id_application, nom_application, desc_application) VALUES (1, 'application utilisateurs', 'application permettant d''administrer la présente base de données.');
+INSERT INTO t_applications (id_application, nom_application, desc_application) VALUES (14, 'application geonature', 'Application permettant la consultation et la gestion des relevés faune et flore.');
 
-INSERT INTO t_applications (id_application, nom_application, desc_application, connect_host, connect_database, connect_user, connect_pass) VALUES (4, 'application flore', 'Application permettant la consultation et la gestion des relevés nomades.', 'monip', 'appli_flore', 'monuserpostgres', 'monpass');
-INSERT INTO t_applications (id_application, nom_application, desc_application, connect_host, connect_database, connect_user, connect_pass) VALUES (14, 'Application faune', 'Application faune permettant saisie et consultation des vertébrés, des invertébrés et de la mortalité. L''application permet la consultation des données de synthèse.', 'monip', 'appli_faune', 'monuserpostgres', 'monpass');
-
-
---
+-- 
 -- TOC entry 3255 (class 0 OID 17445)
 -- Dependencies: 189
 -- Data for Name: t_roles; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
-INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, assermentes, enposte, dernieracces, session_appli, date_insert, date_update, id_organisme) VALUES (true, 20001, NULL, 'grp_assermentes', NULL, 'Les agents assermentés du PN', NULL, NULL, 'monpn', 99, true, true, true, NULL, NULL, '2014-07-24 18:13:11.780459', '2014-08-11 19:36:31.226948', NULL);
-INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, assermentes, enposte, dernieracces, session_appli, date_insert, date_update, id_organisme) VALUES (true, 20002, NULL, 'grp_en_poste', NULL, 'Tous les agents en poste au PN', NULL, NULL, 'monpn', 99, true, false, true, NULL, NULL, '2014-07-24 18:14:59.481651', '2014-08-11 19:37:41.930772', NULL);
-INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, assermentes, enposte, dernieracces, session_appli, date_insert, date_update, id_organisme) VALUES (false, 1, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', '', 'Parc national des Ecrins', 17, true, true, true, '2014-09-04 09:57:33', '7ggsqbjhh9sm3386718ett71e7', '2010-03-26 14:37:32.5', '2014-09-04 09:57:33.107067', 2);
-
-
---
+-- 
+INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, session_appli, date_insert, date_update, id_organisme, remarques) VALUES (true, 20002, NULL, 'grp_en_poste', NULL, 'Tous les agents en poste au PN', NULL, NULL, 'monpn', 99, true, NULL, NULL, NULL, NULL,'groupe test');
+INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, session_appli, date_insert, date_update, id_organisme, remarques) VALUES (false, 1, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', '', 'Parc national des Ecrins', 1, true, NULL, NULL, NULL, 99,'utilisateur test à modifier');
+-- 
 -- TOC entry 3277 (class 0 OID 17831)
 -- Dependencies: 259
 -- Data for Name: cor_role_droit_application; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
-
-INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 4);
+-- 
+INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 1);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (20002, 3, 14);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 14);
-
-
---
+-- 
 -- TOC entry 3279 (class 0 OID 17845)
 -- Dependencies: 263
 -- Data for Name: t_menus; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
+-- 
 INSERT INTO t_menus (id_menu, nom_menu, desc_menu, id_application) VALUES (9, 'faune - Observateurs', 'listes des observateurs faune', 14);
-INSERT INTO t_menus (id_menu, nom_menu, desc_menu, id_application) VALUES (10, 'flore - Observateurs', 'Liste des observateurs flore', 4);
-
-
---
+INSERT INTO t_menus (id_menu, nom_menu, desc_menu, id_application) VALUES (10, 'flore - Observateurs', 'Liste des observateurs flore', 14);
+-- 
 -- TOC entry 3253 (class 0 OID 17437)
 -- Dependencies: 186
 -- Data for Name: cor_role_menu; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
-
+-- 
 INSERT INTO cor_role_menu (id_role, id_menu) VALUES (1, 10);
 INSERT INTO cor_role_menu (id_role, id_menu) VALUES (1, 9);
-
-
---
+-- 
 -- TOC entry 3254 (class 0 OID 17440)
 -- Dependencies: 187
 -- Data for Name: cor_roles; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
---
-
-INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES (20001, 1);
+-- 
 INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES (20002, 1);
 
 
