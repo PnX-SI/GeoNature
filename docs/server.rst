@@ -26,7 +26,7 @@ Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
     ::
     
         cd /tmp
-        wget https://github.com/PnEcrins/geonature/archive/vX.Y.Z.zip
+        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
         unzip vX.Y.Z.zip
         mkdir -p /home/synthese/geonature
         cp geonature-X.Y.Z/* /home/synthese/geonature
@@ -63,7 +63,7 @@ Installation pour Debian 7.
         sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
         sudo apache2ctl restart
 
-* Ajouter un alias du serveur de base de données dans le fichier /etc/host
+* Ajouter un alias du serveur de base de données dans le fichier /etc/hosts
 
   ::  
         
@@ -105,14 +105,14 @@ Installation et configuration de PosgreSQL
     ::
     
         sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/9.3/main/postgresql.conf
-        sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\tde.la.merde.0\/33\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
+        sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/32\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
         /etc/init.d/postgresql restart
 
 * Création de 2 utilisateurs PostgreSQL
 
     ::
     
-        su postgres
+        sudo su postgres
         psql
         CREATE ROLE geonatuser WITH LOGIN PASSWORD 'monpassachanger';
         CREATE ROLE geonatadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
