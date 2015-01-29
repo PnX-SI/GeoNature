@@ -1,5 +1,5 @@
-Bienvenue dans la doc de Faune-Flore Synthese
-=============================================
+Bienvenue dans la doc de GeoNature
+==================================
 
 Contenu:
 
