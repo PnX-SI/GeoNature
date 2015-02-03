@@ -12,7 +12,7 @@ class sfGeonatureConfig extends sfActions
 	public static $id_source_inv = 3;
 	public static $default_pdop = -1;
     //organisme producteur et propriétaire des données
-	public static $id_organisme = 2;
+	public static $id_organisme = 99;
     //srid du fond de carte sur lequel les données sont saisies.
     //ATTENTION ! Cette valeur doit être laissée à 3857. Elle correspond au srid du geoportail. Elle est valable en métropole et outre mer.
     //Cette valeur est présente en dur dans le code de l'application. Elle correspond également aux champ des géométries utilisées dans la base pour consulter ou enregistrer des données.
