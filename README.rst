@@ -36,8 +36,14 @@ Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 
 .. image :: docs/images/capture-application.png
 
+Gestion des utilisateurs
+------------------------
+
+La gestion des utilisateurs est déportée dans l'application UsersHub (https://github.com/PnEcrins/UsersHub).
+Celle-ci permet de centraliser les utilisateurs et observateurs, de les ajouter dans un groupe et d'hériter directement de droits dans l'ensemble des applications (GeoNature, Faune, Flore, Geotrek...).
+
 Installation
------------
+------------
 
 Consulter la documentation :  `<http://geonature.rtfd.org>`_
 
