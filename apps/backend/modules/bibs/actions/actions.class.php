@@ -1,11 +1,16 @@
 <?php
 class bibsActions extends sfFauneActions
 {
-
+    //----------------TOUT ---------------------------------
+    public function executeListCommunesSaisie(sfRequest $request)
+    {
+        $val = LCommunesTable::listAllSaisie($request->getParameter('secteur', null));
+        return $this->renderJSON($val);
+    }
     //---------------- SYNTHESE ---------------------------------
     public function executeListAnneesSynthese(sfRequest $request)
     {
-        $annees = SynthesefauneTable::listAnnees();
+        $annees = SyntheseffTable::listAnnees();
         return $this->renderJSON($annees);
     }
     public function executeListTaxonsSynthese(sfRequest $request)
@@ -17,11 +22,6 @@ class bibsActions extends sfFauneActions
     {
         $val = BibTaxonsTable::listTreeSynthese();
         return $this->renderText(json_encode($val));
-    }
-    public function executeListCommunes(sfRequest $request)
-    {
-        $val = LCommunesTable::listAll($request->getParameter('secteur', null));
-        return $this->renderJSON($val);
     }
     public function executeListSecteurs(sfRequest $request)
     {
@@ -49,6 +49,176 @@ class bibsActions extends sfFauneActions
         return $this->renderJSON($val);
     }
     
+    //---------------- FLORE -----------------------------------------
+    
+    public function executeListObservateursFlore(sfRequest $request)
+    {
+        $auteurs = TRolesTable::listObservateursFlore();
+        return $this->renderText(json_encode($auteurs));
+    }
+    public function executeListOrganismes(sfRequest $request)
+    {
+        $o = BibOrganismesTable::listAll();
+        return $this->renderJSON($o);
+    }
+    
+    
+    //---------------- FLORE STATION ---------------------------------
+    
+    public function executeFiltreObservateursFs(sfRequest $request)
+    {
+        $auteurs = TRolesTable::filtreObservateursFs();
+        return $this->renderText(json_encode($auteurs));
+    }
+    public function executeListProgrammeFs(sfRequest $request)
+    {
+        $programmes = BibProgrammesFsTable::listProgrammeFs();
+        return $this->renderText(json_encode($programmes));
+    }
+    public function executeListSupports(sfRequest $request)
+    {
+        $query = BibSupportsTable::listSupports();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListSurfaces(sfRequest $request)
+    {
+        $query = BibSurfacesTable::listSurfaces();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListHomogenes(sfRequest $request)
+    {
+        $query = BibHomogenesTable::listHomogenes();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListAbondances(sfRequest $request)
+    {
+        $query = BibAbondancesTable::listAbondances();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListSophie(sfRequest $request)
+    {
+        $query = TStationsFsTable::listSophie();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListMicroreliefs(sfRequest $request)
+    {
+        $query = BibMicroreliefsTable::listMicroreliefs();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListExpositions(sfRequest $request)
+    {
+        $query = BibExpositionsTable::listExpositions();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeFiltreTaxonOrigineFs()
+    {
+        $taxons = TaxrefTable::filtreTaxonOrigineFs();
+        return $this->renderJSON($taxons);
+    }
+    public function executeFiltreTaxonReferenceFs()
+    {
+        $taxons = TaxrefTable::filtreTaxonReferenceFs();
+        return $this->renderJSON($taxons);
+    }
+    public function executeListAnneeFs(sfRequest $request)
+    {
+        $annees = TStationsFsTable::listAnneeFs();
+        return $this->renderJSON($annees);
+    }
+    
+    //---------------- FLORE PRIORITAIRE -----------------------------
+    
+    public function executeFiltreObservateursFp(sfRequest $request)
+    {
+        $auteurs = TRolesTable::filtreObservateursFp();
+        return $this->renderText(json_encode($auteurs));
+    }
+    public function executeListlfp(sfRequest $request)
+    {
+        $taxons = BibTaxonsFpTable::listlAll();
+        return $this->renderJSON($taxons);
+    }
+    public function executeListffp(sfRequest $request)
+    {
+        $taxons = BibTaxonsFpTable::listfAll();
+        return $this->renderJSON($taxons);
+    }
+    public function executeListSecteursFp(sfRequest $request)
+    {
+        $secteurs = LSecteursTable::listAll();
+        return $this->renderJSON($secteurs);
+    }
+     public function executeListPheno(sfRequest $request)
+    {
+        $phenos = BibPhenologiesTable::listAll();
+        return $this->renderJSON($phenos);
+    }
+    
+    public function executeListFrequenceMethodoNew(sfRequest $request)
+    {
+        $f = BibFrequencesMethodoNewTable::listAll();
+        return $this->renderJSON($f);
+    }
+    
+    public function executeListComptageMethodo(sfRequest $request)
+    {
+        $c = BibComptagesMethodoTable::listAll();
+        return $this->renderJSON($c);
+    }
+    
+    public function executeListPhysionomies(sfRequest $request)
+    {
+        $physionomies = BibPhysionomiesTable::listAll();
+        return $this->renderJSON($physionomies);
+    }
+    
+    public function executeListPerturbations(sfRequest $request)
+    {
+        $perturbations = BibPerturbationsTable::listAll();
+        return $this->renderJSON($perturbations);
+    }
+    public function executeListAnneeFp(sfRequest $request)
+    {
+        $annees = TZprospectionTable::listAnnee();
+        return $this->renderJSON($annees);
+    }
+    //---------------- FLORE BRYOPHYTES ------------------------------
+        
+    public function executeFiltreObservateursBryo(sfRequest $request)
+    {
+        $auteurs = TRolesTable::filtreObservateursBryo();
+        return $this->renderText(json_encode($auteurs));
+    }
+    public function executeListAbondancesBryo(sfRequest $request)
+    {
+        $query = BibAbondancesBryoTable::listAbondances();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeListExpositionsBryo(sfRequest $request)
+    {
+        $query = BibExpositionsBryoTable::listExpositions();
+        return $this->renderText(json_encode($query));
+    }
+    public function executeFiltreTaxonOrigineBryo()
+    {
+        $taxons = TaxrefTable::filtreTaxonOrigineBryo();
+        return $this->renderJSON($taxons);
+    }
+    public function executeFiltreTaxonReferenceBryo()
+    {
+        $taxons = TaxrefTable::filtreTaxonReferenceBryo();
+        return $this->renderJSON($taxons);
+    }
+    public function executeListSecteursBryo(sfRequest $request)
+    {
+        $secteurs = LSecteursTable::listValidBryo();
+        return $this->renderJSON($secteurs);
+    }
+    public function executeListAnneeBryo(sfRequest $request)
+    {
+        $annees = TStationsBryoTable::listAnneeBryo();
+        return $this->renderJSON($annees);
+    }
     //---------------- CONTACT FAUNE ---------------------------------
     public function executeListObservateursCfAdd(sfRequest $request)
     {

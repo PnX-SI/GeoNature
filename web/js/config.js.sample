@@ -33,11 +33,19 @@ num_zoom_levels = 16;
 id_lot_contact_vertebre = 1;
 id_lot_mortalite = 2;
 id_lot_contact_vertebre = 3;
+id_lot_flore_station = 5;
+id_lot_bryophytes = 6;
+
 id_protocole_contact_vertebre = 1;
 id_protocole_mortalite = 2;
 id_protocole_contact_invertebre = 3;
+id_protocole_flore_station = 5;
+id_protocole_bryophyte = 6;
+
 id_source_contactfaune = 1;
 id_source_contactinv = 3;
+id_source_flore_station = 5;
+id_source_bryophytes = 6;
 
 
 //-----configuration propre à l'identité de la structure-------------

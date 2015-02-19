@@ -13,7 +13,7 @@ class LZonesstatutTable extends Doctrine_Table
         $query = Doctrine_Query::create()
           ->select('id_zone id_reserve, nomzone nom_reserve')   
           ->from('LZonesstatut')
-          ->where('id_type IN (11,13)');
+          ->where('id_type IN (5,6,10,11)');
         $val = $query->fetchArray();       
         return $val;
     }
@@ -22,7 +22,7 @@ class LZonesstatutTable extends Doctrine_Table
         $query = Doctrine_Query::create()
           ->select('id_zone id_n2000, nomzone nom_n2000')   
           ->from('LZonesstatut')
-          ->where('id_type = 5');
+          ->where('id_type = 7');
         $val = $query->fetchArray();       
         return $val;
     }

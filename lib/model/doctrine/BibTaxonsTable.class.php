@@ -20,12 +20,25 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listSynthese()
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //requ?te optimis?e = moins 2 secondes
-        $sql = "select t.id_taxon ,t.nom_latin, t.nom_francais,t.patrimonial,t.protection_stricte,
-                t.id_groupe,txr.cd_ref,txr.nom_valide,txr.famille,txr.ordre,txr.classe,
-                prot.protections
-                FROM taxonomie.bib_taxons t
-                JOIN taxonomie.taxref txr ON txr.cd_nom = t.cd_nom
+        //requète optimisèe = moins 2 secondes
+        $sql = "SELECT 
+                    CASE
+                        WHEN (t.nom_francais = '' OR t.nom_francais IS NULL) AND (txr.nom_vern IS NOT NULL AND txr.nom_vern <> '') THEN txr.nom_vern
+                        WHEN t.nom_francais IS NULL OR txr.nom_vern IS NULL THEN txr.lb_nom
+                        WHEN t.nom_francais = '' OR txr.nom_vern = '' THEN txr.lb_nom
+                        ELSE t.nom_francais
+                    END AS nom_francais,
+                    txr.lb_nom AS nom_latin,
+                    t.patrimonial, t.protection_stricte, 
+                    CASE
+                        WHEN t.id_groupe IS NULL AND txr.regne = 'Fungi' THEN 1004
+                        WHEN t.id_groupe IS NULL AND txr.regne = 'Plantae' THEN 1000
+                        ELSE t.id_groupe
+                    END AS id_groupe,
+                    txr.cd_ref, txr.cd_nom, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.regne,
+                    prot.protections
+                FROM taxonomie.taxref txr 
+                LEFT JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
                 LEFT JOIN (
                     SELECT a.cd_nom, array_to_string(array_agg(a.arrete||' '|| a.article||'__'||a.url) , '#'::text)  AS protections
                     FROM ( SELECT tpe.cd_nom, tpa.url,tpa.arrete,tpa.article
@@ -34,7 +47,7 @@ class BibTaxonsTable extends Doctrine_Table
                           ) a
                     GROUP BY a.cd_nom
                 ) prot ON prot.cd_nom = txr.cd_nom
-                WHERE t.id_taxon IN (SELECT DISTINCT id_taxon FROM synthese.synthesefaune)
+                WHERE txr.cd_nom IN (SELECT DISTINCT cd_nom FROM synthese.syntheseff)
                 ORDER BY t.nom_francais;";
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         foreach ($taxons as $key => &$val)
@@ -72,7 +85,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listCf()
     {
         $query= Doctrine_Query::create()
-            ->select('t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.denombrement, t.patrimonial, t.message,\'orange\' couleur' )
+            ->select('t.id_taxon, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.denombrement, t.patrimonial, t.message,\'orange\' couleur' )
             ->distinct()
             ->from('VNomadeTaxonsFaune t')
             ->where('contactfaune = true')
@@ -88,7 +101,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listInv()
     {
         $query= Doctrine_Query::create()
-            ->select('t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
+            ->select('t.id_taxon, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
             ->distinct()
             ->from('VNomadeTaxonsInv t')
             ->orderBy('t.nom_latin')

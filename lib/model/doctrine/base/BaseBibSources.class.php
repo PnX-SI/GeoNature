@@ -16,32 +16,32 @@
  * @property string $db_schema
  * @property string $db_table
  * @property string $db_field
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * 
- * @method integer             getIdSource()      Returns the current record's "id_source" value
- * @method string              getNomSource()     Returns the current record's "nom_source" value
- * @method string              getDescSource()    Returns the current record's "desc_source" value
- * @method string              getHost()          Returns the current record's "host" value
- * @method integer             getPort()          Returns the current record's "port" value
- * @method string              getUsername()      Returns the current record's "username" value
- * @method string              getPass()          Returns the current record's "pass" value
- * @method string              getDbName()        Returns the current record's "db_name" value
- * @method string              getDbSchema()      Returns the current record's "db_schema" value
- * @method string              getDbTable()       Returns the current record's "db_table" value
- * @method string              getDbField()       Returns the current record's "db_field" value
- * @method Doctrine_Collection getSynthesefaune() Returns the current record's "Synthesefaune" collection
- * @method BibSources          setIdSource()      Sets the current record's "id_source" value
- * @method BibSources          setNomSource()     Sets the current record's "nom_source" value
- * @method BibSources          setDescSource()    Sets the current record's "desc_source" value
- * @method BibSources          setHost()          Sets the current record's "host" value
- * @method BibSources          setPort()          Sets the current record's "port" value
- * @method BibSources          setUsername()      Sets the current record's "username" value
- * @method BibSources          setPass()          Sets the current record's "pass" value
- * @method BibSources          setDbName()        Sets the current record's "db_name" value
- * @method BibSources          setDbSchema()      Sets the current record's "db_schema" value
- * @method BibSources          setDbTable()       Sets the current record's "db_table" value
- * @method BibSources          setDbField()       Sets the current record's "db_field" value
- * @method BibSources          setSynthesefaune() Sets the current record's "Synthesefaune" collection
+ * @method integer             getIdSource()    Returns the current record's "id_source" value
+ * @method string              getNomSource()   Returns the current record's "nom_source" value
+ * @method string              getDescSource()  Returns the current record's "desc_source" value
+ * @method string              getHost()        Returns the current record's "host" value
+ * @method integer             getPort()        Returns the current record's "port" value
+ * @method string              getUsername()    Returns the current record's "username" value
+ * @method string              getPass()        Returns the current record's "pass" value
+ * @method string              getDbName()      Returns the current record's "db_name" value
+ * @method string              getDbSchema()    Returns the current record's "db_schema" value
+ * @method string              getDbTable()     Returns the current record's "db_table" value
+ * @method string              getDbField()     Returns the current record's "db_field" value
+ * @method Doctrine_Collection getSyntheseff()  Returns the current record's "Syntheseff" collection
+ * @method BibSources          setIdSource()    Sets the current record's "id_source" value
+ * @method BibSources          setNomSource()   Sets the current record's "nom_source" value
+ * @method BibSources          setDescSource()  Sets the current record's "desc_source" value
+ * @method BibSources          setHost()        Sets the current record's "host" value
+ * @method BibSources          setPort()        Sets the current record's "port" value
+ * @method BibSources          setUsername()    Sets the current record's "username" value
+ * @method BibSources          setPass()        Sets the current record's "pass" value
+ * @method BibSources          setDbName()      Sets the current record's "db_name" value
+ * @method BibSources          setDbSchema()    Sets the current record's "db_schema" value
+ * @method BibSources          setDbTable()     Sets the current record's "db_table" value
+ * @method BibSources          setDbField()     Sets the current record's "db_field" value
+ * @method BibSources          setSyntheseff()  Sets the current record's "Syntheseff" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -103,7 +103,7 @@ abstract class BaseBibSources extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'id_source',
              'foreign' => 'id_source'));
     }

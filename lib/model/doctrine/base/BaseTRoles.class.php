@@ -25,11 +25,14 @@
  * @property timestamp $date_update
  * @property BibUnites $BibUnites
  * @property BibOrganismes $BibOrganismes
+ * @property Doctrine_Collection $CorBryoObservateur
+ * @property Doctrine_Collection $CorFsObservateur
  * @property Doctrine_Collection $CorRoleDroitApplication
  * @property Doctrine_Collection $CorRoleFicheCf
  * @property Doctrine_Collection $CorRoleFicheInv
  * @property Doctrine_Collection $CorRoleMenu
  * @property Doctrine_Collection $CorRoles
+ * @property Doctrine_Collection $CorZpObs
  * 
  * @method boolean             getGroupe()                  Returns the current record's "groupe" value
  * @method integer             getIdRole()                  Returns the current record's "id_role" value
@@ -51,11 +54,14 @@
  * @method timestamp           getDateUpdate()              Returns the current record's "date_update" value
  * @method BibUnites           getBibUnites()               Returns the current record's "BibUnites" value
  * @method BibOrganismes       getBibOrganismes()           Returns the current record's "BibOrganismes" value
+ * @method Doctrine_Collection getCorBryoObservateur()      Returns the current record's "CorBryoObservateur" collection
+ * @method Doctrine_Collection getCorFsObservateur()        Returns the current record's "CorFsObservateur" collection
  * @method Doctrine_Collection getCorRoleDroitApplication() Returns the current record's "CorRoleDroitApplication" collection
  * @method Doctrine_Collection getCorRoleFicheCf()          Returns the current record's "CorRoleFicheCf" collection
  * @method Doctrine_Collection getCorRoleFicheInv()         Returns the current record's "CorRoleFicheInv" collection
  * @method Doctrine_Collection getCorRoleMenu()             Returns the current record's "CorRoleMenu" collection
  * @method Doctrine_Collection getCorRoles()                Returns the current record's "CorRoles" collection
+ * @method Doctrine_Collection getCorZpObs()                Returns the current record's "CorZpObs" collection
  * @method TRoles              setGroupe()                  Sets the current record's "groupe" value
  * @method TRoles              setIdRole()                  Sets the current record's "id_role" value
  * @method TRoles              setOrganisme()               Sets the current record's "organisme" value
@@ -76,11 +82,14 @@
  * @method TRoles              setDateUpdate()              Sets the current record's "date_update" value
  * @method TRoles              setBibUnites()               Sets the current record's "BibUnites" value
  * @method TRoles              setBibOrganismes()           Sets the current record's "BibOrganismes" value
+ * @method TRoles              setCorBryoObservateur()      Sets the current record's "CorBryoObservateur" collection
+ * @method TRoles              setCorFsObservateur()        Sets the current record's "CorFsObservateur" collection
  * @method TRoles              setCorRoleDroitApplication() Sets the current record's "CorRoleDroitApplication" collection
  * @method TRoles              setCorRoleFicheCf()          Sets the current record's "CorRoleFicheCf" collection
  * @method TRoles              setCorRoleFicheInv()         Sets the current record's "CorRoleFicheInv" collection
  * @method TRoles              setCorRoleMenu()             Sets the current record's "CorRoleMenu" collection
  * @method TRoles              setCorRoles()                Sets the current record's "CorRoles" collection
+ * @method TRoles              setCorZpObs()                Sets the current record's "CorZpObs" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -182,6 +191,14 @@ abstract class BaseTRoles extends sfDoctrineRecord
              'local' => 'id_organisme',
              'foreign' => 'id_organisme'));
 
+        $this->hasMany('CorBryoObservateur', array(
+             'local' => 'id_role',
+             'foreign' => 'id_role'));
+
+        $this->hasMany('CorFsObservateur', array(
+             'local' => 'id_role',
+             'foreign' => 'id_role'));
+
         $this->hasMany('CorRoleDroitApplication', array(
              'local' => 'id_role',
              'foreign' => 'id_role'));
@@ -201,5 +218,9 @@ abstract class BaseTRoles extends sfDoctrineRecord
         $this->hasMany('CorRoles', array(
              'local' => 'id_role',
              'foreign' => 'id_role_groupe'));
+
+        $this->hasMany('CorZpObs', array(
+             'local' => 'id_role',
+             'foreign' => 'codeobs'));
     }
 }

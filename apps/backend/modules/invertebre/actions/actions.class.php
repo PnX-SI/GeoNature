@@ -108,7 +108,8 @@ class invertebreActions extends sfFauneActions
             $ai = $array_taxon[8];
             $na = $array_taxon[9];
             $commentaire = $array_taxon[10];
-            $cd_ref_origine = $array_taxon[11];
+            $determinateur = $array_taxon[11];
+            $cd_ref_origine = $array_taxon[12];
             //on récupère l'enregistrement ou on le crée
             // $taxon = new TRelevesInv();
             if($id_releve_inv==null OR $id_releve_inv==''){
@@ -127,6 +128,7 @@ class invertebreActions extends sfFauneActions
             $taxon->ai = $ai;
             $taxon->na = $na;
             $taxon->commentaire = str_replace('<!>',',',$commentaire);
+            $taxon->determinateur = str_replace('<!>',',',$determinateur);
             $taxon->cd_ref_origine = $cd_ref_origine;
             $taxon->save();
         }
@@ -157,6 +159,7 @@ class invertebreActions extends sfFauneActions
             $fiche->id_inv = $id_inv;
             $fiche->saisie_initiale = 'web';
             $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
+            $fiche->id_protocole = sfGeonatureConfig::$id_protocole_inv;
         }
         //remise au format de la date
         $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
@@ -171,7 +174,6 @@ class invertebreActions extends sfFauneActions
         $fiche->altitude_saisie = $altitude_saisie;
         $fiche->supprime = false;
         $fiche->srid_dessin = sfGeonatureConfig::$srid_dessin;
-        $fiche->id_protocole = sfGeonatureConfig::$id_protocole_inv;
         $fiche->id_lot = sfGeonatureConfig::$id_lot_inv;
         // $fiche->id_lot = $request->getParameter('id_lot');
         $fiche->save();//enregistrement avec la methode save de symfony
@@ -200,8 +202,8 @@ class invertebreActions extends sfFauneActions
         }
         //sauvegarde de la géometrie de la fiche
         // on le fait après l'enregistrement des observateurs car l'insertion de la géométrie va provoquer le trigger update
-        // et ce trigger met à jour la synthesefaune, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
-        //pas à jour la synthesefaune.
+        // et ce trigger met à jour la synthese, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
+        //pas à jour la synthese.
         $geometry = $request->getParameter('geometry');
         Doctrine_Query::create()
          ->update('TFichesInv')
@@ -224,15 +226,15 @@ class invertebreActions extends sfFauneActions
         $srid_layer_isoline = sfGeonatureConfig::$srid_local;
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "SELECT layers.f_isolines20(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_isoline.")) AS z,
-                layers.f_nomcommune(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_commune.")) AS nom_commune";
+                layers.f_nomcommune(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_commune.")) AS nomcommune";
         $array_z = $dbh->query($sql);
         foreach($array_z as $val){
             $z = $val['z'];
-            $nom_commune = str_replace("'","\'",$val['nom_commune']);
+            $nomcommune = str_replace("'","\'",$val['nomcommune']);
         }
         if($z==null){$z=0;}
-        if($nom_commune==null){$nom_commune='hors zone';}
-        return $this->renderText("{success: true,data:{altitude:".$z.",nomcommune:'".$nom_commune."'}}");
+        if($nomcommune==null){$nomcommune='hors zone';}
+        return $this->renderText("{success: true,data:{altitude:".$z.",nomcommune:'".$nomcommune."'}}");
         // print_r(json_encode($val));
     }
 }

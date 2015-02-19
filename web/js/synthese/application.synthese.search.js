@@ -174,7 +174,6 @@ application.synthese.search = function() {
                 ,{name: 'observateurs'}
                 ,{name: 'altitude'}
                 ,{name: 'remarques'}
-                ,{name: 'id_taxon'}
                 ,{name: 'cd_nom'}
                 ,{name: 'cd_ref'}
                 ,{name: 'taxon_latin'}
@@ -184,7 +183,7 @@ application.synthese.search = function() {
                 ,{name: 'nom_critere_synthese'}
                 ,{name: 'effectif_total'}
                 ,{name: 'no_protection', defaultValue: false}
-                ,{name: 'nom_commune'}
+                ,{name: 'nomcommune'}
                 ,{name: 'edit_ok',type:'boolean'}
                 ,{name: 'onscreen',type: 'string',defaultValue:'yes'}
             ])
@@ -261,7 +260,7 @@ application.synthese.search = function() {
             new Ext.XTemplate(
                 '<p><b><tpl if="taxon_francais">{taxon_francais} - </tpl><i>{taxon_latin}</i></b> - {effectif_total} individu(s) le {dateobs:date("d/m/Y")}</p>'
                 ,'<tpl if="observateurs"><p><b>Observation de </b> {observateurs} à {altitude} m ({nom_critere_synthese})</p></tpl> '
-                ,'<tpl if="nom_commune"><p>Sur la commune de {nom_commune}</p></tpl> '
+                ,'<tpl if="nomcommune"><p>Sur la commune de {nomcommune}</p></tpl> '
                 ,'<tpl if="code_fiche_source"><p>Code fiche : {code_fiche_source}</p></tpl> '
                 ,'<tpl if="remarques"><p><b>Remarques : </b>{remarques}</p></tpl>' 
             )
@@ -293,15 +292,15 @@ application.synthese.search = function() {
         ];
     };
 
-    var findInfosTaxon = function(id_taxon) {
+    var findInfosTaxon = function(cd_nom) {
         var store = application.synthese.storeTaxonsSynthese; 
-        var regId = new RegExp ("^"+id_taxon+"$",'gi');
-        var rec = store.getAt(store.find('id_taxon',regId));
+        var regId = new RegExp ("^"+cd_nom+"$",'gi');
+        var rec = store.getAt(store.find('cd_nom',regId));
         return rec;
     };
     var loadTaxonDetails = function(fiche) {
         var i;
-        var rec = findInfosTaxon(fiche.data.id_taxon);
+        var rec = findInfosTaxon(fiche.data.cd_nom);
         if(Ext.isDefined(rec)==true){
 	        fiche.data.nom_valide = rec.data.nom_valide;
 	        fiche.data.famille = rec.data.famille;
@@ -609,7 +608,7 @@ application.synthese.search = function() {
             ,{id:'taxon',header: "Français", width: 100, sortable: true, dataIndex: 'taxon_francais'}
             ,{header: "Date",  width: 60, sortable: true, dataIndex: 'dateobs',renderer: Ext.util.Format.dateRenderer('d/m/Y')}
             ,{header: "Altitude", width: 50, sortable: true, dataIndex: 'altitude',hidden: true}
-            ,{header: "Commune", width: 110, sortable: true, dataIndex: 'nom_commune',hidden: true}
+            ,{header: "Commune", width: 110, sortable: true, dataIndex: 'nomcommune',hidden: true}
             ,{header: "Programme", width: 90, sortable: true, dataIndex: 'nom_programme'}
             ,{header: "Observateurs", width: 120, sortable: true, dataIndex: 'observateurs',hidden: true}
             ,{header: "Patri", width: 45, sortable: true, dataIndex: 'patrimonial',hidden: true}
@@ -760,7 +759,7 @@ application.synthese.search = function() {
                             if(id_source==id_source_contactfaune&&id_protocole==id_protocole_mortalite&&record.data.edit_ok){
                                 application.synthese.editMortalite.loadFiche(id_fiche,'update',null);
                             }
-                            if(id_source==id_source_contactinv&&id_protocole==id_protocole_inv&&record.data.edit_ok){
+                            if(id_source==id_source_contactinv&&id_protocole==id_protocole_contact_invertebre&&record.data.edit_ok){
                                 application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);
                             }
                             if(!record.data.edit_ok){Ext.ux.Toast.msg('Non, non, non !', 'Vous devez être l\'auteur de cette observation ou administrateur pour la modifier.');}  
@@ -1077,7 +1076,7 @@ application.synthese.search = function() {
      */
     var getFormItems = function() {
         myProxyCommunes = new Ext.data.HttpProxy({
-            url: 'bibs/communessynthese'
+            url: 'bibs/communes'
             ,method: 'GET'
         });
         var communesStore = new Ext.data.JsonStore({
@@ -1085,11 +1084,11 @@ application.synthese.search = function() {
             ,url: myProxyCommunes
             ,fields: [
                 'insee'
-                ,'nom_commune'
+                ,'nomcommune'
                 ,'extent'
             ]
             ,sortInfo: {
-                field: 'nom_commune'
+                field: 'nomcommune'
                 ,direction: 'ASC'
             }
             ,autoLoad: true
@@ -1117,7 +1116,7 @@ application.synthese.search = function() {
             application.synthese.storeProgrammes.each(function(record){
                 var id = record.data.id_programme;
                 var chk = true;
-                if(id == 6 || id == 7 || id == 8){chk = false;}
+                // if(id == 6 || id == 7 || id == 8){chk = false;}
                 var cb = new Ext.form.Checkbox({
                     boxLabel: record.data.nom_programme
                     ,name: 'p-'+id
@@ -1203,7 +1202,23 @@ application.synthese.search = function() {
                     ,name:'extent'
                     ,value:''
                 },{
+                    xtype: 'radiogroup'
+                    ,id:'radio-ff'
+                    ,items: [
+                        {boxLabel: 'Faune', name: 'ff', inputValue: 'Animalia'},
+                        {boxLabel: 'Flore', name: 'ff', inputValue: 'Plantae'},
+                        {boxLabel: 'Fonge', name: 'ff', inputValue: 'Fungi'},
+                        {boxLabel: 'Tout', name: 'ff', inputValue: null, checked: true},
+                    ]
+                    ,listeners: {
+                        change: function(cb,checked) {
+                            application.synthese.search.manageCombosTaxons();
+                            if(application.synthese.search.windowTaxons){application.synthese.search.manageTree();}
+                        }
+                    }
+                },{
                     xtype: 'checkbox'
+                    ,id: 'cb-patri'
                     ,fieldLabel: ''
                     ,cls:'bluebold'
                     ,boxLabel: 'Taxons patrimoniaux'
@@ -1213,13 +1228,13 @@ application.synthese.search = function() {
                         check: function(cb,checked) {
                             if(checked){Ext.getCmp('hidden-patri').setValue(true);}
                             else{Ext.getCmp('hidden-patri').setValue(false);}
-                            Ext.getCmp('combo-synthese-taxons-fr').clearValue();
-                            Ext.getCmp('combo-synthese-taxons-latin').clearValue();
+                            application.synthese.search.manageCombosTaxons();
                             if(application.synthese.search.windowTaxons){application.synthese.search.manageTree();}
                         }
                     }
                 },{
                     xtype: 'checkbox'
+                    ,id: 'cb-protege'
                     ,fieldLabel: ''
                     ,cls:'bluebold'
                     ,boxLabel: 'Taxons protégés'
@@ -1229,8 +1244,7 @@ application.synthese.search = function() {
                         check: function(cb,checked) {
                             if(checked){Ext.getCmp('hidden-protege').setValue(true);}
                             else{Ext.getCmp('hidden-protege').setValue(false);}
-                            Ext.getCmp('combo-synthese-taxons-fr').clearValue();
-                            Ext.getCmp('combo-synthese-taxons-latin').clearValue();
+                            application.synthese.search.manageCombosTaxons();
                             if(application.synthese.search.windowTaxons){application.synthese.search.manageTree();}
                         }
                     }
@@ -1242,7 +1256,7 @@ application.synthese.search = function() {
                     ,name:"taxonfr"
                     ,hiddenName:"taxonfr"
                     ,store: application.synthese.storeTaxonsSynthese
-                    ,valueField: "id_taxon"
+                    ,valueField: "cd_nom"
                     ,displayField: "nom_francais"
                     ,typeAhead: true
                     ,typeAheadDelay:750
@@ -1257,22 +1271,11 @@ application.synthese.search = function() {
                     ,listeners: {
                         expand: function(combo, record) {
                             combo.getStore().sort('nom_francais','ASC');
-                            patri = Ext.getCmp('hidden-patri').getValue();
-                            protege = Ext.getCmp('hidden-protege').getValue();
-                            if (patri =='true' && protege =='true'){
-                                combo.getStore().filterBy(function(r,id){if(r.data.patrimonial == true || r.data.protection_stricte == true){return true;}});
-                            }
-                            else if (patri =='true' && protege !='true'){
-                                combo.getStore().filterBy(function(r,id){if(r.data.patrimonial == true){return true;}});
-                            }
-                            else if (patri !='true' && protege =='true'){
-                                combo.getStore().filterBy(function(r,id){if(r.data.protection_stricte == true){return true;}});
-                            }
-                            else if (patri !='true' && protege !='true'){combo.getStore().clearFilter();}
-                            Ext.getCmp('combo-synthese-taxons-latin').clearValue();
                         }
-                        ,select: function(){
-                            if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}   
+                        ,select: function(combo, record, index){
+                            Ext.getCmp('combo-synthese-taxons-latin').setValue(record.data.cd_nom);
+                            if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}
+                            Ext.getCmp('label-choix-taxons').setText('');                            
                         }
                     }
                 },{
@@ -1283,7 +1286,7 @@ application.synthese.search = function() {
                     ,name:"taxonl"
                     ,hiddenName:"taxonl"
                     ,store: application.synthese.storeTaxonsSynthese
-                    ,valueField: "id_taxon"
+                    ,valueField: "cd_nom"
                     ,displayField: "nom_latin"
                     ,typeAhead: true
                     ,typeAheadDelay:750
@@ -1298,21 +1301,9 @@ application.synthese.search = function() {
                     ,listeners: {
                         expand: function(combo, record) {
                             combo.getStore().sort('nom_latin','ASC');
-                            patri = Ext.getCmp('hidden-patri').getValue();
-                            protege = Ext.getCmp('hidden-protege').getValue();
-                            if (patri =='true' && protege =='true'){
-                                combo.getStore().filterBy(function(r,id){if(r.data.patrimonial == true || r.data.protection_stricte == true){return true;}});
-                            }
-                            else if (patri =='true' && protege !='true'){
-                                combo.getStore().filterBy(function(r,id){if(r.data.patrimonial == true){return true;}});
-                            }
-                            else if (patri !='true' && protege =='true'){
-                                combo.getStore().filterBy(function(r,id){if(r.data.protection_stricte == true){return true;}});
-                            }
-                            else if (patri !='true' && protege !='true'){combo.getStore().clearFilter();}
-                            Ext.getCmp('combo-synthese-taxons-fr').clearValue();
                         }
-                        ,select: function(){
+                        ,select: function(combo, record, index){
+                            Ext.getCmp('combo-synthese-taxons-fr').setValue(record.data.cd_nom);
                             if(application.synthese.search.windowTaxons){application.synthese.search.resetTree();}
                             Ext.getCmp('label-choix-taxons').setText('');
                         }
@@ -1443,7 +1434,7 @@ application.synthese.search = function() {
                 {
                     xtype:"twintriggercombo"
                     ,id: 'combo-secteurs'
-                    ,emptyText: "Délégations"
+                    ,emptyText: "Secteur"
                     ,name:"nom_secteur"
                     ,hiddenName:"id_secteur"
                     ,store: secteursStore
@@ -1478,7 +1469,7 @@ application.synthese.search = function() {
                             Ext.getCmp('combo-reserves').clearValue();
                             Ext.getCmp('combo-n2000').clearValue();
                             Ext.getCmp('combo-communes').clearValue();
-                            myProxyCommunes.url = 'bibs/communessynthese?secteur='+combo.getValue();
+                            myProxyCommunes.url = 'bibs/communes?secteur='+combo.getValue();
                             communesStore.reload();
                             Ext.getCmp('hidden-extent').setValue(record.data.extent);   
                             Ext.getCmp('hidden-secteur').setValue(record.data.id_secteur); 
@@ -1488,7 +1479,7 @@ application.synthese.search = function() {
                             Ext.getCmp('combo-communes').clearValue();
                             Ext.getCmp('hidden-secteur').setValue('');
                             Ext.getCmp('hidden-commune').setValue('');
-                            myProxyCommunes.url = 'bibs/communessynthese';
+                            myProxyCommunes.url = 'bibs/communes';
                             communesStore.reload();
                         }
                     }
@@ -1496,11 +1487,11 @@ application.synthese.search = function() {
                     xtype:"twintriggercombo"
                     ,id: 'combo-communes'
                     ,emptyText: "Commune"
-                    ,name:"nom_commune"
+                    ,name:"nomcommune"
                     ,hiddenName:"insee"
                     ,store: communesStore
                     ,valueField: "insee"
-                    ,displayField: "nom_commune"
+                    ,displayField: "nomcommune"
                     ,listWidth: 200
                     ,anchor:'95%'
                     ,typeAhead: true
@@ -1514,7 +1505,7 @@ application.synthese.search = function() {
                     ,listeners: {
                         beforeselect: function(combo, record) {
                             if (application.synthese.searchVectorLayer.features.length>0 && mapBoundsSearch==false) {
-                                Ext.Msg.confirm('Vous aveiz dessiné ou téléchargé une zone de recherche.'
+                                Ext.Msg.confirm('Vous aviez dessiné ou téléchargé une zone de recherche.'
                                     ,'Voulez vous supprimer cette zone de recherche ?'
                                     ,function(btn) {
                                         if (btn == 'yes') {
@@ -1536,20 +1527,6 @@ application.synthese.search = function() {
                         ,clear: function(combo) {
                             combo.reset();
                             Ext.getCmp('hidden-commune').setValue('');
-                        }
-                    }
-                }
-                ,{
-                    id:'cb-coeur'
-                    ,xtype: 'checkbox'
-                    ,fieldLabel: ''
-                    ,cls:'bluebold'
-                    ,boxLabel: 'Coeur uniquement'
-                    ,inputValue: true
-                    ,name: 'coeur'
-                    ,listeners: {
-                        check: function(cb,checked) {
-                            if(checked){Ext.getCmp('combo-reserves').clearValue();}
                         }
                     }
                 }
@@ -1590,7 +1567,6 @@ application.synthese.search = function() {
                             } 
                         }
                         ,select: function(combo, record) {
-                            Ext.getCmp('cb-coeur').setValue(false);
                             Ext.getCmp('combo-communes').clearValue();
                             Ext.getCmp('combo-secteurs').clearValue();
                             Ext.getCmp('combo-n2000').clearValue();
@@ -1636,7 +1612,6 @@ application.synthese.search = function() {
                             } 
                         }
                         ,select: function(combo, record) {
-                            Ext.getCmp('cb-coeur').setValue(false);
                             Ext.getCmp('combo-communes').clearValue();
                             Ext.getCmp('combo-secteurs').clearValue();
                             Ext.getCmp('combo-reserves').clearValue();
@@ -1855,38 +1830,44 @@ application.synthese.search = function() {
     //construction automatique de l'arbre des taxons à partir de la base de données
     var constructListTaxons = function(){
         var monArbre = [];
+        var childrensRegne = [];
         var childrensEmbranchement = [];
         var childrensClasse = [];
         var childrensOrdre = [];
         var childrensFamille = [];
+        var kd = null;
         var emb = null;
         var cl = null;
         var desc_cl = null;
         var ord = null;
         var fam = null;
+        var nouveauRegne=false;
         var nouvelEmbranchement=false;
         var nouvelleClasse=false;
         var nouvelOrdre=false;
         var nouvelleFamille=false;
         var child = {};
+        var regne = {};
         var embranchement = {};
         var classe = {};
         var ordre = {};
         var famille = {};
         //on bouble sur les enregistrements du store des taxons issu de la base
         application.synthese.taxonsTreeStore.each(function(record){
+            if(kd==null){kd = record.data.nom_regne;}//initialisation
             if(emb==null){emb = record.data.nom_embranchement;}//initialisation
             if(cl==null){cl = record.data.nom_classe;}//initialisation
             if(desc_cl==null){desc_cl = record.data.desc_classe;}//initialisation
             if(ord==null){ord = record.data.nom_ordre;}//initialisation
             if(fam==null){fam = record.data.nom_famille;}//initialisation
+            if(kd != record.data.nom_regne){nouveauRegne=true;}// si on a changé de niveau de règne
             if(emb != record.data.nom_embranchement){nouvelEmbranchement=true;}// si on a changé de niveau d'embranchement
             if(cl != record.data.nom_classe){nouvelleClasse=true;}// si on a changé de niveau de classe
             if(ord != record.data.nom_ordre){nouvelOrdre=true;}// si on a changé de niveau d'ordre
             if(fam != record.data.nom_famille){nouvelleFamille=true;}// si on a changé de niveau de famille
             //création d'un noeud final avec checkbox
             child = {
-                id:record.data.id_taxon
+                id:record.data.cd_nom
                 ,text:record.data.nom_latin+' - '+record.data.nom_francais
                 ,leaf:true
                 ,checked:false
@@ -1927,11 +1908,22 @@ application.synthese.search = function() {
                     ,checked:false
                     ,children:childrensEmbranchement
                 };
-                monArbre.push(embranchement); //on ajoute ce groupe à l'arbre
+                childrensRegne.push(embranchement); //on ajoute ce groupe à l'arbre
                 nouvelEmbranchement=false; //on repasse à false pour les prochains tests
                 childrensEmbranchement = []; //on vide la variable qui contenait le groupe pour en accueillir un nouveau
             }
+            if(nouveauRegne){ //on crée le groupe
+                regne = {
+                    text: kd
+                    ,checked:false
+                    ,children:childrensRegne
+                };
+                monArbre.push(regne); //on ajoute ce groupe à l'arbre
+                nouveauRegne=false; //on repasse à false pour les prochains tests
+                childrensRegne = []; //on vide la variable qui contenait le groupe pour en accueillir un nouveau
+            }
             childrensFamille.push(child);//ajout du noeud au groupe
+            kd = record.data.nom_regne; //kd prend la valeur en cours du groupe pour un nouveau test en début de boucle 
             emb = record.data.nom_embranchement; //emb prend la valeur en cours du groupe pour un nouveau test en début de boucle 
             cl = record.data.nom_classe; //cl prend la valeur en cours du groupe pour un nouveau test en début de boucle 
             desc_cl = record.data.desc_classe; //
@@ -1959,10 +1951,16 @@ application.synthese.search = function() {
             ,checked:false
             ,children:childrensEmbranchement
         };
+        regne = {
+            text: kd
+            ,checked:false
+            ,children:childrensRegne
+        };
         childrensOrdre.push(famille);
         childrensClasse.push(ordre);
         childrensEmbranchement.push(classe);
-        monArbre.push(embranchement);
+        childrensRegne.push(embranchement);
+        monArbre.push(regne);
         return monArbre;
     };
     var getTaxonsFormPanel = function(){
@@ -2107,20 +2105,35 @@ application.synthese.search = function() {
             var patri = Ext.getCmp('hidden-patri').getValue();
             var protege = Ext.getCmp('hidden-protege').getValue();
             var txtTaxons = 'Taxons';
-            if (patri =='true' && protege =='true'){txtTaxons='Taxons patrimoniaux et protégés ';}
-            else if (patri =='true' && protege !='true'){txtTaxons='Taxons patrimoniaux ';}
-            else if (patri !='true' && protege =='true'){txtTaxons='Taxons pprotégés ';}
+            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
+            if(ff == null){
+                if (patri =='true' && protege =='true'){txtTaxons='Taxons patrimoniaux et protégés ';}
+                else if (patri =='true' && protege !='true'){txtTaxons='Taxons patrimoniaux ';}
+                else if (patri !='true' && protege =='true'){txtTaxons='Taxons protégés ';}
+            }
+            else{
+                if (patri =='true' && protege =='true'){txtTaxons=ff+'-  Taxons patrimoniaux et protégés ';}
+                else if (patri =='true' && protege !='true'){txtTaxons=ff+'-  Taxons patrimoniaux ';}
+                else if (patri !='true' && protege =='true'){txtTaxons=ff+'-  Taxons protégés ';}
+            }
             var t = Ext.getCmp('tree-taxons');
             var compt = 0;
             var ids = [];
             application.synthese.taxonsTreeStore.each(function(record){
-                var node = t.getNodeById(record.data.id_taxon);
+                var node = t.getNodeById(record.data.cd_nom);
                 var includeRecord = false;
-                var txtTaxons = 'Taxons';
-                if (patri !='true' && protege !='true'){includeRecord=true;}
-                else if (patri =='true' && protege =='true'){if(record.data.patrimonial==true && record.data.protection_stricte == true){includeRecord=true;}}
-                else if (patri =='true' && protege !='true'){if(record.data.patrimonial==true){includeRecord=true;}}
-                else if (patri !='true' && protege =='true'){if(record.data.protection_stricte == true){includeRecord=true;}}
+                if(ff == null){
+                    if (patri !='true' && protege !='true'){includeRecord=true;}
+                    else if (patri =='true' && protege =='true'){if(record.data.patrimonial==true && record.data.protection_stricte == true){includeRecord=true;}}
+                    else if (patri =='true' && protege !='true'){if(record.data.patrimonial==true){includeRecord=true;}}
+                    else if (patri !='true' && protege =='true'){if(record.data.protection_stricte == true){includeRecord=true;}}
+                }
+                else{
+                    if (patri !='true' && protege !='true' && record.data.regne == ff){includeRecord=true;}
+                    else if (patri =='true' && protege =='true'){if((record.data.patrimonial==true && record.data.protection_stricte == true) && record.data.regne == ff) {includeRecord=true;}}
+                    else if (patri =='true' && protege !='true'){if(record.data.patrimonial==true && record.data.regne == ff){includeRecord=true;}}
+                    else if (patri !='true' && protege =='true'){if(record.data.protection_stricte == true && record.data.regne == ff){includeRecord=true;}}
+                }
                 if(node){
                     if (!includeRecord) {node.getUI().hide();}
                     else {node.getUI().show();}
@@ -2144,6 +2157,48 @@ application.synthese.search = function() {
             }
 
         }
+        ,manageCombosTaxons: function(){
+            //récupération des valeurs des cases à cocher patrimoniaux et protégés et faune/flore/fonge
+            var patri = Ext.getCmp('cb-patri').getValue();
+            var protege = Ext.getCmp('cb-protege').getValue()
+            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
+            Ext.getCmp('combo-synthese-taxons-fr').getStore().clearFilter();
+            Ext.getCmp('combo-synthese-taxons-latin').getStore().clearFilter();
+            Ext.getCmp('combo-synthese-taxons-fr').clearValue();
+            Ext.getCmp('combo-synthese-taxons-latin').clearValue();
+            if(ff !=null){
+                if (patri == true && protege == true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if((r.data.patrimonial == true || r.data.protection_stricte == true) && r.data.regne == ff){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if((r.data.patrimonial == true || r.data.protection_stricte == true) && r.data.regne == ff){return true;}});
+                }
+                else if (patri == true && protege != true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.patrimonial == true && r.data.regne == ff){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.patrimonial == true&& r.data.regne == ff){return true;}});
+                }
+                else if (patri != true && protege == true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true && r.data.regne == ff){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true && r.data.regne == ff){return true;}});
+                }
+                else if(patri != true && protege != true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.regne == ff){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.regne == ff){return true;}});
+                }
+            }
+            else{
+                if (patri == true && protege == true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.patrimonial == true || r.data.protection_stricte == true){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.patrimonial == true || r.data.protection_stricte == true){return true;}});
+                }
+                else if (patri == true && protege != true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.patrimonial == true){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.patrimonial == true){return true;}});
+                }
+                else if (patri != true && protege == true){
+                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true){return true;}});
+                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true){return true;}});
+                }
+            }
+        }
         ,resetTree: function(){
             Ext.getCmp('tree-taxons').getRootNode().setText('Taxons (0)');
             Ext.each(Ext.getCmp('tree-taxons').getRootNode(), function(node){
@@ -2154,7 +2209,7 @@ application.synthese.search = function() {
                     this.collapse();
                 },null,args);
             });
-            Ext.getCmp('tree-taxons').getRootNode().setText('taxons');
+            Ext.getCmp('tree-taxons').getRootNode().setText('Taxons');
             Ext.getCmp('label-choix-taxons').setText('');
             Ext.getCmp('search-form').getForm().findField('idstaxons').setValue('');
             treeMask.hide();
@@ -2198,12 +2253,12 @@ application.synthese.search = function() {
             if(Ext.getCmp('result_count').text=="les 50 dernières observations"){st = "yes";}
             var tfr = Ext.getCmp('combo-synthese-taxons-fr').getValue();
             var tl = Ext.getCmp('combo-synthese-taxons-latin').getValue();
+            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
             var ids = Ext.getCmp('search-form').getForm().findField('idstaxons').getValue();
             var p = Ext.getCmp('hidden-patri').getValue();
             var pr = Ext.getCmp('hidden-protege').getValue();
             var c = Ext.getCmp('hidden-commune').getValue();
             var s = Ext.getCmp('hidden-secteur').getValue();
-            var coeur = Ext.getCmp('cb-coeur').getValue();
             var r = Ext.getCmp('combo-reserves').getValue();
             var n = Ext.getCmp('combo-n2000').getValue();
             var prog = Ext.getCmp('hidden-programmes').getValue();
@@ -2211,7 +2266,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsobs?usage='+usage+'&observateur='+ob+'&insee='+c+'&coeur='+coeur+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/xlsobs?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&ff='+ff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,exportXlsStatuts : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();
@@ -2226,12 +2281,12 @@ application.synthese.search = function() {
             if(Ext.getCmp('result_count').text=="les 50 dernières observations"){st = "yes";}
             var tfr = Ext.getCmp('combo-synthese-taxons-fr').getValue();
             var tl = Ext.getCmp('combo-synthese-taxons-latin').getValue();
+            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
             var ids = Ext.getCmp('search-form').getForm().findField('idstaxons').getValue();
             var p = Ext.getCmp('hidden-patri').getValue();
             var pr = Ext.getCmp('hidden-protege').getValue();
             var c = Ext.getCmp('hidden-commune').getValue();
             var s = Ext.getCmp('hidden-secteur').getValue();
-            var coeur = Ext.getCmp('cb-coeur').getValue();
             var r = Ext.getCmp('combo-reserves').getValue();
             var n = Ext.getCmp('combo-n2000').getValue();
             var prog = Ext.getCmp('hidden-programmes').getValue();
@@ -2239,7 +2294,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&coeur='+coeur+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&ff='+ff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,exportShp : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();
@@ -2254,13 +2309,12 @@ application.synthese.search = function() {
             if(Ext.getCmp('result_count').text=="les 50 dernières observations"){st = "yes";}
             var tfr = Ext.getCmp('combo-synthese-taxons-fr').getValue();
             var tl = Ext.getCmp('combo-synthese-taxons-latin').getValue();
+            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
             var ids = Ext.getCmp('search-form').getForm().findField('idstaxons').getValue();
             var p = Ext.getCmp('hidden-patri').getValue();
             var pr = Ext.getCmp('hidden-protege').getValue();
             var c = Ext.getCmp('hidden-commune').getValue();
             var s = Ext.getCmp('hidden-secteur').getValue();
-            // var coeur = '';
-            var coeur = Ext.getCmp('cb-coeur').getValue();
             var r = Ext.getCmp('combo-reserves').getValue();
             var n = Ext.getCmp('combo-n2000').getValue();
             var prog = Ext.getCmp('hidden-programmes').getValue();
@@ -2268,7 +2322,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&coeur='+coeur+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&ff='+ff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,initWindowUploadShp : function() {
                 this.windowUploadShp = initFormUploadShp();

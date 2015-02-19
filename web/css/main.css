@@ -69,7 +69,16 @@
     width: 16px;
     height: 16px;
 }
-
+.action-remove {
+    background-image: url(../images/cross.gif) !important;
+    width: 20px;
+    height: 20px;
+}
+.action-save {
+    background-image: url(../images/table_save.gif) !important;
+    width: 20px;
+    height: 20px;
+}
 .action-link {
    background-image:  url(../images/link_icone.png) !important;
    width: 16px;
@@ -77,6 +86,18 @@
 }
 .un-validate {
     background-image: url(../images/flag_red.png) !important;
+}
+.notvalidated {
+    background-image: url(../images/flag_red.png) !important;
+    width: 20px;
+    height: 20px;
+    cursor: default;
+}
+.validated {
+    background-image: url(../images/flag_green.png) !important;
+    width: 20px;
+    height: 20px;
+    cursor: default;
 }
 
 .validate {
@@ -90,9 +111,13 @@
     width: 16px;
     height: 16px;
 }
-
 .search {
     background-image: url(../images/search.png) !important;
+}
+.centroid {
+    background-image: url(../images/centroid.png) !important;
+    width: 16px;
+    height: 16px;
 }
 .import_shape {
     background-image: url(../images/import_shape.png) !important;
@@ -119,13 +144,19 @@
     width: 16px;
     height: 16px;
 }
-
 .delete{
   background-image:url(../images/cross.gif) !important;
     width: 16px;
     height: 16px;
 }
-
+.gpx {
+    background-image: url(../images/gpx.png) !important;
+}
+.info {
+    background-image: url(../images/information.png) !important;
+    width: 16px;
+    height: 16px;
+}
 .logo_pne{
   background-image:url(../images/logo_pne.gif) !important;
     width: 16px;
@@ -197,9 +228,15 @@
 .gras  {
   font-weight:bold !important;
 }
-
 .grey table{
   color: #cdcdcd !important;
+}
+.txtblue {
+    color:#15428B !important;
+    font: 11px tahoma,arial,helvetica,sans-serif !important;
+}
+.redline {
+    color:red !important;
 }
 
 .errormsg {
@@ -312,6 +349,12 @@
   height:20px !important;
   width:20px !important;
 }
+.float-left {
+  float: left;
+}
+.clear-left {
+  clear: left;
+}
 .legend {
     background-image: url(../images/application_view_list.gif) !important;
 }
@@ -337,4 +380,163 @@
 }
 #releve-description-col1 div div{
   background: transparent !important;
+}
+/*Spécifique Flore*/
+.application-header .x-panel-body {
+    background: url(../images/bandeau_flore_patri.png) top left no-repeat;
+    color: #555;
+    font-size: 16px;
+    line-height: 25px;
+    padding-left: 12px;
+    /*text-align: center;*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    text-shadow: 0 0 3px #fff;
+}
+
+.application-header-fs .x-panel-body {
+    background: url(../images/bandeau_flore_station.png) top left no-repeat;
+    color: #555;
+    font-size: 16px;
+    line-height: 25px;
+    padding-left: 12px;
+    /*text-align: center;*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    text-shadow: 0 0 3px #fff;
+}
+
+.application-header-bryo .x-panel-body {
+    background: url(../images/bandeau_bryo.png) top left no-repeat;
+    color: #555;
+    font-size: 16px;
+    line-height: 25px;
+    padding-left: 12px;
+    /*text-align: center;*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    text-shadow: 0 0 3px #fff;
+}
+/*Etendu un style de ext-all.css;*/
+#zp_list_grid .x-grid-empty {
+    margin-top: 50px;
+    text-align: center;
+}
+#station_list_grid .x-grid-empty {
+    margin-top: 50px;
+    text-align: center;
+}
+.redflag {
+    font-weight: bold !important;
+    font-size : 11px !important;
+    color:red;
+}
+.greenflag {
+    font-weight: bold !important;
+    font-size : 11px !important;
+    color:green;
+}
+.fleur_silhoulette{
+  background-image:url(../images/fleur_silhoulette.gif) !important;
+}
+.send-error{
+    background-image: url(../images/delete.gif) !important;
+}
+.signal-error{
+    background-image: url(../images/tick-red.gif) !important;
+}
+.lock {
+    background-image: url(../images/lock.gif) !important;
+}
+.link-add {
+    background-image: url(../images/link_add.gif) !important;
+}
+.link-remove {
+    background-image: url(../images/link_break.gif) !important;
+    width: 16px;
+    height: 16px;
+}
+.back_to_search {
+    background-image: url(../images/zoom.gif) !important;
+}
+.edit {
+    background-image:  url(../images/table_edit.gif) !important;
+}
+.help {
+    background-image: url(../images/help.gif) !important;
+}
+.remove {
+    background-image: url(../images/cross.gif) !important;
+}
+.print {
+    background-image: url(../images/printer.gif) !important;
+}
+
+.red-btn .x-btn-tl, .red-btn .x-btn-tr, .red-btn .x-btn-tc, .red-btn .x-btn-ml, .red-btn .x-btn-mr, .red-btn .x-btn-mc, .red-btn .x-btn-bl, .red-btn .x-btn-br, .red-btn .x-btn-bc {
+    background-image:url(../js/client/mfbase/ext-3.3.1/resources/images/default/button/btn-red.gif);
+}
+.x-form-zoomto-trigger {
+    background-image: url(../images/zoom_in.gif) !important;
+    background-position: center center !important;
+    cursor: pointer;
+    border: 0 !important;
+    margin-left: 2px;
+}
+
+.always-hidden {
+    display: none
+}
+.zp-panel .station-panel .x-toolbar .ytb-text {
+    font-size: 14px;
+    font-weight: bold;
+}
+.x-grid3-row-body p {
+    font-size: 11px;
+}
+
+.x-hide-checkbox .x-tree-node-cb {
+  visibility: hidden
+}
+/* For bottom bar in blod */
+.x-panel-bbar-noborder .x-toolbar table  span, .x-panel-bbar-noborder .x-toolbar table   button{
+  font-weight: bold;
+}
+
+.olControlScaleLineBottom {
+  display: none;
+} 
+.olControlScaleLine {
+  bottom:21px !important;
+} 
+.x-grid3-dirty-cell {
+  background-image: none;
+}
+  
+/* LOADING MASK */
+
+#loading-mask{
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	z-index:20000;
+	background-color:white;
+}
+#loading{
+	position:absolute;
+	left:45%;
+	top:40%;
+	padding:2px;
+	z-index:20001;
+	height:auto;
+}
+#loading .loading-indicator{
+	background:white;
+	color:#444;
+	font:bold 13px tahoma,arial,helvetica;
+	padding:10px;
+	margin:0;
+	text-align:center;
+	height:auto;
 }

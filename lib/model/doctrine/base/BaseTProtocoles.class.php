@@ -13,9 +13,12 @@
  * @property string $avancement
  * @property date $date_debut
  * @property date $date_fin
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TFichesCf
  * @property Doctrine_Collection $TFichesInv
+ * @property Doctrine_Collection $TStationsBryo
+ * @property Doctrine_Collection $TStationsFs
+ * @property Doctrine_Collection $TZprospection
  * 
  * @method integer             getIdProtocole()   Returns the current record's "id_protocole" value
  * @method string              getNomProtocole()  Returns the current record's "nom_protocole" value
@@ -25,9 +28,12 @@
  * @method string              getAvancement()    Returns the current record's "avancement" value
  * @method date                getDateDebut()     Returns the current record's "date_debut" value
  * @method date                getDateFin()       Returns the current record's "date_fin" value
- * @method Doctrine_Collection getSynthesefaune() Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
  * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
+ * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
+ * @method Doctrine_Collection getTZprospection() Returns the current record's "TZprospection" collection
  * @method TProtocoles         setIdProtocole()   Sets the current record's "id_protocole" value
  * @method TProtocoles         setNomProtocole()  Sets the current record's "nom_protocole" value
  * @method TProtocoles         setQuestion()      Sets the current record's "question" value
@@ -36,9 +42,12 @@
  * @method TProtocoles         setAvancement()    Sets the current record's "avancement" value
  * @method TProtocoles         setDateDebut()     Sets the current record's "date_debut" value
  * @method TProtocoles         setDateFin()       Sets the current record's "date_fin" value
- * @method TProtocoles         setSynthesefaune() Sets the current record's "Synthesefaune" collection
+ * @method TProtocoles         setSyntheseff()    Sets the current record's "Syntheseff" collection
  * @method TProtocoles         setTFichesCf()     Sets the current record's "TFichesCf" collection
  * @method TProtocoles         setTFichesInv()    Sets the current record's "TFichesInv" collection
+ * @method TProtocoles         setTStationsBryo() Sets the current record's "TStationsBryo" collection
+ * @method TProtocoles         setTStationsFs()   Sets the current record's "TStationsFs" collection
+ * @method TProtocoles         setTZprospection() Sets the current record's "TZprospection" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -88,7 +97,7 @@ abstract class BaseTProtocoles extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'id_protocole',
              'foreign' => 'id_protocole'));
 
@@ -97,6 +106,18 @@ abstract class BaseTProtocoles extends sfDoctrineRecord
              'foreign' => 'id_protocole'));
 
         $this->hasMany('TFichesInv', array(
+             'local' => 'id_protocole',
+             'foreign' => 'id_protocole'));
+
+        $this->hasMany('TStationsBryo', array(
+             'local' => 'id_protocole',
+             'foreign' => 'id_protocole'));
+
+        $this->hasMany('TStationsFs', array(
+             'local' => 'id_protocole',
+             'foreign' => 'id_protocole'));
+
+        $this->hasMany('TZprospection', array(
              'local' => 'id_protocole',
              'foreign' => 'id_protocole'));
     }
