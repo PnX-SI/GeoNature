@@ -15,7 +15,6 @@ next
 ## Changements
 
 Version stabilisée de GeoNature - Faune uniquement (Synthèse Faune + Saisie ContactFauneVertebre, ContactFauneInvertebre et Mortalité).
-Changements
 
  * Modification du nom de l'application de FF-synthese en GeoNature
  * Changement du nom des utilisateurs PostgreSQL
