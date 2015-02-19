@@ -7,9 +7,28 @@ next
 
 ## Changements
 
- * Modification du nom de l'application en GeoNature
+ * passage en faune flore = grosse évolution
+ 
+1.2.0 (2015-01-29)
+------------------
+
+## Changements
+
+Version stabilisée de GeoNature - Faune uniquement (Synthèse Faune + Saisie ContactFauneVertebre, ContactFauneInvertebre et Mortalité).
+Changements
+
+ * Modification du nom de l'application de FF-synthese en GeoNature
  * Changement du nom des utilisateurs PostgreSQL
  * Changement du nom de la base de données
+ * Mise à jour de la documentation (http://geonature.readthedocs.org/)
+ * Automatisation de l'installation de la BDD
+ * Renommer les tables pour plus de généricité
+ * Supprimer les tables inutiles ou trop spécifiques
+ * Gestion des utilisateurs externalisée et centralisée avec UsersHub (https://github.com/PnEcrins/UsersHub)
+ * Correction de bugs
+ * Préparation de l'intégration de la Flore pour passer de GeoNature Faune à GeoNature Faune-Flore
+
+
  
 
 1.1.0 (2014-12-11)
