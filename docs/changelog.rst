@@ -6,10 +6,43 @@ next
 ----
 
 ## Changements
- - passage en faune flore = grosse évolution
+ - Revoir le où de la synthese pour mettre des choses plus génériques
+ - optimiser la création des taxons flore
+ - tests complémentaires et bug fix
  
+ 
+1.3.0 (2015-02-11)
+------------------
 
-1.2.0 (2015-01-29)
+Pré-Version de GeoNature - Faune ET Flore. Le fonctionnement de l'ensemble n'a pas été totalement testé, des bugs sont identifiés, d'autres subsistent certainement.
+
+## Changements
+ - Grosse évolution de la base de données
+ - ajout de deux applications de saisie flore (flore station et bryophytes)
+ - intégration de la flore en sythese
+ - ajouter un id_lot, id_organisme, id_protocole dans toutes les tables pour que ces id soit ajoutés vers la synthese en trigger depuis les tables et pas avec des valeurs en dur dans les triggers. Ceci permet d'utiliser les paramètres de conf de GeoNature
+ - ajout d'une fonction à la base pour correction du dysfonctionnement du wms avec mapserver
+ - suppression du champ id_taxon en synthese et lien direct de la synthese avecle taxref. ceci permet d'ajouter des données en synthese directement dans la base sans ajouter tous les taxons manquants dans la table bib_taxons
+ - suppression de la notion de coeur dans les critère de recherche en synthese
+ - Ajout d'un filtre faune flore fonge dans la synthese
+ - Ajout de l'embranchement et du regne dans les exports
+ - permettre à des partenaires de saisir mais d'exporter uniquement leurs données perso
+ - ajout du déterminateur dans les formulaires invertébrés et contactfaune + en synthese
+ - ajout du référentiel géographique de toutes les communes de France métropolitaine
+ - ajout des zones à statuts juridiques de la région sud-est (national à venir)
+ - bugs fix
+ 
+BUG à identifiés
+Installation :
+ - corriger l'insertion de données flore station qui ne fonctionne pas
+Bryophythes :
+ - Corriger la recherche avancée par date sans années
+Synthèse :
+ - la construction de l'arbre pour choisir plusieurs taxons ne tient pas compte des filtres
+ - le fonctionnement des unités geographiques n'a pas été testé (initialement conçu uniquement pour la faune)
+
+
+1.2.0 (2015-02-11)
 ------------------
 
 Version stabilisée de GeoNature - Faune uniquement (Synthèse Faune + Saisie ContactFauneVertebre, ContactFauneInvertebre et Mortalité).
