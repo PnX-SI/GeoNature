@@ -7,8 +7,20 @@ GeoNature est une application permettant de regrouper l'ensemble des données pr
 
 Elle regroupe toutes les données des différents protocoles FAUNE et FLORE en les limitant au niveau QUI QUOI QUAND OU.
 
+Technologies
+------------
+
+- Langages : PHP, HTML, JS, CSS
+- BDD : PostgreSQL, PostGIS
+- Serveur : Debian ou Ubuntu
+- Framework PHP : Symfony
+- Framework JS : ExtJS
+- Framework carto : GeoExtJS, MapFish et Openlayers
+- Serveur carto : MapServer
+- Fonds rasters : Geoportail, OpenStreetMap, Google Maps, WMS
+
 Présentation
------------
+------------
 
 Principe général : Un protocole = Un outil = Une BDD + Une BDD et une application de SYNTHESE regroupant les données des différents protocoles sur la base des champs communs à tous les protocoles (QUI a vu QUOI, OU et QUAND).
 
