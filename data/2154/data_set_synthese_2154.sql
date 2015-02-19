@@ -37,12 +37,12 @@ INSERT INTO cor_role_fiche_cf VALUES (5, 1);
 -- Data for Name: t_releves_cf; Type: TABLE DATA; Schema: contactfaune; Owner: geonatuser
 --
 
-INSERT INTO t_releves_cf VALUES (1, 1, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'test', false, false, 1);
-INSERT INTO t_releves_cf VALUES (2, 2, 704, 2, 0, 0, 0, 0, 1, 0, 0, 67111, 'Ablette', 'very bad ablette cévenole', false, true, 7);
-INSERT INTO t_releves_cf VALUES (3, 3, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'la plus haute ablette du monde c''est dans les écrins', false, false, 6);
-INSERT INTO t_releves_cf VALUES (4, 1, 704, 36, 0, 0, 2, 0, 0, 0, 0, 67111, 'Ablette', '', false, false, 4);
-INSERT INTO t_releves_cf VALUES (5, 4, 704, 37, 0, 1, 0, 0, 0, 0, 0, 67111, 'Ablette', '', false, false, 5);
-INSERT INTO t_releves_cf VALUES (6, 5, 64, 21, 1, 3, 0, 0, 0, 0, 0, 60612, 'Lynx boréal', '', false, false, 6);
+INSERT INTO t_releves_cf VALUES (1, 1, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'test','qq''un', false, false, 1);
+INSERT INTO t_releves_cf VALUES (2, 2, 704, 2, 0, 0, 0, 0, 1, 0, 0, 67111, 'Ablette', 'very bad ablette cévenole','Amandine', false, true, 7);
+INSERT INTO t_releves_cf VALUES (3, 3, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'la plus haute ablette du monde c''est dans les écrins','Gil', false, false, 6);
+INSERT INTO t_releves_cf VALUES (4, 1, 704, 36, 0, 0, 2, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, 4);
+INSERT INTO t_releves_cf VALUES (5, 4, 704, 37, 0, 1, 0, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, 5);
+INSERT INTO t_releves_cf VALUES (6, 5, 64, 21, 1, 3, 0, 0, 0, 0, 0, 60612, 'Lynx boréal', '','Amandine', false, false, 6);
 
 
 --
@@ -74,8 +74,8 @@ INSERT INTO cor_role_fiche_inv VALUES (2, 1);
 -- Data for Name: t_releves_inv; Type: TABLE DATA; Schema: contactinv; Owner: geonatuser
 --
 
-INSERT INTO t_releves_inv VALUES (1, 1, 2804, 3, 0, 0, 1, 0, 11165, 'Coccinella septempunctata', 'test', false, false, 1, NULL);
-INSERT INTO t_releves_inv VALUES (2, 2, 816, 8, 100, 0, 0, 0, 18437, 'Ecrevisse à pieds blancs', 'test', false, false, 2, NULL);
+INSERT INTO t_releves_inv VALUES (1, 1, 2804, 3, 0, 0, 1, 0, 11165, 'Coccinella septempunctata', 'test','Gil', false, false, 1);
+INSERT INTO t_releves_inv VALUES (2, 2, 816, 8, 100, 0, 0, 0, 18437, 'Ecrevisse à pieds blancs', 'test','Amandine', false, false, 2);
 
 
 --
@@ -84,6 +84,73 @@ INSERT INTO t_releves_inv VALUES (2, 2, 816, 8, 100, 0, 0, 0, 18437, 'Ecrevisse 
 
 SELECT pg_catalog.setval('t_releves_inv_gid_seq', 2, true);
 
+
+SET search_path = florestation, pg_catalog;
+
+--
+-- TOC entry 3781 (class 0 OID 382074)
+-- Dependencies: 240
+-- Data for Name: t_stations_fs; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
+--
+
+INSERT INTO t_stations_fs (id_station, id_exposition, id_sophie, id_programme_fs, id_support, id_protocole, id_lot, id_organisme, id_homogene, dateobs, info_acces, id_surface, complet_partiel, meso_longitudinal, meso_lateral, canopee, ligneux_hauts, ligneux_bas, ligneux_tbas, herbaces, mousses, litiere, altitude_saisie, altitude_sig, altitude_retenue, remarques, pdop, supprime, date_insert, date_update, srid_dessin, the_geom_3857, insee, gid, validation) VALUES (1, 'I ', '0', 999, 1, 5, 5, 99, 1, '2015-02-17', 'test', 2, 'P', 1, 2, 0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 'testage', -1, false, '2015-02-17 10:47:27.427575', '2015-02-17 10:48:40.892845', 3857, '0101000020110F000090BF729098862541868E1DB37C5A5541', '38375', 1, true);
+
+
+--
+-- TOC entry 3776 (class 0 OID 382056)
+-- Dependencies: 234
+-- Data for Name: cor_fs_delphine; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
+--
+
+INSERT INTO cor_fs_delphine (id_station, id_delphine) VALUES (1, 'ghj45');
+
+
+--
+-- TOC entry 3777 (class 0 OID 382059)
+-- Dependencies: 235
+-- Data for Name: cor_fs_microrelief; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
+--
+
+INSERT INTO cor_fs_microrelief (id_station, id_microrelief) VALUES (1, 1);
+INSERT INTO cor_fs_microrelief (id_station, id_microrelief) VALUES (1, 2);
+INSERT INTO cor_fs_microrelief (id_station, id_microrelief) VALUES (1, 3);
+
+
+--
+-- TOC entry 3778 (class 0 OID 382062)
+-- Dependencies: 236
+-- Data for Name: cor_fs_observateur; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
+--
+
+INSERT INTO cor_fs_observateur (id_role, id_station) VALUES (1, 1);
+
+
+--
+-- TOC entry 3779 (class 0 OID 382067)
+-- Dependencies: 238
+-- Data for Name: cor_fs_taxon; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
+--
+ALTER TABLE synthese.syntheseff DISABLE TRIGGER tri_maj_cor_unite_synthese;
+INSERT INTO cor_fs_taxon (id_station, cd_nom, herb, inf_1m, de_1_4m, sup_4m, taxon_saisi, supprime, id_station_cd_nom, gid) VALUES (1, 81065, '+', '1', '2', '2', 'Alchemilla decumbens Buser, 1894', false, 1, 1);
+INSERT INTO cor_fs_taxon (id_station, cd_nom, herb, inf_1m, de_1_4m, sup_4m, taxon_saisi, supprime, id_station_cd_nom, gid) VALUES (1, 95186, NULL, '+', NULL, NULL, 'Dittrichia graveolens (L.) Greuter, 1973', false, 2, 2);
+ALTER TABLE synthese.syntheseff ENABLE TRIGGER tri_maj_cor_unite_synthese;
+
+--
+-- TOC entry 3787 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: cor_fs_taxon_id_station_cd_nom_seq; Type: SEQUENCE SET; Schema: florestation; Owner: geonatuser
+--
+
+SELECT pg_catalog.setval('cor_fs_taxon_id_station_cd_nom_seq', 2, true);
+
+
+--
+-- TOC entry 3788 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: t_stations_fs_gid_seq; Type: SEQUENCE SET; Schema: florestation; Owner: geonatuser
+--
+
+SELECT pg_catalog.setval('t_stations_fs_gid_seq', 1, true);
 
 --
 -- PostgreSQL database dump complete

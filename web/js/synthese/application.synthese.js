@@ -196,10 +196,12 @@ application.synthese = function() {
        ,taxonsTreeStore: new Ext.data.JsonStore({
             url: 'bibs/taxonstree'
             ,fields: [
-                'id_taxon' 
+                'cd_nom' 
                 ,'cd_ref'
                 ,'nom_latin'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
+                ,'id_regne'
+                ,'nom_regne'
                 ,'id_embranchement'
                 ,'nom_embranchement'
                 ,'id_classe'
@@ -227,10 +229,11 @@ application.synthese = function() {
         ,storeTaxonsSynthese: new Ext.data.JsonStore({
             url: 'bibs/taxonssynthese'
             ,fields: [
-                'id_taxon'
+                'cd_nom'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
                 ,'nom_latin'
                 ,'id_groupe'
+                ,'regne'
                 ,'patrimonial'
                 ,'protection_stricte'
                 ,'cd_ref'
@@ -407,19 +410,9 @@ application.synthese = function() {
                 wms_uri
                 ,{
                     layers: [
-                      'znieff2'
-                      ,'znieff1'
-                      ,'coeur'
-                      ,'aoa'
-                      // ,'ab'
-                      ,'reservesnat'
-                      // ,'reservesint'
-                      // ,'reserveschasse'
-                      ,'sitesinscrits'
-                      ,'sitesclasses'
-                      // ,'n2000'
-                      ,'communes'
-                      ,'secteurs'
+                      'znieff2', 'znieff1', 'coeur', 'ab', 'aoa', 'unitesgeo',
+                      ,'reservesnationales', 'reservesregionales',  'n2000','secteurs', 'communes'
+                      // ,'sitesinscrits', 'sitesclasses', 'reserveschasse','reservesintegrales'
                     ]
                     ,transparent: true
                     ,projection: wm

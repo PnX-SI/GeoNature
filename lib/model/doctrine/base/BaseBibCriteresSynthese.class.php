@@ -9,18 +9,18 @@
  * @property string $code_critere_synthese
  * @property string $nom_critere_synthese
  * @property integer $tri
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * 
  * @method integer             getIdCritereSynthese()     Returns the current record's "id_critere_synthese" value
  * @method string              getCodeCritereSynthese()   Returns the current record's "code_critere_synthese" value
  * @method string              getNomCritereSynthese()    Returns the current record's "nom_critere_synthese" value
  * @method integer             getTri()                   Returns the current record's "tri" value
- * @method Doctrine_Collection getSynthesefaune()         Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getSyntheseff()            Returns the current record's "Syntheseff" collection
  * @method BibCriteresSynthese setIdCritereSynthese()     Sets the current record's "id_critere_synthese" value
  * @method BibCriteresSynthese setCodeCritereSynthese()   Sets the current record's "code_critere_synthese" value
  * @method BibCriteresSynthese setNomCritereSynthese()    Sets the current record's "nom_critere_synthese" value
  * @method BibCriteresSynthese setTri()                   Sets the current record's "tri" value
- * @method BibCriteresSynthese setSynthesefaune()         Sets the current record's "Synthesefaune" collection
+ * @method BibCriteresSynthese setSyntheseff()            Sets the current record's "Syntheseff" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -54,7 +54,7 @@ abstract class BaseBibCriteresSynthese extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'id_critere_synthese',
              'foreign' => 'id_critere_synthese'));
     }

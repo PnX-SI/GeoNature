@@ -360,6 +360,7 @@ application.synthese.editCf = function() {
                 ,{name: 'yearling', type: 'integer'}
                 ,{name: 'sai', type: 'integer'}
                 ,{name: 'commentaire', type: 'string'}
+                ,{name: 'determinateur', type: 'string'}
                 ,{name: 'cd_ref_origine', type: 'integer'}
                 ,{name: 'denombrement', type: 'integer'}
                 ,{name: 'id_classe', type: 'integer'}
@@ -426,6 +427,7 @@ application.synthese.editCf = function() {
             ,{header: "Jeune", width: 35, sortable: true, dataIndex: 'jeune',hidden:true}
             ,{header: "Yearling", width: 35, sortable: true, dataIndex: 'yearling',hidden:true}
             ,{header: "Commentaire", width: 135, sortable: true, dataIndex: 'commentaire',hidden:true}
+            ,{header: "Déterminateur", width: 135, sortable: true, dataIndex: 'determinateur',hidden:true}
             ,{header: "id_classe", width: 135, sortable: true, dataIndex: 'id_classe',hidden:true}
             ,{id:'taxonsaisi',header: "Taxons saisis", width: 160, sortable: true, dataIndex: 'nom_taxon_saisi'}
             ,{header: "cd_ref", width: 135, sortable: true, dataIndex: 'cd_ref_origine',hidden:true}
@@ -669,6 +671,7 @@ application.synthese.editCf = function() {
                 ,yearling:0
                 ,sai:0
                 ,commentaire:''
+                ,determinateur:''
                 ,cd_ref_origine:null
                 ,denombrement:5
                 ,id_classe:null
@@ -677,6 +680,7 @@ application.synthese.editCf = function() {
             Ext.getCmp('fieldset-critere').collapse();
             Ext.getCmp('fieldset-denombrement').collapse();
             Ext.getCmp('fieldset-commentaire').collapse();
+            Ext.getCmp('fieldset-determinateur').collapse();
             Ext.getCmp('grid-taxons').getSelectionModel().selectLastRow(false);
             manageValidationTaxon(false); 
         };
@@ -1086,6 +1090,8 @@ application.synthese.editCf = function() {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sai',0);
                                     Ext.getCmp('ta-fiche-commentaire').setValue('');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('commentaire',null);
+                                    Ext.getCmp('ta-fiche-determinateur').setValue('');
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',null);
                                     manageValidationTaxon(isValidTaxon(record));//puisque le critère est obligatoire et qu'on vient de le vider
                                     manageDenombrementFields(record.data.denombrement,true);
                                     Ext.getCmp('fieldset-critere').expand();
@@ -1124,6 +1130,7 @@ application.synthese.editCf = function() {
                                         Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('yearling',0);
                                         Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sai',0);
                                         Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('commentaire',null);
+                                        Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',null);
                                         storeCriteresAdapte(null);
                                         Ext.getCmp('combo-fiche-critere').clearValue();
                                         Ext.getCmp('fieldfiche-male').setValue(0);
@@ -1134,9 +1141,11 @@ application.synthese.editCf = function() {
                                         Ext.getCmp('fieldfiche-yearling').setValue(0);
                                         Ext.getCmp('fieldfiche-sai').setValue(0);
                                         Ext.getCmp('ta-fiche-commentaire').setValue('');
+                                        Ext.getCmp('ta-fiche-determinateur').setValue('');
                                         Ext.getCmp('fieldset-critere').collapse();
                                         Ext.getCmp('fieldset-denombrement').collapse();
                                         Ext.getCmp('fieldset-commentaire').collapse();
+                                        Ext.getCmp('fieldset-determinateur').collapse();
                                         manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                     }
                                     
@@ -1357,6 +1366,36 @@ application.synthese.editCf = function() {
                             }
                         }
                     ]
+                },{
+                    xtype:'fieldset'
+                    ,id:'fieldset-determinateur'
+                    ,columnWidth: 1
+                    ,title: 'Déterminateur du taxon (facultatif)'
+                    ,collapsible: true
+                    ,collapsed: true
+                    ,autoHeight:true
+                    ,anchor:'100%'
+                    ,items :[{
+                            id:'ta-fiche-determinateur'
+                            ,xtype: 'textarea'
+                            ,fieldLabel: 'Déterminateur '
+                            ,name: 'determinateur'
+                            ,grow:true
+                            ,autoHeight: true
+                            ,height:'auto'
+                            ,anchor:'100%'
+                            ,enableKeyEvents:true
+                            ,listeners: {
+                                render: function(c) {
+                                    Ext.QuickTips.register({
+                                        target: c.getEl(),
+                                        text: 'Indiquer ici le déterminateur ce taxon.'
+                                    });
+                                }
+                                ,keyup: function(field) {Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',field.getValue());}
+                            }
+                        }
+                    ]
                 }
                 ,validTaxonButton
                 ,{xtype: 'label',id: 'error-message',cls: 'errormsg',text:''}
@@ -1394,16 +1433,20 @@ application.synthese.editCf = function() {
                                         Ext.getCmp('fieldset-critere').collapse();
                                         Ext.getCmp('fieldset-denombrement').collapse();
                                         Ext.getCmp('fieldset-commentaire').collapse();
+                                        Ext.getCmp('fieldset-determinateur').collapse();
                                     }
                                     else{Ext.getCmp('fieldset-critere').expand();}
                                     if(Ext.getCmp('combo-fiche-critere').getValue()==null){
                                         Ext.getCmp('fieldset-denombrement').collapse();
                                         Ext.getCmp('fieldset-commentaire').collapse();
+                                        Ext.getCmp('fieldset-determinateur').collapse();
                                     }
                                     else{
                                         Ext.getCmp('fieldset-denombrement').expand();
                                         if(Ext.getCmp('ta-fiche-commentaire').getValue()==''){Ext.getCmp('fieldset-commentaire').collapse();}
                                         else{Ext.getCmp('fieldset-commentaire').expand();}
+                                        if(Ext.getCmp('ta-fiche-determinateur').getValue()==''){Ext.getCmp('fieldset-determinateur').collapse();}
+                                        else{Ext.getCmp('fieldset-determinateur').expand();}
                                     }
                                 }
                                 else{
@@ -1413,6 +1456,8 @@ application.synthese.editCf = function() {
                                     Ext.getCmp('fieldset-denombrement').expand();
                                     if(Ext.getCmp('ta-fiche-commentaire').getValue()==''){Ext.getCmp('fieldset-commentaire').collapse();}
                                     else{Ext.getCmp('fieldset-commentaire').expand();}
+                                    if(Ext.getCmp('ta-fiche-determinateur').getValue()==''){Ext.getCmp('fieldset-determinateur').collapse();}
+                                    else{Ext.getCmp('fieldset-determinateur').expand();}
                                 }
                             }
                             ,selectionchange: function(sm) {

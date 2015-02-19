@@ -48,13 +48,13 @@ class syntheseActions extends sfFauneActions
     {
         $this->getResponse()->setContentType('application/json');
         $params = $request->getParams();
-        $nbreleves = SynthesefauneTable::preSearch($params);
+        $nbreleves = SyntheseffTable::preSearch($params);
         if($nbreleves<10000){
             // GeoJSON list of relevés de la synthèse
             $userNom = $this->getUser()->getAttribute('userNom');
             $userPrenom = $this->getUser()->getAttribute('userPrenom');
             $statuscode = $this->getUser()->getAttribute('statuscode');
-            $lesreleves = SynthesefauneTable::search($params,$nbreleves,$userNom,$userPrenom,$statuscode );
+            $lesreleves = SyntheseffTable::search($params,$nbreleves,$userNom,$userPrenom,$statuscode );
             if (empty($lesreleves)){return $this->renderText(sfFauneActions::$EmptyGeoJSON);}
             //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfFauneActions.php)
             elseif($lesreleves=='trop'){return $this->renderText(sfFauneActions::$toManyFeatures);}
@@ -78,9 +78,9 @@ class syntheseActions extends sfFauneActions
     public function executeXlsObs(sfRequest $request)
     {
         $params = $request->getParams();
-        $lesobs = SynthesefauneTable::listXlsObs($params);
+        $lesobs = SyntheseffTable::listXlsObs($params);
         $srid_local_export = sfGeonatureConfig::$srid_local;
-        $csv_output = "id_synthese\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tfamille\tordre\tclasse\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tcoeur\tx_".$srid_local_export."\ty_".$srid_local_export."\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source";
+        $csv_output = "id_synthese\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tfamille\tordre\tclasse\tphylum\tregne\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tx_".$srid_local_export."\ty_".$srid_local_export."\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source";
         $csv_output .= "\n";
         foreach ($lesobs as $obs)
         {  
@@ -96,6 +96,8 @@ class syntheseActions extends sfFauneActions
             $famille = $obs['famille'];
             $ordre = $obs['ordre'];
             $classe = $obs['classe'];
+            $phylum = $obs['phylum'];
+            $regne = $obs['regne'];
             $cd_nom = $obs['cd_nom'];
             $cd_ref = $obs['cd_ref'];
             $nom_critere_synthese = $obs['nom_critere_synthese'];
@@ -109,11 +111,10 @@ class syntheseActions extends sfFauneActions
             $y_wgs84 = $obs['y_wgs84'];
             $type_objet = 'point';
             $geom_type = ($obs['geom_type']=='ST_Point')?'point':'maille';
-            $coeur = ($obs['coeur']=='t')?'oui':'non';
-            $csv_output .= "$id_synthese\t$organisme\t$dateobs\t$observateurs\t$taxon_francais\t$taxon_latin\t$famille\t$ordre\t$classe\t$cd_ref\t$patrimonial\t$nom_critere_synthese\t$effectif_total\t$remarques\t$secteur\t$commune\t$insee\t$altitude\t$coeur\t$x_srid_local_export\t$y_srid_local_export\t$x_wgs84\t$y_wgs84\t$type_objet\t$geom_type\n";
+            $csv_output .= "$id_synthese\t$organisme\t$dateobs\t$observateurs\t$taxon_francais\t$taxon_latin\t$famille\t$ordre\t$classe\t$phylum\t$regne\t$cd_ref\t$patrimonial\t$nom_critere_synthese\t$effectif_total\t$remarques\t$secteur\t$commune\t$insee\t$altitude\t$x_srid_local_export\t$y_srid_local_export\t$x_wgs84\t$y_wgs84\t$type_objet\t$geom_type\n";
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
-        header("Content-disposition: attachment; filename=synthese_observations_faune_".date("Y-m-d_His").".xls");
+        header("Content-disposition: attachment; filename=synthese_observations_".date("Y-m-d_His").".xls");
         print utf8_decode($csv_output);
         exit;
     }
@@ -121,7 +122,7 @@ class syntheseActions extends sfFauneActions
     public function executeXlsStatus(sfRequest $request)
     {
         $params = $request->getParams();
-        $statuts = SynthesefauneTable::listXlsStatus($params);
+        $statuts = SyntheseffTable::listXlsStatus($params);
         $csv_output = "cd_ref\tclasse\tordre\tfamille\ttaxon_francais\ttaxon_latin\ttype_protection\tpatrimonial\ttaxon_url\tstatut_resume\tstatut_titre\tstatut_article\tdate_texte\turl_texte";
         $csv_output .= "\n";
         foreach ($statuts as $statut)
@@ -144,7 +145,7 @@ class syntheseActions extends sfFauneActions
         }
 
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
-        header("Content-disposition: attachment; filename=synthese_statuts_faune_".date("Y-m-d_His").".xls");
+        header("Content-disposition: attachment; filename=synthese_statuts_".date("Y-m-d_His").".xls");
         print utf8_decode($csv_output);
         exit;
     
@@ -161,53 +162,53 @@ class syntheseActions extends sfFauneActions
         $madate = date("Y-m-d_His");
         $srid_local_export = sfGeonatureConfig::$srid_local;
         //pour les points
-        $sql = SynthesefauneTable::listShp($params,'ST_Point'); // exécution de la requête sql
+        $sql = SyntheseffTable::listShp($params,'ST_Point'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_points.shp '.$ogrConnexionString.' -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_points.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //pour les mailles
-        $sql = SynthesefauneTable::listShp($params,'ST_Polygon'); // exécution de la requête sql
+        $sql = SyntheseffTable::listShp($params,'ST_Polygon'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_mailles.shp '.$ogrConnexionString.' -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_mailles.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //pour les centroids
-        $sql = SynthesefauneTable::listShp($params,'centroid'); // exécution de la requête sql
+        $sql = SyntheseffTable::listShp($params,'centroid'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/faune_synthese_'.$madate.'_centroids.shp '.    $ogrConnexionString.' -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_centroids.shp '.    $ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //on zipe le tout
         $zip = new zipfile(); 
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_points.shp') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_points.shx') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_points.prj') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_points.dbf') ;
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_mailles.shp') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_mailles.shx') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_mailles.prj') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_mailles.dbf') ;
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_centroids.shp') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_centroids.shx') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_centroids.prj') ;       
-        $zip = self::zipemesfichiers($zip,$path.'faune_synthese_'.$madate.'_centroids.dbf') ;
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.shp') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.shx') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.prj') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.dbf') ;
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.shp') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.shx') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.prj') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.dbf') ;
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_centroids.shp') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_centroids.shx') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_centroids.prj') ;       
+        $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_centroids.dbf') ;
         $archive = $zip->file();
         header('Content-Type: application/x-zip');      
         header('Content-Disposition: inline; filename=synthese_faune_'.$madate.'.zip') ;
         echo $archive ; //on retourne le contenu du zip à l'utilisateur
-        unlink($path.'faune_synthese_'.$madate.'_points.shp');       
-        unlink($path.'faune_synthese_'.$madate.'_points.shx');       
-        unlink($path.'faune_synthese_'.$madate.'_points.prj');       
-        unlink($path.'faune_synthese_'.$madate.'_points.dbf');
-        unlink($path.'faune_synthese_'.$madate.'_mailles.shp');       
-        unlink($path.'faune_synthese_'.$madate.'_mailles.shx');       
-        unlink($path.'faune_synthese_'.$madate.'_mailles.prj');       
-        unlink($path.'faune_synthese_'.$madate.'_mailles.dbf');
-        unlink($path.'faune_synthese_'.$madate.'_centroids.shp');       
-        unlink($path.'faune_synthese_'.$madate.'_centroids.shx');       
-        unlink($path.'faune_synthese_'.$madate.'_centroids.prj');       
-        unlink($path.'faune_synthese_'.$madate.'_centroids.dbf');
+        unlink($path.'synthese_'.$madate.'_points.shp');       
+        unlink($path.'synthese_'.$madate.'_points.shx');       
+        unlink($path.'synthese_'.$madate.'_points.prj');       
+        unlink($path.'synthese_'.$madate.'_points.dbf');
+        unlink($path.'synthese_'.$madate.'_mailles.shp');       
+        unlink($path.'synthese_'.$madate.'_mailles.shx');       
+        unlink($path.'synthese_'.$madate.'_mailles.prj');       
+        unlink($path.'synthese_'.$madate.'_mailles.dbf');
+        unlink($path.'synthese_'.$madate.'_centroids.shp');       
+        unlink($path.'synthese_'.$madate.'_centroids.shx');       
+        unlink($path.'synthese_'.$madate.'_centroids.prj');       
+        unlink($path.'synthese_'.$madate.'_centroids.dbf');
         exit;
     }
     

@@ -1,12 +1,32 @@
-BibGroupes:
-  tableName: taxonomie.bib_groupes
+BibAbondances:
+  tableName: florestation.bib_abondances
   columns:
-    id_groupe:
+    id_abondance:
+      type: string(1)
+      primary: true
+    nom_abondance: string(128)
+BibAbondancesBryo:
+  tableName: bryophytes.bib_abondances
+  columns:
+    id_abondance:
+      type: string(1)
+      primary: true
+    nom_abondance: string(128)
+BibClasses:
+  tableName: taxonomie.bib_classes
+  columns:
+    id_classe:
       type: integer(4)
       primary: true
-    nom_groupe: string(255)
-    desc_group: string()
-    filtre_sql: string()
+    id_embranchement: integer(4)
+    nom_classe: string(50)
+    desc_classe: string(255)
+  relations:
+    BibEmbranchements:
+      class: BibEmbranchements
+      local: id_embranchement
+      foreign: id_embranchement
+      foreignAlias: BibClasses
 BibCriteresCf:
   tableName: contactfaune.bib_criteres_cf
   columns:
@@ -36,6 +56,43 @@ BibCriteresSynthese:
     code_critere_synthese: string(3)
     nom_critere_synthese: string(90)
     tri: integer(4)
+BibComptagesMethodo:
+  tableName: florepatri.bib_comptages_methodo
+  columns:
+    id_comptage_methodo:
+      type: integer(4)
+      primary: true
+    nom_comptage_methodo: string(100)
+BibExpositions:
+  tableName: florestation.bib_expositions
+  columns:
+    id_exposition:
+      type: string(2)
+      primary: true
+    nom_exposition: string(10)
+    tri_exposition: integer(4)
+BibExpositionsBryo:
+  tableName: bryophytes.bib_expositions
+  columns:
+    id_exposition:
+      type: string(2)
+      primary: true
+    nom_exposition: string(10)
+    tri_exposition: integer(4)
+BibFrequencesMethodo:
+  tableName: florepatri.bib_frequences_methodo
+  columns:
+    id_frequence_methodo:
+      type: string(1)
+      primary: true
+    nom_frequence_methodo: string(100)
+BibFrequencesMethodoNew:
+  tableName: florepatri.bib_frequences_methodo_new
+  columns:
+    id_frequence_methodo_new:
+      type: string(1)
+      primary: true
+    nom_frequence_methodo_new: string(100)
 BibDroits:
   tableName: utilisateurs.bib_droits
   columns:
@@ -44,6 +101,22 @@ BibDroits:
       primary: true
     nom_droit: string(50)
     desc_droit: string
+BibGroupes:
+  tableName: taxonomie.bib_groupes
+  columns:
+    id_groupe:
+      type: integer(4)
+      primary: true
+    nom_groupe: string(255)
+    desc_group: string()
+    filtre_sql: string()
+BibHomogenes:
+  tableName: florestation.bib_homogenes
+  columns:
+    id_homogene:
+      type: integer(4)
+      primary: true
+    nom_homogene: string(20)
 BibLots:
   tableName: meta.bib_lots
   columns:
@@ -76,6 +149,13 @@ BibMessagesInv:
       type: integer(4)
       primary: true
     texte_message_inv: string(255)
+BibMicroreliefs:
+  tableName: florestation.bib_microreliefs
+  columns:
+    id_microrelief:
+      type: integer(4)
+      primary: true
+    nom_microrelief: string(128)
 BibMilieuxInv:
   tableName: contactinv.bib_milieux_inv
   columns:
@@ -96,6 +176,37 @@ BibOrganismes:
     tel_organisme: string(14)
     fax_organisme: string(14)
     email_organisme: string(100)
+BibPerturbations:
+  tableName: florepatri.bib_perturbations
+  columns:
+    codeper:
+      type: integer(2)
+      primary: true
+    classification:
+      type: string(30)
+      notnull: true
+    description:
+      type: string(65)
+      notnull: true
+BibPhenologies:
+  tableName: florepatri.bib_phenologies
+  columns:
+    codepheno:
+      type: integer(2)
+      primary: true
+    pheno:
+      type: string(45)
+      notnull: true
+BibPhysionomies:
+  tableName: florepatri.bib_physionomies
+  columns:
+    id_physionomie:
+      type: integer(2)
+      primary: true
+    groupe_physionomie: string(20)
+    nom_physionomie: string(100)
+    definition_physionomie: string()
+    code_physionomie: string(3)
 BibProgrammes:
   tableName: meta.bib_programmes
   columns:
@@ -104,14 +215,13 @@ BibProgrammes:
       primary: true
     nom_programme: string(255)
     desc_programme: string()
-BibProtocoles:
-  tableName: historique.bib_protocoles
+BibProgrammesFs:
+  tableName: florestation.bib_programmes_fs
   columns:
-    codeprotocole:
+    id_programme_fs:
       type: integer(4)
       primary: true
-    protocole: string(80)
-    typeprotocole: string(30)
+    nom_programme_fs: string(255)
 BibSources:
   tableName: synthese.bib_sources
   columns:
@@ -128,6 +238,20 @@ BibSources:
     db_schema: string(50)
     db_table: string(50)
     db_field: string(50)
+BibSupports:
+  tableName: meta.bib_supports
+  columns:
+    id_support:
+      type: integer(4)
+      primary: true
+    nom_support: string(20)
+BibSurfaces:
+  tableName: florestation.bib_surfaces
+  columns:
+    id_surface:
+      type: integer(4)
+      primary: true
+    nom_surface: string(20)
 BibTaxons:
   tableName: taxonomie.bib_taxons
   columns:
@@ -153,6 +277,17 @@ BibTaxons:
       local: cd_nom
       foreign: cd_nom
       foreignAlias: BibTaxons
+BibTaxonsFp:
+  tableName: florepatri.bib_taxons_fp
+  columns:
+    cd_nom:
+      type: integer(4)
+      primary: true
+    echelle:
+      type: integer(2)
+      notnull: true
+    francais: string(100)
+    latin: string(100)
 BibTaxrefHabitats:
   tableName: taxonomie.bib_taxref_habitats
   columns:
@@ -187,6 +322,200 @@ BibUnites:
     tel_unite: string(14)
     fax_unite: string(14)
     email_unite: string(100)
+CorApPerturb:
+  tableName: florepatri.cor_ap_perturb
+  columns:
+    indexap:
+      type: integer(8)
+      primary: true
+    codeper:
+      type: integer(2)
+      notnull: true
+  relations:
+    BibPerturbations:
+      class: BibPerturbations
+      local: codeper
+      foreign: codeper
+      foreignAlias: CorApPerturb
+    TApresence:
+      class: TApresence
+      local: indexap
+      foreign: indexap
+      foreignAlias: CorApPerturb
+CorApPhysionomie:
+  tableName: florepatri.cor_ap_physionomie
+  columns:
+    indexap:
+      type: integer(8)
+      primary: true
+    id_physionomie:
+      type: integer(2)
+      notnull: true
+  relations:
+    BibPhysionomies:
+      class: BibPhysionomies
+      local: id_physionomie
+      foreign: id_physionomie
+      foreignAlias: CorApPhysionomie
+    TApresence:
+      class: TApresence
+      local: indexap
+      foreign: indexap
+      foreignAlias: CorApPhysionomie
+CorBryoObservateur:
+  tableName: bryophytes.cor_bryo_observateur
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    id_role:
+      type: integer(4)
+      notnull: true
+  relations:
+    TStationsBryo:
+      class: TStationsBryo
+      local: id_station
+      foreign: id_station
+      foreignAlias: CorBryoObservateur
+    TRoles:
+      class: TRoles
+      local: id_role
+      foreign: id_role
+      foreignAlias: CorBryoObservateur
+CorBryoTaxon:
+  tableName: bryophytes.cor_bryo_taxon
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    cd_nom:
+      type: integer(4)
+      primary: true
+    id_abondance:
+      type: string(1)
+    taxon_saisi: string(150)
+    supprime: boolean(1)
+  relations:
+    TStationsBryo:
+      class: TStationsBryo
+      local: id_station
+      foreign: id_station
+      foreignAlias: CorBryoTaxon
+    Taxref:
+      class: Taxref
+      local: cd_nom
+      foreign: cd_nom
+      foreignAlias: CorBryoTaxon
+    BibAbondancesBryo:
+      class: BibAbondancesBryo
+      local: id_abondance
+      foreign: id_abondance
+      foreignAlias: CorBryoTaxon
+CorFsDelphine:
+  tableName: florestation.cor_fs_delphine
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    id_delphine:
+      type: string(5)
+      notnull: true
+  relations:
+    TStationsFs:
+      class: TStationsFs
+      local: id_station
+      foreign: id_station
+      foreignAlias: CorFsDelphine
+CorFsMicrorelief:
+  tableName: florestation.cor_fs_microrelief
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    id_microrelief:
+      type: integer(4)
+      notnull: true
+  relations:
+    TStationsFs:
+      class: TStationsFs
+      local: id_station
+      foreign: id_station
+      foreignAlias: CorFsMicrorelief
+    BibMicroreliefs:
+      class: BibMicroreliefs
+      local: id_microrelief
+      foreign: id_microrelief
+      foreignAlias: CorFsMicrorelief
+CorFsObservateur:
+  tableName: florestation.cor_fs_observateur
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    id_role:
+      type: integer(4)
+      notnull: true
+  relations:
+    TStationsFs:
+      class: TStationsFs
+      local: id_station
+      foreign: id_station
+      foreignAlias: CorFsObservateur
+    TRoles:
+      class: TRoles
+      local: id_role
+      foreign: id_role
+      foreignAlias: CorFsObservateur
+CorFsTaxon:
+  tableName: florestation.cor_fs_taxon
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    cd_nom:
+      type: integer(4)
+      primary: true
+    herb:
+      type: string(1)
+    inf_1m:
+      type: string(1)
+    de_1_4m:
+      type: string(1)
+    sup_4m:
+      type: string(1)
+    taxon_saisi: string(150)
+    supprime: boolean(1)
+  relations:
+    TStationsFs:
+      class: TStationsFs
+      local: id_station
+      foreign: id_station
+      foreignAlias: CorFsTaxon
+    Taxref:
+      class: Taxref
+      local: cd_nom
+      foreign: cd_nom
+      foreignAlias: CorFsTaxon
+    BibAbondancesHerb:
+      class: BibAbondances
+      local: herb
+      foreign: id_abondance
+      foreignAlias: CorFsTaxon 
+    BibAbondancesInf1m:
+      class: BibAbondances
+      local: inf_1m
+      foreign: id_abondance
+      foreignAlias: CorFsTaxon
+    BibAbondancesDe14m:
+      class: BibAbondances
+      local: de_1_4m
+      foreign: id_abondance
+      foreignAlias: CorFsTaxon
+    BibAbondancesSup4m:
+      class: BibAbondances
+      local: sup_4m
+      foreign: id_abondance
+      foreignAlias: CorFsTaxon
 CorMessageTaxonCf:
   tableName: contactfaune.cor_message_taxon
   columns:
@@ -407,8 +736,8 @@ CorUniteSynthese:
       type: integer(4)
       notnull: true
   relations:
-    Synthesefaune:
-      class: Synthesefaune
+    Syntheseff:
+      class: Syntheseff
       local: id_synthese
       foreign: id_synthese
       foreignAlias: CorUniteSynthese
@@ -427,8 +756,8 @@ CorZonesstatutSynthese:
       type: integer(4)
       notnull: true
   relations:
-    Synthesefaune:
-      class: Synthesefaune
+    Syntheseff:
+      class: Syntheseff
       local: id_synthese
       foreign: id_synthese
       foreignAlias: CorZonesstatutSynthese
@@ -437,6 +766,26 @@ CorZonesstatutSynthese:
       local: id_zone
       foreign: id_zone
       foreignAlias: CorZonesstatutSynthese
+CorZpObs:
+  tableName: florepatri.cor_zp_obs
+  columns:
+    indexzp:
+      type: integer(8)
+      primary: true
+    codeobs:
+      type: integer(4)
+      notnull: true
+  relations:
+    TRoles:
+      class: TRoles
+      local: codeobs
+      foreign: id_role
+      foreignAlias : CorZpObs
+    TZprospection:
+      class: TZprospection
+      local: indexzp
+      foreign: indexzp	
+      foreignAlias : CorZpObs
 GeometryColumns:
   tableName: geometry_columns
   columns:
@@ -514,6 +863,14 @@ LCommunes:
       local: id_secteur
       foreign: id_secteur
       foreignAlias: LCommunes
+LTerritoires:
+  tableName: layers.l_territoires
+  columns:
+    id_territoire:
+      type: integer(4)
+      primary: true
+    nom_territoire: string(200)
+    the_geom: blob()
 LZonesstatut:
   tableName: layers.l_zonesstatut
   columns:
@@ -523,8 +880,8 @@ LZonesstatut:
     nomzone: string(250)
     id_type: integer(4)
     the_geom: blob()
-Synthesefaune:
-  tableName: synthese.synthesefaune
+Syntheseff:
+  tableName: synthese.syntheseff
   columns:
     id_synthese:
       type: integer(4)
@@ -534,16 +891,14 @@ Synthesefaune:
     code_fiche_source: string(50)
     id_organisme: integer(4)
     id_protocole: integer(4)
-    codeprotocole: integer(4)
-    ids_protocoles: string(255)
     id_precision: integer(4)
     cd_nom: integer(4)
-    id_taxon: integer(4)
     id_lot: integer(4)
     id_critere_synthese: integer(4)
     insee: string(5)
     dateobs: date(25)
     observateurs: string(255)
+    determinateur: string(255)
     remarques: string()
     altitude_retenue: integer(4)
     date_insert: timestamp(25)
@@ -561,52 +916,123 @@ Synthesefaune:
       class: LCommunes
       local: insee
       foreign: insee
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     TProtocoles:
       class: TProtocoles
       local: id_protocole
       foreign: id_protocole
-      foreignAlias: Synthesefaune
-    BibProtocoles:
-      class: BibProtocoles
-      local: codeprotocole
-      foreign: codeprotocole
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     BibOrganismes:
       class: BibOrganismes
       local: id_organisme
       foreign: id_organisme
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     BibSources:
       class: BibSources
       local: id_source
       foreign: id_source
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     TPrecisions:
       class: TPrecisions
       local: id_precision
       foreign: id_precision
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     Taxref:
       class: Taxref
       local: cd_nom
       foreign: cd_nom
-      foreignAlias: Synthesefaune
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     BibLots:
       class: BibLots
       local: id_lot
       foreign: id_lot
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
     BibCriteresSynthese:
       class: BibCriteresSynthese
       local: id_critere_synthese
       foreign: id_critere_synthese
-      foreignAlias: Synthesefaune
+      foreignAlias: Syntheseff
+TApresence:
+  tableName: florepatri.t_apresence
+  columns:
+    indexap:
+      type: integer(8)
+      primary: true
+    codepheno:
+      type: integer(2)
+      notnull: true
+    indexzp:
+      type: integer(8)
+      notnull: true
+    surfaceap:
+      type: integer(8)
+      notnull: true
+    id_frequence_methodo:
+      type: string(1)
+      fixed: true
+    id_frequence_methodo_new:
+      type: string(1)
+      fixed: true
+      notnull: true
+    id_comptage_methodo:
+      type: integer(2)
+      fixed: true
+    frequenceap:
+      type: integer(2)
+      notnull: true
+    ap_pdop: integer(4)
+    altitude_saisie: integer(2)
+    altitude_sig: integer(2)
+    altitude_retenue: integer(2)
+    date_insert: timestamp(25)
+    date_update: timestamp(25)
+    topo_valid: boolean(1)
+    erreur_signalee: boolean(1)
+    supprime: 
+      type: boolean(1)
+      notnull: true
+    insee: string(5)
+    nb_transects_frequence: integer
+    nb_points_frequence: integer(4)
+    nb_contacts_frequence: integer(4)
+    nb_placettes_comptage: integer(4)
+    surface_placette_comptage:
+      type: 'decimal(10, 2)'
+    remarques: string()
+    the_geom: blob()
+    the_geom_3857: blob()
+    the_geom_2154: blob()
+  relations:
+    TZprospection:
+      class: TZprospection
+      local: indexzp
+      foreign: indexzp
+      foreignAlias: TApresence
+    BibPhenologies:
+      class: BibPhenologies
+      local: codepheno
+      foreign: codepheno
+      foreignAlias: TApresence
+    BibFrequencesMethodo:
+      class: BibFrequencesMethodo
+      local: id_frequence_methodo
+      foreign: id_frequence_methodo
+      foreignAlias: TApresence
+    BibFrequencesMethodoNew:
+      class: BibFrequencesMethodoNew
+      local: id_frequence_methodo_new
+      foreign: id_frequence_methodo_new
+      foreignAlias: TApresence
+    BibComptagesMethodo:
+      class: BibComptagesMethodo
+      local: id_comptage_methodo
+      foreign: id_comptage_methodo
+      foreignAlias: TApresence
+    BibCommunesCbna:
+      class: BibCommunesCbna
+      local: insee
+      foreign: inseecom
+      foreignAlias: TApresence
 Taxref:
   tableName: taxonomie.taxref
   columns:
@@ -664,6 +1090,17 @@ TaxrefProtectionEspeces:
     nom_francais_cite: string(100)
     precisions: string()
     cd_nom_cite: string(255)
+  relations:
+    TaxrefProtectionArticles:
+      class: TaxrefProtectionArticles
+      local: cd_protection
+      foreign: cd_protection
+      foreignAlias: TaxrefProtectionEspeces
+    Taxref:
+      class: Taxref
+      local: cd_nom
+      foreign: cd_nom
+      foreignAlias: TaxrefProtectionEspeces
 TApplications:
   tableName: utilisateurs.t_applications
   columns:
@@ -776,6 +1213,23 @@ TFichesInv:
       local: id_organisme
       foreign: id_organisme
       foreignAlias: TFichesInv
+TMenus:
+  tableName: utilisateurs.t_menus
+  columns:
+    id_menu:
+      type: integer(4)
+      primary: true
+      sequence: t_menus_id_menu
+    nom_menu:
+      type: string(50)
+      notnull: true
+    desc_menu: string()
+    id_application: integer(4)
+  relations:
+    TApplications:
+      class: TApplications
+      local: id_application
+      foreign: id_application
 TRelevesCf:
   tableName: contactfaune.t_releves_cf
   columns:
@@ -795,6 +1249,7 @@ TRelevesCf:
     cd_ref_origine: integer(4)
     nom_taxon_saisi: string(100)
     commentaire: string()
+    determinateur: string(255)
     supprime: 
       type: boolean(1)
       notnull: true
@@ -833,6 +1288,7 @@ TRelevesInv:
     cd_ref_origine: integer(4)
     nom_taxon_saisi: string(100)
     commentaire: string()
+    determinateur: string(255)
     supprime: 
       type: boolean(1)
       notnull: true
@@ -855,23 +1311,19 @@ TRelevesInv:
       local: id_inv
       foreign: id_inv
       foreignAlias: TRelevesInv
-TMenus:
-  tableName: utilisateurs.t_menus
+    TRoles:
+      class: Troles
+      local: id_role
+      foreign: id_role
+      foreignAlias: TRelevesInv
+TPrecisions:
+  tableName: meta.t_precisions
   columns:
-    id_menu:
+    id_precision:
       type: integer(4)
       primary: true
-      sequence: t_menus_id_menu
-    nom_menu:
-      type: string(50)
-      notnull: true
-    desc_menu: string()
-    id_application: integer(4)
-  relations:
-    TApplications:
-      class: TApplications
-      local: id_application
-      foreign: id_application
+    nom_precision: string(50)
+    desc_precision: string()
 TProtocoles:
   tableName: meta.t_protocoles
   columns:
@@ -885,14 +1337,6 @@ TProtocoles:
     avancement: string(50)
     date_debut: date(25)
     date_fin: date(25)
-TPrecisions:
-  tableName: meta.t_precisions
-  columns:
-    id_precision:
-      type: integer(4)
-      primary: true
-    nom_precision: string(50)
-    desc_precision: string()
 TRoles:
   tableName: utilisateurs.t_roles
   columns:
@@ -935,6 +1379,243 @@ TRoles:
       local: id_organisme
       foreign: id_organisme
       foreignAlias: TRoles
+TStationsBryo:
+  tableName: bryophytes.t_stations_bryo
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    id_exposition:
+      type: string(2)
+      fixed: true
+    id_protocole:
+      type: integer(4)
+      fixed: true
+    id_organisme:
+      type: integer(4)
+      fixed: true
+    id_lot:
+      type: integer(4)
+      fixed: true
+    id_support:
+      type: integer(4)
+      fixed: true
+    dateobs:
+      type: date(25)
+      notnull: true
+    surface: integer(4)
+    info_acces: string(255)
+    complet_partiel: string(1)
+    altitude_saisie: integer(4)
+    altitude_sig: integer(4)
+    altitude_retenue: integer(4)
+    remarques: string()
+    pdop: 
+      type: 'decimal(10, 2)'
+    the_geom_2154: blob()
+    the_geom_3857: blob()
+    srid_dessin: integer(4)
+    supprime: boolean(1)
+    date_insert: timestamp(25)
+    date_update: timestamp(25)
+    insee: string(5)
+  relations:
+    BibExpositionsBryo:
+      class: BibExpositionsBryo
+      local: id_exposition
+      foreign: id_exposition
+    BibSupports:
+      class: BibSupports
+      local: id_support
+      foreign: id_support
+    BibOrganismes:
+      class: BibOrganismes
+      local: id_organisme
+      foreign: id_organisme
+    BibLots:
+      class: BibLots
+      local: id_lot
+      foreign: id_lot
+    TProtocoles:
+      class: TProtocoles
+      local: id_protocole
+      foreign: id_protocole
+    CorBryoTaxon:
+      class: CorBryoTaxon
+      local: id_station
+      foreign: id_station
+    LCommunes:
+      class: LCommunes
+      local: insee
+      foreign: insee
+TStationsFs:
+  tableName: florestation.t_stations_fs
+  columns:
+    id_station:
+      type: integer(8)
+      primary: true
+    id_exposition:
+      type: string(2)
+      fixed: true
+    id_sophie:
+      type: string(5)
+      fixed: true
+    id_programme_fs:
+      type: integer(4)
+      fixed: true
+    id_protocole:
+      type: integer(4)
+      fixed: true
+    id_lot:
+      type: integer(4)
+      fixed: true
+    id_organisme:
+      type: integer(4)
+      fixed: true
+    id_support:
+      type: integer(4)
+      fixed: true
+    id_homogene:
+      type: integer(4)
+      fixed: true
+    id_surface:
+      type: integer(4)
+      fixed: true
+    dateobs:
+      type: date(25)
+      notnull: true
+    info_acces: string(255)
+    complet_partiel: string(1)
+    meso_longitudinal: integer(4)
+    meso_lateral: integer(4)
+    canopee: 
+      type: 'decimal(10, 2)'
+    ligneux_hauts: integer(4)
+    ligneux_bas: integer(4)
+    ligneux_tbas: integer(4)
+    herbaces: integer(4)
+    mousses: integer(4)
+    litiere: integer(4)
+    altitude_saisie: integer(4)
+    altitude_sig: integer(4)
+    altitude_retenue: integer(4)
+    remarques: string()
+    pdop: 
+      type: 'decimal(10, 2)'
+    the_geom_2154: blob()
+    the_geom_3857: blob()
+    srid_dessin: integer(4)
+    supprime: boolean(1)
+    date_insert: timestamp(25)
+    date_update: timestamp(25)
+    insee: string(5)
+    validation: boolean(1)
+  relations:
+    BibExpositions:
+      class: BibExpositions
+      local: id_exposition
+      foreign: id_exposition
+    BibHomogenes:
+      class: BibHomogenes
+      local: id_homogene
+      foreign: id_homogene
+    BibProgrammesFs:
+      class: BibProgrammesFs
+      local: id_programme_fs
+      foreign: id_programme_fs
+    BibSupports:
+      class: BibSupports
+      local: id_support
+      foreign: id_support
+    BibOrganismes:
+      class: BibOrganismes
+      local: id_organisme
+      foreign: id_organisme
+    BibLots:
+      class: BibLots
+      local: id_lot
+      foreign: id_lot
+    TProtocoles:
+      class: TProtocoles
+      local: id_protocole
+      foreign: id_protocole
+    BibSurfaces:
+      class: BibSurfaces
+      local: id_surface
+      foreign: id_surface
+    CorFsTaxon:
+      class: CorFsTaxon
+      local: id_station
+      foreign: id_station
+    LCommunes:
+      class: LCommunes
+      local: insee
+      foreign: insee
+TZprospection:
+  tableName: florepatri.t_zprospection
+  columns:
+    indexzp:
+      type: integer(8)
+      primary: true
+    cd_nom:
+      type: integer(4)
+      notnull: true
+    id_secteur_fp:
+      type: integer(4)
+      fixed: true
+    id_protocole:
+      type: integer(4)
+      fixed: true
+    id_lot:
+      type: integer(4)
+      fixed: true
+    id_organisme:
+      type: integer(4)
+      fixed: true
+    dateobs:
+      type: date(25)
+      notnull: true
+    the_geom: blob()
+    the_geom_3857: blob()
+    the_geom_2154: blob()
+    geom_mixte_3857: blob()
+    geom_point_3857: blob()
+    date_insert: timestamp(25)
+    date_update: timestamp(25)
+    validation: boolean(1)
+    topo_valid: boolean(1)
+    erreur_signalee: boolean(1)
+    supprime: boolean(1)
+    saisie_initiale: string(20)
+    taxon_saisi: string(150)
+    insee: string(5)
+    id_organisme: integer(4)
+    srid_dessin: integer(4)
+  relations:
+    BibTaxonsFp:
+      class: BibTaxonsFp
+      local: cd_nom
+      foreign: cd_nom
+    LSecteursFp:
+      class: LSecteursFp
+      local: id_secteur_fp
+      foreign: id_secteur_fp
+    LCommunesCbna:
+      class: LCommunesCbna
+      local: insee
+      foreign: inseecom
+    BibOrganismes:
+      class: BibOrganismes
+      local: id_organisme
+      foreign: id_organisme
+    BibLots:
+      class: BibLots
+      local: id_lot
+      foreign: id_lot
+    TProtocoles:
+      class: TProtocoles
+      local: id_protocole
+      foreign: id_protocole
 VNomadeTaxonsFaune:
   tableName: contactfaune.v_nomade_taxons_faune
   columns:
@@ -942,6 +1623,7 @@ VNomadeTaxonsFaune:
       type: integer(8)
       primary: true
     cd_ref: integer(8)
+    cd_nom: integer(8)
     nom_latin: string(100)
     nom_francais: string(50)
     id_classe: integer(8)
@@ -973,6 +1655,7 @@ VNomadeTaxonsInv:
       type: integer(8)
       primary: true
     cd_ref: integer(8)
+    cd_nom: integer(8)
     nom_latin: string(100)
     nom_francais: string(50)
     id_classe: integer(8)
@@ -994,24 +1677,33 @@ VNomadeTaxonsInv:
       local: id_taxon
       foreign: id_taxon
       foreignAlias: VNomadeTaxonsInv
+VTaxonsFs:
+  tableName: florestation.v_taxons_fs
+  columns:
+    cd_nom:
+      type: integer(4)
+      primary: true
+    nom_complet: string(255)
 VTreeTaxonsSynthese:
   tableName: synthese.v_tree_taxons_synthese
   columns:
     id_taxon: 
-      type: integer(8)
+      type: integer(4)
       primary: true
     cd_ref: integer(8)
     nom_latin: string(100)
-    nom_francais: string(50)
-    id_embranchement: integer(8)
-    nom_embranchement: string(12)
-    id_classe: integer(8)
-    nom_classe: string(17)
-    desc_classe: string(57)
-    id_ordre: integer(8)
-    nom_ordre: string(40)
-    id_famille: integer(8)
-    nom_famille: string(17)
+    nom_francais: string(255)
+    id_regne: integer(4)
+    nom_regne: string(50)
+    id_embranchement: integer(4)
+    nom_embranchement: string(50)
+    id_classe: integer(4)
+    nom_classe: string(50)
+    desc_classe: string(255)
+    id_ordre: integer(4)
+    nom_ordre: string(50)
+    id_famille: integer(4)
+    nom_famille: string(50)
     patrimonial: boolean(1)
     protection_stricte: boolean(1)
   relations:

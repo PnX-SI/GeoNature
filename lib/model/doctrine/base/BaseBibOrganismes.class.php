@@ -12,8 +12,11 @@
  * @property string $tel_organisme
  * @property string $fax_organisme
  * @property string $email_organisme
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TRoles
+ * @property Doctrine_Collection $TStationsBryo
+ * @property Doctrine_Collection $TStationsFs
+ * @property Doctrine_Collection $TZprospection
  * 
  * @method integer             getIdOrganisme()       Returns the current record's "id_organisme" value
  * @method string              getNomOrganisme()      Returns the current record's "nom_organisme" value
@@ -22,8 +25,11 @@
  * @method string              getTelOrganisme()      Returns the current record's "tel_organisme" value
  * @method string              getFaxOrganisme()      Returns the current record's "fax_organisme" value
  * @method string              getEmailOrganisme()    Returns the current record's "email_organisme" value
- * @method Doctrine_Collection getSynthesefaune()     Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getSyntheseff()        Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTRoles()            Returns the current record's "TRoles" collection
+ * @method Doctrine_Collection getTStationsBryo()     Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection getTStationsFs()       Returns the current record's "TStationsFs" collection
+ * @method Doctrine_Collection getTZprospection()     Returns the current record's "TZprospection" collection
  * @method BibOrganismes       setIdOrganisme()       Sets the current record's "id_organisme" value
  * @method BibOrganismes       setNomOrganisme()      Sets the current record's "nom_organisme" value
  * @method BibOrganismes       setAdresseOrganisme()  Sets the current record's "adresse_organisme" value
@@ -31,8 +37,11 @@
  * @method BibOrganismes       setTelOrganisme()      Sets the current record's "tel_organisme" value
  * @method BibOrganismes       setFaxOrganisme()      Sets the current record's "fax_organisme" value
  * @method BibOrganismes       setEmailOrganisme()    Sets the current record's "email_organisme" value
- * @method BibOrganismes       setSynthesefaune()     Sets the current record's "Synthesefaune" collection
+ * @method BibOrganismes       setSyntheseff()        Sets the current record's "Syntheseff" collection
  * @method BibOrganismes       setTRoles()            Sets the current record's "TRoles" collection
+ * @method BibOrganismes       setTStationsBryo()     Sets the current record's "TStationsBryo" collection
+ * @method BibOrganismes       setTStationsFs()       Sets the current record's "TStationsFs" collection
+ * @method BibOrganismes       setTZprospection()     Sets the current record's "TZprospection" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -79,11 +88,23 @@ abstract class BaseBibOrganismes extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'id_organisme',
              'foreign' => 'id_organisme'));
 
         $this->hasMany('TRoles', array(
+             'local' => 'id_organisme',
+             'foreign' => 'id_organisme'));
+
+        $this->hasMany('TStationsBryo', array(
+             'local' => 'id_organisme',
+             'foreign' => 'id_organisme'));
+
+        $this->hasMany('TStationsFs', array(
+             'local' => 'id_organisme',
+             'foreign' => 'id_organisme'));
+
+        $this->hasMany('TZprospection', array(
              'local' => 'id_organisme',
              'foreign' => 'id_organisme'));
     }

@@ -7,17 +7,17 @@
  * 
  * @property integer $id_zone
  * @property integer $id_synthese
- * @property Synthesefaune $Synthesefaune
+ * @property Syntheseff $Syntheseff
  * @property LZonesstatut $LZonesstatut
  * 
- * @method integer                getIdZone()        Returns the current record's "id_zone" value
- * @method integer                getIdSynthese()    Returns the current record's "id_synthese" value
- * @method Synthesefaune          getSynthesefaune() Returns the current record's "Synthesefaune" value
- * @method LZonesstatut           getLZonesstatut()  Returns the current record's "LZonesstatut" value
- * @method CorZonesstatutSynthese setIdZone()        Sets the current record's "id_zone" value
- * @method CorZonesstatutSynthese setIdSynthese()    Sets the current record's "id_synthese" value
- * @method CorZonesstatutSynthese setSynthesefaune() Sets the current record's "Synthesefaune" value
- * @method CorZonesstatutSynthese setLZonesstatut()  Sets the current record's "LZonesstatut" value
+ * @method integer                getIdZone()       Returns the current record's "id_zone" value
+ * @method integer                getIdSynthese()   Returns the current record's "id_synthese" value
+ * @method Syntheseff             getSyntheseff()   Returns the current record's "Syntheseff" value
+ * @method LZonesstatut           getLZonesstatut() Returns the current record's "LZonesstatut" value
+ * @method CorZonesstatutSynthese setIdZone()       Sets the current record's "id_zone" value
+ * @method CorZonesstatutSynthese setIdSynthese()   Sets the current record's "id_synthese" value
+ * @method CorZonesstatutSynthese setSyntheseff()   Sets the current record's "Syntheseff" value
+ * @method CorZonesstatutSynthese setLZonesstatut() Sets the current record's "LZonesstatut" value
  * 
  * @package    geonature
  * @subpackage model
@@ -44,7 +44,7 @@ abstract class BaseCorZonesstatutSynthese extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('Synthesefaune', array(
+        $this->hasOne('Syntheseff', array(
              'local' => 'id_synthese',
              'foreign' => 'id_synthese'));
 

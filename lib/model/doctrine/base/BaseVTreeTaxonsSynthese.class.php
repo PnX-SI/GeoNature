@@ -9,6 +9,8 @@
  * @property integer $cd_ref
  * @property string $nom_latin
  * @property string $nom_francais
+ * @property integer $id_regne
+ * @property string $nom_regne
  * @property integer $id_embranchement
  * @property string $nom_embranchement
  * @property integer $id_classe
@@ -26,6 +28,8 @@
  * @method integer             getCdRef()              Returns the current record's "cd_ref" value
  * @method string              getNomLatin()           Returns the current record's "nom_latin" value
  * @method string              getNomFrancais()        Returns the current record's "nom_francais" value
+ * @method integer             getIdRegne()            Returns the current record's "id_regne" value
+ * @method string              getNomRegne()           Returns the current record's "nom_regne" value
  * @method integer             getIdEmbranchement()    Returns the current record's "id_embranchement" value
  * @method string              getNomEmbranchement()   Returns the current record's "nom_embranchement" value
  * @method integer             getIdClasse()           Returns the current record's "id_classe" value
@@ -42,6 +46,8 @@
  * @method VTreeTaxonsSynthese setCdRef()              Sets the current record's "cd_ref" value
  * @method VTreeTaxonsSynthese setNomLatin()           Sets the current record's "nom_latin" value
  * @method VTreeTaxonsSynthese setNomFrancais()        Sets the current record's "nom_francais" value
+ * @method VTreeTaxonsSynthese setIdRegne()            Sets the current record's "id_regne" value
+ * @method VTreeTaxonsSynthese setNomRegne()           Sets the current record's "nom_regne" value
  * @method VTreeTaxonsSynthese setIdEmbranchement()    Sets the current record's "id_embranchement" value
  * @method VTreeTaxonsSynthese setNomEmbranchement()   Sets the current record's "nom_embranchement" value
  * @method VTreeTaxonsSynthese setIdClasse()           Sets the current record's "id_classe" value
@@ -65,10 +71,10 @@ abstract class BaseVTreeTaxonsSynthese extends sfDoctrineRecord
     public function setTableDefinition()
     {
         $this->setTableName('synthese.v_tree_taxons_synthese');
-        $this->hasColumn('id_taxon', 'integer', 8, array(
+        $this->hasColumn('id_taxon', 'integer', 4, array(
              'type' => 'integer',
              'primary' => true,
-             'length' => 8,
+             'length' => 4,
              ));
         $this->hasColumn('cd_ref', 'integer', 8, array(
              'type' => 'integer',
@@ -78,45 +84,53 @@ abstract class BaseVTreeTaxonsSynthese extends sfDoctrineRecord
              'type' => 'string',
              'length' => 100,
              ));
-        $this->hasColumn('nom_francais', 'string', 50, array(
+        $this->hasColumn('nom_francais', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('id_regne', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             ));
+        $this->hasColumn('nom_regne', 'string', 50, array(
              'type' => 'string',
              'length' => 50,
              ));
-        $this->hasColumn('id_embranchement', 'integer', 8, array(
+        $this->hasColumn('id_embranchement', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 8,
+             'length' => 4,
              ));
-        $this->hasColumn('nom_embranchement', 'string', 12, array(
+        $this->hasColumn('nom_embranchement', 'string', 50, array(
              'type' => 'string',
-             'length' => 12,
+             'length' => 50,
              ));
-        $this->hasColumn('id_classe', 'integer', 8, array(
+        $this->hasColumn('id_classe', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 8,
+             'length' => 4,
              ));
-        $this->hasColumn('nom_classe', 'string', 17, array(
+        $this->hasColumn('nom_classe', 'string', 50, array(
              'type' => 'string',
-             'length' => 17,
+             'length' => 50,
              ));
-        $this->hasColumn('desc_classe', 'string', 57, array(
+        $this->hasColumn('desc_classe', 'string', 255, array(
              'type' => 'string',
-             'length' => 57,
+             'length' => 255,
              ));
-        $this->hasColumn('id_ordre', 'integer', 8, array(
+        $this->hasColumn('id_ordre', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 8,
+             'length' => 4,
              ));
-        $this->hasColumn('nom_ordre', 'string', 40, array(
+        $this->hasColumn('nom_ordre', 'string', 50, array(
              'type' => 'string',
-             'length' => 40,
+             'length' => 50,
              ));
-        $this->hasColumn('id_famille', 'integer', 8, array(
+        $this->hasColumn('id_famille', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 8,
+             'length' => 4,
              ));
-        $this->hasColumn('nom_famille', 'string', 17, array(
+        $this->hasColumn('nom_famille', 'string', 50, array(
              'type' => 'string',
-             'length' => 17,
+             'length' => 50,
              ));
         $this->hasColumn('patrimonial', 'boolean', 1, array(
              'type' => 'boolean',

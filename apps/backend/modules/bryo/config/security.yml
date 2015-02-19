@@ -1,0 +1,7 @@
+all:
+  credentials: [[ administrateur, redacteur, utilisateur, referent ]]
+  is_secure: on
+delete:
+  is_secure: off
+validate:
+  is_secure: off

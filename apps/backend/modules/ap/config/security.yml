@@ -1,0 +1,11 @@
+all:
+  credentials: [[ administrateur, redacteur, utilisateur, referent ]]
+  is_secure: on
+msg:
+  is_secure: off
+delete:
+  is_secure: off
+save:
+  is_secure: off
+validate:
+  is_secure: off

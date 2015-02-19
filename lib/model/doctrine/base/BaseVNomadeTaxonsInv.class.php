@@ -7,6 +7,7 @@
  * 
  * @property integer $id_taxon
  * @property integer $cd_ref
+ * @property integer $cd_nom
  * @property string $nom_latin
  * @property string $nom_francais
  * @property integer $id_classe
@@ -18,6 +19,7 @@
  * 
  * @method integer          getIdTaxon()          Returns the current record's "id_taxon" value
  * @method integer          getCdRef()            Returns the current record's "cd_ref" value
+ * @method integer          getCdNom()            Returns the current record's "cd_nom" value
  * @method string           getNomLatin()         Returns the current record's "nom_latin" value
  * @method string           getNomFrancais()      Returns the current record's "nom_francais" value
  * @method integer          getIdClasse()         Returns the current record's "id_classe" value
@@ -28,6 +30,7 @@
  * @method TRelevesInv      getTRelevesInv()      Returns the current record's "TRelevesInv" value
  * @method VNomadeTaxonsInv setIdTaxon()          Sets the current record's "id_taxon" value
  * @method VNomadeTaxonsInv setCdRef()            Sets the current record's "cd_ref" value
+ * @method VNomadeTaxonsInv setCdNom()            Sets the current record's "cd_nom" value
  * @method VNomadeTaxonsInv setNomLatin()         Sets the current record's "nom_latin" value
  * @method VNomadeTaxonsInv setNomFrancais()      Sets the current record's "nom_francais" value
  * @method VNomadeTaxonsInv setIdClasse()         Sets the current record's "id_classe" value
@@ -53,6 +56,10 @@ abstract class BaseVNomadeTaxonsInv extends sfDoctrineRecord
              'length' => 8,
              ));
         $this->hasColumn('cd_ref', 'integer', 8, array(
+             'type' => 'integer',
+             'length' => 8,
+             ));
+        $this->hasColumn('cd_nom', 'integer', 8, array(
              'type' => 'integer',
              'length' => 8,
              ));

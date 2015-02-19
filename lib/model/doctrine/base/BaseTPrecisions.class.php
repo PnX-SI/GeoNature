@@ -8,16 +8,16 @@
  * @property integer $id_precision
  * @property string $nom_precision
  * @property string $desc_precision
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * 
  * @method integer             getIdPrecision()    Returns the current record's "id_precision" value
  * @method string              getNomPrecision()   Returns the current record's "nom_precision" value
  * @method string              getDescPrecision()  Returns the current record's "desc_precision" value
- * @method Doctrine_Collection getSynthesefaune()  Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getSyntheseff()     Returns the current record's "Syntheseff" collection
  * @method TPrecisions         setIdPrecision()    Sets the current record's "id_precision" value
  * @method TPrecisions         setNomPrecision()   Sets the current record's "nom_precision" value
  * @method TPrecisions         setDescPrecision()  Sets the current record's "desc_precision" value
- * @method TPrecisions         setSynthesefaune()  Sets the current record's "Synthesefaune" collection
+ * @method TPrecisions         setSyntheseff()     Sets the current record's "Syntheseff" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -47,7 +47,7 @@ abstract class BaseTPrecisions extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'id_precision',
              'foreign' => 'id_precision'));
     }

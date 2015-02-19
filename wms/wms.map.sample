@@ -178,7 +178,7 @@ LAYER
   PROJECTION
     "init=epsg:2154"
   END
-  FILTER "id_type=4"
+  FILTER "id_type=1"
   CLASS
     NAME "coeur"
     STYLE
@@ -198,7 +198,7 @@ LAYER
   PROJECTION
     "init=epsg:2154"
   END
-  FILTER "id_type=5"
+  FILTER "id_type=7"
   CLASS
     NAME "n2000"
     STYLE
@@ -218,7 +218,7 @@ LAYER
   PROJECTION
     "init=epsg:2154"
   END
-  FILTER "id_type=6"
+  FILTER "id_type=10"
   CLASS
     NAME "reserveschasse"
     STYLE
@@ -269,7 +269,47 @@ LAYER
 END
 
 LAYER
-  NAME "reservesnat"
+  NAME "reservesnationales"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=5"
+  CLASS
+    NAME "reservesnationales"
+    STYLE
+      OUTLINECOLOR 80 80 75
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "reservesregionales"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=6"
+  CLASS
+    NAME "reservesregionales"
+    STYLE
+      OUTLINECOLOR 80 80 55
+      WIDTH 2
+    END
+  END
+END
+
+LAYER
+  NAME "reservesintegrales"
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
@@ -280,29 +320,9 @@ LAYER
   END
   FILTER "id_type=11"
   CLASS
-    NAME "reservesnat"
+    NAME "reservesintegrales"
     STYLE
-      OUTLINECOLOR 80 80 75
-      WIDTH 2
-    END
-  END
-END
-
-LAYER
-  NAME "reservesint"
-  STATUS ON
-  TYPE POLYGON
-  CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
-  DATA "the_geom FROM layers.l_zonesstatut"
-  PROJECTION
-    "init=epsg:2154"
-  END
-  FILTER "id_type=13"
-  CLASS
-    NAME "reservesint"
-    STYLE
-      OUTLINECOLOR 80 80 55
+      OUTLINECOLOR 80 80 35
       WIDTH 2
     END
   END
@@ -318,18 +338,226 @@ LAYER
   PROJECTION
     "init=epsg:2154"
   END
-  FILTER "id_type=12"
+  FILTER "id_type=4"
   CLASS
     NAME "ab"
     STYLE
-      OUTLINECOLOR 80 80 35
+      OUTLINECOLOR 80 80 15
       WIDTH 2
     END
   END
 END
 ############# END ZONES A STATUT PN #####################
 
+############# START ZP & AP #####################
+LAYER
+  NAME "zp_relue"
+  GROUP "zp"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom_2154 FROM florepatri.t_zprospection USING UNIQUE indexzp"
+  FILTER "validation = 't' AND supprime != 't' "
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "zp_relue"
+    STYLE
+      OUTLINECOLOR 100 45 130
+      SIZE 2
+    END
+  END
+  OPACITY 50
+END
 
+LAYER
+  NAME "zp_pasrelue"
+  GROUP "zp"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom_2154 FROM florepatri.t_zprospection USING UNIQUE indexzp"
+  FILTER "validation != 't' AND supprime != 't' "
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "zp_pasrelue"
+    STYLE
+      OUTLINECOLOR 255 60 60
+      SIZE 2
+    END
+  END
+  OPACITY 50
+END
+
+LAYER
+  NAME "zp_Selected"
+  GROUP "zp"
+  STATUS ON
+  DEBUG 5
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom_2154 FROM florepatri.t_zprospection USING UNIQUE indexzp"
+  FILTER "indexzp=%INDEXZP%"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "zp_Selected"
+    STYLE
+      OUTLINECOLOR 255 255 0
+      SIZE 4
+    END
+  END
+  OPACITY 100
+  METADATA
+    INDEXZP_validation_pattern   '[[:digit:]]+'
+  END
+END
+
+LAYER
+  NAME "ap_poly"
+  GROUP "ap"
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.ap_topo_valid FROM florepatri.v_touteslesap_2154_polygon AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp) as test using unique indexap"
+  #DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.supprime, p.topo_valid FROM florepatri.v_ap_poly AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1)AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
+  #FILTER "supprime != 't'"
+  CLASSITEM "ap_topo_valid"
+  MAXSCALE 250000
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "topologies_valides"
+    EXPRESSION "t"
+    STYLE
+      COLOR 0 255 0
+      SYMBOL "hatch"
+      ANGLE -45
+      WIDTH 1
+      SIZE 4
+    END
+    STYLE
+      OUTLINECOLOR 30 145 30
+      WIDTH 2
+    END
+  END
+  CLASS
+    NAME "topologies_non_valides"
+    EXPRESSION "f"
+    STYLE
+      COLOR 255 0 0
+      SYMBOL "hatch"
+      ANGLE 45
+      WIDTH 1
+      SIZE 4
+    END
+    STYLE
+      OUTLINECOLOR 200 0 0
+      WIDTH 2
+    END
+  END
+  OPACITY 90
+END
+
+LAYER
+  NAME "ap_line"
+  GROUP "ap"
+  STATUS ON
+  STATUS ON
+  TYPE LINE
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.ap_topo_valid FROM florepatri.v_touteslesap_2154_line AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1)AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
+  #DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.supprime, p.topo_valid FROM florepatri.v_touteslesap_2154_line AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1)AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
+  #FILTER "supprime != 't'"
+  CLASSITEM "ap_topo_valid"
+  MAXSCALE 250000
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "topologies_valides"
+    EXPRESSION "t"
+    STYLE
+      COLOR 000 255 000
+      SIZE 2
+    END
+  END
+  CLASS
+    NAME "topologies_non_valides"
+    EXPRESSION "f"
+    STYLE
+      COLOR 255 000 000
+      SIZE 2
+    END
+  END
+  OPACITY 100
+END
+
+LAYER
+  NAME "ap_point"
+  GROUP "ap"
+  STATUS ON
+  TYPE POINT
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DEBUG 5
+  DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, ap_topo_valid FROM florepatri.v_ap_point p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1) AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
+  #DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.supprime, p.topo_valid FROM florepatri.v_ap_point p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1) AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
+  #DATA "the_geom_2154 FROM florepatri.v_ap_point USING UNIQUE indexap "
+  #FILTER "supprime != 't'"
+  CLASSITEM "ap_topo_valid"
+  MAXSCALE 250000
+  PROJECTION
+    "init=epsg:2154"
+  END
+  CLASS
+    NAME "topologies_valides"
+    EXPRESSION "t"
+    STYLE
+      COLOR 30 145 30
+      MAXSIZE 13
+      MINSIZE 5
+      SIZE 11
+      SYMBOL "circle"
+    END
+    STYLE
+      COLOR 0 255 0
+      MAXSIZE 11
+      MINSIZE 5
+      SIZE 9
+      SYMBOL "circle"
+    END
+  END
+  CLASS
+    NAME "topologies_non_valides"
+    EXPRESSION "f"
+    STYLE
+      COLOR 255 000 000
+      MAXSIZE 11
+      MINSIZE 5
+      SIZE 9
+      SYMBOL "circle"
+    END
+    STYLE
+      COLOR 200 0 0
+      MAXSIZE 9
+      MINSIZE 5
+      SIZE 5
+      SYMBOL "circle"
+    END
+  END
+  SYMBOLSCALE 25000
+END
 
 ######## End Elements #########
 

@@ -1,6 +1,7 @@
 # You can find more information about this file on the symfony website:
 # http://www.symfony-project.org/reference/1_4/en/10-Routing
 
+# Partie synthese
 getSynthese:
   url: /synthese/get
   param: { module: synthese, action: get }
@@ -19,7 +20,119 @@ kmlSynthese:
 UploadGml:
   url: /synthese/uploadshp
   param: { module: synthese, action: uploadFileShp }
+
+# Partie Flore Patri
+xlsAp:
+  url: /ap/xls/
+  param: { module: ap, action: xls }
+deleteAp:
+  url: /ap/delete/
+  param: { module: ap, action: delete }
+SaveAp:
+  url: /ap/save/:indexap
+  param: { module: ap, action: save }
+getOneAp:
+  url: /ap/listone/:indexap
+  param: { module: ap, action: listone }
+getAp:
+  url: /ap/get/:indexzp
+  param: { module: ap, action: get }
+getAllZp:
+  url: /zp/all
+  param: { module: zp, action: all }
+getZp:
+  url: /zp/get/:indexzp
+  param: { module: zp, action: get }
+validateZp:
+  url: /zp/validate/:indexzp
+  param: { module: zp, action: validate }
+deleteZp:
+  url: /zp/delete/
+  param: { module: zp, action: delete }
+saveZp:
+  url: /zp/save/:indexzp.:monaction
+  param: { module: zp, action: save }
+multiformat_zp:
+  url: /zp/get/:indexzp.:format
+  param: { module: zp, action: get }
+UploadGpx:
+  url: /ap/uploadgpx
+  param: { module: ap, action: uploadFileGpx }
+
+# partie florestation
+xlsStation:
+  url: /station/xls/
+  param: { module: station, action: xls }
+deleteStation:
+  url: /station/delete/
+  param: { module: station, action: delete }
+getAllStation:
+  url: /station/all
+  param: { module: station, action: all }
+getStation:
+  url: /station/get/:id_station
+  param: { module: station, action: get }
+validateStation:
+  url: /station/validate/:id_station
+  param: { module: station, action: validate }
+multiformat_station:
+  url: /station/get/:id_station.:format
+  param: { module: station, action: get }
+getTaxonsFs:
+  url: /station/gettaxons/:id_station
+  param: { module: station, action: getTaxons }
+getOneReleveTaxons:
+  url: /station/getonerelevetaxons
+  param: { module: station, action: getOneReleveTaxons }
+deleteTaxon:
+  url: /station/deletetaxon
+  param: { module: station, action: deleteTaxon }
+saveStation:
+  url: /station/save
+  param: { module: station, action: save }
+saveTaxon:
+  url: /station/savetaxon
+  param: { module: station, action: saveTaxon }
+getTaxonReference:
+  url: /taxon/getref
+  param: { module: station, action: getTaxonsReference }
   
+# partie bryo
+xlsStationBryo:
+  url: /bryo/xls/
+  param: { module: bryo, action: xls }
+deleteStationBryo:
+  url: /bryo/delete/
+  param: { module: bryo, action: delete }
+getAllStationBryo:
+  url: /bryo/all
+  param: { module: bryo, action: all }
+getStationBryo:
+  url: /bryo/get/:id_station
+  param: { module: bryo, action: get }
+multiformat_stationBryo:
+  url: /bryo/get/:id_station.:format
+  param: { module: bryo, action: get }
+multiformat_stationBryo:
+  url: /bryo/get/:id_station.:format
+  param: { module: bryo, action: get }
+getTaxonsBryo:
+  url: /bryo/gettaxons/:id_station
+  param: { module: bryo, action: getTaxons }
+getOneReleveTaxonsBryo:
+  url: /bryo/getonerelevetaxons
+  param: { module: bryo, action: getOneReleveTaxons }
+deleteTaxonBryo:
+  url: /bryo/deletetaxon
+  param: { module: bryo, action: deleteTaxon }
+saveStationBryo:
+  url: /bryo/save
+  param: { module: bryo, action: save }
+saveTaxonBryo:
+  url: /bryo/savetaxon
+  param: { module: bryo, action: saveTaxon }
+  
+# Partie contact faune
 saveFicheCf:
   url: /cf/save
   param: { module: cf, action: saveCf }
@@ -42,6 +155,7 @@ getListRelevesCf:
   url: /cf/listreleves/:id_cf
   param: { module: cf, action: getListRelevesCf }
 
+# Partie faune invertébrés
 saveFicheInv:
   url: /invertebre/save
   param: { module: invertebre, action: saveInv }
@@ -61,6 +175,7 @@ getListRelevesInv:
   url: /invertebre/listreleves/:id_inv
   param: { module: invertebre, action: getListRelevesInv }
 
+#Menus déroulants faune 
 getCriteresCfClasse:
   url: /bibs/criterescf/:id_classe
   param: { module: bibs, action: ListCritereCf }
@@ -94,8 +209,114 @@ getTaxonsInvUnite:
 getTaxonsCfUnite:
   url: /bibs/taxonscfu
   param: { module: bibs, action: listTaxonsCfu }
+
+# Menus déroulants flore 
+listObservateursFlore:
+  url: /bibs/observateurs
+  param: { module: bibs, action: listObservateursFlore }
+filtreObservateursFp:
+  url: /bibs/filtreobservateursfp
+  param: { module: bibs, action: filtreObservateursFp }
+filtreObservateursFs: 
+  url: /bibs/filtreobservateursfs
+  param: { module: bibs, action: filtreObservateursFs }
+filtreObservateursBryo:
+  url: /bibs/filtreobservateursbryo
+  param: { module: bibs, action: filtreObservateursBryo }
+anneesFp:
+  url: /bibs/listanneefp
+  param: { module: bibs, action: listAnneeFp }
+anneesFs:
+  url: /bibs/listanneefs
+  param: { module: bibs, action: listAnneeFs }
+anneesBryo:
+  url: /bibs/listanneebryo
+  param: { module: bibs, action: listAnneeBryo }
+perturbations:
+  url: /bibs/perturbations
+  param: { module: bibs, action: listPerturbations }
+physionomies:
+  url: /bibs/physionomies
+  param: { module: bibs, action: listPhysionomies }
+taxonl:
+  url: /bibs/listlfp
+  param: { module: bibs, action: listlfp }
+taxonf:
+  url: /bibs/listffp
+  param: { module: bibs, action: listffp }
+filtreTaxonOrigineFs:
+  url: /bibs/filtretaxonoriginefs
+  param: { module: bibs, action: filtreTaxonOrigineFs }
+filtreTaxonOrigineBryo:
+  url: /bibs/filtretaxonoriginebryo
+  param: { module: bibs, action: filtreTaxonOrigineBryo }
+filtreTaxonReferenceFs:
+  url: /bibs/filtretaxonreferencefs
+  param: { module: bibs, action: filtreTaxonReferenceFs }
+filtreTaxonReferenceBryo:
+  url: /bibs/filtretaxonreferencebryo
+  param: { module: bibs, action: filtreTaxonReferenceBryo }
+phenologie:
+  url: /bibs/listpheno
+  param: { module: bibs, action: listPheno }
+frequenceMethodoNew:
+  url: /bibs/listfrequencemethodonew
+  param: { module: bibs, action: listFrequenceMethodoNew }
+comptageMethodo:
+  url: /bibs/listcomptagemethodo
+  param: { module: bibs, action: listComptageMethodo }  
+organismes:
+  url: /bibs/organismes
+  param: { module: bibs, action: listOrganismes }
+communes:
+  url: /bibs/communes
+  param: { module: bibs, action: listCommunesSaisie }
+communes_secteur:
+  url: /bibs/communes/:secteur
+  param: { module: bibs, action: listCommunesSaisie }
+secteurfp:
+  url: /bibs/secteursfp
+  param: { module: bibs, action: listSecteursFp }
+secteurs:
+  url: /bibs/secteurs
+  param: { module: bibs, action: listSecteurs }
+secteursBryo:
+  url: /bibs/secteursbryo
+  param: { module: bibs, action: listSecteursBryo }
+abondances:
+  url: /bibs/abondances
+  param: { module: bibs, action: listAbondances }
+abondancesBryo:
+  url: /bibs/abondancesbryo
+  param: { module: bibs, action: listAbondancesBryo }
+expositions:
+  url: /bibs/expositions
+  param: { module: bibs, action: listExpositions }
+expositionsBryo:
+  url: /bibs/expositionsbryo
+  param: { module: bibs, action: listExpositionsBryo }
+homogenes:
+  url: /bibs/homogenes
+  param: { module: bibs, action: listHomogenes }
+programmeFs:
+  url: /bibs/programmefs
+  param: { module: bibs, action: listProgrammeFs }
+surfaces:
+  url: /bibs/surfaces
+  param: { module: bibs, action: listSurfaces }
+microreliefs:
+  url: /bibs/microreliefs
+  param: { module: bibs, action: listMicroreliefs }
+supports:
+  url: /bibs/supports
+  param: { module: bibs, action: listSupports }
+idSophie:
+  url: /bibs/sophie
+  param: { module: bibs, action: listSophie }
+
+#Menus déroulants synthèse
 getAnneesSynthese:
-  url: /bibs/listannee
+  url: /bibs/listanneesynthese
   param: { module: bibs, action: listAnneesSynthese }
 getTreeTaxonsSynthese:
   url: /bibs/taxonstree
@@ -103,15 +324,11 @@ getTreeTaxonsSynthese:
 getTaxonsSynthese:
   url: /bibs/taxonssynthese
   param: { module: bibs, action: listTaxonsSynthese }
-getCommunesSynthese:
-  url: /bibs/communessynthese
-  param: { module: bibs, action: listCommunes }
-getCommunesSyntheseSecteur:
-  url: /bibs/communessynthese/:secteur
-  param: { module: bibs, action: listCommunes }
 getSecteursSynthese:
   url: /bibs/secteurssynthese
   param: { module: bibs, action: listSecteurs }
+
+#Menus déroulants utilisés dans plusierus modules
 getProtocoles:
   url: /bibs/protocoles
   param: { module: bibs, action: listProtocoles }
@@ -124,7 +341,6 @@ getReserves:
 getN2000:
   url: /bibs/n2000
   param: { module: bibs, action: listN2000 }
-
 #statfaune
 datasNbObsCf:
   url: /datasnbobscf
@@ -139,25 +355,36 @@ datasColorsInv:
   url: /datascolorsinv
   param: { module: home, action: datasColorsInv } 
 
-#admin
-majChiros:
-  url: /admin/majchiros
-  param: { module: admin, action: majChiropteres }  
-
 #autres
 getStatus:
   url: /getstatus
   param: { module: home, action: getStatus }
-Cf:
+cf:
   url: /cf
   param: { module: home, action: indexCf }
-Mortalite:
+mortalite:
   url: /mortalite
   param: { module: home, action: indexMortalite }
-Invertebre:
+invertebre:
   url: /invertebre
   param: { module: home, action: indexInvertebre }
-Synthese:
+# on peut ici rediriger le lien flore prioritaire vers le reseau de conservation Alpes-Ain
+#fp: 
+#  url: /fp
+#  param: { module: home, action: indexReseau }
+fp: 
+  url: /fp
+  param: { module: home, action: indexFp }
+reseau: 
+  url: /reseau
+  param: { module: home, action: indexReseau }
+fs: 
+  url: /fs
+  param: { module: home, action: indexFs }
+bryo: 
+  url: /bryo
+  param: { module: home, action: indexBryo }
+synthese:
   url: /synthese
   param: { module: home, action: indexSynthese }
 logout: 

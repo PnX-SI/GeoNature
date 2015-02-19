@@ -10,7 +10,7 @@ class TRelevesInvTable extends Doctrine_Table
     }
     public static function getListRelevesInv($id_inv)
     {
-        $select = 'r.id_releve_inv, r.id_inv, r.id_taxon, r.id_critere_inv, r.am, r.af, r.ai, r.na, r.nom_taxon_saisi, r.commentaire,'.
+        $select = 'r.id_releve_inv, r.id_inv, r.id_taxon, r.id_critere_inv, r.am, r.af, r.ai, r.na, r.nom_taxon_saisi, r.commentaire, r.determinateur,'.
             'v.cd_ref, r.cd_ref_origine,v.nom_francais,v.nom_latin, v.patrimonial, v.id_classe, v.message';
         $releves = Doctrine_Query::create()
           ->select($select)

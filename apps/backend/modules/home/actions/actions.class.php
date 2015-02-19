@@ -42,6 +42,8 @@ class homeActions extends sfFauneActions
                 $user->setAttribute('id_organisme', $id_organisme);
                 $user->setAttribute('nom_secteur', $nom_secteur);
                 $user->setAttribute('email', $email);
+                $user->setAttribute('identifiant',$params['login']);
+                $user->setAttribute('pass',$params['password']);
                 $this->redirect('@homepage');
         $this->form = new LoginForm();
             }
@@ -107,6 +109,47 @@ class homeActions extends sfFauneActions
             //~ $this->redirect('@login');
         }
     }
+    
+    public function executeIndexFs(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_florestation);
+        }
+        else{
+            //~ $this->redirect('@login');
+        }
+    }
+    
+    public function executeIndexBryo(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_bryo);
+        }
+        else{
+            //~ $this->redirect('@login');
+        }
+    }
+    
+    public function executeIndexFp(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_florepatri);
+        }
+        else{
+            //~ $this->redirect('@login');
+        }
+    }
+    
+    public function executeIndexReseau(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $this->identifiant = $this->getUser()->getAttribute('identifiant');
+            $this->pass = $this->getUser()->getAttribute('pass');
+        }
+        else{
+            //~ $this->redirect('@login');
+        }
+    }
         
     public function executeGetStatus(sfRequest $request)
     {
@@ -114,14 +157,17 @@ class homeActions extends sfFauneActions
       	return $this->renderJSON(array(
           	 'status' => array_shift($credentials),
           	 'statuscode' => $this->getUser()->getAttribute('statuscode'),
+          	 'id_role' => $this->getUser()->getAttribute('id'),
+             'id_utilisateur' => $this->getUser()->getAttribute('id'),
           	 'nom' => $this->getUser()->getAttribute('nom'),
           	 'userPrenom' => $this->getUser()->getAttribute('userPrenom'),
           	 'userNom' => $this->getUser()->getAttribute('userNom'),
              'email' => $this->getUser()->getAttribute('email'),
-             'id_utilisateur' => $this->getUser()->getAttribute('id'),
              'id_secteur' => $this->getUser()->getAttribute('id_secteur'),
              'id_organisme' => $this->getUser()->getAttribute('id_organisme'),
-             'nom_secteur' => $this->getUser()->getAttribute('nom_secteur')
+             'nom_secteur' => $this->getUser()->getAttribute('nom_secteur'),
+             'indexzp' => $this->getUser()->getAttribute('indexzp'),
+             'id_station' => $this->getUser()->getAttribute('id_station')
       	));
     }
     

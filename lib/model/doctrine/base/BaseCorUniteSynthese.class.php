@@ -7,17 +7,17 @@
  * 
  * @property integer $id_synthese
  * @property integer $id_unite_geo
- * @property Synthesefaune $Synthesefaune
+ * @property Syntheseff $Syntheseff
  * @property LUnitesGeo $LUnitesGeo
  * 
- * @method integer          getIdSynthese()    Returns the current record's "id_synthese" value
- * @method integer          getIdUniteGeo()    Returns the current record's "id_unite_geo" value
- * @method Synthesefaune    getSynthesefaune() Returns the current record's "Synthesefaune" value
- * @method LUnitesGeo       getLUnitesGeo()    Returns the current record's "LUnitesGeo" value
- * @method CorUniteSynthese setIdSynthese()    Sets the current record's "id_synthese" value
- * @method CorUniteSynthese setIdUniteGeo()    Sets the current record's "id_unite_geo" value
- * @method CorUniteSynthese setSynthesefaune() Sets the current record's "Synthesefaune" value
- * @method CorUniteSynthese setLUnitesGeo()    Sets the current record's "LUnitesGeo" value
+ * @method integer          getIdSynthese()   Returns the current record's "id_synthese" value
+ * @method integer          getIdUniteGeo()   Returns the current record's "id_unite_geo" value
+ * @method Syntheseff       getSyntheseff()   Returns the current record's "Syntheseff" value
+ * @method LUnitesGeo       getLUnitesGeo()   Returns the current record's "LUnitesGeo" value
+ * @method CorUniteSynthese setIdSynthese()   Sets the current record's "id_synthese" value
+ * @method CorUniteSynthese setIdUniteGeo()   Sets the current record's "id_unite_geo" value
+ * @method CorUniteSynthese setSyntheseff()   Sets the current record's "Syntheseff" value
+ * @method CorUniteSynthese setLUnitesGeo()   Sets the current record's "LUnitesGeo" value
  * 
  * @package    geonature
  * @subpackage model
@@ -44,7 +44,7 @@ abstract class BaseCorUniteSynthese extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('Synthesefaune', array(
+        $this->hasOne('Syntheseff', array(
              'local' => 'id_synthese',
              'foreign' => 'id_synthese'));
 

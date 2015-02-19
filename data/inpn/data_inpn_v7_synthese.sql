@@ -41,6 +41,8 @@ INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('VAR ', 'Variété');
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('FO  ', 'Forme');
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSFO', 'Sous-Forme');
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('RACE', 'Race');
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('CAR', '?');
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SVAR', 'Sous-variété');
 
 
 --
@@ -88,7 +90,9 @@ INSERT INTO taxref
              ordre, famille, cd_taxsup, cd_ref, lb_nom, substring(lb_auteur, 1, 150), nom_complet, 
              nom_valide, nom_vern, nom_vern_eng, group1_inpn, group2_inpn
         FROM import_taxref
-        WHERE regne = 'Animalia';
+        WHERE regne = 'Animalia'
+        OR regne = 'Fungi'
+        OR regne = 'Plantae';
 
 
 ----PROTECTION

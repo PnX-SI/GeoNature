@@ -51,13 +51,22 @@ then
     cd data/inpn
     tar -xzvf data_inpn_v7.tar.gz
     cd ../..
+    cd data/layers
+    tar -xzvf layers.tar.gz
+    cd ../..
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
     export PGPASSWORD=$admin_pg_pass;psql -h databases -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v7_synthese.sql &>> log/install_db.log
+    echo "Insertion  du référentiel géographique : communes métropolitaines... (cette opération peut être longue)"
+    export PGPASSWORD=$user_pg_pass;psql -h databases -U $user_pg -d $db_name  -f data/layers/communes_metropole.sql &>> log/install_db.log
     echo "Insertion des données des tables dictionnaires de la base..."
     export PGPASSWORD=$user_pg_pass;psql -h databases -U $user_pg -d $db_name -f data/2154/data_synthese_2154.sql  &>> log/install_db.log
+    echo "Insertion  du référentiel géographique : zones à statut de france métropolitaine..."
+    export PGPASSWORD=$user_pg_pass;psql -h databases -U $user_pg -d $db_name  -f data/layers/zonesstatut.sql &>> log/install_db.log
     echo "Insertion d'un jeu de données test dans les schémas contactfaune et contactinv de la base"
     export PGPASSWORD=$user_pg_pass;psql -h databases -U $user_pg -d $db_name -f data/2154/data_set_synthese_2154.sql  &>> log/install_db.log
 
     # suppression des fichiers taxref de l'inpn : on ne conserve que le fichier compressé
     rm data/inpn/taxref*
+    rm data/layers/communes_metropole.sql
+    rm data/layers/zonesstatut.sql
 fi

@@ -123,7 +123,8 @@ class cfActions extends sfFauneActions
                 $yearling = $array_taxon[11];
                 $sai = $array_taxon[12];
                 $commentaire = $array_taxon[13];
-                $cd_ref_origine = $array_taxon[14];
+                $determinateur = $array_taxon[14];
+                $cd_ref_origine = $array_taxon[15];
                 //on récupère l'enregistrement ou on le crée
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){
@@ -145,6 +146,7 @@ class cfActions extends sfFauneActions
                 $taxon->yearling = $yearling;
                 $taxon->sai = $sai;
                 $taxon->commentaire = str_replace('<!>',',',$commentaire);
+                $taxon->determinateur = str_replace('<!>',',',$determinateur);
                 $taxon->cd_ref_origine = $cd_ref_origine;
                 $taxon->save();
                 // return $this->renderText("{success: true,toto}");
@@ -176,6 +178,7 @@ class cfActions extends sfFauneActions
                 $fiche->id_cf = $id_cf;
                 $fiche->saisie_initiale = 'web';
                 $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
+                $fiche->id_protocole = sfGeonatureConfig::$id_protocole_cf;
             }
             //remise au format de la date
             $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
@@ -187,7 +190,6 @@ class cfActions extends sfFauneActions
             if($request->getParameter('altitude_saisie')=='' OR !$request->hasParameter('altitude_saisie')){$altitude_saisie=-1;} else{$altitude_saisie=$request->getParameter('altitude_saisie');}
             $fiche->altitude_saisie = $altitude_saisie;
             $fiche->supprime = false;
-            $fiche->id_protocole = sfGeonatureConfig::$id_protocole_cf;
             $fiche->srid_dessin = sfGeonatureConfig::$srid_dessin;
             $fiche->id_lot = sfGeonatureConfig::$id_lot_cf;
             // $fiche->id_lot = $request->getParameter('id_lot');
@@ -218,8 +220,8 @@ class cfActions extends sfFauneActions
             }
             //sauvegarde de la géometrie de la fiche
             // on le fait après l'enregistrement des observateurs car l'insertion de la géométrie va provoquer le trigger update
-            // et ce trigger met à jour la synthesefaune, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
-            //pas à jour la synthesefaune.
+            // et ce trigger met à jour la synthese, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
+            //pas à jour la synthese.
             $geometry = $request->getParameter('geometry');
             Doctrine_Query::create()
              ->update('TFichesCf')
@@ -275,8 +277,9 @@ class cfActions extends sfFauneActions
                 $yearling = $array_taxon[12];
                 $sai = $array_taxon[13];
                 $commentaire = $array_taxon[14];
-                $cd_ref_origine = $array_taxon[15];
-                $prelevement = $array_taxon[17];
+                $determinateur = $array_taxon[15];
+                $cd_ref_origine = $array_taxon[16];
+                $prelevement = $array_taxon[18];
                 //on récupère l'enregistrement ou on le crée
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){
@@ -298,6 +301,7 @@ class cfActions extends sfFauneActions
                 $taxon->yearling = $yearling;
                 $taxon->sai = $sai;
                 $taxon->commentaire = str_replace('<!>',',',$commentaire);
+                $taxon->determinateur = str_replace('<!>',',',$determinateur);
                 $taxon->cd_ref_origine = $cd_ref_origine;
                 $taxon->prelevement = $prelevement;
                 $taxon->save();
@@ -370,8 +374,8 @@ class cfActions extends sfFauneActions
             }
             //sauvegarde de la géometrie de la fiche
             // on le fait après l'enregistrement des observateurs car l'insertion de la géométrie va provoquer le trigger update
-            // et ce trigger met à jour la synthesefaune, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
-            //pas à jour la synthesefaune.
+            // et ce trigger met à jour la synthese, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
+            //pas à jour la synthese.
             $geometry = $request->getParameter('geometry');
             Doctrine_Query::create()
              ->update('TFichesCf')
@@ -395,15 +399,15 @@ class cfActions extends sfFauneActions
         $srid_layer_isoline = sfGeonatureConfig::$srid_local;
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "SELECT layers.f_isolines20(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_isoline.")) AS z,
-                layers.f_nomcommune(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_commune.")) AS nom_commune";
+                layers.f_nomcommune(ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_layer_commune.")) AS nomcommune";
         $array_z = $dbh->query($sql);
         foreach($array_z as $val){
             $z = $val['z'];
-            $nom_commune = str_replace("'","\'",$val['nom_commune']);
+            $nomcommune = str_replace("'","\'",$val['nomcommune']);
         }
         if($z==null){$z=0;}
-        if($nom_commune==null){$nom_commune='hors zone';}
-        return $this->renderText("{success: true,data:{altitude:".$z.",nomcommune:'".$nom_commune."'}}");
+        if($nomcommune==null){$nomcommune='hors zone';}
+        return $this->renderText("{success: true,data:{altitude:".$z.",nomcommune:'".$nomcommune."'}}");
         // print_r(json_encode($val));
     }
   

@@ -12,6 +12,6 @@ Ext.onReady(function() {
 </script>
 <div id="loading-mask" style=""></div>
 <div id="loading">
-    <div class="loading-indicator"><img src="images/large-loading.gif" width="32" height="32" style="margin-right:8px;" align="absmiddle"/>Chargement du formulaire contact invertébrés...</div>
+    <div class="loading-indicator"><img src="images/large-loading.gif" width="32" height="32" style="margin-right:8px;" align="absmiddle"/>Chargement du formulaire contact invertÃ©brÃ©s...</div>
 </div>
 <div id="north"></div>

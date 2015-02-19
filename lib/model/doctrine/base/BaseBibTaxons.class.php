@@ -20,7 +20,6 @@
  * @property Doctrine_Collection $CorMessageTaxonInv
  * @property Doctrine_Collection $CorUniteTaxon
  * @property Doctrine_Collection $CorUniteTaxonInv
- * @property Doctrine_Collection $Synthesefaune
  * @property Doctrine_Collection $TRelevesCf
  * @property Doctrine_Collection $TRelevesInv
  * @property Doctrine_Collection $VNomadeTaxonsFaune
@@ -42,7 +41,6 @@
  * @method Doctrine_Collection getCorMessageTaxonInv()  Returns the current record's "CorMessageTaxonInv" collection
  * @method Doctrine_Collection getCorUniteTaxon()       Returns the current record's "CorUniteTaxon" collection
  * @method Doctrine_Collection getCorUniteTaxonInv()    Returns the current record's "CorUniteTaxonInv" collection
- * @method Doctrine_Collection getSynthesefaune()       Returns the current record's "Synthesefaune" collection
  * @method Doctrine_Collection getTRelevesCf()          Returns the current record's "TRelevesCf" collection
  * @method Doctrine_Collection getTRelevesInv()         Returns the current record's "TRelevesInv" collection
  * @method Doctrine_Collection getVNomadeTaxonsFaune()  Returns the current record's "VNomadeTaxonsFaune" collection
@@ -63,7 +61,6 @@
  * @method BibTaxons           setCorMessageTaxonInv()  Sets the current record's "CorMessageTaxonInv" collection
  * @method BibTaxons           setCorUniteTaxon()       Sets the current record's "CorUniteTaxon" collection
  * @method BibTaxons           setCorUniteTaxonInv()    Sets the current record's "CorUniteTaxonInv" collection
- * @method BibTaxons           setSynthesefaune()       Sets the current record's "Synthesefaune" collection
  * @method BibTaxons           setTRelevesCf()          Sets the current record's "TRelevesCf" collection
  * @method BibTaxons           setTRelevesInv()         Sets the current record's "TRelevesInv" collection
  * @method BibTaxons           setVNomadeTaxonsFaune()  Sets the current record's "VNomadeTaxonsFaune" collection
@@ -143,10 +140,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'foreign' => 'id_taxon'));
 
         $this->hasMany('CorUniteTaxonInv', array(
-             'local' => 'id_taxon',
-             'foreign' => 'id_taxon'));
-
-        $this->hasMany('Synthesefaune', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

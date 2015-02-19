@@ -11,7 +11,7 @@
             <div>
                 <div style="margin:10px 0 0 50px ">
                     <div style="vertical-align:middle;display:inline-block;"><img src="images/classe1.gif" border="0"></div>
-                    <div style="vertical-align:middle;display:inline-block;"><a href="synthese" style="text-decoration: none">Synthèse faune</a></div>
+                    <div style="vertical-align:middle;display:inline-block;"><a href="synthese" style="text-decoration: none">Synthèse des observations</a></div>
                 </div>
             </div>
         </div>
@@ -21,8 +21,9 @@
             <div style="vertical-align:middle;display:inline-block;">SAISIE</div>
         </div>
         <div id="contenu_saisie" style="margin-bottom:30px">
-            Pour saisir de nouvelles données faune, vous pouvez utiliser l'un des liens ci-dessous.<br/>
-            Pour modifier des données contact faune, contact invertébré ou mortalité, vous devez passer par la synthèse faune pour retrouver les enregistrements à modifier.<br/><br/>
+            Pour saisir de nouvelles données, vous pouvez utiliser l'un des liens ci-dessous.<br/>
+            Pour modifier des données contact faune, contact invertébré ou mortalité, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.<br/><br/>
+            FAUNE<br/>
                 <div style="margin:10px 0 0 50px ">
                     <div style="vertical-align:middle;display:inline-block;"><img src="images/classe1.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="cf" style="text-decoration: none">Saisie contact faune</a></div>
@@ -35,8 +36,21 @@
                     <div style="vertical-align:middle;display:inline-block;"><img src="images/squelette.png" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="mortalite" style="text-decoration: none">Saisie mortalité faune</a></div>
                 </div>
+            FLORE<br/>
+                <!--<div style="margin:10px 0 0 50px ">
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/fleur_silhoulette.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><a href="fp" style="text-decoration: none">Saisie flore prioritaire</a></div>
+                </div>-->
+                <div style="margin:10px 0 0 50px ">
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/fleur_silhoulette.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><a href="fs" style="text-decoration: none">Saisie flore station</a></div>
+                </div>
+                <div style="margin:10px 0 0 50px ">
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/fleur_silhoulette.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><a href="bryo" style="text-decoration: none">Saisie bryophytes</a></div>
+                </div>
         </div>
-
+        <!--
         <div id="bande_consultation" style="color:#FFFFFF;background: linear-gradient(90deg, #f09819 30%, #edde5d 90%) repeat scroll 0 0 rgba(0, 0, 0, 0);letter-spacing:5px;font-weight:bold;text-shadow:0 0 3px #000;height:25px;">
             <div style="vertical-align:middle;display:inline-block;"><img src="images/logo_pag.png" border="0" width="25px" height="25px"></div>
             <div style="vertical-align:middle;display:inline-block;">STATISTIQUES</div>
@@ -73,5 +87,6 @@
                 </div>
             </div>
         </div>
+        -->
     </div>
  </body>

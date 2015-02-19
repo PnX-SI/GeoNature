@@ -16,6 +16,7 @@
  * @property integer $cd_ref_origine
  * @property string $nom_taxon_saisi
  * @property string $commentaire
+ * @property string $determinateur
  * @property boolean $supprime
  * @property boolean $prelevement
  * @property BibCriteresInv $BibCriteresInv
@@ -34,6 +35,7 @@
  * @method integer             getCdRefOrigine()     Returns the current record's "cd_ref_origine" value
  * @method string              getNomTaxonSaisi()    Returns the current record's "nom_taxon_saisi" value
  * @method string              getCommentaire()      Returns the current record's "commentaire" value
+ * @method string              getDeterminateur()    Returns the current record's "determinateur" value
  * @method boolean             getSupprime()         Returns the current record's "supprime" value
  * @method boolean             getPrelevement()      Returns the current record's "prelevement" value
  * @method BibCriteresInv      getBibCriteresInv()   Returns the current record's "BibCriteresInv" value
@@ -51,6 +53,7 @@
  * @method TRelevesInv         setCdRefOrigine()     Sets the current record's "cd_ref_origine" value
  * @method TRelevesInv         setNomTaxonSaisi()    Sets the current record's "nom_taxon_saisi" value
  * @method TRelevesInv         setCommentaire()      Sets the current record's "commentaire" value
+ * @method TRelevesInv         setDeterminateur()    Sets the current record's "determinateur" value
  * @method TRelevesInv         setSupprime()         Sets the current record's "supprime" value
  * @method TRelevesInv         setPrelevement()      Sets the current record's "prelevement" value
  * @method TRelevesInv         setBibCriteresInv()   Sets the current record's "BibCriteresInv" value
@@ -112,6 +115,10 @@ abstract class BaseTRelevesInv extends sfDoctrineRecord
         $this->hasColumn('commentaire', 'string', null, array(
              'type' => 'string',
              'length' => '',
+             ));
+        $this->hasColumn('determinateur', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
              ));
         $this->hasColumn('supprime', 'boolean', 1, array(
              'type' => 'boolean',

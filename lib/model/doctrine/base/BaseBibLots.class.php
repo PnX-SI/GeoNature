@@ -13,9 +13,12 @@
  * @property boolean $pn
  * @property integer $id_programme
  * @property BibProgrammes $BibProgrammes
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TFichesCf
  * @property Doctrine_Collection $TFichesInv
+ * @property Doctrine_Collection $TStationsBryo
+ * @property Doctrine_Collection $TStationsFs
+ * @property Doctrine_Collection $TZprospection
  * 
  * @method integer             getIdLot()         Returns the current record's "id_lot" value
  * @method string              getNomLot()        Returns the current record's "nom_lot" value
@@ -25,9 +28,12 @@
  * @method boolean             getPn()            Returns the current record's "pn" value
  * @method integer             getIdProgramme()   Returns the current record's "id_programme" value
  * @method BibProgrammes       getBibProgrammes() Returns the current record's "BibProgrammes" value
- * @method Doctrine_Collection getSynthesefaune() Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
  * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
+ * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
+ * @method Doctrine_Collection getTZprospection() Returns the current record's "TZprospection" collection
  * @method BibLots             setIdLot()         Sets the current record's "id_lot" value
  * @method BibLots             setNomLot()        Sets the current record's "nom_lot" value
  * @method BibLots             setDescLots()      Sets the current record's "desc_lots" value
@@ -36,9 +42,12 @@
  * @method BibLots             setPn()            Sets the current record's "pn" value
  * @method BibLots             setIdProgramme()   Sets the current record's "id_programme" value
  * @method BibLots             setBibProgrammes() Sets the current record's "BibProgrammes" value
- * @method BibLots             setSynthesefaune() Sets the current record's "Synthesefaune" collection
+ * @method BibLots             setSyntheseff()    Sets the current record's "Syntheseff" collection
  * @method BibLots             setTFichesCf()     Sets the current record's "TFichesCf" collection
  * @method BibLots             setTFichesInv()    Sets the current record's "TFichesInv" collection
+ * @method BibLots             setTStationsBryo() Sets the current record's "TStationsBryo" collection
+ * @method BibLots             setTStationsFs()   Sets the current record's "TStationsFs" collection
+ * @method BibLots             setTZprospection() Sets the current record's "TZprospection" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -88,7 +97,7 @@ abstract class BaseBibLots extends sfDoctrineRecord
              'local' => 'id_programme',
              'foreign' => 'id_programme'));
 
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'id_lot',
              'foreign' => 'id_lot'));
 
@@ -97,6 +106,18 @@ abstract class BaseBibLots extends sfDoctrineRecord
              'foreign' => 'id_lot'));
 
         $this->hasMany('TFichesInv', array(
+             'local' => 'id_lot',
+             'foreign' => 'id_lot'));
+
+        $this->hasMany('TStationsBryo', array(
+             'local' => 'id_lot',
+             'foreign' => 'id_lot'));
+
+        $this->hasMany('TStationsFs', array(
+             'local' => 'id_lot',
+             'foreign' => 'id_lot'));
+
+        $this->hasMany('TZprospection', array(
              'local' => 'id_lot',
              'foreign' => 'id_lot'));
     }

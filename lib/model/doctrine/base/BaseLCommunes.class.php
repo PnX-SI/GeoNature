@@ -23,9 +23,11 @@
  * @property integer $id_secteur_fp
  * @property blob $the_geom
  * @property LSecteurs $LSecteurs
- * @property Doctrine_Collection $Synthesefaune
+ * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TFichesCf
  * @property Doctrine_Collection $TFichesInv
+ * @property Doctrine_Collection $TStationsBryo
+ * @property Doctrine_Collection $TStationsFs
  * 
  * @method string              getInsee()         Returns the current record's "insee" value
  * @method integer             getIdSecteur()     Returns the current record's "id_secteur" value
@@ -45,9 +47,11 @@
  * @method integer             getIdSecteurFp()   Returns the current record's "id_secteur_fp" value
  * @method blob                getTheGeom()       Returns the current record's "the_geom" value
  * @method LSecteurs           getLSecteurs()     Returns the current record's "LSecteurs" value
- * @method Doctrine_Collection getSynthesefaune() Returns the current record's "Synthesefaune" collection
+ * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
  * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
+ * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
  * @method LCommunes           setInsee()         Sets the current record's "insee" value
  * @method LCommunes           setIdSecteur()     Sets the current record's "id_secteur" value
  * @method LCommunes           setCommuneMaj()    Sets the current record's "commune_maj" value
@@ -66,9 +70,11 @@
  * @method LCommunes           setIdSecteurFp()   Sets the current record's "id_secteur_fp" value
  * @method LCommunes           setTheGeom()       Sets the current record's "the_geom" value
  * @method LCommunes           setLSecteurs()     Sets the current record's "LSecteurs" value
- * @method LCommunes           setSynthesefaune() Sets the current record's "Synthesefaune" collection
+ * @method LCommunes           setSyntheseff()    Sets the current record's "Syntheseff" collection
  * @method LCommunes           setTFichesCf()     Sets the current record's "TFichesCf" collection
  * @method LCommunes           setTFichesInv()    Sets the current record's "TFichesInv" collection
+ * @method LCommunes           setTStationsBryo() Sets the current record's "TStationsBryo" collection
+ * @method LCommunes           setTStationsFs()   Sets the current record's "TStationsFs" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -158,7 +164,7 @@ abstract class BaseLCommunes extends sfDoctrineRecord
              'local' => 'id_secteur',
              'foreign' => 'id_secteur'));
 
-        $this->hasMany('Synthesefaune', array(
+        $this->hasMany('Syntheseff', array(
              'local' => 'insee',
              'foreign' => 'insee'));
 
@@ -167,6 +173,14 @@ abstract class BaseLCommunes extends sfDoctrineRecord
              'foreign' => 'insee'));
 
         $this->hasMany('TFichesInv', array(
+             'local' => 'insee',
+             'foreign' => 'insee'));
+
+        $this->hasMany('TStationsBryo', array(
+             'local' => 'insee',
+             'foreign' => 'insee'));
+
+        $this->hasMany('TStationsFs', array(
              'local' => 'insee',
              'foreign' => 'insee'));
     }

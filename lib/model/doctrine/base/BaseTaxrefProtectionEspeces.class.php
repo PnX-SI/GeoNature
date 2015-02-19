@@ -12,21 +12,27 @@
  * @property string $nom_francais_cite
  * @property string $precisions
  * @property string $cd_nom_cite
+ * @property TaxrefProtectionArticles $TaxrefProtectionArticles
+ * @property Taxref $Taxref
  * 
- * @method integer                 getCdNom()             Returns the current record's "cd_nom" value
- * @method string                  getCdProtection()      Returns the current record's "cd_protection" value
- * @method string                  getNomCite()           Returns the current record's "nom_cite" value
- * @method string                  getSynCite()           Returns the current record's "syn_cite" value
- * @method string                  getNomFrancaisCite()   Returns the current record's "nom_francais_cite" value
- * @method string                  getPrecisions()        Returns the current record's "precisions" value
- * @method string                  getCdNomCite()         Returns the current record's "cd_nom_cite" value
- * @method TaxrefProtectionEspeces setCdNom()             Sets the current record's "cd_nom" value
- * @method TaxrefProtectionEspeces setCdProtection()      Sets the current record's "cd_protection" value
- * @method TaxrefProtectionEspeces setNomCite()           Sets the current record's "nom_cite" value
- * @method TaxrefProtectionEspeces setSynCite()           Sets the current record's "syn_cite" value
- * @method TaxrefProtectionEspeces setNomFrancaisCite()   Sets the current record's "nom_francais_cite" value
- * @method TaxrefProtectionEspeces setPrecisions()        Sets the current record's "precisions" value
- * @method TaxrefProtectionEspeces setCdNomCite()         Sets the current record's "cd_nom_cite" value
+ * @method integer                  getCdNom()                    Returns the current record's "cd_nom" value
+ * @method string                   getCdProtection()             Returns the current record's "cd_protection" value
+ * @method string                   getNomCite()                  Returns the current record's "nom_cite" value
+ * @method string                   getSynCite()                  Returns the current record's "syn_cite" value
+ * @method string                   getNomFrancaisCite()          Returns the current record's "nom_francais_cite" value
+ * @method string                   getPrecisions()               Returns the current record's "precisions" value
+ * @method string                   getCdNomCite()                Returns the current record's "cd_nom_cite" value
+ * @method TaxrefProtectionArticles getTaxrefProtectionArticles() Returns the current record's "TaxrefProtectionArticles" value
+ * @method Taxref                   getTaxref()                   Returns the current record's "Taxref" value
+ * @method TaxrefProtectionEspeces  setCdNom()                    Sets the current record's "cd_nom" value
+ * @method TaxrefProtectionEspeces  setCdProtection()             Sets the current record's "cd_protection" value
+ * @method TaxrefProtectionEspeces  setNomCite()                  Sets the current record's "nom_cite" value
+ * @method TaxrefProtectionEspeces  setSynCite()                  Sets the current record's "syn_cite" value
+ * @method TaxrefProtectionEspeces  setNomFrancaisCite()          Sets the current record's "nom_francais_cite" value
+ * @method TaxrefProtectionEspeces  setPrecisions()               Sets the current record's "precisions" value
+ * @method TaxrefProtectionEspeces  setCdNomCite()                Sets the current record's "cd_nom_cite" value
+ * @method TaxrefProtectionEspeces  setTaxrefProtectionArticles() Sets the current record's "TaxrefProtectionArticles" value
+ * @method TaxrefProtectionEspeces  setTaxref()                   Sets the current record's "Taxref" value
  * 
  * @package    geonature
  * @subpackage model
@@ -73,6 +79,12 @@ abstract class BaseTaxrefProtectionEspeces extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('TaxrefProtectionArticles', array(
+             'local' => 'cd_protection',
+             'foreign' => 'cd_protection'));
+
+        $this->hasOne('Taxref', array(
+             'local' => 'cd_nom',
+             'foreign' => 'cd_nom'));
     }
 }
