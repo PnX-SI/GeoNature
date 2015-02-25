@@ -234,17 +234,26 @@ SET search_path = layers, pg_catalog;
 -- Data for Name: bib_typeszones; Type: TABLE DATA; Schema: layers; Owner: geonatuser
 --
 
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (1, 'Coeur du parc national');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (1, 'Coeurs des Parcs nationaux');
 INSERT INTO bib_typeszones (id_type, typezone) VALUES (2, 'znieff2');
 INSERT INTO bib_typeszones (id_type, typezone) VALUES (3, 'znieff1');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (4, 'Arretés de biotope');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (5, 'Réserve naturelle nationale');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (6, 'Réserve naturelle regionale');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (7, 'Natura 2000');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (8, 'Sites classés');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (9, 'Sites inscrits');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (10, 'Réserves de chasses');
-INSERT INTO bib_typeszones (id_type, typezone) VALUES (11, 'Réserve intégrale');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (4, 'Aires de protection de biotope');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (5, 'Réserves naturelles nationales');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (6, 'Réserves naturelles regionales');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (7, 'Natura 2000 - Zones de protection spéciales');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (8, 'Natura 2000 - Sites d''importance communautaire');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (9, 'Zone d''importance pour la conservation des oiseaux');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (10, 'Réserves nationales de chasse et faune sauvage');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (11, 'Réserves intégrales de parc national');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (12, 'Sites acquis des Conservatoires d''espaces naturels');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (13, 'Sites du Conservatoire du Littoral');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (14, 'Parcs naturels marins');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (15, 'Parcs naturels régionaux');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (16, 'Réserves biologiques');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (17, 'Réserves de biosphère');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (18, 'Réserves naturelles de Corse');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (19, 'Sites Ramsar');
+INSERT INTO bib_typeszones (id_type, typezone) VALUES (20, 'Aire d''adhésion des Parcs nationaux');
 
 UPDATE layers.l_communes SET saisie = true WHERE inseedep IN ('05', '38');
 

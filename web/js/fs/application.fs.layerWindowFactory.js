@@ -28,38 +28,38 @@ application.createLayerWindow = function(map) {
             ,checked: false
             ,layerName: "Parcelles cadastrales"
         }
-        // ,{
-            // text: "Secteurs"
-            // ,leaf: true
-            // ,checked: false
-            // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'secteurs'})
-            // ,layerName: "overlay:secteurs"
-        // },{
-            // text: "Communes"
-            // ,leaf: true
-            // ,checked: false
-            // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'communes'})
-            // ,layerName: "overlay:communes"
-        // }
-        // ,{
-            // text: "Zones à statut"
-            // ,leaf: false
-            // ,expanded: false
-            // ,checked: true
-            // ,children: [
-            // {
-                // text: 'Aire optimale d\'adhésion'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'aoa'})
-                // ,layerName: "overlay:aoa"
-            // },{
-                // text: 'Coeur de parc national'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'coeur'})
-                // ,layerName: "overlay:coeur"
-            // }
+        ,{
+            text: "Secteurs"
+            ,leaf: true
+            ,checked: false
+            ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'secteurs'})
+            ,layerName: "overlay:secteurs"
+        },{
+            text: "Communes"
+            ,leaf: true
+            ,checked: false
+            ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'communes'})
+            ,layerName: "overlay:communes"
+        }
+        ,{
+            text: "Zones à statut"
+            ,leaf: false
+            ,expanded: false
+            ,checked: true
+            ,children: [
+            {
+                text: 'Aire optimale d\'adhésion'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'aoa'})
+                ,layerName: "overlay:aoa"
+            },{
+                text: 'Coeur de parc national'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'coeur'})
+                ,layerName: "overlay:coeur"
+            }
             // ,{
                 // text: 'Réserve intégrale'
                 // ,leaf: true
@@ -67,44 +67,44 @@ application.createLayerWindow = function(map) {
                 // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesintegrales'})
                 // ,layerName: "overlay:reservesintegrales"
             // }
-            // ,{
-                // text: 'Réserves naturelles nationales'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesnationales'})
-                // ,layerName: "overlay:reservesnationales"
-            // }
-            // ,{
-                // text: 'Réserves naturelles regionales'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesregionales'})
-                // ,layerName: "overlay:reservesregionales"
-            // },{
-                // text: 'Arretés de biotope'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'ab'})
-                // ,layerName: "overlay:ab"
-            // },{
-                // text: 'Natura 2000'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'n2000'})
-                // ,layerName: "overlay:n2000"
-            // },{
-                // text: 'Znieff2'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'znieff2'})
-                // ,layerName: "overlay:znieff2"
-            // },{
-                // text: 'Znieff1'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'znieff1'})
-                // ,layerName: "overlay:znieff1"
-            // }
+            ,{
+                text: 'Réserves naturelles nationales'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesnationales'})
+                ,layerName: "overlay:reservesnationales"
+            }
+            ,{
+                text: 'Réserves naturelles regionales'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesregionales'})
+                ,layerName: "overlay:reservesregionales"
+            },{
+                text: 'Arretés de biotope'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'ab'})
+                ,layerName: "overlay:ab"
+            },{
+                text: 'Natura 2000'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'n2000'})
+                ,layerName: "overlay:n2000"
+            },{
+                text: 'Znieff2'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'znieff2'})
+                ,layerName: "overlay:znieff2"
+            },{
+                text: 'Znieff1'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'znieff1'})
+                ,layerName: "overlay:znieff1"
+            }
             // ,{
                 // text: 'Sites inscrits'
                 // ,leaf: true
@@ -125,8 +125,8 @@ application.createLayerWindow = function(map) {
                 // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reserveschasse'})
                 // ,layerName: "overlay:reserveschasse"
             // }
-            // ]
-        // }
+            ]
+        }
     ];
 
     var tree = new mapfish.widgets.LayerTree({

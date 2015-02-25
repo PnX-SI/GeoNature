@@ -432,8 +432,8 @@ application = function() {
                 ,wms_uri
                 ,{
                     layers: [
-                      // 'znieff2', 'znieff1', 'coeur', 'ab', 'aoa',
-                      // ,'reservesnationales', 'reservesregionales', 'n2000','secteurs', 'communes'
+                      'znieff2', 'znieff1', 'coeur', 'ab', 'aoa',
+                      ,'reservesnationales', 'reservesregionales', 'n2000','secteurs', 'communes'
                       // ,'sitesinscrits', 'sitesclasses', 'reserveschasse', 'reservesintegrales'
                     ]
                     ,transparent: true

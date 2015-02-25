@@ -2058,15 +2058,16 @@ CREATE FUNCTION florestation_insert() RETURNS trigger
 
 BEGIN	
 new.date_insert= 'now';	 -- mise a jour de date insert
-new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
-new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee
-new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+new.date_update= 'now';	 -- mise a jour de date update
+--new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+--new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee
+--new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
 
-if new.altitude_saisie is null or new.altitude_saisie = 0 then -- mis à jour de l'altitude retenue
-  new.altitude_retenue = new.altitude_sig;
-else
-  new.altitude_retenue = new.altitude_saisie;
-end if;
+--if new.altitude_saisie is null or new.altitude_saisie = 0 then -- mis à jour de l'altitude retenue
+  --new.altitude_retenue = new.altitude_sig;
+--else
+  --new.altitude_retenue = new.altitude_saisie;
+--end if;
 
 return new; -- return new procède à l'insertion de la donnée dans PG avec les nouvelles valeures.			
 
@@ -2078,25 +2079,69 @@ $$;
 -- Name: florestation_update(); Type: FUNCTION; Schema: florestation; Owner: -
 --
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE FUNCTION florestation_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null)) 
-   THEN
-
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null) THEN
-		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
-		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null) THEN
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+--si aucun geom n'existait et qu'au moins un geom est ajouté, on créé les 2 geom
+IF (old.the_geom_2154 is null AND old.the_geom_3857 is null) THEN
+    IF (new.the_geom_2154 is not null) THEN
+        new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
-	END IF;
-
-        new.insee = layers.f_insee(new.the_geom_2154);-- mise à jour du code insee
-        new.altitude_sig = layers.f_isolines20(new.the_geom_2154); --mise à jour de l'altitude_sig
-
+    END IF;
+    IF (new.the_geom_3857 is not null) THEN
+        new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+		new.srid_dessin = 3857;
+    END IF;
+    -- on calcul la commune...
+    new.insee = layers.f_insee(new.the_geom_2154);-- mise à jour du code insee
+    -- on calcul l'altitude
+    new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+    IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+        new.altitude_retenue = new.altitude_sig;
+    ELSE
+        new.altitude_retenue = new.altitude_saisie;
+    END IF;
+END IF;
+--si au moins un geom existait et qu'il a changé on fait une mise à jour
+IF (old.the_geom_2154 is not null OR old.the_geom_3857 is not null) THEN
+    --si c'est le 2154 qui existait on teste s'il a changé
+    IF (old.the_geom_2154 is not null AND new.the_geom_2154 is not null) THEN
+        IF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) THEN
+            new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+            new.srid_dessin = 2154;
+        END IF;
+    END IF;
+    --si c'est le 3857 qui existait on teste s'il a changé
+    IF (old.the_geom_3857 is not null AND new.the_geom_3857 is not null) THEN
+        IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) THEN
+            new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+            new.srid_dessin = 3857;
+        END IF;
+    END IF;
+    -- on calcul la commune...
+    new.insee = layers.f_insee(new.the_geom_2154);-- mise à jour du code insee
+    -- on calcul l'altitude
+    new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+    IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+        new.altitude_retenue = new.altitude_sig;
+    ELSE
+        new.altitude_retenue = new.altitude_saisie;
+    END IF;
 END IF;
 
 IF (new.altitude_saisie <> old.altitude_saisie OR old.altitude_saisie is null OR new.altitude_saisie is null OR old.altitude_saisie=0 OR new.altitude_saisie=0) then  -- mis à jour de l'altitude retenue
@@ -3969,11 +4014,12 @@ CREATE TABLE l_secteurs (
 --
 
 CREATE TABLE l_zonesstatut (
-    nomzone character varying(250),
     id_zone integer NOT NULL,
-    id_type integer DEFAULT 1 NOT NULL,
+    id_type integer NOT NULL,
+    id_mnhn character varying(20),
+    nomzone character varying(250),
     the_geom public.geometry,
-    CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
+    --CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2) OR (public.st_ndims(the_geom) = 4)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
 );

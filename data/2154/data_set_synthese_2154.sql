@@ -93,8 +93,8 @@ SET search_path = florestation, pg_catalog;
 -- Data for Name: t_stations_fs; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
 --
 
-INSERT INTO t_stations_fs (id_station, id_exposition, id_sophie, id_programme_fs, id_support, id_protocole, id_lot, id_organisme, id_homogene, dateobs, info_acces, id_surface, complet_partiel, meso_longitudinal, meso_lateral, canopee, ligneux_hauts, ligneux_bas, ligneux_tbas, herbaces, mousses, litiere, altitude_saisie, altitude_sig, altitude_retenue, remarques, pdop, supprime, date_insert, date_update, srid_dessin, the_geom_3857, insee, gid, validation) VALUES (1, 'I ', '0', 999, 1, 5, 5, 99, 1, '2015-02-17', 'test', 2, 'P', 1, 2, 0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 'testage', -1, false, '2015-02-17 10:47:27.427575', '2015-02-17 10:48:40.892845', 3857, '0101000020110F000090BF729098862541868E1DB37C5A5541', '38375', 1, true);
-
+INSERT INTO t_stations_fs (id_station, id_exposition, id_sophie, id_programme_fs, id_support, id_protocole, id_lot, id_organisme, id_homogene, dateobs, info_acces, id_surface, complet_partiel, meso_longitudinal, meso_lateral, canopee, ligneux_hauts, ligneux_bas, ligneux_tbas, herbaces, mousses, litiere, altitude_saisie, altitude_sig, altitude_retenue, remarques, pdop, supprime, date_insert, date_update, srid_dessin, insee, gid, validation) VALUES (1, 'I ', '0', 999, 1, 5, 5, 99, 1, '2015-02-17', 'test', 2, 'P', 1, 2, 0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 'testage', -1, false, '2015-02-17 10:47:27.427575', '2015-02-17 10:48:40.892845', 3857, '38375', 1, true);
+UPDATE t_stations_fs SET the_geom_3857 = '0101000020110F0000F2B4DBC6113F18413955881BB4035541';
 
 --
 -- TOC entry 3776 (class 0 OID 382056)
@@ -130,10 +130,10 @@ INSERT INTO cor_fs_observateur (id_role, id_station) VALUES (1, 1);
 -- Dependencies: 238
 -- Data for Name: cor_fs_taxon; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
 --
-ALTER TABLE synthese.syntheseff DISABLE TRIGGER tri_maj_cor_unite_synthese;
+--ALTER TABLE synthese.syntheseff DISABLE TRIGGER tri_maj_cor_unite_synthese;
 INSERT INTO cor_fs_taxon (id_station, cd_nom, herb, inf_1m, de_1_4m, sup_4m, taxon_saisi, supprime, id_station_cd_nom, gid) VALUES (1, 81065, '+', '1', '2', '2', 'Alchemilla decumbens Buser, 1894', false, 1, 1);
 INSERT INTO cor_fs_taxon (id_station, cd_nom, herb, inf_1m, de_1_4m, sup_4m, taxon_saisi, supprime, id_station_cd_nom, gid) VALUES (1, 95186, NULL, '+', NULL, NULL, 'Dittrichia graveolens (L.) Greuter, 1973', false, 2, 2);
-ALTER TABLE synthese.syntheseff ENABLE TRIGGER tri_maj_cor_unite_synthese;
+--ALTER TABLE synthese.syntheseff ENABLE TRIGGER tri_maj_cor_unite_synthese;
 
 --
 -- TOC entry 3787 (class 0 OID 0)
