@@ -2,13 +2,20 @@
 CHANGELOG
 =========
 
+TODO
+----
+
+ - Revoir le où de la synthese pour mettre des choses plus génériques
+ - optimiser la création des taxons flore
+ - tests complémentaires et bug fix
+ 
+ 
 next
 ----
 
 ## Changements
- - Revoir le où de la synthese pour mettre des choses plus génériques
- - optimiser la création des taxons flore
- - tests complémentaires et bug fix
+ - Chargement en base des zones à statuts juridiques pour toute la France métropolitaine à partir des sources de l'INPN
+
  
  
 1.3.0 (2015-02-11)
