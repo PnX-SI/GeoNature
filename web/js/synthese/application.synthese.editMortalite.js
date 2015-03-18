@@ -137,7 +137,7 @@ application.synthese.editMortalite = function() {
     var initWindow = function() {
         return new Ext.Window({
             id:'window-form'
-            ,title: "Créer une fiche contact faune"
+            ,title: "Créer une fiche mortalité"
             ,layout: 'border'
             ,modal: true
             ,plain: true
