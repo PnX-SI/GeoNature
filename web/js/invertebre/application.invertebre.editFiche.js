@@ -1878,7 +1878,7 @@ application.invertebre.editFiche = function() {
                 ,autoScroll:false
                 ,bodyStyle:'padding:5px 5px 0'
                 ,width: 350
-                ,html: 'Votre pointage a bien été enregistré sous le N° <span style="color:red;fontWeight:bold;">'+id_fiche+'</span>. </br>A l\'avenir, pour le consulter ou éventuellement le modifier, vous devrez utiliser l\'application synthèse faune.</br></br>Vous pouvez maintenant utiliser l\'un des boutons ci-dessous pour modifier ou compléter ce pointage n°'+id_fiche+', réaliser un autre pointage, accéder à l\'application de synthèse faune ou quitter.'
+                ,html: 'Votre pointage a bien été enregistré sous le N° <span style="color:red;fontWeight:bold;">'+id_fiche+'</span>. </br>A l\'avenir, pour le consulter ou éventuellement le modifier, vous devrez utiliser l\'application synthèse.</br></br>Vous pouvez maintenant utiliser l\'un des boutons ci-dessous pour modifier ou compléter ce pointage n°'+id_fiche+', réaliser un autre pointage, accéder à l\'application de synthèse ou quitter.'
             }]
             ,listeners: {
                 hide:function(){this.destroy();}
