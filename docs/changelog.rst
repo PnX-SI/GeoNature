@@ -7,6 +7,7 @@ TODO
 
  - Revoir le où de la synthese pour mettre des choses plus génériques
  - optimiser la création des taxons flore
+ - rendre le schéma taxonomie totalement compatible avec taxhub
  - tests complémentaires et bug fix
  
  
@@ -15,6 +16,8 @@ next
 
 ## Changements
  - Chargement en base des zones à statuts juridiques pour toute la France métropolitaine à partir des sources de l'INPN
+ - Mise en place partiel de la compatibilité de la base avec le schema de taxhub
+ - Modification du nom du host hébergeant la base de données. databases --> geonatdbhost. A changer ou ajouter dans le /etc/hosts si vous avez déjà installer GeoNature
 
  
  
