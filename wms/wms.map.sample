@@ -55,7 +55,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_communes"
   PROJECTION
     "init=epsg:2154"
@@ -74,7 +74,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_unites_geo"
   PROJECTION
     "init=epsg:2154"
@@ -93,7 +93,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_secteurs"
   PROJECTION
     "init=epsg:2154"
@@ -112,7 +112,7 @@ LAYER
   STATUS ON
   TYPE LINE
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_aireadhesion"
   PROJECTION
     "init=epsg:2154"
@@ -133,7 +133,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -153,7 +153,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -173,7 +173,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -193,7 +193,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -213,7 +213,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -233,7 +233,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -253,7 +253,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -273,7 +273,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -293,7 +293,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -313,7 +313,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -333,7 +333,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom FROM layers.l_zonesstatut"
   PROJECTION
     "init=epsg:2154"
@@ -356,7 +356,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom_2154 FROM florepatri.t_zprospection USING UNIQUE indexzp"
   FILTER "validation = 't' AND supprime != 't' "
   PROJECTION
@@ -378,7 +378,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom_2154 FROM florepatri.t_zprospection USING UNIQUE indexzp"
   FILTER "validation != 't' AND supprime != 't' "
   PROJECTION
@@ -401,7 +401,7 @@ LAYER
   DEBUG 5
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom_2154 FROM florepatri.t_zprospection USING UNIQUE indexzp"
   FILTER "indexzp=%INDEXZP%"
   PROJECTION
@@ -426,7 +426,7 @@ LAYER
   STATUS ON
   TYPE POLYGON
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.ap_topo_valid FROM florepatri.v_touteslesap_2154_polygon AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp) as test using unique indexap"
   #DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.supprime, p.topo_valid FROM florepatri.v_ap_poly AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1)AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
   #FILTER "supprime != 't'"
@@ -475,7 +475,7 @@ LAYER
   STATUS ON
   TYPE LINE
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.ap_topo_valid FROM florepatri.v_touteslesap_2154_line AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1)AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
   #DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.supprime, p.topo_valid FROM florepatri.v_touteslesap_2154_line AS p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1)AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
   #FILTER "supprime != 't'"
@@ -509,7 +509,7 @@ LAYER
   STATUS ON
   TYPE POINT
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=databases dbname=geonaturedb user=geonatuser password=monpassachanger"
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
   DEBUG 5
   DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, ap_topo_valid FROM florepatri.v_ap_point p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1) AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
   #DATA "the_geom_2154 FROM (SELECT p.the_geom_2154, p.indexap, p.supprime, p.topo_valid FROM florepatri.v_ap_point p LEFT JOIN florepatri.t_zprospection ON florepatri.t_zprospection.indexzp=p.indexzp WHERE (%STATUSCODE% > 1) AND florepatri.t_zprospection.indexzp=%INDEXZP%) as test using unique indexap"
