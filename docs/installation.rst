@@ -28,7 +28,7 @@ Création de la base de données
   
   ::
 
-    export PGPASSWORD=monpassachanger;psql -h databases -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger;psql -h geonatdbhost -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
 
 
 Configuration de l'application

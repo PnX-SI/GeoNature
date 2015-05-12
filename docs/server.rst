@@ -73,16 +73,16 @@ Installation pour Debian 7.
 
   ::  
         
-        sudo sh -c 'echo "127.0.1.1       databases" >> /etc/hosts'
+        sudo sh -c 'echo "127.0.1.1       geonatdbhost" >> /etc/hosts'
         sudo apache2ctl restart
 
 :notes:
 
-    Cet alias ``databases`` permet d'identifier sur quel host l'application doit rechercher la base de données PostgreSQL
+    Cet alias ``geonatdbhost`` permet d'identifier sur quel host l'application doit rechercher la base de données PostgreSQL
     
     Par défaut, PostgreSQL est en localhost (127.0.1.1)
     
-    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   databases``
+    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   geonatdbhost``
 
 * Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur ``www-data`` y ait accès en lecture/écriture
 
