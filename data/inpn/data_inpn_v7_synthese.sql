@@ -154,7 +154,7 @@ WHERE cd_protection IN (
 --- Activation des textes valides pour la structure
 --      Par défaut activation de tous les textes nationaux et internationaux
 --          Pour des considérations locales à faire au cas par cas !!!
-UPDATE  taxonomie.taxref_protection_articles SET pn = true
+UPDATE  taxonomie.taxref_protection_articles SET concerne_mon_territoire = true
 WHERE cd_protection IN (
 	SELECT cd_protection
 	FROM  taxonomie.taxref_protection_articles

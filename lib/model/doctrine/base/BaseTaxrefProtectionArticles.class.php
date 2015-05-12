@@ -19,7 +19,7 @@
  * @property integer $rang_niveau
  * @property string $lb_article
  * @property string $type_protection
- * @property boolean $pn
+ * @property boolean $concerne_mon_territoire
  * @property Doctrine_Collection $TaxrefProtectionEspeces
  * 
  * @method string                   getCdProtection()            Returns the current record's "cd_protection" value
@@ -36,7 +36,7 @@
  * @method integer                  getRangNiveau()              Returns the current record's "rang_niveau" value
  * @method string                   getLbArticle()               Returns the current record's "lb_article" value
  * @method string                   getTypeProtection()          Returns the current record's "type_protection" value
- * @method boolean                  getPn()                      Returns the current record's "pn" value
+ * @method boolean                  getConcerneMonTerritoire()   Returns the current record's "concerne_mon_territoire" value
  * @method Doctrine_Collection      getTaxrefProtectionEspeces() Returns the current record's "TaxrefProtectionEspeces" collection
  * @method TaxrefProtectionArticles setCdProtection()            Sets the current record's "cd_protection" value
  * @method TaxrefProtectionArticles setArticle()                 Sets the current record's "article" value
@@ -52,7 +52,7 @@
  * @method TaxrefProtectionArticles setRangNiveau()              Sets the current record's "rang_niveau" value
  * @method TaxrefProtectionArticles setLbArticle()               Sets the current record's "lb_article" value
  * @method TaxrefProtectionArticles setTypeProtection()          Sets the current record's "type_protection" value
- * @method TaxrefProtectionArticles setPn()                      Sets the current record's "pn" value
+ * @method TaxrefProtectionArticles setConcerneMonTerritoire()   Sets the current record's "concerne_mon_territoire" value
  * @method TaxrefProtectionArticles setTaxrefProtectionEspeces() Sets the current record's "TaxrefProtectionEspeces" collection
  * 
  * @package    geonature
@@ -122,7 +122,7 @@ abstract class BaseTaxrefProtectionArticles extends sfDoctrineRecord
              'type' => 'string',
              'length' => 255,
              ));
-        $this->hasColumn('pn', 'boolean', 1, array(
+        $this->hasColumn('concerne_mon_territoire', 'boolean', 1, array(
              'type' => 'boolean',
              'length' => 1,
              ));

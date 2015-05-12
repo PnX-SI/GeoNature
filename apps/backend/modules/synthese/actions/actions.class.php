@@ -176,7 +176,7 @@ class syntheseActions extends sfFauneActions
         //pour les centroids
         $sql = SyntheseffTable::listShp($params,'centroid'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
-        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_centroids.shp '.    $ogrConnexionString.' -sql ';
+        $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_centroids.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
         //on zipe le tout
@@ -195,7 +195,7 @@ class syntheseActions extends sfFauneActions
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_centroids.dbf') ;
         $archive = $zip->file();
         header('Content-Type: application/x-zip');      
-        header('Content-Disposition: inline; filename=synthese_faune_'.$madate.'.zip') ;
+        header('Content-Disposition: inline; filename=synthese_'.$madate.'.zip') ;
         echo $archive ; //on retourne le contenu du zip à l'utilisateur
         unlink($path.'synthese_'.$madate.'_points.shp');       
         unlink($path.'synthese_'.$madate.'_points.shx');       

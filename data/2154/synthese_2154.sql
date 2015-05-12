@@ -170,14 +170,18 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
 
   DECLARE
   couleur text;
-  patri boolean;
+  patri character(3);
   BEGIN
-	SELECT patrimonial INTO patri FROM taxonomie.bib_taxons WHERE id_taxon = id;
-	IF patri = 't' THEN
+	SELECT patrimonial INTO patri 
+    FROM taxonomie.bib_taxons t
+    LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.id_taxon = t.id_taxon
+    LEFT JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+    WHERE a.nom_attribut = 'patrimonial' AND t.id_taxon = id;
+	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
-	ELSIF patri = 'f' THEN
+	ELSIF patri = 'non' THEN
 		IF date_part('year',maxdateobs)>=date_part('year',now())-3 THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
@@ -567,13 +571,13 @@ macommune character(5);
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null)) 
+IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null) THEN
+	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
 		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null) THEN
+	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
 		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
@@ -657,7 +661,11 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
   couleur text;
   patri boolean;
   BEGIN
-	SELECT patrimonial INTO patri FROM taxonomie.bib_taxons WHERE id_taxon = id;
+	SELECT patrimonial INTO patri 
+    FROM taxonomie.bib_taxons t 
+    LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.id_taxon = t.id_taxon
+    LEFT JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+    WHERE a.nom_attribut = 'patrimonial' AND t.id_taxon = id;
 	IF patri = 't' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
@@ -1057,13 +1065,13 @@ macommune character(5);
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null)) 
+IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null) THEN
+	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
 		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null) THEN
+	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
 		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
@@ -1172,14 +1180,14 @@ CREATE FUNCTION bryophytes_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null)) 
+IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
 
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is not null) THEN
+	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
 		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is not null) THEN
+	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
 		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
@@ -1369,10 +1377,10 @@ FOR monreleve IN SELECT gid, cd_nom FROM bryophytes.cor_bryo_taxon WHERE id_stat
     --On ne fait qq chose que si l'un des champs de la table t_station_bryo concerné dans syntheseff a changé
     IF (
             new.id_station <> old.id_station 
-            OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is not null) OR (new.remarques is not null and old.remarques is null))
-            OR ((new.insee <> old.insee) OR (new.insee is null and old.insee is not null) OR (new.insee is not null and old.insee is null))
-            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is not null) OR (new.dateobs is not null and old.dateobs is null))
-            OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is not null) OR (new.altitude_retenue is not null and old.altitude_retenue is null))
+            OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
+            OR ((new.insee <> old.insee) OR (new.insee is null and old.insee is NOT NULL) OR (new.insee is NOT NULL and old.insee is null))
+            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is NOT NULL) OR (new.dateobs is NOT NULL and old.dateobs is null))
+            OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
         ) THEN
         --on fait le update dans syntheseff
         UPDATE synthese.syntheseff 
@@ -1688,12 +1696,12 @@ car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou th
 code ci dessous a revoir car ST_equals ne marche pas avec les objets invalid
 
 IF 
-    (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS not null))
-    OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857)OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS not null)) 
+    (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL))
+    OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857)OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL)) 
 THEN
-    IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS not null) THEN
+    IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL) THEN
 		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS not null) THEN
+	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL) THEN
 		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
 	END IF;
 puis suite du THEN
@@ -1752,9 +1760,9 @@ BEGIN
 IF (
         new.indexap <> old.indexap 
         OR new.indexzp <> old.indexzp 
-        OR ((new.insee <> old.insee) OR (new.insee is null and old.insee is not null) OR (new.insee is not null and old.insee is null))
-        OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is not null) OR (new.altitude_retenue is not null and old.altitude_retenue is null))
-        OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is not null) OR (new.remarques is not null and old.remarques is null))
+        OR ((new.insee <> old.insee) OR (new.insee is null and old.insee is NOT NULL) OR (new.insee is NOT NULL and old.insee is null))
+        OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
+        OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
         OR new.supprime <> old.supprime 
         OR (NOT ST_EQUALS(new.the_geom_3857,old.the_geom_3857) OR NOT ST_EQUALS(new.the_geom_2154,old.the_geom_2154))
     ) THEN
@@ -1837,9 +1845,9 @@ FOR mazp IN SELECT ap.indexap FROM florepatri.t_zprospection zp JOIN florepatri.
     --On ne fait qq chose que si l'un des champs de la table t_zprospection concerné dans syntheseff a changé
     IF (
             new.indexzp <> old.indexzp 
-            OR ((new.cd_nom <> old.cd_nom) OR (new.cd_nom is null and old.cd_nom is not null) OR (new.cd_nom is not null and old.cd_nom is null))
-            OR ((new.id_organisme <> old.id_organisme) OR (new.id_organisme is null and old.id_organisme is not null) OR (new.id_organisme is not null and old.id_organisme is null))
-            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is not null) OR (new.dateobs is not null and old.dateobs is null))
+            OR ((new.cd_nom <> old.cd_nom) OR (new.cd_nom is null and old.cd_nom is NOT NULL) OR (new.cd_nom is NOT NULL and old.cd_nom is null))
+            OR ((new.id_organisme <> old.id_organisme) OR (new.id_organisme is null and old.id_organisme is NOT NULL) OR (new.id_organisme is NOT NULL and old.id_organisme is null))
+            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is NOT NULL) OR (new.dateobs is NOT NULL and old.dateobs is null))
             OR new.supprime <> old.supprime 
         ) THEN
         --on fait le update dans syntheseff
@@ -1886,15 +1894,15 @@ on pourrait verifier le changement des 3 geom pour lancer les commandes de geome
 car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
 code ci dessous a revoir car ST_equals ne marche pas avec les objets invalid
  -- on verfie si 1 des 3 geom a changé
-IF((old.the_geom_3857 is null AND new.the_geom_3857 is not null) OR NOT ST_Equals(new.the_geom_3857,old.the_geom_3857))
-OR ((old.the_geom_2154 is null AND new.the_geom_2154 is not null) OR NOT ST_Equals(new.the_geom_2154,old.the_geom_2154)) THEN
+IF((old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT ST_Equals(new.the_geom_3857,old.the_geom_3857))
+OR ((old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT ST_Equals(new.the_geom_2154,old.the_geom_2154)) THEN
 
 -- si oui on regarde lequel et on repercute les modif :
-	IF (old.the_geom_3857 is null AND new.the_geom_3857 is not null) OR NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) THEN
+	IF (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) THEN
 		-- verif si on est en multipolygon ou pas : A FAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		new.the_geom_2154 = ST_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;	
-	ELSIF (old.the_geom_2154 is null AND new.the_geom_2154 is not null) OR NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) THEN
+	ELSIF (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) THEN
 		new.the_geom_3857 = ST_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
@@ -2099,11 +2107,11 @@ CREATE FUNCTION florestation_update() RETURNS trigger
 BEGIN
 --si aucun geom n'existait et qu'au moins un geom est ajouté, on créé les 2 geom
 IF (old.the_geom_2154 is null AND old.the_geom_3857 is null) THEN
-    IF (new.the_geom_2154 is not null) THEN
+    IF (new.the_geom_2154 is NOT NULL) THEN
         new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
     END IF;
-    IF (new.the_geom_3857 is not null) THEN
+    IF (new.the_geom_3857 is NOT NULL) THEN
         new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
     END IF;
@@ -2118,16 +2126,16 @@ IF (old.the_geom_2154 is null AND old.the_geom_3857 is null) THEN
     END IF;
 END IF;
 --si au moins un geom existait et qu'il a changé on fait une mise à jour
-IF (old.the_geom_2154 is not null OR old.the_geom_3857 is not null) THEN
+IF (old.the_geom_2154 is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
     --si c'est le 2154 qui existait on teste s'il a changé
-    IF (old.the_geom_2154 is not null AND new.the_geom_2154 is not null) THEN
+    IF (old.the_geom_2154 is NOT NULL AND new.the_geom_2154 is NOT NULL) THEN
         IF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) THEN
             new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
             new.srid_dessin = 2154;
         END IF;
     END IF;
     --si c'est le 3857 qui existait on teste s'il a changé
-    IF (old.the_geom_3857 is not null AND new.the_geom_3857 is not null) THEN
+    IF (old.the_geom_3857 is NOT NULL AND new.the_geom_3857 is NOT NULL) THEN
         IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) THEN
             new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
             new.srid_dessin = 3857;
@@ -2306,10 +2314,10 @@ FOR monreleve IN SELECT gid, cd_nom FROM florestation.cor_fs_taxon WHERE id_stat
     --On ne fait qq chose que si l'un des champs de la table t_stations_fs concerné dans syntheseff a changé
     IF (
             new.id_station <> old.id_station 
-            OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is not null) OR (new.remarques is not null and old.remarques is null))
-            OR ((new.insee <> old.insee) OR (new.insee is null and old.insee is not null) OR (new.insee is not null and old.insee is null))
-            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is not null) OR (new.dateobs is not null and old.dateobs is null))
-            OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is not null) OR (new.altitude_retenue is not null and old.altitude_retenue is null))
+            OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
+            OR ((new.insee <> old.insee) OR (new.insee is null and old.insee is NOT NULL) OR (new.insee is NOT NULL and old.insee is null))
+            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is NOT NULL) OR (new.dateobs is NOT NULL and old.dateobs is null))
+            OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
         ) THEN
         --on fait le update dans syntheseff
         UPDATE synthese.syntheseff 
@@ -3423,8 +3431,7 @@ CREATE TABLE taxonomie.bib_groupes
 (
   id_groupe integer NOT NULL,
   nom_groupe character varying(255),
-  desc_groupe text,
-  filtre_sql text
+  desc_groupe text
 );
 
 
@@ -3524,20 +3531,75 @@ CREATE VIEW v_nomade_observateurs_faune AS
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_taxons; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: bib_attributs; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
+CREATE TABLE bib_attributs
+   (
+    id_attribut integer NOT NULL,
+    nom_attribut character varying(255) NOT NULL,
+    label_attribut character varying(50) NOT NULL,
+    liste_valeur_attribut text NOT NULL,
+    obligatoire boolean NOT NULL,
+    desc_attribut text  
+   );
+ 
+--
+-- Name: bib_listes; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bib_listes
+   (
+    id_liste integer NOT NULL,
+    nom_liste character varying(255) NOT NULL,
+    desc_liste text
+   );
+   
+--
+-- Name: bib_taxons; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+   
 CREATE TABLE bib_taxons (
     id_taxon integer NOT NULL,
     cd_nom integer,
     nom_latin character varying(100),
     nom_francais character varying(255),
-    auteur character varying(200),
-    saisie_autorisee integer,
-    id_groupe integer,
-    patrimonial boolean DEFAULT false NOT NULL,
-    protection_stricte boolean
-);
+    auteur character varying(200)
+);  
+ 
+--
+-- Name: cor_taxon_attribut; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+   
+CREATE TABLE cor_taxon_attribut
+   (
+    id_taxon integer NOT NULL,
+    id_attribut integer NOT NULL,
+    valeur_attribut character varying(50) NOT NULL
+   );
+
+ 
+--
+-- Name: cor_taxon_groupe; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+   
+CREATE TABLE cor_taxon_groupe
+   (
+    id_groupe integer NOT NULL,
+    id_taxon integer NOT NULL
+   );
+
+
+ 
+--
+-- Name: cor_taxon_liste; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+   
+CREATE TABLE cor_taxon_liste
+   (
+    id_liste integer NOT NULL,
+    id_taxon integer NOT NULL
+   );
 
 
 --
@@ -3567,6 +3629,27 @@ CREATE TABLE taxref (
 );
 
 
+--
+-- Name: bib_attributs_id_attribut_seq; Type: SEQUENCE; Schema: taxonomie; Owner: -
+--
+
+CREATE SEQUENCE bib_attributs_id_attribut_seq
+    START WITH 1000000
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+    
+--
+-- Name: bib_listes_id_liste_seq; Type: SEQUENCE; Schema: taxonomie; Owner: -
+--
+
+CREATE SEQUENCE bib_listes_id_liste_seq
+    START WITH 1000000
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 SET search_path = contactfaune, pg_catalog;
 
@@ -3581,11 +3664,11 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
    FROM ( SELECT gr.id_groupe,
             gr.nom_groupe,
             gr.desc_groupe,
-            gr.filtre_sql,
             min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
            FROM taxonomie.bib_groupes gr
-             JOIN taxonomie.bib_taxons tx ON gr.id_groupe = tx.id_groupe
-          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
+             JOIN taxonomie.cor_taxon_groupe ctg ON ctg.id_groupe = gr.id_groupe
+             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctg.id_taxon
+          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.phylum::text = 'Chordata'::text;
 
@@ -3600,17 +3683,24 @@ SELECT DISTINCT t.id_taxon,
     t.nom_francais,
     g.id_classe,
     5 AS denombrement,
-    t.patrimonial,
+        CASE
+            WHEN tx_patri.valeur_attribut::text = 'oui'::text THEN true
+            WHEN tx_patri.valeur_attribut::text = 'non'::text THEN false
+            ELSE NULL::boolean
+        END AS patrimonial,
     m.texte_message_cf AS message,
     true AS contactfaune,
     true AS mortalite
-FROM taxonomie.bib_taxons t
-LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
-LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
-JOIN contactfaune.v_nomade_classes g ON g.id_classe = t.id_groupe
-JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-WHERE t.saisie_autorisee = 1
-ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, t.patrimonial, m.texte_message_cf;
+   FROM taxonomie.bib_taxons t
+     LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
+     LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     LEFT JOIN taxonomie.cor_taxon_groupe ctg ON ctg.id_taxon = t.id_taxon
+     JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
+     JOIN contactfaune.v_nomade_classes g ON g.id_classe = ctg.id_groupe
+     JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon AND ctl.id_liste = 1
+  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe,
+patrimonial, m.texte_message_cf;
 
 
 SET search_path = layers, pg_catalog;
@@ -3831,11 +3921,11 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS
    FROM ( SELECT gr.id_groupe,
             gr.nom_groupe,
             gr.desc_groupe,
-            gr.filtre_sql,
             min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
            FROM taxonomie.bib_groupes gr
-             JOIN taxonomie.bib_taxons tx ON gr.id_groupe = tx.id_groupe
-          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe, gr.filtre_sql) g
+             JOIN taxonomie.cor_taxon_groupe ctg ON ctg.id_groupe = gr.id_groupe
+             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctg.id_taxon
+          GROUP BY gr.id_groupe, gr.nom_groupe, gr.desc_groupe) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
 WHERE NOT  phylum = 'Chordata';
 
@@ -3876,20 +3966,26 @@ CREATE VIEW v_nomade_observateurs_inv AS
 --
 
 CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
-SELECT 
-    t.id_taxon,
-    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
-    tx.cd_nom,
-    t.nom_latin,
-    t.nom_francais,
-    g.id_classe,
-    t.patrimonial,
-    m.texte_message_inv AS message
-FROM taxonomie.bib_taxons t
-LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
-LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
-JOIN contactinv.v_nomade_classes g ON g.id_classe = t.id_groupe
-JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom;
+    SELECT t.id_taxon,
+        taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+        tx.cd_nom,
+        t.nom_latin,
+        t.nom_francais,
+        g.id_classe,
+        CASE
+            WHEN tx_patri.valeur_attribut::text = 'oui'::text THEN true
+            WHEN tx_patri.valeur_attribut::text = 'non'::text THEN false
+            ELSE NULL::boolean
+        END AS patrimonial,
+        m.texte_message_inv AS message
+    FROM taxonomie.bib_taxons t
+    LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
+    LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+    LEFT JOIN taxonomie.cor_taxon_groupe ctg ON ctg.id_taxon = t.id_taxon
+    JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
+    JOIN contactinv.v_nomade_classes g ON g.id_classe = ctg.id_groupe
+    JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon AND ctl.id_liste = 2
+    JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom;
 
 
 --
@@ -4474,7 +4570,7 @@ CREATE TABLE taxref_protection_articles (
   rang_niveau integer,
   lb_article text,
   type_protection character varying(250),
-  pn boolean
+  concerne_mon_territoire boolean
 );
 
 
@@ -4504,8 +4600,6 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             tx.id_taxon,
             tx.nom_latin,
             tx.nom_francais,
-            tx.patrimonial,
-            tx.protection_stricte,
             taxref.cd_nom,
             taxref.id_statut,
             taxref.id_habitat,
@@ -4536,9 +4630,7 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
                         WHEN tx_1.nom_francais IS NULL THEN taxref.lb_nom
                         WHEN tx_1.nom_francais = '' THEN taxref.lb_nom
                         ELSE tx_1.nom_francais
-                    END AS nom_francais,
-                    tx_1.patrimonial,
-                    tx_1.protection_stricte
+                    END AS nom_francais
                 FROM taxonomie.taxref taxref
                 LEFT JOIN taxonomie.bib_taxons tx_1 ON tx_1.cd_nom = taxref.cd_nom
                 WHERE 
@@ -4567,9 +4659,7 @@ SELECT
     COALESCE(t.id_ordre, t.id_classe) AS id_ordre,
     COALESCE(t.nom_ordre, ' Sans ordre dans taxref'::character varying) AS nom_ordre,
     COALESCE(t.id_famille, t.id_ordre) AS id_famille,
-    COALESCE(t.nom_famille, ' Sans famille dans taxref'::character varying) AS nom_famille,
-    t.patrimonial,
-    t.protection_stricte
+    COALESCE(t.nom_famille, ' Sans famille dans taxref'::character varying) AS nom_famille
 FROM 
 ( 
     SELECT DISTINCT 
@@ -4624,9 +4714,7 @@ FROM
                 WHERE taxref.id_rang = 'FM'::bpchar AND taxref.lb_nom::text = t_1.famille::text AND taxref.phylum::text = t_1.phylum::text AND taxref.cd_nom = taxref.cd_ref
             )
         END AS id_famille,
-        t_1.famille AS nom_famille,
-        t_1.patrimonial,
-        t_1.protection_stricte
+        t_1.famille AS nom_famille
     FROM taxon t_1
 ) t;
 
@@ -4998,6 +5086,21 @@ SET search_path = synthese, pg_catalog;
 --
 
 ALTER TABLE ONLY syntheseff ALTER COLUMN id_synthese SET DEFAULT nextval('syntheseff_id_synthese_seq'::regclass);
+
+
+SET search_path = taxonomie, pg_catalog;
+
+--
+-- Name: id_liste; Type: DEFAULT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY bib_listes ALTER COLUMN id_liste SET DEFAULT nextval('bib_listes_id_liste_seq'::regclass);
+
+--
+-- Name: id_attribut; Type: DEFAULT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY bib_attributs ALTER COLUMN id_attribut SET DEFAULT nextval('bib_attributs_id_attribut_seq'::regclass);
 
 
 SET search_path = utilisateurs, pg_catalog;
@@ -5696,6 +5799,12 @@ ALTER TABLE ONLY syntheseff
 
 SET search_path = taxonomie, pg_catalog;
 
+--
+-- Name: pk_bib_attributs; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bib_attributs
+    ADD CONSTRAINT pk_bib_attributs PRIMARY KEY (id_attribut);
 
 --
 -- Name: pk_bib_groupe; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -5703,7 +5812,13 @@ SET search_path = taxonomie, pg_catalog;
 
 ALTER TABLE ONLY bib_groupes
     ADD CONSTRAINT pk_bib_groupe PRIMARY KEY (id_groupe);
-    
+
+--
+-- Name: pk_bib_bib_listes; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bib_listes
+    ADD CONSTRAINT pk_bib_listes PRIMARY KEY (id_liste);   
 
 --
 -- Name: pk_bib_taxons; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -5712,14 +5827,12 @@ ALTER TABLE ONLY bib_groupes
 ALTER TABLE ONLY bib_taxons
     ADD CONSTRAINT pk_bib_taxons PRIMARY KEY (id_taxon);
 
-
 --
 -- Name: pk_bib_taxref_habitats; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY bib_taxref_habitats
     ADD CONSTRAINT pk_bib_taxref_habitats PRIMARY KEY (id_habitat);
-
 
 --
 -- Name: pk_bib_taxref_rangs; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -5728,14 +5841,12 @@ ALTER TABLE ONLY bib_taxref_habitats
 ALTER TABLE ONLY bib_taxref_rangs
     ADD CONSTRAINT pk_bib_taxref_rangs PRIMARY KEY (id_rang);
 
-
 --
 -- Name: pk_bib_taxref_statuts; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY bib_taxref_statuts
     ADD CONSTRAINT pk_bib_taxref_statuts PRIMARY KEY (id_statut);
-
 
 --
 -- Name: pk_import_taxref; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -5744,14 +5855,12 @@ ALTER TABLE ONLY bib_taxref_statuts
 ALTER TABLE ONLY import_taxref
     ADD CONSTRAINT pk_import_taxref PRIMARY KEY (cd_nom);
 
-
 --
 -- Name: pk_taxref; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY taxref
     ADD CONSTRAINT pk_taxref PRIMARY KEY (cd_nom);
-
 
 --
 -- Name: pk_taxref_changes; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -5760,7 +5869,6 @@ ALTER TABLE ONLY taxref
 ALTER TABLE ONLY taxref_changes
     ADD CONSTRAINT pk_taxref_changes PRIMARY KEY (cd_nom, champ);
 
-
 --
 -- Name: taxref_protection_articles_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
@@ -5768,13 +5876,33 @@ ALTER TABLE ONLY taxref_changes
 ALTER TABLE ONLY taxref_protection_articles
     ADD CONSTRAINT taxref_protection_articles_pkey PRIMARY KEY (cd_protection);
 
-
 --
 -- Name: taxref_protection_especes_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY taxref_protection_especes
     ADD CONSTRAINT taxref_protection_especes_pkey PRIMARY KEY (cd_nom, cd_protection, cd_nom_cite);
+
+--
+-- Name: cor_taxon_attribut_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY cor_taxon_attribut
+    ADD CONSTRAINT cor_taxon_attribut_pkey PRIMARY KEY (id_taxon, id_attribut);
+
+--
+-- Name: cor_taxon_groupe_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY cor_taxon_groupe
+    ADD CONSTRAINT cor_taxon_groupe_pkey PRIMARY KEY (id_taxon, id_groupe);
+    
+--
+-- Name: cor_taxon_liste_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY cor_taxon_liste
+    ADD CONSTRAINT cor_taxon_liste_pkey PRIMARY KEY (id_taxon, id_liste);
 
 
 SET search_path = utilisateurs, pg_catalog;
@@ -6263,10 +6391,16 @@ CREATE INDEX i_taxref_hierarchy
   (regne COLLATE pg_catalog."default" , phylum COLLATE pg_catalog."default" , classe COLLATE pg_catalog."default" , ordre COLLATE pg_catalog."default" , famille COLLATE pg_catalog."default" );
   
 --
+-- Name: fki_cor_taxon_attribut; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE INDEX fki_cor_taxon_attribut ON cor_taxon_attribut USING btree (valeur_attribut);
+
+--
 -- Name: fki_bib_taxons_bib_groupes; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE INDEX fki_bib_taxons_bib_groupes ON bib_taxons USING btree (id_groupe);
+CREATE INDEX fki_bib_taxons_bib_groupes ON cor_taxon_groupe USING btree (id_groupe);
 
 
 --
@@ -7435,12 +7569,46 @@ ALTER TABLE ONLY syntheseff
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_taxons_id_groupe_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: cor_taxon_listes_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY bib_taxons
-    ADD CONSTRAINT bib_taxons_id_groupe_fkey FOREIGN KEY (id_groupe) REFERENCES bib_groupes(id_groupe) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_taxon_liste 
+    ADD CONSTRAINT cor_taxon_listes_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon);
+ 
+--
+-- Name: cor_taxon_listes_bib_listes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
 
+ALTER TABLE ONLY cor_taxon_liste 
+    ADD CONSTRAINT cor_taxon_listes_bib_listes_fkey FOREIGN KEY (id_liste) REFERENCES bib_listes (id_liste);
+ 
+--
+-- Name: cor_taxon_groupe_bib_groupes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY cor_taxon_groupe 
+    ADD CONSTRAINT cor_taxon_groupe_bib_groupes_fkey FOREIGN KEY (id_groupe) REFERENCES bib_groupes (id_groupe);
+    
+--
+-- Name: cor_taxon_groupe_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY cor_taxon_groupe 
+    ADD CONSTRAINT cor_taxon_groupe_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon);
+    
+--
+-- Name: cor_taxon_attrib_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY cor_taxon_attribut 
+    ADD CONSTRAINT cor_taxon_attrib_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon);
+    
+--
+-- Name: cor_taxon_attrib_bib_attrib_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY cor_taxon_attribut 
+    ADD CONSTRAINT cor_taxon_attrib_bib_attrib_fkey FOREIGN KEY (id_attribut) REFERENCES bib_attributs (id_attribut);
 
 --
 -- Name: fk_bib_taxons_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
@@ -9144,6 +9312,24 @@ GRANT ALL ON TABLE v_tree_taxons_synthese TO geonatuser;
 SET search_path = taxonomie, pg_catalog;
 
 --
+-- Name: bib_listes; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE bib_listes FROM PUBLIC;
+REVOKE ALL ON TABLE bib_listes FROM geonatuser;
+GRANT ALL ON TABLE bib_listes TO geonatuser;
+
+
+--
+-- Name: bib_attributs; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE bib_attributs FROM PUBLIC;
+REVOKE ALL ON TABLE bib_attributs FROM geonatuser;
+GRANT ALL ON TABLE bib_attributs TO geonatuser;
+
+
+--
 -- Name: bib_taxref_habitats; Type: ACL; Schema: taxonomie; Owner: -
 --
 
@@ -9204,6 +9390,33 @@ GRANT ALL ON TABLE taxref_protection_articles TO geonatuser;
 REVOKE ALL ON TABLE taxref_protection_especes FROM PUBLIC;
 REVOKE ALL ON TABLE taxref_protection_especes FROM geonatuser;
 GRANT ALL ON TABLE taxref_protection_especes TO geonatuser;
+
+
+--
+-- Name: cor_taxon_attribut; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE cor_taxon_attribut FROM PUBLIC;
+REVOKE ALL ON TABLE cor_taxon_attribut FROM geonatuser;
+GRANT ALL ON TABLE cor_taxon_attribut TO geonatuser;
+
+
+--
+-- Name: cor_taxon_groupe; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE cor_taxon_groupe FROM PUBLIC;
+REVOKE ALL ON TABLE cor_taxon_groupe FROM geonatuser;
+GRANT ALL ON TABLE cor_taxon_groupe TO geonatuser;
+
+
+--
+-- Name: cor_taxon_liste; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE cor_taxon_liste FROM PUBLIC;
+REVOKE ALL ON TABLE cor_taxon_liste FROM geonatuser;
+GRANT ALL ON TABLE cor_taxon_liste TO geonatuser;
 
 
 SET search_path = utilisateurs, pg_catalog;
