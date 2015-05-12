@@ -7,17 +7,15 @@
  * 
  * @property integer $id_taxon
  * @property integer $cd_nom
- * @property integer $id_groupe
  * @property string $nom_latin
  * @property string $nom_francais
  * @property string $auteur
- * @property integer $saisie_autorisee
- * @property boolean $patrimonial
- * @property boolean $protection_stricte
- * @property BibGroupes $BibGroupes
  * @property Taxref $Taxref
  * @property Doctrine_Collection $CorMessageTaxonCf
  * @property Doctrine_Collection $CorMessageTaxonInv
+ * @property Doctrine_Collection $CorTaxonAttribut
+ * @property Doctrine_Collection $CorTaxonGroupe
+ * @property Doctrine_Collection $CorTaxonliste
  * @property Doctrine_Collection $CorUniteTaxon
  * @property Doctrine_Collection $CorUniteTaxonInv
  * @property Doctrine_Collection $TRelevesCf
@@ -28,17 +26,15 @@
  * 
  * @method integer             getIdTaxon()             Returns the current record's "id_taxon" value
  * @method integer             getCdNom()               Returns the current record's "cd_nom" value
- * @method integer             getIdGroupe()            Returns the current record's "id_groupe" value
  * @method string              getNomLatin()            Returns the current record's "nom_latin" value
  * @method string              getNomFrancais()         Returns the current record's "nom_francais" value
  * @method string              getAuteur()              Returns the current record's "auteur" value
- * @method integer             getSaisieAutorisee()     Returns the current record's "saisie_autorisee" value
- * @method boolean             getPatrimonial()         Returns the current record's "patrimonial" value
- * @method boolean             getProtectionStricte()   Returns the current record's "protection_stricte" value
- * @method BibGroupes          getBibGroupes()          Returns the current record's "BibGroupes" value
  * @method Taxref              getTaxref()              Returns the current record's "Taxref" value
  * @method Doctrine_Collection getCorMessageTaxonCf()   Returns the current record's "CorMessageTaxonCf" collection
  * @method Doctrine_Collection getCorMessageTaxonInv()  Returns the current record's "CorMessageTaxonInv" collection
+ * @method Doctrine_Collection getCorTaxonAttribut()    Returns the current record's "CorTaxonAttribut" collection
+ * @method Doctrine_Collection getCorTaxonGroupe()      Returns the current record's "CorTaxonGroupe" collection
+ * @method Doctrine_Collection getCorTaxonliste()       Returns the current record's "CorTaxonliste" collection
  * @method Doctrine_Collection getCorUniteTaxon()       Returns the current record's "CorUniteTaxon" collection
  * @method Doctrine_Collection getCorUniteTaxonInv()    Returns the current record's "CorUniteTaxonInv" collection
  * @method Doctrine_Collection getTRelevesCf()          Returns the current record's "TRelevesCf" collection
@@ -48,17 +44,15 @@
  * @method Doctrine_Collection getVTreeTaxonsSynthese() Returns the current record's "VTreeTaxonsSynthese" collection
  * @method BibTaxons           setIdTaxon()             Sets the current record's "id_taxon" value
  * @method BibTaxons           setCdNom()               Sets the current record's "cd_nom" value
- * @method BibTaxons           setIdGroupe()            Sets the current record's "id_groupe" value
  * @method BibTaxons           setNomLatin()            Sets the current record's "nom_latin" value
  * @method BibTaxons           setNomFrancais()         Sets the current record's "nom_francais" value
  * @method BibTaxons           setAuteur()              Sets the current record's "auteur" value
- * @method BibTaxons           setSaisieAutorisee()     Sets the current record's "saisie_autorisee" value
- * @method BibTaxons           setPatrimonial()         Sets the current record's "patrimonial" value
- * @method BibTaxons           setProtectionStricte()   Sets the current record's "protection_stricte" value
- * @method BibTaxons           setBibGroupes()          Sets the current record's "BibGroupes" value
  * @method BibTaxons           setTaxref()              Sets the current record's "Taxref" value
  * @method BibTaxons           setCorMessageTaxonCf()   Sets the current record's "CorMessageTaxonCf" collection
  * @method BibTaxons           setCorMessageTaxonInv()  Sets the current record's "CorMessageTaxonInv" collection
+ * @method BibTaxons           setCorTaxonAttribut()    Sets the current record's "CorTaxonAttribut" collection
+ * @method BibTaxons           setCorTaxonGroupe()      Sets the current record's "CorTaxonGroupe" collection
+ * @method BibTaxons           setCorTaxonliste()       Sets the current record's "CorTaxonliste" collection
  * @method BibTaxons           setCorUniteTaxon()       Sets the current record's "CorUniteTaxon" collection
  * @method BibTaxons           setCorUniteTaxonInv()    Sets the current record's "CorUniteTaxonInv" collection
  * @method BibTaxons           setTRelevesCf()          Sets the current record's "TRelevesCf" collection
@@ -86,10 +80,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('id_groupe', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             ));
         $this->hasColumn('nom_latin', 'string', 100, array(
              'type' => 'string',
              'length' => 100,
@@ -102,27 +92,11 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'type' => 'string',
              'length' => 50,
              ));
-        $this->hasColumn('saisie_autorisee', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             ));
-        $this->hasColumn('patrimonial', 'boolean', 1, array(
-             'type' => 'boolean',
-             'length' => 1,
-             ));
-        $this->hasColumn('protection_stricte', 'boolean', 1, array(
-             'type' => 'boolean',
-             'length' => 1,
-             ));
     }
 
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('BibGroupes', array(
-             'local' => 'id_groupe',
-             'foreign' => 'id_groupe'));
-
         $this->hasOne('Taxref', array(
              'local' => 'cd_nom',
              'foreign' => 'cd_nom'));
@@ -132,6 +106,18 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'foreign' => 'id_taxon'));
 
         $this->hasMany('CorMessageTaxonInv', array(
+             'local' => 'id_taxon',
+             'foreign' => 'id_taxon'));
+
+        $this->hasMany('CorTaxonAttribut', array(
+             'local' => 'id_taxon',
+             'foreign' => 'id_taxon'));
+
+        $this->hasMany('CorTaxonGroupe', array(
+             'local' => 'id_taxon',
+             'foreign' => 'id_taxon'));
+
+        $this->hasMany('CorTaxonliste', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

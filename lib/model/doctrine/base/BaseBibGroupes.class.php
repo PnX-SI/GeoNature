@@ -7,23 +7,20 @@
  * 
  * @property integer $id_groupe
  * @property string $nom_groupe
- * @property string $desc_group
- * @property string $filtre_sql
- * @property Doctrine_Collection $BibTaxons
+ * @property string $desc_groupe
  * @property Doctrine_Collection $CorCritereGroupe
+ * @property Doctrine_Collection $CorTaxonGroupe
  * 
  * @method integer             getIdGroupe()         Returns the current record's "id_groupe" value
  * @method string              getNomGroupe()        Returns the current record's "nom_groupe" value
- * @method string              getDescGroup()        Returns the current record's "desc_group" value
- * @method string              getFiltreSql()        Returns the current record's "filtre_sql" value
- * @method Doctrine_Collection getBibTaxons()        Returns the current record's "BibTaxons" collection
+ * @method string              getDescGroupe()       Returns the current record's "desc_groupe" value
  * @method Doctrine_Collection getCorCritereGroupe() Returns the current record's "CorCritereGroupe" collection
+ * @method Doctrine_Collection getCorTaxonGroupe()   Returns the current record's "CorTaxonGroupe" collection
  * @method BibGroupes          setIdGroupe()         Sets the current record's "id_groupe" value
  * @method BibGroupes          setNomGroupe()        Sets the current record's "nom_groupe" value
- * @method BibGroupes          setDescGroup()        Sets the current record's "desc_group" value
- * @method BibGroupes          setFiltreSql()        Sets the current record's "filtre_sql" value
- * @method BibGroupes          setBibTaxons()        Sets the current record's "BibTaxons" collection
+ * @method BibGroupes          setDescGroupe()       Sets the current record's "desc_groupe" value
  * @method BibGroupes          setCorCritereGroupe() Sets the current record's "CorCritereGroupe" collection
+ * @method BibGroupes          setCorTaxonGroupe()   Sets the current record's "CorTaxonGroupe" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -44,11 +41,7 @@ abstract class BaseBibGroupes extends sfDoctrineRecord
              'type' => 'string',
              'length' => 255,
              ));
-        $this->hasColumn('desc_group', 'string', null, array(
-             'type' => 'string',
-             'length' => '',
-             ));
-        $this->hasColumn('filtre_sql', 'string', null, array(
+        $this->hasColumn('desc_groupe', 'string', null, array(
              'type' => 'string',
              'length' => '',
              ));
@@ -57,11 +50,11 @@ abstract class BaseBibGroupes extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('BibTaxons', array(
+        $this->hasMany('CorCritereGroupe', array(
              'local' => 'id_groupe',
              'foreign' => 'id_groupe'));
 
-        $this->hasMany('CorCritereGroupe', array(
+        $this->hasMany('CorTaxonGroupe', array(
              'local' => 'id_groupe',
              'foreign' => 'id_groupe'));
     }

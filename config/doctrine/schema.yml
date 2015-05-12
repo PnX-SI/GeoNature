@@ -12,6 +12,17 @@ BibAbondancesBryo:
       type: string(1)
       primary: true
     nom_abondance: string(128)
+BibAttributs:
+  tableName: taxonomie.bib_attributs
+  columns:
+    id_attribut:
+      type: integer(4)
+      primary: true
+    nom_attribut: string(255)
+    label_attribut: string(50)
+    liste_valeur_attribut: string()
+    obligatoire: boolean(1)
+    desc_attribut: string()
 BibClasses:
   tableName: taxonomie.bib_classes
   columns:
@@ -108,8 +119,7 @@ BibGroupes:
       type: integer(4)
       primary: true
     nom_groupe: string(255)
-    desc_group: string()
-    filtre_sql: string()
+    desc_groupe: string()
 BibHomogenes:
   tableName: florestation.bib_homogenes
   columns:
@@ -117,6 +127,14 @@ BibHomogenes:
       type: integer(4)
       primary: true
     nom_homogene: string(20)
+BibListes:
+  tableName: taxonomie.bib_listes
+  columns:
+    id_liste:
+      type: integer(4)
+      primary: true
+    nom_liste: string(50)
+    desc_liste: string
 BibLots:
   tableName: meta.bib_lots
   columns:
@@ -259,19 +277,10 @@ BibTaxons:
       type: integer(4)
       primary: true
     cd_nom: integer(4)
-    id_groupe: integer(4)
     nom_latin: string(100)
     nom_francais: string(50)
     auteur: string(50)
-    saisie_autorisee: integer(4)
-    patrimonial: boolean(1)
-    protection_stricte: boolean(1)
   relations:
-    BibGroupes:
-      class: BibGroupes
-      local: id_groupe
-      foreign: id_groupe
-      foreignAlias: BibTaxons
     Taxref:
       class: Taxref
       local: cd_nom
@@ -576,6 +585,67 @@ CorCritereGroupe:
       local: id_critere_cf
       foreign: id_critere_cf
       foreignAlias: CorCritereGroupe
+CorTaxonAttribut:
+  tableName: taxonomie.cor_taxon_attribut
+  columns:
+    id_taxon:
+      type: integer(4)
+      primary: true
+    id_attribut:
+      type: integer(4)
+      primary: true
+    valeur_attribut: string(50)
+  relations:
+    BibAttributs:
+      class: BibAttributs
+      local: id_attribut
+      foreign: id_attribut
+      foreignAlias: CorTaxonAttribut
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: CorTaxonAttribut
+CorTaxonGroupe:
+  tableName: taxonomie.cor_taxon_groupe
+  columns:
+    id_taxon:
+      type: integer(4)
+      primary: true
+    id_groupe:
+      type: integer(4)
+      primary: true
+  relations:
+    BibGroupes:
+      class: BibGroupes
+      local: id_groupe
+      foreign: id_groupe
+      foreignAlias: CorTaxonGroupe
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: CorTaxonGroupe
+CorTaxonliste:
+  tableName: taxonomie.cor_taxon_liste
+  columns:
+    id_taxon:
+      type: integer(4)
+      primary: true
+    id_liste:
+      type: integer(4)
+      primary: true
+  relations:
+    BibListes:
+      class: BibListes
+      local: id_liste
+      foreign: id_liste
+      foreignAlias: CorTaxonliste
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: CorTaxonliste
 CorRoleDroitApplication:
   tableName: utilisateurs.cor_role_droit_application
   columns:
@@ -1075,7 +1145,7 @@ TaxrefProtectionArticles:
     rang_niveau: integer(8)
     lb_article: string()
     type_protection: string(255)
-    pn: boolean(1)    
+    concerne_mon_territoire: boolean(1)    
 TaxrefProtectionEspeces:
   tableName: taxonomie.taxref_protection_especes
   columns:
@@ -1704,8 +1774,6 @@ VTreeTaxonsSynthese:
     nom_ordre: string(50)
     id_famille: integer(4)
     nom_famille: string(50)
-    patrimonial: boolean(1)
-    protection_stricte: boolean(1)
   relations:
     BibTaxons:
       class: BibTaxons

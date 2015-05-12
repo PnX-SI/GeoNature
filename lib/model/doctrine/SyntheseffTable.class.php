@@ -55,7 +55,7 @@ class SyntheseffTable extends Doctrine_Table
     private static function addFilters($params)
     {
         $sql = '';
-        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null)
+        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null && $params['ff']!='null')
             $sql .= " AND txr.regne = '".$params['ff']."'";
         if (isset($params['id_secteur']) && $params['id_secteur']!='')
             $sql .= " AND com.id_secteur = ".$params['id_secteur'];
@@ -66,9 +66,9 @@ class SyntheseffTable extends Doctrine_Table
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "t.patrimonial = true";}
-                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "t.protection_stricte = true";}
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "t.patrimonial = true OR t.protection_stricte = true";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "tx_patri.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "tx_prot.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "tx_patri.valeur_attribut = 'oui' OR tx_prot.valeur_attribut = 'oui'";}
                 $sql .= ")";
             }
         }
@@ -122,7 +122,7 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= " AND z.id_zone = ".$params['id_reserve'];
         if (isset($params['observateur']) && $params['observateur']!='')
             $sql .= " AND synt.observateurs ILIKE '%".$params['observateur']."%'";
-        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null)
+        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null && $params['ff']!='null')
             $sql .= " AND txr.regne = '".$params['ff']."'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
             $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
@@ -133,9 +133,9 @@ class SyntheseffTable extends Doctrine_Table
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "t.patrimonial = true";}
-                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "t.protection_stricte = true";}
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "t.patrimonial = true OR t.protection_stricte = true";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "tx_patri.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "tx_prot.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "tx_patri.valeur_attribut = 'oui' OR tx_prot.valeur_attribut = 'oui'";}
                 $sql .= ")";
             }
         }   
@@ -164,6 +164,8 @@ class SyntheseffTable extends Doctrine_Table
                 FROM synthese.syntheseff synt
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom 
                 LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
+                JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
+		        JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
@@ -202,12 +204,23 @@ class SyntheseffTable extends Doctrine_Table
                         WHEN t.nom_francais = '' THEN txr.lb_nom
                         ELSE t.nom_francais
                     END AS taxon_francais,
-                    t.patrimonial,t.protection_stricte,
+                    CASE 	
+                        WHEN tx_patri.valeur_attribut = 'oui'  THEN true
+                        WHEN tx_patri.valeur_attribut = 'non'  THEN false
+                        ELSE null
+                    END AS patrimonial,
+                    CASE 	
+                        WHEN tx_prot.valeur_attribut = 'oui'  THEN true
+                        WHEN tx_prot.valeur_attribut = 'non'  THEN false
+                        ELSE null
+                    END AS protection_stricte,
                     txr.cd_ref,
                     com.commune_min AS nomcommune, cri.nom_critere_synthese,
                     ST_ASGEOJSON($geom, 0) AS g"
                 .$from.
                 "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
+                JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
+		        JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon
                 LEFT JOIN synthese.bib_criteres_synthese cri ON cri.id_critere_synthese = synt.id_critere_synthese
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
@@ -266,7 +279,7 @@ class SyntheseffTable extends Doctrine_Table
         if (isset($params['id_unite']) && $params['id_unite']!='' && $params['id_unite']==sfGeonatureConfig::$id_unite_fournisseur && isset($params['userName']) && $params['userName']!='' ){
             $sql .= " AND lower(synt.observateurs) ILIKE lower('%".$params['userName']."%')";
         }
-        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null)
+        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null && $params['ff']!='null')
             $sql .= " AND txr.regne = '".$params['ff']."'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
             $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
@@ -277,9 +290,9 @@ class SyntheseffTable extends Doctrine_Table
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "t.patrimonial = true";}
-                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "t.protection_stricte = true";}
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "t.patrimonial = true OR t.protection_stricte = true";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "tx_patri.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "tx_prot.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "tx_patri.valeur_attribut = 'oui' OR tx_prot.valeur_attribut = 'oui'";}
                 $sql .= ")";
             }
         } 
@@ -308,7 +321,17 @@ class SyntheseffTable extends Doctrine_Table
             $sql = "
                 SELECT DISTINCT
                 sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs, 
-                t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,t.patrimonial,
+                t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,
+                CASE 	
+                    WHEN tx_patri.valeur_attribut = 'oui'  THEN true
+                    WHEN tx_patri.valeur_attribut = 'non'  THEN false
+                    ELSE null
+                END AS patrimonial,
+                CASE 	
+                    WHEN tx_prot.valeur_attribut = 'oui'  THEN true
+                    WHEN tx_prot.valeur_attribut = 'non'  THEN false
+                    ELSE null
+                END AS protection_stricte,
                 txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
                 c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme,
                 synt.id_synthese,
@@ -318,6 +341,8 @@ class SyntheseffTable extends Doctrine_Table
                 .$from.
                 "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
+                JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
+		        JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
                 LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = synt.id_organisme
@@ -341,14 +366,26 @@ class SyntheseffTable extends Doctrine_Table
         if($params['start']=="no"){$from = " FROM synthese.syntheseff synt ";}
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "
-                SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,t.patrimonial,tpa.type_protection,
-                        txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
-                        tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
+                SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,tpa.type_protection,
+                    CASE 	
+                        WHEN tx_patri.valeur_attribut = 'oui'  THEN true
+                        WHEN tx_patri.valeur_attribut = 'non'  THEN false
+                        ELSE null
+                    END AS patrimonial,
+                    CASE 	
+                        WHEN tx_prot.valeur_attribut = 'oui'  THEN true
+                        WHEN tx_prot.valeur_attribut = 'non'  THEN false
+                        ELSE null
+                    END AS protection_stricte,
+                    txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
+                    tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
                 .$from.
                 "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref_protection_especes tpe ON tpe.cd_nom = t.cd_nom
-                JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.pn = true
+                JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.concerne_mon_territoire = true
+                LEFT JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
+		        LEFT JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
                 LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = synt.id_organisme
@@ -359,9 +396,10 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
                 WHERE synt.supprime = false"
                 .$addwhere.
-                " GROUP BY t.nom_latin, t.nom_francais,t.patrimonial,t.protection_stricte,txr.nom_valide, txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref, tpe.precisions, 
+                " GROUP BY t.nom_latin, t.nom_francais, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, 
+                        synt.cd_nom, txr.cd_ref, tpe.precisions, tx_prot.valeur_attribut,tx_patri.valeur_attribut,
                         tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url, tpa.url ,tpa.type_protection
-                ORDER BY txr.classe, txr.ordre, txr.famille, t.nom_francais";
+                ORDER BY txr.phylum, txr.regne, txr.classe, txr.ordre, txr.famille, t.nom_francais";
         $lesstatuts = $dbh->query($sql);
         return $lesstatuts;
     }
@@ -373,7 +411,17 @@ class SyntheseffTable extends Doctrine_Table
         if($params['start']=="no"){$from = " FROM synthese.syntheseff synt ";}
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "SELECT DISTINCT sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs,"; 
-            $sql .= "t.nom_latin AS taxonlatin, t.nom_francais AS taxonfr,t.patrimonial AS patri,";
+            $sql .= "t.nom_latin AS taxonlatin, t.nom_francais AS taxonfr,";
+            $sql .= "CASE 	
+                        WHEN tx_patri.valeur_attribut = 'oui'  THEN true
+                        WHEN tx_patri.valeur_attribut = 'non'  THEN false
+                        ELSE null
+                    END AS patrimonial,";
+            $sql .= "CASE 	
+                        WHEN tx_prot.valeur_attribut = 'oui'  THEN true
+                        WHEN tx_prot.valeur_attribut = 'non'  THEN false
+                        ELSE null
+                    END AS protection_stricte,";
             $sql .= "txr.nom_valide, txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese,";
             $sql .= "c.nom_critere_synthese AS critere,synt.remarques, org.nom_organisme AS organisme,";
             if($typ=='centroid'){
@@ -387,6 +435,8 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= $from;
             $sql .= "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom ";
             $sql .= "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = t.cd_nom ";
+            $sql .= "JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon ";
+            $sql .= "JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon ";
             $sql .= "LEFT JOIN layers.l_communes com ON com.insee = synt.insee ";
             $sql .= "LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur ";
             $sql .= "LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = synt.id_organisme ";

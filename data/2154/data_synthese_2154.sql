@@ -337,29 +337,27 @@ SET search_path = taxonomie, pg_catalog;
 -- Data for Name: bib_groupes; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1,'Amphibiens');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(2,'Pycnogonides');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(3,'Entognathes');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(4,'Echinodermes');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(5,'Ecrevisses');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(9,'Insectes');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(11,'Mammifères');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(12,'Oiseaux');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(13,'Poissons');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(14,'Reptiles');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(15,'Myriapodes');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(16,'Arachnides');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(17,'Mollusques');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(18,'Vers');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(19,'Rotifères');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(20,'Tardigrades');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1000,'Plantes vasculaires');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1001,'Bryophytes');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1002,'Lichens');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1003,'Algues');
-INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1004,'Champignons');
-
-
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1,'Amphibiens');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(2,'Pycnogonides');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(3,'Entognathes');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(4,'Echinodermes');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(5,'Ecrevisses');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(9,'Insectes');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(11,'Mammifères');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(12,'Oiseaux');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(13,'Poissons');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(14,'Reptiles');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(15,'Myriapodes');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(16,'Arachnides');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(17,'Mollusques');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(18,'Vers');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(19,'Rotifères');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(20,'Tardigrades');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1000,'Plantes vasculaires');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1001,'Bryophytes');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1002,'Lichens');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1003,'Algues');
+INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1004,'Champignons');
 
 --
 -- TOC entry 3122 (class 0 OID 126729)
@@ -367,14 +365,71 @@ INSERT INTO taxonomie.bib_groupes (id_groupe, nom_groupe) VALUES(1004,'Champigno
 -- Data for Name: bib_taxons; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', 1, 13, false, false);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)',  0, 11, true, true);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758', 1, 1, false, true);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758', 0, 9, false, false);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', 0, 9, false, false);
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, saisie_autorisee, id_groupe, patrimonial, protection_stricte) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', 0, 5, false, true);
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)');
 
+--
+-- 
+-- Data for Name: cor_taxon_groupe; Type: TABLE DATA; Schema: taxonomie; Owner: -
+--
 
+INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (704,13);
+INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (64,11);
+INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (23,1);
+INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (1950,9);
+INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (2804,9);
+INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (816,5);
+
+--
+-- 
+-- Data for Name: bib_attributs; Type: TABLE DATA; Schema: taxonomie; Owner: -
+--
+
+INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut) VALUES (1, 'patrimonial', 'Patrimonial', 'oui;non',true,'Défini si le taxon est patrimonial pour le territoire');
+INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut) VALUES (2, 'protection_stricte', 'Protégé', 'oui;non',true,'Défini si le taxon bénéficie d''une protection juridique stricte pour le territoire');
+
+--
+-- 
+-- Data for Name: cor_taxon_attribut; Type: TABLE DATA; Schema: taxonomie; Owner: -
+--
+
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (704, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (704, 2, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (64, 1, 'oui');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (64, 2, 'oui');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (23, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (23, 2, 'oui');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (1950, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (1950, 2, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (2804, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (2804, 2, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (816, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (816, 2, 'oui');
+
+--
+-- 
+-- Data for Name: bib_listes; Type: TABLE DATA; Schema: taxonomie; Owner: -
+--
+
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1, 'liste faune vertébré', 'Liste de test servant à l''affichage des taxons de la faune vertébré pouvant être saisis');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (2, 'liste faune invertébré', 'Liste de test servant à l''affichage des taxons de la faune invertébré pouvant être saisis');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (3, 'liste flore', 'Liste de test servant à l''affichage des taxons de la flore pouvant être saisis');
+
+--
+-- 
+-- Data for Name: cor_taxon_liste; Type: TABLE DATA; Schema: taxonomie; Owner: -
+--
+
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (704, 1);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (64, 1);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (23, 1);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (1950, 2);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (2804, 2);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (816, 2);
 SET search_path = contactfaune, pg_catalog;
 
 --
