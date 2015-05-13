@@ -11,6 +11,7 @@
  * @property string $liste_valeur_attribut
  * @property boolean $obligatoire
  * @property string $desc_attribut
+ * @property string $type_attribut
  * @property Doctrine_Collection $CorTaxonAttribut
  * 
  * @method integer             getIdAttribut()            Returns the current record's "id_attribut" value
@@ -19,6 +20,7 @@
  * @method string              getListeValeurAttribut()   Returns the current record's "liste_valeur_attribut" value
  * @method boolean             getObligatoire()           Returns the current record's "obligatoire" value
  * @method string              getDescAttribut()          Returns the current record's "desc_attribut" value
+ * @method string              getTypeAttribut()          Returns the current record's "type_attribut" value
  * @method Doctrine_Collection getCorTaxonAttribut()      Returns the current record's "CorTaxonAttribut" collection
  * @method BibAttributs        setIdAttribut()            Sets the current record's "id_attribut" value
  * @method BibAttributs        setNomAttribut()           Sets the current record's "nom_attribut" value
@@ -26,6 +28,7 @@
  * @method BibAttributs        setListeValeurAttribut()   Sets the current record's "liste_valeur_attribut" value
  * @method BibAttributs        setObligatoire()           Sets the current record's "obligatoire" value
  * @method BibAttributs        setDescAttribut()          Sets the current record's "desc_attribut" value
+ * @method BibAttributs        setTypeAttribut()          Sets the current record's "type_attribut" value
  * @method BibAttributs        setCorTaxonAttribut()      Sets the current record's "CorTaxonAttribut" collection
  * 
  * @package    geonature
@@ -62,6 +65,10 @@ abstract class BaseBibAttributs extends sfDoctrineRecord
         $this->hasColumn('desc_attribut', 'string', null, array(
              'type' => 'string',
              'length' => '',
+             ));
+        $this->hasColumn('type_attribut', 'string', 50, array(
+             'type' => 'string',
+             'length' => 50,
              ));
     }
 

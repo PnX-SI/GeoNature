@@ -10,7 +10,7 @@
  * @property string $nom_critere_cf
  * @property integer $tri_cf
  * @property integer $id_critere_synthese
- * @property Doctrine_Collection $CorCritereGroupe
+ * @property Doctrine_Collection $CorCritereListe
  * @property Doctrine_Collection $TRelevesCf
  * 
  * @method integer             getIdCritereCf()         Returns the current record's "id_critere_cf" value
@@ -18,14 +18,14 @@
  * @method string              getNomCritereCf()        Returns the current record's "nom_critere_cf" value
  * @method integer             getTriCf()               Returns the current record's "tri_cf" value
  * @method integer             getIdCritereSynthese()   Returns the current record's "id_critere_synthese" value
- * @method Doctrine_Collection getCorCritereGroupe()    Returns the current record's "CorCritereGroupe" collection
+ * @method Doctrine_Collection getCorCritereListe()     Returns the current record's "CorCritereListe" collection
  * @method Doctrine_Collection getTRelevesCf()          Returns the current record's "TRelevesCf" collection
  * @method BibCriteresCf       setIdCritereCf()         Sets the current record's "id_critere_cf" value
  * @method BibCriteresCf       setCodeCritereCf()       Sets the current record's "code_critere_cf" value
  * @method BibCriteresCf       setNomCritereCf()        Sets the current record's "nom_critere_cf" value
  * @method BibCriteresCf       setTriCf()               Sets the current record's "tri_cf" value
  * @method BibCriteresCf       setIdCritereSynthese()   Sets the current record's "id_critere_synthese" value
- * @method BibCriteresCf       setCorCritereGroupe()    Sets the current record's "CorCritereGroupe" collection
+ * @method BibCriteresCf       setCorCritereListe()     Sets the current record's "CorCritereListe" collection
  * @method BibCriteresCf       setTRelevesCf()          Sets the current record's "TRelevesCf" collection
  * 
  * @package    geonature
@@ -64,7 +64,7 @@ abstract class BaseBibCriteresCf extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('CorCritereGroupe', array(
+        $this->hasMany('CorCritereListe', array(
              'local' => 'id_critere_cf',
              'foreign' => 'id_critere_cf'));
 
