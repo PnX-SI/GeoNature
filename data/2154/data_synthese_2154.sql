@@ -332,34 +332,6 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 SET search_path = taxonomie, pg_catalog;
 
 --
--- TOC entry 3134 (class 0 OID 126691)
--- Dependencies: 184
--- Data for Name: bib_groupes; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1,'Amphibiens');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(2,'Pycnogonides');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(3,'Entognathes');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(4,'Echinodermes');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(5,'Ecrevisses');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(9,'Insectes');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(11,'Mammifères');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(12,'Oiseaux');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(13,'Poissons');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(14,'Reptiles');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(15,'Myriapodes');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(16,'Arachnides');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(17,'Mollusques');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(18,'Vers');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(19,'Rotifères');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(20,'Tardigrades');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1000,'Plantes vasculaires');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1001,'Bryophytes');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1002,'Lichens');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1003,'Algues');
-INSERT INTO bib_groupes (id_groupe, nom_groupe) VALUES(1004,'Champignons');
-
---
 -- TOC entry 3122 (class 0 OID 126729)
 -- Dependencies: 194
 -- Data for Name: bib_taxons; Type: TABLE DATA; Schema: taxonomie; Owner: -
@@ -371,18 +343,6 @@ INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUE
 INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758');
 INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758');
 INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)');
-
---
--- 
--- Data for Name: cor_taxon_groupe; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (704,13);
-INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (64,11);
-INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (23,1);
-INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (1950,9);
-INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (2804,9);
-INSERT INTO cor_taxon_groupe (id_taxon,id_groupe) VALUES (816,5);
 
 --
 -- 
@@ -418,7 +378,28 @@ INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1, 'liste faune vertébré', 'Liste de test servant à l''affichage des taxons de la faune vertébré pouvant être saisis');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (2, 'liste faune invertébré', 'Liste de test servant à l''affichage des taxons de la faune invertébré pouvant être saisis');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (3, 'liste flore', 'Liste de test servant à l''affichage des taxons de la flore pouvant être saisis');
-
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (101, 'Amphibiens',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (102, 'Pycnogonides',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (103, 'Entognathes',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (104, 'Echinodermes',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (105, 'Ecrevisses',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (106, 'Insectes',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (107, 'Mammifères',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (108, 'Oiseaux',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (109, 'Poissons',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (110, 'Reptiles',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (111, 'Myriapodes',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (112, 'Arachnides',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (113, 'Mollusques',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (114, 'Vers',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (115, 'Rotifères',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (116, 'Tardigrades',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (666, 'Nuisibles',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1000, 'Plantes vasculaires',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1001, 'Bryophytes',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1002, 'Lichens',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1003, 'Algues',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1004, 'Champignons',null);
 --
 -- 
 -- Data for Name: cor_taxon_liste; Type: TABLE DATA; Schema: taxonomie; Owner: -
@@ -430,6 +411,13 @@ INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (23, 1);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (1950, 2);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (2804, 2);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (816, 2);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (23, 101);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (64, 107);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (704, 109);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (816, 105);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (1950, 106);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (2804,106);
+
 SET search_path = contactfaune, pg_catalog;
 
 --
@@ -437,52 +425,50 @@ SET search_path = contactfaune, pg_catalog;
 -- Dependencies: 175
 -- Data for Name: cor_critere_groupe; Type: TABLE DATA; Schema: contactfaune; Owner: -
 --
-
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (31, 1);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (32, 1);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (33, 1);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (34, 1);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (21, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (22, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (23, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (24, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (25, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (26, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (6, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (7, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (8, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (9, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (10, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (11, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (12, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (13, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (14, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (15, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (16, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (17, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (18, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (19, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (20, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (35, 13);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (36, 13);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (37, 13);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (38, 13);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (27, 14);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (28, 14);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (29, 14);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (30, 14);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 1);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 13);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (5, 14);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 1);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (4, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 12);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 11);
-INSERT INTO cor_critere_groupe (id_critere_cf, id_groupe) VALUES (3, 14);
-
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (31, 101);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (32, 101);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (33, 101);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (34, 101);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (21, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (22, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (23, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (24, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (25, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (26, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (6, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (7, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (8, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (9, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (10, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (11, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (12, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (13, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (14, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (15, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (16, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (17, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (18, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (19, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (20, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (35, 109);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (36, 109);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (37, 109);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (38, 109);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (27, 110);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (28, 110);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (29, 110);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (30, 110);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 101);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 109);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 110);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (4, 101);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (4, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (4, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (3, 108);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (3, 107);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (3, 110);
 
 SET search_path = utilisateurs, pg_catalog;
 

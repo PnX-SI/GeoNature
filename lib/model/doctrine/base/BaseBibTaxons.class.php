@@ -10,11 +10,20 @@
  * @property string $nom_latin
  * @property string $nom_francais
  * @property string $auteur
+ * @property string $filtre1
+ * @property string $filtre2
+ * @property string $filtre3
+ * @property string $filtre4
+ * @property string $filtre5
+ * @property string $filtre6
+ * @property string $filtre7
+ * @property string $filtre8
+ * @property string $filtre9
+ * @property string $filtre10
  * @property Taxref $Taxref
  * @property Doctrine_Collection $CorMessageTaxonCf
  * @property Doctrine_Collection $CorMessageTaxonInv
  * @property Doctrine_Collection $CorTaxonAttribut
- * @property Doctrine_Collection $CorTaxonGroupe
  * @property Doctrine_Collection $CorTaxonliste
  * @property Doctrine_Collection $CorUniteTaxon
  * @property Doctrine_Collection $CorUniteTaxonInv
@@ -29,11 +38,20 @@
  * @method string              getNomLatin()            Returns the current record's "nom_latin" value
  * @method string              getNomFrancais()         Returns the current record's "nom_francais" value
  * @method string              getAuteur()              Returns the current record's "auteur" value
+ * @method string              getFiltre1()             Returns the current record's "filtre1" value
+ * @method string              getFiltre2()             Returns the current record's "filtre2" value
+ * @method string              getFiltre3()             Returns the current record's "filtre3" value
+ * @method string              getFiltre4()             Returns the current record's "filtre4" value
+ * @method string              getFiltre5()             Returns the current record's "filtre5" value
+ * @method string              getFiltre6()             Returns the current record's "filtre6" value
+ * @method string              getFiltre7()             Returns the current record's "filtre7" value
+ * @method string              getFiltre8()             Returns the current record's "filtre8" value
+ * @method string              getFiltre9()             Returns the current record's "filtre9" value
+ * @method string              getFiltre10()            Returns the current record's "filtre10" value
  * @method Taxref              getTaxref()              Returns the current record's "Taxref" value
  * @method Doctrine_Collection getCorMessageTaxonCf()   Returns the current record's "CorMessageTaxonCf" collection
  * @method Doctrine_Collection getCorMessageTaxonInv()  Returns the current record's "CorMessageTaxonInv" collection
  * @method Doctrine_Collection getCorTaxonAttribut()    Returns the current record's "CorTaxonAttribut" collection
- * @method Doctrine_Collection getCorTaxonGroupe()      Returns the current record's "CorTaxonGroupe" collection
  * @method Doctrine_Collection getCorTaxonliste()       Returns the current record's "CorTaxonliste" collection
  * @method Doctrine_Collection getCorUniteTaxon()       Returns the current record's "CorUniteTaxon" collection
  * @method Doctrine_Collection getCorUniteTaxonInv()    Returns the current record's "CorUniteTaxonInv" collection
@@ -47,11 +65,20 @@
  * @method BibTaxons           setNomLatin()            Sets the current record's "nom_latin" value
  * @method BibTaxons           setNomFrancais()         Sets the current record's "nom_francais" value
  * @method BibTaxons           setAuteur()              Sets the current record's "auteur" value
+ * @method BibTaxons           setFiltre1()             Sets the current record's "filtre1" value
+ * @method BibTaxons           setFiltre2()             Sets the current record's "filtre2" value
+ * @method BibTaxons           setFiltre3()             Sets the current record's "filtre3" value
+ * @method BibTaxons           setFiltre4()             Sets the current record's "filtre4" value
+ * @method BibTaxons           setFiltre5()             Sets the current record's "filtre5" value
+ * @method BibTaxons           setFiltre6()             Sets the current record's "filtre6" value
+ * @method BibTaxons           setFiltre7()             Sets the current record's "filtre7" value
+ * @method BibTaxons           setFiltre8()             Sets the current record's "filtre8" value
+ * @method BibTaxons           setFiltre9()             Sets the current record's "filtre9" value
+ * @method BibTaxons           setFiltre10()            Sets the current record's "filtre10" value
  * @method BibTaxons           setTaxref()              Sets the current record's "Taxref" value
  * @method BibTaxons           setCorMessageTaxonCf()   Sets the current record's "CorMessageTaxonCf" collection
  * @method BibTaxons           setCorMessageTaxonInv()  Sets the current record's "CorMessageTaxonInv" collection
  * @method BibTaxons           setCorTaxonAttribut()    Sets the current record's "CorTaxonAttribut" collection
- * @method BibTaxons           setCorTaxonGroupe()      Sets the current record's "CorTaxonGroupe" collection
  * @method BibTaxons           setCorTaxonliste()       Sets the current record's "CorTaxonliste" collection
  * @method BibTaxons           setCorUniteTaxon()       Sets the current record's "CorUniteTaxon" collection
  * @method BibTaxons           setCorUniteTaxonInv()    Sets the current record's "CorUniteTaxonInv" collection
@@ -92,6 +119,46 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'type' => 'string',
              'length' => 50,
              ));
+        $this->hasColumn('filtre1', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre2', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre3', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre4', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre5', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre6', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre7', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre8', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre9', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('filtre10', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
     }
 
     public function setUp()
@@ -110,10 +177,6 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'foreign' => 'id_taxon'));
 
         $this->hasMany('CorTaxonAttribut', array(
-             'local' => 'id_taxon',
-             'foreign' => 'id_taxon'));
-
-        $this->hasMany('CorTaxonGroupe', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 

@@ -23,6 +23,7 @@ BibAttributs:
     liste_valeur_attribut: string()
     obligatoire: boolean(1)
     desc_attribut: string()
+    type_attribut: string(50)
 BibClasses:
   tableName: taxonomie.bib_classes
   columns:
@@ -90,6 +91,20 @@ BibExpositionsBryo:
       primary: true
     nom_exposition: string(10)
     tri_exposition: integer(4)
+BibFiltres:
+  tableName: taxonomie.bib_filtres
+  columns:
+    id_filtre:
+      type: integer(4)
+      primary: true
+    nom_filtre: string(50)
+    label1: string(50)
+    label2: string(50)
+    label3: string(50)
+    desc_filtre: string(500)
+    img: string(250)
+    valeur_filtre: string(1000)
+    obligatoire: boolean(1)
 BibFrequencesMethodo:
   tableName: florepatri.bib_frequences_methodo
   columns:
@@ -112,14 +127,6 @@ BibDroits:
       primary: true
     nom_droit: string(50)
     desc_droit: string
-BibGroupes:
-  tableName: taxonomie.bib_groupes
-  columns:
-    id_groupe:
-      type: integer(4)
-      primary: true
-    nom_groupe: string(255)
-    desc_groupe: string()
 BibHomogenes:
   tableName: florestation.bib_homogenes
   columns:
@@ -280,6 +287,16 @@ BibTaxons:
     nom_latin: string(100)
     nom_francais: string(50)
     auteur: string(50)
+    filtre1: string(255)
+    filtre2: string(255)
+    filtre3: string(255)
+    filtre4: string(255)
+    filtre5: string(255)
+    filtre6: string(255)
+    filtre7: string(255)
+    filtre8: string(255)
+    filtre9: string(255)
+    filtre10: string(255)
   relations:
     Taxref:
       class: Taxref
@@ -565,26 +582,26 @@ CorMessageTaxonInv:
       local: id_message_inv
       foreign: id_message_inv
       foreignAlias: CorMessageTaxonInv
-CorCritereGroupe:
-  tableName: contactfaune.cor_critere_groupe
+CorCritereListe:
+  tableName: contactfaune.cor_critere_liste
   columns:
     id_critere_cf:
       type: integer(4)
       primary: true
-    id_groupe:
+    id_liste:
       type: integer(4)
       primary: true
   relations:
-    BibGroupes:
-      class: BibGroupes
-      local: id_groupe
-      foreign: id_groupe
-      foreignAlias: CorCritereGroupe
+    BibListes:
+      class: BibListes
+      local: id_liste
+      foreign: id_liste
+      foreignAlias: CorCritereListe
     BibCriteresCf:
       class: BibCriteresCf
       local: id_critere_cf
       foreign: id_critere_cf
-      foreignAlias: CorCritereGroupe
+      foreignAlias: CorCritereListe
 CorTaxonAttribut:
   tableName: taxonomie.cor_taxon_attribut
   columns:
@@ -606,26 +623,6 @@ CorTaxonAttribut:
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorTaxonAttribut
-CorTaxonGroupe:
-  tableName: taxonomie.cor_taxon_groupe
-  columns:
-    id_taxon:
-      type: integer(4)
-      primary: true
-    id_groupe:
-      type: integer(4)
-      primary: true
-  relations:
-    BibGroupes:
-      class: BibGroupes
-      local: id_groupe
-      foreign: id_groupe
-      foreignAlias: CorTaxonGroupe
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
-      foreignAlias: CorTaxonGroupe
 CorTaxonliste:
   tableName: taxonomie.cor_taxon_liste
   columns:

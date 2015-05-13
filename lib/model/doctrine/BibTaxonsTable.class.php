@@ -40,17 +40,17 @@ class BibTaxonsTable extends Doctrine_Table
                         ELSE null
                     END AS protection_stricte, 
                     CASE
-                        WHEN ctg.id_groupe IS NULL AND txr.regne = 'Fungi' THEN 1004
-                        WHEN ctg.id_groupe IS NULL AND txr.regne = 'Plantae' THEN 1000
-                        ELSE ctg.id_groupe
-                    END AS id_groupe,
+                        WHEN ctl.id_liste IS NULL AND txr.regne = 'Fungi' THEN 1004
+                        WHEN ctl.id_liste IS NULL AND txr.regne = 'Plantae' THEN 1000
+                        ELSE ctl.id_liste
+                    END AS id_liste,
                     txr.cd_ref, txr.cd_nom, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.regne,
                     prot.protections
                 FROM taxonomie.taxref txr 
                 LEFT JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
                 JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
 		        JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon
-                LEFT JOIN taxonomie.cor_taxon_groupe ctg ON ctg.id_taxon = t.id_taxon 
+                LEFT JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon AND ctl.id_liste >= 100 
                 LEFT JOIN (
                     SELECT a.cd_nom, array_to_string(array_agg(a.arrete||' '|| a.article||'__'||a.url) , '#'::text)  AS protections
                     FROM ( SELECT tpe.cd_nom, tpa.url,tpa.arrete,tpa.article

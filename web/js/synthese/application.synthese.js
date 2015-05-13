@@ -232,7 +232,7 @@ application.synthese = function() {
                 'cd_nom'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
                 ,'nom_latin'
-                ,'id_groupe'
+                ,'id_liste'
                 ,'regne'
                 ,'patrimonial'
                 ,'protection_stricte'
