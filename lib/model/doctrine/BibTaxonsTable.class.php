@@ -21,46 +21,7 @@ class BibTaxonsTable extends Doctrine_Table
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         //requète optimisèe = moins 2 secondes
-        $sql = "SELECT 
-                    CASE
-                        WHEN (t.nom_francais = '' OR t.nom_francais IS NULL) AND (txr.nom_vern IS NOT NULL AND txr.nom_vern <> '') THEN txr.nom_vern
-                        WHEN t.nom_francais IS NULL OR txr.nom_vern IS NULL THEN txr.lb_nom
-                        WHEN t.nom_francais = '' OR txr.nom_vern = '' THEN txr.lb_nom
-                        ELSE t.nom_francais
-                    END AS nom_francais,
-                    txr.lb_nom AS nom_latin,
-                    CASE 	
-                        WHEN tx_patri.valeur_attribut = 'oui'  THEN true
-                        WHEN tx_patri.valeur_attribut = 'non'  THEN false
-                        ELSE null
-                    END AS patrimonial,
-                    CASE 	
-                        WHEN tx_prot.valeur_attribut = 'oui'  THEN true
-                        WHEN tx_prot.valeur_attribut = 'non'  THEN false
-                        ELSE null
-                    END AS protection_stricte, 
-                    CASE
-                        WHEN ctl.id_liste IS NULL AND txr.regne = 'Fungi' THEN 1004
-                        WHEN ctl.id_liste IS NULL AND txr.regne = 'Plantae' THEN 1000
-                        ELSE ctl.id_liste
-                    END AS id_liste,
-                    txr.cd_ref, txr.cd_nom, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.regne,
-                    prot.protections
-                FROM taxonomie.taxref txr 
-                LEFT JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
-                JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'patrimonial') tx_patri ON tx_patri.id_taxon = t.id_taxon
-		        JOIN (SELECT id_taxon, valeur_attribut FROM taxonomie.cor_taxon_attribut cta JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut = 'protection_stricte') tx_prot ON tx_prot.id_taxon = t.id_taxon
-                LEFT JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon AND ctl.id_liste >= 100 
-                LEFT JOIN (
-                    SELECT a.cd_nom, array_to_string(array_agg(a.arrete||' '|| a.article||'__'||a.url) , '#'::text)  AS protections
-                    FROM ( SELECT tpe.cd_nom, tpa.url,tpa.arrete,tpa.article
-                            FROM taxonomie.taxref_protection_especes tpe
-                            JOIN  taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.concerne_mon_territoire = true
-                          ) a
-                    GROUP BY a.cd_nom
-                ) prot ON prot.cd_nom = txr.cd_nom
-                WHERE txr.cd_nom IN (SELECT DISTINCT cd_nom FROM synthese.syntheseff)
-                ORDER BY t.nom_francais;";
+        $sql = "SELECT * FROM synthese.v_taxons_synthese";
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         foreach ($taxons as $key => &$val)
         {

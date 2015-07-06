@@ -142,6 +142,7 @@ BibListes:
       primary: true
     nom_liste: string(50)
     desc_liste: string
+    picto: string(50)
 BibLots:
   tableName: meta.bib_lots
   columns:
