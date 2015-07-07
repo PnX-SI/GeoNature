@@ -10,7 +10,7 @@
         <div id="contenu_consultation" style="margin-bottom:30px">  
             <div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/classe101.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/amphibien.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="synthese" style="text-decoration: none">Synthèse des observations</a></div>
                 </div>
             </div>
@@ -25,11 +25,11 @@
             Pour modifier des données contact faune, contact invertébré ou mortalité, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.<br/><br/>
             FAUNE<br/>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/classe101.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/amphibien.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="cf" style="text-decoration: none">Saisie contact faune</a></div>
                 </div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/classe106.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/insecte.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="invertebre" style="text-decoration: none">Saisie contact invertébré</a></div>
                 </div>
                 <div style="margin:10px 0 0 50px ">
