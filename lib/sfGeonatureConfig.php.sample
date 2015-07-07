@@ -1,0 +1,58 @@
+<?php 
+class sfGeonatureConfig extends sfActions
+{
+    //Identifiants des lots de données dans la table meta.bib_lots
+    public static $id_lot_cf = 1;
+    public static $id_lot_mortalite = 2;
+    public static $id_lot_inv = 3;
+    public static $id_lot_florepatri = 4;
+    public static $id_lot_florestation = 5;
+    public static $id_lot_bryo = 6;
+    
+    //Identifiants des protocoles dans la table meta.bib_protocoles
+    public static $id_protocole_cf = 1;
+    public static $id_protocole_mortalite = 2;
+    public static $id_protocole_inv = 3;
+    public static $id_protocole_florepatri = 4;
+    public static $id_protocole_florestation = 5;
+    public static $id_protocole_bryo = 6;
+    
+    //Identifiants des sources de données dans la table synthese.bib_sources
+    public static $id_source_cf = 1;
+    public static $id_source_inv = 3;
+    public static $id_source_florepatri = 4;
+    public static $id_source_florestation = 5;
+    public static $id_source_bryo = 6;
+    
+    //PDOP (precision du GPS) par défaut si non renseigné (pas saisi avec un GPS)
+    public static $default_pdop = -1;
+    
+    //Organisme producteur et propriétaire des données
+    public static $id_organisme = 99;
+    
+    //ID de l'unité où tous les observateurs s'y trouvant peuvent saisir des données mais ne peuvent exporter que leurs données personnelles
+    public static $id_unite_fournisseur = 10;
+    
+    //SRID du fond de carte sur lequel les données sont saisies.
+    //ATTENTION ! Cette valeur doit être laissée à 3857. Elle correspond au srid du Geoportail. Elle est valable en métropole et outre mer.
+    //Cette valeur est parfois présente en dur dans le code de l'application. Elle correspond également aux champs des géométries utilisées dans la base pour consulter ou enregistrer des données.
+    public static $srid_dessin = 3857;
+    
+    //SRID local des couches communes, secteurs, unites géographiques, isoline20 et zones à statuts
+    //Ce srid est utilisé dans les exports. 
+    //Lorsque la base de données est créée avec les scripts SQL fournis (synthese_srid.sql), il faut choisir le script correspondant à la valeur portée ci-dessous. 
+    //Idem pour le script d'insertion des données (synthese_data_srid.sql)
+    //ATTENTION. Il faut mettre à jour le service WMS interne de l'application qui utilise ce script. Fichier wms/faune.map
+    public static $srid_local = 2154;
+  
+    //Nom des applications et titres affichés
+    public static $appname_main = 'GeoNature PNX';
+    public static $appname_cf = 'Contact faune - GeoNature';
+    public static $appname_inv = 'Contact invertébrés - GeoNature';
+    public static $appname_mortalite = 'Mortalite faune - GeoNature';
+    public static $appname_florepatri = 'Flore prioritaire - GeoNature';
+    public static $appname_florestation = 'Flore station - GeoNature';
+    public static $appname_bryo = 'Bryophytes - GeoNature';
+    public static $appname_synthese = 'Synthèse - GeoNature';
+    public static $apptitle_main = 'Parc nationaux - Gestion des données faune-flore';
+}

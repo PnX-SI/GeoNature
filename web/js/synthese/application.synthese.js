@@ -233,6 +233,7 @@ application.synthese = function() {
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
                 ,'nom_latin'
                 ,'id_liste'
+                ,'picto'
                 ,'regne'
                 ,'patrimonial'
                 ,'protection_stricte'

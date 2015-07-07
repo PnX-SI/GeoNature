@@ -28,10 +28,9 @@ sed -i "s/CONNECTION \"host=geonatdbhost.*$/CONNECTION \"host=geonatdbhost dbnam
 echo "Suppression des fichier de log de l'installation..."
 rm log/*.log
 
-echo "Création du fichier de configuration de l'application..."
-echo "En pause pour le dev"
-# cp web/js/config.js.sample web/js/config.js
-
+echo "Création des fichiers de configuration de l'application..."
+cp web/js/config.js.sample web/js/config.js
+cp lib/sfGeonatureConfig.php.sample lib/sfGeonatureConfig.php
 
 echo "Configuration du répertoire web de l'application..."
 sudo ln -s ${PWD}/web/ /var/www/geonature

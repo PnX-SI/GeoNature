@@ -24,7 +24,7 @@
  * @property Doctrine_Collection $CorMessageTaxonCf
  * @property Doctrine_Collection $CorMessageTaxonInv
  * @property Doctrine_Collection $CorTaxonAttribut
- * @property Doctrine_Collection $CorTaxonliste
+ * @property Doctrine_Collection $CorTaxonListe
  * @property Doctrine_Collection $CorUniteTaxon
  * @property Doctrine_Collection $CorUniteTaxonInv
  * @property Doctrine_Collection $TRelevesCf
@@ -52,7 +52,7 @@
  * @method Doctrine_Collection getCorMessageTaxonCf()   Returns the current record's "CorMessageTaxonCf" collection
  * @method Doctrine_Collection getCorMessageTaxonInv()  Returns the current record's "CorMessageTaxonInv" collection
  * @method Doctrine_Collection getCorTaxonAttribut()    Returns the current record's "CorTaxonAttribut" collection
- * @method Doctrine_Collection getCorTaxonliste()       Returns the current record's "CorTaxonliste" collection
+ * @method Doctrine_Collection getCorTaxonListe()       Returns the current record's "CorTaxonListe" collection
  * @method Doctrine_Collection getCorUniteTaxon()       Returns the current record's "CorUniteTaxon" collection
  * @method Doctrine_Collection getCorUniteTaxonInv()    Returns the current record's "CorUniteTaxonInv" collection
  * @method Doctrine_Collection getTRelevesCf()          Returns the current record's "TRelevesCf" collection
@@ -79,7 +79,7 @@
  * @method BibTaxons           setCorMessageTaxonCf()   Sets the current record's "CorMessageTaxonCf" collection
  * @method BibTaxons           setCorMessageTaxonInv()  Sets the current record's "CorMessageTaxonInv" collection
  * @method BibTaxons           setCorTaxonAttribut()    Sets the current record's "CorTaxonAttribut" collection
- * @method BibTaxons           setCorTaxonliste()       Sets the current record's "CorTaxonliste" collection
+ * @method BibTaxons           setCorTaxonListe()       Sets the current record's "CorTaxonListe" collection
  * @method BibTaxons           setCorUniteTaxon()       Sets the current record's "CorUniteTaxon" collection
  * @method BibTaxons           setCorUniteTaxonInv()    Sets the current record's "CorUniteTaxonInv" collection
  * @method BibTaxons           setTRelevesCf()          Sets the current record's "TRelevesCf" collection
@@ -180,7 +180,7 @@ abstract class BaseBibTaxons extends sfDoctrineRecord
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 
-        $this->hasMany('CorTaxonliste', array(
+        $this->hasMany('CorTaxonListe', array(
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 
