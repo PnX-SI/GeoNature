@@ -1,7 +1,7 @@
 #config PostgreSQL
 
-# effacer la base de donnée existante lors de l'installation
-drop_apps_db=true
+#effacer la base de donnée existante lors de l'installation
+drop_apps_db=false
 
 #nom de la base de données de l'application
 db_name=geonaturedb
@@ -12,8 +12,8 @@ user_pg=geonatuser
 #nom du superutilisateur PostgreSQL
 admin_pg=geonatadmin
 
-#user propriétaire de la base geonature
+#user propriétaire de la base geonaturedb
 user_pg_pass=monpassachanger
 
-#superuser de la base geonature
+#superuser de la base geonaturedb
 admin_pg_pass=monpassachanger

@@ -5,7 +5,13 @@ APPLICATION
 Configuration de la base de données PostgreSQL
 ==============================================
 
-* Mettre à jour le fichier ``config/settings.ini``
+* Copier et renommer le fichier ``config/settings.ini.sample`` en ``config/settings.ini`` :
+
+    :: 
+	
+	    cp config/settings.ini.sample config/settings.ini
+
+* Mettre à jour le fichier ``config/settings.ini`` avec vos paramètre de connexion à la BDD :
 
     :: 
 	
