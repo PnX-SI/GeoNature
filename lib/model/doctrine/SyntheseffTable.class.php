@@ -389,7 +389,7 @@ class SyntheseffTable extends Doctrine_Table
                 WHERE synt.supprime = false"
                 .$addwhere.
                 " GROUP BY t.nom_latin, t.nom_francais, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, 
-                        synt.cd_nom, txr.cd_ref, tpe.precisions, tx_prot.valeur_attribut,tx_patri.valeur_attribut,
+                        synt.cd_nom, txr.cd_ref, tpe.precisions, patrimonial, protection_stricte, 
                         tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url, tpa.url ,tpa.type_protection
                 ORDER BY txr.phylum, txr.regne, txr.classe, txr.ordre, txr.famille, t.nom_francais";
         $lesstatuts = $dbh->query($sql);
