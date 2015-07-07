@@ -142,6 +142,7 @@ BibListes:
       primary: true
     nom_liste: string(50)
     desc_liste: string
+    picto: string(50)
 BibLots:
   tableName: meta.bib_lots
   columns:
@@ -623,7 +624,7 @@ CorTaxonAttribut:
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorTaxonAttribut
-CorTaxonliste:
+CorTaxonListe:
   tableName: taxonomie.cor_taxon_liste
   columns:
     id_taxon:
@@ -637,12 +638,12 @@ CorTaxonliste:
       class: BibListes
       local: id_liste
       foreign: id_liste
-      foreignAlias: CorTaxonliste
+      foreignAlias: CorTaxonListe
     BibTaxons:
       class: BibTaxons
       local: id_taxon
       foreign: id_taxon
-      foreignAlias: CorTaxonliste
+      foreignAlias: CorTaxonListe
 CorRoleDroitApplication:
   tableName: utilisateurs.cor_role_droit_application
   columns:

@@ -1,5 +1,7 @@
 *.*~
 web/js/config.js
 config/databases.yml
+config/settings.ini
 wms/wms*.map
 log/*
+lib/sfGeonatureConfig.php

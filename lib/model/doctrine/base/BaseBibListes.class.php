@@ -8,19 +8,22 @@
  * @property integer $id_liste
  * @property string $nom_liste
  * @property string $desc_liste
+ * @property string $picto
  * @property Doctrine_Collection $CorCritereListe
- * @property Doctrine_Collection $CorTaxonliste
+ * @property Doctrine_Collection $CorTaxonListe
  * 
  * @method integer             getIdListe()         Returns the current record's "id_liste" value
  * @method string              getNomListe()        Returns the current record's "nom_liste" value
  * @method string              getDescListe()       Returns the current record's "desc_liste" value
+ * @method string              getPicto()           Returns the current record's "picto" value
  * @method Doctrine_Collection getCorCritereListe() Returns the current record's "CorCritereListe" collection
- * @method Doctrine_Collection getCorTaxonliste()   Returns the current record's "CorTaxonliste" collection
+ * @method Doctrine_Collection getCorTaxonListe()   Returns the current record's "CorTaxonListe" collection
  * @method BibListes           setIdListe()         Sets the current record's "id_liste" value
  * @method BibListes           setNomListe()        Sets the current record's "nom_liste" value
  * @method BibListes           setDescListe()       Sets the current record's "desc_liste" value
+ * @method BibListes           setPicto()           Sets the current record's "picto" value
  * @method BibListes           setCorCritereListe() Sets the current record's "CorCritereListe" collection
- * @method BibListes           setCorTaxonliste()   Sets the current record's "CorTaxonliste" collection
+ * @method BibListes           setCorTaxonListe()   Sets the current record's "CorTaxonListe" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -44,6 +47,10 @@ abstract class BaseBibListes extends sfDoctrineRecord
         $this->hasColumn('desc_liste', 'string', null, array(
              'type' => 'string',
              ));
+        $this->hasColumn('picto', 'string', 50, array(
+             'type' => 'string',
+             'length' => 50,
+             ));
     }
 
     public function setUp()
@@ -53,7 +60,7 @@ abstract class BaseBibListes extends sfDoctrineRecord
              'local' => 'id_liste',
              'foreign' => 'id_liste'));
 
-        $this->hasMany('CorTaxonliste', array(
+        $this->hasMany('CorTaxonListe', array(
              'local' => 'id_liste',
              'foreign' => 'id_liste'));
     }

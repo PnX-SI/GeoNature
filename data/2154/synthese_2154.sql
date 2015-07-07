@@ -3536,7 +3536,8 @@ CREATE TABLE bib_listes
    (
     id_liste integer NOT NULL,
     nom_liste character varying(255) NOT NULL,
-    desc_liste text
+    desc_liste text,
+    picto character varying(50), -- Indique le chemin vers l'image du picto représentant le groupe taxonomique dans les menus déroulants de taxons
    );
    
 --
@@ -3659,7 +3660,7 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
 -- Name: v_nomade_taxons_faune; Type: VIEW; Schema: contactfaune; Owner: -
 --
 CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
- SELECT DISTINCT t.id_taxon,
+SELECT DISTINCT t.id_taxon,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
     tx.cd_nom,
     t.nom_latin,
@@ -3667,8 +3668,8 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS
     g.id_classe,
     5 AS denombrement,
         CASE
-            WHEN tx_patri.valeur_attribut::text = 'oui'::text THEN true
-            WHEN tx_patri.valeur_attribut::text = 'non'::text THEN false
+            WHEN t.filtre2::text = 'oui'::text THEN true
+            WHEN t.filtre2::text = 'non'::text THEN false
             ELSE NULL::boolean
         END AS patrimonial,
     m.texte_message_cf AS message,
@@ -3678,19 +3679,10 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS
      LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
      LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
      JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-     JOIN ( SELECT cta.id_taxon,
-            cta.valeur_attribut
-           FROM taxonomie.cor_taxon_attribut cta
-             JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut::text = 'patrimonial'::text) tx_patri ON tx_patri.id_taxon = t.id_taxon
      JOIN contactfaune.v_nomade_classes g ON g.id_classe = ctl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
   WHERE ctl.id_liste = ANY (ARRAY[101, 107, 108, 109, 110])
-  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe,
-        CASE
-            WHEN tx_patri.valeur_attribut::text = 'oui'::text THEN true
-            WHEN tx_patri.valeur_attribut::text = 'non'::text THEN false
-            ELSE NULL::boolean
-        END, m.texte_message_cf;
+  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe,patrimonial,m.texte_message_cf;
 
 SET search_path = layers, pg_catalog;
 
@@ -3955,15 +3947,15 @@ CREATE VIEW v_nomade_observateurs_inv AS
 --
 
 CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
- SELECT t.id_taxon,
+ SELECT DISTINCT t.id_taxon,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
     tx.cd_nom,
     t.nom_latin,
     t.nom_francais,
     g.id_classe,
         CASE
-            WHEN tx_patri.valeur_attribut::text = 'oui'::text THEN true
-            WHEN tx_patri.valeur_attribut::text = 'non'::text THEN false
+            WHEN t.filtre2::text = 'oui'::text THEN true
+            WHEN t.filtre2::text = 'non'::text THEN false
             ELSE NULL::boolean
         END AS patrimonial,
     m.texte_message_inv AS message
@@ -3971,13 +3963,9 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS
      LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
      LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
      JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-     JOIN ( SELECT cta.id_taxon,
-            cta.valeur_attribut
-           FROM taxonomie.cor_taxon_attribut cta
-             JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut AND a.nom_attribut::text = 'patrimonial'::text) tx_patri ON tx_patri.id_taxon = t.id_taxon
      JOIN contactinv.v_nomade_classes g ON g.id_classe = ctl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-     WHERE ctl.id_liste = ANY (ARRAY[104, 105, 106, 111, 112, 113, 114]);
+  WHERE ctl.id_liste = ANY (ARRAY[104, 105, 106, 111, 112, 113, 114]);
 
 --
 -- Name: v_nomade_unites_geo_inv; Type: VIEW; Schema: contactinv; Owner: -
@@ -4708,6 +4696,43 @@ FROM
         t_1.famille AS nom_famille
     FROM taxon t_1
 ) t;
+
+CREATE OR REPLACE VIEW v_taxons_synthese AS 
+SELECT DISTINCT 
+                    CASE
+                        WHEN (t.nom_francais = '' OR t.nom_francais IS NULL) AND (txr.nom_vern IS NOT NULL AND txr.nom_vern <> '') THEN txr.nom_vern
+                        WHEN t.nom_francais IS NULL OR txr.nom_vern IS NULL THEN txr.lb_nom
+                        WHEN t.nom_francais = '' OR txr.nom_vern = '' THEN txr.lb_nom
+                        ELSE t.nom_francais
+                    END AS nom_francais,
+                    txr.lb_nom AS nom_latin,
+                    CASE 	
+                        WHEN t.filtre2 = 'oui'  THEN true
+                        WHEN t.filtre2 = 'non'  THEN false
+                        ELSE null
+                    END AS patrimonial,
+                    CASE 	
+                        WHEN t.filtre3 = 'oui'  THEN true
+                        WHEN t.filtre3 = 'non'  THEN false
+                        ELSE null
+                    END AS protection_stricte, 
+                    txr.cd_ref, txr.cd_nom, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.regne,
+                    prot.protections, l.id_liste, l.picto
+                FROM taxonomie.taxref txr 
+                LEFT JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
+                JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
+                JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste AND l.id_liste IN(101,105,106,107,108,109,110,111,112,113)
+                LEFT JOIN (
+                    SELECT a.cd_nom, array_to_string(array_agg(a.arrete||' '|| a.article||'__'||a.url) , '#'::text)  AS protections
+                    FROM ( SELECT tpe.cd_nom, tpa.url,tpa.arrete,tpa.article
+                            FROM taxonomie.taxref_protection_especes tpe
+                            JOIN  taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.concerne_mon_territoire = true
+                          ) a
+                    GROUP BY a.cd_nom
+                ) prot ON prot.cd_nom = txr.cd_nom
+                WHERE txr.cd_nom IN (SELECT DISTINCT cd_nom FROM synthese.syntheseff)
+                ORDER BY nom_francais;
+                
 
 SET search_path = utilisateurs, pg_catalog;
 
@@ -9250,6 +9275,16 @@ SET search_path = synthese, pg_catalog;
 REVOKE ALL ON TABLE v_tree_taxons_synthese FROM PUBLIC;
 REVOKE ALL ON TABLE v_tree_taxons_synthese FROM geonatuser;
 GRANT ALL ON TABLE v_tree_taxons_synthese TO geonatuser;
+
+--
+-- Name: v_taxons_synthese; Type: ACL; Schema: synthese; Owner: -
+--
+
+REVOKE ALL ON TABLE v_taxons_synthese FROM PUBLIC;
+REVOKE ALL ON TABLE v_taxons_synthese FROM geonatuser;
+GRANT ALL ON TABLE v_taxons_synthese TO geonatuser;
+
+
 
 
 SET search_path = taxonomie, pg_catalog;
