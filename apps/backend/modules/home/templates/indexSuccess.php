@@ -10,7 +10,7 @@
         <div id="contenu_consultation" style="margin-bottom:30px">  
             <div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/amphibien.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/amphibien.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="synthese" style="text-decoration: none">Synthèse des observations</a></div>
                 </div>
             </div>
@@ -38,15 +38,15 @@
                 </div>
             FLORE<br/>
                 <!--<div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/fleur_silhoulette.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/plante.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="fp" style="text-decoration: none">Saisie flore prioritaire</a></div>
                 </div>-->
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/fleur_silhoulette.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/plante.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="fs" style="text-decoration: none">Saisie flore station</a></div>
                 </div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/fleur_silhoulette.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/plante.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="bryo" style="text-decoration: none">Saisie bryophytes</a></div>
                 </div>
         </div>
@@ -61,7 +61,7 @@
             </div>
             <div id="content">
                 <div id="header">
-                    <h3>Culmul des observations selon le mode de saisie</h3>
+                    <h3>Cumul des observations selon le mode de saisie</h3>
                 </div>
                 <div class="demo-container">
                     <p>Faune vertébrée</p>

@@ -375,31 +375,31 @@ INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (
 -- Data for Name: bib_listes; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1, 'liste faune vertébré', 'Liste de test servant à l''affichage des taxons de la faune vertébré pouvant être saisis');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (2, 'liste faune invertébré', 'Liste de test servant à l''affichage des taxons de la faune invertébré pouvant être saisis');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (3, 'liste flore', 'Liste de test servant à l''affichage des taxons de la flore pouvant être saisis');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (101, 'Amphibiens',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (102, 'Pycnogonides',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (103, 'Entognathes',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (104, 'Echinodermes',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (105, 'Ecrevisses',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (106, 'Insectes',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (107, 'Mammifères',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (108, 'Oiseaux',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (109, 'Poissons',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (110, 'Reptiles',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (111, 'Myriapodes',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (112, 'Arachnides',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (113, 'Mollusques',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (114, 'Vers',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (115, 'Rotifères',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (116, 'Tardigrades',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (666, 'Nuisibles',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1000, 'Plantes vasculaires',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1001, 'Bryophytes',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1002, 'Lichens',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1003, 'Algues',null);
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste) VALUES (1004, 'Champignons',null);
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1, 'liste faune vertébré', 'Liste de test servant à l''affichage des taxons de la faune vertébré pouvant être saisis', 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (2, 'liste faune invertébré', 'Liste de test servant à l''affichage des taxons de la faune invertébré pouvant être saisis', 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (3, 'liste flore', 'Liste de test servant à l''affichage des taxons de la flore pouvant être saisis', 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (101, 'Amphibiens',null, 'images/pictos/amphibien.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (102, 'Pycnogonides',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (103, 'Entognathes',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (104, 'Echinodermes',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (105, 'Ecrevisses',null, 'images/pictos/ecrevisse.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (106, 'Insectes',null, 'images/pictos/insecte.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (107, 'Mammifères',null, 'images/pictos/mammifere.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (108, 'Oiseaux',null, 'images/pictos/oiseau.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (109, 'Poissons',null, 'images/pictos/poisson.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (110, 'Reptiles',null, 'images/pictos/reptile.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (111, 'Myriapodes',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (112, 'Arachnides',null, 'images/pictos/araignee.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (113, 'Mollusques',null, 'images/pictos/mollusque.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (114, 'Vers',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (115, 'Rotifères',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (116, 'Tardigrades',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (666, 'Nuisibles',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1000, 'Plantes vasculaires',null, 'images/pictos/plante.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'Bryophytes',null, 'images/pictos/mousse.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1002, 'Lichens',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1003, 'Algues',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1004, 'Champignons',null, 'images/pictos/champignon.gif');
 --
 -- 
 -- Data for Name: cor_taxon_liste; Type: TABLE DATA; Schema: taxonomie; Owner: -
