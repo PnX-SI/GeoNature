@@ -1,5 +1,5 @@
 /*
- * FileUploadField component styles
+ * FileUploadField component styles (upload de fichier, utilisé pour le chargement de GPX)
  */
 .x-form-file-wrap {
     position: relative;
@@ -30,7 +30,9 @@
 	background: url(../images/image_add.png) 
 	no-repeat 0 0 !important; 
 	}
-/*fin pour le  FileUploadField component styles*/
+	
+/* Fin pour le FileUploadField component styles*/
+
 .x-panel-body p {
     margin:5px;
     font-family:arial,tahoma,helvetica,sans-serif;
@@ -435,9 +437,6 @@
     font-weight: bold !important;
     font-size : 11px !important;
     color:green;
-}
-.fleur_silhoulette{
-  background-image:url(../images/fleur_silhoulette.gif) !important;
 }
 .send-error{
     background-image: url(../images/delete.gif) !important;

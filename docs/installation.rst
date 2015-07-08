@@ -11,7 +11,7 @@ Configuration de la base de données PostgreSQL
 	
 	    cp config/settings.ini.sample config/settings.ini
 
-* Mettre à jour le fichier ``config/settings.ini`` avec vos paramètre de connexion à la BDD :
+* Mettre à jour le fichier ``config/settings.ini`` avec vos paramètres de connexion à la BDD :
 
     :: 
 	
@@ -57,9 +57,12 @@ Configuration de l'application
 	- Changer ``mon-domaine.fr`` par votre propre URL (wms_uri, host_uri)
 	- Renseigner votre clé IGN Geoportail ainsi que l'emprise spatiale de votre territoire
 	
+    
 * Adapter le contenu du fichier ``lib/sfGeonatureConfig.php``. Il indique notamment les identifiants de chaque protocoles, lots et sources de données. 
 
+
 * Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature avec l'utilisateur et mot de passe : ``admin/admin``
+
 
 Mise à jour de l'application
 ----------------------------

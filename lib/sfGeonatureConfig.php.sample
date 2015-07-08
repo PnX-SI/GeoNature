@@ -24,6 +24,11 @@ class sfGeonatureConfig extends sfActions
     public static $id_source_florestation = 5;
     public static $id_source_bryo = 6;
     
+    //Personnalisation du contenu des menus déroulants (en lien avec la table utilisateurs.t_menus et utilisateurs.cor_role_menu)
+    public static $id_menu_observateurs_cf = 11;
+    public static $id_menu_observateurs_inv = 11;
+    public static $id_menu_observateurs_flore = 10;
+    
     //PDOP (precision du GPS) par défaut si non renseigné (pas saisi avec un GPS)
     public static $default_pdop = -1;
     
