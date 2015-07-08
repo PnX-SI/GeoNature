@@ -14,7 +14,7 @@ class TRolesTable extends Doctrine_Table
             $query_utilisateur= Doctrine_Query::create()
             ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
             ->from('TRoles r')
-            ->innerJoin('r.CorRoleMenu crm ON crm.id_menu = 9 AND r.id_role=crm.id_role')
+            ->innerJoin('r.CorRoleMenu crm ON crm.id_menu = '.sfGeonatureConfig::$id_menu_observateurs_cf.' AND r.id_role=crm.id_role')
             ->where('r.groupe = false')
             ->orderBy('auteur')
             ->fetchArray();
@@ -22,7 +22,7 @@ class TRolesTable extends Doctrine_Table
             ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
             ->from('TRoles r')
             ->innerJoin('r.CorRoles cr ON cr.id_role_utilisateur = r.id_role')
-            ->innerJoin('cr.CorRoleMenu crmg ON crmg.id_menu = 9 AND cr.id_role_groupe=crmg.id_role')
+            ->innerJoin('cr.CorRoleMenu crmg ON crmg.id_menu = '.sfGeonatureConfig::$id_menu_observateurs_cf.' AND cr.id_role_groupe=crmg.id_role')
             ->orderBy('auteur')
             ->fetchArray();
             $query=array_merge($query_utilisateur, $query_groupe);
@@ -34,7 +34,7 @@ class TRolesTable extends Doctrine_Table
             $query_utilisateur= Doctrine_Query::create()
             ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
             ->from('TRoles r')
-            ->innerJoin('r.CorRoleMenu crm ON crm.id_menu = 9 AND r.id_role=crm.id_role')
+            ->innerJoin('r.CorRoleMenu crm ON crm.id_menu = '.sfGeonatureConfig::$id_menu_observateurs_inv.' AND r.id_role=crm.id_role')
             ->where('r.groupe = false')
             ->orderBy('auteur')
             ->fetchArray();
@@ -42,7 +42,7 @@ class TRolesTable extends Doctrine_Table
             ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
             ->from('TRoles r')
             ->innerJoin('r.CorRoles cr ON cr.id_role_utilisateur = r.id_role')
-            ->innerJoin('cr.CorRoleMenu crmg ON crmg.id_menu = 9 AND cr.id_role_groupe=crmg.id_role')
+            ->innerJoin('cr.CorRoleMenu crmg ON crmg.id_menu = '.sfGeonatureConfig::$id_menu_observateurs_inv.' AND cr.id_role_groupe=crmg.id_role')
             ->orderBy('auteur')
             ->fetchArray();
             $query=array_merge($query_utilisateur, $query_groupe);
@@ -53,7 +53,7 @@ class TRolesTable extends Doctrine_Table
             $query_utilisateur= Doctrine_Query::create()
             ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
             ->from('TRoles r')
-            ->innerJoin('r.CorRoleMenu crm ON crm.id_menu = 10 AND r.id_role=crm.id_role')
+            ->innerJoin('r.CorRoleMenu crm ON crm.id_menu = '.sfGeonatureConfig::$id_menu_observateurs_flore.' AND r.id_role=crm.id_role')
             ->where('r.groupe = false')
             ->orderBy('auteur')
             ->fetchArray();
@@ -61,7 +61,7 @@ class TRolesTable extends Doctrine_Table
             ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
             ->from('TRoles r')
             ->innerJoin('r.CorRoles cr ON cr.id_role_utilisateur = r.id_role')
-            ->innerJoin('cr.CorRoleMenu crmg ON crmg.id_menu = 10 AND cr.id_role_groupe=crmg.id_role')
+            ->innerJoin('cr.CorRoleMenu crmg ON crmg.id_menu = '.sfGeonatureConfig::$id_menu_observateurs_flore.' AND cr.id_role_groupe=crmg.id_role')
             ->orderBy('auteur')
             ->fetchArray();
             $query=array_merge($query_utilisateur, $query_groupe);
