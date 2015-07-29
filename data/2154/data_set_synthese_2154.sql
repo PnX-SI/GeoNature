@@ -85,7 +85,7 @@ INSERT INTO t_releves_inv VALUES (2, 2, 816, 8, 100, 0, 0, 0, 18437, 'Ecrevisse 
 SELECT pg_catalog.setval('t_releves_inv_gid_seq', 2, true);
 
 
-SET search_path = florestation, pg_catalog;
+SET search_path = florestation, public, pg_catalog;
 
 --
 -- TOC entry 3781 (class 0 OID 382074)
