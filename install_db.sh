@@ -52,6 +52,8 @@ then
     tar -xzvf data_inpn_v7.tar.gz
     cd ../..
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
+    DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+    sed -i "s#/home/synthese/geonature#${DIR}#g" data/inpn/data_inpn_v7_synthese.sql
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v7_synthese.sql &>> log/install_db.log
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
@@ -150,7 +152,7 @@ then
     sudo -n -u postgres -s shp2pgsql -s 2154 -a -g the_geom -W "LATIN1"  data/layers/znieff2_mer/znieff2_mer.shp layers.l_zonesstatut > data/layers/sql/znieff2_mer.sql
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/znieff2_mer.sql &>> log/install_db.log
     
-    # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name  -f data/layers/zonesstatut.sql &>> log/install_db.log
+    #export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name  -f data/layers/zonesstatut.sql &>> log/install_db.log
     echo "Insertion d'un jeu de données test dans les schémas contactfaune et contactinv de la base"
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/2154/data_set_synthese_2154.sql  &>> log/install_db.log
 
