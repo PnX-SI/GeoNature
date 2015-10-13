@@ -10,7 +10,7 @@
         <div id="contenu_consultation" style="margin-bottom:30px">  
             <div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/amphibien.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/oiseau.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="synthese" style="text-decoration: none">Synthèse des observations</a></div>
                 </div>
             </div>
@@ -25,15 +25,15 @@
             Pour modifier des données contact faune, contact invertébré ou mortalité, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.<br/><br/>
             FAUNE<br/>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/amphibien.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/amphibien.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="cf" style="text-decoration: none">Saisie contact faune</a></div>
                 </div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/insecte.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/insecte.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="invertebre" style="text-decoration: none">Saisie contact invertébré</a></div>
                 </div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/squelette.png" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/squelette.png" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="mortalite" style="text-decoration: none">Saisie mortalité faune</a></div>
                 </div>
             FLORE<br/>
@@ -46,7 +46,7 @@
                     <div style="vertical-align:middle;display:inline-block;"><a href="fs" style="text-decoration: none">Saisie flore station</a></div>
                 </div>
                 <div style="margin:10px 0 0 50px ">
-                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/plante.gif" border="0"></div>
+                    <div style="vertical-align:middle;display:inline-block;"><img src="images/pictos/mousse.gif" border="0"></div>
                     <div style="vertical-align:middle;display:inline-block;"><a href="bryo" style="text-decoration: none">Saisie bryophytes</a></div>
                 </div>
         </div>
