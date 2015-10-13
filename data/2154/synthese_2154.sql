@@ -2450,7 +2450,7 @@ END
 $$;
 
 
-SET search_path = synthese, pg_catalog;
+SET search_path = synthese, public, pg_catalog;
 
 --
 -- Name: calcul_cor_unite_taxon_cf(integer, integer); Type: FUNCTION; Schema: synthese; Owner: -
@@ -3537,7 +3537,7 @@ CREATE TABLE bib_listes
     id_liste integer NOT NULL,
     nom_liste character varying(255) NOT NULL,
     desc_liste text,
-    picto character varying(50), -- Indique le chemin vers l'image du picto représentant le groupe taxonomique dans les menus déroulants de taxons
+    picto character varying(50) -- Indique le chemin vers l'image du picto représentant le groupe taxonomique dans les menus déroulants de taxons
    );
    
 --
@@ -4697,7 +4697,7 @@ FROM
     FROM taxon t_1
 ) t;
 
-CREATE OR REPLACE VIEW v_taxons_synthese AS 
+CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS 
 SELECT DISTINCT 
                     CASE
                         WHEN (t.nom_francais = '' OR t.nom_francais IS NULL) AND (txr.nom_vern IS NOT NULL AND txr.nom_vern <> '') THEN txr.nom_vern
