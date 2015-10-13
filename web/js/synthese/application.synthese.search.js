@@ -258,7 +258,7 @@ application.synthese.search = function() {
     var createTemplates = function() {     
         tplZpDescriptionCols =[
             new Ext.XTemplate(
-                '<p><b><tpl if="taxon_francais">{taxon_francais} - </tpl><i>{taxon_latin}</i></b> - {effectif_total} individu(s) le {dateobs:date("d/m/Y")}</p>'
+                '<p><b><tpl if="taxon_francais">{taxon_francais} - </tpl><i>{taxon_latin}</i></b><tpl if="effectif_total"> - {effectif_total} individu(s)</tpl> le {dateobs:date("d/m/Y")}</p>'
                 ,'<tpl if="observateurs"><p><b>Observation de </b> {observateurs} à {altitude} m ({nom_critere_synthese})</p></tpl> '
                 ,'<tpl if="nomcommune"><p>Sur la commune de {nomcommune}</p></tpl> '
                 ,'<tpl if="code_fiche_source"><p>Code fiche : {code_fiche_source}</p></tpl> '
