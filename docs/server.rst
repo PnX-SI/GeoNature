@@ -14,14 +14,14 @@ Prérequis
 Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
 
 
-* disposer d'un utilisateur linux nommé ``synthese``. Le répertoire de cet utilisateur ``synthese`` doit être dans ``/home/synthese``
+* Disposer d'un utilisateur linux nommé ``synthese`` (par exemple). Le répertoire de cet utilisateur ``synthese`` doit être dans ``/home/synthese``
 
     :: 
     
         sudo adduser --home /home/synthese synthese
 
 
-* récupérer le zip de l'application sur le Github du projet
+* Récupérer le zip de l’application sur le Github du projet (`X.Y.Z à remplacer par le numéro de version souhaitée <https://github.com/mPnEcrins/GeoNature/releases>`_), dézippez le dans le répertoire ``/tmp`` du serveur puis copiez le dans le répertoire de l’utilisateur linux :
 
     ::
     
@@ -29,7 +29,7 @@ Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
         wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
         unzip vX.Y.Z.zip
         mkdir -p /home/synthese/geonature
-        cp geonature-X.Y.Z/* /home/synthese/geonature
+        cp GeoNature-X.Y.Z/* /home/synthese/geonature
         cd /home/synthese
 
 
@@ -82,7 +82,7 @@ Installation pour Debian 7.
     
     Par défaut, PostgreSQL est en localhost (127.0.1.1)
     
-    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caratères ci-dessus comme ceci ``50.50.56.27   geonatdbhost``
+    Si votre serveur PostgreSQL est sur un autre host (par exemple sur ``50.50.56.27``), vous devez modifier la chaine de caractères ci-dessus comme ceci ``50.50.56.27   geonatdbhost``
 
 * Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur ``www-data`` y ait accès en lecture/écriture
 
@@ -106,7 +106,7 @@ Installation et configuration de PosgreSQL
         sudo apt-get install postgresql-9.3-postgis-2.1
         sudo adduser postgres sudo
         
-* configuration PostgreSQL - permettre l'écoute de toutes les ip
+* configuration PostgreSQL - permettre l'écoute de toutes les IP
 
     ::
     
@@ -128,9 +128,9 @@ L'utilisateur ``geonatuser`` sera le propriétaire de la base de données ``geon
 
 L'utilisateur ``geonatadmin`` est super utilisateur de PostgreSQL.
 
-L'application fonctionne avec par default le mot de passe ``monpassachanger`` mais il est conseillé de le modifier !
+L'application fonctionne avec le mot de passe ``monpassachanger`` par defaut mais il est conseillé de le modifier !
 
-Ce mot de passe, ainsi que les utilisateurs postgres créés ci-dessous ``geonatuser`` et ``geonatadmin`` sont des valeurs par défaut utiliser à plusieurs reprises dans l'application. Ils peuvent cependant être changés. S'ils doivent être changés, ils doivent l'être dans plusieurs fichiers de l'application : 
+Ce mot de passe, ainsi que les utilisateurs PostgreSQL créés ci-dessus (``geonatuser`` et ``geonatadmin``) sont des valeurs par défaut utilisées à plusieurs reprises dans l'application. Ils peuvent cependant être changés. S'ils doivent être changés, ils doivent l'être dans plusieurs fichiers de l'application : 
 
     config/settings.ini
     
