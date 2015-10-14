@@ -65,9 +65,34 @@ Configuration de l'application
 
 
 Mise à jour de l'application
-----------------------------
+============================
 
-* Suivre les instructions disponibles dans la doc de la version choisie (https://github.com/PnEcrins/GeoNature/releases)
+Les différentes versions sont disponibles sur le Github du projet (https://github.com/PnEcrins/GeoNature/releases).
+
+* Télécharger et extraire la version souhaitée dans un répertoire séparé (où ``X.Y.Z`` est à remplacer par le numéro de la version que vous installez). 
+
+.. code-block:: bash
+
+    cd /home/synthese/
+    wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
+    unzip vX.Y.Z.zip
+    cd GeoNature-X.Y.Z/
+
+* Lire attentivement les notes de chaque version si il y a des spécificités (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise à jour.
+
+* Copier les anciens fichiers de configuration et les charger dans le nouveau répertoire de l'application (``version-precedente`` est à modifier par le nom du répertoire où était installé votre application GeoNature).
+
+::
+
+    # Fichiers de configuration
+    cp ../version-precedente/config/settings.ini config/settings.ini
+    cp ../version-precedente/conf/web/js/config.js web/js/config.js
+    cp ../version-precedente/conf/lib/sfGeonatureConfig.php lib/sfGeonatureConfig.php
+
+    # Bandeau de l'application
+    cp ../version-precedente/web/images/bandeau_faune.jpg web/images/bandeau_faune.jpg
+
+* Renommer l'ancien répertoire de l'application GeoNature (/geonature_OLD/ par exemple) puis celui de la nouvelle version (/geonature/ par exemple) pour que le serveur pointe sur la nouvelle version.
 
 
 Clé IGN
