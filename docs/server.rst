@@ -21,7 +21,7 @@ Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
         sudo adduser --home /home/synthese synthese
 
 
-* Récupérer le zip de l’application sur le Github du projet (`X.Y.Z à remplacer par le numéro de version souhaitée <https://github.com/mPnEcrins/GeoNature/releases>`_), dézippez le dans le répertoire ``/tmp`` du serveur puis copiez le dans le répertoire de l’utilisateur linux :
+* Récupérer le zip de l’application sur le Github du projet (`X.Y.Z à remplacer par le numéro de version souhaitée <https://github.com/PnEcrins/GeoNature/releases>`_), dézippez le dans le répertoire ``/tmp`` du serveur puis copiez le dans le répertoire de l’utilisateur linux :
 
     ::
     
