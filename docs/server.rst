@@ -59,9 +59,9 @@ Installation pour Debian 7.
     adduser synthese sudo
     exit
     
-    Fermer la console et la réouvrir pour que les modifications soient prises en compte
+* Fermer la console et la réouvrir pour que les modifications soient prises en compte.
     
-* Activer le mod_rewrite et les configurations requises pour symfony et redémarrer apache
+* Activer le ``mod_rewrite`` et les configurations requises pour Symfony et redémarrer Apache
 
   ::  
         
@@ -69,7 +69,7 @@ Installation pour Debian 7.
         sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
         sudo apache2ctl restart
 
-* Ajouter un alias du serveur de base de données dans le fichier /etc/hosts
+* Ajouter un alias du serveur de base de données dans le fichier ``/etc/hosts``
 
   ::  
         
@@ -106,7 +106,7 @@ Installation et configuration de PosgreSQL
         sudo apt-get install postgresql-9.3-postgis-2.1
         sudo adduser postgres sudo
         
-* configuration PostgreSQL - permettre l'écoute de toutes les IP
+* Configuration de PostgreSQL - permettre l'écoute de toutes les IP
 
     ::
     
