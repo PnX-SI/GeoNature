@@ -89,7 +89,7 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
     cp ../version-precedente/conf/web/js/config.js web/js/config.js
     cp ../version-precedente/conf/lib/sfGeonatureConfig.php lib/sfGeonatureConfig.php
 
-    # Logo et pied de page
+    # Bandeau de l'application
     cp ../version-precedente/web/images/bandeau_faune.jpg web/images/bandeau_faune.jpg
 
 * Renommer l'ancien répertoire de l'application GeoNature (/geonature_OLD/ par exemple) puis celui de la nouvelle version (/geonature/ par exemple) pour que le serveur pointe sur la nouvelle version.
