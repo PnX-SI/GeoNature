@@ -82,24 +82,38 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
 * Lire attentivement les notes de chaque version si il y a des spécificités (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise à jour.
 
+* Si besoin, vous pouvez vous inspirer des commandes présentes dans ``instal_app.sh`` et les adapter à votre contexte
 
-* Copier les anciens fichiers de configuration et les charger dans le nouveau répertoire de l'application (``version-precedente`` est à modifier par le nom du répertoire où était installé votre application GeoNature).
+* assurer vous que le fichier ``/etc/hosts`` comporte une entrée ``geonatdbhost``. Ajoutez la si besoin.
 
-::
+* Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, ne copier ces anciens fichiers de configuration dans le nouveau répertoire qu'après avoir vérifiez que de nouveaux paramètres n'ont pas été ajoutés.
 
     # Fichiers de configuration
-    cp ../version-precedente/config/settings.ini config/settings.ini
-    cp ../version-precedente/conf/web/js/config.js web/js/config.js
-    cp ../version-precedente/conf/lib/sfGeonatureConfig.php lib/sfGeonatureConfig.php
+    config/settings.ini
+    web/js/config.js
+    lib/sfGeonatureConfig.php
+    config/databases.yml
+    
+* Vérifier que votre configuration de connexion à la base de données est correcte dans le fichier ``wms/wms.map``
 
-    # Bandeau de l'application
-    cp ../version-precedente/web/images/bandeau_faune.jpg web/images/bandeau_faune.jpg
+* Récupérer votre bandeau de l'application si vous l'avez personnalisé
+
+    ::
+    
+        cp ../version-precedente/web/images/bandeau_faune.jpg web/images/bandeau_faune.jpg
 
 
 * Renommer l'ancien répertoire de l'application GeoNature (/geonature_OLD/ par exemple) puis celui de la nouvelle version (/geonature/ par exemple) pour que le serveur pointe sur la nouvelle version.
 
+* Mettez à jour votre base de données (faite impérativement une sauvegarde de votre base de données si elle comporte des données)
 
-* Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques (module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``schema.yaml``, l'appel des JS et CSS dans ``config/view.yaml`` et la liste des protocoles et les liens vers leurs formulaires de saisie sur la page d'accueil de GeoNature dans le fichier ``apps/frontend/modules/home/template/indexSuccess.php``).
+    ::
+    
+        sudo su postgres
+        cd /home/synthese/geonature
+        psql -h geonatdbhost -U geonatuser -d geonaturedb > data/update_1.3to1.4.sql
+
+* Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques (module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml``, l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml`` et la liste des protocoles et les liens vers leurs formulaires de saisie sur la page d'accueil de GeoNature dans le fichier ``apps/frontend/modules/home/template/indexSuccess.php``).
 
 
 Clé IGN
