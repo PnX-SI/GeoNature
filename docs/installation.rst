@@ -31,12 +31,13 @@ Création de la base de données
     
         cd /home/synthese/geonature
         sudo ./install_db.sh
+        
+* Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. Attention, ce fichier sera supprimé lors de l'exécution de ``install_ap.sh``
 
-* Si besoin, l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
-  
-    ::
+* Si besoin, l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma layers
 
-        export PGPASSWORD=monpassachanger;psql -h geonatdbhost -U geonatuser -d geonaturedb -f pne/data_sig_pne_2154.sql 
+    export PGPASSWORD=monpassachanger; sudo psql -h geonatdbhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
+
 
 
 Configuration de l'application
