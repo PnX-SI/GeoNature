@@ -88,15 +88,17 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
 * Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, ne copier ces anciens fichiers de configuration dans le nouveau répertoire qu'après avoir vérifiez que de nouveaux paramètres n'ont pas été ajoutés.
 
- #Fichiers de configuration
+    ::
     
-    config/settings.ini
+        #Fichiers de configuration
     
-    web/js/config.js
+    		* config/settings.ini
     
-    lib/sfGeonatureConfig.php
+    		* web/js/config.js
     
-    config/databases.yml
+    		* lib/sfGeonatureConfig.php
+    
+    		* config/databases.yml
     
 * Vérifier que votre configuration de connexion à la base de données est correcte dans le fichier ``wms/wms.map``
 
