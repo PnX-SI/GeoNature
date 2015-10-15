@@ -1,6 +1,6 @@
 usage = 'prod';//valeur possible : demo (limit 100 sur les exports), prod
 host_uri = 'mon-domaine.fr';
-app_uri = 'geonature'; //nom du lien symbolique réalisé dans le répertoire apache
+app_uri = 'geonature'; //nom du lien symbolique rÃ©alisÃ© dans le rÃ©pertoire apache
 wms_uri = 'http://mon-domaine.fr/wmsgeonature';
 
 ign_api_key = 'ma_cle_api_ign'; //clef site http://professionnels.ign.fr
@@ -29,7 +29,7 @@ centre_map = new OpenLayers.LonLat(700000, 5594000)
 resolution_max = 2445.9849051256406;
 num_zoom_levels = 16;
 
-//-----configuration des protocoles et des lots de données-------------
+//-----configuration des protocoles et des lots de donnÃ©es-------------
 id_lot_contact_vertebre = 1;
 id_lot_mortalite = 2;
 id_lot_contact_invertebre = 3;
@@ -48,7 +48,7 @@ id_source_flore_station = 5;
 id_source_bryophytes = 6;
 
 
-//-----configuration propre à l'identité de la structure-------------
+//-----configuration propre Ã  l'identitÃ© de la structure-------------
 pn_name_long = 'Parc nationaux de France';
 struc_abregee = 'PnF';
 

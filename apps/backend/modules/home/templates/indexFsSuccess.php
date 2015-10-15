@@ -1,4 +1,4 @@
-﻿<script type="text/javascript">
+<script type="text/javascript">
 Ext.onReady(function() {
     Ext.QuickTips.init();
     application.init();

@@ -1,7 +1,7 @@
 <?php 
 class sfGeonatureConfig extends sfActions
 {
-    //Identifiants des lots de données dans la table meta.bib_lots
+    //Identifiants des lots de donnÃ©es dans la table meta.bib_lots
     public static $id_lot_cf = 1;
     public static $id_lot_mortalite = 2;
     public static $id_lot_inv = 3;
@@ -17,47 +17,47 @@ class sfGeonatureConfig extends sfActions
     public static $id_protocole_florestation = 5;
     public static $id_protocole_bryo = 6;
     
-    //Identifiants des sources de données dans la table synthese.bib_sources
+    //Identifiants des sources de donnÃ©es dans la table synthese.bib_sources
     public static $id_source_cf = 1;
     public static $id_source_inv = 3;
     public static $id_source_florepatri = 4;
     public static $id_source_florestation = 5;
     public static $id_source_bryo = 6;
     
-    //Personnalisation du contenu des menus déroulants (en lien avec la table utilisateurs.t_menus et utilisateurs.cor_role_menu)
+    //Personnalisation du contenu des menus dÃ©roulants (en lien avec la table utilisateurs.t_menus et utilisateurs.cor_role_menu)
     public static $id_menu_observateurs_cf = 9;
     public static $id_menu_observateurs_inv = 9;
     public static $id_menu_observateurs_flore = 10;
     
-    //PDOP (precision du GPS) par défaut si non renseigné (pas saisi avec un GPS)
+    //PDOP (precision du GPS) par dÃ©faut si non renseignÃ© (pas saisi avec un GPS)
     public static $default_pdop = -1;
     
-    //Organisme producteur et propriétaire des données
+    //Organisme producteur et propriÃ©taire des donnÃ©es
     public static $id_organisme = 99;
     
-    //ID de l'unité où tous les observateurs s'y trouvant peuvent saisir des données mais ne peuvent exporter que leurs données personnelles
+    //ID de l'unitÃ© oÃ¹ tous les observateurs s'y trouvant peuvent saisir des donnÃ©es mais ne peuvent exporter que leurs donnÃ©es personnelles
     public static $id_unite_fournisseur = 10;
     
-    //SRID du fond de carte sur lequel les données sont saisies.
-    //ATTENTION ! Cette valeur doit être laissée à 3857. Elle correspond au srid du Geoportail. Elle est valable en métropole et outre mer.
-    //Cette valeur est parfois présente en dur dans le code de l'application. Elle correspond également aux champs des géométries utilisées dans la base pour consulter ou enregistrer des données.
+    //SRID du fond de carte sur lequel les donnÃ©es sont saisies.
+    //ATTENTION ! Cette valeur doit Ãªtre laissÃ©e Ã  3857. Elle correspond au srid du Geoportail. Elle est valable en mÃ©tropole et outre mer.
+    //Cette valeur est parfois prÃ©sente en dur dans le code de l'application. Elle correspond Ã©galement aux champs des gÃ©omÃ©tries utilisÃ©es dans la base pour consulter ou enregistrer des donnÃ©es.
     public static $srid_dessin = 3857;
     
-    //SRID local des couches communes, secteurs, unites géographiques, isoline20 et zones à statuts
-    //Ce srid est utilisé dans les exports. 
-    //Lorsque la base de données est créée avec les scripts SQL fournis (synthese_srid.sql), il faut choisir le script correspondant à la valeur portée ci-dessous. 
-    //Idem pour le script d'insertion des données (synthese_data_srid.sql)
-    //ATTENTION. Il faut mettre à jour le service WMS interne de l'application qui utilise ce script. Fichier wms/faune.map
+    //SRID local des couches communes, secteurs, unites gÃ©ographiques, isoline20 et zones Ã  statuts
+    //Ce srid est utilisÃ© dans les exports. 
+    //Lorsque la base de donnÃ©es est crÃ©Ã©e avec les scripts SQL fournis (synthese_srid.sql), il faut choisir le script correspondant Ã  la valeur portÃ©e ci-dessous. 
+    //Idem pour le script d'insertion des donnÃ©es (synthese_data_srid.sql)
+    //ATTENTION. Il faut mettre Ã  jour le service WMS interne de l'application qui utilise ce script. Fichier wms/faune.map
     public static $srid_local = 2154;
   
-    //Nom des applications et titres affichés
+    //Nom des applications et titres affichÃ©s
     public static $appname_main = 'GeoNature PNX';
     public static $appname_cf = 'Contact faune - GeoNature';
-    public static $appname_inv = 'Contact invertébrés - GeoNature';
+    public static $appname_inv = 'Contact invertÃ©brÃ©s - GeoNature';
     public static $appname_mortalite = 'Mortalite faune - GeoNature';
     public static $appname_florepatri = 'Flore prioritaire - GeoNature';
     public static $appname_florestation = 'Flore station - GeoNature';
     public static $appname_bryo = 'Bryophytes - GeoNature';
-    public static $appname_synthese = 'Synthèse - GeoNature';
-    public static $apptitle_main = 'Parc nationaux - Gestion des données faune-flore';
+    public static $appname_synthese = 'SynthÃ¨se - GeoNature';
+    public static $apptitle_main = 'Parc nationaux - Gestion des donnÃ©es faune-flore';
 }
