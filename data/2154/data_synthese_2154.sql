@@ -389,10 +389,10 @@ INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (
 INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (2804, 2, 'non');
 INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (816, 1, 'non');
 INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (816, 2, 'oui');
-INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10001, 1, 'non');
-INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10001, 2, 'non');
-INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10002, 1, 'non');
-INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10002, 2, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (100001, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (100001, 2, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (100002, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (100002, 2, 'non');
 
 --
 -- 
@@ -443,10 +443,10 @@ INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (704, 109);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (816, 105);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (1950, 106);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (2804,106);
-INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10001,3);
-INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10002,3);
-INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10001,1000);
-INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10002,1000);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100001,3);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100002,3);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100001,1000);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100002,1000);
 
 SET search_path = contactfaune, pg_catalog;
 
