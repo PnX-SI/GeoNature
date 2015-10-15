@@ -334,15 +334,34 @@ SET search_path = taxonomie, pg_catalog;
 --
 -- TOC entry 3122 (class 0 OID 126729)
 -- Dependencies: 194
+-- Data for Name: bib_filtres; Type: TABLE DATA; Schema: taxonomie; Owner: -
+--
+
+INSERT INTO taxonomie.bib_filtres VALUES (2, 'patrimonial', 'Patrimoniale', NULL, NULL, 'Défini si le taxon est patrimonial pour le territoire', NULL, 'oui;non', true);
+INSERT INTO taxonomie.bib_filtres VALUES (4, 'reproducteur', 'Reproducteur', NULL, NULL, 'Indique si le taxon est reproducteur sur le territoire', NULL, 'oui;non', false);
+INSERT INTO taxonomie.bib_filtres VALUES (1, 'saisie', NULL, NULL, NULL, 'Permet d''exclure des taxons des menus déroulants de saisie', NULL, 'oui;non', true);
+INSERT INTO taxonomie.bib_filtres VALUES (5, 'responsabilite_pne', 'Responsabilité', 'Responsabilité du PN Ecrins', NULL, 'Indique le niveau de responsabilité du PNE vis à vis de la conservation de ce taxon', NULL, 'nulle;faible;moyenne;forte;indéterminée', true);
+INSERT INTO taxonomie.bib_filtres VALUES (6, 'statut_migration', 'Migrateur', 'Statut de migrateur', NULL, 'Indique le comportement de migrateur du taxon', NULL, 'sédentaire;migrateur-erratique-hivernant;estivant;disparu;absent;inconnu', true);
+INSERT INTO taxonomie.bib_filtres VALUES (7, 'importance_population', 'Population', 'Importance de la population', NULL, 'Indique l''importance de la population pour le territoire', NULL, 'inexistante;anecdoctique;localisée;faible;moyenne;significative;inconnue', false);
+INSERT INTO taxonomie.bib_filtres VALUES (3, 'protection_stricte', 'Protection stricte', 'Taxon protégé', NULL, 'Indique si le taxon est bénéficie d''un statut de protection sur le territoire (en excluant les statuts de réglementation)', NULL, 'oui;non', true);
+INSERT INTO taxonomie.bib_filtres VALUES (8, 'règlementé', 'Règlementation', 'Taxon règlementé', NULL, 'Indique que le taxon fait l''objet d''une réglementation sur le territoire', NULL, 'oui;non', false);
+
+
+--
+-- TOC entry 3122 (class 0 OID 126729)
+-- Dependencies: 194
 -- Data for Name: bib_taxons; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)');
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)');
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758');
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758');
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758');
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (704, 67111, 'Alburnus alburnus', 'Ablette', '(Linnaeus, 1758)', 'oui', 'non', 'non');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (64, 60612, 'Lynx lynx', 'Lynx boréal', '(Linnaeus, 1758)', 'oui', 'oui', 'oui');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (23, 351, 'Rana temporaria', 'Grenouille rousse', 'Linnaeus, 1758', 'oui', 'non', 'oui');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (1950, 8326, 'Cicindela hybrida', 'Cicindela hybrida', 'Linné, 1758', 'oui', 'non', 'non');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', 'oui', 'non', 'non');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', 'oui', 'oui', 'oui');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (100001, 81065, 'Alchemilla decumbens', 'Alchémille rampante', 'Buser, 1894 ', 'oui', 'non', 'non');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (100002, 95186, 'Dittrichia graveolens', 'Alchémille rampante', '(L.) Greuter, 1973', 'oui', 'non', 'non');
+
 
 --
 -- 
@@ -351,6 +370,7 @@ INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur) VALUE
 
 INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut) VALUES (1, 'patrimonial', 'Patrimonial', 'oui;non',true,'Défini si le taxon est patrimonial pour le territoire');
 INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut) VALUES (2, 'protection_stricte', 'Protégé', 'oui;non',true,'Défini si le taxon bénéficie d''une protection juridique stricte pour le territoire');
+
 
 --
 -- 
@@ -369,6 +389,10 @@ INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (
 INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (2804, 2, 'non');
 INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (816, 1, 'non');
 INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (816, 2, 'oui');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10001, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10001, 2, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10002, 1, 'non');
+INSERT INTO cor_taxon_attribut (id_taxon ,id_attribut, valeur_attribut) VALUES (10002, 2, 'non');
 
 --
 -- 
@@ -400,6 +424,8 @@ INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'Bry
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1002, 'Lichens',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1003, 'Algues',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1004, 'Champignons',null, 'images/pictos/champignon.gif');
+
+
 --
 -- 
 -- Data for Name: cor_taxon_liste; Type: TABLE DATA; Schema: taxonomie; Owner: -
@@ -417,6 +443,10 @@ INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (704, 109);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (816, 105);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (1950, 106);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (2804,106);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10001,3);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10002,3);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10001,1000);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (10002,1000);
 
 SET search_path = contactfaune, pg_catalog;
 
