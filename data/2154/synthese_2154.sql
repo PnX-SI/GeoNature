@@ -3537,7 +3537,7 @@ CREATE TABLE taxonomie.bib_filtres
   descr_filtre character varying(500),
   img character varying(250),
   valeur_filtre character varying(1000),
-  obligatoire boolean DEFAULT false,
+  obligatoire boolean DEFAULT false
   );
 
 --
