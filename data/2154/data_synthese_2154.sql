@@ -360,7 +360,7 @@ INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtr
 INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (2804, 11165, 'Coccinella septempunctata', 'Coccinella septempunctata', 'Linnaeus, 1758', 'oui', 'non', 'non');
 INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (816, 18437, 'Austropotamobius pallipes', 'Ecrevisse à pieds blancs', '(Lereboullet, 1858)', 'oui', 'oui', 'oui');
 INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (100001, 81065, 'Alchemilla decumbens', 'Alchémille rampante', 'Buser, 1894 ', 'oui', 'non', 'non');
-INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (100002, 95186, 'Dittrichia graveolens', 'Alchémille rampante', '(L.) Greuter, 1973', 'oui', 'non', 'non');
+INSERT INTO bib_taxons (id_taxon, cd_nom, nom_latin, nom_francais, auteur, filtre1, filtre2, filtre3) VALUES (100002, 95186, 'Dittrichia graveolens', 'Inule fétide', '(L.) Greuter, 1973', 'oui', 'non', 'non');
 
 
 --
