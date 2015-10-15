@@ -161,27 +161,25 @@ SET search_path = contactfaune, pg_catalog;
 -- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactfaune; Owner: -
 --
 
-CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
-    LANGUAGE plpgsql
-    AS $$
---fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
---
---Gil DELUERMOZ mars 2012
-
+CREATE OR REPLACE FUNCTION contactinv.couleur_taxon(
+    id integer,
+    maxdateobs date)
+  RETURNS text AS
+$BODY$
   DECLARE
   couleur text;
-  patri character(3);
+  patri boolean;
   BEGIN
 	SELECT patrimonial INTO patri 
-    FROM taxonomie.bib_taxons t
+    FROM taxonomie.bib_taxons t 
     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.id_taxon = t.id_taxon
     LEFT JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
     WHERE a.nom_attribut = 'patrimonial' AND t.id_taxon = id;
-	IF patri = 'oui' THEN
+	IF patri = 't' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
-	ELSIF patri = 'non' THEN
+	ELSIF patri = 'f' THEN
 		IF date_part('year',maxdateobs)>=date_part('year',now())-3 THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
@@ -190,7 +188,9 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
 	END IF;
 	return couleur;
   END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
@@ -2536,45 +2536,55 @@ $$;
 -- Name: maj_cor_unite_taxon(); Type: FUNCTION; Schema: synthese; Owner: -
 --
 
-CREATE FUNCTION maj_cor_unite_taxon() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION synthese.maj_cor_unite_taxon()
+  RETURNS trigger AS
+$BODY$
 DECLARE
-monembranchement integer;
+monembranchement varchar;
+monregne varchar;
 BEGIN
+
 IF (TG_OP = 'DELETE') THEN
-	--calcul de l'embranchement du taxon supprimé
-		SELECT tx.phylum FROM taxonomie.taxref tx 
-		WHERE tx.cd_nom = old.cd_nom;
+	--calcul du règne du taxon supprimé
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+	IF monregne = 'Animalia' THEN
+		--calcul de l'embranchement du taxon supprimé
+			SELECT  INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
 		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-		IF monembranchement = 'Chordata' THEN
-			IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-				DELETE FROM contactfaune.cor_unite_taxon WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo;
+			IF monembranchement = 'Chordata' THEN
+				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+					DELETE FROM contactfaune.cor_unite_taxon WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo;
+				ELSE
+					PERFORM synthese.calcul_cor_unite_taxon_cf(old.cd_nom, old.id_unite_geo);
+				END IF;
 			ELSE
-				PERFORM synthese.calcul_cor_unite_taxon_cf(old.cd_nom, old.id_unite_geo);
-			END IF;
-		ELSE
-			IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-				DELETE FROM contactinv.cor_unite_taxon_inv WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo;
-			ELSE
-				PERFORM synthese.calcul_cor_unite_taxon_inv(old.cd_nom, old.id_unite_geo);
+				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+					DELETE FROM contactinv.cor_unite_taxon_inv WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo;
+				ELSE
+					PERFORM synthese.calcul_cor_unite_taxon_inv(old.cd_nom, old.id_unite_geo);
+				END IF;
 			END IF;
 		END IF;
 		RETURN OLD;		
 ELSIF (TG_OP = 'INSERT') THEN
-	--calcul de l'embranchement du taxon inséré
-        SELECT tx.phylum FROM taxonomie.taxref tx 
-		WHERE tx.cd_nom = old.cd_nom;
-	-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-        IF monembranchement = 'Chordata' THEN
-            PERFORM synthese.calcul_cor_unite_taxon_cf(new.cd_nom, new.id_unite_geo);
-        ELSE
-            PERFORM synthese.calcul_cor_unite_taxon_inv(new.cd_nom, new.id_unite_geo);
+	--calcul du règne du taxon inséré
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+	IF monregne = 'Animalia' THEN
+		--calcul de l'embranchement du taxon inséré
+		SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+		-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
+		IF monembranchement = 'Chordata' THEN
+		    PERFORM synthese.calcul_cor_unite_taxon_cf(new.cd_nom, new.id_unite_geo);
+		ELSE
+		    PERFORM synthese.calcul_cor_unite_taxon_inv(new.cd_nom, new.id_unite_geo);
+		END IF;
         END IF;
 	RETURN NEW;
 END IF;
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
@@ -2939,7 +2949,7 @@ CREATE TABLE t_stations_bryo (
     id_lot integer NOT NULL,
     id_organisme integer NOT NULL,
     dateobs date,
-    info_acces character varying(255),
+    info_acces character varying(1000),
     surface integer DEFAULT 1,
     complet_partiel character(1),
     altitude_saisie integer DEFAULT 0,
@@ -3514,6 +3524,23 @@ CREATE VIEW v_nomade_observateurs_faune AS
 SET search_path = taxonomie, pg_catalog;
 
 --
+-- Name: bib_filtres; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE TABLE taxonomie.bib_filtres
+(
+  id_filtre integer NOT NULL,
+  nom_filtre character varying(50),
+  label1 character varying(50),
+  label2 character varying(50),
+  label3 character varying(50),
+  descr_filtre character varying(500),
+  img character varying(250),
+  valeur_filtre character varying(1000),
+  obligatoire boolean DEFAULT false,
+  );
+
+--
 -- Name: bib_attributs; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
@@ -3609,9 +3636,21 @@ CREATE TABLE taxref (
     nom_vern character varying(255),
     nom_vern_eng character varying(255),
 	group1_inpn character varying(255),
-	group2_inpn character varying(255)
+	group2_inpn character varying(255),
+    nom_complet_html character varying(255)
 );
 
+
+--
+-- Name: bib_listes_id_liste_seq; Type: SEQUENCE; Schema: taxonomie; Owner: -
+--
+
+CREATE SEQUENCE taxonomie.bib_listes_id_liste_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1000000
+  CACHE 1;
 
 --
 -- Name: bib_attributs_id_attribut_seq; Type: SEQUENCE; Schema: taxonomie; Owner: -
@@ -3660,7 +3699,7 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
 -- Name: v_nomade_taxons_faune; Type: VIEW; Schema: contactfaune; Owner: -
 --
 CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
-SELECT DISTINCT t.id_taxon,
+ SELECT DISTINCT t.id_taxon,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
     tx.cd_nom,
     t.nom_latin,
@@ -3682,7 +3721,12 @@ SELECT DISTINCT t.id_taxon,
      JOIN contactfaune.v_nomade_classes g ON g.id_classe = ctl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
   WHERE ctl.id_liste = ANY (ARRAY[101, 107, 108, 109, 110])
-  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe,patrimonial,m.texte_message_cf;
+  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe,
+        CASE
+            WHEN t.filtre2::text = 'oui'::text THEN true
+            WHEN t.filtre2::text = 'non'::text THEN false
+            ELSE NULL::boolean
+        END, m.texte_message_cf;
 
 SET search_path = layers, pg_catalog;
 
@@ -3908,7 +3952,7 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS
              JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
           GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
-   WHERE t.phylum::text <> 'Chordata' AND regne = 'Animalia';
+  WHERE t.phylum::text <> 'Chordata'::text AND t.regne::text = 'Animalia'::text;
 
 --
 -- Name: v_nomade_criteres_inv; Type: VIEW; Schema: contactinv; Owner: -
@@ -4572,11 +4616,10 @@ CREATE TABLE taxref_protection_especes (
 -- Name: v_tree_taxons_synthese; Type: VIEW; Schema: synthese; Owner: -
 --
 
+
 CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS 
- WITH taxon AS 
-    (
-        SELECT 
-            tx.id_taxon,
+ WITH taxon AS (
+         SELECT tx.id_taxon,
             tx.nom_latin,
             tx.nom_francais,
             taxref.cd_nom,
@@ -4598,39 +4641,29 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             taxref.nom_vern_eng,
             taxref.group1_inpn,
             taxref.group2_inpn
-        FROM 
-           ( 
-                SELECT 
-                    tx_1.id_taxon,
-                    taxref.cd_nom,
-                    taxonomie.find_cdref(taxref.cd_nom) AS cd_ref,
-                    taxref.lb_nom AS nom_latin,
-                    CASE
-                        WHEN tx_1.nom_francais IS NULL THEN taxref.lb_nom
-                        WHEN tx_1.nom_francais = '' THEN taxref.lb_nom
-                        ELSE tx_1.nom_francais
-                    END AS nom_francais
-                FROM taxonomie.taxref taxref
-                LEFT JOIN taxonomie.bib_taxons tx_1 ON tx_1.cd_nom = taxref.cd_nom
-                WHERE 
-                (taxref.cd_nom IN 
-                    ( 
-                        SELECT DISTINCT syntheseff.cd_nom
-                               FROM synthese.syntheseff
-                              ORDER BY syntheseff.cd_nom
-                    )
-                )
-            ) tx
-        JOIN taxonomie.taxref taxref ON taxref.cd_nom = tx.cd_ref
-    )
-SELECT
-    t.id_taxon,
+           FROM ( SELECT tx_1.id_taxon,
+                    taxref_1.cd_nom,
+                    taxonomie.find_cdref(taxref_1.cd_nom) AS cd_ref,
+                    taxref_1.lb_nom AS nom_latin,
+                        CASE
+                            WHEN tx_1.nom_francais IS NULL THEN taxref_1.lb_nom
+                            WHEN tx_1.nom_francais::text = ''::text THEN taxref_1.lb_nom
+                            ELSE tx_1.nom_francais
+                        END AS nom_francais
+                   FROM taxonomie.taxref taxref_1
+                     LEFT JOIN taxonomie.bib_taxons tx_1 ON tx_1.cd_nom = taxref_1.cd_nom
+                  WHERE (taxref_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
+                           FROM synthese.syntheseff
+                          ORDER BY syntheseff.cd_nom))) tx
+             JOIN taxonomie.taxref taxref ON taxref.cd_nom = tx.cd_ref
+        )
+ SELECT t.id_taxon,
     t.cd_ref,
     t.nom_latin,
     t.nom_francais,
     t.id_regne,
     t.nom_regne,
-    COALESCE(t.id_embranchement, id_regne) AS id_embranchement,
+    COALESCE(t.id_embranchement, t.id_regne) AS id_embranchement,
     COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref'::character varying) AS nom_embranchement,
     COALESCE(t.id_classe, t.id_embranchement) AS id_classe,
     COALESCE(t.nom_classe, ' Sans classe dans taxref'::character varying) AS nom_classe,
@@ -4639,99 +4672,97 @@ SELECT
     COALESCE(t.nom_ordre, ' Sans ordre dans taxref'::character varying) AS nom_ordre,
     COALESCE(t.id_famille, t.id_ordre) AS id_famille,
     COALESCE(t.nom_famille, ' Sans famille dans taxref'::character varying) AS nom_famille
-FROM 
-( 
-    SELECT DISTINCT 
-        t_1.id_taxon,
-        t_1.cd_ref,
-        t_1.nom_latin,
-        t_1.nom_francais,
-        ( 
-            SELECT taxref.cd_nom
-                FROM taxonomie.taxref
-                WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text
-        ) AS id_regne,
-        t_1.regne AS nom_regne,
-        CASE
-            WHEN t_1.phylum IS NULL THEN NULL::integer
-            ELSE 
-            ( 
-                SELECT taxref.cd_nom
-                FROM taxonomie.taxref
-                WHERE taxref.id_rang = 'PH'::bpchar AND taxref.lb_nom::text = t_1.phylum::text AND taxref.cd_nom = taxref.cd_ref
-            )
-        END AS id_embranchement,
-        t_1.phylum AS nom_embranchement,
-        t_1.phylum AS desc_embranchement,
-        CASE
-            WHEN t_1.classe IS NULL THEN NULL::integer
-            ELSE 
-            ( 
-                SELECT taxref.cd_nom
-                FROM taxonomie.taxref
-                WHERE taxref.id_rang = 'CL'::bpchar AND taxref.lb_nom::text = t_1.classe::text AND taxref.cd_nom = taxref.cd_ref
-            )
-        END AS id_classe,
-        t_1.classe AS nom_classe,
-        t_1.classe AS desc_classe,
-        CASE
-            WHEN t_1.ordre IS NULL THEN NULL::integer
-            ELSE
-            ( 
-                SELECT taxref.cd_nom
-                FROM taxonomie.taxref
-                WHERE taxref.id_rang = 'OR'::bpchar AND taxref.lb_nom::text = t_1.ordre::text AND taxref.cd_nom = taxref.cd_ref
-            )
-        END AS id_ordre,
-        t_1.ordre AS nom_ordre,
-        CASE
-            WHEN t_1.famille IS NULL THEN NULL::integer
-            ELSE 
-            ( 
-                SELECT taxref.cd_nom
-                FROM taxonomie.taxref
-                WHERE taxref.id_rang = 'FM'::bpchar AND taxref.lb_nom::text = t_1.famille::text AND taxref.phylum::text = t_1.phylum::text AND taxref.cd_nom = taxref.cd_ref
-            )
-        END AS id_famille,
-        t_1.famille AS nom_famille
-    FROM taxon t_1
-) t;
+   FROM ( SELECT DISTINCT t_1.id_taxon,
+            t_1.cd_ref,
+            t_1.nom_latin,
+            t_1.nom_francais,
+            ( SELECT taxref.cd_nom
+                   FROM taxonomie.taxref
+                  WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text) AS id_regne,
+            t_1.regne AS nom_regne,
+                CASE
+                    WHEN t_1.phylum IS NULL THEN NULL::integer
+                    ELSE ( SELECT taxref.cd_nom
+                       FROM taxonomie.taxref
+                      WHERE taxref.id_rang = 'PH'::bpchar AND taxref.lb_nom::text = t_1.phylum::text AND taxref.cd_nom = taxref.cd_ref)
+                END AS id_embranchement,
+            t_1.phylum AS nom_embranchement,
+            t_1.phylum AS desc_embranchement,
+                CASE
+                    WHEN t_1.classe IS NULL THEN NULL::integer
+                    ELSE ( SELECT taxref.cd_nom
+                       FROM taxonomie.taxref
+                      WHERE taxref.id_rang = 'CL'::bpchar AND taxref.lb_nom::text = t_1.classe::text AND taxref.cd_nom = taxref.cd_ref)
+                END AS id_classe,
+            t_1.classe AS nom_classe,
+            t_1.classe AS desc_classe,
+                CASE
+                    WHEN t_1.ordre IS NULL THEN NULL::integer
+                    ELSE ( SELECT taxref.cd_nom
+                       FROM taxonomie.taxref
+                      WHERE taxref.id_rang = 'OR'::bpchar AND taxref.lb_nom::text = t_1.ordre::text AND taxref.cd_nom = taxref.cd_ref)
+                END AS id_ordre,
+            t_1.ordre AS nom_ordre,
+                CASE
+                    WHEN t_1.famille IS NULL THEN NULL::integer
+                    ELSE ( SELECT taxref.cd_nom
+                       FROM taxonomie.taxref
+                      WHERE taxref.id_rang = 'FM'::bpchar AND taxref.lb_nom::text = t_1.famille::text AND taxref.phylum::text = t_1.phylum::text AND taxref.cd_nom = taxref.cd_ref)
+                END AS id_famille,
+            t_1.famille AS nom_famille
+           FROM taxon t_1) t;
 
 CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS 
-SELECT DISTINCT 
-                    CASE
-                        WHEN (t.nom_francais = '' OR t.nom_francais IS NULL) AND (txr.nom_vern IS NOT NULL AND txr.nom_vern <> '') THEN txr.nom_vern
-                        WHEN t.nom_francais IS NULL OR txr.nom_vern IS NULL THEN txr.lb_nom
-                        WHEN t.nom_francais = '' OR txr.nom_vern = '' THEN txr.lb_nom
-                        ELSE t.nom_francais
-                    END AS nom_francais,
-                    txr.lb_nom AS nom_latin,
-                    CASE 	
-                        WHEN t.filtre2 = 'oui'  THEN true
-                        WHEN t.filtre2 = 'non'  THEN false
-                        ELSE null
-                    END AS patrimonial,
-                    CASE 	
-                        WHEN t.filtre3 = 'oui'  THEN true
-                        WHEN t.filtre3 = 'non'  THEN false
-                        ELSE null
-                    END AS protection_stricte, 
-                    txr.cd_ref, txr.cd_nom, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.regne,
-                    prot.protections, l.id_liste, l.picto
-                FROM taxonomie.taxref txr 
-                LEFT JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
-                JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-                JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste AND l.id_liste IN(101,105,106,107,108,109,110,111,112,113)
-                LEFT JOIN (
-                    SELECT a.cd_nom, array_to_string(array_agg(a.arrete||' '|| a.article||'__'||a.url) , '#'::text)  AS protections
-                    FROM ( SELECT tpe.cd_nom, tpa.url,tpa.arrete,tpa.article
-                            FROM taxonomie.taxref_protection_especes tpe
-                            JOIN  taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.concerne_mon_territoire = true
-                          ) a
-                    GROUP BY a.cd_nom
-                ) prot ON prot.cd_nom = txr.cd_nom
-                WHERE txr.cd_nom IN (SELECT DISTINCT cd_nom FROM synthese.syntheseff)
-                ORDER BY nom_francais;
+ SELECT DISTINCT
+        CASE
+            WHEN (t.nom_francais::text = ''::text OR t.nom_francais IS NULL) AND txr.nom_vern IS NOT NULL AND txr.nom_vern::text <> ''::text THEN txr.nom_vern
+            WHEN t.nom_francais IS NULL OR txr.nom_vern IS NULL THEN txr.lb_nom
+            WHEN t.nom_francais::text = ''::text OR txr.nom_vern::text = ''::text THEN txr.lb_nom
+            ELSE t.nom_francais
+        END AS nom_francais,
+    txr.lb_nom AS nom_latin,
+        CASE
+            WHEN t.filtre2::text = 'oui'::text THEN true
+            WHEN t.filtre2::text = 'non'::text THEN false
+            ELSE NULL::boolean
+        END AS patrimonial,
+        CASE
+            WHEN t.filtre3::text = 'oui'::text THEN true
+            WHEN t.filtre3::text = 'non'::text THEN false
+            ELSE NULL::boolean
+        END AS protection_stricte,
+    txr.cd_ref,
+    txr.cd_nom,
+    txr.nom_valide,
+    txr.famille,
+    txr.ordre,
+    txr.classe,
+    txr.regne,
+    prot.protections,
+    l.id_liste,
+    l.picto
+   FROM taxonomie.taxref txr
+     LEFT JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
+     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
+     JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste AND (l.id_liste = ANY (ARRAY[3, 101, 105, 106, 107, 108, 109, 110, 111, 112, 113]))
+     LEFT JOIN ( SELECT a.cd_nom,
+            array_to_string(array_agg((((a.arrete || ' '::text) || a.article::text) || '__'::text) || a.url::text), '#'::text) AS protections
+           FROM ( SELECT tpe.cd_nom,
+                    tpa.url,
+                    tpa.arrete,
+                    tpa.article
+                   FROM taxonomie.taxref_protection_especes tpe
+                     JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection::text = tpe.cd_protection::text AND tpa.concerne_mon_territoire = true) a
+          GROUP BY a.cd_nom) prot ON prot.cd_nom = txr.cd_nom
+  WHERE (txr.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
+           FROM synthese.syntheseff))
+  ORDER BY
+        CASE
+            WHEN (t.nom_francais::text = ''::text OR t.nom_francais IS NULL) AND txr.nom_vern IS NOT NULL AND txr.nom_vern::text <> ''::text THEN txr.nom_vern
+            WHEN t.nom_francais IS NULL OR txr.nom_vern IS NULL THEN txr.lb_nom
+            WHEN t.nom_francais::text = ''::text OR txr.nom_vern::text = ''::text THEN txr.lb_nom
+            ELSE t.nom_francais
+        END;
                 
 
 SET search_path = utilisateurs, pg_catalog;
@@ -5105,6 +5136,12 @@ ALTER TABLE ONLY syntheseff ALTER COLUMN id_synthese SET DEFAULT nextval('synthe
 
 
 SET search_path = taxonomie, pg_catalog;
+
+--
+-- Name: id_liste; Type: DEFAULT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY bib_listes ALTER COLUMN id_liste SET DEFAULT nextval('bib_listes_id_liste_seq'::regclass);
 
 --
 -- Name: id_liste; Type: DEFAULT; Schema: taxonomie; Owner: -
@@ -5816,6 +5853,13 @@ ALTER TABLE ONLY syntheseff
 SET search_path = taxonomie, pg_catalog;
 
 --
+-- Name: pk_bib_filtres; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bib_filtres
+    ADD CONSTRAINT pk_bib_filtres PRIMARY KEY (id_filtre);
+
+--
 -- Name: pk_bib_attributs; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
@@ -5991,14 +6035,14 @@ CREATE INDEX fki_ ON bib_criteres_cf USING btree (id_critere_synthese);
 
 
 --
--- Name: i_fk_cor_critere_liste_bib_gr; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: i_fk_cor_critere_liste_bib_li; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_critere_liste_bib_gr ON cor_critere_liste USING btree (id_liste);
+CREATE INDEX i_fk_cor_critere_liste_bib_li ON cor_critere_liste USING btree (id_liste);
 
 
 --
--- Name: i_fk_cor_critere_liste_bib_gr; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: i_fk_cor_critere_liste_bib_cr; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
 CREATE INDEX i_fk_cor_critere_liste_bib_cr ON cor_critere_liste USING btree (id_critere_cf);
@@ -7571,19 +7615,19 @@ ALTER TABLE ONLY syntheseff
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: cor_taxon_listes_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: cor_taxon_liste_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
 ALTER TABLE ONLY cor_taxon_liste 
-    ADD CONSTRAINT cor_taxon_listes_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon) MATCH SIMPLE
+    ADD CONSTRAINT cor_taxon_liste_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE NO ACTION;
  
 --
--- Name: cor_taxon_listes_bib_listes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: cor_taxon_liste_bib_listes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
 ALTER TABLE ONLY cor_taxon_liste 
-    ADD CONSTRAINT cor_taxon_listes_bib_listes_fkey FOREIGN KEY (id_liste) REFERENCES bib_listes (id_liste) MATCH SIMPLE
+    ADD CONSTRAINT cor_taxon_liste_bib_listes_fkey FOREIGN KEY (id_liste) REFERENCES bib_listes (id_liste) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE NO ACTION;
     
 --
@@ -9296,6 +9340,15 @@ SET search_path = taxonomie, pg_catalog;
 REVOKE ALL ON TABLE bib_listes FROM PUBLIC;
 REVOKE ALL ON TABLE bib_listes FROM geonatuser;
 GRANT ALL ON TABLE bib_listes TO geonatuser;
+
+
+--
+-- Name: bib_filtres; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE bib_filtres FROM PUBLIC;
+REVOKE ALL ON TABLE bib_filtres FROM geonatuser;
+GRANT ALL ON TABLE bib_filtres TO geonatuser;
 
 
 --
