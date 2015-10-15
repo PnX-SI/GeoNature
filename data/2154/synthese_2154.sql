@@ -161,7 +161,7 @@ SET search_path = contactfaune, pg_catalog;
 -- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactfaune; Owner: -
 --
 
-CREATE OR REPLACE FUNCTION contactinv.couleur_taxon(
+CREATE OR REPLACE FUNCTION couleur_taxon(
     id integer,
     maxdateobs date)
   RETURNS text AS
@@ -3640,17 +3640,6 @@ CREATE TABLE taxref (
     nom_complet_html character varying(255)
 );
 
-
---
--- Name: bib_listes_id_liste_seq; Type: SEQUENCE; Schema: taxonomie; Owner: -
---
-
-CREATE SEQUENCE taxonomie.bib_listes_id_liste_seq
-  INCREMENT 1
-  MINVALUE 1
-  MAXVALUE 9223372036854775807
-  START 1000000
-  CACHE 1;
 
 --
 -- Name: bib_attributs_id_attribut_seq; Type: SEQUENCE; Schema: taxonomie; Owner: -
