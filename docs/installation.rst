@@ -117,7 +117,7 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
     
         sudo su postgres
         cd /home/synthese/geonature
-        psql -h geonatdbhost -U geonatuser -d geonaturedb > data/update_1.3to1.4.sql
+        psql -h geonatdbhost -U geonatuser -d geonaturedb -f /home/synthese/geonature/data/update_1.3to1.4.sql &> log/update.log
 
 * Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques (module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml``, l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml`` et la liste des protocoles et les liens vers leurs formulaires de saisie sur la page d'accueil de GeoNature dans le fichier ``apps/frontend/modules/home/template/indexSuccess.php``).
 
