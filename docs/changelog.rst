@@ -20,8 +20,8 @@ TODO
 **Note de version**
 
 * La gestion de la taxonomie a été mis en conformité avec le schéma ``taxonomie`` de la base de données de TaxHub (https://github.com/PnX-SI/TaxHub). Ainsi le schéma ``taxonomie`` intégré à GeoNature 1.3.0 doit être globalement revu. L'ensemble des modifications peuvent être réalisées en éxecutant la partie correspondante dans le fichier ``data/update_1.3to1.4.sql`` (https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.3to1.4.sql).
-* De nouveaux paramètres ont été ajoutés à l'application. Après avoir récupéré le fichier de configurationde votre version 1.3.0, vérifiez les changements éventuels des différents fichiers de configuration.
- - Modification du nom du host hébergeant la base de données. databases --> geonatdbhost. A changer ou ajouter dans le ``/etc/hosts`` si vous avez déjà installé GeoNature.
+* De nouveaux paramètres ont potentiellement été ajoutés à l'application. Après avoir récupéré le fichier de configuration de votre version 1.3.0, vérifiez les changements éventuels des différents fichiers de configuration.
+* Modification du nom de l'host host hébergeant la base de données. databases --> geonatdbhost. A changer ou ajouter dans le ``/etc/hosts`` si vous avez déjà installé GeoNature.
 * Suivez la procédure de mise à jour : http://geonature.readthedocs.org/fr/latest/installation.html#mise-a-jour-de-l-application
 
 **Changements**
