@@ -82,9 +82,9 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
 * Lire attentivement les notes de chaque version si il y a des spécificités (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise à jour.
 
-* Si besoin, vous pouvez vous inspirer des commandes présentes dans ``instal_app.sh`` et les adapter à votre contexte
+* Si besoin, vous pouvez aussi vous inspirer des commandes présentes dans le fichier ``install_app.sh`` et les adapter à votre contexte.
 
-* assurer vous que le fichier ``/etc/hosts`` comporte une entrée ``geonatdbhost``. Ajoutez la si besoin.
+* Assurez vous que le fichier ``/etc/hosts`` comporte une entrée ``geonatdbhost``. Ajoutez la si besoin.
 
 * Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, ne copier ces anciens fichiers de configuration dans le nouveau répertoire qu'après avoir vérifiez que de nouveaux paramètres n'ont pas été ajoutés.
 
@@ -111,7 +111,7 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
 * Renommer l'ancien répertoire de l'application GeoNature (/geonature_OLD/ par exemple) puis celui de la nouvelle version (/geonature/ par exemple) pour que le serveur pointe sur la nouvelle version.
 
-* Mettez à jour votre base de données (faite impérativement une sauvegarde de votre base de données si elle comporte des données)
+* 1.3.0 vers 1.4.0 : Mettez à jour votre base de données (faite impérativement une sauvegarde de votre base de données si elle comporte des données)
 
     ::
     
