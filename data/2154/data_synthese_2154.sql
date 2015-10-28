@@ -31,6 +31,11 @@ SELECT pg_catalog.setval('t_applications_id_application_seq', 15, true);
 
 SELECT pg_catalog.setval('t_menus_id_menu_seq', 10, true);
 
+SET search_path = public, pg_catalog;
+
+INSERT INTO cor_boolean VALUES('oui',true);
+INSERT INTO cor_boolean VALUES('non',false);
+
 
 SET search_path = synthese, pg_catalog;
 
