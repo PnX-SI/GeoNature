@@ -8,15 +8,18 @@
  * @property integer $id_programme
  * @property string $nom_programme
  * @property string $desc_programme
+ * @property boolean $actif
  * @property Doctrine_Collection $BibLots
  * 
  * @method integer             getIdProgramme()    Returns the current record's "id_programme" value
  * @method string              getNomProgramme()   Returns the current record's "nom_programme" value
  * @method string              getDescProgramme()  Returns the current record's "desc_programme" value
+ * @method boolean             getActif()          Returns the current record's "actif" value
  * @method Doctrine_Collection getBibLots()        Returns the current record's "BibLots" collection
  * @method BibProgrammes       setIdProgramme()    Sets the current record's "id_programme" value
  * @method BibProgrammes       setNomProgramme()   Sets the current record's "nom_programme" value
  * @method BibProgrammes       setDescProgramme()  Sets the current record's "desc_programme" value
+ * @method BibProgrammes       setActif()          Sets the current record's "actif" value
  * @method BibProgrammes       setBibLots()        Sets the current record's "BibLots" collection
  * 
  * @package    geonature
@@ -41,6 +44,10 @@ abstract class BaseBibProgrammes extends sfDoctrineRecord
         $this->hasColumn('desc_programme', 'string', null, array(
              'type' => 'string',
              'length' => '',
+             ));
+        $this->hasColumn('actif', 'boolean', 1, array(
+             'type' => 'boolean',
+             'length' => 1,
              ));
     }
 

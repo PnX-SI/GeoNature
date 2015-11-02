@@ -12,7 +12,8 @@ class BibProgrammesTable extends Doctrine_Table
     {
         $query = Doctrine_Query::create()
           ->select('id_programme, nom_programme, desc_programme')
-          ->from('BibProgrammes')                  
+          ->from('BibProgrammes')
+          ->where('actif = true')
           ->orderBy('nom_programme ASC');               
         $programmes = $query->fetchArray();
         return $programmes;

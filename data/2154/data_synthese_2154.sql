@@ -613,13 +613,13 @@ INSERT INTO t_precisions (id_precision, nom_precision, desc_precision) VALUES (3
 -- Data for Name: bib_programmes; Type: TABLE DATA; Schema: meta; Owner: -
 --
 --faune
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (3, 'Contact invertébrés', 'Contact aléatoire de la faune invertébrée.', true, 'Contact aléatoire de la faune invertébrée.');
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (1, 'Contact vertébrés', 'Contact aléatoire de la faune vertébrée.', true, 'Contact aléatoire de la faune vertébrée.');
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (2, 'Mortalité', 'Données issue du protocole mortalité.', true, 'Données issue du protocole mortalité.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (3, 'Contact invertébrés', 'Contact aléatoire de la faune invertébrée.', true, true, 'Contact aléatoire de la faune invertébrée.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, programme_public, desc_programme_public) VALUES (1, 'Contact vertébrés', 'Contact aléatoire de la faune vertébrée.', true, true, 'Contact aléatoire de la faune vertébrée.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, programme_public, desc_programme_public) VALUES (2, 'Mortalité', 'Données issue du protocole mortalité.', true, true, 'Données issue du protocole mortalité.');
 --flore
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (4, 'Flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire.', true, 'Inventaire et suivi en présence absence de la Flore prioritaire.');
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (5, 'Flore station', 'Relevés stationnels et stratifiés de la flore.', true, 'Relevés stationnels et stratifiés de la flore.');
-INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, sitpn, desc_programme_sitpn) VALUES (6, 'Bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte.', true, 'Relevés stationnels et non stratifiés de la flore bryophyte.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (4, 'Flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire.', true, true, 'Inventaire et suivi en présence absence de la Flore prioritaire.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (5, 'Flore station', 'Relevés stationnels et stratifiés de la flore.', true, true, 'Relevés stationnels et stratifiés de la flore.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (6, 'Bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte.', true, true, 'Relevés stationnels et non stratifiés de la flore bryophyte.');
 
 --
 -- TOC entry 3370 (class 0 OID 55751)
