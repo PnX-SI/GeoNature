@@ -241,6 +241,7 @@ BibProgrammes:
       primary: true
     nom_programme: string(255)
     desc_programme: string()
+    actif: boolean(1)
 BibProgrammesFs:
   tableName: florestation.bib_programmes_fs
   columns:

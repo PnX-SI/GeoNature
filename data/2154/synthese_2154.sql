@@ -4171,8 +4171,9 @@ CREATE TABLE bib_programmes (
     id_programme integer NOT NULL,
     nom_programme character varying(255),
     desc_programme text,
-    sitpn boolean,
-    desc_programme_sitpn text
+    actif boolean,
+    programme_public boolean,
+    desc_programme_public text
 );
 
 --

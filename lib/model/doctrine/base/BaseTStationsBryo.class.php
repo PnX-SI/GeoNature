@@ -146,9 +146,9 @@ abstract class BaseTStationsBryo extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('info_acces', 'string', 255, array(
+        $this->hasColumn('info_acces', 'string', 1000, array(
              'type' => 'string',
-             'length' => 255,
+             'length' => 1000,
              ));
         $this->hasColumn('complet_partiel', 'string', 1, array(
              'type' => 'string',

@@ -216,9 +216,9 @@ abstract class BaseTStationsFs extends sfDoctrineRecord
              'notnull' => true,
              'length' => 25,
              ));
-        $this->hasColumn('info_acces', 'string', 1000, array(
+        $this->hasColumn('info_acces', 'string', 255, array(
              'type' => 'string',
-             'length' => 1000,
+             'length' => 255,
              ));
         $this->hasColumn('complet_partiel', 'string', 1, array(
              'type' => 'string',
