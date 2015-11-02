@@ -1553,7 +1553,7 @@ TStationsFs:
     dateobs:
       type: date(25)
       notnull: true
-    info_acces: string(255)
+    info_acces: string(1000)
     complet_partiel: string(1)
     meso_longitudinal: integer(4)
     meso_lateral: integer(4)
