@@ -13,6 +13,16 @@ TODO
 1.5.0.dev0
 ------------------
 
+**Note de version**
+
+* Pour les changements dans la base vous pouvez exécuter le fichier ``data/update_1.4to1.5.sql``
+
+
+**Changements**
+
+* Optimisation des vues aux chargement des listes de taxons #64
+* Généricité des champs dans meta.bib_programmes (champs ``sitpn`` renommé en ``public``) #68
+* Ajout d'un champ ``actif`` permettant de masquer certains programme dans le "Comment ?" de la synthese #66
  
 1.4.0 (2015-10-16)
 ------------------
