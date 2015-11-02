@@ -1209,7 +1209,7 @@ application.editStation = function() {
 
             toolbar.addControl(
                 drawPointControl = new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point, {
-                    title: 'Dessiner un point'
+                    title: 'Localiser la station'
                 }), {
                     iconCls: 'drawpoint'
                     ,toggleGroup: this.id
@@ -1220,7 +1220,7 @@ application.editStation = function() {
             toolbar.add({
                 text: 'GPS'
                 ,id: 'edit-station-gps'
-                ,tooltip: 'Pour positionner un point sur la carte à partir de coordonnées GPS en UTM'
+                ,tooltip: 'Localiser la station sur la carte à partir de coordonnées GPS en UTM'
                 ,handler: function() {
                     vectorLayer.removeFeatures(vectorLayer.features[0]);
                     application.editStation.initGpsWindow()

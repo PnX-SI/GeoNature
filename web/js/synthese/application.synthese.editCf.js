@@ -1645,7 +1645,7 @@ application.synthese.editCf = function() {
 
             toolbar.addControl(
                 drawPointControl = new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point, {
-                    title: 'Dessiner un point (supprime le point existant s\'il y en a un)'
+                    title: 'Localiser l\'observation (supprime la localisation existante s\'il y en a une)'
                 }), {
                     iconCls: 'drawpoint'
                     ,toggleGroup: this.id
@@ -1656,7 +1656,7 @@ application.synthese.editCf = function() {
             toolbar.add({
                 text: 'GPS'
                 ,id: 'edit-fiche-gps'
-                ,tooltip: 'Positionner un point sur la carte à partir de coordonnées GPS en UTM'
+                ,tooltip: 'Positionner l\'observation sur la carte à partir de coordonnées GPS en UTM'
                 ,handler: function() {
                     vectorLayer.removeFeatures(vectorLayer.features[0]);
                     application.synthese.editCf.initGpsWindow();
