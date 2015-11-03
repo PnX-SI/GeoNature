@@ -235,3 +235,4 @@ GRANT ALL ON TABLE synthese.v_tree_taxons_synthese TO geonatuser;
 ALTER TABLE meta.bib_programmes RENAME sitpn TO programme_public;
 ALTER TABLE meta.bib_programmes RENAME desc_programme_sitpn TO desc_programme_public;
 ALTER TABLE meta.bib_programmes ADD COLUMN actif boolean;
+UPDATE meta.bib_programmes SET actif = true;
