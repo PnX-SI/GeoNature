@@ -265,6 +265,11 @@ BibSources:
     db_schema: string(50)
     db_table: string(50)
     db_field: string(50)
+    url: string(255)
+    target: string(10)
+    picto: string(255)
+    groupe: string(50)
+    actif: boolean(1)
 BibSupports:
   tableName: meta.bib_supports
   columns:

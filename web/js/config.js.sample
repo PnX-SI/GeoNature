@@ -43,6 +43,7 @@ id_protocole_flore_station = 5;
 id_protocole_bryophyte = 6;
 
 id_source_contactfaune = 1;
+id_source_mortalite = 2;
 id_source_contactinv = 3;
 id_source_flore_station = 5;
 id_source_bryophytes = 6;

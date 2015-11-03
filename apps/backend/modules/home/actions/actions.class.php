@@ -64,6 +64,35 @@ class homeActions extends sfFauneActions
       
         if($this->getUser()->isAuthenticated()){
             slot('title', sfGeonatureConfig::$appname_main);
+            // construction dynamique de la liste des liens vers les formulaires
+            $groupes = BibSourcesTable::listSourcesGroupes();
+            $sources = BibSourcesTable::listActiveSources();
+            $this->lien_saisie = '';
+            foreach ($groupes as $groupe)
+            {  
+                $group = $groupe['groupe'];
+                $this->liens_saisie .= '<b>'.$group.'</b><br/>';
+                foreach ($sources as $source)
+                {  
+                    $source_group = $source['groupe'];
+                    $url = $source['url'];
+                    $target = $source['target'];
+                    $picto = $source['picto'];
+                    $nom_source = $source['nom_source'];
+                    if($source_group == $group)
+                    {
+                        $this->lien_saisie = '';
+                        $this->lien_saisie .= '<div style="margin:10px 0 0 50px ">';
+                        $this->lien_saisie .= '<div style="vertical-align:middle;display:inline-block;"><a href="'.$url.'" target="'.$target.'" style="text-decoration: none"><img src="'.$picto.'" border="0"> '.$nom_source.'</a></div>';
+                        $this->lien_saisie .= '</div>';
+                        $this->liens_saisie .= $this->lien_saisie;
+                        
+                    }
+                    
+                }
+            }
+            
+            
         }
         else{
            # $this->redirect('@login');

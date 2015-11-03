@@ -19,6 +19,7 @@ class sfGeonatureConfig extends sfActions
     
     //Identifiants des sources de données dans la table synthese.bib_sources
     public static $id_source_cf = 1;
+    public static $id_source_mortalite = 2;
     public static $id_source_inv = 3;
     public static $id_source_florepatri = 4;
     public static $id_source_florestation = 5;
