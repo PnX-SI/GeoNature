@@ -22,7 +22,7 @@
         </div>
         <div id="contenu_saisie" style="margin-bottom:30px">
             Pour saisir de nouvelles données, vous pouvez utiliser l'un des liens ci-dessous.<br/>
-            Pour modifier des données contact faune, contact invertébré ou mortalité, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.<br/><br/>
+            Pour modifier des données saisies à l'aide d'un des formulaires proposés en lien ci-dessous, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.<br/><br/>
             <? echo $liens_saisie;?>
         </div>
         <!--
