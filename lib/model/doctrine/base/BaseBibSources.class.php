@@ -16,6 +16,11 @@
  * @property string $db_schema
  * @property string $db_table
  * @property string $db_field
+ * @property string $url
+ * @property string $target
+ * @property string $picto
+ * @property string $groupe
+ * @property boolean $actif
  * @property Doctrine_Collection $Syntheseff
  * 
  * @method integer             getIdSource()    Returns the current record's "id_source" value
@@ -29,6 +34,11 @@
  * @method string              getDbSchema()    Returns the current record's "db_schema" value
  * @method string              getDbTable()     Returns the current record's "db_table" value
  * @method string              getDbField()     Returns the current record's "db_field" value
+ * @method string              getUrl()         Returns the current record's "url" value
+ * @method string              getTarget()      Returns the current record's "target" value
+ * @method string              getPicto()       Returns the current record's "picto" value
+ * @method string              getGroupe()      Returns the current record's "groupe" value
+ * @method boolean             getActif()       Returns the current record's "actif" value
  * @method Doctrine_Collection getSyntheseff()  Returns the current record's "Syntheseff" collection
  * @method BibSources          setIdSource()    Sets the current record's "id_source" value
  * @method BibSources          setNomSource()   Sets the current record's "nom_source" value
@@ -41,6 +51,11 @@
  * @method BibSources          setDbSchema()    Sets the current record's "db_schema" value
  * @method BibSources          setDbTable()     Sets the current record's "db_table" value
  * @method BibSources          setDbField()     Sets the current record's "db_field" value
+ * @method BibSources          setUrl()         Sets the current record's "url" value
+ * @method BibSources          setTarget()      Sets the current record's "target" value
+ * @method BibSources          setPicto()       Sets the current record's "picto" value
+ * @method BibSources          setGroupe()      Sets the current record's "groupe" value
+ * @method BibSources          setActif()       Sets the current record's "actif" value
  * @method BibSources          setSyntheseff()  Sets the current record's "Syntheseff" collection
  * 
  * @package    geonature
@@ -97,6 +112,26 @@ abstract class BaseBibSources extends sfDoctrineRecord
         $this->hasColumn('db_field', 'string', 50, array(
              'type' => 'string',
              'length' => 50,
+             ));
+        $this->hasColumn('url', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('target', 'string', 10, array(
+             'type' => 'string',
+             'length' => 10,
+             ));
+        $this->hasColumn('picto', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
+        $this->hasColumn('groupe', 'string', 50, array(
+             'type' => 'string',
+             'length' => 50,
+             ));
+        $this->hasColumn('actif', 'boolean', 1, array(
+             'type' => 'boolean',
+             'length' => 1,
              ));
     }
 

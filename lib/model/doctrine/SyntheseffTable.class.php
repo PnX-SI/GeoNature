@@ -238,7 +238,24 @@ class SyntheseffTable extends Doctrine_Table
                 $obs['no_protection'] = ($obs['protection_stricte']=='t')?false:true;
                 $obs['taxon_francais'] = ($obs['taxon_francais'] == '' || $obs['taxon_francais'] == null )?$obs['taxon_latin']:$obs['taxon_francais'];
                //pour l'affichage ou non du bouton edit; 
-               if ((preg_match("/".$userNom."/i", $obs['observateurs']) && preg_match("/".$userPrenom."/i", $obs['observateurs'])&&($obs['id_source']==sfGeonatureConfig::$id_source_cf || $obs['id_source']==sfGeonatureConfig::$id_source_inv))||($statuscode==6 && ($obs['id_source']==sfGeonatureConfig::$id_source_cf || $obs['id_source']==sfGeonatureConfig::$id_source_inv))) {$obs['edit_ok']='true';}
+               if   (
+                        (preg_match("/".$userNom."/i", $obs['observateurs']) 
+                            && preg_match("/".$userPrenom."/i", $obs['observateurs'])
+                            &&(
+                                $obs['id_source']==sfGeonatureConfig::$id_source_cf 
+                                || $obs['id_source']==sfGeonatureConfig::$id_source_mortalite 
+                                || $obs['id_source']==sfGeonatureConfig::$id_source_inv
+                            )
+                        )
+                        ||
+                        ($statuscode==6 
+                            && (
+                                $obs['id_source']==sfGeonatureConfig::$id_source_cf
+                                || $obs['id_source']==sfGeonatureConfig::$id_source_mortalite
+                                || $obs['id_source']==sfGeonatureConfig::$id_source_inv
+                            )
+                        )
+                    ) {$obs['edit_ok']='true';}
                 else{$obs['edit_ok']='false';}
                 if($compt>0){$geojson .= ',';}
                 $geojson .= '{"type":"Feature","id":'.$obs['id_synthese'].',"properties":';

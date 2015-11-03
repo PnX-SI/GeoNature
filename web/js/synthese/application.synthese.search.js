@@ -637,7 +637,7 @@ application.synthese.search = function() {
                             var id_fiche = tableau[0].substr(1,20);
                             var id_releve = tableau[1].substr(1,20);
                             if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
+                            if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
                             if(record.data.id_source==id_source_contactinv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
                         }
                     }
@@ -671,7 +671,7 @@ application.synthese.search = function() {
                                         var id_fiche = tableau[0].substr(1,20);
                                         var id_releve = tableau[1].substr(1,20);
                                         if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                        if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
                                         if(record.data.id_source==id_source_contactinv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
                                     }
                                 }
@@ -747,7 +747,7 @@ application.synthese.search = function() {
                     if(record){
                         var code = record.data.code_fiche_source;
                         var id_source = record.data.id_source;
-                        if(code!='' && code!=null && (id_source==id_source_contactfaune || id_source==id_source_contactinv)){
+                        if(code!='' && code!=null && (id_source==id_source_contactfaune || id_source==id_source_contactinv || id_source==id_source_mortalite)){
                             var reg=new RegExp("[-]+", "g");
                             var tableau=code.split(reg);
                             var id_fiche = tableau[0].substr(1,20);
@@ -756,7 +756,7 @@ application.synthese.search = function() {
                             if(id_source==id_source_contactfaune&&id_protocole==id_protocole_contact_vertebre&&record.data.edit_ok){
                                 application.synthese.editCf.loadFiche(id_fiche,'update',null);
                             }
-                            if(id_source==id_source_contactfaune&&id_protocole==id_protocole_mortalite&&record.data.edit_ok){
+                            if(id_source==id_source_mortalite&&id_protocole==id_protocole_mortalite&&record.data.edit_ok){
                                 application.synthese.editMortalite.loadFiche(id_fiche,'update',null);
                             }
                             if(id_source==id_source_contactinv&&id_protocole==id_protocole_contact_invertebre&&record.data.edit_ok){

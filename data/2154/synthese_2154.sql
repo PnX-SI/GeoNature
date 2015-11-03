@@ -313,22 +313,27 @@ $$;
 
 CREATE OR REPLACE FUNCTION contactfaune.synthese_insert_releve_cf()
   RETURNS trigger AS
-$$
+$BODY$
 DECLARE
 	fiche RECORD;
-	test integer;
 	mesobservateurs character varying(255);
 	criteresynthese integer;
-	unite integer;
 	idsource integer;
+	idsourcem integer;
+	idsourcecf integer;
+	unite integer;
 BEGIN
-
 	--Récupération des données id_source dans la table synthese.bib_sources
-	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf';
-	
+	SELECT INTO idsourcem id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' AND nom_source = 'Mortalité';
+	SELECT INTO idsourcecf id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' AND nom_source = 'Contact faune';
 	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
 	SELECT INTO fiche * FROM contactfaune.t_fiches_cf WHERE id_cf = new.id_cf;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
+	-- Récupération du id_source selon le critère d'observation, Si critère = 2 alors on est dans une source mortalité (=2) sinon cf (=1)
+	IF criteresynthese = 2 THEN idsource = idsourcem;
+	ELSE
+	    idsource = idsourcecf;
+	END IF;
 	SELECT INTO mesobservateurs o.observateurs FROM contactfaune.t_releves_cf r
 	JOIN contactfaune.t_fiches_cf f ON f.id_cf = r.id_cf
 	LEFT JOIN (
@@ -338,7 +343,7 @@ BEGIN
                 GROUP BY id_cf
             ) o ON o.id_cf = f.id_cf
 	WHERE r.id_releve_cf = new.id_releve_cf;
-
+	
 	INSERT INTO synthese.syntheseff (
 		id_source,
 		id_fiche_source,
@@ -387,7 +392,7 @@ BEGIN
 	);
 	RETURN NEW; 			
 END;
-$$
+$BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 ALTER FUNCTION contactfaune.synthese_insert_releve_cf()
@@ -4444,7 +4449,12 @@ CREATE TABLE bib_sources (
     db_name character varying(50),
     db_schema character varying(50),
     db_table character varying(50),
-    db_field character varying(50)
+    db_field character varying(50),
+    url character varying(255),
+    target character varying(10),
+    picto character varying(255),
+    groupe character varying(50) NOT NULL,
+    actif boolean NOT NULL
 );
 
 
