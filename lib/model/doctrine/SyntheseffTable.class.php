@@ -223,7 +223,7 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
-                WHERE synt.supprime = false ".$addfilters;
+                WHERE synt.supprime = false ".$addfilters."ORDER BY synt.dateobs DESC";
             
             $lesobs = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
             $geojson = '{"type":"FeatureCollection","features":[';
