@@ -16,12 +16,13 @@ TODO
 
 **Note de version**
 
-* Pour les changements dans la base vous pouvez exécuter le fichier ``data/update_1.4to1.5.sql``
+* Pour les changements dans la base de données vous pouvez exécuter le fichier ``data/update_1.4to1.5.sql``
+* Le bandeau de la page d'accueil ``web/images/bandeau_faune.jpg`` a été renommé en ``bandeau_geonature.jpg``. Renommez le votre si vous aviez personnalisé ce bandeau.
 * Si vous souhaitez désactiver certains programmes dans le "Comment ?" de la synthèse vous devez utiliser le champs ``actif`` de la table meta.bib_programmes
 * Compléter les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources`
 * Ajouter le paramètre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
 * Ajouter le paramètre ``public static $id_source_mortalite = 2;`` au fichier ``lib/sfGeonatureConfig.php``;
-* si vous avez déjà des données de mortalité enregistrée, vous devez adapater la requête SQL ci-dessous avec votre id_source pour  mortalité et l'exécuter
+* Si vous avez déjà des données de mortalité enregistrées, vous devez adapater la requête SQL ci-dessous avec votre ``id_source`` pour Mortalité et l'exécuter :
     ::
         UPDATE synthese.syntheseff SET id_source = 2 WHERE id_source = 1 AND id_critere_synthese = 2;
 
@@ -31,6 +32,7 @@ TODO
 * Généricité des champs dans meta.bib_programmes (champs ``sitpn`` renommé en ``public``) #68
 * Ajout d'un champ ``actif`` à la table ``meta.bib_programmes`` permettant de masquer certains programmes dans le "Comment ?" de la synthèse #66
 * Construire dynamiquement la liste des liens vers la saisie des protocoles à partir de la table ``synthese.bib_sources`` #69
+* Tous les styles des éléments de la page d'accueil ont été passés en CSS #57
  
  
 1.4.0 (2015-10-16)
