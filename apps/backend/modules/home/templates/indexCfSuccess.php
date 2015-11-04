@@ -2,16 +2,13 @@
 Ext.onReady(function() {
     Ext.QuickTips.init();
     application.cf.init('cf');
-
-    setTimeout(function() {
-        Ext.get('loading').remove();
-        Ext.get('loading-mask').fadeOut({remove:true});
-    }, 2250);
-
 });
 </script>
-<div id="loading-mask" style=""></div>
 <div id="loading">
-    <div class="loading-indicator"><img src="images/large-loading.gif" width="32" height="32" style="margin-right:8px;" align="absmiddle"/>Chargement du formulaire contact faune...</div>
+  <div class="wrapper">
+    <div class="loader"></div>
+    <h1>Chargement…</h1>
+    <h3>Le fonctionnement de l'application n'est pas garanti avec Internet Explorer. Utilisez plutôt Firefox ou Chrome</h3>
+  </div>
 </div>
 <div id="north"></div>
