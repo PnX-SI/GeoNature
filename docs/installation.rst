@@ -106,7 +106,7 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
     ::
     
-        cp ../version-precedente/web/images/bandeau_faune.jpg web/images/bandeau_faune.jpg
+        cp ../version-precedente/web/images/bandeau_geonature.jpg web/images/bandeau_geonature.jpg
 
 
 * Renommer l'ancien répertoire de l'application GeoNature (/geonature_OLD/ par exemple) puis celui de la nouvelle version (/geonature/ par exemple) pour que le serveur pointe sur la nouvelle version.
