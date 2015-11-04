@@ -27,7 +27,7 @@ indexSyntheseSuccess:
     - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
     - accents.js
@@ -63,7 +63,7 @@ indexCfSuccess:
     - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
@@ -91,7 +91,7 @@ indexMortaliteSuccess:
     - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
@@ -119,7 +119,7 @@ indexInvertebreSuccess:
     - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
@@ -148,7 +148,7 @@ indexFpSuccess:
     - client/mfbase/openlayers/lib/OpenLayers.js       
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/1.2/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
     - Ext.ux.Toast.js
@@ -186,7 +186,7 @@ indexFsSuccess:
     - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.grid.RowActions.js
@@ -223,7 +223,7 @@ indexBryoSuccess:
     - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
-    - client/mfbase/mapfish/MapFish.js
+    - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.grid.RowActions.js

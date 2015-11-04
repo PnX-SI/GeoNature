@@ -325,7 +325,7 @@ application.cf = function() {
                     //--------Code Atol CD - Nicolas Chevobbe-----------
                     Ext.get('loading').fadeOut({
                         remove: true
-                      });
+                    });
                     //Et on essaye de localiser l'utilisateur
                     navigator.geolocation.getCurrentPosition(function(position) {
                         //On va se centrer sur la localisation de l'utilisateur
