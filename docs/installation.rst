@@ -32,11 +32,13 @@ Création de la base de données
         cd /home/synthese/geonature
         sudo ./install_db.sh
         
-* Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. Attention, ce fichier sera supprimé lors de l'exécution de ``install_ap.sh``
+* Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. Attention, ce fichier sera supprimé lors de l'exécution de ``install_app.sh``
 
-* Si besoin, l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma layers
+* Vous pouvez intégrer l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
 
-    export PGPASSWORD=monpassachanger; sudo psql -h geonatdbhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
+    ::
+    
+        export PGPASSWORD=monpassachanger; sudo psql -h geonatdbhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
 
 
 
@@ -56,13 +58,19 @@ Configuration de l'application
 * Adapter le contenu du fichier ``web/js/config.js``
 
 	- Changer ``mon-domaine.fr`` par votre propre URL (wms_uri, host_uri)
-	- Renseigner votre clé IGN Geoportail ainsi que l'emprise spatiale de votre territoire
+	- Renseigner votre clé API IGN Geoportail ainsi que l'emprise spatiale de votre territoire
 	
-    
 * Adapter le contenu du fichier ``lib/sfGeonatureConfig.php``. Il indique notamment les identifiants de chaque protocoles, lots et sources de données. 
 
+* Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature avec l'utilisateur et mot de passe : ``admin / admin``
 
-* Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature avec l'utilisateur et mot de passe : ``admin/admin``
+* Si vous souhaitez ajouter des données provenant d'autres protocoles non fournis avec GeoNature, créez leur chacun un schéma dans la BDD de GeoNature correspondant à la structure des données du protocole et ajouté un trigger qui alimentera le schéma ``synthèse`` existant à chaque fois qu'une donnée y est ajoutée ou modifiée. Pour cela vous pouvez vous appuyer sur les exemples existants dans les protocoles fournis (``contactfaune`` par exemple).
+
+* Si vous souhaitez ajouter des protocoles spécifiques dont les formulaires de saisie sont intégrés à votre GeoNature, référez vous à la discussion https://github.com/PnEcrins/GeoNature/issues/54
+
+* Si vous souhaitez désactiver certains programmes dans le critère de recherche COMMENT de l'application Synthèse, décochez leur champs ``actif`` dans la table ``meta.bib_programmes`` (https://github.com/PnEcrins/GeoNature/issues/67)
+
+* Si vous souhaitez ne pas afficher tous les liens vers les formulaires de saisie des protocoles fournis par défaut avec GeoNature, décochez leur champs ``actif`` dans la table ``synthese.bib_sources`` (https://github.com/PnEcrins/GeoNature/issues/69)
 
 
 Mise à jour de l'application
@@ -86,19 +94,15 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
 * Assurez vous que le fichier ``/etc/hosts`` comporte une entrée ``geonatdbhost``. Ajoutez la si besoin.
 
-* Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, ne copier ces anciens fichiers de configuration dans le nouveau répertoire qu'après avoir vérifiez que de nouveaux paramètres n'ont pas été ajoutés.
+* Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, si de nouveaux paramètres ont été ajoutés, ajoutez les dans ces fichiers.
 
     ::
     
-        #Fichiers de configuration
+        cp ../version-precedente/config/settings.ini config/settings.ini
+        cp ../version-precedente/web/js/config.js web/js/config.js
+        cp ../version-precedente/lib/sfGeonatureConfig.php lib/sfGeonatureConfig.php
+        cp ../version-precedente/config/databases.yml config/databases.yml
     
-    		* config/settings.ini
-    
-    		* web/js/config.js
-    
-    		* lib/sfGeonatureConfig.php
-    
-    		* config/databases.yml
     
 * Vérifier que votre configuration de connexion à la base de données est correcte dans le fichier ``wms/wms.map``
 
@@ -119,13 +123,20 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
         cd /home/synthese/geonature
         psql -h geonatdbhost -U geonatuser -d geonaturedb -f /home/synthese/geonature/data/update_1.3to1.4.sql &> log/update.log
 
-* Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques (module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml``, l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml`` et la liste des protocoles et les liens vers leurs formulaires de saisie sur la page d'accueil de GeoNature dans le fichier ``apps/frontend/modules/home/template/indexSuccess.php``).
+* Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. 
+Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. 
+Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques 
+(module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml`` et l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml``).
 
 
-Clé IGN
-=======
-Si vous êtes un établissement public, commandez une clé IGN de type : Licence géoservices IGN pour usage grand public - gratuite
-Avec les couches suivantes : 
+Clé API IGN Geoportail
+======================
+
+L'API IGN Geoportail permet d'afficher les fonds IGN dans GeoNature directement depuis le Geoportail.
+
+Si vous êtes un établissement public, commandez une clé IGN de type : Licence géoservices IGN pour usage grand public - gratuite.
+
+Selectionner les couches suivantes : 
 
 * WMTS-Géoportail - Orthophotographies
 
@@ -136,15 +147,15 @@ Avec les couches suivantes :
 Pour cela, il faut que vous disposiez d'un compte IGN pro. (http://professionnels.ign.fr)
 Une fois connecté au site: 
 
-* aller dans "Nouvelle commande"
+* Aller dans "Nouvelle commande"
 
-* choisir "Géoservices IGN : Pour le web" dans la rubrique "LES GÉOSERVICES EN LIGNE"
+* Choisir "Géoservices IGN : Pour le web" dans la rubrique "LES GÉOSERVICES EN LIGNE"
 
-* cocher l'option "Pour un site internet grand public"
+* Cocher l'option "Pour un site internet grand public"
 
-* cocher l'option "Licence géoservices IGN pour usage grand public - gratuite"
+* Cocher l'option "Licence géoservices IGN pour usage grand public - gratuite"
 
-* saisir votre url. Attention, l'adresse doit être précédée de ``http://`` (même si il s'agit d'une IP)
+* Saisir votre URL. Attention, l'adresse doit être précédée de ``http://`` (même si il s'agit d'une IP)
 
 * Finir votre commande en selectionnant les couches d'intéret et en acceptant les différentes conditions.
 
