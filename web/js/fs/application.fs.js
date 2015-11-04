@@ -471,7 +471,29 @@ application = function() {
             this.selectFeatureControl.activate();
             
             layerTester.on('ignReady',function(){
-                if(firstMapLoad){map.zoomToMaxExtent();}
+                if(firstMapLoad){
+                    map.zoomToMaxExtent();
+                    //--------Code Atol CD - Nicolas Chevobbe-----------
+                    Ext.get('loading').fadeOut({
+                        remove: true
+                      });
+                    //Et on essaye de localiser l'utilisateur
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        //On va se centrer sur la localisation de l'utilisateur
+                        var lonLat = new OpenLayers.LonLat(position.coords.longitude, position.coords.latitude).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+                        map.setCenter(lonLat, 10);
+
+                    }
+                    ,function(error) {
+                        Ext.ux.Toast.msg('Erreur', 'Le navigateur n\'a pas pu vous géolocaliser');
+                    } 
+                    ,{
+                        enableHighAccuracy : true
+                        ,maximumAge : 600000
+                        ,timeout : 27000
+                    });
+                    //--------Fin du code Atol CD - Nicolas Chevobbe-----------
+                }
                 firstMapLoad = false;
             });
             layerTester.fireEvent('mapReady');
