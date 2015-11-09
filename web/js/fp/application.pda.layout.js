@@ -48,7 +48,7 @@ application.layout = function() {
             region:"south"
             ,height:25
             ,bbar: new Ext.Toolbar({           
-                items: ['&copy; Parc National des Ecrins', '->',
+                items: ['&copy; <a href="https://github.com/PnEcrins/GeoNature/" target="_blank">GeoNature</a>, développé par le <a href="http://www.ecrins-parcnational.fr" target="_blank">Parc national des Ecrins</a>', '->',
                 application.user.nom+' ('+application.user.status+')',
                 {
                     text: 'déconnexion'
