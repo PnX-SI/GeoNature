@@ -1,5 +1,5 @@
 <?php use_helper('Url') ?>
-<div id="container">
+<div class="container">
     <form class="form-signin" action="<?php echo url_for('@login') ?>" method="post" id="loginForm">
     
         <h2 class="form-signin-heading"><?php echo sfGeonatureConfig::$appname_main;?></h2>
