@@ -8,7 +8,7 @@ class homeActions extends sfFauneActions
   
     public function executeLogin(sfRequest $request)
     {
-        slot('title', "Synthese PN");
+        slot('title', sfGeonatureConfig::$appname_main);
         //affichage du formulaire
         $this->form = new LoginForm();
         
