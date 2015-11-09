@@ -45,7 +45,7 @@ class homeActions extends sfFauneActions
                 $user->setAttribute('identifiant',$params['login']);
                 $user->setAttribute('pass',$params['password']);
                 $this->redirect('@homepage');
-        $this->form = new LoginForm();
+                // $this->form = new LoginForm();
             }
         }
     }

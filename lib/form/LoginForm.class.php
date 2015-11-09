@@ -15,8 +15,8 @@ class LoginForm extends BaseForm
   {
 	//setWidgets = définition des champs du formulaire = name d'un input par exemple
     $this->setWidgets(array(
-      'login'  => new sfWidgetFormInputText(),
-      'password'  => new sfWidgetFormInputPassword(),
+      'login'  => new sfWidgetFormInputText(array(), array('class' => 'form-control','placeholder' => 'Identifiant')),
+      'password'  => new sfWidgetFormInputPassword(array(), array('class' => 'form-control', 'placeholder' => 'Mot de passe')),
     ));
 	//valide chaque champ selon son contenu (voir la doc symfony pour les différentes classes de validator ; par exemple sfValditorEmail
     $this->setValidators(array(
@@ -31,12 +31,10 @@ class LoginForm extends BaseForm
     //défini un préfixe dans le name ou le id du html
     $this->widgetSchema->setNameFormat('login[%s]');
 	//probalement écriture du html avec des div
-    $this->widgetSchema->setFormFormatterName('div');
+    // $this->widgetSchema->setFormFormatterName('div');
     
     // post traitement pour vérifier que le formulaire entier est bien valide ; ici on va vérifier que l'utilisateur à bien des droits
-    $this->validatorSchema->setPostValidator(
-      new sfValidatorCallback(array('callback' => array($this, 'checkPassword')))
-    );
+    $this->validatorSchema->setPostValidator(new sfValidatorCallback(array('callback' => array($this, 'checkPassword'))));
   }
  
   /**
@@ -58,8 +56,6 @@ class LoginForm extends BaseForm
 	    // throw an error bound to the password field
 	    throw new sfValidatorErrorSchema($validator, array('password' => $error));
 	  }
-	 
 	  return $values;
 	}
-  
 }

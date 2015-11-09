@@ -40,8 +40,9 @@ TODO
 * Un message automatique conseille les utilisateurs d'Internet Explorer de plutôt utiliser Firefox ou Chrome. #65
 * Tri par défaut par date décroissante des 50 dernières observations affichées à l'ouverture de la Synthèse #51
 * Vocabulaire. "Dessiner un point" remplacé par "Localiser l'observation" #66
-* Mise à jour des copyrights dans les pieds de page de tous les applications
-* Arrière-plan avec la spirale violette remplacé par une photo plus générique
+* Mise à jour des copyrights dans les pieds de page de toutes les applications
+* refonte du css du formulaire de login avec bootstrap et une image de fond différente
+* Suppression d'images non utilisées dans le répertoire ``web/images``
  
  
 1.4.0 (2015-10-16)
