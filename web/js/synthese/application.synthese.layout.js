@@ -66,7 +66,7 @@ application.synthese.layout = function() {
             region:"south"
             ,height:25
             ,bbar: new Ext.Toolbar({           
-                items: ['&copy; Parc National des Ecrins 2012-2015', '->',
+                items: ['&copy; <a href="https://github.com/PnEcrins/GeoNature/" target="_blank">GeoNature</a>, développé par le <a href="http://www.ecrins-parcnational.fr" target="_blank">Parc national des Ecrins</a>', '->',
                 application.synthese.user.nom+' ('+application.synthese.user.status+')',
                 {
                     text: 'Déconnexion'

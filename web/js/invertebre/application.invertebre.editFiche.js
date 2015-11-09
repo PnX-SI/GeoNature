@@ -163,7 +163,7 @@ application.invertebre.editFiche = function() {
             ,layout:'fit'
             ,height:45
             ,bbar: new Ext.Toolbar({           
-                items: ['&copy; Parc National des Ecrins 2012', '->',
+                items: ['&copy; <a href="https://github.com/PnEcrins/GeoNature/" target="_blank">GeoNature</a>, développé par le <a href="http://www.ecrins-parcnational.fr" target="_blank">Parc national des Ecrins</a>', '->',
                 application.invertebre.user.nom+' ('+application.invertebre.user.status+')',
                 {
                     text: 'Déconnexion'
