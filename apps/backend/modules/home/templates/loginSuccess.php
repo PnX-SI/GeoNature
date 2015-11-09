@@ -1,7 +1,7 @@
 <?php use_helper('Url') ?>
-  <h2 style="color:#FFFFFF;font-family:Arial;letter-spacing:2px;margin-top:35px;text-align:center;text-shadow:0 0 3px #555555;">
+  <div id="titre">
    <?php echo sfGeonatureConfig::$appname_main; ?>
-  </h2> 
+  </div> 
 <form action="<?php echo url_for('@login') ?>" method="post" id="loginForm">
   <div id="container">
       <?php echo $form?>

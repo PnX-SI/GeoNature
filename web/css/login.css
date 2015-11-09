@@ -1,8 +1,9 @@
 body {
   margin: 0;
   padding: 0;
-  background: url(../images/ecrins.png) 150% -52% no-repeat;
-  background: url(../images/full.png) center 10% no-repeat #ecd9eb;}
+  background: url(../images/geonature_background.jpg) center 10% no-repeat #ecd9eb;
+  background-size: 100%;
+}
   
 #loginForm {
   width: 286px;
@@ -13,7 +14,8 @@ body {
   margin: -78px 0 0 -143px;
   background: url(../images/login.png) top left no-repeat;
   font-size: 12px;
-  font-family: Arial;}
+  font-family: Arial;
+}
 
 #reflect {
   width: 286px;
@@ -21,17 +23,29 @@ body {
   position: absolute;
   top: 158px;
   left: 0;
-  background: url(../images/login-reflect.png) top left no-repeat;}
+  background: url(../images/login-reflect.png) top left no-repeat;
+}
 
-  #container {
-    margin: 10px 20px;}
+#titre {
+    color:#FFFFFF;
+    letter-spacing:2px;
+    margin-top:35px;
+    text-align:center;
+    text-shadow:0 0 3px #555555;
+    font-size: 2em; 
+}
+
+#container {
+  margin: 10px 20px;
+}
     
-  #loginForm label {
+#loginForm label {
     display: block;
     line-height: 1.8em;
-    clear: left;}
+    clear: left;
+}
     
-  .error_list {
+.error_list {
     float: right;
     list-style: none;
     color: #f00;
@@ -40,21 +54,26 @@ body {
     clear: right;
     margin: 0 10px 0 0;
     line-height: 1.8em;
-    padding: 0;}
+    padding: 0;
+}
     
-  input {
+input {
     clear: both;
-    width: 230px;}
+    width: 230px;
+}
     
-  #submit {
+#submit {
     width: 100px;
     text-align: center;
-    margin: 10px 0 0 80px;}
+    margin: 10px 0 0 80px;
+}
     
-/*partie concernant le secureSucess (module default)*/
+/*Partie concernant le secureSucess (module default)*/
+
 .centertext{
     text-align:center;
 }
+
 #success{
   width: 420px;
   height: 400px;
@@ -64,7 +83,8 @@ body {
   left: 33%;
   background: url(../images/login-grand.png) top left no-repeat;
   font-size: 12px;
-  font-family: Arial;}
+  font-family: Arial;
+}
 
 #reflectSuccess {
   width: 450px;
@@ -72,7 +92,8 @@ body {
   position: absolute;
   top: 498px;
   left: 33%;
-  background: url(../images/login-reflect-grand.png) top left no-repeat;}
+  background: url(../images/login-reflect-grand.png) top left no-repeat;
+}
 
 #success a:hover {
     font-weight: bold;
