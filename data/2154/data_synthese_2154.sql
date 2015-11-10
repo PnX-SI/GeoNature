@@ -424,6 +424,8 @@ INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (113, 'Moll
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (114, 'Vers',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (115, 'Rotifères',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (116, 'Tardigrades',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (201, 'Bivalves',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (202, 'Gastéropodes',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (666, 'Nuisibles',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1000, 'Plantes vasculaires',null, 'images/pictos/plante.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'Bryophytes',null, 'images/pictos/mousse.gif');
