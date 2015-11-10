@@ -369,3 +369,86 @@ $BODY$
 ALTER FUNCTION contactfaune.synthese_insert_releve_cf()
   OWNER TO geonatuser;
 GRANT EXECUTE ON FUNCTION contactfaune.synthese_insert_releve_cf() TO geonatuser;
+
+--mise à jour des vous taxonomique faune
+
+CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
+ SELECT g.id_liste AS id_classe,
+    g.nom_liste AS nom_classe_fr,
+    g.desc_liste AS desc_classe
+   FROM ( SELECT l.id_liste,
+            l.nom_liste,
+            l.desc_liste,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_listes l
+             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
+             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
+          WHERE l.id_liste >= 100 AND l.id_liste < 200
+          GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+  WHERE t.phylum::text = 'Chordata'::text;
+  
+CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS 
+ SELECT g.id_liste AS id_classe,
+    g.nom_liste AS nom_classe_fr,
+    g.desc_liste AS desc_classe
+   FROM ( SELECT l.id_liste,
+            l.nom_liste,
+            l.desc_liste,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_listes l
+             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
+             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
+          WHERE l.id_liste >= 100
+          GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+  WHERE t.phylum::text <> 'Chordata'::text AND t.regne::text = 'Animalia'::text;
+  
+CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
+ SELECT DISTINCT t.id_taxon,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    t.nom_latin,
+    t.nom_francais,
+    g.id_classe,
+        CASE
+            WHEN tx.cd_nom = ANY (ARRAY[61098, 61119, 61000]) THEN 6
+            ELSE 5
+        END AS denombrement,
+    f2.bool AS patrimonial,
+    m.texte_message_cf AS message,
+        CASE
+            WHEN tx.cd_nom = ANY (ARRAY[60577, 60612]) THEN false
+            ELSE true
+        END AS contactfaune,
+    true AS mortalite
+   FROM taxonomie.bib_taxons t
+     LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
+     LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
+     JOIN contactfaune.v_nomade_classes g ON g.id_classe = ctl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+     JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
+  WHERE t.filtre1::text = 'oui'::text
+  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, f2.bool, m.texte_message_cf;
+  
+CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
+ SELECT DISTINCT t.id_taxon,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    t.nom_latin,
+    t.nom_francais,
+    g.id_classe,
+    f2.bool AS patrimonial,
+    m.texte_message_inv AS message
+   FROM taxonomie.bib_taxons t
+     LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
+     LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
+     JOIN contactinv.v_nomade_classes g ON g.id_classe = ctl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+     JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text;
+
+-- Pour le fun
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (201, 'Bivalves',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (202, 'Gastéropodes',null, 'images/pictos/nopicto.gif');
