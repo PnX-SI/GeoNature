@@ -96,6 +96,12 @@ application.synthese.editInvertebre = function() {
      * {Boolean} is the geometry has been load once only
      */
     var firstGeometryLoad = true;
+
+    /**
+     * Property: firstAltitudeLoad
+     * {Boolean} is the altitude has been load once only
+     */
+    var firstAltitudeLoad = true;
     
     /**
      * Property: myProxyTaxons
@@ -363,7 +369,7 @@ application.synthese.editInvertebre = function() {
                         render: function(c) {
                             Ext.QuickTips.register({
                                 target: c.getEl(),
-                                text: 'L\'altitude est calculée automatiquement, vous pouvez donc laisser ce champ vide. Si vous le souhaitez, vous pouvez toutefois saisir une altitude c\'est celle que vous fournissez qui sera retenue.'
+                                text: 'L\'altitude est calculée à partir d\'un service de l\'API Geoportail de l\'IGN. Vous pouvez la corriger si vous le souhaitez.'
                             });
                         }
                     }
@@ -1460,7 +1466,8 @@ application.synthese.editInvertebre = function() {
                 Ext.getCmp('edit-fiche-form').getForm().findField('ids_observateurs').setValue(Ext.getCmp('combo-fiche-observateurs').getValue());
                 myProxyTaxons.url = 'bibs/taxonsinvu?point='+Ext.getCmp('edit-fiche-form').getForm().findField('geometry').getValue();
                 Ext.getCmp('combo-fiche-taxon').getStore().reload();
-                application.synthese.editInvertebre.findZ();
+                if(!firstAltitudeLoad){application.synthese.editInvertebre.findZ(feature);}
+                firstAltitudeLoad = false;
             }
             ,featuremodified: function(obj) {
                 updateGeometryField(obj.feature);
@@ -1794,6 +1801,7 @@ application.synthese.editInvertebre = function() {
          * Loads a record from the aps list store
          */
         ,loadFiche: function(fiche,action,cd) {
+            firstAltitudeLoad = true;
             this.init();
             this.window.show();
             if (action=='update') {
@@ -1821,61 +1829,31 @@ application.synthese.editInvertebre = function() {
             this.GpsWindow = Ext.ux.GpsLocation.initGpsWindow(vectorLayer);
             this.GpsWindow.show();
         }
-        //remplir l'altitude du champ altitude dans le formulaire selon le pointage
-        ,findZ: function() {
-            Ext.Ajax.request({
-                url: 'invertebre/getz?point='+Ext.getCmp('edit-fiche-form').getForm().findField('geometry').getValue()
-                ,success: function(response) {
-                    var result = Ext.decode(response.responseText);
-                    if(result.success==false){
-                        Ext.ux.Toast.msg('Information !', 'L\'application n\'a pu récupérer l\'altitude');
-                    }
-                    else{
-                        if(result.data.altitude==0){
-                            //on recherche l'altitude avec l'API googlemap
-                            var mageometry = new OpenLayers.Geometry.Point(vectorLayer.features[0].geometry.x, vectorLayer.features[0].geometry.y);
-                            var projSource = new OpenLayers.Projection("EPSG:3857");
-                            var maProjection = new OpenLayers.Projection("EPSG:4326");
-                            OpenLayers.Projection.transform(mageometry,projSource,maProjection);
-                            //On créé un objet ElevationService
-                            elevator = new google.maps.ElevationService();
-                            //Ainsi qu'un objet "Location"
-                            var lctn = new google.maps.LatLng(mageometry.y, mageometry.x);
-                            //On met le tout dans une variable qui est le format attendu par la méthode getElevationForLocations
-                            // à savoir, un attribut locations qui est un tableau de plusieurs points Latlong
-                            var positionalRequest = {locations:[lctn]};
-                            //Et finalement on demande l'elevation pour nos localisations
-                            //On la même systeme de callback qu'en Ext
-                            elevator.getElevationForLocations(positionalRequest, function(results, status) {
-                                if (status == google.maps.ElevationStatus.OK) {
-                                    //On récupère le premier resultat (vu qu'on n'a demandé qu'un point)
-                                    if (results[0]) {
-                                        Ext.getCmp('fieldfiche-altitude').setValue(Math.round(results[0].elevation));
-                                        Ext.ux.Toast.msg('Information !', 'Cette altitude est fournie à par un service Google.');
-                                    }
-                                    else {
-                                        Ext.getCmp('fieldfiche-altitude').setValue(0);
-                                        Ext.ux.Toast.msg('Information !', 'Aucune altitude n\'est disponible sur ce pointage.');
-                                    }
-                                } 
-                                else {
-                                  //Si il y a eu un problème lors de l'appel
-                                  Ext.ux.Toast.msg('Attention !', 'Erreur: ' + status);
-                                  Ext.getCmp('fieldfiche-altitude').setValue(0);
-                                }
-                            });
-                        }
-                        else{Ext.getCmp('fieldfiche-altitude').setValue(result.data.altitude);}
-                        Ext.getCmp('fieldlabel-commune').setValue('Commune: '+result.data.nomcommune);
-                    }  
-                }
-                ,failure: function() {
-                    Ext.Msg.alert('Attention',"Un problème à été rencontré.");
-                }
-                ,scope: this
-            });
-        }
         
+        //remplir l'altitude du champ altitude dans le formulaire selon le pointage
+        ,findZ : function(feature) {
+            //on recherche l'altitude avec l'API IGN
+            var geometryCentroid = feature.geometry.getCentroid();
+            var latLonGeom = geometryCentroid.transform(new OpenLayers.Projection("EPSG:3857"), new OpenLayers.Projection("EPSG:4326"));
+            var script = document.createElement('script');
+            script.src = String.format('//wxs.ign.fr/{0}/alti/rest/elevation.xml?lon={1}&lat={2}&output=json&zonly=true&callback=application.synthese.editInvertebre.handleIGNResponse', ign_api_key, latLonGeom.x, latLonGeom.y);
+            document.head.appendChild(script);
+        }
+        ,handleIGNResponse : function(data) {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(data.xml, "text/xml");
+            var s = xmlDoc.getElementsByTagName('z');
+            if (s.length === 0 || Ext.isEmpty(s[0]) || Ext.isEmpty(s[0].innerHTML)) {
+                Ext.Msg.alert('Attention', "Un problème à été rencontré lors de l'appel au service de l'IGN.");
+                return;
+            }
+            Ext.ux.Toast.msg('Information !', 'Cette altitude est fournie à par un service de l\'IGN.');
+            application.synthese.editInvertebre.setAltitude(Math.round(s[0].innerHTML));
+        }
+        ,setAltitude : function(alti) {
+            Ext.getCmp('fieldfiche-altitude').setValue(alti);
+        }
+
         ,changeLabel: function(fieldId, newLabel){
               var label = Ext.DomQuery.select(String.format('label[for="{0}"]', fieldId));
               if (label){

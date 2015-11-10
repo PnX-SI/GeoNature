@@ -156,8 +156,6 @@ class syntheseActions extends sfFauneActions
         //Récupération des paramètres de connexion à la base
         $ogrConnexionString = $this::getOgrConnexionString();
         $params = $request->getParams(); // récup des paramètres de la requête utilisateur
-        $user = str_replace(' ','_',$this->getUser()->getAttribute('nom')); //récup du nom de l'utilisateur connecté
-        $user = self::enleveaccents($user); //nettoyage
         $path = 'exportshape/'; //chemin public pour téléchargement du fichier zip
         $madate = date("Y-m-d_His");
         $srid_local_export = sfGeonatureConfig::$srid_local;
@@ -165,8 +163,15 @@ class syntheseActions extends sfFauneActions
         $sql = SyntheseffTable::listShp($params,'ST_Point'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
         $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_points.shp '.$ogrConnexionString.' -sql ';
-        $command = $ogr." \"".$sql."\""; 
+        $command = $ogr." \"".$sql."\"";       
         system($command);//execution de la commande
+        //pour les lignes
+        // $sql = SyntheseffTable::listShp($params,'ST_Line'); // exécution de la requête sql
+        //construction de la ligne de commande ogr2ogr
+        // $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_lignes.shp '.$ogrConnexionString.' -sql ';
+        // $command = $ogr." \"".$sql."\"";
+        // return print_r($command);        
+        // system($command);//execution de la commande
         //pour les mailles
         $sql = SyntheseffTable::listShp($params,'ST_Polygon'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
@@ -185,6 +190,10 @@ class syntheseActions extends sfFauneActions
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.shx') ;       
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.prj') ;       
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.dbf') ;
+        // $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_lignes.shp') ;       
+        // $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_lignes.shx') ;       
+        // $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_lignes.prj') ;       
+        // $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_lignes.dbf') ;
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.shp') ;       
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.shx') ;       
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_mailles.prj') ;       
@@ -201,6 +210,10 @@ class syntheseActions extends sfFauneActions
         unlink($path.'synthese_'.$madate.'_points.shx');       
         unlink($path.'synthese_'.$madate.'_points.prj');       
         unlink($path.'synthese_'.$madate.'_points.dbf');
+        // unlink($path.'synthese_'.$madate.'_lignes.shp');       
+        // unlink($path.'synthese_'.$madate.'_lignes.shx');       
+        // unlink($path.'synthese_'.$madate.'_lignes.prj');       
+        // unlink($path.'synthese_'.$madate.'_lignes.dbf');
         unlink($path.'synthese_'.$madate.'_mailles.shp');       
         unlink($path.'synthese_'.$madate.'_mailles.shx');       
         unlink($path.'synthese_'.$madate.'_mailles.prj');       

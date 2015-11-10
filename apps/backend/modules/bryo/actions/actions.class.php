@@ -204,6 +204,7 @@ class bryoActions extends sfFauneActions
         $station->surface = $request->getParameter('surface');
         $station->id_exposition = $request->getParameter('id_exposition');
         $station->complet_partiel = $request->getParameter('releve');
+        $station->altitude_saisie = $request->getParameter('altitude');
         $station->remarques = $request->getParameter('remarques');
         $station->supprime = false;
         $station->srid_dessin = sfGeonatureConfig::$srid_dessin;

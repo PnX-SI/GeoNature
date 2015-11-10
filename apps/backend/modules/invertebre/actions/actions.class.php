@@ -219,8 +219,8 @@ class invertebreActions extends sfFauneActions
         $this->redirect('@login');
     }
   }
-    public function executeGetZ(sfRequest $request)
-    {
+   public function executeGetZ(sfRequest $request)
+  {
         $point = $request->getParameter('point');
         $srid_layer_commune = sfGeonatureConfig::$srid_local;
         $srid_layer_isoline = sfGeonatureConfig::$srid_local;
@@ -235,6 +235,5 @@ class invertebreActions extends sfFauneActions
         if($z==null){$z=0;}
         if($nomcommune==null){$nomcommune='hors zone';}
         return $this->renderText("{success: true,data:{altitude:".$z.",nomcommune:'".$nomcommune."'}}");
-        // print_r(json_encode($val));
-    }
+  }
 }

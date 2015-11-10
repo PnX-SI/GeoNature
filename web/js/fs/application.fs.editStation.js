@@ -95,6 +95,12 @@ application.editStation = function() {
      * {Boolean} is the geometry has been load once only
      */
     var firstGeometryLoad = true;
+
+    /**
+     * Property: firstAltitudeLoad
+     * {Boolean} is the altitude has been load once only
+     */
+    var firstAltitudeLoad = true;
     
     /**
      * Property: maProjection
@@ -372,6 +378,23 @@ application.editStation = function() {
                 ,triggerAction: 'all'
                 ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
                 ,mode: 'local'
+            }
+            ,{
+                id: 'numberfield-altitude'
+                ,xtype:'numberfield'
+                ,fieldLabel: 'Altitude '
+                ,allowDecimals :false
+                ,allowNegative: false
+                ,name: 'altitude'
+                ,anchor: '40%'
+                ,listeners: {
+                    render: function(c) {
+                        Ext.QuickTips.register({
+                            target: c.getEl(),
+                            text: 'L\'altitude est calculée à partir d\'un service de l\'API Geoportail de l\'IGN. Vous pouvez la corriger si vous le souhaitez.'
+                        });
+                    }
+                }
             }]
         } //fin du groupe 1
         ,{ //groupe 2
@@ -1127,6 +1150,8 @@ application.editStation = function() {
                     deactivateAllEditingControls();
                 }
                 updateGeometryField(feature);
+                if(!firstAltitudeLoad){application.editStation.findZ(feature);}
+                firstAltitudeLoad = false;
                 Ext.getCmp('edit-station-form').enable();
                 Ext.getCmp('edit-station-form').ownerCt.ownerCt.doLayout();
             }
@@ -1399,6 +1424,7 @@ application.editStation = function() {
                 ,'ids_observateurs'
                 ,{name:'dateobs', type: 'date', dateFormat:'d/m/Y'}
                 ,'complet_partiel'
+                ,'altitude'
                 ,'id_sophie'
                 ,'id_support'
                 ,'pdop'
@@ -1831,6 +1857,7 @@ application.editStation = function() {
          * Loads a record from the aps list store
          */
         ,loadStation: function(id,action,cd) {
+            firstAltitudeLoad = true;
             if (!this.window) {
                 this.init();
             }
@@ -1888,6 +1915,30 @@ application.editStation = function() {
         ,initTaxrefWindow: function() {
             this.TaxrefWindow = initTaxrefWindow();
             this.TaxrefWindow.show();
+        }
+        
+        //remplir l'altitude du champ altitude dans le formulaire selon le pointage
+        ,findZ : function(feature) {
+            //on recherche l'altitude avec l'API IGN
+            var geometryCentroid = feature.geometry.getCentroid();
+            var latLonGeom = geometryCentroid.transform(new OpenLayers.Projection("EPSG:3857"), new OpenLayers.Projection("EPSG:4326"));
+            var script = document.createElement('script');
+            script.src = String.format('//wxs.ign.fr/{0}/alti/rest/elevation.xml?lon={1}&lat={2}&output=json&zonly=true&callback=application.editStation.handleIGNResponse', ign_api_key, latLonGeom.x, latLonGeom.y);
+            document.head.appendChild(script);
+        }
+        ,handleIGNResponse : function(data) {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(data.xml, "text/xml");
+            var s = xmlDoc.getElementsByTagName('z');
+            if (s.length === 0 || Ext.isEmpty(s[0]) || Ext.isEmpty(s[0].innerHTML)) {
+                Ext.Msg.alert('Attention', "Un problème à été rencontré lors de l'appel au service de l'IGN.");
+                return;
+            }
+            Ext.ux.Toast.msg('Information !', 'Cette altitude est fournie à par un service de l\'IGN.');
+            application.editStation.setAltitude(Math.round(s[0].innerHTML));
+        }
+        ,setAltitude : function(alti) {
+            Ext.getCmp('numberfield-altitude').setValue(alti);
         }
         
         ,changeLabel: function(fieldId, newLabel){

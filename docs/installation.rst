@@ -157,7 +157,13 @@ Une fois connecté au site:
 
 * Saisir votre URL. Attention, l'adresse doit être précédée de ``http://`` (même si il s'agit d'une IP)
 
-* Finir votre commande en selectionnant les couches d'intéret et en acceptant les différentes conditions.
+* Finir votre commande en selectionnant les couches utiles :
+
+    - Alticodage, 
+    - WMTS-Géoportail - Cartes IGN, 
+    - WMTS-Géoportail - Limites administratives, 
+    - WMTS-Géoportail - Orthophotographies
+    - WMTS-Géoportail - Parcelles cadastrales
 
 
 Une fois que votre commande est prête, saisissez la valeur de la clé IGN reçue dans le fichier ``web/js/config.js``.
