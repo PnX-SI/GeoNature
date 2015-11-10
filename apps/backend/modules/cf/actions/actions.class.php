@@ -391,7 +391,6 @@ class cfActions extends sfFauneActions
             $this->redirect('@login');
         }
     }
-    
     public function executeGetZ(sfRequest $request)
     {
         $point = $request->getParameter('point');
@@ -408,9 +407,5 @@ class cfActions extends sfFauneActions
         if($z==null){$z=0;}
         if($nomcommune==null){$nomcommune='hors zone';}
         return $this->renderText("{success: true,data:{altitude:".$z.",nomcommune:'".$nomcommune."'}}");
-        // print_r(json_encode($val));
-    }
-  
-  
-  
+    }    
 }

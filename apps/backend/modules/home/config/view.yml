@@ -5,7 +5,6 @@ loginSuccess:
 
 indexSuccess:
   stylesheets: 
-    - login.css
     - flot.css
   javascripts:
     - client/mfbase/jquery-1.10.2.min.js

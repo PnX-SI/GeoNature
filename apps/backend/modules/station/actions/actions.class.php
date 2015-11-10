@@ -233,6 +233,7 @@ class stationActions extends sfFauneActions
         $station->id_lot = sfGeonatureConfig::$id_lot_florestation;
         $station->id_organisme = sfGeonatureConfig::$id_organisme;
         $station->complet_partiel = $request->getParameter('releve');
+        $station->altitude_saisie = $request->getParameter('altitude');
         $station->id_programme_fs = $request->getParameter('id_programme_fs');
         $station->id_homogene = $request->getParameter('id_homogene');
         if($request->getParameter('meso_longitudinal')=='' OR $request->getParameter('meso_longitudinal')==null){$meso_longitudinal=null;} else{$meso_longitudinal=$request->getParameter('meso_longitudinal');}
