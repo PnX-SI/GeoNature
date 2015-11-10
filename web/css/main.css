@@ -181,8 +181,8 @@ a {
   color: #333;
   background-color: #FF9698;
   border-top: 1px solid rgba(0,0,0,0.2);
-  padding: 0.5em;
-  line-height: 1.25em;
+  line-height: 1.5em;
+  margin-bottom: 1px;
   margin-top: 1em;
   text-align: center;
   width: 100%;
