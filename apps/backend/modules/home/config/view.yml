@@ -6,11 +6,13 @@ loginSuccess:
 indexSuccess:
   stylesheets: 
     - flot.css
+    - main.css
   javascripts:
     - client/mfbase/jquery-1.10.2.min.js
     - client/mfbase/flot/jquery.flot.min.js
     - client/mfbase/flot/jquery.flot.time.min.js
     - statfaune.js
+    - config.js
 
 indexSyntheseSuccess:
   stylesheets:
