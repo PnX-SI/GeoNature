@@ -506,6 +506,11 @@ a {
   height:20px !important;
   width:20px !important;
 }
+.dragpolygon {
+  background-image:url(../images/move_feature_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
 .dragpoint {
   background-image:url(../images/move_feature_off.png) !important;
   height:20px !important;
