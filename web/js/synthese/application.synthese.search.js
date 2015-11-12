@@ -1867,7 +1867,7 @@ application.synthese.search = function() {
             if(fam != record.data.nom_famille){nouvelleFamille=true;}// si on a changé de niveau de famille
             //création d'un noeud final avec checkbox
             child = {
-                id:record.data.cd_nom
+                id:record.data.cd_ref
                 ,text:record.data.nom_latin+' - '+record.data.nom_francais
                 ,leaf:true
                 ,checked:false
