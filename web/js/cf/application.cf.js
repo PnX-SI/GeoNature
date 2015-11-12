@@ -280,8 +280,10 @@ application.cf = function() {
                 wms_uri
                 ,{
                     layers: [
-                      'znieff2', 'znieff1', 'coeur', 'ab', 'aoa',
-                      ,'reservesnationales', 'reservesregionales', 'n2000','secteurs', 'communes'
+                      'znieff2', 'znieff1', 'coeur',  'aoa', 'secteurs', 'communes'
+                      ,'ab','n2000','reservesnationales', 'reservesregionales'
+                      // ,'unitesgeo'
+                      //  
                       // ,'reservesintegrales', 'reserveschasse','sitesinscrits', 'sitesclasses'
                     ]
                     ,transparent: true
@@ -321,7 +323,6 @@ application.cf = function() {
             this.selectFeatureControl.activate();
             layerTester.on('ignReady',function(){
                 if(firstMapLoad){
-                    map.zoomToMaxExtent();
                     //--------Code Atol CD - Nicolas Chevobbe-----------
                     Ext.get('loading').fadeOut({
                         remove: true
@@ -343,6 +344,7 @@ application.cf = function() {
                     });
                     //--------Fin du code Atol CD - Nicolas Chevobbe-----------
                 }
+                map.zoomToMaxExtent();
                 firstMapLoad = false;
             });
             layerTester.fireEvent('mapReady');

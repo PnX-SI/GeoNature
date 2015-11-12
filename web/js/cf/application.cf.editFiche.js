@@ -1625,7 +1625,6 @@ application.cf.editFiche = function() {
      */
     var createMap = function() {
         map = application.cf.createMap();
-       
         map.getLayersByName('overlay')[0].mergeNewParams({
           id_cf:id_cf
         });
