@@ -1378,10 +1378,10 @@ application.editStation = function() {
          * Loads a record from the aps list store
          */
         ,loadStation: function(id,action,cd) {
-            firstAltitudeLoad = true;
             this.init();
             this.window.show();
             if (action=='update') {
+                firstAltitudeLoad = true;
                 Ext.getCmp('edit-station-form').getForm().findField('monaction').setValue('update');
                 this.window.setTitle('Modification d\'une station');
                 if (id) {
@@ -1413,6 +1413,7 @@ application.editStation = function() {
                 }
             }
             if (action=='add') {
+                firstAltitudeLoad = false;
                 activateControls(true);
                 updateGeometryField(null);
                 Ext.getCmp('edit-station-form').getForm().findField('monaction').setValue('add');
