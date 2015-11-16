@@ -92,7 +92,7 @@ class mfQuery extends Doctrine_Query
   
   public function intersect($geometry)
   {
-    $srid = sfConfigSynthese::$srid_local;
+    $srid = sfGeonatureConfig::$srid_ol_map;
     $pg_geometry = 'st_GEOMETRYFROMTEXT(?, '.$srid .')';
     $the_geom = $this->__geoColumn;
 
