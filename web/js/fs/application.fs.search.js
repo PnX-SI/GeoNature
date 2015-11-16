@@ -1121,8 +1121,41 @@ application.search = function() {
             map = application.createMap();
             var vector = createLayer();
             map.addLayers([vector]);
+            function createPopup(feature) {
+                var dataDiv = '<div><span style="font-weight:bold;">';
+                if(feature.attributes.id_station){
+                    var maDate = Ext.util.Format.date(feature.data.dateobs,'d/m/Y');
+                    dataDiv = dataDiv + 'Le ' + maDate + '</span><br/>';
+                    dataDiv = dataDiv + 'Station N°' + feature.data.id_station+ '</span><br/>';
+                    
+                }
+                if(feature.attributes.nb_taxons ==0){dataDiv = dataDiv + '<small>Aucun taxon</small>';}
+                if(feature.attributes.nb_taxons ==1){dataDiv = dataDiv + '<small>1 taxon</small>';}
+                if(feature.attributes.nb_taxons >1){dataDiv = dataDiv + '<small>' + feature.data.nb_taxons + ' taxons</small>';}
+                dataDiv = dataDiv + '</div>';
+                feature.popup = new OpenLayers.Popup("data",
+                    feature.geometry.getBounds().getCenterLonLat(),
+                    null,
+                    dataDiv,
+                    false
+                );
+                feature.popup.backgroundColor='#ccc';
+                feature.popup.opacity=0.75;
+                feature.popup.autoSize=true;
+                map.addPopup(feature.popup);
+            }
+     
+            // This function destroys the popup when the user clicks the X.
+            function destroyPopup(feature) {
+                if(feature.popup!=null){feature.popup.destroy();}
+                feature.popup = null;
+            }
             this.selectControl = new OpenLayers.Control.SelectFeature([vector], {
                 multiple: false
+                ,id:'vectorselect'
+                ,onSelect: createPopup
+                ,hover:true
+                ,onUnselect: destroyPopup
             });
             var mediator = new mapfish.widgets.data.GridRowFeatureMediator({
                 grid: StationListGrid,
