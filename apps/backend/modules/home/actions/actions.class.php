@@ -71,7 +71,7 @@ class homeActions extends sfFauneActions
             foreach ($groupes as $groupe)
             {  
                 $group = $groupe['groupe'];
-                $this->liens_saisie .= '<b>'.$group.'</b>';
+                $this->liens_saisie .= '<div class="groupe"><h3 class="panel-title">'.$group.'</h3>';
                 foreach ($sources as $source)
                 {  
                     $source_group = $source['groupe'];
@@ -82,11 +82,11 @@ class homeActions extends sfFauneActions
                     if($source_group == $group)
                     {
                         $this->lien_saisie = '';
-                        $this->lien_saisie .= '<p class="ligne_lien"><a href="'.$url.'" target="'.$target.'" ><img src="'.$picto.'" border="0"> '.$nom_source.'</a></p>';
+                        $this->lien_saisie .= '<p class="ligne_lien"><a class="btn btn-default" href="'.$url.'" target="'.$target.'" ><img src="'.$picto.'" border="0"> '.$nom_source.'</a></p>';
                         $this->liens_saisie .= $this->lien_saisie;
                     }
-                    
                 }
+                $this->liens_saisie .= '</div>';
             }
             
             

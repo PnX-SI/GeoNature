@@ -5,6 +5,8 @@ loginSuccess:
 
 indexSuccess:
   stylesheets: 
+    - bootstrap/css/bootstrap.css
+    - glyphicons.css
     - flot.css
     - main.css
   javascripts:
