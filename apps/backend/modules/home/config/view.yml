@@ -199,6 +199,7 @@ indexFsSuccess:
     - Ext.ux.plugins.ProportionalWindows.js
     - Ext.ux.Toast.js
     - RowExpander.js
+    - BufferView.js
     - CheckColumn.js
     - SuperBoxSelect.js
     - config.js
@@ -237,6 +238,7 @@ indexBryoSuccess:
     - Ext.ux.plugins.ProportionalWindows.js
     - Ext.ux.Toast.js
     - RowExpander.js
+    - BufferView.js
     - CheckColumn.js
     - SuperBoxSelect.js
     - config.js
