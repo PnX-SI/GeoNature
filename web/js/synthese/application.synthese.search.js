@@ -1774,26 +1774,29 @@ application.synthese.search = function() {
         var vector = createLayer();
         map.addLayers([vector]);
         function createPopup(feature) {
-                var dataDiv = '<div> * <span style="font-weight:bold;">'+ feature.attributes.taxon_francais+ '</span>';
-                if(feature.attributes.dateobs){dataDiv = dataDiv + ' ('+ feature.data.dateobs+ ')';}
-                dataDiv = dataDiv + '</div>';
-				feature.popup = new OpenLayers.Popup("data",
-					feature.geometry.getBounds().getCenterLonLat(),
-					null,
-					dataDiv,
-					false
-				);
-                feature.popup.backgroundColor='#ccc';
-                feature.popup.opacity=0.75;
-                feature.popup.autoSize=true;
-				map.addPopup(feature.popup);
-			}
+            var dataDiv = '<div><span style="font-weight:bold;">'+ feature.attributes.taxon_francais+ '</span><br/>';
+            if(feature.attributes.dateobs){
+                var maDate = Ext.util.Format.date(feature.data.dateobs,'d/m/Y');
+                dataDiv = dataDiv + 'Le '+ maDate;
+            }
+            dataDiv = dataDiv + '</div>';
+            feature.popup = new OpenLayers.Popup("data",
+                feature.geometry.getBounds().getCenterLonLat(),
+                null,
+                dataDiv,
+                false
+            );
+            feature.popup.backgroundColor='#ccc';
+            feature.popup.opacity=0.75;
+            feature.popup.autoSize=true;
+            map.addPopup(feature.popup);
+        }
  
-			// This function destroys the popup when the user clicks the X.
-			function destroyPopup(feature) {
-				if(feature.popup!=null){feature.popup.destroy();}
-				feature.popup = null;
-			}
+        // This function destroys the popup when the user clicks the X.
+        function destroyPopup(feature) {
+            if(feature.popup!=null){feature.popup.destroy();}
+            feature.popup = null;
+        }
         selectControl = new OpenLayers.Control.SelectFeature(vector, {
             multiple: false
             ,id:'vectorselect'

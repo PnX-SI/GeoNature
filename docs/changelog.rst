@@ -45,6 +45,9 @@ TODO
 * Vocabulaire. "Dessiner un point" remplacé par "Localiser l'observation" #66
 * Mise à jour des copyrights dans les pieds de page de toutes les applications
 * refonte du css du formulaire de login avec bootstrap et une image de fond différente
+* Refonte bootstrap de la page d'accueil
+* Homogénéisation du pied de page
+* FloreStation et Bryophytes - Homogénéiser interaction carte liste - ajout d'un popup au survol #74 
 * Suppression d'images non utilisées dans le répertoire ``web/images``
 * Mise en cohérence des vues taxonomiques faune #81
 * Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN
