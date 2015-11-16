@@ -51,14 +51,20 @@ application.layout = function() {
                 items: ['&copy; <a href="https://github.com/PnEcrins/GeoNature/" target="_blank">GeoNature</a>, développé par le <a href="http://www.ecrins-parcnational.fr" target="_blank">Parc national des Ecrins</a>', '->',
                 application.user.nom+' ('+application.user.status+')',
                 {
-                    text: 'déconnexion'
-                    ,iconCls: 'lock'
+                    text: 'Déconnexion'
+                    ,iconCls: 'logout'
                     ,handler: function() {
-                        window.location.href = 'deconnexion' 
+                        window.location.href = 'deconnexion';
+                    }
+                },{
+                    text: 'Accueil'
+                    ,iconCls: 'home_mini'
+                    ,handler: function() {
+                        window.location.href = '/'+app_uri;
                     }
                 }]
             })
-        }
+        };
     };
 
     /**
