@@ -1423,6 +1423,7 @@ application.editStation = function() {
                 Ext.ux.Toast.msg('Attention !', 'Commencer par saisir la position de la station sur la carte pour activer le formulaire');
                 gridStoreTaxons.removeAll();
             }
+            map.zoomToMaxExtent();
         }
 
         ,initGpsWindow: function() {

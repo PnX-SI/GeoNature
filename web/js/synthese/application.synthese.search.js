@@ -989,7 +989,8 @@ application.synthese.search = function() {
             toolbar.addControl(
               drawPolygonControl = new OpenLayers.Control.DrawFeature(application.synthese.searchVectorLayer, OpenLayers.Handler.Polygon, {
                 title: 'Dessiner une zone de recherche'
-              }), {
+              })
+              ,{
                 iconCls: 'drawpolygon'
                 ,toggleGroup: this.id
                 ,handler: function(){

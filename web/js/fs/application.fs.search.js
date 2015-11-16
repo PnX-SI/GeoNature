@@ -91,7 +91,7 @@ application.search = function() {
      * {Boolean} toolbar has already been initialized
      */
     var toolbarInitializedOnce = false;
-
+    var mapBoundsSearch = false;
 	var nbFeatures = null;
     var gridMask = null;
 
@@ -244,13 +244,6 @@ application.search = function() {
                     initToolbarItems();
                     map.baseLayer.redraw();   // hack to ensure that the baseLayer is completely drawn
                     map.div.style.visibility = 'visible';
-                    // map.events.on({
-                        // move:function() {
-                            //alert(map.zoom);
-                            // Ext.getCmp('hidden-zoom').setValue(map.zoom);
-                        // }
-                    // });
-
                 }
                 ,activate: function(panel) {
                     panel.doLayout();
@@ -575,12 +568,38 @@ application.search = function() {
 
             application.utils.addSeparator(toolbar);
             toolbar.addControl(
-              drawPolygonControl = new OpenLayers.Control.DrawFeature(application.searchVectorLayer, OpenLayers.Handler.Polygon, {
-                title: 'Dessiner une zone de recherche'
-              }), {
-                iconCls: 'drawpolygon'
-                ,toggleGroup: this.id
-              }
+                drawPolygonControl = new OpenLayers.Control.DrawFeature(application.searchVectorLayer, OpenLayers.Handler.Polygon, {
+                    title: 'Dessiner une zone de recherche'
+                })
+                ,{
+                    iconCls: 'drawpolygon'
+                    ,toggleGroup: this.id
+                    ,handler: function(){
+                        application.searchVectorLayer.events.on({
+                            "featureadded":function(feature){
+                                if(mapBoundsSearch==true){
+                                    application.searchVectorLayer.removeFeatures(application.searchVectorLayer.features[0]);
+                                    mapBoundsSearch=false;
+                                }
+                                if(application.searchVectorLayer.features.length>1){
+                                    Ext.Msg.confirm('Definir une autre zone de recherche ?'
+                                        ,'Voulez vous supprimer la zone de recherche précédente ?'
+                                        ,function(btn) {
+                                            if (btn == 'yes') {
+                                                Ext.getCmp('hidden-geom').setValue(null);
+                                                application.searchVectorLayer.removeFeatures(application.searchVectorLayer.features[0]);
+                                            }
+                                            else{application.searchVectorLayer.removeFeatures(application.searchVectorLayer.features[1]);}
+                                        }
+                                    );
+                                }
+                                
+                            }
+                        });
+                        Ext.getCmp('combo_commune').clearValue();
+                        Ext.getCmp('combo-fs-secteur').clearValue();
+                    }
+                }
             );
 
             toolbar.addControl(
@@ -596,13 +615,12 @@ application.search = function() {
                 ,id: 'station-geometry-erase'
                 //,disabled: true
                 ,iconCls: 'erase'
-                ,qtip: 'Permet de supprimer la zone de recherche pour éventuellement en créer une nouvelle'
+                ,tooltip: 'Supprimer la zone de recherche'
                 ,handler: function() {
                     Ext.Msg.confirm('Attention'
                         ,'Cela supprimera définitivement la zone de recherche que vous avez dessinée !<br />Confirmer ?'
                         ,function(btn) {
                             if (btn == 'yes') {
-                                // activateControls(true);
                                 Ext.getCmp('hidden-geom').setValue(null);
                                 application.searchVectorLayer.removeFeatures(application.searchVectorLayer.features[0]);
                                 formSearcher.triggerSearch();
@@ -645,7 +663,23 @@ application.search = function() {
                 // ,trigger1Class: 'x-form-clear-trigger always-hidden'
                 ,trigger3Class: 'x-hidden'
                 ,listeners: {
-                    select: function(combo, record) {
+                    beforeselect: function(combo, record) {
+                        if (application.searchVectorLayer.features.length>0 && mapBoundsSearch==false) {
+                            Ext.Msg.confirm('Vous aviez défini une zone de recherche.'
+                                ,'Voulez vous supprimer cette zone de recherche ?'
+                                ,function(btn) {
+                                    if (btn == 'yes') {
+                                        Ext.getCmp('hidden-geom').setValue(null);
+                                        application.searchVectorLayer.removeAllFeatures();
+                                        return true;
+                                    }
+                                    combo.clearValue();
+                                    return false;
+                                }
+                            );
+                        } 
+                    }
+                    ,select: function(combo, record) {
                         Ext.getCmp('combo_commune').clearValue();
                         Ext.getCmp('hidden-extent').setValue(record.data.extent);
                         myProxyCommunes.url = 'bibs/communes?secteur='+combo.getValue();
@@ -704,7 +738,23 @@ application.search = function() {
                 // ,trigger1Class: 'x-form-clear-trigger always-hidden'
                 ,trigger3Class: 'x-hidden'
                 ,listeners: {
-                    select: function(combo, record) {
+                    beforeselect: function(combo, record) {
+                        if (application.searchVectorLayer.features.length>0 && mapBoundsSearch==false) {
+                            Ext.Msg.confirm('Vous aviez défini une zone de recherche.'
+                                ,'Voulez vous supprimer cette zone de recherche ?'
+                                ,function(btn) {
+                                    if (btn == 'yes') {
+                                        Ext.getCmp('hidden-geom').setValue(null);
+                                        application.searchVectorLayer.removeAllFeatures();
+                                        return true;
+                                    }
+                                    combo.clearValue();
+                                    return false;
+                                }
+                            );
+                        } 
+                    }
+                    ,select: function(combo, record) {
                         // combo.triggers[2].removeClass('x-hidden');
                         zoomToRecord(record);
                     }
@@ -958,7 +1008,13 @@ application.search = function() {
                 });
             });
         });
-
+        
+        var isWhereParam = function(){
+            var paramCommune = Ext.getCmp('combo_commune').getValue();
+            var paramSecteur = Ext.getCmp('combo-fs-secteur').getValue();
+            if(paramCommune=="" && paramSecteur=="" && application.searchVectorLayer.features.length==0){return false;}
+            return true;
+        };
         columns.push({
             width: 250
             ,height: 50
@@ -970,16 +1026,32 @@ application.search = function() {
                     Ext.getCmp('hidden-geom').setValue(null);
                     formSearcher.form.reset();
                     application.rechercheAvancee.formReset();
-                    formSearcher.triggerSearch();
+                    Ext.getCmp('combo-fs-secteur').clearValue();
+                    Ext.getCmp('combo_commune').clearValue();
+                    map.zoomToMaxExtent();
+                    mapBoundsSearch = false;
                     Ext.getCmp('station_count').setText("les 50 dernières stations");
+                    formSearcher.triggerSearch();
                 }
                 ,listeners: {click: function(button, e) {Ext.getCmp('btn-avancee').removeClass('red-btn');}}
             },{
                 id:'btn-rechercher'
                 ,text: "Rechercher"
+                ,iconCls: 'search'
                 ,handler: function() {
-                    if(application.searchVectorLayer.features.length>0){
-                        Ext.getCmp('hidden-geom').setValue(application.getFeatureWKT());
+                    // if(application.searchVectorLayer.features.length>0){
+                        // Ext.getCmp('hidden-start').setValue('no');
+                        // Ext.getCmp('hidden-geom').setValue(application.getFeatureWKT());
+                    // }
+                    if (isWhereParam()==false) {
+                        Ext.getCmp('hidden-geom').setValue(application.getFeatureWKT(map.getExtent().toGeometry()));
+                        mapBoundsSearch = true;
+                    }
+                    else{
+                        if(application.searchVectorLayer.features.length>0){
+                            Ext.getCmp('hidden-geom').setValue(application.getFeatureWKT(application.searchVectorLayer.features[0].geometry));
+                        }
+                        mapBoundsSearch = false;
                     }
                     formSearcher.triggerSearch();
                 }
@@ -1193,19 +1265,6 @@ application.search = function() {
         }
         ,triggerSearch : function() {
             return formSearcher.triggerSearch();
-        }
-        ,changeGridCss : function(){
-            var f = vectorLayer.features;
-            Ext.each(f,function(item,index){
-                var id = item.data.id_station; 
-                var regId = new RegExp ("^"+id+"$",'gi');
-                var rec = store.getAt(store.find('id_station',regId));
-                if(rec){
-                    if(item.onScreen()){rec.set('onscreen','yes');}
-                    else{rec.set('onscreen','');}
-                }            
-            });
-            syntheseListGrid.getView().refresh();
         }
     }
 }();

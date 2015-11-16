@@ -514,17 +514,18 @@ application = function() {
         ,getSelectControl: function() {
           return selectFeatureControl;
         }
-        ,getFeature: function() {
+        ,getFeature: function(geom) {
             var v = application.searchVectorLayer;
+                //s'il n'y a pas de zonne de dessinée, on prend celle de l'emprise de la carte
                 if (v.features.length<=0) {
-                    var geom = map.getExtent().toGeometry();
+                    // var geom = map.getExtent().toGeometry();
                     var f = new OpenLayers.Feature.Vector(geom);
                     v.addFeatures([f]);
                 }
             return v.features[0];
         }
-        ,getFeatureWKT: function() {
-            return formatWKT.write(this.getFeature());
+        ,getFeatureWKT: function(geom) {
+            return formatWKT.write(this.getFeature(geom));
         }
     }
 }();
