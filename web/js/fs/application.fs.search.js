@@ -13,6 +13,12 @@ application.search = function() {
      * {OpenLayers.Map}
      */
     var map = null;
+     
+     /**
+     * Property: vectorLayer
+     * {OpenLayers.Layer.Vector}
+     */
+    vectorLayer = null;
 
     /**
      * Property: protocol
@@ -159,6 +165,7 @@ application.search = function() {
                 ,{name: 'statut'}
                 ,{name: 'validated'/*, defaultValue: false*/}
                 ,{name: 'notvalidated'/*, defaultValue: false*/}
+                ,{name: 'onscreen',type: 'string',defaultValue:'yes'}
             ])
             ,listeners: {
                 load: function(store, records) {
@@ -237,16 +244,24 @@ application.search = function() {
                     initToolbarItems();
                     map.baseLayer.redraw();   // hack to ensure that the baseLayer is completely drawn
                     map.div.style.visibility = 'visible';
-                    map.events.on({
-                        move:function() {
+                    // map.events.on({
+                        // move:function() {
                             //alert(map.zoom);
-                            Ext.getCmp('hidden-zoom').setValue(map.zoom);
-                        }
-                    });
+                            // Ext.getCmp('hidden-zoom').setValue(map.zoom);
+                        // }
+                    // });
 
                 }
                 ,activate: function(panel) {
-                    panel.doLayout()
+                    panel.doLayout();
+                    application.search.triggerSearch();
+                    //action suivant les actions sur la carte
+                    map.events.on({
+                        move: function(e) { 
+                            Ext.getCmp('hidden-zoom').setValue(map.zoom);
+                            StationListGrid.getView().refresh();                            
+                        }
+                    });
                 }
                 ,scope: this
             }
@@ -434,14 +449,25 @@ application.search = function() {
             ,width:500
             ,split: true
             ,store: store
-            ,viewConfig:{
-                emptyText:'<span class="pInfo" >Rien à afficher. Voir message ci-dessus.</span>'
-            }
             ,loadMask: true
             ,columns:columns
             ,plugins: actions
             ,sm: new Ext.grid.RowSelectionModel({singleSelect:true})
-            // ,autoExpandColumn: 'dateobs'
+            ,viewConfig: new Ext.ux.grid.BufferView({
+                emptyText:'<span class="pInfo" >Aucune donnée ne peut être affichée. Voir message ci-dessus.</span>'
+                ,forceFit:true
+                //Return CSS class to apply to rows depending upon data values
+                ,getRowClass: function(r, index,rp,ds) {
+                    //pour éviter un bug quand il y a trop de réponses, on doit tester s'il y a bien des données
+                    if(r.data.id_station){
+                        var s;
+                        if(vectorLayer.getFeatureByFid(r.data.id_station)){s = vectorLayer.getFeatureByFid(r.data.id_station).onScreen();}
+                        else{s = r.get('onscreen');}
+                        if (s) {return '';}
+                        return 'grey';
+                    }
+                }
+            })
             ,stripeRows: true
             ,tbar: toolbarItems
             ,listeners:{
@@ -478,7 +504,7 @@ application.search = function() {
             ,configurable: false
             ,height:60
         });
-        createMapSearcher();
+        // createMapSearcher();// commenter pour ne pas chercher sur chaque mouvement ou zoom sur la carte
 
         return {
             region: 'center'
@@ -1025,19 +1051,7 @@ application.search = function() {
                 OpenLayers.Feature.Vector.style['select'])
         });
 
-        // create a lookup table with different symbolizers for the different
-        // state values
-        // var lookup = {
-            // "topologies_valides": {
-                // fillColor: "green"
-                // ,strokeColor: "green"
-                // ,cursor: "pointer"
-            // }
-        // };
-
-        // styleMap.addUniqueValueRules("default", lookup);
-
-        return new OpenLayers.Layer.Vector("vector"
+        vectorLayer = new OpenLayers.Layer.Vector("vector"
             ,{
                 protocol: eventProtocol
                 ,strategies: [
@@ -1047,6 +1061,8 @@ application.search = function() {
                 ,styleMap: styleMap
             }
         );
+        
+        return vectorLayer;
     };
 
     /**
@@ -1177,6 +1193,19 @@ application.search = function() {
         }
         ,triggerSearch : function() {
             return formSearcher.triggerSearch();
+        }
+        ,changeGridCss : function(){
+            var f = vectorLayer.features;
+            Ext.each(f,function(item,index){
+                var id = item.data.id_station; 
+                var regId = new RegExp ("^"+id+"$",'gi');
+                var rec = store.getAt(store.find('id_station',regId));
+                if(rec){
+                    if(item.onScreen()){rec.set('onscreen','yes');}
+                    else{rec.set('onscreen','');}
+                }            
+            });
+            syntheseListGrid.getView().refresh();
         }
     }
 }();

@@ -1857,7 +1857,6 @@ application.editStation = function() {
          * Loads a record from the aps list store
          */
         ,loadStation: function(id,action,cd) {
-            
             if (!this.window) {
                 this.init();
             }
@@ -1908,6 +1907,7 @@ application.editStation = function() {
                 Ext.getCmp('textfield-station-sophie').hide();
                 gridStoreTaxons.removeAll();
             }
+            map.zoomToMaxExtent();
         }
 
         ,initGpsWindow: function() {
