@@ -471,10 +471,14 @@ application = function() {
             
             layerTester.on('ignReady',function(){
                 if(firstMapLoad){
+                    map.zoomToMaxExtent();
                     //--------Code Atol CD - Nicolas Chevobbe-----------
                     Ext.get('loading').fadeOut({
-                        remove: true
-                      });
+                        endOpacity: 0
+                        ,easing: 'easeOut'
+                        ,duration: .5
+                        ,remove: false
+                    });
                     //Et on essaye de localiser l'utilisateur
                     navigator.geolocation.getCurrentPosition(function(position) {
                         //On va se centrer sur la localisation de l'utilisateur
@@ -492,7 +496,6 @@ application = function() {
                     });
                     //--------Fin du code Atol CD - Nicolas Chevobbe-----------
                 }
-                map.zoomToMaxExtent();
                 firstMapLoad = false;
             });
             layerTester.fireEvent('mapReady');
@@ -521,7 +524,7 @@ application = function() {
             return v.features[0];
         }
         ,getFeatureWKT: function() {
-          return formatWKT.write(this.getFeature());
+            return formatWKT.write(this.getFeature());
         }
     }
 }();

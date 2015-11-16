@@ -412,6 +412,7 @@ application = function() {
             
             layerTester.on('ignReady',function(){
                 if(firstMapLoad){
+                    map.zoomToMaxExtent();
                     //--------Code Atol CD - Nicolas Chevobbe-----------
                     Ext.get('loading').fadeOut({
                         remove: true
@@ -433,7 +434,7 @@ application = function() {
                     });
                     //--------Fin du code Atol CD - Nicolas Chevobbe-----------
                 }
-                map.zoomToMaxExtent();
+
                 firstMapLoad = false;
             });
             layerTester.fireEvent('mapReady');
