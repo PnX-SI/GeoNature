@@ -32,7 +32,6 @@ indexSyntheseSuccess:
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
-    - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
@@ -69,7 +68,6 @@ indexCfSuccess:
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
-    - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
@@ -97,7 +95,6 @@ indexMortaliteSuccess:
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
-    - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
@@ -125,7 +122,6 @@ indexInvertebreSuccess:
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
-    - "http://maps.google.com/maps/api/js?sensor=false"
     - config.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
