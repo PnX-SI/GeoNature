@@ -21,6 +21,8 @@ TODO
 * Si vous souhaitez désactiver certains programmes dans le "Comment ?" de la synthèse vous devez utiliser le champs ``actif`` de la table ``meta.bib_programmes``
 * Compléter si nécessaire les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources``
 * Ajouter le paramètre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
+* Retirer le paramètre ``fuseauUTM;`` au fichier ``web/js/config.js``;
+* Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre ``gps_user_projection`` dans le fichier ``web/js/config.js``;
 * Ajouter le paramètre ``public static $id_source_mortalite = 2;`` au fichier ``lib/sfGeonatureConfig.php``;
 * Ajouter le paramètre ``public static $srid_ol_map = 3857;`` au fichier ``lib/sfGeonatureConfig.php``;
 * L'altitude est calculée à partir du service "Alticodage" de l'API GeoPortail de l'IGN. Il n'est plus nécessaire de remplir la couche ``layers.l_isolines20``. Cette couche peut toutefois encore être utile si l'utilisateur ne fourni pas l'altitude dans les formulaires de saisie.
@@ -52,6 +54,7 @@ TODO
 * Suppression d'images non utilisées dans le répertoire ``web/images``
 * Mise en cohérence des vues taxonomiques faune #81
 * Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN
+* factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config
  
  
 1.4.0 (2015-10-16)
