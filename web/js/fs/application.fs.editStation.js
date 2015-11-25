@@ -1395,9 +1395,9 @@ application.editStation = function() {
                     Ext.getCmp('labelstation-station').setText('<p class="bluetext">Station N° '+feature.data.id_station+' du '+feature.data.dateobs+' ('+feature.data.commune+')</p>',false);
                     //chargement des valeurs du formulaire
                     Ext.getCmp('edit-station-form').getForm().loadRecord(feature);
-                    //on centre en limitant le zoom à 7
+                    //on centre en positionnant le zoom à 15
                     var centerGeom = feature.geometry.getBounds().getCenterLonLat();
-                    map.setCenter(centerGeom,7);
+                    map.setCenter(centerGeom,15);
                     Ext.getCmp('edit-station-form').enable();
                     if(Ext.getCmp('combo-station-programme').getValue()==101){
                         Ext.getCmp('textfield-station-sophie').showItem();

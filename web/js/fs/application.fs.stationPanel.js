@@ -554,7 +554,7 @@ Ext.extend(application.stationPanel, Ext.Panel,  {
                         //on limit le zoom à 6
                         var zoomLevel = this.map.getZoomForExtent(this.station.feature.geometry.getBounds());
                         var centerGeom = this.station.feature.geometry.getBounds().getCenterLonLat();
-                        if (zoomLevel > 6){zoomLevel = 6;}
+                        if (zoomLevel > 15){zoomLevel = 15;}
                         this.map.setCenter(centerGeom,zoomLevel);
                         this.map.div.style.visibility = 'visible';
                     }
