@@ -50,6 +50,8 @@ class sfGeonatureConfig extends sfActions
     //Idem pour le script d'insertion des données (synthese_data_srid.sql)
     //ATTENTION. Il faut mettre à jour le service WMS interne de l'application qui utilise ce script. Fichier wms/faune.map
     public static $srid_local = 2154;
+    //SRID utilisé pour la map dans Openlayers
+    public static $srid_ol_map = 3857;
   
     //Nom des applications et titres affichés
     public static $appname_main = 'GeoNature PNX';

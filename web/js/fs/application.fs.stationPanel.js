@@ -551,7 +551,7 @@ Ext.extend(application.stationPanel, Ext.Panel,  {
                             this.taxonsGrid.loadMask.hide();
                             this.taxonsGrid.setTitle("Aucun taxon");
                         }
-                        //on limit le zoom à 6
+                        //on limit le zoom à 15
                         var zoomLevel = this.map.getZoomForExtent(this.station.feature.geometry.getBounds());
                         var centerGeom = this.station.feature.geometry.getBounds().getCenterLonLat();
                         if (zoomLevel > 15){zoomLevel = 15;}

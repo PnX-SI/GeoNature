@@ -206,13 +206,7 @@ application.search = function() {
             ,append: false
         });
     };
-	/*var createGridMask = function() {
-		gridMask = new Ext.LoadMask(Ext.getCmp('station_list_grid').getEl(), {
-			msg: "Faut bosser maintenant il a dit Cédric."
-			,msgCls: 'pInfo'
-		});
-		return gridMask;
-	};*/
+
     /**
      * Method: initPanel
      */
@@ -222,7 +216,6 @@ application.search = function() {
             ,layout: 'border'
             ,iconCls: 'back_to_search'
             ,defaults: {
-                //split: true
                 border: false
             }
             ,items: [
@@ -306,10 +299,10 @@ application.search = function() {
                 action: function (grid, record, action) {
                     switch (action) {
                         case 'action-recenter':
-                            //on limit le zoom à 6
+                            //on limit le zoom à 15
                             var zoomLevel = map.getZoomForExtent(record.data.feature.geometry.getBounds());
                             var centerGeom = record.data.feature.geometry.getBounds().getCenterLonLat();
-                            if (zoomLevel > 6){zoomLevel = 6;}
+                            if (zoomLevel > 15){zoomLevel = 15;}
                             map.setCenter(centerGeom,zoomLevel);
                             break;
                     }
@@ -613,7 +606,6 @@ application.search = function() {
             toolbar.add({
                 title: 'Effacer la zone de recherche'
                 ,id: 'station-geometry-erase'
-                //,disabled: true
                 ,iconCls: 'erase'
                 ,tooltip: 'Supprimer la zone de recherche'
                 ,handler: function() {
@@ -660,7 +652,6 @@ application.search = function() {
                 ,editable: false
                 ,mode: 'local'
                 ,triggerAction: 'all'
-                // ,trigger1Class: 'x-form-clear-trigger always-hidden'
                 ,trigger3Class: 'x-hidden'
                 ,listeners: {
                     beforeselect: function(combo, record) {
@@ -684,11 +675,9 @@ application.search = function() {
                         Ext.getCmp('hidden-extent').setValue(record.data.extent);
                         myProxyCommunes.url = 'bibs/communes?secteur='+combo.getValue();
                         communeStore.reload();
-                        // combo.triggers[2].removeClass('x-hidden');
                         zoomToRecord(record);
                     }
                     ,clear: function(combo) {
-                        // combo.triggers[2].addClass('x-hidden');
                         myProxyCommunes.url = 'bibs/communes'
                         communeStore.reload();
                         Ext.getCmp('hidden-extent').setValue('');
@@ -707,7 +696,6 @@ application.search = function() {
             });
             var communeStore= new Ext.data.JsonStore({
                 url: myProxyCommunes
-                // url:'bibs/communes'
                 ,sortInfo: {
                     field: 'nomcommune'
                     ,direction: 'ASC'
@@ -734,8 +722,6 @@ application.search = function() {
                 ,selectOnFocus: true
                 ,mode: 'local'
                 ,triggerAction: 'all'
-                // keep the clear button never displayed
-                // ,trigger1Class: 'x-form-clear-trigger always-hidden'
                 ,trigger3Class: 'x-hidden'
                 ,listeners: {
                     beforeselect: function(combo, record) {
@@ -755,11 +741,9 @@ application.search = function() {
                         } 
                     }
                     ,select: function(combo, record) {
-                        // combo.triggers[2].removeClass('x-hidden');
                         zoomToRecord(record);
                     }
                     ,clear: function(combo) {
-                        // combo.triggers[2].addClass('x-hidden');
                     }
                     ,trigger3Click: function(combo) {
                         var index = combo.view.getSelectedIndexes()[0];
@@ -808,27 +792,12 @@ application.search = function() {
                     ,typeAhead: true
                     ,forceSelection: true
                     ,selectOnFocus: true
-                    //,editable: true
                     ,listWidth: 80
                     ,width:100
                     ,triggerAction: 'all'
                     ,mode: 'local'
                     ,trigger3Class: 'x-hidden'
-                    /*,listeners: {
-                        select: function(combo, record) {
-                            formSearcher.triggerSearch();
-                        }
-                        ,clear: function() {
-                            formSearcher.triggerSearch();
-                        }
-                    }*/
                 }
-                // ,{
-                    // xtype:'hidden'
-                    // ,id:'hidden-id-station'
-                    // ,name:'by_id_station'
-                    // ,value:''
-                // }
                 ,{
                     xtype:'hidden'
                     ,id:'hidden-zoom'
@@ -933,14 +902,6 @@ application.search = function() {
                     ,triggerAction: 'all'
                     ,mode: 'local'
                     ,trigger3Class: 'x-hidden'
-                    /*,listeners: {
-                        select: function(combo, record) {
-                            formSearcher.triggerSearch();
-                        }
-                        ,clear: function() {
-                            formSearcher.triggerSearch();
-                        }
-                    }*/
                 }]
             },{
                 items:[{
@@ -949,9 +910,9 @@ application.search = function() {
                     ,fieldLabel:"Taxons"
                     ,name:"rtaxon"
                     ,hiddenName:"rcd_nom"
-                    ,store: application.filtreTaxonsReferenceStore
+                    ,store: application.filtreTaxonsOrigineStore
                     ,valueField: "cd_nom"
-                    ,displayField: "nom_complet"
+                    ,displayField: "lb_nom"
                     ,typeAhead: true
                     ,typeAheadDelay:750
                     ,forceSelection: true
@@ -963,37 +924,8 @@ application.search = function() {
                     ,triggerAction: 'all'
                     ,mode: 'local'
                     ,trigger3Class: 'x-hidden'
-                    /*,listeners: {
-                        select: function(combo, record) {
-                            formSearcher.triggerSearch();
-                        }
-                        ,clear: function() {
-                            formSearcher.triggerSearch();
-                        }
-                    }*/
                 }]
             }
-            // ,{
-                // items:[{
-                    // xtype:"twintriggercombo"
-                    // ,id: 'combo-fs-secteurfp'
-                    // ,fieldLabel:"Secteur"
-                    // ,name:"secteurfp"
-                    // ,hiddenName:"id_secteur_fp"
-                    // ,store: application.secteurFpStore
-                    // ,valueField: "id_secteur_fp"
-                    // ,displayField: "nom_secteur_fp"
-                    // ,typeAhead: true
-                    // ,forceSelection: true
-                    // ,selectOnFocus: true
-                    // ,editable: true
-                    // ,listWidth: 130
-                    // ,width: 150
-                    // ,triggerAction: 'all'
-                    // ,mode: 'local'
-                    // ,trigger3Class: 'x-hidden'
-                // }]
-            // }
         ];
         
         Ext.each(columns, function(column) {
@@ -1039,10 +971,6 @@ application.search = function() {
                 ,text: "Rechercher"
                 ,iconCls: 'search'
                 ,handler: function() {
-                    // if(application.searchVectorLayer.features.length>0){
-                        // Ext.getCmp('hidden-start').setValue('no');
-                        // Ext.getCmp('hidden-geom').setValue(application.getFeatureWKT());
-                    // }
                     if (isWhereParam()==false) {
                         Ext.getCmp('hidden-geom').setValue(application.getFeatureWKT(map.getExtent().toGeometry()));
                         mapBoundsSearch = true;
@@ -1138,35 +1066,6 @@ application.search = function() {
     };
 
     /**
-     * Method: createMap
-     * Creates the map
-     *
-     * Return
-     * <OpenLayers.Map>
-     */
-    // var createMap = function() {
-        // map = application.createMap();
-
-        // var vector = createLayer();
-        // map.addLayers([vector]);
-
-        // this.selectControl = new OpenLayers.Control.SelectFeature([vector], {
-            // multiple: false
-        // });
-
-        // var mediator = new mapfish.widgets.data.GridRowFeatureMediator({
-            // grid: StationListGrid,
-            // selectControl: this.selectControl
-        // });
-
-        // map.addControl(this.selectControl);
-        // this.selectControl.activate();
-
-        // map.zoomToMaxExtent();
-    // };
-
-
-    /**
      * Method: createMapSearcher
      */
     var createMapSearcher = function() {
@@ -1254,7 +1153,6 @@ application.search = function() {
             map.zoomToMaxExtent();
         }
         ,zoomTo: function(extent) {
-            //extent = extent.split(',');
             var bounds = new OpenLayers.Bounds(extent[0], extent[1], extent[2], extent[3]);
             map.zoomToExtent(bounds);
         }

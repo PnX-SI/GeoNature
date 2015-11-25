@@ -294,10 +294,10 @@ application.search = function() {
                 action: function (grid, record, action) {
                     switch (action) {
                         case 'action-recenter':
-                            //on limit le zoom à 6
+                            //on limit le zoom à 15
                             var zoomLevel = map.getZoomForExtent(record.data.feature.geometry.getBounds());
                             var centerGeom = record.data.feature.geometry.getBounds().getCenterLonLat();
-                            if (zoomLevel > 6){zoomLevel = 6;}
+                            if (zoomLevel > 15){zoomLevel = 15;}
                             map.setCenter(centerGeom,zoomLevel);
                             break;
                     }

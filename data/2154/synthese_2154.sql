@@ -155,6 +155,111 @@ ALTER FUNCTION public.periode(date, date, date)
   OWNER TO geonatuser;
   
 
+CREATE OR REPLACE FUNCTION public.application_aggregate_taxons_rang_sp(id integer)
+  RETURNS text AS
+$BODY$
+--fonction permettant de regroupper dans un tableau tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
+--si le cd_nom passé est d'un rang différent de l'espèce (genre, famille... ou sous-espèce, variété...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
+--
+--Gil DELUERMOZ septembre 2011
+  DECLARE
+  rang character(4);
+  rangsup character(4);
+  ref integer;
+  sup integer;
+  cd integer;
+  tab integer;
+  r text; 
+  BEGIN
+	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
+	IF(rang='ES') THEN
+		cd = taxonomie.find_cdref(id);
+		--SELECT INTO tab cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = taxonomie.find_cdref(id);
+		SELECT INTO r array_agg(a.cd_nom) FROM (
+		SELECT cd_nom FROM taxonomie.taxref WHERE cd_ref = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		) a;   
+	ELSE
+	   SELECT INTO r array_agg(cd_ref) FROM taxonomie.taxref WHERE cd_nom = id;
+	END IF;
+	return r;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public.application_aggregate_taxons_rang_sp(integer)
+  OWNER TO geonatuser;
+
+
+CREATE OR REPLACE FUNCTION public.application_aggregate_taxons_all_rang_sp(id integer)
+  RETURNS text AS
+$BODY$
+--fonction permettant de regroupper dans un tableau au rang espèce tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
+--si le cd_nom passé est d'un rang supérieur à l'espèce (genre, famille...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
+--
+--Gil DELUERMOZ septembre 2011
+  DECLARE
+  rang character(4);
+  rangsup character(4);
+  ref integer;
+  sup integer;
+  cd integer;
+  tab integer;
+  r text; 
+  BEGIN
+	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
+	IF(rang='ES' OR rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
+	    IF(rang = 'ES') THEN
+		cd = taxonomie.find_cdref(id);
+	    END IF;
+	    IF(rang = 'SSES') THEN
+		SELECT INTO cd cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(id);
+	    END IF;
+	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
+		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(id);
+		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(sup);
+		IF(rangsup = 'ES') THEN
+			cd = sup;
+		ELSE
+			SELECT INTO cd cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(sup);
+		END IF;
+	    END IF;
+
+		--SELECT INTO tab cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = taxonomie.find_cdref(id);
+		SELECT INTO r array_agg(a.cd_nom) FROM (
+		SELECT cd_nom FROM taxonomie.taxref WHERE cd_ref = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		) a;   
+	ELSE
+	   SELECT INTO r cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
+	END IF;
+	return r;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public.application_aggregate_taxons_all_rang_sp(integer)
+  OWNER TO geonatuser;
+
+
 SET search_path = contactfaune, pg_catalog;
 
 --
@@ -3768,7 +3873,7 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS
         JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
         JOIN contactfaune.v_nomade_classes g ON g.id_classe = ctl.id_liste
         JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-        JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
+        JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text
     WHERE t.filtre1::text = 'oui'::text
     ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, f2.bool, m.texte_message_cf;
 
@@ -4058,7 +4163,7 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS
     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
     JOIN contactinv.v_nomade_classes g ON g.id_classe = ctl.id_liste
     JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-    JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text;
+    JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text;
 
 --
 -- Name: v_nomade_unites_geo_inv; Type: VIEW; Schema: contactinv; Owner: -
