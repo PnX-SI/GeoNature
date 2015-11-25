@@ -1245,10 +1245,10 @@ application.editStation = function() {
             toolbar.add({
                 text: 'GPS'
                 ,id: 'edit-station-gps'
-                ,tooltip: 'Localiser la station sur la carte à partir de coordonnées GPS en UTM'
+                ,tooltip: 'Localiser la station sur la carte à partir de coordonnées GPS'
                 ,handler: function() {
                     vectorLayer.removeFeatures(vectorLayer.features[0]);
-                    application.editStation.initGpsWindow()
+                    application.editStation.initGpsWindow();
                 }
             });
             
@@ -1541,180 +1541,7 @@ application.editStation = function() {
     var showLayerTreeTip = function(show) {
         layerTreeTip.setVisible(show);
     };
-    
-//----------------------------------fenêtre pour le positionnement par gsp----------------------------------
-    var submitFormGps = function(zone, longitude, latitude,maProjection,proj31,proj32) {
-        if(Ext.getCmp('form-gps-station').getForm().isValid()){
-            // création du point et reprojection grace à proj4js;
-            //j'ai du télécharger et ajouter le répertoire de la lib pro4js dans js/openlayers/firebug/proj4js
-            //puis créer EPSG32632.js,EPSG32631.js,EPSG27572.js (+EPSG2154.js pour le lambert 93 plus tard)
-            //Les 3 projections nécessaires pour le transform sont définies au moment de la création de la fenêtre GSP sinon il y a un pb de timeout et la reprojection n'a pas le temps de se faire ???
-            var features = [];
-            if(zone==31||zone==32){
-                if(zone==32){var projSource = proj32;}
-                if(zone==31){var projSource = proj31;}
-            }
-            else{Ext.Msg.alert('Attention', 'Zone 31 ou 32 uniquement'); return false;}
-            // if(zone==32){var projSource = new OpenLayers.Projection("EPSG:32632");}
-            // if(zone==31){var projSource = new OpenLayers.Projection("EPSG:32631");}
-            // var maProjection = map.getProjectionObject();
-            // var maProjection = new OpenLayers.Projection('EPSG:27572');
-
-            // alert ('le temps d\'initialisation des projections ou de proj4 ???');
-            var mageometry = new OpenLayers.Geometry.Point(longitude, latitude);
-            OpenLayers.Projection.transform(mageometry,projSource,maProjection);
-            var mafeature = new OpenLayers.Feature.Vector(mageometry);
-            features.push(mafeature);
-            malayer = vectorLayer; //débugage (voir vite fait la couche et ses features dans le DOM)
-            vectorLayer.addFeatures(features);
-            vectorLayer.redraw();
-            map.setCenter(new OpenLayers.LonLat(mageometry.x, mageometry.y),6);
-            // alert('Longitude : ' + mageometry.x +' - Latitude : '+ mageometry.y);
-            Ext.getCmp('window-gqs').destroy();
-            Ext.getCmp('combo-station-support').setValue(3);
-        }
-        else{
-            Ext.Msg.alert('Attention', 'Une information est mal saisie ou n\'est pas valide.</br>Vous devez la corriger avant de poursuivre.');
-        }
-    };
-    
-    var initGpsWindow = function() {
-        var maProjection = map.getProjectionObject();
-        var proj32 = new OpenLayers.Projection("EPSG:32632");
-        var proj31 = new OpenLayers.Projection("EPSG:32631");
-        
-        return new Ext.Window({
-            id:'window-gqs'
-            ,layout:'border'
-            ,height:250
-            ,width: 400
-            ,closeAction:'hide'
-            ,autoScroll:true
-            ,modal: true
-            ,plain: true
-            ,split: true
-            ,buttons: [{
-                text:'Afficher'
-                ,id:'gps-afficher-button'
-                ,handler: function(){
-                    var zone, longitude, latitude;
-                    zone = Ext.getCmp('gps-station-zone').getValue();
-                    longitude = Ext.getCmp('gps-station-longitude').getValue();
-                    latitude = Ext.getCmp('gps-station-latitude').getValue();
-                    submitFormGps(zone, longitude, latitude, maProjection, proj31, proj32);   
-                }
-            },{
-                text: 'Annuler et fermer'
-                ,handler: function(){
-                    Ext.getCmp('window-gqs').destroy();
-                    Ext.ux.Toast.msg('Annulation !', 'Aucun point n\'a été positionné.');
-                }
-            }]
-            ,items: [{
-                id:'form-gps-station'
-                ,xtype: 'form'
-                ,title: 'Positionnement d\'un point à partir de coordonnées GPS'
-                ,region: 'center'
-                ,labelWidth: 100 // label settings here cascade unless overridden
-                ,frame:true
-                ,border:false
-                ,split: false
-                ,autoScroll:false
-                ,monitorValid:true
-                ,bodyStyle:'padding:5px 5px 0'
-                ,width: 350
-                ,defaultType: 'numberfield'
-                ,items: [{
-                    id: 'gps-station-zone'
-                    ,xtype: 'numberfield'
-                    ,allowDecimals :false
-                    ,allowNegative: false
-                    ,fieldLabel: 'Zone (31 ou 32) '
-                    ,allowBlank:false
-                    ,enableKeyEvents:true
-                    ,minValue:31
-                    ,minText:'Cette zone n\'est pas valide. Zone = 31 ou 32'
-                    ,maxText:'Cette zone n\'est pas valide. Zone = 31 ou 32'
-                    ,maxValue:32
-                    ,blankText: 'La zone est obligatoire. Ce doit être un nombre entier = à 31 ou 32.'
-                    ,name: 'zone'
-                    ,width: 150
-                    ,listeners: {
-                        keyup:function(field,e){
-                            var v = field.getValue();
-                            var fLong = Ext.getCmp('gps-station-longitude')
-                            var fLat = Ext.getCmp('gps-station-latitude')
-                            if(v==31 || v==32){
-                                if(v==31){
-                                    fLong.show();fLong.setMinValue(719125);fLong.setMaxValue(791514);
-                                    fLat.show();fLat.setMinValue(4923086);fLat.setMaxValue(5010936);
-                                }
-                                if(v==32){
-                                    fLong.show();fLong.setMinValue(241546);fLong.setMaxValue(320202);
-                                    fLat.show();fLat.setMinValue(4924529);fLat.setMaxValue(5006782);
-                                }
-                            }
-                            else{
-                                fLong.hide();
-                                fLat.hide();
-                            }
-                        }
-                    }
-                },{
-                    id: 'gps-station-longitude'
-                    ,xtype: 'numberfield'
-                    ,allowDecimals :false
-                    ,allowNegative: false
-                    ,hidden:true
-                    ,fieldLabel: 'Longitude '
-                    ,minValue:719125
-                    ,minText:'Cette longitude n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à 719125 (zone 31) ou 241546 (zone 32).'
-                    ,maxValue:791514
-                    ,maxText:'Cette longitude n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à 791514 (zone 31) ou 320202 (zone 32).'
-                    ,allowBlank:false
-                    ,blankText: 'La longitude est obligatoire. Ce doit être un nombre entier ; coordonnées UTM en mètre'
-                    ,name: 'longitude'
-                    ,width: 150
-                },{
-                    id: 'gps-station-latitude'
-                    ,xtype: 'numberfield'
-                    ,allowDecimals :false
-                    ,allowNegative: false
-                    ,hidden:true
-                    ,fieldLabel: 'Latitude '
-                    ,minValue:4923086
-                    ,minText:'Cette latitude n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à 4923086 (zone 31) ou 4924529 (zone 32).'
-                    ,maxValue:5010936
-                    ,maxText:'Cette latitude n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à 5010936 (zone 31) ou 5006782 (zone 32) .'
-                    ,allowBlank:false
-                    ,blankText: 'La latitude est obligatoire. Ce doit être un nombre entier ; coordonnées UTM en mètre'
-                    ,name: 'latitude'
-                    ,width: 150
-                }]
-                ,listeners: {
-                    clientvalidation:function(form,valid){
-                        if(valid){Ext.getCmp('gps-afficher-button').enable();}
-                        else{Ext.getCmp('gps-afficher-button').disable();}
-                    }
-                }
-            },{
-                id:'panel-export-evenement'
-                ,xtype: 'panel'
-                ,region: 'south'
-                ,frame:true
-                ,border:false
-                ,split: false
-                ,autoScroll:false
-                ,bodyStyle:'padding:5px 5px 0'
-                ,width: 350
-                ,html: 'Les coordonnés doivent être en UTM. </br>Zone 31 ou 32 uniquemnet pour le Parc national des Ecrins.'
-            }]
-            ,listeners: {
-                hide:function(){this.destroy();}
-            } 
-        });
-    };
-//----------------------------------fin de fenêtre du choix des dates d'export----------------------------------
+ 
 //----------------------------------fenêtre de recherche des synonymes taxonomiques----------------------------------
     var submitFormTaxref = function() {
         if(Ext.getCmp('form-taxref-station').getForm().isValid()){
@@ -1911,7 +1738,7 @@ application.editStation = function() {
         }
 
         ,initGpsWindow: function() {
-            this.GpsWindow = initGpsWindow();
+            this.GpsWindow = Ext.ux.GpsLocation.initGpsWindow(vectorLayer);
             this.GpsWindow.show();
         }
         ,initTaxrefWindow: function() {

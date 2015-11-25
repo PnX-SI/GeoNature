@@ -189,16 +189,17 @@ indexFsSuccess:
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
+    - config.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.grid.RowActions.js
     - Ext.ux.grid.RowEditor.js
     - Ext.ux.plugins.ProportionalWindows.js
     - Ext.ux.Toast.js
+    - Ext.ux.GpsLocation.js
     - RowExpander.js
     - BufferView.js
     - CheckColumn.js
     - SuperBoxSelect.js
-    - config.js
     - mapfish.ux.Searcher.Form.Ext.js
     - mapfish.ux.widgets.print.PrintAction.js
     - fs/application.fs.js
@@ -228,16 +229,17 @@ indexBryoSuccess:
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
+    - config.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.grid.RowActions.js
     - Ext.ux.grid.RowEditor.js
     - Ext.ux.plugins.ProportionalWindows.js
     - Ext.ux.Toast.js
+    - Ext.ux.GpsLocation.js
     - RowExpander.js
     - BufferView.js
     - CheckColumn.js
     - SuperBoxSelect.js
-    - config.js
     - mapfish.ux.Searcher.Form.Ext.js
     - mapfish.ux.widgets.print.PrintAction.js
     - bryo/application.bryo.js
