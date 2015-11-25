@@ -1,6 +1,6 @@
 /**
- * @class Ext.ux.Toast
- * Fenêtre pour le positionnement par gsp 
+ * @class Ext.ux.GpsLocation
+ * Fenêtre pour le positionnement à partir de coordonnées fournies (GPS par exemple) 
  * Gil DELUERMOZ 2014
  * @singleton
  */
@@ -9,7 +9,10 @@ Ext.ux.GpsLocation = function() {
     // var userProjection = new OpenLayers.Projection("EPSG:32622"); // si besoin de définition manuelle dans ce fichier
     // variables définies dans le config.js
     var userProjection = gps_user_projection; 
-    var fuseau = fuseauUTM;
+    var fuseau = '';
+    var zone = '';
+    var consigneFuseau = '';
+    var consigneExemple = '';
     var xmin = x_min;
     var xmax = x_max;
     var ymin = y_min;
@@ -17,12 +20,19 @@ Ext.ux.GpsLocation = function() {
     var xex = x_exemple;
     var yex = y_exemple;
     var pnNameLong = pn_name_long;
+    if (userProjection.proj.projName=='utm'){
+        fuseau = userProjection.proj.zone;
+        zone = fuseau;
+        consigneFuseau = ', fuseau '+fuseau;
+        consigneExemple = 'fuseau '+fuseau+' - ';  
+    }
+    var msgInfo = 'Les coordonnés doivent être en '+userProjection.proj.title+'('+userProjection.projCode+').<br/>Exemple '+consigneExemple+': X : '+xex+'   Y : '+yex+''
     
-    var submitFormGps = function(layer, zone, longitude, latitude, mapProjection, userProjection) {
+    var submitFormGps = function(layer, longitude, latitude, mapProjection, userProjection) {
         if(Ext.getCmp('form-gps-fiche').getForm().isValid()){
             // création du point et reprojection grace à proj4js;
-            //j'ai du télécharger et ajouter le répertoire de la lib pro4js 
-            //puis créer EPSG32622.js dans un répertoire defs
+            //La lib pro4js est nécessaire
+            //il faut aussi créer les defs comme par exemple EPSG32622.js dans un répertoire proj4js/defs
             //Les 2 projections nécessaires pour le transform sont définies au moment de la création de la fenêtre GSP sinon il y a un pb de timeout et la reprojection n'a pas le temps de se faire ???
             var features = [];
             var projSource = userProjection;
@@ -59,11 +69,11 @@ Ext.ux.GpsLocation = function() {
                     text:'Positionner'
                     ,id:'gps-afficher-button'
                     ,handler: function(){
-                        var zone, longitude, latitude;
-                        zone = Ext.getCmp('gps-fiche-zone').getValue();
+                        var longitude, latitude;
+                        // zone = Ext.getCmp('gps-fiche-zone').getValue();
                         longitude = Ext.getCmp('gps-fiche-longitude').getValue();
                         latitude = Ext.getCmp('gps-fiche-latitude').getValue();
-                        submitFormGps(layer,zone, longitude, latitude, mapProjection, userProjection);   
+                        submitFormGps(layer, longitude, latitude, mapProjection, userProjection);   
                     }
                 },{
                     text: 'Annuler et fermer'
@@ -75,7 +85,7 @@ Ext.ux.GpsLocation = function() {
                 ,items: [{
                     id:'form-gps-fiche'
                     ,xtype: 'form'
-                    ,title: 'Positionnement d\'un point à partir de coordonnées UTM'
+                    ,title: 'Positionnement d\'un point à partir de coordonnées fournies'
                     ,region: 'center'
                     ,labelWidth: 100 // label settings here cascade unless overridden
                     ,frame:true
@@ -86,50 +96,39 @@ Ext.ux.GpsLocation = function() {
                     ,bodyStyle:'padding:5px 5px 0'
                     ,width: 350
                     ,defaultType: 'numberfield'
-                    ,items: [{
-                        id: 'gps-fiche-zone'
-                        ,xtype: 'numberfield'
-                        ,allowDecimals :false
-                        ,allowNegative: false
-                        ,fieldLabel: 'Fuseau '+fuseau
-                        ,allowBlank:false
-                        ,enableKeyEvents:true
-                        // ,minValue:22
-                        // ,minText:'Ce fuseau n\'est pas valide. Fuseau = 22'
-                        // ,maxText:'Ce fuseau n\'est pas valide. Fuseau = 22'
-                        // ,maxValue:22
-                        ,value:fuseau
-                        ,blankText: 'Le fuseau est obligatoire. Ce doit être le fuseau '+fuseau+'.'
-                        ,name: 'zone'
-                        ,width: 150
-                    },{
+                    ,items: [
+                    {
                         id: 'gps-fiche-longitude'
                         ,xtype: 'numberfield'
-                        ,allowDecimals :false
-                        ,allowNegative: false
+                        ,allowDecimals :true
+                        ,decimalPrecision:6
+                        ,decimalSeparator:'.'
+                        ,allowNegative: true
                         ,disabled:false
-                        ,fieldLabel: 'X '
+                        ,fieldLabel: 'X en '+ gps_user_projection.proj.units +' '
                         ,minValue:xmin
-                        ,minText:'Cette coordonnées en x n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à '+xmin+'.'
+                        ,minText:'Cette coordonnée en x n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à '+xmin+'.'
                         ,maxValue:xmax
-                        ,maxText:'Cette coordonnées en x n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à '+xmax+'.'
+                        ,maxText:'Cette coordonnée en x n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à '+xmax+'.'
                         ,allowBlank:false
-                        ,blankText: 'La coordonnées en x est obligatoire. Ce doit être un nombre entier négatif entre '+xmin+' et '+xmax+'; coordonnées UTM en mètre'
+                        ,blankText: 'La coordonnée en x est obligatoire. Ce doit être un nombre entre '+xmin+' et '+xmax+'.'
                         ,name: 'longitude'
                         ,width: 150
                     },{
                         id: 'gps-fiche-latitude'
                         ,xtype: 'numberfield'
-                        ,allowDecimals :false
-                        ,allowNegative: false
+                        ,allowDecimals :true
+                        ,allowNegative: true
+                        ,decimalPrecision:6
+                        ,decimalSeparator:'.'
                         ,disabled:false
-                        ,fieldLabel: 'Y '
-                        ,minValue:230000
-                        ,minText:'Cette coordonnées en y n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à '+ymin+'. (fuseau '+fuseau+').'
-                        ,maxValue:655000
-                        ,maxText:'Cette coordonnées en y n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à '+ymax+'. (fuseau '+fuseau+').'
+                        ,fieldLabel: 'Y en '+ gps_user_projection.proj.units +' '
+                        ,minValue:ymin
+                        ,minText:'Cette coordonnée en y n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à '+ymin+consigneFuseau+'.'
+                        ,maxValue:ymax
+                        ,maxText:'Cette coordonnée en y n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à '+ymax+consigneFuseau+'.'
                         ,allowBlank:false
-                        ,blankText: 'La coordonnées en y est obligatoire. Ce doit être un nombre entier positif entre '+ymin+' et '+ymax+'; coordonnées UTM en mètre'
+                        ,blankText: 'La coordonnée en y est obligatoire. Ce doit être un nombre entre '+ymin+' et '+ymax+'.'
                         ,name: 'latitude'
                         ,width: 150
                     }
@@ -150,7 +149,7 @@ Ext.ux.GpsLocation = function() {
                     ,autoScroll:false
                     ,bodyStyle:'padding:5px 5px 0'
                     ,width: 350
-                    ,html: 'Les coordonnés doivent être en UTM. </br>Fuseau '+fuseau+' uniquement pour le '+pnNameLong+'.</br>Exemple : Fuseau : '+fuseau+' -  X : '+xex+'   Y : '+yex+''
+                    ,html: msgInfo
                 }]
                 ,listeners: {
                     hide:function(){this.destroy();}
