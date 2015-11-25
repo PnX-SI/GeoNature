@@ -1847,7 +1847,7 @@ application.synthese.editInvertebre = function() {
                 Ext.Msg.alert('Attention', "Un problème à été rencontré lors de l'appel au service de l'IGN.");
                 return;
             }
-            Ext.ux.Toast.msg('Information !', 'Cette altitude est fournie à par un service de l\'IGN.');
+            Ext.ux.Toast.msg('Information !', 'Cette altitude est fournie par un service de l\'IGN.');
             application.synthese.editInvertebre.setAltitude(Math.round(s[0].innerHTML));
         }
         ,setAltitude : function(alti) {

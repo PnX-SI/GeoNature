@@ -35,8 +35,8 @@ x_min = -5.25;
 x_max = 8.3;
 y_min = 42.3;
 y_max = 51.1;
-x_exemple = 43.64856;
-y_exemple = 3.87854;
+x_exemple = 3.87854;
+y_exemple = 43.64856;
 
 
 // Parc Amazonnien de Guyane
