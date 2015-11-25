@@ -277,9 +277,9 @@ class cfActions extends sfFauneActions
                 $yearling = $array_taxon[12];
                 $sai = $array_taxon[13];
                 $commentaire = $array_taxon[14];
-                $determinateur = $array_taxon[15];
-                $cd_ref_origine = $array_taxon[16];
+                $cd_ref_origine = $array_taxon[15];
                 $prelevement = $array_taxon[18];
+                $determinateur = $array_taxon[19];
                 //on récupère l'enregistrement ou on le crée
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){

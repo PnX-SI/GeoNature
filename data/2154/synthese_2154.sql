@@ -170,16 +170,14 @@ $BODY$
   couleur text;
   patri boolean;
   BEGIN
-	SELECT patrimonial INTO patri 
-    FROM taxonomie.bib_taxons t 
-    LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.id_taxon = t.id_taxon
-    LEFT JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
-    WHERE a.nom_attribut = 'patrimonial' AND t.id_taxon = id;
-	IF patri = 't' THEN
+    SELECT filtre2 INTO patri 
+    FROM taxonomie.bib_taxons
+    WHERE id_taxon = id;
+	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
-	ELSIF patri = 'f' THEN
+	ELSIF patri = 'non' THEN
 		IF date_part('year',maxdateobs)>=date_part('year',now())-3 THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
@@ -257,12 +255,15 @@ CREATE FUNCTION insert_releve_cf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
+cdnom integer;
 re integer;
 unite integer;
 nbobs integer;
 line record;
 fiche record;
 BEGIN
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
 	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	new.cd_ref_origine = re;
@@ -279,7 +280,7 @@ BEGIN
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
 		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
-		WHERE s.id_taxon = new.id_taxon;
+		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
 		INSERT INTO contactfaune.cor_unite_taxon VALUES(unite,new.id_taxon,fiche.dateobs,contactfaune.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
 	END IF;
@@ -457,21 +458,28 @@ CREATE FUNCTION synthese_update_fiche_cf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
-	releves RECORD;
-	test integer;
-	mesobservateurs character varying(255);
-    idsource integer;
+    releves RECORD;
+    test integer;
+    mesobservateurs character varying(255);
+    sources RECORD;
+    idsourcem integer;
+    idsourcecf integer;
 BEGIN
 
-    
-    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
-
+    --on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
+    FOR sources IN SELECT id_source, url  FROM synthese.bib_sources WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' LOOP
+	IF sources.url = 'cf' THEN
+	    idsourcecf = sources.id_source;
+	ELSIF sources.url = 'mortalite' THEN
+	    idsourcem = sources.id_source;
+	END IF;
+    END LOOP;
 	--Récupération des données de la table t_releves_cf avec l'id_cf de la fiche modifié
 	-- Ici on utilise le OLD id_cf pour être sur qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_fiches_cf
 	--le trigger met à jour avec le NEW --> SET code_fiche_source =  ....
 	FOR releves IN SELECT * FROM contactfaune.t_releves_cf WHERE id_cf = old.id_cf LOOP
 		--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
-		SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
+		SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = releves.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 		IF test IS NOT NULL THEN
 			SELECT INTO mesobservateurs o.observateurs FROM contactfaune.t_releves_cf r
 			JOIN contactfaune.t_fiches_cf f ON f.id_cf = r.id_cf
@@ -499,7 +507,7 @@ BEGIN
 				the_geom_2154 = new.the_geom_2154,
 				the_geom_point = new.the_geom_3857,
 				id_lot = new.id_lot
-				WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
+				WHERE id_fiche_source = releves.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem) ;
 			ELSE
 				--mise à jour de l'enregistrement correspondant dans syntheseff
 				UPDATE synthese.syntheseff SET
@@ -516,7 +524,7 @@ BEGIN
 				the_geom_2154 = new.the_geom_2154,
 				the_geom_point = new.the_geom_3857,
 				id_lot = new.id_lot
-			    WHERE id_source = idsource AND id_fiche_source = releves.id_releve_cf::text;
+			    WHERE id_fiche_source = releves.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 			END IF;
 		END IF;
 	END LOOP;
@@ -533,15 +541,23 @@ CREATE FUNCTION synthese_update_releve_cf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
-	test integer;
-	criteresynthese integer;
-    idsource integer;
+    test integer;
+    criteresynthese integer;
+    sources RECORD;
+    idsourcem integer;
+    idsourcecf integer;
 BEGIN
     
-    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
-
+	--on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
+        FOR sources IN SELECT id_source, url  FROM synthese.bib_sources WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' LOOP
+	    IF sources.url = 'cf' THEN
+	        idsourcecf = sources.id_source;
+	    ELSIF sources.url = 'mortalite' THEN
+	        idsourcem = sources.id_source;
+	    END IF;
+        END LOOP;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
-	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text;
+	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 	IF test IS NOT NULL THEN
 		SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
 
@@ -551,11 +567,12 @@ BEGIN
 			code_fiche_source = 'f'||new.id_cf||'-r'||new.id_releve_cf,
 			cd_nom = new.cd_ref_origine,
 			remarques = new.commentaire,
+			determinateur = new.determinateur,
 			derniere_action = 'u',
 			supprime = new.supprime,
 			id_critere_synthese = criteresynthese,
 			effectif_total = new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai
-		WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text; -- Ici on utilise le OLD id_releve_cf pour être sur 
+		WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem); -- Ici on utilise le OLD id_releve_cf pour être sur 
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cf
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cf
 	END IF;
@@ -666,16 +683,14 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
   couleur text;
   patri boolean;
   BEGIN
-	SELECT patrimonial INTO patri 
-    FROM taxonomie.bib_taxons t 
-    LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.id_taxon = t.id_taxon
-    LEFT JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
-    WHERE a.nom_attribut = 'patrimonial' AND t.id_taxon = id;
-	IF patri = 't' THEN
+    SELECT filtre2 INTO patri 
+    FROM taxonomie.bib_taxons
+    WHERE id_taxon = id;
+	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
-	ELSIF patri = 'f' THEN
+	ELSIF patri = 'non' THEN
 		IF date_part('year',maxdateobs)>=date_part('year',now())-3 THEN couleur = 'gray';
 		ELSE couleur = 'red';
 		END IF;
@@ -751,12 +766,15 @@ CREATE FUNCTION insert_releve_inv() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
+cdnom integer;
 re integer;
 unite integer;
 nbobs integer;
 line record;
 fiche record;
 BEGIN
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
 	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	new.cd_ref_origine = re;
@@ -773,7 +791,7 @@ BEGIN
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
 		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
-		WHERE s.id_taxon = new.id_taxon;
+		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
 		INSERT INTO contactinv.cor_unite_taxon_inv VALUES(unite,new.id_taxon,fiche.dateobs,contactinv.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
 	END IF;
@@ -1045,6 +1063,7 @@ BEGIN
 			code_fiche_source = 'f'||new.id_inv||'-r'||new.id_releve_inv,
 			cd_nom = new.cd_ref_origine,
 			remarques = new.commentaire,
+            determinateur = new.determinateur,
 			derniere_action = 'u',
 			supprime = new.supprime,
 			id_critere_synthese = criteresynthese,
@@ -2464,12 +2483,16 @@ SET search_path = synthese, public, pg_catalog;
 CREATE FUNCTION calcul_cor_unite_taxon_cf(monidtaxon integer, monunite integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
+  DECLARE
+  cdnom integer;
   BEGIN
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = monidtaxon;
 	DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
 	INSERT INTO contactfaune.cor_unite_taxon (id_unite_geo,id_taxon,derniere_date,couleur,nb_obs)
 	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactfaune.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
 	FROM synthese.cor_unite_synthese
-	WHERE id_taxon = monidtaxon
+	WHERE cd_nom = cdnom
 	AND id_unite_geo = monunite;
   END;
 $$;
@@ -2482,12 +2505,16 @@ $$;
 CREATE FUNCTION calcul_cor_unite_taxon_inv(monidtaxon integer, monunite integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    cdnom integer;
 BEGIN
-	DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = monidtaxon;
+    DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
 	INSERT INTO contactinv.cor_unite_taxon_inv (id_unite_geo,id_taxon,derniere_date,couleur,nb_obs)
 	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactinv.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
 	FROM synthese.cor_unite_synthese
-	WHERE id_taxon = monidtaxon
+	WHERE cd_nom = cdnom
 	AND id_unite_geo = monunite;
 END;
 $$;
@@ -2547,9 +2574,12 @@ $BODY$
 DECLARE
 monembranchement varchar;
 monregne varchar;
+monidtaxon integer;
 BEGIN
 
 IF (TG_OP = 'DELETE') THEN
+	--retrouver le id_taxon
+	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = old.cd_nom LIMIT 1; 
 	--calcul du règne du taxon supprimé
 		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
 	IF monregne = 'Animalia' THEN
@@ -2558,20 +2588,22 @@ IF (TG_OP = 'DELETE') THEN
 		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
 			IF monembranchement = 'Chordata' THEN
 				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactfaune.cor_unite_taxon WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo;
+					DELETE FROM contactfaune.cor_unite_taxon WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
 				ELSE
-					PERFORM synthese.calcul_cor_unite_taxon_cf(old.cd_nom, old.id_unite_geo);
+					PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, old.id_unite_geo);
 				END IF;
 			ELSE
 				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactinv.cor_unite_taxon_inv WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo;
+					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
 				ELSE
-					PERFORM synthese.calcul_cor_unite_taxon_inv(old.cd_nom, old.id_unite_geo);
+					PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
 				END IF;
 			END IF;
 		END IF;
 		RETURN OLD;		
 ELSIF (TG_OP = 'INSERT') THEN
+	--retrouver le id_taxon
+	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = new.cd_nom LIMIT 1;
 	--calcul du règne du taxon inséré
 		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
 	IF monregne = 'Animalia' THEN
@@ -2579,9 +2611,9 @@ ELSIF (TG_OP = 'INSERT') THEN
 		SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
 		-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
 		IF monembranchement = 'Chordata' THEN
-		    PERFORM synthese.calcul_cor_unite_taxon_cf(new.cd_nom, new.id_unite_geo);
+		    PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, new.id_unite_geo);
 		ELSE
-		    PERFORM synthese.calcul_cor_unite_taxon_inv(new.cd_nom, new.id_unite_geo);
+		    PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, new.id_unite_geo);
 		END IF;
         END IF;
 	RETURN NEW;
