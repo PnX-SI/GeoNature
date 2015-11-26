@@ -2,14 +2,40 @@
 APPLICATION
 ===========
 
+Prérequis
+=========
+
+* Environnement serveur :
+
+Voir le guide d'installation du serveur dans https://github.com/PnEcrins/GeoNature/blob/master/docs/server.rst
+
+* Disposer d'un utilisateur linux nommé par exemple ``synthese``. Dans ce guide, le répertoire de cet utilisateur est dans ``/home/synthese``
+
+* Se loguer sur le serveur avec l'utilisateur ``synthese`` ou tout autre utilisateur linux faisant partie du groupe www-data.
+
+* Récupérer le zip de l’application sur le Github du projet (`X.Y.Z à remplacer par le numéro de version souhaitée <https://github.com/PnEcrins/GeoNature/releases>`_), dézippez le dans le répertoire de l'utilisateur linux du serveur puis copiez le dans le répertoire de l’utilisateur linux :
+
+    ::
+    
+        cd /home/synthese
+        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
+        unzip vX.Y.Z.zip
+        mv GeoNature-X.Y.Z/ geonature/
+
 Configuration de la base de données PostgreSQL
 ==============================================
 
+* Se positionner dans le répertoire de l'application ; par exemple ``geonature`` :
+
+    :: 
+	
+	    cd geonature
+        
 * Copier et renommer le fichier ``config/settings.ini.sample`` en ``config/settings.ini`` :
 
     :: 
 	
-	    cp config/settings.ini.sample config/settings.ini
+        cp config/settings.ini.sample config/settings.ini
 
 * Mettre à jour le fichier ``config/settings.ini`` avec vos paramètres de connexion à la BDD :
 
@@ -28,11 +54,10 @@ Création de la base de données
 * Création de la base de données et chargement des données initiales
 
     ::
-    
-        cd /home/synthese/geonature
+
         sudo ./install_db.sh
         
-* Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. Attention, ce fichier sera supprimé lors de l'exécution de ``install_app.sh``
+* Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. **Attention, ce fichier sera supprimé** lors de l'exécution de ``install_app.sh``
 
 * Vous pouvez intégrer l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
 
@@ -45,14 +70,10 @@ Création de la base de données
 Configuration de l'application
 ==============================
 
-* Se loguer sur le serveur avec l'utilisateur ``synthese``
-   
-
-* Installation et configuration de l'application
+* Lancer le fichier d'installation et de préparation de la configuration de l'application
 
     ::
     
-        cd /home/synthese/geonature
         ./install_app.sh
 
 * Adapter le contenu du fichier ``web/js/config.js``
