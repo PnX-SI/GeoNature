@@ -1,5 +1,6 @@
 *.*~
 web/js/config.js
+web/js/configmap.js
 config/databases.yml
 config/settings.ini
 wms/wms*.map

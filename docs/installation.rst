@@ -58,7 +58,12 @@ Configuration de l'application
 * Adapter le contenu du fichier ``web/js/config.js``
 
 	- Changer ``mon-domaine.fr`` par votre propre URL (wms_uri, host_uri)
-	- Renseigner votre clé API IGN Geoportail ainsi que l'emprise spatiale de votre territoire
+    
+* Adapter le contenu du fichier ``web/js/configmap.js``
+
+	- Renseigner votre clé API IGN Geoportail, 
+    - l'extent max de l'affichage cartographique, le centrage initial, le nombre maximum de niveau de zoom de la carte, la résolution maximale (en lien avec le paramètre précédent et le tableau ``ign_resolutions``)
+    - Renseigner le système de coordonnées et la bbox des coordonnées utilisable pour le positionnement du pointage par coordonnées fournies (GPS)
 	
 * Adapter le contenu du fichier ``lib/sfGeonatureConfig.php``. Il indique notamment les identifiants de chaque protocoles, lots et sources de données. 
 
