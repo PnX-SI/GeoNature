@@ -14,22 +14,11 @@ Prérequis
 Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
 
 
-* Disposer d'un utilisateur linux nommé ``synthese`` (par exemple). Le répertoire de cet utilisateur ``synthese`` doit être dans ``/home/synthese``
+* Disposer d'un utilisateur linux nommé ``synthese`` (par exemple). Dans ce guide, le répertoire de cet utilisateur est dans ``/home/synthese``
 
     :: 
     
         sudo adduser --home /home/synthese synthese
-
-
-* Récupérer le zip de l’application sur le Github du projet (`X.Y.Z à remplacer par le numéro de version souhaitée <https://github.com/PnEcrins/GeoNature/releases>`_), dézippez le dans le répertoire de l'utilisateur linux du serveur puis copiez le dans le répertoire de l’utilisateur linux :
-
-    ::
-    
-        cd /home/synthese
-        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
-        unzip vX.Y.Z.zip
-        mkdir -p /home/synthese/geonature
-        cp GeoNature-X.Y.Z/* /home/synthese/geonature
 
 
 Installation et configuration du serveur
