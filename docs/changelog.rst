@@ -2,16 +2,7 @@
 CHANGELOG
 =========
 
-TODO
-----
-
- - Revoir le où de la synthese pour mettre des choses plus génériques
- - optimiser la création des taxons flore
- - rendre le schéma taxonomie totalement compatible avec taxhub
- - tests complémentaires et bug fix
-
- 
-1.5.0.dev0
+1.5.0 (2015-11-26)
 ------------------
 
 **Note de version**
@@ -20,16 +11,16 @@ TODO
 * Le bandeau de la page d'accueil ``web/images/bandeau_faune.jpg`` a été renommé en ``bandeau_geonature.jpg``. Renommez le votre si vous aviez personnalisé ce bandeau.
 * Si vous souhaitez désactiver certains programmes dans le "Comment ?" de la synthèse vous devez utiliser le champs ``actif`` de la table ``meta.bib_programmes``.
 * Compléter si nécessaire les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources``.
-* Nouvelle répartition des paramètres de config js en 2 fichiers (config.js et configmap.js). Vous devez reprendre vos paramètres de config et les ventiler dans ces deux fichiers.
+* Nouvelle répartition des paramètres de configuration javascript en 2 fichiers (``config.js`` et ``configmap.js``). Vous devez reprendre vos paramètres de configuration du fichier ``web/js/config.js`` et les ventiler dans ces deux fichiers.
 * Ajouter le paramètre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
-* Retirer le paramètre ``fuseauUTM;`` au fichier ``web/js/config.js``;
+* Retirer le paramètre ``fuseauUTM;`` du fichier ``web/js/config.js``;
 * Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre ``gps_user_projection`` dans le fichier ``web/js/config.js``;
 * Ajouter le paramètre ``public static $id_source_mortalite = 2;`` au fichier ``lib/sfGeonatureConfig.php``;
 * Ajouter le paramètre ``public static $srid_ol_map = 3857;`` au fichier ``lib/sfGeonatureConfig.php``;
-* L'altitude est calculée à partir du service "Alticodage" de l'API GeoPortail de l'IGN. Il n'est plus nécessaire de remplir la couche ``layers.l_isolines20``. Cette couche peut toutefois encore être utile si l'utilisateur ne fourni pas l'altitude dans les formulaires de saisie.
-* le loup et le lynx sont retiré de la saisie (saisie recommandée selon protocole du réseau grands prédateurs)
-* le cerf, chamois et le bouquetin doivent être saisie selon 6 critères de sexe et age et non 5 comme les autres taxons. Comportement peut-être changé en modifiant la vue contactfaune.v_nomade_taxons_faune
-* Si vous avez déjà des données de mortalité enregistrées, vous devez adapater la requête SQL ci-dessous avec votre ``id_source`` pour Mortalité et l'exécuter :
+* L'altitude est calculée automatiquement à partir du service "Alticodage" de l'API GeoPortail de l'IGN et non pluas à partir de la couche ``layers.l_isolines20``. Ajoutez ce service dans votre contrat API Geoportail. Il n'est donc plus nécessaire de remplir la couche ``layers.l_isolines20``. Cette couche peut toutefois encore être utile si l'utilisateur supprime l'altitude calculée par l'API Geoportail dans les formulaires de saisie.
+* Le loup et le lynx sont retirés par défaut de la saisie (saisie recommandée dans le protocole national du réseau grands prédateurs)
+* Le cerf, chamois et le bouquetin doivent être saisis selon 6 critères de sexe et age et non 5 comme les autres taxons. Comportement peut-être changé en modifiant la vue ``contactfaune.v_nomade_taxons_faune``.
+* Mortailité est désormais une source à part entière alors qu'elles étaient mélangées avec la source ContactFaune précédemment. Si vous avez déjà des données de mortalité enregistrées, vous devez adapter la requête SQL ci-dessous avec votre ``id_source`` pour Mortalité et l'exécuter :
     
     ::
     
@@ -37,27 +28,32 @@ TODO
 
 **Changements**
 
-* Optimisation des vues aux chargement des listes de taxons #64
-* Généricité des champs dans ``meta.bib_programmes`` (champs ``sitpn`` renommé en ``public``) #68
-* Ajout d'un champ ``actif`` à la table ``meta.bib_programmes`` permettant de masquer certains programmes dans le "Comment ?" de la synthèse #66
-* Construire dynamiquement la liste des liens vers la saisie des différents protocoles à partir de la table ``synthese.bib_sources`` #69
-* Tous les styles des éléments de la page d'accueil ont été passés en CSS #57
-* Amélioration de l'interface pendant le chargement des différentes applications (synthèse, flore station, formualires de saisie...) #65
-* Recentrage sur la position de l'utilisation en utilisant le protocole de géolocalisation intégré au navigateur de l'utilisateur #65
-* Un message automatique conseille les utilisateurs d'Internet Explorer de plutôt utiliser Firefox ou Chrome. #65
-* Tri par défaut par date décroissante des 50 dernières observations affichées à l'ouverture de la Synthèse #51
-* Vocabulaire. "Dessiner un point" remplacé par "Localiser l'observation" #66
-* Mise à jour des copyrights dans les pieds de page de toutes les applications
-* refonte du css du formulaire de login avec bootstrap et une image de fond différente
-* Refonte bootstrap de la page d'accueil
-* Homogénéisation du pied de page
-* FloreStation et Bryophytes - Homogénéiser interaction carte liste - ajout d'un popup au survol #74 
-* Suppression d'images non utilisées dans le répertoire ``web/images``
-* Mise en cohérence des vues taxonomiques faune #81
-* Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN
-* factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config
-* création d'une config js carto dédiée
+* Optimisation des vues aux chargement des listes de taxons. Fixes #64
+* Généricité des champs dans ``meta.bib_programmes`` (champs ``sitpn`` renommé en ``public``). Fixes #68
+* Ajout d'un champ ``actif`` à la table ``meta.bib_programmes`` permettant de masquer certains programmes dans le "Comment ?" de la synthèse. Fixes #66
+* Ajout d'un champ ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources`` pour générer la page d'accueil dynamiquement et de manière générique. Fixes #69
+* Construire dynamiquement la liste des liens vers la saisie des différents protocoles à partir de la table ``synthese.bib_sources``. Fixes #69
+* Tous les styles des éléments de la page d'accueil ont été passés en CSS. Fixes #57
+* Amélioration de l'interface pendant le chargement des différentes applications (synthèse, flore station, formualires de saisie...). Fixes #65
+* Recentrage sur la position de l'utilisation en utilisant le protocole de géolocalisation intégré au navigateur de l'utilisateur. Fixes #65
+* Un message automatique conseille les utilisateurs d'Internet Explorer de plutôt utiliser Firefox ou Chrome. Fixes #65
+* Tri par défaut par date décroissante des 50 dernières observations affichées à l'ouverture de la Synthèse. Fixes #51
+* Vocabulaire. "Dessiner un point" remplacé par "Localiser l'observation". Fixes #66
+* Mise à jour des copyrights dans les pieds de page de toutes les applications.
+* Refonte du CSS du formulaire de login avec bootstrap et une image de fond différente.
+* Refonte Bootstrap de la page d'accueil.
+* Homogénéisation du pied de page.
+* FloreStation et Bryophytes - Homogénéiser interaction carte liste - ajout d'un popup au survol. Fixes #74
+* Suppression d'images non utilisées dans le répertoire ``web/images``.
+* Mise en cohérence des vues taxonomiques faune. Fixes #81
+* Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN.
+* Factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config.
+* Création d'une configuration javascript carto dédiée (``configmap.js``).
  
+ **Corrections de bug**
+ 
+ * Correction des problèmes de saisie de la version 1.4.0 liés à la migration de la taxonomie.
+ * Correction de bugs dans Flore Station et Bryophytes (Zoom, recherche
  
 1.4.0 (2015-10-16)
 ------------------
@@ -84,19 +80,19 @@ Pré-Version de GeoNature - Faune ET Flore. Le fonctionnement de l'ensemble n'a 
 **Changements**
 
 * Grosse évolution de la base de données
-* ajout de deux applications de saisie flore (flore station et bryophytes)
-* intégration de la flore en sythese
-* ajouter un id_lot, id_organisme, id_protocole dans toutes les tables pour que ces id soit ajoutés vers la synthese en trigger depuis les tables et pas avec des valeurs en dur dans les triggers. Ceci permet d'utiliser les paramètres de conf de GeoNature
-* ajout d'une fonction à la base pour correction du dysfonctionnement du wms avec mapserver
-* suppression du champ id_taxon en synthese et lien direct de la synthese avecle taxref. ceci permet d'ajouter des données en synthese directement dans la base sans ajouter tous les taxons manquants dans la table bib_taxons
-* suppression de la notion de coeur dans les critère de recherche en synthese
+* Ajout de deux applications de saisie flore (flore station et bryophytes)
+* Intégration de la flore en sythese
+* Ajouter un id_lot, id_organisme, id_protocole dans toutes les tables pour que ces id soit ajoutés vers la synthese en trigger depuis les tables et pas avec des valeurs en dur dans les triggers. Ceci permet d'utiliser les paramètres de conf de GeoNature
+* Ajout d'une fonction à la base pour correction du dysfonctionnement du wms avec mapserver
+* Suppression du champ id_taxon en synthese et lien direct de la synthese avecle taxref. ceci permet d'ajouter des données en synthese directement dans la base sans ajouter tous les taxons manquants dans la table bib_taxons
+* Suppression de la notion de coeur dans les critère de recherche en synthese
 * Ajout d'un filtre faune flore fonge dans la synthese
 * Ajout de l'embranchement et du regne dans les exports
-* permettre à des partenaires de saisir mais d'exporter uniquement leurs données perso
-* ajout du déterminateur dans les formulaires invertébrés et contactfaune + en synthese
-* ajout du référentiel géographique de toutes les communes de France métropolitaine
-* ajout des zones à statuts juridiques de la région sud-est (national à venir)
-* bugs fix
+* Permettre à des partenaires de saisir mais d'exporter uniquement leurs données perso
+* Ajout du déterminateur dans les formulaires invertébrés et contactfaune + en synthese
+* Ajout du référentiel géographique de toutes les communes de France métropolitaine
+* Ajout des zones à statuts juridiques de la région sud-est (national à venir)
+* Bugs fix
  
 **BUG à identifier**
 
