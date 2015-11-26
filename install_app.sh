@@ -30,8 +30,9 @@ rm log/*.log
 
 echo "Création des fichiers de configuration de l'application..."
 cp web/js/config.js.sample web/js/config.js
+cp web/js/configmap.js.sample web/js/configmap.js
 cp lib/sfGeonatureConfig.php.sample lib/sfGeonatureConfig.php
 
 echo "Configuration du répertoire web de l'application..."
 sudo ln -s ${PWD}/web/ /var/www/geonature
-echo "Vous devez maintenant éditer le fichier de configuration de l'application : web/js/config.js et lib/sfGeonatureConfig.php et l'adapter à votre besoin"
+echo "Vous devez maintenant éditer les fichiers de configuration de l'application : web/js/config.js, web/js/configmap.js et lib/sfGeonatureConfig.php et les adapter à votre besoin."

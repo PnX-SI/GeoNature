@@ -6,7 +6,6 @@ loginSuccess:
 indexSuccess:
   stylesheets: 
     - bootstrap/css/bootstrap.css
-    - glyphicons.css
     - flot.css
     - main.css
   javascripts:
@@ -33,6 +32,7 @@ indexSyntheseSuccess:
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
     - config.js
+    - configmap.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.Toast.js
@@ -69,6 +69,7 @@ indexCfSuccess:
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
+    - configmap.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.Toast.js
@@ -96,6 +97,7 @@ indexMortaliteSuccess:
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
+    - configmap.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.Toast.js
@@ -123,6 +125,7 @@ indexInvertebreSuccess:
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
+    - configmap.js
     - accents.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.Toast.js
@@ -151,6 +154,7 @@ indexFpSuccess:
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
+    - configmap.js
     - Ext.ux.Toast.js
     - mapfish.ux.Searcher.Form.Ext.js
     - Ext.ux.form.TwinTriggerComboBox.js
@@ -190,6 +194,7 @@ indexFsSuccess:
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
+    - configmap.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.grid.RowActions.js
     - Ext.ux.grid.RowEditor.js
@@ -230,6 +235,7 @@ indexBryoSuccess:
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
+    - configmap.js
     - Ext.ux.form.TwinTriggerComboBox.js
     - Ext.ux.grid.RowActions.js
     - Ext.ux.grid.RowEditor.js

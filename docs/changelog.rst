@@ -18,8 +18,9 @@ TODO
 
 * Pour les changements dans la base de données vous pouvez exécuter le fichier ``data/update_1.4to1.5.sql``
 * Le bandeau de la page d'accueil ``web/images/bandeau_faune.jpg`` a été renommé en ``bandeau_geonature.jpg``. Renommez le votre si vous aviez personnalisé ce bandeau.
-* Si vous souhaitez désactiver certains programmes dans le "Comment ?" de la synthèse vous devez utiliser le champs ``actif`` de la table ``meta.bib_programmes``
-* Compléter si nécessaire les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources``
+* Si vous souhaitez désactiver certains programmes dans le "Comment ?" de la synthèse vous devez utiliser le champs ``actif`` de la table ``meta.bib_programmes``.
+* Compléter si nécessaire les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources``.
+* Nouvelle répartition des paramètres de config js en 2 fichiers (config.js et configmap.js). Vous devez reprendre vos paramètres de config et les ventiler dans ces deux fichiers.
 * Ajouter le paramètre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
 * Retirer le paramètre ``fuseauUTM;`` au fichier ``web/js/config.js``;
 * Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre ``gps_user_projection`` dans le fichier ``web/js/config.js``;
@@ -55,6 +56,7 @@ TODO
 * Mise en cohérence des vues taxonomiques faune #81
 * Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN
 * factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config
+* création d'une config js carto dédiée
  
  
 1.4.0 (2015-10-16)
