@@ -1,0 +1,3 @@
+all:
+  credentials: [[ administrateur, redacteur, utilisateur, referent ]]
+  is_secure: true

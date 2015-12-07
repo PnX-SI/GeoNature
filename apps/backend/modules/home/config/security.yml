@@ -1,27 +1,12 @@
-indexSynthese:
-  credentials: [[ administrateur, redacteur, utilisateur, referent  ]]
+all:
   is_secure: true
-indexCf:
-  credentials: [[ administrateur, redacteur, referent  ]]
+  credentials: [[ administrateur, redacteur, utilisateur, referent ]]
+cf:
+  credentials: [[ administrateur, redacteur ]]
   is_secure: true
-indexInvertebre:
-  credentials: [[ administrateur, redacteur, referent  ]]
+invertebre:
+  credentials: [[ administrateur, redacteur ]]
   is_secure: true
-indexMortalite:
-  credentials: [[ administrateur, redacteur, referent  ]]
-  is_secure: true
-indexFp:
-  credentials: [[ administrateur, redacteur, referent ]]
-  is_secure: on
-indexFs:
-  credentials: [[ administrateur, redacteur, referent ]]
-  is_secure: on
-indexBryo:
-  credentials: [[ administrateur, redacteur, referent ]]
-  is_secure: on
-indexReseau:
-  credentials: [[ administrateur, redacteur, referent ]]
-  is_secure: on
-index:
-  credentials: [[ administrateur, redacteur, utilisateur, referent  ]]
+mortalite:
+  credentials: [[ administrateur, redacteur ]]
   is_secure: true

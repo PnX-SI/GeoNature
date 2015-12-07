@@ -1,6 +1,3 @@
-invertebreAll:
-  credentials: [[ administrateur, redacteur ]]
-  is_secure: true
-invertebreXls:
+all:
   credentials: [[ administrateur, redacteur ]]
   is_secure: true
