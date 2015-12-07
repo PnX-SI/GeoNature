@@ -1,7 +1,18 @@
 all:
+  is_secure: true
   credentials: [[ administrateur, redacteur, utilisateur, referent ]]
-  is_secure: on
+xls:
+  credentials: [[ administrateur, redacteur, referent ]]
+  is_secure: true
 delete:
-  is_secure: off
-validate:
-  is_secure: off
+  credentials: [[ administrateur, redacteur, referent ]]
+  is_secure: true
+deleteTaxon:
+  credentials: [[ administrateur, redacteur, referent ]]
+  is_secure: true
+saveTaxon:
+  credentials: [[ administrateur, redacteur, referent ]]
+  is_secure: true
+save:
+  credentials: [[ administrateur, redacteur, referent ]]
+  is_secure: true
