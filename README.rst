@@ -1,7 +1,7 @@
 GeoNature
 =========
 
-Application de synthèse des observations faune et flore.
+Application de saisie et de synthèse des observations faune et flore.
 
 GeoNature est une application permettant de regrouper l'ensemble des données provenant des **protocoles Faune et Flore**, de saisir les protocoles de **contact occasionnel faune** et **Flore station** et de consulter l'ensemble de ces données dans une application de **synthèse**.
 
@@ -23,6 +23,17 @@ Technologies
 
 Présentation
 ------------
+
+- GeoNature comprend une application WEB de synthèse des observations 
+- GeoNature comprend aussi les formulaires de saisie des protocoles ContactFaune (vertébrés, invertébrés et mortalité), Flore station et Bryophytes. Ces protocoles peuvent être activés ou désactivés. Une discussion est aussi en cours pour y intégrer un Contact Flore sur le modèle de la Faune : https://github.com/PnEcrins/GeoNature/issues/59. Les protocoles de contact intègrent une orientation de la saisie en fonction de 3 critères combinés (localisation x date de la dernière observation x patrimonialité)
+- GeoNature-mobile permet de saisir 4 de ces protocoles sur appareil mobile Android. https://github.com/PnEcrins/GeoNature-mobile, https://github.com/PnEcrins/GeoNature-mobile-sync, https://github.com/PnEcrins/GeoNature-mobile-webapi
+- Chaque protocole dispose de son propre schéma dans la base de données de GeoNature. Il est possible d'y ajouter d'autres schémas pour ses propres protocoles ou l'intégration des données des partenaires.
+- Il est aussi possible d'alimenter la synthèse de GeoNature depuis des protocoles qui ont leur propre base de données (SICEN, Suivi_chiro...) par des triggers, des jobs Talend ou depuis version 1.6.0 par une API REST.
+- Des webservices permettent de diffuser les données de la synthèse à des partenaires
+- Enfin nous prévoyons un stage l'année prochaine pour le développement d'un atlas public basé sur les données de la synthèse de GeoNature. 
+
+.. image :: docs/images/schema-geonature-environnement.jpg
+
 
 **Principe général** : Un protocole = Un outil = Une BDD + Une BDD et une application de SYNTHESE regroupant les données des différents protocoles sur la base des champs communs à tous les protocoles (QUI a vu QUOI, OU et QUAND).
 
