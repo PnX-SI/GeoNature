@@ -3,8 +3,25 @@
 
 # Partie synthese
 getSynthese:
+  class: sfRequestRoute
   url: /synthese/get
   param: { module: synthese, action: get }
+  requirements: { sf_method: get }
+addObservation:
+  class: sfRequestRoute
+  url: /synthese/observation
+  param: { module: synthese, action: add, id_source: 0 }
+  requirements: { sf_method: post }
+updateObservation:
+  class: sfRequestRoute
+  url: /synthese/observation/:id_synthese
+  param: { module: synthese, action: update, id_synthese: 0}
+  requirements: { sf_method: put }
+deleteObservation:
+  class: sfRequestRoute
+  url: /synthese/observation/:id_synthese
+  param: { module: synthese, action: delete, id_synthese: 0}
+  requirements: { sf_method: delete }
 xlsObsSynthese:
   url: /synthese/xlsobs
   param: { module: synthese, action: xlsObs }
@@ -14,10 +31,10 @@ xlsStatusSynthese:
 shpSynthese:
   url: /synthese/shp
   param: { module: synthese, action: shp }
-kmlSynthese:
+gmlSynthese:
   url: /synthese/gml
   param: { module: synthese, action: kml }
-UploadGml:
+uploadGml:
   url: /synthese/uploadshp
   param: { module: synthese, action: uploadFileShp }
 
