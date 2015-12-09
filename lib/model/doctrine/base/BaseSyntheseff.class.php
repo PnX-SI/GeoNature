@@ -122,6 +122,7 @@ abstract class BaseSyntheseff extends sfDoctrineRecord
         $this->hasColumn('id_synthese', 'integer', 4, array(
              'type' => 'integer',
              'primary' => true,
+             'autoincrement' => true,
              'length' => 4,
              ));
         $this->hasColumn('id_source', 'integer', 4, array(

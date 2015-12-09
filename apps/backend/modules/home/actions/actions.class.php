@@ -87,12 +87,10 @@ class homeActions extends sfFauneActions
                     }
                 }
                 $this->liens_saisie .= '</div>';
-            }
-            
-            
+            }  
         }
         else{
-           # $this->redirect('@login');
+           $this->redirect('@login');
        }
     }
     
@@ -102,7 +100,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_synthese);
         }
         else{
-           # $this->redirect('@login');
+           $this->redirect('@login');
         }
     }
     
@@ -112,7 +110,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_cf);
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
     
@@ -122,7 +120,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_mortalite);
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
     
@@ -132,7 +130,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_inv);
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
     
@@ -142,7 +140,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_florestation);
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
     
@@ -152,7 +150,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_bryo);
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
     
@@ -162,7 +160,7 @@ class homeActions extends sfFauneActions
             slot('title', sfGeonatureConfig::$appname_florepatri);
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
     
@@ -173,7 +171,7 @@ class homeActions extends sfFauneActions
             $this->pass = $this->getUser()->getAttribute('pass');
         }
         else{
-            //~ $this->redirect('@login');
+            $this->redirect('@login');
         }
     }
         
