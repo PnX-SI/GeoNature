@@ -960,6 +960,7 @@ Syntheseff:
     id_synthese:
       type: integer(4)
       primary: true
+      autoincrement: true
     id_source: integer(4)
     id_fiche_source: string(50)
     code_fiche_source: string(50)
