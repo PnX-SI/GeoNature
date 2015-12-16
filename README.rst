@@ -1,7 +1,7 @@
 GeoNature
 =========
 
-Application de synthèse des observations faune et flore.
+Application de saisie et de synthèse des observations faune et flore.
 
 GeoNature est une application permettant de regrouper l'ensemble des données provenant des **protocoles Faune et Flore**, de saisir les protocoles de **contact occasionnel faune** et **Flore station** et de consulter l'ensemble de ces données dans une application de **synthèse**.
 
@@ -24,6 +24,17 @@ Technologies
 Présentation
 ------------
 
+- GeoNature comprend une application WEB de synthèse des observations 
+- GeoNature comprend aussi les formulaires de saisie des protocoles ContactFaune (vertébrés, invertébrés et mortalité), Flore station et Bryophytes. Ces protocoles peuvent être activés ou désactivés. Une discussion est aussi en cours pour y intégrer un Contact Flore sur le modèle de la Faune : https://github.com/PnEcrins/GeoNature/issues/59. Les protocoles de contact intègrent une orientation de la saisie en fonction de 3 critères combinés (localisation x date de la dernière observation x patrimonialité)
+- GeoNature-mobile permet de saisir 4 de ces protocoles sur appareil mobile Android. https://github.com/PnEcrins/GeoNature-mobile, https://github.com/PnEcrins/GeoNature-mobile-sync, https://github.com/PnEcrins/GeoNature-mobile-webapi
+- Chaque protocole dispose de son propre schéma dans la base de données de GeoNature. Il est possible d'y ajouter d'autres schémas pour ses propres protocoles ou l'intégration des données des partenaires.
+- Il est aussi possible d'alimenter la synthèse de GeoNature depuis des protocoles qui ont leur propre base de données (SICEN, Suivi_chiro...) par des triggers, des jobs Talend ou depuis version 1.6.0 par une API REST.
+- Des webservices permettent de diffuser les données de la synthèse à des partenaires
+- Enfin nous prévoyons un stage l'année prochaine pour le développement d'un atlas public basé sur les données de la synthèse de GeoNature. 
+
+.. image :: docs/images/schema-geonature-environnement.jpg
+
+
 **Principe général** : Un protocole = Un outil = Une BDD + Une BDD et une application de SYNTHESE regroupant les données des différents protocoles sur la base des champs communs à tous les protocoles (QUI a vu QUOI, OU et QUAND).
 
 .. image :: docs/images/schema-general.jpg
@@ -37,6 +48,41 @@ Le schéma de chacun des protocoles répond donc au besoin du protocole et le sc
 Pour en savoir plus :  `<docs/pdf/protocoles-locaux-echanges-nationaux.pdf>`_
 
 .. image :: docs/images/capture-application.png
+
+Les protocoles intégrés
+-----------------------
+
+Certains protocoles et leurs formulaires de saisie sont disponibles dans GeoNature. Ils peuvent être désactivés pour ceux qui ne souhaitent pas les utiliser. 
+
+- **Contact Faune (vertébrés, invertébrés, mortalité)**
+
+Il s'agit d'un protocole de contact occasionnel de la faune.
+
+Il faut commencer par localiser l'observation sur la carte ou avec ses coordonnées GPS. L'altitude et la commune sont alors automatiquement calculés.
+
+Il faut ensuite renseigner le(s) observateur(s) et la date de l'observation.
+
+Il faut ensuite renseigner le taxon, le critère d'observation (vu, entendu, nid...) qui peuvent varier selon le groupe, le dénombrement, éventuellement un commentaire et un déterminateur. 
+
+Il est possible d'ajouter plusieurs taxons (``contactfaune.t_releves_cf``) sur une même localisation (``contactfaune.t_fiches_cf``).
+
+La particularité de ce protocole est que le territoire a été découpé en plusieurs unités géographiques (153 polygones au Parc national des Ecrins dans ``layers.l_unites_geo``) pour orienter la saisie en fonction de 3 critères combinés (localisation x date de la dernière observation x patrimonialité). Cela permet une meilleure répartition spatiale et taxonomique des relevés. Pour chaque unité géographique (UG), la dernière observation de chaque taxon est calculée automatiquement. Chaque taxon est ainsi affiché comme prioritaire (pas noté dans l'UG depuis 1 an si patrimonial ou 3 ans si non patrimonial), facultatif (déjà noté récemment dans l'UG) ou nouveau (jamais vu dans l'UG) accompagné de la date de dernière observation et du nombre d'observations du taxon dans l'UG. 
+
+.. image :: docs/images/protocole-contact-faune.jpg 
+
+Ce protocole peut aussi être saisi sur tablette avec https://github.com/PnEcrins/GeoNature-mobile qui tire notamment profit du GPS.
+
+- **Flore station**
+
+L'esprit de ce protocole est d'observer une espèce ou une liste d'espèces dans le milieu physique qu'elle(s) occupe(nt). Il peut accessoirement servir d'inventaire de type « atlas », c'est à dire avec une information réduite sur les conditions de milieu (Etape 3 de la fiche de relevé), ou avec une liste partielle des espèces présentes dans l'espace du relevé (Etape 4 de la fiche de relevé).
+
+Objectif : Relever l'ensemble des éléments d'une station floristique : données de l'observation (ou métadonnées) (étapes 1 et 2), données stationnelles (étapes 1 et 3), espèces présentes dans les limites du relevé, avec leurs abondances relatives notée pour chaque strate occupée (étape 4).
+
+Ce protocole est à réaliser de manière partielle par tous les agents, et de manière complète au moins par les agents du groupe opérationnel flore.
+
+- **Bryophytes**
+
+Il s'agit d'une copie de Flore station limitée aux mousses et sans relevé statifié.
 
 Gestion des utilisateurs
 ------------------------

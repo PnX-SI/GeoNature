@@ -1,9 +1,8 @@
-xlsSynthese:
-  credentials: [[ administrateur, redacteur ]]
+all:
   is_secure: true
-shpSynthese:
-  credentials: [[ administrateur, redacteur ]]
-  is_secure: true
-gmlSynthese:
-  credentials: [[ administrateur, redacteur ]]
-  is_secure: true
+add:
+  is_secure: false
+update:
+  is_secure: false
+delete:
+  is_secure: false

@@ -319,4 +319,414 @@ class syntheseActions extends sfFauneActions
         }
         return $this->renderText($msg);
     }
+    
+    /**
+	 * return a json message for the GeoJson web api service
+	 *
+	*/
+	private static function return_content($success ,$msg ,$id_synthese ,$id_source ,$id_fiche_source)
+    {
+        $status = array();
+        $status["success"] = $success;
+        $status["message"] = $msg;
+        $status["id_synthese"] = $id_synthese;
+        $status["id_source"] = $id_source;
+        $status["id_fiche_source"] = $id_fiche_source;
+        return $status;
+    }
+    /**
+	 * Test if given JSON is valid or not
+	 *
+	*/
+	private static function json_test($json)
+    {
+        $json_status = 'Erreur JSON';
+        json_decode($json);
+        switch (json_last_error()) {
+            case JSON_ERROR_NONE:
+                $json_status=true ;
+                break;
+            case JSON_ERROR_DEPTH:
+                $json_status.= ' - Profondeur maximale atteinte';
+                break;
+            case JSON_ERROR_STATE_MISMATCH:
+                $json_status.= ' - Inadéquation des modes ou underflow';
+                break;
+            case JSON_ERROR_CTRL_CHAR:
+                $json_status.= ' - Erreur lors du contrôle des caractères';
+                break;
+            case JSON_ERROR_SYNTAX:
+                $json_status.= ' - Erreur de syntaxe ; JSON malformé';
+                break;
+            case JSON_ERROR_UTF8:
+                $json_status.= ' - Caractères UTF-8 malformés, probablement une erreur d\'encodage';
+                break;
+            default:
+                $json_status.= ' - Erreur inconnue';
+            break;
+        }
+        return $json_status;
+    }
+    
+    public function executeAdd(sfRequest $request)
+    {
+        // initialisation des valeurs retournées par la fonction
+        $success = null;
+        $msg = "";
+        $id_synthese = null;
+        $id_source = null;
+        $id_fiche_source = null;
+        
+        // récupération des paramètres transmis
+        $token = $request->getParameter('token');
+        $json = $request->getParameter('json');
+        
+        // on test si le token est valide
+        if($token=="05ff)giOklRTb;sedqw4xaz56Tmoi5!"){    
+            // test si le json est valid
+            if(self::json_test($json) != 1){
+                $success = false;
+                $msg = self::json_test($json);
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+
+            // récupération des valeurs transmises dans le json
+            $synthese_val = json_decode($json, true);
+            $id_source = $synthese_val['properties']['id_source'];
+            $id_fiche_source = $synthese_val['properties']['id_fiche_source'];
+            $code_fiche_source = $synthese_val['properties']['code_fiche_source'];
+            $id_organisme = $synthese_val['properties']['id_organisme'];
+            $id_protocole = $synthese_val['properties']['id_protocole'];
+            $id_precision = $synthese_val['properties']['id_precision'];
+            $id_lot = $synthese_val['properties']['id_lot'];
+            $dateobs = $synthese_val['properties']['dateobs'];
+            $cd_nom = $synthese_val['properties']['cd_nom'];
+            $effectif_total = $synthese_val['properties']['effectif_total'];
+            $insee = $synthese_val['properties']['insee'];
+            $altitude = $synthese_val['properties']['altitude'];
+            $observateurs = $synthese_val['properties']['observateurs'];
+            $determinateur = $synthese_val['properties']['determinateur'];
+            $remarques = $synthese_val['properties']['remarques'];
+            $id_critere_synthese = $synthese_val['properties']['id_critere_synthese'];
+            $json_geom = json_encode($synthese_val['geometry']);
+        
+            // on teste les champs obligatoires ; si soucis on retourne un message d'erreur qui stoppe le script
+            if($id_organisme === null || $id_organisme === '' || $id_organisme < 0){
+                $success = false;
+                $msg = "Opération stoppée : L'identifiant de l'organisme est obligatoire ; valeur attendue = id_organisme";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($id_protocole === null || $id_protocole === '' || $id_protocole < 0){
+                $success = false;
+                $msg = "Opération stoppée : L'identifiant du protocole est obligatoire ; valeur attendue = id_protocole";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($id_precision === null || $id_precision === '' || $id_precision < 0){
+                $success = false;
+                $msg = "Opération stoppée : L'identifiant de la précision de saisie est obligatoire ; valeur attendue = id_precision";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($id_critere_synthese === null || $id_critere_synthese === '' || $id_critere_synthese < 0){
+                $success = false;
+                $msg = "Opération stoppée : L'identifiant du critère d'observation est obligatoire ; valeur attendue = id_critere_synthese";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($cd_nom === null || $cd_nom === '' || $cd_nom < 0){
+                $success = false;
+                $msg = "Opération stoppée : Le taxon est obligatoire ; valeur attendue = cd_nom";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($dateobs == null || $dateobs ==''){
+                $success = false;
+                $msg = "Opération stoppée : La date de l'observation est obligatoire ; valeur attendue = dateobs";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($observateurs == null || $observateurs ==''){
+                $success = false;
+                $msg = "Opération stoppée : Au moins un observateur est obligatoire ; valeur attendue = observateurs";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            if($json_geom == null || $json_geom ==''){
+                $success = false;
+                $msg = "Opération stoppée : La localisation est obligatoire ; valeur attendue = geometry. Voir les spécifications du format GeoJSON";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            
+            // on teste si le ou les paramètres nécessaires à la création sont bien fournis
+            $where = "WHERE ";
+            if($id_source !== null && $id_source >= 0 && $id_fiche_source != null && $id_fiche_source!= ''){
+                $where.= "id_source = ".$id_source." AND id_fiche_source = ".$id_fiche_source."::text";
+            }
+            else{
+                $success = false;
+                $msg = "Opération stoppée : identifiants nécessaires à la création de l'enregistrement non fournis.";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            
+            $synthese = new Syntheseff();
+            $synthese->id_source = $id_source;
+            $synthese->id_fiche_source = $id_fiche_source;
+            $synthese->code_fiche_source = $code_fiche_source;
+            $synthese->id_organisme = $id_organisme;
+            $synthese->id_protocole = $id_protocole;
+            $synthese->id_precision = $id_precision;
+            $synthese->id_lot = $id_lot;
+            $synthese->id_critere_synthese = $id_critere_synthese;
+            $synthese->dateobs = $dateobs;
+            $synthese->cd_nom = $cd_nom;
+            $synthese->effectif_total = $effectif_total;
+            $synthese->insee = $insee;
+            $synthese->altitude_retenue = $altitude;
+            $synthese->observateurs = $observateurs;
+            $synthese->determinateur = $determinateur;
+            $synthese->remarques = $remarques;
+            $synthese->derniere_action = 'c';
+            $synthese->supprime = false;
+            
+            // on peut lancer l'action sur la base de données
+            try{
+                $synthese->save();
+                $id_synthese = $synthese->getIdSynthese();
+                $monjson = "ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857)";
+                $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+                // insertion des géometries
+                // doctrine ne gère pas le  type geometry. Du coup on le fait en Update en SQL.
+                $sql = "UPDATE synthese.syntheseff 
+                        SET the_geom_3857 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857)
+                        ,the_geom_2154 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),2154)
+                        ,the_geom_point = ST_PointOnSurface(ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857))
+                        WHERE id_synthese = ".$id_synthese;
+                $dbh->query($sql);
+                // test si l'enregistrement existe dans la table synthese.syntheseff
+                $sql = "SELECT id_synthese, id_source, id_fiche_source FROM synthese.syntheseff ".$where;
+                $result = $dbh->query($sql)->fetchAll();
+                // si l'enregistrement existe dans la table synthese.syntheseff c'est qu'il a bien été créé
+                if($result[0]['id_synthese']>0){
+                    $id_source = $result[0]['id_source'];
+                    $id_fiche_source = $result[0]['id_fiche_source'];
+                    $success = true;
+                    $msg = "insertion dans la table syntheseff avec l'id_synthese : ".$id_synthese;
+                }
+                else{
+                    $success = false;
+                    $msg = "Une erreur s'est produite. L'observation n'a pas été enregistrée.";
+                }
+            }
+            catch(Exception $e) {
+                $success = false;
+                $msg = "Une erreur s'est produite :".$e->getMessage();
+            }
+        }
+        // si le token n'est pas valide
+        else{
+            $success = false;
+            $msg = "Opération stoppée : identification incorrecte";
+            return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+        }
+        return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+    }
+    
+    public function executeUpdate(sfRequest $request)
+    {
+        // initialisation des valeurs retournées par la fonction
+        $success = null;
+        $msg = "";
+        $id_synthese = null;
+        $id_source = null;
+        $id_fiche_source = null;
+        
+        // récupération des paramètres transmis
+        $token = $request->getParameter('token');
+        $json = $request->getParameter('json');
+        
+        // on test si le token est valide
+        if($token=="05ff)giOklRTb;sedqw4xaz56Tmoi5!"){
+            //test si le json est valid
+            if(self::json_test($json) != 1){
+                $success = false;
+                $msg = self::json_test($json);
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+
+            // récupération des valeurs transmises dans le json
+            // comme les valeurs sont facultatives, on test systématiquement si elles sont passées ou non
+            $synthese_val = json_decode($json, true);
+            if($synthese_val['properties']['id_source'] !== null && $synthese_val['properties']['id_source'] >= 0){$id_source = $synthese_val['properties']['id_source'];}
+            if($synthese_val['properties']['id_fiche_source'] !== null && $synthese_val['properties']['id_fiche_source'] !== ''){$id_fiche_source = $synthese_val['properties']['id_fiche_source'];}
+            if($synthese_val['properties']['code_fiche_source'] !== null && $synthese_val['properties']['code_fiche_source'] !== ''){$code_fiche_source = $synthese_val['properties']['code_fiche_source'];}
+            if($synthese_val['properties']['id_organisme'] !== null && $synthese_val['properties']['id_organisme'] >=0){$id_organisme = $synthese_val['properties']['id_organisme'];}
+            if($synthese_val['properties']['id_protocole'] !== null && $synthese_val['properties']['id_protocole'] >=0){$id_protocole = $synthese_val['properties']['id_protocole'];}
+            if($synthese_val['properties']['id_precision'] !== null && $synthese_val['properties']['id_precision'] >=0){$id_precision = $synthese_val['properties']['id_precision'];}
+            if($synthese_val['properties']['id_precision'] !== null && $synthese_val['properties']['id_precision'] >=0){$id_lot = $synthese_val['properties']['id_lot'];}
+            if($synthese_val['properties']['dateobs'] !== null && $synthese_val['properties']['dateobs'] !== ''){$dateobs = $synthese_val['properties']['dateobs'];}
+            if($synthese_val['properties']['cd_nom'] !== null && $synthese_val['properties']['cd_nom'] >=0){$cd_nom = $synthese_val['properties']['cd_nom'];}
+            if($synthese_val['properties']['effectif_total'] !== null && $synthese_val['properties']['effectif_total'] >=0){$effectif_total = $synthese_val['properties']['effectif_total'];}
+            if($synthese_val['properties']['altitude'] !== null && $synthese_val['properties']['altitude'] !== ''){$insee = $synthese_val['properties']['insee'];}
+            if($synthese_val['properties']['altitude'] !== null && $synthese_val['properties']['altitude'] !== ''){$altitude = $synthese_val['properties']['altitude'];}
+            if($synthese_val['properties']['observateurs'] !== null && $synthese_val['properties']['observateurs'] !== ''){$observateurs = $synthese_val['properties']['observateurs'];}
+            if($synthese_val['properties']['determinateur'] !== null && $synthese_val['properties']['determinateur'] !== ''){$determinateur = $synthese_val['properties']['determinateur'];}
+            if($synthese_val['properties']['remarques'] !== null && $synthese_val['properties']['remarques'] !== ''){$remarques = $synthese_val['properties']['remarques'];}
+            if($synthese_val['properties']['id_critere_synthese'] !== null && $synthese_val['properties']['id_critere_synthese'] >=0){$id_critere_synthese = $synthese_val['properties']['id_critere_synthese'];}
+            if($synthese_val['geometry'] !== null && $synthese_val['geometry']!==''){$json_geom = json_encode($synthese_val['geometry']);}
+            
+            // on teste si le ou les paramètres nécessaires à l'identification de la données sont bien fournis
+            $where = "WHERE ";
+            if($request->hasParameter('id_synthese') && $request->getParameter('id_synthese') != 0){
+                $id_synthese = $request->getParameter('id_synthese');
+                $where .= "id_synthese = ".$id_synthese;
+            }
+            elseif(isset($id_fiche_source) && isset($id_fiche_source)){
+                $where.= "id_source = ".$id_source." AND id_fiche_source = ".$id_fiche_source."::text";
+            }
+            else{
+                $success = false;
+                $msg = "Opération stoppée : identifiants nécessaires à la création de l'enregistrement non fournis.";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            // test si l'enregistrement existe dans la table synthese.syntheseff
+            $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+            $sql = "SELECT id_synthese FROM synthese.syntheseff ".$where;
+            $result = $dbh->query($sql)->fetchAll();
+            // si l'enregistrement existe dans la table synthese.syntheseff on récupère ses informations d'identification unique et on met à jour les champs
+            if($result[0]['id_synthese']>0){
+                $id_synthese = $result[0]['id_synthese'];
+                // on récupère l'enregistrement et on met à jour
+                $synthese = Doctrine::getTable('Syntheseff')->find($id_synthese);
+                if(isset($code_fiche_source)){$synthese->code_fiche_source = $code_fiche_source;}
+                if(isset($id_organisme)){$synthese->id_organisme = $id_organisme;}
+                if(isset($id_protocole)){$synthese->id_protocole = $id_protocole;}
+                if(isset($id_precision)){$synthese->id_precision = $id_precision;}
+                if(isset($id_lot)){$synthese->id_lot = $id_lot;}
+                if(isset($id_critere_synthese)){$synthese->id_critere_synthese = $id_critere_synthese;}
+                if(isset($dateobs)){$synthese->dateobs = $dateobs;}
+                if(isset($cd_nom)){$synthese->cd_nom = $cd_nom;}
+                if(isset($effectif_total)){$synthese->effectif_total = $effectif_total;}
+                if(isset($insee)){$synthese->insee = $insee;}
+                if(isset($altitude)){$synthese->altitude_retenue = $altitude;}
+                if(isset($observateurs)){$synthese->observateurs = $observateurs;}
+                if(isset($determinateur)){$synthese->determinateur = $determinateur;}
+                if(isset($remarques)){$synthese->remarques = $remarques;}
+                $synthese->derniere_action = 'u';
+            }
+            // si l'enregistrement n'existe pas dans la table synthese.syntheseff
+            else{
+                $success = false;
+                $msg = "Les informations d'identification de l'observation ne correspondent à aucune donnée dans la table synthese.syntheseff.";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            // on peut lancer l'action sur la base de données
+            try{
+                $synthese->save();
+                if($json_geom !== null && $json_geom !== ''){
+                    $monjson = "ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857)";
+                    // update des géometries
+                    // doctrine ne gère pas le type geometry. Du coup on le fait en Update en SQL.
+                    $sql = "UPDATE synthese.syntheseff 
+                            SET the_geom_3857 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857)
+                            ,the_geom_2154 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),2154)
+                            ,the_geom_point = ST_PointOnSurface(ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857))
+                            WHERE id_synthese = ".$id_synthese;
+                    $dbh->query($sql);
+                }
+                $success = true;
+                $msg = "La modification dans la table syntheseff avec l'id_synthese : ".$id_synthese." a bien été réalisée";
+            }
+            catch(Exception $e) {
+                $success = false;
+                $msg = "Une erreur s'est produite :".$e->getMessage();
+            }
+        }
+        // si le token n'est pas valide
+        else{
+            $success = false;
+            $msg = "Opération stoppée : identification incorrecte";
+            return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+        }
+        
+        return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+    }
+    
+    public function executeDelete(sfRequest $request)
+    {
+        // initialisation des valeurs retournées par la fonction
+        $success;
+        $msg = "";
+        $id_synthese = null;
+        $id_source = null;
+        $id_fiche_source = null;
+        
+        // récupération des paramètres transmis
+        $token = $request->getParameter('token'); 
+        $json = $request->getParameter('json');
+        
+        // on test si le token est valide
+        if($token=="05ff)giOklRTb;sedqw4xaz56Tmoi5!"){
+            // test si le json est valid
+            if(self::json_test($json) != 1){
+                $success = false;
+                $msg = self::json_test($json);
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            $synthese_val = json_decode($json, true);
+            
+            // on teste si le ou les paramètres d'identification de l'enregistrement sont bien fournis
+            $where = "WHERE ";
+            if($request->hasParameter('id_synthese') && $request->getParameter('id_synthese') != 0){
+                $id_synthese = $request->getParameter('id_synthese');
+                $where .= "id_synthese = ".$id_synthese;
+            }
+            elseif($synthese_val['id_source'] != null && $synthese_val['id_source'] >= 0 && $synthese_val['id_fiche_source'] != null && $synthese_val['id_fiche_source'] != ''){
+                $id_source = $synthese_val['id_source'];
+                $id_fiche_source = $synthese_val['id_fiche_source'];
+                $where.= "id_source = ".$id_source." AND id_fiche_source = ".$id_fiche_source."::text";
+            }
+            else{
+                $success = false;
+                $msg = "Opération stoppée : identifiant de l'enregistrement non valide.";
+                return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+            }
+            // on peut lancer l'action sur la base de données
+            try{
+                $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+                // test si l'enregistrement existe dans la table synthese.syntheseff
+                $sql = "SELECT id_synthese, id_source, id_fiche_source FROM synthese.syntheseff ".$where;
+                $result = $dbh->query($sql)->fetchAll();
+                // si l'enregistrement existe dans la table synthese.syntheseff
+                if(isset($result[0])){
+                    if($result[0]['id_synthese']>0){
+                        // récupération de toutes les informations d'identification de l'enregistrement qui va être supprimé pour le retour
+                        $id_synthese = $result[0]['id_synthese'];
+                        $id_source = $result[0]['id_source'];
+                        $id_fiche_source = $result[0]['id_fiche_source'];
+                        // suppression de l'enregistrement
+                        $sql = "DELETE FROM synthese.syntheseff ".$where;
+                        // $sql = "UPDATE synthese.syntheseff SET supprime = true ".$where;
+                        $dbh->query($sql); 
+                        $success = true;
+                        $msg = "L'enregistrement portant l'id_synthese : ".$id_synthese." a été supprimé avec succès.";
+                    }
+                }
+                // si l'enregistrement n'existe pas dans la table synthese.syntheseff
+                else{
+                    $success = false;
+                    $msg = "Aucun enregistrement ne correspond aux identifiants fournis. La suppression n'a pas été réalisée.";
+                }
+            // si une erreur sql se produit dans le 'try' on la récupère et on l'expose
+            }
+            catch(Exception $e) {
+                $success = false;
+                $msg = "Une erreur s'est produite : ".$e->getMessage();
+            }
+        }
+        // si le token n'est pas valide
+        else{
+             $success = false;
+             $msg = "Opération stoppée : identification incorrecte";
+        }
+        // construction du json de retour
+        // if($success===true){header('HTTP/1.1 200 OK');}
+        // else{header('HTTP/1.1 433 Error');}
+        // header('Content-Type: application/json');
+        return $this->renderJSON(self::return_content($success,$msg,$id_synthese,$id_source,$id_fiche_source));
+    }
 }
