@@ -5,4 +5,5 @@ config/databases.yml
 config/settings.ini
 wms/wms*.map
 log/*
+cache/*
 lib/sfGeonatureConfig.php

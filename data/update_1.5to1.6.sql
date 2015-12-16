@@ -1,0 +1,2 @@
+﻿--ajout de la source 0 utilisée par la web api si l'id_source n'est pas transmis
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (0, 'Web API', 'Donnée externe non définie (insérée dans la synthese à partir du service reste de la web API sans id_source fourni)', 'localhost', 22, NULL, NULL, 'geonaturedb', 'synthese', 'syntheseff', 'id_fiche_source', NULL, NULL, NULL, 'NONE', false);
