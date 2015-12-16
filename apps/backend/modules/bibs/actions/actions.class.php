@@ -15,7 +15,7 @@ class bibsActions extends sfFauneActions
     }
     public function executeListTaxonsSynthese(sfRequest $request)
     {
-        $val = BibTaxonsTable::listSynthese();
+        $val = BibTaxonsTable::listSynthese($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
         return $this->renderText($val);
     }
     public function executeListTaxonsTreeSynthese(sfRequest $request)

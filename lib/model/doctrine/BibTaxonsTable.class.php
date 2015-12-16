@@ -17,11 +17,17 @@ class BibTaxonsTable extends Doctrine_Table
             ->fetchArray();
         return $query;
     }
-    public static function listSynthese()
+    public static function listSynthese($fff, $patri, $protege)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //requète optimisèe = moins 2 secondes
-        $sql = "SELECT * FROM synthese.v_taxons_synthese";
+        //requète optimisée = moins 2 secondes
+        $where = 'WHERE cd_nom > 0';
+        if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
+        if($patri == true) {$where .= " AND patrimonial=true"; }
+        if($protege == true) {$where .= " AND protection_stricte=true"; }
+        $sql = "SELECT * FROM synthese.v_taxons_synthese ".$where;
+        // return $sql;
+
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         foreach ($taxons as $key => &$val)
         {
@@ -41,7 +47,7 @@ class BibTaxonsTable extends Doctrine_Table
         return json_encode($taxons);
     }
     
-    public static function listTreeSynthese()
+    public static function listTreeSynthese($fff, $patri, $protege)
     {
         $query= Doctrine_Query::create()
             ->select('*' )
