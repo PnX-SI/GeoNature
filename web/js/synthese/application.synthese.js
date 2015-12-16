@@ -45,6 +45,16 @@ function checkApiLoading(retryClbk,clss) {
 */
 var layerTester = new Ext.util.Observable();
 var firstMapLoad = true;
+
+var myProxyTaxonsSynthese = new Ext.data.HttpProxy({
+    url: 'bibs/taxonssynthese'
+    ,method: 'GET'
+});
+var myProxyTaxonsTree = new Ext.data.HttpProxy({
+    url: 'bibs/taxonstree'
+    ,method: 'GET'
+});
+
 application.synthese = function() {
     /**
     * Property: formatWKT
@@ -194,7 +204,7 @@ application.synthese = function() {
             ,autoLoad:true
         })
        ,taxonsTreeStore: new Ext.data.JsonStore({
-            url: 'bibs/taxonstree'
+            url: myProxyTaxonsTree
             ,fields: [
                 'cd_nom' 
                 ,'cd_ref'
@@ -226,8 +236,9 @@ application.synthese = function() {
             }
             ,autoLoad: true
         })
+        
         ,storeTaxonsSynthese: new Ext.data.JsonStore({
-            url: 'bibs/taxonssynthese'
+            url: myProxyTaxonsSynthese
             ,fields: [
                 'cd_nom'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
