@@ -1204,12 +1204,12 @@ application.synthese.search = function() {
                     ,value:''
                 },{
                     xtype: 'radiogroup'
-                    ,id:'radio-ff'
+                    ,id:'radio-fff'
                     ,items: [
-                        {boxLabel: 'Faune', name: 'ff', inputValue: 'Animalia'},
-                        {boxLabel: 'Flore', name: 'ff', inputValue: 'Plantae'},
-                        {boxLabel: 'Fonge', name: 'ff', inputValue: 'Fungi'},
-                        {boxLabel: 'Tout', name: 'ff', inputValue: null, checked: true},
+                        {boxLabel: 'Faune', name: 'fff', inputValue: 'Animalia'},
+                        {boxLabel: 'Flore', name: 'fff', inputValue: 'Plantae'},
+                        {boxLabel: 'Fonge', name: 'fff', inputValue: 'Fungi'},
+                        {boxLabel: 'Tout', name: 'fff', inputValue: 'all', checked: true},
                     ]
                     ,listeners: {
                         change: function(cb,checked) {
@@ -1252,7 +1252,7 @@ application.synthese.search = function() {
                 },{
                     xtype:"twintriggercombo"
                     ,id:'combo-synthese-taxons-fr'
-                    ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="{picto}" width=20 height=20/> {nom_francais}</div></tpl></tpl>'
+                    // ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="{picto}" width=20 height=20/> {nom_francais}</div></tpl></tpl>'
                     ,emptyText: "Taxons français"
                     ,name:"taxonfr"
                     ,hiddenName:"taxonfr"
@@ -1282,7 +1282,7 @@ application.synthese.search = function() {
                 },{
                     xtype:"twintriggercombo"
                     ,id:'combo-synthese-taxons-latin'
-                    ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="{picto}" width=20 height=20/> {nom_latin}</div></tpl></tpl>'
+                    // ,tpl: '<tpl for="."><div class="x-combo-list-item" style="<tpl if="patrimonial">font-weight:bold</tpl>" ><img src="{picto}" width=20 height=20/> {nom_latin}</div></tpl></tpl>'
                     ,emptyText: "Taxons latin"
                     ,name:"taxonl"
                     ,hiddenName:"taxonl"
@@ -2104,21 +2104,20 @@ application.synthese.search = function() {
               treeMask.show();
               Ext.getCmp('label-patience-tree').setText('La machine travaille mais y\'a du boulot, patience...');
             }
-
             Ext.getCmp('windows-taxons-tree').doLayout();
             var patri = Ext.getCmp('hidden-patri').getValue();
             var protege = Ext.getCmp('hidden-protege').getValue();
             var txtTaxons = 'Taxons';
-            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
-            if(ff == null){
+            var fff = Ext.getCmp('radio-fff').getValue().inputValue;
+            if(fff == 'all'){
                 if (patri =='true' && protege =='true'){txtTaxons='Taxons patrimoniaux et protégés ';}
                 else if (patri =='true' && protege !='true'){txtTaxons='Taxons patrimoniaux ';}
                 else if (patri !='true' && protege =='true'){txtTaxons='Taxons protégés ';}
             }
             else{
-                if (patri =='true' && protege =='true'){txtTaxons=ff+'-  Taxons patrimoniaux et protégés ';}
-                else if (patri =='true' && protege !='true'){txtTaxons=ff+'-  Taxons patrimoniaux ';}
-                else if (patri !='true' && protege =='true'){txtTaxons=ff+'-  Taxons protégés ';}
+                if (patri =='true' && protege =='true'){txtTaxons=fff+' -  Taxons patrimoniaux et protégés ';}
+                else if (patri =='true' && protege !='true'){txtTaxons=fff+' -  Taxons patrimoniaux ';}
+                else if (patri !='true' && protege =='true'){txtTaxons=fff+' -  Taxons protégés ';}
             }
             var t = Ext.getCmp('tree-taxons');
             var compt = 0;
@@ -2126,17 +2125,17 @@ application.synthese.search = function() {
             application.synthese.taxonsTreeStore.each(function(record){
                 var node = t.getNodeById(record.data.cd_nom);
                 var includeRecord = false;
-                if(ff == null){
+                if(fff == null){
                     if (patri !='true' && protege !='true'){includeRecord=true;}
                     else if (patri =='true' && protege =='true'){if(record.data.patrimonial==true && record.data.protection_stricte == true){includeRecord=true;}}
                     else if (patri =='true' && protege !='true'){if(record.data.patrimonial==true){includeRecord=true;}}
                     else if (patri !='true' && protege =='true'){if(record.data.protection_stricte == true){includeRecord=true;}}
                 }
                 else{
-                    if (patri !='true' && protege !='true' && record.data.regne == ff){includeRecord=true;}
-                    else if (patri =='true' && protege =='true'){if((record.data.patrimonial==true && record.data.protection_stricte == true) && record.data.regne == ff) {includeRecord=true;}}
-                    else if (patri =='true' && protege !='true'){if(record.data.patrimonial==true && record.data.regne == ff){includeRecord=true;}}
-                    else if (patri !='true' && protege =='true'){if(record.data.protection_stricte == true && record.data.regne == ff){includeRecord=true;}}
+                    if (patri !='true' && protege !='true' && record.data.regne == fff){includeRecord=true;}
+                    else if (patri =='true' && protege =='true'){if((record.data.patrimonial==true && record.data.protection_stricte == true) && record.data.regne == fff) {includeRecord=true;}}
+                    else if (patri =='true' && protege !='true'){if(record.data.patrimonial==true && record.data.regne == fff){includeRecord=true;}}
+                    else if (patri !='true' && protege =='true'){if(record.data.protection_stricte == true && record.data.regne == fff){includeRecord=true;}}
                 }
                 if(node){
                     if (!includeRecord) {node.getUI().hide();}
@@ -2165,43 +2164,13 @@ application.synthese.search = function() {
             //récupération des valeurs des cases à cocher patrimoniaux et protégés et faune/flore/fonge
             var patri = Ext.getCmp('cb-patri').getValue();
             var protege = Ext.getCmp('cb-protege').getValue()
-            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
+            var fff = Ext.getCmp('radio-fff').getValue().inputValue;
             Ext.getCmp('combo-synthese-taxons-fr').getStore().clearFilter();
             Ext.getCmp('combo-synthese-taxons-latin').getStore().clearFilter();
             Ext.getCmp('combo-synthese-taxons-fr').clearValue();
             Ext.getCmp('combo-synthese-taxons-latin').clearValue();
-            if(ff !=null){
-                if (patri == true && protege == true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if((r.data.patrimonial == true || r.data.protection_stricte == true) && r.data.regne == ff){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if((r.data.patrimonial == true || r.data.protection_stricte == true) && r.data.regne == ff){return true;}});
-                }
-                else if (patri == true && protege != true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.patrimonial == true && r.data.regne == ff){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.patrimonial == true&& r.data.regne == ff){return true;}});
-                }
-                else if (patri != true && protege == true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true && r.data.regne == ff){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true && r.data.regne == ff){return true;}});
-                }
-                else if(patri != true && protege != true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.regne == ff){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.regne == ff){return true;}});
-                }
-            }
-            else{
-                if (patri == true && protege == true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.patrimonial == true || r.data.protection_stricte == true){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.patrimonial == true || r.data.protection_stricte == true){return true;}});
-                }
-                else if (patri == true && protege != true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.patrimonial == true){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.patrimonial == true){return true;}});
-                }
-                else if (patri != true && protege == true){
-                    Ext.getCmp('combo-synthese-taxons-fr').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true){return true;}});
-                    Ext.getCmp('combo-synthese-taxons-latin').getStore().filterBy(function(r,id){if(r.data.protection_stricte == true){return true;}});
-                }
-            }
+            myProxyTaxonsSynthese.url = 'bibs/taxonssynthese/'+fff+'/'+patri+'/'+protege
+            Ext.getCmp('combo-synthese-taxons-latin').getStore().reload();
         }
         ,resetTree: function(){
             Ext.getCmp('tree-taxons').getRootNode().setText('Taxons (0)');
@@ -2257,7 +2226,7 @@ application.synthese.search = function() {
             if(Ext.getCmp('result_count').text=="les 50 dernières observations"){st = "yes";}
             var tfr = Ext.getCmp('combo-synthese-taxons-fr').getValue();
             var tl = Ext.getCmp('combo-synthese-taxons-latin').getValue();
-            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
+            var fff = Ext.getCmp('radio-fff').getValue().inputValue;
             var ids = Ext.getCmp('search-form').getForm().findField('idstaxons').getValue();
             var p = Ext.getCmp('hidden-patri').getValue();
             var pr = Ext.getCmp('hidden-protege').getValue();
@@ -2270,7 +2239,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsobs?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&ff='+ff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/xlsobs?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,exportXlsStatuts : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();
@@ -2285,7 +2254,7 @@ application.synthese.search = function() {
             if(Ext.getCmp('result_count').text=="les 50 dernières observations"){st = "yes";}
             var tfr = Ext.getCmp('combo-synthese-taxons-fr').getValue();
             var tl = Ext.getCmp('combo-synthese-taxons-latin').getValue();
-            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
+            var fff = Ext.getCmp('radio-fff').getValue().inputValue;
             var ids = Ext.getCmp('search-form').getForm().findField('idstaxons').getValue();
             var p = Ext.getCmp('hidden-patri').getValue();
             var pr = Ext.getCmp('hidden-protege').getValue();
@@ -2298,7 +2267,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&ff='+ff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,exportShp : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();
@@ -2313,7 +2282,7 @@ application.synthese.search = function() {
             if(Ext.getCmp('result_count').text=="les 50 dernières observations"){st = "yes";}
             var tfr = Ext.getCmp('combo-synthese-taxons-fr').getValue();
             var tl = Ext.getCmp('combo-synthese-taxons-latin').getValue();
-            var ff = Ext.getCmp('radio-ff').getValue().inputValue;
+            var fff = Ext.getCmp('radio-fff').getValue().inputValue;
             var ids = Ext.getCmp('search-form').getForm().findField('idstaxons').getValue();
             var p = Ext.getCmp('hidden-patri').getValue();
             var pr = Ext.getCmp('hidden-protege').getValue();
@@ -2326,7 +2295,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&ff='+ff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            window.location.href = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,initWindowUploadShp : function() {
                 this.windowUploadShp = initFormUploadShp();
