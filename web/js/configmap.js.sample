@@ -23,8 +23,8 @@ gps_user_projection = new OpenLayers.Projection("EPSG:4326");
 // x_max = 6.71109;
 // y_min = 44.42789;
 // y_max = 45.19158;
-// x_exemple = 44.85012;
-// y_exemple = 6.35817;
+// x_exemple = 6.35817;
+// y_exemple = 44.85012;
 
 // Parc Amazonnien de Guyane en UTM
 //x_min = 90000;
