@@ -27,7 +27,7 @@ indexSyntheseSuccess:
     - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
     - client/mfbase/ext-3.4.0/ext-all.js
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
+    - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
@@ -63,7 +63,7 @@ indexCfSuccess:
     - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
     - client/mfbase/ext-3.4.0/ext-all.js
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
+    - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
@@ -91,7 +91,7 @@ indexMortaliteSuccess:
     - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
     - client/mfbase/ext-3.4.0/ext-all.js
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
+    - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
@@ -119,7 +119,7 @@ indexInvertebreSuccess:
     - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
     - client/mfbase/ext-3.4.0/ext-all.js
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
+    - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
@@ -148,7 +148,7 @@ indexFpSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/lib/Firebug/firebug.js
 #---------Version API IGN 1.2------------------------------
-    - client/mfbase/openlayers/lib/OpenLayers.js       
+    - client/mfbase/openlayers/OpenLayers.js       
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/1.2/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
@@ -188,7 +188,7 @@ indexFsSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/lib/Firebug/firebug.js
     - client/mfbase/proj4js/lib/proj4js.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
+    - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
@@ -229,7 +229,7 @@ indexBryoSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/lib/Firebug/firebug.js
     - client/mfbase/proj4js/lib/proj4js.js
-    - "http://dev.openlayers.org/releases/OpenLayers-2.11/OpenLayers.js"
+    - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
     - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
     - client/mfbase/mapfish/MapFish-all-min.js
