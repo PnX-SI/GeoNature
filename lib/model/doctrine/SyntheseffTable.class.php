@@ -55,8 +55,8 @@ class SyntheseffTable extends Doctrine_Table
     private static function addFilters($params)
     {
         $sql = '';
-        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null && $params['ff']!='null')
-            $sql .= " AND txr.regne = '".$params['ff']."'";
+        if (isset($params['fff']) && $params['fff']!='' && $params['fff']!=null && $params['fff']!='all')
+            $sql .= " AND txr.regne = '".$params['fff']."'";
         if (isset($params['id_secteur']) && $params['id_secteur']!='')
             $sql .= " AND com.id_secteur = ".$params['id_secteur'];
         if (isset($params['id_n2000']) && $params['id_n2000']!='')
@@ -122,8 +122,8 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= " AND z.id_zone = ".$params['id_reserve'];
         if (isset($params['observateur']) && $params['observateur']!='')
             $sql .= " AND synt.observateurs ILIKE '%".$params['observateur']."%'";
-        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null && $params['ff']!='null')
-            $sql .= " AND txr.regne = '".$params['ff']."'";
+        if (isset($params['fff']) && $params['fff']!='' && $params['fff']!=null && $params['fff']!='all')
+            $sql .= " AND txr.regne = '".$params['fff']."'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
             $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
         if (isset($params['taxonl']) && $params['taxonl']!='')
@@ -292,8 +292,8 @@ class SyntheseffTable extends Doctrine_Table
         if (isset($params['id_unite']) && $params['id_unite']!='' && $params['id_unite']==sfGeonatureConfig::$id_unite_fournisseur && isset($params['userName']) && $params['userName']!='' ){
             $sql .= " AND lower(synt.observateurs) ILIKE lower('%".$params['userName']."%')";
         }
-        if (isset($params['ff']) && $params['ff']!='' && $params['ff']!=null && $params['ff']!='null')
-            $sql .= " AND txr.regne = '".$params['ff']."'";
+        if (isset($params['fff']) && $params['fff']!='' && $params['fff']!=null && $params['fff']!='all')
+            $sql .= " AND txr.regne = '".$params['fff']."'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
             $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
         if (isset($params['taxonl']) && $params['taxonl']!='')

@@ -337,10 +337,11 @@ getAnneesSynthese:
   param: { module: bibs, action: listAnneesSynthese }
 getTreeTaxonsSynthese:
   url: /bibs/taxonstree
-  param: { module: bibs, action: listTaxonsTreeSynthese }
+  param: { module: bibs, action: listTaxonsTreeSynthese}
 getTaxonsSynthese:
-  url: /bibs/taxonssynthese
-  param: { module: bibs, action: listTaxonsSynthese }
+  class: sfRequestRoute
+  url: /bibs/taxonssynthese/:fff/:patri/:protege
+  param: { module: bibs, action: listTaxonsSynthese, fff: null, patri: false, protege: false }
 getSecteursSynthese:
   url: /bibs/secteurssynthese
   param: { module: bibs, action: listSecteurs }
