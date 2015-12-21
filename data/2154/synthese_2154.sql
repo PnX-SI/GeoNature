@@ -786,7 +786,7 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
 
   DECLARE
   couleur text;
-  patri boolean;
+  patri character(3);
   BEGIN
     SELECT filtre2 INTO patri 
     FROM taxonomie.bib_taxons
