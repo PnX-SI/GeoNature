@@ -22,6 +22,18 @@ Voir le guide d'installation du serveur dans https://github.com/PnEcrins/GeoNatu
         unzip vX.Y.Z.zip
         mv GeoNature-X.Y.Z/ geonature/
 
+
+Configuration Apache
+====================
+
+* Prise en compte de la configuration Apache requises pour Symfony :
+
+    :: 
+	
+	    sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
+        sudo apache2ctl restart
+        
+
 Configuration de la base de données PostgreSQL
 ==============================================
 
@@ -106,12 +118,12 @@ Les différentes versions sont disponibles sur le Github du projet (https://gith
 
 * Télécharger et extraire la version souhaitée dans un répertoire séparé (où ``X.Y.Z`` est à remplacer par le numéro de la version que vous installez). 
 
-.. code-block:: bash
+    ::
 
-    cd /home/synthese/
-    wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
-    unzip vX.Y.Z.zip
-    cd GeoNature-X.Y.Z/
+        cd /home/synthese/
+        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
+        unzip vX.Y.Z.zip
+        cd GeoNature-X.Y.Z/
 
 
 * Lire attentivement les notes de chaque version si il y a des spécificités (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise à jour.

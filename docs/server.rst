@@ -49,12 +49,11 @@ Installation pour Debian 7.
     
 * Fermer la console et la réouvrir pour que les modifications soient prises en compte.
     
-* Activer le ``mod_rewrite`` et les configurations requises pour Symfony et redémarrer Apache
+* Activer le ``mod_rewrite`` et redémarrer Apache
 
   ::  
         
         sudo a2enmod rewrite
-        sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
         sudo apache2ctl restart
 
 * Ajouter un alias du serveur de base de données dans le fichier ``/etc/hosts``
@@ -74,10 +73,11 @@ Installation pour Debian 7.
 
 * Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur ``www-data`` y ait accès en lecture/écriture
 
+
 Installation et configuration de PosgreSQL
 ==========================================
 
-* Sur Debian 7, configuration des dépots pour avoir les dernières versions de PostgreSQL (9.3) et PostGIS (2.1)
+* Sur Debian 8, Postgres est livré en version 9.4 et postgis 2.1, vous pouvez sauter l'étape suivante. Sur Debian 7, il faut revoir la configuration des dépots pour avoir une version compatible de PostgreSQL (9.3) et PostGIS (2.1)
 (http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html)
 
   ::  
@@ -85,8 +85,17 @@ Installation et configuration de PosgreSQL
         sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" >> /etc/apt/sources.list'
         sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
         sudo apt-get update
-
-* Installation de PostreSQL/PostGIS 
+ 
+* Installation de PostreSQL/PostGIS pour debian 8
+ 
+  ::  
+  
+        sudo apt-get update
+        sudo apt-get install postgresql postgresql-client
+        sudo apt-get install postgresql-9.4-postgis-2.1
+        sudo adduser postgres sudo
+        
+* Installation de PostreSQL/PostGIS pour debian 7
 
     ::
     
@@ -94,12 +103,20 @@ Installation et configuration de PosgreSQL
         sudo apt-get install postgresql-9.3-postgis-2.1
         sudo adduser postgres sudo
         
-* Configuration de PostgreSQL - permettre l'écoute de toutes les IP
+* Configuration de PostgreSQL pour Debian 8 - permettre l'écoute de toutes les IP
+
+    ::
+    
+        sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/9.4/main/postgresql.conf
+        sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/0\t md5/g" -i /etc/postgresql/9.4/main/pg_hba.conf
+        /etc/init.d/postgresql restart
+        
+* Configuration de PostgreSQL pour Debian 7 - permettre l'écoute de toutes les IP
 
     ::
     
         sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/9.3/main/postgresql.conf
-        sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/32\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
+        sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/0\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
         /etc/init.d/postgresql restart
 
 * Création de 2 utilisateurs PostgreSQL
