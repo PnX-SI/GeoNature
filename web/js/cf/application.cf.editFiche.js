@@ -1957,7 +1957,7 @@ application.cf.editFiche = function() {
                 ,iconCls:'action-recenter'
                 ,handler: function(){
                     Ext.getCmp('window-save').destroy();
-                    application.cf.editFiche.viewport.destroy();
+                    window.location.href = 'http://'+host_uri+'/'+app_uri;
                 }
             }]
             ,items: [{

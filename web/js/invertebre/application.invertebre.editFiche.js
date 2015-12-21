@@ -1865,7 +1865,7 @@ application.invertebre.editFiche = function() {
                 ,iconCls:'action-recenter'
                 ,handler: function(){
                     Ext.getCmp('window-save').destroy();
-                    application.invertebre.editFiche.viewport.destroy();
+                    window.location.href = 'http://'+host_uri+'/'+app_uri;
                 }
             }]
             ,items: [{

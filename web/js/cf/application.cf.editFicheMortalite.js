@@ -1833,7 +1833,7 @@ application.cf.editFicheMortalite = function() {
                 ,iconCls:'action-recenter'
                 ,handler: function(){
                     Ext.getCmp('window-save').destroy();
-                    application.cf.editFicheMortalite.viewport.destroy();
+                    window.location.href = 'http://'+host_uri+'/'+app_uri;
                 }
             }]
             ,items: [{

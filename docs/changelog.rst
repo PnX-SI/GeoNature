@@ -16,6 +16,7 @@ CHANGELOG
 * Correction d'une erreur lors de l'enregistrement de la saisie invertébrés. - Fix #104
 * Mise en paramètre du id_application dans ``lib/sfGeonatureConfig.php.php`` - Fix #105
 * Recharger la synthese après suppression d'un enregistrement - Fix #94 
+* Correction d'une erreur de redirection si on choisi "quitter" après la saisie de l'enregistrement (contact faune, mortalité et invertébrés) - Fix #102 
 
 
 1.5.0 (2015-11-26)
