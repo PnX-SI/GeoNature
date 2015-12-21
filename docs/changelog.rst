@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.6.0 dev (2015-12-21)
+------------------
+
+**Note de version**
+
+* Pour les changements dans la base de données vous pouvez exécuter le fichier ``data/update_1.5to1.6.sql``
+
+
+**Changements**
+
+* Correction d'une erreur lors de l'enregistrement de la saisie invertébrés. Fixes #64
+
+
 1.5.0 (2015-11-26)
 ------------------
 
