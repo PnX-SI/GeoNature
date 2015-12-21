@@ -1,13 +1,13 @@
-<?php use_helper('Url') ?>
+<?php use_helper('Url') ?>  
+<div class="container">
+    <form class="form-signin" action="<?php echo url_for('@login') ?>" method="post" id="loginForm">
+    
+        <h2 class="form-signin-heading"><?php echo sfGeonatureConfig::$appname_main;?></h2>
+        
+          <div class="alert alert-danger fade in">
+                <strong>Erreur ! </strong>Vous n'avez pas les droits nécessaires pour accéder à cette page.<br/>
+                <a href="<?php echo url_for('@login')?>">Vous devez vous identifier de nouveau</a>
+          </div>
 
-  <h2 style="color:#FFFFFF;font-family:Arial;letter-spacing:2px;margin-top:35px;text-align:center;text-shadow:0 0 3px #555555;">
-   GeoNature
-  </h2> 
-
-  <div id="success">
-    Vous n'avez pas les droits nécessaires pour accéder à cette page.
-    <br/><br/><br/>
-    <a href="<?php echo url_for('@logout')?>">Vous devez vous identifier de nouveau</a>
-  </div>
-
-  <div id="reflectSuccess"></div>
+    </form>
+</div>
