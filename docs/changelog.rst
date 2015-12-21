@@ -7,12 +7,15 @@ CHANGELOG
 
 **Note de version**
 
-* Pour les changements dans la base de données vous pouvez exécuter le fichier ``data/update_1.5to1.6.sql``
+* Pour les changements dans la base de données vous devez exécuter le fichier ``data/update_1.5to1.6.sql``
+* ajouter le paramètre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisée pour GeoNature dans les tables "utilisateurs.t_applications" et "utilisateurs.cor_role_droit_application")
 
 
 **Changements**
 
-* Correction d'une erreur lors de l'enregistrement de la saisie invertébrés. Fixes #104
+* Correction d'une erreur lors de l'enregistrement de la saisie invertébrés. - Fix #104
+* Mise en paramètre du id_application dans ``lib/sfGeonatureConfig.php.php`` - Fix #105
+* Recharger la synthese après suppression d'un enregistrement - Fix #94 
 
 
 1.5.0 (2015-11-26)

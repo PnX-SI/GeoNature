@@ -2327,10 +2327,10 @@ application.synthese.search = function() {
                 ,params: params
                 ,success: function (result, request) {
                     Ext.ux.Toast.msg('Suppression !', 'L\'observation de "'+taxon+'" a été supprimée.');
+                    formSearcher.triggerSearch();
                 }
                 ,failure: function (result, request) { 
                     Ext.MessageBox.alert('Erreur lors de la suppression');
-                    formSearcher.triggerSearch();
                 } 
             });
         }
