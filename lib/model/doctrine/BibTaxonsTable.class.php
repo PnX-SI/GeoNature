@@ -23,8 +23,8 @@ class BibTaxonsTable extends Doctrine_Table
         //requète optimisée = moins 2 secondes
         $where = 'WHERE cd_nom > 0';
         if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
-        if($patri == true) {$where .= " AND patrimonial=true"; }
-        if($protege == true) {$where .= " AND protection_stricte=true"; }
+        if($patri == 'true') {$where .= " AND patrimonial=true"; }
+        if($protege == 'true') {$where .= " AND protection_stricte=true"; }
         $sql = "SELECT * FROM synthese.v_taxons_synthese ".$where;
         // return $sql;
 
