@@ -48,13 +48,13 @@ class fauneUsers extends sfFauneActions
                     (SELECT c.id_droit
                     FROM utilisateurs.t_roles u
                     JOIN utilisateurs.cor_role_droit_application c ON c.id_role = u.id_role
-                    WHERE u.id_role = $id_role AND c.id_application = 23)
+                    WHERE u.id_role = $id_role AND c.id_application = ".sfGeonatureConfig::$id_application.")
                     union
                     (SELECT c.id_droit
                     FROM utilisateurs.t_roles u
                     JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
                     JOIN utilisateurs.cor_role_droit_application c ON c.id_role = g.id_role_groupe
-                    WHERE u.id_role = $id_role AND c.id_application = 23)
+                    WHERE u.id_role = $id_role AND c.id_application = ".sfGeonatureConfig::$id_application.")
                 ) as a";
         $array_droit = $dbh->query($sql);
         foreach($array_droit as $val){
