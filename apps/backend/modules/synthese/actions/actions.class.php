@@ -157,13 +157,17 @@ class syntheseActions extends sfFauneActions
         $ogrConnexionString = $this::getOgrConnexionString();
         $params = $request->getParams(); // récup des paramètres de la requête utilisateur
         $path = 'exportshape/'; //chemin public pour téléchargement du fichier zip
+
         $madate = date("Y-m-d_His");
         $srid_local_export = sfGeonatureConfig::$srid_local;
+        
         //pour les points
-        $sql = SyntheseffTable::listShp($params,'ST_Point'); // exécution de la requête sql
+        $sql = SyntheseffTable::listShp($params,'ST_Point');      
+        // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
         $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_points.shp '.$ogrConnexionString.' -sql ';
-        $command = $ogr." \"".$sql."\"";       
+        $command = $ogr." \"".$sql."\"";
+        
         system($command);//execution de la commande
         //pour les lignes
         // $sql = SyntheseffTable::listShp($params,'ST_Line'); // exécution de la requête sql
@@ -172,18 +176,21 @@ class syntheseActions extends sfFauneActions
         // $command = $ogr." \"".$sql."\"";
         // return print_r($command);        
         // system($command);//execution de la commande
+        
         //pour les mailles
         $sql = SyntheseffTable::listShp($params,'ST_Polygon'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
         $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_mailles.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
+
         //pour les centroids
         $sql = SyntheseffTable::listShp($params,'centroid'); // exécution de la requête sql
         //construction de la ligne de commande ogr2ogr
         $ogr = 'ogr2ogr  -overwrite -s_srs EPSG:'.$srid_local_export.' -t_srs EPSG:'.$srid_local_export.' -f "ESRI Shapefile" '.sfConfig::get('sf_web_dir').'/exportshape/synthese_'.$madate.'_centroids.shp '.$ogrConnexionString.' -sql ';
         $command = $ogr." \"".$sql."\""; 
         system($command);//execution de la commande
+                
         //on zipe le tout
         $zip = new zipfile(); 
         $zip = self::zipemesfichiers($zip,$path.'synthese_'.$madate.'_points.shp') ;       
