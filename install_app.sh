@@ -8,7 +8,9 @@ sudo chmod -R 777 log
 sudo chmod -R 777 cache
 chmod -R 775 web/exportshape
 chmod -R 775 web/uploads/shapes
+mkdir web/uploads/gpx
 chmod -R 775 web/uploads/gpx
+
 
 echo "Vider le cache de Symfony..."
 php symfony cc

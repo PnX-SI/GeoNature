@@ -437,7 +437,7 @@ class SyntheseffTable extends Doctrine_Table
                 $sql .= "ST_transform(synt.the_geom_point,".$srid_local_export.") AS the_geom,
                         CASE st_geometrytype(synt.the_geom_3857) 
                             WHEN 'ST_Point' THEN 'point'
-                            WHEN 'ST_Polygon' THEN 'maille'
+                            WHEN 'ST_Polygon' THEN 'polygone'
                             WHEN 'ST_Line' THEN 'ligne'
                         END AS geom_src ";
             }
