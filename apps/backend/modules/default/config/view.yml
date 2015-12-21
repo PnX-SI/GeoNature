@@ -1,3 +1,4 @@
 secureSuccess:
   stylesheets: 
+    - bootstrap/css/bootstrap.css
     - login.css
