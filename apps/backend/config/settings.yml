@@ -3,12 +3,15 @@
 
 prod:
   .settings:
+    #ajout de E_DEPRECATED pour corriger temporairement la compatibilité avec php 5.6 (debian 8)
+    error_reporting:  <?php echo ((E_ALL | E_STRICT) ^ E_DEPRECATED)."\n" ?>
     no_script_name:         true
     logging_enabled:        false
 
 dev:
   .settings:
-    error_reporting:        <?php echo (E_ALL | E_STRICT)."\n" ?>
+    #ajout de E_DEPRECATED pour corriger temporairement la compatibilité avec php 5.6 (debian 8)
+    error_reporting:  <?php echo ((E_ALL | E_STRICT) ^ E_DEPRECATED)."\n" ?>
     web_debug:              true
     cache:                  false
     no_script_name:         false
