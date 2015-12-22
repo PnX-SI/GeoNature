@@ -4,6 +4,7 @@ web/js/configmap.js
 config/databases.yml
 config/settings.ini
 wms/wms*.map
+apache/*.conf
 log/*
 cache/*
 lib/sfGeonatureConfig.php

@@ -30,6 +30,11 @@ sed -i "s/CONNECTION \"host=geonatdbhost.*$/CONNECTION \"host=geonatdbhost dbnam
 echo "Suppression des fichier de log de l'installation..."
 rm log/*.log
 
+echo "Création des fichiers de configuration Apache..."
+cp apache/sf.conf.sample apache/sf.conf
+cp apache/synthese.conf.sample apache/synthese.conf
+cp apache/wms.conf.sample apache/wms.conf
+
 echo "Création des fichiers de configuration de l'application..."
 cp web/js/config.js.sample web/js/config.js
 cp web/js/configmap.js.sample web/js/configmap.js
@@ -38,3 +43,4 @@ cp lib/sfGeonatureConfig.php.sample lib/sfGeonatureConfig.php
 echo "Configuration du répertoire web de l'application..."
 sudo ln -s ${PWD}/web/ /var/www/geonature
 echo "Vous devez maintenant éditer les fichiers de configuration de l'application : web/js/config.js, web/js/configmap.js et lib/sfGeonatureConfig.php et les adapter à votre besoin."
+echo "Vous devez également éditer les fichiers de configuration Apache : apache/sf.conf, apache/synthese.conf et apache/wms.conf et adapter les chemins à votre serveur."

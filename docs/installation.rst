@@ -25,6 +25,9 @@ Voir le guide d'installation du serveur dans https://github.com/PnEcrins/GeoNatu
 
 Configuration Apache
 ====================
+* Adaptation des chemins de l'application pour la configuration Apache
+
+Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synthese.conf`` et ``apache/wms.conf`` et adapter les chemins à ceux de votre serveur.
 
 * Prise en compte de la configuration Apache requises pour Symfony :
 
