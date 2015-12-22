@@ -13,6 +13,6 @@ Alias /wmsgeonature /usr/lib/cgi-bin/mapserv
    Allow from all
 
    SetHandler cgi-script
-   SetEnv MS_MAPFILE /var/www/localhost/private/trunk/geonature/wms/wms.map
-   SetEnv MS_MAPFILE_PATTERN "^/var/www/localhost/private/trunk/geonature/wms/wms.map$"
+   SetEnv MS_MAPFILE /home/synthese/geonature/wms/wms.map
+   SetEnv MS_MAPFILE_PATTERN "^/home/synthese/geonature/wms/wms.map$"
 </Location>
