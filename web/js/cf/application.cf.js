@@ -282,9 +282,8 @@ application.cf = function() {
                     layers: [
                       'znieff2', 'znieff1', 'coeur',  'aoa', 'secteurs', 'communes'
                       ,'ab','n2000','reservesnationales', 'reservesregionales'
-                      // ,'unitesgeo'
-                      //  
-                      // ,'reservesintegrales', 'reserveschasse','sitesinscrits', 'sitesclasses'
+                      ,'unitesgeo','reservesintegrales', 'reserveschasse'
+                      // ,'sitesinscrits', 'sitesclasses'
                     ]
                     ,transparent: true
                     ,projection: wm

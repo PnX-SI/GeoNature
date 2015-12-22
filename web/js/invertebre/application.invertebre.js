@@ -277,8 +277,10 @@ application.invertebre = function() {
                 wms_uri
                 ,{
                     layers: [
-                      'znieff2', 'znieff1', 'coeur', 'ab', 'aoa',
-                      ,'reservesnationales', 'reservesregionales', 'reservesintegrales', 'n2000','secteurs', 'communes','sitesinscrits', 'sitesclasses', 'reserveschasse'
+                      'znieff2', 'znieff1', 'coeur',  'aoa', 'secteurs', 'communes'
+                      ,'ab','n2000','reservesnationales', 'reservesregionales'
+                      ,'unitesgeo','reservesintegrales', 'reserveschasse'
+                      // ,'sitesinscrits', 'sitesclasses'
                     ]
                     ,transparent: true
                     ,projection: wm

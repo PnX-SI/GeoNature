@@ -422,9 +422,10 @@ application.synthese = function() {
                 wms_uri
                 ,{
                     layers: [
-                      'znieff2', 'znieff1', 'coeur', 'ab', 'aoa', 'unitesgeo',
-                      ,'reservesnationales', 'reservesregionales',  'n2000','secteurs', 'communes'
-                      // ,'sitesinscrits', 'sitesclasses', 'reserveschasse','reservesintegrales'
+                      'znieff2', 'znieff1', 'coeur',  'aoa', 'secteurs', 'communes'
+                      ,'ab','n2000','reservesnationales', 'reservesregionales'
+                      ,'unitesgeo','reservesintegrales', 'reserveschasse'
+                      // ,'sitesinscrits', 'sitesclasses'
                     ]
                     ,transparent: true
                     ,projection: wm
