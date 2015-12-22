@@ -71,13 +71,13 @@ application.synthese.createLayerWindow = function(map) {
                 ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'coeur'})
                 ,layerName: "overlay:coeur"
             }
-            // ,{
-                // text: 'Réserve intégrale'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesintegrales'})
-                // ,layerName: "overlay:reservesintegrales"
-            // }
+            ,{
+                text: 'Réserve intégrale'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesintegrales'})
+                ,layerName: "overlay:reservesintegrales"
+            }
             ,{
                 text: 'Réserves naturelles nationales'
                 ,leaf: true
@@ -92,13 +92,13 @@ application.synthese.createLayerWindow = function(map) {
                 ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesregionales'})
                 ,layerName: "overlay:reservesregionales"
             }
-            // ,{
-                // text: 'Réserves de chasse'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reserveschasse'})
-                // ,layerName: "overlay:reserveschasse"
-            // }
+            ,{
+                text: 'Réserves de chasse'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reserveschasse'})
+                ,layerName: "overlay:reserveschasse"
+            }
             ,{
                 text: 'Arretés de biotope'
                 ,leaf: true
@@ -106,19 +106,6 @@ application.synthese.createLayerWindow = function(map) {
                 ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'ab'})
                 ,layerName: "overlay:ab"
             }
-            // ,{
-                // text: 'Sites classés'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'sitesclasses'})
-                // ,layerName: "overlay:sitesclasses"
-            // },{
-                // text: 'Sites inscrits'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'sitesinscrits'})
-                // ,layerName: "overlay:sitesinscrits"
-            // }
             ,{
                 text: 'Natura 2000'
                 ,leaf: true
@@ -137,7 +124,21 @@ application.synthese.createLayerWindow = function(map) {
                 ,checked: false
                 ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'znieff1'})
                 ,layerName: "overlay:znieff1"
-            }]
+            }
+            // ,{
+                // text: 'Sites classés'
+                // ,leaf: true
+                // ,checked: false
+                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'sitesclasses'})
+                // ,layerName: "overlay:sitesclasses"
+            // },{
+                // text: 'Sites inscrits'
+                // ,leaf: true
+                // ,checked: false
+                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'sitesinscrits'})
+                // ,layerName: "overlay:sitesinscrits"
+            // }
+            ]
         }
         
     ];

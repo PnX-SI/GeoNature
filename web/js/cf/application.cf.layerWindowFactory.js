@@ -43,13 +43,13 @@ application.cf.createLayerWindow = function(map) {
             ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'secteurs'})
             ,layerName: "overlay:secteurs"
         }
-        // ,{
-            // text: "Unités géographiques"
-            // ,leaf: true
-            // ,checked: true
-            // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'unitesgeo'})
-            // ,layerName: "overlay:unitesgeo"
-        // }
+        ,{
+            text: "Unités géographiques"
+            ,leaf: true
+            ,checked: true
+            ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'unitesgeo'})
+            ,layerName: "overlay:unitesgeo"
+        }
         ,{
             text: "Zones à statut"
             ,leaf: false
@@ -110,20 +110,20 @@ application.cf.createLayerWindow = function(map) {
                 ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'znieff1'})
                 ,layerName: "overlay:znieff1"
             }
-            // ,{
-                // text: 'Réserve intégrale'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesintegrales'})
-                // ,layerName: "overlay:reservesintegrales"
-            // }            
-            // ,{
-                // text: 'Réserves de chasse'
-                // ,leaf: true
-                // ,checked: false
-                // ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reserveschasse'})
-                // ,layerName: "overlay:reserveschasse"
-            // }
+            ,{
+                text: 'Réserve intégrale'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reservesintegrales'})
+                ,layerName: "overlay:reservesintegrales"
+            }            
+            ,{
+                text: 'Réserves de chasse'
+                ,leaf: true
+                ,checked: false
+                ,icon: mapfish.Util.getIconUrl(overlayLayerUrl, {layer: 'reserveschasse'})
+                ,layerName: "overlay:reserveschasse"
+            }
             // ,{
                 // text: 'Sites classés'
                 // ,leaf: true
