@@ -20,7 +20,7 @@
             Pour modifier des données saisies à l'aide d'un des formulaires proposés en lien ci-dessous, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.
         </p>
         <p>
-            <? echo $liens_saisie;?>
+            <?php echo $liens_saisie;?>
         </p>
             <!-- BLOC DE STATS PNE NON AFFICHES. A REINTEGRER SOUS FORME DE IFRAME CUSTOMISABLE ?
             <div id="bande_consultation" style="color:#FFFFFF;background: linear-gradient(90deg, #f09819 30%, #edde5d 90%) repeat scroll 0 0 rgba(0, 0, 0, 0);letter-spacing:5px;font-weight:bold;text-shadow:0 0 3px #000;height:25px;">
