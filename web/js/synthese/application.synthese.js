@@ -227,7 +227,8 @@ application.synthese = function() {
             ,listeners:{
                 load:function(store){
                     store.sort([
-                        {field: 'nom_embranchement',direction: 'ASC'}
+                        {field: 'id_regne',direction: 'ASC'}
+                        ,{field: 'nom_embranchement',direction: 'ASC'}
                         ,{field: 'nom_classe',direction: 'ASC'}
                         ,{field: 'nom_ordre',direction: 'ASC'}
                         ,{field: 'nom_famille',direction: 'ASC'}
