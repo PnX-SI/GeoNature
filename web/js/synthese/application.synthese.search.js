@@ -2362,7 +2362,7 @@ application.synthese.search = function() {
                 success: function (result, request) {
                     var featurecollection= result.responseText;
                     var gml_format = new OpenLayers.Format.GML({
-                        externalProjection : new OpenLayers.Projection(gps_user_projection)
+                        externalProjection : import_shp_projection
                         ,internalProjection : new OpenLayers.Projection("EPSG:3857")
                     });
                     application.synthese.searchVectorLayer.addFeatures(gml_format.read(featurecollection));
@@ -2426,7 +2426,7 @@ application.synthese.search = function() {
                 })
                 ,strategies: [new OpenLayers.Strategy.Fixed()]
                 ,styleMap: styleMap
-                ,projection: new OpenLayers.Projection(gps_user_projection)      
+                ,projection: import_shp_projection      
             });
             // This will perform the autozoom as soon as the GPX file is loaded.
             vectorGmlLayer.events.register("loadend", vectorGmlLayer, setExtent);

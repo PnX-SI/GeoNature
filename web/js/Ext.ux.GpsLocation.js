@@ -5,28 +5,68 @@
  * @singleton
  */
 Ext.ux.GpsLocation = function() {
-
-    // var userProjection = new OpenLayers.Projection("EPSG:32622"); // si besoin de définition manuelle dans ce fichier
-    // variables définies dans le config.js
-    var userProjection = gps_user_projection; 
+    // gps_user_default_projection défini dans le configmap.js
+    var userProjection = gps_user_default_projection;
+    var default_projection = new OpenLayers.Projection("EPSG:4326");    
     var fuseau = '';
     var zone = '';
-    var consigneFuseau = '';
     var consigneExemple = '';
+    var msgInfo = '';
     var xmin = x_min;
     var xmax = x_max;
     var ymin = y_min;
     var ymax = y_max;
     var xex = x_exemple;
     var yex = y_exemple;
+    
     var pnNameLong = pn_name_long;
-    if (userProjection.proj.projName=='utm'){
-        fuseau = userProjection.proj.zone;
-        zone = fuseau;
-        consigneFuseau = ', fuseau '+fuseau;
-        consigneExemple = 'fuseau '+fuseau+' - ';  
-    }
-    var msgInfo = 'Les coordonnés doivent être en '+userProjection.proj.title+'('+userProjection.projCode+').<br/>Exemple '+consigneExemple+': X : '+xex+'   Y : '+yex+''
+    var setProjection = function(){
+        if (userProjection.proj.projName=='utm'){
+            fuseau = userProjection.proj.zone;
+            zone = fuseau;
+            consigneExemple = 'fuseau '+fuseau;
+        }
+        else{
+            consigneExemple = '';
+        }
+        var geomin = new OpenLayers.Geometry.Point(x_min, y_min);
+        var geomax = new OpenLayers.Geometry.Point(x_max, y_max);
+        var geomexemple = new OpenLayers.Geometry.Point(x_exemple, y_exemple);
+        OpenLayers.Projection.transform(geomin,default_projection,userProjection);
+        OpenLayers.Projection.transform(geomax,default_projection,userProjection);
+        OpenLayers.Projection.transform(geomexemple,default_projection,userProjection);
+        xmin = geomin.x; Ext.getCmp('gps-fiche-longitude').setMinValue(xmin);
+        xmax = geomax.x; Ext.getCmp('gps-fiche-longitude').setMaxValue(xmax);
+        ymin = geomin.y; Ext.getCmp('gps-fiche-latitude').setMinValue(ymin);
+        ymax = geomax.y; Ext.getCmp('gps-fiche-latitude').setMaxValue(ymax);
+        xex = geomexemple.x;
+        yex = geomexemple.y;
+        if(userProjection.proj.units != 'degrees'){
+            xmin = Math.round(xmin);
+            xmax = Math.round(xmax);
+            ymin = Math.round(ymin);
+            ymax = Math.round(ymax);
+            xex = Math.round(xex);
+            yex = Math.round(yex);
+        }
+        var msgInfo = 'Les coordonnés doivent être en '+userProjection.proj.title+'('+userProjection.projCode+'). <br/>X min = '+xmin+'. X max = '+xmax+'.<br/> Y min = '+ymin+'. Y max = '+ymax+'. <br/>Exemple '+consigneExemple+': X = '+xex+' ;  Y = '+yex;
+        Ext.getCmp('gps-info').setText(msgInfo,false);
+    };
+    
+    
+    var projectionsStore = new Ext.data.JsonStore({
+        data: gps_user_projections
+        ,fields: [
+            'id_proj'
+            ,'nom_projection'
+            ,'ol_projection'
+        ]
+        ,sortInfo: {
+            field: 'id_proj'
+            ,direction: 'ASC'
+        }
+        ,autoLoad:true
+    });
     
     var submitFormGps = function(layer, longitude, latitude, mapProjection, userProjection) {
         if(Ext.getCmp('form-gps-fiche').getForm().isValid()){
@@ -36,7 +76,6 @@ Ext.ux.GpsLocation = function() {
             //Les 2 projections nécessaires pour le transform sont définies au moment de la création de la fenêtre GSP sinon il y a un pb de timeout et la reprojection n'a pas le temps de se faire ???
             var features = [];
             var projSource = userProjection;
-            // alert ('le temps d\'initialisation des projections ou de proj4 ???');
             var mageometry = new OpenLayers.Geometry.Point(longitude, latitude);
             OpenLayers.Projection.transform(mageometry,projSource,mapProjection);
             var mafeature = new OpenLayers.Feature.Vector(mageometry);
@@ -53,8 +92,7 @@ Ext.ux.GpsLocation = function() {
     
     return{
         initGpsWindow : function(layer) {
-            var mapProjection = map.getProjectionObject();
-                        
+            var mapProjection = map.getProjectionObject();           
             return new Ext.Window({
                 id:'window-gps'
                 ,layout:'border'
@@ -82,79 +120,103 @@ Ext.ux.GpsLocation = function() {
                         Ext.ux.Toast.msg('Annulation !', 'Aucun point n\'a été positionné.');
                     }
                 }]
-                ,items: [{
-                    id:'form-gps-fiche'
-                    ,xtype: 'form'
-                    ,title: 'Positionnement d\'un point à partir de coordonnées fournies'
-                    ,region: 'center'
-                    ,labelWidth: 100 // label settings here cascade unless overridden
-                    ,frame:true
-                    ,border:false
-                    ,split: false
-                    ,autoScroll:false
-                    ,monitorValid:true
-                    ,bodyStyle:'padding:5px 5px 0'
-                    ,width: 350
-                    ,defaultType: 'numberfield'
-                    ,items: [
+                ,items: [
                     {
-                        id: 'gps-fiche-longitude'
-                        ,xtype: 'numberfield'
-                        ,allowDecimals :true
-                        ,decimalPrecision:6
-                        ,decimalSeparator:'.'
-                        ,allowNegative: true
-                        ,disabled:false
-                        ,fieldLabel: 'X en '+ gps_user_projection.proj.units +' '
-                        ,minValue:xmin
-                        ,minText:'Cette coordonnée en x n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à '+xmin+'.'
-                        ,maxValue:xmax
-                        ,maxText:'Cette coordonnée en x n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à '+xmax+'.'
-                        ,allowBlank:false
-                        ,blankText: 'La coordonnée en x est obligatoire. Ce doit être un nombre entre '+xmin+' et '+xmax+'.'
-                        ,name: 'longitude'
-                        ,width: 150
-                    },{
-                        id: 'gps-fiche-latitude'
-                        ,xtype: 'numberfield'
-                        ,allowDecimals :true
-                        ,allowNegative: true
-                        ,decimalPrecision:6
-                        ,decimalSeparator:'.'
-                        ,disabled:false
-                        ,fieldLabel: 'Y en '+ gps_user_projection.proj.units +' '
-                        ,minValue:ymin
-                        ,minText:'Cette coordonnée en y n\'est pas valide pour l\'emprise de la carte. Elle doit être supérieure à '+ymin+consigneFuseau+'.'
-                        ,maxValue:ymax
-                        ,maxText:'Cette coordonnée en y n\'est pas valide pour l\'emprise de la carte. Elle doit être inférieure à '+ymax+consigneFuseau+'.'
-                        ,allowBlank:false
-                        ,blankText: 'La coordonnée en y est obligatoire. Ce doit être un nombre entre '+ymin+' et '+ymax+'.'
-                        ,name: 'latitude'
-                        ,width: 150
-                    }
-                    ]
-                    ,listeners: {
-                        clientvalidation:function(form,valid){
-                            if(valid){Ext.getCmp('gps-afficher-button').enable();}
-                            else{Ext.getCmp('gps-afficher-button').disable();}
+                        id:'form-gps-fiche'
+                        ,xtype: 'form'
+                        ,title: 'Positionnement d\'un point à partir de coordonnées fournies'
+                        ,region: 'center'
+                        ,labelWidth: 100
+                        ,frame:true
+                        ,border:false
+                        ,split: false
+                        ,autoScroll:false
+                        ,monitorValid:true
+                        ,bodyStyle:'padding:5px 5px 0'
+                        ,width: 350
+                        ,defaultType: 'numberfield'
+                        ,items: [
+                            {
+                                id:'combo-projection'
+                                ,xtype:"twintriggercombo"
+                                ,fieldLabel: 'Projection '
+                                ,name: 'projection'
+                                ,hiddenName:"ol_projection"
+                                ,emptyText: "Choisir un système de coordonnées"
+                                ,store: projectionsStore
+                                ,valueField: "ol_projection"
+                                ,displayField: "nom_projection"
+                                ,typeAhead: true
+                                ,forceSelection: true
+                                ,selectOnFocus: true
+                                ,editable: false
+                                ,triggerAction: 'all'
+                                ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
+                                ,mode: 'local'
+                                ,listeners: {
+                                    expand: function(combo, record) {
+                                        combo.getStore().sort('id_proj','ASC');
+                                    }
+                                    ,select: function(combo, record, index){
+                                        userProjection = record.data.ol_projection;
+                                        setProjection();                                    
+                                    }
+                                }
+                            }
+                            ,{
+                                id: 'gps-fiche-longitude'
+                                ,xtype: 'numberfield'
+                                ,allowDecimals :true
+                                ,decimalPrecision:6
+                                ,decimalSeparator:'.'
+                                ,allowNegative: true
+                                ,disabled:false
+                                ,fieldLabel: 'X'
+                                ,minValue:xmin
+                                ,minText:'Cette coordonnée en x n\'est pas valide pour l\'emprise de la carte. Voir le xmin ci-dessous'
+                                ,maxValue:xmax
+                                ,maxText:'Cette coordonnée en x n\'est pas valide pour l\'emprise de la carte. Voir le xmax ci-dessous'
+                                ,allowBlank:false
+                                ,blankText: 'La coordonnée en x est obligatoire.'
+                                ,name: 'longitude'
+                                ,width: 150
+                            },{
+                                id: 'gps-fiche-latitude'
+                                ,xtype: 'numberfield'
+                                ,allowDecimals :true
+                                ,allowNegative: true
+                                ,decimalPrecision:6
+                                ,decimalSeparator:'.'
+                                ,disabled:false
+                                ,fieldLabel: 'Y'
+                                ,minValue:ymin
+                                ,minText:'Cette coordonnée en y n\'est pas valide pour l\'emprise de la carte. Voir le ymin ci-dessous'
+                                ,maxValue:ymax
+                                ,maxText:'Cette coordonnée en y n\'est pas valide pour l\'emprise de la carte. Voir le ymax ci-dessous'
+                                ,allowBlank:false
+                                ,blankText: 'La coordonnée en y est obligatoire.'
+                                ,name: 'latitude'
+                                ,width: 150
+                            }
+                            ,{
+                                id: 'gps-info'
+                                ,xtype: 'label'
+                                ,text: msgInfo
+                            }
+                        ]
+                        ,listeners: {
+                            clientvalidation:function(form,valid){
+                                if(valid){Ext.getCmp('gps-afficher-button').enable();}
+                                else{Ext.getCmp('gps-afficher-button').disable();}
+                            }
                         }
                     }
-                },{
-                    id:'panel-export-evenement'
-                    ,xtype: 'panel'
-                    ,region: 'south'
-                    ,frame:true
-                    ,border:false
-                    ,split: false
-                    ,autoScroll:false
-                    ,bodyStyle:'padding:5px 5px 0'
-                    ,width: 350
-                    ,html: msgInfo
-                }]
+                ]
                 ,listeners: {
                     hide:function(){this.destroy();}
                 } 
             });
+            setProjection();
         }
     }
 }();
