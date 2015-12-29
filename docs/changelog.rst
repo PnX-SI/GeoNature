@@ -11,7 +11,7 @@ CHANGELOG
 * Ajouter le paramètre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisée pour GeoNature dans les tables "utilisateurs.t_applications" et "utilisateurs.cor_role_droit_application")
 * Ajouter le paramètre ``import_shp_projection`` dans ``web/js/configmap.map`` - voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L35
 * Supprimer toute référence à gps_user_projection dans ``web/js/configmap.map`` 
-* Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure définie dans https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7
+* Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure définie dans https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7-L14
 Attention de bien respecter la structure du tableau JSON et notamment syntaxe (accolades, virgules, nom des objects, etc...)
 
 **Changements**
