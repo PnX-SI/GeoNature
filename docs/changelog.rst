@@ -8,8 +8,11 @@ CHANGELOG
 **Note de version**
 
 * Pour les changements dans la base de données vous devez exécuter le fichier ``data/update_1.5to1.6.sql``
-* ajouter le paramètre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisée pour GeoNature dans les tables "utilisateurs.t_applications" et "utilisateurs.cor_role_droit_application")
-
+* Ajouter le paramètre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisée pour GeoNature dans les tables "utilisateurs.t_applications" et "utilisateurs.cor_role_droit_application")
+* Ajouter le paramètre ``import_shp_projection`` dans ``web/js/configmap.map`` - voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L35
+* Supprimer toute référence à gps_user_projection dans ``web/js/configmap.map`` 
+* Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure définie dans https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7
+Attention de bien respecter la structure du tableau JSON et notamment syntaxe (accolades, virgules, nom des objects, etc...)
 
 **Changements**
 
@@ -18,6 +21,8 @@ CHANGELOG
 * Recharger la synthese après suppression d'un enregistrement - Fix #94 
 * Correction d'une erreur de redirection si on choisi "quitter" après la saisie de l'enregistrement (contact faune, mortalité et invertébrés) - Fix #102
 * Correction et adaptation faune-flore des exports shape 
+* L'utilisateur peut lui même définir le système de coordonnées dans l'outil de pointage GPS - Fix #107 
+* Mise en paramètre de la projection de la shape importée comme zone de recherche dans la synthèse 
 
 
 1.5.0 (2015-11-26)
@@ -32,7 +37,7 @@ CHANGELOG
 * Nouvelle répartition des paramètres de configuration javascript en 2 fichiers (``config.js`` et ``configmap.js``). Vous devez reprendre vos paramètres de configuration du fichier ``web/js/config.js`` et les ventiler dans ces deux fichiers.
 * Ajouter le paramètre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
 * Retirer le paramètre ``fuseauUTM;`` du fichier ``web/js/config.js``;
-* Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre ``gps_user_projection`` dans le fichier ``web/js/config.js``;
+* Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre ``gps_user_projection`` dans le fichier ``web/js/configmap.js``;
 * Ajouter le paramètre ``public static $id_source_mortalite = 2;`` au fichier ``lib/sfGeonatureConfig.php``;
 * Ajouter le paramètre ``public static $srid_ol_map = 3857;`` au fichier ``lib/sfGeonatureConfig.php``;
 * L'altitude est calculée automatiquement à partir du service "Alticodage" de l'API GeoPortail de l'IGN et non pluas à partir de la couche ``layers.l_isolines20``. Ajoutez ce service dans votre contrat API Geoportail. Il n'est donc plus nécessaire de remplir la couche ``layers.l_isolines20``. Cette couche peut toutefois encore être utile si l'utilisateur supprime l'altitude calculée par l'API Geoportail dans les formulaires de saisie.
