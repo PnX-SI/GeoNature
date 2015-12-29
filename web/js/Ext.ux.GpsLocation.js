@@ -5,9 +5,8 @@
  * @singleton
  */
 Ext.ux.GpsLocation = function() {
-    // gps_user_default_projection défini dans le configmap.js
-    var userProjection = gps_user_default_projection;
-    var default_projection = new OpenLayers.Projection("EPSG:4326");    
+    var default_projection = new OpenLayers.Projection("EPSG:4326");
+    var userProjection = default_projection;    
     var fuseau = '';
     var zone = '';
     var consigneExemple = '';
