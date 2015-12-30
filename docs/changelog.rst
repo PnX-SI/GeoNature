@@ -22,7 +22,9 @@ Attention de bien respecter la structure du tableau JSON et notamment syntaxe (a
 * Correction d'une erreur de redirection si on choisi "quitter" après la saisie de l'enregistrement (contact faune, mortalité et invertébrés) - Fix #102
 * Correction et adaptation faune-flore des exports shape 
 * L'utilisateur peut lui même définir le système de coordonnées dans l'outil de pointage GPS - Fix #107 
-* Mise en paramètre de la projection de la shape importée comme zone de recherche dans la synthèse 
+* Mise en paramètre de la projection de la shape importée comme zone de recherche dans la synthèse
+* Les résultats de la recherche en synthese affichent désormais tous les synonymes. https://github.com/PnEcrins/GeoNature/issues/92
+* Les exports xls et shp comportent le cd_nom ET le cd_ref de tous les synonymes du nom recherché ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref). https://github.com/PnEcrins/GeoNature/issues/92
 
 
 1.5.0 (2015-11-26)
