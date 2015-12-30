@@ -41,6 +41,7 @@ indexSyntheseSuccess:
     - mapfish.ux.Searcher.Form.Ext.js
     - SuperBoxSelect.js
     - RowExpander.js
+    - FileDownloader.js
     - FileUploadField.js
     - BufferView.js
     - synthese/application.synthese.js

@@ -2239,7 +2239,21 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsobs?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            var monUrl = 'synthese/xlsobs?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            Ext.getBody().mask("Géneration du fichier Excel des observations …");
+            //FileDownloader.load renvoie une promise
+            var p = FileDownloader.load({
+                url : monUrl,
+                format : 'xls',
+                filename : 'synthese_observations_' + ((new Date()).format('d_m_Y_His'))
+            });
+            p.then(function() {
+                Ext.getBody().unmask();
+            });
+            p['catch'](function(e) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Erreur', e);
+            });
         }
         ,exportXlsStatuts : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();
@@ -2267,7 +2281,22 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            var monUrl = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            Ext.getBody().mask("Géneration du fichier Excel des statuts juridiques …");
+            //FileDownloader.load renvoie une promise
+            var p = FileDownloader.load({
+                url : monUrl,
+                format : 'xls',
+                filename : 'synthese_statuts_' + ((new Date()).format('d_m_Y_His'))
+            });
+            p.then(function() {
+                Ext.getBody().unmask();
+            });
+            p['catch'](function(e) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Erreur', e);
+            });
+            // window.location.href = 'synthese/xlsstatus?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,exportShp : function(){
             var ob = Ext.getCmp('textfield-observateur').getValue();
@@ -2295,7 +2324,22 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            window.location.href = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            var monUrl = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            Ext.getBody().mask("Géneration des fichiers shape (compressés) des observations …");
+            //FileDownloader.load renvoie une promise
+            var p = FileDownloader.load({
+                url : monUrl,
+                format : 'zip',
+                filename : 'synthese_' + ((new Date()).format('d_m_Y_His'))
+            });
+            p.then(function() {
+                Ext.getBody().unmask();
+            });
+            p['catch'](function(e) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Erreur', e);
+            });
+            // window.location.href = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
         }
         ,initWindowUploadShp : function() {
                 this.windowUploadShp = initFormUploadShp();
