@@ -90,11 +90,11 @@ class SyntheseffTable extends Doctrine_Table
         if (isset($params['observateur']) && $params['observateur']!='')
             $sql .= " AND synt.observateurs ILIKE '%".$params['observateur']."%'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
-            $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['taxonfr']."))";
         if (isset($params['taxonl']) && $params['taxonl']!='')
-            $sql .= " AND synt.cd_nom = ".$params['taxonl'];
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['taxonl']."))";
         if (isset($params['idstaxons']) && $params['idstaxons']!='')
-            $sql .= " AND synt.cd_nom IN (".$params['idstaxons'].")";
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['idstaxons']."))";
         if (isset($params['insee']) && $params['insee']!='')
             $sql .= " AND synt.insee = '".$params['insee']."'";
         if (isset($params['id_organisme']) && $params['id_organisme']!='')
@@ -125,11 +125,11 @@ class SyntheseffTable extends Doctrine_Table
         if (isset($params['fff']) && $params['fff']!='' && $params['fff']!=null && $params['fff']!='all')
             $sql .= " AND txr.regne = '".$params['fff']."'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
-            $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['taxonfr']."))";
         if (isset($params['taxonl']) && $params['taxonl']!='')
-            $sql .= " AND synt.cd_nom = ".$params['taxonl'];
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['taxonl']."))";
         if (isset($params['idstaxons']) && $params['idstaxons']!='')
-            $sql .= " AND synt.cd_nom IN (".$params['idstaxons'].")";
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['idstaxons']."))";
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
@@ -186,7 +186,7 @@ class SyntheseffTable extends Doctrine_Table
             if($params['start']=="no"){
                 $addfilters = self::addFilters($params);
                 $addTSyntheseFilters = self::addTSyntheseFilters($params);
-                $from = " FROM (SELECT * FROM synthese.syntheseff synt WHERE supprime = false ".$addTSyntheseFilters.") synt "; 
+                $from = " FROM (SELECT synt.* FROM synthese.syntheseff synt LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom WHERE supprime = false ".$addTSyntheseFilters.") synt "; 
             }
             else{
                 $from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";
@@ -295,11 +295,11 @@ class SyntheseffTable extends Doctrine_Table
         if (isset($params['fff']) && $params['fff']!='' && $params['fff']!=null && $params['fff']!='all')
             $sql .= " AND txr.regne = '".$params['fff']."'";
         if (isset($params['taxonfr']) && $params['taxonfr']!='')
-            $sql .= " AND synt.cd_nom = ".$params['taxonfr'];
+            $sql .= " AND txr.cd_ref IN (taxonomie.find_cdref(".$params['taxonfr']."))";
         if (isset($params['taxonl']) && $params['taxonl']!='')
-            $sql .= " AND synt.cd_nom = ".$params['taxonl'];
+            $sql .= " AND txr.cd_ref IN (taxonomie.find_cdref(".$params['taxonl']."))";
         if (isset($params['idstaxons']) && $params['idstaxons']!='')
-            $sql .= " AND synt.cd_nom IN (".$params['idstaxons'].")";
+            $sql .= " AND txr.cd_ref IN (SELECT DISTINCT cd_ref FROM taxonomie.taxref WHERE cd_nom IN (".$params['idstaxons']."))";
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
@@ -335,17 +335,9 @@ class SyntheseffTable extends Doctrine_Table
                 SELECT DISTINCT
                 sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs, 
                 t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,
-                CASE 	
-                    WHEN t.filtre2 = 'oui'  THEN true
-                    WHEN t.filtre2 = 'non'  THEN false
-                    ELSE null
-                END AS patrimonial,
-                CASE 	
-                    WHEN t.filtre3 = 'oui'  THEN true
-                    WHEN t.filtre3 = 'non'  THEN false
-                    ELSE null
-                END AS protection_stricte,
-                txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
+                f2.bool AS patrimonial,
+                f3.bool AS protection_stricte,
+                txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, txr.nom_valide, 
                 c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme,
                 synt.id_synthese,
                 CAST(st_x(st_centroid(synt.the_geom_".$srid_local_export.")) AS int) AS x_srid_local_export, CAST(st_y(st_centroid(synt.the_geom_".$srid_local_export.")) AS int) AS y_srid_local_export,                    
@@ -361,7 +353,9 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = synt.id_critere_synthese
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
-                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
+                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
+                JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
+                JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text                
                 WHERE synt.supprime = false"
                 .$addwhere.
                 "ORDER BY sec.nom_secteur, com.commune_min, t.nom_latin";
@@ -378,16 +372,8 @@ class SyntheseffTable extends Doctrine_Table
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "
                 SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,tpa.type_protection,
-                    CASE 	
-                        WHEN t.filtre2 = 'oui'  THEN true
-                        WHEN t.filtre2 = 'non'  THEN false
-                        ELSE null
-                    END AS patrimonial,
-                    CASE 	
-                        WHEN t.filtre3 = 'oui'  THEN true
-                        WHEN t.filtre3 = 'non'  THEN false
-                        ELSE null
-                    END AS protection_stricte,
+                    f2.bool AS patrimonial,
+                    f3.bool AS protection_stricte,
                     txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
                     tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
                 .$from.
@@ -403,6 +389,8 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
+                JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
+                JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text
                 WHERE synt.supprime = false"
                 .$addwhere.
                 " GROUP BY t.nom_latin, t.nom_francais, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, 
@@ -421,17 +409,9 @@ class SyntheseffTable extends Doctrine_Table
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "SELECT DISTINCT sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs,"; 
             $sql .= "t.nom_latin AS taxonlatin, t.nom_francais AS taxonfr,";
-            $sql .= "CASE 	
-                        WHEN t.filtre2 = 'oui'  THEN true
-                        WHEN t.filtre2 = 'non'  THEN false
-                        ELSE null
-                    END AS patrimonial,";
-            $sql .= "CASE 	
-                        WHEN t.filtre3 = 'oui'  THEN true
-                        WHEN t.filtre3 = 'non'  THEN false
-                        ELSE null
-                    END AS protection_stricte,";
-            $sql .= "txr.nom_valide, txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese,";
+            $sql .= "f2.bool AS patrimonial,";
+            $sql .= "f3.bool AS protection_stricte,";
+            $sql .= "txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref ,txr.nom_valide, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese,";
             $sql .= "c.nom_critere_synthese AS critere,synt.remarques, org.nom_organisme AS organisme,";
             if($typ=='centroid'){
                 $sql .= "ST_transform(synt.the_geom_point,".$srid_local_export.") AS the_geom,
@@ -453,6 +433,8 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= "LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot ";
             $sql .= "LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme ";
             $sql .= "LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese ";
+            $sql .= "JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text ";
+            $sql .= "JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text ";
             $sql .= "WHERE synt.supprime = false ";
             if($typ!='centroid'){$sql .= "AND ST_geometrytype(synt.the_geom_".$srid_local_export.") = '".$typ."'::text ";}
             $sql .= $addwhere;
