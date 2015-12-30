@@ -455,7 +455,7 @@ application.synthese.search = function() {
         return {
             region: 'west'
             ,title:'Critères de recherche'
-            ,width: 250
+            ,width: 270
             ,split: true
             ,collapsible:true
             ,autoScroll: true
@@ -1316,6 +1316,7 @@ application.synthese.search = function() {
                     ,iconCls: 'tetras'
                     ,qtip: 'Ouvre une fenêtre permettant de construire une requête renvoyant plusieurs taxons'
                     ,handler: function() {
+                        Ext.getCmp('radio-fff').setValue('all');
                         application.synthese.search.choiseTaxons();
                     }
                 }
