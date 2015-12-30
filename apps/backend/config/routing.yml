@@ -359,19 +359,14 @@ getReserves:
 getN2000:
   url: /bibs/n2000
   param: { module: bibs, action: listN2000 }
-#statfaune
-datasNbObsCf:
-  url: /datasnbobscf
-  param: { module: home, action: datasNbObsCf }
-datasNbObsInv:
-  url: /datasnbobsinv
-  param: { module: home, action: datasNbObsInv } 
-datasColorsCf:
-  url: /datascolorscf
-  param: { module: home, action: datasColorsCf } 
-datasColorsInv:
-  url: /datascolorsinv
-  param: { module: home, action: datasColorsInv } 
+
+#statff
+datasNbObsKd:
+  url: /datasnbobskd
+  param: { module: home, action: datasNbObsKd }
+datasNbObsCl:
+  url: /datasnbobscl
+  param: { module: home, action: datasNbObsCl }
 
 #autres
 getStatus:

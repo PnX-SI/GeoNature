@@ -195,38 +195,23 @@ class homeActions extends sfFauneActions
       	));
     }
     
-    //-----------STAT FAUNE-----------------
+    //-----------STAT FAUNE FLORE-----------------
 
-    public function executeDatasNbObsCf(sfRequest $request)
+    public function executeDatasNbObsKd(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesCfTable::getDatasNbObsCf() ;
+            $datas =  SyntheseffTable::getDatasNbObsKd() ;
             
-            return $this->renderJSON($datas_tout);
+            return $this->renderJSON($datas);
         }
     }
-    public function executeDatasNbObsInv(sfRequest $request)
+    public function executeDatasNbObsCl(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesCfTable::getDatasNbObsInv() ;
+            $datas =  SyntheseffTable::getDatasNbObsCl() ;
             
-            return $this->renderJSON($datas_tout);
+            return $this->renderJSON($datas);
         }
     }
-    public function executeDatasColorsCf(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesCfTable::getDatasColorsCf() ;
-            
-            return $this->renderJSON($datas_tout);
-        }
-    }
-    public function executeDatasColorsInv(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesCfTable::getDatasColorsInv() ;
-            
-            return $this->renderJSON($datas_tout);
-        }
-    }
+
 }

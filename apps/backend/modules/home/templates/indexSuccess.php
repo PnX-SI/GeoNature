@@ -8,59 +8,35 @@
     <div id ="container">
 
         <h2>Consultation</h2>
-        <p>Pour consulter la synthèse des observations faune et flore, tous protocoles confondus.</p>
-        <p class="ligne_lien">
-             <a href="synthese" class="btn btn-default"><img src="images/pictos/oiseau.gif">Synthèse des observations</a>
-        </p>
-        <div id="interligne50"></div>
+            <p>Pour consulter la synthèse des observations faune et flore, tous protocoles confondus.</p>
+            <p class="ligne_lien">
+                 <a href="synthese" class="btn btn-default"><img src="images/pictos/oiseau.gif">Synthèse des observations</a>
+            </p>
+            <div id="interligne50"></div>
             
         <h2>Saisie</h2>
-        <p>
-            Pour saisir de nouvelles données, vous pouvez utiliser l'un des liens ci-dessous.<br/>
-            Pour modifier des données saisies à l'aide d'un des formulaires proposés en lien ci-dessous, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.
-        </p>
-        <p>
-            <?php echo $liens_saisie;?>
-        </p>
-            <!-- BLOC DE STATS PNE NON AFFICHES. A REINTEGRER SOUS FORME DE IFRAME CUSTOMISABLE ?
-            <div id="bande_consultation" style="color:#FFFFFF;background: linear-gradient(90deg, #f09819 30%, #edde5d 90%) repeat scroll 0 0 rgba(0, 0, 0, 0);letter-spacing:5px;font-weight:bold;text-shadow:0 0 3px #000;height:25px;">
-                <div style="vertical-align:middle;display:inline-block;"><img src="images/logo_pag.png" border="0" width="25px" height="25px"></div>
-                <div style="vertical-align:middle;display:inline-block;">STATISTIQUES</div>
-            </div>
-            <div>
-                <div id="header">
-                    <h2>Utilisation des outils de saisie Faune</h2>
-                </div>
-                <div id="content">
-                    <div id="header">
-                        <h3>Cumul des observations selon le mode de saisie</h3>
-                    </div>
-                    <div class="demo-container">
-                        <p>Faune vertébrée</p>
-                        <div id="placeholder1" class="demo-placeholder"></div>
-                    </div>             
-                    <div class="demo-container">
-                        <p>Faune invertébrée</p>
-                        <div id="placeholder3" class="demo-placeholder"></div>
-                    </div>
+            <p>
+                Pour saisir de nouvelles données, vous pouvez utiliser l'un des liens ci-dessous.<br/>
+                Pour modifier des données saisies à l'aide d'un des formulaires proposés en lien ci-dessous, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.
+            </p>
+            <p>
+                <?php echo $liens_saisie;?>
+            </p>
 
-                    <br/>
-                    <div id="header">
-                        <h3>Evolution du nombre d'espèces vues ou à rechercher</h3>
-                    </div>
-                    <div class="demo-container">
-                        <p>Faune vertébrée</p>
-                        <div id="placeholder2" class="demo-placeholder"></div>
-                    </div>
-                    
-                    <div class="demo-container">
-                        <p>Faune invertébrée</p>
-                        <div id="placeholder4" class="demo-placeholder"></div>
-                    </div>
+        <h2>Statistiques</h3>
+            <div class="row" style="border:1px solid #ddd;">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Règnes</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="kd-chart" style="height: 250px;" ></div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Classes animales</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="cl-chart" style="height: 250px;" ></div>
                 </div>
             </div>
-            -->
-
+        
         <footer>
             <h5>
             <small>
@@ -72,6 +48,52 @@
             <a class="pull-right" href="deconnexion"><img src="images/logout.gif" title="Déconnexion"/></a>
             </h5>
         </footer>
+        
     </div>
 </div>
+<script>
+var constructDatas = function(arr) {
+    var datas = [];
+    var item;
+    for(var i=0; i<arr.length ; i++){
+        if(arr[i][0] !=null){
+            item = {value: arr[i][1], label: arr[i][0]};
+            datas.push(item);
+        }
+    }
+    return datas;
+};
+var constructDonuts = function(datas,div) {
+    return new Morris.Donut({
+        element: div
+        ,data: datas
+        ,backgroundColor: '#ccc'
+        ,labelColor: '#666699'
+        ,colors:['#f2e5ff','#e5ccff','#d9b3ff','#cc99ff','#bf80ff','#bf80ff','#b266ff','#a64dff','#9933ff','#8c1aff','#7f00ff','#7300e6','#6600cc','#5900b3','#4c0099','#400080','#330066','#26004d','#190033','#0d001a']
+        ,formatter: function (x) { return x }
+    });
+};
+function onDataReceived1(series) {
+    var datas = constructDatas(series);
+    constructDonuts(datas,'kd-chart');  
+};
+function onDataReceived2(series) {
+    var datas = constructDatas(series);
+    constructDonuts(datas,'cl-chart');   
+};
+//on lance la requête ajax
+$.ajax({
+    url: 'datasnbobskd'
+    ,type: "GET"
+    ,dataType: "json"
+    ,success: onDataReceived1
+});
+$.ajax({
+    url: 'datasnbobscl'
+    ,type: "GET"
+    ,dataType: "json"
+    ,success: onDataReceived2
+});
+
+</script>
  </body>

@@ -1,6 +1,4 @@
 <?php
-
-
 class SyntheseffTable extends Doctrine_Table
 {
     
@@ -432,5 +430,59 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= $addwhere;
             if($params['usage']=="demo"){$sql .= " LIMIT 100 ";}
             return $sql;
+    }
+    
+    //statistiques
+    public static function getDatasNbObsKd()
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        //nb d'observations par règne
+        $sql = "SELECT l.nom_liste, count(*) as nb FROM synthese.syntheseff s
+                JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+                JOIN taxonomie.bib_taxons t ON t.cd_nom = tx.cd_nom
+                LEFT JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
+                LEFT JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste
+                WHERE s.supprime = false AND l.id_liste < 100
+                GROUP BY nom_liste,l.id_liste
+                ORDER BY l.id_liste;";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
+        $nb = count($result);
+        $datas = array();
+        $somme = 0;
+        for ($i = 0; $i < $nb; $i++) { 
+            $data = array();
+            $nb = $result[$i]['nb'];
+            $nom_liste = $result[$i]['nom_liste'];
+            array_push($data, $nom_liste, $nb);
+            array_push($datas, $data);  
+        }
+        
+        return $datas;
+    }
+    public static function getDatasNbObsCl()
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        //nb d'observations par règne
+        $sql = "SELECT l.nom_liste, count(*) as nb FROM synthese.syntheseff s
+                JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+                JOIN taxonomie.bib_taxons t ON t.cd_nom = tx.cd_nom
+                LEFT JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
+                LEFT JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste
+                WHERE s.supprime = false AND l.id_liste > 100
+                GROUP BY nom_liste,l.id_liste
+                ORDER BY l.id_liste;";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
+        $nb = count($result);
+        $datas = array();
+        $somme = 0;
+        for ($i = 0; $i < $nb; $i++) { 
+            $data = array();
+            $nb = $result[$i]['nb'];
+            $nom_liste = $result[$i]['nom_liste'];
+            array_push($data, $nom_liste, $nb);
+            array_push($datas, $data);  
+        }
+        
+        return $datas;
     }
 }
