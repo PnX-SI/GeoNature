@@ -166,8 +166,8 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
-                JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
-                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
+                JOIN meta.bib_programmes p ON p.id_programme = l.id_programme 
+                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
                 WHERE synt.supprime = false ".$addprefilters;
             $nb = $dbh->query($sql)->fetchAll();
             $nb_res = $nb[0]['nb'];
@@ -202,16 +202,7 @@ class SyntheseffTable extends Doctrine_Table
                         WHEN t.nom_francais = '' THEN txr.lb_nom
                         ELSE t.nom_francais
                     END AS taxon_francais,
-                    CASE 	
-                        WHEN t.filtre2 = 'oui'  THEN true
-                        WHEN t.filtre2 = 'non'  THEN false
-                        ELSE null
-                    END AS patrimonial,
-                    CASE 	
-                        WHEN t.filtre3 = 'oui'  THEN true
-                        WHEN t.filtre3 = 'non'  THEN false
-                        ELSE null
-                    END AS protection_stricte,
+                    f2.bool AS patrimonial, f3.bool AS protection_stricte,
                     txr.cd_ref,
                     com.commune_min AS nomcommune, cri.nom_critere_synthese,
                     ST_ASGEOJSON($geom, 0) AS g"
@@ -222,7 +213,10 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
-                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
+                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
+                JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
+                JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text
+                 
                 WHERE synt.supprime = false ".$addfilters."ORDER BY synt.dateobs DESC";
             
             $lesobs = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -335,10 +329,9 @@ class SyntheseffTable extends Doctrine_Table
                 SELECT DISTINCT
                 sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs, 
                 t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,
-                f2.bool AS patrimonial,
-                f3.bool AS protection_stricte,
+                f2.bool AS patrimonial, f3.bool AS protection_stricte,
                 txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, txr.nom_valide, 
-                c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme,
+                c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,
                 synt.id_synthese,
                 CAST(st_x(st_centroid(synt.the_geom_".$srid_local_export.")) AS int) AS x_srid_local_export, CAST(st_y(st_centroid(synt.the_geom_".$srid_local_export.")) AS int) AS y_srid_local_export,                    
                 st_x(st_centroid(st_transform(synt.the_geom_3857,4326))) AS x_wgs84, st_y(st_centroid(st_transform(synt.the_geom_3857,4326))) AS y_wgs84,
@@ -372,8 +365,7 @@ class SyntheseffTable extends Doctrine_Table
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "
                 SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,tpa.type_protection,
-                    f2.bool AS patrimonial,
-                    f3.bool AS protection_stricte,
+                    f2.bool AS patrimonial, f3.bool AS protection_stricte,
                     txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
                     tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
                 .$from.
@@ -396,7 +388,7 @@ class SyntheseffTable extends Doctrine_Table
                 " GROUP BY t.nom_latin, t.nom_francais, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, 
                         synt.cd_nom, txr.cd_ref, tpe.precisions, patrimonial, protection_stricte, 
                         tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url, tpa.url ,tpa.type_protection
-                ORDER BY txr.phylum, txr.regne, txr.classe, txr.ordre, txr.famille, t.nom_francais";
+                ORDER BY txr.regne, txr.phylum, txr.classe, txr.ordre, txr.famille, t.nom_francais";
         $lesstatuts = $dbh->query($sql);
         return $lesstatuts;
     }
@@ -412,7 +404,7 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= "f2.bool AS patrimonial,";
             $sql .= "f3.bool AS protection_stricte,";
             $sql .= "txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref ,txr.nom_valide, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese,";
-            $sql .= "c.nom_critere_synthese AS critere,synt.remarques, org.nom_organisme AS organisme,";
+            $sql .= "c.nom_critere_synthese AS critere,synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,";
             if($typ=='centroid'){
                 $sql .= "ST_transform(synt.the_geom_point,".$srid_local_export.") AS the_geom,
                         CASE st_geometrytype(synt.the_geom_3857) 
