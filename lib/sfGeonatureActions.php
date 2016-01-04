@@ -1,6 +1,6 @@
 <?php 
 
-class sfFauneActions extends sfActions
+class sfGeonatureActions extends sfActions
 {
     public static $EmptyGeoJSON = '{"type":"FeatureCollection","features":[]}';
     public static $toManyFeatures = '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"nb": 0}}]}';

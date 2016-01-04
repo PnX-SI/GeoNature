@@ -1,5 +1,5 @@
 <?php
-class stationActions extends sfFauneActions
+class stationActions extends sfGeonatureActions
 {
 	
 	/**
@@ -52,7 +52,7 @@ class stationActions extends sfFauneActions
         {
             $station = TStationsFsTable::findOne($request->getParameter('id_station'), 'geoJSON');
             if (empty($station))
-                return $this->renderText(sfFauneActions::$EmptyGeoJSON);
+                return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
             else
                 return $this->renderText($this->geojson->encode(array($station), 'the_geom_3857', 'id_station'));
         }
@@ -70,9 +70,9 @@ class stationActions extends sfFauneActions
                 $request->getParams(), 
                 $this->getUser()->hasCredential('utilisateur')
             );
-            if (empty($lesstations)){return $this->renderText(sfFauneActions::$EmptyGeoJSON);}
-            //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfFauneActions.php)
-            elseif($lesstations=='trop'){return $this->renderText(sfFauneActions::$toManyFeatures);}
+            if (empty($lesstations)){return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);}
+            //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfGeonatureActions.php)
+            elseif($lesstations=='trop'){return $this->renderText(sfGeonatureActions::$toManyFeatures);}
             else{return $this->renderText($this->geojson->encode($lesstations, 'the_geom_3857', 'id_station'));}
         }
     }
@@ -81,7 +81,7 @@ class stationActions extends sfFauneActions
     {
         $taxons = CorFsTaxonTable::listTaxons($request->getParameter('id_station'), $this->getUser());
         if (empty($taxons))
-          return $this->renderText(sfFauneActions::$EmptyGeoJSON);
+          return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
         else
           return $this->renderText($this->geojson->encode($taxons, 'the_geom_3857', 'id_station'));
     }

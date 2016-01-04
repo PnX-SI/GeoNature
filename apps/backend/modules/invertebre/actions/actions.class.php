@@ -1,5 +1,5 @@
 <?php
-class invertebreActions extends sfFauneActions
+class invertebreActions extends sfGeonatureActions
 {
     /**
 	 * GeoJson encoder/decoder

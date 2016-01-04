@@ -1,5 +1,5 @@
 <?php
-class zpActions extends sfFauneActions
+class zpActions extends sfGeonatureActions
 {
 	
 	/**
@@ -52,7 +52,7 @@ class zpActions extends sfFauneActions
         {
             $zp = TZprospectionTable::findOne($request->getParameter('indexzp'), 'geoJSON');
             if (empty($zp))
-                return $this->renderText(sfFauneActions::$EmptyGeoJSON);
+                return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
             else
                 return $this->renderText($this->geojson->encode(array($zp), 'the_geom_ignfxx', 'indexzp'));
         }
@@ -71,9 +71,9 @@ class zpActions extends sfFauneActions
                 $this->getUser()->hasCredential('utilisateur')
             );
             if (empty($leszps)){
-                return $this->renderText(sfFauneActions::$EmptyGeoJSON);}
-            //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfFauneActions.php)
-            elseif($leszps=='trop'){return $this->renderText(sfFauneActions::$toManyFeatures);}
+                return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);}
+            //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfGeonatureActions.php)
+            elseif($leszps=='trop'){return $this->renderText(sfGeonatureActions::$toManyFeatures);}
             else{
                 if($request->getParameter('zoom')<5){
                     return $this->renderText($this->geojson->encode($leszps, 'geom_point_ignfxx', 'indexzp'));
