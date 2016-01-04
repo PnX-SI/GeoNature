@@ -1,5 +1,5 @@
 <?php
-class cfActions extends sfFauneActions
+class cfActions extends sfGeonatureActions
 {
     /**
 	 * GeoJson encoder/decoder
@@ -28,7 +28,7 @@ class cfActions extends sfFauneActions
         {
             $fiche = TFichesCfTable::findOne($request->getParameter('id_cf'), 'geoJSON');
             if (empty($fiche))
-                return $this->renderText(sfFauneActions::$EmptyGeoJSON);
+                return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
             else
                 return $this->renderText($this->geojson->encode(array($fiche), 'the_geom_3857', 'id_cf'));
         }

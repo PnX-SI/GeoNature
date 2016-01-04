@@ -1,5 +1,5 @@
 <?php
-class homeActions extends sfFauneActions
+class homeActions extends sfGeonatureActions
 {
     public function preExecute()
     {

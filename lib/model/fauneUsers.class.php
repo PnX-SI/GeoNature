@@ -1,5 +1,5 @@
 <?php
-class fauneUsers extends sfFauneActions
+class fauneUsers extends sfGeonatureActions
 {
     public static  $status = array(
         0 => 'aucun droit',

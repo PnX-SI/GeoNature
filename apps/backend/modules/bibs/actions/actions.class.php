@@ -1,5 +1,5 @@
 <?php
-class bibsActions extends sfFauneActions
+class bibsActions extends sfGeonatureActions
 {
     //----------------TOUT ---------------------------------
     public function executeListCommunesSaisie(sfRequest $request)

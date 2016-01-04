@@ -1,5 +1,5 @@
 <?php
-class syntheseActions extends sfFauneActions
+class syntheseActions extends sfGeonatureActions
 {
     /**
 	 * GeoJson encoder/decoder
@@ -55,9 +55,9 @@ class syntheseActions extends sfFauneActions
             $userPrenom = $this->getUser()->getAttribute('userPrenom');
             $statuscode = $this->getUser()->getAttribute('statuscode');
             $lesreleves = SyntheseffTable::search($params,$nbreleves,$userNom,$userPrenom,$statuscode );
-            if (empty($lesreleves)){return $this->renderText(sfFauneActions::$EmptyGeoJSON);}
-            //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfFauneActions.php)
-            elseif($lesreleves=='trop'){return $this->renderText(sfFauneActions::$toManyFeatures);}
+            if (empty($lesreleves)){return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);}
+            //si on est au dela de la limite, on renvoi un geojson avec une feature contenant une geometry null (voir lib/sfGeonatureActions.php)
+            elseif($lesreleves=='trop'){return $this->renderText(sfGeonatureActions::$toManyFeatures);}
             else{
                 return $this->renderText($lesreleves);
                 // if($request->getParameter('zoom')<5){
@@ -72,7 +72,7 @@ class syntheseActions extends sfFauneActions
                 // }
             }
         }
-        else{return sfFauneActions::comptFeatures($nbreleves);}
+        else{return sfGeonatureActions::comptFeatures($nbreleves);}
     }
     
     public function executeXlsObs(sfRequest $request)

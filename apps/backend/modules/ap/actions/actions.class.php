@@ -1,5 +1,5 @@
 <?php
-class apActions extends sfFauneActions
+class apActions extends sfGeonatureActions
 { 
     /**
 	 * GeoJson encoder/decoder
@@ -75,7 +75,7 @@ class apActions extends sfFauneActions
     {
         $aps = TApresenceTable::listFor($request->getParameter('indexzp'), $this->getUser());
         if (empty($aps))
-          return $this->renderText(sfFauneActions::$EmptyGeoJSON);
+          return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
         else
           return $this->renderText($this->geojson->encode($aps, 'the_geom_ignfxx', 'indexap'));
     }
@@ -86,7 +86,7 @@ class apActions extends sfFauneActions
         {
             $ap = TApresenceTable::findOne($request->getParameter('indexap'), 'geoJSON');
             if (empty($ap)){
-                return $this->renderText(sfFauneActions::$EmptyGeoJSON);}
+                return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);}
             else{//print_r($ap['observateurs']);
                 return $this->renderText($this->geojson->encode(array($ap), 'the_geom_ignfxx', 'indexap'));
                 //return $this->renderJson(array($ap));
