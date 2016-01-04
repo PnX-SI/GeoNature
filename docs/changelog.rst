@@ -25,7 +25,7 @@ Attention de bien respecter la structure du tableau JSON et notamment syntaxe (a
 * Mise en paramètre de la projection de la shape importée comme zone de recherche dans la synthèse
 * Les résultats de la recherche en synthese affichent désormais tous les synonymes. https://github.com/PnEcrins/GeoNature/issues/92
 * Les exports xls et shp comportent le cd_nom ET le cd_ref de tous les synonymes du nom recherché ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref). https://github.com/PnEcrins/GeoNature/issues/92
-
+* Correction du trigger contactfaune.synthese_update_cor_role_fiche_cf() - Fix #95
 
 1.5.0 (2015-11-26)
 ------------------
