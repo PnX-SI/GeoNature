@@ -13,6 +13,9 @@ CHANGELOG
 * Supprimer toute référence à gps_user_projection dans ``web/js/configmap.map`` 
 * Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure définie dans https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7-L14
 Attention de bien respecter la structure du tableau JSON et notamment syntaxe (accolades, virgules, nom des objects, etc...)
+* Ajouter les id_liste pour les classes faune filtrables dans les formulaires de saisie dans ``web/js/config.map``. Ceci concerne id_classe_oiseaux, id_classe_mammiferes, id_classe_amphibiens, id_classe_reptiles, id_classe_poissons et id_classe_ecrevisses, id_classe_insectes, id_classe_arachnides, id_classe_myriapodes. 
+Voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master/web/js/config.js.sample#L32-43
+
 
 **Changements**
 
@@ -26,6 +29,8 @@ Attention de bien respecter la structure du tableau JSON et notamment syntaxe (a
 * Les résultats de la recherche en synthese affichent désormais tous les synonymes. https://github.com/PnEcrins/GeoNature/issues/92
 * Les exports xls et shp comportent le cd_nom ET le cd_ref de tous les synonymes du nom recherché ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref). https://github.com/PnEcrins/GeoNature/issues/92
 * Correction du trigger contactfaune.synthese_update_cor_role_fiche_cf() - Fix #95
+* Correction d'un bug dans les listes déroulantes des taxons filtrée par classe qui n'affichaient rien - Fix #109 
+
 
 1.5.0 (2015-11-26)
 ------------------

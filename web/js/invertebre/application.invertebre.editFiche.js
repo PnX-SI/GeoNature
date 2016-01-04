@@ -622,10 +622,10 @@ application.invertebre.editFiche = function() {
             var arachnides = Ext.getCmp('cb-arachnides-inv').getValue();
             var myriapodes = Ext.getCmp('cb-myriapodes-inv').getValue();
             if((!ecrevisses&&!insectes&&!arachnides&&!myriapodes)){return true;}
-            if(ecrevisses && classe==5){return true;}
-            if(insectes && classe==9){return true;}
-            if(arachnides && classe==16){return true;}
-            if(myriapodes && classe==15){return true;}
+            if(ecrevisses && classe==id_classe_ecrevisses){return true;}
+            if(insectes && classe==id_classe_insectes){return true;}
+            if(arachnides && classe==id_classe_arachnides){return true;}
+            if(myriapodes && classe==id_classe_myriapodes){return true;}
             return false;
         };
 
