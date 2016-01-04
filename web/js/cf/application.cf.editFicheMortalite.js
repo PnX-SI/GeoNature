@@ -538,11 +538,11 @@ application.cf.editFicheMortalite = function() {
             var poissons = Ext.getCmp('cb-poissons-cf').getValue();
             var reptiles = Ext.getCmp('cb-reptiles-cf').getValue();
             if((!amphibiens&&!mammiferes&&!oiseaux&&!poissons&&!reptiles)==true){return true;}
-            if(oiseaux && classe==12){return true;}
-            if(mammiferes && classe==11){return true;}
-            if(amphibiens && classe==1){return true;}
-            if(reptiles && classe==14){return true;}
-            if(poissons && classe==13){return true;}
+            if(oiseaux && classe==id_classe_oiseaux){return true;}
+            if(mammiferes && classe==id_classe_mammiferes){return true;}
+            if(amphibiens && classe==id_classe_amphibiens){return true;}
+            if(reptiles && classe==id_classe_reptiles){return true;}
+            if(poissons && classe==id_classe_poissons){return true;}
             return false;
         };
 
