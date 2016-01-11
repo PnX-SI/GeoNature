@@ -30,6 +30,7 @@ Voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master
 * Les exports xls et shp comportent le cd_nom ET le cd_ref de tous les synonymes du nom recherché ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref). https://github.com/PnEcrins/GeoNature/issues/92
 * Correction du trigger contactfaune.synthese_update_cor_role_fiche_cf() - Fix #95
 * Correction d'un bug dans les listes déroulantes des taxons filtrée par classe qui n'affichaient rien - Fix #109 
+* Correction d'un bug sur le contenu des exports shape avec le critère de protection activé - Fix #114 
 
 
 1.5.0 (2015-11-26)

@@ -2325,7 +2325,7 @@ application.synthese.search = function() {
             var ido = application.synthese.user.id_organisme;
             var idu = application.synthese.user.id_secteur;
             var userName = application.synthese.user.userNom+' '+application.synthese.user.userPrenom;
-            var monUrl = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_tricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
+            var monUrl = 'synthese/shp?usage='+usage+'&observateur='+ob+'&insee='+c+'&id_reserve='+r+'&id_n2000='+n+'&id_secteur='+s+'&patrimonial='+p+'&protection_stricte='+pr+'&searchgeom='+geom+'&datedebut='+sd+'&datefin='+ed+'&periodedebut='+sp+'&periodefin='+ep+'&start='+st+'&taxonfr='+tfr+'&taxonl='+tl+'&fff='+fff+'&idstaxons='+ids+'&programmes='+prog+'&id_organisme='+ido+'&id_unite='+idu+'&userName='+userName;
             Ext.getBody().mask("Géneration des fichiers shape (compressés) des observations …");
             //FileDownloader.load renvoie une promise
             var p = FileDownloader.load({
