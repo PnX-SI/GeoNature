@@ -85,3 +85,9 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 ALTER FUNCTION contactfaune.synthese_update_cor_role_fiche_cf() OWNER TO geonatuser;
+
+--Amélioration des performances
+CREATE INDEX i_fk_cor_cor_zonesstatut_synthese_syntheseff
+  ON synthese.cor_zonesstatut_synthese
+  USING btree
+  (id_synthese);

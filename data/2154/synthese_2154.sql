@@ -6530,6 +6530,13 @@ CREATE INDEX i_fk_cor_cor_zonesstatut_synthese_l_zonesstatut ON cor_zonesstatut_
 
 
 --
+-- Name: i_fk_cor_cor_zonesstatut_synthese_syntheseff; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
+--
+
+CREATE INDEX i_fk_cor_cor_zonesstatut_synthese_syntheseff ON cor_zonesstatut_synthese USING btree (id_synthese);
+
+
+--
 -- Name: i_fk_cor_unite_synthese_l_unites; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
 --
 
