@@ -1,5 +1,5 @@
 ﻿--ajout de la source 0 utilisée par la web api si l'id_source n'est pas transmis
-INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (0, 'Web API', 'Donnée externe non définie (insérée dans la synthese à partir du service reste de la web API sans id_source fourni)', 'localhost', 22, NULL, NULL, 'geonaturedb', 'synthese', 'syntheseff', 'id_fiche_source', NULL, NULL, NULL, 'NONE', false);
+INSERT INTO synthese.bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (0, 'Web API', 'Donnée externe non définie (insérée dans la synthese à partir du service reste de la web API sans id_source fourni)', 'localhost', 22, NULL, NULL, 'geonaturedb', 'synthese', 'syntheseff', 'id_fiche_source', NULL, NULL, NULL, 'NONE', false);
 
 CREATE OR REPLACE FUNCTION contactinv.couleur_taxon(id integer,maxdateobs date)
   RETURNS text AS
@@ -91,3 +91,16 @@ CREATE INDEX i_fk_cor_cor_zonesstatut_synthese_syntheseff
   ON synthese.cor_zonesstatut_synthese
   USING btree
   (id_synthese);
+  
+--automatisation de la suppression en cascade dans la table de correspondance cor_taxon_liste
+ALTER TABLE taxonomie.cor_taxon_liste DROP CONSTRAINT cor_taxon_liste_bib_listes_fkey;
+ALTER TABLE taxonomie.cor_taxon_liste
+  ADD CONSTRAINT cor_taxon_liste_bib_listes_fkey FOREIGN KEY (id_liste)
+      REFERENCES taxonomie.bib_listes (id_liste) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE taxonomie.cor_taxon_liste DROP CONSTRAINT cor_taxon_liste_bib_taxons_fkey;
+ALTER TABLE taxonomie.cor_taxon_liste
+  ADD CONSTRAINT cor_taxon_liste_bib_taxons_fkey FOREIGN KEY (id_taxon)
+      REFERENCES taxonomie.bib_taxons (id_taxon) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE;

@@ -7773,7 +7773,7 @@ SET search_path = taxonomie, pg_catalog;
 
 ALTER TABLE ONLY cor_taxon_liste 
     ADD CONSTRAINT cor_taxon_liste_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE NO ACTION;
+    ON UPDATE CASCADE ON DELETE CASCADE;
  
 --
 -- Name: cor_taxon_liste_bib_listes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
@@ -7781,7 +7781,7 @@ ALTER TABLE ONLY cor_taxon_liste
 
 ALTER TABLE ONLY cor_taxon_liste 
     ADD CONSTRAINT cor_taxon_liste_bib_listes_fkey FOREIGN KEY (id_liste) REFERENCES bib_listes (id_liste) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE NO ACTION;
+    ON UPDATE CASCADE ON DELETE CASCADE;
     
 --
 -- Name: cor_taxon_attrib_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
