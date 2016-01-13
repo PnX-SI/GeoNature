@@ -571,11 +571,13 @@ application.synthese.editInvertebre = function() {
             var insectes = Ext.getCmp('cb-insectes-inv').getValue();
             var arachnides = Ext.getCmp('cb-arachnides-inv').getValue();
             var myriapodes = Ext.getCmp('cb-myriapodes-inv').getValue();
-            if((!ecrevisses&&!insectes&&!arachnides&&!myriapodes)){return true;}
-            if(ecrevisses && classe==5){return true;}
-            if(insectes && classe==9){return true;}
-            if(arachnides && classe==16){return true;}
-            if(myriapodes && classe==15){return true;}
+            var mollusques = Ext.getCmp('cb-mollusques-inv').getValue();
+            if((!ecrevisses&&!insectes&&!arachnides&&!myriapodes&&!mollusques)){return true;}
+            if(ecrevisses && classe==id_classe_ecrevisses){return true;}
+            if(insectes && classe==id_classe_insectes){return true;}
+            if(arachnides && classe==id_classe_arachnides){return true;}
+            if(myriapodes && classe==id_classe_myriapodes){return true;}
+            if(mollusques && classe==id_classe_mollusques){return true;}
             return false;
         };
 
@@ -851,6 +853,7 @@ application.synthese.editInvertebre = function() {
                                                 Ext.getCmp('cb-ecrevisses-inv').setValue(false);
                                                 Ext.getCmp('cb-arachnides-inv').setValue(false);
                                                 Ext.getCmp('cb-myriapodes-inv').setValue(false);
+                                                Ext.getCmp('cb-mollusques-inv').setValue(false);
                                             }
                                             comboTaxonsFiltre();
                                             if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
@@ -874,6 +877,7 @@ application.synthese.editInvertebre = function() {
                                                 Ext.getCmp('cb-insectes-inv').setValue(false);
                                                 Ext.getCmp('cb-arachnides-inv').setValue(false);
                                                 Ext.getCmp('cb-myriapodes-inv').setValue(false);
+                                                Ext.getCmp('cb-mollusques-inv').setValue(false);
                                             }
                                             comboTaxonsFiltre();
                                             if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
@@ -897,6 +901,7 @@ application.synthese.editInvertebre = function() {
                                                 Ext.getCmp('cb-insectes-inv').setValue(false);
                                                 Ext.getCmp('cb-ecrevisses-inv').setValue(false);
                                                 Ext.getCmp('cb-myriapodes-inv').setValue(false);
+                                                Ext.getCmp('cb-mollusques-inv').setValue(false);
                                             }
                                             comboTaxonsFiltre();
                                             if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
@@ -920,6 +925,7 @@ application.synthese.editInvertebre = function() {
                                                 Ext.getCmp('cb-insectes-inv').setValue(false);
                                                 Ext.getCmp('cb-ecrevisses-inv').setValue(false);
                                                 Ext.getCmp('cb-arachnides-inv').setValue(false);
+                                                Ext.getCmp('cb-mollusques-inv').setValue(false);
                                             }
                                             comboTaxonsFiltre();
                                             if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
@@ -928,6 +934,30 @@ application.synthese.editInvertebre = function() {
                                             Ext.QuickTips.register({
                                                 target: c.getEl(),
                                                 text: 'Affiche les myriapodes dans la liste si la case est cochée.'
+                                            });
+                                        }
+                                    }
+                                },{
+                                    id:'cb-mollusques-inv'
+                                    ,boxLabel: 'Mollusques'
+                                    ,name: 'cb-mollusques'
+                                    ,itemCls:'graytext'
+                                    ,checked: false
+                                    ,listeners: {
+                                        check: function(checkbox,checked) {
+                                            if(checked){
+                                                Ext.getCmp('cb-insectes-inv').setValue(false);
+                                                Ext.getCmp('cb-ecrevisses-inv').setValue(false);
+                                                Ext.getCmp('cb-arachnides-inv').setValue(false);
+                                                Ext.getCmp('cb-myriapodes-inv').setValue(false);
+                                            }
+                                            comboTaxonsFiltre();
+                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                        }
+                                        ,render: function(c) {
+                                            Ext.QuickTips.register({
+                                                target: c.getEl(),
+                                                text: 'Affiche les mollusques dans la liste si la case est cochée.'
                                             });
                                         }
                                     }
