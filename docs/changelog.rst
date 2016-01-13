@@ -15,7 +15,10 @@ CHANGELOG
 Attention de bien respecter la structure du tableau JSON et notamment syntaxe (accolades, virgules, nom des objects, etc...)
 * Ajouter les id_liste pour les classes faune filtrables dans les formulaires de saisie dans ``web/js/config.map``. Ceci concerne id_classe_oiseaux, id_classe_mammiferes, id_classe_amphibiens, id_classe_reptiles, id_classe_poissons et id_classe_ecrevisses, id_classe_insectes, id_classe_arachnides, id_classe_myriapodes, id_classe_mollusques. 
 Voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master/web/js/config.js.sample#L32-44
+* Le routing a été mise à jour, vous devez vider le cache de symfony. Pour cela, placez vous dans le répertoire racine de l'application et effectuez la commande suivante :
 
+    ::
+        php symfony cc
 
 **Changements**
 
