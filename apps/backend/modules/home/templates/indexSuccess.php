@@ -1,5 +1,5 @@
 <body>
-<div id="home">
+<div id="home" class="container">
     
     <div class="jumbotron">
         <div id="bandeau_accueil"></div>
