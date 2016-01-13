@@ -4,6 +4,23 @@
 class BibTaxonsTable extends Doctrine_Table
 {
     
+    private static function test_null($val){
+            return ($val!=null || $val!='null' || $val!='');
+    }
+    //supprime les enregistrements si une des clés est égale à une autre dans un tableau à deux dimentions
+    private static function clear_fr_egal_latin ($array, $index1, $index2){
+        $newarray = array();
+        if(is_array($array) && count($array)>0) 
+        {
+            foreach(array_keys($array) as $key){
+                if ($array[$key][$index1]!=$array[$key][$index2]){
+                    array_push($newarray,$array[$key]);
+                }
+            }
+          }
+      return $newarray;
+    }
+    
     public static function getInstance()
     {
         return Doctrine_Core::getTable('BibTaxons');
@@ -17,7 +34,7 @@ class BibTaxonsTable extends Doctrine_Table
             ->fetchArray();
         return $query;
     }
-    public static function listSynthese($fff, $patri, $protege)
+    public static function listSyntheseFr($fff, $patri, $protege)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         //requète optimisée = moins 2 secondes
@@ -29,6 +46,7 @@ class BibTaxonsTable extends Doctrine_Table
         // return $sql;
 
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $taxons = self::clear_fr_egal_latin($taxons, 'nom_francais', 'nom_latin'); 
         foreach ($taxons as $key => &$val)
         {
             $reglements = explode('#',$val['protections']);
@@ -42,7 +60,36 @@ class BibTaxonsTable extends Doctrine_Table
             }
             $val['protections'] = $reglementations;
             if($val['protection_stricte']=='t'){$val['no_protection']=true;}else{$val['no_protection']=false;}
-            if($val['nom_francais']==null || $val['nom_francais']=='null' || $val['nom_francais']==''){$val['nom_francais']=$val['nom_latin'];}
+            // if($val['nom_francais']==null || $val['nom_francais']=='null' || $val['nom_francais']==''){$val['nom_francais']=$val['nom_latin'];}
+        }
+        return json_encode($taxons);
+    }
+    
+    public static function listSyntheseLatin($fff, $patri, $protege)
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        //requète optimisée = moins 2 secondes
+        $where = 'WHERE cd_nom > 0';
+        if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
+        if($patri == 'true') {$where .= " AND patrimonial=true"; }
+        if($protege == 'true') {$where .= " AND protection_stricte=true"; }
+        $sql = "SELECT * FROM synthese.v_taxons_synthese ".$where;
+        // return $sql;
+
+        $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC); 
+        foreach ($taxons as $key => &$val)
+        {
+            $reglements = explode('#',$val['protections']);
+            $reglementations = array();
+            foreach ($reglements as $r)
+            {
+                $p = explode('__',$r);
+                $couple['texte']=$p[0];
+                $couple['url']= (isset($p[1])) ? $p[1] : '';;
+                array_push($reglementations,$couple);
+            }
+            $val['protections'] = $reglementations;
+            if($val['protection_stricte']=='t'){$val['no_protection']=true;}else{$val['no_protection']=false;}
         }
         return json_encode($taxons);
     }

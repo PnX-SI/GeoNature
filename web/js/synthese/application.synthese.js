@@ -46,8 +46,12 @@ function checkApiLoading(retryClbk,clss) {
 var layerTester = new Ext.util.Observable();
 var firstMapLoad = true;
 
-var myProxyTaxonsSynthese = new Ext.data.HttpProxy({
-    url: 'bibs/taxonssynthese'
+var myProxyTaxonsSyntheseFr = new Ext.data.HttpProxy({
+    url: 'bibs/taxonssynthesefr'
+    ,method: 'GET'
+});
+var myProxyTaxonsSyntheseLatin = new Ext.data.HttpProxy({
+    url: 'bibs/taxonssyntheselatin'
     ,method: 'GET'
 });
 var myProxyTaxonsTree = new Ext.data.HttpProxy({
@@ -238,8 +242,8 @@ application.synthese = function() {
             ,autoLoad: true
         })
         
-        ,storeTaxonsSynthese: new Ext.data.JsonStore({
-            url: myProxyTaxonsSynthese
+        ,storeTaxonsSyntheseFr: new Ext.data.JsonStore({
+            url: myProxyTaxonsSyntheseFr
             ,fields: [
                 'cd_nom'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
@@ -259,6 +263,32 @@ application.synthese = function() {
             ]
             ,sortInfo: {
                 field: 'nom_francais'
+                ,direction: 'ASC'
+            }
+            ,autoLoad:true
+        })
+        
+        ,storeTaxonsSyntheseLatin: new Ext.data.JsonStore({
+            url: myProxyTaxonsSyntheseLatin
+            ,fields: [
+                'cd_nom'
+                ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
+                ,'nom_latin'
+                ,'id_liste'
+                ,'picto'
+                ,'regne'
+                ,'patrimonial'
+                ,'protection_stricte'
+                ,'cd_ref'
+                ,'nom_valide'
+                ,'famille'
+                ,'ordre'
+                ,'classe'
+                ,'protections'
+                ,'no_protection'
+            ]
+            ,sortInfo: {
+                field: 'nom_latin'
                 ,direction: 'ASC'
             }
             ,autoLoad:true
