@@ -293,7 +293,7 @@ application.synthese.search = function() {
     };
 
     var findInfosTaxon = function(cd_nom) {
-        var store = application.synthese.storeTaxonsSynthese; 
+        var store = application.synthese.storeTaxonsSyntheseLatin; 
         var regId = new RegExp ("^"+cd_nom+"$",'gi');
         var rec = store.getAt(store.find('cd_nom',regId));
         return rec;
@@ -318,7 +318,7 @@ application.synthese.search = function() {
 	        Ext.getCmp('south-synthese-panel').expand();
         }
         else{
-            application.synthese.storeTaxonsSynthese.on('load',function(){
+            application.synthese.storeTaxonsSyntheseLatin.on('load',function(){
                 loadTaxonDetails(fiche);
             }
             ,this
@@ -1256,9 +1256,10 @@ application.synthese.search = function() {
                     ,emptyText: "Taxons français"
                     ,name:"taxonfr"
                     ,hiddenName:"taxonfr"
-                    ,store: application.synthese.storeTaxonsSynthese
+                    ,store: application.synthese.storeTaxonsSyntheseFr
                     ,valueField: "cd_nom"
                     ,displayField: "nom_francais"
+                    ,valueNotFoundText:"Ce taxon n'a pas de nom français"
                     ,typeAhead: true
                     ,typeAheadDelay:750
                     ,forceSelection: true
@@ -1286,7 +1287,7 @@ application.synthese.search = function() {
                     ,emptyText: "Taxons latin"
                     ,name:"taxonl"
                     ,hiddenName:"taxonl"
-                    ,store: application.synthese.storeTaxonsSynthese
+                    ,store: application.synthese.storeTaxonsSyntheseLatin
                     ,valueField: "cd_nom"
                     ,displayField: "nom_latin"
                     ,typeAhead: true
@@ -2170,7 +2171,9 @@ application.synthese.search = function() {
             Ext.getCmp('combo-synthese-taxons-latin').getStore().clearFilter();
             Ext.getCmp('combo-synthese-taxons-fr').clearValue();
             Ext.getCmp('combo-synthese-taxons-latin').clearValue();
-            myProxyTaxonsSynthese.url = 'bibs/taxonssynthese/'+fff+'/'+patri+'/'+protege
+            myProxyTaxonsSyntheseFr.url = 'bibs/taxonssynthesefr/'+fff+'/'+patri+'/'+protege
+            myProxyTaxonsSyntheseLatin.url = 'bibs/taxonssyntheselatin/'+fff+'/'+patri+'/'+protege
+            Ext.getCmp('combo-synthese-taxons-fr').getStore().reload();
             Ext.getCmp('combo-synthese-taxons-latin').getStore().reload();
         }
         ,resetTree: function(){

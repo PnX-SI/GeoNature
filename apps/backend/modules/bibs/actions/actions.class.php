@@ -13,9 +13,14 @@ class bibsActions extends sfGeonatureActions
         $annees = SyntheseffTable::listAnnees();
         return $this->renderJSON($annees);
     }
-    public function executeListTaxonsSynthese(sfRequest $request)
+    public function executeListTaxonsSyntheseFr(sfRequest $request)
     {
-        $val = BibTaxonsTable::listSynthese($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
+        $val = BibTaxonsTable::listSyntheseFr($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
+        return $this->renderText($val);
+    }
+    public function executeListTaxonsSyntheseLatin(sfRequest $request)
+    {
+        $val = BibTaxonsTable::listSyntheseLatin($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
         return $this->renderText($val);
     }
     public function executeListTaxonsTreeSynthese(sfRequest $request)
