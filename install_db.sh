@@ -45,24 +45,31 @@ then
     # Mise en place de la structure de la base et des données permettant son focntionnement avec l'application
     echo "Grant..."
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/grant.sql &> log/install_db.log
+    
     echo "Création de la structure de la base..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/synthese_2154.sql  &>> log/install_db.log
+    
     echo "Décompression des fichiers du taxref..."
     cd data/inpn
-    tar -xzvf data_inpn_v7.tar.gz
+    unzip TAXREF_INPN_v8.0.zip
+	unzip ESPECES_REGLEMENTEES.zip
     cd ../..
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
     DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-    sed -i "s#/home/synthese/geonature#${DIR}#g" data/inpn/data_inpn_v7_synthese.sql
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v7_synthese.sql &>> log/install_db.log
+    sed -i "s#/home/synthese/geonature#${DIR}#g" data/inpn/data_inpn_v8_synthese.sql
+    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v8_synthese.sql &>> log/install_db.log
+ 
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
     tar -xzvf layers.tar.gz
     cd ../..
+    
     echo "Insertion  du référentiel géographique : communes métropolitaines... (cette opération peut être longue)"
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name  -f data/layers/communes_metropole.sql &>> log/install_db.log
+    
     echo "Insertion des données des tables dictionnaires de la base..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/data_synthese_2154.sql  &>> log/install_db.log
+    
     echo "Décompression des fichiers du référentiel géographique..."
     cd data/layers
     unzip apb.zip
@@ -88,6 +95,7 @@ then
     unzip znieff2_mer.zip
     mkdir sql
     cd ../..
+    
     echo "Insertion  du référentiel géographique : zones à statut de france métropolitaine..."
     echo "...Aires de protection de biotope..."
     sudo -n -u postgres -s shp2pgsql -s 2154 -a -g the_geom -W "LATIN1"  data/layers/apb/apb.shp layers.l_zonesstatut > data/layers/sql/apb.sql
@@ -151,14 +159,16 @@ then
     echo "...ZNIEFF 2 mer..."
     sudo -n -u postgres -s shp2pgsql -s 2154 -a -g the_geom -W "LATIN1"  data/layers/znieff2_mer/znieff2_mer.shp layers.l_zonesstatut > data/layers/sql/znieff2_mer.sql
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/znieff2_mer.sql &>> log/install_db.log
-    
     #export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name  -f data/layers/zonesstatut.sql &>> log/install_db.log
+    
     echo "Insertion d'un jeu de données test dans les schémas contactfaune et contactinv de la base"
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/2154/data_set_synthese_2154.sql  &>> log/install_db.log
 
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
-    rm data/inpn/taxref*
+    rm data/inpn/*.txt
+    rm data/inpn/*.xls
+    rm data/inpn/*.csv
     rm data/layers/communes_metropole.sql
     # rm data/layers/zonesstatut.sql
     rm -R data/layers/apb
