@@ -567,151 +567,171 @@ application.synthese.search = function() {
          toolbarItems.add('->');
          toolbarItems.add({xtype: 'label',id: 'result_count',text:'les 50 dernières observations'});
         
-        var columns = [
-            {
-                xtype : 'actioncolumn'
-                ,sortable : false
-                ,hideable : false
-                ,menuDisabled : true
-                ,width:25
-                ,items : [{
-                    tooltip : 'Ce taxon bénéfie d\'un statut de protection'
-                    ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
-                        return (record.data.no_protection ? '' : 'fr');
-                    }
-                    ,scope : this
-                    ,handler : function(grid, rowIndex, colIndex) {
-                        var record = grid.getStore().getAt(rowIndex);
-                        window.open('http://inpn.mnhn.fr/espece/cd_nom/' + record.data.cd_nom + '/tab/statut');
-                    }
-                }]
-            },{
-                xtype : 'actioncolumn'
-                ,sortable : false
-                ,hideable : false
-                ,menuDisabled : true
-                ,width:25
-                ,items : [{
-                    tooltip : 'Ce taxon est patrimonial pour le PN Ecrins'
-                    ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
-                        return (record.data.no_patrimonial ? '' : 'logo_pne_mini');
-                    }
-                    ,scope : this
-                }]
-            }
-            ,{header: "Id",  width: 50, sortable: true, dataIndex: 'id_synthese',hidden: true}
-            ,{header: "Id source",  width: 50, sortable: true, dataIndex: 'id_source',hidden: true}
-            ,{header: "Id propriétaire",  width: 50, sortable: true, dataIndex: 'id_organisme',hidden: true}
-            ,{header: "Code fiche",  width: 50, sortable: true, dataIndex: 'code_fiche_source',hidden: true}
-            ,{header: "cd nom", width: 45, sortable: true, dataIndex: 'cd_nom',hidden: true}
-            ,{header: "Latin", width: 100, sortable: true, dataIndex: 'taxon_latin',hidden: true}
-            ,{id:'taxon',header: "Français", width: 100, sortable: true, dataIndex: 'taxon_francais'}
-            ,{header: "Date",  width: 60, sortable: true, dataIndex: 'dateobs',renderer: Ext.util.Format.dateRenderer('d/m/Y')}
-            ,{header: "Altitude", width: 50, sortable: true, dataIndex: 'altitude',hidden: true}
-            ,{header: "Commune", width: 110, sortable: true, dataIndex: 'nomcommune',hidden: true}
-            ,{header: "Programme", width: 90, sortable: true, dataIndex: 'nom_programme'}
-            ,{header: "Observateurs", width: 120, sortable: true, dataIndex: 'observateurs',hidden: true}
-            ,{header: "Patri", width: 45, sortable: true, dataIndex: 'patrimonial',hidden: true}
-            ,{
-                xtype : 'actioncolumn'
-                ,sortable : false
-                ,hideable : false
-                ,menuDisabled : true
-                ,width:25
-                ,items : [{
-                    tooltip : 'Modifier cette observation'
-                    ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
-                        var displayClass = '';
-                        if(record.data.edit_ok){
-                            displayClass = 'action-edit';
+        var colModel = new Ext.grid.ColumnModel({
+            columns : [
+                {
+                    xtype : 'actioncolumn'
+                    ,sortable : false
+                    ,hideable : false
+                    ,menuDisabled : true
+                    ,width:25
+                    ,items : [{
+                        tooltip : 'Ce taxon bénéfie d\'un statut de protection'
+                        ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
+                            return (record.data.no_protection ? '' : 'fr');
                         }
-                        return displayClass;
-                    }
-                    ,scope : this
-                    ,handler : function(grid, rowIndex, colIndex) {
-                        var record = grid.getStore().getAt(rowIndex);
-                        var code = record.data.code_fiche_source;
-                        if(code!=''||code!=null){
-                            var reg=new RegExp("[-]+", "g");
-                            var tableau=code.split(reg);
-                            var id_fiche = tableau[0].substr(1,20);
-                            var id_releve = tableau[1].substr(1,20);
-                            if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
-                            if(record.data.id_source==id_source_contactinv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
+                        ,scope : this
+                        ,handler : function(grid, rowIndex, colIndex) {
+                            var record = grid.getStore().getAt(rowIndex);
+                            window.open('http://inpn.mnhn.fr/espece/cd_nom/' + record.data.cd_nom + '/tab/statut');
                         }
-                    }
-                }]
-            },{
-                xtype : 'actioncolumn'
-                ,sortable : false
-                ,hideable : false
-                ,menuDisabled : true
-                ,width:25
-                ,items : [{
-                    tooltip : 'Supprimer cette observation'
-                    ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
-                        var displayClass = '';
-                        if(record.data.edit_ok){
-                            displayClass = 'action-remove';
+                    }]
+                },{
+                    xtype : 'actioncolumn'
+                    ,sortable : false
+                    ,hideable : false
+                    ,menuDisabled : true
+                    ,width:25
+                    ,items : [{
+                        tooltip : 'Ce taxon est patrimonial pour le PN Ecrins'
+                        ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
+                            return (record.data.no_patrimonial ? '' : 'logo_pne_mini');
                         }
-                        return displayClass;
-                    }
-                    ,scope : this
-                    ,handler : function(grid, rowIndex, colIndex) {
-                        var record = grid.getStore().getAt(rowIndex);
-                        Ext.Msg.confirm('Attention !'
-                            ,'Etes-vous certain de vouloir supprimer cette observation de "'+record.data.taxon_francais+'" ?'
-                            ,function(btn) {
-                                if (btn == 'yes') {
-                                    var code = record.data.code_fiche_source;
-                                    if(code!=''||code!=null){
-                                        var reg=new RegExp("[-]+", "g");
-                                        var tableau=code.split(reg);
-                                        var id_fiche = tableau[0].substr(1,20);
-                                        var id_releve = tableau[1].substr(1,20);
-                                        if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
-                                        if(record.data.id_source==id_source_contactinv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
+                        ,scope : this
+                    }]
+                }
+                ,{header: "Id", width: 60,  sortable: true, dataIndex: 'id_synthese',hidden: true}
+                ,{header: "Id source", width: 25,  sortable: true, dataIndex: 'id_source',hidden: true}
+                ,{header: "Id propriétaire", width: 25,  sortable: true, dataIndex: 'id_organisme',hidden: true}
+                ,{header: "Code fiche", width: 100,  sortable: true, dataIndex: 'code_fiche_source',hidden: true}
+                ,{header: "cd nom", width: 50, sortable: true, dataIndex: 'cd_nom',hidden: true}
+                ,{header: "Latin", width: 100, sortable: true, dataIndex: 'taxon_latin',hidden: true}
+                ,{id:'taxon',header: "Français", width: 100, sortable: true, dataIndex: 'taxon_francais'}
+                ,{header: "Date",  width: 60, sortable: true, dataIndex: 'dateobs',renderer: Ext.util.Format.dateRenderer('d/m/Y')}
+                ,{header: "Altitude", width: 40, sortable: true, dataIndex: 'altitude',hidden: true}
+                ,{header: "Commune", width: 120, sortable: true, dataIndex: 'nomcommune',hidden: true}
+                ,{header: "Programme", width: 90, sortable: true, dataIndex: 'nom_programme'}
+                ,{header: "Observateurs",width: 90,  sortable: true, dataIndex: 'observateurs',hidden: true}
+                ,{header: "Patri", width: 30, sortable: true, dataIndex: 'patrimonial',hidden: true}
+                ,{
+                    xtype : 'actioncolumn'
+                    ,sortable : false
+                    ,hideable : false
+                    ,menuDisabled : true
+                    ,width:25
+                    ,items : [{
+                        tooltip : 'Modifier cette observation'
+                        ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
+                            var displayClass = '';
+                            if(record.data.edit_ok){
+                                displayClass = 'action-edit';
+                            }
+                            return displayClass;
+                        }
+                        ,scope : this
+                        ,handler : function(grid, rowIndex, colIndex) {
+                            var record = grid.getStore().getAt(rowIndex);
+                            var code = record.data.code_fiche_source;
+                            if(code!=''||code!=null){
+                                var reg=new RegExp("[-]+", "g");
+                                var tableau=code.split(reg);
+                                var id_fiche = tableau[0].substr(1,20);
+                                var id_releve = tableau[1].substr(1,20);
+                                if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
+                                if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
+                                if(record.data.id_source==id_source_contactinv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
+                            }
+                        }
+                    }]
+                },{
+                    xtype : 'actioncolumn'
+                    ,sortable : false
+                    ,hideable : false
+                    ,menuDisabled : true
+                    ,width:25
+                    ,items : [{
+                        tooltip : 'Supprimer cette observation'
+                        ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
+                            var displayClass = '';
+                            if(record.data.edit_ok){
+                                displayClass = 'action-remove';
+                            }
+                            return displayClass;
+                        }
+                        ,scope : this
+                        ,handler : function(grid, rowIndex, colIndex) {
+                            var record = grid.getStore().getAt(rowIndex);
+                            Ext.Msg.confirm('Attention !'
+                                ,'Etes-vous certain de vouloir supprimer cette observation de "'+record.data.taxon_francais+'" ?'
+                                ,function(btn) {
+                                    if (btn == 'yes') {
+                                        var code = record.data.code_fiche_source;
+                                        if(code!=''||code!=null){
+                                            var reg=new RegExp("[-]+", "g");
+                                            var tableau=code.split(reg);
+                                            var id_fiche = tableau[0].substr(1,20);
+                                            var id_releve = tableau[1].substr(1,20);
+                                            if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                            if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
+                                            if(record.data.id_source==id_source_contactinv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
+                                        }
                                     }
                                 }
-                            }
-                            ,this // scope
-                        );
+                                ,this // scope
+                            );
+                        }
+                    }]
+                },{
+                    xtype : 'actioncolumn'
+                    ,sortable : false
+                    ,hideable : false
+                    ,menuDisabled : true
+                    ,width:25
+                    ,items : [{
+                        tooltip : 'Centrer la carte sur l\'observation'
+                        ,getClass : function(v, meta, record, rowIdx, colIdx, store) {
+                            return 'action-recenter';
+                        }
+                        ,scope : this
+                        ,handler : function(grid, rowIndex, colIndex) {
+                            var record = grid.getStore().getAt(rowIndex);
+                            var zoomLevel = map.getZoomForExtent(record.data.feature.geometry.getBounds());
+                            var centerGeom = record.data.feature.geometry.getBounds().getCenterLonLat();
+                            if (zoomLevel > 15){zoomLevel = 15;}
+                            map.setCenter(centerGeom,zoomLevel);
+                        }
+                    }]
+                }
+            ]
+            ,listeners:{
+                hiddenchange:function(cm,columnIndex,hidden){
+                    var w = Ext.getCmp('synthese_list_grid').getInnerWidth();
+                    var cm = Ext.getCmp('synthese_list_grid').getColumnModel();
+                    id = cm.getColumnId(columnIndex);
+                    var c = cm.getColumnById(id);
+                    cw = c.width;
+                    if(!hidden){
+                        Ext.getCmp('synthese_list_grid').setWidth(w+cw);
                     }
-                }]
-            },{
-                xtype : 'actioncolumn'
-                ,sortable : false
-                ,hideable : false
-                ,menuDisabled : true
-                ,width:25
-                ,items : [{
-                    tooltip : 'Centrer la carte sur l\'observation'
-                    ,getClass : function(v, meta, record, rowIdx, colIdx, store) {
-                        return 'action-recenter';
+                    else{
+                        Ext.getCmp('synthese_list_grid').setWidth(w-cw);
                     }
-                    ,scope : this
-                    ,handler : function(grid, rowIndex, colIndex) {
-                        var record = grid.getStore().getAt(rowIndex);
-                        var zoomLevel = map.getZoomForExtent(record.data.feature.geometry.getBounds());
-                        var centerGeom = record.data.feature.geometry.getBounds().getCenterLonLat();
-                        if (zoomLevel > 15){zoomLevel = 15;}
-                        map.setCenter(centerGeom,zoomLevel);
-                    }
-                }]
+                    Ext.getCmp('synthese_list_grid').ownerCt.doLayout();
+                }   
             }
-        ];
+        });
 
         syntheseListGrid = new Ext.grid.GridPanel({
             region:"east"
             ,id: 'synthese_list_grid'
             ,xtype: 'grid'
+            ,anchor:'30%'
             ,width:450
             ,split: true
             ,store: store
             ,loadMask: true
-            ,columns:columns
+            // ,columns:columns
+            ,colModel : colModel
             ,sm: new Ext.grid.RowSelectionModel({
                 singleSelect:true
                 ,listeners:{
