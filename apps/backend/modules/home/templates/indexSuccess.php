@@ -7,14 +7,14 @@
     </div>
     <div id ="container">
 
-        <h2>Consultation</h2>
+        <h2>SYNTHÈSE</h2>
             <p>Pour consulter la synthèse des observations faune et flore, tous protocoles confondus.</p>
             <p class="ligne_lien">
                  <a href="synthese" class="btn btn-default"><img src="images/pictos/oiseau.gif">Synthèse des observations</a>
             </p>
             <div id="interligne50"></div>
             
-        <h2>Saisie</h2>
+        <h2>PROTOCOLES</h2>
             <p>
                 Pour saisir de nouvelles données, vous pouvez utiliser l'un des liens ci-dessous.<br/>
                 Pour modifier des données saisies à l'aide d'un des formulaires proposés en lien ci-dessous, vous devez passer par la synthèse pour retrouver les enregistrements à modifier.
@@ -23,7 +23,7 @@
                 <?php echo $liens_saisie;?>
             </p>
 
-        <h2>Statistiques</h3>
+        <h2>STATISTIQUES</h3>
             <div class="row" style="border:1px solid #ddd;">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Règnes</h3>
