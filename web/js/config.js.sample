@@ -41,3 +41,4 @@ id_classe_ecrevisses = 105;
 id_classe_insectes = 106;
 id_classe_arachnides = 112;
 id_classe_myriapodes = 111;
+id_classe_mollusques = 113;
