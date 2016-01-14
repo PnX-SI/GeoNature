@@ -1,11 +1,11 @@
 <body>
-<div id="home" class="container">
+<div id="home">
     
     <div class="jumbotron">
         <div id="bandeau_accueil"></div>
         <h1 id="home_title" ><small class="text-muted"><?php echo sfGeonatureConfig::$apptitle_main; ?></small></h1>
     </div>
-    <div id ="container">
+    <div id="accueil" class="container">
 
         <h2>SYNTHÈSE</h2>
             <p>Pour consulter la synthèse des observations faune et flore, tous protocoles confondus.</p>
