@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-1.6.0 dev (2015-12-21)
+1.6.0 (2016-01-14)
 ------------------
 
 **Note de version**
@@ -15,6 +15,7 @@ CHANGELOG
 Attention de bien respecter la structure du tableau JSON et notamment syntaxe (accolades, virgules, nom des objects, etc...)
 * Ajouter les id_liste pour les classes faune filtrables dans les formulaires de saisie dans ``web/js/config.map``. Ceci concerne id_classe_oiseaux, id_classe_mammiferes, id_classe_amphibiens, id_classe_reptiles, id_classe_poissons et id_classe_ecrevisses, id_classe_insectes, id_classe_arachnides, id_classe_myriapodes, id_classe_mollusques. 
 Voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master/web/js/config.js.sample#L32-44
+* Mettre à jour la table ``synthese.taxref`` en version 8. Cette mise à jour pouvant avoir un impact fort sur vos données, son automatisation n'a pas été prévue. Le script sql n'est donc pas fourni. Toutefois, GeoNature 1.6 peut fonctionner avec taxref en V7. Pour une installation nouvelle de la base de données, GeoNature 1.6 est fourni avec taxref V8.
 * Le routing a été mise à jour, vous devez vider le cache de symfony. Pour cela, placez vous dans le répertoire racine de l'application et effectuez la commande suivante :
 
     ::
@@ -22,6 +23,7 @@ Voir l'exemple dans le fichier https://github.com/PnEcrins/GeoNature/blob/master
 
 **Changements**
 
+* Passage de taxref V7 à Taxref V8 - Fix #34
 * Correction d'une erreur lors de l'enregistrement de la saisie invertébrés. - Fix #104
 * Mise en paramètre du id_application dans ``lib/sfGeonatureConfig.php.php`` - Fix #105
 * Recharger la synthese après suppression d'un enregistrement - Fix #94 
