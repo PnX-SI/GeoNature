@@ -2,6 +2,9 @@
 CHANGELOG
 =========
 
+1.7.0 dev (unreleased)
+----------------------
+
 1.6.0 (2016-01-14)
 ------------------
 
@@ -51,6 +54,7 @@ CHANGELOG
 * Correction des doublons dans la recherche multi-taxons - Fix #101
 * Autres corrections mineures
 
+
 1.5.0 (2015-11-26)
 ------------------
 
@@ -99,11 +103,12 @@ CHANGELOG
 * Factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config.
 * Création d'une configuration javascript carto dédiée (``configmap.js``).
  
- **Corrections de bug**
+**Corrections de bug**
  
  * Correction des problèmes de saisie de la version 1.4.0 liés à la migration de la taxonomie.
  * Correction de bugs dans Flore Station et Bryophytes (Zoom, recherche
- 
+
+
 1.4.0 (2015-10-16)
 ------------------
 
