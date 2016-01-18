@@ -36,7 +36,7 @@ CHANGELOG
 * Affichage d'un message pendant le chargement des exports
 * Mise en place de statistiques automatiques sur la page d'accueil, basées sur les listes de taxons. A compléter. 
 
- **Corrections de bug**
+**Corrections de bug**
 
 * Intégration de la librairie ``OpenLayers.js`` en local dans le code car les liens distants ne fonctionnaient plus - Fix #97
 * Correction d'une erreur lors de l'enregistrement de la saisie invertébrés - Fix #104
