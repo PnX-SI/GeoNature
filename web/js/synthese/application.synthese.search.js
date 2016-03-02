@@ -2425,7 +2425,7 @@ application.synthese.search = function() {
             var reg=new RegExp("( )", "g");
             var gmlFile = application.synthese.user.nom.replace(reg,"_");
             Ext.Ajax.request({
-                url : host_uri+"/"+app_uri+"/uploads/shapes/"+gmlFile+"_"+randomnumber+".gml"  
+                url : "uploads/shapes/"+gmlFile+"_"+randomnumber+".gml"  
                 ,method: 'GET',
                 success: function (result, request) {
                     var featurecollection= result.responseText;
