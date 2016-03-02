@@ -3849,7 +3849,7 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
             FROM taxonomie.bib_listes l
             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
-            WHERE l.id_liste >= 100 AND l.id_liste < 200
+            WHERE l.id_liste = IN(1, 11, 12, 13, 14)
             GROUP BY l.id_liste, l.nom_liste, l.desc_liste
         ) g
     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
@@ -4115,7 +4115,7 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS
         FROM taxonomie.bib_listes l
         JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
         JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
-        WHERE l.id_liste >= 100 AND l.id_liste < 200
+        WHERE l.id_liste IN(2,5,8,9,10,15,16)
         GROUP BY l.id_liste, l.nom_liste, l.desc_liste
     ) g
     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
@@ -4889,7 +4889,7 @@ CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS
    FROM taxonomie.taxref txr
      JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
      JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-     JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste AND (l.id_liste = ANY (ARRAY[3, 101, 105, 106, 107, 108, 109, 110, 111, 112, 113]))
+     JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste AND (l.id_liste = ANY (ARRAY[1001, 1002,1003,1004]))
      LEFT JOIN ( SELECT tpe.cd_nom,
             string_agg((((tpa.arrete || ' '::text) || tpa.article::text) || '__'::text) || tpa.url::text, '#'::text) AS protections
            FROM taxonomie.taxref_protection_especes tpe

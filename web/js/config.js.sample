@@ -29,16 +29,16 @@ id_source_bryophytes = 6;
 
 //configuration du filtre par classes contact faune et mortalité
 //Utiliser les identifiants id_liste de la table taxonomie.bib_listes
-id_classe_oiseaux = 108;
-id_classe_mammiferes = 107;
-id_classe_amphibiens = 101;
-id_classe_reptiles = 110;
-id_classe_poissons = 109;
+id_classe_oiseaux = 12;
+id_classe_mammiferes = 11;
+id_classe_amphibiens = 1;
+id_classe_reptiles = 14;
+id_classe_poissons = 13;
 
 //configuration du filtre par classes contact invertébré
 //Utiliser les identifiants id_liste de la table taxonomie.bib_listes
-id_classe_ecrevisses = 105;
-id_classe_insectes = 106;
-id_classe_arachnides = 112;
-id_classe_myriapodes = 111;
-id_classe_mollusques = 113;
+id_classe_ecrevisses = 5;
+id_classe_insectes = 9;
+id_classe_arachnides = 16;
+id_classe_myriapodes = 15;
+id_classe_mollusques = 101;
