@@ -1,4 +1,4 @@
-<?php
+Ôªø<?php
 
 
 class TRelevesCfTable extends Doctrine_Table
@@ -23,13 +23,13 @@ class TRelevesCfTable extends Doctrine_Table
             foreach ($releves as $key => &$releve)
             {
               if($releve['id_critere_cf']==2){
-                if($releve['am']==1){$releve['sexeage']='am';$releve['sexeageinfo']='Ad m‚le';}
+                if($releve['am']==1){$releve['sexeage']='am';$releve['sexeageinfo']='Ad m√¢le';}
                 if($releve['af']==1){$releve['sexeage']='af';$releve['sexeageinfo']='Ad femelle';}
-                if($releve['ai']==1){$releve['sexeage']='ai';$releve['sexeageinfo']='Ad indÈterminÈ';}
+                if($releve['ai']==1){$releve['sexeage']='ai';$releve['sexeageinfo']='Ad ind√©termin√©';}
                 if($releve['na']==1){$releve['sexeage']='na';$releve['sexeageinfo']='Non adulte';}
                 if($releve['jeune']==1){$releve['sexeage']='jeune';$releve['sexeageinfo']='Jeune';}
                 if($releve['yearling']==1){$releve['sexeage']='yearling';$releve['sexeageinfo']='Yearling';}
-                if($releve['sai']==1){$releve['sexeage']='sai';$releve['sexeageinfo']='Sexe et ‚ge indÈterminÈ';}
+                if($releve['sai']==1){$releve['sexeage']='sai';$releve['sexeageinfo']='Sexe et √¢ge ind√©termin√©';}
               }
               $releve['cd_ref'] = $releve['VNomadeTaxonsFaune'][0]['cd_ref'];
               $releve['nom_francais'] = $releve['VNomadeTaxonsFaune'][0]['nom_francais'];
