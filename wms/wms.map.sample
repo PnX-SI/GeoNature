@@ -198,7 +198,7 @@ LAYER
   PROJECTION
     "init=epsg:2154"
   END
-  FILTER "id_type=7"
+  FILTER "id_type=7 OR id_type=8"
   CLASS
     NAME "n2000"
     STYLE
@@ -228,45 +228,45 @@ LAYER
   END
 END
 
-LAYER
-  NAME "sitesclasses"
-  STATUS ON
-  TYPE POLYGON
-  CONNECTIONTYPE POSTGIS
-  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
-  DATA "the_geom FROM layers.l_zonesstatut"
-  PROJECTION
-    "init=epsg:2154"
-  END
-  FILTER "id_type=8"
-  CLASS
-    NAME "sitesclasses"
-    STYLE
-      OUTLINECOLOR 80 80 135
-      WIDTH 2
-    END
-  END
-END
+#LAYER
+  #NAME "sitesclasses"
+  #STATUS ON
+  #TYPE POLYGON
+  #CONNECTIONTYPE POSTGIS
+  #CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
+  #DATA "the_geom FROM layers.l_zonesstatut"
+  #PROJECTION
+    #"init=epsg:2154"
+  #END
+  #FILTER "id_type=8"
+  #CLASS
+    #NAME "sitesclasses"
+    #STYLE
+      #OUTLINECOLOR 80 80 135
+      #WIDTH 2
+    #END
+  #END
+#END
 
-LAYER
-  NAME "sitesinscrits"
-  STATUS ON
-  TYPE POLYGON
-  CONNECTIONTYPE POSTGIS
-  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
-  DATA "the_geom FROM layers.l_zonesstatut"
-  PROJECTION
-    "init=epsg:2154"
-  END
-  FILTER "id_type=9"
-  CLASS
-    NAME "sitesinscrits"
-    STYLE
-      OUTLINECOLOR 80 80 115
-      WIDTH 2
-    END
-  END
-END
+#LAYER
+  #NAME "sitesinscrits"
+  #STATUS ON
+  #TYPE POLYGON
+  #CONNECTIONTYPE POSTGIS
+  #CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
+  #DATA "the_geom FROM layers.l_zonesstatut"
+  #PROJECTION
+    #"init=epsg:2154"
+  #END
+  #FILTER "id_type=9"
+  #CLASS
+    #NAME "sitesinscrits"
+    #STYLE
+      #OUTLINECOLOR 80 80 115
+      #WIDTH 2
+    #END
+  #END
+#END
 
 LAYER
   NAME "reservesnationales"
