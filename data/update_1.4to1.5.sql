@@ -300,7 +300,7 @@ BEGIN
             ) o ON o.id_cf = f.id_cf
 	WHERE r.id_releve_cf = new.id_releve_cf;
 	-- on calcul si on est dans le coeur
-	IF st_intersects((SELECT the_geom FROM layers.l_zonesstatut WHERE id_zone = 3249), fiche.the_geom_27572) THEN 
+	IF st_intersects((SELECT the_geom FROM layers.l_zonesstatut WHERE id_zone = 3249), fiche.the_geom_2154) THEN 
 	    danslecoeur = true;
 	ELSE
 	    danslecoeur = false;
@@ -324,7 +324,6 @@ BEGIN
 		remarques,
 		derniere_action,
 		supprime,
-		the_geom_27572,
 		the_geom_3857,
 		the_geom_2154,
 		the_geom_point,
@@ -351,7 +350,6 @@ BEGIN
 	new.commentaire,
 	'c',
 	false,
-	fiche.the_geom_27572,
 	fiche.the_geom_3857,
 	fiche.the_geom_2154,
 	fiche.the_geom_3857,
