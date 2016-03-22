@@ -108,6 +108,21 @@ class BibTaxonsTable extends Doctrine_Table
         return $query;
     }
     
+    public static function listCflore()
+    {
+        $query= Doctrine_Query::create()
+            ->select('t.id_taxon, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
+            ->distinct()
+            ->from('VNomadeTaxonsFlore t')
+            ->orderBy('t.nom_latin')
+            ->fetchArray();
+        foreach ($query as $key => &$val)
+        {
+            if($val['nom_francais']==null || $val['nom_francais']=='null' || $val['nom_francais']==''){$val['nom_francais']=$val['nom_latin'];}
+        }
+        return $query;
+    }
+    
     public static function listCf()
     {
         $query= Doctrine_Query::create()
@@ -139,6 +154,32 @@ class BibTaxonsTable extends Doctrine_Table
         return $query;
     }
 
+    public static function listCfloreUnite($id_unite_geo = null)
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        $sql = "(
+                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
+                    t.id_classe, t.patrimonial, t.message,cut.couleur
+                    FROM contactflore.v_nomade_taxons_flore t
+                    LEFT JOIN contactflore.cor_unite_taxon_cflore cut ON cut.id_taxon = t.id_taxon
+                    WHERE cut.id_unite_geo = $id_unite_geo
+                    ORDER BY t.nom_latin
+                )
+                UNION
+                (
+                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
+                    t.id_classe, t.patrimonial, t.message,'orange' AS couleur
+                    FROM contactflore.v_nomade_taxons_flore t
+                    WHERE t.id_taxon NOT IN (SELECT id_taxon FROM contactfflore.cor_unite_taxon_cflore WHERE id_unite_geo = $id_unite_geo)
+                    ORDER BY t.nom_latin
+                )";
+        $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($taxons as $key => &$val)
+        {
+            if($val['nom_francais']==null || $val['nom_francais']=='null' || $val['nom_francais']==''){$val['nom_francais']=$val['nom_latin'];}
+        }
+        return $taxons;
+    }
     public static function listCfUnite($id_unite_geo = null)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();

@@ -25,6 +25,7 @@
  * @property LSecteurs $LSecteurs
  * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TFichesCf
+ * @property Doctrine_Collection $TFichesCflore
  * @property Doctrine_Collection $TFichesInv
  * @property Doctrine_Collection $TStationsBryo
  * @property Doctrine_Collection $TStationsFs
@@ -49,6 +50,7 @@
  * @method LSecteurs           getLSecteurs()     Returns the current record's "LSecteurs" value
  * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
+ * @method Doctrine_Collection getTFichesCflore() Returns the current record's "TFichesCflore" collection
  * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
  * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
  * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
@@ -72,6 +74,7 @@
  * @method LCommunes           setLSecteurs()     Sets the current record's "LSecteurs" value
  * @method LCommunes           setSyntheseff()    Sets the current record's "Syntheseff" collection
  * @method LCommunes           setTFichesCf()     Sets the current record's "TFichesCf" collection
+ * @method LCommunes           setTFichesCflore() Sets the current record's "TFichesCflore" collection
  * @method LCommunes           setTFichesInv()    Sets the current record's "TFichesInv" collection
  * @method LCommunes           setTStationsBryo() Sets the current record's "TStationsBryo" collection
  * @method LCommunes           setTStationsFs()   Sets the current record's "TStationsFs" collection
@@ -169,6 +172,10 @@ abstract class BaseLCommunes extends sfDoctrineRecord
              'foreign' => 'insee'));
 
         $this->hasMany('TFichesCf', array(
+             'local' => 'insee',
+             'foreign' => 'insee'));
+
+        $this->hasMany('TFichesCflore', array(
              'local' => 'insee',
              'foreign' => 'insee'));
 

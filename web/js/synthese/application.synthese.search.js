@@ -640,6 +640,7 @@ application.synthese.search = function() {
                                 if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.editCf.loadFiche(id_fiche,'update',null);}
                                 if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.editMortalite.loadFiche(id_fiche,'update',null);}
                                 if(record.data.id_source==id_source_contactinv){application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);}
+                                if(record.data.id_source==id_source_contactflore){application.synthese.editCflore.loadFiche(id_fiche,'update',null);}
                             }
                         }
                     }]
@@ -674,6 +675,7 @@ application.synthese.search = function() {
                                             if(record.data.id_source==id_source_contactfaune&&record.data.id_protocole==id_protocole_contact_vertebre){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
                                             if(record.data.id_source==id_source_mortalite&&record.data.id_protocole==id_protocole_mortalite){application.synthese.search.deleteReleveCf(id_releve, record.data.taxon_francais);}
                                             if(record.data.id_source==id_source_contactinv){application.synthese.search.deleteReleveInv(id_releve, record.data.taxon_latin);}
+                                            if(record.data.id_source==id_source_contactflore){application.synthese.search.deleteReleveCflore(id_releve, record.data.taxon_latin);}
                                         }
                                     }
                                 }
@@ -767,7 +769,7 @@ application.synthese.search = function() {
                     if(record){
                         var code = record.data.code_fiche_source;
                         var id_source = record.data.id_source;
-                        if(code!='' && code!=null && (id_source==id_source_contactfaune || id_source==id_source_contactinv || id_source==id_source_mortalite)){
+                        if(code!='' && code!=null && (id_source==id_source_contactfaune || id_source==id_source_contactflore || id_source==id_source_contactinv || id_source==id_source_mortalite)){
                             var reg=new RegExp("[-]+", "g");
                             var tableau=code.split(reg);
                             var id_fiche = tableau[0].substr(1,20);
@@ -781,6 +783,9 @@ application.synthese.search = function() {
                             }
                             if(id_source==id_source_contactinv&&id_protocole==id_protocole_contact_invertebre&&record.data.edit_ok){
                                 application.synthese.editInvertebre.loadFiche(id_fiche,'update',null);
+                            }
+                            if(id_source==id_source_contactflore&&id_protocole==id_protocole_contact_flore&&record.data.edit_ok){
+                                application.synthese.editCflore.loadFiche(id_fiche,'update',null);
                             }
                             if(!record.data.edit_ok){Ext.ux.Toast.msg('Non, non, non !', 'Vous devez être l\'auteur de cette observation ou administrateur pour la modifier.');}  
                         }
@@ -2399,6 +2404,22 @@ application.synthese.search = function() {
                 }
                 ,failure: function (result, request) { 
                     Ext.MessageBox.alert('Erreur lors de la suppression');
+                } 
+            });
+        }
+        ,deleteReleveCflore: function(id, taxon) {
+            var params = {};
+            if (id) {params.id_releve_cflore = id;}
+            Ext.Ajax.request({
+                url : 'cflore/deletereleve'
+                ,method: 'POST'
+                ,params: params
+                ,success: function (result, request) {
+                    Ext.ux.Toast.msg('Suppression !', 'L\'observation de "'+taxon+'" a été supprimée.');
+                    formSearcher.triggerSearch();
+                }
+                ,failure: function (result, request) { 
+                    Ext.MessageBox.alert('Erreur lors de la suppression'); 
                 } 
             });
         }

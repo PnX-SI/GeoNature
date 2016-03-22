@@ -48,7 +48,7 @@ abstract class BaseCorUniteTaxonInv extends sfDoctrineRecord
              ));
         $this->hasColumn('id_unite_geo', 'integer', 4, array(
              'type' => 'integer',
-             'notnull' => true,
+             'primary' => true,
              'length' => 4,
              ));
         $this->hasColumn('derniere_date', 'date', 25, array(

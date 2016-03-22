@@ -8,6 +8,7 @@ class sfGeonatureConfig extends sfActions
     public static $id_lot_florepatri = 4;
     public static $id_lot_florestation = 5;
     public static $id_lot_bryo = 6;
+    public static $id_lot_cflore = 7;
     
     //Identifiants des protocoles dans la table meta.bib_protocoles
     public static $id_protocole_cf = 1;
@@ -16,6 +17,7 @@ class sfGeonatureConfig extends sfActions
     public static $id_protocole_florepatri = 4;
     public static $id_protocole_florestation = 5;
     public static $id_protocole_bryo = 6;
+    public static $id_protocole_cflore = 7;
     
     //Identifiants des sources de données dans la table synthese.bib_sources
     public static $id_source_cf = 1;
@@ -24,6 +26,7 @@ class sfGeonatureConfig extends sfActions
     public static $id_source_florepatri = 4;
     public static $id_source_florestation = 5;
     public static $id_source_bryo = 6;
+    public static $id_source_cflore = 7;
     
     //Personnalisation du contenu des menus déroulants (en lien avec la table utilisateurs.t_menus et utilisateurs.cor_role_menu)
     public static $id_menu_observateurs_cf = 9;
@@ -62,6 +65,7 @@ class sfGeonatureConfig extends sfActions
     public static $appname_cf = 'Contact faune - GeoNature';
     public static $appname_inv = 'Contact invertébrés - GeoNature';
     public static $appname_mortalite = 'Mortalite faune - GeoNature';
+    public static $appname_cflore = 'Contact flore - GeoNature';
     public static $appname_florepatri = 'Flore prioritaire - GeoNature';
     public static $appname_florestation = 'Flore station - GeoNature';
     public static $appname_bryo = 'Bryophytes - GeoNature';

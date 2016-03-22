@@ -148,7 +148,27 @@ saveStationBryo:
 saveTaxonBryo:
   url: /bryo/savetaxon
   param: { module: bryo, action: saveTaxon }
-  
+
+# Partie contact flore
+saveFicheCflore:
+  url: /cflore/save
+  param: { module: cflore, action: saveCflore }
+deleteFicheCflore:
+  url: /cflore/deletefiche
+  param: { module: cflore, action: deleteFicheCflore }
+deleteReleveCflore:
+  url: /cflore/deletereleve
+  param: { module: cflore, action: deleteReleveCflore }
+getZCflore:
+  url: /cflore/getz
+  param: { module: cflore, action: getZ }
+getOneFicheCflore:
+  url: /cflore/getone/:id_cflore
+  param: { module: cflore, action: getOneFiche }
+getListRelevesCflore:
+  url: /cflore/listreleves/:id_cflore
+  param: { module: cflore, action: getListRelevesCflore }
+
 # Partie contact faune
 saveFicheCf:
   url: /cf/save
@@ -227,7 +247,7 @@ getTaxonsCfUnite:
   url: /bibs/taxonscfu
   param: { module: bibs, action: listTaxonsCfu }
 
-# Menus déroulants flore 
+# Menus déroulants flore
 listObservateursFlore:
   url: /bibs/observateurs
   param: { module: bibs, action: listObservateursFlore }
@@ -240,6 +260,9 @@ filtreObservateursFs:
 filtreObservateursBryo:
   url: /bibs/filtreobservateursbryo
   param: { module: bibs, action: filtreObservateursBryo }
+filtreObservateursCflore:
+  url: /bibs/filtreobservateurscflore
+  param: { module: bibs, action: filtreObservateursCflore }
 anneesFp:
   url: /bibs/listanneefp
   param: { module: bibs, action: listAnneeFp }
@@ -306,6 +329,15 @@ abondances:
 abondancesBryo:
   url: /bibs/abondancesbryo
   param: { module: bibs, action: listAbondancesBryo }
+abondancesCflore:
+  url: /bibs/abondancescflore
+  param: { module: bibs, action: listAbondancesCflore }
+phenologiesCflore:
+  url: /bibs/phenologiescflore
+  param: { module: bibs, action: listPhenologiesCflore }
+validitesCflore:
+  url: /bibs/validitescflore
+  param: { module: bibs, action: listValiditesCflore }
 expositions:
   url: /bibs/expositions
   param: { module: bibs, action: listExpositions }
@@ -330,6 +362,12 @@ supports:
 idSophie:
   url: /bibs/sophie
   param: { module: bibs, action: listSophie }
+getTaxonsCflore:
+  url: /bibs/taxonscflore
+  param: { module: bibs, action: listTaxonsCflore }
+getTaxonsCfloreUnite:
+  url: /bibs/taxonscfloreu
+  param: { module: bibs, action: listTaxonsCfloreu }
 
 #Menus déroulants synthèse
 getAnneesSynthese:
@@ -401,6 +439,9 @@ fs:
 bryo: 
   url: /bryo
   param: { module: home, action: indexBryo }
+cflore:
+  url: /cflore
+  param: { module: home, action: indexCflore }
 synthese:
   url: /synthese
   param: { module: home, action: indexSynthese }
