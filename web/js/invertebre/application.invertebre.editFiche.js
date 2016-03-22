@@ -54,7 +54,7 @@ application.invertebre.editFiche = function() {
      * Property: protocol
      * {mapfish.Protocol.MapFish}
      */
-    var protocol = null
+    var protocol = null;
 
     /**
      * Property: eventProtocol
@@ -709,7 +709,7 @@ application.invertebre.editFiche = function() {
             }
             
         };
-       this.addNewTaxon = function(){
+        this.addNewTaxon = function(){
             Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('add');
             relevesStore.add(new blankRecord({
                 //attention l'ordre des champs est important
@@ -817,7 +817,7 @@ application.invertebre.editFiche = function() {
             ,title: 'Listes des taxons observés'
             ,bodyStyle:'padding:5px'
             ,width: 600
-            ,layout: 'column'    // Specifies that the items will now be arranged in columns
+            ,layout: 'column' // Specifies that the items will now be arranged in columns
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
@@ -876,7 +876,7 @@ application.invertebre.editFiche = function() {
                                     ,listeners: {
                                         check: function(checkbox,checked) {
                                                 if(checked){comboTaxonsTemplate('latin');
-                                                Ext.getCmp('combo-fiche-taxon').displayField = 'nom_latin'
+                                                Ext.getCmp('combo-fiche-taxon').displayField = 'nom_latin';
                                                 Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('combo-fiche-taxon').getValue());//pas trouvé mieux pour rafraichier en live le taxon déjà affiché dans le combo
                                             }
                                         }
@@ -1137,7 +1137,7 @@ application.invertebre.editFiche = function() {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('patrimonial',record.data.patrimonial);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('cd_ref_origine',record.data.cd_ref);
                                     Ext.getCmp('combo-fiche-critere').clearValue();
-                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_critere_inv',null); 
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_critere_inv',null);
                                     Ext.getCmp('fieldfiche-male').setValue(0);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('am',0);
                                     Ext.getCmp('fieldfiche-femelle').setValue(0);
@@ -1785,8 +1785,8 @@ application.invertebre.editFiche = function() {
      * Method: constructStringTaxons
      * Construct a multidimentional Array with all taxon informations
      */
-     var constructStringTaxons = function(){     
-        var arrayGlobal = []
+    var constructStringTaxons = function(){     
+        var arrayGlobal = [];
         Ext.getCmp('grid-taxons').getStore().each(function(rec){
             var attrib = [];
             var reg = new RegExp("(,)", "g");
@@ -1798,7 +1798,7 @@ application.invertebre.editFiche = function() {
             }
             arrayGlobal.push(attrib);
         });     
-        var taxons = arrayGlobal.join("|")
+        var taxons = arrayGlobal.join("|");
         return taxons;
     };
 

@@ -15,6 +15,7 @@
  * @property date $date_fin
  * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TFichesCf
+ * @property Doctrine_Collection $TFichesCflore
  * @property Doctrine_Collection $TFichesInv
  * @property Doctrine_Collection $TStationsBryo
  * @property Doctrine_Collection $TStationsFs
@@ -30,6 +31,7 @@
  * @method date                getDateFin()       Returns the current record's "date_fin" value
  * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
+ * @method Doctrine_Collection getTFichesCflore() Returns the current record's "TFichesCflore" collection
  * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
  * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
  * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
@@ -44,6 +46,7 @@
  * @method TProtocoles         setDateFin()       Sets the current record's "date_fin" value
  * @method TProtocoles         setSyntheseff()    Sets the current record's "Syntheseff" collection
  * @method TProtocoles         setTFichesCf()     Sets the current record's "TFichesCf" collection
+ * @method TProtocoles         setTFichesCflore() Sets the current record's "TFichesCflore" collection
  * @method TProtocoles         setTFichesInv()    Sets the current record's "TFichesInv" collection
  * @method TProtocoles         setTStationsBryo() Sets the current record's "TStationsBryo" collection
  * @method TProtocoles         setTStationsFs()   Sets the current record's "TStationsFs" collection
@@ -102,6 +105,10 @@ abstract class BaseTProtocoles extends sfDoctrineRecord
              'foreign' => 'id_protocole'));
 
         $this->hasMany('TFichesCf', array(
+             'local' => 'id_protocole',
+             'foreign' => 'id_protocole'));
+
+        $this->hasMany('TFichesCflore', array(
              'local' => 'id_protocole',
              'foreign' => 'id_protocole'));
 

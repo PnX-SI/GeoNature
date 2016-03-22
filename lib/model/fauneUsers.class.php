@@ -6,6 +6,7 @@ class fauneUsers extends sfGeonatureActions
         1 => 'utilisateur',
         2 => 'redacteur',
         3 => 'referent',
+        5 => 'validateur',
         6 => 'administrateur' 
     );
     

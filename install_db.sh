@@ -70,6 +70,9 @@ then
     echo "Insertion des données des tables dictionnaires de la base..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/data_synthese_2154.sql  &>> log/install_db.log
     
+    echo "Création du contact flore..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/contactflore.sql  &>> log/install_db.log
+    
     echo "Décompression des fichiers du référentiel géographique..."
     cd data/layers
     unzip apb.zip

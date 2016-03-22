@@ -8,19 +8,22 @@
  * @property integer $id_unite_geo
  * @property blob $the_geom
  * @property Doctrine_Collection $CorUniteTaxon
+ * @property Doctrine_Collection $CorUniteTaxonCflore
  * @property Doctrine_Collection $CorUniteTaxonInv
  * @property Doctrine_Collection $CorUniteSynthese
  * 
- * @method integer             getIdUniteGeo()       Returns the current record's "id_unite_geo" value
- * @method blob                getTheGeom()          Returns the current record's "the_geom" value
- * @method Doctrine_Collection getCorUniteTaxon()    Returns the current record's "CorUniteTaxon" collection
- * @method Doctrine_Collection getCorUniteTaxonInv() Returns the current record's "CorUniteTaxonInv" collection
- * @method Doctrine_Collection getCorUniteSynthese() Returns the current record's "CorUniteSynthese" collection
- * @method LUnitesGeo          setIdUniteGeo()       Sets the current record's "id_unite_geo" value
- * @method LUnitesGeo          setTheGeom()          Sets the current record's "the_geom" value
- * @method LUnitesGeo          setCorUniteTaxon()    Sets the current record's "CorUniteTaxon" collection
- * @method LUnitesGeo          setCorUniteTaxonInv() Sets the current record's "CorUniteTaxonInv" collection
- * @method LUnitesGeo          setCorUniteSynthese() Sets the current record's "CorUniteSynthese" collection
+ * @method integer             getIdUniteGeo()          Returns the current record's "id_unite_geo" value
+ * @method blob                getTheGeom()             Returns the current record's "the_geom" value
+ * @method Doctrine_Collection getCorUniteTaxon()       Returns the current record's "CorUniteTaxon" collection
+ * @method Doctrine_Collection getCorUniteTaxonCflore() Returns the current record's "CorUniteTaxonCflore" collection
+ * @method Doctrine_Collection getCorUniteTaxonInv()    Returns the current record's "CorUniteTaxonInv" collection
+ * @method Doctrine_Collection getCorUniteSynthese()    Returns the current record's "CorUniteSynthese" collection
+ * @method LUnitesGeo          setIdUniteGeo()          Sets the current record's "id_unite_geo" value
+ * @method LUnitesGeo          setTheGeom()             Sets the current record's "the_geom" value
+ * @method LUnitesGeo          setCorUniteTaxon()       Sets the current record's "CorUniteTaxon" collection
+ * @method LUnitesGeo          setCorUniteTaxonCflore() Sets the current record's "CorUniteTaxonCflore" collection
+ * @method LUnitesGeo          setCorUniteTaxonInv()    Sets the current record's "CorUniteTaxonInv" collection
+ * @method LUnitesGeo          setCorUniteSynthese()    Sets the current record's "CorUniteSynthese" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -47,6 +50,10 @@ abstract class BaseLUnitesGeo extends sfDoctrineRecord
     {
         parent::setUp();
         $this->hasMany('CorUniteTaxon', array(
+             'local' => 'id_unite_geo',
+             'foreign' => 'id_unite_geo'));
+
+        $this->hasMany('CorUniteTaxonCflore', array(
              'local' => 'id_unite_geo',
              'foreign' => 'id_unite_geo'));
 

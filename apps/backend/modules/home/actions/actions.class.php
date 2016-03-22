@@ -114,6 +114,16 @@ class homeActions extends sfGeonatureActions
         }
     }
     
+    public function executeIndexCflore(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_cflore);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
+    
     public function executeIndexMortalite(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){

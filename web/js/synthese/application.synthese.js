@@ -171,6 +171,18 @@ application.synthese = function() {
             }
             ,autoLoad:true
         })
+        ,storeObservateursCfloreAdd: new Ext.data.JsonStore({
+            url: 'bibs/observateurs'
+            ,fields: [
+                'id_role'
+                ,{name:'auteur',sortType: Ext.data.SortTypes.asAccentuatedString}
+            ]
+            ,sortInfo: {
+                field: 'auteur'
+                ,direction: 'ASC'
+            }
+            ,autoLoad:true
+        })
         ,storeMilieuxInv: new Ext.data.JsonStore({
             url: 'bibs/milieuxinv'
             ,fields: [

@@ -106,4 +106,17 @@ class TRolesTable extends Doctrine_Table
             ->fetchArray();
             return $query;
         }
+        
+        public static function filtreObservateursCflore()
+        {
+            $query = Doctrine_Query::create()
+            ->select('r.id_role, concat(r.nom_role, \' \',r.prenom_role) auteur' )
+            ->from('TRoles r')
+            ->innerJoin('r.CorRoleFicheCflore crfc')
+            ->where('r.groupe = false')
+            // ->addWhere('')
+            ->orderBy('auteur')
+            ->fetchArray();
+            return $query;
+        }
 }
