@@ -29,6 +29,7 @@
  * @property Doctrine_Collection $CorFsObservateur
  * @property Doctrine_Collection $CorRoleDroitApplication
  * @property Doctrine_Collection $CorRoleFicheCf
+ * @property Doctrine_Collection $CorRoleFicheCflore
  * @property Doctrine_Collection $CorRoleFicheInv
  * @property Doctrine_Collection $CorRoleMenu
  * @property Doctrine_Collection $CorRoles
@@ -58,6 +59,7 @@
  * @method Doctrine_Collection getCorFsObservateur()        Returns the current record's "CorFsObservateur" collection
  * @method Doctrine_Collection getCorRoleDroitApplication() Returns the current record's "CorRoleDroitApplication" collection
  * @method Doctrine_Collection getCorRoleFicheCf()          Returns the current record's "CorRoleFicheCf" collection
+ * @method Doctrine_Collection getCorRoleFicheCflore()      Returns the current record's "CorRoleFicheCflore" collection
  * @method Doctrine_Collection getCorRoleFicheInv()         Returns the current record's "CorRoleFicheInv" collection
  * @method Doctrine_Collection getCorRoleMenu()             Returns the current record's "CorRoleMenu" collection
  * @method Doctrine_Collection getCorRoles()                Returns the current record's "CorRoles" collection
@@ -86,6 +88,7 @@
  * @method TRoles              setCorFsObservateur()        Sets the current record's "CorFsObservateur" collection
  * @method TRoles              setCorRoleDroitApplication() Sets the current record's "CorRoleDroitApplication" collection
  * @method TRoles              setCorRoleFicheCf()          Sets the current record's "CorRoleFicheCf" collection
+ * @method TRoles              setCorRoleFicheCflore()      Sets the current record's "CorRoleFicheCflore" collection
  * @method TRoles              setCorRoleFicheInv()         Sets the current record's "CorRoleFicheInv" collection
  * @method TRoles              setCorRoleMenu()             Sets the current record's "CorRoleMenu" collection
  * @method TRoles              setCorRoles()                Sets the current record's "CorRoles" collection
@@ -204,6 +207,10 @@ abstract class BaseTRoles extends sfDoctrineRecord
              'foreign' => 'id_role'));
 
         $this->hasMany('CorRoleFicheCf', array(
+             'local' => 'id_role',
+             'foreign' => 'id_role'));
+
+        $this->hasMany('CorRoleFicheCflore', array(
              'local' => 'id_role',
              'foreign' => 'id_role'));
 

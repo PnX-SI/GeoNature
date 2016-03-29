@@ -5,6 +5,13 @@ BibAbondances:
       type: string(1)
       primary: true
     nom_abondance: string(128)
+BibAbondancesCflore:
+  tableName: contactflore.bib_abondances_cflore
+  columns:
+    id_abondance_cflore:
+      type: integer(4)
+      primary: true
+    nom_abondance_cflore: string(25)
 BibAbondancesBryo:
   tableName: bryophytes.bib_abondances
   columns:
@@ -168,6 +175,13 @@ BibMessagesCf:
       type: integer(4)
       primary: true
     texte_message_cf: string(255)
+BibMessagesCflore:
+  tableName: contactflore.bib_messages_cflore
+  columns:
+    id_message_cflore:
+      type: integer(4)
+      primary: true
+    texte_message_cflore: string(255)
 BibMessagesInv:
   tableName: contactinv.bib_messages_inv
   columns:
@@ -214,6 +228,13 @@ BibPerturbations:
     description:
       type: string(65)
       notnull: true
+BibPhenologiesCflore:
+  tableName: contactflore.bib_phenologies_cflore
+  columns:
+    id_phenologie_cflore:
+      type: integer(4)
+      primary: true
+    nom_phenologie_cflore: string(100)
 BibPhenologies:
   tableName: florepatri.bib_phenologies
   columns:
@@ -569,6 +590,26 @@ CorMessageTaxonCf:
       local: id_message_cf
       foreign: id_message_cf
       foreignAlias: CorMessageTaxonCf
+CorMessageTaxonCflore:
+  tableName: contactflore.cor_message_taxon_cflore
+  columns:
+    id_message_cflore:
+      type: integer(4)
+      primary: true
+    id_taxon:
+      type: integer(4)
+      primary: true
+  relations:
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: CorMessageTaxonCflore
+    BibMessagesCflore:
+      class: BibMessagesCflore
+      local: id_message_cflore
+      foreign: id_message_cflore
+      foreignAlias: CorMessageTaxonCflore
 CorMessageTaxonInv:
   tableName: contactinv.cor_message_taxon
   columns:
@@ -584,7 +625,7 @@ CorMessageTaxonInv:
       local: id_taxon
       foreign: id_taxon
       foreignAlias: CorMessageTaxonInv
-    BibMessagesCf:
+    BibMessagesInv:
       class: BibMessagesInv
       local: id_message_inv
       foreign: id_message_inv
@@ -682,7 +723,7 @@ CorRoleFicheCf:
       type: integer(4)
       primary: true
     id_cf:
-      type: integer(5)
+      type: integer(4)
       notnull: true
   relations:
     TRoles:
@@ -694,6 +735,27 @@ CorRoleFicheCf:
       class: TFichesCf
       local: id_cf
       foreign: id_cf
+      foreignAlias: CorRoleFicheCf
+CorRoleFicheCflore:
+  tableName: contactflore.cor_role_fiche_cflore
+  columns:
+    id_role:
+      type: integer(4)
+      primary: true
+    id_cflore:
+      type: integer(4)
+      notnull: true
+  relations:
+    TRoles:
+      class: TRoles
+      local: id_role
+      foreign: id_role
+      foreignAlias: CorRoleFicheCflore
+    TFichesCflore:
+      class: TFichesCflore
+      local: id_cflore
+      foreign: id_cflore
+      foreignAlias: CorRoleFicheCflore
 CorRoleFicheInv:
   tableName: contactinv.cor_role_fiche_inv
   columns:
@@ -713,6 +775,7 @@ CorRoleFicheInv:
       class: TFichesInv
       local: id_inv
       foreign: id_inv
+      foreignAlias: CorRoleFicheInv
 CorRoleMenu:
   tableName: utilisateurs.cor_role_menu
   columns:
@@ -777,6 +840,29 @@ CorUniteTaxon:
       local: id_unite_geo
       foreign: id_unite_geo
       foreignAlias: CorUniteTaxon
+CorUniteTaxonCflore:
+  tableName: contactflore.cor_unite_taxon_cflore
+  columns:
+    id_taxon:
+      type: integer(4)
+      primary: true
+    id_unite_geo:
+      type: integer(4)
+      primary: true
+    derniere_date: date(25)
+    couleur: string(10)
+    nb_obs: integer(4)
+  relations:
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: CorUniteTaxonCflore
+    LUnitesGeo:
+      class: LUnitesGeo
+      local: id_unite_geo
+      foreign: id_unite_geo
+      foreignAlias: CorUniteTaxonCflore
 CorUniteTaxonInv:
   tableName: contactinv.cor_unite_taxon_inv
   columns:
@@ -785,7 +871,7 @@ CorUniteTaxonInv:
       primary: true
     id_unite_geo:
       type: integer(4)
-      notnull: true
+      primary: true
     derniere_date: date(25)
     couleur: string(10)
     nb_obs: integer(4)
@@ -1236,6 +1322,51 @@ TFichesCf:
       local: id_organisme
       foreign: id_organisme
       foreignAlias: TFichesCf
+TFichesCflore:
+  tableName: contactflore.t_fiches_cflore
+  columns:
+    id_cflore:
+      type: integer(8)
+      primary: true
+    insee: string(5)
+    id_organisme: integer(4)
+    id_protocole: integer(4)
+    id_lot: integer(4)
+    dateobs: date(25)
+    altitude_saisie: integer(4)
+    altitude_sig: integer(4)
+    altitude_retenue: integer(4)
+    date_insert: timestamp(25)
+    date_update: timestamp(25)
+    supprime: 
+      type: boolean(1)
+      notnull: true
+    pdop: integer(4)
+    srid_dessin: integer(4)
+    saisie_initiale: string(20)
+    the_geom_2154: blob()
+    the_geom_3857: blob()
+  relations:
+    LCommunes:
+      class: LCommunes
+      local: insee
+      foreign: insee
+      foreignAlias: TFichesCflore
+    TProtocoles:
+      class: TProtocoles
+      local: id_protocole
+      foreign: id_protocole
+      foreignAlias: TFichesCflore
+    BibLots:
+      class: BibLots
+      local: id_lot
+      foreign: id_lot
+      foreignAlias: TFichesCflore
+    BibProprietaires:
+      class: BibProprietaires
+      local: id_organisme
+      foreign: id_organisme
+      foreignAlias: TFichesCflore
 TFichesInv:
   tableName: contactinv.t_fiches_inv
   columns:
@@ -1347,6 +1478,48 @@ TRelevesCf:
       local: id_cf
       foreign: id_cf
       foreignAlias: TRelevesCf
+TRelevesCflore:
+  tableName: contactflore.t_releves_cflore
+  columns:
+    id_releve_cflore:
+      type: integer(5)
+      primary: true
+    id_cflore: integer(5)
+    id_taxon: integer(4)
+    id_abondance_cflore: integer(4)
+    id_phenologie_cflore: integer(4)
+    validite_cflore: boolean(1)
+    cd_ref_origine: integer(4)
+    nom_taxon_saisi: string(100)
+    commentaire: string()
+    determinateur: string(255)
+    supprime: 
+      type: boolean(1)
+      notnull: true
+    herbier: 
+      type: boolean(1)
+      notnull: true   
+  relations:
+    BibAbondancesCflore:
+      class: BibAbondancesCflore
+      local: id_abondance_cflore
+      foreign: id_abondance_cflore
+      foreignAlias: TRelevesCflore
+    BibPhenologiesCflore:
+      class: BibPhenologiesCflore
+      local: id_phenologie_cflore
+      foreign: id_phenologie_cflore
+      foreignAlias: TRelevesCflore
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: TRelevesCflore
+    TFichesCflore:
+      class: TFichesCflore
+      local: id_cf
+      foreign: id_cf
+      foreignAlias: TRelevesCflore
 TRelevesInv:
   tableName: contactinv.t_releves_inv
   columns:
@@ -1723,6 +1896,35 @@ VNomadeTaxonsFaune:
       local: id_taxon
       foreign: id_taxon
       foreignAlias: VNomadeTaxonsFaune
+VNomadeTaxonsFlore:
+  tableName: contactflore.v_nomade_taxons_flore
+  columns:
+    id_taxon: 
+      type: integer(8)
+      primary: true
+    cd_ref: integer(8)
+    cd_nom: integer(8)
+    nom_latin: string(100)
+    nom_francais: string(50)
+    id_classe: integer(8)
+    patrimonial: boolean(1)
+    message: string(255)
+  relations:
+    BibTaxons:
+      class: BibTaxons
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: VNomadeTaxonsFlore
+    CorUniteTaxonCflore:
+      class: CorUniteTaxonCflore
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: VNomadeTaxonsFlore
+    TRelevesCflore:
+      class: TRelevesCflore
+      local: id_taxon
+      foreign: id_taxon
+      foreignAlias: VNomadeTaxonsFlore
 VNomadeTaxonsInv:
   tableName: contactinv.v_nomade_taxons_inv
   columns:

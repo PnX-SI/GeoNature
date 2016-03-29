@@ -76,12 +76,12 @@ class SyntheseffTable extends Doctrine_Table
     }
     private static function addTSyntheseFilters($params)
     {
-        //on doit gérer la valeur du emptyText d'extjs qui est transmise pour les champs autre que combobox
+        //on doit gÃ©rer la valeur du emptyText d'extjs qui est transmise pour les champs autre que combobox
         if($params['observateur']=='Observateur'){$params['observateur']=null;}
-        if($params['datedebut']=='Date début'){$params['datedebut']=null;}
-        if($params['periodedebut']=='Période début'){$params['periodedebut']=null;}
+        if($params['datedebut']=='Date dÃ©but'){$params['datedebut']=null;}
+        if($params['periodedebut']=='PÃ©riode dÃ©but'){$params['periodedebut']=null;}
         if($params['datefin']=='Date fin'){$params['datefin']=null;}
-        if($params['periodefin']=='Période fin'){$params['periodefin']=null;}
+        if($params['periodefin']=='PÃ©riode fin'){$params['periodefin']=null;}
         $sql = '';
         if (isset($params['searchgeom']) && $params['searchgeom']!='')
             $sql .= " AND ST_intersects(synt.the_geom_3857,ST_GeomFromText('".$params['searchgeom']."', 3857))";
@@ -99,18 +99,18 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= " AND synt.id_organisme = ".$params['id_organisme'];            
         if (isset($params['datedebut']) && $params['datedebut']!=null && isset($params['datefin']) && $params['datefin']!=null)
             $sql .= " AND synt.dateobs BETWEEN to_date('".$params['datedebut']."','DD MM YYYY') AND to_date('".$params['datefin']."','DD MM YYYY')";
-        if (isset($params['periodedebut']) && $params['periodedebut']!=null && $params['periodedebut']!='Période début' && isset($params['periodefin']) && $params['periodefin']!=null && $params['periodefin']!='Période fin')   
+        if (isset($params['periodedebut']) && $params['periodedebut']!=null && $params['periodedebut']!='PÃ©riode dÃ©but' && isset($params['periodefin']) && $params['periodefin']!=null && $params['periodefin']!='PÃ©riode fin')   
             $sql .= " AND periode(synt.dateobs,to_date('".$params['periodedebut']."','DD MM'),to_date('".$params['periodefin']."','DD MM'))=true ";
         return $sql;
     } 
     private static function addPreFilters($params)
     {
-        //on doit gérer la valeur du emptyText d'extjs qui est transmise pour les champs autre que combobox
+        //on doit gÃ©rer la valeur du emptyText d'extjs qui est transmise pour les champs autre que combobox
         if($params['observateur']=='Observateur'){$params['observateur']=null;}
-        if($params['datedebut']=='Date début'){$params['datedebut']=null;}
-        if($params['periodedebut']=='Période début'){$params['periodedebut']=null;}
+        if($params['datedebut']=='Date dÃ©but'){$params['datedebut']=null;}
+        if($params['periodedebut']=='PÃ©riode dÃ©but'){$params['periodedebut']=null;}
         if($params['datefin']=='Date fin'){$params['datefin']=null;}
-        if($params['periodefin']=='Période fin'){$params['periodefin']=null;}
+        if($params['periodefin']=='PÃ©riode fin'){$params['periodefin']=null;}
         $sql = '';
         if (isset($params['searchgeom']) && $params['searchgeom']!='')
             $sql .= " AND ST_intersects(synt.the_geom_3857,ST_GeomFromText('".$params['searchgeom']."', 3857))";
@@ -147,13 +147,13 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= " AND synt.id_organisme = ".$params['id_organisme'];            
         if (isset($params['datedebut']) && $params['datedebut']!=null && isset($params['datefin']) && $params['datefin']!=null)
             $sql .= " AND synt.dateobs BETWEEN to_date('".$params['datedebut']."','DD MM YYYY') AND to_date('".$params['datefin']."','DD MM YYYY')";
-        if (isset($params['periodedebut']) && $params['periodedebut']!=null && $params['periodedebut']!='Période début' && isset($params['periodefin']) && $params['periodefin']!=null && $params['periodefin']!='Période fin')   
+        if (isset($params['periodedebut']) && $params['periodedebut']!=null && $params['periodedebut']!='PÃ©riode dÃ©but' && isset($params['periodefin']) && $params['periodefin']!=null && $params['periodefin']!='PÃ©riode fin')   
             $sql .= " AND periode(synt.dateobs,to_date('".$params['periodedebut']."','DD MM'),to_date('".$params['periodefin']."','DD MM'))=true ";
         return $sql;
     }
     public static function preSearch($params)
     {
-        //si on n'est pas sur la recherche par défaut de la première page, on test le nb de résultats
+        //si on n'est pas sur la recherche par dÃ©faut de la premiÃ¨re page, on test le nb de rÃ©sultats
         if ($params['start']=='no'){
             $addprefilters = self::addPreFilters($params);
             $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
@@ -171,12 +171,12 @@ class SyntheseffTable extends Doctrine_Table
             $nb_res = $nb[0]['nb'];
             return $nb_res;
         }
-        //sinon on est sur la première page, on retourne 50 qui le nombre de résultats que l'on va rechercher
+        //sinon on est sur la premiÃ¨re page, on retourne 50 qui le nombre de rÃ©sultats que l'on va rechercher
         else{return 50;}
     }
     public static function search($params,$nb_res,$userNom,$userPrenom,$statuscode)
     { 
-        // On met une limite pour éviter qu'il n'y ait trop de réponses à charger
+        // On met une limite pour Ã©viter qu'il n'y ait trop de rÃ©ponses Ã  charger
         if($nb_res<10000){
             $zoom = $params['zoom'];
             if($zoom<12){$geom = 'synt.the_geom_point';}
@@ -237,16 +237,19 @@ class SyntheseffTable extends Doctrine_Table
                                 $obs['id_source']==sfGeonatureConfig::$id_source_cf 
                                 || $obs['id_source']==sfGeonatureConfig::$id_source_mortalite 
                                 || $obs['id_source']==sfGeonatureConfig::$id_source_inv
+                                || $obs['id_source']==sfGeonatureConfig::$id_source_cflore
                             )
                         )
                         ||
-                        ($statuscode==6 
+                        ($statuscode ==6 
                             && (
                                 $obs['id_source']==sfGeonatureConfig::$id_source_cf
                                 || $obs['id_source']==sfGeonatureConfig::$id_source_mortalite
                                 || $obs['id_source']==sfGeonatureConfig::$id_source_inv
                             )
                         )
+                        ||
+                        ($statuscode >=5 && $obs['id_source']==sfGeonatureConfig::$id_source_cflore)
                     ) {$obs['edit_ok']='true';}
                 else{$obs['edit_ok']='false';}
                 if($compt>0){$geojson .= ',';}
@@ -266,12 +269,12 @@ class SyntheseffTable extends Doctrine_Table
     }
     private static function addwhere($params)
     {
-        //on doit gérer la valeur du emptyText d'extjs qui est transmise pour les champs autre que combobox
+        //on doit gÃ©rer la valeur du emptyText d'extjs qui est transmise pour les champs autre que combobox
         if($params['observateur']=='Observateur'){$params['observateur']=null;}
-        if($params['datedebut']=='Date début'){$params['datedebut']=null;}
-        if($params['periodedebut']=='Période début'){$params['periodedebut']=null;}
+        if($params['datedebut']=='Date dÃ©but'){$params['datedebut']=null;}
+        if($params['periodedebut']=='PÃ©riode dÃ©but'){$params['periodedebut']=null;}
         if($params['datefin']=='Date fin'){$params['datefin']=null;}
-        if($params['periodefin']=='Période fin'){$params['periodefin']=null;}
+        if($params['periodefin']=='PÃ©riode fin'){$params['periodefin']=null;}
         $sql = '';
         if (isset($params['searchgeom']) && $params['searchgeom']!='')
             $sql .= " AND ST_intersects(synt.the_geom_3857,ST_GeomFromText('".$params['searchgeom']."', 3857))";
@@ -311,7 +314,7 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= " AND synt.id_organisme = ".$params['id_organisme'];            
          if (isset($params['datedebut']) && $params['datedebut']!=null && isset($params['datefin']) && $params['datefin']!=null)
             $sql .= " AND synt.dateobs BETWEEN to_date('".$params['datedebut']."','Dy Mon DD YYYY') AND to_date('".$params['datefin']."','Dy Mon DD YYYY')";
-        if (isset($params['periodedebut']) && $params['periodedebut']!=null && $params['periodedebut']!='Période début' && isset($params['periodefin']) && $params['periodefin']!=null && $params['periodefin']!='Période fin')   
+        if (isset($params['periodedebut']) && $params['periodedebut']!=null && $params['periodedebut']!='PÃ©riode dÃ©but' && isset($params['periodefin']) && $params['periodefin']!=null && $params['periodefin']!='PÃ©riode fin')   
             $sql .= " AND periode(synt.dateobs,to_date('".$params['periodedebut']."','Dy Mon DD YYYY'),to_date('".$params['periodefin']."','Dy Mon DD YYYY'))=true ";    
         return $sql;
     }
@@ -436,20 +439,20 @@ class SyntheseffTable extends Doctrine_Table
     public static function getDatasNbObsKd()
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par règne
+        //nb d'observations par rÃ¨gne
         $sql = "SELECT l.nom_liste, count(*) as nb FROM synthese.syntheseff s
                 JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
                 JOIN taxonomie.bib_taxons t ON t.cd_nom = tx.cd_nom
                 LEFT JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
                 LEFT JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste
-                WHERE s.supprime = false AND l.id_liste < 100
+                WHERE s.supprime = false AND l.id_liste >= 1000
                 GROUP BY nom_liste,l.id_liste
                 ORDER BY l.id_liste;";
         $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        $nb = count($result);
+        $nbs = count($result);
         $datas = array();
         $somme = 0;
-        for ($i = 0; $i < $nb; $i++) { 
+        for ($i = 0; $i < $nbs; $i++) { 
             $data = array();
             $nb = $result[$i]['nb'];
             $nom_liste = $result[$i]['nom_liste'];
@@ -462,20 +465,20 @@ class SyntheseffTable extends Doctrine_Table
     public static function getDatasNbObsCl()
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par règne
+        //nb d'observations par rÃ¨gne
         $sql = "SELECT l.nom_liste, count(*) as nb FROM synthese.syntheseff s
                 JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
                 JOIN taxonomie.bib_taxons t ON t.cd_nom = tx.cd_nom
                 LEFT JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
                 LEFT JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste
-                WHERE s.supprime = false AND l.id_liste > 100
+                WHERE s.supprime = false AND l.id_liste < 1000
                 GROUP BY nom_liste,l.id_liste
                 ORDER BY l.id_liste;";
         $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        $nb = count($result);
+        $nbs = count($result);
         $datas = array();
         $somme = 0;
-        for ($i = 0; $i < $nb; $i++) { 
+        for ($i = 0; $i < $nbs; $i++) { 
             $data = array();
             $nb = $result[$i]['nb'];
             $nom_liste = $result[$i]['nom_liste'];

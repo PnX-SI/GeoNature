@@ -3,7 +3,6 @@
 
 class TFichesCfTable extends Doctrine_Table
 {
-    
     public static function getInstance()
     {
         return Doctrine_Core::getTable('TFichesCf');
@@ -104,14 +103,4 @@ class TFichesCfTable extends Doctrine_Table
         }
         return implode(',',$obs);
     }
- 
-    // private static function getCounterObservateurs()
-    // {
-        // $o = Doctrine_Query::create()
-          // ->select('count(id_role) nb')
-          // ->from('CorRoleFicheCf c')
-          // ->where('c.id_cf=?');
-        // return $o;
-    // }
-    
 }
