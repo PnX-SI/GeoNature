@@ -224,6 +224,45 @@ class bibsActions extends sfGeonatureActions
         $annees = TStationsBryoTable::listAnneeBryo();
         return $this->renderJSON($annees);
     }
+    
+    //---------------- CONTACT FLORE ---------------------------------
+    public function executeListTaxonsCflore(sfRequest $request)
+    {
+        $val = BibTaxonsTable::listCflore();
+        return $this->renderText(json_encode($val));
+    }
+
+    public function executeListTaxonsCfloreu(sfRequest $request)
+    {
+        $srid_loc = sfGeonatureConfig::$srid_local;
+        $point = $request->getParameter('point');
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        $sql = "SELECT DISTINCT id_unite_geo
+                FROM layers.l_unites_geo
+                WHERE ST_intersects(the_geom,ST_transform(st_setsrid(ST_GeomFromText('$point',3857),3857),".$srid_loc."))";
+        $array_unite = $dbh->query($sql);
+        foreach($array_unite as $val){
+            $id_unite_geo = $val['id_unite_geo'];
+        }
+        if($id_unite_geo!=null){
+        $val = BibTaxonsTable::listCfloreUnite($id_unite_geo);}
+        else{$val = BibTaxonsTable::listCflore();}
+        
+        return $this->renderText(json_encode($val));
+    }
+    
+    public function executeListAbondancesCflore(sfRequest $request)
+    {
+        $val = BibAbondancesCfloreTable::listAll();
+        return $this->renderText(json_encode($val));
+    }
+    
+    public function executeListPhenologiesCflore(sfRequest $request)
+    {
+        $val = BibPhenologiesCfloreTable::listAll();
+        return $this->renderText(json_encode($val));
+    }
+    
     //---------------- CONTACT FAUNE ---------------------------------
     public function executeListObservateursCfAdd(sfRequest $request)
     {

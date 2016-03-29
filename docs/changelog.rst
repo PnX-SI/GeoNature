@@ -4,6 +4,32 @@ CHANGELOG
 
 1.7.0 dev (unreleased)
 ----------------------
+**Note de version**
+
+* Modification des identifiants des listes pour compatibilité avec les applications GeoNature Mobile.
+Dans GeoNature Mobile, les taxons sont filtrables par classe sur la base d'un id_classe. Ces id sont inscrits en dur dans le code des applications mobiles. 
+Dans la base GeoNature les classes taxonomiques sont configurables grace au vues v_nomade_classes qui utilisent les listes (taxonomie.bib_listes)
+Les id_liste ont donc été mis à jour pour être compatibles avec les id_classe des applications mobiles
+Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LES COMMENTAIRES
+* En lien avec les modifications ci-dessus, mettre à jour les variables des classes taxonomiques correspondant aux modification des id_liste dans ``web/js/config.js``
+* Pour ajouter le contact flore :
+    * Exécuter le script sql ``data/2154/contactflore.sql``
+    * Ajouter les variables $id_lot_cflore  = 7, $id_protocole_cflore  = 7, $id_source_cflore = 7 et $appname_cflore = 'Contact flore - GeoNature'; dans ``lib/sfGeonatureConfig.php`` (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
+    * Ajouter les variables  id_lot_contact_flore = 7, id_protocole_contact_flore = 7, id_source_contactflore = 7 dans ``web/js/config.js`` (voir le fichier ``web/js/config.js.sample``)
+    * l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit être actif (dernière colonne) pour que le contact flore soit visible sur la page d'accueil.
+    * Vider le cache 
+        
+        :: 
+            php symfony cc
+
+**Changements**
+
+* Modification des identifiants des listes pour compatibilité avec les applications GeoNature Mobile.
+* Correction d'une erreur sur l'importation de shape pour la recherche géographique
+* WMS : correction de la liste des sites N2000 et retrait des sites inscrits et classés
+* Ajout du contact flore
+
+
 
 1.6.0 (2016-01-14)
 ------------------

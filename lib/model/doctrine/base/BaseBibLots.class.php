@@ -15,6 +15,7 @@
  * @property BibProgrammes $BibProgrammes
  * @property Doctrine_Collection $Syntheseff
  * @property Doctrine_Collection $TFichesCf
+ * @property Doctrine_Collection $TFichesCflore
  * @property Doctrine_Collection $TFichesInv
  * @property Doctrine_Collection $TStationsBryo
  * @property Doctrine_Collection $TStationsFs
@@ -30,6 +31,7 @@
  * @method BibProgrammes       getBibProgrammes() Returns the current record's "BibProgrammes" value
  * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
  * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
+ * @method Doctrine_Collection getTFichesCflore() Returns the current record's "TFichesCflore" collection
  * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
  * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
  * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
@@ -44,6 +46,7 @@
  * @method BibLots             setBibProgrammes() Sets the current record's "BibProgrammes" value
  * @method BibLots             setSyntheseff()    Sets the current record's "Syntheseff" collection
  * @method BibLots             setTFichesCf()     Sets the current record's "TFichesCf" collection
+ * @method BibLots             setTFichesCflore() Sets the current record's "TFichesCflore" collection
  * @method BibLots             setTFichesInv()    Sets the current record's "TFichesInv" collection
  * @method BibLots             setTStationsBryo() Sets the current record's "TStationsBryo" collection
  * @method BibLots             setTStationsFs()   Sets the current record's "TStationsFs" collection
@@ -102,6 +105,10 @@ abstract class BaseBibLots extends sfDoctrineRecord
              'foreign' => 'id_lot'));
 
         $this->hasMany('TFichesCf', array(
+             'local' => 'id_lot',
+             'foreign' => 'id_lot'));
+
+        $this->hasMany('TFichesCflore', array(
              'local' => 'id_lot',
              'foreign' => 'id_lot'));
 

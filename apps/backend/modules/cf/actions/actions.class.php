@@ -83,7 +83,7 @@ class cfActions extends sfGeonatureActions
             // $new_cd_nom = $request->getParameter('new_cd_nom');
             // $old_cd_nom = $request->getParameter('old_cd_nom');
 
-            //on vérifie que le taxon (old ou new) n'existe pas déjà éventuellement avec supprime = true pour cette station
+            //on vÃ©rifie que le taxon (old ou new) n'existe pas dÃ©jÃ  Ã©ventuellement avec supprime = true pour cette station
             // $verif_new = Doctrine::getTable('CorFsTaxon')->find(array($id_station,$new_cd_nom));
             // if($verif_new){$verif_new->delete();}// si oui on le supprime
             // if($old_cd_nom>0){
@@ -93,24 +93,24 @@ class cfActions extends sfGeonatureActions
             // print_r($string_taxons);
             
             $array_taxons = explode('|',$string_taxons);
-            // Suppression des taxons qui existe et qui ont été supprimé dans le formulaire javascript
+            // Suppression des taxons qui existe et qui ont Ã©tÃ© supprimÃ© dans le formulaire javascript
             $mon_array = array(); // dans ce tableau on va pousser tous les enregistrements qui ont un id_releve_cf donc ceux qui ne sont pas nouveau
             foreach ($array_taxons as $string_taxon){
                 $array_taxon = explode(",",$string_taxon);
                 if($array_taxon[0]!='' OR $array_taxon[0]!=null){array_push($mon_array,$array_taxon[0]);}
             }
             //s'il y a des id_releve_cf on boucle pour supprimer ceux de la fiche qui ne serait plus dans le tableau $array_taxon
-            // si comme dans le cas d'un ajout de taxon pour une nouvelle fiche, il n'y a pas encore de id_releve_cf il n'y a rien à supprimer
+            // si comme dans le cas d'un ajout de taxon pour une nouvelle fiche, il n'y a pas encore de id_releve_cf il n'y a rien Ã  supprimer
             if(count($mon_array)>0){
-                $string_del_tx = implode(', ',$mon_array);//on créé une chaine avec les taxon à supprimer
+                $string_del_tx = implode(', ',$mon_array);//on crÃ©Ã© une chaine avec les taxon Ã  supprimer
                 $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
                 $sql = "UPDATE contactfaune.t_releves_cf SET supprime = true WHERE id_cf = $id_cf AND id_releve_cf NOT IN ($string_del_tx);";
                 $a = $dbh->query($sql);
             }
-            //on boucle sur la chaine des taxons envoyée par le formulaire pour récupérer les champs et on insert ou on update
+            //on boucle sur la chaine des taxons envoyÃ©e par le formulaire pour rÃ©cupÃ©rer les champs et on insert ou on update
             foreach ($array_taxons as $string_taxon){
                 $array_taxon = explode(",",$string_taxon);
-                // Récupération des valeurs dans des variables
+                // RÃ©cupÃ©ration des valeurs dans des variables
                 $id_releve_cf = $array_taxon[0];
                 $id_taxon = $array_taxon[1];
                 $nom_taxon_saisi = $array_taxon[4];
@@ -125,7 +125,7 @@ class cfActions extends sfGeonatureActions
                 $commentaire = $array_taxon[13];
                 $determinateur = $array_taxon[14];
                 $cd_ref_origine = $array_taxon[15];
-                //on récupère l'enregistrement ou on le crée
+                //on rÃ©cupÃ¨re l'enregistrement ou on le crÃ©e
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){
                     $taxon = new TRelevesCf();
@@ -160,8 +160,8 @@ class cfActions extends sfGeonatureActions
     public function executeSaveCf(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){    
-            $monaction = $request->getParameter('monaction');//on récupère l'action pour savoir si on update ou si on créé un nouvel enregistrement
-            //création de l'objet selon update ou ajout
+            $monaction = $request->getParameter('monaction');//on rÃ©cupÃ¨re l'action pour savoir si on update ou si on crÃ©Ã© un nouvel enregistrement
+            //crÃ©ation de l'objet selon update ou ajout
             switch ($monaction) {
                 case 'add':
                     $new_id_cf = TFichesCfTable::getMaxIdFiche()+1;
@@ -184,7 +184,7 @@ class cfActions extends sfGeonatureActions
             $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
             preg_match($pattern, $request->getParameter('dateobs'), $d);
             $datepg = sprintf('%s-%s-%s', $d[3],$d[2],$d[1]);
-            //affectation des valeurs reçues du formulaire extjs
+            //affectation des valeurs reÃ§ues du formulaire extjs
             $fiche->dateobs = $datepg;
             $fiche->pdop = sfGeonatureConfig::$default_pdop;
             if($request->getParameter('altitude_saisie')=='' OR !$request->hasParameter('altitude_saisie')){$altitude_saisie=-1;} else{$altitude_saisie=$request->getParameter('altitude_saisie');}
@@ -218,10 +218,10 @@ class cfActions extends sfGeonatureActions
                     $crfc->save();
                 }
             }
-            //sauvegarde de la géometrie de la fiche
-            // on le fait après l'enregistrement des observateurs car l'insertion de la géométrie va provoquer le trigger update
-            // et ce trigger met à jour la synthese, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
-            //pas à jour la synthese.
+            //sauvegarde de la gÃ©ometrie de la fiche
+            // on le fait aprÃ¨s l'enregistrement des observateurs car l'insertion de la gÃ©omÃ©trie va provoquer le trigger update
+            // et ce trigger met Ã  jour la synthese, dont les observateurs. Si on insert les observateurs aprÃ¨s, cela ne mettrait
+            //pas Ã  jour la synthese.
             $geometry = $request->getParameter('geometry');
             Doctrine_Query::create()
              ->update('TFichesCf')
@@ -242,21 +242,21 @@ class cfActions extends sfGeonatureActions
     {
         if($this->getUser()->isAuthenticated()){
             $array_taxons = explode('|',$string_taxons);
-            // Suppression des taxons qui existe et qui ont été supprimé dans le formulaire javascript
+            // Suppression des taxons qui existe et qui ont Ã©tÃ© supprimÃ© dans le formulaire javascript
             $mon_array = array(); // dans ce tableau on va pousser tous les enregistrements qui ont un id_releve_cf donc ceux qui ne sont pas nouveau
             foreach ($array_taxons as $string_taxon){
                 $array_taxon = explode(",",$string_taxon);
                 if($array_taxon[0]!='' OR $array_taxon[0]!=null){array_push($mon_array,$array_taxon[0]);}
             }
             //s'il y a des id_releve_cf on boucle pour supprimer ceux de la fiche qui ne serait plus dans le tableau $array_taxon
-            // si comme dans le cas d'un ajout de taxon pour une nouvelle fiche, il n'y a pas encore de id_releve_cf il n'y a rien à supprimer
+            // si comme dans le cas d'un ajout de taxon pour une nouvelle fiche, il n'y a pas encore de id_releve_cf il n'y a rien Ã  supprimer
             if(count($mon_array)>0){
-                $string_del_tx = implode(', ',$mon_array);//on créé une chaine avec les taxon à supprimer
+                $string_del_tx = implode(', ',$mon_array);//on crÃ©Ã© une chaine avec les taxon Ã  supprimer
                 $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
                 $sql = "UPDATE contactfaune.t_releves_cf SET supprime = true WHERE id_cf = $id_cf AND id_releve_cf NOT IN ($string_del_tx);";
                 $a = $dbh->query($sql);
             }
-            //on boucle sur la chaine des taxons envoyée par le formulaire pour récupérer les champs et on insert ou on update
+            //on boucle sur la chaine des taxons envoyÃ©e par le formulaire pour rÃ©cupÃ©rer les champs et on insert ou on update
             foreach ($array_taxons as $string_taxon){
                 $array_taxon = explode(",",$string_taxon);
                 //construction de variable dynamique avec le nom des champs
@@ -264,7 +264,7 @@ class cfActions extends sfGeonatureActions
                     // ${$var$array_keys[$i]} = $array_taxon[$i];
                     // $taxons->{$var$array_keys[$i]} = $array_taxon[$i];
                 // }
-                // Récupération des valeurs dans des variables
+                // RÃ©cupÃ©ration des valeurs dans des variables
                 $id_releve_cf = $array_taxon[0];
                 $id_taxon = $array_taxon[1];
                 $nom_taxon_saisi = $array_taxon[4];
@@ -280,7 +280,7 @@ class cfActions extends sfGeonatureActions
                 $cd_ref_origine = $array_taxon[15];
                 $prelevement = $array_taxon[18];
                 $determinateur = $array_taxon[19];
-                //on récupère l'enregistrement ou on le crée
+                //on rÃ©cupÃ¨re l'enregistrement ou on le crÃ©e
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){
                     $taxon = new TRelevesCf();
@@ -315,8 +315,8 @@ class cfActions extends sfGeonatureActions
     public function executeSaveMortalite(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){    
-            $monaction = $request->getParameter('monaction');//on récupère l'action pour savoir si on update ou si on créé un nouvel enregistrement
-            //création de l'objet selon update ou ajout
+            $monaction = $request->getParameter('monaction');//on rÃ©cupÃ¨re l'action pour savoir si on update ou si on crÃ©Ã© un nouvel enregistrement
+            //crÃ©ation de l'objet selon update ou ajout
             switch ($monaction) {
                 case 'add':
                     $new_id_cf = TFichesCfTable::getMaxIdFiche()+1;
@@ -336,7 +336,7 @@ class cfActions extends sfGeonatureActions
             $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
             preg_match($pattern, $request->getParameter('dateobs'), $d);
             $datepg = sprintf('%s-%s-%s', $d[3],$d[2],$d[1]);
-            //affectation des valeurs reçues du formulaire extjs
+            //affectation des valeurs reÃ§ues du formulaire extjs
             $fiche->dateobs = $datepg;
             $fiche->pdop = sfGeonatureConfig::$default_pdop;
             if($request->getParameter('altitude_saisie')=='' OR !$request->hasParameter('altitude_saisie')){$altitude_saisie=-1;} else{$altitude_saisie=$request->getParameter('altitude_saisie');}
@@ -372,10 +372,10 @@ class cfActions extends sfGeonatureActions
                     $crfc->save();
                 }
             }
-            //sauvegarde de la géometrie de la fiche
-            // on le fait après l'enregistrement des observateurs car l'insertion de la géométrie va provoquer le trigger update
-            // et ce trigger met à jour la synthese, dont les observateurs. Si on insert les observateurs après, cela ne mettrait
-            //pas à jour la synthese.
+            //sauvegarde de la gÃ©ometrie de la fiche
+            // on le fait aprÃ¨s l'enregistrement des observateurs car l'insertion de la gÃ©omÃ©trie va provoquer le trigger update
+            // et ce trigger met Ã  jour la synthese, dont les observateurs. Si on insert les observateurs aprÃ¨s, cela ne mettrait
+            //pas Ã  jour la synthese.
             $geometry = $request->getParameter('geometry');
             Doctrine_Query::create()
              ->update('TFichesCf')

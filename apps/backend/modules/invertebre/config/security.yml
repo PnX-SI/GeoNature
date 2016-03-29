@@ -1,3 +1,3 @@
 all:
-  credentials: [[ administrateur, redacteur ]]
+  credentials: [[ administrateur, redacteur, validateur ]]
   is_secure: true

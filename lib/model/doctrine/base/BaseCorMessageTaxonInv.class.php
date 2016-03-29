@@ -8,16 +8,16 @@
  * @property integer $id_message_inv
  * @property integer $id_taxon
  * @property BibTaxons $BibTaxons
- * @property BibMessagesInv $BibMessagesCf
+ * @property BibMessagesInv $BibMessagesInv
  * 
  * @method integer            getIdMessageInv()   Returns the current record's "id_message_inv" value
  * @method integer            getIdTaxon()        Returns the current record's "id_taxon" value
  * @method BibTaxons          getBibTaxons()      Returns the current record's "BibTaxons" value
- * @method BibMessagesInv     getBibMessagesCf()  Returns the current record's "BibMessagesCf" value
+ * @method BibMessagesInv     getBibMessagesInv() Returns the current record's "BibMessagesInv" value
  * @method CorMessageTaxonInv setIdMessageInv()   Sets the current record's "id_message_inv" value
  * @method CorMessageTaxonInv setIdTaxon()        Sets the current record's "id_taxon" value
  * @method CorMessageTaxonInv setBibTaxons()      Sets the current record's "BibTaxons" value
- * @method CorMessageTaxonInv setBibMessagesCf()  Sets the current record's "BibMessagesCf" value
+ * @method CorMessageTaxonInv setBibMessagesInv() Sets the current record's "BibMessagesInv" value
  * 
  * @package    geonature
  * @subpackage model
@@ -48,7 +48,7 @@ abstract class BaseCorMessageTaxonInv extends sfDoctrineRecord
              'local' => 'id_taxon',
              'foreign' => 'id_taxon'));
 
-        $this->hasOne('BibMessagesInv as BibMessagesCf', array(
+        $this->hasOne('BibMessagesInv', array(
              'local' => 'id_message_inv',
              'foreign' => 'id_message_inv'));
     }

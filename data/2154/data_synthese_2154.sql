@@ -319,6 +319,9 @@ INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_g
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_line', 'the_geom_2154', 2, 2154, 'LINESTRING');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_polygon', 'the_geom_2154', 2, 2154, 'POLYGON');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_toutesleszp_2154', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_3857', 2, 3857, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 'v_nomade_unites_geo_cflore', 'the_geom', 2, 2154, 'MULTIPOLYGON');
 
 SET search_path = synthese, pg_catalog;
 
@@ -335,6 +338,7 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (4, 'Flore prioritaire', 'Relevés en présence-absence de la flore prioritaire', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florepatri', 't_apresence', 'indexap', 'pda', NULL, 'images/pictos/plante.gif', 'FLORE', false);
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (5, 'Flore station', 'Données de relevés floristique stationnels complets ou partiel', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florestation', 'cor_fs_taxon', 'gid', 'fs', NULL, 'images/pictos/plante.gif', 'FLORE', true);
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (6, 'Bryophytes', 'Données de contact bryologique', 'localhost', 22, NULL, NULL, 'geonaturedb', 'bryophytes', 'cor_bryo_taxon', 'gid', 'bryo', NULL, 'images/pictos/mousse.gif', 'FLORE', true);
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (7,'Contact flore','Contenu des tables t_fiches_cflore et t_releves_cflore de la base GeoNature postgres','localhost',22,NULL,NULL,'geonaturedb','contactflore','t_releves_cflore','id_releve_cflore','cflore',NULL,'images/pictos/plante.gif','FLORE',true);
 
 SET search_path = taxonomie, pg_catalog;
 
@@ -424,11 +428,12 @@ INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (16, 'Arach
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (20, 'Rotifères',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (21, 'Tardigrades',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (101, 'Mollusques',null, 'images/pictos/mollusque.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (300, 'Plantes vasculaires',null, 'images/pictos/plante.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (301, 'Bryophytes',null, 'images/pictos/mousse.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (302, 'Lichens',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (303, 'Algues',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (304, 'Champignons',null, 'images/pictos/champignon.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (305, 'Ptéridophytes',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (306, 'Monocotylédones',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (307, 'Dycotylédones',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (666, 'Nuisibles',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'liste faune vertébré', 'Liste servant à l''affichage des taxons de la faune vertébré pouvant être saisis', 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1002, 'liste faune invertébré', 'Liste servant à l''affichage des taxons de la faune invertébré pouvant être saisis', 'images/pictos/nopicto.gif');
@@ -455,8 +460,8 @@ INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (1950, 9);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (2804,9);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100001,1003);
 INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100002,1003);
-INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100001,300);
-INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100002,300);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100001,306);
+INSERT INTO cor_taxon_liste (id_taxon ,id_liste) VALUES (100002,307);
 
 SET search_path = contactfaune, pg_catalog;
 
@@ -625,6 +630,7 @@ INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, 
 INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (4, 'Flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire.', true, true, 'Inventaire et suivi en présence absence de la Flore prioritaire.');
 INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (5, 'Flore station', 'Relevés stationnels et stratifiés de la flore.', true, true, 'Relevés stationnels et stratifiés de la flore.');
 INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (6, 'Bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte.', true, true, 'Relevés stationnels et non stratifiés de la flore bryophyte.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (7, 'Contact flore', 'Contact aléatoire de la flore.', true, true, 'Contact aléatoire de la faune invertébrée.');
 
 --
 -- TOC entry 3370 (class 0 OID 55751)
@@ -654,11 +660,12 @@ INSERT INTO bib_supports (id_support, nom_support) VALUES (12, 'Grade sans info'
 
 INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (1, 'Contact vertébrés', 'Contact vertébrés', true, true, false, 1);
 INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (2, 'Mortalité', 'Mortalité', true, true, false, 2);
-INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (3, 'Contact invertébrés', 'Contact invertébrés', true, true, false, 3);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (3, 'Contact invertébrés', 'Contact invertébrés', false, true, false, 3);
 --flore
-INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (4, 'flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire', true, true, false, 4);
-INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (5, 'flore station', 'Relevés stationnels et stratifiés de la flore', true, true, false, 5);
-INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (6, 'bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte', true, true, false, 6);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (4, 'flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire', false, true, false, 4);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (5, 'flore station', 'Relevés stationnels et stratifiés de la flore', false, true, false, 5);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (6, 'bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte', false, true, false, 6);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (7, 'Contact flore', 'Contact flore', false, true, false, 7);
 
 --
 -- TOC entry 3140 (class 0 OID 126911)
@@ -672,9 +679,48 @@ INSERT INTO t_protocoles VALUES (3, 'mortalité', 'à compléter', 'à compléte
 INSERT INTO t_protocoles VALUES (4, 'Flore prioritaire', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 INSERT INTO t_protocoles VALUES (5, 'Flore station', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 INSERT INTO t_protocoles VALUES (6, 'Bryophytes', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+INSERT INTO t_protocoles VALUES (7, 'contact flore', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+
+
+SET search_path = contactflore, pg_catalog;
+--
+-- TOC entry 3404 (class 0 OID 55310)
+-- Dependencies: 179
+-- Data for Name: bib_abondances_cflore; Type: TABLE DATA; Schema: contactflore; Owner: cartopne
+--
+
+INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES ('1', '1 individu');
+INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES ('2', 'De 1 à 10 individus');
+INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES ('3', 'De 10 à 100 individus');
+INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES ('4', 'Plus de 100 individus');
+
+
+--
+-- TOC entry 3410 (class 0 OID 55409)
+-- Dependencies: 191
+-- Data for Name: bib_phenologies_cflore; Type: TABLE DATA; Schema: contactflore; Owner: cartopne
+--
+
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (1, 'Stade végétatif');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (2, 'Stade boutons floraux');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (3, 'Début de floraison');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (4, 'Pleine floraison');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (5, 'Fin de floraison et maturation des fruits');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (6, 'Dissémination');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (7, 'Stade de décrépitude');
+INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (8, 'Stage végétatif permanent ');
+
+
+--
+-- TOC entry 3410 (class 0 OID 55409)
+-- Dependencies: 191
+-- Data for Name: bib_validites_cflore; Type: TABLE DATA; Schema: contactflore; Owner: cartopne
+--
+
+INSERT INTO bib_validites_cflore (id_validite_cflore, nom_validite_cflore) VALUES (1, 'relue');
+INSERT INTO bib_validites_cflore (id_validite_cflore, nom_validite_cflore) VALUES (2, 'non relue');
 
 SET search_path = bryophytes, pg_catalog;
-
 --
 -- TOC entry 3404 (class 0 OID 55310)
 -- Dependencies: 179

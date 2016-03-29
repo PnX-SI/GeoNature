@@ -34,10 +34,10 @@ abstract class BaseCorRoleFicheCf extends sfDoctrineRecord
              'primary' => true,
              'length' => 4,
              ));
-        $this->hasColumn('id_cf', 'integer', 5, array(
+        $this->hasColumn('id_cf', 'integer', 4, array(
              'type' => 'integer',
              'notnull' => true,
-             'length' => 5,
+             'length' => 4,
              ));
     }
 

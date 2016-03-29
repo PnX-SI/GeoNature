@@ -137,7 +137,7 @@ application.synthese.editInvertebre = function() {
     // private functions
 
     /**
-     * Method: initViewport
+     * Method: initWindow
      */
     var initWindow = function() {
         return new Ext.Window({
@@ -618,7 +618,8 @@ application.synthese.editInvertebre = function() {
                 return true;
             });
             return isValid;
-        }; 
+        };
+        
         var isValidTaxon = function(r){
             var isValid = true;
             errorMsg = '';
@@ -768,7 +769,7 @@ application.synthese.editInvertebre = function() {
             ,title: 'Listes des taxons observés'
             ,bodyStyle:'padding:5px'
             ,width: 600
-            ,layout: 'column'  // Specifies that the items will now be arranged in columns
+            ,layout: 'column' // Specifies that the items will now be arranged in columns
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
@@ -974,7 +975,7 @@ application.synthese.editInvertebre = function() {
                                     ,name: 'cb-patri'
                                     ,checked: false
                                     ,cls:'graytext'
-                                    ,itemCls:'graytext'                                    
+                                    ,itemCls:'graytext'
                                     ,listeners: {
                                         check: function(checkbox,checked) {
                                             comboTaxonsFiltre();
@@ -999,7 +1000,7 @@ application.synthese.editInvertebre = function() {
                                     id:'cb-red-inv'
                                     ,boxLabel: 'Priorité'
                                     ,name: 'cb-red'
-                                    ,itemCls:'redtext'                                    
+                                    ,itemCls:'redtext'
                                     ,checked: true
                                     ,listeners: {
                                         check: function(checkbox,checked) {
@@ -1030,13 +1031,13 @@ application.synthese.editInvertebre = function() {
                                                 text: 'Taxons jamais observés dans cette unité géographique.'
                                             });
                                         }
-                                    }                                       
+                                    }
                                 },{
                                     id:'cb-gray-inv'
                                     ,boxLabel: 'Facultatif'
                                     ,name: 'cb-gray'
                                     ,itemCls:'graytext'
-                                    ,checked: true                                    
+                                    ,checked: true
                                     ,listeners: {
                                         check: function(checkbox,checked) {
                                             comboTaxonsFiltre();
@@ -1048,7 +1049,7 @@ application.synthese.editInvertebre = function() {
                                                 text: 'La saisie est facultative pour ces taxons dans cette unité géographique.'
                                             });
                                         }
-                                    }                                
+                                    }
                                 }
                             ]
                             ,listeners: {
