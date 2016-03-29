@@ -3849,7 +3849,7 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
             FROM taxonomie.bib_listes l
             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
-            WHERE l.id_liste = IN(1, 11, 12, 13, 14)
+            WHERE l.id_liste IN(1, 11, 12, 13, 14)
             GROUP BY l.id_liste, l.nom_liste, l.desc_liste
         ) g
     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
