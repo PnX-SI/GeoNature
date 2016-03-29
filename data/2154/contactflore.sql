@@ -60,7 +60,7 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
 $$;
 
 
-ALTER FUNCTION contactflore.couleur_taxon(id integer, maxdateobs date) OWNER TO geonatuser;
+ALTER FUNCTION couleur_taxon(id integer, maxdateobs date) OWNER TO geonatuser;
 
 --
 -- TOC entry 1496 (class 1255 OID 1387973)
@@ -119,7 +119,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.insert_fiche_cflore() OWNER TO geonatuser;
+ALTER FUNCTION insert_fiche_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1497 (class 1255 OID 1387974)
@@ -164,7 +164,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.insert_releve_cflore() OWNER TO geonatuser;
+ALTER FUNCTION insert_releve_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1498 (class 1255 OID 1387975)
@@ -187,7 +187,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.synthese_delete_releve_cflore() OWNER TO geonatuser;
+ALTER FUNCTION synthese_delete_releve_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1505 (class 1255 OID 1387976)
@@ -264,7 +264,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.synthese_insert_releve_cflore() OWNER TO geonatuser;
+ALTER FUNCTION synthese_insert_releve_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1499 (class 1255 OID 1387977)
@@ -321,7 +321,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.synthese_update_cor_role_fiche_cflore() OWNER TO geonatuser;
+ALTER FUNCTION synthese_update_cor_role_fiche_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1500 (class 1255 OID 1387978)
@@ -404,7 +404,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.synthese_update_fiche_cflore() OWNER TO geonatuser;
+ALTER FUNCTION synthese_update_fiche_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1501 (class 1255 OID 1387979)
@@ -449,7 +449,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.synthese_update_releve_cflore() OWNER TO geonatuser;
+ALTER FUNCTION synthese_update_releve_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1502 (class 1255 OID 1387980)
@@ -516,7 +516,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.update_fiche_cflore() OWNER TO geonatuser;
+ALTER FUNCTION update_fiche_cflore() OWNER TO geonatuser;
 
 --
 -- TOC entry 1503 (class 1255 OID 1387981)
@@ -540,7 +540,7 @@ END;
 $$;
 
 
-ALTER FUNCTION contactflore.update_releve_cflore() OWNER TO geonatuser;
+ALTER FUNCTION update_releve_cflore() OWNER TO geonatuser;
 
 SET default_tablespace = '';
 
@@ -557,7 +557,7 @@ CREATE TABLE bib_abondances_cflore (
 );
 
 
-ALTER TABLE contactflore.bib_abondances_cflore OWNER TO geonatuser;
+ALTER TABLE bib_abondances_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 358 (class 1259 OID 1388106)
@@ -570,7 +570,7 @@ CREATE TABLE bib_messages_cflore (
 );
 
 
-ALTER TABLE contactflore.bib_messages_cflore OWNER TO geonatuser;
+ALTER TABLE bib_messages_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 348 (class 1259 OID 1387985)
@@ -583,7 +583,7 @@ CREATE TABLE bib_phenologies_cflore (
 );
 
 
-ALTER TABLE contactflore.bib_phenologies_cflore OWNER TO geonatuser;
+ALTER TABLE bib_phenologies_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 359 (class 1259 OID 1388111)
@@ -596,7 +596,7 @@ CREATE TABLE cor_message_taxon_cflore (
 );
 
 
-ALTER TABLE contactflore.cor_message_taxon_cflore OWNER TO geonatuser;
+ALTER TABLE cor_message_taxon_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 360 (class 1259 OID 1388128)
@@ -609,7 +609,7 @@ CREATE TABLE cor_role_fiche_cflore (
 );
 
 
-ALTER TABLE contactflore.cor_role_fiche_cflore OWNER TO geonatuser;
+ALTER TABLE cor_role_fiche_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 349 (class 1259 OID 1387991)
@@ -625,7 +625,7 @@ CREATE TABLE cor_unite_taxon_cflore (
 );
 
 
-ALTER TABLE contactflore.cor_unite_taxon_cflore OWNER TO geonatuser;
+ALTER TABLE cor_unite_taxon_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 352 (class 1259 OID 1388006)
@@ -659,7 +659,7 @@ CREATE TABLE t_fiches_cflore (
 );
 
 
-ALTER TABLE contactflore.t_fiches_cflore OWNER TO geonatuser;
+ALTER TABLE t_fiches_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 353 (class 1259 OID 1388019)
@@ -683,7 +683,7 @@ CREATE TABLE t_releves_cflore (
 );
 
 
-ALTER TABLE contactflore.t_releves_cflore OWNER TO geonatuser;
+ALTER TABLE t_releves_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 354 (class 1259 OID 1388027)
@@ -698,7 +698,7 @@ CREATE SEQUENCE t_releves_cflore_gid_seq
     CACHE 1;
 
 
-ALTER TABLE contactflore.t_releves_cflore_gid_seq OWNER TO geonatuser;
+ALTER TABLE t_releves_cflore_gid_seq OWNER TO geonatuser;
 
 --
 -- TOC entry 3897 (class 0 OID 0)
@@ -721,7 +721,7 @@ CREATE VIEW v_nomade_abondances_cflore AS
   ORDER BY a.id_abondance_cflore;
 
 
-ALTER TABLE contactflore.v_nomade_abondances_cflore OWNER TO geonatuser;
+ALTER TABLE v_nomade_abondances_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 355 (class 1259 OID 1388029)
@@ -745,7 +745,7 @@ CREATE VIEW v_nomade_classes AS
   WHERE ((t.regne)::text = 'Plantae'::text);
 
 
-ALTER TABLE contactflore.v_nomade_classes OWNER TO geonatuser;
+ALTER TABLE v_nomade_classes OWNER TO geonatuser;
 
 --
 -- TOC entry 356 (class 1259 OID 1388034)
@@ -768,7 +768,7 @@ CREATE VIEW v_nomade_observateurs_flore AS
   ORDER BY r.nom_role, r.prenom_role, r.id_role;
 
 
-ALTER TABLE contactflore.v_nomade_observateurs_flore OWNER TO geonatuser;
+ALTER TABLE v_nomade_observateurs_flore OWNER TO geonatuser;
 
 --
 -- TOC entry 363 (class 1259 OID 1388160)
@@ -782,7 +782,7 @@ CREATE VIEW v_nomade_phenologies_cflore AS
   ORDER BY p.id_phenologie_cflore;
 
 
-ALTER TABLE contactflore.v_nomade_phenologies_cflore OWNER TO geonatuser;
+ALTER TABLE v_nomade_phenologies_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 361 (class 1259 OID 1388147)
@@ -809,7 +809,7 @@ CREATE VIEW v_nomade_taxons_flore AS
   ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, f2.bool;
 
 
-ALTER TABLE contactflore.v_nomade_taxons_flore OWNER TO geonatuser;
+ALTER TABLE v_nomade_taxons_flore OWNER TO geonatuser;
 
 --
 -- TOC entry 357 (class 1259 OID 1388044)
@@ -823,7 +823,7 @@ CREATE VIEW v_nomade_unites_geo_cflore AS
   GROUP BY l_unites_geo.the_geom, l_unites_geo.id_unite_geo;
 
 
-ALTER TABLE contactflore.v_nomade_unites_geo_cflore OWNER TO geonatuser;
+ALTER TABLE v_nomade_unites_geo_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 3680 (class 2604 OID 1388048)
@@ -1217,20 +1217,23 @@ INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore)
 
 
 ---------------- geometry_columns
-
+SET search_path = public, pg_catalog;
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_3857', 2, 3857, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_2154', 2, 2154, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 'v_nomade_unites_geo_cflore', 'the_geom', 2, 2154, 'MULTIPOLYGON');
 
 -- ajout des enregistrements nécéssaires dans les tables liées
-INSERT INTO meta.bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (7, 'Contact flore', 'Contact aléatoire de la flore.', true, true, 'Contact aléatoire de la faune invertébrée.');
-INSERT INTO meta.bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (7, 'Contact flore', 'Contact flore', false, true, false, 7);
-INSERT INTO meta.t_protocoles VALUES (7, 'contact flore', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
-INSERT INTO synthese.bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (7,'Contact flore','Contenu des tables t_fiches_cflore et t_releves_cflore de la base GeoNature postgres','localhost',22,NULL,NULL,'geonaturedb','contactflore','t_releves_cflore','id_releve_cflore','cflore',NULL,'images/pictos/plante.gif','FLORE',true);
+SET search_path = meta, pg_catalog;
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (7, 'Contact flore', 'Contact aléatoire de la flore.', true, true, 'Contact aléatoire de la faune invertébrée.');
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (7, 'Contact flore', 'Contact flore', false, true, false, 7);
+INSERT INTO t_protocoles VALUES (7, 'contact flore', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+SET search_path = synthese, pg_catalog;
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (7,'Contact flore','Contenu des tables t_fiches_cflore et t_releves_cflore de la base GeoNature postgres','localhost',22,NULL,NULL,'geonaturedb','contactflore','t_releves_cflore','id_releve_cflore','cflore',NULL,'images/pictos/plante.gif','FLORE',true);
 
 
 ---------------- Mise à jour de la vue v_nomade_classes globale
-CREATE OR REPLACE VIEW taxonomie.v_nomade_classes AS 
+SET search_path = taxonomie, pg_catalog;
+CREATE OR REPLACE VIEW v_nomade_classes AS 
  SELECT v_nomade_classes.id_classe,
     v_nomade_classes.nom_classe_fr,
     v_nomade_classes.desc_classe
@@ -1240,11 +1243,6 @@ UNION
     v_nomade_classes.nom_classe_fr,
     v_nomade_classes.desc_classe
    FROM contactinv.v_nomade_classes
-UNION
- SELECT v_nomade_classes.id_classe,
-    v_nomade_classes.nom_classe_fr,
-    v_nomade_classes.desc_classe
-   FROM florepatri.v_nomade_classes
 UNION
  SELECT v_nomade_classes.id_classe,
     v_nomade_classes.nom_classe_fr,
