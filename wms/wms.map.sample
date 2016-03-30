@@ -107,24 +107,6 @@ LAYER
   END
 END
 
-LAYER
-  NAME "aoa"
-  STATUS ON
-  TYPE LINE
-  CONNECTIONTYPE POSTGIS
-  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
-  DATA "the_geom FROM layers.l_aireadhesion"
-  PROJECTION
-    "init=epsg:2154"
-  END
-  CLASS
-    NAME "aoa"
-    STYLE
-      OUTLINECOLOR 157 0 26
-      WIDTH 2
-    END
-  END
-END
 ######## End Zones PN #########
 
 ############# START ZONES A STATUT PN #####################
@@ -184,6 +166,26 @@ LAYER
     STYLE
       OUTLINECOLOR 190 14 45
       WIDTH 3
+    END
+  END
+END
+
+LAYER
+  NAME "aoa"
+  STATUS ON
+  TYPE LINE
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=geonatdbhost dbname=geonaturedb user=geonatuser password=monpassachanger"
+  DATA "the_geom FROM layers.l_zonesstatut"
+  PROJECTION
+    "init=epsg:2154"
+  END
+  FILTER "id_type=20"
+  CLASS
+    NAME "aoa"
+    STYLE
+      OUTLINECOLOR 157 0 26
+      WIDTH 2
     END
   END
 END
