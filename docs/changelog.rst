@@ -25,8 +25,9 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
 **Changements**
 
 * Modification des identifiants des listes pour compatibilité avec les applications GeoNature Mobile.
+* Complément dans la base de données pour compatibilité avec les applications GeoNature Mobile.
 * Correction d'une erreur sur l'importation de shape pour la recherche géographique
-* WMS : correction de la liste des sites N2000 et retrait des sites inscrits et classés
+* WMS : correction de la liste des sites N2000, correction de l'affichage de l'aire optimale d'adhésion des parcs nationaux et retrait des sites inscrits et classés
 * Ajout du contact flore
 
 
