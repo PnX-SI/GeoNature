@@ -135,3 +135,116 @@ CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS
            FROM synthese.syntheseff
           WHERE syntheseff.supprime = false) s ON s.cd_nom = t.cd_nom
   ORDER BY t.nom_francais;
+  
+  -- Correction/fusion des menus faune et invertébrés. Seul le menu 9 (faune) existe à la livraison de GeoNature.
+  -- Si vous souhaitez distinguer les observateurs "faune" des observateurs "invertébrés", il faut créer un menu dans utilisateurs.t_menus,
+  -- mettre les observateurs ou les groupes d'observateurs en lien avec ce nouveau menu dans utilisateurs.cor_role_menu 
+  -- puis modifier cette vue en conséquence
+ CREATE OR REPLACE VIEW utilisateurs.v_nomade_observateurs_all AS 
+( SELECT DISTINCT r.id_role,
+    r.nom_role,
+    r.prenom_role,
+    'fauna'::text AS mode
+   FROM utilisateurs.t_roles r
+  WHERE (r.id_role IN ( SELECT DISTINCT cr.id_role_utilisateur
+           FROM utilisateurs.cor_roles cr
+          WHERE (cr.id_role_groupe IN ( SELECT crm.id_role
+                   FROM utilisateurs.cor_role_menu crm
+                  WHERE crm.id_menu = 9))
+          ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN ( SELECT crm.id_role
+           FROM utilisateurs.cor_role_menu crm
+             JOIN utilisateurs.t_roles r_1 ON r_1.id_role = crm.id_role AND crm.id_menu = 9 AND r_1.groupe = false))
+  ORDER BY r.nom_role, r.prenom_role, r.id_role)
+UNION
+( SELECT DISTINCT r.id_role,
+    r.nom_role,
+    r.prenom_role,
+    'flora'::text AS mode
+   FROM utilisateurs.t_roles r
+  WHERE (r.id_role IN ( SELECT DISTINCT cr.id_role_utilisateur
+           FROM utilisateurs.cor_roles cr
+          WHERE (cr.id_role_groupe IN ( SELECT crm.id_role
+                   FROM utilisateurs.cor_role_menu crm
+                  WHERE crm.id_menu = 10))
+          ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN ( SELECT crm.id_role
+           FROM utilisateurs.cor_role_menu crm
+             JOIN utilisateurs.t_roles r_1 ON r_1.id_role = crm.id_role AND crm.id_menu = 10 AND r_1.groupe = false))
+  ORDER BY r.nom_role, r.prenom_role, r.id_role)
+UNION
+( SELECT DISTINCT r.id_role,
+    r.nom_role,
+    r.prenom_role,
+    'inv'::text AS mode
+   FROM utilisateurs.t_roles r
+  WHERE (r.id_role IN ( SELECT DISTINCT cr.id_role_utilisateur
+           FROM utilisateurs.cor_roles cr
+          WHERE (cr.id_role_groupe IN ( SELECT crm.id_role
+                   FROM utilisateurs.cor_role_menu crm
+                  WHERE crm.id_menu = 9))
+          ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN ( SELECT crm.id_role
+           FROM utilisateurs.cor_role_menu crm
+             JOIN utilisateurs.t_roles r_1 ON r_1.id_role = crm.id_role AND crm.id_menu = 9 AND r_1.groupe = false))
+  ORDER BY r.nom_role, r.prenom_role, r.id_role);
+ 
+ --Création de 2 vues manquantes pour le fonctionnement des applications mobiles
+ CREATE OR REPLACE VIEW florepatri.v_nomade_classes AS 
+ SELECT g.id_liste AS id_classe,
+    g.nom_liste AS nom_classe_fr,
+    g.desc_liste AS desc_classe
+   FROM ( SELECT l.id_liste,
+            l.nom_liste,
+            l.desc_liste,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_listes l
+             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
+             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
+          WHERE l.id_liste >= 300 AND l.id_liste < 400
+          GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+  WHERE t.regne::text = 'Plantae'::text;
+
+ALTER TABLE florepatri.v_nomade_classes
+  OWNER TO geonatuser;
+GRANT ALL ON TABLE florepatri.v_nomade_classes TO geonatuser;
+
+
+CREATE OR REPLACE VIEW public.v_mobile_recherche AS 
+( SELECT ap.indexap AS gid,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(ap.the_geom_2154, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(ap.the_geom_2154), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(ap.the_geom_2154), 4326)) AS centroid_y
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+  WHERE ap.supprime = false AND st_isvalid(ap.the_geom_2154) AND ap.topo_valid = true
+  ORDER BY zp.dateobs DESC)
+UNION
+( SELECT cft.id_station AS gid,
+    s.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(s.the_geom_3857, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_y
+   FROM florestation.cor_fs_taxon cft
+     JOIN florestation.t_stations_fs s ON s.id_station = cft.id_station
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = cft.cd_nom
+     JOIN ( SELECT c.id_station,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florestation.cor_fs_observateur c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+          GROUP BY c.id_station) o ON o.id_station = cft.id_station
+  WHERE cft.supprime = false AND st_isvalid(s.the_geom_3857)
+  ORDER BY s.dateobs DESC);
+
+ALTER TABLE public.v_mobile_recherche
+  OWNER TO geonatuser;
+GRANT ALL ON TABLE public.v_mobile_recherche TO geonatuser;

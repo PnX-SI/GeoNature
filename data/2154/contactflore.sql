@@ -1247,6 +1247,11 @@ UNION
  SELECT v_nomade_classes.id_classe,
     v_nomade_classes.nom_classe_fr,
     v_nomade_classes.desc_classe
+   FROM florepatri.v_nomade_classes;
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
    FROM contactflore.v_nomade_classes;
 
 
