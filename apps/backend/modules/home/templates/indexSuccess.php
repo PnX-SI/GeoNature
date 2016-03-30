@@ -31,7 +31,7 @@
                     <div id="kd-chart" style="height: 250px;" ></div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
-                    <h3 class="text-primary text-center">Classes animales</h3>
+                    <h3 class="text-primary text-center">Classes</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="cl-chart" style="height: 250px;" ></div>
                 </div>
