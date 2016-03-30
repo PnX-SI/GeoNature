@@ -5027,7 +5027,7 @@ ALTER SEQUENCE t_menus_id_menu_seq OWNED BY t_menus.id_menu;
 --
 
 CREATE VIEW v_nomade_observateurs_all AS
-    ((SELECT DISTINCT r.id_role, r.nom_role, r.prenom_role, 'fauna'::text AS mode FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 9))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 9)) AND (r.groupe = false))))))) ORDER BY r.nom_role, r.prenom_role, r.id_role) UNION (SELECT DISTINCT r.id_role, r.nom_role, r.prenom_role, 'flora'::text AS mode FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 10))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 10)) AND (r.groupe = false))))))) ORDER BY r.nom_role, r.prenom_role, r.id_role)) UNION (SELECT DISTINCT r.id_role, r.nom_role, r.prenom_role, 'inv'::text AS mode FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 11))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 11)) AND (r.groupe = false))))))) ORDER BY r.nom_role, r.prenom_role, r.id_role);
+    ((SELECT DISTINCT r.id_role, r.nom_role, r.prenom_role, 'fauna'::text AS mode FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 9))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 9)) AND (r.groupe = false))))))) ORDER BY r.nom_role, r.prenom_role, r.id_role) UNION (SELECT DISTINCT r.id_role, r.nom_role, r.prenom_role, 'flora'::text AS mode FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 10))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 10)) AND (r.groupe = false))))))) ORDER BY r.nom_role, r.prenom_role, r.id_role)) UNION (SELECT DISTINCT r.id_role, r.nom_role, r.prenom_role, 'inv'::text AS mode FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 9))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 9)) AND (r.groupe = false))))))) ORDER BY r.nom_role, r.prenom_role, r.id_role);
 
 
 --
@@ -5177,6 +5177,22 @@ CREATE VIEW v_nomade_ap AS
 SELECT ap.indexap, ap.codepheno, letypedegeom(ap.the_geom_2154) AS montype, substr(public.st_asgml(ap.the_geom_2154), (strpos(public.st_asgml(ap.the_geom_2154), '<gml:coordinates>'::text) + 17), (strpos(public.st_asgml(ap.the_geom_2154), '</gml:coordinates>'::text) - (strpos(public.st_asgml(ap.the_geom_2154), '<gml:coordinates>'::text) + 17))) AS coordinates, ap.surfaceap, (((ap.id_frequence_methodo_new)::text || ';'::text) || (ap.frequenceap)::integer) AS frequence, vper.codeper, ((('TF;'::text || ((ap.total_fertiles)::character(1))::text) || ',RS;'::text) || ((ap.total_steriles)::character(1))::text) AS denombrement, zp.id_secteur_fp FROM ((t_apresence ap JOIN v_nomade_zp zp ON ((ap.indexzp = zp.indexzp))) LEFT JOIN (SELECT ab.indexap, substr((array_agg(ab.codeper))::text, 2, (strpos((array_agg(ab.codeper))::text, '}'::text) - 2)) AS codeper FROM (SELECT aa.indexap, aa.codeper FROM cor_ap_perturb aa ORDER BY aa.indexap, aa.codeper) ab GROUP BY ab.indexap) vper ON ((vper.indexap = ap.indexap))) WHERE (ap.supprime = false) ORDER BY ap.indexap;
 
 
+CREATE OR REPLACE VIEW v_nomade_classes AS 
+ SELECT g.id_liste AS id_classe,
+    g.nom_liste AS nom_classe_fr,
+    g.desc_liste AS desc_classe
+   FROM ( SELECT l.id_liste,
+            l.nom_liste,
+            l.desc_liste,
+            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_listes l
+             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
+             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
+          WHERE l.id_liste >= 300 AND l.id_liste < 400
+          GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+  WHERE t.regne::text = 'Plantae'::text;
+
 
 SET search_path = florestation, pg_catalog;
 
@@ -5204,6 +5220,46 @@ SELECT cor.id_station_cd_nom AS indexbidon, fs.id_station, bt.francais, bt.latin
 CREATE VIEW v_taxons_fs AS
 SELECT t.cd_nom, t.nom_complet FROM (taxonomie.taxref t JOIN ((SELECT DISTINCT t.cd_ref FROM ((taxonomie.taxref t JOIN cor_fs_taxon c ON ((c.cd_nom = t.cd_nom))) RIGHT JOIN t_stations_fs s ON ((s.id_station = c.id_station))) WHERE ((s.supprime = false) AND (c.supprime = false)) ORDER BY t.cd_ref) UNION SELECT t.cd_ref FROM taxonomie.taxref t WHERE (t.cd_nom = ANY (ARRAY[106226, 95136, 134738, 91823, 109422, 84904, 113388, 97502, 138537, 611325, 81376, 115437, 127191, 115228, 88108, 137138, 139803, 89840, 124967, 82656, 136028, 97785, 117952, 112747, 117933, 125337, 123156, 111297, 1000001, 131447, 122118, 134958, 99882, 111311, 123711, 90319, 111996, 89881, 97262, 117951, 95186, 98474, 115110, 90259, 119818, 126541, 117087, 87690, 131610, 127450, 116265, 97502, 125816, 104221, 95398, 138515, 86429, 83528, 110994, 121039, 110410, 87143, 110421, 82285, 126628, 103478, 129325, 81065, 81166, 106220, 90561, 86948, 73574, 73558]))) a ON ((a.cd_ref = t.cd_nom)));
 
+
+SET search_path = public, pg_catalog;
+
+CREATE OR REPLACE VIEW v_mobile_recherche AS 
+( SELECT ap.indexap AS gid,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(ap.the_geom_2154, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(ap.the_geom_2154), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(ap.the_geom_2154), 4326)) AS centroid_y
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+  WHERE ap.supprime = false AND st_isvalid(ap.the_geom_2154) AND ap.topo_valid = true
+  ORDER BY zp.dateobs DESC)
+UNION
+( SELECT cft.id_station AS gid,
+    s.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(s.the_geom_3857, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_y
+   FROM florestation.cor_fs_taxon cft
+     JOIN florestation.t_stations_fs s ON s.id_station = cft.id_station
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = cft.cd_nom
+     JOIN ( SELECT c.id_station,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florestation.cor_fs_observateur c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+          GROUP BY c.id_station) o ON o.id_station = cft.id_station
+  WHERE cft.supprime = false AND st_isvalid(s.the_geom_3857)
+  ORDER BY s.dateobs DESC);
+  
 
 SET search_path = contactfaune, pg_catalog;
 
@@ -8521,12 +8577,21 @@ GRANT ALL ON FUNCTION modify_date_update() TO PUBLIC;
 SET search_path = public, pg_catalog;
 
 --
--- Name: cor_boolean; Type: ACL; Schema: contactfaune; Owner: -
+-- Name: cor_boolean; Type: ACL; Schema: public; Owner: -
 --
 
 REVOKE ALL ON TABLE cor_boolean FROM PUBLIC;
 REVOKE ALL ON TABLE cor_boolean FROM geonatuser;
 GRANT ALL ON TABLE cor_boolean TO geonatuser;
+
+
+--
+-- Name: v_mobile_recherche; Type: ACL; Schema: public; Owner: -
+--
+
+REVOKE ALL ON TABLE v_mobile_recherche FROM PUBLIC;
+REVOKE ALL ON TABLE v_mobile_recherche FROM geonatuser;
+GRANT ALL ON TABLE v_mobile_recherche TO geonatuser;
 
 
 SET search_path = contactfaune, pg_catalog;
@@ -8872,6 +8937,18 @@ REVOKE ALL ON TABLE v_mobile_visu_zp FROM PUBLIC;
 REVOKE ALL ON TABLE v_mobile_visu_zp FROM geonatuser;
 GRANT ALL ON TABLE v_mobile_visu_zp TO geonatuser;
 GRANT ALL ON TABLE v_mobile_visu_zp TO postgres;
+
+
+--
+-- TOC entry 3693 (class 0 OID 0)
+-- Dependencies: 325
+-- Name: v_nomade_classes; Type: ACL; Schema: florepatri; Owner: -
+--
+
+REVOKE ALL ON TABLE v_nomade_classes FROM PUBLIC;
+REVOKE ALL ON TABLE v_nomade_classes FROM geonatuser;
+GRANT ALL ON TABLE v_nomade_classes TO geonatuser;
+GRANT ALL ON TABLE v_nomade_classes TO postgres;
 
 
 --

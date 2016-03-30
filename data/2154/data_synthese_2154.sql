@@ -563,7 +563,8 @@ INSERT INTO t_applications (id_application, nom_application, desc_application) V
 -- Data for Name: t_roles; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
 -- 
 INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, session_appli, date_insert, date_update, id_organisme, remarques) VALUES (true, 20002, NULL, 'grp_en_poste', NULL, 'Tous les agents en poste au PN', NULL, NULL, 'monpn', 99, true, NULL, NULL, NULL, NULL,'groupe test');
-INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, session_appli, date_insert, date_update, id_organisme, remarques) VALUES (false, 1, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', '', 'Parc national des Ecrins', 1, true, NULL, NULL, NULL, 99,'utilisateur test à modifier');
+INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, session_appli, date_insert, date_update, id_organisme, remarques) VALUES (false, 1, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', '', 'Parc national des Ecrins', 1, true, NULL, NULL, NULL, 99,'utilisateur test à modifier ou supprimer');
+INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_role, pass, email, organisme, id_unite, pn, session_appli, date_insert, date_update, id_organisme, remarques) VALUES (false, 2, 'agent', 'Agent', 'test', NULL, 'b33aed8f3134996703dc39f9a7c95783', '', 'Parc national des Ecrins', 1, true, NULL, NULL, NULL, 99,'utilisateur test à modifier ou supprimer');
 -- 
 -- TOC entry 3277 (class 0 OID 17831)
 -- Dependencies: 259
@@ -572,6 +573,7 @@ INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_r
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 1);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (20002, 3, 14);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 14);
+INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (2, 2, 14);
 -- 
 -- TOC entry 3279 (class 0 OID 17845)
 -- Dependencies: 263
@@ -584,14 +586,16 @@ INSERT INTO t_menus (id_menu, nom_menu, desc_menu, id_application) VALUES (10, '
 -- Dependencies: 186
 -- Data for Name: cor_role_menu; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
 -- 
-INSERT INTO cor_role_menu (id_role, id_menu) VALUES (1, 10);
-INSERT INTO cor_role_menu (id_role, id_menu) VALUES (1, 9);
+INSERT INTO cor_role_menu (id_role, id_menu) VALUES (20002, 10);
+INSERT INTO cor_role_menu (id_role, id_menu) VALUES (20002, 9);
+
 -- 
 -- TOC entry 3254 (class 0 OID 17440)
 -- Dependencies: 187
 -- Data for Name: cor_roles; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
 -- 
 INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES (20002, 1);
+INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES (20002, 2);
 
 
 SET search_path = meta, pg_catalog;
