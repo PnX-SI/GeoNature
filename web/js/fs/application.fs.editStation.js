@@ -329,6 +329,8 @@ application.editStation = function() {
                 ,forceSelection: true
                 ,selectOnFocus: true
                 ,editable: true
+                ,allowBlank: false
+                ,blankText:'Le support ayant servi à la localisation doit être rénseigné'
                 ,triggerAction: 'all'
                 ,trigger3Class: 'x-form-zoomto-trigger x-hidden'
                 ,mode: 'local'
