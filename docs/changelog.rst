@@ -35,6 +35,8 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
 * Correction d'une erreur sur l'importation de shape pour la recherche géographique
 * WMS : correction de la liste des sites N2000, correction de l'affichage de l'aire optimale d'adhésion des parcs nationaux et retrait des sites inscrits et classés
 * Ajout du contact flore
+* correction d'un bug permetant la saisie d'une date d'observation postérieure à aujourd'hui dans flore station
+* Ajout de la version de taxref sur la page d'accueil
 
 
 

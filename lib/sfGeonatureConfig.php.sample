@@ -59,6 +59,9 @@ class sfGeonatureConfig extends sfActions
     public static $srid_local = 2154;
     //SRID utilisé pour la map dans Openlayers
     public static $srid_ol_map = 3857;
+    
+    //Version du référentiel taxonomique : exemple "version 8"
+    public static $taxref_version = "version 8";
   
     //Nom des applications et titres affichés
     public static $appname_main = 'GeoNature PNX';
