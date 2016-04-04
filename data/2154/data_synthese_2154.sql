@@ -435,10 +435,10 @@ INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (305, 'Pté
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (306, 'Monocotylédones',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (307, 'Dycotylédones',null, 'images/pictos/nopicto.gif');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (666, 'Nuisibles',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'liste faune vertébré', 'Liste servant à l''affichage des taxons de la faune vertébré pouvant être saisis', 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1002, 'liste faune invertébré', 'Liste servant à l''affichage des taxons de la faune invertébré pouvant être saisis', 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1003, 'liste flore', 'Liste servant à l''affichage des taxons de la flore pouvant être saisis', 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1004, 'Champignons','Liste servant à l''affichage des taxons de la fonge pouvant être saisis', 'images/pictos/champignon.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'Faune vertébrée', 'Liste servant à l''affichage des taxons de la faune vertébré pouvant être saisis', 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1002, 'Faune invertébrée', 'Liste servant à l''affichage des taxons de la faune invertébré pouvant être saisis', 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1003, 'Flore', 'Liste servant à l''affichage des taxons de la flore pouvant être saisis', 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1004, 'Fonge','Liste servant à l''affichage des taxons de la fonge pouvant être saisis', 'images/pictos/champignon.gif');
 
 
 --
