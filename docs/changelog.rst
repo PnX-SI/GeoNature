@@ -21,6 +21,12 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
         
         :: 
             php symfony cc
+            
+* Afin de mettre à jour la configuration wms, vous devez exécuter le fichier wms/update1.6to1.7.sh. Au préalable, assurez vous que les informations renseignées dans le fichier ``config/settings.ini`` sont à jour. L'ancien fichier sera sauvegardé sous wms/wms_1.6.map. Vous pourrez faire le choix de conserver ou de supprimer ce fichier de sauvegarde qui ne sera pas utilisé par l'application.
+        
+    :: 
+        cd geonature
+        ./wms/update1.6to1.7.sh
 
 **Changements**
 
