@@ -288,7 +288,7 @@ application.editStation = function() {
                 ,fieldLabel: 'Date '
                 ,name: 'dateobs'
                 ,xtype:'datefield'
-                ,maxValue: 'today'
+                ,maxValue: new Date()
                 ,format: 'd/m/Y'
                 ,altFormats:'Y-m-d'
                 ,allowBlank: false
