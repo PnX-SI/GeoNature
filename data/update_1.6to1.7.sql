@@ -41,6 +41,11 @@ UPDATE taxonomie.bib_liste set id_liste = 10 WHERE id_liste = 10201; --Bivalves
 UPDATE taxonomie.bib_liste set id_liste = 8 WHERE id_liste = 10202; --Gastéropodes
 UPDATE taxonomie.bib_liste set nom_liste = 'Crustacés' WHERE id_liste = 10105; --Ecrevisses
 
+UPDATE taxonomie.bib_liste set nom_liste = 'Faune vertébrée' WHERE id_liste = 1001; --faune vertébré
+UPDATE taxonomie.bib_liste set nom_liste = 'Faune invertébrée' WHERE id_liste = 1002; --faune invertébré
+UPDATE taxonomie.bib_liste set nom_liste = 'Flore' WHERE id_liste = 1003; --flore
+UPDATE taxonomie.bib_liste set nom_liste = 'Fonge' WHERE id_liste = 1004; --fonge
+
 CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
  SELECT g.id_liste AS id_classe,
     g.nom_liste AS nom_classe_fr,
