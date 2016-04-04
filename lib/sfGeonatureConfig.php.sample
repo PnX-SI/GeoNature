@@ -62,6 +62,9 @@ class sfGeonatureConfig extends sfActions
     
     //Version du référentiel taxonomique : exemple "version 8"
     public static $taxref_version = "version 8";
+    
+    //afficher ou non les statistiques concernant les observations. Valeurs possible true ou false
+    public static $show_statistiques = false;
   
     //Nom des applications et titres affichés
     public static $appname_main = 'GeoNature PNX';

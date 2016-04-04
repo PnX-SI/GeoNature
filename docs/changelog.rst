@@ -12,6 +12,7 @@ Dans la base GeoNature les classes taxonomiques sont configurables grace au vues
 Les id_liste ont donc été mis à jour pour être compatibles avec les id_classe des applications mobiles
 Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LES COMMENTAIRES
 * En lien avec les modifications ci-dessus, mettre à jour les variables des classes taxonomiques correspondant aux modification des id_liste dans ``web/js/config.js``
+* Ajouter dans le fichier ``lib/sfGeonatureConfig.php`` les variables $taxref_version et $show_statistiques (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
 * Pour ajouter le contact flore :
     * Exécuter le script sql ``data/2154/contactflore.sql``
     * Ajouter les variables $id_lot_cflore  = 7, $id_protocole_cflore  = 7, $id_source_cflore = 7 et $appname_cflore = 'Contact flore - GeoNature'; dans ``lib/sfGeonatureConfig.php`` (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
@@ -37,6 +38,7 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
 * Ajout du contact flore
 * correction d'un bug permetant la saisie d'une date d'observation postérieure à aujourd'hui dans flore station
 * Ajout de la version de taxref sur la page d'accueil
+* Correction des statistiques et mise en paramètre du choix de les afficher ou non.
 
 
 

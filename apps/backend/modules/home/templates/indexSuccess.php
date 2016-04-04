@@ -22,7 +22,7 @@
             <p>
                 <?php echo $liens_saisie;?>
             </p>
-
+        <?php if(sfGeonatureConfig::$show_statistiques){ ?>
         <h2>STATISTIQUES</h3>
             <div class="row" style="border:1px solid #ddd;">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
@@ -36,7 +36,7 @@
                     <div id="cl-chart" style="height: 250px;" ></div>
                 </div>
             </div>
-        
+        <?php } ?>
         <footer>
             <h5>
             <small>
