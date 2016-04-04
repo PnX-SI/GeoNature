@@ -43,7 +43,8 @@
                 <a href="https://github.com/PnEcrins/GeoNature/" target="_blank">GeoNature</a>
                 , développé par le 
                 <a href="http://www.ecrins-parcnational.fr" target="_blank">
-                Parc national des Ecrins</a>
+                Parc national des Ecrins </a>
+                - Basé sur Taxref <?php echo sfGeonatureConfig::$taxref_version; ?>
             </small>
             <a class="pull-right" href="deconnexion"><img src="images/logout.gif" title="Déconnexion"/></a>
             </h5>
