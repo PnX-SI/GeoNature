@@ -55,4 +55,50 @@ class TRelevesCfTable extends Doctrine_Table
         }
         return $maxid;
     }
+    
+    public static function getDatasNbObsCf()
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+       //total des données
+        $sql = "SELECT 
+                    DISTINCT TO_CHAR(f.dateobs, 'YYYY-MM') AS d, 
+                    w.nb AS web, 
+                    n.nb AS nomade
+                FROM contactfaune.t_fiches_cf f
+                LEFT JOIN
+                (
+                    SELECT dateobs AS d, count(r.*) AS nb 
+                    FROM  contactfaune.t_releves_cf r
+                    JOIN contactfaune.t_fiches_cf f ON f.id_cf = r.id_cf AND f.saisie_initiale = 'web'
+                    WHERE f.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
+                    AND r.supprime = false
+                    GROUP BY dateobs
+                    ORDER BY dateobs
+                ) w ON w.d = f.dateobs
+                LEFT JOIN 
+                (
+                    SELECT dateobs AS d, count(*) AS nb 
+                    FROM  contactfaune.t_releves_cf r
+                    JOIN contactfaune.t_fiches_cf f ON f.id_cf = r.id_cf AND f.saisie_initiale = 'nomade'
+                    WHERE f.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
+                    AND r.supprime = false
+                    GROUP BY dateobs
+                    ORDER BY dateobs
+                ) n ON n.d = f.dateobs
+                ORDER BY TO_CHAR(f.dateobs, 'YYYY-MM')";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $datas = array();
+        $somme_web = 0;
+        $somme_nomade = 0;
+        $somme_total = 0;
+        foreach ($result as &$row) {
+            $data = array();
+            $somme_web =  $somme_web +(int) $row['web'];
+            $somme_nomade =  $somme_nomade +(int) $row['nomade'];
+            $somme_total =  $somme_nomade +$somme_web;
+            $data = ['d'=>$row['d'], 'web'=>$somme_web, 'nomade'=>$somme_nomade, 'total'=>$somme_total];
+            array_push($datas, $data);
+        } 
+        return $datas;
+    }
 }

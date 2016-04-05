@@ -65,6 +65,8 @@ class sfGeonatureConfig extends sfActions
     
     //afficher ou non les statistiques concernant les observations. Valeurs possible true ou false
     public static $show_statistiques = false;
+    // date initiale prise en compte pour les statistiques du nombre d'observations
+    public static $init_date_statistiques = "2000-01-01";
   
     //Nom des applications et titres affichés
     public static $appname_main = 'GeoNature PNX';

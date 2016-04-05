@@ -223,5 +223,53 @@ class homeActions extends sfGeonatureActions
             return $this->renderJSON($datas);
         }
     }
+    public function executeDatasNbObsYear(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsYear() ;
+            
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbObsCf(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  TRelevesCfTable::getDatasNbObsCf() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
+    public function executeDatasNbObsInv(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  TRelevesInvTable::getDatasNbObsInv() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
+    public function executeDatasNbObsCflore(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  TRelevesCfloreTable::getDatasNbObsCflore() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
+    public function executeDatasNbObsFs(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  CorFsTaxonTable::getDatasNbObsFs() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
+    public function executeDatasNbObsFp(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  TApresenceTable::getDatasNbObsFp() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
 
 }
