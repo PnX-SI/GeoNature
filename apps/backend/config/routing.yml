@@ -409,6 +409,24 @@ datasNbObsKd:
 datasNbObsCl:
   url: /datasnbobscl
   param: { module: home, action: datasNbObsCl }
+datasNbObsYear:
+  url: /datasnbobsyear
+  param: { module: home, action: datasNbObsYear }
+datasNbObsCf:
+  url: /datasnbobscf
+  param: { module: home, action: datasNbObsCf }
+datasNbObsInv:
+  url: /datasnbobsinv
+  param: { module: home, action: datasNbObsInv }
+datasNbObsCflore:
+  url: /datasnbobscflore
+  param: { module: home, action: datasNbObsCflore }
+datasNbObsFs:
+  url: /datasnbobsfs
+  param: { module: home, action: datasNbObsFs }
+datasNbObsFp:
+  url: /datasnbobsfp
+  param: { module: home, action: datasNbObsFp }
 
 #autres
 getStatus:

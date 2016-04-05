@@ -488,4 +488,36 @@ class SyntheseffTable extends Doctrine_Table
         
         return $datas;
     }
+    public static function getDatasNbObsYear()
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        //nb d'observations par règne
+        $sql = "SELECT EXTRACT(YEAR FROM s.dateobs) AS annee, count(*) AS nb FROM synthese.syntheseff s
+                WHERE s.supprime = false AND id_organisme = ".sfGeonatureConfig::$id_organisme
+                ."GROUP BY EXTRACT(YEAR FROM s.dateobs)
+                ORDER BY annee;";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
+        $json = array();
+        foreach ($result as &$row) {      
+            array_push($json, $row);
+        }
+        return $json;
+    }
+    public static function getDatasNbObsCf()
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        //nb d'observations par règne
+        $sql = "SELECT to_char(f.dateobs, 'MM/YYYY') AS anneemoisobs, f.saisie_initiale, count(r.*) AS nb
+                FROM contactfaune.t_releves_cf r
+                JOIN contactfaune.t_fiches_cf f ON f.id_cf = r.id_cf
+                WHERE f.dateobs > '2012-11-01'
+                GROUP BY f.saisie_initiale, to_char(f.dateobs, 'MM/YYYY'),EXTRACT(YEAR FROM f.dateobs)
+                ORDER BY EXTRACT(YEAR FROM f.dateobs), anneemoisobs, f.saisie_initiale;";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
+        $json = array();
+        foreach ($result as &$row) {      
+            array_push($json, $row);
+        }
+        return $json;
+    }
 }
