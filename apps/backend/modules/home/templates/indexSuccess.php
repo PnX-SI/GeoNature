@@ -23,8 +23,9 @@
                 <?php echo $liens_saisie;?>
             </p>
         <?php if(sfGeonatureConfig::$show_statistiques){ ?>
-        <h2>STATISTIQUES</h3>
+        <h2>STATISTIQUES</h2>
             <div class="row" style="border:1px solid #ddd;">
+                <h3>Taxonomie</h3>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Règnes</h3>
                     <label class="label label-success">Nombre d'observations</label>
@@ -36,35 +37,86 @@
                     <div id="cl-chart" style="height: 250px;" ></div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
-                    <h3 class="text-primary text-center">Observations par années</h3>
+                    <h3 class="text-primary text-center">Groupe 1 INPN</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="gp1-chart" style="height: 250px;" ></div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Groupe 2 INPN</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="gp2-chart" style="height: 250px;" ></div>
+                </div>
+            </div>
+            <div class="row" style="border:1px solid #ddd;">
+                <h3>Autre</h3>
+                <div class="text-center">
+                    <h3 class="text-primary text-center">Années</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="year-chart" style="height: 250px;" ></div>
                 </div>
+                <div class="text-center">
+                    <h3 class="text-primary text-center">Organismes producteurs</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="org-chart" style="height: 250px;" ></div>
+                </div>
+            </div>
+            <div class="row" style="border:1px solid #ddd;">
+                <h3>Programmes de la synthèse</h3>
+                <div class="text-center">
+                    <h3 class="text-primary text-center">Programmes</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="prog-chart-obs" style="height: 250px;" ></div>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-primary text-center">Programmes</h3>
+                    <label class="label label-success">Nombre de taxons</label>
+                    <div id="prog-chart-tx" style="height: 250px;" ></div>
+                </div>
+            </div>
+            <div class="row" style="border:1px solid #ddd;">
+                <h3>Protocoles GeoNature</h3>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_cf, $actives_sources)) { ?>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Contact faune vertébrée</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="cf-chart" style="height: 250px;" ></div>
                 </div>
+                <?php }?>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_mortalite, $actives_sources)) { ?>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Mortalité</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="mortalite-chart" style="height: 250px;" ></div>
+                </div>
+                <?php }?>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_inv, $actives_sources)) { ?>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Contact faune invertébrée</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="inv-chart" style="height: 250px;" ></div>
                 </div>
+                <?php }?>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_cflore, $actives_sources)) { ?>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Contact flore</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="cflore-chart" style="height: 250px;" ></div>
                 </div>
+                <?php }?>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_florestation, $actives_sources)) { ?>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Flore station</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="fs-chart" style="height: 250px;" ></div>
                 </div>
+                <?php }?>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_florepatri, $actives_sources)) { ?>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Flore prioritaire</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="fp-chart" style="height: 250px;" ></div>
                 </div>
+                <?php }?>
             </div>
         <?php } ?>
         <footer>
@@ -83,6 +135,7 @@
     </div>
 </div>
 <script>
+
 var constructDatas = function(arr) {
     var datas = [];
     var item;
@@ -105,35 +158,38 @@ var constructDonuts = function(datas,div) {
     });
 };
 
-var constructBars = function(datas,div) {
+var constructBars = function(datas,div,labels) {
     return new Morris.Bar({
     element: div,
     data:datas,
-    xkey: 'annee',
+    xkey: 'subject',
     ykeys: ['nb'],
-    labels: ['nombre d\'observations'],
+    labels: labels,
     barRatio: 0.4,
-    xLabelAngle: 35,
-    hideHover: 'auto'
+    xLabelAngle: 25,
+    hideHover: 'auto',
+    resize:true
   });
 };
 
-var constructLinesWNT = function(datas,div) {
-    return new Morris.Line({
-        element: div,
-        data: datas,
-        xkey: 'd',
-        ykeys: ['web', 'nomade','total'],
-        labels: ['web', 'nomade','total']
-    })
-};
+// var constructLinesWNT = function(datas,div) {
+    // return new Morris.Line({
+        // element: div,
+        // data: datas,
+        // xkey: 'd',
+        // ykeys: ['web', 'nomade','total'],
+        // labels: ['web', 'nomade','total'],
+        // hideHover: 'auto'
+    // })
+// };
 var constructSimpleLine = function(datas,div) {
     return new Morris.Line({
         element: div,
         data: datas,
         xkey: 'd',
-        ykeys: ['nb'],
-        labels: ['nombre d\'observations']
+        ykeys: ['annee','somme'],
+        labels: ['annee','total'],
+        hideHover: 'auto'
     })
 };
 function onDataReceived1(series) {
@@ -145,21 +201,44 @@ function onDataReceived2(series) {
     constructDonuts(datas,'cl-chart');   
 };
 function onDataReceived3(series) {
-    constructBars(series,'year-chart');   
+    var datas = constructDatas(series);
+    constructDonuts(datas,'gp1-chart');  
 };
 function onDataReceived4(series) {
-    constructLinesWNT(series,'cf-chart');   
-};
+    var datas = constructDatas(series);
+    constructDonuts(datas,'gp2-chart');  
+}; 
+ 
 function onDataReceived5(series) {
-    constructLinesWNT(series,'inv-chart');   
+    constructBars(series,'year-chart',['nombre d\'observations']);   
 };
 function onDataReceived6(series) {
-    constructLinesWNT(series,'cflore-chart');   
+    constructBars(series,'org-chart',['nombre d\'observations']);   
 };
+
 function onDataReceived7(series) {
-    constructSimpleLine(series,'fs-chart');   
+    constructBars(series,'prog-chart-obs',['nombre d\'observations']);   
 };
 function onDataReceived8(series) {
+    constructBars(series,'prog-chart-tx',['nombre de taxons']);   
+};
+
+function onDataReceived9(series) {
+    constructSimpleLine(series,'cf-chart');   
+};
+function onDataReceived10(series) {
+    constructSimpleLine(series,'mortalite-chart');   
+};
+function onDataReceived11(series) {
+    constructSimpleLine(series,'inv-chart');   
+};
+function onDataReceived12(series) {
+    constructSimpleLine(series,'cflore-chart');   
+};
+function onDataReceived13(series) {
+    constructSimpleLine(series,'fs-chart');   
+};
+function onDataReceived14(series) {
     constructSimpleLine(series,'fp-chart');   
 };
 //récupération des données avec une requête ajax et lancement de la construction du graphique sur le success
@@ -173,11 +252,21 @@ function getDatas(url, successFunction) {
 };
 getDatas('datasnbobskd',onDataReceived1);
 getDatas('datasnbobscl',onDataReceived2);
-getDatas('datasnbobsyear',onDataReceived3);
-getDatas('datasnbobscf',onDataReceived4);
-getDatas('datasnbobsinv',onDataReceived5);
-getDatas('datasnbobscflore',onDataReceived6);
-getDatas('datasnbobsfs',onDataReceived7);
+getDatas('datasnbobsgp1',onDataReceived3);
+getDatas('datasnbobsgp2',onDataReceived4);
+
+getDatas('datasnbobsyear',onDataReceived5);
+getDatas('datasnbobsorganisme',onDataReceived6);
+
+getDatas('datasnbobsprogramme',onDataReceived7);
+getDatas('datasnbtxprogramme',onDataReceived8);
+
+<?php  if (in_array(sfGeonatureConfig::$id_source_cf, $actives_sources)) { ?>getDatas('datasnbobscf',onDataReceived9);<?php } ?>
+<?php  if (in_array(sfGeonatureConfig::$id_source_mortalite, $actives_sources)) { ?>getDatas('datasnbobsmortalite',onDataReceived10);<?php } ?>
+<?php  if (in_array(sfGeonatureConfig::$id_source_inv, $actives_sources)) { ?>getDatas('datasnbobsinv',onDataReceived11);<?php } ?>
+<?php  if (in_array(sfGeonatureConfig::$id_source_cflore, $actives_sources)) { ?>getDatas('datasnbobscflore',onDataReceived12);<?php } ?>
+<?php  if (in_array(sfGeonatureConfig::$id_source_florestation, $actives_sources)) { ?>getDatas('datasnbobsfs',onDataReceived13);<?php } ?>
+<?php  if (in_array(sfGeonatureConfig::$id_source_florepatri, $actives_sources)) { ?>getDatas('datasnbobsfp',onDataReceived14);<?php } ?>
 
 </script>
  </body>

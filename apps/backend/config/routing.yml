@@ -406,15 +406,33 @@ getN2000:
 datasNbObsKd:
   url: /datasnbobskd
   param: { module: home, action: datasNbObsKd }
+datasNbObsGp1:
+  url: /datasnbobsgp1
+  param: { module: home, action: datasNbObsGp1 }
+datasNbObsGp2:
+  url: /datasnbobsgp2
+  param: { module: home, action: datasNbObsGp2 }
 datasNbObsCl:
   url: /datasnbobscl
   param: { module: home, action: datasNbObsCl }
 datasNbObsYear:
   url: /datasnbobsyear
   param: { module: home, action: datasNbObsYear }
+datasNbObsOrganisme:
+  url: /datasnbobsorganisme
+  param: { module: home, action: datasNbObsOrganisme }
+datasNbObsProgramme:
+  url: /datasnbobsprogramme
+  param: { module: home, action: datasNbObsProgramme }
+datasNbTxProgramme:
+  url: /datasnbtxprogramme
+  param: { module: home, action: datasNbTxProgramme }
 datasNbObsCf:
   url: /datasnbobscf
   param: { module: home, action: datasNbObsCf }
+datasNbObsMortalite:
+  url: /datasnbobsmortalite
+  param: { module: home, action: datasNbObsMortalite }
 datasNbObsInv:
   url: /datasnbobsinv
   param: { module: home, action: datasNbObsInv }
