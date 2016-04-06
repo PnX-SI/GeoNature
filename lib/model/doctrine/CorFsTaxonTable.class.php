@@ -260,27 +260,4 @@ class CorFsTaxonTable extends Doctrine_Table
         $aps = $dbh->query($sql);
         return $aps;
     }
-
-    public static function getDatasNbObsFs()
-    {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-       //total des données
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY-MM') AS d, count(*) AS nb 
-                FROM  florestation.cor_fs_taxon cft
-                JOIN florestation.t_stations_fs s  ON cft.id_station = s.id_station
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY-MM')
-                ORDER BY TO_CHAR(dateobs, 'YYYY-MM')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'nb'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
-    }
 }

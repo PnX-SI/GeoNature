@@ -68,6 +68,7 @@ class homeActions extends sfGeonatureActions
             $groupes = BibSourcesTable::listSourcesGroupes();
             $sources = BibSourcesTable::listActiveSources();
             $this->lien_saisie = '';
+            $this->actives_sources = [];
             foreach ($groupes as $groupe)
             {  
                 $group = $groupe['groupe'];
@@ -79,6 +80,7 @@ class homeActions extends sfGeonatureActions
                     $target = $source['target'];
                     $picto = $source['picto'];
                     $nom_source = $source['nom_source'];
+                    array_push($this->actives_sources, $source['id_source']);
                     if($source_group == $group)
                     {
                         $this->lien_saisie = '';
@@ -215,6 +217,22 @@ class homeActions extends sfGeonatureActions
             return $this->renderJSON($datas);
         }
     }
+    public function executeDatasNbObsGp1(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsGp1() ;
+            
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbObsGp2(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsGp2() ;
+            
+            return $this->renderJSON($datas);
+        }
+    }
     public function executeDatasNbObsCl(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
@@ -231,10 +249,42 @@ class homeActions extends sfGeonatureActions
             return $this->renderJSON($datas);
         }
     }
+    public function executeDatasNbObsOrganisme(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsOrganisme() ;
+            
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbObsProgramme(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsProgramme() ;
+            
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbTxProgramme(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbTxProgramme() ;
+            
+            return $this->renderJSON($datas);
+        }
+    }
     public function executeDatasNbObsCf(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesCfTable::getDatasNbObsCf() ;
+            $datas_tout =  SyntheseffTable::getDatasNbObsCf() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
+    public function executeDatasNbObsMortalite(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  SyntheseffTable::getDatasNbObsMortalite() ;
             
             return $this->renderJSON($datas_tout);
         }
@@ -242,7 +292,7 @@ class homeActions extends sfGeonatureActions
     public function executeDatasNbObsInv(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesInvTable::getDatasNbObsInv() ;
+            $datas_tout =  SyntheseffTable::getDatasNbObsInv() ;
             
             return $this->renderJSON($datas_tout);
         }
@@ -250,7 +300,7 @@ class homeActions extends sfGeonatureActions
     public function executeDatasNbObsCflore(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TRelevesCfloreTable::getDatasNbObsCflore() ;
+            $datas_tout =  SyntheseffTable::getDatasNbObsCflore() ;
             
             return $this->renderJSON($datas_tout);
         }
@@ -258,7 +308,7 @@ class homeActions extends sfGeonatureActions
     public function executeDatasNbObsFs(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  CorFsTaxonTable::getDatasNbObsFs() ;
+            $datas_tout =  SyntheseffTable::getDatasNbObsFs() ;
             
             return $this->renderJSON($datas_tout);
         }
@@ -266,7 +316,7 @@ class homeActions extends sfGeonatureActions
     public function executeDatasNbObsFp(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  TApresenceTable::getDatasNbObsFp() ;
+            $datas_tout =  SyntheseffTable::getDatasNbObsFp() ;
             
             return $this->renderJSON($datas_tout);
         }
