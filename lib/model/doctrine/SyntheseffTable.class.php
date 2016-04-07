@@ -485,54 +485,221 @@ class SyntheseffTable extends Doctrine_Table
     
     public static function getDatasNbObsKd()
     {
-        $sql = "SELECT tr.regne AS subject, count(*) AS nb FROM synthese.syntheseff s
-                JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+        $sql = "SELECT tr.regne AS subject, count(*) AS nb 
+                FROM synthese.syntheseff s
+                LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
                 WHERE s.supprime = false
-                GROUP BY tr.regne";
+                GROUP BY tr.regne
+                ORDER BY nb desc;";
+        return self::getTaxonomiesDatas($sql);
+    }
+    public static function getDatasNbTxKd()
+    {
+        $sql = "SELECT a.regne AS subject, count (a.*) AS nb
+                FROM
+                (SELECT distinct  tr.regne, tr.cd_ref
+                FROM taxonomie.taxref tr 
+                LEFT JOIN synthese.syntheseff s ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false) a
+                GROUP by  a.regne
+                ORDER BY nb desc; ";     
         return self::getTaxonomiesDatas($sql);
     }
     public static function getDatasNbObsCl()
     {
-        $sql = "SELECT tr.classe AS subject, count(*) AS nb FROM synthese.syntheseff s
-                JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                GROUP BY tr.classe";
-        return self::getTaxonomiesDatas($sql);
-    }
-    public static function getDatasNbObsgp1()
-    {
-        $sql = "SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb FROM synthese.syntheseff s
+        $sql = "SELECT tr.classe AS subject, count(*) AS nb 
+                FROM synthese.syntheseff s
                 LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
                 WHERE s.supprime = false
-                GROUP BY tr.group1_inpn";
+                GROUP BY tr.classe
+                ORDER BY nb desc;";
         return self::getTaxonomiesDatas($sql);
+    }
+    public static function getDatasNbTxCl()
+    {
+        $sql = "SELECT a.classe AS subject, count (a.*) AS nb
+                FROM
+                (SELECT distinct  tr.classe, tr.cd_ref
+                FROM taxonomie.taxref tr 
+                LEFT JOIN synthese.syntheseff s ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false) a
+                GROUP by  a.classe
+                ORDER BY nb desc; ";     
+        return self::getTaxonomiesDatas($sql);
+    }
+    public static function getDatasNbObsGp1()
+    {
+        $sql = "SELECT DISTINCT  COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
+                FROM taxonomie.bib_taxons t
+                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom              
+                LEFT JOIN
+                (SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb 
+                        FROM taxonomie.bib_taxons t
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre2 = 'oui' 
+                        GROUP BY tr.group1_inpn
+                        ORDER BY nb desc) pat ON pat.subject = tr.group1_inpn
+                LEFT JOIN
+                (SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb 
+                        FROM taxonomie.bib_taxons t
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre3 = 'oui' 
+                        GROUP BY tr.group1_inpn
+                        ORDER BY nb desc) prot ON prot.subject = tr.group1_inpn
+                LEFT JOIN
+                (SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb 
+                        FROM synthese.syntheseff s
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        GROUP BY tr.group1_inpn
+                        ORDER BY nb desc) tout ON tout.subject = tr.group1_inpn
+                        ORDER BY tout.nb desc";
+        return self::getDatas($sql);
+    }
+    public static function getDatasNbTxGp1()
+    {
+        $sql = "SELECT distinct  tr.group1_inpn AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
+                FROM taxonomie.bib_taxons t
+                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                LEFT JOIN (SELECT a.group1_inpn AS subject, count (a.*) AS nb
+                    FROM
+                        (SELECT distinct  tr.group1_inpn, tr.cd_ref
+                        FROM taxonomie.bib_taxons t
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre2 = 'oui') a
+                    GROUP by  a.group1_inpn
+                    ORDER BY nb desc) pat ON pat.subject = tr.group1_inpn
+                LEFT JOIN (SELECT a.group1_inpn AS subject, count (a.*) AS nb
+                    FROM
+                        (SELECT distinct  tr.group1_inpn, tr.cd_ref
+                        FROM taxonomie.bib_taxons t
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre3 = 'oui') a 
+                    GROUP by  a.group1_inpn
+                    ORDER BY nb desc) prot ON prot.subject = tr.group1_inpn
+                LEFT JOIN (SELECT a.group1_inpn AS subject, count (a.*) AS nb
+                    FROM
+                        (SELECT distinct  tr.group1_inpn, tr.cd_ref
+                        FROM taxonomie.bib_taxons t
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false) a 
+                    GROUP by  a.group1_inpn
+                    ORDER BY nb desc) tout ON tout.subject = tr.group1_inpn
+                ORDER BY tout.nb desc";     
+        return self::getDatas($sql);
+    }
+    public static function getDatasNbObsGp2()
+    {
+        $sql = "SELECT DISTINCT  COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
+                FROM taxonomie.bib_taxons t
+                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom              
+                LEFT JOIN
+                (SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb 
+                        FROM taxonomie.bib_taxons t
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre2 = 'oui' 
+                        GROUP BY tr.group2_inpn
+                        ORDER BY nb desc) pat ON pat.subject = tr.group2_inpn
+                LEFT JOIN
+                (SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb 
+                        FROM taxonomie.bib_taxons t
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre3 = 'oui' 
+                        GROUP BY tr.group2_inpn
+                        ORDER BY nb desc) prot ON prot.subject = tr.group2_inpn
+                LEFT JOIN
+                (SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb 
+                        FROM synthese.syntheseff s
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        GROUP BY tr.group2_inpn
+                        ORDER BY nb desc) tout ON tout.subject = tr.group2_inpn
+                        ORDER BY tout.nb desc";
+        return self::getDatas($sql);
+    }
+    public static function getDatasNbTxGp2()
+    {
+        $sql = "SELECT distinct  tr.group2_inpn AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
+                FROM taxonomie.bib_taxons t
+                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                LEFT JOIN (SELECT a.group2_inpn AS subject, count (a.*) AS nb
+                    FROM
+                        (SELECT distinct  tr.group2_inpn, tr.cd_ref
+                        FROM taxonomie.bib_taxons t
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre2 = 'oui') a
+                    GROUP by  a.group2_inpn
+                    ORDER BY nb desc) pat ON pat.subject = tr.group2_inpn
+                LEFT JOIN (SELECT a.group2_inpn AS subject, count (a.*) AS nb
+                    FROM
+                        (SELECT distinct  tr.group2_inpn, tr.cd_ref
+                        FROM taxonomie.bib_taxons t
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false
+                        AND t.filtre3 = 'oui') a 
+                    GROUP by  a.group2_inpn
+                    ORDER BY nb desc) prot ON prot.subject = tr.group2_inpn
+                LEFT JOIN (SELECT a.group2_inpn AS subject, count (a.*) AS nb
+                    FROM
+                        (SELECT distinct  tr.group2_inpn, tr.cd_ref
+                        FROM taxonomie.bib_taxons t
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        WHERE s.supprime = false) a 
+                    GROUP by  a.group2_inpn
+                    ORDER BY nb desc) tout ON tout.subject = tr.group2_inpn
+                ORDER BY tout.nb desc";     
+        return self::getDatas($sql);
     }
     
-    public static function getDatasNbObsgp2()
-    {
-        $sql = "SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb FROM synthese.syntheseff s
-                LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                GROUP BY tr.group2_inpn";
-        return self::getTaxonomiesDatas($sql);
-    }
     
     public static function getDatasNbObsYear()
     {
-        $sql = "SELECT EXTRACT(YEAR FROM s.dateobs) AS subject, count(*) AS nb FROM synthese.syntheseff s
+        $sql = "SELECT EXTRACT(YEAR FROM s.dateobs) AS subject, count(*) AS nb 
+                FROM synthese.syntheseff s
                 WHERE s.supprime = false 
                 AND id_organisme = ".sfGeonatureConfig::$id_organisme."
                 GROUP BY EXTRACT(YEAR FROM s.dateobs)
-                ORDER BY subject;";
+                ORDER BY EXTRACT(YEAR FROM s.dateobs);";
+        return self::getDatas($sql);
+    }
+    public static function getDatasNbTxYear()
+    {
+        $sql = "SELECT a.annee AS subject, count (a.*) AS nb
+                FROM
+                (SELECT DISTINCT EXTRACT(YEAR FROM s.dateobs) as annee, tr.cd_ref
+                FROM taxonomie.taxref tr 
+                LEFT JOIN synthese.syntheseff s ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false
+                AND id_organisme = ".sfGeonatureConfig::$id_organisme.") a
+                GROUP by a.annee
+                ORDER BY a.annee; ";     
         return self::getDatas($sql);
     }
     public static function getDatasNbObsOrganisme()
     {
-        $sql = "SELECT nom_organisme AS subject, count(*) as nb FROM synthese.syntheseff s
+        $sql = "SELECT nom_organisme AS subject, count(*) as nb 
+                FROM synthese.syntheseff s
                 JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
                 WHERE supprime = false
                 GROUP BY nom_organisme
-                ORDER BY nom_organisme;";  
+                ORDER BY nb desc;";  
         return self::getDatas($sql);
     }
     public static function getDatasNbObsProgramme()

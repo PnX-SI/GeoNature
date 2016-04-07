@@ -28,47 +28,70 @@
                 <h3>Taxonomie</h3>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Règnes</h3>
-                    <label class="label label-success">Nombre d'observations</label>
-                    <div id="kd-chart" style="height: 250px;" ></div>
+                    <label class="label label-success">Nombre total d'observations</label>
+                    <div id="kd-chart-obs" style="height: 250px;" ></div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Règnes</h3>
+                    <label class="label label-success">Nombre de taxons observés</label>
+                    <div id="kd-chart-tx" style="height: 250px;" ></div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
                     <h3 class="text-primary text-center">Classes</h3>
-                    <label class="label label-success">Nombre d'observations</label>
-                    <div id="cl-chart" style="height: 250px;" ></div>
+                    <label class="label label-success">Nombre total d'observations</label>
+                    <div id="cl-chart-obs" style="height: 250px;" ></div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Classes</h3>
+                    <label class="label label-success">Nombre de taxons observés</label>
+                    <div id="cl-chart-tx" style="height: 250px;" ></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
                     <h3 class="text-primary text-center">Groupe 1 INPN</h3>
-                    <label class="label label-success">Nombre d'observations</label>
-                    <div id="gp1-chart" style="height: 250px;" ></div>
+                    <label class="label label-success">Nombre total d'observations</label>
+                    <div id="gp1-chart-obs" style="height: 250px;" ></div>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <h3 class="text-primary text-center">Groupe 1 INPN</h3>
+                    <label class="label label-success">Nombre de taxons observés</label>
+                    <div id="gp1-chart-tx" style="height: 250px;" ></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
                     <h3 class="text-primary text-center">Groupe 2 INPN</h3>
-                    <label class="label label-success">Nombre d'observations</label>
-                    <div id="gp2-chart" style="height: 250px;" ></div>
+                    <label class="label label-success">Nombre total d'observations</label>
+                    <div id="gp2-chart-obs" style="height: 250px;" ></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <h3 class="text-primary text-center">Groupe 2 INPN</h3>
+                    <label class="label label-success">Nombre de taxons observés</label>
+                    <div id="gp2-chart-tx" style="height: 250px;" ></div>
                 </div>
             </div>
             <div class="row" style="border:1px solid #ddd;">
-                <h3>Autre</h3>
+                <h3>Répartition des observations</h3>
                 <div class="text-center">
-                    <h3 class="text-primary text-center">Années</h3>
-                    <label class="label label-success">Nombre d'observations</label>
-                    <div id="year-chart" style="height: 250px;" ></div>
-                </div>
-                <div class="text-center">
-                    <h3 class="text-primary text-center">Organismes producteurs</h3>
+                    <h3 class="text-primary text-center">Par organisme producteur</h3>
                     <label class="label label-success">Nombre d'observations</label>
                     <div id="org-chart" style="height: 250px;" ></div>
                 </div>
-            </div>
-            <div class="row" style="border:1px solid #ddd;">
-                <h3>Programmes de la synthèse</h3>
                 <div class="text-center">
-                    <h3 class="text-primary text-center">Programmes</h3>
-                    <label class="label label-success">Nombre d'observations</label>
+                    <h3 class="text-primary text-center">Par année</h3>
+                    <label class="label label-success">Nombre d'observations <?php echo sfGeonatureConfig::$struc_abregee;?></label>
+                    <div id="year-chart-obs" style="height: 250px;" ></div>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-primary text-center">Par année</h3>
+                    <label class="label label-success">Nombre de taxons observés (<?php echo sfGeonatureConfig::$struc_abregee;?>)</label>
+                    <div id="year-chart-tx" style="height: 250px;" ></div>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="text-primary text-center">Par programme</h3>
+                    <label class="label label-success">Nombre total d'observations</label>
                     <div id="prog-chart-obs" style="height: 250px;" ></div>
                 </div>
                 <div class="text-center">
-                    <h3 class="text-primary text-center">Programmes</h3>
+                    <h3 class="text-primary text-center">Par programme</h3>
                     <label class="label label-success">Nombre de taxons</label>
                     <div id="prog-chart-tx" style="height: 250px;" ></div>
                 </div>
@@ -179,16 +202,20 @@ var constructBars = function(datas,div,labels) {
   });
 };
 
-// var constructLinesWNT = function(datas,div) {
-    // return new Morris.Line({
-        // element: div,
-        // data: datas,
-        // xkey: 'd',
-        // ykeys: ['web', 'nomade','total'],
-        // labels: ['web', 'nomade','total'],
-        // hideHover: 'auto'
-    // })
-// };
+var constructTriBars = function(datas,div,labels) {
+    return new Morris.Bar({
+    element: div,
+    data:datas,
+    xkey: 'subject',
+    ykeys: ['a','b','c'],
+    labels: labels,
+    barRatio: 0.4,
+    xLabelAngle: 25,
+    hideHover: 'auto',
+    resize:true
+  });
+};
+
 var constructSimpleLine = function(datas,div) {
     return new Morris.Line({
         element: div,
@@ -199,25 +226,44 @@ var constructSimpleLine = function(datas,div) {
         hideHover: 'auto'
     })
 };
-function onDataReceived1(series) {
+function onDataReceivedKdObs(series) {
     var datas = constructDatas(series);
-    constructDonuts(datas,'kd-chart');  
+    constructDonuts(datas,'kd-chart-obs');  
 };
-function onDataReceived2(series) {
+function onDataReceivedKdTx(series) {
     var datas = constructDatas(series);
-    constructDonuts(datas,'cl-chart');   
+    constructDonuts(datas,'kd-chart-tx');  
 };
-function onDataReceived3(series) {
+function onDataReceivedClObs(series) {
     var datas = constructDatas(series);
-    constructDonuts(datas,'gp1-chart');  
+    constructDonuts(datas,'cl-chart-obs');   
 };
-function onDataReceived4(series) {
+function onDataReceivedClTx(series) {
     var datas = constructDatas(series);
-    constructDonuts(datas,'gp2-chart');  
+    constructDonuts(datas,'cl-chart-tx');   
+};
+function onDataReceivedGp1Obs(series) {
+    // var datas = constructDatas(series);
+    constructTriBars(series,'gp1-chart-obs',['total','patrimoniaux', 'protégés']);  
+};
+function onDataReceivedGp1Tx(series) {
+    // var datas = constructDatas(series);
+    constructTriBars(series,'gp1-chart-tx',['total','patrimoniaux', 'protégés']);  
+};
+function onDataReceivedGp2Obs(series) {
+    // var datas = constructDatas(series);
+    constructTriBars(series,'gp2-chart-obs',['total','patrimoniaux', 'protégés']);   
+};
+function onDataReceivedGp2Tx(series) {
+    // var datas = constructDatas(series);
+    constructTriBars(series,'gp2-chart-tx',['total','patrimoniaux', 'protégés']);   
 }; 
  
-function onDataReceived5(series) {
-    constructBars(series,'year-chart',['nombre d\'observations']);   
+function onDataReceivedYearObs(series) {
+    constructBars(series,'year-chart-obs',['nombre d\'observations']);   
+};
+function onDataReceivedYearTx(series) {
+    constructBars(series,'year-chart-tx',['nombre de taxons observés']);   
 };
 function onDataReceived6(series) {
     constructBars(series,'org-chart',['nombre d\'observations']);   
@@ -260,12 +306,17 @@ function getDatas(url, successFunction) {
         ,success: successFunction
     });
 };
-getDatas('datasnbobskd',onDataReceived1);
-getDatas('datasnbobscl',onDataReceived2);
-getDatas('datasnbobsgp1',onDataReceived3);
-getDatas('datasnbobsgp2',onDataReceived4);
+getDatas('datasnbobskd',onDataReceivedKdObs);
+getDatas('datasnbtxkd',onDataReceivedKdTx);
+getDatas('datasnbobscl',onDataReceivedClObs);
+getDatas('datasnbtxcl',onDataReceivedClTx);
+getDatas('datasnbobsgp1',onDataReceivedGp1Obs);
+getDatas('datasnbtxgp1',onDataReceivedGp1Tx);
+getDatas('datasnbobsgp2',onDataReceivedGp2Obs);
+getDatas('datasnbtxgp2',onDataReceivedGp2Tx);
 
-getDatas('datasnbobsyear',onDataReceived5);
+getDatas('datasnbobsyear',onDataReceivedYearObs);
+getDatas('datasnbtxyear',onDataReceivedYearTx);
 getDatas('datasnbobsorganisme',onDataReceived6);
 
 getDatas('datasnbobsprogramme',onDataReceived7);

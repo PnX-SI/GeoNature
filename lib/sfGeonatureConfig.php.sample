@@ -79,4 +79,8 @@ class sfGeonatureConfig extends sfActions
     public static $appname_bryo = 'Bryophytes - GeoNature';
     public static $appname_synthese = 'Synthèse - GeoNature';
     public static $apptitle_main = 'Parc nationaux - Gestion des données faune-flore';
+
+    //Configuration propre à l'identité de la structure
+    public static $struc_long = 'Parc national des Ecrins';
+    public static $struc_abregee = 'PNE';
 }
