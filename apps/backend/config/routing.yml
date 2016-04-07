@@ -406,18 +406,34 @@ getN2000:
 datasNbObsKd:
   url: /datasnbobskd
   param: { module: home, action: datasNbObsKd }
-datasNbObsGp1:
-  url: /datasnbobsgp1
-  param: { module: home, action: datasNbObsGp1 }
-datasNbObsGp2:
-  url: /datasnbobsgp2
-  param: { module: home, action: datasNbObsGp2 }
+datasNbTxKd:
+  url: /datasnbtxkd
+  param: { module: home, action: datasNbTxKd }
 datasNbObsCl:
   url: /datasnbobscl
   param: { module: home, action: datasNbObsCl }
+datasNbTxCl:
+  url: /datasnbtxcl
+  param: { module: home, action: datasNbTxCl }
+datasNbObsGp1:
+  url: /datasnbobsgp1
+  param: { module: home, action: datasNbObsGp1 }
+datasNbTxGp1:
+  url: /datasnbtxgp1
+  param: { module: home, action: datasNbTxGp1 }
+datasNbObsGp2:
+  url: /datasnbobsgp2
+  param: { module: home, action: datasNbObsGp2 }
+datasNbTxGp2:
+  url: /datasnbtxgp2
+  param: { module: home, action: datasNbTxGp2 }
+
 datasNbObsYear:
   url: /datasnbobsyear
   param: { module: home, action: datasNbObsYear }
+datasNbTxYear:
+  url: /datasnbtxyear
+  param: { module: home, action: datasNbTxYear }
 datasNbObsOrganisme:
   url: /datasnbobsorganisme
   param: { module: home, action: datasNbObsOrganisme }

@@ -212,15 +212,43 @@ class homeActions extends sfGeonatureActions
     public function executeDatasNbObsKd(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsKd() ;
-            
+            $datas =  SyntheseffTable::getDatasNbObsKd();  
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbTxKd(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbTxKd();  
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbObsCl(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsCl();
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbTxCl(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbTxCl();  
             return $this->renderJSON($datas);
         }
     }
     public function executeDatasNbObsGp1(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsGp1() ;
+            $datas =  SyntheseffTable::getDatasNbObsGp1();
+            
+            return $this->renderJSON($datas);
+        }
+    }
+    public function executeDatasNbTxGp1(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbTxGp1();
             
             return $this->renderJSON($datas);
         }
@@ -228,104 +256,100 @@ class homeActions extends sfGeonatureActions
     public function executeDatasNbObsGp2(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsGp2() ;
-            
+            $datas =  SyntheseffTable::getDatasNbObsGp2();
             return $this->renderJSON($datas);
         }
     }
-    public function executeDatasNbObsCl(sfRequest $request)
+    public function executeDatasNbTxGp2(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsCl() ;
-            
+            $datas =  SyntheseffTable::getDatasNbTxGp2();
+            return $this->renderJSON($datas);
+        }
+    }
+    
+    public function executeDatasNbObsOrganisme(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas =  SyntheseffTable::getDatasNbObsOrganisme();
             return $this->renderJSON($datas);
         }
     }
     public function executeDatasNbObsYear(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsYear() ;
-            
+            $datas =  SyntheseffTable::getDatasNbObsYear();
             return $this->renderJSON($datas);
         }
     }
-    public function executeDatasNbObsOrganisme(sfRequest $request)
+    public function executeDatasNbTxYear(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsOrganisme() ;
-            
+            $datas =  SyntheseffTable::getDatasNbTxYear();
             return $this->renderJSON($datas);
         }
     }
+    
     public function executeDatasNbObsProgramme(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbObsProgramme() ;
-            
+            $datas =  SyntheseffTable::getDatasNbObsProgramme();
             return $this->renderJSON($datas);
         }
     }
     public function executeDatasNbTxProgramme(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas =  SyntheseffTable::getDatasNbTxProgramme() ;
-            
+            $datas =  SyntheseffTable::getDatasNbTxProgramme();
             return $this->renderJSON($datas);
         }
     }
     public function executeDatasNbObsCf(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsCf() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsCf();
             return $this->renderJSON($datas_tout);
         }
     }
     public function executeDatasNbObsMortalite(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsMortalite() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsMortalite();
             return $this->renderJSON($datas_tout);
         }
     }
     public function executeDatasNbObsInv(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsInv() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsInv();
             return $this->renderJSON($datas_tout);
         }
     }
     public function executeDatasNbObsCflore(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsCflore() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsCflore();
             return $this->renderJSON($datas_tout);
         }
     }
     public function executeDatasNbObsFs(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsFs() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsFs();
             return $this->renderJSON($datas_tout);
         }
     }
     public function executeDatasNbObsFp(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsFp() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsFp();
             return $this->renderJSON($datas_tout);
         }
     }
     public function executeDatasNbObsBryo(sfRequest $request)
     {
         if($this->getUser()->isAuthenticated()){
-            $datas_tout =  SyntheseffTable::getDatasNbObsBryo() ;
-            
+            $datas_tout =  SyntheseffTable::getDatasNbObsBryo();
             return $this->renderJSON($datas_tout);
         }
     }
