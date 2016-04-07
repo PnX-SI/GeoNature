@@ -117,6 +117,13 @@
                     <div id="fp-chart" style="height: 250px;" ></div>
                 </div>
                 <?php }?>
+                <?php  if (in_array(sfGeonatureConfig::$id_source_bryo, $actives_sources)) { ?>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-lg-offset-1 text-center">
+                    <h3 class="text-primary text-center">Bryophythes</h3>
+                    <label class="label label-success">Nombre d'observations</label>
+                    <div id="bryo-chart" style="height: 250px;" ></div>
+                </div>
+                <?php }?>
             </div>
         <?php } ?>
         <footer>
@@ -241,6 +248,9 @@ function onDataReceived13(series) {
 function onDataReceived14(series) {
     constructSimpleLine(series,'fp-chart');   
 };
+function onDataReceived15(series) {
+    constructSimpleLine(series,'bryo-chart');   
+};
 //récupération des données avec une requête ajax et lancement de la construction du graphique sur le success
 function getDatas(url, successFunction) {
     $.ajax({
@@ -267,6 +277,7 @@ getDatas('datasnbtxprogramme',onDataReceived8);
 <?php  if (in_array(sfGeonatureConfig::$id_source_cflore, $actives_sources)) { ?>getDatas('datasnbobscflore',onDataReceived12);<?php } ?>
 <?php  if (in_array(sfGeonatureConfig::$id_source_florestation, $actives_sources)) { ?>getDatas('datasnbobsfs',onDataReceived13);<?php } ?>
 <?php  if (in_array(sfGeonatureConfig::$id_source_florepatri, $actives_sources)) { ?>getDatas('datasnbobsfp',onDataReceived14);<?php } ?>
+<?php  if (in_array(sfGeonatureConfig::$id_source_bryo, $actives_sources)) { ?>getDatas('datasnbobsbryo',onDataReceived15);<?php } ?>
 
 </script>
  </body>
