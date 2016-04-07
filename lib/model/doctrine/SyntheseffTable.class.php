@@ -708,5 +708,26 @@ class SyntheseffTable extends Doctrine_Table
         } 
         return $datas;
     }
+    public static function getDatasNbObsBryo()
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
+                FROM  synthese.syntheseff s
+                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
+                AND s.id_lot = ".sfGeonatureConfig::$id_lot_bryo."
+                AND s.supprime = false
+                GROUP BY TO_CHAR(dateobs, 'YYYY')
+                ORDER BY TO_CHAR(dateobs, 'YYYY')";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $datas = array();
+        $somme = 0;
+        foreach ($result as &$row) {
+            $data = array();
+            $somme =  $somme +(int) $row['nb'];
+            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
+            array_push($datas, $data);
+        } 
+        return $datas;
+    }
     
 }

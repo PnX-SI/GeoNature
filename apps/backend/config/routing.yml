@@ -445,6 +445,9 @@ datasNbObsFs:
 datasNbObsFp:
   url: /datasnbobsfp
   param: { module: home, action: datasNbObsFp }
+datasNbObsBryo:
+  url: /datasnbobsbryo
+  param: { module: home, action: datasNbObsBryo }
 
 #autres
 getStatus:

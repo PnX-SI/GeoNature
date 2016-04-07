@@ -321,5 +321,13 @@ class homeActions extends sfGeonatureActions
             return $this->renderJSON($datas_tout);
         }
     }
+    public function executeDatasNbObsBryo(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $datas_tout =  SyntheseffTable::getDatasNbObsBryo() ;
+            
+            return $this->renderJSON($datas_tout);
+        }
+    }
 
 }
