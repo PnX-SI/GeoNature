@@ -436,137 +436,118 @@ class SyntheseffTable extends Doctrine_Table
     }
     
     //statistiques
-    public static function getDatasNbObsKd()
+    private static function getDatas($sql)
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par règne
-        $sql = "SELECT tr.regne AS regne, count(*) AS nb FROM synthese.syntheseff s
-                JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                GROUP BY tr.regne";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        $nbs = count($result);
-        $datas = array();
-        for ($i = 0; $i < $nbs; $i++) { 
-            $data = array();
-            $nb = $result[$i]['nb'];
-            $regne = $result[$i]['regne'];
-            array_push($data, $regne, $nb);
-            array_push($datas, $data);  
-        }
-        return $datas;
-    }
-    public static function getDatasNbObsCl()
-    {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par classe
-        $sql = "SELECT tr.classe AS classe, count(*) AS nb FROM synthese.syntheseff s
-                JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                GROUP BY tr.classe";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        $nbs = count($result);
-        $datas = array();
-        for ($i = 0; $i < $nbs; $i++) { 
-            $data = array();
-            $nb = $result[$i]['nb'];
-            $classe = $result[$i]['classe'];
-            array_push($data, $classe, $nb);
-            array_push($datas, $data);  
-        }
-        return $datas;
-    }
-    public static function getDatasNbObsgp1()
-    {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par règne
-        $sql = "SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS groupe, count(*) AS nb FROM synthese.syntheseff s
-                LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                GROUP BY tr.group1_inpn";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        $nbs = count($result);
-        $datas = array();
-        for ($i = 0; $i < $nbs; $i++) { 
-            $data = array();
-            $nb = $result[$i]['nb'];
-            $groupe = $result[$i]['groupe'];
-            array_push($data, $groupe, $nb);
-            array_push($datas, $data);  
-        }
-        return $datas;
-    }
-    
-    public static function getDatasNbObsgp2()
-    {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par règne
-        $sql = "SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS groupe, count(*) AS nb FROM synthese.syntheseff s
-                LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                GROUP BY tr.group2_inpn";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        $nbs = count($result);
-        $datas = array();
-        for ($i = 0; $i < $nbs; $i++) { 
-            $data = array();
-            $nb = $result[$i]['nb'];
-            $groupe = $result[$i]['groupe'];
-            array_push($data, $groupe, $nb);
-            array_push($datas, $data);  
-        }
-        return $datas;
-    }
-
-    private static function getDatas($result)
-    {
+       $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+       $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC); 
        $arr = array();
         foreach ($result as &$row) {      
             array_push($arr, $row);
         }
         return $arr; 
     }
-    public static function getDatasNbObsYear()
+    private static function getProtocoleDatas($id_lot)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par règne
-        $sql = "SELECT EXTRACT(YEAR FROM s.dateobs) AS subject, count(*) AS nb FROM synthese.syntheseff s
-                WHERE s.supprime = false AND id_organisme = ".sfGeonatureConfig::$id_organisme
-                ."GROUP BY EXTRACT(YEAR FROM s.dateobs)
-                ORDER BY subject;";
+        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
+                FROM  synthese.syntheseff s
+                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
+                AND s.id_lot = ".$id_lot."
+                AND s.supprime = false
+                GROUP BY TO_CHAR(dateobs, 'YYYY')
+                ORDER BY TO_CHAR(dateobs, 'YYYY')";
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $datas = array();
+        $somme = 0;
+        foreach ($result as &$row) {
+            $data = array();
+            $somme =  $somme +(int) $row['nb'];
+            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
+            array_push($datas, $data);
+        } 
+        return $datas;
+    }
+    private static function getTaxonomiesDatas($sql)
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        return self::getDatas($result);
+        $nbs = count($result);
+        $datas = array();
+        for ($i = 0; $i < $nbs; $i++) { 
+            $data = array();
+            $nb = $result[$i]['nb'];
+            $subject = $result[$i]['subject'];
+            array_push($data, $subject, $nb);
+            array_push($datas, $data);  
+        }
+        return $datas;
+    }
+    
+    public static function getDatasNbObsKd()
+    {
+        $sql = "SELECT tr.regne AS subject, count(*) AS nb FROM synthese.syntheseff s
+                JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false
+                GROUP BY tr.regne";
+        return self::getTaxonomiesDatas($sql);
+    }
+    public static function getDatasNbObsCl()
+    {
+        $sql = "SELECT tr.classe AS subject, count(*) AS nb FROM synthese.syntheseff s
+                JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false
+                GROUP BY tr.classe";
+        return self::getTaxonomiesDatas($sql);
+    }
+    public static function getDatasNbObsgp1()
+    {
+        $sql = "SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb FROM synthese.syntheseff s
+                LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false
+                GROUP BY tr.group1_inpn";
+        return self::getTaxonomiesDatas($sql);
+    }
+    
+    public static function getDatasNbObsgp2()
+    {
+        $sql = "SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb FROM synthese.syntheseff s
+                LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = s.cd_nom
+                WHERE s.supprime = false
+                GROUP BY tr.group2_inpn";
+        return self::getTaxonomiesDatas($sql);
+    }
+    
+    public static function getDatasNbObsYear()
+    {
+        $sql = "SELECT EXTRACT(YEAR FROM s.dateobs) AS subject, count(*) AS nb FROM synthese.syntheseff s
+                WHERE s.supprime = false 
+                AND id_organisme = ".sfGeonatureConfig::$id_organisme."
+                GROUP BY EXTRACT(YEAR FROM s.dateobs)
+                ORDER BY subject;";
+        return self::getDatas($sql);
     }
     public static function getDatasNbObsOrganisme()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par organisme
         $sql = "SELECT nom_organisme AS subject, count(*) as nb FROM synthese.syntheseff s
                 JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
                 WHERE supprime = false
                 GROUP BY nom_organisme
-                ORDER BY nom_organisme;";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        return self::getDatas($result);
+                ORDER BY nom_organisme;";  
+        return self::getDatas($sql);
     }
     public static function getDatasNbObsProgramme()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par organisme
         $sql = "SELECT p.nom_programme AS subject, count (*) AS nb
                 FROM synthese.syntheseff s
                 LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
                 WHERE supprime = false
                 GROUP by  p.nom_programme
-                ORDER BY nb desc;";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        return self::getDatas($result);
+                ORDER BY nb desc;";      
+        return self::getDatas($sql);
     }
     public static function getDatasNbTxProgramme()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //nb d'observations par organisme
         $sql = "SELECT p.nom_programme AS subject, count (a.*) AS nb
                 FROM
                 (SELECT distinct  p.id_programme, tr.cd_ref
@@ -577,157 +558,36 @@ class SyntheseffTable extends Doctrine_Table
                 WHERE s.supprime = false) a
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = a.id_programme
                 GROUP by  p.nom_programme
-                ORDER BY nb desc;";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);       
-        return self::getDatas($result);
+                ORDER BY nb desc;";     
+        return self::getDatas($sql);
     }
+    
     public static function getDatasNbObsCf()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_cf."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_cf);
     }
     public static function getDatasNbObsMortalite()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_mortalite."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_mortalite);
     }
     public static function getDatasNbObsInv()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_inv."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_inv);
     }
-    
     public static function getDatasNbObsCflore()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_cflore."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_cflore);
     }
     public static function getDatasNbObsFs()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_florestation."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_florestation);
     }
     public static function getDatasNbObsFp()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_florepatri."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_florepatri);
     }
     public static function getDatasNbObsBryo()
     {
-        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        $sql = "SELECT TO_CHAR(dateobs, 'YYYY') AS d, count(*) AS nb 
-                FROM  synthese.syntheseff s
-                WHERE s.dateobs >= '".sfGeonatureConfig::$init_date_statistiques."'
-                AND s.id_lot = ".sfGeonatureConfig::$id_lot_bryo."
-                AND s.supprime = false
-                GROUP BY TO_CHAR(dateobs, 'YYYY')
-                ORDER BY TO_CHAR(dateobs, 'YYYY')";
-        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        $datas = array();
-        $somme = 0;
-        foreach ($result as &$row) {
-            $data = array();
-            $somme =  $somme +(int) $row['nb'];
-            $data = ['d'=>$row['d'], 'annee'=>$row['nb'], 'somme'=>$somme];
-            array_push($datas, $data);
-        } 
-        return $datas;
+        return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_bryo);
     }
-    
 }
