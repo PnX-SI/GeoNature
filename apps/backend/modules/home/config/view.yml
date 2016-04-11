@@ -22,7 +22,6 @@ indexSyntheseSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
     - geoportail.css
@@ -32,7 +31,7 @@ indexSyntheseSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - config.js
     - configmap.js
@@ -60,7 +59,6 @@ indexCfSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
     - geoportail.css
@@ -70,7 +68,7 @@ indexCfSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
@@ -88,7 +86,6 @@ indexCfloreSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
     - geoportail.css
@@ -98,7 +95,7 @@ indexCfloreSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
@@ -116,7 +113,6 @@ indexMortaliteSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
     - geoportail.css
@@ -126,7 +122,7 @@ indexMortaliteSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
@@ -144,7 +140,6 @@ indexInvertebreSuccess:
   stylesheets:
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - main.css
     - superboxselect.css
     - geoportail.css
@@ -154,7 +149,7 @@ indexInvertebreSuccess:
     - client/mfbase/ext-3.4.0/src/locale/ext-lang-fr.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
@@ -183,7 +178,7 @@ indexFpSuccess:
 #---------Version API IGN 1.2------------------------------
     - client/mfbase/openlayers/OpenLayers.js       
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/1.2/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
@@ -211,10 +206,10 @@ indexFsSuccess:
   stylesheets:    
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css 
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - superboxselect.css
     - rowActions.css 
     - main.css
+    - geoportail.css
   javascripts:
     - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
     - client/mfbase/ext-3.4.0/ext-all.js
@@ -223,7 +218,7 @@ indexFsSuccess:
     - client/mfbase/proj4js/lib/proj4js.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js
@@ -252,10 +247,10 @@ indexBryoSuccess:
   stylesheets:    
     - ../js/client/mfbase/ext-3.4.0/resources/css/ext-all.css 
     - ../js/client/mfbase/ext-3.4.0/resources/css/xtheme-gray.css
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/theme/geoportal/style.css"
     - superboxselect.css
     - rowActions.css 
     - main.css
+    - geoportail.css
   javascripts:
     - client/mfbase/ext-3.4.0/adapter/ext/ext-base.js
     - client/mfbase/ext-3.4.0/ext-all.js
@@ -264,7 +259,7 @@ indexBryoSuccess:
     - client/mfbase/proj4js/lib/proj4js.js
     - client/mfbase/openlayers/OpenLayers.js
     - client/mfbase/openlayers/lib/OpenLayers/Lang/fr.js
-    - "http://api.ign.fr/geoportail/api/js/2.0.0/GeoportalMin.js"
+    - client/mfbase/GeoportalMin.js
     - client/mfbase/mapfish/MapFish-all-min.js
     - client/mfbase/mapfish/lang/fr.js
     - config.js

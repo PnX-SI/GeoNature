@@ -1802,10 +1802,10 @@ application.synthese.search = function() {
         var vector = createLayer();
         map.addLayers([vector]);
         function createPopup(feature) {
-            var dataDiv = '<div><span style="font-weight:bold;">'+ feature.attributes.taxon_francais+ '</span><br/>';
+            var dataDiv = '<div class="popupGeoNature"><span style="font-weight:bold;color:orangered">'+ feature.attributes.taxon_francais+ '</span><br/>';
             if(feature.attributes.dateobs){
                 var maDate = Ext.util.Format.date(feature.data.dateobs,'d/m/Y');
-                dataDiv = dataDiv + 'Le '+ maDate;
+                dataDiv = dataDiv + '<span style="font-size:0.85em">Le '+ maDate+'</span>';
             }
             dataDiv = dataDiv + '</div>';
             feature.popup = new OpenLayers.Popup("data",
@@ -1814,9 +1814,11 @@ application.synthese.search = function() {
                 dataDiv,
                 false
             );
-            feature.popup.backgroundColor='#ccc';
-            feature.popup.opacity=0.75;
+            feature.popup.backgroundColor='#fff';
+            feature.popup.opacity=0.8;
             feature.popup.autoSize=true;
+            // feature.popup.displayClass='popupGeoNature';
+            feature.popup.keepInMap=true;
             map.addPopup(feature.popup);
         }
  
