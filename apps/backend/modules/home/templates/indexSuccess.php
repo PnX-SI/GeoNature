@@ -6,14 +6,14 @@
         <h1 id="home_title" ><small class="text-muted"><?php echo sfGeonatureConfig::$apptitle_main; ?></small></h1>
     </div>
     <div id="accueil" class="container">
-
+        <?php if($statuscode >=2){?>
         <h2>SYNTHÈSE</h2>
             <p>Pour consulter la synthèse des observations faune et flore, tous protocoles confondus.</p>
             <p class="ligne_lien">
                  <a href="synthese" class="btn btn-default"><img src="images/pictos/oiseau.gif">Synthèse des observations</a>
             </p>
             <div id="interligne50"></div>
-            
+        
         <h2>PROTOCOLES</h2>
             <p>
                 Pour saisir de nouvelles données, vous pouvez utiliser l'un des liens ci-dessous.<br/>
@@ -22,6 +22,11 @@
             <p>
                 <?php echo $liens_saisie;?>
             </p>
+        <?php }?>
+        
+            <?php echo $lien_export;?>
+            
+            <div id="interligne50"></div>   
         <?php if(sfGeonatureConfig::$show_statistiques){ ?>
         <h2>STATISTIQUES</h2>
             <div class="row" style="border:1px solid #ddd;">

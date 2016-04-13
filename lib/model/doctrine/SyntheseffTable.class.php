@@ -757,4 +757,22 @@ class SyntheseffTable extends Doctrine_Table
     {
         return self::getProtocoleDatas(sfGeonatureConfig::$id_lot_bryo);
     }
+    
+    //exports
+    public static function exportsView($pgview)
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        // print_r($viewparams['pgview']);
+        $sql = "SELECT * FROM ".$pgview;
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    public static function exportsCountRowsView($pgview)
+    {
+        $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+        // print_r($viewparams['pgview']);
+        $sql = "SELECT count(*) AS nb FROM ".$pgview;
+        $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
 }

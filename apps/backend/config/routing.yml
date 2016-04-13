@@ -37,6 +37,11 @@ gmlSynthese:
 uploadGml:
   url: /synthese/uploadshp
   param: { module: synthese, action: uploadFileShp }
+  
+# partie export
+exportView:
+  url: /export/exportview
+  param: { module: export, action: exportView }
 
 # Partie Flore Patri
 xlsAp:
@@ -500,6 +505,12 @@ cflore:
 synthese:
   url: /synthese
   param: { module: home, action: indexSynthese }
+# export:
+  # url: /export/:viewname/:pgview
+  # param: { module: home, action: indexExport }
+export:
+  url: /export/:exportparams
+  param: { module: home, action: indexExport }
 logout: 
   url: /deconnexion
   param: { module: home, action: logout }

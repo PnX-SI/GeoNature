@@ -253,3 +253,42 @@ UNION
 ALTER TABLE public.v_mobile_recherche
   OWNER TO geonatuser;
 GRANT ALL ON TABLE public.v_mobile_recherche TO geonatuser;
+
+--Vues pour le module export
+CREATE OR REPLACE VIEW synthese.v_export_sinp AS 
+ SELECT s.id_synthese,
+    o.nom_organisme,
+    s.dateobs,
+    s.observateurs,
+    t.cd_nom,
+    t.nom_latin,
+    c.nom_critere_synthese AS critere,
+    s.effectif_total,
+    s.remarques,
+    p.nom_programme,
+    s.insee,
+    s.altitude_retenue AS altitude,
+    st_x(st_transform(s.the_geom_point, 2154))::integer AS x,
+    st_y(st_transform(s.the_geom_point, 2154))::integer AS y,
+    s.derniere_action,
+    s.date_insert,
+    s.date_update
+   FROM synthese.syntheseff s
+     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
+     JOIN taxonomie.bib_taxons t ON t.cd_nom = s.cd_nom
+     LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = s.id_critere_synthese
+     LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
+     LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
+  WHERE s.supprime = false;
+ALTER TABLE synthese.v_export_sinp
+  OWNER TO geonatuser;
+GRANT ALL ON TABLE synthese.v_export_sinp TO geonatuser;
+
+CREATE OR REPLACE VIEW synthese.v_export_sinp_deleted AS 
+ SELECT s.id_synthese
+   FROM synthese.syntheseff s
+     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+  WHERE s.supprime = true;
+ALTER TABLE synthese.v_export_sinp_deleted
+  OWNER TO geonatuser;
