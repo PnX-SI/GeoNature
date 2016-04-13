@@ -4901,6 +4901,42 @@ CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS
            FROM synthese.syntheseff) s ON s.cd_nom = t.cd_nom
   ORDER BY t.nom_francais;
                 
+CREATE OR REPLACE VIEW synthese.v_export_sinp AS 
+ SELECT s.id_synthese,
+    o.nom_organisme,
+    s.dateobs,
+    s.observateurs,
+    t.cd_nom,
+    t.nom_latin,
+    c.nom_critere_synthese AS critere,
+    s.effectif_total,
+    s.remarques,
+    p.nom_programme,
+    s.insee,
+    s.altitude_retenue AS altitude,
+    st_x(st_transform(s.the_geom_point, 2154))::integer AS x,
+    st_y(st_transform(s.the_geom_point, 2154))::integer AS y,
+    s.derniere_action,
+    s.date_insert,
+    s.date_update
+   FROM synthese.syntheseff s
+     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
+     JOIN taxonomie.bib_taxons t ON t.cd_nom = s.cd_nom
+     LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = s.id_critere_synthese
+     LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
+     LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
+  WHERE s.supprime = false;
+  
+CREATE OR REPLACE VIEW synthese.v_export_sinp_deleted AS 
+ SELECT s.id_synthese
+   FROM synthese.syntheseff s
+     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+  WHERE s.supprime = true;
+
+ALTER TABLE synthese.v_export_sinp_deleted
+  OWNER TO geonatuser;
+  
 
 SET search_path = utilisateurs, pg_catalog;
 
@@ -9569,6 +9605,22 @@ GRANT ALL ON TABLE v_tree_taxons_synthese TO geonatuser;
 REVOKE ALL ON TABLE v_taxons_synthese FROM PUBLIC;
 REVOKE ALL ON TABLE v_taxons_synthese FROM geonatuser;
 GRANT ALL ON TABLE v_taxons_synthese TO geonatuser;
+
+--
+-- Name: v_export_sinp; Type: ACL; Schema: synthese; Owner: -
+--
+
+REVOKE ALL ON TABLE v_export_sinp FROM PUBLIC;
+REVOKE ALL ON TABLE v_export_sinp FROM geonatuser;
+GRANT ALL ON TABLE v_export_sinp TO geonatuser;
+
+--
+-- Name: v_export_sinp_deleted; Type: ACL; Schema: synthese; Owner: -
+--
+
+REVOKE ALL ON TABLE v_export_sinp_deleted FROM PUBLIC;
+REVOKE ALL ON TABLE v_export_sinp_deleted FROM geonatuser;
+GRANT ALL ON TABLE v_export_sinp_deleted TO geonatuser;
 
 
 

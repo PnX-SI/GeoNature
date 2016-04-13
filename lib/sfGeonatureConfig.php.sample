@@ -83,4 +83,47 @@ class sfGeonatureConfig extends sfActions
     //Configuration propre à l'identité de la structure
     public static $struc_long = 'Parc national des Ecrins';
     public static $struc_abregee = 'PNE';
+    
+    //configuration de l'export pour les partenaires
+    public static $appname_export = 'Exports GeoNature';
+    
+    //configuration du module d'export
+    public static $appname_export = 'Exports GeoNature';
+    public static $exports_config = [
+        [
+            "exportname"=>"SINP"
+            ,"authorized_roles_ids"=>[1,3]
+            ,"views"=>[
+                [
+                    "pgschema"=>"synthese"
+                    ,"pgview"=>"v_export_sinp"
+                    ,"buttonviewtitle"=>"Données faune-flore"
+                    ,"viewdesc"=>"Toutes les données faune et flore de Parc nationaux de France au format csv"
+                    ,"fileformat"=>"csv"
+                ]
+                ,[
+                    "pgschema"=>"synthese"
+                    ,"pgview"=>"v_export_sinp_deleted"
+                    ,"buttonviewtitle"=>"Données faune-flore supprimées"
+                    ,"viewdesc"=>"Les données faune et flore de Parc nationaux de France supprimées"
+                    ,"fileformat"=>"xls"
+                ]
+            ]
+            
+        ]
+        ,[
+            "exportname"=>"INTERNE"
+            ,"authorized_roles_ids"=>[1]
+            ,"views"=>[
+                [
+                    "pgschema"=>"taxonomie"
+                    ,"pgview"=>"bib_taxons"
+                    ,"buttonviewtitle"=>"liste des taxons"
+                    ,"viewdesc"=>"Liste des taxons disponibles depuis la table bib_taxons (pour l'exemple)"
+                    ,"fileformat"=>"csv"
+                ]
+            ]
+            
+        ]
+    ];
 }

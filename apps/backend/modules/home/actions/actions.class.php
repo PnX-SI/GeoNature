@@ -29,6 +29,7 @@ class homeActions extends sfGeonatureActions
                     $nom_secteur = $val['nom_unite'];
                     $email = $val['email'];
                 }
+                
                 $user = $this->getUser();
                 $user->setAuthenticated(true);
                 $id_droit_user = fauneUsers::getDroitsUser($id_role);
@@ -44,8 +45,18 @@ class homeActions extends sfGeonatureActions
                 $user->setAttribute('email', $email);
                 $user->setAttribute('identifiant',$params['login']);
                 $user->setAttribute('pass',$params['password']);
+                //traitement des modules d'export
+                $user->setAttribute('can_export',false);
+                $exports = [];//liste des vues des modules d'export à afficher
+                foreach (sfGeonatureConfig::$exports_config as $export)
+                {
+                    if(in_array($id_role,$export['authorized_roles_ids'])){
+                        $user->setAttribute('can_export',true);
+                        array_push($exports,$export);
+                    }
+                    $user->setAttribute('user_exports',$exports);
+                }
                 $this->redirect('@homepage');
-                // $this->form = new LoginForm();
             }
         }
     }
@@ -56,17 +67,18 @@ class homeActions extends sfGeonatureActions
       	$user->setAuthenticated(false);
       	$user->clearCredentials();
       	$user->setAttribute('statuscode', 0);
+        $user->setAttribute('can_export',false);
         $this->redirect('@login');
     }
     
     public function executeIndex(sfRequest $request)
     {
-      
         if($this->getUser()->isAuthenticated()){
             slot('title', sfGeonatureConfig::$appname_main);
             // construction dynamique de la liste des liens vers les formulaires
             $groupes = BibSourcesTable::listSourcesGroupes();
             $sources = BibSourcesTable::listActiveSources();
+            $this->statuscode = $this->getUser()->getAttribute('statuscode');
             $this->lien_saisie = '';
             $this->actives_sources = [];
             foreach ($groupes as $groupe)
@@ -89,7 +101,19 @@ class homeActions extends sfGeonatureActions
                     }
                 }
                 $this->liens_saisie .= '</div>';
-            }  
+            }
+            //construction dynamique des liens d'export des données pour les id_roles présent dans la configuration lib/sfGeonatureConif.php
+            //pour que ces liens s'affichent, l'id-role de l'utilisateur logué doit être présent dans au moins un des tableaux 'authorized_roles_ids' de la variable $exports_config
+            if($this->getUser()->getAttribute('can_export')){
+                $this->lien_export = '<h2>EXPORTS</h2>';
+                $this->lien_export .= '<p>Permet d\'accéder aux pages offrant des liens d\'export prédéfinis des données de la synthèse.</p>';
+                $userexports = $this->getUser()->getAttribute('user_exports');
+                foreach ($userexports as $userexport)
+                {
+                    $serializeuserexport = serialize($userexport);
+                    $this->lien_export .= '<p class="ligne_lien"><a class="btn btn-default" href="export/'.urlencode($serializeuserexport).'" target="_blank" ><img src="images/exporter.png" border="0"> '.$userexport['exportname'].'</a></p>';
+                }
+            }
         }
         else{
            $this->redirect('@login');
@@ -100,6 +124,27 @@ class homeActions extends sfGeonatureActions
     {
         if($this->getUser()->isAuthenticated()){
             slot('title', sfGeonatureConfig::$appname_synthese);
+        }
+        else{
+           $this->redirect('@login');
+        }
+    }
+    
+    public function executeIndexExport(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $unserializeviewparams = unserialize($request->getParameter('exportparams'));
+            $this->title = $unserializeviewparams['exportname'].' - '.sfGeonatureConfig::$appname_export;
+            slot('title', $this->title);
+            $this->lienscsv = '';
+            $views = $unserializeviewparams['views'];
+            foreach($views as $view)
+            {
+                $pgview = $view['pgschema'].'.'.$view['pgview'];
+                $rows = SyntheseffTable::exportsCountRowsView($pgview);
+                $nb = $rows[0]['nb'];
+                $this->lienscsv .= '<p class="ligne_lien"><a href="../export/exportview?pgschema='.$view['pgschema'].'&pgview='.$view['pgview'].'&fileformat='.$view['fileformat'].'" class="btn btn-default"><img src="../images/exporter.png">'.$view['buttonviewtitle'].' ('.$nb.')</a> '.$view['viewdesc'].'</p>';
+            }
         }
         else{
            $this->redirect('@login');

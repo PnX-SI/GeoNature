@@ -28,6 +28,20 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
     :: 
         cd geonature
         ./wms/update1.6to1.7.sh
+        
+* Mise en place du module d'export : 
+    * Créer les vues retournant les données attendues.
+    * Configurer le module dans le fichier ``lib/sfGeonatureConfig.php`` à partir de l'exemple du fichier ``lib/sfGeonatureConfig.php.sample``) ; section ``configuration du module d'export``
+        * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
+        * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
+        * Chaque module peut comporter autant que vues que necessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
+        * voir la documentation ici : 
+* Création du répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export. Attribution des droits nécessaires.
+        
+    :: 
+        cd geonature
+        mkdir web/uploads/exports
+        chmod -R 775 web/uploads/exports
 
 **Changements**
 
@@ -39,7 +53,7 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
 * correction d'un bug permetant la saisie d'une date d'observation postérieure à aujourd'hui dans flore station
 * Ajout de la version de taxref sur la page d'accueil
 * Correction et compléments dans les statistiques et mise en paramètre du choix de les afficher ou non ainsi que de la date de début à prendre en compte.
-
+* Ajout d'un module d'export des données permettant d'offrir, en interne ou à des partenaires, un lien de téléchargement des données basé sur une ou des vues de la base de données (un fichier par vue).
 
 
 1.6.0 (2016-01-14)
