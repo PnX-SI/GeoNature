@@ -762,15 +762,14 @@ class SyntheseffTable extends Doctrine_Table
     public static function exportsView($pgview)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        // print_r($viewparams['pgview']);
         $sql = "SELECT * FROM ".$pgview;
+        ini_set('memory_limit', '-1');
         $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
     public static function exportsCountRowsView($pgview)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        // print_r($viewparams['pgview']);
         $sql = "SELECT count(*) AS nb FROM ".$pgview;
         $result = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         return $result;
