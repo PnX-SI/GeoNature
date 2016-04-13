@@ -26,5 +26,5 @@ Pour qu'un utilisateur puisse voir le ou les liens vers les pages d'export qui l
 * La variable générale ``$appname_export`` défini le titre de la ou des pages du module d'export.
 * La variable ``$exports_config`` contient toute la configuration de la ou des pages du module d'export.
 * Le schéma ci-dessous résume le rôle de chacun des paramètres de configuration.
-.. image :: docs/images/export_module.jpg
+.. image :: images/export_module.jpg
 
