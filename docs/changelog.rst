@@ -49,6 +49,12 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT L
         cd geonature
         mkdir web/uploads/exports
         chmod -R 775 web/uploads/exports
+* Vider le cache 
+
+    ::
+
+        php symfony cc
+
 
 **Changements**
 
