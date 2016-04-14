@@ -8,6 +8,7 @@ sudo chmod -R 777 log
 sudo chmod -R 777 cache
 chmod -R 775 web/exportshape
 chmod -R 775 web/uploads/shapes
+chmod -R 775 web/uploads/exports
 mkdir web/uploads/gpx
 chmod -R 775 web/uploads/gpx
 
