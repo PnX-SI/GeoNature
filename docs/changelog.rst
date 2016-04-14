@@ -13,7 +13,7 @@ Les id_liste ont donc été mis à jour pour être compatibles avec les id_class
 Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LES COMMENTAIRES
 * En lien avec les modifications ci-dessus, mettre à jour les variables des classes taxonomiques correspondant aux modification des id_liste dans ``web/js/config.js``
 * Ajouter dans le fichier ``lib/sfGeonatureConfig.php`` les variables $struc_abregee, $struc_long, $taxref_version, $show_statistiques et $init_date_statistiques (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
-* Pour ajouter le contact flore :
+* Pour ajouter le contact flore
     * Exécuter le script sql ``data/2154/contactflore.sql``
     * Ajouter les variables $id_lot_cflore  = 7, $id_protocole_cflore  = 7, $id_source_cflore = 7 et $appname_cflore = 'Contact flore - GeoNature'; dans ``lib/sfGeonatureConfig.php`` (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
     * Ajouter les variables  id_lot_contact_flore = 7, id_protocole_contact_flore = 7, id_source_contactflore = 7 dans ``web/js/config.js`` (voir le fichier ``web/js/config.js.sample``)
@@ -35,7 +35,7 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` ; LIRE ATTENTIVEMENT LE
         * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
         * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
         * Chaque module peut comporter autant que vues que necessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
-        * voir la documentation ici : 
+        * voir la documentation ici : https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_export_doc.rst
 * Création du répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export. Attribution des droits nécessaires.
         
     :: 
