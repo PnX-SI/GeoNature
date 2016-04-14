@@ -32,7 +32,7 @@ Pour qu'un utilisateur puisse voir le ou les liens vers les pages d'export qui l
 * La variable ``$exports_config`` contient toute la configuration de la ou des pages du module d'export.
 * Le schéma ci-dessous résume le rôle de chacun des paramètres de configuration.
     * Seuls les formats csv et xls sont possibles. Si un autre format est spécifié, le format csv sera retourné par défaut.
-    * Le séparateur csv est le ';'. Le séparateur xls est la tabulation '\t'.
+    * Le séparateur csv est le ';'. Le séparateur xls est la tabulation '\\t'.
     * Attention, la syntaxe PHP de cette variable ``$exports_config`` ne doit pas comporter d'erreur sous peine de plantage. 
     Il s'agit d'un tableau multidimentionnel PHP, veillez à respecter la syntaxe des tableaux [] et objets "key"=>"value", de les séparer par une virgule et de bien terminer la variable par un point virgule.
 .. image :: images/export_module.jpg
