@@ -15,8 +15,10 @@ class exportActions extends sfGeonatureActions
         $rows = SyntheseffTable::exportsView($pgview);
         if ($request->getParameter('fileformat')=="csv" || $request->getParameter('fileformat') == "xls"){
             $file_format = $request->getParameter('fileformat');
-            $file_separator = "\t";
-        }else{
+            if ($request->getParameter('fileformat') == "xls"){$file_separator = "\t";}
+            else{$file_separator = ";";}
+        }
+        else{
             $file_format = "csv";
             $file_separator = ";";
         }
