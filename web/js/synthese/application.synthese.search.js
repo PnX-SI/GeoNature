@@ -593,7 +593,7 @@ application.synthese.search = function() {
                     ,menuDisabled : true
                     ,width:25
                     ,items : [{
-                        tooltip : 'Ce taxon est patrimonial pour le PN Ecrins'
+                        tooltip : 'Ce taxon est patrimonial pour '+pn_name_long
                         ,getClass : function(v, meta, record, rowIndex, colIdx, store) {
                             return (record.data.no_patrimonial ? '' : 'logo_pne_mini');
                         }
