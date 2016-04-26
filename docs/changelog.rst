@@ -25,11 +25,11 @@ CHANGELOG
 
 **Rappels.**
 
-* Téléchargez l'archive de la dernière version au format zip. https://github.com/PnEcrins/GeoNature/archive/v1.7.1.zip ou au format tar.gz https://github.com/PnEcrins/GeoNature/archive/v1.7.1.tar.gz 
+* Téléchargez l'archive de la dernière version au format zip. https://github.com/PnEcrins/GeoNature/archive/v1.7.0.zip ou au format tar.gz https://github.com/PnEcrins/GeoNature/archive/v1.7.0.tar.gz 
 
 :: 
 
-      wget https://github.com/PnEcrins/GeoNature/archive/v1.7.1.tar.gz
+      wget https://github.com/PnEcrins/GeoNature/archive/v1.7.0.tar.gz
       
 * Renommez votre ancien répertoire ``geonature`` en ``geonature_old`` et décompressez l'archive dans un répertoire nommé ``geonature``.
 
