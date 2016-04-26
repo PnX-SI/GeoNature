@@ -68,17 +68,19 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
    * Chaque module peut comporter autant que vues que nécessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
    * Voir la documentation ici : https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_export_doc.rst
 
-* Création du répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export. Attribution des droits nécessaires.
+* Attribution des droits nécessaires pour le répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export.
 
     :: 
 
         cd geonature
         chmod -R 775 web/uploads/exports
         
-* Vider le cache 
+* Rétablir les droits d'écriture et vider le cache 
 
     ::
 
+        chmod -R 777 cache/
+        chmod -R 777 log/
         php symfony cc
 
 
