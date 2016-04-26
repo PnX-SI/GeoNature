@@ -23,8 +23,11 @@ Insertion d'une observation
 ===========================
 
 Méthode HTTP à utiliser : POST
-url : synthese/observation?token=[votre_token]&json=[votre_geojson]
-param :
+
+URL : synthese/observation?token=[votre_token]&json=[votre_geojson]
+
+Paramètres :
+
     token : requis (voir ci-dessus)
     json :
         format : GeoJSON
@@ -126,6 +129,7 @@ param :
         Ces données étant susceptibles d'être modifiées par l'administrateur de GeoNature, vous devez vous référer au contenu des tables liées en consultant le contenu des ces tables dans votre base de données de GeoNature.
     
     Exemple de GeoJSON compatible pour une insertion de données: 
+    ::
         {
             "type": "Feature"
             ,"geometry": 
@@ -166,10 +170,13 @@ Modification d'une observation
 ==============================
 
 Méthode HTTP à utiliser : PUT
-url : synthese/observation/[id_synthese]?token=[votre_token]&json=[votre_geojson]
+
+URL : synthese/observation/[id_synthese]?token=[votre_token]&json=[votre_geojson]
 
 Deux manières de modifier un enregistrement :
+
 1/ en fournissant le ``id_synthese`` dans l'url. Par exemple synthese/observation/68?token=mon;token!hyper#complexe
+
 2/ en fournissant le ``id_source`` et le ``id_fiche_source`` dans le paramètre ``json`` (voir ci-dessous). Dans ce cas, l'url ne contient pas l'id_synthese --> synthese/observation?token=mon;token!hyper#complexe
 
 param :
@@ -275,6 +282,7 @@ param :
         Ces données étant susceptibles d'être modifiées par l'administrateur de GeoNature, vous devez vous référer au contenu des tables liées en consultant le contenu des ces tables dans la base de données de GeoNature.
     
     Exemples de GeoJSON compatible pour une modification de données: 
+    ::
         {
             "type": "Feature"
             ,"properties": {
@@ -325,10 +333,13 @@ Suppression d'une observation
 =============================
 
 Méthode HTTP à utiliser : DELETE
-url : synthese/observation/[id_synthese]?token=[votre_token]&json=[votre_json]
+
+URL : synthese/observation/[id_synthese]?token=[votre_token]&json=[votre_json]
 
 Deux manières de supprimer un enregistrement :
+
 1/ en fournissant le ``id_synthese`` dans l'url. Par exemple synthese/observation/68?token=mon;token!hyper#complexe
+
 2/ en fournissant le ``id_source`` et le ``id_fiche_source`` dans le paramètre ``json`` (voir ci-dessous). Dans ce cas, l'url ne contient pas l'id_synthese --> synthese/observation?token=mon;token!hyper#complexe
 
 param :
