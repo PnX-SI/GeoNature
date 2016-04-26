@@ -6,7 +6,7 @@ CHANGELOG
 ----------------------
 
 
-1.7.0 dev (2016-04-24)
+1.7.0 (2016-04-24)
 ----------------------
 
 **Nouveautés**
@@ -73,7 +73,6 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
     :: 
 
         cd geonature
-        mkdir web/uploads/exports
         chmod -R 775 web/uploads/exports
         
 * Vider le cache 
