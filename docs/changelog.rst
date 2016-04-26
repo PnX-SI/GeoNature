@@ -2,45 +2,71 @@
 CHANGELOG
 =========
 
-1.7.0 dev (unreleased)
+1.8.0 dev (unreleased)
 ----------------------
+
+
+1.7.0 dev (2016-04-24)
+----------------------
+
+**Nouveautés**
+
+* Ajout du contact flore
+* Correction et compléments dans les statistiques et mise en paramètre de leur affichage ou non, ainsi que de la date de début à prendre en compte pour leur affichage.
+* Ajout d'un module d'export des données permettant d'offrir, en interne ou à des partenaires, un lien de téléchargement des données basé sur une ou des vues de la base de données (un fichier par vue). Voir http://geonature.readthedocs.org/fr/latest/geonature_export_doc.html
+* Modification des identifiants des listes pour compatibilité avec les applications GeoNature-Mobile.
+* Complément dans la base de données pour compatibilité avec les applications GeoNature-Mobile.
+* Correction d'une erreur sur l'importation de shape pour la recherche géographique
+* WMS : correction de la liste des sites N2000, correction de l'affichage de l'aire optimale d'adhésion des parcs nationaux et retrait des sites inscrits et classés
+* Correction d'un bug permettant la saisie d'une date d'observation postérieure à aujourd'hui dans Flore station
+* Mention de la version de taxref sur la page d'accueil
+
 **Note de version**
 
-* Modification des identifiants des listes pour compatibilité avec les applications GeoNature Mobile.
-Dans GeoNature Mobile, les taxons sont filtrables par classe sur la base d'un id_classe. Ces id sont inscrits en dur dans le code des applications mobiles. 
-Dans la base GeoNature les classes taxonomiques sont configurables grace au vues v_nomade_classes qui utilisent les listes (taxonomie.bib_listes)
-Les id_liste ont donc été mis à jour pour être compatibles avec les id_classe des applications mobiles
-Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT LES COMMENTAIRES
+**1.** Modification des identifiants des listes de taxons pour compatibilité avec les applications GeoNature-Mobile.
+   
+Dans GeoNature-Mobile, les taxons sont filtrables par classe sur la base d'un ``id_classe``. Ces id sont inscrits en dur dans le code des applications mobiles. 
 
-* En lien avec les modifications ci-dessus, mettre à jour les variables des classes taxonomiques correspondant aux modification des id_liste dans ``web/js/config.js``
+Dans la base GeoNature les classes taxonomiques sont configurables grace au vues ``v_nomade_classes`` qui utilisent les listes (``taxonomie.bib_listes``).
 
-* Ajouter dans le fichier ``lib/sfGeonatureConfig.php`` les variables $struc_abregee, $struc_long, $taxref_version, $show_statistiques et $init_date_statistiques (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
+Les ``id_liste`` ont donc été mis à jour pour être compatibles avec les ``id_classe`` des applications mobiles.
 
-* Pour ajouter le contact flore
-    * Exécuter le script sql ``data/2154/contactflore.sql``
-    * Ajouter les variables $id_lot_cflore  = 7, $id_protocole_cflore  = 7, $id_source_cflore = 7 et $appname_cflore = 'Contact flore - GeoNature'; dans ``lib/sfGeonatureConfig.php`` (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
-    * Ajouter les variables  id_lot_contact_flore = 7, id_protocole_contact_flore = 7, id_source_contactflore = 7 dans ``web/js/config.js`` (voir le fichier ``web/js/config.js.sample``)
-    * l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit être actif (dernière colonne) pour que le contact flore soit visible sur la page d'accueil.
-    * Vider le cache 
+Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT LES COMMENTAIRES.
 
-    ::
+* En lien avec les modifications ci-dessus, mettre à jour les variables des classes taxonomiques correspondant aux modification des ``id_liste`` dans ``web/js/config.js``
 
-        php symfony cc
+* Ajouter dans le fichier ``lib/sfGeonatureConfig.php`` les variables ``$struc_abregee``, ``$struc_long``, ``$taxref_version``, ``$show_statistiques`` et ``$init_date_statistiques`` (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
+
+**2.** Pour ajouter le Contact flore
+
+* Exécuter le script sql ``data/2154/contactflore.sql``
+* Ajouter les variables ``$id_lot_cflore  = 7``, ``$id_protocole_cflore  = 7``, ``$id_source_cflore = 7`` et ``$appname_cflore = 'Contact flore - GeoNature';`` dans ``lib/sfGeonatureConfig.php`` (voir le fichier d'exemple ``lib/sfGeonatureConfig.php.sample``)
+* Ajouter les variables  ``id_lot_contact_flore = 7``, ``id_protocole_contact_flore = 7``, ``id_source_contactflore = 7`` dans ``web/js/config.js`` (voir le fichier d'exemple ``web/js/config.js.sample``)
+* l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit être actif (dernière colonne) pour que le contact flore soit accessible depuis la page d'accueil.
+* Vider le cache 
+
+   ::
+
+      php symfony cc
             
-* Afin de mettre à jour la configuration wms, vous devez exécuter le fichier wms/update1.6to1.7.sh. Au préalable, assurez vous que les informations renseignées dans le fichier ``config/settings.ini`` sont à jour. L'ancien fichier sera sauvegardé sous wms/wms_1.6.map. Vous pourrez faire le choix de conserver ou de supprimer ce fichier de sauvegarde qui ne sera pas utilisé par l'application.
+**3.** Afin de mettre à jour la configuration WMS, vous devez exécuter le fichier ``wms/update1.6to1.7.sh``. 
+
+Au préalable, assurez vous que les informations renseignées dans le fichier ``config/settings.ini`` sont à jour. L'ancien fichier sera sauvegardé sous ``wms/wms_1.6.map``. Vous pourrez faire le choix de conserver ou de supprimer ce fichier de sauvegarde qui ne sera pas utilisé par l'application.
 
    :: 
 
       cd geonature
       ./wms/update1.6to1.7.sh
         
-* Mise en place du module d'export 
-   * Créer les vues retournant les données attendues.
-   * Configurer le module dans le fichier ``lib/sfGeonatureConfig.php`` à partir de l'exemple du fichier ``lib/sfGeonatureConfig.php.sample``) ; section ``configuration du module d'export``
-      * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
-      * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
-      * Chaque module peut comporter autant que vues que necessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
-      * voir la documentation ici : https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_export_doc.rst
+**4.** Mise en place du module d'export 
+
+* Créer les vues retournant les données attendues.
+* Configurer le module dans le fichier ``lib/sfGeonatureConfig.php`` à partir de l'exemple du fichier ``lib/sfGeonatureConfig.php.sample``); section ``configuration du module d'export``
+   
+   * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
+   * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
+   * Chaque module peut comporter autant que vues que necessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
+   * voir la documentation ici : https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_export_doc.rst
 
 * Création du répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export. Attribution des droits nécessaires.
 
@@ -49,24 +75,12 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT L
         cd geonature
         mkdir web/uploads/exports
         chmod -R 775 web/uploads/exports
+        
 * Vider le cache 
 
     ::
 
         php symfony cc
-
-
-**Changements**
-
-* Modification des identifiants des listes pour compatibilité avec les applications GeoNature Mobile.
-* Complément dans la base de données pour compatibilité avec les applications GeoNature Mobile.
-* Correction d'une erreur sur l'importation de shape pour la recherche géographique
-* WMS : correction de la liste des sites N2000, correction de l'affichage de l'aire optimale d'adhésion des parcs nationaux et retrait des sites inscrits et classés
-* Ajout du contact flore
-* correction d'un bug permetant la saisie d'une date d'observation postérieure à aujourd'hui dans flore station
-* Ajout de la version de taxref sur la page d'accueil
-* Correction et compléments dans les statistiques et mise en paramètre du choix de les afficher ou non ainsi que de la date de début à prendre en compte.
-* Ajout d'un module d'export des données permettant d'offrir, en interne ou à des partenaires, un lien de téléchargement des données basé sur une ou des vues de la base de données (un fichier par vue).
 
 
 1.6.0 (2016-01-14)
