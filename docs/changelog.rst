@@ -13,7 +13,7 @@ CHANGELOG
 
 * Ajout du contact flore
 * Correction et compléments dans les statistiques et mise en paramètre de leur affichage ou non, ainsi que de la date de début à prendre en compte pour leur affichage.
-* Ajout d'un module d'export des données permettant d'offrir, en interne ou à des partenaires, un lien de téléchargement des données basé sur une ou des vues de la base de données (un fichier par vue). Voir http://geonature.readthedocs.org/fr/latest/geonature_export_doc.html
+* Ajout d'un module d'export des données permettant d'offrir, en interne ou à des partenaires, un lien de téléchargement des données basé sur une ou des vues de la base de données (un fichier par vue). Voir http://geonature.readthedocs.org/fr/latest/export.html
 * Modification des identifiants des listes pour compatibilité avec les applications GeoNature-Mobile.
 * Complément dans la base de données pour compatibilité avec les applications GeoNature-Mobile.
 * Correction d'une erreur sur l'importation de shape pour la recherche géographique
@@ -23,7 +23,7 @@ CHANGELOG
 
 **Note de version**
 
-* Rappels : commencez par suivre la procédure classique de mise à jour. http://geonature.readthedocs.org/fr/latest/update.html
+Rappel : commencez par suivre la procédure classique de mise à jour. http://geonature.readthedocs.org/fr/latest/update.html
 
 **1.** Modification des identifiants des listes de taxons pour compatibilité avec les applications GeoNature-Mobile.
    
@@ -66,17 +66,17 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 
 * Attribution des droits nécessaires pour le répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export.
 
-    :: 
+   :: 
 
-        chmod -R 775 web/uploads/exports
+      chmod -R 775 web/uploads/exports
         
 * Rétablir les droits d'écriture et vider le cache 
 
-    ::
+   ::
 
-        chmod -R 777 cache/
-        chmod -R 777 log/
-        php symfony cc
+      chmod -R 777 cache/
+      chmod -R 777 log/
+      php symfony cc
 
 
 1.6.0 (2016-01-14)
@@ -179,8 +179,8 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
  
 **Corrections de bug**
  
- * Correction des problèmes de saisie de la version 1.4.0 liés à la migration de la taxonomie.
- * Correction de bugs dans Flore Station et Bryophytes (Zoom, recherche
+* Correction des problèmes de saisie de la version 1.4.0 liés à la migration de la taxonomie.
+* Correction de bugs dans Flore Station et Bryophytes (Zoom, recherche
 
 
 1.4.0 (2015-10-16)
@@ -191,7 +191,7 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 * La gestion de la taxonomie a été mis en conformité avec le schéma ``taxonomie`` de la base de données de TaxHub (https://github.com/PnX-SI/TaxHub). Ainsi le schéma ``taxonomie`` intégré à GeoNature 1.3.0 doit être globalement revu. L'ensemble des modifications peuvent être réalisées en éxecutant la partie correspondante dans le fichier ``data/update_1.3to1.4.sql`` (https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.3to1.4.sql).
 * De nouveaux paramètres ont potentiellement été ajoutés à l'application. Après avoir récupéré le fichier de configuration de votre version 1.3.0, vérifiez les changements éventuels des différents fichiers de configuration.
 * Modification du nom de l'host host hébergeant la base de données. databases --> geonatdbhost. A changer ou ajouter dans le ``/etc/hosts`` si vous avez déjà installé GeoNature.
-* Suivez la procédure de mise à jour : http://geonature.readthedocs.org/fr/latest/installation.html#mise-a-jour-de-l-application
+* Suivez la procédure de mise à jour : http://geonature.readthedocs.org/fr/latest/update.html
 
 **Changements**
 
