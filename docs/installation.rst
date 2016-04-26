@@ -114,61 +114,6 @@ Configuration de l'application
 * Si vous souhaitez ne pas afficher tous les liens vers les formulaires de saisie des protocoles fournis par défaut avec GeoNature, décochez leur champs ``actif`` dans la table ``synthese.bib_sources`` (https://github.com/PnEcrins/GeoNature/issues/69)
 
 
-Mise à jour de l'application
-============================
-
-Les différentes versions sont disponibles sur le Github du projet (https://github.com/PnEcrins/GeoNature/releases).
-
-* Télécharger et extraire la version souhaitée dans un répertoire séparé (où ``X.Y.Z`` est à remplacer par le numéro de la version que vous installez). 
-
-    ::
-
-        cd /home/synthese/
-        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
-        unzip vX.Y.Z.zip
-        cd GeoNature-X.Y.Z/
-
-
-* Lire attentivement les notes de chaque version si il y a des spécificités (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise à jour.
-
-* Si besoin, vous pouvez aussi vous inspirer des commandes présentes dans le fichier ``install_app.sh`` et les adapter à votre contexte.
-
-* Assurez vous que le fichier ``/etc/hosts`` comporte une entrée ``geonatdbhost``. Ajoutez la si besoin.
-
-* Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, si de nouveaux paramètres ont été ajoutés, ajoutez les dans ces fichiers.
-
-    ::
-    
-        cp ../version-precedente/config/settings.ini config/settings.ini
-        cp ../version-precedente/web/js/config.js web/js/config.js
-        cp ../version-precedente/lib/sfGeonatureConfig.php lib/sfGeonatureConfig.php
-        cp ../version-precedente/config/databases.yml config/databases.yml
-    
-    
-* Vérifier que votre configuration de connexion à la base de données est correcte dans le fichier ``wms/wms.map``
-
-* Récupérer votre bandeau de l'application si vous l'avez personnalisé
-
-    ::
-    
-        cp ../version-precedente/web/images/bandeau_geonature.jpg web/images/bandeau_geonature.jpg
-
-
-* Renommer l'ancien répertoire de l'application GeoNature (/geonature_OLD/ par exemple) puis celui de la nouvelle version (/geonature/ par exemple) pour que le serveur pointe sur la nouvelle version.
-
-* 1.3.0 vers 1.4.0 : Mettez à jour votre base de données (faite impérativement une sauvegarde de votre base de données si elle comporte des données)
-
-    ::
-    
-        sudo su postgres
-        cd /home/synthese/geonature
-        psql -h geonatdbhost -U geonatuser -d geonaturedb -f /home/synthese/geonature/data/update_1.3to1.4.sql &> log/update.log
-
-* Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. 
-Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. 
-Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques 
-(module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml`` et l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml``).
-
 
 Clé API IGN Geoportail
 ======================
@@ -207,4 +152,4 @@ Une fois connecté au site:
     - WMTS-Géoportail - Parcelles cadastrales
 
 
-Une fois que votre commande est prête, saisissez la valeur de la clé IGN reçue dans le fichier ``web/js/config.js``.
+Une fois que votre commande est prête, saisissez la valeur de la clé IGN reçue dans le fichier ``web/js/configmap.js``.
