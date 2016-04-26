@@ -1,5 +1,6 @@
-﻿Note d'utilisation de la web API GeoNature
-==========================================
+=======
+WEB API
+=======
 
 La web API GeoNature est un service web REST. Les informations sont transmises au format JSON ou GeoJSON.
 Il est possible d'utiliser les méthodes HTTP ``POST``, ``PUT``, ``DELETE``.
@@ -19,7 +20,8 @@ json :
     
 
 Insertion d'une observation
----------------------------
+===========================
+
 Méthode HTTP à utiliser : POST
 url : synthese/observation?token=[votre_token]&json=[votre_geojson]
 param :
@@ -123,7 +125,7 @@ param :
         Lorsqu'il est fait référence au contenu des tables liées : "Cet identifiant est une clé étrangère et doit être présent dans la table ...". 
         Ces données étant susceptibles d'être modifiées par l'administrateur de GeoNature, vous devez vous référer au contenu des tables liées en consultant le contenu des ces tables dans votre base de données de GeoNature.
     
-    Example de GeoJSON compatible pour une insertion de données: 
+    Exemple de GeoJSON compatible pour une insertion de données: 
         {
             "type": "Feature"
             ,"geometry": 
@@ -161,7 +163,8 @@ param :
 
 
 Modification d'une observation
-------------------------------
+==============================
+
 Méthode HTTP à utiliser : PUT
 url : synthese/observation/[id_synthese]?token=[votre_token]&json=[votre_geojson]
 
@@ -271,7 +274,7 @@ param :
         Lorsqu'il est fait référence au contenu des tables liées : -Cet identifiant est une clé étrangère et doit être présent dans la table "schéma.table"-. 
         Ces données étant susceptibles d'être modifiées par l'administrateur de GeoNature, vous devez vous référer au contenu des tables liées en consultant le contenu des ces tables dans la base de données de GeoNature.
     
-    Examples de GeoJSON compatible pour une modification de données: 
+    Exemples de GeoJSON compatible pour une modification de données: 
         {
             "type": "Feature"
             ,"properties": {
@@ -319,7 +322,8 @@ param :
         
         
 Suppression d'une observation
------------------------------
+=============================
+
 Méthode HTTP à utiliser : DELETE
 url : synthese/observation/[id_synthese]?token=[votre_token]&json=[votre_json]
 
