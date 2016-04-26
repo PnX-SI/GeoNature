@@ -62,7 +62,7 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
    * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
    * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
    * Chaque module peut comporter autant que vues que nécessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
-   * Voir la documentation ici : https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_export_doc.rst
+   * Voir la documentation ici : http://geonature.readthedocs.org/fr/latest/export.html
 
 * Attribution des droits nécessaires pour le répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export.
 
