@@ -11,40 +11,40 @@
 --Il est conseillé de lancer les instructions sql d'update ligne par ligne et de vérifier que les id_liste à mettre à jour correspondent bien à ceux de votre base.
 --Les liens d'intégrité doivent mettre à jour les tables contactfaune.cor_critere_liste, taxonomie.cor_taxon_liste
 
-UPDATE taxonomie.bib_liste set id_liste = id_liste + 10000; --gestion des conflits sur la clé primaire
-DELETE FROM taxonomie.bib_liste WHERE id_liste = 11000; --Plantes vasculaires
-DELETE FROM taxonomie.bib_liste WHERE id_liste = 10400; --Champignons
-UPDATE taxonomie.bib_liste set id_liste = 1001 WHERE id_liste = 10001; --faune vertébré
-UPDATE taxonomie.bib_liste set id_liste = 1002 WHERE id_liste = 10002; --faune invertébré
-UPDATE taxonomie.bib_liste set id_liste = 1003 WHERE id_liste = 10003; --flore
-UPDATE taxonomie.bib_liste set id_liste = 1004 WHERE id_liste = 11004; --fonge
-UPDATE taxonomie.bib_liste set id_liste = 301 WHERE id_liste = 11001; --Bryophytes
-UPDATE taxonomie.bib_liste set id_liste = 302 WHERE id_liste = 11002; --Lichens
-UPDATE taxonomie.bib_liste set id_liste = 303 WHERE id_liste = 11003; --Algues
-UPDATE taxonomie.bib_liste set id_liste = 1 WHERE id_liste = 10101; --Amphibiens
-UPDATE taxonomie.bib_liste set id_liste = 7 WHERE id_liste = 10102; --Pycnogonides
-UPDATE taxonomie.bib_liste set id_liste = 3 WHERE id_liste = 10103; --Entognathes
-UPDATE taxonomie.bib_liste set id_liste = 4 WHERE id_liste = 10104; --Echinodermes
-UPDATE taxonomie.bib_liste set id_liste = 5 WHERE id_liste = 10105; --Ecrevisses
-UPDATE taxonomie.bib_liste set id_liste = 9 WHERE id_liste = 10106; --Insectes
-UPDATE taxonomie.bib_liste set id_liste = 11 WHERE id_liste = 10107; --Mammifères
-UPDATE taxonomie.bib_liste set id_liste = 12 WHERE id_liste = 10108; --Oiseaux
-UPDATE taxonomie.bib_liste set id_liste = 13 WHERE id_liste = 10109; --Poissons
-UPDATE taxonomie.bib_liste set id_liste = 14 WHERE id_liste = 10110; --Reptiles
-UPDATE taxonomie.bib_liste set id_liste = 15 WHERE id_liste = 10111; --Myriapodes
-UPDATE taxonomie.bib_liste set id_liste = 16 WHERE id_liste = 10112; --Arachnides
-UPDATE taxonomie.bib_liste set id_liste = 101 WHERE id_liste = 10113; --Mollusques
-UPDATE taxonomie.bib_liste set id_liste = 2 WHERE id_liste = 10114; --Vers
-UPDATE taxonomie.bib_liste set id_liste = 20 WHERE id_liste = 10115; --Rotifères
-UPDATE taxonomie.bib_liste set id_liste = 21 WHERE id_liste = 10116; --Tardigrades
-UPDATE taxonomie.bib_liste set id_liste = 10 WHERE id_liste = 10201; --Bivalves
-UPDATE taxonomie.bib_liste set id_liste = 8 WHERE id_liste = 10202; --Gastéropodes
-UPDATE taxonomie.bib_liste set nom_liste = 'Crustacés' WHERE id_liste = 10105; --Ecrevisses
+UPDATE taxonomie.bib_listes set id_liste = id_liste + 10000; --gestion des conflits sur la clé primaire
+DELETE FROM taxonomie.bib_listes WHERE id_liste = 11000; --Plantes vasculaires
+DELETE FROM taxonomie.bib_listes WHERE id_liste = 10400; --Champignons
+UPDATE taxonomie.bib_listes set id_liste = 1001 WHERE id_liste = 10001; --faune vertébré
+UPDATE taxonomie.bib_listes set id_liste = 1002 WHERE id_liste = 10002; --faune invertébré
+UPDATE taxonomie.bib_listes set id_liste = 1003 WHERE id_liste = 10003; --flore
+UPDATE taxonomie.bib_listes set id_liste = 1004 WHERE id_liste = 11004; --fonge
+UPDATE taxonomie.bib_listes set id_liste = 301 WHERE id_liste = 11001; --Bryophytes
+UPDATE taxonomie.bib_listes set id_liste = 302 WHERE id_liste = 11002; --Lichens
+UPDATE taxonomie.bib_listes set id_liste = 303 WHERE id_liste = 11003; --Algues
+UPDATE taxonomie.bib_listes set id_liste = 1 WHERE id_liste = 10101; --Amphibiens
+UPDATE taxonomie.bib_listes set id_liste = 7 WHERE id_liste = 10102; --Pycnogonides
+UPDATE taxonomie.bib_listes set id_liste = 3 WHERE id_liste = 10103; --Entognathes
+UPDATE taxonomie.bib_listes set id_liste = 4 WHERE id_liste = 10104; --Echinodermes
+UPDATE taxonomie.bib_listes set id_liste = 5 WHERE id_liste = 10105; --Ecrevisses
+UPDATE taxonomie.bib_listes set id_liste = 9 WHERE id_liste = 10106; --Insectes
+UPDATE taxonomie.bib_listes set id_liste = 11 WHERE id_liste = 10107; --Mammifères
+UPDATE taxonomie.bib_listes set id_liste = 12 WHERE id_liste = 10108; --Oiseaux
+UPDATE taxonomie.bib_listes set id_liste = 13 WHERE id_liste = 10109; --Poissons
+UPDATE taxonomie.bib_listes set id_liste = 14 WHERE id_liste = 10110; --Reptiles
+UPDATE taxonomie.bib_listes set id_liste = 15 WHERE id_liste = 10111; --Myriapodes
+UPDATE taxonomie.bib_listes set id_liste = 16 WHERE id_liste = 10112; --Arachnides
+UPDATE taxonomie.bib_listes set id_liste = 101 WHERE id_liste = 10113; --Mollusques
+UPDATE taxonomie.bib_listes set id_liste = 2 WHERE id_liste = 10114; --Vers
+UPDATE taxonomie.bib_listes set id_liste = 20 WHERE id_liste = 10115; --Rotifères
+UPDATE taxonomie.bib_listes set id_liste = 21 WHERE id_liste = 10116; --Tardigrades
+UPDATE taxonomie.bib_listes set id_liste = 10 WHERE id_liste = 10201; --Bivalves
+UPDATE taxonomie.bib_listes set id_liste = 8 WHERE id_liste = 10202; --Gastéropodes
+UPDATE taxonomie.bib_listes set nom_liste = 'Crustacés' WHERE id_liste = 5; --Ecrevisses
 
-UPDATE taxonomie.bib_liste set nom_liste = 'Faune vertébrée' WHERE id_liste = 1001; --faune vertébré
-UPDATE taxonomie.bib_liste set nom_liste = 'Faune invertébrée' WHERE id_liste = 1002; --faune invertébré
-UPDATE taxonomie.bib_liste set nom_liste = 'Flore' WHERE id_liste = 1003; --flore
-UPDATE taxonomie.bib_liste set nom_liste = 'Fonge' WHERE id_liste = 1004; --fonge
+UPDATE taxonomie.bib_listes set nom_liste = 'Faune vertébrée' WHERE id_liste = 1001; --faune vertébré
+UPDATE taxonomie.bib_listes set nom_liste = 'Faune invertébrée' WHERE id_liste = 1002; --faune invertébré
+UPDATE taxonomie.bib_listes set nom_liste = 'Flore' WHERE id_liste = 1003; --flore
+UPDATE taxonomie.bib_listes set nom_liste = 'Fonge' WHERE id_liste = 1004; --fonge
 
 CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
  SELECT g.id_liste AS id_classe,
