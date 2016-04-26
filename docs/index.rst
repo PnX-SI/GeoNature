@@ -8,5 +8,7 @@ Contenu:
 
    server
    installation
+   geonature_webapi_doc
+   geonature_export_doc
    auteurs
    changelog
