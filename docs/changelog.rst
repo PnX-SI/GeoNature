@@ -43,11 +43,6 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT L
 * Ajouter les variables ``$id_lot_cflore  = 7``, ``$id_protocole_cflore  = 7``, ``$id_source_cflore = 7`` et ``$appname_cflore = 'Contact flore - GeoNature';`` dans ``lib/sfGeonatureConfig.php`` (voir le fichier d'exemple ``lib/sfGeonatureConfig.php.sample``)
 * Ajouter les variables  ``id_lot_contact_flore = 7``, ``id_protocole_contact_flore = 7``, ``id_source_contactflore = 7`` dans ``web/js/config.js`` (voir le fichier d'exemple ``web/js/config.js.sample``)
 * l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit être actif (dernière colonne) pour que le contact flore soit accessible depuis la page d'accueil.
-* Vider le cache 
-
-   ::
-
-      php symfony cc
             
 **3.** Afin de mettre à jour la configuration WMS, vous devez exécuter le fichier ``wms/update1.6to1.7.sh``. 
 
@@ -72,7 +67,6 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 
     :: 
 
-        cd geonature
         chmod -R 775 web/uploads/exports
         
 * Rétablir les droits d'écriture et vider le cache 
