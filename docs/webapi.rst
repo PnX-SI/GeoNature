@@ -3,20 +3,26 @@ WEB API
 =======
 
 La web API GeoNature est un service web REST. Les informations sont transmises au format JSON ou GeoJSON.
+
 Il est possible d'utiliser les méthodes HTTP ``POST``, ``PUT``, ``DELETE``.
+
 Les données manipuler par le service se trouvent dans la table ``synthese.syntheseff``.
+
 Toutes les méthodes http doivent être transmise avec les 2 paramètres ``token`` et ``json`` sauf la méthode ``DELETE`` qui peut fonctionner sans le paramètre ``json``.
 
 token :
-    description : clé secrète. Si non conforme ou non fournie le service retourne une erreur.
-    type : string
-    obligatoire : oui
-    valeur par défaut : none
+
+* description : clé secrète. Si non conforme ou non fournie le service retourne une erreur.
+* type : string
+* obligatoire : oui
+* valeur par défaut : none
+
 json :
-    description : paramètre au format JSON ou GeoJSON .
-    type : string
-    obligatoire : oui
-    valeur par défaut : none
+
+* description : paramètre au format JSON ou GeoJSON .
+* type : string
+* obligatoire : oui
+* valeur par défaut : none
     
 
 Insertion d'une observation
@@ -290,7 +296,9 @@ param :
                 ,"dateobs" : "2014-10-27"
             }
         }
+        
         ou
+        
         {
             "type": "Feature"
             ,"properties": {
@@ -301,7 +309,9 @@ param :
                 ,"observateurs" : "Gaston l'observateur" 
             }
         }
+        
         ou
+        
         {
             "type": "Feature"
             ,"geometry": 
