@@ -23,6 +23,34 @@ CHANGELOG
 
 **Note de version**
 
+**Rappels.**
+
+* Téléchargez l'archive de la dernière version au format zip. https://github.com/PnEcrins/GeoNature/archive/v1.7.1.zip ou au format tar.gz https://github.com/PnEcrins/GeoNature/archive/v1.7.1.tar.gz 
+
+:: 
+
+      wget https://github.com/PnEcrins/GeoNature/archive/v1.7.1.tar.gz
+      
+* Renommez votre ancien répertoire ``geonature`` en ``geonature_old`` et décompressez l'archive dans un répertoire nommé ``geonature``.
+
+:: 
+
+      mv geonature geonature_old
+      unzip v1.7.0.zip
+      mv GeoNature-1.7.0/ geonature
+      rm v1.7.0.zip
+
+* copiez vos anciens fichiers de configuration et placez vous dans le répertoire geonature
+
+:: 
+
+      cp geonature_old/wms/wms.map geonature/wms/wms.map
+      cp geonature_old/web/js/config.js geonature/web/js/config.js
+      cp geonature_old/web/js/configmap.js geonature/web/js/configmap.js
+      cp geonature_old/lib/sfGeonatureConfig.php geonature/lib/sfGeonatureConfig.php
+      cp geonature_old/config/databases.yml geonature/config/databases.yml
+      cd geonature
+
 **1.** Modification des identifiants des listes de taxons pour compatibilité avec les applications GeoNature-Mobile.
    
 Dans GeoNature-Mobile, les taxons sont filtrables par classe sur la base d'un ``id_classe``. Ces id sont inscrits en dur dans le code des applications mobiles. 
@@ -50,7 +78,6 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 
    :: 
 
-      cd geonature
       ./wms/update1.6to1.7.sh
         
 **4.** Mise en place du module d'export 
