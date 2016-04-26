@@ -1,13 +1,13 @@
-===========
-APPLICATION
-===========
+=============================
+INSTALLATION DE L'APPLICATION
+=============================
 
 Prérequis
 =========
 
 * Environnement serveur :
 
-Voir le guide d'installation du serveur dans https://github.com/PnEcrins/GeoNature/blob/master/docs/server.rst
+Voir le guide d'installation du serveur (http://geonature.readthedocs.org/fr/latest/server.html)
 
 * Disposer d'un utilisateur linux nommé par exemple ``synthese``. Dans ce guide, le répertoire de cet utilisateur est dans ``/home/synthese``
 
@@ -33,8 +33,8 @@ Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synth
 
     :: 
 	
-	    sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
-        sudo apache2ctl restart
+	sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
+	sudo apache2ctl restart
         
 
 Configuration de la base de données PostgreSQL
@@ -44,7 +44,7 @@ Configuration de la base de données PostgreSQL
 
     :: 
 	
-	    cd geonature
+	cd geonature
         
 * Copier et renommer le fichier ``config/settings.ini.sample`` en ``config/settings.ini`` :
 
@@ -56,7 +56,7 @@ Configuration de la base de données PostgreSQL
 
     :: 
 	
-	    nano config/settings.ini
+	nano config/settings.ini
 
 Renseigner le nom de la base de données, les utilisateurs PostgreSQL et les mots de passe. Il est possible mais non conseillé de laisser les valeurs proposées par défaut. 
 
@@ -81,7 +81,6 @@ Création de la base de données
         export PGPASSWORD=monpassachanger; sudo psql -h geonatdbhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
 
 
-
 Configuration de l'application
 ==============================
 
@@ -97,7 +96,7 @@ Configuration de l'application
     
 * Adapter le contenu du fichier ``web/js/configmap.js``
 
-	- Renseigner votre clé API IGN Geoportail, 
+    - Renseigner votre clé API IGN Geoportail, 
     - l'extent max de l'affichage cartographique, le centrage initial, le nombre maximum de niveau de zoom de la carte, la résolution maximale (en lien avec le paramètre précédent et le tableau ``ign_resolutions``)
     - Renseigner le système de coordonnées et la bbox des coordonnées utilisable pour le positionnement du pointage par coordonnées fournies (GPS)
 	
@@ -150,6 +149,5 @@ Une fois connecté au site:
     - WMTS-Géoportail - Limites administratives, 
     - WMTS-Géoportail - Orthophotographies
     - WMTS-Géoportail - Parcelles cadastrales
-
 
 Une fois que votre commande est prête, saisissez la valeur de la clé IGN reçue dans le fichier ``web/js/configmap.js``.
