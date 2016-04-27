@@ -329,7 +329,7 @@ class stationActions extends sfGeonatureActions
   public function executeXls(sfRequest $request)
     {
         $listes = CorFsTaxonTable::listXls($request);
-        $csv_output = "Id_station\tTaxon_saisi\tTaxon enregistré\tTaxon_reference\tTaxon_complet\tHerb\tinf_1m\t1a4m\tSup_4m\tDate\tSecteur\tCommune\tAcces\tObservateurs\tNiveau\tProgramme\tIdSophie\tPointage\tSurface\tHomogene\tExposition\tAltitude\tMicro-reliefs\tMeso-relief_longitudinal\tmeso-relief_lateral\tCanopee\tLigneux_hauts\tLigneux_bas\tLigneux_tbas\tHerbaces\tMousses\tLitiere\tCodes_delphine\tRemarques\tPdop\tL93X\tL93Y\tRelue";
+        $csv_output = "Id_station\tTaxon_saisi\tTaxon enregistré\tTaxon_reference\tTaxon_complet\tHerb\tinf_1m\t1a4m\tSup_4m\tDate\tSecteur\tCommune\tAcces\tObservateurs\tNiveau\tProgramme\tIdSophie\tPointage\tSurface\tHomogene\tExposition\tAltitude\tMicro-reliefs\tMeso-relief_longitudinal\tmeso-relief_lateral\tCanopee\tLigneux_hauts\tLigneux_bas\tLigneux_tbas\tHerbaces\tMousses\tLitiere\tCodes_delphine\tRemarques\tPdop\tX\tY\tRelue";
         $csv_output .= "\n";
         foreach ($listes as $l)
         {  
@@ -367,12 +367,12 @@ class stationActions extends sfGeonatureActions
             $litiere = $l['litiere'];
             $delphines = $l['delphines'];
             $remarques = str_replace( array( CHR(10), CHR(13), "\n", "\r" ), array( ' - ',' - ',' - ',' - '), $l['remarques'] );
-            $l93x = $l['l93x'];
-            $l93y = $l['l93y'];
+            $x = $l['y_local'];
+            $y = $l['y_local'];
             $relue = (!$l['relue'])?'non':'oui';
             if ($l['pdop']==-1){$l['pdop'] = 'non précisé';}
             $pdop = $l['pdop'];
-            $csv_output .= "$id_station\t$taxon_saisi\t$taxon\t$taxon_ref\t$taxon_complet\t$herb\t$inf_1m\t$de_1_4m\t$sup_4m\t$dateobs\t$nom_secteur\t$nomcommune\t$info_acces\t$observateurs\t$complet_partiel\t$nom_programme\t$id_sophie\t$nom_support\t$nom_surface\t$nom_homogene\t$nom_exposition\t$altitude\t$microreliefs\t$meso_longitudinal\t$meso_lateral\t$canopee\t$ligneux_hauts\t$ligneux_bas\t$ligneux_tbas\t$herbaces\t$mousses\t$litiere\t$delphines\t$remarques\t$pdop\t$l93x\t$l93y\t$relue\n";
+            $csv_output .= "$id_station\t$taxon_saisi\t$taxon\t$taxon_ref\t$taxon_complet\t$herb\t$inf_1m\t$de_1_4m\t$sup_4m\t$dateobs\t$nom_secteur\t$nomcommune\t$info_acces\t$observateurs\t$complet_partiel\t$nom_programme\t$id_sophie\t$nom_support\t$nom_surface\t$nom_homogene\t$nom_exposition\t$altitude\t$microreliefs\t$meso_longitudinal\t$meso_lateral\t$canopee\t$ligneux_hauts\t$ligneux_bas\t$ligneux_tbas\t$herbaces\t$mousses\t$litiere\t$delphines\t$remarques\t$pdop\t$x\t$y\t$relue\n";
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=fs_".date("Y-m-d_His").".xls");
