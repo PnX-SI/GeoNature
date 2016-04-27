@@ -5,6 +5,16 @@ CHANGELOG
 1.8.0 dev (unreleased)
 ----------------------
 
+1.7.1 (2016-04-27)
+----------------------
+
+**Corrections de bug**
+
+* Ajout des listes flore manquantes dans le script de mise à jour ``data/update_1.6to1.7.sql``.
+
+**Note de version**
+
+* Vous pouvez passer directement de la version 1.6.0 à la 1.7.1 mais en vous référant aux notes de version de la 1.7.0.
 
 1.7.0 (2016-04-24)
 ----------------------
