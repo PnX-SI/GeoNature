@@ -46,6 +46,10 @@ UPDATE taxonomie.bib_listes set nom_liste = 'Faune invertébrée' WHERE id_liste
 UPDATE taxonomie.bib_listes set nom_liste = 'Flore' WHERE id_liste = 1003; --flore
 UPDATE taxonomie.bib_listes set nom_liste = 'Fonge' WHERE id_liste = 1004; --fonge
 
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (305, 'Ptéridophytes',null, 'images/pictos/nopicto.gif'); --Ptéridophytes
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (306, 'Monocotylédones',null, 'images/pictos/nopicto.gif'); --Monocotylédones
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (307, 'Dycotylédones',null, 'images/pictos/nopicto.gif'); --Dycotylédones
+
 CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
  SELECT g.id_liste AS id_classe,
     g.nom_liste AS nom_classe_fr,
