@@ -36,6 +36,14 @@ Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synth
 	sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 	sudo apache2ctl restart
         
+* Pour les utilisateurs d'Apache 2.4 (par défaut dans Debian 8), installer perl et cgi
+
+    ::
+    
+    	sudo apt-get install libapache2-mod-perl2
+	sudo a2enmod cgi
+	sudo apache2ctl restart
+	
 
 Configuration de la base de données PostgreSQL
 ==============================================
