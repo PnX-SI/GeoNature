@@ -428,11 +428,14 @@ DECLARE
 	idsourcem integer;
 	idsourcecf integer;
 	unite integer;
+    cdnom integer;
 BEGIN
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsourcem id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' AND nom_source = 'Mortalité';
 	SELECT INTO idsourcecf id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' AND nom_source = 'Contact faune';
-	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+    --Récupération des données dans la table t_fiches_cf et de la liste des observateurs
 	SELECT INTO fiche * FROM contactfaune.t_fiches_cf WHERE id_cf = new.id_cf;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
 	-- Récupération du id_source selon le critère d'observation, Si critère = 2 alors on est dans une source mortalité (=2) sinon cf (=1)
@@ -480,7 +483,7 @@ BEGIN
 	fiche.id_organisme,
 	fiche.id_protocole,
 	1,
-	new.cd_ref_origine,
+	cdnom,
 	fiche.insee,
 	fiche.dateobs,
 	mesobservateurs,
@@ -661,6 +664,7 @@ DECLARE
     sources RECORD;
     idsourcem integer;
     idsourcecf integer;
+    cdnom integer;
 BEGIN
     
 	--on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
@@ -671,6 +675,8 @@ BEGIN
 	        idsourcem = sources.id_source;
 	    END IF;
         END LOOP;
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 	IF test IS NOT NULL THEN
@@ -680,7 +686,7 @@ BEGIN
 		UPDATE synthese.syntheseff SET
 			id_fiche_source = new.id_releve_cf,
 			code_fiche_source = 'f'||new.id_cf||'-r'||new.id_releve_cf,
-			cd_nom = new.cd_ref_origine,
+			cd_nom = cdnom,
 			remarques = new.commentaire,
 			determinateur = new.determinateur,
 			derniere_action = 'u',
@@ -948,11 +954,13 @@ DECLARE
 	mesobservateurs character varying(255);
 	unite integer;
 	idsource integer;
+    cdnom integer;
 BEGIN
 
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
-	
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	--Récupération des données dans la table t_fiches_inv et de la liste des observateurs
 	SELECT INTO fiche * FROM contactinv.t_fiches_inv WHERE id_inv = new.id_inv;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactinv.bib_criteres_inv WHERE id_critere_inv = new.id_critere_inv;
@@ -997,7 +1005,7 @@ BEGIN
 	fiche.id_organisme,
 	fiche.id_protocole,
 	1,
-	new.cd_ref_origine,
+	cdnom,
 	fiche.insee,
 	fiche.dateobs,
 	mesobservateurs,
@@ -1161,11 +1169,13 @@ DECLARE
 	criteresynthese integer;
 	mesobservateurs character varying(255);
     idsource integer;
+    cdnom integer;
 BEGIN
 
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
-    
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text;
 	IF test IS NOT NULL THEN
@@ -1176,7 +1186,7 @@ BEGIN
 		UPDATE synthese.syntheseff SET
 			id_fiche_source = new.id_releve_inv,
 			code_fiche_source = 'f'||new.id_inv||'-r'||new.id_releve_inv,
-			cd_nom = new.cd_ref_origine,
+			cd_nom = cdnom,
 			remarques = new.commentaire,
             determinateur = new.determinateur,
 			derniere_action = 'u',
