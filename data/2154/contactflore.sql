@@ -201,9 +201,12 @@ DECLARE
 	fiche RECORD;
 	mesobservateurs character varying(255);
 	idsourcecflore integer;
+    cdnom integer;
 BEGIN
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' AND nom_source = 'Contact flore';
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
 	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
 	
@@ -245,7 +248,7 @@ BEGIN
 	fiche.id_organisme,
 	fiche.id_protocole,
 	1,
-	new.cd_ref_origine,
+	cdnom,
 	fiche.insee,
 	fiche.dateobs,
 	mesobservateurs,
@@ -418,14 +421,14 @@ DECLARE
     test integer;
     sources RECORD;
     idsourcecflore integer;
+    cdnom integer;
 BEGIN
     
-	--on doit boucler pour récupérer le id_source car il y en a 2 possibles (cflore et mortalité) pour le même schéma
-        FOR sources IN SELECT id_source, url  FROM synthese.bib_sources WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' LOOP
-	    IF sources.url = 'cflore' THEN
-	        idsourcecflore = sources.id_source;
-	    END IF;
-        END LOOP;
+	--Récupération des données id_source dans la table synthese.bib_sources
+    SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore';
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cflore::text AND (id_source = idsourcecflore);
 	IF test IS NOT NULL THEN
@@ -435,7 +438,7 @@ BEGIN
 		UPDATE synthese.syntheseff SET
 			id_fiche_source = new.id_releve_cflore,
 			code_fiche_source = 'f'||new.id_cflore||'-r'||new.id_releve_cflore,
-			cd_nom = new.cd_ref_origine,
+			cd_nom = cdnom,
 			remarques = new.commentaire,
 			determinateur = new.determinateur,
 			derniere_action = 'u',
@@ -1062,6 +1065,13 @@ ALTER TABLE ONLY cor_role_fiche_cflore
     ADD CONSTRAINT fk_cor_role_fiche_cflore_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
+--
+-- TOC entry 3711 (class 2606 OID 1388138)
+-- Name: fk_cor_unite_taxon_cflore_bib_taxons; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+--
+
+ALTER TABLE contactflore.cor_unite_taxon_cflore
+  ADD CONSTRAINT fk_cor_unite_taxon_cflore_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons (id_taxon) ON UPDATE CASCADE;
 --
 -- TOC entry 3708 (class 2606 OID 1388079)
 -- Name: fk_t_releves_cflore_bib_abondances_cflore; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser

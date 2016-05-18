@@ -5,6 +5,20 @@ CHANGELOG
 1.8.0 dev (unreleased)
 ----------------------
 
+1.7.3 (2016-05-18)
+----------------------
+
+**Corrections de bugs**
+
+* Correction de coordonnées vides dans l'export de Flore station. cf https://github.com/PnEcrins/GeoNature/commit/0793a3d3d2b3719ed515058d1a0ba9baf7cb2096
+* Correction des triggers en base concernant un bug de saisie pour les taxons dont le taxon de référence n'est pas présent dans ``taxonomie.bib_taxons``.
+
+**Note de version**
+
+* Vous pouvez passer directement de la version 1.6.0 à la 1.7.3 mais en vous référant aux notes de version de la 1.7.0.
+* Pour passer de la 1.7.2 à la 1.7.3 vous devez exécuter le script 1.7.2to1.7.3.sql.
+
+
 1.7.2 (2016-04-27)
 ----------------------
 
