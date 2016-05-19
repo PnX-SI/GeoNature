@@ -5,7 +5,7 @@ CHANGELOG
 1.8.0 dev (unreleased)
 ----------------------
 
-1.7.3 (2016-05-18)
+1.7.3 (2016-05-19)
 ----------------------
 
 **Corrections de bugs**
@@ -16,7 +16,7 @@ CHANGELOG
 **Note de version**
 
 * Vous pouvez passer directement de la version 1.6.0 à la 1.7.3 mais en vous référant aux notes de version de la 1.7.0.
-* Pour passer de la 1.7.2 à la 1.7.3 vous devez exécuter le script 1.7.2to1.7.3.sql.
+* Pour passer de la 1.7.2 à la 1.7.3 vous devez exécuter le script ``https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.7.2to1.7.3.sql``.
 
 
 1.7.2 (2016-04-27)
