@@ -142,22 +142,22 @@ BEGIN
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
 	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	new.cd_ref_origine = re;
-    -- MAJ de la table cor_unite_taxon, on commence par récupérer l'unité à partir du pointage (table t_fiches_cf)
+    -- MAJ de la table cor_unite_taxon_cflore, on commence par récupérer l'unité à partir du pointage (table t_fiches_cf)
 	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
 	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE ST_INTERSECTS(fiche.the_geom_2154,u.the_geom);
-	--si on est dans une des unités on peut mettre à jour la table cor_unite_taxon, sinon on fait rien
+	--si on est dans une des unités on peut mettre à jour la table cor_unite_taxon_cflore, sinon on fait rien
 	IF unite>0 THEN
-		SELECT INTO line * FROM contactflore.cor_unite_taxon WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
-		--si la ligne existe dans cor_unite_taxon on la supprime
+		SELECT INTO line * FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+		--si la ligne existe dans cor_unite_taxon_cflore on la supprime
 		IF line IS NOT NULL THEN
-			DELETE FROM contactflore.cor_unite_taxon WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
 		END IF;
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
 		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
 		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
-		INSERT INTO contactflore.cor_unite_taxon VALUES(unite,new.id_taxon,fiche.dateobs,contactflore.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
+		INSERT INTO contactflore.cor_unite_taxon_cflore VALUES(unite,new.id_taxon,fiche.dateobs,contactflore.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
 	END IF;
 	RETURN NEW; 			
 END;
@@ -1277,3 +1277,103 @@ UNION
 
 --INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (1, 1);
 --INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (2, 1);
+
+-- MODIFICATIONS A FAIRE COTE SYNTHESE
+-- Ajout de la fonction synthese.calcul_cor_unite_taxon_cflore
+
+CREATE OR REPLACE FUNCTION synthese.calcul_cor_unite_taxon_cflore(
+    monidtaxon integer,
+    monunite integer)
+  RETURNS void AS
+$BODY$
+  DECLARE
+  cdnom integer;
+  BEGIN
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = monidtaxon;
+	DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
+	INSERT INTO contactflore.cor_unite_taxon_cflore (id_unite_geo,id_taxon,derniere_date,couleur,nb_obs)
+	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactflore.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
+	FROM synthese.cor_unite_synthese
+	WHERE cd_nom = cdnom
+	AND id_unite_geo = monunite;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION synthese.calcul_cor_unite_taxon_cflore(integer, integer)
+  OWNER TO geonatuser;
+
+
+-- Modif de la fonction synthese.maj_cor_unite_taxon
+
+CREATE OR REPLACE FUNCTION synthese.maj_cor_unite_taxon()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+monembranchement varchar;
+monregne varchar;
+monidtaxon integer;
+BEGIN
+
+IF (TG_OP = 'DELETE') THEN
+	--retrouver le id_taxon
+	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = old.cd_nom LIMIT 1; 
+	--calcul du règne du taxon supprimé
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+	IF monregne = 'Animalia' THEN
+		--calcul de l'embranchement du taxon supprimé
+			SELECT  INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
+			IF monembranchement = 'Chordata' THEN
+				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+					DELETE FROM contactfaune.cor_unite_taxon WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+				ELSE
+					PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, old.id_unite_geo);
+				END IF;
+			ELSE
+				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+				ELSE
+					PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
+				END IF;
+			END IF;
+	ELSIF monregne = 'Plantae' THEN
+		IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+		ELSE
+			PERFORM synthese.calcul_cor_unite_taxon_cflore(monidtaxon, old.id_unite_geo);
+		END IF;
+	END IF;
+	
+	RETURN OLD;		
+	
+ELSIF (TG_OP = 'INSERT') THEN
+	--retrouver le id_taxon
+	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = new.cd_nom LIMIT 1;
+	--calcul du règne du taxon inséré
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+	IF monregne = 'Animalia' THEN
+		--calcul de l'embranchement du taxon inséré
+		SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+		-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
+		IF monembranchement = 'Chordata' THEN
+		    PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, new.id_unite_geo);
+		ELSE
+		    PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, new.id_unite_geo);
+		END IF;
+	ELSIF monregne = 'Plantae' THEN
+		PERFORM synthese.calcul_cor_unite_taxon_cflore(monidtaxon, new.id_unite_geo);
+    END IF;
+	RETURN NEW;
+END IF;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION synthese.maj_cor_unite_taxon()
+  OWNER TO geonatuser;
+GRANT EXECUTE ON FUNCTION synthese.maj_cor_unite_taxon() TO geonatuser;
+GRANT EXECUTE ON FUNCTION synthese.maj_cor_unite_taxon() TO public;
+
+
