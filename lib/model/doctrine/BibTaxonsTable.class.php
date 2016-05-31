@@ -7,7 +7,7 @@ class BibTaxonsTable extends Doctrine_Table
     private static function test_null($val){
             return ($val!=null || $val!='null' || $val!='');
     }
-    //supprime les enregistrements si une des clés est égale à une autre dans un tableau à deux dimentions
+    //supprime les enregistrements si une des clÃ©s est Ã©gale Ã  une autre dans un tableau Ã  deux dimentions
     private static function clear_fr_egal_latin ($array, $index1, $index2){
         $newarray = array();
         if(is_array($array) && count($array)>0) 
@@ -37,7 +37,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listSyntheseFr($fff, $patri, $protege)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //requète optimisée = moins 2 secondes
+        //requÃ¨te optimisÃ©e = moins 2 secondes
         $where = 'WHERE cd_nom > 0';
         if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
         if($patri == 'true') {$where .= " AND patrimonial=true"; }
@@ -68,7 +68,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listSyntheseLatin($fff, $patri, $protege)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //requète optimisée = moins 2 secondes
+        //requÃ¨te optimisÃ©e = moins 2 secondes
         $where = 'WHERE cd_nom > 0';
         if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
         if($patri == 'true') {$where .= " AND patrimonial=true"; }
@@ -170,7 +170,7 @@ class BibTaxonsTable extends Doctrine_Table
                     SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
                     t.id_classe, t.patrimonial, t.message,'orange' AS couleur
                     FROM contactflore.v_nomade_taxons_flore t
-                    WHERE t.id_taxon NOT IN (SELECT id_taxon FROM contactfflore.cor_unite_taxon_cflore WHERE id_unite_geo = $id_unite_geo)
+                    WHERE t.id_taxon NOT IN (SELECT id_taxon FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = $id_unite_geo)
                     ORDER BY t.nom_latin
                 )";
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
