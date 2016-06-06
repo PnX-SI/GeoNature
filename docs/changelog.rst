@@ -4,6 +4,13 @@ CHANGELOG
 
 1.8.0 dev (unreleased)
 ----------------------
+**Corrections de bugs**
+
+* Mise en cohérence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe générique 'mollusques'.
+
+**Note de version**
+
+* Remplacer ``id_classe_mollusques`` par ``id_classe_gasteropodes`` dans ``web/js/config.js`` et renseigner la valeur en cohérence avec l'id_liste retenu dans la table ``taxonomie.bib_listes`` pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table ``taxonomie.cor_taxon_liste``.
 
 1.7.3 (2016-05-19)
 ----------------------

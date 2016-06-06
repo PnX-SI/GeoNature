@@ -44,7 +44,7 @@ id_classe_ecrevisses = 5;
 id_classe_insectes = 9;
 id_classe_arachnides = 16;
 id_classe_myriapodes = 15;
-id_classe_mollusques = 101;
+id_classe_gasteropodes = 8;
 
 //-----configuration du contact flore
 //activation/désactivation de la validation des données de contact flore
