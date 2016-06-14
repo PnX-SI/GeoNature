@@ -273,7 +273,7 @@ CREATE OR REPLACE FUNCTION couleur_taxon(
 $BODY$
   DECLARE
   couleur text;
-  patri boolean;
+  patri character(3);
   BEGIN
     SELECT filtre2 INTO patri 
     FROM taxonomie.bib_taxons
@@ -4183,7 +4183,9 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS
     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
     JOIN contactinv.v_nomade_classes g ON g.id_classe = ctl.id_liste
     JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-    JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text;
+    JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text
+	WHERE t.filtre1::text = 'oui'::text
+	ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, f2.bool;
 
 --
 -- Name: v_nomade_unites_geo_inv; Type: VIEW; Schema: contactinv; Owner: -
