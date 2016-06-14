@@ -15,10 +15,10 @@ Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
 
 
 * Disposer d'un utilisateur linux nommé ``synthese`` (par exemple). Dans ce guide, le répertoire de cet utilisateur est dans ``/home/synthese``
-
-    :: 
-    
-        sudo adduser --home /home/synthese synthese
+ 
+  ::  
+  
+    sudo adduser --home /home/synthese synthese
 
 
 Installation et configuration du serveur
@@ -37,15 +37,15 @@ Installation pour Debian 7.
     Durant toute la procédure d'installation, travailler avec l'utilisateur ``synthese``. Ne changer d'utilisateur que lorsque la documentation le spécifie.
 
 .
-
-  ::
+ 
+  ::  
   
-    su - 
-    apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo gdal-bin
-    usermod -g www-data synthese
-    usermod -a -G root synthese
-    adduser synthese sudo
-    exit
+        su - 
+        apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo gdal-bin
+        usermod -g www-data synthese
+        usermod -a -G root synthese
+        adduser synthese sudo
+        exit
     
 * Fermer la console et la réouvrir pour que les modifications soient prises en compte.
     
@@ -74,19 +74,18 @@ Installation pour Debian 7.
 * Vérifier que le répertoire ``/tmp`` existe et que l'utilisateur ``www-data`` y ait accès en lecture/écriture
 
 
-Installation et configuration de PosgreSQL
-==========================================
+Installation et configuration de PostgreSQL
+===========================================
 
-* Sur Debian 8, Postgres est livré en version 9.4 et postgis 2.1, vous pouvez sauter l'étape suivante. Sur Debian 7, il faut revoir la configuration des dépots pour avoir une version compatible de PostgreSQL (9.3) et PostGIS (2.1)
-(http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html)
-
+* Sur Debian 8, PostgreSQL est livré en version 9.4 et postGIS en 2.1, vous pouvez sauter l'étape suivante. Sur Debian 7, il faut revoir la configuration des dépots pour avoir une version compatible de PostgreSQL (9.3) et PostGIS (2.1). Voir http://foretribe.blogspot.fr/2013/12/the-posgresql-and-postgis-install-on.html.
+ 
   ::  
   
         sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" >> /etc/apt/sources.list'
         sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
         sudo apt-get update
  
-* Installation de PostreSQL/PostGIS pour debian 8
+* Installation de PostreSQL/PostGIS pour Debian 8
  
   ::  
   
@@ -94,35 +93,35 @@ Installation et configuration de PosgreSQL
         sudo apt-get install postgresql postgresql-client
         sudo apt-get install postgresql-9.4-postgis-2.1
         sudo adduser postgres sudo
-        
-* Installation de PostreSQL/PostGIS pour debian 7
 
-    ::
-    
+* Installation de PostreSQL/PostGIS pour Debian 7
+ 
+  ::  
+  
         sudo apt-get install postgresql-9.3 postgresql-client-9.3
         sudo apt-get install postgresql-9.3-postgis-2.1
         sudo adduser postgres sudo
         
 * Configuration de PostgreSQL pour Debian 8 - permettre l'écoute de toutes les IP
-
-    ::
-    
+ 
+  ::  
+  
         sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/9.4/main/postgresql.conf
         sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/0\t md5/g" -i /etc/postgresql/9.4/main/pg_hba.conf
         /etc/init.d/postgresql restart
         
 * Configuration de PostgreSQL pour Debian 7 - permettre l'écoute de toutes les IP
-
-    ::
-    
+ 
+  ::  
+  
         sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/9.3/main/postgresql.conf
         sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/0\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
         /etc/init.d/postgresql restart
 
 * Création de 2 utilisateurs PostgreSQL
-
-    ::
-    
+ 
+  ::  
+  
         sudo su postgres
         psql
         CREATE ROLE geonatuser WITH LOGIN PASSWORD 'monpassachanger';
@@ -137,9 +136,6 @@ L'application fonctionne avec le mot de passe ``monpassachanger`` par defaut mai
 
 Ce mot de passe, ainsi que les utilisateurs PostgreSQL créés ci-dessus (``geonatuser`` et ``geonatadmin``) sont des valeurs par défaut utilisées à plusieurs reprises dans l'application. Ils peuvent cependant être changés. S'ils doivent être changés, ils doivent l'être dans plusieurs fichiers de l'application : 
 
-    config/settings.ini
-    
-    config/databases.yml
-    
-    wms/wms.map
-    
+- config/settings.ini
+- config/databases.yml
+- wms/wms.map
