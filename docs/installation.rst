@@ -14,9 +14,9 @@ Voir le guide d'installation du serveur (http://geonature.readthedocs.org/fr/lat
 * Se loguer sur le serveur avec l'utilisateur ``synthese`` ou tout autre utilisateur linux faisant partie du groupe www-data.
 
 * Récupérer le zip de l’application sur le Github du projet (`X.Y.Z à remplacer par le numéro de version souhaitée <https://github.com/PnEcrins/GeoNature/releases>`_), dézippez le dans le répertoire de l'utilisateur linux du serveur puis copiez le dans le répertoire de l’utilisateur linux :
-
-    ::
-    
+ 
+  ::  
+  
         cd /home/synthese
         wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
         unzip vX.Y.Z.zip
@@ -30,16 +30,16 @@ Configuration Apache
 Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synthese.conf`` et ``apache/wms.conf`` et adapter les chemins à ceux de votre serveur.
 
 * Prise en compte de la configuration Apache requises pour Symfony :
-
-    :: 
-	
+ 
+  ::  
+  
 	sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 	sudo apache2ctl restart
         
 * Pour les utilisateurs d'Apache 2.4 (par défaut dans Debian 8), installer perl et cgi
-
-    ::
-    
+ 
+  ::  
+  
     	sudo apt-get install libapache2-mod-perl2
 	sudo a2enmod cgi
 	sudo apache2ctl restart
@@ -49,21 +49,21 @@ Configuration de la base de données PostgreSQL
 ==============================================
 
 * Se positionner dans le répertoire de l'application ; par exemple ``geonature`` :
-
-    :: 
-	
+ 
+  ::  
+  
 	cd geonature
         
 * Copier et renommer le fichier ``config/settings.ini.sample`` en ``config/settings.ini`` :
-
-    :: 
-	
+ 
+  ::  
+  
         cp config/settings.ini.sample config/settings.ini
 
 * Mettre à jour le fichier ``config/settings.ini`` avec vos paramètres de connexion à la BDD :
-
-    :: 
-	
+ 
+  ::  
+  
 	nano config/settings.ini
 
 Renseigner le nom de la base de données, les utilisateurs PostgreSQL et les mots de passe. Il est possible mais non conseillé de laisser les valeurs proposées par défaut. 
@@ -75,17 +75,17 @@ Création de la base de données
 ==============================
 
 * Création de la base de données et chargement des données initiales
-
-    ::
-
+ 
+  ::  
+  
         sudo ./install_db.sh
         
 * Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. **Attention, ce fichier sera supprimé** lors de l'exécution de ``install_app.sh``
 
 * Vous pouvez intégrer l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
-
-    ::
-    
+ 
+  ::  
+  
         export PGPASSWORD=monpassachanger; sudo psql -h geonatdbhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
 
 
@@ -93,9 +93,9 @@ Configuration de l'application
 ==============================
 
 * Lancer le fichier d'installation et de préparation de la configuration de l'application
-
-    ::
-    
+ 
+  ::  
+  
         ./install_app.sh
 
 * Adapter le contenu du fichier ``web/js/config.js``
@@ -121,7 +121,6 @@ Configuration de l'application
 * Si vous souhaitez ne pas afficher tous les liens vers les formulaires de saisie des protocoles fournis par défaut avec GeoNature, décochez leur champs ``actif`` dans la table ``synthese.bib_sources`` (https://github.com/PnEcrins/GeoNature/issues/69)
 
 
-
 Clé API IGN Geoportail
 ======================
 
@@ -132,24 +131,17 @@ Si vous êtes un établissement public, commandez une clé IGN de type : Licence
 Selectionner les couches suivantes : 
 
 * WMTS-Géoportail - Orthophotographies
-
 * WMTS-Géoportail - Parcelles cadastrales
-
 * WMTS-Géoportail - Cartes IGN
 
 Pour cela, il faut que vous disposiez d'un compte IGN pro. (http://professionnels.ign.fr)
 Une fois connecté au site: 
 
 * Aller dans "Nouvelle commande"
-
 * Choisir "Géoservices IGN : Pour le web" dans la rubrique "LES GÉOSERVICES EN LIGNE"
-
 * Cocher l'option "Pour un site internet grand public"
-
 * Cocher l'option "Licence géoservices IGN pour usage grand public - gratuite"
-
 * Saisir votre URL. Attention, l'adresse doit être précédée de ``http://`` (même si il s'agit d'une IP)
-
 * Finir votre commande en selectionnant les couches utiles :
 
     - Alticodage, 
@@ -158,4 +150,4 @@ Une fois connecté au site:
     - WMTS-Géoportail - Orthophotographies
     - WMTS-Géoportail - Parcelles cadastrales
 
-Une fois que votre commande est prête, saisissez la valeur de la clé IGN reçue dans le fichier ``web/js/configmap.js``.
+Une fois que votre commande est prête, saisissez la valeur de la clé IGN dans le fichier ``web/js/configmap.js``.
