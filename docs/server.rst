@@ -30,22 +30,22 @@ Installation pour Debian 7.
 
     Cette documentation concerne une installation sur Debian. Pour tout autre environemment les commandes sont à adapter.
 
-.
+
 
 :notes:
 
     Durant toute la procédure d'installation, travailler avec l'utilisateur ``synthese``. Ne changer d'utilisateur que lorsque la documentation le spécifie.
 
-.
- 
-  ::  
-  
-        su - 
-        apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo gdal-bin
-        usermod -g www-data synthese
-        usermod -a -G root synthese
-        adduser synthese sudo
-        exit
+
+
+::
+
+    su - 
+    apt-get install apache2 php5 libapache2-mod-php5 php5-gd libapache2-mod-wsgi php5-pgsql cgi-mapserver sudo gdal-bin
+    usermod -g www-data synthese
+    usermod -a -G root synthese
+    adduser synthese sudo
+    exit
     
 * Fermer la console et la réouvrir pour que les modifications soient prises en compte.
     
