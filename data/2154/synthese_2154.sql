@@ -3743,6 +3743,18 @@ CREATE TABLE bib_listes
    );
    
 --
+-- Name: bib_taxref_categories_lr; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bib_taxref_categories_lr
+(
+  id_categorie_france character(2) NOT NULL,
+  type_categorie_lr character varying(50) NOT NULL,
+  nom_categorie_lr character varying(255) NOT NULL,
+  desc_categorie_lr character varying(255)
+);
+   
+--
 -- Name: bib_taxons; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
    
@@ -4794,6 +4806,38 @@ CREATE TABLE taxref_protection_especes (
 
 
 --
+-- Name: taxref_liste_rouge_fr; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE TABLE taxref_liste_rouge_fr (
+    id_lr serial NOT NULL,
+    ordre_statut integer,
+    vide character varying(255),
+    cd_nom integer,
+    cd_ref integer,
+    nomcite character varying(255),
+    nom_scientifique character varying(255),
+    auteur character varying(255),
+    nom_vernaculaire character varying(255),
+    nom_commun character varying(255),
+    rang character(4),
+    famille character varying(50),
+    endemisme character varying(255),
+    population character varying(255),
+    commentaire text,
+    id_categorie_france character(2) NOT NULL,
+    criteres_france character varying(255),
+    liste_rouge character varying(255),
+    fiche_espece character varying(255),
+    tendance character varying(255),
+    liste_rouge_source character varying(255),
+    annee_publication integer,
+    categorie_lr_europe character varying(2),
+    categorie_lr_mondiale character varying(5)
+);
+
+
+--
 -- Name: v_tree_taxons_synthese; Type: VIEW; Schema: synthese; Owner: -
 --
 
@@ -5382,11 +5426,6 @@ SET search_path = taxonomie, pg_catalog;
 
 ALTER TABLE ONLY bib_listes ALTER COLUMN id_liste SET DEFAULT nextval('bib_listes_id_liste_seq'::regclass);
 
---
--- Name: id_liste; Type: DEFAULT; Schema: taxonomie; Owner: -
---
-
-ALTER TABLE ONLY bib_listes ALTER COLUMN id_liste SET DEFAULT nextval('bib_listes_id_liste_seq'::regclass);
 
 --
 -- Name: id_attribut; Type: DEFAULT; Schema: taxonomie; Owner: -
@@ -6120,7 +6159,14 @@ ALTER TABLE ONLY bib_attributs
 --
 
 ALTER TABLE ONLY bib_listes
-    ADD CONSTRAINT pk_bib_listes PRIMARY KEY (id_liste);   
+    ADD CONSTRAINT pk_bib_listes PRIMARY KEY (id_liste);  
+
+--
+-- Name: pk_bib_taxref_categories_lr; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bib_taxref_categories_lr
+    ADD CONSTRAINT pk_bib_taxref_categories_lr PRIMARY KEY (id_categorie_france);   
 
 --
 -- Name: pk_bib_taxons; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -6177,6 +6223,13 @@ ALTER TABLE ONLY taxref_changes
 
 ALTER TABLE ONLY taxref_protection_articles
     ADD CONSTRAINT taxref_protection_articles_pkey PRIMARY KEY (cd_protection);
+
+--
+-- Name: pk_taxref_liste_rouge_fr; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY taxref_liste_rouge_fr
+    ADD CONSTRAINT pk_taxref_liste_rouge_fr PRIMARY KEY (id_lr);
 
 --
 -- Name: taxref_protection_especes_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -6703,6 +6756,20 @@ CREATE INDEX fki_cor_taxon_attribut ON cor_taxon_attribut USING btree (valeur_at
 --
 
 CREATE INDEX fki_bib_taxons_bib_listes ON cor_taxon_liste USING btree (id_liste);
+
+
+--
+-- Name: i_taxref_liste_rouge_fr_cd_nom; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE INDEX i_taxref_liste_rouge_fr_cd_nom ON taxref_liste_rouge_fr USING btree(cd_nom);
+
+
+--
+-- Name: i_taxref_liste_rouge_fr_cd_ref; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+CREATE INDEX i_taxref_liste_rouge_fr_cd_ref ON taxref_liste_rouge_fr USING btree(cd_ref);
 
 
 --
@@ -7930,6 +7997,14 @@ ALTER TABLE ONLY taxref
 
 ALTER TABLE ONLY taxref
     ADD CONSTRAINT taxref_id_statut_fkey FOREIGN KEY (id_statut) REFERENCES bib_taxref_statuts(id_statut) ON UPDATE CASCADE;
+
+
+--
+-- Name: fk_taxref_lr_bib_taxref_categories; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY taxref_liste_rouge_fr
+    ADD CONSTRAINT fk_taxref_lr_bib_taxref_categories FOREIGN KEY (id_categorie_france) REFERENCES bib_taxref_categories_lr (id_categorie_france) ON UPDATE CASCADE;
 
 
 --
@@ -9645,6 +9720,14 @@ REVOKE ALL ON TABLE bib_listes FROM PUBLIC;
 REVOKE ALL ON TABLE bib_listes FROM geonatuser;
 GRANT ALL ON TABLE bib_listes TO geonatuser;
 
+--
+-- Name: bib_taxref_categories_lr; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE bib_taxref_categories_lr FROM PUBLIC;
+REVOKE ALL ON TABLE bib_taxref_categories_lr FROM geonatuser;
+GRANT ALL ON TABLE bib_taxref_categories_lr TO geonatuser;
+
 
 --
 -- Name: bib_filtres; Type: ACL; Schema: taxonomie; Owner: -
@@ -9716,6 +9799,15 @@ GRANT ALL ON TABLE taxref_changes TO geonatuser;
 REVOKE ALL ON TABLE taxref_protection_articles FROM PUBLIC;
 REVOKE ALL ON TABLE taxref_protection_articles FROM geonatuser;
 GRANT ALL ON TABLE taxref_protection_articles TO geonatuser;
+
+
+--
+-- Name: taxref_liste_rouge_fr; Type: ACL; Schema: taxonomie; Owner: -
+--
+
+REVOKE ALL ON TABLE taxref_liste_rouge_fr FROM PUBLIC;
+REVOKE ALL ON TABLE taxref_liste_rouge_fr FROM geonatuser;
+GRANT ALL ON TABLE taxref_liste_rouge_fr TO geonatuser;
 
 
 --

@@ -53,6 +53,7 @@ then
     cd data/inpn
     unzip TAXREF_INPN_v8.0.zip
 	unzip ESPECES_REGLEMENTEES.zip
+	unzip LR_FRANCE.zip
     cd ../..
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
     DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
