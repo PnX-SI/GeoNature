@@ -15,8 +15,19 @@ class stationActions extends sfGeonatureActions
 	*/
 	public function preExecute()
 	{
-    $this->geojson = new Services_GeoJson();
-	} 
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $this->geojson = new Services_GeoJson();
+	}
+    
+    public function executeIndexFs(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_florestation);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
 	
 	/**
 	 * Simple list of all stations

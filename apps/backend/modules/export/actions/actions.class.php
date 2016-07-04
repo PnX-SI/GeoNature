@@ -1,13 +1,30 @@
 <?php
 class exportActions extends sfGeonatureActions
 {
-    private static function zipemesfichiers($zip,$filename)
+    public function preExecute()
     {
-        $fp = fopen ($filename, 'r');
-        $content = fread($fp, filesize($filename));
-        fclose($fp);
-        $zip->addfile($content, $filename);
-        return $zip;
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        ini_set("memory_limit",'512M');
+    }
+    public function executeIndexExport(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $unserializeviewparams = unserialize($request->getParameter('exportparams'));
+            $this->title = $unserializeviewparams['exportname'].' - '.sfGeonatureConfig::$appname_export;
+            slot('title', $this->title);
+            $this->lienscsv = '';
+            $views = $unserializeviewparams['views'];
+            foreach($views as $view)
+            {
+                $pgview = $view['pgschema'].'.'.$view['pgview'];
+                $rows = SyntheseffTable::exportsCountRowsView($pgview);
+                $nb = $rows[0]['nb'];
+                $this->lienscsv .= '<p class="ligne_lien"><a href="../export/exportview?pgschema='.$view['pgschema'].'&pgview='.$view['pgview'].'&fileformat='.$view['fileformat'].'" class="btn btn-default"><img src="../images/exporter.png">'.$view['buttonviewtitle'].' ('.$nb.')</a> '.$view['viewdesc'].'</p>';
+            }
+        }
+        else{
+           $this->redirect('@login');
+        }
     }
     public function executeExportView(sfRequest $request)
     {

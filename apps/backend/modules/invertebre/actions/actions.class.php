@@ -14,8 +14,19 @@ class invertebreActions extends sfGeonatureActions
 	*/
 	public function preExecute()
 	{
-    $this->geojson = new Services_GeoJson();
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $this->geojson = new Services_GeoJson();
 	} 
+    
+    public function executeIndexInvertebre(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_inv);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
 	
     /**
     * Get GeoJSON fiche from id_inv passed

@@ -476,41 +476,38 @@ getStatus:
   param: { module: home, action: getStatus }
 cf:
   url: /cf
-  param: { module: home, action: indexCf }
+  param: { module: cf, action: indexCf }
 mortalite:
   url: /mortalite
-  param: { module: home, action: indexMortalite }
+  param: { module: cf, action: indexMortalite }
 invertebre:
   url: /invertebre
-  param: { module: home, action: indexInvertebre }
+  param: { module: invertebre, action: indexInvertebre }
 # on peut ici rediriger le lien flore prioritaire vers le reseau de conservation Alpes-Ain
 #fp: 
 #  url: /fp
 #  param: { module: home, action: indexReseau }
 fp: 
   url: /fp
-  param: { module: home, action: indexFp }
+  param: { module: zp, action: indexFp }
 reseau: 
   url: /reseau
-  param: { module: home, action: indexReseau }
+  param: { module: zp, action: indexReseau }
 fs: 
   url: /fs
-  param: { module: home, action: indexFs }
+  param: { module: station, action: indexFs }
 bryo: 
   url: /bryo
-  param: { module: home, action: indexBryo }
+  param: { module: bryo, action: indexBryo }
 cflore:
   url: /cflore
-  param: { module: home, action: indexCflore }
+  param: { module: cflore, action: indexCflore }
 synthese:
   url: /synthese
-  param: { module: home, action: indexSynthese }
-# export:
-  # url: /export/:viewname/:pgview
-  # param: { module: home, action: indexExport }
+  param: { module: synthese, action: indexSynthese }
 export:
   url: /export/:exportparams
-  param: { module: home, action: indexExport }
+  param: { module: export, action: indexExport }
 logout: 
   url: /deconnexion
   param: { module: home, action: logout }

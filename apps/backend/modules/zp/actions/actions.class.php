@@ -15,8 +15,30 @@ class zpActions extends sfGeonatureActions
 	*/
 	public function preExecute()
 	{
-    $this->geojson = new Services_GeoJson();
-	} 
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $this->geojson = new Services_GeoJson();
+	}
+    
+    public function executeIndexFp(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_florepatri);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
+    
+    public function executeIndexReseau(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            $this->identifiant = $this->getUser()->getAttribute('identifiant');
+            $this->pass = $this->getUser()->getAttribute('pass');
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
 	
 	/**
 	 * Simple list of all zp

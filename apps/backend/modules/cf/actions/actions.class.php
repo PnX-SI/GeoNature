@@ -14,8 +14,29 @@ class cfActions extends sfGeonatureActions
 	*/
 	public function preExecute()
 	{
-    $this->geojson = new Services_GeoJson();
-	} 
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $this->geojson = new Services_GeoJson();
+	}
+    
+    public function executeIndexCf(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_cf);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
+    
+    public function executeIndexMortalite(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_mortalite);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
 	
     /**
     * Get GeoJSON fiche from id_cf passed
