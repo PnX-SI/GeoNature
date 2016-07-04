@@ -119,119 +119,7 @@ class homeActions extends sfGeonatureActions
            $this->redirect('@login');
        }
     }
-    
-    public function executeIndexSynthese(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_synthese);
-        }
-        else{
-           $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexExport(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            $unserializeviewparams = unserialize($request->getParameter('exportparams'));
-            $this->title = $unserializeviewparams['exportname'].' - '.sfGeonatureConfig::$appname_export;
-            slot('title', $this->title);
-            $this->lienscsv = '';
-            $views = $unserializeviewparams['views'];
-            foreach($views as $view)
-            {
-                $pgview = $view['pgschema'].'.'.$view['pgview'];
-                $rows = SyntheseffTable::exportsCountRowsView($pgview);
-                $nb = $rows[0]['nb'];
-                $this->lienscsv .= '<p class="ligne_lien"><a href="../export/exportview?pgschema='.$view['pgschema'].'&pgview='.$view['pgview'].'&fileformat='.$view['fileformat'].'" class="btn btn-default"><img src="../images/exporter.png">'.$view['buttonviewtitle'].' ('.$nb.')</a> '.$view['viewdesc'].'</p>';
-            }
-        }
-        else{
-           $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexCf(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_cf);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexCflore(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_cflore);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexMortalite(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_mortalite);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexInvertebre(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_inv);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexFs(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_florestation);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexBryo(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_bryo);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexFp(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            slot('title', sfGeonatureConfig::$appname_florepatri);
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-    
-    public function executeIndexReseau(sfRequest $request)
-    {
-        if($this->getUser()->isAuthenticated()){
-            $this->identifiant = $this->getUser()->getAttribute('identifiant');
-            $this->pass = $this->getUser()->getAttribute('pass');
-        }
-        else{
-            $this->redirect('@login');
-        }
-    }
-        
+
     public function executeGetStatus(sfRequest $request)
     {
       	$credentials = $this->getUser()->getCredentials();
@@ -252,6 +140,7 @@ class homeActions extends sfGeonatureActions
       	));
     }
     
+
     //-----------STAT FAUNE FLORE-----------------
 
     public function executeDatasNbObsKd(sfRequest $request)

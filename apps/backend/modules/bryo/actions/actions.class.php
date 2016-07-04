@@ -15,8 +15,19 @@ class bryoActions extends sfGeonatureActions
 	*/
 	public function preExecute()
 	{
-    $this->geojson = new Services_GeoJson();
-	} 
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $this->geojson = new Services_GeoJson();
+	}
+    
+    public function executeIndexBryo(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_bryo);
+        }
+        else{
+            $this->redirect('@login');
+        }
+    }
 	
 	/**
 	 * Simple list of all stations

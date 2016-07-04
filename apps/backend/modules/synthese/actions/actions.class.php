@@ -1,6 +1,7 @@
 <?php
 class syntheseActions extends sfGeonatureActions
 {
+
     /**
 	 * GeoJson encoder/decoder
 	 *
@@ -14,9 +15,20 @@ class syntheseActions extends sfGeonatureActions
 	*/
 	public function preExecute()
 	{
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
         ini_set("memory_limit",'256M');
         $this->geojson = new Services_GeoJson();
 	}
+    
+    public function executeIndexSynthese(sfRequest $request)
+    {
+        if($this->getUser()->isAuthenticated()){
+            slot('title', sfGeonatureConfig::$appname_synthese);
+        }
+        else{
+           $this->redirect('@login');
+        }
+    }
     
     /**
 	 * replace allcharacter with accents
