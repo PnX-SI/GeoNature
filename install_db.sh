@@ -51,14 +51,14 @@ then
     
     echo "Décompression des fichiers du taxref..."
     cd data/inpn
-    unzip TAXREF_INPN_v8.0.zip
-	unzip ESPECES_REGLEMENTEES.zip
+    unzip TAXREF_INPN_v9.0.zip
+	unzip ESPECES_REGLEMENTEES_v9.zip
 	unzip LR_FRANCE.zip
     cd ../..
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
     DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-    sed -i "s#/home/synthese/geonature#${DIR}#g" data/inpn/data_inpn_v8_synthese.sql
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v8_synthese.sql &>> log/install_db.log
+    sed -i "s#/home/synthese/geonature#${DIR}#g" data/inpn/data_inpn_v9_synthese.sql
+    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v9_synthese.sql &>> log/install_db.log
  
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
@@ -171,7 +171,7 @@ then
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
     rm data/inpn/*.txt
-    rm data/inpn/*.xls
+    #rm data/inpn/*.xls
     rm data/inpn/*.csv
     rm data/layers/communes_metropole.sql
     # rm data/layers/zonesstatut.sql
