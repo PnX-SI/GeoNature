@@ -4,16 +4,39 @@ CHANGELOG
 
 1.8.0 dev (unreleased)
 ----------------------
-**Corrections de bugs**
+**Nouveautés**
 
-* Mise en cohérence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe générique 'mollusques'.
+* Travail en cours sur la généricité en mettant en place un fichier par module (https://github.com/PnEcrins/GeoNature/commit/f5d16ba160657e712029408823419cca6478ec11). Voir discussion https://github.com/PnEcrins/GeoNature/issues/54
+* Travail en cours sur la mise à jour vers TaxRef V9 et sur la compatibilité avec TaxHub dont des évolutions de la BDD sont en cours (https://github.com/PnX-SI/TaxHub/issues/71)
 
 **Note de version**
 
+* Attention, dans la 1.7.4 les tables de la liste rouge France ont été ajoutées au script de création de la BDD mais pas dans les scripts de MAJ de la BDD. A rajouter donc dans data/update_1.7to1.8.sql.
+* A voir aussi si le script data/contact_flore.sql est ajouté dans install_db.sh ou si la création des tables du Contact Flore sont ajoutés dans data/2154/synthese_2154.sql
+
+
+1.7.4 (2016-07-06)
+------------------
+
+**Corrections de bugs**
+
+* Correction du script d'installation des tables liées au Contact flore (https://github.com/PnEcrins/GeoNature/commit/5a1fb070c73dc0b05f19a886bbaa2ad0ce61dbc7)
+* Mise en cohérence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe générique 'mollusques'.
+
+**Nouveautés**
+
+* Corrections de mise en forme de la documentation
+* Ajout de la liste rouge France de TaxRef lors d'une nouvelle installation (https://github.com/PnEcrins/GeoNature/commit/f4be2b6c026997c9590bc6c4779dd1c111f1d9a1). A ne pas prendre en compte dans le cas d'une mise à jour.
+* Ajout du MCD de la BDD - https://github.com/PnEcrins/GeoNature/blob/master/docs/2016-04-29-mcd_geonaturedb.png
+
+**Note de version**
+
+* Vous pouvez passer directement de la version 1.6.0 à la 1.7.4 mais en vous référant aux notes de version de la 1.7.0.
 * Remplacer ``id_classe_mollusques`` par ``id_classe_gasteropodes`` dans ``web/js/config.js`` et renseigner la valeur en cohérence avec l'id_liste retenu dans la table ``taxonomie.bib_listes`` pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table ``taxonomie.cor_taxon_liste``.
 
+
 1.7.3 (2016-05-19)
-----------------------
+------------------
 
 **Corrections de bugs**
 
@@ -27,7 +50,7 @@ CHANGELOG
 
 
 1.7.2 (2016-04-27)
-----------------------
+------------------
 
 **Corrections de bug**
 
@@ -37,15 +60,17 @@ CHANGELOG
 
 * Vous pouvez passer directement de la version 1.6.0 à la 1.7.2 mais en vous référant aux notes de version de la 1.7.0.
 
+
 1.7.1 (2016-04-27)
-----------------------
+------------------
 
 **Corrections de bug**
 
 * Ajout des listes flore manquantes dans le script de mise à jour ``data/update_1.6to1.7.sql``.
 
+
 1.7.0 (2016-04-24)
-----------------------
+------------------
 
 **Nouveautés**
 
