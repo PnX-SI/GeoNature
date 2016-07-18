@@ -271,13 +271,15 @@ CREATE OR REPLACE FUNCTION couleur_taxon(
     maxdateobs date)
   RETURNS text AS
 $BODY$
+  --fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
   DECLARE
   couleur text;
   patri boolean;
   BEGIN
-    SELECT filtre2 INTO patri 
-    FROM taxonomie.bib_taxons
-    WHERE id_taxon = id;
+    SELECT cta.valeur_attribut INTO patri 
+    FROM taxonomie.bib_noms n
+    JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_nom AND cta.id_attribut = 1
+    WHERE n.id_nom = id;
 	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
@@ -315,7 +317,7 @@ ELSE
 -------gestion des infos relatives a la numerisation (srid utilisé et support utilisé : nomade ou web ou autre)
 	IF new.saisie_initiale = 'pda' OR new.saisie_initiale = 'nomade' THEN
 		new.srid_dessin = 2154;
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 	ELSIF new.saisie_initiale = 'web' THEN
 		new.srid_dessin = 3857;
 		-- attention : pas de creation des geom 2154 car c'est fait par l'application web
@@ -326,7 +328,7 @@ ELSE
 -------gestion des divers control avec attributions des secteurs + communes : dans le cas d'un insert depuis le nomade uniquement via the_geom !!!!
 	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
 		-- on calcul l'altitude
 		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
@@ -336,10 +338,10 @@ ELSE
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -356,9 +358,9 @@ $$;
 -- Name: insert_releve_cf(); Type: FUNCTION; Schema: contactfaune; Owner: -
 --
 
-CREATE FUNCTION insert_releve_cf() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactfaune.insert_releve_cf()
+  RETURNS trigger AS
+$BODY$
 DECLARE
 cdnom integer;
 re integer;
@@ -368,30 +370,32 @@ line record;
 fiche record;
 BEGIN
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
-	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	new.cd_ref_origine = re;
     -- MAJ de la table cor_unite_taxon, on commence par récupérer l'unité à partir du pointage (table t_fiches_cf)
 	SELECT INTO fiche * FROM contactfaune.t_fiches_cf WHERE id_cf = new.id_cf;
-	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE ST_INTERSECTS(fiche.the_geom_2154,u.the_geom);
+	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE public.st_intersects(fiche.the_geom_2154,u.the_geom);
 	--si on est dans une des unités on peut mettre à jour la table cor_unite_taxon, sinon on fait rien
 	IF unite>0 THEN
-		SELECT INTO line * FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+		SELECT INTO line * FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = unite AND id_nom = new.id_nom;
 		--si la ligne existe dans cor_unite_taxon on la supprime
 		IF line IS NOT NULL THEN
-			DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+			DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = unite AND id_nom = new.id_nom;
 		END IF;
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
-		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
+		JOIN layers.l_unites_geo u ON public.st_intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
 		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
-		INSERT INTO contactfaune.cor_unite_taxon VALUES(unite,new.id_taxon,fiche.dateobs,contactfaune.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
+		INSERT INTO contactfaune.cor_unite_taxon VALUES(unite,new.id_nom,fiche.dateobs,contactfaune.couleur_taxon(new.id_nom,fiche.dateobs), nbobs+1);
 	END IF;
 	RETURN NEW; 			
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
@@ -434,7 +438,7 @@ BEGIN
 	SELECT INTO idsourcem id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' AND nom_source = 'Mortalité';
 	SELECT INTO idsourcecf id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' AND nom_source = 'Contact faune';
 	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
     --Récupération des données dans la table t_fiches_cf et de la liste des observateurs
 	SELECT INTO fiche * FROM contactfaune.t_fiches_cf WHERE id_cf = new.id_cf;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
@@ -608,7 +612,7 @@ BEGIN
 				GROUP BY id_cf
 			) o ON o.id_cf = f.id_cf
 			WHERE r.id_releve_cf = releves.id_releve_cf;
-			IF NOT St_Equals(new.the_geom_3857,old.the_geom_3857) OR NOT St_Equals(new.the_geom_2154,old.the_geom_2154) THEN
+			IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) THEN
 				
 				--mise à jour de l'enregistrement correspondant dans syntheseff
 				UPDATE synthese.syntheseff SET
@@ -676,7 +680,7 @@ BEGIN
 	    END IF;
         END LOOP;
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 	IF test IS NOT NULL THEN
@@ -714,20 +718,20 @@ macommune character(5);
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+IF (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
-		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+	IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
 -------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
 	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
 		-- on calcul l'altitude
 		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
@@ -737,10 +741,10 @@ IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is 
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -777,9 +781,9 @@ DECLARE
 	re integer;
 BEGIN
    -- Si changement de taxon, 
-	IF new.id_taxon<>old.id_taxon THEN
+	IF new.id_nom<>old.id_nom THEN
 	   -- Correction du cd_ref_origine
-		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 		new.cd_ref_origine = re;
 	END IF;
 RETURN NEW;			
@@ -793,20 +797,18 @@ SET search_path = contactinv, pg_catalog;
 -- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactinv; Owner: -
 --
 
-CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
-    LANGUAGE plpgsql
-    AS $$
---fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
---
---Gil DELUERMOZ mars 2012
-
+CREATE OR REPLACE FUNCTION couleur_taxon(id integer, maxdateobs date)
+  RETURNS text AS
+$BODY$
+  --fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
   DECLARE
   couleur text;
   patri character(3);
   BEGIN
-    SELECT filtre2 INTO patri 
-    FROM taxonomie.bib_taxons
-    WHERE id_taxon = id;
+    SELECT cta.valeur_attribut INTO patri 
+    FROM taxonomie.bib_noms n
+    JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_nom AND cta.id_attribut = 1
+    WHERE n.id_nom = id;
 	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
@@ -820,7 +822,9 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
 	END IF;
 	return couleur;
   END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
@@ -842,7 +846,7 @@ ELSE
 -------gestion des infos relatives a la numerisation (srid utilisé et support utilisé : nomade ou web ou autre)
 	IF new.saisie_initiale = 'pda' OR new.saisie_initiale = 'nomade' THEN
 		new.srid_dessin = 2154;
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 	ELSIF new.saisie_initiale = 'web' THEN
 		new.srid_dessin = 3857;
 		-- attention : pas de creation du geom 2154 car c'est fait par l'application web
@@ -853,7 +857,7 @@ ELSE
 -------gestion des divers control avec attributions des secteurs + communes : dans le cas d'un insert depuis le nomade uniquement via the_geom !!!!
 	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
 		-- on calcul l'altitude
 		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
@@ -863,10 +867,10 @@ ELSE
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -883,9 +887,9 @@ $$;
 -- Name: insert_releve_inv(); Type: FUNCTION; Schema: contactinv; Owner: -
 --
 
-CREATE FUNCTION insert_releve_inv() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION insert_releve_inv()
+  RETURNS trigger AS
+$BODY$
 DECLARE
 cdnom integer;
 re integer;
@@ -895,30 +899,32 @@ line record;
 fiche record;
 BEGIN
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
-	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	new.cd_ref_origine = re;
     -- MAJ de la table cor_unite_taxon_inv, on commence par récupérer l'unité à partir du pointage (table t_fiches_inv)
 	SELECT INTO fiche * FROM contactinv.t_fiches_inv WHERE id_inv = new.id_inv;
-	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE ST_INTERSECTS(fiche.the_geom_2154,u.the_geom);
+	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE public.st_intersects(fiche.the_geom_2154,u.the_geom);
 	--si on est dans une des unités on peut mettre à jour la table cor_unite_taxon_inv, sinon on fait rien
 	IF unite>0 THEN
-		SELECT INTO line * FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+		SELECT INTO line * FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = unite AND id_nom = new.id_nom;
 		--si la ligne existe dans cor_unite_taxon_inv on la supprime
 		IF line IS NOT NULL THEN
-			DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+			DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = unite AND id_nom = new.id_nom;
 		END IF;
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
-		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
+		JOIN layers.l_unites_geo u ON public.st_intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
 		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
-		INSERT INTO contactinv.cor_unite_taxon_inv VALUES(unite,new.id_taxon,fiche.dateobs,contactinv.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
+		INSERT INTO contactinv.cor_unite_taxon_inv VALUES(unite,new.id_nom,fiche.dateobs,contactinv.couleur_taxon(new.id_nom,fiche.dateobs), nbobs+1);
 	END IF;
 	RETURN NEW; 			
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
@@ -960,7 +966,7 @@ BEGIN
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
 	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	--Récupération des données dans la table t_fiches_inv et de la liste des observateurs
 	SELECT INTO fiche * FROM contactinv.t_fiches_inv WHERE id_inv = new.id_inv;
 	SELECT INTO criteresynthese id_critere_synthese FROM contactinv.bib_criteres_inv WHERE id_critere_inv = new.id_critere_inv;
@@ -1026,11 +1032,6 @@ END;
 $$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.synthese_insert_releve_inv()
-  OWNER TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactinv.synthese_insert_releve_inv() TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactinv.synthese_insert_releve_inv() TO public;
-
 
 
 --
@@ -1116,7 +1117,7 @@ BEGIN
 			) o ON o.id_inv = f.id_inv
 			WHERE r.id_releve_inv = releves.id_releve_inv;
             
-			IF NOT St_Equals(new.the_geom_3857,old.the_geom_3857) OR NOT St_Equals(new.the_geom_2154,old.the_geom_2154) THEN
+			IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) THEN
 			--mise à jour de l'enregistrement correspondant dans syntheseff
 				UPDATE synthese.syntheseff SET
 					code_fiche_source = 'f'||new.id_inv||'-r'||releves.id_releve_inv,
@@ -1175,7 +1176,7 @@ BEGIN
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text;
 	IF test IS NOT NULL THEN
@@ -1214,21 +1215,21 @@ macommune character(5);
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+IF (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
-		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+	IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
 
 -------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
 	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, new.the_geom_2154);
 		new.insee = macommune;
 		-- on calcul l'altitude
 		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
@@ -1238,10 +1239,10 @@ IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is 
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -1278,9 +1279,9 @@ DECLARE
 	re integer;
 BEGIN
    -- Si changement de taxon, 
-	IF new.id_taxon<>old.id_taxon THEN
+	IF new.id_nom<>old.id_nom THEN
 	   -- Correction du cd_ref_origine
-		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 		new.cd_ref_origine = re;
 	END IF;
 RETURN NEW;			
@@ -1304,7 +1305,7 @@ CREATE FUNCTION bryophytes_insert() RETURNS trigger
 BEGIN
 
 new.date_insert= 'now';	 -- mise a jour de date insert
-new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee
 new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
 
@@ -1329,15 +1330,15 @@ CREATE FUNCTION bryophytes_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
-  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+IF (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
 
-	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
-		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+	IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
 
@@ -1597,9 +1598,9 @@ ELSE
 ------ gestion des géometries selon l'outil de saisie :
 ------ Attention !!! La saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
 	IF new.the_geom_3857 IS NOT NULL THEN -- saisie web avec the_geom_3857
-		new.the_geom_2154 = ST_transform(new.the_geom_3857,2154);
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 	ELSIF new.the_geom_2154 IS NOT NULL THEN	-- saisie avec outil nomade android avec the_geom_2154
-		new.the_geom_3857 = ST_transform(new.the_geom_2154,3857);
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 	END IF;
 
 ------ calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
@@ -1616,7 +1617,7 @@ ELSE
 		END IF;
 	ELSE
 		new.topo_valid = 'false';
-		moncentroide = ST_setsrid(ST_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+		moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
 		new.insee = layers.f_insee(moncentroide);-- mise a jour du code insee
 		new.altitude_sig = layers.f_isolines20(moncentroide); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
@@ -1655,7 +1656,7 @@ BEGIN
     WHERE c.indexzp = new.indexzp;
     -- création du geom_point
     IF st_isvalid(new.the_geom_3857) THEN mongeompoint = st_pointonsurface(new.the_geom_3857);
-    ELSE mongeompoint = ST_PointFromWKB(st_centroid(Box2D(new.the_geom_3857)),3857);
+    ELSE mongeompoint = public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_3857)),3857);
     END IF;
     -- récupération de la valeur de précision de la géométrie
     IF st_geometrytype(new.the_geom_3857) = 'ST_Point' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPoint' THEN monidprecision = 1;
@@ -1739,7 +1740,7 @@ ELSE
 ------ gestion de la source des géometries selon l'outil de saisie :
     IF new.saisie_initiale = 'nomade' THEN
 		new.srid_dessin = 2154;
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 	ELSIF new.saisie_initiale = 'web' THEN
 		new.srid_dessin = 3857;
 		-- attention : pas de calcul sur les geoemtry car "the_geom_3857" est inseré par le trigger update !!
@@ -1756,20 +1757,20 @@ ELSE
 			-- calcul du geom_point_3857 
 			new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857);  -- calcul du point pour le premier niveau de zoom appli web
 			-- croisement secteur (celui qui contient le plus de zp en surface)
-			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE ST_intersects(ls.the_geom, new.the_geom_2154)
-			ORDER BY ST_area(ST_intersection(ls.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, new.the_geom_2154)
+			ORDER BY public.ST_area(public.ST_intersection(ls.the_geom, new.the_geom_2154)) DESC LIMIT 1;
 			-- croisement commune (celle qui contient le plus de zp en surface)
-			SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE ST_intersects(lc.the_geom, new.the_geom_2154)
-			ORDER BY ST_area(ST_intersection(lc.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+			SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, new.the_geom_2154)
+			ORDER BY public.ST_area(public.ST_intersection(lc.the_geom, new.the_geom_2154)) DESC LIMIT 1;
 		ELSE
 			new.topo_valid = 'false';
 			-- calcul du geom_point_3857
-			new.geom_point_3857 = ST_setsrid(ST_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
-			moncentroide = ST_setsrid(ST_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+			new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
+			moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
 			-- croisement secteur (celui qui contient moncentroide)
-			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE ST_intersects(ls.the_geom, moncentroide);
+			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, moncentroide);
 			-- croisement commune (celle qui contient moncentroid)
-			SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE ST_intersects(lc.the_geom, moncentroide);
+			SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, moncentroide);
 		END IF;
 		new.insee = macommune;
 		IF monsectfp IS NULL THEN 		-- suite calcul secteur : si la requete sql renvoit null (cad pas d'intersection donc dessin hors zone)
@@ -1779,7 +1780,7 @@ ELSE
 		END IF;
 
 		------ calcul du geom_mixte_3857
-		IF ST_area(new.the_geom_3857) <10000 THEN	   -- calcul du point (ou de la surface si > 1 hectare) pour le second niveau de zoom appli web
+		IF public.ST_area(new.the_geom_3857) <10000 THEN	   -- calcul du point (ou de la surface si > 1 hectare) pour le second niveau de zoom appli web
 			new.geom_mixte_3857 = new.geom_point_3857;
 		ELSE
 			new.geom_mixte_3857 = new.the_geom_3857;
@@ -1842,16 +1843,16 @@ BEGIN
 /*  section en attente : 
 on pourrait verifier le changement des 3 geom pour lancer les commandes de geometries
 car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
-code ci dessous a revoir car ST_equals ne marche pas avec les objets invalid
+code ci dessous a revoir car public.st_equals ne marche pas avec les objets invalid
 
 IF 
-    (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL))
-    OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857)OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL)) 
+    (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL))
+    OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857)OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL)) 
 THEN
-    IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL) THEN
-		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL) THEN
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+    IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL) THEN
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 	END IF;
 puis suite du THEN
 fin de section en attente */ 
@@ -1864,7 +1865,7 @@ IF ST_NumGeometries(new.the_geom_3857)=1 THEN	-- si le Multi objet renvoyé par 
 	new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
 END IF;
 
-new.the_geom_2154 = ST_transform(new.the_geom_3857,2154);
+new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 
 ------ calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
 ------ puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
@@ -1879,7 +1880,7 @@ IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
 	END IF;
 ELSE
 	new.topo_valid = 'false';
-	moncentroide = ST_setsrid(ST_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+	moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
 	new.insee = layers.f_insee(moncentroide);
 	new.altitude_sig = layers.f_isolines20(moncentroide);
 	IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN
@@ -1913,11 +1914,11 @@ IF (
         OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
         OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
         OR new.supprime <> old.supprime 
-        OR (NOT ST_EQUALS(new.the_geom_3857,old.the_geom_3857) OR NOT ST_EQUALS(new.the_geom_2154,old.the_geom_2154))
+        OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154))
     ) THEN
     -- création du geom_point
     IF st_isvalid(new.the_geom_3857) THEN mongeompoint = st_pointonsurface(new.the_geom_3857);
-    ELSE mongeompoint = ST_PointFromWKB(st_centroid(Box2D(new.the_geom_3857)),3857);
+    ELSE mongeompoint = public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_3857)),3857);
     END IF;
     -- récupération de la valeur de précision de la géométrie
     IF st_geometrytype(new.the_geom_3857) = 'ST_Point' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPoint' THEN monidprecision = 1;
@@ -2041,18 +2042,18 @@ END IF;
 /*  section en attente : 
 on pourrait verifier le changement des 3 geom pour lancer les commandes de geometries
 car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
-code ci dessous a revoir car ST_equals ne marche pas avec les objets invalid
+code ci dessous a revoir car public.st_equals ne marche pas avec les objets invalid
  -- on verfie si 1 des 3 geom a changé
-IF((old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT ST_Equals(new.the_geom_3857,old.the_geom_3857))
-OR ((old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT ST_Equals(new.the_geom_2154,old.the_geom_2154)) THEN
+IF((old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT public.st_equals(new.the_geom_3857,old.the_geom_3857))
+OR ((old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154)) THEN
 
 -- si oui on regarde lequel et on repercute les modif :
-	IF (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) THEN
+	IF (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) THEN
 		-- verif si on est en multipolygon ou pas : A FAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		new.the_geom_2154 = ST_transform(new.the_geom_3857,2154);
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;	
-	ELSIF (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) THEN
-		new.the_geom_3857 = ST_transform(new.the_geom_2154,3857);
+	ELSIF (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
 	END IF;
 puis suite du THEN...
@@ -2067,7 +2068,7 @@ IF ST_NumGeometries(new.the_geom_3857)=1 THEN	-- si le Multi objet renvoyé par 
 	new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
 END IF;
 
-new.the_geom_2154 = ST_transform(new.the_geom_3857,2154);
+new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 new.srid_dessin = 3857;
 
 ------ 2) puis on calcul la validité des geom + on refait les calcul du geom_point_3857 + on refait les croisements SIG secteurs + communes
@@ -2077,20 +2078,20 @@ IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
 	-- calcul du geom_point_3857 
 	new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857);  -- calcul du point pour le premier niveau de zoom appli web
 	-- croisement secteur (celui qui contient le plus de zp en surface)
-	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE ST_intersects(ls.the_geom, new.the_geom_2154)
-	ORDER BY ST_area(ST_intersection(ls.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, new.the_geom_2154)
+	ORDER BY public.ST_area(public.ST_intersection(ls.the_geom, new.the_geom_2154)) DESC LIMIT 1;
 	-- croisement commune (celle qui contient le plus de zp en surface)
-	SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE ST_intersects(lc.the_geom, new.the_geom_2154)
-	ORDER BY ST_area(ST_intersection(lc.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+	SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, new.the_geom_2154)
+	ORDER BY public.ST_area(public.ST_intersection(lc.the_geom, new.the_geom_2154)) DESC LIMIT 1;
 ELSE
 	new.topo_valid = 'false';
 	-- calcul du geom_point_3857
-	new.geom_point_3857 = ST_setsrid(ST_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
-	moncentroide = ST_setsrid(ST_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+	new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
+	moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
 	-- croisement secteur (celui qui contient moncentroide)
-	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE ST_intersects(ls.the_geom, moncentroide);
+	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, moncentroide);
 	-- croisement commune (celle qui contient moncentroid)
-	SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE ST_intersects(lc.the_geom, moncentroide);
+	SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, moncentroide);
 	END IF;
 	new.insee = macommune;
 	IF monsectfp IS NULL THEN 		-- suite calcul secteur : si la requete sql renvoit null (cad pas d'intersection donc dessin hors zone)
@@ -2101,7 +2102,7 @@ END IF;
 
 ------ 3) puis calcul du geom_mixte_3857
 ------    c'est la même chose que lors d'un INSERT ( cf trigger insert_zp)
-IF ST_area(new.the_geom_3857) <10000 THEN	   -- calcul du point (ou de la surface si > 1 hectare) pour le second niveau de zoom appli web
+IF public.ST_area(new.the_geom_3857) <10000 THEN	   -- calcul du point (ou de la surface si > 1 hectare) pour le second niveau de zoom appli web
 	new.geom_mixte_3857 = new.geom_point_3857;
 ELSE
 	new.geom_mixte_3857 = new.the_geom_3857;
@@ -2190,14 +2191,14 @@ monetiquette char(24);
 BEGIN
 -- on prend le centroid du géom comme ça la fonction marchera avec tous les objets point ligne ou polygon
 -- si la longitude en WGS84 degré decimal est < à 6 degrés on est en zone UTM 31
-IF ST_x(ST_transform(ST_centroid(mongeom),4326))< 6 then
-	monx = CAST(ST_x(ST_transform(ST_centroid(mongeom),32631)) AS integer)as string;
-	mony = CAST(ST_y(ST_transform(ST_centroid(mongeom),32631)) AS integer)as string;
+IF public.st_x(public.st_transform(public.st_centroid(mongeom),4326))< 6 then
+	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
+	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
 	monetiquette = 'UTM31 x:'|| monx || ' y:' || mony;
 ELSE
 	-- sinon on est en zone UTM 32
-	monx = CAST(ST_x(ST_transform(ST_centroid(mongeom),32632)) AS integer)as string;
-	mony = CAST(ST_y(ST_transform(ST_centroid(mongeom),32632)) AS integer)as string;
+	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
+	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
 	monetiquette = 'UTM32 x:'|| monx || ' y:' || mony;
 END IF;
 RETURN monetiquette;
@@ -2216,7 +2217,7 @@ CREATE FUNCTION florestation_insert() RETURNS trigger
 BEGIN	
 new.date_insert= 'now';	 -- mise a jour de date insert
 new.date_update= 'now';	 -- mise a jour de date update
---new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+--new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 --new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee
 --new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
 
@@ -2257,11 +2258,11 @@ BEGIN
 --si aucun geom n'existait et qu'au moins un geom est ajouté, on créé les 2 geom
 IF (old.the_geom_2154 is null AND old.the_geom_3857 is null) THEN
     IF (new.the_geom_2154 is NOT NULL) THEN
-        new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+        new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
 		new.srid_dessin = 2154;
     END IF;
     IF (new.the_geom_3857 is NOT NULL) THEN
-        new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+        new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
 		new.srid_dessin = 3857;
     END IF;
     -- on calcul la commune...
@@ -2278,15 +2279,15 @@ END IF;
 IF (old.the_geom_2154 is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
     --si c'est le 2154 qui existait on teste s'il a changé
     IF (old.the_geom_2154 is NOT NULL AND new.the_geom_2154 is NOT NULL) THEN
-        IF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) THEN
-            new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+        IF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) THEN
+            new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
             new.srid_dessin = 2154;
         END IF;
     END IF;
     --si c'est le 3857 qui existait on teste s'il a changé
     IF (old.the_geom_3857 is NOT NULL AND new.the_geom_3857 is NOT NULL) THEN
-        IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) THEN
-            new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+        IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) THEN
+            new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
             new.srid_dessin = 3857;
         END IF;
     END IF;
@@ -2509,7 +2510,7 @@ BEGIN
 IF mon_insee IN (SELECT insee FROM layers.l_communes) THEN
 	-- calcul la distance entre la maille et la commune (vérifie d'abord si la maille intersect la commune)
 	SELECT INTO ma_commune lc.the_geom FROM layers.l_communes lc WHERE lc.insee = mon_insee;
-	IF ST_Intersects(mon_geom, ma_commune) THEN
+	IF public.st_intersects(mon_geom, ma_commune) THEN
 		  RETURN  0;		-- on est bon la maille est dans la commune saisie a la main
 	ELSE
 		 SELECT INTO ma_distance ST_Distance(mon_geom, ma_commune);
@@ -2535,7 +2536,7 @@ mavariableinsee char(5);
 BEGIN
 
 select insee into mavariableinsee from 
-layers.l_communes c where st_intersects(c.the_geom, mongeom)= true;
+layers.l_communes c where public.st_intersects(c.the_geom, mongeom)= true;
 
 if mavariableinsee ISNULL then
 	return null;
@@ -2587,7 +2588,7 @@ macommmune character varying(40);
 BEGIN
 
 select commune_min into macommmune from 
-layers.l_communes c where st_intersects(c.the_geom, mongeom)= true;
+layers.l_communes c where public.st_intersects(c.the_geom, mongeom)= true;
 
 if macommmune ISNULL then
 	return null;
@@ -2612,9 +2613,9 @@ CREATE FUNCTION calcul_cor_unite_taxon_cf(monidtaxon integer, monunite integer) 
   cdnom integer;
   BEGIN
 	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = monidtaxon;
-	DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
-	INSERT INTO contactfaune.cor_unite_taxon (id_unite_geo,id_taxon,derniere_date,couleur,nb_obs)
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
+	DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
+	INSERT INTO contactfaune.cor_unite_taxon (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
 	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactfaune.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
 	FROM synthese.cor_unite_synthese
 	WHERE cd_nom = cdnom
@@ -2634,9 +2635,9 @@ DECLARE
     cdnom integer;
 BEGIN
 	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = monidtaxon;
-    DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
-	INSERT INTO contactinv.cor_unite_taxon_inv (id_unite_geo,id_taxon,derniere_date,couleur,nb_obs)
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
+    DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
+	INSERT INTO contactinv.cor_unite_taxon_inv (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
 	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactinv.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
 	FROM synthese.cor_unite_synthese
 	WHERE cd_nom = cdnom
@@ -2680,7 +2681,7 @@ IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
 		INSERT INTO synthese.cor_unite_synthese (id_synthese, cd_nom, dateobs, id_unite_geo)
 		SELECT s.id_synthese, s.cd_nom, s.dateobs,u.id_unite_geo 
         FROM synthese.syntheseff s, layers.l_unites_geo u
-		WHERE st_intersects(u.the_geom, s.the_geom_2154) 
+		WHERE public.st_intersects(u.the_geom, s.the_geom_2154) 
 		AND s.id_synthese = new.id_synthese;
 	END IF;
 END IF;	
@@ -2703,8 +2704,8 @@ monidtaxon integer;
 BEGIN
 
 IF (TG_OP = 'DELETE') THEN
-	--retrouver le id_taxon
-	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = old.cd_nom LIMIT 1; 
+	--retrouver le id_nom
+	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
 	--calcul du règne du taxon supprimé
 		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
 	IF monregne = 'Animalia' THEN
@@ -2713,13 +2714,13 @@ IF (TG_OP = 'DELETE') THEN
 		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
 			IF monembranchement = 'Chordata' THEN
 				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactfaune.cor_unite_taxon WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+					DELETE FROM contactfaune.cor_unite_taxon WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
 				ELSE
 					PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, old.id_unite_geo);
 				END IF;
 			ELSE
 				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
 				ELSE
 					PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
 				END IF;
@@ -2727,8 +2728,8 @@ IF (TG_OP = 'DELETE') THEN
 		END IF;
 		RETURN OLD;		
 ELSIF (TG_OP = 'INSERT') THEN
-	--retrouver le id_taxon
-	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = new.cd_nom LIMIT 1;
+	--retrouver le id_nom
+	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
 	--calcul du règne du taxon inséré
 		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
 	IF monregne = 'Animalia' THEN
@@ -2770,7 +2771,7 @@ IF (TG_OP = 'INSERT') or (TG_OP = 'UPDATE') THEN
 	IF new.supprime = FALSE THEN
 		INSERT INTO synthese.cor_zonesstatut_synthese (id_zone,id_synthese)
 		SELECT z.id_zone,s.id_synthese FROM synthese.syntheseff s, layers.l_zonesstatut z 
-		WHERE ST_Intersects(z.the_geom, s.the_geom_2154)
+		WHERE public.st_intersects(z.the_geom, s.the_geom_2154)
 		AND z.id_type IN(1,4,5,6,7,8,9,10,11) -- typologie limitée au coeur, reserve, natura2000 etc...
 		AND s.id_synthese = new.id_synthese;
 	END IF;
@@ -2905,7 +2906,7 @@ CREATE TABLE cor_critere_liste (
 
 CREATE TABLE cor_message_taxon (
     id_message_cf integer NOT NULL,
-    id_taxon integer NOT NULL
+    id_nom integer NOT NULL
 );
 
 
@@ -2925,7 +2926,7 @@ CREATE TABLE cor_role_fiche_cf (
 
 CREATE TABLE cor_unite_taxon (
     id_unite_geo integer NOT NULL,
-    id_taxon integer NOT NULL,
+    id_nom integer NOT NULL,
     derniere_date date,
     couleur character varying(10) NOT NULL,
     nb_obs integer
@@ -2995,7 +2996,7 @@ CREATE TABLE t_fiches_cf (
 CREATE TABLE t_releves_cf (
     id_releve_cf bigint NOT NULL,
     id_cf bigint NOT NULL,
-    id_taxon integer NOT NULL,
+    id_nom integer NOT NULL,
     id_critere_cf integer NOT NULL,
     am integer,
     af integer,
@@ -3727,7 +3728,12 @@ CREATE TABLE bib_attributs
     liste_valeur_attribut text NOT NULL,
     obligatoire boolean NOT NULL,
     desc_attribut text,
-    type_attribut character varying(50)    
+    type_attribut character varying(50),
+    type_widget character varying(50),
+    id_theme integer,
+    ordre integer,
+    regne character varying(20),
+    group2_inpn character varying(255)    
    );
  
 --
@@ -3755,26 +3761,27 @@ CREATE TABLE bib_taxref_categories_lr
 );
    
 --
--- Name: bib_taxons; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: bib_noms; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
    
-CREATE TABLE bib_taxons 
+CREATE TABLE bib_themes 
    (
-    id_taxon integer NOT NULL,
+    id_theme integer NOT NULL,
+    nom_theme character varying(20),
+    desc_theme character varying(255),
+    ordre integer
+    ); 
+   
+--
+-- Name: bib_noms; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+--
+   
+CREATE TABLE bib_noms 
+   (
+    id_nom integer NOT NULL,
     cd_nom integer,
-    nom_latin character varying(100),
-    nom_francais character varying(255),
-    auteur character varying(200),
-    filtre1 character varying(255),
-    filtre2 character varying(255),
-    filtre3 character varying(255),
-    filtre4 character varying(255),
-    filtre5 character varying(255),
-    filtre6 character varying(255),
-    filtre7 character varying(255),
-    filtre8 character varying(255),
-    filtre9 character varying(255),
-    filtre10 character varying(255)
+    cd_ref integer,
+    nom_francais character varying(255)
     );  
  
 --
@@ -3783,20 +3790,20 @@ CREATE TABLE bib_taxons
    
 CREATE TABLE cor_taxon_attribut
    (
-    id_taxon integer NOT NULL,
+    cd_ref integer NOT NULL,
     id_attribut integer NOT NULL,
     valeur_attribut character varying(50) NOT NULL
    );
 
    
 --
--- Name: cor_taxon_liste; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: cor_nom_liste; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
    
-CREATE TABLE cor_taxon_liste
+CREATE TABLE cor_nom_liste
    (
     id_liste integer NOT NULL,
-    id_taxon integer NOT NULL
+    id_nom integer NOT NULL
    );
 
 
@@ -3857,24 +3864,19 @@ SET search_path = contactfaune, pg_catalog;
 -- Name: v_nomade_classes; Type: VIEW; Schema: contactfaune; Owner: -
 --
 
-CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
-    SELECT 
-        g.id_liste AS id_classe,
+CREATE OR REPLACE VIEW v_nomade_classes AS 
+    SELECT g.id_liste AS id_classe,
         g.nom_liste AS nom_classe_fr,
         g.desc_liste AS desc_classe
-    FROM 
-        ( 
-            SELECT 
-                l.id_liste,
-                l.nom_liste,
-                l.desc_liste,
-                min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+    FROM ( SELECT l.id_liste,
+            l.nom_liste,
+            l.desc_liste,
+            min(taxonomie.find_cdref(n.cd_nom)) AS cd_ref
             FROM taxonomie.bib_listes l
-            JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
-            JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
-            WHERE l.id_liste IN(1, 11, 12, 13, 14)
-            GROUP BY l.id_liste, l.nom_liste, l.desc_liste
-        ) g
+            JOIN taxonomie.cor_nom_liste cnl ON cnl.id_liste = l.id_liste
+            JOIN taxonomie.bib_noms n ON n.id_nom = cnl.id_nom
+            WHERE l.id_liste = ANY (ARRAY[1, 11, 12, 13, 14])
+            GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
     WHERE t.phylum::text = 'Chordata'::text;
 
@@ -3882,33 +3884,34 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
 -- Name: v_nomade_taxons_faune; Type: VIEW; Schema: contactfaune; Owner: -
 --
 CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
-    SELECT DISTINCT 
-        t.id_taxon,
-        taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
-        tx.cd_nom,
-        t.nom_latin,
-        t.nom_francais,
-        g.id_classe,
+ SELECT DISTINCT n.id_nom,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    tx.lb_nom AS nom_latin,
+    n.nom_francais,
+    g.id_classe,
         CASE
             WHEN tx.cd_nom = ANY (ARRAY[61098, 61119, 61000]) THEN 6
             ELSE 5
         END AS denombrement,
-        f2.bool AS patrimonial,
-        m.texte_message_cf AS message,
+    f2.bool AS patrimonial,
+    m.texte_message_cf AS message,
         CASE
             WHEN tx.cd_nom = ANY (ARRAY[60577, 60612]) THEN false
             ELSE true
         END AS contactfaune,
-        true AS mortalite
-    FROM taxonomie.bib_taxons t
-        LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
-        LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
-        JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-        JOIN contactfaune.v_nomade_classes g ON g.id_classe = ctl.id_liste
-        JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-        JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text
-    WHERE t.filtre1::text = 'oui'::text
-    ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, f2.bool, m.texte_message_cf;
+    true AS mortalite
+   FROM taxonomie.bib_noms n
+     LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+     JOIN contactfaune.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN public.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut::text AND cta.id_attribut = 1
+  --WHERE n.filtre1::text = 'oui'::text TODO
+  ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cf;
 
 
 
@@ -3985,7 +3988,7 @@ CREATE TABLE bib_milieux_inv (
 
 CREATE TABLE cor_message_taxon (
     id_message_inv integer NOT NULL,
-    id_taxon integer NOT NULL
+    id_nom integer NOT NULL
 );
 
 
@@ -4005,7 +4008,7 @@ CREATE TABLE cor_role_fiche_inv (
 
 CREATE TABLE cor_unite_taxon_inv (
     id_unite_geo integer NOT NULL,
-    id_taxon integer NOT NULL,
+    id_nom integer NOT NULL,
     derniere_date date,
     couleur character varying(10) NOT NULL,
     nb_obs integer
@@ -4077,7 +4080,7 @@ CREATE TABLE t_fiches_inv (
 CREATE TABLE t_releves_inv (
     id_releve_inv bigint NOT NULL,
     id_inv bigint NOT NULL,
-    id_taxon integer NOT NULL,
+    id_nom integer NOT NULL,
     id_critere_inv integer NOT NULL,
     am integer,
     af integer,
@@ -4124,23 +4127,18 @@ ALTER SEQUENCE t_releves_inv_gid_seq OWNED BY t_releves_inv.gid;
 --
 
 CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS 
-    SELECT 
-        g.id_liste AS id_classe,
+    SELECT g.id_liste AS id_classe,
         g.nom_liste AS nom_classe_fr,
         g.desc_liste AS desc_classe
-    FROM 
-    ( 
-        SELECT 
-            l.id_liste,
+    FROM ( SELECT l.id_liste,
             l.nom_liste,
             l.desc_liste,
-        min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
-        FROM taxonomie.bib_listes l
-        JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
-        JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
-        WHERE l.id_liste IN(2,5,8,9,10,15,16)
-        GROUP BY l.id_liste, l.nom_liste, l.desc_liste
-    ) g
+            min(taxonomie.find_cdref(n.cd_nom)) AS cd_ref
+            FROM taxonomie.bib_listes l
+            JOIN taxonomie.cor_nom_liste cnl ON cnl.id_liste = l.id_liste
+            JOIN taxonomie.bib_noms n ON n.id_nom = cnl.id_nom
+            WHERE l.id_liste = ANY (ARRAY[2, 5, 8, 9, 10, 15, 16])
+            GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
     WHERE t.phylum::text <> 'Chordata'::text AND t.regne::text = 'Animalia'::text;
 
@@ -4181,22 +4179,25 @@ CREATE VIEW v_nomade_observateurs_inv AS
 --
 
 CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
-    SELECT DISTINCT 
-        t.id_taxon,
-        taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
-        tx.cd_nom,
-        t.nom_latin,
-        t.nom_francais,
-        g.id_classe,
-        f2.bool AS patrimonial,
-        m.texte_message_inv AS message
-    FROM taxonomie.bib_taxons t
-    LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_taxon = t.id_taxon
-    LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
-    JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-    JOIN contactinv.v_nomade_classes g ON g.id_classe = ctl.id_liste
-    JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
-    JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text;
+ SELECT DISTINCT n.id_nom,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    tx.lb_nom AS nom_latin,
+    n.nom_francais,
+    g.id_classe,
+    f2.bool AS patrimonial,
+    m.texte_message_inv AS message
+   FROM taxonomie.bib_noms n
+     LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+     JOIN contactinv.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN public.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut::text AND cta.id_attribut = 1
+  --WHERE n.filtre1::text = 'oui'::text TODO
+  ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_inv;
 
 --
 -- Name: v_nomade_unites_geo_inv; Type: VIEW; Schema: contactinv; Owner: -
@@ -4696,7 +4697,8 @@ CREATE TABLE bib_taxref_habitats (
 
 CREATE TABLE bib_taxref_rangs (
     id_rang character(4) NOT NULL,
-    nom_rang character varying(20) NOT NULL
+    nom_rang character varying(20) NOT NULL,
+    tri_rang integer
 );
 
 
@@ -4839,9 +4841,8 @@ CREATE TABLE taxref_liste_rouge_fr (
 --
 
 CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS 
- WITH taxon AS 
-    (
-        SELECT tx.id_taxon,
+ WITH taxon AS (
+         SELECT tx.id_nom,
             tx.nom_latin,
             tx.nom_francais,
             taxref.cd_nom,
@@ -4863,10 +4864,7 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             taxref.nom_vern_eng,
             taxref.group1_inpn,
             taxref.group2_inpn
-        FROM 
-            ( 
-                SELECT 
-                    tx_1.id_taxon,
+           FROM ( SELECT tx_1.id_nom,
                     taxref_1.cd_nom,
                     taxref_1.cd_ref,
                     taxref_1.lb_nom AS nom_latin,
@@ -4875,13 +4873,13 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
                             WHEN tx_1.nom_francais::text = ''::text THEN taxref_1.lb_nom
                             ELSE tx_1.nom_francais
                         END AS nom_francais
-                FROM taxonomie.taxref taxref_1
-                LEFT JOIN taxonomie.bib_taxons tx_1 ON tx_1.cd_nom = taxref_1.cd_nom
-                WHERE (taxref_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom FROM synthese.syntheseff))
-            ) tx
-        JOIN taxonomie.taxref taxref ON taxref.cd_nom = tx.cd_ref
-    )
-SELECT t.id_taxon,
+                   FROM taxonomie.taxref taxref_1
+                     LEFT JOIN taxonomie.bib_noms tx_1 ON tx_1.cd_nom = taxref_1.cd_nom
+                  WHERE (taxref_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
+                           FROM synthese.syntheseff))) tx
+             JOIN taxonomie.taxref taxref ON taxref.cd_nom = tx.cd_ref
+        )
+ SELECT t.id_nom,
     t.cd_ref,
     t.nom_latin,
     t.nom_francais,
@@ -4896,13 +4894,13 @@ SELECT t.id_taxon,
     COALESCE(t.nom_ordre, ' Sans ordre dans taxref'::character varying) AS nom_ordre,
     COALESCE(t.id_famille, t.id_ordre) AS id_famille,
     COALESCE(t.nom_famille, ' Sans famille dans taxref'::character varying) AS nom_famille
-FROM 
-    (   
-        SELECT DISTINCT t_1.id_taxon,
+   FROM ( SELECT DISTINCT t_1.id_nom,
             t_1.cd_ref,
             t_1.nom_latin,
             t_1.nom_francais,
-            (SELECT taxref.cd_nom FROM taxonomie.taxref WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text) AS id_regne,
+            ( SELECT taxref.cd_nom
+                   FROM taxonomie.taxref
+                  WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text) AS id_regne,
             t_1.regne AS nom_regne,
             ph.cd_nom AS id_embranchement,
             t_1.phylum AS nom_embranchement,
@@ -4914,19 +4912,27 @@ FROM
             t_1.ordre AS nom_ordre,
             f.cd_nom AS id_famille,
             t_1.famille AS nom_famille
-        FROM taxon t_1
-        LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
-        LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
-        LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
-        LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL
-    ) t;
+           FROM taxon t_1
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
+             LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
+
 
 
 CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS 
- SELECT DISTINCT t.nom_francais,
+ SELECT DISTINCT n.nom_francais,
     txr.lb_nom AS nom_latin,
-    f2.bool AS patrimonial,
-    f3.bool AS protection_stricte,
+    CASE pat.valeur_attribut 
+	WHEN 'oui' THEN TRUE
+	WHEN 'non' THEN FALSE
+	ELSE NULL
+    END AS patrimonial,
+    CASE pr.valeur_attribut 
+	WHEN 'oui' THEN TRUE
+	WHEN 'non' THEN FALSE
+	ELSE NULL
+    END AS protection_stricte,
     txr.cd_ref,
     txr.cd_nom,
     txr.nom_valide,
@@ -4937,28 +4943,28 @@ CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS
     prot.protections,
     l.id_liste,
     l.picto
-   FROM taxonomie.taxref txr
-     JOIN taxonomie.bib_taxons t ON txr.cd_nom = t.cd_nom
-     JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_taxon = t.id_taxon
-     JOIN taxonomie.bib_listes l ON l.id_liste = ctl.id_liste AND (l.id_liste = ANY (ARRAY[1001, 1002,1003,1004]))
-     LEFT JOIN ( SELECT tpe.cd_nom,
+    FROM taxonomie.taxref txr
+    JOIN taxonomie.bib_noms n ON txr.cd_nom = n.cd_nom
+    LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+    LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
+    JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+    JOIN taxonomie.bib_listes l ON l.id_liste = cnl.id_liste AND (l.id_liste = ANY (ARRAY[1001, 1002, 1003, 1004]))
+    LEFT JOIN ( SELECT tpe.cd_nom,
             string_agg((((tpa.arrete || ' '::text) || tpa.article::text) || '__'::text) || tpa.url::text, '#'::text) AS protections
            FROM taxonomie.taxref_protection_especes tpe
              JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection::text = tpe.cd_protection::text AND tpa.concerne_mon_territoire = true
-          GROUP BY tpe.cd_nom) prot ON prot.cd_nom = t.cd_nom
-     JOIN public.cor_boolean f2 ON f2.expression::text = t.filtre2::text
-     JOIN public.cor_boolean f3 ON f3.expression::text = t.filtre3::text
-     JOIN ( SELECT DISTINCT syntheseff.cd_nom
-           FROM synthese.syntheseff) s ON s.cd_nom = t.cd_nom
-  ORDER BY t.nom_francais;
+          GROUP BY tpe.cd_nom) prot ON prot.cd_nom = n.cd_nom
+    JOIN ( SELECT DISTINCT syntheseff.cd_nom
+           FROM synthese.syntheseff) s ON s.cd_nom = n.cd_nom
+    ORDER BY n.nom_francais;
                 
 CREATE OR REPLACE VIEW synthese.v_export_sinp AS 
  SELECT s.id_synthese,
     o.nom_organisme,
     s.dateobs,
     s.observateurs,
-    t.cd_nom,
-    t.nom_latin,
+    n.cd_nom,
+    tx.lb_nom AS nom_latin,
     c.nom_critere_synthese AS critere,
     s.effectif_total,
     s.remarques,
@@ -4973,7 +4979,7 @@ CREATE OR REPLACE VIEW synthese.v_export_sinp AS
    FROM synthese.syntheseff s
      JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
-     JOIN taxonomie.bib_taxons t ON t.cd_nom = s.cd_nom
+     JOIN taxonomie.bib_noms n ON n.cd_nom = s.cd_nom
      LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = s.id_critere_synthese
      LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
      LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
@@ -5271,11 +5277,11 @@ CREATE OR REPLACE VIEW v_nomade_classes AS
    FROM ( SELECT l.id_liste,
             l.nom_liste,
             l.desc_liste,
-            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
+            min(taxonomie.find_cdref(n.cd_nom)) AS cd_ref
            FROM taxonomie.bib_listes l
-             JOIN taxonomie.cor_taxon_liste ctl ON ctl.id_liste = l.id_liste
-             JOIN taxonomie.bib_taxons tx ON tx.id_taxon = ctl.id_taxon
-          WHERE l.id_liste >= 300 AND l.id_liste < 400
+             JOIN taxonomie.cor_nom_liste cnl ON cnl.id_liste = l.id_liste
+             JOIN taxonomie.bib_noms n ON n.id_nom = cnl.id_nom
+          WHERE l.id_liste > 300 AND l.id_liste < 400
           GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.regne::text = 'Plantae'::text;
@@ -5315,9 +5321,9 @@ CREATE OR REPLACE VIEW v_mobile_recherche AS
     zp.dateobs,
     t.latin AS taxon,
     o.observateurs,
-    st_asgeojson(st_transform(ap.the_geom_2154, 4326)) AS geom_4326,
-    st_x(st_transform(st_centroid(ap.the_geom_2154), 4326)) AS centroid_x,
-    st_y(st_transform(st_centroid(ap.the_geom_2154), 4326)) AS centroid_y
+    public.st_asgeojson(public.st_transform(ap.the_geom_2154, 4326)) AS geom_4326,
+    public.st_x(public.st_transform(public.st_centroid(ap.the_geom_2154), 4326)) AS centroid_x,
+    public.st_y(public.st_transform(public.st_centroid(ap.the_geom_2154), 4326)) AS centroid_y
    FROM florepatri.t_apresence ap
      JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
      JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
@@ -5333,9 +5339,9 @@ UNION
     s.dateobs,
     t.latin AS taxon,
     o.observateurs,
-    st_asgeojson(st_transform(s.the_geom_3857, 4326)) AS geom_4326,
-    st_x(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_x,
-    st_y(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_y
+    public.st_asgeojson(public.st_transform(s.the_geom_3857, 4326)) AS geom_4326,
+    public.st_x(public.st_transform(public.st_centroid(s.the_geom_3857), 4326)) AS centroid_x,
+    public.st_y(public.st_transform(public.st_centroid(s.the_geom_3857), 4326)) AS centroid_y
    FROM florestation.cor_fs_taxon cft
      JOIN florestation.t_stations_fs s ON s.id_station = cft.id_station
      JOIN florepatri.bib_taxons_fp t ON t.cd_nom = cft.cd_nom
@@ -5524,7 +5530,7 @@ ALTER TABLE ONLY cor_critere_liste
 --
 
 ALTER TABLE ONLY cor_message_taxon
-    ADD CONSTRAINT pk_cor_message_taxon PRIMARY KEY (id_message_cf, id_taxon);
+    ADD CONSTRAINT pk_cor_message_taxon PRIMARY KEY (id_message_cf, id_nom);
 
 
 --
@@ -5540,7 +5546,7 @@ ALTER TABLE ONLY cor_role_fiche_cf
 --
 
 ALTER TABLE ONLY cor_unite_taxon
-    ADD CONSTRAINT pk_cor_unite_taxon PRIMARY KEY (id_unite_geo, id_taxon);
+    ADD CONSTRAINT pk_cor_unite_taxon PRIMARY KEY (id_unite_geo, id_nom);
 
 
 --
@@ -5606,7 +5612,7 @@ ALTER TABLE ONLY bib_messages_inv
 --
 
 ALTER TABLE ONLY cor_message_taxon
-    ADD CONSTRAINT pk_cor_message_taxon_inv PRIMARY KEY (id_message_inv, id_taxon);
+    ADD CONSTRAINT pk_cor_message_taxon_inv PRIMARY KEY (id_message_inv, id_nom);
 
 
 --
@@ -5622,7 +5628,7 @@ ALTER TABLE ONLY cor_role_fiche_inv
 --
 
 ALTER TABLE ONLY cor_unite_taxon_inv
-    ADD CONSTRAINT pk_cor_unite_taxon_inv PRIMARY KEY (id_unite_geo, id_taxon);
+    ADD CONSTRAINT pk_cor_unite_taxon_inv PRIMARY KEY (id_unite_geo, id_nom);
 
 
 --
@@ -6166,11 +6172,18 @@ ALTER TABLE ONLY bib_taxref_categories_lr
     ADD CONSTRAINT pk_bib_taxref_categories_lr PRIMARY KEY (id_categorie_france);   
 
 --
--- Name: pk_bib_taxons; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: pk_bib_themes; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY bib_taxons
-    ADD CONSTRAINT pk_bib_taxons PRIMARY KEY (id_taxon);
+ALTER TABLE ONLY bib_themes
+    ADD CONSTRAINT pk_bib_themes PRIMARY KEY (id_theme);   
+
+--
+-- Name: pk_bib_noms; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bib_noms
+    ADD CONSTRAINT pk_bib_noms PRIMARY KEY (id_nom);
 
 --
 -- Name: pk_bib_taxref_habitats; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -6240,14 +6253,14 @@ ALTER TABLE ONLY taxref_protection_especes
 --
 
 ALTER TABLE ONLY cor_taxon_attribut
-    ADD CONSTRAINT cor_taxon_attribut_pkey PRIMARY KEY (id_taxon, id_attribut);
+    ADD CONSTRAINT cor_taxon_attribut_pkey PRIMARY KEY (cd_ref, id_attribut);
     
 --
--- Name: cor_taxon_liste_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: cor_nom_liste_pkey; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY cor_taxon_liste
-    ADD CONSTRAINT cor_taxon_liste_pkey PRIMARY KEY (id_taxon, id_liste);
+ALTER TABLE ONLY cor_nom_liste
+    ADD CONSTRAINT cor_nom_liste_pkey PRIMARY KEY (id_nom, id_liste);
 
 
 SET search_path = utilisateurs, pg_catalog;
@@ -6355,10 +6368,10 @@ CREATE INDEX i_fk_cor_message_cf_bib_me ON cor_message_taxon USING btree (id_mes
 
 
 --
--- Name: i_fk_cor_message_cf_bib_ta; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: i_fk_cor_message_cf_bib_noms; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_message_cf_bib_ta ON cor_message_taxon USING btree (id_taxon);
+CREATE INDEX i_fk_cor_message_cf_bib_noms ON cor_message_taxon USING btree (id_nom);
 
 
 --
@@ -6379,7 +6392,7 @@ CREATE INDEX i_fk_cor_role_fiche_cf_t_roles ON cor_role_fiche_cf USING btree (id
 -- Name: i_fk_cor_unite_taxon_bib_taxon; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_unite_taxon_bib_taxon ON cor_unite_taxon USING btree (id_taxon);
+CREATE INDEX i_fk_cor_unite_taxon_bib_noms ON cor_unite_taxon USING btree (id_nom);
 
 
 --
@@ -6404,10 +6417,10 @@ CREATE INDEX i_fk_t_releves_cf_bib_criteres ON t_releves_cf USING btree (id_crit
 
 
 --
--- Name: i_fk_t_releves_cf_bib_taxons_f; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
+-- Name: i_fk_t_releves_cf_bib_noms; Type: INDEX; Schema: contactfaune; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_t_releves_cf_bib_taxons_f ON t_releves_cf USING btree (id_taxon);
+CREATE INDEX i_fk_t_releves_cf_bib_noms ON t_releves_cf USING btree (id_nom);
 
 
 --
@@ -6441,10 +6454,10 @@ CREATE INDEX i_fk_cor_msg_inv_bib_msg ON cor_message_taxon USING btree (id_messa
 
 
 --
--- Name: i_fk_cor_msg_inv_bib_taxons; Type: INDEX; Schema: contactinv; Owner: -; Tablespace: 
+-- Name: i_fk_cor_msg_inv_bib_noms; Type: INDEX; Schema: contactinv; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_msg_inv_bib_taxons ON cor_message_taxon USING btree (id_taxon);
+CREATE INDEX i_fk_cor_msg_inv_bib_noms ON cor_message_taxon USING btree (id_nom);
 
 
 --
@@ -6465,7 +6478,7 @@ CREATE INDEX i_fk_cor_role_fiche_inv_t_roles ON cor_role_fiche_inv USING btree (
 -- Name: i_fk_cor_unite_taxon_inv_bib_taxon; Type: INDEX; Schema: contactinv; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_unite_taxon_inv_bib_taxon ON cor_unite_taxon_inv USING btree (id_taxon);
+CREATE INDEX i_fk_cor_unite_taxon_inv_bib_noms ON cor_unite_taxon_inv USING btree (id_nom);
 
 
 --
@@ -6490,10 +6503,10 @@ CREATE INDEX i_fk_t_releves_inv_bib_criteres ON t_releves_inv USING btree (id_cr
 
 
 --
--- Name: i_fk_t_releves_inv_bib_taxons_f; Type: INDEX; Schema: contactinv; Owner: -; Tablespace: 
+-- Name: i_fk_t_releves_inv_bib_taxons; Type: INDEX; Schema: contactinv; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_t_releves_inv_bib_taxons_f ON t_releves_inv USING btree (id_taxon);
+CREATE INDEX i_fk_t_releves_inv_bib_noms ON t_releves_inv USING btree (id_nom);
 
 
 --
@@ -6749,10 +6762,10 @@ CREATE INDEX i_taxref_hierarchy
 CREATE INDEX fki_cor_taxon_attribut ON cor_taxon_attribut USING btree (valeur_attribut);
 
 --
--- Name: fki_bib_taxons_bib_listes; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: fki_bib_noms_bib_listes; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE INDEX fki_bib_taxons_bib_listes ON cor_taxon_liste USING btree (id_liste);
+CREATE INDEX fki_bib_noms_bib_listes ON cor_nom_liste USING btree (id_liste);
 
 
 --
@@ -6777,10 +6790,10 @@ CREATE INDEX fki_cd_nom_taxref_protection_especes ON taxref_protection_especes U
 
 
 --
--- Name: i_fk_bib_taxons_taxr; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
+-- Name: i_fk_bib_noms_taxr; Type: INDEX; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
-CREATE INDEX i_fk_bib_taxons_taxr ON bib_taxons USING btree (cd_nom);
+CREATE INDEX i_fk_bib_noms_taxr ON bib_noms USING btree (cd_nom);
 
 
 --
@@ -7207,11 +7220,11 @@ ALTER TABLE ONLY cor_critere_liste
 
 
 --
--- Name: fk_cor_message_taxon_bib_taxons_fa; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
+-- Name: fk_cor_message_taxon_bib_noms_fa; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
 --
 
 ALTER TABLE ONLY cor_message_taxon
-    ADD CONSTRAINT fk_cor_message_taxon_bib_taxons_fa FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_message_taxon_bib_noms_fa FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -7239,11 +7252,11 @@ ALTER TABLE ONLY cor_role_fiche_cf
 
 
 --
--- Name: fk_cor_unite_taxon_bib_taxons_fa; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
+-- Name: fk_cor_unite_taxon_bib_noms_fa; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
 --
 
 ALTER TABLE ONLY cor_unite_taxon
-    ADD CONSTRAINT fk_cor_unite_taxon_bib_taxons_fa FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_unite_taxon_bib_noms_fa FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -7255,11 +7268,11 @@ ALTER TABLE ONLY t_releves_cf
 
 
 --
--- Name: fk_t_releves_cf_bib_taxons; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
+-- Name: fk_t_releves_cf_bib_noms; Type: FK CONSTRAINT; Schema: contactfaune; Owner: -
 --
 
 ALTER TABLE ONLY t_releves_cf
-    ADD CONSTRAINT fk_t_releves_cf_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_cf_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -7305,11 +7318,11 @@ ALTER TABLE ONLY bib_criteres_inv
 
 
 --
--- Name: fk_cor_message_taxon_inv_bib_taxons; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
+-- Name: fk_cor_message_taxon_inv_bib_noms; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
 --
 
 ALTER TABLE ONLY cor_message_taxon
-    ADD CONSTRAINT fk_cor_message_taxon_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_message_taxon_inv_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -7337,11 +7350,11 @@ ALTER TABLE ONLY cor_role_fiche_inv
 
 
 --
--- Name: fk_cor_unite_taxon_inv_bib_taxons; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
+-- Name: fk_cor_unite_taxon_inv_bib_noms; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
 --
 
 ALTER TABLE ONLY cor_unite_taxon_inv
-    ADD CONSTRAINT fk_cor_unite_taxon_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_unite_taxon_inv_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -7361,11 +7374,11 @@ ALTER TABLE ONLY t_releves_inv
 
 
 --
--- Name: fk_t_releves_inv_bib_taxons; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
+-- Name: fk_t_releves_inv_bib_noms; Type: FK CONSTRAINT; Schema: contactinv; Owner: -
 --
 
 ALTER TABLE ONLY t_releves_inv
-    ADD CONSTRAINT fk_t_releves_inv_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_inv_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -7875,7 +7888,7 @@ SET search_path = synthese, pg_catalog;
 ALTER TABLE ONLY cor_unite_synthese
     ADD CONSTRAINT fk_cor_unite_synthese_syntheseff FOREIGN KEY (id_synthese) REFERENCES syntheseff(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
-
+  
 --
 -- Name: fk_cor_zonesstatut_synthese_syntheseff; Type: FK CONSTRAINT; Schema: synthese; Owner: -
 --
@@ -7935,27 +7948,35 @@ ALTER TABLE ONLY syntheseff
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: cor_taxon_liste_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: fk_bib_attributs_bib_themes; Type: FK CONSTRAINT; Schema: synthese; Owner: -
 --
 
-ALTER TABLE ONLY cor_taxon_liste 
-    ADD CONSTRAINT cor_taxon_liste_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon) MATCH SIMPLE
+ALTER TABLE bib_attributs
+  ADD CONSTRAINT fk_bib_attributs_bib_themes FOREIGN KEY (id_theme) REFERENCES taxonomie.bib_themes (id_theme) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+  
+--
+-- Name: cor_nom_liste_bib_noms_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+--
+
+ALTER TABLE ONLY cor_nom_liste 
+    ADD CONSTRAINT cor_nom_liste_bib_noms_fkey FOREIGN KEY (id_nom) REFERENCES bib_noms (id_nom) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE CASCADE;
  
 --
--- Name: cor_taxon_liste_bib_listes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: cor_nom_liste_bib_listes_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY cor_taxon_liste 
-    ADD CONSTRAINT cor_taxon_liste_bib_listes_fkey FOREIGN KEY (id_liste) REFERENCES bib_listes (id_liste) MATCH SIMPLE
+ALTER TABLE ONLY cor_nom_liste 
+    ADD CONSTRAINT cor_nom_liste_bib_listes_fkey FOREIGN KEY (id_liste) REFERENCES bib_listes (id_liste) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE CASCADE;
     
 --
--- Name: cor_taxon_attrib_bib_taxons_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: cor_taxon_attrib_bib_noms_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
 ALTER TABLE ONLY cor_taxon_attribut 
-    ADD CONSTRAINT cor_taxon_attrib_bib_taxons_fkey FOREIGN KEY (id_taxon) REFERENCES bib_taxons (id_taxon);
+    ADD CONSTRAINT cor_taxon_attrib_bib_noms_fkey FOREIGN KEY (cd_ref) REFERENCES taxref(cd_nom);
     
 --
 -- Name: cor_taxon_attrib_bib_attrib_fkey; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
@@ -7965,11 +7986,11 @@ ALTER TABLE ONLY cor_taxon_attribut
     ADD CONSTRAINT cor_taxon_attrib_bib_attrib_fkey FOREIGN KEY (id_attribut) REFERENCES bib_attributs (id_attribut);
 
 --
--- Name: fk_bib_taxons_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
+-- Name: fk_bib_noms_taxref; Type: FK CONSTRAINT; Schema: taxonomie; Owner: -
 --
 
-ALTER TABLE ONLY bib_taxons
-    ADD CONSTRAINT fk_bib_taxons_taxref FOREIGN KEY (cd_nom) REFERENCES taxref(cd_nom);
+ALTER TABLE ONLY bib_noms
+    ADD CONSTRAINT fk_bib_noms_taxref FOREIGN KEY (cd_nom) REFERENCES taxref(cd_nom);
 
 
 --
@@ -9262,12 +9283,12 @@ GRANT ALL ON TABLE v_nomade_observateurs_faune TO geonatuser;
 
 SET search_path = taxonomie, pg_catalog;
 --
--- Name: bib_taxons; Type: ACL; Schema: taxonomie; Owner: -
+-- Name: bib_noms; Type: ACL; Schema: taxonomie; Owner: -
 --
 
-REVOKE ALL ON TABLE bib_taxons FROM PUBLIC;
-REVOKE ALL ON TABLE bib_taxons FROM geonatuser;
-GRANT ALL ON TABLE bib_taxons TO geonatuser;
+REVOKE ALL ON TABLE bib_noms FROM PUBLIC;
+REVOKE ALL ON TABLE bib_noms FROM geonatuser;
+GRANT ALL ON TABLE bib_noms TO geonatuser;
 
 
 --
@@ -9825,12 +9846,12 @@ REVOKE ALL ON TABLE cor_taxon_attribut FROM geonatuser;
 GRANT ALL ON TABLE cor_taxon_attribut TO geonatuser;
 
 --
--- Name: cor_taxon_liste; Type: ACL; Schema: taxonomie; Owner: -
+-- Name: cor_nom_liste; Type: ACL; Schema: taxonomie; Owner: -
 --
 
-REVOKE ALL ON TABLE cor_taxon_liste FROM PUBLIC;
-REVOKE ALL ON TABLE cor_taxon_liste FROM geonatuser;
-GRANT ALL ON TABLE cor_taxon_liste TO geonatuser;
+REVOKE ALL ON TABLE cor_nom_liste FROM PUBLIC;
+REVOKE ALL ON TABLE cor_nom_liste FROM geonatuser;
+GRANT ALL ON TABLE cor_nom_liste TO geonatuser;
 
 
 SET search_path = utilisateurs, pg_catalog;

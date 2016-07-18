@@ -64,9 +64,9 @@ class SyntheseffTable extends Doctrine_Table
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "t.filtre2 = 'oui'";}
-                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "t.filtre3 = 'oui'";}
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "t.filtre2 = 'oui' OR t.filtre3 = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "pat.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "pr.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "pat.valeur_attribut = 'oui' OR pr.valeur_attribut = 'oui'";}
                 $sql .= ")";
             }
         }
@@ -131,9 +131,9 @@ class SyntheseffTable extends Doctrine_Table
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "t.filtre2 = 'oui'";}
-                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "t.filtre3 = 'oui'";}
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "t.filtre2 = 'oui' OR t.filtre3 = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "pat.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "pr.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "pat.valeur_attribut = 'oui' OR pr.valeur_attribut = 'oui'";}
                 $sql .= ")";
             }
         }   
@@ -161,11 +161,13 @@ class SyntheseffTable extends Doctrine_Table
                 SELECT count(*) AS nb
                 FROM synthese.syntheseff synt
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom 
-                LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
+                LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme 
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
+                LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
                 WHERE synt.supprime = false ".$addprefilters;
             $nb = $dbh->query($sql)->fetchAll();
             $nb_res = $nb[0]['nb'];
@@ -196,24 +198,33 @@ class SyntheseffTable extends Doctrine_Table
                     synt.insee, synt.dateobs, synt.observateurs, synt.altitude_retenue AS altitude, synt.remarques, synt.cd_nom, synt.effectif_total,
                     txr.lb_nom AS taxon_latin, 
                     CASE
-                        WHEN t.nom_francais is null THEN txr.lb_nom
-                        WHEN t.nom_francais = '' THEN txr.lb_nom
-                        ELSE t.nom_francais
+                        WHEN n.nom_francais is null THEN txr.lb_nom
+                        WHEN n.nom_francais = '' THEN txr.lb_nom
+                        ELSE n.nom_francais
                     END AS taxon_francais,
-                    f2.bool AS patrimonial, f3.bool AS protection_stricte,
+                    CASE pat.valeur_attribut 
+                        WHEN 'oui' THEN TRUE
+                        WHEN 'non' THEN FALSE
+                        ELSE NULL
+                    END AS patrimonial,
+                    CASE pr.valeur_attribut 
+                        WHEN 'oui' THEN TRUE
+                        WHEN 'non' THEN FALSE
+                        ELSE NULL
+                    END AS protection_stricte,
                     txr.cd_ref,
                     com.commune_min AS nomcommune, cri.nom_critere_synthese,
                     ST_ASGEOJSON($geom, 0) AS g"
                 .$from.
-                "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
+                "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
                 LEFT JOIN synthese.bib_criteres_synthese cri ON cri.id_critere_synthese = synt.id_critere_synthese
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
-                JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
-                JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text
+                LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
                  
                 WHERE synt.supprime = false ".$addfilters."ORDER BY synt.dateobs DESC";
             
@@ -298,9 +309,9 @@ class SyntheseffTable extends Doctrine_Table
         if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {
             if (($params['patrimonial']=='true') || ($params['protection_stricte']=='true')){
                 $sql .= " AND (";
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "t.filtre2 = 'oui'";}
-                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "t.filtre3 = 'oui'";}
-                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "t.filtre2 = 'oui' OR t.filtre3 = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']!='true')){$sql .= "pat.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']!='true')&&($params['protection_stricte']=='true')){$sql .= "pr.valeur_attribut = 'oui'";}
+                    if(($params['patrimonial']=='true')&&($params['protection_stricte']=='true')){$sql .= "pat.valeur_attribut = 'oui' OR pr.valeur_attribut = 'oui'";}
                 $sql .= ")";
             }
         } 
@@ -329,8 +340,17 @@ class SyntheseffTable extends Doctrine_Table
             $sql = "
                 SELECT DISTINCT
                 sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs, 
-                t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,
-                f2.bool AS patrimonial, f3.bool AS protection_stricte,
+                txr.nom_complet AS taxon_latin, n.nom_francais AS taxon_francais,
+                CASE pat.valeur_attribut 
+                    WHEN 'oui' THEN TRUE
+                    WHEN 'non' THEN FALSE
+                    ELSE NULL
+                END AS patrimonial,
+                CASE pr.valeur_attribut 
+                    WHEN 'oui' THEN TRUE
+                    WHEN 'non' THEN FALSE
+                    ELSE NULL
+                END AS protection_stricte,
                 txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, txr.nom_valide, 
                 c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,
                 synt.id_synthese,
@@ -338,7 +358,7 @@ class SyntheseffTable extends Doctrine_Table
                 st_x(st_centroid(st_transform(synt.the_geom_3857,4326))) AS x_wgs84, st_y(st_centroid(st_transform(synt.the_geom_3857,4326))) AS y_wgs84,
                 st_geometrytype(synt.the_geom_3857) AS geom_type"
                 .$from.
-                "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
+                "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
@@ -348,11 +368,11 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
-                JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
-                JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text                
+                LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2                
                 WHERE synt.supprime = false"
                 .$addwhere.
-                "ORDER BY sec.nom_secteur, com.commune_min, t.nom_latin";
+                "ORDER BY sec.nom_secteur, com.commune_min, txr.nom_complet";
                 if($params['usage']=="demo"){$sql .= " LIMIT 100 ";}
         $lesobs = $dbh->query($sql);
         return $lesobs;
@@ -365,14 +385,23 @@ class SyntheseffTable extends Doctrine_Table
         if($params['start']=="no"){$from = " FROM synthese.syntheseff synt ";}
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "
-                SELECT DISTINCT t.nom_latin AS taxon_latin, t.nom_francais AS taxon_francais,tpa.type_protection,
-                    f2.bool AS patrimonial, f3.bool AS protection_stricte,
+                SELECT DISTINCT txr.nom_complet AS taxon_latin, n.nom_francais AS taxon_francais,tpa.type_protection,
+                    CASE pat.valeur_attribut 
+                        WHEN 'oui' THEN TRUE
+                        WHEN 'non' THEN FALSE
+                        ELSE NULL
+                    END AS patrimonial,
+                    CASE pr.valeur_attribut 
+                        WHEN 'oui' THEN TRUE
+                        WHEN 'non' THEN FALSE
+                        ELSE NULL
+                    END AS protection_stricte,
                     txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, 
                     tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url AS url_texte, tpa.url AS url_taxon"
                 .$from.
-                "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom
+                "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
-                LEFT JOIN taxonomie.taxref_protection_especes tpe ON tpe.cd_nom = t.cd_nom
+                LEFT JOIN taxonomie.taxref_protection_especes tpe ON tpe.cd_nom = n.cd_nom
                 JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection = tpe.cd_protection AND tpa.concerne_mon_territoire = true
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
@@ -382,14 +411,14 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
                 LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese 
-                JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text
-                JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text
+                LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
                 WHERE synt.supprime = false"
                 .$addwhere.
-                " GROUP BY t.nom_latin, t.nom_francais, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, 
+                " GROUP BY txr.nom_complet, n.nom_francais, txr.nom_valide, txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, 
                         synt.cd_nom, txr.cd_ref, tpe.precisions, patrimonial, protection_stricte, 
                         tpa.article, tpa.intitule, tpa.arrete, tpa.date_arrete, tpa.url, tpa.url ,tpa.type_protection
-                ORDER BY txr.regne, txr.phylum, txr.classe, txr.ordre, txr.famille, t.nom_francais";
+                ORDER BY txr.regne, txr.phylum, txr.classe, txr.ordre, txr.famille, n.nom_francais";
         $lesstatuts = $dbh->query($sql);
         return $lesstatuts;
     }
@@ -401,9 +430,17 @@ class SyntheseffTable extends Doctrine_Table
         if($params['start']=="no"){$from = " FROM synthese.syntheseff synt ";}
         else{$from = " FROM (SELECT * FROM synthese.syntheseff WHERE supprime = false ORDER BY dateobs DESC limit 50) synt ";}
             $sql = "SELECT DISTINCT sec.nom_secteur AS secteur, com.commune_min AS commune, synt.insee,  synt.dateobs, synt.altitude_retenue AS altitude, synt.observateurs,"; 
-            $sql .= "t.nom_latin AS taxonlatin, t.nom_francais AS taxonfr,";
-            $sql .= "f2.bool AS patrimonial,";
-            $sql .= "f3.bool AS protection_stricte,";
+            $sql .= "txr.nom_complet AS taxonlatin, n.nom_francais AS taxonfr,";
+            $sql .= "CASE pat.valeur_attribut 
+                        WHEN 'oui' THEN TRUE
+                        WHEN 'non' THEN FALSE
+                        ELSE NULL
+                    END AS patrimonial,";
+            $sql .= "CASE pr.valeur_attribut 
+                        WHEN 'oui' THEN TRUE
+                        WHEN 'non' THEN FALSE
+                        ELSE NULL
+                    END AS protection_stricte,";
             $sql .= "txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref ,txr.nom_valide, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese,";
             $sql .= "c.nom_critere_synthese AS critere,synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,";
             if($typ=='centroid'){
@@ -416,8 +453,8 @@ class SyntheseffTable extends Doctrine_Table
             }
             else{$sql .= "synt.the_geom_".$srid_local_export." AS the_geom";}
             $sql .= $from;
-            $sql .= "LEFT JOIN taxonomie.bib_taxons t ON t.cd_nom = synt.cd_nom ";
-            $sql .= "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = t.cd_nom ";
+            $sql .= "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom ";
+            $sql .= "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = n.cd_nom ";
             $sql .= "LEFT JOIN layers.l_communes com ON com.insee = synt.insee ";
             $sql .= "LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur ";
             $sql .= "LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = synt.id_organisme ";
@@ -426,8 +463,8 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= "LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot ";
             $sql .= "LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme ";
             $sql .= "LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese ";
-            $sql .= "JOIN cor_boolean f2 ON f2.expression::text = t.filtre2::text ";
-            $sql .= "JOIN cor_boolean f3 ON f3.expression::text = t.filtre3::text ";
+            $sql .= "LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1 ";
+            $sql .= "LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2 ";
             $sql .= "WHERE synt.supprime = false ";
             if($typ!='centroid'){$sql .= "AND ST_geometrytype(synt.the_geom_".$srid_local_export.") = '".$typ."'::text ";}
             $sql .= $addwhere;
@@ -530,24 +567,26 @@ class SyntheseffTable extends Doctrine_Table
     public static function getDatasNbObsGp1()
     {
         $sql = "SELECT DISTINCT  COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
-                FROM taxonomie.bib_taxons t
-                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom              
+                FROM taxonomie.bib_noms n
+                JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom              
                 LEFT JOIN
                 (SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb 
-                        FROM taxonomie.bib_taxons t
-                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 1
                         WHERE s.supprime = false
-                        AND t.filtre2 = 'oui' 
+                        AND p.valeur_attribut = 'oui' 
                         GROUP BY tr.group1_inpn
                         ORDER BY nb desc) pat ON pat.subject = tr.group1_inpn
                 LEFT JOIN
                 (SELECT COALESCE(tr.group1_inpn,'Absent du taxref') AS subject, count(*) AS nb 
-                        FROM taxonomie.bib_taxons t
-                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 2
                         WHERE s.supprime = false
-                        AND t.filtre3 = 'oui' 
+                        AND p.valeur_attribut = 'oui' 
                         GROUP BY tr.group1_inpn
                         ORDER BY nb desc) prot ON prot.subject = tr.group1_inpn
                 LEFT JOIN
@@ -563,34 +602,36 @@ class SyntheseffTable extends Doctrine_Table
     public static function getDatasNbTxGp1()
     {
         $sql = "SELECT distinct  tr.group1_inpn AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
-                FROM taxonomie.bib_taxons t
-                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                FROM taxonomie.bib_noms n
+                JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
                 LEFT JOIN (SELECT a.group1_inpn AS subject, count (a.*) AS nb
                     FROM
                         (SELECT distinct  tr.group1_inpn, tr.cd_ref
-                        FROM taxonomie.bib_taxons t
-                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 1
                         WHERE s.supprime = false
-                        AND t.filtre2 = 'oui') a
+                        AND p.valeur_attribut = 'oui') a
                     GROUP by  a.group1_inpn
                     ORDER BY nb desc) pat ON pat.subject = tr.group1_inpn
                 LEFT JOIN (SELECT a.group1_inpn AS subject, count (a.*) AS nb
                     FROM
                         (SELECT distinct  tr.group1_inpn, tr.cd_ref
-                        FROM taxonomie.bib_taxons t
-                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 2
                         WHERE s.supprime = false
-                        AND t.filtre3 = 'oui') a 
+                        AND p.valeur_attribut = 'oui') a 
                     GROUP by  a.group1_inpn
                     ORDER BY nb desc) prot ON prot.subject = tr.group1_inpn
                 LEFT JOIN (SELECT a.group1_inpn AS subject, count (a.*) AS nb
                     FROM
                         (SELECT distinct  tr.group1_inpn, tr.cd_ref
-                        FROM taxonomie.bib_taxons t
-                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
                         WHERE s.supprime = false) a 
                     GROUP by  a.group1_inpn
                     ORDER BY nb desc) tout ON tout.subject = tr.group1_inpn
@@ -600,24 +641,26 @@ class SyntheseffTable extends Doctrine_Table
     public static function getDatasNbObsGp2()
     {
         $sql = "SELECT DISTINCT  COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
-                FROM taxonomie.bib_taxons t
-                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom              
+                FROM taxonomie.bib_noms n
+                JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom              
                 LEFT JOIN
                 (SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb 
-                        FROM taxonomie.bib_taxons t
-                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 1
                         WHERE s.supprime = false
-                        AND t.filtre2 = 'oui' 
+                        AND p.valeur_attribut = 'oui' 
                         GROUP BY tr.group2_inpn
                         ORDER BY nb desc) pat ON pat.subject = tr.group2_inpn
                 LEFT JOIN
                 (SELECT COALESCE(tr.group2_inpn,'Absent du taxref') AS subject, count(*) AS nb 
-                        FROM taxonomie.bib_taxons t
-                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        LEFT JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        LEFT JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        LEFT JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 2
                         WHERE s.supprime = false
-                        AND t.filtre3 = 'oui' 
+                        AND p.valeur_attribut = 'oui' 
                         GROUP BY tr.group2_inpn
                         ORDER BY nb desc) prot ON prot.subject = tr.group2_inpn
                 LEFT JOIN
@@ -633,34 +676,36 @@ class SyntheseffTable extends Doctrine_Table
     public static function getDatasNbTxGp2()
     {
         $sql = "SELECT distinct  tr.group2_inpn AS subject, tout.nb AS a, prot.nb AS b, pat.nb AS c
-                FROM taxonomie.bib_taxons t
-                JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
+                FROM taxonomie.bib_noms n
+                JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
                 LEFT JOIN (SELECT a.group2_inpn AS subject, count (a.*) AS nb
                     FROM
                         (SELECT distinct  tr.group2_inpn, tr.cd_ref
-                        FROM taxonomie.bib_taxons t
-                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 1
                         WHERE s.supprime = false
-                        AND t.filtre2 = 'oui') a
+                        AND p.valeur_attribut = 'oui') a
                     GROUP by  a.group2_inpn
                     ORDER BY nb desc) pat ON pat.subject = tr.group2_inpn
                 LEFT JOIN (SELECT a.group2_inpn AS subject, count (a.*) AS nb
                     FROM
                         (SELECT distinct  tr.group2_inpn, tr.cd_ref
-                        FROM taxonomie.bib_taxons t
-                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
+                        LEFT JOIN taxonomie.cor_taxon_attribut p ON p.cd_ref = n.cd_ref AND p.id_attribut = 2
                         WHERE s.supprime = false
-                        AND t.filtre3 = 'oui') a 
+                        AND p.valeur_attribut = 'oui') a 
                     GROUP by  a.group2_inpn
                     ORDER BY nb desc) prot ON prot.subject = tr.group2_inpn
                 LEFT JOIN (SELECT a.group2_inpn AS subject, count (a.*) AS nb
                     FROM
                         (SELECT distinct  tr.group2_inpn, tr.cd_ref
-                        FROM taxonomie.bib_taxons t
-                        JOIN taxonomie.taxref tr ON tr.cd_nom = t.cd_nom 
-                        JOIN synthese.syntheseff s ON t.cd_nom = s.cd_nom
+                        FROM taxonomie.bib_noms n
+                        JOIN taxonomie.taxref tr ON tr.cd_nom = n.cd_nom 
+                        JOIN synthese.syntheseff s ON n.cd_nom = s.cd_nom
                         WHERE s.supprime = false) a 
                     GROUP by  a.group2_inpn
                     ORDER BY nb desc) tout ON tout.subject = tr.group2_inpn

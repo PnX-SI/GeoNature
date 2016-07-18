@@ -88,7 +88,7 @@ class CorBryoTaxonTable extends Doctrine_Table
           ->from('TaxrefProtectionArticles r')
           ->innerJoin('r.TaxrefProtectionEspeces cpet')
           ->where('cpet.cd_nom=?', $cd_ref)
-          ->whereIn('r.niveau',array('national','international','communautaire'))
+          ->addWhere('r.concerne_mon_territoire=?', true)
           // ->orWhereIn('r.cd_protection',array('RV93','DV05','DV38'))
           ->fetchArray();
           $reglementations = array();
@@ -110,7 +110,7 @@ class CorBryoTaxonTable extends Doctrine_Table
           ->from('TaxrefProtectionArticles r')
           ->innerJoin('r.TaxrefProtectionEspeces cpet')
           ->where('cpet.cd_nom=?', $cd_ref)
-          ->whereIn('r.niveau',array('national','international','communautaire'))
+          ->addWhere('r.concerne_mon_territoire=?', true)
           // ->orWhereIn('r.cd_protection',array('RV93','DV05','DV38'))
           ->fetchArray();
           $reglementations = array();
@@ -120,7 +120,6 @@ class CorBryoTaxonTable extends Doctrine_Table
           array_push($reglementations,$a);
         }
         return implode(' --- ',$reglementations);
-
     }
     
     private static function addwhere($request)

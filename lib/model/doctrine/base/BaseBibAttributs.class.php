@@ -12,6 +12,11 @@
  * @property boolean $obligatoire
  * @property string $desc_attribut
  * @property string $type_attribut
+ * @property integer $id_theme
+ * @property string $type_widget
+ * @property string $regne
+ * @property string $group2_inpn
+ * @property BibThemes $BibThemes
  * @property Doctrine_Collection $CorTaxonAttribut
  * 
  * @method integer             getIdAttribut()            Returns the current record's "id_attribut" value
@@ -21,6 +26,11 @@
  * @method boolean             getObligatoire()           Returns the current record's "obligatoire" value
  * @method string              getDescAttribut()          Returns the current record's "desc_attribut" value
  * @method string              getTypeAttribut()          Returns the current record's "type_attribut" value
+ * @method integer             getIdTheme()               Returns the current record's "id_theme" value
+ * @method string              getTypeWidget()            Returns the current record's "type_widget" value
+ * @method string              getRegne()                 Returns the current record's "regne" value
+ * @method string              getGroup2Inpn()            Returns the current record's "group2_inpn" value
+ * @method BibThemes           getBibThemes()             Returns the current record's "BibThemes" value
  * @method Doctrine_Collection getCorTaxonAttribut()      Returns the current record's "CorTaxonAttribut" collection
  * @method BibAttributs        setIdAttribut()            Sets the current record's "id_attribut" value
  * @method BibAttributs        setNomAttribut()           Sets the current record's "nom_attribut" value
@@ -29,6 +39,11 @@
  * @method BibAttributs        setObligatoire()           Sets the current record's "obligatoire" value
  * @method BibAttributs        setDescAttribut()          Sets the current record's "desc_attribut" value
  * @method BibAttributs        setTypeAttribut()          Sets the current record's "type_attribut" value
+ * @method BibAttributs        setIdTheme()               Sets the current record's "id_theme" value
+ * @method BibAttributs        setTypeWidget()            Sets the current record's "type_widget" value
+ * @method BibAttributs        setRegne()                 Sets the current record's "regne" value
+ * @method BibAttributs        setGroup2Inpn()            Sets the current record's "group2_inpn" value
+ * @method BibAttributs        setBibThemes()             Sets the current record's "BibThemes" value
  * @method BibAttributs        setCorTaxonAttribut()      Sets the current record's "CorTaxonAttribut" collection
  * 
  * @package    geonature
@@ -70,11 +85,31 @@ abstract class BaseBibAttributs extends sfDoctrineRecord
              'type' => 'string',
              'length' => 50,
              ));
+        $this->hasColumn('id_theme', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             ));
+        $this->hasColumn('type_widget', 'string', 50, array(
+             'type' => 'string',
+             'length' => 50,
+             ));
+        $this->hasColumn('regne', 'string', 20, array(
+             'type' => 'string',
+             'length' => 20,
+             ));
+        $this->hasColumn('group2_inpn', 'string', 255, array(
+             'type' => 'string',
+             'length' => 255,
+             ));
     }
 
     public function setUp()
     {
         parent::setUp();
+        $this->hasOne('BibThemes', array(
+             'local' => 'id_theme',
+             'foreign' => 'id_theme'));
+
         $this->hasMany('CorTaxonAttribut', array(
              'local' => 'id_attribut',
              'foreign' => 'id_attribut'));

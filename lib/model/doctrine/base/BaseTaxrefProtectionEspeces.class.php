@@ -44,10 +44,10 @@ abstract class BaseTaxrefProtectionEspeces extends sfDoctrineRecord
     public function setTableDefinition()
     {
         $this->setTableName('taxonomie.taxref_protection_especes');
-        $this->hasColumn('cd_nom', 'integer', 8, array(
+        $this->hasColumn('cd_nom', 'integer', 4, array(
              'type' => 'integer',
              'primary' => true,
-             'length' => 8,
+             'length' => 4,
              ));
         $this->hasColumn('cd_protection', 'string', 20, array(
              'type' => 'string',

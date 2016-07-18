@@ -30,20 +30,18 @@ SET search_path = contactflore, pg_catalog;
 -- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
 --
 
-CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
-    LANGUAGE plpgsql
-    AS $$
---fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
---
---Gil DELUERMOZ mars 2016
-
+CREATE OR REPLACE FUNCTION couleur_taxon(id integer, maxdateobs date)
+  RETURNS text AS
+$BODY$
+  --fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
   DECLARE
   couleur text;
   patri character(3);
   BEGIN
-    SELECT filtre2 INTO patri 
-    FROM taxonomie.bib_taxons
-    WHERE id_taxon = id;
+    SELECT cta.valeur_attribut INTO patri 
+    FROM taxonomie.bib_noms n
+    JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_nom AND cta.id_attribut = 1
+    WHERE n.id_nom = id;
 	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
 		ELSE couleur = 'red';
@@ -57,9 +55,9 @@ CREATE FUNCTION couleur_taxon(id integer, maxdateobs date) RETURNS text
 	END IF;
 	return couleur;
   END;
-$$;
-
-
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 ALTER FUNCTION couleur_taxon(id integer, maxdateobs date) OWNER TO geonatuser;
 
 --
@@ -138,26 +136,26 @@ line record;
 fiche record;
 BEGIN
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
     --récup du cd_ref du taxon pour le stocker en base au moment de l'enregistrement (= conseil inpn)
-	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	new.cd_ref_origine = re;
     -- MAJ de la table cor_unite_taxon_cflore, on commence par récupérer l'unité à partir du pointage (table t_fiches_cf)
 	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
 	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE ST_INTERSECTS(fiche.the_geom_2154,u.the_geom);
 	--si on est dans une des unités on peut mettre à jour la table cor_unite_taxon_cflore, sinon on fait rien
 	IF unite>0 THEN
-		SELECT INTO line * FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+		SELECT INTO line * FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_nom = new.id_nom;
 		--si la ligne existe dans cor_unite_taxon_cflore on la supprime
 		IF line IS NOT NULL THEN
-			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_taxon = new.id_taxon;
+			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_nom = new.id_nom;
 		END IF;
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
 		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
 		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
-		INSERT INTO contactflore.cor_unite_taxon_cflore VALUES(unite,new.id_taxon,fiche.dateobs,contactflore.couleur_taxon(new.id_taxon,fiche.dateobs), nbobs+1);
+		INSERT INTO contactflore.cor_unite_taxon_cflore VALUES(unite,new.id_nom,fiche.dateobs,contactflore.couleur_taxon(new.id_nom,fiche.dateobs), nbobs+1);
 	END IF;
 	RETURN NEW; 			
 END;
@@ -206,7 +204,7 @@ BEGIN
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' AND nom_source = 'Contact flore';
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
 	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
 	
@@ -427,7 +425,7 @@ BEGIN
 	--Récupération des données id_source dans la table synthese.bib_sources
     SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore';
 	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cflore::text AND (id_source = idsourcecflore);
@@ -533,9 +531,9 @@ DECLARE
 	re integer;
 BEGIN
    -- Si changement de taxon, 
-	IF new.id_taxon<>old.id_taxon THEN
+	IF new.id_nom<>old.id_nom THEN
 	   -- Correction du cd_ref_origine
-		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+		SELECT INTO re taxonomie.find_cdref(cd_nom) FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 		new.cd_ref_origine = re;
 	END IF;
 RETURN NEW;			
@@ -595,7 +593,7 @@ ALTER TABLE bib_phenologies_cflore OWNER TO geonatuser;
 
 CREATE TABLE cor_message_taxon_cflore (
     id_message_cflore integer NOT NULL,
-    id_taxon integer NOT NULL
+    id_nom integer NOT NULL
 );
 
 
@@ -621,7 +619,7 @@ ALTER TABLE cor_role_fiche_cflore OWNER TO geonatuser;
 
 CREATE TABLE cor_unite_taxon_cflore (
     id_unite_geo integer NOT NULL,
-    id_taxon integer NOT NULL,
+    id_nom integer NOT NULL,
     derniere_date date,
     couleur character varying(10) NOT NULL,
     nb_obs integer
@@ -672,7 +670,7 @@ ALTER TABLE t_fiches_cflore OWNER TO geonatuser;
 CREATE TABLE t_releves_cflore (
     id_releve_cflore bigint NOT NULL,
     id_cflore bigint NOT NULL,
-    id_taxon integer NOT NULL,
+    id_nom integer NOT NULL,
     id_abondance_cflore integer NOT NULL,
     id_phenologie_cflore integer NOT NULL,
     cd_ref_origine integer,
@@ -723,7 +721,7 @@ CREATE VIEW v_nomade_abondances_cflore AS
    FROM bib_abondances_cflore a
   ORDER BY a.id_abondance_cflore;
 
-
+  
 ALTER TABLE v_nomade_abondances_cflore OWNER TO geonatuser;
 
 --
@@ -731,23 +729,23 @@ ALTER TABLE v_nomade_abondances_cflore OWNER TO geonatuser;
 -- Name: v_nomade_classes; Type: VIEW; Schema: contactflore; Owner: geonatuser
 --
 
-CREATE VIEW v_nomade_classes AS
+CREATE OR REPLACE VIEW v_nomade_classes AS 
  SELECT g.id_liste AS id_classe,
     g.nom_liste AS nom_classe_fr,
     g.desc_liste AS desc_classe
-   FROM (( SELECT l.id_liste,
+   FROM ( SELECT l.id_liste,
             l.nom_liste,
             l.desc_liste,
-            min(taxonomie.find_cdref(tx.cd_nom)) AS cd_ref
-           FROM ((taxonomie.bib_listes l
-             JOIN taxonomie.cor_taxon_liste ctl ON ((ctl.id_liste = l.id_liste)))
-             JOIN taxonomie.bib_taxons tx ON ((tx.id_taxon = ctl.id_taxon)))
-          WHERE ((l.id_liste > 300) AND (l.id_liste < 400))
+            min(taxonomie.find_cdref(n.cd_nom)) AS cd_ref
+           FROM taxonomie.bib_listes l
+             JOIN taxonomie.cor_nom_liste cnl ON cnl.id_liste = l.id_liste
+             JOIN taxonomie.bib_noms n ON n.id_nom = cnl.id_nom
+          WHERE l.id_liste > 300 AND l.id_liste < 400
           GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
-     JOIN taxonomie.taxref t ON ((t.cd_nom = g.cd_ref)))
-  WHERE ((t.regne)::text = 'Plantae'::text);
+     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
+  WHERE t.regne::text = 'Plantae'::text;
 
-
+  
 ALTER TABLE v_nomade_classes OWNER TO geonatuser;
 
 --
@@ -792,24 +790,26 @@ ALTER TABLE v_nomade_phenologies_cflore OWNER TO geonatuser;
 -- Name: v_nomade_taxons_flore; Type: VIEW; Schema: contactflore; Owner: geonatuser
 --
 
-CREATE VIEW v_nomade_taxons_flore AS
- SELECT DISTINCT t.id_taxon,
+CREATE OR REPLACE VIEW v_nomade_taxons_flore AS 
+ SELECT DISTINCT n.id_nom,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
     tx.cd_nom,
-    t.nom_latin,
-    t.nom_francais,
+    tx.lb_nom AS nom_latin,
+    n.nom_francais,
     g.id_classe,
     f2.bool AS patrimonial,
     m.texte_message_cflore AS message
-   FROM ((((((taxonomie.bib_taxons t
-     LEFT JOIN cor_message_taxon_cflore cmt ON ((cmt.id_taxon = t.id_taxon)))
-     LEFT JOIN bib_messages_cflore m ON ((m.id_message_cflore = cmt.id_message_cflore)))
-     JOIN taxonomie.cor_taxon_liste ctl ON ((ctl.id_taxon = t.id_taxon)))
-     JOIN v_nomade_classes g ON ((g.id_classe = ctl.id_liste)))
-     JOIN taxonomie.taxref tx ON ((tx.cd_nom = t.cd_nom)))
-     JOIN public.cor_boolean f2 ON (((f2.expression)::text = (t.filtre2)::text)))
-  WHERE ((t.filtre1)::text = 'oui'::text)
-  ORDER BY t.id_taxon, taxonomie.find_cdref(tx.cd_nom), t.nom_latin, t.nom_francais, g.id_classe, f2.bool;
+   FROM taxonomie.bib_noms n
+     LEFT JOIN contactflore.cor_message_taxon_cflore cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN contactflore.bib_messages_cflore m ON m.id_message_cflore = cmt.id_message_cflore
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+     JOIN contactflore.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN public.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut::text AND cta.id_attribut = 1
+  --WHERE n.filtre1::text = 'oui'::text TODO
+  ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cflore;
 
 
 ALTER TABLE v_nomade_taxons_flore OWNER TO geonatuser;
@@ -869,7 +869,7 @@ ALTER TABLE ONLY bib_phenologies_cflore
 --
 
 ALTER TABLE ONLY cor_unite_taxon_cflore
-    ADD CONSTRAINT cor_unite_taxon_cflore_pkey PRIMARY KEY (id_unite_geo, id_taxon);
+    ADD CONSTRAINT cor_unite_taxon_cflore_pkey PRIMARY KEY (id_unite_geo, id_nom);
 
 
 --
@@ -887,7 +887,7 @@ ALTER TABLE ONLY bib_messages_cflore
 --
 
 ALTER TABLE ONLY cor_message_taxon_cflore
-    ADD CONSTRAINT pk_cor_message_taxon_cflore PRIMARY KEY (id_message_cflore, id_taxon);
+    ADD CONSTRAINT pk_cor_message_taxon_cflore PRIMARY KEY (id_message_cflore, id_nom);
 
 
 --
@@ -930,7 +930,7 @@ CREATE INDEX i_fk_cor_message_cflore_bib_me ON cor_message_taxon_cflore USING bt
 -- Name: i_fk_cor_message_cflore_bib_ta; Type: INDEX; Schema: contactflore; Owner: geonatuser; Tablespace: 
 --
 
-CREATE INDEX i_fk_cor_message_cflore_bib_ta ON cor_message_taxon_cflore USING btree (id_taxon);
+CREATE INDEX i_fk_cor_message_cflore_bib_noms ON cor_message_taxon_cflore USING btree (id_nom);
 
 
 --
@@ -1031,11 +1031,11 @@ CREATE TRIGGER tri_update_synthese_cor_role_fiche_cflore AFTER INSERT OR UPDATE 
 
 --
 -- TOC entry 3710 (class 2606 OID 1388116)
--- Name: fk_cor_message_taxon_cflore_bib_taxons; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_message_taxon_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
 --
 
 ALTER TABLE ONLY cor_message_taxon_cflore
-    ADD CONSTRAINT fk_cor_message_taxon_cflore_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_message_taxon_cflore_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -1067,11 +1067,11 @@ ALTER TABLE ONLY cor_role_fiche_cflore
 
 --
 -- TOC entry 3711 (class 2606 OID 1388138)
--- Name: fk_cor_unite_taxon_cflore_bib_taxons; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_unite_taxon_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
 --
 
 ALTER TABLE contactflore.cor_unite_taxon_cflore
-  ADD CONSTRAINT fk_cor_unite_taxon_cflore_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons (id_taxon) ON UPDATE CASCADE;
+  ADD CONSTRAINT fk_cor_unite_taxon_cflore_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms (id_nom) ON UPDATE CASCADE;
 --
 -- TOC entry 3708 (class 2606 OID 1388079)
 -- Name: fk_t_releves_cflore_bib_abondances_cflore; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
@@ -1092,11 +1092,11 @@ ALTER TABLE ONLY t_releves_cflore
 
 --
 -- TOC entry 3706 (class 2606 OID 1388094)
--- Name: fk_t_releves_cflore_bib_taxons; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_t_releves_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
 --
 
 ALTER TABLE ONLY t_releves_cflore
-    ADD CONSTRAINT fk_t_releves_cflore_bib_taxons FOREIGN KEY (id_taxon) REFERENCES taxonomie.bib_taxons(id_taxon) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_cflore_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
 
 
 --
@@ -1271,9 +1271,9 @@ UNION
 --INSERT INTO t_fiches_cflore (id_cflore, insee, dateobs, altitude_saisie, altitude_sig, altitude_retenue, date_insert, date_update, supprime, pdop, saisie_initiale, id_organisme, srid_dessin, id_protocole, id_lot, the_geom_3857, the_geom_2154) VALUES (1, '05181', '2016-03-10', 3627, 0, 3627, '2016-03-10 17:34:09.160291', '2016-03-10 17:34:09.319749', false, -1, 'web', 99, 3857, 7, 7, '0101000020110F00003DFA78D1CE79254161CCCC4D13725541', '01010000206A0800007B4143E5ED582D41481F86793A905841');
 --INSERT INTO t_fiches_cflore (id_cflore, insee, dateobs, altitude_saisie, altitude_sig, altitude_retenue, date_insert, date_update, supprime, pdop, saisie_initiale, id_organisme, srid_dessin, id_protocole, id_lot, the_geom_3857, the_geom_2154) VALUES (2, '05063', '2016-03-10', 2295, 0, 2295, '2016-03-10 17:47:42.100277', '2016-03-10 17:47:42.257232', false, -1, 'web', 99, 3857, 7, 7, '0101000020110F000026A524147A502541FD0BA9995B805541', '01010000206A0800009C3CFA465C382D41F7844B6F229A5841');
 
---INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_taxon, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (1, 1, 100001, 1, 2, 81065, 'Alchémille rampante', 'test comment', 'Gil det', false, true, 4, NULL);
---INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_taxon, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (2, 1, 100002, 4, 8, 95186, 'Inule fétide', 'test sans prélevemnt', 'Gil test det2', false, true, 5, NULL);
---INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_taxon, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (3, 2, 100001, 2, 4, 81065, 'Alchémille rampante', '', '', false, false, 6, NULL);
+--INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_nom, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (1, 1, 100001, 1, 2, 81065, 'Alchémille rampante', 'test comment', 'Gil det', false, true, 4, NULL);
+--INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_nom, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (2, 1, 100002, 4, 8, 95186, 'Inule fétide', 'test sans prélevemnt', 'Gil test det2', false, true, 5, NULL);
+--INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_nom, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (3, 2, 100001, 2, 4, 81065, 'Alchémille rampante', '', '', false, false, 6, NULL);
 
 --INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (1, 1);
 --INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (2, 1);
@@ -1290,9 +1290,9 @@ $BODY$
   cdnom integer;
   BEGIN
 	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = monidtaxon;
-	DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = monunite AND id_taxon = monidtaxon;
-	INSERT INTO contactflore.cor_unite_taxon_cflore (id_unite_geo,id_taxon,derniere_date,couleur,nb_obs)
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
+	DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
+	INSERT INTO contactflore.cor_unite_taxon_cflore (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
 	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactflore.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
 	FROM synthese.cor_unite_synthese
 	WHERE cd_nom = cdnom
@@ -1317,8 +1317,8 @@ monidtaxon integer;
 BEGIN
 
 IF (TG_OP = 'DELETE') THEN
-	--retrouver le id_taxon
-	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = old.cd_nom LIMIT 1; 
+	--retrouver le id_nom
+	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
 	--calcul du règne du taxon supprimé
 		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
 	IF monregne = 'Animalia' THEN
@@ -1327,20 +1327,20 @@ IF (TG_OP = 'DELETE') THEN
 		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
 			IF monembranchement = 'Chordata' THEN
 				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactfaune.cor_unite_taxon WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+					DELETE FROM contactfaune.cor_unite_taxon WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
 				ELSE
 					PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, old.id_unite_geo);
 				END IF;
 			ELSE
 				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
 				ELSE
 					PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
 				END IF;
 			END IF;
 	ELSIF monregne = 'Plantae' THEN
 		IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_taxon = monidtaxon AND id_unite_geo = old.id_unite_geo;
+			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
 		ELSE
 			PERFORM synthese.calcul_cor_unite_taxon_cflore(monidtaxon, old.id_unite_geo);
 		END IF;
@@ -1349,8 +1349,8 @@ IF (TG_OP = 'DELETE') THEN
 	RETURN OLD;		
 	
 ELSIF (TG_OP = 'INSERT') THEN
-	--retrouver le id_taxon
-	SELECT INTO monidtaxon id_taxon FROM taxonomie.bib_taxons WHERE cd_nom = new.cd_nom LIMIT 1;
+	--retrouver le id_nom
+	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
 	--calcul du règne du taxon inséré
 		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
 	IF monregne = 'Animalia' THEN

@@ -31,6 +31,16 @@ BibAttributs:
     obligatoire: boolean(1)
     desc_attribut: string()
     type_attribut: string(50)
+    id_theme: integer(4)
+    type_widget: string(50)
+    regne: string(20)
+    group2_inpn: string(255)
+  relations:
+    BibThemes:
+      class: BibThemes
+      local: id_theme
+      foreign: id_theme
+      foreignAlias: BibAttributs
 BibClasses:
   tableName: taxonomie.bib_classes
   columns:
@@ -305,32 +315,21 @@ BibSurfaces:
       type: integer(4)
       primary: true
     nom_surface: string(20)
-BibTaxons:
-  tableName: taxonomie.bib_taxons
+BibNoms:
+  tableName: taxonomie.bib_noms
   columns:
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
     cd_nom: integer(4)
-    nom_latin: string(100)
-    nom_francais: string(50)
-    auteur: string(50)
-    filtre1: string(255)
-    filtre2: string(255)
-    filtre3: string(255)
-    filtre4: string(255)
-    filtre5: string(255)
-    filtre6: string(255)
-    filtre7: string(255)
-    filtre8: string(255)
-    filtre9: string(255)
-    filtre10: string(255)
+    cd_ref: integer(4)
+    nom_francais: string(255)
   relations:
     Taxref:
       class: Taxref
       local: cd_nom
       foreign: cd_nom
-      foreignAlias: BibTaxons
+      foreignAlias: BibNoms
 BibTaxonsFp:
   tableName: florepatri.bib_taxons_fp
   columns:
@@ -363,6 +362,15 @@ BibTaxrefStatuts:
       type: string(1)
       primary: true
     nom_statut: string(50)
+BibThemes:
+  tableName: taxonomie.bib_taxref_statuts
+  columns:
+    id_theme:
+      type: integer(4)
+      primary: true
+    nom_theme: string(20)
+    desc_theme: string(255)
+    ordre: integer(4)
 BibUnites:
   tableName: utilisateurs.bib_unites
   columns:
@@ -576,14 +584,14 @@ CorMessageTaxonCf:
     id_message_cf:
       type: integer(4)
       primary: true
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorMessageTaxonCf
     BibMessagesCf:
       class: BibMessagesCf
@@ -596,14 +604,14 @@ CorMessageTaxonCflore:
     id_message_cflore:
       type: integer(4)
       primary: true
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorMessageTaxonCflore
     BibMessagesCflore:
       class: BibMessagesCflore
@@ -616,14 +624,14 @@ CorMessageTaxonInv:
     id_message_inv:
       type: integer(4)
       primary: true
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorMessageTaxonInv
     BibMessagesInv:
       class: BibMessagesInv
@@ -653,7 +661,7 @@ CorCritereListe:
 CorTaxonAttribut:
   tableName: taxonomie.cor_taxon_attribut
   columns:
-    id_taxon:
+    cd_ref:
       type: integer(4)
       primary: true
     id_attribut:
@@ -666,15 +674,15 @@ CorTaxonAttribut:
       local: id_attribut
       foreign: id_attribut
       foreignAlias: CorTaxonAttribut
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorTaxonAttribut
-CorTaxonListe:
-  tableName: taxonomie.cor_taxon_liste
+CorNomListe:
+  tableName: taxonomie.cor_nom_liste
   columns:
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
     id_liste:
@@ -685,12 +693,12 @@ CorTaxonListe:
       class: BibListes
       local: id_liste
       foreign: id_liste
-      foreignAlias: CorTaxonListe
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
-      foreignAlias: CorTaxonListe
+      foreignAlias: CorNomListe
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
+      foreignAlias: CorNomListe
 CorRoleDroitApplication:
   tableName: utilisateurs.cor_role_droit_application
   columns:
@@ -820,7 +828,7 @@ CorRoles:
 CorUniteTaxon:
   tableName: contactfaune.cor_unite_taxon
   columns:
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
     id_unite_geo:
@@ -830,10 +838,10 @@ CorUniteTaxon:
     couleur: string(10)
     nb_obs: integer(4)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorUniteTaxon
     LUnitesGeo:
       class: LUnitesGeo
@@ -843,7 +851,7 @@ CorUniteTaxon:
 CorUniteTaxonCflore:
   tableName: contactflore.cor_unite_taxon_cflore
   columns:
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
     id_unite_geo:
@@ -853,10 +861,10 @@ CorUniteTaxonCflore:
     couleur: string(10)
     nb_obs: integer(4)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorUniteTaxonCflore
     LUnitesGeo:
       class: LUnitesGeo
@@ -866,7 +874,7 @@ CorUniteTaxonCflore:
 CorUniteTaxonInv:
   tableName: contactinv.cor_unite_taxon_inv
   columns:
-    id_taxon:
+    id_nom:
       type: integer(4)
       primary: true
     id_unite_geo:
@@ -876,10 +884,10 @@ CorUniteTaxonInv:
     couleur: string(10)
     nb_obs: integer(4)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: CorUniteTaxonInv
     LUnitesGeo:
       class: LUnitesGeo
@@ -1225,23 +1233,18 @@ TaxrefProtectionArticles:
       primary: true
     article: string(100)
     intitule: string()
-    protection: string()
     arrete: string()
-    fichier: string()
-    fg_afprot: integer(8)
-    niveau: string(255)
-    cd_arrete: integer(8)
-    url: string(255)
-    date_arrete: integer(8)
-    rang_niveau: integer(8)
-    lb_article: string()
-    type_protection: string(255)
+    url_inpn: string(250)
+    cd_doc: integer(4)
+    url: string(250)
+    date_arrete: integer(4)
+    type_protection: string(250)
     concerne_mon_territoire: boolean(1)    
 TaxrefProtectionEspeces:
   tableName: taxonomie.taxref_protection_especes
   columns:
     cd_nom:
-      type: integer(8)
+      type: integer(4)
       primary: true
     cd_protection:
       type: string(20)
@@ -1443,7 +1446,7 @@ TRelevesCf:
       type: integer(5)
       primary: true
     id_cf: integer(5)
-    id_taxon: integer(4)
+    id_nom: integer(4)
     id_critere_cf: integer(4)
     am: integer(4)
     af: integer(4)
@@ -1468,10 +1471,10 @@ TRelevesCf:
       local: id_critere_cf
       foreign: id_critere_cf
       foreignAlias: TRelevesCf
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: TRelevesCf
     TFichesCf:
       class: TFichesCf
@@ -1485,7 +1488,7 @@ TRelevesCflore:
       type: integer(5)
       primary: true
     id_cflore: integer(5)
-    id_taxon: integer(4)
+    id_nom: integer(4)
     id_abondance_cflore: integer(4)
     id_phenologie_cflore: integer(4)
     validite_cflore: boolean(1)
@@ -1510,10 +1513,10 @@ TRelevesCflore:
       local: id_phenologie_cflore
       foreign: id_phenologie_cflore
       foreignAlias: TRelevesCflore
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: TRelevesCflore
     TFichesCflore:
       class: TFichesCflore
@@ -1527,7 +1530,7 @@ TRelevesInv:
       type: integer(5)
       primary: true
     id_inv: integer(5)
-    id_taxon: integer(4)
+    id_nom: integer(4)
     id_critere_inv: integer(4)
     am: integer(4)
     af: integer(4)
@@ -1549,10 +1552,10 @@ TRelevesInv:
       local: id_critere_inv
       foreign: id_critere_inv
       foreignAlias: TRelevesInv
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: TRelevesInv
     TFichesCf:
       class: TFichesInv
@@ -1867,7 +1870,7 @@ TZprospection:
 VNomadeTaxonsFaune:
   tableName: contactfaune.v_nomade_taxons_faune
   columns:
-    id_taxon: 
+    id_nom: 
       type: integer(8)
       primary: true
     cd_ref: integer(8)
@@ -1881,25 +1884,25 @@ VNomadeTaxonsFaune:
     contactfaune: boolean(1)
     mortalite: boolean(1)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsFaune
     CorUniteTaxon:
       class: CorUniteTaxon
-      local: id_taxon
-      foreign: id_taxon
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsFaune
     TRelevesCf:
       class: TRelevesCf
-      local: id_taxon
-      foreign: id_taxon
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsFaune
 VNomadeTaxonsFlore:
   tableName: contactflore.v_nomade_taxons_flore
   columns:
-    id_taxon: 
+    id_nom: 
       type: integer(8)
       primary: true
     cd_ref: integer(8)
@@ -1910,25 +1913,25 @@ VNomadeTaxonsFlore:
     patrimonial: boolean(1)
     message: string(255)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsFlore
     CorUniteTaxonCflore:
       class: CorUniteTaxonCflore
-      local: id_taxon
-      foreign: id_taxon
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsFlore
     TRelevesCflore:
       class: TRelevesCflore
-      local: id_taxon
-      foreign: id_taxon
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsFlore
 VNomadeTaxonsInv:
   tableName: contactinv.v_nomade_taxons_inv
   columns:
-    id_taxon: 
+    id_nom: 
       type: integer(8)
       primary: true
     cd_ref: integer(8)
@@ -1939,20 +1942,20 @@ VNomadeTaxonsInv:
     patrimonial: boolean(1)
     message: string(255)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsInv
     CorUniteTaxonInv:
       class: CorUniteTaxonInv
-      local: id_taxon
-      foreign: id_taxon
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsInv
     TRelevesInv:
       class: TRelevesInv
-      local: id_taxon
-      foreign: id_taxon
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VNomadeTaxonsInv
 VTaxonsFs:
   tableName: florestation.v_taxons_fs
@@ -1964,7 +1967,7 @@ VTaxonsFs:
 VTreeTaxonsSynthese:
   tableName: synthese.v_tree_taxons_synthese
   columns:
-    id_taxon: 
+    id_nom: 
       type: integer(4)
       primary: true
     cd_ref: integer(8)
@@ -1982,8 +1985,8 @@ VTreeTaxonsSynthese:
     id_famille: integer(4)
     nom_famille: string(50)
   relations:
-    BibTaxons:
-      class: BibTaxons
-      local: id_taxon
-      foreign: id_taxon
+    BibNoms:
+      class: BibNoms
+      local: id_nom
+      foreign: id_nom
       foreignAlias: VTreeTaxonsSynthese

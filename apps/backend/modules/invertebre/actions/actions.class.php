@@ -111,7 +111,7 @@ class invertebreActions extends sfGeonatureActions
             $array_taxon = explode(",",$string_taxon);
             // Récupération des valeurs dans des variables
             $id_releve_inv = $array_taxon[0];
-            $id_taxon = $array_taxon[1];
+            $id_nom = $array_taxon[1];
             $nom_taxon_saisi = $array_taxon[4];
             $id_critere_inv = $array_taxon[5];
             $am = $array_taxon[6];
@@ -131,7 +131,7 @@ class invertebreActions extends sfGeonatureActions
             //on passe les valeur et on enregistre
             $taxon->id_releve_inv = $id_releve_inv;
             $taxon->id_inv = $id_inv;
-            $taxon->id_taxon = $id_taxon;
+            $taxon->id_nom = $id_nom;
             $taxon->nom_taxon_saisi = str_replace('<!>',',',$nom_taxon_saisi);
             $taxon->id_critere_inv = $id_critere_inv;
             $taxon->am= $am;
