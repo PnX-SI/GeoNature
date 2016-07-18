@@ -117,9 +117,9 @@ class sfGeonatureConfig extends sfActions
             ,"views"=>[
                 [
                     "pgschema"=>"taxonomie"
-                    ,"pgview"=>"bib_taxons"
+                    ,"pgview"=>"bib_noms"
                     ,"buttonviewtitle"=>"liste des taxons"
-                    ,"viewdesc"=>"Liste des taxons disponibles depuis la table bib_taxons (pour l'exemple)"
+                    ,"viewdesc"=>"Liste des taxons disponibles depuis la table bib_noms (pour l'exemple)"
                     ,"fileformat"=>"csv"
                 ]
             ]

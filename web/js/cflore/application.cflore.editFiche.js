@@ -399,7 +399,7 @@ application.cflore.editFiche = function() {
     var getFormTaxons = function(){
         var relevesStoreFields = [
                 {name: 'id_releve_cflore', type: 'integer'}
-                ,{name: 'id_taxon', type: 'integer'}
+                ,{name: 'id_nom', type: 'integer'}
                 ,{name: 'nom_francais', type: 'string',sortType: Ext.data.SortTypes.asAccentuatedString}
                 ,{name: 'nom_latin', type: 'string'}
                 ,{name: 'nom_taxon_saisi', type: 'string'}
@@ -444,7 +444,7 @@ application.cflore.editFiche = function() {
         }
 
         var colModel = new Ext.grid.ColumnModel([
-            {header: "Id", width: 55,  sortable: true, dataIndex: 'id_taxon',hidden:true}
+            {header: "Id", width: 55,  sortable: true, dataIndex: 'id_nom',hidden:true}
             ,{id:'taxonfr',header: "Taxons déjà saisis", width: 160, sortable: true, locked:false, dataIndex: 'nom_francais',hidden:true}
             ,{id:'taxonssc',header: "Taxons déjà saisis", width: 160, sortable: true, locked:false, dataIndex: 'nom_latin',hidden:true}
             ,{header: "Abondance", width: 55, sortable: true, dataIndex: 'id_abondance_cflore',hidden:true}
@@ -471,7 +471,7 @@ application.cflore.editFiche = function() {
                     ,scope : this
                     ,handler : function(grid, rowIndex, colIndex) {
                         var record = grid.getStore().getAt(rowIndex);
-                        if(!record.data.id_taxon){
+                        if(!record.data.id_nom){
                             grid.getStore().remove(record);
                                 if(Ext.getCmp('grid-taxons').getStore().getCount()==0){
                                     this.addNewTaxon();
@@ -613,7 +613,7 @@ application.cflore.editFiche = function() {
         var isValidForm = function(){
             var isValid = true;
             Ext.getCmp('grid-taxons').getStore().each(function(r){
-                if(r.data.id_taxon==0 || r.data.id_taxon==null){isValid = false;return false;}
+                if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;return false;}
                 if(r.data.nom_taxon_saisi=='Saisie en cours'){isValid = false;return false;}
                 if(r.data.id_abondance_cflore==0 || r.data.id_abondance_cflore==null){isValid = false;return false;}
                 if(r.data.id_phenologie_cflore==0 || r.data.id_phenologie_cflore==null){isValid = false;return false;}
@@ -624,7 +624,7 @@ application.cflore.editFiche = function() {
         var isValidTaxon = function(r){
             var isValid = true;
             errorMsg = '';
-            if(r.data.id_taxon==0 || r.data.id_taxon==null){isValid = false;errorMsg='Veuillez choisir un taxon';return false;}
+            if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;errorMsg='Veuillez choisir un taxon';return false;}
             if(r.data.id_abondance_cflore==0 || r.data.id_abondance_cflore==null){isValid = false;errorMsg='Veuillez définir l\'abondance pour ce taxon';return false;}
             if(r.data.id_phenologie_cflore==0 || r.data.id_phenologie_cflore==null){isValid = false;errorMsg='Veuillez définir la phénologie de ce taxon';return false;}
             var commentValue = Ext.getCmp('ta-fiche-commentaire').getValue();
@@ -639,7 +639,7 @@ application.cflore.editFiche = function() {
                 Ext.getCmp('bt-validtaxon').setText('Valider "' + returnTaxonSaisi() +'"');
             }
             else{
-                if(!Ext.getCmp('grid-taxons').getSelectionModel().hasNext() && Ext.getCmp('grid-taxons').getSelectionModel().getSelected().data.id_taxon==null){
+                if(!Ext.getCmp('grid-taxons').getSelectionModel().hasNext() && Ext.getCmp('grid-taxons').getSelectionModel().getSelected().data.id_nom==null){
                     Ext.getCmp('grid-taxons').enable();
                 }
                 else{Ext.getCmp('grid-taxons').disable();}
@@ -668,7 +668,7 @@ application.cflore.editFiche = function() {
             relevesStore.add(new blankRecord({
                 //attention l'ordre des champs est important
                 id_releve_cflore:null
-                ,id_taxon:null
+                ,id_nom:null
                 ,nom_francais:''
                 ,nom_latin:''
                 ,nom_taxon_saisi:'Saisie en cours'
@@ -693,7 +693,7 @@ application.cflore.editFiche = function() {
         };
         var returnTaxonSaisi = function(){
             var r = null;
-            if(Ext.getCmp('combo-fiche-taxon').findRecord('id_taxon',Ext.getCmp('combo-fiche-taxon').getValue())){r = Ext.getCmp('combo-fiche-taxon').findRecord('id_taxon',Ext.getCmp('combo-fiche-taxon').getValue())};
+            if(Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())){r = Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())};
             if(Ext.getCmp('radiogroup-langue-cf').getValue().inputValue=='fr'){
                 if(r){return r.data.nom_francais;}
                 else{return 'en cours';}
@@ -734,7 +734,7 @@ application.cflore.editFiche = function() {
         storeTaxonsCf = new Ext.data.JsonStore({
             url: myProxyTaxons
             ,fields: [
-                'id_taxon'
+                'id_nom'
                 ,'cd_ref'
                 ,'nom_latin'
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
@@ -753,7 +753,7 @@ application.cflore.editFiche = function() {
             ,listeners: {
                 load: function(store, records) {
                     if(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()){
-                        Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('grid-taxons').getSelectionModel().getSelected().data.id_taxon);
+                        Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('grid-taxons').getSelectionModel().getSelected().data.id_nom);
                     }
                     comboTaxonsFiltre();
                 }
@@ -1038,10 +1038,10 @@ application.cflore.editFiche = function() {
                             ,xtype:'twintriggercombo'
                             ,tpl: '<tpl for="."><div class="x-combo-list-item" style="color:{couleur};"> <tpl if="patrimonial"><img src="images/logo_pne.gif" width="10" height="10"></tpl> {nom_francais} ({nb_obs}) - {derniere_date}</div></tpl>'
                             ,fieldLabel: 'Taxon '
-                            ,name: 'id_taxon'
-                            ,hiddenName:"id_taxon"
+                            ,name: 'id_nom'
+                            ,hiddenName:"id_nom"
                             ,store: storeTaxonsCf
-                            ,valueField: "id_taxon"
+                            ,valueField: "id_nom"
                             ,displayField: "nom_francais"
                             ,allowBlank:false
                             ,typeAhead: true
@@ -1058,7 +1058,7 @@ application.cflore.editFiche = function() {
                                 select: function(combo, record) { 
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('nom_francais',record.data.nom_francais);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('nom_latin',record.data.nom_latin);
-                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_taxon',combo.getValue());
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_nom',combo.getValue());
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_classe',record.data.id_classe);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('denombrement',record.data.denombrement);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('patrimonial',record.data.patrimonial);
@@ -1096,7 +1096,7 @@ application.cflore.editFiche = function() {
                                 ,clear: function(combo, record) {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('nom_francais',null);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('nom_latin',null);
-                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_taxon',null);
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_nom',null);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('id_classe',null);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('patrimonial',false);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('cd_ref_origine',null);
@@ -1928,7 +1928,7 @@ application.cflore.editFiche = function() {
                 Ext.getCmp('grid-taxons').getStore().add(new blankRecord({
                     //attention l'ordre des champs est important
                     id_releve_cflore:null
-                    ,id_taxon:null
+                    ,id_nom:null
                     ,nom_francais:''
                     ,nom_latin:''
                     ,nom_taxon_saisi:'Saisie en cours'

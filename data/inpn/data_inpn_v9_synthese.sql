@@ -26,60 +26,60 @@ INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (8, 'Continenta
 -- Data for Name: bib_taxref_rangs; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
 --
 
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('Dumm', 'Domaine');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SPRG', 'Super-Règne');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('KD  ', 'Règne');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSRG', 'Sous-Règne');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('IFRG', 'Infra-Règne');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('PH  ', 'Embranchement');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SBPH', 'Sous-Phylum');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('IFPH', 'Infra-Phylum');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('DV  ', 'Division');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SBDV', 'Sous-division');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SPCL', 'Super-Classe');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('CLAD', 'Cladus');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('CL  ', 'Classe');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SBCL', 'Sous-Classe');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('IFCL', 'Infra-classe');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('LEG ', 'Legio');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SPOR', 'Super-Ordre');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('COH ', 'Cohorte');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('OR  ', 'Ordre');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SBOR', 'Sous-Ordre');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('IFOR', 'Infra-Ordre');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SPFM', 'Super-Famille');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('FM  ', 'Famille');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SBFM', 'Sous-Famille');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('TR  ', 'Tribu');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSTR', 'Sous-Tribu');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('GN  ', 'Genre');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSGN', 'Sous-Genre');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SC  ', 'Section');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SBSC', 'Sous-Section');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SER', 'Série');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSER', 'Sous-Série');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('AGES', 'Agrégat');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('ES  ', 'Espèce');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SMES', 'Semi-espèce');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('MES ', 'Micro-Espèce');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSES', 'Sous-espèce');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('NAT ', 'Natio');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('VAR ', 'Variété');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SVAR ', 'Sous-Variété');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('FO  ', 'Forme');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSFO', 'Sous-Forme');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('FOES', 'Forma species');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('LIN ', 'Linea');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('CLO ', 'Clône');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('RACE', 'Race');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('CAR ', 'Cultivar');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('MO  ', 'Morpha');
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('AB  ', 'Abberatio');
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('Dumm', 'Domaine', 1);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SPRG', 'Super-Règne', 2);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('KD  ', 'Règne', 3);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SSRG', 'Sous-Règne', 4);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('IFRG', 'Infra-Règne', 5);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('PH  ', 'Embranchement', 6);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SBPH', 'Sous-Phylum', 7);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('IFPH', 'Infra-Phylum', 8);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('DV  ', 'Division', 9);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SBDV', 'Sous-division', 10);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SPCL', 'Super-Classe', 11);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('CLAD', 'Cladus', 12);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('CL  ', 'Classe', 13);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SBCL', 'Sous-Classe', 14);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('IFCL', 'Infra-classe', 15);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('LEG ', 'Legio', 16);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SPOR', 'Super-Ordre', 17);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('COH ', 'Cohorte', 18);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('OR  ', 'Ordre', 19);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SBOR', 'Sous-Ordre', 20);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('IFOR', 'Infra-Ordre', 21);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SPFM', 'Super-Famille', 22);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('FM  ', 'Famille', 23);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SBFM', 'Sous-Famille', 24);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('TR  ', 'Tribu', 26);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SSTR', 'Sous-Tribu', 27);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('GN  ', 'Genre', 28);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SSGN', 'Sous-Genre', 29);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SC  ', 'Section', 30);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SBSC', 'Sous-Section', 31);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SER', 'Série', 32);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SSER', 'Sous-Série', 33);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('AGES', 'Agrégat', 34);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('ES  ', 'Espèce', 35);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SMES', 'Semi-espèce', 36);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('MES ', 'Micro-Espèce',37);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SSES', 'Sous-espèce', 38);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('NAT ', 'Natio', 39);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('VAR ', 'Variété', 40);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SVAR ', 'Sous-Variété', 41);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('FO  ', 'Forme', 42);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SSFO', 'Sous-Forme', 43);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('FOES', 'Forma species', 44);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('LIN ', 'Linea', 45);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('CLO ', 'Clône', 46);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('RACE', 'Race', 47);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('CAR ', 'Cultivar', 48);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('MO  ', 'Morpha', 49);
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('AB  ', 'Abberatio',50);
 --n'existe plus dans taxref V9
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('CVAR', 'Convariété');
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('HYB ', 'Hybride');
 --non documenté dans la doc taxref
-INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SPTR', 'Supra-Tribu');
+INSERT INTO bib_taxref_rangs (id_rang, nom_rang, tri_rang) VALUES ('SPTR', 'Supra-Tribu', 25);
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SCO ', '?');
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('PVOR', '?');
 INSERT INTO bib_taxref_rangs (id_rang, nom_rang) VALUES ('SSCO', '?');
@@ -141,7 +141,7 @@ COPY import_taxref (regne, phylum, classe, ordre, famille, group1_inpn, group2_i
           sm, sb, spm, may, epa, reu, taaf, pf, nc, wf, cli, url)
 FROM  '/home/synthese/geonature/data/inpn/TAXREFv90.txt'
 WITH  CSV HEADER 
-DELIMITER E'\t'  encoding 'LATIN1';
+DELIMITER E'\t'  encoding 'UTF-8';
 
 ---selection des taxons faune-flore-fonge uniquement--
 TRUNCATE TABLE taxref CASCADE;

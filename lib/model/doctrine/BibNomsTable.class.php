@@ -1,13 +1,19 @@
 <?php
 
 
-class BibTaxonsTable extends Doctrine_Table
+class BibNomsTable extends Doctrine_Table
 {
+    
+    public static function getInstance()
+    {
+        return Doctrine_Core::getTable('BibNoms');
+    }
     
     private static function test_null($val){
             return ($val!=null || $val!='null' || $val!='');
     }
-    //supprime les enregistrements si une des clÃ©s est Ã©gale Ã  une autre dans un tableau Ã  deux dimentions
+    
+    //supprime les enregistrements si une des clés est égale à une autre dans un tableau à deux dimentions
     private static function clear_fr_egal_latin ($array, $index1, $index2){
         $newarray = array();
         if(is_array($array) && count($array)>0) 
@@ -21,23 +27,20 @@ class BibTaxonsTable extends Doctrine_Table
       return $newarray;
     }
     
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('BibTaxons');
-    }
     public static function listAll()
     {
         $query= Doctrine_Query::create()
-            ->select('t.id_taxon, t.nom_latin' )
-            ->from('BibTaxons t')
-            ->orderBy('t.nom_latin')
+            ->select('t.id_nom, tx.lb_nom nom_latin' )
+            ->from('BibNoms t')
+            ->join('Taxrerf tx')
+            ->orderBy('tx.lb_nom')
             ->fetchArray();
         return $query;
     }
     public static function listSyntheseFr($fff, $patri, $protege)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //requÃ¨te optimisÃ©e = moins 2 secondes
+        //requète optimisée = moins 2 secondes
         $where = 'WHERE cd_nom > 0';
         if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
         if($patri == 'true') {$where .= " AND patrimonial=true"; }
@@ -68,7 +71,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listSyntheseLatin($fff, $patri, $protege)
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-        //requÃ¨te optimisÃ©e = moins 2 secondes
+        //requète optimisée = moins 2 secondes
         $where = 'WHERE cd_nom > 0';
         if($fff != null && $fff != '' && $fff !='all') {$where .= " AND regne='".$fff."'"; }
         if($patri == 'true') {$where .= " AND patrimonial=true"; }
@@ -111,7 +114,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listCflore()
     {
         $query= Doctrine_Query::create()
-            ->select('t.id_taxon, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
+            ->select('t.id_nom, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
             ->distinct()
             ->from('VNomadeTaxonsFlore t')
             ->orderBy('t.nom_latin')
@@ -126,7 +129,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listCf()
     {
         $query= Doctrine_Query::create()
-            ->select('t.id_taxon, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.denombrement, t.patrimonial, t.message,\'orange\' couleur' )
+            ->select('t.id_nom, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.denombrement, t.patrimonial, t.message,\'orange\' couleur' )
             ->distinct()
             ->from('VNomadeTaxonsFaune t')
             ->where('contactfaune = true')
@@ -142,7 +145,7 @@ class BibTaxonsTable extends Doctrine_Table
     public static function listInv()
     {
         $query= Doctrine_Query::create()
-            ->select('t.id_taxon, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
+            ->select('t.id_nom, t.cd_ref, t.cd_nom, t.nom_latin, t.nom_francais, \'inconnue\' derniere_date, 0 nb_obs, t.id_classe, t.patrimonial, t.message,\'orange\' couleur' )
             ->distinct()
             ->from('VNomadeTaxonsInv t')
             ->orderBy('t.nom_latin')
@@ -158,19 +161,19 @@ class BibTaxonsTable extends Doctrine_Table
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "(
-                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
+                    SELECT DISTINCT t.id_nom, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
                     t.id_classe, t.patrimonial, t.message,cut.couleur
                     FROM contactflore.v_nomade_taxons_flore t
-                    LEFT JOIN contactflore.cor_unite_taxon_cflore cut ON cut.id_taxon = t.id_taxon
+                    LEFT JOIN contactflore.cor_unite_taxon_cflore cut ON cut.id_nom = t.id_nom
                     WHERE cut.id_unite_geo = $id_unite_geo
                     ORDER BY t.nom_latin
                 )
                 UNION
                 (
-                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
+                    SELECT DISTINCT t.id_nom, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
                     t.id_classe, t.patrimonial, t.message,'orange' AS couleur
                     FROM contactflore.v_nomade_taxons_flore t
-                    WHERE t.id_taxon NOT IN (SELECT id_taxon FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = $id_unite_geo)
+                    WHERE t.id_nom NOT IN (SELECT id_nom FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = $id_unite_geo)
                     ORDER BY t.nom_latin
                 )";
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -184,20 +187,20 @@ class BibTaxonsTable extends Doctrine_Table
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "(
-                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
+                    SELECT DISTINCT t.id_nom, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
                     t.id_classe, t.denombrement, t.patrimonial, t.message,cut.couleur
                     FROM contactfaune.v_nomade_taxons_faune t
-                    LEFT JOIN contactfaune.cor_unite_taxon cut ON cut.id_taxon = t.id_taxon
+                    LEFT JOIN contactfaune.cor_unite_taxon cut ON cut.id_nom = t.id_nom
                     WHERE cut.id_unite_geo = $id_unite_geo
                     AND t.contactfaune = true
                     ORDER BY t.nom_latin
                 )
                 UNION
                 (
-                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
+                    SELECT DISTINCT t.id_nom, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
                     t.id_classe, t.denombrement, t.patrimonial, t.message,'orange' AS couleur
                     FROM contactfaune.v_nomade_taxons_faune t
-                    WHERE t.id_taxon NOT IN (SELECT id_taxon FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = $id_unite_geo)
+                    WHERE t.id_nom NOT IN (SELECT id_nom FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = $id_unite_geo)
                     AND t.contactfaune = true
                     ORDER BY t.nom_latin
                 )";
@@ -212,19 +215,19 @@ class BibTaxonsTable extends Doctrine_Table
     {
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         $sql = "(
-                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
+                    SELECT DISTINCT t.id_nom, t.cd_ref, t.nom_latin, t.nom_francais, to_char(cut.derniere_date,'dd/mm/yyyy') AS derniere_date,CAST(cut.nb_obs AS varchar), 
                     t.id_classe, t.patrimonial, t.message,cut.couleur
                     FROM contactinv.v_nomade_taxons_inv t
-                    LEFT JOIN contactinv.cor_unite_taxon_inv cut ON cut.id_taxon = t.id_taxon
+                    LEFT JOIN contactinv.cor_unite_taxon_inv cut ON cut.id_nom = t.id_nom
                     WHERE cut.id_unite_geo = $id_unite_geo
                     ORDER BY t.nom_latin
                 )
                 UNION
                 (
-                    SELECT DISTINCT t.id_taxon, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
+                    SELECT DISTINCT t.id_nom, t.cd_ref, t.nom_latin, t.nom_francais, '' AS derniere_date,null as nb_obs, 
                     t.id_classe, t.patrimonial, t.message,'orange' AS couleur
                     FROM contactinv.v_nomade_taxons_inv t
-                    WHERE t.id_taxon NOT IN (SELECT id_taxon FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = $id_unite_geo)
+                    WHERE t.id_nom NOT IN (SELECT id_nom FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = $id_unite_geo)
                     ORDER BY t.nom_latin
                 )";
         $taxons = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -233,5 +236,5 @@ class BibTaxonsTable extends Doctrine_Table
             if($val['nom_francais']==null || $val['nom_francais']=='null' || $val['nom_francais']==''){$val['nom_francais']=$val['nom_latin'];}
         }
         return $taxons;
-    }  
+    }
 }

@@ -111,8 +111,7 @@ class CorFsTaxonTable extends Doctrine_Table
           ->from('TaxrefProtectionArticles r')
           ->innerJoin('r.TaxrefProtectionEspeces cpet')
           ->where('cpet.cd_nom=?', $cd_ref)
-          ->whereIn('r.niveau',array('national','international','communautaire'))
-          // ->orWhereIn('r.cd_protection',array('RV93','DV05','DV38'))
+          ->addWhere('r.concerne_mon_territoire=?', true)
           ->fetchArray();
           $reglementations = array();
           foreach ($reglements as $r)
@@ -133,7 +132,7 @@ class CorFsTaxonTable extends Doctrine_Table
           ->from('TaxrefProtectionArticles r')
           ->innerJoin('r.TaxrefProtectionEspeces cpet')
           ->where('cpet.cd_nom=?', $cd_ref)
-          ->whereIn('r.niveau',array('national','international','communautaire'))
+          ->addWhere('r.concerne_mon_territoire=?', true)
           // ->orWhereIn('r.cd_protection',array('RV93','DV05','DV38'))
           ->fetchArray();
           $reglementations = array();

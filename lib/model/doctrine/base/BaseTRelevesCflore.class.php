@@ -7,7 +7,7 @@
  * 
  * @property integer $id_releve_cflore
  * @property integer $id_cflore
- * @property integer $id_taxon
+ * @property integer $id_nom
  * @property integer $id_abondance_cflore
  * @property integer $id_phenologie_cflore
  * @property boolean $validite_cflore
@@ -19,13 +19,13 @@
  * @property boolean $herbier
  * @property BibAbondancesCflore $BibAbondancesCflore
  * @property BibPhenologiesCflore $BibPhenologiesCflore
- * @property BibTaxons $BibTaxons
+ * @property BibNoms $BibNoms
  * @property TFichesCflore $TFichesCflore
  * @property Doctrine_Collection $VNomadeTaxonsFlore
  * 
  * @method integer              getIdReleveCflore()       Returns the current record's "id_releve_cflore" value
  * @method integer              getIdCflore()             Returns the current record's "id_cflore" value
- * @method integer              getIdTaxon()              Returns the current record's "id_taxon" value
+ * @method integer              getIdNom()                Returns the current record's "id_nom" value
  * @method integer              getIdAbondanceCflore()    Returns the current record's "id_abondance_cflore" value
  * @method integer              getIdPhenologieCflore()   Returns the current record's "id_phenologie_cflore" value
  * @method boolean              getValiditeCflore()       Returns the current record's "validite_cflore" value
@@ -37,12 +37,12 @@
  * @method boolean              getHerbier()              Returns the current record's "herbier" value
  * @method BibAbondancesCflore  getBibAbondancesCflore()  Returns the current record's "BibAbondancesCflore" value
  * @method BibPhenologiesCflore getBibPhenologiesCflore() Returns the current record's "BibPhenologiesCflore" value
- * @method BibTaxons            getBibTaxons()            Returns the current record's "BibTaxons" value
+ * @method BibNoms              getBibNoms()              Returns the current record's "BibNoms" value
  * @method TFichesCflore        getTFichesCflore()        Returns the current record's "TFichesCflore" value
  * @method Doctrine_Collection  getVNomadeTaxonsFlore()   Returns the current record's "VNomadeTaxonsFlore" collection
  * @method TRelevesCflore       setIdReleveCflore()       Sets the current record's "id_releve_cflore" value
  * @method TRelevesCflore       setIdCflore()             Sets the current record's "id_cflore" value
- * @method TRelevesCflore       setIdTaxon()              Sets the current record's "id_taxon" value
+ * @method TRelevesCflore       setIdNom()                Sets the current record's "id_nom" value
  * @method TRelevesCflore       setIdAbondanceCflore()    Sets the current record's "id_abondance_cflore" value
  * @method TRelevesCflore       setIdPhenologieCflore()   Sets the current record's "id_phenologie_cflore" value
  * @method TRelevesCflore       setValiditeCflore()       Sets the current record's "validite_cflore" value
@@ -54,7 +54,7 @@
  * @method TRelevesCflore       setHerbier()              Sets the current record's "herbier" value
  * @method TRelevesCflore       setBibAbondancesCflore()  Sets the current record's "BibAbondancesCflore" value
  * @method TRelevesCflore       setBibPhenologiesCflore() Sets the current record's "BibPhenologiesCflore" value
- * @method TRelevesCflore       setBibTaxons()            Sets the current record's "BibTaxons" value
+ * @method TRelevesCflore       setBibNoms()              Sets the current record's "BibNoms" value
  * @method TRelevesCflore       setTFichesCflore()        Sets the current record's "TFichesCflore" value
  * @method TRelevesCflore       setVNomadeTaxonsFlore()   Sets the current record's "VNomadeTaxonsFlore" collection
  * 
@@ -77,7 +77,7 @@ abstract class BaseTRelevesCflore extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 5,
              ));
-        $this->hasColumn('id_taxon', 'integer', 4, array(
+        $this->hasColumn('id_nom', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              ));
@@ -132,16 +132,16 @@ abstract class BaseTRelevesCflore extends sfDoctrineRecord
              'local' => 'id_phenologie_cflore',
              'foreign' => 'id_phenologie_cflore'));
 
-        $this->hasOne('BibTaxons', array(
-             'local' => 'id_taxon',
-             'foreign' => 'id_taxon'));
+        $this->hasOne('BibNoms', array(
+             'local' => 'id_nom',
+             'foreign' => 'id_nom'));
 
         $this->hasOne('TFichesCflore', array(
              'local' => 'id_cf',
              'foreign' => 'id_cf'));
 
         $this->hasMany('VNomadeTaxonsFlore', array(
-             'local' => 'id_taxon',
-             'foreign' => 'id_taxon'));
+             'local' => 'id_nom',
+             'foreign' => 'id_nom'));
     }
 }

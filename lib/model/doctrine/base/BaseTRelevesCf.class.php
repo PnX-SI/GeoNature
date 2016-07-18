@@ -7,7 +7,7 @@
  * 
  * @property integer $id_releve_cf
  * @property integer $id_cf
- * @property integer $id_taxon
+ * @property integer $id_nom
  * @property integer $id_critere_cf
  * @property integer $am
  * @property integer $af
@@ -23,13 +23,13 @@
  * @property boolean $supprime
  * @property boolean $prelevement
  * @property BibCriteresCf $BibCriteresCf
- * @property BibTaxons $BibTaxons
+ * @property BibNoms $BibNoms
  * @property TFichesCf $TFichesCf
  * @property Doctrine_Collection $VNomadeTaxonsFaune
  * 
  * @method integer             getIdReleveCf()         Returns the current record's "id_releve_cf" value
  * @method integer             getIdCf()               Returns the current record's "id_cf" value
- * @method integer             getIdTaxon()            Returns the current record's "id_taxon" value
+ * @method integer             getIdNom()              Returns the current record's "id_nom" value
  * @method integer             getIdCritereCf()        Returns the current record's "id_critere_cf" value
  * @method integer             getAm()                 Returns the current record's "am" value
  * @method integer             getAf()                 Returns the current record's "af" value
@@ -45,12 +45,12 @@
  * @method boolean             getSupprime()           Returns the current record's "supprime" value
  * @method boolean             getPrelevement()        Returns the current record's "prelevement" value
  * @method BibCriteresCf       getBibCriteresCf()      Returns the current record's "BibCriteresCf" value
- * @method BibTaxons           getBibTaxons()          Returns the current record's "BibTaxons" value
+ * @method BibNoms             getBibNoms()            Returns the current record's "BibNoms" value
  * @method TFichesCf           getTFichesCf()          Returns the current record's "TFichesCf" value
  * @method Doctrine_Collection getVNomadeTaxonsFaune() Returns the current record's "VNomadeTaxonsFaune" collection
  * @method TRelevesCf          setIdReleveCf()         Sets the current record's "id_releve_cf" value
  * @method TRelevesCf          setIdCf()               Sets the current record's "id_cf" value
- * @method TRelevesCf          setIdTaxon()            Sets the current record's "id_taxon" value
+ * @method TRelevesCf          setIdNom()              Sets the current record's "id_nom" value
  * @method TRelevesCf          setIdCritereCf()        Sets the current record's "id_critere_cf" value
  * @method TRelevesCf          setAm()                 Sets the current record's "am" value
  * @method TRelevesCf          setAf()                 Sets the current record's "af" value
@@ -66,7 +66,7 @@
  * @method TRelevesCf          setSupprime()           Sets the current record's "supprime" value
  * @method TRelevesCf          setPrelevement()        Sets the current record's "prelevement" value
  * @method TRelevesCf          setBibCriteresCf()      Sets the current record's "BibCriteresCf" value
- * @method TRelevesCf          setBibTaxons()          Sets the current record's "BibTaxons" value
+ * @method TRelevesCf          setBibNoms()            Sets the current record's "BibNoms" value
  * @method TRelevesCf          setTFichesCf()          Sets the current record's "TFichesCf" value
  * @method TRelevesCf          setVNomadeTaxonsFaune() Sets the current record's "VNomadeTaxonsFaune" collection
  * 
@@ -89,7 +89,7 @@ abstract class BaseTRelevesCf extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 5,
              ));
-        $this->hasColumn('id_taxon', 'integer', 4, array(
+        $this->hasColumn('id_nom', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              ));
@@ -160,16 +160,16 @@ abstract class BaseTRelevesCf extends sfDoctrineRecord
              'local' => 'id_critere_cf',
              'foreign' => 'id_critere_cf'));
 
-        $this->hasOne('BibTaxons', array(
-             'local' => 'id_taxon',
-             'foreign' => 'id_taxon'));
+        $this->hasOne('BibNoms', array(
+             'local' => 'id_nom',
+             'foreign' => 'id_nom'));
 
         $this->hasOne('TFichesCf', array(
              'local' => 'id_cf',
              'foreign' => 'id_cf'));
 
         $this->hasMany('VNomadeTaxonsFaune', array(
-             'local' => 'id_taxon',
-             'foreign' => 'id_taxon'));
+             'local' => 'id_nom',
+             'foreign' => 'id_nom'));
     }
 }

@@ -11,7 +11,7 @@ class TRelevesCfloreTable extends Doctrine_Table
     
     public static function getListRelevesCflore($id_cflore)
     {
-        $select = 'r.id_releve_cflore, r.id_cflore, r.id_taxon, r.nom_taxon_saisi, r.id_abondance_cflore, r.id_phenologie_cflore, r.validite_cflore, r.herbier, r.commentaire, r.determinateur,'.
+        $select = 'r.id_releve_cflore, r.id_cflore, r.id_nom, r.nom_taxon_saisi, r.id_abondance_cflore, r.id_phenologie_cflore, r.validite_cflore, r.herbier, r.commentaire, r.determinateur,'.
             'v.cd_ref, r.cd_ref_origine,v.nom_francais,v.nom_latin, v.patrimonial, v.id_classe, v.message';
         $releves = Doctrine_Query::create()
           ->select($select)

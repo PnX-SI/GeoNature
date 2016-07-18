@@ -133,7 +133,7 @@ class cfActions extends sfGeonatureActions
                 $array_taxon = explode(",",$string_taxon);
                 // Récupération des valeurs dans des variables
                 $id_releve_cf = $array_taxon[0];
-                $id_taxon = $array_taxon[1];
+                $id_nom = $array_taxon[1];
                 $nom_taxon_saisi = $array_taxon[4];
                 $id_critere_cf = $array_taxon[5];
                 $am = $array_taxon[6];
@@ -156,7 +156,7 @@ class cfActions extends sfGeonatureActions
                 //on passe les valeur et on enregistre
                 $taxon->id_releve_cf = $id_releve_cf;
                 $taxon->id_cf = $id_cf;
-                $taxon->id_taxon = $id_taxon;
+                $taxon->id_nom = $id_nom;
                 $taxon->nom_taxon_saisi = str_replace('<!>',',',$nom_taxon_saisi);
                 $taxon->id_critere_cf = $id_critere_cf;
                 $taxon->am= $am;
@@ -287,7 +287,7 @@ class cfActions extends sfGeonatureActions
                 // }
                 // Récupération des valeurs dans des variables
                 $id_releve_cf = $array_taxon[0];
-                $id_taxon = $array_taxon[1];
+                $id_nom = $array_taxon[1];
                 $nom_taxon_saisi = $array_taxon[4];
                 $id_critere_cf = 2;
                 $am = $array_taxon[7];
@@ -311,7 +311,7 @@ class cfActions extends sfGeonatureActions
                 //on passe les valeur et on enregistre
                 $taxon->id_releve_cf = $id_releve_cf;
                 $taxon->id_cf = $id_cf;
-                $taxon->id_taxon = $id_taxon;
+                $taxon->id_nom = $id_nom;
                 $taxon->nom_taxon_saisi = str_replace('<!>',',',$nom_taxon_saisi);
                 $taxon->id_critere_cf = $id_critere_cf;
                 $taxon->am = $am;

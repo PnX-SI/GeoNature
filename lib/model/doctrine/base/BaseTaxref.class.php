@@ -23,7 +23,7 @@
  * @property string $nom_vern_eng
  * @property string $group1_inpn
  * @property string $group2_inpn
- * @property Doctrine_Collection $BibTaxons
+ * @property Doctrine_Collection $BibNoms
  * @property Doctrine_Collection $CorBryoTaxon
  * @property Doctrine_Collection $CorFsTaxon
  * @property Doctrine_Collection $Syntheseff
@@ -47,7 +47,7 @@
  * @method string              getNomVernEng()              Returns the current record's "nom_vern_eng" value
  * @method string              getGroup1Inpn()              Returns the current record's "group1_inpn" value
  * @method string              getGroup2Inpn()              Returns the current record's "group2_inpn" value
- * @method Doctrine_Collection getBibTaxons()               Returns the current record's "BibTaxons" collection
+ * @method Doctrine_Collection getBibNoms()                 Returns the current record's "BibNoms" collection
  * @method Doctrine_Collection getCorBryoTaxon()            Returns the current record's "CorBryoTaxon" collection
  * @method Doctrine_Collection getCorFsTaxon()              Returns the current record's "CorFsTaxon" collection
  * @method Doctrine_Collection getSyntheseff()              Returns the current record's "Syntheseff" collection
@@ -70,7 +70,7 @@
  * @method Taxref              setNomVernEng()              Sets the current record's "nom_vern_eng" value
  * @method Taxref              setGroup1Inpn()              Sets the current record's "group1_inpn" value
  * @method Taxref              setGroup2Inpn()              Sets the current record's "group2_inpn" value
- * @method Taxref              setBibTaxons()               Sets the current record's "BibTaxons" collection
+ * @method Taxref              setBibNoms()                 Sets the current record's "BibNoms" collection
  * @method Taxref              setCorBryoTaxon()            Sets the current record's "CorBryoTaxon" collection
  * @method Taxref              setCorFsTaxon()              Sets the current record's "CorFsTaxon" collection
  * @method Taxref              setSyntheseff()              Sets the current record's "Syntheseff" collection
@@ -164,7 +164,7 @@ abstract class BaseTaxref extends sfDoctrineRecord
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('BibTaxons', array(
+        $this->hasMany('BibNoms', array(
              'local' => 'cd_nom',
              'foreign' => 'cd_nom'));
 

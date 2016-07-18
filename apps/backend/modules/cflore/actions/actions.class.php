@@ -111,7 +111,7 @@ class cfloreActions extends sfGeonatureActions
                 $array_taxon = explode(",",$string_taxon);
                 // Récupération des valeurs dans des variables
                 $id_releve_cflore = $array_taxon[0];
-                $id_taxon = $array_taxon[1];
+                $id_nom = $array_taxon[1];
                 $nom_taxon_saisi = $array_taxon[4];
                 $id_abondance_cflore = $array_taxon[5];
                 $id_phenologie_cflore = $array_taxon[6];
@@ -130,7 +130,7 @@ class cfloreActions extends sfGeonatureActions
                 //on passe les valeur et on enregistre
                 $taxon->id_releve_cflore = $id_releve_cflore;
                 $taxon->id_cflore = $id_cflore;
-                $taxon->id_taxon = $id_taxon;
+                $taxon->id_nom = $id_nom;
                 $taxon->nom_taxon_saisi = str_replace('<!>',',',$nom_taxon_saisi);
                 $taxon->id_abondance_cflore = $id_abondance_cflore;
                 $taxon->id_phenologie_cflore = $id_phenologie_cflore;

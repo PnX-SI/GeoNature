@@ -15,17 +15,17 @@ class bibsActions extends sfGeonatureActions
     }
     public function executeListTaxonsSyntheseFr(sfRequest $request)
     {
-        $val = BibTaxonsTable::listSyntheseFr($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
+        $val = BibNomsTable::listSyntheseFr($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
         return $this->renderText($val);
     }
     public function executeListTaxonsSyntheseLatin(sfRequest $request)
     {
-        $val = BibTaxonsTable::listSyntheseLatin($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
+        $val = BibNomsTable::listSyntheseLatin($request->getParameter('fff'),$request->getParameter('patri'),$request->getParameter('protege'));
         return $this->renderText($val);
     }
     public function executeListTaxonsTreeSynthese(sfRequest $request)
     {
-        $val = BibTaxonsTable::listTreeSynthese();
+        $val = BibNomsTable::listTreeSynthese(null,null,null);
         return $this->renderText(json_encode($val));
     }
     public function executeListSecteurs(sfRequest $request)
@@ -228,7 +228,7 @@ class bibsActions extends sfGeonatureActions
     //---------------- CONTACT FLORE ---------------------------------
     public function executeListTaxonsCflore(sfRequest $request)
     {
-        $val = BibTaxonsTable::listCflore();
+        $val = BibNomsTable::listCflore();
         return $this->renderText(json_encode($val));
     }
 
@@ -245,8 +245,8 @@ class bibsActions extends sfGeonatureActions
             $id_unite_geo = $val['id_unite_geo'];
         }
         if($id_unite_geo!=null){
-        $val = BibTaxonsTable::listCfloreUnite($id_unite_geo);}
-        else{$val = BibTaxonsTable::listCflore();}
+        $val = BibNomsTable::listCfloreUnite($id_unite_geo);}
+        else{$val = BibNomsTable::listCflore();}
         
         return $this->renderText(json_encode($val));
     }
@@ -272,7 +272,7 @@ class bibsActions extends sfGeonatureActions
     
     public function executeListTaxonsCf(sfRequest $request)
     {
-        $val = BibTaxonsTable::listCf();
+        $val = BibNomsTable::listCf();
         return $this->renderText(json_encode($val));
     }
 
@@ -289,8 +289,8 @@ class bibsActions extends sfGeonatureActions
             $id_unite_geo = $val['id_unite_geo'];
         }
         if($id_unite_geo!=null){
-        $val = BibTaxonsTable::listCfUnite($id_unite_geo);}
-        else{$val = BibTaxonsTable::listCf();}
+        $val = BibNomsTable::listCfUnite($id_unite_geo);}
+        else{$val = BibNomsTable::listCf();}
         // print_r(json_encode($val));
         return $this->renderText(json_encode($val));
     }
@@ -316,7 +316,7 @@ class bibsActions extends sfGeonatureActions
     
     public function executeListTaxonsInv(sfRequest $request)
     {
-        $val = BibTaxonsTable::listInv();
+        $val = BibNomsTable::listInv();
         return $this->renderText(json_encode($val));
     }
 
@@ -333,8 +333,8 @@ class bibsActions extends sfGeonatureActions
             $id_unite_geo = $val['id_unite_geo'];
         }
         if($id_unite_geo!=null){
-        $val = BibTaxonsTable::listInvUnite($id_unite_geo);}
-        else{$val = BibTaxonsTable::listInv();}
+        $val = BibNomsTable::listInvUnite($id_unite_geo);}
+        else{$val = BibNomsTable::listInv();}
         // print_r(json_encode($val));
         return $this->renderText(json_encode($val));
     }
