@@ -366,7 +366,7 @@ BEGIN
 				
 				--mise à jour de l'enregistrement correspondant dans syntheseff
 				UPDATE synthese.syntheseff SET
-				code_fiche_source = 'f'||new.id_cflore||'-r'||releves.id_releve_cf,
+				code_fiche_source = 'f'||new.id_cflore||'-r'||releves.id_releve_cflore,
 				id_organisme = new.id_organisme,
 				id_protocole = new.id_protocole,
 				insee = new.insee,
