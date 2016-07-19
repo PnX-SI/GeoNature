@@ -57,6 +57,13 @@ FROM taxonomie.bib_taxons t
 WHERE c.id_taxon = t.id_taxon;
 ALTER TABLE taxonomie.cor_taxon_attribut DROP CONSTRAINT cor_taxon_attribut_pkey;
 ALTER TABLE taxonomie.cor_taxon_attribut ADD PRIMARY KEY (id_attribut, cd_ref);
+
+--Theme
+INSERT INTO taxonomie.bib_themes(id_theme,nom_theme, desc_theme, ordre)
+VALUES (1,'Général', 'Informations générales concernant les taxons', 1);
+VALUES (2,'Atlas', 'Informations relatives à l''atlas', 2);
+UPDATE taxonomie.bib_attributs SET id_theme = 1;
+--Attributs update with thèmes
 UPDATE taxonomie.bib_attributs
 SET 
   liste_valeur_attribut = '{"values":["oui", "non"]}',
@@ -84,12 +91,6 @@ JOIN taxonomie.bib_taxons t
 ON ctl.id_taxon = t.id_taxon
 JOIN taxonomie.bib_noms n
 ON n.cd_nom = t.cd_nom;
-
---Theme
-INSERT INTO taxonomie.bib_themes(id_theme,nom_theme, desc_theme, ordre)
-VALUES (1,'Général', 'Informations générales concernant les taxons', 1);
-VALUES (2,'Atlas', 'Informations relatives à l''atlas', 2);
-UPDATE taxonomie.bib_attributs SET id_theme = 1;
 
 -----------------Grant---------------------
 
@@ -416,7 +417,7 @@ CREATE OR REPLACE VIEW contactflore.v_nomade_classes AS
 ALTER TABLE contactflore.v_nomade_classes OWNER TO geonatuser;
 
 -- View: contactflore.v_nomade_taxons_flore
-DROP VIEW contactflore.v_nomade_taxons_flore;
+--DROP VIEW contactflore.v_nomade_taxons_flore;
 CREATE OR REPLACE VIEW contactflore.v_nomade_taxons_flore AS 
  SELECT DISTINCT n.id_nom,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
@@ -1132,13 +1133,13 @@ ALTER FUNCTION synthese.maj_cor_unite_taxon() OWNER TO geonatuser;
 ----------------------------
 ALTER TABLE contactfaune.cor_message_taxon DROP CONSTRAINT fk_cor_message_taxon_bib_taxons_fa;
 ALTER TABLE contactfaune.cor_message_taxon
-  ADD CONSTRAINT fk_cor_message_taxon_bib_noms_fa FOREIGN KEY (id_nom)
+  ADD CONSTRAINT fk_cor_message_taxon_bib_noms FOREIGN KEY (id_nom)
       REFERENCES taxonomie.bib_noms (id_nom) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE contactfaune.cor_unite_taxon DROP CONSTRAINT fk_cor_unite_taxon_bib_taxons_fa;
 ALTER TABLE contactfaune.cor_unite_taxon
-  ADD CONSTRAINT fk_cor_unite_taxon_bib_noms_fa FOREIGN KEY (id_nom)
+  ADD CONSTRAINT fk_cor_unite_taxon_bib_noms FOREIGN KEY (id_nom)
       REFERENCES taxonomie.bib_noms (id_nom) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION;
 
@@ -1220,6 +1221,48 @@ SELECT taxonomie.fct_build_bibtaxon_attributs_view('Animalia');
 SELECT taxonomie.fct_build_bibtaxon_attributs_view('Plantae');
 SELECT taxonomie.fct_build_bibtaxon_attributs_view('Fungi');
 
+
+--Mise à jour de la relation taxons attributs à partir de la valeur des filtres dans bib_taxons
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT id_taxon, 1 as id_attribut, 'oui' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre2 = 'oui'
+AND tx.cd_nom = tx.cd_ref;
+
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT id_taxon, 1 as id_attribut, 'non' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre2 = 'non'
+AND tx.cd_nom = tx.cd_ref;
+
+SELECT id_taxon, 2 as id_attribut, 'oui' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre3 = 'oui'
+AND tx.cd_nom = tx.cd_ref;
+
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT id_taxon, 2 as id_attribut, 'non' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre3 = 'non'
+AND tx.cd_nom = tx.cd_ref;
+
+--PNE
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT id_taxon, 3 as id_attribut, 'oui' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre4 = 'oui'
+AND tx.cd_nom = tx.cd_ref;
+
+SELECT id_taxon, 3 as id_attribut, 'non' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre4 = 'non'
+AND tx.cd_nom = tx.cd_ref;
 ---- Nettoyage
 -- Petite sauvegarde au cas où avant de tout péter 
 --CREATE SCHEMA save;
