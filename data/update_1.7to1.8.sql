@@ -568,7 +568,7 @@ $BODY$
   --fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
   DECLARE
   couleur text;
-  patri boolean;
+  patri character(3);
   BEGIN
     SELECT cta.valeur_attribut INTO patri 
     FROM taxonomie.bib_noms n
