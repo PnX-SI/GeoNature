@@ -159,16 +159,19 @@ class SyntheseffTable extends Doctrine_Table
             $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
             $sql = "
                 SELECT count(*) AS nb
-                FROM synthese.syntheseff synt
-                LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom 
-                LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
-                LEFT JOIN layers.l_communes com ON com.insee = synt.insee
-                LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
-                JOIN meta.bib_programmes p ON p.id_programme = l.id_programme 
-                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
-                LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
-                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
-                WHERE synt.supprime = false ".$addprefilters;
+                FROM
+                    (SELECT synt.id_synthese, count(*) AS nb
+                    FROM synthese.syntheseff synt
+                    LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom 
+                    LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
+                    LEFT JOIN layers.l_communes com ON com.insee = synt.insee
+                    LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
+                    JOIN meta.bib_programmes p ON p.id_programme = l.id_programme 
+                    LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
+                    LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+                    LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
+                    WHERE synt.supprime = false ".$addprefilters."
+                    GROUP BY synt.id_synthese) a";
             $nb = $dbh->query($sql)->fetchAll();
             $nb_res = $nb[0]['nb'];
             return $nb_res;

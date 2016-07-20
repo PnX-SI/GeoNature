@@ -205,7 +205,7 @@ application.synthese.search = function() {
                             Ext.getCmp('result_count').removeClass('bluebold');
                             if(nbResult<=65535){
                                 Ext.Msg.confirm('Attention !'
-                                    ,'Il y a trop de réponses pour les afficher sans difficulté dans votre navigateur. !<br />Souhaitez vous exporter les '+nbResult+' résultats de votre recherche vers excel ?<br />Attention, selon le volume de données, cette opération peut-être longue voir très longue. Soyez patient(e).'
+                                    ,'Il y a  '+nbResult+' observations. C\'est trop pour les afficher sans difficulté dans votre navigateur. !<br />Souhaitez vous exporter ces observations vers excel ?<br />Attention, seules les observations de votre structure seront exportées et selon le volume de données, cette opération peut-être longue.'
                                     ,function(btn) {
                                         if (btn == 'yes') {
                                             application.synthese.search.exportXlsObs();
