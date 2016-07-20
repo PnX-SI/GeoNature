@@ -418,35 +418,35 @@ INSERT INTO cor_taxon_attribut (cd_ref ,id_attribut, valeur_attribut) VALUES (95
 -- Data for Name: bib_listes; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1, 'Amphibiens',null, 'images/pictos/amphibien.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (2, 'Vers',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (3, 'Entognathes',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (4, 'Echinodermes',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (5, 'Crustacés',null, 'images/pictos/ecrevisse.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (7, 'Pycnogonides',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (8, 'Gastéropodes',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (9, 'Insectes',null, 'images/pictos/insecte.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (10, 'Bivalves',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (11, 'Mammifères',null, 'images/pictos/mammifere.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (12, 'Oiseaux',null, 'images/pictos/oiseau.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (13, 'Poissons',null, 'images/pictos/poisson.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (14, 'Reptiles',null, 'images/pictos/reptile.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (15, 'Myriapodes',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (16, 'Arachnides',null, 'images/pictos/araignee.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (20, 'Rotifères',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (21, 'Tardigrades',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (101, 'Mollusques',null, 'images/pictos/mollusque.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (301, 'Bryophytes',null, 'images/pictos/mousse.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (302, 'Lichens',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (303, 'Algues',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (305, 'Ptéridophytes',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (306, 'Monocotylédones',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (307, 'Dycotylédones',null, 'images/pictos/nopicto.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (1, 'Amphibiens',null, 'images/pictos/amphibien.gif','Animalia','Amphibiens');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (2, 'Vers',null, 'images/pictos/nopicto.gif','Animalia','Annélides');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (3, 'Entognathes',null, 'images/pictos/nopicto.gif','Animalia','Entognathes');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (4, 'Echinodermes',null, 'images/pictos/nopicto.gif','Animalia','<Autres>');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (5, 'Crustacés',null, 'images/pictos/ecrevisse.gif','Animalia','Crustacés');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (7, 'Pycnogonides',null, 'images/pictos/nopicto.gif','Animalia','Pycnogonides');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (8, 'Gastéropodes',null, 'images/pictos/nopicto.gif','Animalia','Gastéropodes');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (9, 'Insectes',null, 'images/pictos/insecte.gif','Animalia','Insectes');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (10, 'Bivalves',null, 'images/pictos/nopicto.gif','Animalia','Bivalves');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (11, 'Mammifères',null, 'images/pictos/mammifere.gif','Animalia','Mammifères');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (12, 'Oiseaux',null, 'images/pictos/oiseau.gif','Animalia','Oiseaux');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (13, 'Poissons',null, 'images/pictos/poisson.gif','Animalia','Poissons' );
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (14, 'Reptiles',null, 'images/pictos/reptile.gif','Animalia','Reptiles');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (15, 'Myriapodes',null, 'images/pictos/nopicto.gif','Animalia','Myriapodes');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (16, 'Arachnides',null, 'images/pictos/araignee.gif','Animalia','Arachnides');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (20, 'Rotifères',null, 'images/pictos/nopicto.gif','Animalia','<Autres>');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (21, 'Tardigrades',null, 'images/pictos/nopicto.gif','Animalia','<Autres>');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (101, 'Mollusques',null, 'images/pictos/mollusque.gif','Animalia','<Autres>');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (301, 'Bryophytes',null, 'images/pictos/mousse.gif','Plantae','Mousses');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (302, 'Lichens',null, 'images/pictos/nopicto.gif','Plantae','Lichens');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (303, 'Algues',null, 'images/pictos/nopicto.gif','Plantae','Algues');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (305, 'Ptéridophytes',null, 'images/pictos/nopicto.gif','Plantae','Angiospermes');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (306, 'Monocotylédones',null, 'images/pictos/nopicto.gif','Plantae','Angiospermes');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) VALUES (307, 'Dycotylédones',null, 'images/pictos/nopicto.gif','Plantae','Angiospermes');
 INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (666, 'Nuisibles',null, 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1001, 'Faune vertébrée', 'Liste servant à l''affichage des taxons de la faune vertébré pouvant être saisis', 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1002, 'Faune invertébrée', 'Liste servant à l''affichage des taxons de la faune invertébré pouvant être saisis', 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1003, 'Flore', 'Liste servant à l''affichage des taxons de la flore pouvant être saisis', 'images/pictos/nopicto.gif');
-INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto) VALUES (1004, 'Fonge','Liste servant à l''affichage des taxons de la fonge pouvant être saisis', 'images/pictos/champignon.gif');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne) VALUES (1001, 'Faune vertébrée', 'Liste servant à l''affichage des taxons de la faune vertébré pouvant être saisis', 'images/pictos/nopicto.gif','Animalia');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne) VALUES (1002, 'Faune invertébrée', 'Liste servant à l''affichage des taxons de la faune invertébré pouvant être saisis', 'images/pictos/nopicto.gif','Animalia');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne) VALUES (1003, 'Flore', 'Liste servant à l''affichage des taxons de la flore pouvant être saisis', 'images/pictos/nopicto.gif','Plantae');
+INSERT INTO bib_listes (id_liste ,nom_liste,desc_liste,picto,regne) VALUES (1004, 'Fonge','Liste servant à l''affichage des taxons de la fonge pouvant être saisis', 'images/pictos/champignon.gif','Fungi');
 
 
 --

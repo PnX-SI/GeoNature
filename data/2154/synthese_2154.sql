@@ -3745,7 +3745,9 @@ CREATE TABLE bib_listes
     id_liste integer NOT NULL,
     nom_liste character varying(255) NOT NULL,
     desc_liste text,
-    picto character varying(50) -- Indique le chemin vers l'image du picto représentant le groupe taxonomique dans les menus déroulants de taxons
+    picto character varying(50), -- Indique le chemin vers l'image du picto représentant le groupe taxonomique dans les menus déroulants de taxons
+    regne character varying(20),
+    group2_inpn character varying(255)
    );
    
 --
@@ -5129,6 +5131,76 @@ CREATE VIEW v_nomade_observateurs_all AS
 
 CREATE VIEW v_observateurs AS
     SELECT DISTINCT r.id_role AS codeobs, (((r.nom_role)::text || ' '::text) || (r.prenom_role)::text) AS nomprenom FROM t_roles r WHERE ((r.id_role IN (SELECT DISTINCT cr.id_role_utilisateur FROM cor_roles cr WHERE (cr.id_role_groupe IN (SELECT crm.id_role FROM cor_role_menu crm WHERE (crm.id_menu = 9))) ORDER BY cr.id_role_utilisateur)) OR (r.id_role IN (SELECT crm.id_role FROM (cor_role_menu crm JOIN t_roles r ON ((((r.id_role = crm.id_role) AND (crm.id_menu = 9)) AND (r.groupe = false))))))) ORDER BY (((r.nom_role)::text || ' '::text) || (r.prenom_role)::text), r.id_role;
+
+    
+--
+-- Name: v_userslist_forall_applications; Type: VIEW; Schema: utilisateurs; Owner: -
+--
+    
+CREATE OR REPLACE VIEW v_userslist_forall_applications AS 
+ SELECT a.groupe,
+    a.id_role,
+    a.identifiant,
+    a.nom_role,
+    a.prenom_role,
+    a.desc_role,
+    a.pass,
+    a.email,
+    a.id_organisme,
+    a.organisme,
+    a.id_unite,
+    a.remarques,
+    a.pn,
+    a.session_appli,
+    a.date_insert,
+    a.date_update,
+    max(a.id_droit) AS id_droit_max,
+    a.id_application
+   FROM ( SELECT u.groupe,
+            u.id_role,
+            u.identifiant,
+            u.nom_role,
+            u.prenom_role,
+            u.desc_role,
+            u.pass,
+            u.email,
+            u.id_organisme,
+            u.organisme,
+            u.id_unite,
+            u.remarques,
+            u.pn,
+            u.session_appli,
+            u.date_insert,
+            u.date_update,
+            c.id_droit,
+            c.id_application
+           FROM t_roles u
+             JOIN cor_role_droit_application c ON c.id_role = u.id_role
+          WHERE u.groupe = false
+        UNION
+         SELECT u.groupe,
+            u.id_role,
+            u.identifiant,
+            u.nom_role,
+            u.prenom_role,
+            u.desc_role,
+            u.pass,
+            u.email,
+            u.id_organisme,
+            u.organisme,
+            u.id_unite,
+            u.remarques,
+            u.pn,
+            u.session_appli,
+            u.date_insert,
+            u.date_update,
+            c.id_droit,
+            c.id_application
+           FROM t_roles u
+             JOIN cor_roles g ON g.id_role_utilisateur = u.id_role
+             JOIN cor_role_droit_application c ON c.id_role = g.id_role_groupe
+          WHERE u.groupe = false) a
+  GROUP BY a.groupe, a.id_role, a.identifiant, a.nom_role, a.prenom_role, a.desc_role, a.pass, a.email, a.id_organisme, a.organisme, a.id_unite, a.remarques, a.pn, a.session_appli, a.date_insert, a.date_update, a.id_application;
 
     
 SET search_path = florepatri, pg_catalog;
@@ -9946,6 +10018,15 @@ GRANT ALL ON TABLE v_nomade_observateurs_all TO postgres;
 REVOKE ALL ON TABLE v_observateurs FROM PUBLIC;
 REVOKE ALL ON TABLE v_observateurs FROM geonatuser;
 GRANT ALL ON TABLE v_observateurs TO geonatuser;
+
+
+--
+-- Name: v_userslist_forall_applications; Type: ACL; Schema: utilisateurs; Owner: -
+--
+
+REVOKE ALL ON TABLE v_userslist_forall_applications FROM PUBLIC;
+REVOKE ALL ON TABLE v_userslist_forall_applications FROM geonatuser;
+GRANT ALL ON TABLE v_userslist_forall_applications TO geonatuser;
 
 --
 -- PostgreSQL database dump complete
