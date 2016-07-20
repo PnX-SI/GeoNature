@@ -176,8 +176,8 @@ TRUNCATE TABLE taxonomie.taxref;
 ALTER TABLE taxonomie.taxref ADD cd_sup integer;
 INSERT INTO taxonomie.taxref
       SELECT cd_nom, fr as id_statut, habitat::int as id_habitat, rang as  id_rang, regne, phylum, classe, 
-             ordre, famille, cd_taxsup, cd_sup, cd_ref, lb_nom, substring(lb_auteur, 1, 150), nom_complet, 
-             nom_valide, nom_vern, nom_vern_eng, group1_inpn, group2_inpn
+             ordre, famille, cd_taxsup, cd_ref, lb_nom, substring(lb_auteur, 1, 150), nom_complet, 
+             nom_valide, nom_vern, nom_vern_eng, group1_inpn, group2_inpn, nom_complet_html, cd_sup
         FROM taxonomie.import_taxref
         WHERE regne = 'Animalia' ---selection des taxons faune-flore-fonge uniquement--
         OR regne = 'Fungi'
