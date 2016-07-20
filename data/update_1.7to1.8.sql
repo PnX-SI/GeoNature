@@ -44,7 +44,33 @@ ALTER TABLE taxonomie.bib_attributs ADD regne character varying(20);
 ALTER TABLE taxonomie.bib_attributs ADD group2_inpn character varying(255);
 ALTER TABLE taxonomie.bib_attributs ADD id_theme INTEGER  REFERENCES taxonomie.bib_themes (id_theme);
 ALTER TABLE taxonomie.bib_attributs ADD ordre INTEGER;
-
+ALTER TABLE taxonomie.bib_listes ADD COLUMN regne character varying(20);
+ALTER TABLE taxonomie.bib_listes ADD COLUMN group2_inpn character varying(255);
+UPDATE taxonomie.bib_listes SET regne = 'Animalia' WHERE id_liste IN(1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,20,21,101,1001,1002);
+UPDATE taxonomie.bib_listes SET regne = 'Plantae' WHERE id_liste IN(300,301,302,303,305,306,307,1003);
+UPDATE taxonomie.bib_listes SET regne = 'Fungi' WHERE id_liste IN(1004);
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Amphibiens' WHERE id_liste =1;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Annélides' WHERE id_liste =2;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Entognathes' WHERE id_liste =3;
+UPDATE taxonomie.bib_listes SET group2_inpn = '<Autres>' WHERE id_liste =4;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Crustacés' WHERE id_liste =5;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Pycnogonides' WHERE id_liste =7;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Gastéropodes' WHERE id_liste =8;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Insectes' WHERE id_liste =9;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Bivalves' WHERE id_liste =10;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Mammifères' WHERE id_liste =11;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Oiseaux' WHERE id_liste =12;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Poissons' WHERE id_liste =13;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Reptiles' WHERE id_liste =14;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Myriapodes' WHERE id_liste =15;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Arachnides' WHERE id_liste =16;
+UPDATE taxonomie.bib_listes SET group2_inpn = '<Autres>' WHERE id_liste =20;
+UPDATE taxonomie.bib_listes SET group2_inpn = '<Autres>' WHERE id_liste =21;
+UPDATE taxonomie.bib_listes SET group2_inpn = '<Autres>' WHERE id_liste =101;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Mousses' WHERE id_liste =301;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Lichens' WHERE id_liste =302;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Algues' WHERE id_liste =303;
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Angiospermes' WHERE id_liste IN (305,306,307);
 
 -------------Transfert des données--------------------------
 --Bib_noms
@@ -528,6 +554,74 @@ CREATE OR REPLACE VIEW synthese.v_export_sinp AS
   WHERE s.supprime = false;
 ALTER TABLE synthese.v_export_sinp OWNER TO geonatuser;
 
+-- View: utilisateurs.v_userslist_forall_applications
+CREATE OR REPLACE VIEW utilisateurs.v_userslist_forall_applications AS 
+ SELECT a.groupe,
+    a.id_role,
+    a.identifiant,
+    a.nom_role,
+    a.prenom_role,
+    a.desc_role,
+    a.pass,
+    a.email,
+    a.id_organisme,
+    a.organisme,
+    a.id_unite,
+    a.remarques,
+    a.pn,
+    a.session_appli,
+    a.date_insert,
+    a.date_update,
+    max(a.id_droit) AS id_droit_max,
+    a.id_application
+   FROM ( SELECT u.groupe,
+            u.id_role,
+            u.identifiant,
+            u.nom_role,
+            u.prenom_role,
+            u.desc_role,
+            u.pass,
+            u.email,
+            u.id_organisme,
+            u.organisme,
+            u.id_unite,
+            u.remarques,
+            u.pn,
+            u.session_appli,
+            u.date_insert,
+            u.date_update,
+            c.id_droit,
+            c.id_application
+           FROM utilisateurs.t_roles u
+             JOIN utilisateurs.cor_role_droit_application c ON c.id_role = u.id_role
+          WHERE u.groupe = false
+        UNION
+         SELECT u.groupe,
+            u.id_role,
+            u.identifiant,
+            u.nom_role,
+            u.prenom_role,
+            u.desc_role,
+            u.pass,
+            u.email,
+            u.id_organisme,
+            u.organisme,
+            u.id_unite,
+            u.remarques,
+            u.pn,
+            u.session_appli,
+            u.date_insert,
+            u.date_update,
+            c.id_droit,
+            c.id_application
+           FROM utilisateurs.t_roles u
+             JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
+             JOIN utilisateurs.cor_role_droit_application c ON c.id_role = g.id_role_groupe
+          WHERE u.groupe = false) a
+  GROUP BY a.groupe, a.id_role, a.identifiant, a.nom_role, a.prenom_role, a.desc_role, a.pass, a.email, a.id_organisme, a.organisme, a.id_unite, a.remarques, a.pn, a.session_appli, a.date_insert, a.date_update, a.id_application;
+ALTER TABLE utilisateurs.v_userslist_forall_applications OWNER TO geonatuser;
+GRANT ALL ON TABLE utilisateurs.v_userslist_forall_applications TO geonatuser;
+
 
 ---------------FUNCTIONS----------------
 
@@ -841,7 +935,7 @@ BEGIN
 	    END IF;
         END LOOP;
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 	IF test IS NOT NULL THEN
