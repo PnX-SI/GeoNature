@@ -342,21 +342,6 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 
 SET search_path = taxonomie, pg_catalog;
 
---
--- TOC entry 3122 (class 0 OID 126729)
--- Dependencies: 194
--- Data for Name: bib_filtres; Type: TABLE DATA; Schema: taxonomie; Owner: -
---
-
-INSERT INTO taxonomie.bib_filtres VALUES (2, 'patrimonial', 'Patrimoniale', NULL, NULL, 'Défini si le taxon est patrimonial pour le territoire', NULL, 'oui;non', true);
-INSERT INTO taxonomie.bib_filtres VALUES (4, 'reproducteur', 'Reproducteur', NULL, NULL, 'Indique si le taxon est reproducteur sur le territoire', NULL, 'oui;non', false);
-INSERT INTO taxonomie.bib_filtres VALUES (1, 'saisie', NULL, NULL, NULL, 'Permet d''exclure des taxons des menus déroulants de saisie', NULL, 'oui;non', true);
-INSERT INTO taxonomie.bib_filtres VALUES (5, 'responsabilite_pne', 'Responsabilité', 'Responsabilité du PN Ecrins', NULL, 'Indique le niveau de responsabilité du PNE vis à vis de la conservation de ce taxon', NULL, 'nulle;faible;moyenne;forte;indéterminée', true);
-INSERT INTO taxonomie.bib_filtres VALUES (6, 'statut_migration', 'Migrateur', 'Statut de migrateur', NULL, 'Indique le comportement de migrateur du taxon', NULL, 'sédentaire;migrateur-erratique-hivernant;estivant;disparu;absent;inconnu', true);
-INSERT INTO taxonomie.bib_filtres VALUES (7, 'importance_population', 'Population', 'Importance de la population', NULL, 'Indique l''importance de la population pour le territoire', NULL, 'inexistante;anecdoctique;localisée;faible;moyenne;significative;inconnue', false);
-INSERT INTO taxonomie.bib_filtres VALUES (3, 'protection_stricte', 'Protection stricte', 'Taxon protégé', NULL, 'Indique si le taxon est bénéficie d''un statut de protection sur le territoire (en excluant les statuts de réglementation)', NULL, 'oui;non', true);
-INSERT INTO taxonomie.bib_filtres VALUES (8, 'règlementé', 'Règlementation', 'Taxon règlementé', NULL, 'Indique que le taxon fait l''objet d''une réglementation sur le territoire', NULL, 'oui;non', false);
-
 
 --
 -- TOC entry 3122 (class 0 OID 126729)

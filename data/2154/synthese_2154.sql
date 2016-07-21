@@ -3700,23 +3700,6 @@ CREATE VIEW v_nomade_observateurs_faune AS
 SET search_path = taxonomie, pg_catalog;
 
 --
--- Name: bib_filtres; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-CREATE TABLE taxonomie.bib_filtres
-(
-  id_filtre integer NOT NULL,
-  nom_filtre character varying(50),
-  label1 character varying(50),
-  label2 character varying(50),
-  label3 character varying(50),
-  descr_filtre character varying(500),
-  img character varying(250),
-  valeur_filtre character varying(1000),
-  obligatoire boolean DEFAULT false
-  );
-
---
 -- Name: bib_attributs; Type: TABLE; Schema: taxonomie; Owner: -; Tablespace: 
 --
 
@@ -6213,13 +6196,6 @@ ALTER TABLE ONLY syntheseff
 
 
 SET search_path = taxonomie, pg_catalog;
-
---
--- Name: pk_bib_filtres; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_filtres
-    ADD CONSTRAINT pk_bib_filtres PRIMARY KEY (id_filtre);
 
 --
 -- Name: pk_bib_attributs; Type: CONSTRAINT; Schema: taxonomie; Owner: -; Tablespace: 
@@ -9816,15 +9792,6 @@ GRANT ALL ON TABLE bib_listes TO geonatuser;
 REVOKE ALL ON TABLE bib_taxref_categories_lr FROM PUBLIC;
 REVOKE ALL ON TABLE bib_taxref_categories_lr FROM geonatuser;
 GRANT ALL ON TABLE bib_taxref_categories_lr TO geonatuser;
-
-
---
--- Name: bib_filtres; Type: ACL; Schema: taxonomie; Owner: -
---
-
-REVOKE ALL ON TABLE bib_filtres FROM PUBLIC;
-REVOKE ALL ON TABLE bib_filtres FROM geonatuser;
-GRANT ALL ON TABLE bib_filtres TO geonatuser;
 
 
 --
