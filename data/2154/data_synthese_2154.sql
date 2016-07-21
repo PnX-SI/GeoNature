@@ -387,8 +387,9 @@ INSERT INTO bib_themes (id_theme ,nom_theme, desc_theme, ordre) VALUES (1, 'Gén
 -- Data for Name: bib_attributs; Type: TABLE DATA; Schema: taxonomie; Owner: -
 --
 
-INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (1, 'patrimonial', 'Patrimonial', '{"values":["oui", "non"]}', true, 'Défini si le taxon est patrimonial pour le territoire', 'boolean', 'radio', 1, 1, null, null);
-INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (2, 'protection_stricte', 'Protégé', '{"values":["oui", "non"]}',true,'Défini si le taxon bénéficie d''une protection juridique stricte pour le territoire', 'boolean', 'radio', 1, 2, null, null);
+INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (1, 'patrimonial', 'Patrimonial', '{"values":["oui", "non"]}', true, 'Défini si le taxon est patrimonial pour le territoire', 'text', 'radio', 1, 1, null, null);
+INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (2, 'protection_stricte', 'Protégé', '{"values":["oui", "non"]}',true,'Défini si le taxon bénéficie d''une protection juridique stricte pour le territoire', 'text', 'radio', 1, 2, null, null);
+INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (2, 'saisie', 'Saisie possible', '{"values":["oui", "non"]}',true,'Permet d''exclure des taxons des menus déroulants de saisie', 'text', 'radio', 1, 3, null, null);
 
 
 --
