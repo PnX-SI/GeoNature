@@ -1,4 +1,5 @@
 --
+--
 -- PostgreSQL database dump
 --
 
@@ -3783,7 +3784,7 @@ CREATE TABLE cor_taxon_attribut
    (
     cd_ref integer NOT NULL,
     id_attribut integer NOT NULL,
-    valeur_attribut character varying(50) NOT NULL
+    valeur_attribut text NOT NULL
    );
 
    
