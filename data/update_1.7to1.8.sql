@@ -16,6 +16,17 @@ CREATE TABLE taxonomie.bib_noms
 -- Les attributs sont attachés à un taxon (cd_ref) afin d'éviter une éventuelle incohérence : attributs renseignés de manière différente pour 2 synonymes.
 ALTER TABLE taxonomie.cor_taxon_attribut ADD cd_ref integer;
 ALTER TABLE taxonomie.cor_taxon_attribut ADD CONSTRAINT check_is_cd_ref CHECK (cd_ref = taxonomie.find_cdref(cd_ref)); -- Le cd_ref fourni doit être un taxon de référence dans taxref.
+-- en prévision de l'atals, la valeur des attribut peut-être très longue
+DROP VIEW synthese.v_taxons_synthese;
+DROP VIEW contactfaune.v_nomade_taxons_faune;
+DROP VIEW contactflore.v_nomade_taxons_flore;
+DROP VIEW contactinv.v_nomade_taxons_inv;
+DROP VIEW taxonomie.v_nomade_classes;
+DROP VIEW contactfaune.v_nomade_classes;
+DROP VIEW contactflore.v_nomade_classes;
+DROP VIEW contactinv.v_nomade_classes;
+DROP VIEW florepatri.v_nomade_classes;
+ALTER TABLE taxonomie.cor_taxon_attribut ALTER COLUMN valeur_attribut TYPE text;
 
 CREATE TABLE taxonomie.cor_nom_liste
 (
@@ -496,6 +507,32 @@ CREATE OR REPLACE VIEW florepatri.v_nomade_classes AS
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.regne::text = 'Plantae'::text;
 ALTER TABLE florepatri.v_nomade_classes OWNER TO geonatuser;
+
+CREATE OR REPLACE VIEW taxonomie.v_nomade_classes AS 
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM contactfaune.v_nomade_classes
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM contactinv.v_nomade_classes
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM florepatri.v_nomade_classes
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM contactflore.v_nomade_classes;
+
+ALTER TABLE taxonomie.v_nomade_classes
+  OWNER TO cartopne;
+GRANT ALL ON TABLE taxonomie.v_nomade_classes TO cartopne;
+GRANT SELECT ON TABLE taxonomie.v_nomade_classes TO pnv;
 
 -- View: synthese.v_taxons_synthese
 DROP VIEW synthese.v_taxons_synthese;
