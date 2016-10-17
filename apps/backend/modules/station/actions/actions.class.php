@@ -378,7 +378,7 @@ class stationActions extends sfGeonatureActions
             $litiere = $l['litiere'];
             $delphines = $l['delphines'];
             $remarques = str_replace( array( CHR(10), CHR(13), "\n", "\r" ), array( ' - ',' - ',' - ',' - '), $l['remarques'] );
-            $x = $l['y_local'];
+            $x = $l['x_local'];
             $y = $l['y_local'];
             $relue = (!$l['relue'])?'non':'oui';
             if ($l['pdop']==-1){$l['pdop'] = 'non précisé';}
