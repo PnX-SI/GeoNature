@@ -9,15 +9,15 @@ SET search_path = taxonomie, pg_catalog;
 -- Data for Name: bib_taxref_habitats; Type: TABLE DATA; Schema: taxonomie; Owner: geonatuser
 --
 
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (1, 'Marin');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (2, 'Eau douce');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (3, 'Terrestre');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (5, 'Marin et Terrestre');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (6, 'Eau Saumâtre');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (7, 'Continental (Terrestre et/ou Eau douce)');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (0, 'Non renseigné');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (4, 'Marin et Eau douce');
-INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat) VALUES (8, 'Continental (Terrestre et Eau douce)');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (1, 'Marin', 'Espèces vivant uniquement en milieu marin');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (2, 'Eau douce', 'Espèces vivant uniquement en milieu d''eau douce');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (3, 'Terrestre', 'Espèces vivant uniquement en milieu terrestre');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (5, 'Marin et Terrestre', 'Espèces effectuant une partie de leur cycle de vie en eau douce et l''autre partie en mer (espèces diadromes, amphidromes, anadromes ou catadromes)');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (6, 'Eau Saumâtre', 'Cas des pinnipèdes, des tortues et des oiseaux marins (par exemple)');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (7, 'Continental (Terrestre et/ou Eau douce)', 'Espèces vivant exclusivement en eau saumâtre');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (0, 'Non renseigné', null);
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (4, 'Marin et Eau douce', 'Espèces continentales (non marines) dont on ne sait pas si elles sont terrestres et/ou d''eau douce (taxons provenant de Fauna Europaea)');
+INSERT INTO bib_taxref_habitats (id_habitat, nom_habitat, desc_habitat) VALUES (8, 'Continental (Terrestre et Eau douce)', 'Espèces terrestres effectuant une partie de leur cycle en eau douce (odonates par exemple), ou fortement liées au milieu aquatique (loutre par exemple)');
 
 
 --
@@ -139,20 +139,17 @@ COPY import_taxref (regne, phylum, classe, ordre, famille, group1_inpn, group2_i
           cd_nom, cd_taxsup, cd_sup, cd_ref, rang, lb_nom, lb_auteur, nom_complet, nom_complet_html,
           nom_valide, nom_vern, nom_vern_eng, habitat, fr, gf, mar, gua, 
           sm, sb, spm, may, epa, reu, taaf, pf, nc, wf, cli, url)
-FROM  '/home/synthese/geonature/data/inpn/TAXREFv90.txt'
+FROM  '/tmp/TAXREFv90.txt'
 WITH  CSV HEADER 
 DELIMITER E'\t'  encoding 'UTF-8';
 
----selection des taxons faune-flore-fonge uniquement--
+--insertion dans la table taxref
 TRUNCATE TABLE taxref CASCADE;
 INSERT INTO taxref
       SELECT cd_nom, fr as id_statut, habitat::int as id_habitat, rang as  id_rang, regne, phylum, classe, 
-             ordre, famille, cd_taxsup, cd_sup, cd_ref, lb_nom, substring(lb_auteur, 1, 150), nom_complet, 
-             nom_valide, nom_vern, nom_vern_eng, group1_inpn, group2_inpn
-        FROM import_taxref
-        WHERE regne = 'Animalia'
-        OR regne = 'Fungi'
-        OR regne = 'Plantae';
+             ordre, famille, cd_taxsup, cd_sup, cd_ref, lb_nom, substring(lb_auteur, 1, 150),
+             nom_complet, nom_complet_html,nom_valide, substring(nom_vern,1,255), nom_vern_eng, group1_inpn, group2_inpn
+        FROM import_taxref;
 
 
 ----PROTECTION
@@ -160,9 +157,10 @@ INSERT INTO taxref
 ---import des statuts de protections
 TRUNCATE TABLE taxref_protection_articles CASCADE;
 COPY taxref_protection_articles (
-cd_protection, article, intitule, arrete, url_inpn, cd_doc, url, date_arrete, type_protection
+cd_protection, article, intitule, arrete, 
+url_inpn, cd_doc, url, date_arrete, type_protection
 )
-FROM  '/home/synthese/geonature/data/inpn/PROTECTION_ESPECES_TYPES_90.csv'
+FROM  '/tmp/PROTECTION_ESPECES_TYPES_90.csv'
 WITH  CSV HEADER 
 DELIMITER ';'  encoding 'LATIN1';
 
@@ -174,12 +172,14 @@ CREATE TABLE import_protection_especes (
 	nom_cite text,
 	syn_cite text,
 	nom_francais_cite text,
+
 	precisions varchar(500),
 	cd_nom_cite int
+
 );
 
 COPY import_protection_especes
-FROM  '/home/synthese/geonature/data/inpn/PROTECTION_ESPECES_90.csv'
+FROM  '/tmp/PROTECTION_ESPECES_90.csv'
 WITH  CSV HEADER 
 DELIMITER ';'  encoding 'LATIN1';
 
@@ -188,7 +188,7 @@ TRUNCATE TABLE taxonomie.taxref_liste_rouge_fr;
 COPY taxonomie.taxref_liste_rouge_fr (ordre_statut,vide,cd_nom,cd_ref,nomcite,nom_scientifique,auteur,nom_vernaculaire,nom_commun,
     rang,famille,endemisme,population,commentaire,id_categorie_france,criteres_france,liste_rouge,fiche_espece,tendance,
     liste_rouge_source,annee_publication,categorie_lr_europe,categorie_lr_mondiale)
-FROM  '/home/synthese/geonature/data/inpn/LR_FRANCE.csv'
+FROM  '/tmp/LR_FRANCE.csv'
 WITH  CSV HEADER 
 DELIMITER E'\;'  encoding 'UTF-8';
 
@@ -225,7 +225,5 @@ WHERE cd_protection IN (
 --WHERE cd_protection IN (
 	--SELECT cd_protection
 	--FROM  taxonomie.taxref_protection_articles
-	--WHERE
-		--niveau IN ('international', 'national', 'communautaire')
-		--AND type_protection = 'Protection'
+	--WHERE type_protection = 'Protection'
 --);
