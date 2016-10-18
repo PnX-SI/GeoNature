@@ -42,7 +42,7 @@ then
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
 
 
-    # Mise en place de la structure de la base et des données permettant son focntionnement avec l'application
+    # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
     echo "Grant..."
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/grant.sql &> log/install_db.log
     
