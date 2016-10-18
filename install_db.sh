@@ -46,18 +46,40 @@ then
     echo "Grant..."
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/grant.sql &> log/install_db.log
     
-    echo "Création du schema taxonomie..."
-    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/create_schema_taxonomie.sql  &>> log/install_db.log
+    if [ $users_schema = "local" ]
+        then
+            echo "Création du schéma utilisateurs..."
+            export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_schema_utilisateurs.sql  &>> log/install_db.log
+            export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/data_utilisateurs.sql  &>> log/install_db.log
+            export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
     
+    else
+        echo "Connexion à la base Utilisateur..."
+        cp data/utilisateurs/create_fdw_utilisateurs.sql /tmp/create_fdw_utilisateurs.sql
+        sed -i "s#\$user_pg#$user_pg#g" /tmp/create_fdw_utilisateurs.sql
+        sed -i "s#\$usershub_host#$usershub_host#g" /tmp/create_fdw_utilisateurs.sql
+        sed -i "s#\$usershub_db#$usershub_db#g" /tmp/create_fdw_utilisateurs.sql
+        sed -i "s#\$usershub_port#$usershub_port#g" /tmp/create_fdw_utilisateurs.sql
+        sed -i "s#\$usershub_user#$usershub_user#g" /tmp/create_fdw_utilisateurs.sql
+        sed -i "s#\$usershub_pass#$usershub_pass#g" /tmp/create_fdw_utilisateurs.sql
+        export PGPASSWORD=$admin_pg_pass;psql -h $db_host -U $admin_pg -d $db_name -f /tmp/create_fdw_utilisateurs.sql  &>> log/install_db.log
+    fi
+
     echo "Décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
     unzip TAXREF_INPN_v9.0.zip -d /tmp
   	unzip ESPECES_REGLEMENTEES_v9.zip -d /tmp
     unzip LR_FRANCE.zip -d /tmp
-
-    echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
     cd ../../..
+    
+    echo "Création du schéma taxonomie..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/create_schema_taxonomie.sql  &>> log/install_db.log
+    
+    echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/taxonomie/inpn/data_inpn_v9_synthese.sql &>> log/install_db.log
+    
+    echo "Création des données exemples et des données liées à TaxHub..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/data_taxonomie.sql  &>> log/install_db.log
     
     echo "Création de la vue représentant la hierarchie taxonomique..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/vm_hierarchie_taxo.sql  &>> log/install_db.log
