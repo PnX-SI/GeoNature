@@ -67,7 +67,7 @@ $_$;
 CREATE FUNCTION find_cdref(id integer) RETURNS integer
     LANGUAGE plpgsql IMMUTABLE
     AS $$
---fonction permettant de renvoyer le cd_ref d'un taxon à partir de son cd_nom
+--fonction permettant de renvoyer le cd_ref d'un taxon Ã  partir de son cd_nom
 --
 --Gil DELUERMOZ septembre 2011
 
@@ -191,7 +191,7 @@ CREATE TABLE bib_listes (
 -- Name: COLUMN bib_listes.picto; Type: COMMENT; Schema: taxonomie; Owner: -
 --
 
-COMMENT ON COLUMN bib_listes.picto IS 'Indique le chemin vers l''image du picto représentant le groupe taxonomique dans les menus déroulants de taxons';
+COMMENT ON COLUMN bib_listes.picto IS 'Indique le chemin vers l''image du picto reprÃ©sentant le groupe taxonomique dans les menus dÃ©roulants de taxons';
 
 
 --
@@ -252,7 +252,7 @@ CREATE TABLE bib_taxref_categories_lr
   categorie_lr character varying(50) NOT NULL,
   nom_categorie_lr character varying(255) NOT NULL,
   desc_categorie_lr character varying(255)
-)
+);
 
 --
 -- TOC entry 181 (class 1259 OID 101253)
