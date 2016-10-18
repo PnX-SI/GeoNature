@@ -46,20 +46,25 @@ then
     echo "Grant..."
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/grant.sql &> log/install_db.log
     
+    echo "Création du schema taxonomie..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/create_schema_taxonomie.sql  &>> log/install_db.log
+    
+    echo "Décompression des fichiers du taxref..."
+    cd data/taxonomie/inpn
+    unzip TAXREF_INPN_v9.0.zip -d /tmp
+  	unzip ESPECES_REGLEMENTEES_v9.zip -d /tmp
+    unzip LR_FRANCE.zip -d /tmp
+
+    echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
+    cd ../../..
+    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/taxonomie/inpn/data_inpn_v9_synthese.sql &>> log/install_db.log
+    
+    echo "Création de la vue représentant la hierarchie taxonomique..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/vm_hierarchie_taxo.sql  &>> log/install_db.log
+    
     echo "Création de la structure de la base..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/synthese_2154.sql  &>> log/install_db.log
     
-    echo "Décompression des fichiers du taxref..."
-    cd data/inpn
-    unzip TAXREF_INPN_v9.0.zip
-	unzip ESPECES_REGLEMENTEES_v9.zip
-	unzip LR_FRANCE.zip
-    cd ../..
-    echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
-    DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-    sed -i "s#/home/synthese/geonature#${DIR}#g" data/inpn/data_inpn_v9_synthese.sql
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/inpn/data_inpn_v9_synthese.sql &>> log/install_db.log
- 
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
     tar -xzvf layers.tar.gz
@@ -170,9 +175,8 @@ then
 
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
-    rm data/inpn/*.txt
-    #rm data/inpn/*.xls
-    rm data/inpn/*.csv
+    rm /tmp/*.txt
+    rm /tmp/*.csv
     rm data/layers/communes_metropole.sql
     # rm data/layers/zonesstatut.sql
     rm -R data/layers/apb
