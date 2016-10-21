@@ -11,7 +11,10 @@ CREATE SCHEMA save;
 CREATE TABLE save.taxref_protection_articles AS
 SELECT * FROM taxonomie.taxref_protection_articles;
 
-
+--Les commandes ci-dessous sont fournies à titre d'exemple et ne peuvent être totalement automatisées. 
+--Il est recommandé de les exécuter pas à pas.
+--Il est fort probable que les modifications de taxref V9 conduisent à des erreurs d'intégrité lors du rétablissement des clés étrangères pointant vers "taxonomie.taxref".
+--Vous devez analyser ces erreurs au cas par cas en lien avec vos données.
 
 --Insertion des données de dictionnaire manquantes
 ALTER TABLE taxonomie.taxref DROP CONSTRAINT fk_taxref_bib_taxref_rangs;
@@ -78,80 +81,6 @@ ALTER TABLE taxonomie.taxref
   ADD CONSTRAINT fk_taxref_bib_taxref_rangs FOREIGN KEY (id_rang)
       REFERENCES taxonomie.bib_taxref_rangs (id_rang) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION;
-      
-INSERT INTO taxonomie.bib_taxref_statuts (id_statut, nom_statut) VALUES (' ', 'Non précisé');
-
-
---------------------Liste rouge--------------------
-CREATE TABLE taxonomie.bib_taxref_categories_lr
-(
-  id_categorie_france character(2) NOT NULL,
-  type_categorie_lr character varying(50) NOT NULL,
-  nom_categorie_lr character varying(255) NOT NULL,
-  desc_categorie_lr character varying(255),
-  CONSTRAINT pk_bib_taxref_categories_lr PRIMARY KEY (id_categorie_france)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE taxonomie.bib_taxref_categories_lr OWNER TO geonatuser;
-
-CREATE TABLE taxonomie.taxref_liste_rouge_fr
-(
-  id_lr serial NOT NULL,
-  ordre_statut integer,
-  vide character varying(255),
-  cd_nom integer,
-  cd_ref integer,
-  nomcite character varying(255),
-  nom_scientifique character varying(255),
-  auteur character varying(255),
-  nom_vernaculaire character varying(255),
-  nom_commun character varying(255),
-  rang character(4),
-  famille character varying(50),
-  endemisme character varying(255),
-  population character varying(255),
-  commentaire text,
-  id_categorie_france character(2) NOT NULL,
-  criteres_france character varying(255),
-  liste_rouge character varying(255),
-  fiche_espece character varying(255),
-  tendance character varying(255),
-  liste_rouge_source character varying(255),
-  annee_publication integer,
-  categorie_lr_europe character varying(2),
-  categorie_lr_mondiale character varying(5),
-  CONSTRAINT pk_taxref_liste_rouge_fr PRIMARY KEY (id_lr),
-  CONSTRAINT fk_taxref_lr_bib_taxref_categories FOREIGN KEY (id_categorie_france)
-      REFERENCES taxonomie.bib_taxref_categories_lr (id_categorie_france) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE taxonomie.taxref_liste_rouge_fr
-  OWNER TO geonatuser;
-  
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('EX', 'Disparues', 'Eteinte à l''état sauvage', 'Eteinte au niveau mondial');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('EW', 'Disparues', 'Eteinte à l''état sauvage', 'Eteinte à l''état sauvage');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('RE', 'Disparues', 'Disparue au niveau régional', 'Disparue au niveau régional');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('CR', 'Menacées de disparition', 'En danger critique', 'En danger critique');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('EN', 'Menacées de disparition', 'En danger', 'En danger');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('VU', 'Menacées de disparition', 'Vulnérable', 'Vulnérable');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('NT', 'Autre', 'Quasi menacée', 'Espèce proche du seuil des espèces menacées ou qui pourrait être menacée si des mesures de conservation spécifiques n''étaient pas prises');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('LC', 'Autre', 'Préoccupation mineure', 'Espèce pour laquelle le risque de disparition est faible');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('DD', 'Autre', 'Données insuffisantes', 'Espèce pour laquelle l''évaluation n''a pas pu être réalisée faute de données suffisantes');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('NA', 'Autre', 'Non applicable', 'Espèce non soumise à évaluation car (a) introduite dans la période récente ou (b) présente en métropole de manière occasionnelle ou marginale');
-INSERT INTO taxonomie.bib_taxref_categories_lr VALUES ('NE', 'Autre', 'Non évaluée', 'Espèce non encore confrontée aux critères de la Liste rouge');
-
-TRUNCATE TABLE taxonomie.taxref_liste_rouge_fr;
-COPY taxonomie.taxref_liste_rouge_fr (ordre_statut,vide,cd_nom,cd_ref,nomcite,nom_scientifique,auteur,nom_vernaculaire,nom_commun,
-    rang,famille,endemisme,population,commentaire,id_categorie_france,criteres_france,liste_rouge,fiche_espece,tendance,
-    liste_rouge_source,annee_publication,categorie_lr_europe,categorie_lr_mondiale)
-FROM  '/home/synthese/geonature/data/inpn/LR_FRANCE.csv'
-WITH  CSV HEADER 
-DELIMITER E'\;'  encoding 'UTF-8';
 
 
 --------------------import taxref--------------------
@@ -161,7 +90,7 @@ COPY taxonomie.import_taxref (regne, phylum, classe, ordre, famille, group1_inpn
           cd_nom, cd_taxsup, cd_sup, cd_ref, rang, lb_nom, lb_auteur, nom_complet, nom_complet_html,
           nom_valide, nom_vern, nom_vern_eng, habitat, fr, gf, mar, gua, 
           sm, sb, spm, may, epa, reu, taaf, pf, nc, wf, cli, url)
-FROM  '/home/synthese/geonature/data/inpn/TAXREFv90.txt'
+FROM  '/home/synthese/geonature/data/taxonomie/inpn/TAXREFv90.txt'
 WITH  CSV HEADER 
 DELIMITER E'\t'  encoding 'UTF-8';
 --MAJ taxref
@@ -223,7 +152,7 @@ ALTER TABLE taxonomie.taxref_protection_articles ADD COLUMN url_inpn character v
 ALTER TABLE taxonomie.taxref_protection_articles ADD COLUMN cd_doc integer;
 
 COPY taxonomie.taxref_protection_articles (cd_protection, article, intitule, arrete, url_inpn, cd_doc, url, date_arrete, type_protection)
-FROM  '/home/synthese/geonature/data/inpn/PROTECTION_ESPECES_TYPES_90.csv'
+FROM  '/home/synthese/geonature/data/taxonomie/inpn/PROTECTION_ESPECES_TYPES_90.csv'
 WITH  CSV HEADER 
 DELIMITER ';'  encoding 'LATIN1';
 
@@ -239,7 +168,7 @@ CREATE TABLE taxonomie.import_protection_especes (
 );
 
 COPY taxonomie.import_protection_especes
-FROM  '/home/synthese/geonature/data/inpn/PROTECTION_ESPECES_90.csv'
+FROM  '/home/synthese/geonature/data/taxonomie/inpn/PROTECTION_ESPECES_90.csv'
 WITH  CSV HEADER 
 DELIMITER ';'  encoding 'LATIN1';
 
