@@ -1,6 +1,19 @@
 ﻿-- bib_noms remplace bib_taxons pour des raisons de cohérence taxonomique avec le référenciel taxref. Cette table liste les noms des taxons de votre territoire. Taxref liste aussi des noms (cd_nom) et des taxons (cd_ref). 
 -- Unicité du cd_nom dans bib_noms afin d'éviter les doublons. 
 -- Si vous avez des doublons sur cd_nom, la table bib_taxons ainsi qu'éventuellement vos données doivent être nettoyées.
+
+-- Petite sauvegarde au cas où avant de tout péter 
+--CREATE SCHEMA save; --normalement ce schéma a du être créé par le script de mise à jour vers taxref V9.
+CREATE TABLE save.bib_taxons AS
+SELECT * FROM taxonomie.bib_taxons;
+CREATE TABLE save.cor_taxon_liste AS
+SELECT * FROM taxonomie.cor_taxon_liste;
+CREATE TABLE save.cor_taxon_attribut AS
+SELECT * FROM taxonomie.cor_taxon_attribut;
+CREATE TABLE save.bib_filtres AS
+SELECT * FROM taxonomie.bib_filtres;
+
+--On y va !
 CREATE TABLE taxonomie.bib_noms
 (
   id_nom serial PRIMARY KEY,
@@ -11,6 +24,137 @@ CREATE TABLE taxonomie.bib_noms
       REFERENCES taxonomie.taxref (cd_nom) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT check_is_valid_cd_ref CHECK (cd_ref = taxonomie.find_cdref(cd_ref))
+);
+
+CREATE TABLE taxonomie.bib_types_media
+(
+  id_type integer NOT NULL,
+  nom_type_media character varying(100) NOT NULL,
+  desc_type_media text,
+  CONSTRAINT id PRIMARY KEY (id_type)
+);
+
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (1, 'Photo_principale', 'Photo principale du taxon à utiliser pour les vignettes par exemple');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (2, 'Photo', 'Autres photos du taxon');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (4, 'PDF', 'Document de type PDF');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (5, 'Audio', 'Fichier audio MP3');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (6, 'Video (fichier)', 'Fichier video hébergé');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (7, 'Video Youtube', 'ID d''une video hebergee sur Youtube');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (8, 'Video Dailymotion', 'ID d''une video hebergee sur Dailymotion');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (9, 'Video Vimeo', 'ID d''une video hebergee sur Vimeo');
+INSERT INTO taxonomie.bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (3, 'Page web', 'URL d''une page web');
+
+
+CREATE TABLE taxonomie.t_medias
+(
+  id_media serial NOT NULL,
+  cd_ref integer,
+  titre character varying(255) NOT NULL,
+  url character varying(255),
+  chemin character varying(255),
+  auteur character varying(100),
+  desc_media text,
+  date_media date,
+  is_public boolean NOT NULL DEFAULT true,
+  supprime boolean NOT NULL DEFAULT false,
+  id_type integer NOT NULL,
+  CONSTRAINT id_media PRIMARY KEY (id_media),
+  CONSTRAINT fk_t_media_bib_types_media FOREIGN KEY (id_type)
+      REFERENCES taxonomie.bib_types_media (id_type) MATCH FULL
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  CONSTRAINT check_cd_ref_is_ref CHECK (cd_ref = taxonomie.find_cdref(cd_ref))
+);
+
+CREATE OR REPLACE FUNCTION taxonomie.insert_t_medias()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+    new.date_media = now();
+    RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE TRIGGER tri_insert_t_medias
+  BEFORE INSERT
+  ON taxonomie.t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE taxonomie.insert_t_medias();
+  
+  
+CREATE OR REPLACE FUNCTION taxonomie.update_or_delete_taxon()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    nboldcdref integer;
+    nbnewcdref integer;
+    nbattr integer;
+    nbmedia integer;
+BEGIN
+    IF (TG_OP = 'DELETE') THEN
+	--on regarde si le taxon supprimé est le seul synonyme, donc si après suppression son cd_ref existera ou n'existera plus dans la table
+	SELECT INTO nboldcdref count(cd_ref) FROM taxonomie.bib_noms WHERE cd_ref = old.cd_ref;
+	IF nboldcdref <=1 THEN
+		--si oui on vérifie si des attributs ou des medias sont attachés à ce cd_ref
+		SELECT INTO nbattr count(cd_ref) FROM taxonomie.cor_taxon_attribut WHERE cd_ref = old.cd_ref;
+		SELECT INTO nbmedia count(cd_ref) FROM taxonomie.t_medias WHERE cd_ref = old.cd_ref;
+		IF nbattr > 0 THEN
+			RAISE EXCEPTION 'Le cd_ref % ne peut être supprimé car il est référencé dans la table taxonomie.cor_taxon_attribut', old.cd_ref 
+			USING HINT = 'Vous devez supprimer les enregistrements correspondants au préalable.';
+			RETURN NULL; -- = annulation de l'opération delete
+		END IF;
+		IF nbmedia > 0 THEN
+			RAISE EXCEPTION 'Le cd_ref % ne peut être supprimé car il est référencé dans la table taxonomie.t_medias', old.cd_ref 
+			USING HINT = 'Vous devez supprimer les enregistrements correspondants au préalable.';
+			RETURN NULL; -- = annulation de l'opération delete
+		END IF;
+	END IF;
+	RETURN OLD;
+    END IF;
+    IF (TG_OP = 'UPDATE') AND new.cd_ref <> old.cd_ref THEN
+	--on regarde si le taxon supprimé est le seul synonyme, donc si après modification du cd_ref, l'ancien cd_ref existera ou n'existera plus dans la table
+	SELECT INTO nboldcdref count(cd_ref) FROM taxonomie.bib_noms WHERE cd_ref = old.cd_ref;
+	IF nboldcdref <= 1 THEN --si l'ancien cd_ref disparait de la table taxonomie.bib_noms
+		--si oui on vérifie si des attributs ou des medias sont attachés à ce cd_ref qui n'existera plus
+		SELECT INTO nbattr count(cd_ref) FROM taxonomie.cor_taxon_attribut WHERE cd_ref = old.cd_ref;
+		SELECT INTO nbmedia count(cd_ref) FROM taxonomie.t_medias WHERE cd_ref = old.cd_ref;
+		IF nbattr > 0 THEN --si oui on cascade la modification dans la table taxonomie.cor_taxon attribut
+			UPDATE taxonomie.cor_taxon_attribut SET cd_ref = new.cd_ref WHERE cd_ref = old.cd_ref;
+		END IF;
+		IF nbmedia > 0 THEN --si oui on cascade la modification dans la table taxonomie.t_medias
+			UPDATE taxonomie.t_medias SET cd_ref = new.cd_ref WHERE cd_ref = old.cd_ref;
+		END IF;
+	ELSE --si l'ancien cd_ref continue d'exister dans la table taxonomie.bib_noms (via un synonyme)
+		SELECT INTO nbnewcdref count(cd_ref) FROM taxonomie.bib_noms WHERE cd_ref = new.cd_ref; --si le nouveau cd_ref existe déjà dans la table taxonomie.bib_noms
+		IF nbnewcdref > 0 THEN
+			RAISE WARNING 'L''ancien cd_ref (%) ainsi que le nouveau cd_ref (%) que vous venez d''affecter au taxon modifié existe aussi dans un autre enregistrement de la table taxonomie.bib_noms (synonymes ).', old.cd_ref, new.cd_ref
+			USING HINT = E'Vous devez vérifier si ce nouveau cd_ref de rattachement dispose ou non d''attributs et/ou de médias et s''ils sont cohérents avec le taxon modifié.\nEn effet, les éventuels médias et/ou les attributs attachés à l''ancien cd_ref du taxon que vous venez de modifier reste attachés à cet ancien cd_ref. Ils ne seront donc pas rattachés au nouveau cd_ref.';
+		ELSE
+			RAISE INFO 'L''ancien cd_ref (%) existe dans un autre enregistrement synonyme de la table taxonomie.bib_noms mais le nouveau cd_ref (%) n''existait pas.', old.cd_ref, new.cd_ref
+			USING HINT = E'Le taxon dont vous venez de modifier le cd_ref n''a donc ni attribut, ni média.\nEn effet, les éventuels médias et/ou les attributs attachés à l''ancien cd_ref du taxon que vous venez de modifier reste attachés à l''ancien cd_ref.';
+		END IF;
+	END IF;
+	RETURN NEW;
+    ELSE
+	RETURN NEW;
+    END IF;   
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE TABLE taxonomie.taxhub_admin_log
+(
+  id serial NOT NULL,
+  action_time timestamp with time zone NOT NULL DEFAULT now(),
+  id_role integer,
+  object_type character varying(50),
+  object_id integer,
+  object_repr character varying(200) NOT NULL,
+  change_type character varying(250),
+  change_message character varying(250),
+  CONSTRAINT taxhub_admin_log_pkey PRIMARY KEY (id)
 );
 
 -- Les attributs sont attachés à un taxon (cd_ref) afin d'éviter une éventuelle incohérence : attributs renseignés de manière différente pour 2 synonymes.
@@ -42,11 +186,15 @@ CREATE TABLE taxonomie.cor_nom_liste
 );
 
 -- Afin de regrouper les attributs par théme (par exemple les attributs de l'atlas)
-CREATE TABLE taxonomie.bib_themes (
-  id_theme integer primary key,
-  nom_theme varchar(20),
-  desc_theme varchar(255),
-  ordre int
+CREATE TABLE taxonomie.bib_themes
+(
+  id_theme integer NOT NULL,
+  nom_theme character varying(20),
+  desc_theme character varying(255),
+  ordre integer,
+  id_droit integer NOT NULL DEFAULT 0, -- niveau de droit minimal pour pouvoir éditer les attributs attachés à ce thème. Valeur entre 0 et 6
+  CONSTRAINT bib_themes_pkey PRIMARY KEY (id_theme),
+  CONSTRAINT is_valid_id_droit_theme CHECK (id_droit >= 0 AND id_droit <= 6)
 );
 
 --modifications liées  au fonctionnement de TaxHub
@@ -89,17 +237,19 @@ INSERT INTO taxonomie.bib_noms(id_nom, cd_nom, cd_ref, nom_francais)
 SELECT DISTINCT id_taxon, cd_nom, taxonomie.find_cdref(cd_nom), nom_francais FROM taxonomie.bib_taxons;
 
 --Attributs
-UPDATE taxonomie.cor_taxon_attribut c SET cd_ref = taxonomie.find_cdref(cd_nom)
-FROM taxonomie.bib_taxons t
-WHERE c.id_taxon = t.id_taxon;
+TRUNCATE TABLE taxonomie.cor_taxon_attribut; --cette table n'était pas utilisées dans GeoNature 1.7.4
+--UPDATE taxonomie.cor_taxon_attribut c SET cd_ref = taxonomie.find_cdref(cd_nom)
+--FROM taxonomie.bib_taxons t
+--WHERE c.id_taxon = t.id_taxon;
 ALTER TABLE taxonomie.cor_taxon_attribut DROP CONSTRAINT cor_taxon_attribut_pkey;
 ALTER TABLE taxonomie.cor_taxon_attribut ADD PRIMARY KEY (id_attribut, cd_ref);
 
 --Theme
-INSERT INTO taxonomie.bib_themes(id_theme,nom_theme, desc_theme, ordre)
-VALUES (1,'Général', 'Informations générales concernant les taxons', 1);
-VALUES (2,'Atlas', 'Informations relatives à l''atlas', 2);
-UPDATE taxonomie.bib_attributs SET id_theme = 1;
+INSERT INTO taxonomie.bib_themes (id_theme, nom_theme, desc_theme, ordre, id_droit) VALUES (1, 'GeoNature', 'Informations nécessaires au fonctionnement de GeoNature', 1, 4);
+INSERT INTO taxonomie.bib_themes (id_theme, nom_theme, desc_theme, ordre, id_droit) VALUES (2, 'Atlas', 'Informations relative à GeoNature Atlas', 2, 3);
+INSERT INTO taxonomie.bib_themes (id_theme, nom_theme, desc_theme, ordre, id_droit) VALUES (3, 'Mon territoire', 'Informations relatives à mon territoire', 3, 4);
+
+UPDATE taxonomie.bib_attributs SET id_theme = 3;
 --Attributs update with thèmes
 UPDATE taxonomie.bib_attributs
 SET 
@@ -119,7 +269,12 @@ SET
   ordre= 2,
   type_widget = 'radio'
 WHERE id_attribut = 2;
-INSERT INTO bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (2, 'saisie', 'Saisie possible', '{"values":["oui", "non"]}',true,'Permet d''exclure des taxons des menus déroulants de saisie', 'text', 'radio', 1, 3, null, null);
+INSERT INTO taxonomie.bib_attributs (id_attribut ,nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, id_theme, ordre, regne, group2_inpn) VALUES (3, 'saisie', 'Saisie possible', '{"values":["oui", "non"]}',true,'Permet d''exclure des taxons des menus déroulants de saisie', 'text', 'radio', 1, 3, null, null);
+INSERT INTO taxonomie.bib_attributs (id_attribut, nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, regne, group2_inpn, id_theme, ordre) VALUES (100, 'atlas_description', 'Description', '{}', false, 'Donne une description du taxon pour l''atlas', 'text', 'textarea', NULL, NULL, 2, 100);
+INSERT INTO taxonomie.bib_attributs (id_attribut, nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, regne, group2_inpn, id_theme, ordre) VALUES (101, 'atlas_commentaire', 'Commentaire', '{}', false, 'Commentaire contextualisé sur le taxon pour GeoNature-Atlas', 'text', 'textarea', NULL, NULL, 2, 101);
+INSERT INTO taxonomie.bib_attributs (id_attribut, nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, regne, group2_inpn, id_theme, ordre) VALUES (102, 'atlas_milieu', 'Milieu', '{"values":["Forêt","Prairie","eau"]}', false, 'Habitat, milieu principal du taxon', 'text', 'multiselect', NULL, NULL, 2, 102);
+INSERT INTO taxonomie.bib_attributs (id_attribut, nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, regne, group2_inpn, id_theme, ordre) VALUES (103, 'atlas_chorologie', 'Chorologie', '{"values":["Méditéranéenne","Alpine","Océanique"]}', false, 'Distribution, répartition, région à grande échelle du taxon', 'text', 'select', NULL, NULL, 2, 103);
+INSERT INTO taxonomie.bib_attributs (id_attribut, nom_attribut, label_attribut, liste_valeur_attribut, obligatoire, desc_attribut, type_attribut, type_widget, regne, group2_inpn, id_theme, ordre) VALUES (4, 'migrateur', 'Migrateur', '{"values":["migrateur","migrateur partiel","sédentaire"]}', false, 'Défini le statut de migration pour le territoire', 'varchar(50)', 'select', 'Animalia', 'Oiseaux', 3, 200);
 
 
 --Listes
@@ -130,12 +285,6 @@ JOIN taxonomie.bib_taxons t
 ON ctl.id_taxon = t.id_taxon
 JOIN taxonomie.bib_noms n
 ON n.cd_nom = t.cd_nom;
-
------------------Grant---------------------
-
-GRANT ALL ON TABLE taxonomie.bib_noms TO geonatuser;
-GRANT ALL ON TABLE taxonomie.cor_nom_liste TO geonatuser;
-GRANT ALL ON TABLE taxonomie.bib_themes TO geonatuser;
 
 -------------renommer les colonnes id_taxon vers id_nom---------------
 ALTER TABLE contactfaune.cor_message_taxon RENAME id_taxon  TO id_nom;
@@ -264,7 +413,6 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
              LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
              LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
 
-ALTER TABLE synthese.v_tree_taxons_synthese OWNER TO geonatuser;
 
 -- View: taxonomie.v_taxref_hierarchie_bibtaxons
 CREATE OR REPLACE VIEW taxonomie.v_taxref_hierarchie_bibtaxons AS 
@@ -340,7 +488,6 @@ CREATE OR REPLACE VIEW taxonomie.v_taxref_hierarchie_bibtaxons AS
           WHERE mestaxons.id_rang::text <> 'KD'::text
           GROUP BY mestaxons.regne) r ON r.regne::text = tx.regne::text
   WHERE (tx.id_rang::text = ANY (ARRAY['KD'::character varying, 'PH'::character varying, 'CL'::character varying, 'OR'::character varying, 'FM'::character varying]::text[])) AND tx.cd_nom = tx.cd_ref;
-  GRANT ALL ON TABLE taxonomie.v_taxref_hierarchie_bibtaxons TO geonatuser;
   
 --View: contactfaune.vm_taxref_hierarchie
 CREATE TABLE taxonomie.vm_taxref_hierarchie AS
@@ -352,7 +499,6 @@ SELECT tx.regne,tx.phylum,tx.classe,tx.ordre,tx.famille, tx.cd_nom, tx.cd_ref, l
   LEFT JOIN (SELECT regne ,count(*) AS nb_tx_kd  FROM taxonomie.taxref where id_rang NOT IN ('KD') GROUP BY  regne) r ON r.regne = tx.regne
 WHERE id_rang IN ('KD','PH','CL','OR','FM') AND tx.cd_nom = tx.cd_ref;
 ALTER TABLE ONLY taxonomie.vm_taxref_hierarchie ADD CONSTRAINT vm_taxref_hierarchie_pkey PRIMARY KEY (cd_nom);
-ALTER TABLE taxonomie.vm_taxref_hierarchie OWNER TO geonatuser;
 
 -- View: contactfaune.v_nomade_classes
 CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS 
@@ -370,11 +516,8 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_classes AS
           GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.phylum::text = 'Chordata'::text;
-ALTER TABLE contactfaune.v_nomade_classes OWNER TO geonatuser;
-GRANT ALL ON TABLE contactfaune.v_nomade_classes TO geonatuser;
 
 -- View: contactfaune.v_nomade_taxons_faune
-DROP VIEW contactfaune.v_nomade_taxons_faune;
 CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
  SELECT DISTINCT n.id_nom,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
@@ -404,7 +547,6 @@ CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS
     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut::text AND cta.id_attribut = 1
    WHERE n.cd_ref IN (SELECT cd_ref FROM taxonomie.cor_taxon_attribut WHERE valeur_attribut = 'oui' AND id_attribut = 3)
   ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cf;
-ALTER TABLE contactfaune.v_nomade_taxons_faune OWNER TO geonatuser;
 
 -- View: contactinv.v_nomade_classes
 CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS 
@@ -422,10 +564,8 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_classes AS
             GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
     JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
     WHERE t.phylum::text <> 'Chordata'::text AND t.regne::text = 'Animalia'::text;
-ALTER TABLE contactinv.v_nomade_classes OWNER TO geonatuser;
 
 -- View: contactinv.v_nomade_taxons_inv
-DROP VIEW contactinv.v_nomade_taxons_inv;
 CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
  SELECT DISTINCT n.id_nom,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
@@ -446,7 +586,6 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS
      JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut::text AND cta.id_attribut = 1
    WHERE n.cd_ref IN (SELECT cd_ref FROM taxonomie.cor_taxon_attribut WHERE valeur_attribut = 'oui' AND id_attribut = 3)
   ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_inv;
-ALTER TABLE contactinv.v_nomade_taxons_inv OWNER TO geonatuser;
 
 -- View: contactflore.v_nomade_classes
 CREATE OR REPLACE VIEW contactflore.v_nomade_classes AS 
@@ -464,7 +603,6 @@ CREATE OR REPLACE VIEW contactflore.v_nomade_classes AS
           GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.regne::text = 'Plantae'::text;
-ALTER TABLE contactflore.v_nomade_classes OWNER TO geonatuser;
 
 -- View: contactflore.v_nomade_taxons_flore
 --DROP VIEW contactflore.v_nomade_taxons_flore;
@@ -488,7 +626,6 @@ CREATE OR REPLACE VIEW contactflore.v_nomade_taxons_flore AS
      JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut::text AND cta.id_attribut = 1
     WHERE n.cd_ref IN (SELECT cd_ref FROM taxonomie.cor_taxon_attribut WHERE valeur_attribut = 'oui' AND id_attribut = 3)
   ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cflore;
-ALTER TABLE contactflore.v_nomade_taxons_flore OWNER TO geonatuser;
 
 -- View: florepatri.v_nomade_classes
 CREATE OR REPLACE VIEW florepatri.v_nomade_classes AS 
@@ -506,7 +643,6 @@ CREATE OR REPLACE VIEW florepatri.v_nomade_classes AS
           GROUP BY l.id_liste, l.nom_liste, l.desc_liste) g
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.regne::text = 'Plantae'::text;
-ALTER TABLE florepatri.v_nomade_classes OWNER TO geonatuser;
 
 CREATE OR REPLACE VIEW taxonomie.v_nomade_classes AS 
  SELECT v_nomade_classes.id_classe,
@@ -529,13 +665,8 @@ UNION
     v_nomade_classes.desc_classe
    FROM contactflore.v_nomade_classes;
 
-ALTER TABLE taxonomie.v_nomade_classes
-  OWNER TO cartopne;
-GRANT ALL ON TABLE taxonomie.v_nomade_classes TO cartopne;
-GRANT SELECT ON TABLE taxonomie.v_nomade_classes TO pnv;
 
 -- View: synthese.v_taxons_synthese
-DROP VIEW synthese.v_taxons_synthese;
 CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS 
  SELECT DISTINCT n.nom_francais,
     txr.lb_nom AS nom_latin,
@@ -573,7 +704,6 @@ CREATE OR REPLACE VIEW synthese.v_taxons_synthese AS
      JOIN ( SELECT DISTINCT syntheseff.cd_nom
            FROM synthese.syntheseff) s ON s.cd_nom = n.cd_nom
   ORDER BY n.nom_francais;
-ALTER TABLE synthese.v_taxons_synthese OWNER TO geonatuser;
 
 -- View: synthese.v_export_sinp
 CREATE OR REPLACE VIEW synthese.v_export_sinp AS 
@@ -602,7 +732,6 @@ CREATE OR REPLACE VIEW synthese.v_export_sinp AS
      LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
      LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
   WHERE s.supprime = false;
-ALTER TABLE synthese.v_export_sinp OWNER TO geonatuser;
 
 -- View: utilisateurs.v_userslist_forall_applications
 CREATE OR REPLACE VIEW utilisateurs.v_userslist_forall_applications AS 
@@ -669,8 +798,6 @@ CREATE OR REPLACE VIEW utilisateurs.v_userslist_forall_applications AS
              JOIN utilisateurs.cor_role_droit_application c ON c.id_role = g.id_role_groupe
           WHERE u.groupe = false) a
   GROUP BY a.groupe, a.id_role, a.identifiant, a.nom_role, a.prenom_role, a.desc_role, a.pass, a.email, a.id_organisme, a.organisme, a.id_unite, a.remarques, a.pn, a.session_appli, a.date_insert, a.date_update, a.id_application;
-ALTER TABLE utilisateurs.v_userslist_forall_applications OWNER TO geonatuser;
-GRANT ALL ON TABLE utilisateurs.v_userslist_forall_applications TO geonatuser;
 
 
 ---------------FUNCTIONS----------------
@@ -703,7 +830,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactflore.couleur_taxon(integer, date) OWNER TO geonatuser;
   
 
 CREATE OR REPLACE FUNCTION contactfaune.couleur_taxon(id integer, maxdateobs date)
@@ -734,7 +860,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactfaune.couleur_taxon(integer, date) OWNER TO geonatuser;
    
 CREATE OR REPLACE FUNCTION contactinv.couleur_taxon(id integer, maxdateobs date)
   RETURNS text AS
@@ -764,7 +889,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.couleur_taxon(integer, date) OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION synthese.calcul_cor_unite_taxon_cf(
     monidtaxon integer,
@@ -786,7 +910,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION synthese.calcul_cor_unite_taxon_cf(integer, integer) OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION synthese.calcul_cor_unite_taxon_inv(
     monidtaxon integer,
@@ -808,7 +931,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION synthese.calcul_cor_unite_taxon_inv(integer, integer) OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION synthese.calcul_cor_unite_taxon_cflore(
     monidtaxon integer,
@@ -830,7 +952,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION synthese.calcul_cor_unite_taxon_cflore(integer, integer) OWNER TO geonatuser;
 
 
 -------------TRIGGERS-------------------
@@ -873,7 +994,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactfaune.insert_releve_cf() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactfaune.synthese_insert_releve_cf()
   RETURNS trigger AS
@@ -962,7 +1082,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;  
-ALTER FUNCTION contactfaune.synthese_insert_releve_cf() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactfaune.synthese_update_releve_cf()
   RETURNS trigger AS
@@ -1011,7 +1130,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactfaune.synthese_update_releve_cf() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactfaune.update_releve_cf()
   RETURNS trigger AS
@@ -1030,7 +1148,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactfaune.update_releve_cf() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactinv.insert_releve_inv()
   RETURNS trigger AS
@@ -1070,7 +1187,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.insert_releve_inv() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactinv.synthese_insert_releve_inv()
   RETURNS trigger AS
@@ -1153,7 +1269,6 @@ END;
 $$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.synthese_insert_releve_inv() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactinv.synthese_update_releve_inv()
   RETURNS trigger AS
@@ -1195,7 +1310,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.synthese_update_releve_inv() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION contactinv.update_releve_inv()
   RETURNS trigger AS
@@ -1214,7 +1328,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.update_releve_inv() OWNER TO geonatuser;
 
 CREATE OR REPLACE FUNCTION synthese.maj_cor_unite_taxon()
   RETURNS trigger AS
@@ -1270,8 +1383,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION synthese.maj_cor_unite_taxon() OWNER TO geonatuser;
-
 
 
 ----------------------------
@@ -1394,20 +1505,24 @@ LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
 WHERE filtre3 = 'non'
 AND tx.cd_nom = tx.cd_ref;
 
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT id_taxon, 3 as id_attribut, 'oui' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre1 = 'oui'
+AND tx.cd_nom = tx.cd_ref;
+
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT id_taxon, 3 as id_attribut, 'non' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM taxonomie.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre1 = 'non'
+AND tx.cd_nom = tx.cd_ref;
+
 ---- Nettoyage
--- Petite sauvegarde au cas où avant de tout péter 
---CREATE SCHEMA save;
-CREATE TABLE save.bib_taxons AS
-SELECT * FROM taxonomie.bib_taxons;
-CREATE TABLE save.cor_taxon_liste AS
-SELECT * FROM taxonomie.cor_taxon_liste;
-CREATE TABLE save.cor_taxon_attribut AS
-SELECT * FROM taxonomie.cor_taxon_attribut;
-CREATE TABLE save.bib_filtres AS
-SELECT * FROM taxonomie.bib_filtres;
 --suppression de l'ancien MCD
-DROP TABLE taxonomie.bib_filtres;
-DROP TABLE taxonomie.cor_taxon_liste;
-ALTER TABLE taxonomie.cor_taxon_attribut DROP CONSTRAINT cor_taxon_attrib_bib_taxons_fkey;
-ALTER TABLE taxonomie.cor_taxon_attribut DROP id_taxon;
-DROP TABLE taxonomie.bib_taxons;
+--DROP TABLE taxonomie.bib_filtres;
+--DROP TABLE taxonomie.cor_taxon_liste;
+--ALTER TABLE taxonomie.cor_taxon_attribut DROP CONSTRAINT cor_taxon_attrib_bib_taxons_fkey;
+--ALTER TABLE taxonomie.cor_taxon_attribut DROP id_taxon;
+--DROP TABLE taxonomie.bib_taxons;
