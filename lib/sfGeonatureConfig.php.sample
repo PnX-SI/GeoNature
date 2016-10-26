@@ -84,9 +84,6 @@ class sfGeonatureConfig extends sfActions
     public static $struc_long = 'Parc national des Ecrins';
     public static $struc_abregee = 'PNE';
     
-    //configuration de l'export pour les partenaires
-    public static $appname_export = 'Exports GeoNature';
-    
     //configuration du module d'export
     public static $appname_export = 'Exports GeoNature';
     public static $exports_config = [
