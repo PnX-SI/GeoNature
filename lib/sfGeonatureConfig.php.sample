@@ -60,8 +60,8 @@ class sfGeonatureConfig extends sfActions
     //SRID utilisé pour la map dans Openlayers
     public static $srid_ol_map = 3857;
     
-    //Version du référentiel taxonomique : exemple "version 8"
-    public static $taxref_version = "version 8";
+    //Version du référentiel taxonomique : exemple "version 9"
+    public static $taxref_version = "version 9";
     
     //afficher ou non les statistiques concernant les observations. Valeurs possible true ou false
     public static $show_statistiques = true;
