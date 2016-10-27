@@ -27,13 +27,20 @@ Configuration Apache
 ====================
 * Adaptation des chemins de l'application pour la configuration Apache
 
-Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synthese.conf`` et ``apache/wms.conf`` et adapter les chemins à ceux de votre serveur.
+Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synthese.conf`` et ``apache/wms.conf`` et adapter les chemins à ceux de votre serveur. Pour Apache 2.4 et supérieur, le répertoire de publication web par défaut est ``/var/www/html/geonature`` ; à changer dans ``apache/synthese.conf``.
 
-* Prise en compte de la configuration Apache requises pour Symfony :
+* Prise en compte de la configuration Apache requises pour Symfony (avant Apache2.4) :
  
   ::  
   
 	sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
+	sudo apache2ctl restart
+        
+* Prise en compte de la configuration Apache requises pour Symfony Apache 2.4 et supérieur :
+ 
+  ::  
+  
+	sudo sh -c 'echo "IncludeOptional /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 	sudo apache2ctl restart
         
 * Pour les utilisateurs d'Apache 2.4 (par défaut dans Debian 8), installer perl et cgi
