@@ -4,8 +4,10 @@
 
 # Donner les droits nécessaires pour le bon fonctionnement de l'application (adapter les chemins à votre serveur)
 echo "Configuration des droits des répertoires de l'application..."
-sudo chmod -R 777 log
-sudo chmod -R 777 cache
+mkdir log
+mkdir cache
+chmod -R 777 log
+chmod -R 777 cache
 chmod -R 775 web/exportshape
 chmod -R 775 web/uploads/shapes
 chmod -R 775 web/uploads/exports
