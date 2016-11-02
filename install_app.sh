@@ -31,7 +31,7 @@ echo "Configuration du fichier wms/wms.map ..."
 sed -i "s/CONNECTION \"host=geonatdbhost.*$/CONNECTION \"host=geonatdbhost dbname=$db_name user=$user_pg password=$user_pg_pass\"/" wms/wms.map
 
 echo "Suppression des fichier de log de l'installation..."
-rm log/*.log
+#rm log/*.log
 
 echo "Création des fichiers de configuration Apache..."
 cp apache/sf.conf.sample apache/sf.conf
