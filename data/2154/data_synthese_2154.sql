@@ -450,8 +450,8 @@ INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_progr
 --
 
 INSERT INTO t_protocoles VALUES (1, 'contact faune', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
-INSERT INTO t_protocoles VALUES (2, 'contact invertébrés', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
-INSERT INTO t_protocoles VALUES (3, 'mortalité', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+INSERT INTO t_protocoles VALUES (2, 'mortalité', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+INSERT INTO t_protocoles VALUES (3, 'contact invertébrés', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 INSERT INTO t_protocoles VALUES (4, 'Flore prioritaire', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 INSERT INTO t_protocoles VALUES (5, 'Flore station', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 INSERT INTO t_protocoles VALUES (6, 'Bryophytes', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
