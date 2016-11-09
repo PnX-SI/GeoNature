@@ -49,11 +49,12 @@ then
     echo "Récupération et création du schéma utilisateurs..."
     cd data/utilisateurs
     wget https://raw.githubusercontent.com/PnEcrins/UsersHub/master/data/usershub.sql
+    cd ../..
     # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_schema_utilisateurs.sql  &>> log/install_db.log
     # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/data_utilisateurs.sql  &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/usershub.sql  &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
-    cd ../..
+
     
     echo "Création du schéma taxonomie..."
     echo "Décompression des fichiers du taxref..."
@@ -197,6 +198,7 @@ then
     echo "nettoyage..."
     rm /tmp/*.txt
     rm /tmp/*.csv
+    rm data/utilisateurs/usershub.sql
     rm data/taxonomie/taxhubdb.sql
     rm data/taxonomie/vm_hierarchie_taxo.sql
     rm data/taxonomie/taxhubdata.sql
