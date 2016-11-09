@@ -45,6 +45,7 @@ INSERT INTO bib_unites (nom_unite, adresse_unite, cp_unite, ville_unite, tel_uni
 -- Data for Name: t_applications; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
 -- 
 INSERT INTO t_applications (id_application, nom_application, desc_application) VALUES (1, 'application utilisateurs', 'application permettant d''administrer la présente base de données.');
+INSERT INTO t_applications (id_application, nom_application, desc_application) VALUES (2, 'Taxhub', 'application permettant d''administrer la liste des taxons.');
 INSERT INTO t_applications (id_application, nom_application, desc_application) VALUES (14, 'application geonature', 'Application permettant la consultation et la gestion des relevés faune et flore.');
 SELECT pg_catalog.setval('t_applications_id_application_seq', 15, true);
 
@@ -64,8 +65,9 @@ INSERT INTO t_roles (groupe, id_role, identifiant, nom_role, prenom_role, desc_r
 -- Data for Name: cor_role_droit_application; Type: TABLE DATA; Schema: utilisateurs; Owner: geonatuser
 -- 
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 1);
-INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (20002, 3, 14);
+INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 2);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (1, 6, 14);
+INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (20002, 3, 14);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (2, 2, 14);
 INSERT INTO cor_role_droit_application (id_role, id_droit, id_application) VALUES (3, 1, 14);
 
