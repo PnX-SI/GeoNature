@@ -17,16 +17,3 @@ user_pg_pass=monpassachanger
 
 #superuser de la base geonaturedb
 admin_pg_pass=monpassachanger
-
-###localisation du schema utilisateurs
-#valeurs possibles : 'local' ou 'foreign'
-#nota : foreign nécessite d'avoir installer usersHub au préalable 
-#ou de pointer sur une base de données comportant un schéma utilisateur avec le même modèle de données
-users_schema=local
-
-###Configuration de la relation avec usershub - Nécessaire si users_schema=foreign
-usershub_host=localhost
-usershub_db=usershubdb
-usershub_port=5432
-usershub_user=usershubuser
-usershub_pass=monpassachanger

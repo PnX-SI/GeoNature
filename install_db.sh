@@ -46,26 +46,14 @@ then
     echo "Grant..."
     export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/grant.sql &> log/install_db.log
     
-    if [ $users_schema = "local" ]
-        then
-            echo "Création du schéma utilisateurs..."
-            export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_schema_utilisateurs.sql  &>> log/install_db.log
-            export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/data_utilisateurs.sql  &>> log/install_db.log
-            export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
-    
-    else
-        echo "Connexion à la base Utilisateur..."
-        cp data/utilisateurs/create_fdw_utilisateurs.sql /tmp/create_fdw_utilisateurs.sql
-        sed -i "s#\$user_pg#$user_pg#g" /tmp/create_fdw_utilisateurs.sql
-        sed -i "s#\$usershub_host#$usershub_host#g" /tmp/create_fdw_utilisateurs.sql
-        sed -i "s#\$usershub_db#$usershub_db#g" /tmp/create_fdw_utilisateurs.sql
-        sed -i "s#\$usershub_port#$usershub_port#g" /tmp/create_fdw_utilisateurs.sql
-        sed -i "s#\$usershub_user#$usershub_user#g" /tmp/create_fdw_utilisateurs.sql
-        sed -i "s#\$usershub_pass#$usershub_pass#g" /tmp/create_fdw_utilisateurs.sql
-        export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f /tmp/create_fdw_utilisateurs.sql  &>> log/install_db.log
-    fi
-
-    
+    echo "Récupération et création du schéma utilisateurs..."
+    cd data/utilisateurs
+    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/master/data/usershub.sql
+    # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_schema_utilisateurs.sql  &>> log/install_db.log
+    # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/data_utilisateurs.sql  &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/usershub.sql  &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
+    cd ../..
     
     echo "Création du schéma taxonomie..."
     echo "Décompression des fichiers du taxref..."
