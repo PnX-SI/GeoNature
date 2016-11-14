@@ -54,7 +54,9 @@ sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i -e "s/chemin_custom_maille=.*$/chemin_custom_maille=\/home\/$monuser\/atlas\/data\/ref\/$custom_maille_name/g" main/configuration/settings.ini
 ################TODO mettre à jour la config.py
-
+sed -i "s/database_connection = .*$/database_connection = \"postgresql:\/\/$user_pg:$user_pg_pass@$pg_host:$pg_port/$atlasdb_name\"/g" main/configuration/config.py
+sed -i "s/STRUCTURE = \".*$/STRUCTURE = \"$structure\"/g"  main/configuration/config.py
+sed -i "s/NOM_APPLICATION = \".*$/NOM_APPLICATION = \"$structure\"/g"  main/configuration/config.py
 
 sudo ./install_db.sh
 

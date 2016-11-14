@@ -7,10 +7,10 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 #configuration initiale de l'installation serveur
-. install_env.ini
+. install_all.ini
 
 #affectation des droits d'exécution sur le fichier install_env.sh
-chmod 755 install_env.sh
+chmod 755 install_all.sh
 
 #installation de sudo et de l'utilisateur courant comme user sudo
 apt-get update

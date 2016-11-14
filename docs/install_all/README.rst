@@ -25,8 +25,23 @@ Après installation de l'OS avec OpenSSH server, placez vous dans le home de votr
     chmod +x install_all.sh
 
     
-lancez ensuite l'installation (le mot de passe de votre utilisateur vous sera demandé par sudo):
+Mettez à jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas les fichiers .sh tant que vous n'avez pas totalement complété ce fichier.
+
+Lancez la configuration de l'utilisateur linux (le mot de passe de votre utilisateur vous sera demandé par sudo):
+ 
+  ::  
+  
+	sudo ./init_user.sh
+    
+Lancez ensuite l'installation des applications:
  
   ::  
   
 	./install_all.sh
+    
+Vous devez pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre domaine ou avec votre adresse IP)
+    http://mondomaine.fr/usershub
+    http://mondomaine.fr/geonature
+    http://mondomaine.fr/taxhub
+    
+Ces applications demandent une authentification. L'utilisateur admin avec le pass ``admin`` est disponible par défaut avec des droits administrateur sur toutes les applications.
