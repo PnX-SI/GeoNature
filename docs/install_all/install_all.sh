@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #configuration initiale de l'installation serveur
-. install_env.ini
+. install_all.ini
 
 # Make sure this script is NOT run as root
 if [ "$(id -u)" == "0" ]; then
