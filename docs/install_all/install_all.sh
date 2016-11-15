@@ -1,4 +1,11 @@
 #!/bin/bash
+#TODO : 
+    #faire une install complète avec les données du PNE pour l'atlas
+    #ajouter la connexion pour la synchro du schema utilisateurs de GeoNature
+    #virer les "v" des releases
+    #demander à l'utilisateur de mettre ses shp dans les data/ref puis de relancer le install_db.sh
+    #régler le soucis de la question posée ainsi que le doublement du prompt pour le user sudo
+    #préparer une installation et une version de geonature compatible avec d'autres projections
 
 #configuration initiale de l'installation serveur
 . install_all.ini
@@ -57,7 +64,7 @@ sudo a2enmod cgi
 sudo a2enmod wsgi
 sudo apache2ctl restart
 
-#Iynstallation de UsersHub avec l'utilisateur courant
+#Installation de UsersHub avec l'utilisateur courant
 echo "téléchargement et installation de UsersHub ..."
 cd /tmp
 wget https://github.com/PnEcrins/UsersHub/archive/v$usershub_release.zip
@@ -77,6 +84,30 @@ sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sudo ./install_db.sh
 #installation et configuration de l'application UsersHub
 ./install_app.sh
+#configuration de la connexion à la base de données GeoNature
+rm config/dbconnexions.json
+touch config/dbconnexions.json
+echo "{" >> config/dbconnexions.json
+echo "    \"databases\":" >> config/dbconnexions.json
+echo "    [" >> config/dbconnexions.json
+echo "        {" >> config/dbconnexions.json  
+echo "            \"dbfunname\":\"Utilisateurs\"" >> config/dbconnexions.json 
+echo "            ,\"host\":\"$pg_host\"" >> config/dbconnexions.json 
+echo "            ,\"dbname\":\"$usershubdb_name\"" >> config/dbconnexions.json 
+echo "            ,\"user\":\"$user_pg\"" >> config/dbconnexions.json 
+echo "            ,\"pass\":\"$user_pg_pass\"" >> config/dbconnexions.json 
+echo "            ,\"port\":\"$pg_port\"" >> config/dbconnexions.json 
+echo "        }" >> config/dbconnexions.json
+echo "        ,{" >> config/dbconnexions.json
+echo "            \"dbfunname\":\"Utilisateurs\"" >> config/dbconnexions.json 
+echo "            ,\"host\":\"$pg_host\"" >> config/dbconnexions.json 
+echo "            ,\"dbname\":\"$geonaturedb_name\"" >> config/dbconnexions.json 
+echo "            ,\"user\":\"$user_pg\"" >> config/dbconnexions.json 
+echo "            ,\"pass\":\"$user_pg_pass\"" >> config/dbconnexions.json 
+echo "            ,\"port\":\"$pg_port\"" >> config/dbconnexions.json 
+echo "        }" >> config/dbconnexions.json  
+echo "    ]" >> config/dbconnexions.json
+echo "}" >> config/dbconnexions.json
 
 #installation de GeoNature avec l'utilisateur courant
 echo "téléchargement et installation de GeoNature ..."

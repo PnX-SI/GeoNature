@@ -14,7 +14,6 @@ chmod 755 install_all.sh
 
 #installation de sudo et de l'utilisateur courant comme user sudo
 apt-get update
-apt-get install -y sudo
 usermod -g www-data $monuser
 usermod -a -G root $monuser
 adduser $monuser sudo
