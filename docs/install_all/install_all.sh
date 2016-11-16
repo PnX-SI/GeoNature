@@ -67,9 +67,9 @@ sudo apache2ctl restart
 #Installation de UsersHub avec l'utilisateur courant
 echo "téléchargement et installation de UsersHub ..."
 cd /tmp
-wget https://github.com/PnEcrins/UsersHub/archive/v$usershub_release.zip
-unzip v$usershub_release.zip
-rm v$usershub_release.zip
+wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
+unzip $usershub_release.zip
+rm $usershub_release.zip
 mv UsersHub-$usershub_release /home/$monuser/usershub/
 cd /home/$monuser/usershub
 
@@ -99,7 +99,7 @@ echo "            ,\"pass\":\"$user_pg_pass\"" >> config/dbconnexions.json
 echo "            ,\"port\":\"$pg_port\"" >> config/dbconnexions.json 
 echo "        }" >> config/dbconnexions.json
 echo "        ,{" >> config/dbconnexions.json
-echo "            \"dbfunname\":\"Utilisateurs\"" >> config/dbconnexions.json 
+echo "            \"dbfunname\":\"GeoNature\"" >> config/dbconnexions.json 
 echo "            ,\"host\":\"$pg_host\"" >> config/dbconnexions.json 
 echo "            ,\"dbname\":\"$geonaturedb_name\"" >> config/dbconnexions.json 
 echo "            ,\"user\":\"$user_pg\"" >> config/dbconnexions.json 
