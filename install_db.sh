@@ -57,8 +57,12 @@ then
 
     
     echo "Création du schéma taxonomie..."
-    echo "Décompression des fichiers du taxref..."
+    echo "Téléchargement et décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/master/data/inpn/data_inpn_v9_taxhub.sql
+    wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/TAXREF_INPN_v9.0.zip
+    wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/ESPECES_REGLEMENTEES.zip
+    wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/LR_FRANCE.zip
     unzip TAXREF_INPN_v9.0.zip -d /tmp
   	unzip ESPECES_REGLEMENTEES_v9.zip -d /tmp
     unzip LR_FRANCE.zip -d /tmp
@@ -74,7 +78,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/taxhubdb.sql  &>> log/install_db.log
     
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/taxonomie/inpn/data_inpn_v9_synthese.sql &>> log/install_db.log
+    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/taxonomie/inpn/data_inpn_v9_taxhub.sql &>> log/install_db.log
     
     echo "Création des données dictionnaires du schéma taxonomie..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/taxhubdata.sql  &>> log/install_db.log
@@ -203,6 +207,10 @@ then
     rm data/taxonomie/vm_hierarchie_taxo.sql
     rm data/taxonomie/taxhubdata.sql
     rm data/layers/communes_metropole.sql
+    rm data/taxonomie/inpn/ESPECES_REGLEMENTEES_v9.zip
+    rm data/taxonomie/inpn/LR_FRANCE.zip
+    rm data/taxonomie/inpn/TAXREF_INPN_v9.0.zip
+    rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
     # rm data/layers/zonesstatut.sql
     rm -R data/layers/apb
     rm -R data/layers/bios
