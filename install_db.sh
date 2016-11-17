@@ -40,18 +40,16 @@ then
     echo "Ajout de postgis à la base"
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;"
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-
+    
 
     # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
     echo "Grant..."
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/grant.sql &> log/install_db.log
-    
+    sudo -n -u postgres -s psql -d $db_name -f data/grant.sql &> log/install_db.log
+        
     echo "Récupération et création du schéma utilisateurs..."
     cd data/utilisateurs
     wget https://raw.githubusercontent.com/PnEcrins/UsersHub/master/data/usershub.sql
     cd ../..
-    # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_schema_utilisateurs.sql  &>> log/install_db.log
-    # export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/data_utilisateurs.sql  &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/usershub.sql  &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
 
@@ -78,7 +76,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/taxhubdb.sql  &>> log/install_db.log
     
     echo "Insertion  des données taxonomiques de l'inpn... (cette opération peut être longue)"
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name  -f data/taxonomie/inpn/data_inpn_v9_taxhub.sql &>> log/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f data/taxonomie/inpn/data_inpn_v9_taxhub.sql &>> log/install_db.log
     
     echo "Création des données dictionnaires du schéma taxonomie..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/taxonomie/taxhubdata.sql  &>> log/install_db.log
@@ -195,9 +193,9 @@ then
     #export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name  -f data/layers/zonesstatut.sql &>> log/install_db.log
     
     echo "Insertion d'un jeu de données test dans les schémas taxonomie, contactfaune et contactinv de la base"
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/taxonomie/data_set_taxonomie.sql  &>> log/install_db.log
-    export PGPASSWORD=$admin_pg_pass;psql -h geonatdbhost -U $admin_pg -d $db_name -f data/2154/data_set_synthese_2154.sql  &>> log/install_db.log
-
+    sudo -n -u postgres -s psql -d $db_name -f data/taxonomie/data_set_taxonomie.sql  &>> log/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f data/2154/data_set_synthese_2154.sql  &>> log/install_db.log
+    
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
     rm /tmp/*.txt
@@ -233,3 +231,4 @@ then
     rm -R data/layers/znieff2_mer
     rm -R data/layers/sql
 fi
+

@@ -9,11 +9,5 @@ db_name=geonaturedb
 #nom de l'utilisateur propriétaire de la base PostgreSQL
 user_pg=geonatuser
 
-#nom du superutilisateur PostgreSQL
-admin_pg=geonatadmin
-
-#user propriétaire de la base geonaturedb
+#pass de l'utilisateur propriétaire de la base geonaturedb
 user_pg_pass=monpassachanger
-
-#superuser de la base geonaturedb
-admin_pg_pass=monpassachanger
