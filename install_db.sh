@@ -91,7 +91,7 @@ then
     
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
-    tar -xzvf communes_metropole.tar.gz
+    tar -xzvf git.tar.gz
     cd ../..
     
     echo "Insertion  du référentiel géographique : communes métropolitaines... (cette opération peut être longue)"
