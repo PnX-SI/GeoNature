@@ -1,8 +1,7 @@
 #!/bin/bash
 #TODO : 
-    #faire une install complète avec les données du PNE pour l'atlas
+    #faire une install complète avec des données du PNE pour l'atlas
     #ajouter la connexion pour la synchro du schema utilisateurs de GeoNature
-    #virer les "v" des releases
     #demander à l'utilisateur de mettre ses shp dans les data/ref puis de relancer le install_db.sh
     #régler le soucis de la question posée ainsi que le doublement du prompt pour le user sudo
     #préparer une installation et une version de geonature compatible avec d'autres projections
@@ -125,8 +124,6 @@ sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
-sed -i "s/admin_pg=.*$/admin_pg=$admin_pg/g" config/settings.ini
-sed -i "s/admin_pg_pass=.*$/admin_pg_pass=$admin_pg_pass/g" config/settings.ini
 # sed -i "s/users_schema=.*$/user_schema=$geonature_users_schema_location/g" config/settings.ini
 # sed -i "s/usershub_host=.*$/usershub_host=$pg_host/g" config/settings.ini
 # sed -i "s/usershub_port=.*$/usershub_port=$pg_port/g" config/settings.ini
@@ -166,8 +163,6 @@ sed -i "s/db_port=.*$/db_port=$pg_port/g" settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" settings.ini
-sed -i "s/admin_pg=.*$/admin_pg=$admin_pg/g" settings.ini
-sed -i "s/admin_pg_pass=.*$/admin_pg_pass=$admin_pg_pass/g" settings.ini
 sed -i "s/user_schema=.*$/user_schema=local/g" settings.ini
 sed -i "s/usershub_host=.*$/usershub_host=$pg_host/g" settings.ini
 sed -i "s/usershub_port=.*$/usershub_port=$pg_port/g" settings.ini
