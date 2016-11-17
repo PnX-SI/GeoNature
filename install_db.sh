@@ -103,49 +103,28 @@ then
     echo "Création du contact flore..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/contactflore.sql  &>> log/install_db.log
     
-    echo "Téléchargement et décompression des fichiers du référentiel géographique..."
+    echo "Décompression des fichiers du référentiel géographique..."
     cd data/layers
-    wget https://inpn.mnhn.fr/docs/Shape/apb.zip
     unzip apb.zip
-    wget https://inpn.mnhn.fr/docs/Shape/bios.zip
     unzip bios.zip
-    wget https://inpn.mnhn.fr/docs/Shape/cdl.zip
     unzip cdl.zip
-    wget https://inpn.mnhn.fr/docs/Shape/cen.zip
     unzip cen.zip
-    wget https://inpn.mnhn.fr/docs/Shape/pn.zip
     unzip pn.zip
-    wget https://inpn.mnhn.fr/docs/Shape/pnr.zip
     unzip pnr.zip
-    wget https://inpn.mnhn.fr/docs/Shape/pnm.zip
     unzip pnm.zip
-    wget https://inpn.mnhn.fr/docs/Shape/ramsar.zip
     unzip ramsar.zip
-    wget https://inpn.mnhn.fr/docs/Shape/rb.zip
     unzip rb.zip
-    wget https://inpn.mnhn.fr/docs/Shape/rnc.zip
     unzip ripn.zip
-    wget https://inpn.mnhn.fr/docs/Shape/cdl.zip
     unzip rnc.zip
-    wget https://inpn.mnhn.fr/docs/Shape/rncfs.zip
     unzip rncfs.zip
-    wget https://inpn.mnhn.fr/docs/Shape/rnn.zip
     unzip rnn.zip
-    wget https://inpn.mnhn.fr/docs/Shape/rnr.zip
     unzip rnr.zip
-    wget https://inpn.mnhn.fr/docs/Shape/sic.zip
     unzip sic.zip
-    wget https://inpn.mnhn.fr/docs/Shape/zps.zip
     unzip zps.zip
-    wget https://inpn.mnhn.fr/docs/Shape/zico.zip
     unzip zico.zip
-    wget https://inpn.mnhn.fr/docs/Shape/znieff1.zip
     unzip znieff1.zip
-    wget https://inpn.mnhn.fr/docs/Shape/znieff2.zip
     unzip znieff2.zip
-    wget https://inpn.mnhn.fr/docs/Shape/znieff1_mer.zip
     unzip znieff1_mer.zip
-    wget https://inpn.mnhn.fr/docs/Shape/znieff2_mer.zip
     unzip znieff2_mer.zip
     mkdir sql
     cd ../..
@@ -255,6 +234,5 @@ then
     rm -R data/layers/znieff1_mer
     rm -R data/layers/znieff2_mer
     rm -R data/layers/sql
-    rm data/layers/*.zip
 
 fi
