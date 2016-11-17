@@ -64,7 +64,7 @@ then
     wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/ESPECES_REGLEMENTEES.zip
     wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/LR_FRANCE.zip
     unzip TAXREF_INPN_v9.0.zip -d /tmp
-  	unzip ESPECES_REGLEMENTEES_v9.zip -d /tmp
+  	unzip ESPECES_REGLEMENTEES.zip -d /tmp
     unzip LR_FRANCE.zip -d /tmp
     cd ..
     
@@ -91,7 +91,7 @@ then
     
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
-    tar -xzvf git.tar.gz
+    tar -xzvf communes_metropole.tar.gz
     cd ../..
     
     echo "Insertion  du référentiel géographique : communes métropolitaines... (cette opération peut être longue)"
@@ -207,9 +207,7 @@ then
     rm data/taxonomie/vm_hierarchie_taxo.sql
     rm data/taxonomie/taxhubdata.sql
     rm data/layers/communes_metropole.sql
-    rm data/taxonomie/inpn/ESPECES_REGLEMENTEES_v9.zip
-    rm data/taxonomie/inpn/LR_FRANCE.zip
-    rm data/taxonomie/inpn/TAXREF_INPN_v9.0.zip
+    rm data/taxonomie/inpn/*.zip
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
     # rm data/layers/zonesstatut.sql
     rm -R data/layers/apb
@@ -234,5 +232,4 @@ then
     rm -R data/layers/znieff1_mer
     rm -R data/layers/znieff2_mer
     rm -R data/layers/sql
-
 fi
