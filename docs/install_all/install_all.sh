@@ -190,9 +190,9 @@ sudo a2ensite taxhub
 #installation de l'atlas avec l'utilisateur courant
 echo "téléchargement et installation de GeoNature-atlas ..."
 cd /tmp
-wget https://github.com/PnEcrins/GeoNature-atlas/archive/$atlas_release.zip
-unzip $atlas_release.zip
-rm $atlas_release.zip
+wget https://github.com/PnEcrins/GeoNature-atlas/archive/v$atlas_release.zip
+unzip v$atlas_release.zip
+rm v$atlas_release.zip
 mv GeoNature-atlas-$atlas_release /home/$monuser/atlas/
 cd /home/$monuser/atlas
 
@@ -204,13 +204,28 @@ echo "Installation des dépendances pour l'application GeoNature-atlas ..."
 pip install -r requirements.txt
 
 echo "configuration de l'application GeoNature-atlas ..."
+mkdir ./static/custom/images/
 cp ./main/configuration/config.py.sample ./main/configuration/config.py
 cp ./main/configuration/settings.ini.sample ./main/configuration/settings.ini
 cp ./static/custom/templates/footer.html.sample ./static/custom/templates/footer.html
 cp ./static/custom/templates/introduction.html.sample ./static/custom/templates/introduction.html
 cp ./static/custom/templates/presentation.html.sample ./static/custom/templates/presentation.html
+cp ./static/custom/templates/credits.html.sample ./static/custom/templates/credits.html
+cp ./static/custom/templates/mentions-legales.html.sample ./static/custom/templates/mentions-legales.html
 cp ./static/custom/custom.css.sample ./static/custom/custom.css
 cp ./static/custom/glossaire.json.sample ./static/custom/glossaire.json
+cp ./static/images/sample.favicon.ico ./static/custom/images/favicon.ico
+cp ./static/images/sample.accueil-intro.jpg ./static/custom/images/accueil-intro.jpg
+cp ./static/images/sample.logo-structure.png ./static/custom/images/logo-structure.png
+cp ./static/images/sample.logo_patrimonial.png ./static/custom/images/logo_patrimonial.png
+cp ./data/ref/communes.dbf.sample ./data/ref/communes.dbf
+cp ./data/ref/communes.prj.sample ./data/ref/communes.prj
+cp ./data/ref/communes.shp.sample ./data/ref/communes.shp
+cp ./data/ref/communes.shx.sample ./data/ref/communes.shx
+cp ./data/ref/territoire.dbf.sample ./data/ref/territoire.dbf
+cp ./data/ref/territoire.prj.sample ./data/ref/territoire.prj
+cp ./data/ref/territoire.shp.sample ./data/ref/territoire.shp
+cp ./data/ref/territoire.shx.sample ./data/ref/territoire.shx
 
 #configuration des settings de GeoNature-atlas et création de la base de données
 echo " Configuration et installation de la base de données ..."
@@ -227,13 +242,9 @@ sed -i "s/admin_source_user=.*$/admin_source_user=$admin_pg/g"  main/configurati
 sed -i "s/admin_source_pass=.*$/admin_source_pass=$admin_pg_pass/g"  main/configuration/settings.ini
 sed -i "s/atlas_source_user=.*$/atlas_source_user=$user_pg/g"  main/configuration/settings.ini #TODO utiliser la variable $user_atlaset faire des GRANT select et usage pour geonatatlas sur la bd geonature
 sed -i "s/atlas_source_pass=.*$/atlas_source_pass=$user_pg_pass/g"  main/configuration/settings.ini #TODO utiliser la variable $user_atlas_pass
-sed -i -e "s/limit_shp=.*$/limit_shp=\/home\/$monuser\/atlas\/data\/ref\/$limit_shp_name/g" main/configuration/settings.ini
-sed -i -e "s/communes_shp=.*$/communes_shp=\/home\/$monuser\/atlas\/data\/ref\/$communes_shp_name/g" main/configuration/settings.ini
-sed -i "s/colonne_insee=.*$/colonne_insee=$colonne_insee/g"  main/configuration/settings.ini
-sed -i "s/colonne_nom_commune=.*$/colonne_nom_commune=$colonne_nom_commune/g"  main/configuration/settings.ini
 sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
-sed -i -e "s/chemin_custom_maille=.*$/chemin_custom_maille=\/home\/$monuser\/atlas\/data\/ref\/$custom_maille_name/g" main/configuration/settings.ini
+
 #mettre à jour config.py
 sed -i "s/database_connection =.*$/database_connection = \"postgresql:\/\/$user_atlas:$user_atlas_pass@$pg_host:$pg_port\/$atlasdb_name\"/g" main/configuration/config.py
 sed -i "s/STRUCTURE = \".*$/STRUCTURE = \"$structure\"/g" main/configuration/config.py
