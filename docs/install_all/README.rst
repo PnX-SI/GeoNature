@@ -27,19 +27,21 @@ Récupérer les scripts d'installation
 
   ::  
     
-	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/init_user.sh
 	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/install_all.ini
 	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/install_all.sh
-	chmod +x init_user.sh
 	chmod +x install_all.sh
 
 Mettez à jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas les fichiers .sh tant que vous n'avez pas totalement complété ce fichier.
+TODO : détailler la procédure pour l'atlas avec : 
+    * install avec données exemple 
+    * mettre à jour les shapes territoire 
+    * relancer le install.db de l'atlas.
 
-Lancez la configuration de l'utilisateur linux (le mot de passe de votre utilisateur vous sera demandé par sudo):
-  
-  ::  
-  
-	sudo ./init_user.sh
+
+:notes:
+
+    Votre utilisateur linux doit disposer des droits administrateur avec sudo. Voir https://www.privateinternetaccess.com/forum/discussion/18063/debian-8-1-0-jessie-sudo-fix-not-installed-by-default
+
 
 Lancez ensuite l'installation des applications:
  
@@ -68,3 +70,9 @@ L'utilisateur ``admin`` avec le mot de passe ``admin`` est disponible par défaut
 Vous devez utiliser UsersHub pour gérer d'autres utilisateurs.
 
 L'installation des bases de données est loguée dans le répertoire ``log`` des applications : ``log/install_db.log``.
+
+:notes:
+
+    L'application GeoNature-atlas est livrée avec des données exemples. Une fois l'installation de l'atlas terminée, vous devez l'adapter à votre territoire. 
+    * remplacez les shapes ``territoire.shp`` et ``communes.shp`` dans ``data/ref`` avec celles de votre territoire.
+    * relancer le sript ``install.db``.
