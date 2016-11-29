@@ -190,9 +190,9 @@ sudo a2ensite taxhub
 #installation de l'atlas avec l'utilisateur courant
 echo "téléchargement et installation de GeoNature-atlas ..."
 cd /tmp
-wget https://github.com/PnEcrins/GeoNature-atlas/archive/v$atlas_release.zip
-unzip v$atlas_release.zip
-rm v$atlas_release.zip
+wget https://github.com/PnEcrins/GeoNature-atlas/archive/$atlas_release.zip
+unzip $atlas_release.zip
+rm $atlas_release.zip
 mv GeoNature-atlas-$atlas_release /home/$monuser/atlas/
 cd /home/$monuser/atlas
 
@@ -234,12 +234,10 @@ sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_atlasdb/g" main/configuration/sett
 sed -i "s/db_name=.*$/db_name=$atlasdb_name/g" main/configuration/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_atlas/g"  main/configuration/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_atlas_pass/g"  main/configuration/settings.ini
-sed -i "s/admin_pg=.*$/admin_pg=$admin_pg/g"  main/configuration/settings.ini
-sed -i "s/admin_pg_pass=.*$/admin_pg_pass=$admin_pg_pass/g"  main/configuration/settings.ini
+sed -i "s/owner_atlas=.*$/owner_atlas=$owner_atlas/g"  main/configuration/settings.ini
+sed -i "s/owner_atlas_pass=.*$/owner_atlas_pass=$owner_atlas_pass/g"  main/configuration/settings.ini
 sed -i "s/db_source_host=.*$/db_source_host=$pg_host/g"  main/configuration/settings.ini
 sed -i "s/db_source_port=.*$/db_source_port=$pg_port/g"  main/configuration/settings.ini
-sed -i "s/admin_source_user=.*$/admin_source_user=$admin_pg/g"  main/configuration/settings.ini
-sed -i "s/admin_source_pass=.*$/admin_source_pass=$admin_pg_pass/g"  main/configuration/settings.ini
 sed -i "s/atlas_source_user=.*$/atlas_source_user=$user_pg/g"  main/configuration/settings.ini #TODO utiliser la variable $user_atlaset faire des GRANT select et usage pour geonatatlas sur la bd geonature
 sed -i "s/atlas_source_pass=.*$/atlas_source_pass=$user_pg_pass/g"  main/configuration/settings.ini #TODO utiliser la variable $user_atlas_pass
 sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
