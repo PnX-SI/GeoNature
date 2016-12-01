@@ -49,13 +49,8 @@ Lancez ensuite l'installation des applications:
   
 	./install_all.sh
 
-Le mot de passe sudo vous sera demandé. 
-Lors de l'exécution du script, une question sera posée. 
-Unable to find a suitable version for webcomponentsjs, please choose one by typing one of the numbers below:
-    1) webcomponentsjs#~0.5.4 which resolved to 0.5.5 and is required by App States#0.6.9
-    2) webcomponentsjs#* which resolved to 0.5.5 and is required by core-component-page#0.5.6
-    3) webcomponentsjs#^0.6.0 which resolved to 0.6.3 and is required by polymer#0.5.6
-Répondre ``3``
+Le mot de passe sudo vous sera demandé 2 fois. 
+Lors de l'exécution du script, 2 questions seront posée. Répondre ``9`` puis ``3``
 
 Vous devez pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre nom de domaine ou avec votre adresse IP)
 	http://mondomaine.fr/usershub

@@ -1,8 +1,6 @@
 #!/bin/bash
 #TODO : 
     #faire une install complète avec des données du PNE pour l'atlas
-    #ajouter la connexion pour la synchro du schema utilisateurs de GeoNature
-    #demander à l'utilisateur de mettre ses shp dans les data/ref puis de relancer le install_db.sh
     #régler le soucis de la question posée ainsi que le doublement du prompt pour le user sudo
     #préparer une installation et une version de geonature compatible avec d'autres projections
 
@@ -49,7 +47,7 @@ sudo /etc/init.d/postgresql restart
 echo "Création des utilisateurs postgresql..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_atlas WITH LOGIN PASSWORD '$user_atlas_pass';"
-sudo -n -u postgres -s psql -c "CREATE ROLE $admin_pg WITH SUPERUSER LOGIN PASSWORD '$admin_pg_pass';" 
+#sudo -n -u postgres -s psql -c "CREATE ROLE $admin_pg WITH SUPERUSER LOGIN PASSWORD '$admin_pg_pass';" 
 
 #Ajouter un alias du serveur de base de données dans le fichier /etc/hosts
 echo "Configuration de Apache..."
@@ -234,8 +232,8 @@ sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_atlasdb/g" main/configuration/sett
 sed -i "s/db_name=.*$/db_name=$atlasdb_name/g" main/configuration/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_atlas/g"  main/configuration/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_atlas_pass/g"  main/configuration/settings.ini
-sed -i "s/owner_atlas=.*$/owner_atlas=$owner_atlas/g"  main/configuration/settings.ini
-sed -i "s/owner_atlas_pass=.*$/owner_atlas_pass=$owner_atlas_pass/g"  main/configuration/settings.ini
+sed -i "s/owner_atlas=.*$/owner_atlas=$user_pg/g"  main/configuration/settings.ini
+sed -i "s/owner_atlas_pass=.*$/owner_atlas_pass=$user_pg_pass/g"  main/configuration/settings.ini
 sed -i "s/db_source_host=.*$/db_source_host=$pg_host/g"  main/configuration/settings.ini
 sed -i "s/db_source_port=.*$/db_source_port=$pg_port/g"  main/configuration/settings.ini
 sed -i "s/atlas_source_user=.*$/atlas_source_user=$user_pg/g"  main/configuration/settings.ini #TODO utiliser la variable $user_atlaset faire des GRANT select et usage pour geonatatlas sur la bd geonature
