@@ -69,7 +69,7 @@ class sfGeonatureConfig extends sfActions
     public static $init_date_statistiques = "1900-01-01";
   
     //Nom des applications et titres affichés
-    public static $appname_main = 'GeoNature PNX';
+    public static $appname_main = 'GeoNature';
     public static $appname_cf = 'Contact faune - GeoNature';
     public static $appname_inv = 'Contact invertébrés - GeoNature';
     public static $appname_mortalite = 'Mortalite faune - GeoNature';
