@@ -53,7 +53,7 @@ class exportActions extends sfGeonatureActions
             $values = array_values($row);
             foreach ($values as $value)
             {
-                $output_content .= str_replace( array( CHR(10), CHR(13), "\n", "\r" ), array( ' - ',' - ',' - ',' - '), $value).$file_separator;
+                $output_content .= str_replace( array( CHR(10), CHR(13), "\n", "\r", "\t", ";" ), array( ' - ',' - ',' - ',' - ','',' - '), $value).$file_separator;
             }
             $output_content .= "\n";
         }
