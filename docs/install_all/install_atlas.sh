@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #configuration initiale de l'installation serveur
-. install_env.ini
+. install_all.ini
 
 #installation de l'atlas avec l'utilisateur courant
 echo "téléchargement et installation de GeoNature-atlas ..."
@@ -11,9 +11,6 @@ unzip $atlas_release.zip
 rm $atlas_release.zip
 mv GeoNature-atlas-$atlas_release /home/$monuser/atlas/
 cd /home/$monuser/atlas
-
-echo "Installation des logiciels manquant pour l'application GeoNature-atlas ..."
-sudo apt-get install -y python-setuptools python-gdal python-virtualenv
 
 echo "Création de l'environnement virtuel de GeoNature-atlas ..."
 virtualenv ./venv
@@ -53,14 +50,20 @@ sed -i "s/colonne_nom_commune=.*$/colonne_nom_commune=$colonne_nom_commune/g"  m
 sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i -e "s/chemin_custom_maille=.*$/chemin_custom_maille=\/home\/$monuser\/atlas\/data\/ref\/$custom_maille_name/g" main/configuration/settings.ini
-################TODO mettre à jour la config.py
-sed -i "s/database_connection = .*$/database_connection = \"postgresql:\/\/$user_pg:$user_pg_pass@$pg_host:$pg_port/$atlasdb_name\"/g" main/configuration/config.py
-sed -i "s/STRUCTURE = \".*$/STRUCTURE = \"$structure\"/g"  main/configuration/config.py
-sed -i "s/NOM_APPLICATION = \".*$/NOM_APPLICATION = \"$structure\"/g"  main/configuration/config.py
+#mettre à jour config.py
+sed -i "s/database_connection =.*$/database_connection = \"postgresql:\/\/$user_atlas:$user_atlas_pass@$pg_host:$pg_port\/$atlasdb_name\"/g" main/configuration/config.py
+sed -i "s/STRUCTURE = \".*$/STRUCTURE = \"$structure\"/g" main/configuration/config.py
+sed -i "s/NOM_APPLICATION = \".*$/NOM_APPLICATION = \"$nom_application\"/g" main/configuration/config.py
+sed -i "s/URL_APPLICATION =.*$/URL_APPLICATION = \"$url_atlas\"/g" main/configuration/config.py
+sed -i "s/ID_GOOGLE_ANALYTICS =.*$/ID_GOOGLE_ANALYTICS = \"$id_google_analytics\"/g" main/configuration/config.py
+sed -i "s/IGNAPIKEY =.*/IGNAPIKEY = \'$macleign\';/g" main/configuration/config.py
+#sed -i "s/+IGNAPIKEY+/+$macleign+/g" main/configuration/config.py
+sed -i "s/'LAT_LONG':.*$/\'LAT_LONG\': [$y, $x],/g" main/configuration/config.py
 
 sudo ./install_db.sh
 
 #configuration apache de GeoNature-atlas
+sudo rm /etc/apache2/sites-available/atlas.conf
 sudo touch /etc/apache2/sites-available/atlas.conf
 sudo sh -c 'echo "# Configuration de GeoNature-atlas" >> /etc/apache2/sites-available/atlas.conf'
 sudo sh -c 'echo "WSGIScriptAlias /atlas \"/home/'$monuser'/atlas/atlas.wsgi\"" >> /etc/apache2/sites-available/atlas.conf'
@@ -73,3 +76,5 @@ sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/atlas.con
 sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/atlas.conf'
 sudo a2ensite atlas
 sudo apachectl restart
+#nettoyage
+sudo rm /tmp/*.sql
