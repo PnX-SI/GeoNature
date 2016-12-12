@@ -14,6 +14,14 @@ CREATE TABLE save.bib_filtres AS
 SELECT * FROM taxonomie.bib_filtres;
 
 --On y va !
+ALTER TABLE synthese.syntheseff DISABLE TRIGGER tri_maj_cor_unite_synthese;
+ALTER TABLE synthese.syntheseff DISABLE TRIGGER tri_maj_cor_zonesstatut_synthese;
+ALTER TABLE synthese.syntheseff DISABLE TRIGGER tri_update_syntheseff;
+ALTER TABLE synthese.syntheseff ADD COLUMN diffusable boolean DEFAULT true;
+ALTER TABLE synthese.syntheseff ENABLE TRIGGER tri_maj_cor_unite_synthese;
+ALTER TABLE synthese.syntheseff ENABLE TRIGGER tri_maj_cor_zonesstatut_synthese;
+ALTER TABLE synthese.syntheseff ENABLE TRIGGER tri_update_syntheseff;
+
 CREATE TABLE taxonomie.bib_noms
 (
   id_nom serial PRIMARY KEY,

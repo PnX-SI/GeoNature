@@ -4150,6 +4150,7 @@ CREATE TABLE syntheseff (
     the_geom_3857 public.geometry,
     effectif_total integer,
     the_geom_2154 public.geometry,
+    diffusable boolean DEFAULT true,
     CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
