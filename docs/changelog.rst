@@ -8,11 +8,22 @@ CHANGELOG
 **Corrections de bugs**
 
 * Mise en cohérence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe générique 'mollusques'.
+* Amélioration des triggers concernant la suppression de fiches orphelines
+* Affichage par défaut du nom latin pour contact flore et contact invertébrés
+* Correction pour l'export concernant la présence de points-virgules dans les commentaires
+* Suppression du besoin d'un super utilisateur lors de l'installation de la base
+* Correction de l'id du protocole mortalité et invertebres dans la configuration
+* Suppression d'un doublon dans le fichier de configuration symfony de l'application
+* Correction des coordonnées lors de l'export flore station
 
 **Nouveautés**
 
-* Compatibilité avec Taxhub
+* Compatibilité avec Taxhub et GeoNature-atlas
 * Taxref V9
+* Accès à la synthèse en consultation uniquement pour des utilisateurs enregistrés avec des droits 1
+* Ajout d'un champ diffusion oui/non en synthèse utilisable dans GeoNature-atlas (pas d'interface de gestion de ce champ pour le moment)
+* Proposition d'un script d'installation simplifié pour un pack UsersHub, TaxHub, GeoNature et GeoNature-atlas
+* Factorisation des sql des schémas ``taxonomie`` et ``utilisateurs`` avec les dépots TaxHub et UsersHub
 
 **Note de version**
 
@@ -35,14 +46,33 @@ GeoNature Atlas sera également basé sur Taxhub qui permettra la saisie des infor
 
 :notes:
 
-    Une régression dans le contenu de taxref conduit à la suppression de l'information concernant le niveau de protection des espèces (régional, national, international,...). 
+    Une régression dans le contenu de Taxref V9 conduit à la suppression de l'information concernant le niveau de protection des espèces (régional, national, international,...). 
     Cette information était utilisée par GeoNature, notamment pour définir les textes à retenir pour la colonne ``concerne_mon_territoire`` de la table ``taxonomie.taxref_protection_articles``.
     Vous devez désormais remplir cette colonne manuellement.
 
-.
+
+1.7.4 (2016-07-06)
+------------------
+
+**Corrections de bugs**
+
+* Correction du script d'installation des tables liées au Contact flore (5a1fb07)
+* Mise en cohérence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe générique 'mollusques'.
+
+**Nouveautés**
+
+* Corrections de mise en forme de la documentation
+* Ajout de la liste rouge France de TaxRef lors d'une nouvelle installation (f4be2b6). A ne pas prendre en compte dans le cas d'une mise à jour.
+* Ajout du MCD de la BDD - https://github.com/PnEcrins/GeoNature/blob/master/docs/2016-04-29-mcd_geonaturedb.png
+
+**Note de version**
+
+* Vous pouvez passer directement de la version 1.6.0 à la 1.7.4 mais en vous référant aux notes de version de la 1.7.0.
+* Remplacer id_classe_mollusques par id_classe_gasteropodes dans web/js/config.js et renseigner la valeur en cohérence avec l'id_liste retenu dans la table taxonomie.bib_listes pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table taxonomie.cor_taxon_liste.
+
 
 1.7.3 (2016-05-19)
-----------------------
+------------------
 
 **Corrections de bugs**
 
