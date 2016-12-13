@@ -241,7 +241,7 @@ sed -i "s/atlas_source_pass=.*$/atlas_source_pass=$user_pg_pass/g"  main/configu
 sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
-sed -i "s/MYUSER/$monuser/g"  main/configuration/settings.ini
+sed -i "s/MYUSERLINUX/$monuser/g"  main/configuration/settings.ini
 
 #mettre à jour config.py
 sed -i "s/database_connection =.*$/database_connection = \"postgresql:\/\/$user_atlas:$user_atlas_pass@$pg_host:$pg_port\/$atlasdb_name\"/g" main/configuration/config.py
