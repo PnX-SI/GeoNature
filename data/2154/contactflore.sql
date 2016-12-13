@@ -169,20 +169,26 @@ ALTER FUNCTION insert_releve_cflore() OWNER TO geonatuser;
 -- Name: synthese_delete_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
 --
 
-CREATE FUNCTION synthese_delete_releve_cflore() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactflore.synthese_delete_releve_cflore()
+  RETURNS trigger AS
+$BODY$
 DECLARE
     idsource integer;
+    nbreleves integer;
 BEGIN
     --SUPRESSION EN SYNTHESE
-    
     SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' ;
-    
-	DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cflore::text; 
+    DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cflore::text; 
+    -- SUPPRESSION DE LA FICHE S'IL N'Y A PLUS DE RELEVE
+    SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = old.id_releve_cflore;
+    IF nbreleves < 1 THEN
+        DELETE FROM contactflore.t_fiches_cflore WHERE id_cflore = old.id_releve_cflore;
+    END IF;
     RETURN OLD; 
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 ALTER FUNCTION synthese_delete_releve_cflore() OWNER TO geonatuser;
@@ -329,80 +335,72 @@ ALTER FUNCTION synthese_update_cor_role_fiche_cflore() OWNER TO geonatuser;
 -- Name: synthese_update_fiche_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
 --
 
-CREATE FUNCTION synthese_update_fiche_cflore() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactflore.update_fiche_cflore()
+  RETURNS trigger AS
+$BODY$
 DECLARE
-    releves RECORD;
-    test integer;
-    mesobservateurs character varying(255);
-    sources RECORD;
-    idsourcecflore integer;
+  macommune character(5);
+  nbreleves integer;
 BEGIN
-
-    --on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
-    FOR sources IN SELECT id_source, url  FROM synthese.bib_sources WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' LOOP
-	IF sources.url = 'cflore' THEN
-	    idsourcecflore = sources.id_source;
+-------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
+-------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
+IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+   THEN
+	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+		new.srid_dessin = 3857;
+	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+		new.srid_dessin = 2154;
 	END IF;
-    END LOOP;
-	--Récupération des données de la table t_releves_cf avec l'id_cf de la fiche modifié
-	-- Ici on utilise le OLD id_cf pour être sur qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_fiches_cf
-	--le trigger met à jour avec le NEW --> SET code_fiche_source =  ....
-	FOR releves IN SELECT * FROM contactflore.t_releves_cflore WHERE id_cflore = old.id_cflore LOOP
-		--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
-		SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = releves.id_releve_cflore::text AND (id_source = idsourcecflore);
-		IF test IS NOT NULL THEN
-			SELECT INTO mesobservateurs o.observateurs FROM contactflore.t_releves_cflore r
-			JOIN contactflore.t_fiches_cflore f ON f.id_cflore = r.id_cflore
-			LEFT JOIN (
-				SELECT id_cflore, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
-				FROM contactflore.cor_role_fiche_cflore c
-				JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
-				GROUP BY id_cflore
-			) o ON o.id_cflore = f.id_cflore
-			WHERE r.id_releve_cflore = releves.id_releve_cflore;
-			IF NOT St_Equals(new.the_geom_3857,old.the_geom_3857) OR NOT St_Equals(new.the_geom_2154,old.the_geom_2154) THEN
-				
-				--mise à jour de l'enregistrement correspondant dans syntheseff
-				UPDATE synthese.syntheseff SET
-				code_fiche_source = 'f'||new.id_cflore||'-r'||releves.id_releve_cf,
-				id_organisme = new.id_organisme,
-				id_protocole = new.id_protocole,
-				insee = new.insee,
-				dateobs = new.dateobs,
-				observateurs = mesobservateurs,
-				altitude_retenue = new.altitude_retenue,
-				derniere_action = 'u',
-				supprime = new.supprime,
-				the_geom_3857 = new.the_geom_3857,
-				the_geom_2154 = new.the_geom_2154,
-				the_geom_point = new.the_geom_3857,
-				id_lot = new.id_lot
-				WHERE id_fiche_source = releves.id_releve_cflore::text AND (id_source = idsourcecflore) ;
-			ELSE
-				--mise à jour de l'enregistrement correspondant dans syntheseff
-				UPDATE synthese.syntheseff SET
-				code_fiche_source = 'f'||new.id_cflore||'-r'||releves.id_releve_cflore,
-				id_organisme = new.id_organisme,
-				id_protocole = new.id_protocole,
-				insee = new.insee,
-				dateobs = new.dateobs,
-				observateurs = mesobservateurs,
-				altitude_retenue = new.altitude_retenue,
-				derniere_action = 'u',
-				supprime = new.supprime,
-				the_geom_3857 = new.the_geom_3857,
-				the_geom_2154 = new.the_geom_2154,
-				the_geom_point = new.the_geom_3857,
-				id_lot = new.id_lot
-			    WHERE id_fiche_source = releves.id_releve_cflore::text AND (id_source = idsourcecflore);
-			END IF;
+-------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+		-- on calcul la commune (celle qui contient le plus de zp en surface)...
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+		    new.altitude_retenue = new.altitude_sig;
+		ELSE
+		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
-	END LOOP;
-	RETURN NEW; 			
+	ELSE					
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+			new.altitude_retenue = new.altitude_sig;
+		ELSE
+			new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	END IF;				
+END IF;
+--- divers update
+IF new.altitude_saisie <> old.altitude_saisie THEN
+   new.altitude_retenue = new.altitude_saisie;
+END IF;
+new.date_update = 'now';
+IF new.supprime <> old.supprime THEN	 
+  IF new.supprime = 't' THEN
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = old.id_cflore AND supprime = false;
+    IF nbreleves > 0 THEN
+        update contactflore.t_releves_cflore set supprime = 't' WHERE id_cflore = old.id_cflore; 
+    END IF;
+  END IF;
+  IF new.supprime = 'f' THEN
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactflore.t_releves_cflore set supprime = 'f' WHERE id_cflore = old.id_cflore; 
+  END IF;
+END IF;
+RETURN NEW; 
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 ALTER FUNCTION synthese_update_fiche_cflore() OWNER TO geonatuser;
@@ -412,14 +410,15 @@ ALTER FUNCTION synthese_update_fiche_cflore() OWNER TO geonatuser;
 -- Name: synthese_update_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
 --
 
-CREATE FUNCTION synthese_update_releve_cflore() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactflore.synthese_update_releve_cflore()
+  RETURNS trigger AS
+$BODY$
 DECLARE
     test integer;
     sources RECORD;
     idsourcecflore integer;
     cdnom integer;
+    nbreleves integer;
 BEGIN
     
 	--Récupération des données id_source dans la table synthese.bib_sources
@@ -445,9 +444,16 @@ BEGIN
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cflore
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cflore
 	END IF;
+	-- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+	SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = new.id_cflore AND supprime = false;
+	IF nbreleves < 1 THEN
+		UPDATE contactflore.t_fiches_cflore SET supprime = true WHERE id_cflore = new.id_cflore;
+	END IF;
 	RETURN NEW; 			
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 ALTER FUNCTION synthese_update_releve_cflore() OWNER TO geonatuser;

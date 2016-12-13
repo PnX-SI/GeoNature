@@ -389,20 +389,26 @@ $BODY$
 -- Name: synthese_delete_releve_cf(); Type: FUNCTION; Schema: contactfaune; Owner: -
 --
 
-CREATE FUNCTION synthese_delete_releve_cf() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactfaune.synthese_delete_releve_cf()
+  RETURNS trigger AS
+$BODY$
 DECLARE
     idsource integer;
+    nbreleves integer;
 BEGIN
     --SUPRESSION EN SYNTHESE
-    
     SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
-    
-	DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text; 
+    DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text;
+    -- SUPPRESSION DE LA FICHE S'IL N'Y A PLUS DE RELEVE
+    SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = old.id_cf;
+    IF nbreleves < 1 THEN
+        DELETE FROM contactfaune.t_fiches_cf WHERE id_cf = old.id_cf;
+    END IF;
     RETURN OLD; 
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- Function: contactfaune.synthese_insert_releve_cf()
 
@@ -646,9 +652,9 @@ $$;
 -- Name: synthese_update_releve_cf(); Type: FUNCTION; Schema: contactfaune; Owner: -
 --
 
-CREATE FUNCTION synthese_update_releve_cf() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactfaune.synthese_update_releve_cf()
+  RETURNS trigger AS
+$BODY$
 DECLARE
     test integer;
     criteresynthese integer;
@@ -656,6 +662,7 @@ DECLARE
     idsourcem integer;
     idsourcecf integer;
     cdnom integer;
+    nbreleves integer;
 BEGIN
     
 	--on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
@@ -688,20 +695,28 @@ BEGIN
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cf
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cf
 	END IF;
+	-- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+	SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = new.id_cf AND supprime = false;
+	IF nbreleves < 1 THEN
+		UPDATE contactfaune.t_fiches_cf SET supprime = true WHERE id_cf = new.id_cf;
+	END IF;
 	RETURN NEW; 			
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
 -- Name: update_fiche_cf(); Type: FUNCTION; Schema: contactfaune; Owner: -
 --
 
-CREATE FUNCTION update_fiche_cf() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactfaune.update_fiche_cf()
+  RETURNS trigger AS
+$BODY$
 DECLARE
-macommune character(5);
+  macommune character(5);
+  nbreleves integer;
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
@@ -746,15 +761,22 @@ END IF;
 new.date_update = 'now';
 IF new.supprime <> old.supprime THEN	 
   IF new.supprime = 't' THEN
-     update contactfaune.t_releves_cf set supprime = 't' WHERE id_cf = old.id_cf; 
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = old.id_cf AND supprime = false;
+    IF nbreleves > 0 THEN
+	    update contactfaune.t_releves_cf set supprime = 't' WHERE id_cf = old.id_cf; 
+    END IF;
   END IF;
   IF new.supprime = 'f' THEN
-     update contactfaune.t_releves_cf set supprime = 'f' WHERE id_cf = old.id_cf; 
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactfaune.t_releves_cf set supprime = 'f' WHERE id_cf = old.id_cf; 
   END IF;
 END IF;
 RETURN NEW; 
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
@@ -918,20 +940,27 @@ $BODY$
 -- Name: synthese_delete_releve_inv(); Type: FUNCTION; Schema: contactinv; Owner: -
 --
 
-CREATE FUNCTION synthese_delete_releve_inv() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactinv.synthese_delete_releve_inv()
+  RETURNS trigger AS
+$BODY$
 DECLARE
     idsource integer;
+    nbreleves integer;
 BEGIN
     
     SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv' ;
-    
     --SUPRESSION EN SYNTHESE
-	DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text; 
+    DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text;
+    -- SUPPRESSION DE LA FICHE S'IL N'Y A PLUS DE RELEVE
+    SELECT INTO nbreleves count(*) FROM contactinv.t_releves_inv WHERE id_inv = old.id_releve_inv;
+    IF nbreleves < 1 THEN
+        DELETE FROM contactinv.t_fiches_inv WHERE id_inv = old.id_releve_inv;
+    END IF; 
     RETURN OLD; 
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- Function: contactinv.synthese_insert_releve_inv()
 
@@ -1149,15 +1178,16 @@ $$;
 -- Name: synthese_update_releve_inv(); Type: FUNCTION; Schema: contactinv; Owner: -
 --
 
-CREATE FUNCTION synthese_update_releve_inv() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactinv.synthese_update_releve_inv()
+  RETURNS trigger AS
+$BODY$
 DECLARE
-	test integer;
-	criteresynthese integer;
-	mesobservateurs character varying(255);
+    test integer;
+    criteresynthese integer;
+    mesobservateurs character varying(255);
     idsource integer;
     cdnom integer;
+    nbreleves integer;
 BEGIN
 
 	--Récupération des données id_source dans la table synthese.bib_sources
@@ -1185,20 +1215,28 @@ BEGIN
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_inv
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_inv
 	END IF;
+	-- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+	SELECT INTO nbreleves count(*) FROM contactinv.t_releves_inv WHERE id_inv = new.id_inv AND supprime = false;
+	IF nbreleves < 1 THEN
+		UPDATE contactinv.t_fiches_inv SET supprime = true WHERE id_inv = new.id_inv;
+	END IF;
 	RETURN NEW;
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
 -- Name: update_fiche_inv(); Type: FUNCTION; Schema: contactinv; Owner: -
 --
 
-CREATE FUNCTION update_fiche_inv() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION contactinv.update_fiche_inv()
+  RETURNS trigger AS
+$BODY$
 DECLARE
-macommune character(5);
+  macommune character(5);
+  nbreleves integer;
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
@@ -1244,15 +1282,22 @@ END IF;
 new.date_update = 'now';
 IF new.supprime <> old.supprime THEN	 
   IF new.supprime = 't' THEN
-     update contactinv.t_releves_inv set supprime = 't' WHERE id_inv = old.id_inv; 
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactinv.t_releves_inv WHERE id_inv = old.id_inv AND supprime = false;
+    IF nbreleves > 0 THEN
+      update contactinv.t_releves_inv set supprime = 't' WHERE id_inv = old.id_inv; 
+    END IF;
   END IF;
   IF new.supprime = 'f' THEN
-     update contactfaune.t_releves_inv set supprime = 'f' WHERE id_inv = old.id_inv; 
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactfaune.t_releves_inv set supprime = 'f' WHERE id_inv = old.id_inv; 
   END IF;
 END IF;
 RETURN NEW; 
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 --
