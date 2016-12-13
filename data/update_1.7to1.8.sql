@@ -1101,6 +1101,7 @@ DECLARE
     idsourcem integer;
     idsourcecf integer;
     cdnom integer;
+    nbreleves integer;
 BEGIN
     
 	--on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
@@ -1112,7 +1113,7 @@ BEGIN
 	    END IF;
         END LOOP;
     --récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_taxons WHERE id_taxon = new.id_taxon;
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
 	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
 	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
 	IF test IS NOT NULL THEN
@@ -1132,6 +1133,11 @@ BEGIN
 		WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem); -- Ici on utilise le OLD id_releve_cf pour être sur 
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cf
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cf
+	END IF;
+	-- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+	SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = new.id_cf AND supprime = false;
+	IF nbreleves < 1 THEN
+		UPDATE contactfaune.t_fiches_cf SET supprime = true WHERE id_cf = new.id_cf;
 	END IF;
 	RETURN NEW; 			
 END;
@@ -1282,12 +1288,14 @@ CREATE OR REPLACE FUNCTION contactinv.synthese_update_releve_inv()
   RETURNS trigger AS
 $BODY$
 DECLARE
-	test integer;
-	criteresynthese integer;
-	mesobservateurs character varying(255);
+    test integer;
+    criteresynthese integer;
+    mesobservateurs character varying(255);
     idsource integer;
     cdnom integer;
+    nbreleves integer;
 BEGIN
+
 	--Récupération des données id_source dans la table synthese.bib_sources
 	SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv';
     --récup du cd_nom du taxon
@@ -1312,6 +1320,11 @@ BEGIN
 		WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text; -- Ici on utilise le OLD id_releve_inv pour être sur 
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_inv
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_inv
+	END IF;
+	-- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+	SELECT INTO nbreleves count(*) FROM contactinv.t_releves_inv WHERE id_inv = new.id_inv AND supprime = false;
+	IF nbreleves < 1 THEN
+		UPDATE contactinv.t_fiches_inv SET supprime = true WHERE id_inv = new.id_inv;
 	END IF;
 	RETURN NEW;
 END;
@@ -1387,6 +1400,317 @@ ELSIF (TG_OP = 'INSERT') THEN
         END IF;
 	RETURN NEW;
 END IF;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactfaune.synthese_delete_releve_cf()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    idsource integer;
+    nbreleves integer;
+BEGIN
+    --SUPRESSION EN SYNTHESE
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' ;
+    DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cf::text;
+    -- SUPPRESSION DE LA FICHE S'IL N'Y A PLUS DE RELEVE
+    SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = old.id_cf;
+    IF nbreleves < 1 THEN
+        DELETE FROM contactfaune.t_fiches_cf WHERE id_cf = old.id_cf;
+    END IF;
+    RETURN OLD; 
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactinv.synthese_delete_releve_inv()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    idsource integer;
+    nbreleves integer;
+BEGIN
+    
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactinv' AND db_field = 'id_releve_inv' ;
+    --SUPRESSION EN SYNTHESE
+    DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_inv::text;
+    -- SUPPRESSION DE LA FICHE S'IL N'Y A PLUS DE RELEVE
+    SELECT INTO nbreleves count(*) FROM contactinv.t_releves_inv WHERE id_inv = old.id_releve_inv;
+    IF nbreleves < 1 THEN
+        DELETE FROM contactinv.t_fiches_inv WHERE id_inv = old.id_releve_inv;
+    END IF; 
+    RETURN OLD; 
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactflore.synthese_delete_releve_cflore()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    idsource integer;
+    nbreleves integer;
+BEGIN
+    --SUPRESSION EN SYNTHESE
+    SELECT INTO idsource id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' ;
+    DELETE FROM synthese.syntheseff WHERE id_source = idsource AND id_fiche_source = old.id_releve_cflore::text; 
+    -- SUPPRESSION DE LA FICHE S'IL N'Y A PLUS DE RELEVE
+    SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = old.id_releve_cflore;
+    IF nbreleves < 1 THEN
+        DELETE FROM contactflore.t_fiches_cflore WHERE id_cflore = old.id_releve_cflore;
+    END IF;
+    RETURN OLD; 
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactfaune.update_fiche_cf()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  macommune character(5);
+  nbreleves integer;
+BEGIN
+-------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
+-------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
+IF (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+   THEN
+	IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+		new.srid_dessin = 3857;
+	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
+		new.srid_dessin = 2154;
+	END IF;
+-------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+		-- on calcul la commune (celle qui contient le plus de zp en surface)...
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, new.the_geom_2154);
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+		    new.altitude_retenue = new.altitude_sig;
+		ELSE
+		    new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	ELSE					
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154));
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+			new.altitude_retenue = new.altitude_sig;
+		ELSE
+			new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	END IF;				
+END IF;
+--- divers update
+IF new.altitude_saisie <> old.altitude_saisie THEN
+   new.altitude_retenue = new.altitude_saisie;
+END IF;
+new.date_update = 'now';
+IF new.supprime <> old.supprime THEN	 
+  IF new.supprime = 't' THEN
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = old.id_cf AND supprime = false;
+    IF nbreleves > 0 THEN
+	    update contactfaune.t_releves_cf set supprime = 't' WHERE id_cf = old.id_cf; 
+    END IF;
+  END IF;
+  IF new.supprime = 'f' THEN
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactfaune.t_releves_cf set supprime = 'f' WHERE id_cf = old.id_cf; 
+  END IF;
+END IF;
+RETURN NEW; 
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactflore.synthese_update_releve_cflore()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    test integer;
+    sources RECORD;
+    idsourcecflore integer;
+    cdnom integer;
+    nbreleves integer;
+BEGIN
+    
+	--Récupération des données id_source dans la table synthese.bib_sources
+    SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore';
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
+	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
+	--test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
+	SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cflore::text AND (id_source = idsourcecflore);
+	IF test IS NOT NULL THEN
+		
+
+		--mise à jour de l'enregistrement correspondant dans syntheseff
+		UPDATE synthese.syntheseff SET
+			id_fiche_source = new.id_releve_cflore,
+			code_fiche_source = 'f'||new.id_cflore||'-r'||new.id_releve_cflore,
+			cd_nom = cdnom,
+			remarques = new.commentaire,
+			determinateur = new.determinateur,
+			derniere_action = 'u',
+			supprime = new.supprime
+		WHERE id_fiche_source = old.id_releve_cflore::text AND (id_source = idsourcecflore); -- Ici on utilise le OLD id_releve_cflore pour être sur 
+		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cflore
+		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cflore
+	END IF;
+	-- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+	SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = new.id_cflore AND supprime = false;
+	IF nbreleves < 1 THEN
+		UPDATE contactflore.t_fiches_cflore SET supprime = true WHERE id_cflore = new.id_cflore;
+	END IF;
+	RETURN NEW; 			
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactflore.update_fiche_cflore()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  macommune character(5);
+  nbreleves integer;
+BEGIN
+-------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
+-------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
+IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+   THEN
+	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+		new.srid_dessin = 3857;
+	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+		new.srid_dessin = 2154;
+	END IF;
+-------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+		-- on calcul la commune (celle qui contient le plus de zp en surface)...
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+		    new.altitude_retenue = new.altitude_sig;
+		ELSE
+		    new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	ELSE					
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+			new.altitude_retenue = new.altitude_sig;
+		ELSE
+			new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	END IF;				
+END IF;
+--- divers update
+IF new.altitude_saisie <> old.altitude_saisie THEN
+   new.altitude_retenue = new.altitude_saisie;
+END IF;
+new.date_update = 'now';
+IF new.supprime <> old.supprime THEN	 
+  IF new.supprime = 't' THEN
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = old.id_cflore AND supprime = false;
+    IF nbreleves > 0 THEN
+        update contactflore.t_releves_cflore set supprime = 't' WHERE id_cflore = old.id_cflore; 
+    END IF;
+  END IF;
+  IF new.supprime = 'f' THEN
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactflore.t_releves_cflore set supprime = 'f' WHERE id_cflore = old.id_cflore; 
+  END IF;
+END IF;
+RETURN NEW; 
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+CREATE OR REPLACE FUNCTION contactinv.update_fiche_inv()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  macommune character(5);
+  nbreleves integer;
+BEGIN
+-------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
+-------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
+IF (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+  OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
+   THEN
+	IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
+		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+		new.srid_dessin = 3857;
+	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
+		new.srid_dessin = 2154;
+	END IF;
+
+-------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
+	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+		-- on calcul la commune (celle qui contient le plus de zp en surface)...
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, new.the_geom_2154);
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+		    new.altitude_retenue = new.altitude_sig;
+		ELSE
+		    new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	ELSE					
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE public.st_intersects(c.the_geom, public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154));
+		new.insee = macommune;
+		-- on calcul l'altitude
+		new.altitude_sig = layers.f_isolines20(public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
+			new.altitude_retenue = new.altitude_sig;
+		ELSE
+			new.altitude_retenue = new.altitude_saisie;
+		END IF;
+	END IF;	
+END IF;
+-- divers update
+IF new.altitude_saisie <> old.altitude_saisie THEN
+   new.altitude_retenue = new.altitude_saisie;
+END IF;
+new.date_update = 'now';
+IF new.supprime <> old.supprime THEN	 
+  IF new.supprime = 't' THEN
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactinv.t_releves_inv WHERE id_inv = old.id_inv AND supprime = false;
+    IF nbreleves > 0 THEN
+      update contactinv.t_releves_inv set supprime = 't' WHERE id_inv = old.id_inv; 
+    END IF;
+  END IF;
+  IF new.supprime = 'f' THEN
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactfaune.t_releves_inv set supprime = 'f' WHERE id_inv = old.id_inv; 
+  END IF;
+END IF;
+RETURN NEW; 
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
