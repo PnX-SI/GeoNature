@@ -746,7 +746,7 @@ application.cflore.editFiche = function() {
                 ,'derniere_date'
             ]
             ,sortInfo: {
-                field: 'nom_francais'
+                field: 'nom_latin'
                 ,direction: 'ASC'
             }
             ,autoLoad:true
@@ -811,8 +811,7 @@ application.cflore.editFiche = function() {
                                     boxLabel: 'français'
                                     ,name: 'langue'
                                     ,itemCls:'graytext'
-                                    ,inputValue: 'fr'                                 
-                                    ,checked: true
+                                    ,inputValue: 'fr'
                                     ,listeners: {
                                         check: function(checkbox,checked) {
                                             if(checked){
@@ -826,7 +825,8 @@ application.cflore.editFiche = function() {
                                     boxLabel: 'latin'
                                     ,name: 'langue'
                                     ,itemCls:'graytext'
-                                    ,inputValue: 'latin' 
+                                    ,inputValue: 'latin'
+                                    ,checked: true                                    
                                     ,listeners: {
                                         check: function(checkbox,checked) {
                                                 if(checked){comboTaxonsTemplate('latin');
@@ -1036,13 +1036,13 @@ application.cflore.editFiche = function() {
                         },{
                             id:'combo-fiche-taxon'
                             ,xtype:'twintriggercombo'
-                            ,tpl: '<tpl for="."><div class="x-combo-list-item" style="color:{couleur};"> <tpl if="patrimonial"><img src="images/logo_pne.gif" width="10" height="10"></tpl> {nom_francais} ({nb_obs}) - {derniere_date}</div></tpl>'
+                            ,tpl: '<tpl for="."><div class="x-combo-list-item" style="color:{couleur};"> <tpl if="patrimonial"><img src="images/logo_pne.gif" width="10" height="10"></tpl> {nom_latin} ({nb_obs}) - {derniere_date}</div></tpl>'
                             ,fieldLabel: 'Taxon '
                             ,name: 'id_nom'
                             ,hiddenName:"id_nom"
                             ,store: storeTaxonsCf
                             ,valueField: "id_nom"
-                            ,displayField: "nom_francais"
+                            ,displayField: "nom_latin"
                             ,allowBlank:false
                             ,typeAhead: true
                             ,typeAheadDelay:750
