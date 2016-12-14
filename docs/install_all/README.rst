@@ -14,6 +14,11 @@ Pré-requis
 Installation
 ------------
 
+:notes:
+
+    Votre utilisateur linux doit disposer des droits administrateur avec sudo. Voir https://www.privateinternetaccess.com/forum/discussion/18063/debian-8-1-0-jessie-sudo-fix-not-installed-by-default
+
+
 Après installation de l'OS avec OpenSSH server, placez vous dans le home de votre utilisateur et entrez les commandes suivantes :
 
   ::
@@ -38,24 +43,21 @@ TODO : détailler la procédure pour l'atlas avec :
     * relancer le install.db de l'atlas.
 
 
-:notes:
-
-    Votre utilisateur linux doit disposer des droits administrateur avec sudo. Voir https://www.privateinternetaccess.com/forum/discussion/18063/debian-8-1-0-jessie-sudo-fix-not-installed-by-default
-
-
 Lancez ensuite l'installation des applications:
  
   ::  
   
 	./install_all.sh
 
-Le mot de passe sudo vous sera demandé 2 fois. 
-Lors de l'exécution du script, 2 questions seront posée. Répondre ``9`` puis ``3``
+Le mot de passe sudo vous sera peut-être demandé une deuxième fois. 
 
 Vous devez pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre nom de domaine ou avec votre adresse IP)
 	http://mondomaine.fr/usershub
+    
 	http://mondomaine.fr/geonature
+    
 	http://mondomaine.fr/taxhub
+    
 	http://mondomaine.fr/atlas
 
 
