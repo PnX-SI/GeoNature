@@ -1,4 +1,4 @@
-.. image:: http://geotrek.fr/images/logo-pne.png
+.. image:: http://geotrek.fr/assets/img/parc_ecrins.png
     :target: http://www.ecrins-parcnational.fr
     
 =======
