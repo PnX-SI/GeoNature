@@ -29,7 +29,7 @@ CHANGELOG
 
 * Remplacer ``id_classe_mollusques`` par ``id_classe_gasteropodes`` dans ``web/js/config.js`` et renseigner la valeur en cohérence avec l'id_liste retenu dans la table ``taxonomie.bib_listes`` pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table ``taxonomie.cor_taxon_liste``.
 * Exécuter le script sql ``data/update_1.7to1.8.sql``
-* Installer taxref V9 **TODO : script taxref_v8tov9.sql**
+* Mettre à jour taxref en V9 en vous inspirant du script ``data/taxonomie/inpn/update_taxref_v8tov9``
 
 **taxhub**
 
@@ -38,6 +38,8 @@ L'application TaxHub devient fonctionnelle pour sa première version. Vous pouvez
 Elle vous aidera à gérer vos taxons. 
 
 Taxhub évoluera pour intégrer progressivement de nouvelles fonctionnalités.
+
+Il est conseillé de ne pas installer la base de données TaxHub et de connecter l'application directement sur la base de données de GeoNature
 
 **GeoNature Atlas**
 
