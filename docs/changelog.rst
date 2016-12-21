@@ -2,58 +2,95 @@
 CHANGELOG
 =========
 
-1.8.0 dev (unreleased)
+1.8.1dev (unreleased)
 ----------------------
 
-**Corrections de bugs**
+1.8.0 (2016-12-14)
+------------------
 
-* Mise en cohérence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe générique 'mollusques'.
+**NouveautÃ©s**
 
-**Nouveautés**
+* Passage Ã  TAXREF version 9
+* AccÃ¨s Ã  la synthÃ¨se en consultation uniquement pour des utilisateurs enregistrÃ©s avec des droits 1
+* Ajout d'un champ ``diffusion`` (oui/non) dans la table ``synthese.syntheseff``, utilisable dans GeoNature-atlas. Pas d'interface de gestion de ce champ pour le moment. CF #132
+* CrÃ©ation d'un script d'installation simplifiÃ© pour un pack UsersHub, TaxHub, GeoNature et GeoNature-atlas : https://github.com/PnEcrins/GeoNature/tree/master/docs/install_all
+* Factorisation des SQL de crÃ©ation des schÃ©mas ``taxonomie`` et ``utilisateurs`` en les rÃ©cupÃ©rant dans les dÃ©pots TaxHub et UsersHub
+* CompatibilitÃ© avec l'application `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui permet de gÃ©rer la taxonomie Ã  partir de TAXREF. Cela induit d'importants changements dans le schÃ©ma ``taxonomie``, notamment le renommage de ``taxonomie.bib_taxons`` en ``taxonomie.bib_noms``, la suppression de ``taxonomie.bib_filtres`` et l'utilisation de ``taxonomie.bib_attributs`` (voir https://github.com/PnX-SI/TaxHub/issues/71 pour plus d'informations). Voir aussi le fichier de migration ``data/update_1.7to1.8.sql`` qui permet d'automatiser ces Ã©volutions de la BDD
+* CompatibilitÃ© avec l'application `GeoNature-atlas <https://github.com/PnEcrins/GeoNature-atlas>`_ qui permet de diffuser les donnÃ©es de la synthÃ¨se faune et flore dans un atlas en ligne (exemple : http://biodiversite.ecrins-parcnational.fr)
+* CrÃ©ation d'un site internet de prÃ©sentation de GeoNature : http://geonature.fr
 
-* Compatibilité avec Taxhub
-* Taxref V9
+**Corrections**
+
+* AmÃ©lioration des triggers concernant la suppression de fiches orphelines
+* Affichage par dÃ©faut du nom latin dans Contact flore et Contact invertÃ©brÃ©s
+* Correction des exports lors de la prÃ©sence de points-virgules dans les commentaires. Fix #143
+* Suppression du besoin d'un super utilisateur lors de l'installation de la BDD. Fix #141
+* Correction de l'ID des protocoles mortalitÃ© et invertebres dans la configuration par dÃ©faut
+* Suppression d'un doublon dans le fichier de configuration symfony de l'application
+* Correction des coordonnÃ©es lors de l'export de donnÃ©es Flore Station
+* Autres corrections mineures
 
 **Note de version**
 
-* Remplacer ``id_classe_mollusques`` par ``id_classe_gasteropodes`` dans ``web/js/config.js`` et renseigner la valeur en cohérence avec l'id_liste retenu dans la table ``taxonomie.bib_listes`` pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table ``taxonomie.cor_taxon_liste``.
-* Exécuter le script sql ``data/update_1.7to1.8.sql``
-* Installer taxref V9 **TODO : script taxref_v8tov9.sql**
+* ExÃ©cuter le script SQL de migration rÃ©alisant les modifications de la BDD de la version 1.7.X Ã  1.8.0 ``data/update_1.7to1.8.sql``
+* Mettre Ã  jour taxref en V9 en vous inspirant du script ``data/taxonomie/inpn/update_taxref_v8tov9``
 
-**taxhub**
+**TaxHub**
 
-L'application TaxHub devient fonctionnelle pour sa première version. Vous pouvez l'installer. https://github.com/PnX-SI/TaxHub
+L'application TaxHub (https://github.com/PnX-SI/TaxHub) est dÃ©sormais fonctionnelle, documentÃ© et installable.
 
-Elle vous aidera à gérer vos taxons. 
+Elle vous aidera Ã  gÃ©rer vos taxons et l'ensemble du schÃ©ma ``taxonomie``, prÃ©sent dans la BDD de GeoNature. 
 
-Taxhub évoluera pour intégrer progressivement de nouvelles fonctionnalités.
+TaxHub Ã©voluera pour intÃ©grer progressivement de nouvelles fonctionnalitÃ©s.
 
-**GeoNature Atlas**
+Il est conseillÃ© de ne pas installer la base de donnÃ©es de TaxHub indÃ©pendamment et de connecter l'application directement sur le la base de donnÃ©es de GeoNature.
 
-GeoNature Atlas sera également basé sur Taxhub qui permettra la saisie des informations relatives aux taxons. GeoNature Atlas dispose de sa propre base de données mais pour fonctionner en connexion avec le contenu de la base GeoNature il faudra une version 1.8 de GeoNature.
+**GeoNature-atlas**
+
+GeoNature-atlas est Ã©galement basÃ© sur le schÃ©ma ``taxonomie`` de TaxHub. Ainsi TaxHub permet la saisie des informations relatives aux taxons (descriptions, milieux, photos, liens, PDF...). GeoNature-atlas dispose de sa propre base de donnÃ©es mais pour fonctionner en connexion avec le contenu de la base GeoNature il faut Ã  minima disposer d'une version 1.8 de GeoNature.
   
-
 :notes:
 
-    Une régression dans le contenu de taxref conduit à la suppression de l'information concernant le niveau de protection des espèces (régional, national, international,...). 
-    Cette information était utilisée par GeoNature, notamment pour définir les textes à retenir pour la colonne ``concerne_mon_territoire`` de la table ``taxonomie.taxref_protection_articles``.
-    Vous devez désormais remplir cette colonne manuellement.
+    Une rÃ©gression dans le contenu de Taxref V9 conduit Ã  la suppression de l'information concernant le niveau de protection des espÃ¨ces (rÃ©gional, national, international,...). 
+    Cette information Ã©tait utilisÃ©e par GeoNature, notamment pour dÃ©finir les textes Ã  retenir pour la colonne ``concerne_mon_territoire`` de la table ``taxonomie.taxref_protection_articles``.
+    Vous devez dÃ©sormais remplir cette colonne manuellement.
 
-.
 
-1.7.3 (2016-05-19)
-----------------------
+1.7.4 (2016-07-06)
+------------------
 
 **Corrections de bugs**
 
-* Correction de coordonnées vides dans l'export de Flore station. cf https://github.com/PnEcrins/GeoNature/commit/0793a3d3d2b3719ed515058d1a0ba9baf7cb2096
-* Correction des triggers en base concernant un bug de saisie pour les taxons dont le taxon de référence n'est pas présent dans ``taxonomie.bib_taxons``.
+* Correction du script d'installation des tables liÃ©es au Contact flore (5a1fb07)
+* Mise en cohÃ©rence avec GeoNature-mobile utilisant les classes 'gasteropodes' et 'bivalves' et non la classe gÃ©nÃ©rique 'mollusques'.
+
+**NouveautÃ©s**
+
+* Corrections de mise en forme de la documentation
+* Ajout de la liste rouge France de TaxRef lors d'une nouvelle installation (f4be2b6). A ne pas prendre en compte dans le cas d'une mise Ã  jour.
+* Ajout du MCD de la BDD - https://github.com/PnEcrins/GeoNature/blob/master/docs/2016-04-29-mcd_geonaturedb.png
 
 **Note de version**
 
-Rappel : commencez par suivre la procédure classique de mise à jour. http://geonature.readthedocs.org/fr/latest/update.html
-* Vous pouvez passer directement de la version 1.6.0 à la 1.7.3 mais en vous référant aux notes de version de la 1.7.0.
-* Pour passer de la 1.7.2 à la 1.7.3 vous devez exécuter le script ``https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.7.2to1.7.3.sql``.
+* Vous pouvez passer directement de la version 1.6.0 Ã  la 1.7.4 mais en vous rÃ©fÃ©rant aux notes de version de la 1.7.0.
+* Remplacer ``id_classe_mollusques`` par ``id_classe_gasteropodes`` dans ``web/js/config.js`` et renseigner la valeur en cohÃ©rence avec l'``id_liste`` retenu dans la table ``taxonomie.bib_listes`` pour les gastÃ©ropodes. Attention, vous devez avoir Ã©tabli une correspondance entre les taxons gastÃ©ropodes et bivalves et leur liste dans la table ``taxonomie.cor_taxon_liste``.
+
+
+1.7.3 (2016-05-19)
+------------------
+
+**Corrections de bugs**
+
+* Correction de coordonnÃ©es vides dans l'export de Flore station. cf https://github.com/PnEcrins/GeoNature/commit/0793a3d3d2b3719ed515058d1a0ba9baf7cb2096
+* Correction des triggers en base concernant un bug de saisie pour les taxons dont le taxon de rÃ©fÃ©rence n'est pas prÃ©sent dans ``taxonomie.bib_taxons``.
+
+**Note de version**
+
+Rappel : commencez par suivre la procÃ©dure classique de mise Ã  jour. http://geonature.readthedocs.org/fr/latest/update.html
+
+* Vous pouvez passer directement de la version 1.6.0 Ã  la 1.7.3 mais en vous rÃ©fÃ©rant aux notes de version de la 1.7.0.
+
+* Pour passer de la 1.7.2 Ã  la 1.7.3 vous devez exÃ©cuter le script ``https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.7.2to1.7.3.sql``.
 
 
 1.7.2 (2016-04-27)
@@ -65,58 +102,58 @@ Rappel : commencez par suivre la procédure classique de mise à jour. http://geon
 
 **Note de version**
 
-* Vous pouvez passer directement de la version 1.6.0 à la 1.7.2 mais en vous référant aux notes de version de la 1.7.0.
+* Vous pouvez passer directement de la version 1.6.0 Ã  la 1.7.2 mais en vous rÃ©fÃ©rant aux notes de version de la 1.7.0.
 
 1.7.1 (2016-04-27)
 ----------------------
 
 **Corrections de bug**
 
-* Ajout des listes flore manquantes dans le script de mise à jour ``data/update_1.6to1.7.sql``.
+* Ajout des listes flore manquantes dans le script de mise Ã  jour ``data/update_1.6to1.7.sql``.
 
 1.7.0 (2016-04-24)
 ----------------------
 
-**Nouveautés**
+**NouveautÃ©s**
 
 * Ajout du contact flore
-* Correction et compléments dans les statistiques et mise en paramètre de leur affichage ou non, ainsi que de la date de début à prendre en compte pour leur affichage.
-* Ajout d'un module d'export des données permettant d'offrir, en interne ou à des partenaires, un lien de téléchargement des données basé sur une ou des vues de la base de données (un fichier par vue). Voir http://geonature.readthedocs.org/fr/latest/export.html
-* Modification des identifiants des listes pour compatibilité avec les applications GeoNature-Mobile.
-* Complément dans la base de données pour compatibilité avec les applications GeoNature-Mobile.
-* Correction d'une erreur sur l'importation de shape pour la recherche géographique
-* WMS : correction de la liste des sites N2000, correction de l'affichage de l'aire optimale d'adhésion des parcs nationaux et retrait des sites inscrits et classés
-* Correction d'un bug permettant la saisie d'une date d'observation postérieure à aujourd'hui dans Flore station
+* Correction et complÃ©ments dans les statistiques et mise en paramÃ¨tre de leur affichage ou non, ainsi que de la date de dÃ©but Ã  prendre en compte pour leur affichage.
+* Ajout d'un module d'export des donnÃ©es permettant d'offrir, en interne ou Ã  des partenaires, un lien de tÃ©lÃ©chargement des donnÃ©es basÃ© sur une ou des vues de la base de donnÃ©es (un fichier par vue). Voir http://geonature.readthedocs.org/fr/latest/export.html
+* Modification des identifiants des listes pour compatibilitÃ© avec les applications GeoNature-Mobile.
+* ComplÃ©ment dans la base de donnÃ©es pour compatibilitÃ© avec les applications GeoNature-Mobile.
+* Correction d'une erreur sur l'importation de shape pour la recherche gÃ©ographique
+* WMS : correction de la liste des sites N2000, correction de l'affichage de l'aire optimale d'adhÃ©sion des parcs nationaux et retrait des sites inscrits et classÃ©s
+* Correction d'un bug permettant la saisie d'une date d'observation postÃ©rieure Ã  aujourd'hui dans Flore station
 * Mention de la version de taxref sur la page d'accueil
 
 **Note de version**
 
-Rappel : commencez par suivre la procédure classique de mise à jour. http://geonature.readthedocs.org/fr/latest/update.html
+Rappel : commencez par suivre la procÃ©dure classique de mise Ã  jour. http://geonature.readthedocs.org/fr/latest/update.html
 
-**1.** Modification des identifiants des listes de taxons pour compatibilité avec les applications GeoNature-Mobile.
+**1.** Modification des identifiants des listes de taxons pour compatibilitÃ© avec les applications GeoNature-Mobile.
    
 Dans GeoNature-Mobile, les taxons sont filtrables par classe sur la base d'un ``id_classe``. Ces id sont inscrits en dur dans le code des applications mobiles. 
 
 Dans la base GeoNature les classes taxonomiques sont configurables grace au vues ``v_nomade_classes`` qui utilisent les listes (``taxonomie.bib_listes``).
 
-Les ``id_liste`` ont donc été mis à jour pour être compatibles avec les ``id_classe`` des applications mobiles.
+Les ``id_liste`` ont donc Ã©tÃ© mis Ã  jour pour Ãªtre compatibles avec les ``id_classe`` des applications mobiles.
 
 Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT LES COMMENTAIRES.
 
-* En lien avec les modifications ci-dessus, mettre à jour les variables des classes taxonomiques correspondant aux modification des ``id_liste`` dans ``web/js/config.js``
+* En lien avec les modifications ci-dessus, mettre Ã  jour les variables des classes taxonomiques correspondant aux modification des ``id_liste`` dans ``web/js/config.js``
 
 * Ajouter dans le fichier ``lib/sfGeonatureConfig.php`` les variables ``$struc_abregee``, ``$struc_long``, ``$taxref_version``, ``$show_statistiques`` et ``$init_date_statistiques`` (voir le fichier ``lib/sfGeonatureConfig.php.sample``)
 
 **2.** Pour ajouter le Contact flore
 
-* Exécuter le script sql ``data/2154/contactflore.sql``
+* ExÃ©cuter le script sql ``data/2154/contactflore.sql``
 * Ajouter les variables ``$id_lot_cflore  = 7``, ``$id_protocole_cflore  = 7``, ``$id_source_cflore = 7`` et ``$appname_cflore = 'Contact flore - GeoNature';`` dans ``lib/sfGeonatureConfig.php`` (voir le fichier d'exemple ``lib/sfGeonatureConfig.php.sample``)
 * Ajouter les variables  ``id_lot_contact_flore = 7``, ``id_protocole_contact_flore = 7``, ``id_source_contactflore = 7`` dans ``web/js/config.js`` (voir le fichier d'exemple ``web/js/config.js.sample``)
-* l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit être actif (dernière colonne) pour que le contact flore soit accessible depuis la page d'accueil.
+* l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit Ãªtre actif (derniÃ¨re colonne) pour que le contact flore soit accessible depuis la page d'accueil.
             
-**3.** Afin de mettre à jour la configuration WMS, vous devez exécuter le fichier ``wms/update1.6to1.7.sh``. 
+**3.** Afin de mettre Ã  jour la configuration WMS, vous devez exÃ©cuter le fichier ``wms/update1.6to1.7.sh``. 
 
-Au préalable, assurez vous que les informations renseignées dans le fichier ``config/settings.ini`` sont à jour. L'ancien fichier sera sauvegardé sous ``wms/wms_1.6.map``. Vous pourrez faire le choix de conserver ou de supprimer ce fichier de sauvegarde qui ne sera pas utilisé par l'application.
+Au prÃ©alable, assurez vous que les informations renseignÃ©es dans le fichier ``config/settings.ini`` sont Ã  jour. L'ancien fichier sera sauvegardÃ© sous ``wms/wms_1.6.map``. Vous pourrez faire le choix de conserver ou de supprimer ce fichier de sauvegarde qui ne sera pas utilisÃ© par l'application.
 
    :: 
 
@@ -124,21 +161,21 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``co
         
 **4.** Mise en place du module d'export 
 
-* Créer les vues retournant les données attendues.
-* Configurer le module dans le fichier ``lib/sfGeonatureConfig.php`` à partir de l'exemple du fichier ``lib/sfGeonatureConfig.php.sample``); section ``configuration du module d'export``
+* CrÃ©er les vues retournant les donnÃ©es attendues.
+* Configurer le module dans le fichier ``lib/sfGeonatureConfig.php`` Ã  partir de l'exemple du fichier ``lib/sfGeonatureConfig.php.sample``); section ``configuration du module d'export``
    
-   * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
-   * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
-   * Chaque module peut comporter autant que vues que nécessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
+   * Vous pouvez paramÃ©trer plusieurs modules avec un nom pour chacun grace au paramÃ¨tre ``exportname``
+   * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les donnÃ©es mises Ã  disposition par le module d'export.
+   * Chaque module peut comporter autant que vues que nÃ©cessaire (un bouton par vue gÃ©nÃ©rera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
    * Voir la documentation ici : http://geonature.readthedocs.org/fr/latest/export.html
 
-* Attribution des droits nécessaires pour le répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export.
+* Attribution des droits nÃ©cessaires pour le rÃ©pertoire permettant l'enregistrement temporaire des fichiers gÃ©nÃ©rÃ©s par le module d'export.
 
    :: 
 
       chmod -R 775 web/uploads/exports
         
-* Rétablir les droits d'écriture et vider le cache 
+* RÃ©tablir les droits d'Ã©criture et vider le cache 
 
    ::
 
@@ -152,15 +189,15 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``co
 
 **Note de version**
 
-* Pour les changements dans la base de données vous pouvez exécuter le fichier ``data/update_1.5to1.6.sql``
-* Mise à jour de la configuration Apache. Modifier le fichier ``apache/wms.conf`` en vous basant sur l'exemple https://github.com/PnEcrins/GeoNature/blob/master/apache/wms.conf.sample#L16-L17
-* Ajouter le paramètre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisée pour GeoNature dans les tables ``utilisateurs.t_applications`` et ``utilisateurs.cor_role_droit_application``)
-* Ajouter le paramètre ``import_shp_projection`` dans ``web/js/configmap.map`` - voir l'exemple dans le fichier ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L35``
-* Supprimer toute référence à gps_user_projection dans ``web/js/configmap.map`` 
-* Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure définie dans ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7-L14``. Attention de bien respecter la structure du tableau JSON et notamment sa syntaxe (accolades, virgules, nom des objects, etc...)
+* Pour les changements dans la base de donnÃ©es vous pouvez exÃ©cuter le fichier ``data/update_1.5to1.6.sql``
+* Mise Ã  jour de la configuration Apache. Modifier le fichier ``apache/wms.conf`` en vous basant sur l'exemple https://github.com/PnEcrins/GeoNature/blob/master/apache/wms.conf.sample#L16-L17
+* Ajouter le paramÃ¨tre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisÃ©e pour GeoNature dans les tables ``utilisateurs.t_applications`` et ``utilisateurs.cor_role_droit_application``)
+* Ajouter le paramÃ¨tre ``import_shp_projection`` dans ``web/js/configmap.map`` - voir l'exemple dans le fichier ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L35``
+* Supprimer toute rÃ©fÃ©rence Ã  gps_user_projection dans ``web/js/configmap.map`` 
+* Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure dÃ©finie dans ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7-L14``. Attention de bien respecter la structure du tableau JSON et notamment sa syntaxe (accolades, virgules, nom des objects, etc...)
 * Ajouter les ``id_liste`` pour les classes faune filtrables dans les formulaires de saisie dans le fichier ``web/js/config.map``. Ceci concerne les variables ``id_classe_oiseaux``, ``id_classe_mammiferes``, ``id_classe_amphibiens``, ``id_classe_reptiles``, ``id_classe_poissons`` et ``id_classe_ecrevisses``, ``id_classe_insectes``, ``id_classe_arachnides``, ``id_classe_myriapodes`` et  ``id_classe_mollusques``. Voir l'exemple dans le fichier ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/config.js.sample#L32-44``
-* Taxref a été mis à jour de la version 7 à 8. GeoNature 1.6.0 peut fonctionner avec la version 7. Cependant il est conseillé de passer en taxref V8 en mettant à jour la table ``synthese.taxref`` avec la version 8. Cette mise à jour pouvant avoir un impact fort sur vos données, son automatisation n'a pas été prévue. Le script SQL de migration de vos données de taxref V7 vers taxref V8 n'est donc pas fourni. Pour une installation nouvelle de la base de données, GeoNature 1.6.0 est fourni avec taxref V8.
-* Le routing a été mis à jour, vous devez vider le cache de Symfony pour qu'il soit pris en compte. Pour cela, placez vous dans le répertoire racine de l'application et effectuez la commande suivante :
+* Taxref a Ã©tÃ© mis Ã  jour de la version 7 Ã  8. GeoNature 1.6.0 peut fonctionner avec la version 7. Cependant il est conseillÃ© de passer en taxref V8 en mettant Ã  jour la table ``synthese.taxref`` avec la version 8. Cette mise Ã  jour pouvant avoir un impact fort sur vos donnÃ©es, son automatisation n'a pas Ã©tÃ© prÃ©vue. Le script SQL de migration de vos donnÃ©es de taxref V7 vers taxref V8 n'est donc pas fourni. Pour une installation nouvelle de la base de donnÃ©es, GeoNature 1.6.0 est fourni avec taxref V8.
+* Le routing a Ã©tÃ© mis Ã  jour, vous devez vider le cache de Symfony pour qu'il soit pris en compte. Pour cela, placez vous dans le rÃ©pertoire racine de l'application et effectuez la commande suivante :
 
     ::
     
@@ -168,31 +205,31 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``co
 
 **Changements**
 
-* Les recherches dans la synthèse sont désormais faites sur le ``cd_ref`` et non plus sur le ``cd_nom`` pour retourner tous les synonymes du taxon recherché - Fix #92
-* Passage de taxref V7 à Taxref V8 - Fix #34
-* Intégration de la première version de l'API permettant d'intégrer des données dans la synthèse depuis une source externe - https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_webapi_doc.rst
-* Mise en paramètre du ``id_application`` dans ``lib/sfGeonatureConfig.php.php`` - Fix #105
-* Recharger la synthese après suppression d'un enregistrement - Fix #94 
-* L'utilisateur peut lui-même définir le système de coordonnées dans l'outil de pointage GPS - Fix #107 
-* Mise en paramètre de la projection de la shape importée comme zone de recherche dans la synthèse
-* Les exports XLS et SHP comportent le ``cd_nom`` ET le ``cd_ref`` de tous les synonymes du nom recherché ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref) - Fix #92
-* SAISIE invertébrés - Ajout d'un filtre Mollusques - Fix #117
-* Amélioration du vocabulaire utilisé sur la page d'accueil - #118
+* Les recherches dans la synthÃ¨se sont dÃ©sormais faites sur le ``cd_ref`` et non plus sur le ``cd_nom`` pour retourner tous les synonymes du taxon recherchÃ© - Fix #92
+* Passage de taxref V7 Ã  Taxref V8 - Fix #34
+* IntÃ©gration de la premiÃ¨re version de l'API permettant d'intÃ©grer des donnÃ©es dans la synthÃ¨se depuis une source externe - https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_webapi_doc.rst
+* Mise en paramÃ¨tre du ``id_application`` dans ``lib/sfGeonatureConfig.php.php`` - Fix #105
+* Recharger la synthese aprÃ¨s suppression d'un enregistrement - Fix #94 
+* L'utilisateur peut lui-mÃªme dÃ©finir le systÃ¨me de coordonnÃ©es dans l'outil de pointage GPS - Fix #107 
+* Mise en paramÃ¨tre de la projection de la shape importÃ©e comme zone de recherche dans la synthÃ¨se
+* Les exports XLS et SHP comportent le ``cd_nom`` ET le ``cd_ref`` de tous les synonymes du nom recherchÃ© ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref) - Fix #92
+* SAISIE invertÃ©brÃ©s - Ajout d'un filtre Mollusques - Fix #117
+* AmÃ©lioration du vocabulaire utilisÃ© sur la page d'accueil - #118
 * Affichage d'un message pendant le chargement des exports
-* Mise en place de statistiques automatiques sur la page d'accueil, basées sur les listes de taxons. A compléter. 
+* Mise en place de statistiques automatiques sur la page d'accueil, basÃ©es sur les listes de taxons. A complÃ©ter. 
 
 **Corrections de bug**
 
-* Intégration de la librairie ``OpenLayers.js`` en local dans le code car les liens distants ne fonctionnaient plus - Fix #97
-* Correction d'une erreur lors de l'enregistrement de la saisie invertébrés - Fix #104
-* Correction d'une erreur de redirection si on choisit "Quitter" après la saisie de l'enregistrement (contact faune, mortalité et invertébrés) - Fix #102
+* IntÃ©gration de la librairie ``OpenLayers.js`` en local dans le code car les liens distants ne fonctionnaient plus - Fix #97
+* Correction d'une erreur lors de l'enregistrement de la saisie invertÃ©brÃ©s - Fix #104
+* Correction d'une erreur de redirection si on choisit "Quitter" aprÃ¨s la saisie de l'enregistrement (contact faune, mortalitÃ© et invertÃ©brÃ©s) - Fix #102
 * Correction du trigger ``contactfaune.synthese_update_cor_role_fiche_cf()`` - Fix #95
-* Correction d'un bug dans les listes déroulantes des taxons filtrée par classe qui n'affichaient rien - Fix #109 
-* Correction d'un bug sur le contenu des exports shape avec le critère de protection activé - Fix #114
+* Correction d'un bug dans les listes dÃ©roulantes des taxons filtrÃ©e par classe qui n'affichaient rien - Fix #109 
+* Correction d'un bug sur le contenu des exports shape avec le critÃ¨re de protection activÃ© - Fix #114
 * Correction et adaptation faune-flore des exports shape
-* SYNTHESE - Correction de la liste des taxons sans nom français - Fix #116
+* SYNTHESE - Correction de la liste des taxons sans nom franÃ§ais - Fix #116
 * Corrections CSS sur la page d'accueil - Fix #115
-* Correction sur la largeur de la liste des résultats de la synthèse - Fix #110
+* Correction sur la largeur de la liste des rÃ©sultats de la synthÃ¨se - Fix #110
 * Correction des doublons dans la recherche multi-taxons - Fix #101
 * Autres corrections mineures
 
@@ -202,20 +239,20 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``co
 
 **Note de version**
 
-* Pour les changements dans la base de données vous pouvez exécuter le fichier ``data/update_1.4to1.5.sql``
-* Le bandeau de la page d'accueil ``web/images/bandeau_faune.jpg`` a été renommé en ``bandeau_geonature.jpg``. Renommez le votre si vous aviez personnalisé ce bandeau.
-* Si vous souhaitez désactiver certains programmes dans le "Comment ?" de la synthèse vous devez utiliser le champs ``actif`` de la table ``meta.bib_programmes``.
-* Compléter si nécessaire les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources``.
-* Nouvelle répartition des paramètres de configuration javascript en 2 fichiers (``config.js`` et ``configmap.js``). Vous devez reprendre vos paramètres de configuration du fichier ``web/js/config.js`` et les ventiler dans ces deux fichiers.
-* Ajouter le paramètre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
-* Retirer le paramètre ``fuseauUTM;`` du fichier ``web/js/config.js``;
-* Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre ``gps_user_projection`` dans le fichier ``web/js/configmap.js``;
-* Ajouter le paramètre ``public static $id_source_mortalite = 2;`` au fichier ``lib/sfGeonatureConfig.php``;
-* Ajouter le paramètre ``public static $srid_ol_map = 3857;`` au fichier ``lib/sfGeonatureConfig.php``;
-* L'altitude est calculée automatiquement à partir du service "Alticodage" de l'API GeoPortail de l'IGN et non pluas à partir de la couche ``layers.l_isolines20``. Ajoutez ce service dans votre contrat API Geoportail. Il n'est donc plus nécessaire de remplir la couche ``layers.l_isolines20``. Cette couche peut toutefois encore être utile si l'utilisateur supprime l'altitude calculée par l'API Geoportail dans les formulaires de saisie.
-* Le loup et le lynx sont retirés par défaut de la saisie (saisie recommandée dans le protocole national du réseau grands prédateurs)
-* Le cerf, chamois et le bouquetin doivent être saisis selon 6 critères de sexe et age et non 5 comme les autres taxons. Comportement peut-être changé en modifiant la vue ``contactfaune.v_nomade_taxons_faune``.
-* Mortailité est désormais une source à part entière alors qu'elles étaient mélangées avec la source ContactFaune précédemment. Si vous avez déjà des données de mortalité enregistrées, vous devez adapter la requête SQL ci-dessous avec votre ``id_source`` pour Mortalité et l'exécuter :
+* Pour les changements dans la base de donnÃ©es vous pouvez exÃ©cuter le fichier ``data/update_1.4to1.5.sql``
+* Le bandeau de la page d'accueil ``web/images/bandeau_faune.jpg`` a Ã©tÃ© renommÃ© en ``bandeau_geonature.jpg``. Renommez le votre si vous aviez personnalisÃ© ce bandeau.
+* Si vous souhaitez dÃ©sactiver certains programmes dans le "Comment ?" de la synthÃ¨se vous devez utiliser le champs ``actif`` de la table ``meta.bib_programmes``.
+* ComplÃ©ter si nÃ©cessaire les champs ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources``.
+* Nouvelle rÃ©partition des paramÃ¨tres de configuration javascript en 2 fichiers (``config.js`` et ``configmap.js``). Vous devez reprendre vos paramÃ¨tres de configuration du fichier ``web/js/config.js`` et les ventiler dans ces deux fichiers.
+* Ajouter le paramÃ¨tre ``id_source_mortalite = 2;`` au fichier ``web/js/config.js``;
+* Retirer le paramÃ¨tre ``fuseauUTM;`` du fichier ``web/js/config.js``;
+* Bien dÃ©finir le systÃ¨me de coordonnÃ©es Ã  utiliser pour les pointages par coordonnÃ©es fournies en renseignant le paramÃ¨tre ``gps_user_projection`` dans le fichier ``web/js/configmap.js``;
+* Ajouter le paramÃ¨tre ``public static $id_source_mortalite = 2;`` au fichier ``lib/sfGeonatureConfig.php``;
+* Ajouter le paramÃ¨tre ``public static $srid_ol_map = 3857;`` au fichier ``lib/sfGeonatureConfig.php``;
+* L'altitude est calculÃ©e automatiquement Ã  partir du service "Alticodage" de l'API GeoPortail de l'IGN et non pluas Ã  partir de la couche ``layers.l_isolines20``. Ajoutez ce service dans votre contrat API Geoportail. Il n'est donc plus nÃ©cessaire de remplir la couche ``layers.l_isolines20``. Cette couche peut toutefois encore Ãªtre utile si l'utilisateur supprime l'altitude calculÃ©e par l'API Geoportail dans les formulaires de saisie.
+* Le loup et le lynx sont retirÃ©s par dÃ©faut de la saisie (saisie recommandÃ©e dans le protocole national du rÃ©seau grands prÃ©dateurs)
+* Le cerf, chamois et le bouquetin doivent Ãªtre saisis selon 6 critÃ¨res de sexe et age et non 5 comme les autres taxons. Comportement peut-Ãªtre changÃ© en modifiant la vue ``contactfaune.v_nomade_taxons_faune``.
+* MortailitÃ© est dÃ©sormais une source Ã  part entiÃ¨re alors qu'elles Ã©taient mÃ©langÃ©es avec la source ContactFaune prÃ©cÃ©demment. Si vous avez dÃ©jÃ  des donnÃ©es de mortalitÃ© enregistrÃ©es, vous devez adapter la requÃªte SQL ci-dessous avec votre ``id_source`` pour MortalitÃ© et l'exÃ©cuter :
     
     ::
     
@@ -224,30 +261,30 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``co
 **Changements**
 
 * Optimisation des vues aux chargement des listes de taxons. Fixes #64
-* Généricité des champs dans ``meta.bib_programmes`` (champs ``sitpn`` renommé en ``public``). Fixes #68
-* Ajout d'un champ ``actif`` à la table ``meta.bib_programmes`` permettant de masquer certains programmes dans le "Comment ?" de la synthèse. Fixes #66
-* Ajout d'un champ ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources`` pour générer la page d'accueil dynamiquement et de manière générique. Fixes #69
-* Construire dynamiquement la liste des liens vers la saisie des différents protocoles à partir de la table ``synthese.bib_sources``. Fixes #69
-* Tous les styles des éléments de la page d'accueil ont été passés en CSS. Fixes #57
-* Amélioration de l'interface pendant le chargement des différentes applications (synthèse, flore station, formualires de saisie...). Fixes #65
-* Recentrage sur la position de l'utilisation en utilisant le protocole de géolocalisation intégré au navigateur de l'utilisateur. Fixes #65
-* Un message automatique conseille les utilisateurs d'Internet Explorer de plutôt utiliser Firefox ou Chrome. Fixes #65
-* Tri par défaut par date décroissante des 50 dernières observations affichées à l'ouverture de la Synthèse. Fixes #51
-* Vocabulaire. "Dessiner un point" remplacé par "Localiser l'observation". Fixes #66
-* Mise à jour des copyrights dans les pieds de page de toutes les applications.
-* Refonte du CSS du formulaire de login avec bootstrap et une image de fond différente.
+* GÃ©nÃ©ricitÃ© des champs dans ``meta.bib_programmes`` (champs ``sitpn`` renommÃ© en ``public``). Fixes #68
+* Ajout d'un champ ``actif`` Ã  la table ``meta.bib_programmes`` permettant de masquer certains programmes dans le "Comment ?" de la synthÃ¨se. Fixes #66
+* Ajout d'un champ ``url``, ``target``, ``picto``, ``groupe`` et ``actif`` dans la table ``synthese.bib_sources`` pour gÃ©nÃ©rer la page d'accueil dynamiquement et de maniÃ¨re gÃ©nÃ©rique. Fixes #69
+* Construire dynamiquement la liste des liens vers la saisie des diffÃ©rents protocoles Ã  partir de la table ``synthese.bib_sources``. Fixes #69
+* Tous les styles des Ã©lÃ©ments de la page d'accueil ont Ã©tÃ© passÃ©s en CSS. Fixes #57
+* AmÃ©lioration de l'interface pendant le chargement des diffÃ©rentes applications (synthÃ¨se, flore station, formualires de saisie...). Fixes #65
+* Recentrage sur la position de l'utilisation en utilisant le protocole de gÃ©olocalisation intÃ©grÃ© au navigateur de l'utilisateur. Fixes #65
+* Un message automatique conseille les utilisateurs d'Internet Explorer de plutÃ´t utiliser Firefox ou Chrome. Fixes #65
+* Tri par dÃ©faut par date dÃ©croissante des 50 derniÃ¨res observations affichÃ©es Ã  l'ouverture de la SynthÃ¨se. Fixes #51
+* Vocabulaire. "Dessiner un point" remplacÃ© par "Localiser l'observation". Fixes #66
+* Mise Ã  jour des copyrights dans les pieds de page de toutes les applications.
+* Refonte du CSS du formulaire de login avec bootstrap et une image de fond diffÃ©rente.
 * Refonte Bootstrap de la page d'accueil.
-* Homogénéisation du pied de page.
-* FloreStation et Bryophytes - Homogénéiser interaction carte liste - ajout d'un popup au survol. Fixes #74
-* Suppression d'images non utilisées dans le répertoire ``web/images``.
-* Mise en cohérence des vues taxonomiques faune. Fixes #81
-* Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN.
-* Factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config.
-* Création d'une configuration javascript carto dédiée (``configmap.js``).
+* HomogÃ©nÃ©isation du pied de page.
+* FloreStation et Bryophytes - HomogÃ©nÃ©iser interaction carte liste - ajout d'un popup au survol. Fixes #74
+* Suppression d'images non utilisÃ©es dans le rÃ©pertoire ``web/images``.
+* Mise en cohÃ©rence des vues taxonomiques faune. Fixes #81
+* Calcul de l'altitude Ã  partir du service "Alticodage" de l'API GeoPortail de l'IGN.
+* Factorisation et gÃ©nÃ©ralisation du module permettant un positionnement des pointages par saisie de coordonnÃ©es selon projection et bbox fournies en paramÃ¨tres de config.
+* CrÃ©ation d'une configuration javascript carto dÃ©diÃ©e (``configmap.js``).
  
 **Corrections de bug**
  
-* Correction des problèmes de saisie de la version 1.4.0 liés à la migration de la taxonomie.
+* Correction des problÃ¨mes de saisie de la version 1.4.0 liÃ©s Ã  la migration de la taxonomie.
 * Correction de bugs dans Flore Station et Bryophytes (Zoom, recherche
 
 
@@ -256,73 +293,73 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``co
 
 **Note de version**
 
-* La gestion de la taxonomie a été mis en conformité avec le schéma ``taxonomie`` de la base de données de TaxHub (https://github.com/PnX-SI/TaxHub). Ainsi le schéma ``taxonomie`` intégré à GeoNature 1.3.0 doit être globalement revu. L'ensemble des modifications peuvent être réalisées en éxecutant la partie correspondante dans le fichier ``data/update_1.3to1.4.sql`` (https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.3to1.4.sql).
-* De nouveaux paramètres ont potentiellement été ajoutés à l'application. Après avoir récupéré le fichier de configuration de votre version 1.3.0, vérifiez les changements éventuels des différents fichiers de configuration.
-* Modification du nom de l'host host hébergeant la base de données. databases --> geonatdbhost. A changer ou ajouter dans le ``/etc/hosts`` si vous avez déjà installé GeoNature.
-* Suivez la procédure de mise à jour : http://geonature.readthedocs.org/fr/latest/update.html
+* La gestion de la taxonomie a Ã©tÃ© mis en conformitÃ© avec le schÃ©ma ``taxonomie`` de la base de donnÃ©es de TaxHub (https://github.com/PnX-SI/TaxHub). Ainsi le schÃ©ma ``taxonomie`` intÃ©grÃ© Ã  GeoNature 1.3.0 doit Ãªtre globalement revu. L'ensemble des modifications peuvent Ãªtre rÃ©alisÃ©es en Ã©xecutant la partie correspondante dans le fichier ``data/update_1.3to1.4.sql`` (https://github.com/PnEcrins/GeoNature/blob/master/data/update_1.3to1.4.sql).
+* De nouveaux paramÃ¨tres ont potentiellement Ã©tÃ© ajoutÃ©s Ã  l'application. AprÃ¨s avoir rÃ©cupÃ©rÃ© le fichier de configuration de votre version 1.3.0, vÃ©rifiez les changements Ã©ventuels des diffÃ©rents fichiers de configuration.
+* Modification du nom de l'host host hÃ©bergeant la base de donnÃ©es. databases --> geonatdbhost. A changer ou ajouter dans le ``/etc/hosts`` si vous avez dÃ©jÃ  installÃ© GeoNature.
+* Suivez la procÃ©dure de mise Ã  jour : http://geonature.readthedocs.org/fr/latest/update.html
 
 **Changements**
 
-* A l'installation initiale, chargement en base des zones à statuts juridiques pour toute la France métropolitaine à partir des sources de l'INPN
+* A l'installation initiale, chargement en base des zones Ã  statuts juridiques pour toute la France mÃ©tropolitaine Ã  partir des sources de l'INPN
 * A l'installation initiale, chargement en base de toutes les communes de France
-* Mise en place de la compatibilité de la base avec le schema de TaxHub
+* Mise en place de la compatibilitÃ© de la base avec le schema de TaxHub
 
 
 1.3.0 (2015-02-11)
 ------------------
 
-Pré-Version de GeoNature - Faune ET Flore. Le fonctionnement de l'ensemble n'a pas été totalement testé, des bugs sont identifiés, d'autres subsistent certainement.
+PrÃ©-Version de GeoNature - Faune ET Flore. Le fonctionnement de l'ensemble n'a pas Ã©tÃ© totalement testÃ©, des bugs sont identifiÃ©s, d'autres subsistent certainement.
 
 **Changements**
 
-* Grosse évolution de la base de données
+* Grosse Ã©volution de la base de donnÃ©es
 * Ajout de deux applications de saisie flore (flore station et bryophytes)
-* Intégration de la flore en sythese
-* Ajouter un id_lot, id_organisme, id_protocole dans toutes les tables pour que ces id soit ajoutés vers la synthese en trigger depuis les tables et pas avec des valeurs en dur dans les triggers. Ceci permet d'utiliser les paramètres de conf de GeoNature
-* Ajout d'une fonction à la base pour correction du dysfonctionnement du wms avec mapserver
-* Suppression du champ id_taxon en synthese et lien direct de la synthese avecle taxref. ceci permet d'ajouter des données en synthese directement dans la base sans ajouter tous les taxons manquants dans la table bib_taxons
-* Suppression de la notion de coeur dans les critère de recherche en synthese
+* IntÃ©gration de la flore en sythese
+* Ajouter un id_lot, id_organisme, id_protocole dans toutes les tables pour que ces id soit ajoutÃ©s vers la synthese en trigger depuis les tables et pas avec des valeurs en dur dans les triggers. Ceci permet d'utiliser les paramÃ¨tres de conf de GeoNature
+* Ajout d'une fonction Ã  la base pour correction du dysfonctionnement du wms avec mapserver
+* Suppression du champ id_taxon en synthese et lien direct de la synthese avecle taxref. ceci permet d'ajouter des donnÃ©es en synthese directement dans la base sans ajouter tous les taxons manquants dans la table bib_taxons
+* Suppression de la notion de coeur dans les critÃ¨re de recherche en synthese
 * Ajout d'un filtre faune flore fonge dans la synthese
 * Ajout de l'embranchement et du regne dans les exports
-* Permettre à des partenaires de saisir mais d'exporter uniquement leurs données perso
-* Ajout du déterminateur dans les formulaires invertébrés et contactfaune + en synthese
-* Ajout du référentiel géographique de toutes les communes de France métropolitaine
-* Ajout des zones à statuts juridiques de la région sud-est (national à venir)
+* Permettre Ã  des partenaires de saisir mais d'exporter uniquement leurs donnÃ©es perso
+* Ajout du dÃ©terminateur dans les formulaires invertÃ©brÃ©s et contactfaune + en synthese
+* Ajout du rÃ©fÃ©rentiel gÃ©ographique de toutes les communes de France mÃ©tropolitaine
+* Ajout des zones Ã  statuts juridiques de la rÃ©gion sud-est (national Ã  venir)
 * Bugs fix
  
-**BUG à identifier**
+**BUG Ã  identifier**
 
 Installation :
 
-* corriger l'insertion de données flore station qui ne fonctionne pas
+* corriger l'insertion de donnÃ©es flore station qui ne fonctionne pas
 
 Bryophythes :
 
-* Corriger la recherche avancée par date sans années
+* Corriger la recherche avancÃ©e par date sans annÃ©es
 
-Synthèse :
+SynthÃ¨se :
 
 * la construction de l'arbre pour choisir plusieurs taxons ne tient pas compte des filtres
-* le fonctionnement des unités geographiques n'a pas été testé (initialement conçu uniquement pour la faune)
+* le fonctionnement des unitÃ©s geographiques n'a pas Ã©tÃ© testÃ© (initialement conÃ§u uniquement pour la faune)
 
 
 1.2.0 (2015-02-11)
 ------------------
 
-Version stabilisée de GeoNature - Faune uniquement (Synthèse Faune + Saisie ContactFauneVertebre, ContactFauneInvertebre et Mortalité).
+Version stabilisÃ©e de GeoNature - Faune uniquement (SynthÃ¨se Faune + Saisie ContactFauneVertebre, ContactFauneInvertebre et MortalitÃ©).
 
 **Changements**
 
 * Modification du nom de l'application de FF-synthese en GeoNature
 * Changement du nom des utilisateurs PostgreSQL
-* Changement du nom de la base de données
-* Mise à jour de la documentation (http://geonature.readthedocs.org/)
+* Changement du nom de la base de donnÃ©es
+* Mise Ã  jour de la documentation (http://geonature.readthedocs.org/)
 * Automatisation de l'installation de la BDD
-* Renommer les tables pour plus de généricité
-* Supprimer les tables inutiles ou trop spécifiques
-* Gestion des utilisateurs externalisée et centralisée avec UsersHub (https://github.com/PnEcrins/UsersHub)
+* Renommer les tables pour plus de gÃ©nÃ©ricitÃ©
+* Supprimer les tables inutiles ou trop spÃ©cifiques
+* Gestion des utilisateurs externalisÃ©e et centralisÃ©e avec UsersHub (https://github.com/PnEcrins/UsersHub)
 * Correction de bugs
-* Préparation de l'intégration de la Flore pour passer de GeoNature Faune à GeoNature Faune-Flore
+* PrÃ©paration de l'intÃ©gration de la Flore pour passer de GeoNature Faune Ã  GeoNature Faune-Flore
 
 
 1.1.0 (2014-12-11)
@@ -330,36 +367,36 @@ Version stabilisée de GeoNature - Faune uniquement (Synthèse Faune + Saisie Cont
 
 **Changements**
 
-* Modification du schéma de la base pour être compatible taxref v7
-* Import automatisé de taxref v7
-* Suppression des tables de hiérarchie taxonomique (famille, ordre, ...) afin de simplifier l'utilisation de la taxonomie.
-* Création de la notion de groupe (para-taxonomique) à la place de l'utilisation des classes.
-* Ajout de données pour pouvoir tester de façon complète l'application (invertébrés, vertébrés)
-* Ajout de données exemples
+* Modification du schÃ©ma de la base pour Ãªtre compatible taxref v7
+* Import automatisÃ© de taxref v7
+* Suppression des tables de hiÃ©rarchie taxonomique (famille, ordre, ...) afin de simplifier l'utilisation de la taxonomie.
+* CrÃ©ation de la notion de groupe (para-taxonomique) Ã  la place de l'utilisation des classes.
+* Ajout de donnÃ©es pour pouvoir tester de faÃ§on complÃ¨te l'application (invertÃ©brÃ©s, vertÃ©brÃ©s)
+* Ajout de donnÃ©es exemples
 * Bugs fix
 
 
 1.0.0 (2014-12-10)
 ------------------
 
-Version fonctionnelle des applications : visualisation de la synthèse faune, saisie d'une donnée de contact (vertébrés, invertébrés, mortalité)
+Version fonctionnelle des applications : visualisation de la synthÃ¨se faune, saisie d'une donnÃ©e de contact (vertÃ©brÃ©s, invertÃ©brÃ©s, mortalitÃ©)
 
 **Changements**
 
-* Documentation de l'installation d'un serveur Debian wheezy pas à pas
-* Documentation de la mise en place de la base de données
-* Documentation de la mise en place de l'application et de son paramétrage
-* Script d'insertion d'un jeu de données test
-* Passage à PostGIS v2
-* Mise en paramètre de la notion de lot, protocole et source
+* Documentation de l'installation d'un serveur Debian wheezy pas Ã  pas
+* Documentation de la mise en place de la base de donnÃ©es
+* Documentation de la mise en place de l'application et de son paramÃ©trage
+* Script d'insertion d'un jeu de donnÃ©es test
+* Passage Ã  PostGIS v2
+* Mise en paramÃ¨tre de la notion de lot, protocole et source
 
-**Prochaines évolutions**
+**Prochaines Ã©volutions**
 
 * Script d'import de taxref v7
-* Utilisation préférentielle de la taxonomie de taxref plutôt que les tables de hiérarchie taxonomique
+* Utilisation prÃ©fÃ©rentielle de la taxonomie de taxref plutÃ´t que les tables de hiÃ©rarchie taxonomique
 
 
 0.1.0 (2014-12-01)
 ------------------
 
-* Création du projet et de la documentation
+* CrÃ©ation du projet et de la documentation
