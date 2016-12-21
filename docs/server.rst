@@ -1,4 +1,4 @@
-.. image:: http://geotrek.fr/images/logo-pne.png
+.. image:: http://geotrek.fr/assets/img/parc_ecrins.png
     :target: http://www.ecrins-parcnational.fr
     
 =======
@@ -118,23 +118,20 @@ Installation et configuration de PostgreSQL
         sudo sed -e "s/# IPv4 local connections:/# IPv4 local connections:\nhost\tall\tall\t0.0.0.0\/0\t md5/g" -i /etc/postgresql/9.3/main/pg_hba.conf
         /etc/init.d/postgresql restart
 
-* Création de 2 utilisateurs PostgreSQL
+* Création de l'utilisateur PostgreSQL
  
   ::  
   
         sudo su postgres
         psql
         CREATE ROLE geonatuser WITH LOGIN PASSWORD 'monpassachanger';
-        CREATE ROLE geonatadmin WITH SUPERUSER LOGIN PASSWORD 'monpassachanger';
         \q
         
 L'utilisateur ``geonatuser`` sera le propriétaire de la base de données ``geonaturedb`` et sera utilisé par l'application pour se connecter à celle-ci.
 
-L'utilisateur ``geonatadmin`` est super utilisateur de PostgreSQL.
-
 L'application fonctionne avec le mot de passe ``monpassachanger`` par defaut mais il est conseillé de le modifier !
 
-Ce mot de passe, ainsi que les utilisateurs PostgreSQL créés ci-dessus (``geonatuser`` et ``geonatadmin``) sont des valeurs par défaut utilisées à plusieurs reprises dans l'application. Ils peuvent cependant être changés. S'ils doivent être changés, ils doivent l'être dans plusieurs fichiers de l'application : 
+Ce mot de passe, ainsi que l'utilisateur PostgreSQL créés ci-dessus (``geonatuser``) sont des valeurs par défaut utilisées à plusieurs reprises dans l'application. Ils peuvent cependant être changés. S'ils doivent être changés, ils doivent l'être dans plusieurs fichiers de l'application : 
 
 - config/settings.ini
 - config/databases.yml

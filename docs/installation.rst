@@ -18,8 +18,8 @@ Voir le guide d'installation du serveur (http://geonature.readthedocs.org/fr/lat
   ::  
   
         cd /home/synthese
-        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
-        unzip vX.Y.Z.zip
+        wget https://github.com/PnEcrins/GeoNature/archive/X.Y.Z.zip
+        unzip X.Y.Z.zip
         mv GeoNature-X.Y.Z/ geonature/
 
 
