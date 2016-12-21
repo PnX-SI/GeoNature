@@ -162,15 +162,23 @@ class SyntheseffTable extends Doctrine_Table
                 FROM
                     (SELECT synt.id_synthese, count(*) AS nb
                     FROM synthese.syntheseff synt
-                    LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom 
-                    LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
-                    LEFT JOIN layers.l_communes com ON com.insee = synt.insee
-                    LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
-                    JOIN meta.bib_programmes p ON p.id_programme = l.id_programme 
-                    LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
-                    LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
-                    LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
-                    WHERE synt.supprime = false ".$addprefilters."
+                    LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom";
+            if (isset($params['id_secteur']) && $params['id_secteur']!=''){
+                $sql.=" LEFT JOIN layers.l_communes com ON com.insee = synt.insee";
+            }
+            if (isset($params['programmes']) && $params['programmes']!=''){        
+                $sql.=" LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
+                      JOIN meta.bib_programmes p ON p.id_programme = l.id_programme";
+            }
+            if ((isset($params['id_reserve']) && $params['id_reserve']!='')||(isset($params['id_n2000']) && $params['id_n2000']!='')){
+                $sql.=" LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese";
+            }
+            if ((isset($params['patrimonial']) && $params['patrimonial']!='') || (isset($params['protection_stricte']) && $params['protection_stricte']!='')) {    
+                $sql.=" LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
+                       LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
+                       LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2";
+            }
+            $sql.=" WHERE synt.supprime = false ".$addprefilters."
                     GROUP BY synt.id_synthese) a";
             $nb = $dbh->query($sql)->fetchAll();
             $nb_res = $nb[0]['nb'];
@@ -219,17 +227,19 @@ class SyntheseffTable extends Doctrine_Table
                     com.commune_min AS nomcommune, cri.nom_critere_synthese,
                     ST_ASGEOJSON($geom, 0) AS g"
                 .$from.
-                "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
+                "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN synthese.bib_criteres_synthese cri ON cri.id_critere_synthese = synt.id_critere_synthese
-                LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
-                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
+                LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
-                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
+                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2";
+            if ((isset($params['id_reserve']) && $params['id_reserve']!='')||(isset($params['id_n2000']) && $params['id_n2000']!='')){
+                $sql.=" LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese";
+            }
                  
-                WHERE synt.supprime = false ".$addfilters."ORDER BY synt.dateobs DESC";
+            $sql.=" WHERE synt.supprime = false".$addfilters." ORDER BY synt.dateobs DESC";
             
             $lesobs = $dbh->query($sql)->fetchAll(PDO::FETCH_ASSOC);
             $geojson = '{"type":"FeatureCollection","features":[';
@@ -361,8 +371,7 @@ class SyntheseffTable extends Doctrine_Table
                 st_x(st_centroid(st_transform(synt.the_geom_3857,4326))) AS x_wgs84, st_y(st_centroid(st_transform(synt.the_geom_3857,4326))) AS y_wgs84,
                 st_geometrytype(synt.the_geom_3857) AS geom_type"
                 .$from.
-                "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
-                LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
+                "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = synt.cd_nom
                 LEFT JOIN layers.l_communes com ON com.insee = synt.insee
                 LEFT JOIN layers.l_secteurs sec ON sec.id_secteur = com.id_secteur
                 LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = synt.id_organisme
@@ -370,12 +379,15 @@ class SyntheseffTable extends Doctrine_Table
                 LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = synt.id_critere_synthese
                 LEFT JOIN meta.bib_lots l ON l.id_lot = synt.id_lot
                 LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
-                LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese
+                LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom
                 LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
-                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2                
-                WHERE synt.supprime = false"
+                LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2";
+            if ((isset($params['id_reserve']) && $params['id_reserve']!='')||(isset($params['id_n2000']) && $params['id_n2000']!='')){
+                $sql.=" LEFT JOIN synthese.cor_zonesstatut_synthese z ON z.id_synthese = synt.id_synthese";
+            }
+            $sql.=" WHERE synt.supprime = false"
                 .$addwhere.
-                "ORDER BY sec.nom_secteur, com.commune_min, txr.nom_complet";
+                " ORDER BY sec.nom_secteur, com.commune_min, txr.nom_complet";
                 if($params['usage']=="demo"){$sql .= " LIMIT 100 ";}
         $lesobs = $dbh->query($sql);
         return $lesobs;
