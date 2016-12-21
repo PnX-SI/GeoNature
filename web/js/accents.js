@@ -255,8 +255,8 @@ Ext.data.SortTypes.asAccentuatedString = function(s) {
   ];
   var changes = defaultDiacriticsRemovalMap;
   for (var i = 0; i < changes.length; i++) {
-    var change = changes[i];
-    s = s.replace(change.letters, change.base);
+        var change = changes[i];
+        if (s != null){s = s.replace(change.letters, change.base);}
   }
   return s;
 };
