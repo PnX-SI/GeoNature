@@ -346,41 +346,31 @@ SELECT taxonomie.fct_build_bibtaxon_attributs_view('Fungi');
 DROP VIEW synthese.v_tree_taxons_synthese;
 CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS 
  WITH taxon AS (
-            SELECT tx.id_nom,
-                tx.nom_latin,
-                tx.nom_francais,
-                taxref.cd_nom,
-                taxref.id_statut,
-                taxref.id_habitat,
-                taxref.id_rang,
-                taxref.regne,
-                taxref.phylum,
-                taxref.classe,
-                taxref.ordre,
-                taxref.famille,
-                taxref.cd_taxsup,
-                taxref.cd_ref,
-                taxref.lb_nom,
-                taxref.lb_auteur,
-                taxref.nom_complet,
-                taxref.nom_valide,
-                taxref.nom_vern,
-                taxref.nom_vern_eng,
-                taxref.group1_inpn,
-                taxref.group2_inpn
-            FROM ( SELECT tx_1.id_nom,
-                    taxref_1.cd_nom,
-                    taxref_1.cd_ref,
-                    taxref_1.lb_nom AS nom_latin,
-                        CASE
-                            WHEN tx_1.nom_francais IS NULL THEN taxref_1.lb_nom
-                            WHEN tx_1.nom_francais::text = ''::text THEN taxref_1.lb_nom
-                            ELSE tx_1.nom_francais
-                        END AS nom_francais
-                    FROM taxonomie.taxref taxref_1
-                    LEFT JOIN taxonomie.bib_noms tx_1 ON tx_1.cd_nom = taxref_1.cd_nom
-                    WHERE (taxref_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom FROM synthese.syntheseff))) tx
-            JOIN taxonomie.taxref taxref ON taxref.cd_nom = tx.cd_ref
+         SELECT n.id_nom,
+            t_1.cd_ref,
+            t_1.lb_nom AS nom_latin,
+                CASE
+                    WHEN n.nom_francais IS NULL THEN t_1.lb_nom
+                    WHEN n.nom_francais::text = ''::text THEN t_1.lb_nom
+                    ELSE n.nom_francais
+                END AS nom_francais,
+            t_1.cd_nom,
+            t_1.id_rang,
+            t_1.regne,
+            t_1.phylum,
+            t_1.classe,
+            t_1.ordre,
+            t_1.famille,
+            t_1.lb_nom
+           FROM taxonomie.taxref t_1
+             LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = t_1.cd_nom
+          WHERE (t_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
+                   FROM synthese.syntheseff))
+        ), cd_regne AS (
+         SELECT DISTINCT t_1.cd_nom,
+            t_1.regne
+           FROM taxonomie.taxref t_1
+          WHERE t_1.id_rang::bpchar = 'KD'::bpchar AND t_1.cd_nom = t_1.cd_ref
         )
  SELECT t.id_nom,
     t.cd_ref,
@@ -401,9 +391,9 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             t_1.cd_ref,
             t_1.nom_latin,
             t_1.nom_francais,
-            ( SELECT taxref.cd_nom
-                   FROM taxonomie.taxref
-                  WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text) AS id_regne,
+            ( SELECT DISTINCT r.cd_nom
+                   FROM cd_regne r
+                  WHERE r.regne::text = t_1.regne::text) AS id_regne,
             t_1.regne AS nom_regne,
             ph.cd_nom AS id_embranchement,
             t_1.phylum AS nom_embranchement,
@@ -416,11 +406,10 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             f.cd_nom AS id_famille,
             t_1.famille AS nom_famille
            FROM taxon t_1
-             LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
-             LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
-             LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
-             LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
-
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang::bpchar = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang::bpchar = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang::bpchar = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
+             LEFT JOIN taxonomie.taxref f ON f.id_rang::bpchar = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
 
 -- View: taxonomie.v_taxref_hierarchie_bibtaxons
 CREATE OR REPLACE VIEW taxonomie.v_taxref_hierarchie_bibtaxons AS 
