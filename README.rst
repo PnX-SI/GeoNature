@@ -119,8 +119,8 @@ License
 * Copyright (c) 2014-2015 - Parc National des Écrins - Parc national des Cévennes
 
 
-.. image:: http://pnecrins.github.io/GeoNature/img/logo-pne.jpg
+.. image:: http://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
 
-.. image:: http://pnecrins.github.io/GeoNature/img/logo-pnc.jpg
+.. image:: http://geonature.fr/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
