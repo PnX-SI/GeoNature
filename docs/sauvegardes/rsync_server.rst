@@ -73,7 +73,7 @@ Créer le fichier de configuration ``/etc/rsyncd.conf`` des modules rsync qui po
 	
 	nano /etc/default/rsync
 
- * Lancez le service rsync :
+ * Lancez le service rsync:
  
   ::  
   
