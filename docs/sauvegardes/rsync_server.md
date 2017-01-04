@@ -31,22 +31,22 @@ Créer le fichier de configuration ``/etc/rsyncd.conf`` des modules rsync qui po
 
 * Mettre ce contenu :
 
-	uid = rsyncuser
-	gid = www-data
-	use chroot = yes
-	pid file = /var/run/rsyncd.pid
+	uid = rsyncuser  
+	gid = www-data  
+	use chroot = yes  
+	pid file = /var/run/rsyncd.pid  
 
 	[geonature]
-  	  path = /home/mylinuxuser/geonature
-  	  comment = fichiers de l’application geonature
-  	  auth users = rsyncuser
-  	  secrets file = /etc/rsyncd.secrets
+  	  path = /home/mylinuxuser/geonature  
+  	  comment = fichiers de l’application geonature  
+  	  auth users = rsyncuser  
+  	  secrets file = /etc/rsyncd.secrets  
 
 	[usershub]
-  	  path = /home/mylinuxuser/usershub
-  	  comment = fichiers de l’application usershub
-  	  auth users = rsyncuser
-  	  secrets file = /etc/rsyncd.secrets
+  	  path = /home/mylinuxuser/usershub  
+  	  comment = fichiers de l’application usershub  
+  	  auth users = rsyncuser  
+  	  secrets file = /etc/rsyncd.secrets  
 
 * Créer un fichier ``/etc/rsyncd.secrets`` comportant le mot de passe de l'utilisateur ``rsyncuser`` ayant accès aux modules du service rsync:
  
@@ -72,11 +72,10 @@ Créer le fichier de configuration ``/etc/rsyncd.conf`` des modules rsync qui po
   
 	nano /etc/default/rsync
 
- * Lancez le service rsync:
+ * Lancez le service rsync :
  
   ::  
   
-	
 	rsync --daemon
 
 
