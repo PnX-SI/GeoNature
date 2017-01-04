@@ -121,7 +121,7 @@ Rafraichir les VM de l'atlas pour faire apparaitre les modifications faites dans
 Fonctionnement général
 ----------------------
 
-.. image :: ../docs/images/geonature-all-schema.jpg
+.. image :: ../images/geonature-all-schema.jpg
 
 **USERSHUB**
 
