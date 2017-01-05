@@ -1,15 +1,16 @@
-INSTALLATION RAPIDE ET COMPLETE
-===============================
+INSTALLATION GLOBALE
+====================
 
-Cette documentation permet une installation rapide et simplifiÈe de GeoNature et de ses applications liÈes : UsersHub, TaxHub et GeoNature-atlas.
-Les scripts proposÈs installent l'environnement logiciel du serveur, tÈlÈchargent les applications sur leur dÈpots github, les installent et les configurent par dÈfaut.
+Cette documentation permet une installation rapide et simplifi√©e de GeoNature et de ses applications li√©es : `UsersHub <https://github.com/PnEcrins/UsersHub>`_, `TaxHub <https://github.com/PnX-SI/TaxHub>`_ et `GeoNature-atlas <https://github.com/PnEcrins/GeoNature-atlas>`_. Pour plus d'informations, r√©f√©rez-vous aux documentations plus d√©taill√©es de chaque projet.
 
-PrÈ-requis
+Les scripts propos√©s installent l'environnement logiciel du serveur, t√©l√©chargent les applications sur leur d√©pots github, les installent et les configurent par d√©faut.
+
+Pr√©-requis
 ----------
 
-- Un serveur Debian 8 (Ubuntu 16.04 LTS devrait fonctionner Ègalement - non testÈ)
-- Une clÈ IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur rÈpond
-- TODO : proposer un sources.list valide et la procÈdure pour le mettre ‡ jour
+- Un serveur Debian 8 (Ubuntu 16.04 LTS devrait fonctionner √©galement - non test√©)
+- Une cl√© IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur r√©pond
+- TODO : proposer un sources.list valide et la proc√©dure pour le mettre √† jour
 
 Installation
 ------------
@@ -19,57 +20,56 @@ Installation
     Votre utilisateur linux doit disposer des droits administrateur avec sudo. Voir https://www.privateinternetaccess.com/forum/discussion/18063/debian-8-1-0-jessie-sudo-fix-not-installed-by-default
 
 
-AprËs installation de l'OS avec OpenSSH server, placez vous dans le home de votre utilisateur et entrez les commandes suivantes :
+Apr√®s installation de l'OS avec OpenSSH server, placez vous dans le home de votre utilisateur et entrez les commandes suivantes :
 
-  ::
+::
     
     su
     apt-get update
     apt-get install -y sudo ca-certificates
     exit
     
-RÈcupÈrer les scripts d'installation
+R√©cup√©rer les scripts d'installation
 
-  ::  
+::  
     
 	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/install_all.ini
 	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/install_all.sh
 	chmod +x install_all.sh
 
-Mettez ‡ jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas les fichiers .sh tant que vous n'avez pas totalement complÈtÈ ce fichier.
-TODO : dÈtailler la procÈdure pour l'atlas avec : 
-    * install avec donnÈes exemple 
-    * mettre ‡ jour les shapes territoire 
-    * relancer le install.db de l'atlas.
+Mettez √† jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas les fichiers .sh tant que vous n'avez pas totalement compl√©t√© ce fichier.
 
+TODO : d√©tailler la proc√©dure pour l'atlas avec : 
+
+* install avec donn√©es exemple 
+* mettre √† jour les shapes territoire 
+* relancer le install.db de l'atlas.
 
 Lancez ensuite l'installation des applications:
  
-  ::  
+::  
   
 	./install_all.sh
 
-Le mot de passe sudo vous sera peut-Ítre demandÈ une deuxiËme fois. 
+Le mot de passe sudo vous sera peut-√™tre demand√© une deuxi√®me fois. 
 
-Vous devez pouvoir vous connecter ‡ vos applications avec les adresses (adaptez mondomaine.fr ‡ votre nom de domaine ou avec votre adresse IP)
-	http://mondomaine.fr/usershub
-    
-	http://mondomaine.fr/geonature
-    
-	http://mondomaine.fr/taxhub
-    
-	http://mondomaine.fr/atlas
+Vous devez pouvoir vous connecter √† vos applications avec les adresses (adaptez mondomaine.fr √† votre nom de domaine ou avec votre adresse IP) :
 
+- http://mondomaine.fr/usershub
+- http://mondomaine.fr/geonature
+- http://mondomaine.fr/taxhub
+- http://mondomaine.fr/atlas
 
-Les 3 premiËres applications demandent une authentification.
+Les 3 premi√®res applications demandent une authentification.
 
-L'utilisateur ``admin`` avec le mot de passe ``admin`` est disponible par dÈfaut avec des droits administrateur sur toutes les applications. 
-Vous devez utiliser UsersHub pour gÈrer d'autres utilisateurs.
+L'utilisateur ``admin`` avec le mot de passe ``admin`` est disponible par d√©faut avec des droits administrateur sur toutes les applications. 
+Vous devez utiliser UsersHub pour g√©rer d'autres utilisateurs.
 
-L'installation des bases de donnÈes est loguÈe dans le rÈpertoire ``log`` des applications : ``log/install_db.log``.
+L'installation des bases de donn√©es est logu√©e dans le r√©pertoire ``log`` des applications : ``log/install_db.log``.
 
 :notes:
 
-    L'application GeoNature-atlas est livrÈe avec des donnÈes exemples. Une fois l'installation de l'atlas terminÈe, vous devez l'adapter ‡ votre territoire. 
-    * remplacez les shapes ``territoire.shp`` et ``communes.shp`` dans ``data/ref`` avec celles de votre territoire.
-    * relancer le sript ``install.db``.
+    L'application GeoNature-atlas est livr√©e avec des donn√©es exemples. Une fois l'installation de l'atlas termin√©e, vous devez l'adapter √† votre territoire. 
+    
+    - Remplacez les shapes ``territoire.shp`` et ``communes.shp`` dans ``data/ref`` avec celles de votre territoire.
+    - Relancer le sript ``install.db``.
