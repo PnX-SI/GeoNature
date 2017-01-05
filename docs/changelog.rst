@@ -2,8 +2,24 @@
 CHANGELOG
 =========
 
-1.8.1dev (unreleased)
+1.8.2dev (unreleased)
 ----------------------
+
+1.8.1 (2017-01-05)
+------------------
+
+**Nouveautés**
+
+* Ajout des sauvegardes et de l'installation globale avec un exemple détaillé dans la documentation : http://geonature.readthedocs.io
+* Optimisation et correction de la vue qui retourne l'arbre des rangs taxonomiques (synthese.v_tree_taxons_synthese)
+* Mise en cohérence des données exemple de GeoNature-atlas avec les critères des vues matérialisées de GeoNature-atlas
+* Mise à jour de 2 triggers du Contact Flore (@ClaireLagaye)
+
+**Notes de versions**
+
+Vous pouvez passer directement d'une 1.7.X à la 1.8.1, en prenant en compte les notes des différentes versions intermédiaires. 
+
+Si vous migrez depuis la version 1.8.0, éxécutez le fichier ``data/update_1.8to1.8.1.sql``
 
 1.8.0 (2016-12-14)
 ------------------
