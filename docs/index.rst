@@ -11,6 +11,7 @@ Contenu:
    update
    webapi
    export
+   sauvegardes/readme
    install_all/2016-12-exemple-deploiement-pnr
    auteurs
    changelog
