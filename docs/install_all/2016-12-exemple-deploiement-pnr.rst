@@ -1,5 +1,7 @@
+EXEMPLE D'INSTALLATION GLOBALE
+==============================
+
 Installation de GeoNature, TaxHub, UsersHub et GeoNature-atlas dans un PNR utilisant SERENA
-===========================================================================================
 
 **Décembre 2016** / Camille Monchicourt (Parc national des Ecrins)
 
@@ -10,7 +12,7 @@ Ce document décrit le déploiement de tout l'environnement GeoNature à l'aide 
 
 Il décrit aussi comment l'outil a été paramétré et comment les données historiques du PNR saisies dans SERENA ont été intégrées dans GeoNature.
 
-Il se base sur les versions 1.8.0 de GeoNature (https://github.com/PnEcrins/GeoNature), 1.1.1 de TaxHub (https://github.com/PnX-SI/TaxHub), 1.2.0 de UsersHub (https://github.com/PnEcrins/UsersHub) et 1.2.2 de GeoNature-atlas (https://github.com/PnEcrins/GeoNature-atlas).
+Il se base sur les versions 1.8.0 de `GeoNature <https://github.com/PnEcrins/GeoNature>`_, 1.1.1 de `TaxHub <https://github.com/PnX-SI/TaxHub>`_, 1.2.0 de `UsersHub <https://github.com/PnEcrins/UsersHub>`_ et 1.2.2 de `GeoNature-atlas <https://github.com/PnEcrins/GeoNature-atlas>`_.
 
 Vérifiez les évolutions de ces applications et de leurs procédures si vous utilisez des versions plus récentes. 
 
