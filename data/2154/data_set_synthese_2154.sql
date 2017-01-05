@@ -15,10 +15,10 @@ SET search_path = contactfaune, public, pg_catalog;
 -- Data for Name: t_fiches_cf; Type: TABLE DATA; Schema: contactfaune; Owner: geonatuser
 --
 
-INSERT INTO t_fiches_cf VALUES (2, NULL, '2014-12-10', 409, 0, 409, '2014-12-11 18:00:33.561278', '2014-12-11 18:00:33.561278', false, -1, 'web', 99, 3857, 2, 2, '0101000020110F000052C7B622B3AB1A41D1F5B32AE70A5541', '01010000206A0800007C3DB396459D274140D397690E425841');
-INSERT INTO t_fiches_cf VALUES (3, NULL, '2014-12-10', 2772, 0, 2772, '2014-12-11 18:00:33.569997', '2014-12-11 18:00:33.569997', false, -1, 'web', 99, 3857, 1, 1, '0101000020110F00008E467880980E254132FD37DF3C495541', '01010000206A0800008F2C3BA375162D41F6C357AEFB725841');
-INSERT INTO t_fiches_cf VALUES (1, NULL, '2014-12-08', 967, 0, 967, '2014-12-11 18:00:33.570695', '2014-12-11 18:00:33.570695', false, -1, 'web', 99, 3857, 1, 1, '0101000020110F0000327AEA00FEB4184186BA592FFC105541', '01010000206A0800005A2BBC33F0E826418E2218932C465841');
-INSERT INTO t_fiches_cf VALUES (4, NULL, '2014-12-11', 133, 0, 133, '2014-12-11 18:00:33.571303', '2014-12-11 18:00:33.571303', false, -1, 'web', 99, 3857, 1, 1, '0101000020110F000039575AC72A8403417EACE095539D5441', '01010000206A0800004DB1A3201282214198AFE5A021F45741');
+INSERT INTO t_fiches_cf VALUES (2, NULL, '2014-12-10', 409, 0, 409, '2014-12-11 18:00:33.561278', '2014-12-11 18:00:33.561278', false, -1, 'web', 2, 3857, 2, 2, '0101000020110F000052C7B622B3AB1A41D1F5B32AE70A5541', '01010000206A0800007C3DB396459D274140D397690E425841');
+INSERT INTO t_fiches_cf VALUES (3, NULL, '2014-12-10', 2772, 0, 2772, '2014-12-11 18:00:33.569997', '2014-12-11 18:00:33.569997', false, -1, 'web', 2, 3857, 1, 1, '0101000020110F00008E467880980E254132FD37DF3C495541', '01010000206A0800008F2C3BA375162D41F6C357AEFB725841');
+INSERT INTO t_fiches_cf VALUES (1, NULL, '2014-12-08', 967, 0, 967, '2014-12-11 18:00:33.570695', '2014-12-11 18:00:33.570695', false, -1, 'web', 2, 3857, 1, 1, '0101000020110F0000327AEA00FEB4184186BA592FFC105541', '01010000206A0800005A2BBC33F0E826418E2218932C465841');
+INSERT INTO t_fiches_cf VALUES (4, NULL, '2014-12-11', 133, 0, 133, '2014-12-11 18:00:33.571303', '2014-12-11 18:00:33.571303', false, -1, 'web', 2, 3857, 1, 1, '0101000020110F000039575AC72A8403417EACE095539D5441', '01010000206A0800004DB1A3201282214198AFE5A021F45741');
 
 
 --
@@ -55,8 +55,8 @@ SET search_path = contactinv,public, pg_catalog;
 -- Data for Name: t_fiches_inv; Type: TABLE DATA; Schema: contactinv; Owner: geonatuser
 --
 
-INSERT INTO t_fiches_inv VALUES (1, NULL, '2014-12-11', 11, 1525, 0, 1525, '2014-12-11 18:03:46.288976', '2014-12-11 18:03:46.303834', false, -1, 'web', 99, 3857, 3, 3, '0101000020110F00002B227945A00C19412828452BB11B5541', 0, '01010000206A0800003642BEE8C5072741DD5BFD24D74D5841');
-INSERT INTO t_fiches_inv VALUES (2, NULL, '2014-12-11', 10, 1047, 0, 1047, '2014-12-11 18:04:54.159624', '2014-12-11 18:04:54.172636', false, -1, 'web', 99, 3857, 3, 3, '0101000020110F0000F2B4DBC6113F18413955881BB4035541', 0, '01010000206A08000022D826FF46BF26411D8067D4A63C5841');
+INSERT INTO t_fiches_inv VALUES (1, NULL, '2014-12-11', 11, 1525, 0, 1525, '2014-12-11 18:03:46.288976', '2014-12-11 18:03:46.303834', false, -1, 'web', 2, 3857, 3, 3, '0101000020110F00002B227945A00C19412828452BB11B5541', 0, '01010000206A0800003642BEE8C5072741DD5BFD24D74D5841');
+INSERT INTO t_fiches_inv VALUES (2, NULL, '2014-12-11', 10, 1047, 0, 1047, '2014-12-11 18:04:54.159624', '2014-12-11 18:04:54.172636', false, -1, 'web', 2, 3857, 3, 3, '0101000020110F0000F2B4DBC6113F18413955881BB4035541', 0, '01010000206A08000022D826FF46BF26411D8067D4A63C5841');
 
 
 --
@@ -90,7 +90,7 @@ SET search_path = florestation, public, pg_catalog;
 -- Data for Name: t_stations_fs; Type: TABLE DATA; Schema: florestation; Owner: geonatuser
 --
 
-INSERT INTO t_stations_fs (id_station, id_exposition, id_sophie, id_programme_fs, id_support, id_protocole, id_lot, id_organisme, id_homogene, dateobs, info_acces, id_surface, complet_partiel, meso_longitudinal, meso_lateral, canopee, ligneux_hauts, ligneux_bas, ligneux_tbas, herbaces, mousses, litiere, altitude_saisie, altitude_sig, altitude_retenue, remarques, pdop, supprime, date_insert, date_update, srid_dessin, insee, gid, validation) VALUES (1, 'I ', '0', 999, 1, 5, 5, 99, 1, '2015-02-17', 'test', 2, 'P', 1, 2, 0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 'testage', -1, false, '2015-02-17 10:47:27.427575', '2015-02-17 10:48:40.892845', 3857, '38375', 1, true);
+INSERT INTO t_stations_fs (id_station, id_exposition, id_sophie, id_programme_fs, id_support, id_protocole, id_lot, id_organisme, id_homogene, dateobs, info_acces, id_surface, complet_partiel, meso_longitudinal, meso_lateral, canopee, ligneux_hauts, ligneux_bas, ligneux_tbas, herbaces, mousses, litiere, altitude_saisie, altitude_sig, altitude_retenue, remarques, pdop, supprime, date_insert, date_update, srid_dessin, insee, gid, validation) VALUES (1, 'I ', '0', 999, 1, 5, 5, 2, 1, '2015-02-17', 'test', 2, 'P', 1, 2, 0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 'testage', -1, false, '2015-02-17 10:47:27.427575', '2015-02-17 10:48:40.892845', 3857, '38375', 1, true);
 UPDATE t_stations_fs SET the_geom_3857 = '0101000020110F0000F2B4DBC6113F18413955881BB4035541';
 
 --
