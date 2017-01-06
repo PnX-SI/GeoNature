@@ -2,12 +2,14 @@
 INSTALLATION DE L'APPLICATION
 =============================
 
+Cette procédure décrit l'installation de l'application GeoNature seule. Il est aussi possible d'installer plus facilement GeoNature et tout son environnement (UsersHub, TaxHub et GeoNature-atlas) avec le script `install_all` (voir chapitre INSTALLATION GLOBALE).
+
 Prérequis
 =========
 
 * Environnement serveur :
 
-Voir le guide d'installation du serveur (http://geonature.readthedocs.org/fr/latest/server.html)
+Voir le chapitre sur l'installation du serveur (http://geonature.readthedocs.org/fr/latest/server.html)
 
 * Disposer d'un utilisateur linux nommé par exemple ``synthese``. Dans ce guide, le répertoire de cet utilisateur est dans ``/home/synthese``
 

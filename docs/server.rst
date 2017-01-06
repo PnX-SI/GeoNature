@@ -5,6 +5,7 @@
 SERVEUR
 =======
 
+Cette procédure décrit l'installation de l'application GeoNature seule. Il est aussi possible d'installer plus facilement GeoNature et tout son environnement (UsersHub, TaxHub et GeoNature-atlas) avec le script `install_all` (voir chapitre INSTALLATION GLOBALE).
 
 Prérequis
 =========
