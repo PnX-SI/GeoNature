@@ -78,3 +78,12 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+--récupération des taxons protégés. 
+--Cette opération aurait du être faite dans le script "update_1.7to1.8.sql" mais une coquille sur la requête l'a rendu inopérante.  
+INSERT INTO taxonomie.cor_taxon_attribut
+SELECT 2 as id_attribut, 'oui' as valeur_attribut, taxonomie.find_cdref(t.cd_nom)
+FROM save.bib_taxons t
+LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
+WHERE filtre3 = 'oui'
+AND tx.cd_nom = tx.cd_ref;
