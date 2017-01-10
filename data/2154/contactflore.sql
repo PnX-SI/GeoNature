@@ -15,19 +15,17 @@ SET client_min_messages = warning;
 
 --
 -- TOC entry 18 (class 2615 OID 1387972)
--- Name: contactflore; Type: SCHEMA; Schema: -; Owner: geonatuser
+-- Name: contactflore; Type: SCHEMA; Schema: -;
 --
 
 CREATE SCHEMA contactflore;
 
 
-ALTER SCHEMA contactflore OWNER TO geonatuser;
-
 SET search_path = contactflore, pg_catalog;
 
 --
 -- TOC entry 1504 (class 1255 OID 1388146)
--- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE OR REPLACE FUNCTION couleur_taxon(id integer, maxdateobs date)
@@ -58,11 +56,33 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION couleur_taxon(id integer, maxdateobs date) OWNER TO geonatuser;
+
+-- Function: contactflore.calcul_cor_unite_taxon_cflore(integer, integer)
+-- DROP FUNCTION contactflore.calcul_cor_unite_taxon_cflore(integer, integer);
+CREATE OR REPLACE FUNCTION calcul_cor_unite_taxon_cflore(
+    monidtaxon integer,
+    monunite integer)
+  RETURNS void AS
+$BODY$
+  DECLARE
+  cdnom integer;
+  BEGIN
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
+	DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
+	INSERT INTO contactflore.cor_unite_taxon_cflore (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
+	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactflore.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
+	FROM synthese.cor_unite_synthese
+	WHERE cd_nom = cdnom
+	AND id_unite_geo = monunite;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 --
 -- TOC entry 1496 (class 1255 OID 1387973)
--- Name: insert_fiche_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: insert_fiche_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE FUNCTION insert_fiche_cflore() RETURNS trigger
@@ -117,14 +137,12 @@ END;
 $$;
 
 
-ALTER FUNCTION insert_fiche_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1497 (class 1255 OID 1387974)
--- Name: insert_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: insert_releve_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
-CREATE FUNCTION insert_releve_cflore() RETURNS trigger
+CREATE OR REPLACE FUNCTION insert_releve_cflore() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -162,11 +180,9 @@ END;
 $$;
 
 
-ALTER FUNCTION insert_releve_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1498 (class 1255 OID 1387975)
--- Name: synthese_delete_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: synthese_delete_releve_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE OR REPLACE FUNCTION synthese_delete_releve_cflore()
@@ -191,11 +207,9 @@ $BODY$
   COST 100;
 
 
-ALTER FUNCTION synthese_delete_releve_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1505 (class 1255 OID 1387976)
--- Name: synthese_insert_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: synthese_insert_releve_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE FUNCTION synthese_insert_releve_cflore() RETURNS trigger
@@ -271,11 +285,9 @@ END;
 $$;
 
 
-ALTER FUNCTION synthese_insert_releve_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1499 (class 1255 OID 1387977)
--- Name: synthese_update_cor_role_fiche_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: synthese_update_cor_role_fiche_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE FUNCTION synthese_update_cor_role_fiche_cflore() RETURNS trigger
@@ -328,11 +340,9 @@ END;
 $$;
 
 
-ALTER FUNCTION synthese_update_cor_role_fiche_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1500 (class 1255 OID 1387978)
--- Name: synthese_update_fiche_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: synthese_update_fiche_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE OR REPLACE FUNCTION synthese_update_fiche_cflore()
@@ -413,11 +423,9 @@ $BODY$
   COST 100;
 
 
-ALTER FUNCTION synthese_update_fiche_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1501 (class 1255 OID 1387979)
--- Name: synthese_update_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: synthese_update_releve_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE OR REPLACE FUNCTION synthese_update_releve_cflore()
@@ -466,11 +474,9 @@ $BODY$
   COST 100;
 
 
-ALTER FUNCTION synthese_update_releve_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1502 (class 1255 OID 1387980)
--- Name: update_fiche_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: update_fiche_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
 CREATE FUNCTION update_fiche_cflore() RETURNS trigger
@@ -533,14 +539,12 @@ END;
 $$;
 
 
-ALTER FUNCTION update_fiche_cflore() OWNER TO geonatuser;
-
 --
 -- TOC entry 1503 (class 1255 OID 1387981)
--- Name: update_releve_cflore(); Type: FUNCTION; Schema: contactflore; Owner: geonatuser
+-- Name: update_releve_cflore(); Type: FUNCTION; Schema: contactflore;
 --
 
-CREATE FUNCTION update_releve_cflore() RETURNS trigger
+CREATE OR REPLACE FUNCTION update_releve_cflore() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -557,7 +561,45 @@ END;
 $$;
 
 
-ALTER FUNCTION update_releve_cflore() OWNER TO geonatuser;
+-- Function: contactflore.maj_cor_unite_taxon_cflore()
+-- DROP FUNCTION contactflore.maj_cor_unite_taxon_cflore();
+CREATE OR REPLACE FUNCTION maj_cor_unite_taxon_cflore()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+monembranchement varchar;
+monregne varchar;
+monidtaxon integer;
+BEGIN
+	IF (TG_OP = 'DELETE') THEN
+		--retrouver le id_nom
+		SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
+		--calcul du règne du taxon supprimé
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+		IF monregne = 'Plantae' THEN
+			IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+				DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
+			ELSE
+				PERFORM contactflore.calcul_cor_unite_taxon_cflore(monidtaxon, old.id_unite_geo);
+			END IF;
+		END IF;
+		RETURN OLD;		
+		
+	ELSIF (TG_OP = 'INSERT') THEN
+		--retrouver le id_nom
+		SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
+		--calcul du règne du taxon inséré
+			SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+		IF monregne = 'Plantae' THEN
+			PERFORM contactflore.calcul_cor_unite_taxon_cflore(monidtaxon, new.id_unite_geo);
+	    END IF;
+		RETURN NEW;
+	END IF;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 
 SET default_tablespace = '';
 
@@ -565,7 +607,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 347 (class 1259 OID 1387982)
--- Name: bib_abondances_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: bib_abondances_cflore; Type: TABLE; Schema: contactflore;
 --
 
 CREATE TABLE bib_abondances_cflore (
@@ -574,11 +616,9 @@ CREATE TABLE bib_abondances_cflore (
 );
 
 
-ALTER TABLE bib_abondances_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 358 (class 1259 OID 1388106)
--- Name: bib_messages_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: bib_messages_cflore; Type: TABLE; Schema: contactflore;
 --
 
 CREATE TABLE bib_messages_cflore (
@@ -587,11 +627,9 @@ CREATE TABLE bib_messages_cflore (
 );
 
 
-ALTER TABLE bib_messages_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 348 (class 1259 OID 1387985)
--- Name: bib_phenologies_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: bib_phenologies_cflore; Type: TABLE; Schema: contactflore;
 --
 
 CREATE TABLE bib_phenologies_cflore (
@@ -600,11 +638,9 @@ CREATE TABLE bib_phenologies_cflore (
 );
 
 
-ALTER TABLE bib_phenologies_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 359 (class 1259 OID 1388111)
--- Name: cor_message_taxon_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: cor_message_taxon_cflore; Type: TABLE; Schema: contactflore; 
 --
 
 CREATE TABLE cor_message_taxon_cflore (
@@ -613,11 +649,9 @@ CREATE TABLE cor_message_taxon_cflore (
 );
 
 
-ALTER TABLE cor_message_taxon_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 360 (class 1259 OID 1388128)
--- Name: cor_role_fiche_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: cor_role_fiche_cflore; Type: TABLE; Schema: contactflore;
 --
 
 CREATE TABLE cor_role_fiche_cflore (
@@ -626,11 +660,9 @@ CREATE TABLE cor_role_fiche_cflore (
 );
 
 
-ALTER TABLE cor_role_fiche_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 349 (class 1259 OID 1387991)
--- Name: cor_unite_taxon_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: cor_unite_taxon_cflore; Type: TABLE; Schema: contactflore;
 --
 
 CREATE TABLE cor_unite_taxon_cflore (
@@ -642,11 +674,9 @@ CREATE TABLE cor_unite_taxon_cflore (
 );
 
 
-ALTER TABLE cor_unite_taxon_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 352 (class 1259 OID 1388006)
--- Name: t_fiches_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: t_fiches_cflore; Type: TABLE; Schema: contactflore; 
 --
 
 CREATE TABLE t_fiches_cflore (
@@ -676,11 +706,9 @@ CREATE TABLE t_fiches_cflore (
 );
 
 
-ALTER TABLE t_fiches_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 353 (class 1259 OID 1388019)
--- Name: t_releves_cflore; Type: TABLE; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: t_releves_cflore; Type: TABLE; Schema: contactflore; 
 --
 
 CREATE TABLE t_releves_cflore (
@@ -700,11 +728,9 @@ CREATE TABLE t_releves_cflore (
 );
 
 
-ALTER TABLE t_releves_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 354 (class 1259 OID 1388027)
--- Name: t_releves_cflore_gid_seq; Type: SEQUENCE; Schema: contactflore; Owner: geonatuser
+-- Name: t_releves_cflore_gid_seq; Type: SEQUENCE; Schema: contactflore;
 --
 
 CREATE SEQUENCE t_releves_cflore_gid_seq
@@ -715,12 +741,10 @@ CREATE SEQUENCE t_releves_cflore_gid_seq
     CACHE 1;
 
 
-ALTER TABLE t_releves_cflore_gid_seq OWNER TO geonatuser;
-
 --
 -- TOC entry 3897 (class 0 OID 0)
 -- Dependencies: 354
--- Name: t_releves_cflore_gid_seq; Type: SEQUENCE OWNED BY; Schema: contactflore; Owner: geonatuser
+-- Name: t_releves_cflore_gid_seq; Type: SEQUENCE OWNED BY; Schema: contactflore;
 --
 
 ALTER SEQUENCE t_releves_cflore_gid_seq OWNED BY t_releves_cflore.gid;
@@ -728,7 +752,7 @@ ALTER SEQUENCE t_releves_cflore_gid_seq OWNED BY t_releves_cflore.gid;
 
 --
 -- TOC entry 362 (class 1259 OID 1388156)
--- Name: v_nomade_abondances_cflore; Type: VIEW; Schema: contactflore; Owner: geonatuser
+-- Name: v_nomade_abondances_cflore; Type: VIEW; Schema: contactflore;
 --
 
 CREATE VIEW v_nomade_abondances_cflore AS
@@ -737,12 +761,10 @@ CREATE VIEW v_nomade_abondances_cflore AS
    FROM bib_abondances_cflore a
   ORDER BY a.id_abondance_cflore;
 
-  
-ALTER TABLE v_nomade_abondances_cflore OWNER TO geonatuser;
 
 --
 -- TOC entry 355 (class 1259 OID 1388029)
--- Name: v_nomade_classes; Type: VIEW; Schema: contactflore; Owner: geonatuser
+-- Name: v_nomade_classes; Type: VIEW; Schema: contactflore;
 --
 
 CREATE OR REPLACE VIEW v_nomade_classes AS 
@@ -761,12 +783,10 @@ CREATE OR REPLACE VIEW v_nomade_classes AS
      JOIN taxonomie.taxref t ON t.cd_nom = g.cd_ref
   WHERE t.regne::text = 'Plantae'::text;
 
-  
-ALTER TABLE v_nomade_classes OWNER TO geonatuser;
 
 --
 -- TOC entry 356 (class 1259 OID 1388034)
--- Name: v_nomade_observateurs_flore; Type: VIEW; Schema: contactflore; Owner: geonatuser
+-- Name: v_nomade_observateurs_flore; Type: VIEW; Schema: contactflore;
 --
 
 CREATE VIEW v_nomade_observateurs_flore AS
@@ -785,11 +805,9 @@ CREATE VIEW v_nomade_observateurs_flore AS
   ORDER BY r.nom_role, r.prenom_role, r.id_role;
 
 
-ALTER TABLE v_nomade_observateurs_flore OWNER TO geonatuser;
-
 --
 -- TOC entry 363 (class 1259 OID 1388160)
--- Name: v_nomade_phenologies_cflore; Type: VIEW; Schema: contactflore; Owner: geonatuser
+-- Name: v_nomade_phenologies_cflore; Type: VIEW; Schema: contactflore;
 --
 
 CREATE VIEW v_nomade_phenologies_cflore AS
@@ -799,11 +817,9 @@ CREATE VIEW v_nomade_phenologies_cflore AS
   ORDER BY p.id_phenologie_cflore;
 
 
-ALTER TABLE v_nomade_phenologies_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 361 (class 1259 OID 1388147)
--- Name: v_nomade_taxons_flore; Type: VIEW; Schema: contactflore; Owner: geonatuser
+-- Name: v_nomade_taxons_flore; Type: VIEW; Schema: contactflore;
 --
 
 CREATE OR REPLACE VIEW v_nomade_taxons_flore AS 
@@ -828,11 +844,9 @@ CREATE OR REPLACE VIEW v_nomade_taxons_flore AS
   ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cflore;
 
 
-ALTER TABLE v_nomade_taxons_flore OWNER TO geonatuser;
-
 --
 -- TOC entry 357 (class 1259 OID 1388044)
--- Name: v_nomade_unites_geo_cflore; Type: VIEW; Schema: contactflore; Owner: geonatuser
+-- Name: v_nomade_unites_geo_cflore; Type: VIEW; Schema:
 --
 
 CREATE VIEW v_nomade_unites_geo_cflore AS
@@ -842,11 +856,9 @@ CREATE VIEW v_nomade_unites_geo_cflore AS
   GROUP BY l_unites_geo.the_geom, l_unites_geo.id_unite_geo;
 
 
-ALTER TABLE v_nomade_unites_geo_cflore OWNER TO geonatuser;
-
 --
 -- TOC entry 3680 (class 2604 OID 1388048)
--- Name: gid; Type: DEFAULT; Schema: contactflore; Owner: geonatuser
+-- Name: gid; Type: DEFAULT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_releves_cflore ALTER COLUMN gid SET DEFAULT nextval('t_releves_cflore_gid_seq'::regclass);
@@ -855,7 +867,7 @@ ALTER TABLE ONLY t_releves_cflore ALTER COLUMN gid SET DEFAULT nextval('t_releve
 --
 -- TOC entry 3900 (class 0 OID 0)
 -- Dependencies: 354
--- Name: t_releves_cflore_gid_seq; Type: SEQUENCE SET; Schema: contactflore; Owner: geonatuser
+-- Name: t_releves_cflore_gid_seq; Type: SEQUENCE SET; Schema: contactflore;
 --
 
 SELECT pg_catalog.setval('t_releves_cflore_gid_seq', 1, true);
@@ -863,7 +875,7 @@ SELECT pg_catalog.setval('t_releves_cflore_gid_seq', 1, true);
 
 --
 -- TOC entry 3682 (class 2606 OID 1388050)
--- Name: bib_abondance_cflore_pkey; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: bib_abondance_cflore_pkey; Type: CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY bib_abondances_cflore
@@ -872,7 +884,7 @@ ALTER TABLE ONLY bib_abondances_cflore
 
 --
 -- TOC entry 3684 (class 2606 OID 1388052)
--- Name: bib_phenologie_cflore_pkey; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: bib_phenologie_cflore_pkey; Type: CONSTRAINT; Schema: contactflore; Owner: 
 --
 
 ALTER TABLE ONLY bib_phenologies_cflore
@@ -881,7 +893,7 @@ ALTER TABLE ONLY bib_phenologies_cflore
 
 --
 -- TOC entry 3686 (class 2606 OID 1388056)
--- Name: cor_unite_taxon_cflore_pkey; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: cor_unite_taxon_cflore_pkey; Type: CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY cor_unite_taxon_cflore
@@ -890,7 +902,7 @@ ALTER TABLE ONLY cor_unite_taxon_cflore
 
 --
 -- TOC entry 3693 (class 2606 OID 1388110)
--- Name: pk_bib_messages_cflore; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: pk_bib_messages_cflore; Type: CONSTRAINT; Schema: contactflore; 
 --
 
 ALTER TABLE ONLY bib_messages_cflore
@@ -899,7 +911,7 @@ ALTER TABLE ONLY bib_messages_cflore
 
 --
 -- TOC entry 3697 (class 2606 OID 1388115)
--- Name: pk_cor_message_taxon_cflore; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: pk_cor_message_taxon_cflore; Type: CONSTRAINT; Schema: contactflore; 
 --
 
 ALTER TABLE ONLY cor_message_taxon_cflore
@@ -908,7 +920,7 @@ ALTER TABLE ONLY cor_message_taxon_cflore
 
 --
 -- TOC entry 3701 (class 2606 OID 1388132)
--- Name: pk_cor_role_fiche_cflore; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: pk_cor_role_fiche_cflore; Type: CONSTRAINT; Schema: contactflore; 
 --
 
 ALTER TABLE ONLY cor_role_fiche_cflore
@@ -917,7 +929,7 @@ ALTER TABLE ONLY cor_role_fiche_cflore
 
 --
 -- TOC entry 3689 (class 2606 OID 1388058)
--- Name: pk_t_fiches_cflore; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: pk_t_fiches_cflore; Type: CONSTRAINT; Schema: contactflore; 
 --
 
 ALTER TABLE ONLY t_fiches_cflore
@@ -926,7 +938,7 @@ ALTER TABLE ONLY t_fiches_cflore
 
 --
 -- TOC entry 3691 (class 2606 OID 1388190)
--- Name: t_releves_cflore_pkey; Type: CONSTRAINT; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: t_releves_cflore_pkey; Type: CONSTRAINT; Schema: contactflore; 
 --
 
 ALTER TABLE ONLY t_releves_cflore
@@ -935,7 +947,7 @@ ALTER TABLE ONLY t_releves_cflore
 
 --
 -- TOC entry 3694 (class 1259 OID 1388126)
--- Name: i_fk_cor_message_cflore_bib_me; Type: INDEX; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: i_fk_cor_message_cflore_bib_me; Type: INDEX; Schema: contactflore; 
 --
 
 CREATE INDEX i_fk_cor_message_cflore_bib_me ON cor_message_taxon_cflore USING btree (id_message_cflore);
@@ -943,7 +955,7 @@ CREATE INDEX i_fk_cor_message_cflore_bib_me ON cor_message_taxon_cflore USING bt
 
 --
 -- TOC entry 3695 (class 1259 OID 1388127)
--- Name: i_fk_cor_message_cflore_bib_ta; Type: INDEX; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: i_fk_cor_message_cflore_bib_ta; Type: INDEX; Schema: contactflore; 
 --
 
 CREATE INDEX i_fk_cor_message_cflore_bib_noms ON cor_message_taxon_cflore USING btree (id_nom);
@@ -951,7 +963,7 @@ CREATE INDEX i_fk_cor_message_cflore_bib_noms ON cor_message_taxon_cflore USING 
 
 --
 -- TOC entry 3698 (class 1259 OID 1388143)
--- Name: i_fk_cor_role_fiche_cflore_t_fiche; Type: INDEX; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: i_fk_cor_role_fiche_cflore_t_fiche; Type: INDEX; Schema: contactflore; 
 --
 
 CREATE INDEX i_fk_cor_role_fiche_cflore_t_fiche ON cor_role_fiche_cflore USING btree (id_cflore);
@@ -959,7 +971,7 @@ CREATE INDEX i_fk_cor_role_fiche_cflore_t_fiche ON cor_role_fiche_cflore USING b
 
 --
 -- TOC entry 3699 (class 1259 OID 1388144)
--- Name: i_fk_cor_role_fiche_cflore_t_roles; Type: INDEX; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: i_fk_cor_role_fiche_cflore_t_roles; Type: INDEX; Schema: contactflore; 
 --
 
 CREATE INDEX i_fk_cor_role_fiche_cflore_t_roles ON cor_role_fiche_cflore USING btree (id_role);
@@ -967,7 +979,7 @@ CREATE INDEX i_fk_cor_role_fiche_cflore_t_roles ON cor_role_fiche_cflore USING b
 
 --
 -- TOC entry 3687 (class 1259 OID 1388078)
--- Name: i_fk_t_fiches_cflore_l_communes; Type: INDEX; Schema: contactflore; Owner: geonatuser; Tablespace: 
+-- Name: i_fk_t_fiches_cflore_l_communes; Type: INDEX; Schema: contactflore; 
 --
 
 CREATE INDEX i_fk_t_fiches_cflore_l_communes ON t_fiches_cflore USING btree (insee);
@@ -975,7 +987,7 @@ CREATE INDEX i_fk_t_fiches_cflore_l_communes ON t_fiches_cflore USING btree (ins
 
 --
 -- TOC entry 3713 (class 2620 OID 1388074)
--- Name: tri_insert_fiche_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_insert_fiche_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_insert_fiche_cflore BEFORE INSERT ON t_fiches_cflore FOR EACH ROW EXECUTE PROCEDURE insert_fiche_cflore();
@@ -983,7 +995,7 @@ CREATE TRIGGER tri_insert_fiche_cflore BEFORE INSERT ON t_fiches_cflore FOR EACH
 
 --
 -- TOC entry 3716 (class 2620 OID 1388184)
--- Name: tri_insert_releve_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_insert_releve_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_insert_releve_cflore BEFORE INSERT ON t_releves_cflore FOR EACH ROW EXECUTE PROCEDURE insert_releve_cflore();
@@ -991,7 +1003,7 @@ CREATE TRIGGER tri_insert_releve_cflore BEFORE INSERT ON t_releves_cflore FOR EA
 
 --
 -- TOC entry 3717 (class 2620 OID 1388185)
--- Name: tri_synthese_delete_releve_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_synthese_delete_releve_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_synthese_delete_releve_cflore AFTER DELETE ON t_releves_cflore FOR EACH ROW EXECUTE PROCEDURE synthese_delete_releve_cflore();
@@ -999,7 +1011,7 @@ CREATE TRIGGER tri_synthese_delete_releve_cflore AFTER DELETE ON t_releves_cflor
 
 --
 -- TOC entry 3718 (class 2620 OID 1388186)
--- Name: tri_synthese_insert_releve_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_synthese_insert_releve_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_synthese_insert_releve_cflore AFTER INSERT ON t_releves_cflore FOR EACH ROW EXECUTE PROCEDURE synthese_insert_releve_cflore();
@@ -1007,7 +1019,7 @@ CREATE TRIGGER tri_synthese_insert_releve_cflore AFTER INSERT ON t_releves_cflor
 
 --
 -- TOC entry 3714 (class 2620 OID 1388075)
--- Name: tri_synthese_update_fiche_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_synthese_update_fiche_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_synthese_update_fiche_cflore AFTER UPDATE ON t_fiches_cflore FOR EACH ROW EXECUTE PROCEDURE synthese_update_fiche_cflore();
@@ -1015,7 +1027,7 @@ CREATE TRIGGER tri_synthese_update_fiche_cflore AFTER UPDATE ON t_fiches_cflore 
 
 --
 -- TOC entry 3719 (class 2620 OID 1388187)
--- Name: tri_synthese_update_releve_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_synthese_update_releve_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_synthese_update_releve_cflore AFTER UPDATE ON t_releves_cflore FOR EACH ROW EXECUTE PROCEDURE synthese_update_releve_cflore();
@@ -1023,7 +1035,7 @@ CREATE TRIGGER tri_synthese_update_releve_cflore AFTER UPDATE ON t_releves_cflor
 
 --
 -- TOC entry 3715 (class 2620 OID 1388077)
--- Name: tri_update_fiche_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_update_fiche_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_update_fiche_cflore BEFORE UPDATE ON t_fiches_cflore FOR EACH ROW EXECUTE PROCEDURE update_fiche_cflore();
@@ -1031,7 +1043,7 @@ CREATE TRIGGER tri_update_fiche_cflore BEFORE UPDATE ON t_fiches_cflore FOR EACH
 
 --
 -- TOC entry 3720 (class 2620 OID 1388188)
--- Name: tri_update_releve_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_update_releve_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_update_releve_cflore BEFORE UPDATE ON t_releves_cflore FOR EACH ROW EXECUTE PROCEDURE update_releve_cflore();
@@ -1039,15 +1051,21 @@ CREATE TRIGGER tri_update_releve_cflore BEFORE UPDATE ON t_releves_cflore FOR EA
 
 --
 -- TOC entry 3721 (class 2620 OID 1388145)
--- Name: tri_update_synthese_cor_role_fiche_cflore; Type: TRIGGER; Schema: contactflore; Owner: geonatuser
+-- Name: tri_update_synthese_cor_role_fiche_cflore; Type: TRIGGER; Schema: contactflore;
 --
 
 CREATE TRIGGER tri_update_synthese_cor_role_fiche_cflore AFTER INSERT OR UPDATE ON cor_role_fiche_cflore FOR EACH ROW EXECUTE PROCEDURE synthese_update_cor_role_fiche_cflore();
 
 
 --
+-- Name: tri_maj_cor_unite_taxon_cflore; Type: TRIGGER; Schema: contactflore;
+--
+
+CREATE TRIGGER tri_maj_cor_unite_taxon_cflore AFTER INSERT OR DELETE ON synthese.cor_unite_synthese FOR EACH ROW EXECUTE PROCEDURE maj_cor_unite_taxon_cflore();
+
+--
 -- TOC entry 3710 (class 2606 OID 1388116)
--- Name: fk_cor_message_taxon_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_message_taxon_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY cor_message_taxon_cflore
@@ -1056,7 +1074,7 @@ ALTER TABLE ONLY cor_message_taxon_cflore
 
 --
 -- TOC entry 3709 (class 2606 OID 1388121)
--- Name: fk_cor_message_taxon_cflore_l_unites_geo; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_message_taxon_cflore_l_unites_geo; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY cor_message_taxon_cflore
@@ -1065,7 +1083,7 @@ ALTER TABLE ONLY cor_message_taxon_cflore
 
 --
 -- TOC entry 3712 (class 2606 OID 1388133)
--- Name: fk_cor_role_fiche_cflore_t_fiches_cflore; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_role_fiche_cflore_t_fiches_cflore; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY cor_role_fiche_cflore
@@ -1074,7 +1092,7 @@ ALTER TABLE ONLY cor_role_fiche_cflore
 
 --
 -- TOC entry 3711 (class 2606 OID 1388138)
--- Name: fk_cor_role_fiche_cflore_t_roles; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_role_fiche_cflore_t_roles; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY cor_role_fiche_cflore
@@ -1083,14 +1101,14 @@ ALTER TABLE ONLY cor_role_fiche_cflore
 
 --
 -- TOC entry 3711 (class 2606 OID 1388138)
--- Name: fk_cor_unite_taxon_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_cor_unite_taxon_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY cor_unite_taxon_cflore
   ADD CONSTRAINT fk_cor_unite_taxon_cflore_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms (id_nom) ON UPDATE CASCADE;
 --
 -- TOC entry 3708 (class 2606 OID 1388079)
--- Name: fk_t_releves_cflore_bib_abondances_cflore; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_t_releves_cflore_bib_abondances_cflore; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_releves_cflore
@@ -1099,7 +1117,7 @@ ALTER TABLE ONLY t_releves_cflore
 
 --
 -- TOC entry 3707 (class 2606 OID 1388084)
--- Name: fk_t_releves_cflore_bib_phenologies_cflore; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_t_releves_cflore_bib_phenologies_cflore; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_releves_cflore
@@ -1108,7 +1126,7 @@ ALTER TABLE ONLY t_releves_cflore
 
 --
 -- TOC entry 3706 (class 2606 OID 1388094)
--- Name: fk_t_releves_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_t_releves_cflore_bib_noms; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_releves_cflore
@@ -1117,7 +1135,7 @@ ALTER TABLE ONLY t_releves_cflore
 
 --
 -- TOC entry 3705 (class 2606 OID 1388101)
--- Name: fk_t_releves_cflore_t_fiches_cflore; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: fk_t_releves_cflore_t_fiches_cflore; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_releves_cflore
@@ -1126,7 +1144,7 @@ ALTER TABLE ONLY t_releves_cflore
 
 --
 -- TOC entry 3704 (class 2606 OID 1388059)
--- Name: t_fiches_cflore_id_lot_fkey; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: t_fiches_cflore_id_lot_fkey; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_fiches_cflore
@@ -1135,7 +1153,7 @@ ALTER TABLE ONLY t_fiches_cflore
 
 --
 -- TOC entry 3703 (class 2606 OID 1388064)
--- Name: t_fiches_cflore_id_organisme_fkey; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: t_fiches_cflore_id_organisme_fkey; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_fiches_cflore
@@ -1144,69 +1162,12 @@ ALTER TABLE ONLY t_fiches_cflore
 
 --
 -- TOC entry 3702 (class 2606 OID 1388069)
--- Name: t_fiches_cflore_id_protocole_fkey; Type: FK CONSTRAINT; Schema: contactflore; Owner: geonatuser
+-- Name: t_fiches_cflore_id_protocole_fkey; Type: FK CONSTRAINT; Schema: contactflore;
 --
 
 ALTER TABLE ONLY t_fiches_cflore
     ADD CONSTRAINT t_fiches_cflore_id_protocole_fkey FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
 
-
---
--- TOC entry 3894 (class 0 OID 0)
--- Dependencies: 358
--- Name: bib_messages_cflore; Type: ACL; Schema: contactflore; Owner: geonatuser
---
-
-REVOKE ALL ON TABLE bib_messages_cflore FROM PUBLIC;
-REVOKE ALL ON TABLE bib_messages_cflore FROM geonatuser;
-GRANT ALL ON TABLE bib_messages_cflore TO geonatuser;
-
-
---
--- TOC entry 3895 (class 0 OID 0)
--- Dependencies: 359
--- Name: cor_message_taxon_cflore; Type: ACL; Schema: contactflore; Owner: geonatuser
---
-
-REVOKE ALL ON TABLE cor_message_taxon_cflore FROM PUBLIC;
-REVOKE ALL ON TABLE cor_message_taxon_cflore FROM geonatuser;
-GRANT ALL ON TABLE cor_message_taxon_cflore TO geonatuser;
-
-
---
--- TOC entry 3896 (class 0 OID 0)
--- Dependencies: 360
--- Name: cor_role_fiche_cflore; Type: ACL; Schema: contactflore; Owner: geonatuser
---
-
-REVOKE ALL ON TABLE cor_role_fiche_cflore FROM PUBLIC;
-REVOKE ALL ON TABLE cor_role_fiche_cflore FROM geonatuser;
-GRANT ALL ON TABLE cor_role_fiche_cflore TO geonatuser;
-
-
---
--- TOC entry 3898 (class 0 OID 0)
--- Dependencies: 362
--- Name: v_nomade_abondances_cflore; Type: ACL; Schema: contactflore; Owner: geonatuser
---
-
-REVOKE ALL ON TABLE v_nomade_abondances_cflore FROM PUBLIC;
-REVOKE ALL ON TABLE v_nomade_abondances_cflore FROM geonatuser;
-GRANT ALL ON TABLE v_nomade_abondances_cflore TO geonatuser;
-
-
---
--- TOC entry 3899 (class 0 OID 0)
--- Dependencies: 363
--- Name: v_nomade_phenologies_cflore; Type: ACL; Schema: contactflore; Owner: geonatuser
---
-
-REVOKE ALL ON TABLE v_nomade_phenologies_cflore FROM PUBLIC;
-REVOKE ALL ON TABLE v_nomade_phenologies_cflore FROM geonatuser;
-GRANT ALL ON TABLE v_nomade_phenologies_cflore TO geonatuser;
-
-
--- Completed on 2016-03-21 17:06:48
 
 --
 -- PostgreSQL database dump complete
@@ -1217,7 +1178,7 @@ GRANT ALL ON TABLE v_nomade_phenologies_cflore TO geonatuser;
 --
 -- TOC entry 3879 (class 0 OID 1387982)
 -- Dependencies: 347
--- Data for Name: bib_abondances_cflore; Type: TABLE DATA; Schema: contactflore; Owner: geonatuser
+-- Data for Name: bib_abondances_cflore; Type: TABLE DATA; Schema: contactflore;
 --
 
 INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES (1, '1 individu');
@@ -1229,7 +1190,7 @@ INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VA
 --
 -- TOC entry 3880 (class 0 OID 1387985)
 -- Dependencies: 348
--- Data for Name: bib_phenologies_cflore; Type: TABLE DATA; Schema: contactflore; Owner: geonatuser
+-- Data for Name: bib_phenologies_cflore; Type: TABLE DATA; Schema: contactflore;
 --
 
 INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (1, 'Stade végétatif');
@@ -1293,103 +1254,3 @@ UNION
 
 --INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (1, 1);
 --INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (2, 1);
-
--- MODIFICATIONS A FAIRE COTE SYNTHESE
--- Ajout de la fonction synthese.calcul_cor_unite_taxon_cflore
-
-CREATE OR REPLACE FUNCTION synthese.calcul_cor_unite_taxon_cflore(
-    monidtaxon integer,
-    monunite integer)
-  RETURNS void AS
-$BODY$
-  DECLARE
-  cdnom integer;
-  BEGIN
-	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
-	DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
-	INSERT INTO contactflore.cor_unite_taxon_cflore (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
-	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactflore.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
-	FROM synthese.cor_unite_synthese
-	WHERE cd_nom = cdnom
-	AND id_unite_geo = monunite;
-  END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION synthese.calcul_cor_unite_taxon_cflore(integer, integer)
-  OWNER TO geonatuser;
-
-
--- Modif de la fonction synthese.maj_cor_unite_taxon
-
-CREATE OR REPLACE FUNCTION synthese.maj_cor_unite_taxon()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-monembranchement varchar;
-monregne varchar;
-monidtaxon integer;
-BEGIN
-
-IF (TG_OP = 'DELETE') THEN
-	--retrouver le id_nom
-	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
-	--calcul du règne du taxon supprimé
-		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
-	IF monregne = 'Animalia' THEN
-		--calcul de l'embranchement du taxon supprimé
-			SELECT  INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
-		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-			IF monembranchement = 'Chordata' THEN
-				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactfaune.cor_unite_taxon WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
-				ELSE
-					PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, old.id_unite_geo);
-				END IF;
-			ELSE
-				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
-				ELSE
-					PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
-				END IF;
-			END IF;
-	ELSIF monregne = 'Plantae' THEN
-		IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-			DELETE FROM contactflore.cor_unite_taxon_cflore WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
-		ELSE
-			PERFORM synthese.calcul_cor_unite_taxon_cflore(monidtaxon, old.id_unite_geo);
-		END IF;
-	END IF;
-	
-	RETURN OLD;		
-	
-ELSIF (TG_OP = 'INSERT') THEN
-	--retrouver le id_nom
-	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
-	--calcul du règne du taxon inséré
-		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
-	IF monregne = 'Animalia' THEN
-		--calcul de l'embranchement du taxon inséré
-		SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
-		-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-		IF monembranchement = 'Chordata' THEN
-		    PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, new.id_unite_geo);
-		ELSE
-		    PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, new.id_unite_geo);
-		END IF;
-	ELSIF monregne = 'Plantae' THEN
-		PERFORM synthese.calcul_cor_unite_taxon_cflore(monidtaxon, new.id_unite_geo);
-    END IF;
-	RETURN NEW;
-END IF;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION synthese.maj_cor_unite_taxon()
-  OWNER TO geonatuser;
-GRANT EXECUTE ON FUNCTION synthese.maj_cor_unite_taxon() TO geonatuser;
-GRANT EXECUTE ON FUNCTION synthese.maj_cor_unite_taxon() TO public;
-
-
