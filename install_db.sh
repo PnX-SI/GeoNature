@@ -114,6 +114,9 @@ then
     echo "Création du schéma flore station..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/florestation.sql  &>> log/install_db.log
     
+    echo "Création du schéma flore patri..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/florepatri.sql  &>> log/install_db.log
+    
     echo "Création du schéma bryophytes..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/bryophytes.sql  &>> log/install_db.log
     
