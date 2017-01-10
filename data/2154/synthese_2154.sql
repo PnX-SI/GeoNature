@@ -250,7 +250,7 @@ ALTER FUNCTION public.application_aggregate_taxons_all_rang_sp(integer)
 SET search_path = contactfaune, pg_catalog;
 
 --
--- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactfaune; Owner: -
+-- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactfaune;
 --
 
 CREATE OR REPLACE FUNCTION couleur_taxon(
@@ -280,6 +280,84 @@ $BODY$
 	END IF;
 	return couleur;
   END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+--
+-- Name: calcul_cor_unite_taxon_cfaune(); Type: FUNCTION; Schema: contactfaune;
+--
+
+CREATE OR REPLACE FUNCTION calcul_cor_unite_taxon_cfaune(
+    monidtaxon integer,
+    monunite integer)
+  RETURNS void AS
+$BODY$
+  DECLARE
+  cdnom integer;
+  BEGIN
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
+	DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
+	INSERT INTO contactfaune.cor_unite_taxon (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
+	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactfaune.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
+	FROM synthese.cor_unite_synthese
+	WHERE cd_nom = cdnom
+	AND id_unite_geo = monunite;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+--
+-- Name: maj_cor_unite_taxon_cfaune(); Type: FUNCTION; Schema: contactfaune;
+--
+
+CREATE OR REPLACE FUNCTION maj_cor_unite_taxon_cfaune()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+monembranchement varchar;
+monregne varchar;
+monidtaxon integer;
+BEGIN
+	IF (TG_OP = 'DELETE') THEN
+		--retrouver le id_nom
+		SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
+		--calcul du règne du taxon supprimé
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+		IF monregne = 'Animalia' THEN
+			--calcul de l'embranchement du taxon supprimé
+			SELECT  INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+			-- puis recalul des couleurs avec old.id_unite_geo et old.taxon pour les vertébrés
+			IF monembranchement = 'Chordata' THEN
+				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+						DELETE FROM contactfaune.cor_unite_taxon WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
+				ELSE
+						PERFORM contactfaune.calcul_cor_unite_taxon_cfaune(monidtaxon, old.id_unite_geo);
+				END IF;
+			END IF;
+		END IF;
+		RETURN OLD;		
+		
+	ELSIF (TG_OP = 'INSERT') THEN
+		--retrouver le id_nom
+		SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
+		--calcul du règne du taxon inséré
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+		IF monregne = 'Animalia' THEN
+			--calcul de l'embranchement du taxon inséré
+			SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+			-- puis recalul des couleurs avec new.id_unite_geo et new.taxon pour un taxon vertébrés
+			IF monembranchement = 'Chordata' THEN
+			    PERFORM contactfaune.calcul_cor_unite_taxon_cfaune(monidtaxon, new.id_unite_geo);
+			END IF;
+		END IF;
+		RETURN NEW;
+	END IF;
+END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
@@ -803,6 +881,32 @@ $$;
 SET search_path = contactinv, pg_catalog;
 
 --
+-- Name: calcul_cor_unite_taxon_inv(integer, integer); Type: FUNCTION; Schema: contactinv; Owner: -
+--
+
+CREATE OR REPLACE FUNCTION calcul_cor_unite_taxon_inv(
+    monidtaxon integer,
+    monunite integer)
+  RETURNS void AS
+$BODY$
+DECLARE
+    cdnom integer;
+BEGIN
+	--récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
+    DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
+	INSERT INTO contactinv.cor_unite_taxon_inv (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
+	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactinv.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
+	FROM synthese.cor_unite_synthese
+	WHERE cd_nom = cdnom
+	AND id_unite_geo = monunite;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+--
 -- Name: couleur_taxon(integer, date); Type: FUNCTION; Schema: contactinv; Owner: -
 --
 
@@ -831,6 +935,58 @@ $BODY$
 	END IF;
 	return couleur;
   END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+--
+-- Name: maj_cor_unite_taxon_inv(); Type: FUNCTION; Schema: contactinv; Owner: -
+--
+
+CREATE OR REPLACE FUNCTION maj_cor_unite_taxon_inv()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+monembranchement varchar;
+monregne varchar;
+monidtaxon integer;
+BEGIN
+	IF (TG_OP = 'DELETE') THEN
+		--retrouver le id_nom
+		SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
+		--calcul du règne du taxon supprimé
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+		IF monregne = 'Animalia' THEN
+			--calcul de l'embranchement du taxon supprimé
+			SELECT  INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
+			-- puis recalul des couleurs avec old.id_unite_geo et old.taxon pour un taxon est invertébrés
+			IF monembranchement != 'Chordata' THEN
+				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
+					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
+				ELSE
+					PERFORM contactinv.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
+				END IF;
+			END IF;
+		END IF;
+		RETURN OLD;	
+		
+	ELSIF (TG_OP = 'INSERT') THEN
+		--retrouver le id_nom
+		SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
+		--calcul du règne du taxon inséré
+		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+		IF monregne = 'Animalia' THEN
+			--calcul de l'embranchement du taxon inséré
+			SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
+			-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
+			IF monembranchement != 'Chordata' THEN
+			    PERFORM contactinv.calcul_cor_unite_taxon_inv(monidtaxon, new.id_unite_geo);
+			END IF;
+		END IF;
+		RETURN NEW;
+	END IF;
+END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
@@ -2635,50 +2791,6 @@ $$;
 SET search_path = synthese, public, pg_catalog;
 
 --
--- Name: calcul_cor_unite_taxon_cf(integer, integer); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE FUNCTION calcul_cor_unite_taxon_cf(monidtaxon integer, monunite integer) RETURNS void
-    LANGUAGE plpgsql
-    AS $$
-  DECLARE
-  cdnom integer;
-  BEGIN
-	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
-	DELETE FROM contactfaune.cor_unite_taxon WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
-	INSERT INTO contactfaune.cor_unite_taxon (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
-	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactfaune.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
-	FROM synthese.cor_unite_synthese
-	WHERE cd_nom = cdnom
-	AND id_unite_geo = monunite;
-  END;
-$$;
-
-
---
--- Name: calcul_cor_unite_taxon_inv(integer, integer); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE FUNCTION calcul_cor_unite_taxon_inv(monidtaxon integer, monunite integer) RETURNS void
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-    cdnom integer;
-BEGIN
-	--récup du cd_nom du taxon
-	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = monidtaxon;
-    DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_unite_geo = monunite AND id_nom = monidtaxon;
-	INSERT INTO contactinv.cor_unite_taxon_inv (id_unite_geo,id_nom,derniere_date,couleur,nb_obs)
-	SELECT monunite, monidtaxon,  max(dateobs) AS derniere_date, contactinv.couleur_taxon(monidtaxon,max(dateobs)) AS couleur, count(id_synthese) AS nb_obs
-	FROM synthese.cor_unite_synthese
-	WHERE cd_nom = cdnom
-	AND id_unite_geo = monunite;
-END;
-$$;
-
-
---
 -- Name: insert_syntheseff(); Type: FUNCTION; Schema: synthese; Owner: -
 --
 
@@ -2720,66 +2832,6 @@ END IF;
 RETURN NULL;	
 END;
 $$;
-
-
---
--- Name: maj_cor_unite_taxon(); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE OR REPLACE FUNCTION synthese.maj_cor_unite_taxon()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-monembranchement varchar;
-monregne varchar;
-monidtaxon integer;
-BEGIN
-
-IF (TG_OP = 'DELETE') THEN
-	--retrouver le id_nom
-	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = old.cd_nom LIMIT 1; 
-	--calcul du règne du taxon supprimé
-		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
-	IF monregne = 'Animalia' THEN
-		--calcul de l'embranchement du taxon supprimé
-			SELECT  INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = old.cd_nom;
-		-- puis recalul des couleurs avec old.id_unite_geo et old.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-			IF monembranchement = 'Chordata' THEN
-				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactfaune.cor_unite_taxon WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
-				ELSE
-					PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, old.id_unite_geo);
-				END IF;
-			ELSE
-				IF (SELECT count(*) FROM synthese.cor_unite_synthese WHERE cd_nom = old.cd_nom AND id_unite_geo = old.id_unite_geo)= 0 THEN
-					DELETE FROM contactinv.cor_unite_taxon_inv WHERE id_nom = monidtaxon AND id_unite_geo = old.id_unite_geo;
-				ELSE
-					PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, old.id_unite_geo);
-				END IF;
-			END IF;
-		END IF;
-		RETURN OLD;		
-ELSIF (TG_OP = 'INSERT') THEN
-	--retrouver le id_nom
-	SELECT INTO monidtaxon id_nom FROM taxonomie.bib_noms WHERE cd_nom = new.cd_nom LIMIT 1;
-	--calcul du règne du taxon inséré
-		SELECT  INTO monregne tx.regne FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
-	IF monregne = 'Animalia' THEN
-		--calcul de l'embranchement du taxon inséré
-		SELECT INTO monembranchement tx.phylum FROM taxonomie.taxref tx WHERE tx.cd_nom = new.cd_nom;
-		-- puis recalul des couleurs avec new.id_unite_geo et new.taxon selon que le taxon est vertébrés (embranchemet 1) ou invertébres
-		IF monembranchement = 'Chordata' THEN
-		    PERFORM synthese.calcul_cor_unite_taxon_cf(monidtaxon, new.id_unite_geo);
-		ELSE
-		    PERFORM synthese.calcul_cor_unite_taxon_inv(monidtaxon, new.id_unite_geo);
-		END IF;
-        END IF;
-	RETURN NEW;
-END IF;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
 
 
 --
@@ -4408,7 +4460,7 @@ ALTER SEQUENCE syntheseff_id_synthese_seq OWNED BY syntheseff.id_synthese;
 -- Name: v_tree_taxons_synthese; Type: VIEW; Schema: synthese; Owner: -
 --
 
-CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS 
+CREATE OR REPLACE VIEW v_tree_taxons_synthese AS 
  WITH taxon AS (
          SELECT n.id_nom,
             t_1.cd_ref,
@@ -4430,11 +4482,6 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
              LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = t_1.cd_nom
           WHERE (t_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
                    FROM synthese.syntheseff))
-        ), cd_regne AS (
-         SELECT DISTINCT t_1.cd_nom,
-            t_1.regne
-           FROM taxonomie.taxref t_1
-          WHERE t_1.id_rang::bpchar = 'KD'::bpchar AND t_1.cd_nom = t_1.cd_ref
         )
  SELECT t.id_nom,
     t.cd_ref,
@@ -4455,9 +4502,9 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             t_1.cd_ref,
             t_1.nom_latin,
             t_1.nom_francais,
-            ( SELECT DISTINCT r.cd_nom
-                   FROM cd_regne r
-                  WHERE r.regne::text = t_1.regne::text) AS id_regne,
+            ( SELECT taxref.cd_nom
+                   FROM taxonomie.taxref
+                  WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text) AS id_regne,
             t_1.regne AS nom_regne,
             ph.cd_nom AS id_embranchement,
             t_1.phylum AS nom_embranchement,
@@ -4470,11 +4517,10 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
             f.cd_nom AS id_famille,
             t_1.famille AS nom_famille
            FROM taxon t_1
-             LEFT JOIN taxonomie.taxref ph ON ph.id_rang::bpchar = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
-             LEFT JOIN taxonomie.taxref cl ON cl.id_rang::bpchar = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
-             LEFT JOIN taxonomie.taxref ord ON ord.id_rang::bpchar = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
-             LEFT JOIN taxonomie.taxref f ON f.id_rang::bpchar = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
-
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
+             LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
 
 CREATE OR REPLACE VIEW v_taxons_synthese AS 
  SELECT DISTINCT n.nom_francais,
@@ -6001,6 +6047,11 @@ CREATE TRIGGER tri_update_releve_cf BEFORE UPDATE ON t_releves_cf FOR EACH ROW E
 CREATE TRIGGER tri_update_synthese_cor_role_fiche_cf AFTER INSERT OR UPDATE ON cor_role_fiche_cf FOR EACH ROW EXECUTE PROCEDURE synthese_update_cor_role_fiche_cf();
 
 
+--
+-- Name: tri_maj_cor_unite_taxon_cfaune; Type: TRIGGER; Schema: contactfaune; Owner: -
+--
+CREATE TRIGGER tri_maj_cor_unite_taxon_cfaune AFTER INSERT OR DELETE ON synthese.cor_unite_synthese FOR EACH ROW EXECUTE PROCEDURE maj_cor_unite_taxon_cfaune();
+
 SET search_path = contactinv, pg_catalog;
 
 --
@@ -6064,6 +6115,13 @@ CREATE TRIGGER tri_update_releve_inv BEFORE UPDATE ON t_releves_inv FOR EACH ROW
 --
 
 CREATE TRIGGER tri_update_synthese_cor_role_fiche_inv AFTER INSERT OR UPDATE ON cor_role_fiche_inv FOR EACH ROW EXECUTE PROCEDURE synthese_update_cor_role_fiche_inv();
+
+
+--
+-- Name: tri_maj_cor_unite_taxon_inv; Type: TRIGGER; Schema: contactinv; Owner: -
+--
+
+CREATE TRIGGER tri_maj_cor_unite_taxon_inv AFTER INSERT OR DELETE ON synthese.cor_unite_synthese FOR EACH ROW EXECUTE PROCEDURE maj_cor_unite_taxon_inv();
 
 SET search_path = bryophytes, pg_catalog;
 
@@ -6268,13 +6326,6 @@ CREATE TRIGGER tri_insert_syntheseff BEFORE INSERT ON syntheseff FOR EACH ROW EX
 --
 
 CREATE TRIGGER tri_maj_cor_unite_synthese AFTER INSERT OR DELETE OR UPDATE ON syntheseff FOR EACH ROW EXECUTE PROCEDURE maj_cor_unite_synthese();
-
-
---
--- Name: tri_maj_cor_unite_taxon; Type: TRIGGER; Schema: synthese; Owner: -
---
-
-CREATE TRIGGER tri_maj_cor_unite_taxon AFTER INSERT OR DELETE ON cor_unite_synthese FOR EACH ROW EXECUTE PROCEDURE maj_cor_unite_taxon();
 
 
 --

@@ -22,8 +22,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactfaune.calcul_cor_unite_taxon_cfaune(integer, integer)
-  OWNER TO geonatuser;
 
 
 -- Function: contactfaune.maj_cor_unite_taxon_cfaune()
@@ -74,10 +72,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactfaune.maj_cor_unite_taxon_cfaune()
-  OWNER TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactfaune.maj_cor_unite_taxon_cfaune() TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactfaune.maj_cor_unite_taxon_cfaune() TO public;
 
 
 -- Trigger: tri_maj_cor_unite_taxon_cfaune on synthese.cor_unite_synthese
@@ -113,8 +107,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.calcul_cor_unite_taxon_inv(integer, integer)
-  OWNER TO geonatuser;
 
 
 -- Function: contactinv.maj_cor_unite_taxon_inv()
@@ -144,7 +136,7 @@ BEGIN
 				END IF;
 			END IF;
 		END IF;
-		RETURN OLD;		
+		RETURN OLD;	
 		
 	ELSIF (TG_OP = 'INSERT') THEN
 		--retrouver le id_nom
@@ -165,10 +157,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactinv.maj_cor_unite_taxon_inv()
-  OWNER TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactinv.maj_cor_unite_taxon_inv() TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactinv.maj_cor_unite_taxon_inv() TO public;
 
 
 -- Trigger: tri_maj_cor_unite_taxon_inv on synthese.cor_unite_synthese
@@ -204,8 +192,7 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactflore.calcul_cor_unite_taxon_cflore(integer, integer)
-  OWNER TO geonatuser;
+
 
 -- Function: contactflore.maj_cor_unite_taxon_cflore()
 -- DROP FUNCTION contactflore.maj_cor_unite_taxon_cflore();
@@ -245,10 +232,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION contactflore.maj_cor_unite_taxon_cflore()
-  OWNER TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactflore.maj_cor_unite_taxon_cflore() TO geonatuser;
-GRANT EXECUTE ON FUNCTION contactflore.maj_cor_unite_taxon_cflore() TO public;
 
 
 -- Trigger: tri_maj_cor_unite_taxon_cflore on synthese.cor_unite_synthese
@@ -349,6 +332,80 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+-- Function: contactflore.synthese_insert_releve_cflore()
+-- DROP FUNCTION contactflore.synthese_insert_releve_cflore();
+CREATE FUNCTION contactflore.synthese_insert_releve_cflore() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+	fiche RECORD;
+	mesobservateurs character varying(255);
+	idsourcecflore integer;
+    cdnom integer;
+BEGIN
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' AND nom_source = 'Contact flore';
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
+	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
+	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
+	
+	SELECT INTO mesobservateurs o.observateurs FROM contactflore.t_releves_cflore r
+	JOIN contactflore.t_fiches_cflore f ON f.id_cflore = r.id_cflore
+	LEFT JOIN (
+                SELECT id_cflore, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
+                FROM contactflore.cor_role_fiche_cflore c
+                JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+                GROUP BY id_cflore
+            ) o ON o.id_cflore = f.id_cflore
+	WHERE r.id_releve_cflore = new.id_releve_cflore;
+	
+	INSERT INTO synthese.syntheseff (
+		id_source,
+		id_fiche_source,
+		code_fiche_source,
+		id_organisme,
+		id_protocole,
+		id_precision,
+		cd_nom,
+		insee,
+		dateobs,
+		observateurs,
+		determinateur,
+		altitude_retenue,
+		remarques,
+		derniere_action,
+		supprime,
+		the_geom_3857,
+		the_geom_2154,
+		the_geom_point,
+		id_lot
+	)
+	VALUES(
+	idsourcecflore,
+	new.id_releve_cflore,
+	'f'||new.id_cflore||'-r'||new.id_releve_cflore,
+	fiche.id_organisme,
+	fiche.id_protocole,
+	1,
+	cdnom,
+	fiche.insee,
+	fiche.dateobs,
+	mesobservateurs,
+        new.determinateur,
+	fiche.altitude_retenue,
+	new.commentaire,
+	'c',
+	false,
+	fiche.the_geom_3857,
+	fiche.the_geom_2154,
+	fiche.the_geom_3857,
+	fiche.id_lot
+	);
+	RETURN NEW; 			
+END;
+$$;
 
 --récupération des taxons protégés. 
 --Cette opération aurait du être faite dans le script "update_1.7to1.8.sql" mais une coquille sur la requête l'a rendu inopérante.  
