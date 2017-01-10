@@ -465,7 +465,7 @@ application.synthese = function() {
                 wms_uri
                 ,{
                     layers: [
-                      'znieff2', 'znieff1', 'coeur',  'aoa', 'secteurs', 'communes'
+                      'znieff2', 'znieff1', 'aoa', 'secteurs', 'coeur', 'communes'
                       ,'ab','n2000','reservesnationales', 'reservesregionales'
                       ,'unitesgeo','reservesintegrales', 'reserveschasse'
                       // ,'sitesinscrits', 'sitesclasses'
