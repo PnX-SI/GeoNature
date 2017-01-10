@@ -102,8 +102,24 @@ then
     echo "Insertion des données des tables dictionnaires de la base..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/data_synthese_2154.sql  &>> log/install_db.log
     
-    echo "Création du contact flore..."
+    echo "Création du schéma contact faune..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/contactfaune.sql  &>> log/install_db.log
+
+    echo "Création du schéma contact flore..."
     export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/contactflore.sql  &>> log/install_db.log
+
+    echo "Création du schéma contact invertébré..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/contactinv.sql  &>> log/install_db.log
+    
+    echo "Création du schéma flore station..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/florestation.sql  &>> log/install_db.log
+    
+    echo "Création du schéma bryophytes..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/bryophytes.sql  &>> log/install_db.log
+    
+    #TODO : mettre une condition de la présence de florestation et florepatri ou revoir la requête de ce script
+    echo "Création des éléments nécessaire au fonctionnement des mobiles..."
+    export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/2154/nomade.sql  &>> log/install_db.log
     
     echo "Décompression des fichiers du référentiel géographique..."
     cd data/layers
