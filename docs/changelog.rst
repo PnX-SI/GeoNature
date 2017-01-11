@@ -2,8 +2,24 @@
 CHANGELOG
 =========
 
-1.8.2dev (unreleased)
+1.8.3dev (unreleased)
 ----------------------
+
+1.8.2 (2017-01-11)
+------------------
+
+**Nouveautés**
+
+* Correction d'une requête dans flore station (indépendance vis à vis de flore patrimoniale)
+* Modularité des scripts sql de création de la base (préparation GeoNature V2)
+* Correction du trigger ``synthese_update_fiche_cflore`` (@ClaireLagaye)
+
+**Notes de versions**
+
+Vous pouvez passer directement d'une 1.7.X à la 1.8.2, en prenant en compte les notes des différentes versions intermédiaires. 
+
+Si vous migrez depuis la version 1.8.1, éxécutez le fichier ``data/update_1.8.1to1.8.2.sql``. Consultez les dernières lignes de ce fichier : vous devez évaluer si la requête d'insertion dans la table ``taxonomie.cor_taxon_attribut`` doit être faite ou non (vous pourriez avoir déjà constaté et corrigé cette erreur lors d'une précédente migration). Cela corrige l'absence de taxons protégés dans votre synthese en récupérant les informations de protection présentes dans le champ ``filtre3`` de la table ``save.bib_taxons``
+
 
 1.8.1 (2017-01-05)
 ------------------
