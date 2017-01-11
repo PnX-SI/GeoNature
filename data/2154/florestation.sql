@@ -8,7 +8,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
 -- TOC entry 13 (class 2615 OID 2747600)
@@ -640,18 +639,20 @@ CREATE VIEW v_florestation_all AS
 -- Name: v_florestation_patrimoniale; Type: VIEW; Schema: florestation; Owner: -
 --
 
-CREATE VIEW v_florestation_patrimoniale AS
- SELECT cor.id_station_cd_nom AS indexbidon,
+CREATE OR REPLACE VIEW v_florestation_patrimoniale AS
+ SELECT cft.id_station_cd_nom AS indexbidon,
     fs.id_station,
-    bt.francais,
-    bt.latin,
+    tx.nom_vern AS francais,
+    tx.nom_complet AS latin,
     fs.dateobs,
     fs.the_geom_2154
-   FROM ((t_stations_fs fs
-     JOIN cor_fs_taxon cor ON ((cor.id_station = fs.id_station)))
-     JOIN florepatri.bib_taxons_fp bt ON ((cor.cd_nom = bt.cd_nom)))
-  WHERE ((fs.supprime = false) AND (cor.supprime = false))
-  ORDER BY fs.id_station, bt.latin;
+  FROM t_stations_fs fs
+     JOIN cor_fs_taxon cft ON cft.id_station = fs.id_station
+     JOIN taxonomie.bib_noms n ON n.cd_nom = cft.cd_nom
+     LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = cft.cd_nom
+     JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref AND id_attribut = 1 AND valeur_attribut = 'oui'
+  WHERE fs.supprime = false AND cft.supprime = false
+  ORDER BY fs.id_station, tx.nom_vern;
 
 
 --
@@ -1083,9 +1084,141 @@ ALTER TABLE ONLY t_stations_fs
     ADD CONSTRAINT fk_t_stations_fs_t_protocoles FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
 
 
--- Completed on 2017-01-10 17:32:35 CET
+--------------------------------------------------------------------------------------
+--------------------INSERTION DES DONNEES DES TABLES DICTIONNAIRES--------------------
+--------------------------------------------------------------------------------------
 
---
--- PostgreSQL database dump complete
---
+SET search_path = florestation, pg_catalog;
 
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('+', 'Moins de 1 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('1', 'Moins de 5 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('2', 'De 5 à 25 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('3', 'De 25 à 50 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('4', 'De 50 à 75 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('5', 'Plus de 75 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('9', 'Aucune');
+
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('N ', 'Nord', 1);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('NE', 'Nord Est', 2);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('E ', 'Est', 3);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('SE', 'Sud Est', 4);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('S ', 'Sud', 5);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('SO', 'Sud Ouest', 6);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('O ', 'Ouest', 7);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('NO', 'Nord Ouest', 8);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('I ', 'Indéfinie', 9);
+
+INSERT INTO bib_homogenes (id_homogene, nom_homogene) VALUES (1, 'Oui');
+INSERT INTO bib_homogenes (id_homogene, nom_homogene) VALUES (2, 'Non');
+INSERT INTO bib_homogenes (id_homogene, nom_homogene) VALUES (9, 'Ne sait pas');
+
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (1, 'Roche en place : rocher compact');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (2, 'Roche en place : rocher brisé, jamais surplombant');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (3, 'Formations détritiques : matériel grossier dominant');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (35, 'cône ou tablier d''éboulis (partie médiane à éléments moyens)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (36, 'cône d''avalanche (aucun tri des matériaux entre le haut et le bas)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (37, 'blocs épars dans une pelouse');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (4, 'Formations détritiques : matériel fin dominant (graviers, sables limons, argiles)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (41, 'moraines frontales, latérales ou de fond');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (42, 'creux et bosses (cas général)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (43, 'sommet déboulis (éléments les plus fins)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (44, 'guirlandes de solifluxion');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (45, 'laves torrentielles');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (46, 'alluvions : chenaux, méandres, tresses (le tout privé d''eau)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (47, 'talus naturel (cicatrice d''arrachement ou sapement à la base)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (48, 'berge de lac, de rivière ou de torrent');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (49, 'zone de limon à proximité des glaciers');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (5, 'Microformes liées aux activités humaines présentes (si non, voir 8)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (51, 'talus articficiel (en particulier de piste)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (52, 'piste non goudronnée');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (53, 'sillons de labour');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (54, 'canaux (d''irrigation ou de draînage) / fossé');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (55, 'bordure de sentier et sentier');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (56, 'bourrelet de bulldozer ');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (57, 'ornières');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (58, 'toile en plastique (pour éviter les mauvaises herbes autour des jeunes arbres)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (59, 'petite construction en ciment');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (6, 'Microformes liées aux animaux');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (61, 'draille des ovins, des bovins ou des chamois');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (62, 'labour de sanglier / boutis / gouille / grattis');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (63, 'galeries d''Arvicola terrestris');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (64, 'galeries de campagnols');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (65, 'déblais (devant un terrier de marmotte)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (66, 'autres terriers sans déblais');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (67, 'nids de fourmis');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (7, 'Microformes de nature végétale');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (71, 'bombements à sphaignes');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (72, 'touradons (de grand carex)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (73, 'chablis (racines mise à l''''air)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (74, 'arbres cassés et souches');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (8, 'Microformes liées aux activités humaines passées sauf murets (3.2) et clapier d''épierrement (3.3)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (81, 'brou, talus limitant une terrasse de culture');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (82, 'bombement entre chemin et champs');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (83, 'canal d''irrigation abandonné');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (9, 'Microformes liées à un pergélisol');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (91, 'buttes gazonnées (Emparis)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (92, 'langues gazonnées');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (93, 'sols polygonaux');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (94, 'glaciers rocheux');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (11, 'Poli glaciaire, roches moutonnées, dalles rocheuses lisses,"lauze"');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (12, 'Lapiaz (forme de dissolution du calcaire)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (13, 'Portion de falaise avec surplombs');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (14, 'Pied de falaise surplombante : balme " chemin de pluie" blocs écroulés');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (21, 'Eperons rocheux, rochers brisés, rochillons, petites vires, gradins rocheux');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (22, '"Fesses d''éléphant" (roubines)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (24, 'Ravines (entre les fesses d''éléphant), rigoles et autres talwegs');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (25, 'Petites barres (1 à 5 mètres)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (26, 'Débris rocheux en place ; pente très faible');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (27, 'Fond d''oukane  (crevasse rocheuse)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (28, 'Fond de doline');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (31, 'Falaise délabrée, disloquée  (fissures ouvertes)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (23, 'Couloir (entre les éprerons rocheux)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (32, 'Muret de pierres sèches, ruine   (si non voir 5.9)');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (33, 'Clapier d''épierrement');
+INSERT INTO bib_microreliefs (id_microrelief, nom_microrelief) VALUES (34, 'Casse, éboulis (partie inférieure à éléments les plus grossiers)');
+
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (3, 'IPA');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (4, 'STERF');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (5, 'Phytomasse');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (2, 'Natura 2000');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (1, 'Complément flore patrimoniale');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (6, 'Relevé sur un sommet');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (7, 'Milieux');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (8, 'Messicoles');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (9, 'M.A.E et C.A.D');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (10, 'Programme Bocage');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (101, 'Sophie');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (102, 'Autre');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (999, 'Aucun programme complémentaire');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (11, 'Ecologie verticale');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (12, 'Combes à neige');
+INSERT INTO bib_programmes_fs (id_programme_fs, nom_programme_fs) VALUES (13, 'E.N.S');
+
+INSERT INTO bib_surfaces (id_surface, nom_surface) VALUES (1, '100 m2');
+INSERT INTO bib_surfaces (id_surface, nom_surface) VALUES (2, '10 m2');
+INSERT INTO bib_surfaces (id_surface, nom_surface) VALUES (4, 'de 11 à 100 m2');
+INSERT INTO bib_surfaces (id_surface, nom_surface) VALUES (5, 'de 101 à 1000 m2');
+INSERT INTO bib_surfaces (id_surface, nom_surface) VALUES (3, 'Inf à 10 m2');
+INSERT INTO bib_surfaces (id_surface, nom_surface) VALUES (999, 'Pas d''info');
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES DE DESCRIPTION--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = meta, pg_catalog;
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (5, 'Flore station', 'Relevés stationnels et stratifiés de la flore.', true, true, 'Relevés stationnels et stratifiés de la flore.');
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (5, 'flore station', 'Relevés stationnels et stratifiés de la flore', false, true, false, 5);
+INSERT INTO t_protocoles VALUES (5, 'Flore station', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+SET search_path = synthese, pg_catalog;
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (5, 'Flore station', 'Données de relevés floristique stationnels complets ou partiel', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florestation', 'cor_fs_taxon', 'gid', 'fs', NULL, 'images/pictos/plante.gif', 'FLORE', true);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = public, pg_catalog;
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 't_stations_fs', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 'v_florestation_all', 'the_geom', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 'v_florestation_patrimoniale', 'the_geom', 2, 27572, 'POINT');

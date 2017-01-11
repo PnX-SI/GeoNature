@@ -2,18 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.3.5
--- Dumped by pg_dump version 9.5.5
-
--- Started on 2017-01-10 17:42:42 CET
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
 -- TOC entry 11 (class 2615 OID 2747598)
@@ -694,9 +688,47 @@ ALTER TABLE ONLY t_stations_bryo
     ADD CONSTRAINT fk_t_stations_bryo_t_protocoles FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
 
 
--- Completed on 2017-01-10 17:43:51 CET
+--------------------------------------------------------------------------------------
+--------------------INSERTION DES DONNEES DES TABLES DICTIONNAIRES--------------------
+--------------------------------------------------------------------------------------
 
---
--- PostgreSQL database dump complete
---
+SET search_path = bryophytes, pg_catalog;
 
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('+', 'Moins de 1 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('1', 'Moins de 5 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('2', 'De 5 à 25 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('3', 'De 25 à 50 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('4', 'De 50 à 75 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('5', 'Plus de 75 %');
+INSERT INTO bib_abondances (id_abondance, nom_abondance) VALUES ('9', 'Aucune');
+
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('N ', 'Nord', 1);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('NE', 'Nord Est', 2);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('E ', 'Est', 3);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('SE', 'Sud Est', 4);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('S ', 'Sud', 5);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('SO', 'Sud Ouest', 6);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('O ', 'Ouest', 7);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('NO', 'Nord Ouest', 8);
+INSERT INTO bib_expositions (id_exposition, nom_exposition, tri_exposition) VALUES ('I ', 'Indéfinie', 9);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES DE DESCRIPTION--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = meta, pg_catalog;
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (6, 'Bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte.', true, true, 'Relevés stationnels et non stratifiés de la flore bryophyte.');
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (6, 'bryophytes', 'Relevés stationnels et non stratifiés de la flore bryophyte', false, true, false, 6);
+INSERT INTO t_protocoles VALUES (6, 'Bryophytes', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+SET search_path = synthese, pg_catalog;
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (6, 'Bryophytes', 'Données de contact bryologique', 'localhost', 22, NULL, NULL, 'geonaturedb', 'bryophytes', 'cor_bryo_taxon', 'gid', 'bryo', NULL, 'images/pictos/mousse.gif', 'FLORE', true);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = public, pg_catalog;
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'bryophytes', 't_stations_bryo', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'bryophytes', 't_stations_bryo', 'the_geom_3857', 2, 3857, 'POINT');

@@ -8,7 +8,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
 -- TOC entry 12 (class 2615 OID 2747599)
@@ -1759,3 +1758,200 @@ ALTER TABLE ONLY erreurs_flora ALTER COLUMN id SET DEFAULT nextval('erreurs_flor
 
 ALTER TABLE ONLY erreurs_flora
     ADD CONSTRAINT erreurs_flora_pkey PRIMARY KEY (id);
+
+
+
+--------------------------------------------------------------------------------------
+--------------------INSERTION DES DONNEES DES TABLES DICTIONNAIRES--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = florepatri, pg_catalog;
+
+INSERT INTO bib_comptages_methodo (id_comptage_methodo, nom_comptage_methodo) VALUES (1, 'Recensement exhaustif');
+INSERT INTO bib_comptages_methodo (id_comptage_methodo, nom_comptage_methodo) VALUES (2, 'Echantillonage');
+INSERT INTO bib_comptages_methodo (id_comptage_methodo, nom_comptage_methodo) VALUES (9, 'Aucun comptage');
+
+INSERT INTO bib_frequences_methodo_new (id_frequence_methodo_new, nom_frequence_methodo_new) VALUES ('N', 'Nouveau transect');
+INSERT INTO bib_frequences_methodo_new (id_frequence_methodo_new, nom_frequence_methodo_new) VALUES ('S', 'Estimation');
+
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (1, 2.5, 'Labourable (0-5)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (2, 7.5, 'Fauchable (5-10)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (3, 12.5, 'Haut d''un cône de déjection torrentiel (10-15)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (4, 17.5, 'Haut d''un cône d''avalanche (15-20)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (5, 22.5, 'Pied d''éboulis (20-25)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (6, 30, 'Tablier d''éboulis (25-35)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (7, 37.5, 'Sommet d''éboulis (35-40)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (8, 45, 'Rochillon (sans les mains) (40-50)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (9, 55, 'Rochillon (avec les mains) (50-60)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (10, 90, 'Vires et barres (>60)');
+INSERT INTO bib_pentes (id_pente, val_pente, nom_pente) VALUES (0, 0, 'Aucune pente');
+
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (73, 'Processus naturels d''érosion', 'Engravement (laves torrentielles et divagation d''une rivière)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (11, 'Gestion par le feu', 'Brûlage contrôlé');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (78, 'Processus naturels d''érosion', 'Eboulement récent');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (24, 'Activités de loisirs', 'Véhicules à moteur (écrasement)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (54, 'Activités forestières', 'Elagage (haie et bord de route)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (76, 'Processus naturels d''érosion', 'Sapement de la berge d''un cours d''eau');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (43, 'Activités agricoles', 'Produits phytosanitaires (épandage)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (75, 'Processus naturels d''érosion', 'Erosion s''exerçant sur de vastes surfaces (gélifluxion)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (12, 'Gestion par le feu', 'Incendie (naturel ou incontrôlé)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (21, 'Activités de loisirs', 'Récolte des fleurs');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (22, 'Activités de loisirs', 'Arrachage des pieds');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (23, 'Activités de loisirs', 'Piétinement pédestre');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (25, 'Activités de loisirs', 'Plongée dans un lac');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (31, 'Gestion de l''eau', 'Pompage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (32, 'Gestion de l''eau', 'Drainage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (33, 'Gestion de l''eau', 'Irrigation par gravité');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (34, 'Gestion de l''eau', 'Irrigation par aspersion');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (35, 'Gestion de l''eau', 'Curage (fossé, mare, serve)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (36, 'Gestion de l''eau', 'Extraction de granulats');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (41, 'Activités agricoles', 'Labour');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (42, 'Activités agricoles', 'Fertilisation');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (44, 'Activités agricoles', 'Fauchaison');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (45, 'Activités agricoles', 'Apport de blocs (déterrés par le labour)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (46, 'Activités agricoles', 'Gyrobroyage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (47, 'Activités agricoles', 'Revégétalisation (sur semis)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (51, 'Activités forestières', 'Jeune plantation de feuillus');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (52, 'Activités forestières', 'Jeune plantation mixte (feuillus et résineux)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (53, 'Activités forestières', 'Jeune plantation de résineux');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (55, 'Activités forestières', 'Coupe d''éclaircie');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (56, 'Activités forestières', 'Coupe à blanc');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (57, 'Activités forestières', 'Bois coupé et laissé sur place');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (58, 'Activités forestières', 'Ouverture de piste forestière');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (61, 'Comportement des animaux', 'Jas (couchades nocturnes des animaux domestiques)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (62, 'Comportement des animaux', 'Chaume (couchades aux heures chaudes des animaux domestiques)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (63, 'Comportement des animaux', 'Faune sauvage (reposoir)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (64, 'Comportement des animaux', 'Piétinement, sans apports de déjection');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (65, 'Comportement des animaux', 'Pâturage (sur herbacées exclusivement)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (66, 'Comportement des animaux', 'Abroutissement et écorçage (sur ligneux)');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (71, 'Processus naturels d''érosion', 'Submersion temporaire');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (72, 'Processus naturels d''érosion', 'Envasement');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (74, 'Processus naturels d''érosion', 'Avalanche : apport de matériaux non triés');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (77, 'Processus naturels d''érosion', 'Avalanche : ramonage du terrain');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (81, 'Aménagements lourds', 'Carrière en roche dure');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (82, 'Aménagements lourds', 'Fossé pare-blocs');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (83, 'Aménagements lourds', 'Endiguement');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (84, 'Aménagements lourds', 'Terrassement pour aménagements lourds');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (85, 'Aménagements lourds', 'Déboisement avec désouchage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (86, 'Aménagements lourds', 'Béton, goudron : revêtement abiotique');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (67, 'Comportement des animaux', 'Sangliers : labours et grattis');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (68, 'Comportement des animaux', 'Marmottes : terriers');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (69, 'Comportement des animaux', 'Chenilles : défoliation');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (91, 'Gestion des invasives', 'Arrachage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (92, 'Gestion des invasives', 'Fauchage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (93, 'Gestion des invasives', 'Débroussaillage');
+INSERT INTO bib_perturbations (codeper, classification, description) VALUES (94, 'Gestion des invasives', 'Recouvrement avec bâches');
+
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (1, 'Stade végétatif');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (2, 'Stade boutons floraux');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (3, 'Début de floraison');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (4, 'Pleine floraison');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (5, 'Fin de floraison et maturation des fruits');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (6, 'Dissémination');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (7, 'Stade de décrépitude');
+INSERT INTO bib_phenologies (codepheno, pheno) VALUES (8, 'Stage végétatif permanent ');
+
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (1, 'Herbacée', 'Alluvions (Végétation herbacée pionnière des)', 'Formation très ouverte pionnière des alluvions actifs, régulièrement perturbés et alimentés, des torrents, des rivières et des fleuves à régime nival (bilan hydrique largement déficient sur un substrat très drainant), riches en galets mêlés ou non de terre fine.', 'AL');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (2, 'Herbacée', 'Végétation aquatique', 'Ensemble vaste de formations végétales strictement aquatiques (non hélophytiques), des eaux stagnantes et courantes, enracinées ou libres, immergées ou submergées. Comprend les herbiers à Sparganium angustifolium des étages subalpin et alpin.', 'AQ');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (3, 'Herbacée', 'Autre formation herbacée artificielle', 'à garder ?', 'AR');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (4, 'Herbacée', 'Bas-marais et marais de transition', 'Formation basse dominée par des cypéracées de petites et moyennes taille à nappe d''eau proche ou juste au dessus de la surface. Comprend aussi les formations amphibies franchement aquatiques (ceinture à Eriophorum scheuchzeri) des étages subalpin et alpin.', 'BM');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (5, 'Herbacée', 'Combe à neige (Végétation des)', 'Formation à degré d''ouverture variable des zones longuement enneigées de l''étage alpin (rare au subalpin) souvent dominée par des nanophanérophytes du genre Salix. Substrat variable, formes minérales  caractérisées le tassement des éléments du substrat (fins à moyens)', 'CN');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (6, 'Herbacée', 'Cultures  (Végétation des)', 'Formation basse et très ouverte dominée par des plantes annuelles (à bisannuelles) des terrains agricoles exploités et les cultures arboricoles à terre retournée.', 'CU');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (7, 'Herbacée', 'Dalles rocheuses (Végétation pionnière des)', 'Formation herbacée ouverte pionnière des affleurements rocheux (souvent tabulaires avec pente peu marqué), riche en plantes grasses et à composition mixte vivaces et annuelles. Elle comprend la végétation pionnière des lapiaz vifs', 'DA');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (8, 'Herbacée', 'Éboulis (Végétation des)', 'Formation très ouverte pionnière des éboulis et chaos rocheux, actifs ou stabilisés, comprenant la végétation colonisant les moraines. Formation caractérisée par la (quasi) absence de sol. Ne comprend pas les formations pionnières à saules nains des chaos rocheux longuement enneigés qui sont à coder sous CN (combes à neige)', 'EB');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (9, 'Herbacée', 'Bordure d''eaux courantes  (Végétation amphibie des)', 'Formation amphibie vivace dense (petits hélophytes souvent) et entremêlée occupant les petits cours d''eau et leurs berges ainsi que les lones et bras-mort à courant faible (comprend les herbiers à Glyceria, Berula, Apium, Nasturtium et Leersia).', 'EC');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (10, 'Herbacée', 'Grèves exondées  (Végétation pionnière des)', 'Formation pionnière annuelle et vivace de petite taille (Eleocharis acicularis, Littorella uniflora, Ludwigia palustris, Juncus bulbosus…) ou plus haute (Polygonum lapathifolium, Bidens pl.sp. etc.). des  zones périodiquement exondées des eaux stagnantes et courantes, végétation à caractère amphibie souvent marqué.', 'EX');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (11, 'Herbacée', 'Végétation fontinale', 'Formation en majorité dominée par les bryophytes, avec végétation vasculaire peu diversifiée mais parfois assez recouvrante (Epilobium alsinifolium, Saxifraga aizoides, Carex frigida), colonisant les sources, les bords de ruisselets et les rochers suintants, milieux imbibé en permanence', 'FO');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (12, 'Herbacée', 'Grands hélophytes  (Communauté de)', 'Formation souvent dense de grands hélophytes graminoïdes (roselières au sens large à Phragmites, Phalaris, Typha, Schoenoplectus, Cladium...) comprenant à la fois les communautés franchement aquatique et les communautés terrestres (atterries).', 'GH');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (13, 'Herbacée', 'Haut-marais', 'Formation mixte bryophytique (sphaignes), herbacée (cypéracée) et sous-arbustive (éricacées) formant un paysage lâchement moutonné de buttes de sphaignes et de creux plus ou moins inondés ', 'HM');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (14, 'Herbacée', 'Végétation rase hyperpiétinée', 'Formation dominée par des plantes annuelles prostrées supportant le piétinement régulier de toute nature', 'HY');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (15, 'Herbacée', 'Magnocariçaie', 'Formation haute dominée par des hélophytes de la famille des cypéracées comprenant à la fois les communautés franchement aquatiques et des communautés terrestres à sol mouillé une partie de l''année.', 'MC');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (16, 'Herbacée', 'Mégaphorbiaie', 'Formation dense et haute dominée par des dicotylédones à feuillage très recouvrant des milieux frais à humides, riches en éléments minéraux. Comprend aussi les formations montagnardes à subalpines mésophiles composition mixte entre graminées et dicotylédones (Calamagrostis sp. souvent), d’origine naturelle (praires de couloirs d’avalanche). Plaine, montagnard et subalpin. Urtica, Anthriscus, Convolvulus, lisière nitrophiles ?', 'MG');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (17, 'Herbacée', 'Murs  (Végétation anthropique des)', 'Formation colonisant les murs', 'MU');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (18, 'Herbacée', 'Coupes et ourlets forestiers', 'Formation intraforestière, constituée de grandes dicotylédones vivaces colonisant les coupes forestières récentes et les clairières à sol riches, ou de dicotylédones moins grande en situation de lisière et de clairière (Aegopodium, … ). Comprend également les formations de lisière intraforestièresd dominées par des graminées (Festuca gigantea, Bromus ramosus / benekenii, Calamagrostis varia, Elytrigia / Roegneria ou encore à Hordelymus europaeus ). A préciser JCV. Comprend les ronciers forestiers. Les formations riveraines à Petasites albus (souvent intraforestières) sont codées sous MG – Mégaphorbiaie. Les formations de lisère humides à Petasites albus sont quant à elles traités ici. ', 'OF');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (19, 'Herbacée', 'Ourlet maigre', 'Formation mésophile à méso-xérophile, peu élevée, développées sur des terrains maigres en bordure externe de végétations arbustives et forestières (conditions héliophiles à hémi-héliophiles) ou colonisant d’ancien espaces agro-pastoraux, dominée par des espèces à développement tardif, parmi lesquels les graminées sont (co-)dominantes. Les formations à Rubus sont codés OU ou OF en fonction de leur situation. Les manteaux arbustifs sont traités dans les fourré quand le recouvrement arbustif > 25 %, < 25 %, ils sont traités ici', 'OU');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (20, 'Herbacée', 'Pelouse alpine et pâturage d''altitude', 'Formation basse diversifiée à dominante de graminées et de cypéracées peu élevées des étages supérieurs (subalpin et alpin). Recouvrement minéral souvent important, comprend aussi les pelouses rocailleuses de colonisation d''éboulis et des roches altérées. L''altitude est le critère déterminant.', 'PA');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (21, 'Herbacée', 'Prairie humide', 'Formation herbacée d''origine anthropique diversifiée, dense et haute à dominante graminéenne, fauchée et/ou pâturée, humide à mouillée (nappe affleurante) une partie de l''année, périodiquement inondée. Les prairies alluviales à Arrhenatherum elatius à tendance mésohygrophile des niveaux topo supérieurs sont traitées sous PM. Les formations basses méditerranéennes à Deschampsia media sont comprises dans PH.', 'PH');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (22, 'Herbacée', 'Prairie mésophile', 'Formation diversifiée d''origine anthropique, dense et haute à dominante graminéenne de hauteur supérieure à 50 cm, fauchée et/ou pâturée, temporairement humide, exceptionnellement inondée et mouillée. Les formations semi hautes pâturées d''altitude ne sont pas comprises. La hauteur de certaines formations (ex. formation dense à Brome érigé) doit examinées attentivement pour distinguer la pelouse de la prairie. Les formations naturelles montagnardes à hautes herbes mixte (graminées et dicotylédones) sont à coder sous MG Mégaphorbiaie.', 'PM');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (23, 'Herbacée', 'Pelouse (de basse et moyenne altitude)', 'Formation basse diversifiée, de hauteur moyenne inférieure à 50 cm à dominante graminéenne, des sols maigres des étages planitiaire, collinéen et montagnard. Recouvrement minéral variable, comprend aussi les pelouses rocailleuses de colonisation d''éboulis et des roches altérées. La hauteur de certaines formations (ex. formation dense à Brome érigé) doit examinées attentivement pour distinguer la pelouse de la prairie.', 'PS');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (24, 'Herbacée', 'Petits hélophytes (Communauté de)', 'Formation souvent clairsemée de petits hélophytes non graminoïdes des eaux stagnantes peu profondes à niveau variable (Sparganium sppl., Alisma sppl., Equisetum fluviatile, Oenanthe aquatica, Rorippa amphibia, Butomus umbellatus, Sagitaria sagitifolia), également appelé roselière basse.', 'RB');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (25, 'Herbacée', 'Parois et façades rocheuses (Végétation des)', 'Formation clairsemée des anfractuosités rocheuses, végétation saxicole au sens strict, incluant la végétation des rochers frais méridionaux mais pas les suintement quasi permanents', 'RO');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (26, 'Herbacée', 'Friche herbacée et végétation rudérale', 'Formation dominée par des espèces annuelles et/ou bisannuelles des terrains agricoles, urbains, industriels irrégulièrement perturbé, souvent nitrophile. Comprend aussi la végétation rudérale vivace  des reposoirs à bestiaux et des friches à graminées (chiendent) sur anciens terrains agricoles. Comprend également les formations vivaces de substitution de xénopytes (Reynoutria japonica/ bohemica ou Impatiens glandulifera. lisières nitrophiles ?', 'RU');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (27, 'Herbacée', 'Pelouse pionnière annuelle', 'Formation très ouverte primaire dominée par espèces annuelles de petite taille à cycle court, fréquemment sur substrats fins et mobiles', 'TH');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (101, 'Sous-arbustive', 'Lande  (et landine)', 'Formation végétale dominée par des petits chaméphytes (landines) ou des grands chaméphytes (landes). Les seuils de recouvrement de la strate sous-arbustive sont donnés dans « Physionomies complexes ».', 'LA');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (102, 'Sous-arbustive', 'Garrigue  (incluant les ourlets herbacés méditerranéens)', 'Formation végétale dominée par des chaméphytes des secteurs supra- et oro-méditerranéens', 'GA');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (201, 'Arbustive', 'Fourré mésophile (mésophile à sec)', 'Formation dominée des espèces caducifoliées des autres situations (Coryllaie, coudraie, accru à …, fourré à Amelanchier, …). ', 'FM');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (202, 'Arbustive', 'Fourré artificiel', 'ex. : haie bocagère', 'FR');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (203, 'Arbustive', 'Fourré sempervirent', 'Formation dominée par des espèces à feuillage persistant, épineuses ou non', 'FS');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (204, 'Arbustive', 'Fourré humide', 'Formation dominée des des espèces caducifoliées des sols engorgés, des bordures d''eaux calmes et courantes (saulaie arbustive, fourré à bourdaine, …). Les aulnaies vertes sont traitées sous FM', 'FU');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (301, 'Arborescente', 'Boisement artificiel', NULL, 'BA');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (302, 'Arborescente', 'Boisement de conifères humide', 'Formation dominée par les conifères ( > 75 %  recouvrement) des sols humides ou engorgés. Les pré-bois de Pin à crochet sur tourbe sont considérés comme des formations arborescentes dès 15 % de recouvrement (au lieu de 30 % pour les autres essences).', 'BCH');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (303, 'Arborescente', 'Boisement de conifère  (mésophile à sec)', 'Formation dominée par les conifères (> 75 %  recouvrement) des situations  sèches ou mésophiles. Les pré-bois de Mélèze, Arolle, Pin à crochet et de Thurifère sont considérés comme des formations arborescentes dès 15 % de recouvrement (au lieu de 30 % pour les autres essences).', 'BCM');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (304, 'Arborescente', 'Boisement feuillu humide', 'Formation dominée par des espèces feuillues  (> 75 % de recouvrement) caducifoliées des sols engorgés (nappe affleurante ou peu profonde) et des situations alluviales et riveraines (nappe  circulante à niveau variable et crues). Les boisements à sous bois de mégaphorbiaie non riverain ou alluviaux sont traités sous BFM.', 'BFH');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (305, 'Arborescente', 'Boisement feuillu  (mésophile à sec)', 'Formation dominée par des espèces feuillues  (> 75 % de recouvrement) caducifoliées des autres situations, sèches ou mésophiles', 'BFM');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (306, 'Arborescente', 'Boisement feuillu sempervirent', 'Formation dominée par des espèces feuillues  (> 75 % de recouvrement) sempervirentes', 'BFS');
+INSERT INTO bib_physionomies (id_physionomie, groupe_physionomie, nom_physionomie, definition_physionomie, code_physionomie) VALUES (307, 'Arborescente', 'Boisement mixte  (conifères/feuillus, sempervirent/caduc.)', 'Formation mixte conifères/feuillus ou feuillus sempervirents/feuillus caducifolié dans laquelle aucune des essences atteint individuellement 75 % de la surface. Les combinaisons mixte d’essences sont retenues dans la liste de peuplements.', 'BMI');
+
+INSERT INTO bib_rezo_ecrins (id_rezo_ecrins, nom_rezo_ecrins) VALUES (1, 'La synchronisation de la base Ecrins vers la base Rezo a été faite avec succès');
+INSERT INTO bib_rezo_ecrins (id_rezo_ecrins, nom_rezo_ecrins) VALUES (2, 'La synchronisation de la base Rézo vers la base Ecrins a été faite avec succès');
+INSERT INTO bib_rezo_ecrins (id_rezo_ecrins, nom_rezo_ecrins) VALUES (0, 'Erreur de synchronisation entre les 2 bases');
+INSERT INTO bib_rezo_ecrins (id_rezo_ecrins, nom_rezo_ecrins) VALUES (9, 'Pas de synchronisation entre les 2 bases (données existantes avant mise en place synchronisations)');
+
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (1, 'UICN Vu', 'Liste rouge UICN - Vulnérable');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (2, 'UICN En', 'Liste rouge UICN - En danger');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (3, 'UICN Cr', 'Liste rouge UICN - En danger critique d''extinction');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (10, 'PR PACA', 'Protection régionale Provence Alpes Caôte d''Azur');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (11, 'PR RA', 'Protection régionale Rhône-Alpes');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (12, 'PD 05', 'Protection départementale Hautes-Alpes');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (13, 'PD 38', 'Protection départementale Isère');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (14, 'PD 01', 'Protection départementale Ain');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (15, 'PD 04', 'Protection départementale Alpes de Haute Provence');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (16, 'PD 73', 'Protection départementale Savoie');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (17, 'PD 74', 'Protection départementale Haute Savoie');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (18, 'PD 26', 'Protection départementale Drôme');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (30, 'PNat', 'Protection national');
+INSERT INTO bib_statuts (id_statut, nom_statut, desc_statut) VALUES (40, 'EEE', 'Espèce exotique invasive');
+
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (102232, 'Herbe aux cosaques', 'Litwinowia tenuissima', 4000, 611131, true);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (35676, 'Houx', 'Ilex aquifolium', 8000, 103514, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (43424, 'Cerfeuil musqué', 'Myrrhis odorata', 4000, 109161, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (1071, 'Aethionéma des rochers', 'Aethionema saxatile', 8000, 130869, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (14752, 'Châtaigner', 'Castanea sativa', 8000, 89304, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (19204, 'Cotonéaster intermédiaire', 'Cotoneaster intermedius', 8000, 92715, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (19226, 'Cotonéaster de Rabou', 'Cotoneaster raboutensis', 8000, 92700, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (26575, 'Fétuque alpine', 'Festuca alpina', 8000, 98054, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (29235, 'Gaillet des rochers', 'Galium saxosum', 8000, 99530, false);
+INSERT INTO bib_taxons_fp (num_nomenclatural, francais, latin, echelle, cd_nom, nomade_ecrins) VALUES (39494, 'Liparis de loesel', 'Liparis loeselii', 4000, 106353, false);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES DE DESCRIPTION--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = meta, pg_catalog;
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (4, 'Flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire.', true, true, 'Inventaire et suivi en présence absence de la Flore prioritaire.');
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (4, 'flore prioritaire', 'Inventaire et suivi en présence absence de la Flore prioritaire', false, true, false, 4);
+INSERT INTO t_protocoles VALUES (4, 'Flore prioritaire', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+SET search_path = synthese, pg_catalog;
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (4, 'Flore prioritaire', 'Relevés en présence-absence de la flore prioritaire', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florepatri', 't_apresence', 'indexap', 'pda', NULL, 'images/pictos/plante.gif', 'FLORE', false);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = public, pg_catalog;
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_mobile_visu_zp', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_poly', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_point', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_line', 'the_geom_2154', 2, 2154, 'LINESTRING');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_point', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_line', 'the_geom_2154', 2, 2154, 'LINESTRING');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_polygon', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_toutesleszp_2154', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_3857', 2, 3857, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'geom_point_3857', 2, 3857, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'geom_mixte_3857', 2, 3857, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_3857', 2, 3857, 'POLYGON');

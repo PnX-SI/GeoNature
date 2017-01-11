@@ -36,3 +36,27 @@ UNION
           GROUP BY c.id_station) o ON o.id_station = cft.id_station
   WHERE cft.supprime = false AND st_isvalid(s.the_geom_3857)
   ORDER BY s.dateobs DESC);
+
+---------------- Mise à jour de la vue v_nomade_classes globale
+--TODO : Attention cette vue n'est pas modulaire.
+SET search_path = taxonomie, pg_catalog;
+CREATE OR REPLACE VIEW v_nomade_classes AS 
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM contactfaune.v_nomade_classes
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM contactinv.v_nomade_classes
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM florepatri.v_nomade_classes
+UNION
+ SELECT v_nomade_classes.id_classe,
+    v_nomade_classes.nom_classe_fr,
+    v_nomade_classes.desc_classe
+   FROM contactflore.v_nomade_classes;
