@@ -227,10 +227,11 @@ then
     rm data/taxonomie/taxhubdb.sql
     rm data/taxonomie/vm_hierarchie_taxo.sql
     rm data/taxonomie/taxhubdata.sql
-    rm data/layers/communes_metropole.sql
+    rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/*.zip
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
     # rm data/layers/zonesstatut.sql
+    rm data/layers/communes_metropole.sql
     rm -R data/layers/apb
     rm -R data/layers/bios
     rm -R data/layers/cdl
