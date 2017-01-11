@@ -407,6 +407,25 @@ BEGIN
 END;
 $$;
 
+
+--modification de la vue florestation.v_florestation_patrimoniale pour ne plus dépendre du schéma florepatri
+DROP VIEW florestation.v_florestation_patrimoniale;
+CREATE OR REPLACE VIEW florestation.v_florestation_patrimoniale AS 
+ SELECT cft.id_station_cd_nom AS indexbidon,
+    fs.id_station,
+    tx.nom_vern AS francais,
+    tx.nom_complet AS latin,
+    fs.dateobs,
+    fs.the_geom_2154
+   FROM florestation.t_stations_fs fs
+     JOIN florestation.cor_fs_taxon cft ON cft.id_station = fs.id_station
+     JOIN taxonomie.bib_noms n ON n.cd_nom = cft.cd_nom
+     LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = cft.cd_nom
+     JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref AND cta.id_attribut = 1 AND cta.valeur_attribut = 'oui'::text
+  WHERE fs.supprime = false AND cft.supprime = false
+  ORDER BY fs.id_station, tx.nom_vern;
+
+
 --récupération des taxons protégés. 
 --Cette opération aurait du être faite dans le script "update_1.7to1.8.sql" mais une coquille sur la requête l'a rendu inopérante.  
 INSERT INTO taxonomie.cor_taxon_attribut
@@ -415,3 +434,4 @@ FROM save.bib_taxons t
 LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = t.cd_nom
 WHERE filtre3 = 'oui'
 AND tx.cd_nom = tx.cd_ref;
+
