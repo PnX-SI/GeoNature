@@ -10,8 +10,8 @@ CHANGELOG
 
 **Nouveautés**
 
+* Modularité des scripts SQL de création de la base en les dissociant par protocole et en regroupant les triggers dans les schémas de chaque protocole (préparation GeoNature V2)
 * Correction d'une requête dans flore station (indépendance vis à vis de flore patrimoniale)
-* Modularité des scripts sql de création de la base (préparation GeoNature V2)
 * Correction du trigger ``synthese_update_fiche_cflore`` (@ClaireLagaye)
 
 **Notes de versions**
