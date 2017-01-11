@@ -2,14 +2,12 @@
 -- PostgreSQL database dump
 --
 
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
 -- TOC entry 9 (class 2615 OID 2747596)
@@ -1427,10 +1425,129 @@ ALTER TABLE ONLY erreurs_mortalite ALTER COLUMN id SET DEFAULT nextval('erreurs_
 ALTER TABLE ONLY erreurs_cf
     ADD CONSTRAINT erreurs_cf_pkey PRIMARY KEY (id);
 
-    
+
 --
 -- Name: erreurs_mortalite_pkey; Type: CONSTRAINT; Schema: synchronomade; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY erreurs_mortalite
     ADD CONSTRAINT erreurs_mortalite_pkey PRIMARY KEY (id);
+
+
+--------------------------------------------------------------------------------------
+--------------------INSERTION DES DONNEES DES TABLES DICTIONNAIRES--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = contactfaune, pg_catalog;
+
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (15, 'o10', 'Nid utilisé récemment ou coquille vide', 15, '10', 15);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (16, 'o11', 'Jeunes fraîchement envolés ou poussins', 16, '11', 16);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (17, 'o12', 'Nid occupé', 17, '12', 17);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (18, 'o13', 'Adulte transportant des sacs fécaux ou de la nourriture pour les jeunes', 18, '13', 18);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (19, 'o14', 'Nid avec oeuf(s)', 19, '14', 19);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (20, 'o15', 'Nid avec jeune(s)', 20, '15', 20);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (31, 'a1 ', 'Accouplement', 31, '1 ', 31);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (32, 'a2 ', 'Ponte', 32, '2 ', 32);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (33, 'a3 ', 'Têtards ou larves', 33, '3 ', 33);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (34, 'a4 ', 'Léthargie hivernale', 34, '4 ', 34);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (21, 'm1 ', 'Accouplement ', 21, '1 ', 21);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (22, 'm2 ', 'Femelle gestante', 22, '2 ', 22);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (23, 'm3 ', 'Femelle allaitante, suitée', 23, '3 ', 23);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (24, 'm4 ', 'Terrier occupé', 24, '4 ', 24);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (25, 'm5 ', 'Terrier non occupé', 25, '5 ', 25);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (26, 'm6 ', 'Hibernation', 26, '6 ', 26);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (6, 'o1 ', 'Immature', 6, '1 ', 6);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (7, 'o2 ', 'Mâle chanteur', 7, '2 ', 7);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (8, 'o3 ', 'Couple', 8, '3 ', 8);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (10, 'o5 ', 'Parades nuptiales', 10, '5 ', 10);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (11, 'o6 ', 'Signes ou cris d''inquiétude d''un individu adulte', 11, '6 ', 11);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (13, 'o8 ', 'Construction d''un nid', 13, '8 ', 13);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (14, 'o9 ', 'Adulte feignant une blessure ou cherchant à détourner l''attention', 14, '9 ', 14);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (35, 'p1 ', 'Activité de frai', 35, '1 ', 35);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (36, 'p2 ', 'Ponte ou nids de ponte', 36, '2 ', 36);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (30, 'r4 ', 'Léthargie hivernale', 30, '4 ', 30);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (29, 'r3 ', 'Jeune éclos', 29, '3 ', 29);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (28, 'r2 ', 'Ponte', 28, '2 ', 28);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (27, 'r1 ', 'Accouplement', 27, '1 ', 27);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (38, 'p4 ', 'Remontées migratoires', 38, '4 ', 38);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (37, 'p3 ', 'Alevins ou larves', 37, '3 ', 37);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (2, 'C  ', 'Cadavre', NULL, 'C ', 2);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (1, 'X  ', 'Absence de critère d’observation', 999, 'X ', 1);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (4, 'E  ', 'Entendu', 101, 'E ', 4);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (5, 'V  ', 'Vu', 100, 'V ', 5);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (3, 'T  ', 'Traces ou indices de présence', 102, 'T ', 3);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (12, 'o7 ', 'Plaque incubatrice ', 12, '7 ', 12);
+INSERT INTO bib_criteres_cf (id_critere_cf, code_critere_cf, nom_critere_cf, tri_cf, cincomplet, id_critere_synthese) VALUES (9, 'o4 ', 'Comportements territoriaux', 9, '4 ', 9);
+
+INSERT INTO bib_messages_cf (id_message_cf, texte_message_cf) VALUES (1, 'Exemple de message : l''élephant rose est extrèmement rare ; merci de fournir une photo pour confirmer l''observation');
+
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (31, 1);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (32, 1);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (33, 1);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (34, 1);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (21, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (22, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (23, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (24, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (25, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (26, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (6, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (7, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (8, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (9, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (10, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (11, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (12, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (13, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (14, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (15, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (16, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (17, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (18, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (19, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (20, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (35, 13);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (36, 13);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (37, 13);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (38, 13);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (27, 14);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (28, 14);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (29, 14);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (30, 14);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 14);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 13);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (5, 1);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (4, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (4, 11);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (4, 1);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (3, 14);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (3, 12);
+INSERT INTO cor_critere_liste (id_critere_cf, id_liste) VALUES (3, 11);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES DE DESCRIPTION--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = meta, pg_catalog;
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (1, 'Contact vertébrés', 'Contact aléatoire de la faune vertébrée.', true, true, 'Contact aléatoire de la faune vertébrée.');
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (2, 'Mortalité', 'Données issue du protocole mortalité.', true, true, 'Données issue du protocole mortalité.');
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (1, 'Contact vertébrés', 'Contact vertébrés', true, true, false, 1);
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (2, 'Mortalité', 'Mortalité', true, true, false, 2);
+INSERT INTO t_protocoles VALUES (1, 'contact faune', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+INSERT INTO t_protocoles VALUES (2, 'mortalité', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+SET search_path = synthese, pg_catalog;
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (1, 'Contact faune', 'Contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'geonaturedb', 'contactfaune', 't_releves_cf', 'id_releve_cf', 'cf', NULL, 'images/pictos/amphibien.gif', 'FAUNE', true);
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (2, 'Mortalité', 'Contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'geonaturedb', 'contactfaune', 't_releves_cf', 'id_releve_cf', 'mortalite', NULL, 'images/pictos/squelette.png', 'FAUNE', true);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = public, pg_catalog;
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactfaune', 't_fiches_cf', 'the_geom_3857', 2, 3857, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactfaune', 't_fiches_cf', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactfaune', 'v_nomade_unites_geo_cf', 'the_geom', 2, 2154, 'MULTIPOLYGON');

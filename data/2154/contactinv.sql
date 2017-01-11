@@ -2,18 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.3.5
--- Dumped by pg_dump version 9.5.5
-
--- Started on 2017-01-10 17:16:40 CET
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
 -- TOC entry 10 (class 2615 OID 2747597)
@@ -1361,3 +1355,74 @@ ALTER TABLE ONLY erreurs_inv ALTER COLUMN id SET DEFAULT nextval('erreurs_inv_id
 
 ALTER TABLE ONLY erreurs_inv
     ADD CONSTRAINT erreurs_inv_pkey PRIMARY KEY (id);
+
+--------------------------------------------------------------------------------------
+--------------------INSERTION DES DONNEES DES TABLES DICTIONNAIRES--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = contactinv, pg_catalog;
+
+INSERT INTO bib_criteres_inv (id_critere_inv, code_critere_inv, nom_critere_inv, tri_inv, id_critere_synthese) VALUES (1, '1', 'larve, oeuf, chenille, nymphe...', 1, 101);
+INSERT INTO bib_criteres_inv (id_critere_inv, code_critere_inv, nom_critere_inv, tri_inv, id_critere_synthese) VALUES (2, '2', 'adultes en parade nuptiale...', 2, 102);
+INSERT INTO bib_criteres_inv (id_critere_inv, code_critere_inv, nom_critere_inv, tri_inv, id_critere_synthese) VALUES (5, '5', 'autres indices', 5, 105);
+INSERT INTO bib_criteres_inv (id_critere_inv, code_critere_inv, nom_critere_inv, tri_inv, id_critere_synthese) VALUES (3, '3', 'adulte observé de corps', 3, 103);
+INSERT INTO bib_criteres_inv (id_critere_inv, code_critere_inv, nom_critere_inv, tri_inv, id_critere_synthese) VALUES (8, '8', 'animal mort', 8, 2);
+
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (0, 'Indéterminé');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (11, 'Friche');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (12, 'Prairie');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (13, 'Culture');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (14, 'Jardin');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (15, 'Vigne');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (16, 'Verger');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (17, 'Haie');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (18, 'Reposoir');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (19, 'Habitat, ruine, route');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (20, 'Combe à neige');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (21, 'Pelouse');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (22, 'Lande');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (23, 'Fourré');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (24, 'Bois, Futaie');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (25, 'Ripisylve');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (26, 'Clairière');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (27, 'Reboisement (jeune)');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (28, 'Taillis');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (31, 'Arête');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (32, 'Barre');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (33, 'Falaise, grotte');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (34, 'Moraine');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (35, 'Eboulis');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (36, 'Roc, bloc');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (37, 'Gravière');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (41, 'Tourbière');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (42, 'Mare');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (43, 'Marais');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (44, 'Etang');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (45, 'Lac');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (46, 'Ruisseau');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (47, 'Torrent');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (48, 'Rivière');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (49, 'Neige, glace (permanente)');
+INSERT INTO bib_milieux_inv (id_milieu_inv, nom_milieu_inv) VALUES (88, 'Atmosphère');
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES DE DESCRIPTION--------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = meta, pg_catalog;
+INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (3, 'Contact invertébrés', 'Contact aléatoire de la faune invertébrée.', true, true, 'Contact aléatoire de la faune invertébrée.');
+INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (3, 'Contact invertébrés', 'Contact invertébrés', false, true, false, 3);
+INSERT INTO t_protocoles VALUES (3, 'contact invertébrés', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
+SET search_path = synthese, pg_catalog;
+INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (3, 'Contact invertébrés', 'contenu des tables t_fiches_inv et t_releves_inv de la base faune postgres', 'localhost', 22, NULL, NULL, 'geonaturedb', 'contactinv', 't_releves_inv', 'id_releve_inv', 'invertebre', NULL, 'images/pictos/insecte.gif', 'FAUNE', true);
+
+
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
+--------------------------------------------------------------------------------------
+
+SET search_path = public, pg_catalog;
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactinv', 't_fiches_inv', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactinv', 't_fiches_inv', 'the_geom_3857', 2, 3857, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactinv', 'v_nomade_unites_geo_inv', 'the_geom', 2, 2154, 'MULTIPOLYGON');

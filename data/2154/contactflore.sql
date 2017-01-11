@@ -2,10 +2,6 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.3.5
--- Dumped by pg_dump version 9.3.1
--- Started on 2016-03-21 17:06:14
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -1169,29 +1165,16 @@ ALTER TABLE ONLY t_fiches_cflore
     ADD CONSTRAINT t_fiches_cflore_id_protocole_fkey FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
 
 
---
--- PostgreSQL database dump complete
---
+--------------------------------------------------------------------------------------
+--------------------INSERTION DES DONNEES DES TABLES DICTIONNAIRES--------------------
+--------------------------------------------------------------------------------------
 
----------------- Contenu des listes déroulantes abondances et phénologies
-
---
--- TOC entry 3879 (class 0 OID 1387982)
--- Dependencies: 347
--- Data for Name: bib_abondances_cflore; Type: TABLE DATA; Schema: contactflore;
---
+SET search_path = contactflore, pg_catalog;
 
 INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES (1, '1 individu');
 INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES (2, 'De 1 à 10 individus');
 INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES (3, 'De 10 à 100 individus');
 INSERT INTO bib_abondances_cflore (id_abondance_cflore, nom_abondance_cflore) VALUES (4, 'Plus de 100 individus');
-
-
---
--- TOC entry 3880 (class 0 OID 1387985)
--- Dependencies: 348
--- Data for Name: bib_phenologies_cflore; Type: TABLE DATA; Schema: contactflore;
---
 
 INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (1, 'Stade végétatif');
 INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (2, 'Stade boutons floraux');
@@ -1203,13 +1186,10 @@ INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore)
 INSERT INTO bib_phenologies_cflore (id_phenologie_cflore, nom_phenologie_cflore) VALUES (8, 'Stage végétatif permanent ');
 
 
----------------- geometry_columns
-SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_2154', 2, 2154, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 'v_nomade_unites_geo_cflore', 'the_geom', 2, 2154, 'MULTIPOLYGON');
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES DE DESCRIPTION--------------------
+--------------------------------------------------------------------------------------
 
--- ajout des enregistrements nécéssaires dans les tables liées
 SET search_path = meta, pg_catalog;
 INSERT INTO bib_programmes (id_programme, nom_programme, desc_programme, actif, programme_public, desc_programme_public) VALUES (7, 'Contact flore', 'Contact aléatoire de la flore.', true, true, 'Contact aléatoire de la faune invertébrée.');
 INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_programme) VALUES (7, 'Contact flore', 'Contact flore', false, true, false, 7);
@@ -1218,39 +1198,11 @@ SET search_path = synthese, pg_catalog;
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (7,'Contact flore','Contenu des tables t_fiches_cflore et t_releves_cflore de la base GeoNature postgres','localhost',22,NULL,NULL,'geonaturedb','contactflore','t_releves_cflore','id_releve_cflore','cflore',NULL,'images/pictos/plante.gif','FLORE',true);
 
 
----------------- Mise à jour de la vue v_nomade_classes globale
-SET search_path = taxonomie, pg_catalog;
-CREATE OR REPLACE VIEW v_nomade_classes AS 
- SELECT v_nomade_classes.id_classe,
-    v_nomade_classes.nom_classe_fr,
-    v_nomade_classes.desc_classe
-   FROM contactfaune.v_nomade_classes
-UNION
- SELECT v_nomade_classes.id_classe,
-    v_nomade_classes.nom_classe_fr,
-    v_nomade_classes.desc_classe
-   FROM contactinv.v_nomade_classes
-UNION
- SELECT v_nomade_classes.id_classe,
-    v_nomade_classes.nom_classe_fr,
-    v_nomade_classes.desc_classe
-   FROM florepatri.v_nomade_classes
-UNION
- SELECT v_nomade_classes.id_classe,
-    v_nomade_classes.nom_classe_fr,
-    v_nomade_classes.desc_classe
-   FROM contactflore.v_nomade_classes;
+--------------------------------------------------------------------------------------
+--------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
+--------------------------------------------------------------------------------------
 
-
----------------- 3 Données exemple; Si besoin, décommenter les lignes INSERT INTO ci-dessous
-
-
---INSERT INTO t_fiches_cflore (id_cflore, insee, dateobs, altitude_saisie, altitude_sig, altitude_retenue, date_insert, date_update, supprime, pdop, saisie_initiale, id_organisme, srid_dessin, id_protocole, id_lot, the_geom_3857, the_geom_2154) VALUES (1, '05181', '2016-03-10', 3627, 0, 3627, '2016-03-10 17:34:09.160291', '2016-03-10 17:34:09.319749', false, -1, 'web', 99, 3857, 7, 7, '0101000020110F00003DFA78D1CE79254161CCCC4D13725541', '01010000206A0800007B4143E5ED582D41481F86793A905841');
---INSERT INTO t_fiches_cflore (id_cflore, insee, dateobs, altitude_saisie, altitude_sig, altitude_retenue, date_insert, date_update, supprime, pdop, saisie_initiale, id_organisme, srid_dessin, id_protocole, id_lot, the_geom_3857, the_geom_2154) VALUES (2, '05063', '2016-03-10', 2295, 0, 2295, '2016-03-10 17:47:42.100277', '2016-03-10 17:47:42.257232', false, -1, 'web', 99, 3857, 7, 7, '0101000020110F000026A524147A502541FD0BA9995B805541', '01010000206A0800009C3CFA465C382D41F7844B6F229A5841');
-
---INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_nom, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (1, 1, 100001, 1, 2, 81065, 'Alchémille rampante', 'test comment', 'Gil det', false, true, 4, NULL);
---INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_nom, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (2, 1, 100002, 4, 8, 95186, 'Inule fétide', 'test sans prélevemnt', 'Gil test det2', false, true, 5, NULL);
---INSERT INTO t_releves_cflore (id_releve_cflore, id_cflore, id_nom, id_abondance_cflore, id_phenologie_cflore, cd_ref_origine, nom_taxon_saisi, commentaire, determinateur, supprime, herbier, gid, validite_cflore) VALUES (3, 2, 100001, 2, 4, 81065, 'Alchémille rampante', '', '', false, false, 6, NULL);
-
---INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (1, 1);
---INSERT INTO cor_role_fiche_cflore (id_cflore, id_role) VALUES (2, 1);
+SET search_path = public, pg_catalog;
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_3857', 2, 3857, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 'v_nomade_unites_geo_cflore', 'the_geom', 2, 2154, 'MULTIPOLYGON');
