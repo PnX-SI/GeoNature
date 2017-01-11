@@ -1271,8 +1271,3 @@ ALTER TABLE ONLY syntheseff
 
 ALTER TABLE ONLY syntheseff
     ADD CONSTRAINT synthese_id_source_fkey FOREIGN KEY (id_source) REFERENCES bib_sources(id_source) ON UPDATE CASCADE;
-
-
---
--- PostgreSQL database dump complete
---
