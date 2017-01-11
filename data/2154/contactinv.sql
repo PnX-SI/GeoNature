@@ -1316,9 +1316,48 @@ ALTER TABLE ONLY t_fiches_inv
     ADD CONSTRAINT t_fiches_inv_id_protocole_fkey FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
 
 
--- Completed on 2017-01-10 17:17:25 CET
+SET search_path = synchronomade, pg_catalog;
 
 --
--- PostgreSQL database dump complete
+-- Name: erreurs_inv; Type: TABLE; Schema: synchronomade; Owner: -; Tablespace: 
 --
 
+CREATE TABLE erreurs_inv (
+    id integer NOT NULL,
+    json text,
+    date_import date
+);
+
+
+--
+-- Name: erreurs_inv_id_seq; Type: SEQUENCE; Schema: synchronomade; Owner: -
+--
+
+CREATE SEQUENCE erreurs_inv_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: erreurs_inv_id_seq; Type: SEQUENCE OWNED BY; Schema: synchronomade; Owner: -
+--
+
+ALTER SEQUENCE erreurs_inv_id_seq OWNED BY erreurs_inv.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: synchronomade; Owner: -
+--
+
+ALTER TABLE ONLY erreurs_inv ALTER COLUMN id SET DEFAULT nextval('erreurs_inv_id_seq'::regclass);
+
+
+--
+-- Name: erreurs_inv_pkey; Type: CONSTRAINT; Schema: synchronomade; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY erreurs_inv
+    ADD CONSTRAINT erreurs_inv_pkey PRIMARY KEY (id);

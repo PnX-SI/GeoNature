@@ -37,6 +37,13 @@ CREATE SCHEMA meta;
 CREATE SCHEMA synthese;
 
 
+--
+-- Name: synchronomade; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA synchronomade;
+
+
 SET search_path = public, pg_catalog;
 
 --function visant à restaurer le fonctionnement du wms dans l'application fonctionnant avec un mapserver non compatible avec st_geomfromtext
@@ -79,8 +86,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION public.periode(date, date, date)
-  OWNER TO geonatuser;
   
 
 CREATE OR REPLACE FUNCTION public.application_aggregate_taxons_rang_sp(id integer)
@@ -124,8 +129,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION public.application_aggregate_taxons_rang_sp(integer)
-  OWNER TO geonatuser;
 
 
 CREATE OR REPLACE FUNCTION public.application_aggregate_taxons_all_rang_sp(id integer)
@@ -184,11 +187,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION public.application_aggregate_taxons_all_rang_sp(integer)
-  OWNER TO geonatuser;
-
-
-
 
 
 SET search_path = layers, pg_catalog;
@@ -886,9 +884,6 @@ CREATE OR REPLACE VIEW v_export_sinp_deleted AS
    FROM synthese.syntheseff s
      JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
   WHERE s.supprime = true;
-
-ALTER TABLE v_export_sinp_deleted
-  OWNER TO geonatuser;
 
   
 SET search_path = layers, pg_catalog;

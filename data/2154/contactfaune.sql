@@ -1344,9 +1344,93 @@ ALTER TABLE ONLY t_fiches_cf
     ADD CONSTRAINT t_fiches_cf_id_protocole_fkey FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
 
 
--- Completed on 2017-01-10 17:02:36 CET
+SET search_path = synchronomade, pg_catalog;
 
 --
--- PostgreSQL database dump complete
+-- Name: erreurs_cf; Type: TABLE; Schema: synchronomade; Owner: -; Tablespace: 
 --
 
+CREATE TABLE erreurs_cf (
+    id integer NOT NULL,
+    json text,
+    date_import date
+);
+
+
+--
+-- Name: erreurs_cf_id_seq; Type: SEQUENCE; Schema: synchronomade; Owner: -
+--
+
+CREATE SEQUENCE erreurs_cf_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: erreurs_cf_id_seq; Type: SEQUENCE OWNED BY; Schema: synchronomade; Owner: -
+--
+
+ALTER SEQUENCE erreurs_cf_id_seq OWNED BY erreurs_cf.id;
+
+
+--
+-- Name: erreurs_mortalite; Type: TABLE; Schema: synchronomade; Owner: -; Tablespace: 
+--
+
+CREATE TABLE erreurs_mortalite (
+    id integer NOT NULL,
+    json text,
+    date_import date
+);
+
+
+--
+-- Name: erreurs_mortalite_id_seq; Type: SEQUENCE; Schema: synchronomade; Owner: -
+--
+
+CREATE SEQUENCE erreurs_mortalite_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: erreurs_mortalite_id_seq; Type: SEQUENCE OWNED BY; Schema: synchronomade; Owner: -
+--
+
+ALTER SEQUENCE erreurs_mortalite_id_seq OWNED BY erreurs_mortalite.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: synchronomade; Owner: -
+--
+
+ALTER TABLE ONLY erreurs_cf ALTER COLUMN id SET DEFAULT nextval('erreurs_cf_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: synchronomade; Owner: -
+--
+
+ALTER TABLE ONLY erreurs_mortalite ALTER COLUMN id SET DEFAULT nextval('erreurs_mortalite_id_seq'::regclass);
+
+
+--
+-- Name: erreurs_cf_pkey; Type: CONSTRAINT; Schema: synchronomade; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY erreurs_cf
+    ADD CONSTRAINT erreurs_cf_pkey PRIMARY KEY (id);
+
+    
+--
+-- Name: erreurs_mortalite_pkey; Type: CONSTRAINT; Schema: synchronomade; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY erreurs_mortalite
+    ADD CONSTRAINT erreurs_mortalite_pkey PRIMARY KEY (id);
