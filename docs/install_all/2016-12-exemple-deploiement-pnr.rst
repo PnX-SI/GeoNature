@@ -161,6 +161,8 @@ Fonctionnement général
 - Il est nécessaire de rafraichir les vues matérialisées pour que GeoNature-atlas prenne en compte tout changement dans la synthèse ou la taxonomie de ``geonaturedb``. 
 - Ce rafraichissement peut-être réalisé manuellement ou automatiquement
 
+Consultez le MCD complet pour en savoir plus : https://github.com/PnEcrins/GeoNature/blob/develop/docs/2017-01-mcd_geonaturedb_1.8.2.png
+
 Intégration des données existantes dans GeoNature
 -------------------------------------------------
 
