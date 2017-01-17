@@ -1,10 +1,10 @@
 #!/bin/bash
-#TODO : 
-    #faire une install complète avec des données du PNE pour l'atlas
-    #régler le soucis de la question posée ainsi que le doublement du prompt pour le user sudo
-    #préparer une installation et une version de geonature compatible avec d'autres projections
+# TODO : 
+    # Faire une install complÃ¨te avec des donnÃ©es du PNE pour l'atlas
+    # RÃ©gler le soucis de la question posÃ©e ainsi que le doublement du prompt pour le user sudo
+    # PrÃ©parer une installation et une version de geonature compatible avec d'autres projections
 
-#configuration initiale de l'installation serveur
+# Configuration initiale de l'installation serveur
 . install_all.ini
 
 # Make sure this script is NOT run as root
@@ -14,7 +14,7 @@ if [ "$(id -u)" == "0" ]; then
    exit 1
 fi
 
-#installation de l'environnement nécessaire à UsersHub, GeoNature, TaxHub et GeoNature-atlas
+# Installation de l'environnement nÃ©cessaire Ã  UsersHub, GeoNature, TaxHub et GeoNature-atlas
 echo "Installation de l'environnement logiciel..."
 sudo apt-get update
 sudo apt-get -y install ntpdate
@@ -39,22 +39,22 @@ sudo update-alternatives --install /usr/bin/node nodejs /usr/bin/nodejs 100
 sudo sh -c 'curl https://www.npmjs.com/install.sh | sh'
 sudo npm install -g bower
 
-echo "Configuration de postgresql..."
+echo "Configuration de postgreSQL..."
 sudo sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/*/main/postgresql.conf
 sudo sh -c 'echo "host    all             all             0.0.0.0/0            md5" >> /etc/postgresql/9.4/main/pg_hba.conf'
 sudo /etc/init.d/postgresql restart
 
-echo "Création des utilisateurs postgresql..."
+echo "CrÃ©ation des utilisateurs postgreSQL..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_atlas WITH LOGIN PASSWORD '$user_atlas_pass';"
 #sudo -n -u postgres -s psql -c "CREATE ROLE $admin_pg WITH SUPERUSER LOGIN PASSWORD '$admin_pg_pass';" 
 
-#Ajouter un alias du serveur de base de données dans le fichier /etc/hosts
+# Ajouter un alias du serveur de base de donnÃ©es dans le fichier /etc/hosts
 echo "Configuration de Apache..."
 echo "ajout d'un alias 'databases' et 'geonatdbhost' dans /etc/hosts..."
 sudo sh -c 'echo "127.0.1.1       databases" >> /etc/hosts'
 sudo sh -c 'echo "127.0.1.1       geonatdbhost" >> /etc/hosts'
-#suppression de la notice au redémarrage d'apache
+# Suppression de la notice au redÃ©marrage d'apache
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 echo "Activation des modules apache rewrite, wsgi et cgi..."
 sudo a2enmod rewrite
@@ -62,8 +62,8 @@ sudo a2enmod cgi
 sudo a2enmod wsgi
 sudo apache2ctl restart
 
-#Installation de UsersHub avec l'utilisateur courant
-echo "téléchargement et installation de UsersHub ..."
+# Installation de UsersHub avec l'utilisateur courant
+echo "tÃ©lÃ©chargement et installation de UsersHub ..."
 cd /tmp
 wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
 unzip $usershub_release.zip
@@ -71,18 +71,18 @@ rm $usershub_release.zip
 mv UsersHub-$usershub_release /home/$monuser/usershub/
 cd /home/$monuser/usershub
 
-#configuration des settings de UsersHub
-echo "Installation de la base de données et configuration de l'application UsersHub ..."
+# Configuration des settings de UsersHub
+echo "Installation de la base de donnÃ©es et configuration de l'application UsersHub ..."
 cp config/settings.ini.sample config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_usershubdb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$usershubdb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
-#installation de la base de données UsersHub en root
+# Installation de la base de donnÃ©es UsersHub en root
 sudo ./install_db.sh
-#installation et configuration de l'application UsersHub
+# Installation et configuration de l'application UsersHub
 ./install_app.sh
-#configuration de la connexion à la base de données GeoNature
+# Configuration de la connexion Ã  la base de donnÃ©es GeoNature
 rm config/dbconnexions.json
 touch config/dbconnexions.json
 echo "{" >> config/dbconnexions.json
@@ -107,8 +107,8 @@ echo "        }" >> config/dbconnexions.json
 echo "    ]" >> config/dbconnexions.json
 echo "}" >> config/dbconnexions.json
 
-#installation de GeoNature avec l'utilisateur courant
-echo "téléchargement et installation de GeoNature ..."
+# Installation de GeoNature avec l'utilisateur courant
+echo "TÃ©lÃ©chargement et installation de GeoNature ..."
 cd /tmp
 wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
@@ -116,8 +116,8 @@ rm $geonature_release.zip
 mv GeoNature-$geonature_release /home/$monuser/geonature/
 cd /home/$monuser/geonature
 
-#configuration des settings de GeoNature
-echo "Installation de la base de données et configuration de l'application GeoNature ..."
+# Configuration des settings de GeoNature
+echo "Installation de la base de donnÃ©es et configuration de l'application GeoNature ..."
 cp config/settings.ini.sample config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
@@ -130,11 +130,11 @@ sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 # sed -i "s/usershub_user=.*$/usershub_user=$user_pg/g" config/settings.ini
 # sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" config/settings.ini
 sed -i -e "s/\/var\/www/$apache_document_root/g" install_app.sh
-#installation de la base de données GeoNature en root
+# Installation de la base de donnÃ©es GeoNature en root
 sudo ./install_db.sh
-#installation et configuration de l'application GeoNature
+# Installation et configuration de l'application GeoNature
 ./install_app.sh
-#configuration apache de l'application GeoNature
+# Configuration Apache de l'application GeoNature
 cd /home/$monuser/geonature
 sed -i -e "s/\/home\/synthese\/geonature/\/home\/$monuser\/geonature/g" apache/sf.conf
 sed -i -e "s/\/home\/synthese\/geonature/\/home\/$monuser\/geonature/g" apache/wms.conf
@@ -144,8 +144,8 @@ sed -i -e "s/ma_cle_api_ign/$macleign/g" web/js/configmap.js
 sudo sh -c 'echo "IncludeOptional /home/'$monuser'/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 #sudo apache2ctl restart
 
-#installation de Taxhub avec l'utilisateur courant
-echo "téléchargement et installation de Taxhub ..."
+# Installation de TaxHub avec l'utilisateur courant
+echo "TÃ©lÃ©chargement et installation de TaxHub ..."
 cd /tmp
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
@@ -153,7 +153,7 @@ rm $taxhub_release.zip
 mv TaxHub-$taxhub_release /home/$monuser/taxhub/
 cd /home/$monuser/taxhub
 
-#configuration des settings de TaxHub
+# Configuration des settings de TaxHub
 echo "Configuration de l'application TaxHub ..."
 cp settings.ini.sample settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=false/g" settings.ini
@@ -169,7 +169,7 @@ sed -i "s/usershub_db=.*$/usershub_db=$usershubdb_name/g" settings.ini
 sed -i "s/usershub_user=.*$/usershub_user=$user_pg/g" settings.ini
 sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" settings.ini
 
-#configuration apache de TaxHub
+# Configuration Apache de TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
@@ -181,12 +181,12 @@ sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/taxhub.co
 sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo a2ensite taxhub
-#installation et configuration de l'application TaxHub
+# Installation et configuration de l'application TaxHub
 ./install_app.sh
 #sudo apache2ctl restart
 
-#installation de l'atlas avec l'utilisateur courant
-echo "téléchargement et installation de GeoNature-atlas ..."
+# Installation de l'atlas avec l'utilisateur courant
+echo "TÃ©lÃ©chargement et installation de GeoNature-atlas ..."
 cd /tmp
 wget https://github.com/PnEcrins/GeoNature-atlas/archive/$atlas_release.zip
 unzip $atlas_release.zip
@@ -194,14 +194,14 @@ rm $atlas_release.zip
 mv GeoNature-atlas-$atlas_release /home/$monuser/atlas/
 cd /home/$monuser/atlas
 
-echo "Création de l'environnement virtuel de GeoNature-atlas ..."
+echo "CrÃ©ation de l'environnement virtuel de GeoNature-atlas ..."
 virtualenv ./venv
 . ./venv/bin/activate
 
-echo "Installation des dépendances pour l'application GeoNature-atlas ..."
+echo "Installation des dÃ©pendances pour l'application GeoNature-atlas ..."
 pip install -r requirements.txt
 
-echo "configuration de l'application GeoNature-atlas ..."
+echo "Configuration de l'application GeoNature-atlas ..."
 mkdir ./static/custom/images/
 cp ./main/configuration/config.py.sample ./main/configuration/config.py
 cp ./main/configuration/settings.ini.sample ./main/configuration/settings.ini
@@ -225,11 +225,12 @@ cp ./data/ref/territoire.prj.sample ./data/ref/territoire.prj
 cp ./data/ref/territoire.shp.sample ./data/ref/territoire.shp
 cp ./data/ref/territoire.shx.sample ./data/ref/territoire.shx
 
-#configuration des settings de GeoNature-atlas et création de la base de données
-echo " Configuration et installation de la base de données ..."
+# Configuration des settings de GeoNature-atlas et crÃ©ation de la base de donnÃ©es
+echo "Configuration et installation de la base de donnÃ©es ..."
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_atlasdb/g" main/configuration/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_atlasdb/g" main/configuration/settings.ini
 sed -i "s/db_name=.*$/db_name=$atlasdb_name/g" main/configuration/settings.ini
+sed -i "s/db_source_name=.*$/db_source_name=$geonaturedb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_atlas/g"  main/configuration/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_atlas_pass/g"  main/configuration/settings.ini
 sed -i "s/owner_atlas=.*$/owner_atlas=$user_pg/g"  main/configuration/settings.ini
@@ -243,7 +244,7 @@ sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/set
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i "s/MYUSERLINUX/$monuser/g"  main/configuration/settings.ini
 
-#mettre à jour config.py
+# Mise Ã  jour de config.py
 sed -i "s/database_connection =.*$/database_connection = \"postgresql:\/\/$user_atlas:$user_atlas_pass@$pg_host:$pg_port\/$atlasdb_name\"/g" main/configuration/config.py
 sed -i "s/STRUCTURE = \".*$/STRUCTURE = \"$structure\"/g" main/configuration/config.py
 sed -i "s/NOM_APPLICATION = \".*$/NOM_APPLICATION = \"$nom_application\"/g" main/configuration/config.py
@@ -255,7 +256,7 @@ sed -i "s/'LAT_LONG':.*$/\'LAT_LONG\': [$y, $x],/g" main/configuration/config.py
 
 sudo ./install_db.sh
 
-#configuration apache de GeoNature-atlas
+# Configuration Apache de GeoNature-atlas
 sudo rm /etc/apache2/sites-available/atlas.conf
 sudo touch /etc/apache2/sites-available/atlas.conf
 sudo sh -c 'echo "# Configuration de GeoNature-atlas" >> /etc/apache2/sites-available/atlas.conf'
@@ -269,5 +270,5 @@ sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/atlas.con
 sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/atlas.conf'
 sudo a2ensite atlas
 sudo apachectl restart
-#nettoyage
+# Nettoyage
 sudo rm /tmp/*.sql
