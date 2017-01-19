@@ -774,6 +774,11 @@ CREATE OR REPLACE VIEW v_tree_taxons_synthese AS
              LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = t_1.cd_nom
           WHERE (t_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
                    FROM synthese.syntheseff))
+        ), cd_regne AS (
+         SELECT DISTINCT t_1.cd_nom,
+            t_1.regne
+           FROM taxonomie.taxref t_1
+          WHERE t_1.id_rang::bpchar = 'KD'::bpchar AND t_1.cd_nom = t_1.cd_ref
         )
  SELECT t.id_nom,
     t.cd_ref,
@@ -794,9 +799,9 @@ CREATE OR REPLACE VIEW v_tree_taxons_synthese AS
             t_1.cd_ref,
             t_1.nom_latin,
             t_1.nom_francais,
-            ( SELECT taxref.cd_nom
-                   FROM taxonomie.taxref
-                  WHERE taxref.id_rang = 'KD'::bpchar AND taxref.lb_nom::text = t_1.regne::text) AS id_regne,
+            ( SELECT DISTINCT r.cd_nom
+                   FROM cd_regne r
+                  WHERE r.regne::text = t_1.regne::text) AS id_regne,
             t_1.regne AS nom_regne,
             ph.cd_nom AS id_embranchement,
             t_1.phylum AS nom_embranchement,
@@ -809,10 +814,10 @@ CREATE OR REPLACE VIEW v_tree_taxons_synthese AS
             f.cd_nom AS id_famille,
             t_1.famille AS nom_famille
            FROM taxon t_1
-             LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
-             LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
-             LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
-             LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang::bpchar = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang::bpchar = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang::bpchar = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
+             LEFT JOIN taxonomie.taxref f ON f.id_rang::bpchar = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
 
 CREATE OR REPLACE VIEW v_taxons_synthese AS 
  SELECT DISTINCT n.nom_francais,
