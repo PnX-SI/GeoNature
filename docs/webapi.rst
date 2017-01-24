@@ -379,5 +379,5 @@ param :
             
     Test :
         avec CURL : 
-            curl -i -X DELETE --header 'Accept:application/json' 'http://92.222.107.92/geonature/synthese/observation/68?token=mon;token!hyper#complexe'
-            curl -i -X DELETE --header 'Accept:application/json' 'http://92.222.107.92/geonature/synthese/observation?token=mon;token!hyper#complexe' -d 'json={"id_source": 18, "id_fiche_source":"99"}'
+            curl -i -X DELETE --header 'Accept:application/json' 'http://xx.xxx.xxx.xx/geonature/synthese/observation/68?token=mon;token!hyper#complexe'
+            curl -i -X DELETE --header 'Accept:application/json' 'http://xx.xxx.xxx.xx/geonature/synthese/observation?token=mon;token!hyper#complexe' -d 'json={"id_source": 18, "id_fiche_source":"99"}'
