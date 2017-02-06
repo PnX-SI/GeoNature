@@ -66,5 +66,5 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
              LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
 
 --Nettoyage
-DROP TABLE IF EXISTS taxonomie.bib_observateurs;
+DROP TABLE IF EXISTS utilisateurs.bib_observateurs;
 
