@@ -86,6 +86,7 @@ ALTER TABLE taxonomie.taxref
 --------------------import taxref--------------------
 TRUNCATE TABLE taxonomie.import_taxref;
 ALTER TABLE taxonomie.import_taxref ADD cd_sup integer;
+ALTER TABLE taxonomie.import_taxref ADD nom_complet_html character varying(255);
 COPY taxonomie.import_taxref (regne, phylum, classe, ordre, famille, group1_inpn, group2_inpn, 
           cd_nom, cd_taxsup, cd_sup, cd_ref, rang, lb_nom, lb_auteur, nom_complet, nom_complet_html,
           nom_valide, nom_vern, nom_vern_eng, habitat, fr, gf, mar, gua, 
