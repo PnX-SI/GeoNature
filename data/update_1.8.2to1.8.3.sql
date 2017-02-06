@@ -68,3 +68,123 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
 --Nettoyage
 DROP TABLE IF EXISTS utilisateurs.bib_observateurs;
 
+--Index spatiaux gist manquants (amélioration des performances)
+CREATE INDEX index_gist_l_communes_the_geom
+  ON layers.l_communes
+  USING gist
+  (the_geom);
+
+CREATE INDEX index_gist_l_unites_geo_the_geom
+  ON layers.l_unites_geo
+  USING gist
+  (the_geom);
+
+CREATE INDEX index_gist_l_secteurs_the_geom
+  ON layers.l_secteurs
+  USING gist
+  (the_geom);
+
+CREATE INDEX index_gist_l_zonesstatut_the_geom
+  ON layers.l_zonesstatut
+  USING gist
+  (the_geom);
+
+CREATE INDEX index_gist_l_aireadhesion_the_geom
+  ON layers.l_aireadhesion
+  USING gist
+  (the_geom);
+
+CREATE INDEX index_gist_l_isolines20_the_geom
+  ON layers.l_isolines20
+  USING gist
+  (the_geom);
+
+CREATE INDEX index_gist_synthese_the_geom_2154
+  ON synthese.syntheseff
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_synthese_the_geom_3857
+  ON synthese.syntheseff
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_stations_bryo_the_geom_2154
+  ON bryophytes.t_stations_bryo
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_stations_bryo_the_geom_3857
+  ON bryophytes.t_stations_bryo
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_fiches_cf_the_geom_2154
+  ON contactfaune.t_fiches_cf
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_fiches_cf_the_geom_3857
+  ON contactfaune.t_fiches_cf
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_fiches_cflore_the_geom_2154
+  ON contactflore.t_fiches_cflore
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_fiches_cflore_the_geom_3857
+  ON contactflore.t_fiches_cflore
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_fiches_inv_the_geom_2154
+  ON contactinv.t_fiches_inv
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_fiches_inv_the_geom_3857
+  ON contactinv.t_fiches_inv
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_stations_fs_the_geom_2154
+  ON florestation.t_stations_fs
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_stations_fs_the_geom_3857
+  ON florestation.t_stations_fs
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_apresence_the_geom_2154
+  ON florepatri.t_apresence
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_apresence_the_geom_3857
+  ON florepatri.t_apresence
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_zprospection_the_geom_2154
+  ON florepatri.t_zprospection
+  USING gist
+  (the_geom_2154);
+
+CREATE INDEX index_gist_t_zprospection_the_geom_3857
+  ON florepatri.t_zprospection
+  USING gist
+  (the_geom_3857);
+
+CREATE INDEX index_gist_t_zprospection_geom_point_3857
+  ON florepatri.t_zprospection
+  USING gist
+  (geom_point_3857);
+
+CREATE INDEX index_gist_t_zprospection_geom_mixte_3857
+  ON florepatri.t_zprospection
+  USING gist
+  (geom_mixte_3857);
