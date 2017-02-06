@@ -165,19 +165,6 @@ CREATE TABLE bib_droits (
 
 
 --
--- TOC entry 308 (class 1259 OID 52783)
--- Name: bib_observateurs; Type: TABLE; Schema: utilisateurs; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_observateurs (
-    codeobs character varying(6) NOT NULL,
-    nom character varying(100),
-    prenom character varying(100),
-    orphelin integer
-);
-
-
---
 -- TOC entry 309 (class 1259 OID 52786)
 -- Name: bib_unites_id_seq; Type: SEQUENCE; Schema: utilisateurs; Owner: -
 --
@@ -319,15 +306,6 @@ ALTER TABLE ONLY t_menus ALTER COLUMN id_menu SET DEFAULT nextval('t_menus_id_me
 
 ALTER TABLE ONLY bib_droits
     ADD CONSTRAINT bib_droits_pkey PRIMARY KEY (id_droit);
-
-
---
--- TOC entry 3380 (class 2606 OID 53528)
--- Name: bib_observateurs_pk; Type: CONSTRAINT; Schema: utilisateurs; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_observateurs
-    ADD CONSTRAINT bib_observateurs_pk PRIMARY KEY (codeobs);
 
 
 --
