@@ -2276,7 +2276,7 @@ application.synthese.search = function() {
             var p = FileDownloader.load({
                 url : monUrl,
                 format : 'xls',
-                filename : 'synthese_observations_' + ((new Date()).format('d_m_Y_His'))
+                filename : 'synthese_observations_' + ((new Date()).format('Y_m_d_His'))
             });
             p.then(function() {
                 Ext.getBody().unmask();
