@@ -198,7 +198,7 @@ class cfActions extends sfGeonatureActions
                 $id_cf = $new_id_cf;
                 $fiche->id_cf = $id_cf;
                 $fiche->saisie_initiale = 'web';
-                $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
+                $fiche->id_organisme = $request->getParameter('id_organisme');
                 $fiche->id_protocole = sfGeonatureConfig::$id_protocole_cf;
             }
             //remise au format de la date
@@ -213,7 +213,6 @@ class cfActions extends sfGeonatureActions
             $fiche->supprime = false;
             $fiche->srid_dessin = sfGeonatureConfig::$srid_dessin;
             $fiche->id_lot = sfGeonatureConfig::$id_lot_cf;
-            // $fiche->id_lot = $request->getParameter('id_lot');
             $fiche->save();//enregistrement avec la methode save de symfony
             // ensuite on commence par supprimer tout ce qui concerne cette fiche si on est en update
             
@@ -352,6 +351,7 @@ class cfActions extends sfGeonatureActions
             if($monaction=='add') {
                 $id_cf = $new_id_cf;
                 $fiche->id_cf = $id_cf;
+                $fiche->id_organisme = $request->getParameter('id_organisme');
             }
             //remise au format de la date
             $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
@@ -365,10 +365,8 @@ class cfActions extends sfGeonatureActions
             $fiche->supprime = false;
             $fiche->saisie_initiale = 'web';
             $fiche->srid_dessin = sfGeonatureConfig::$srid_dessin;
-            $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
             $fiche->id_protocole = sfGeonatureConfig::$id_protocole_mortalite;
             $fiche->id_lot = sfGeonatureConfig::$id_lot_mortalite;
-            // $fiche->id_lot = $request->getParameter('id_lot');
             $fiche->save();//enregistrement avec la methode save de symfony
             // ensuite on commence par supprimer tout ce qui concerne cette fiche si on est en update
             if($monaction=='update'){
