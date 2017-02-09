@@ -319,6 +319,9 @@ application.cflore.editFiche = function() {
             xtype:'hidden'
             ,name: 'monaction'
         },{
+            xtype:'hidden'
+            ,name: 'id_organisme'
+        },{
             xtype: 'hidden'
             ,name: 'geometry' 
         },{
@@ -1760,6 +1763,7 @@ application.cflore.editFiche = function() {
         vectorLayer.removeFeatures(vectorLayer.features);
         Ext.getCmp('edit-fiche-form').getForm().reset();
         Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
+        Ext.getCmp('edit-fiche-form').getForm().findField('id_organisme').setValue(application.cflore.user.id_organisme);
         Ext.getCmp('grid-taxons').getStore().removeAll();
         this.addNewTaxon();
         dragPanControl.activate();
@@ -1923,6 +1927,7 @@ application.cflore.editFiche = function() {
                 activateControls(true);
                 updateGeometryField(null);
                 Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
+                Ext.getCmp('edit-fiche-form').getForm().findField('id_organisme').setValue(application.cf.user.id_organisme);
                 Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('add');
                 Ext.getCmp('grid-taxons').getStore().removeAll();
                 Ext.getCmp('grid-taxons').getStore().add(new blankRecord({

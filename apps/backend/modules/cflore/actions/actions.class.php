@@ -167,7 +167,7 @@ class cfloreActions extends sfGeonatureActions
                 $id_cflore = $new_id_cflore;
                 $fiche->id_cflore = $id_cflore;
                 $fiche->saisie_initiale = 'web';
-                $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
+                $fiche->id_organisme = $request->getParameter('id_organisme');
                 $fiche->id_protocole = sfGeonatureConfig::$id_protocole_cflore;
             }
             //remise au format de la date
