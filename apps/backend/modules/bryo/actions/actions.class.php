@@ -197,6 +197,7 @@ class bryoActions extends sfGeonatureActions
         if($monaction=='add') {
             $id_station = $new_id_station;
             $station->id_station = $id_station;
+            $station->id_organisme = $request->getParameter('id_organisme');
         }
         //remise au format de la date
         $d = array(); $pattern = '/^(\d{2})\/(\d{2})\/(\d{4})/';
@@ -209,7 +210,6 @@ class bryoActions extends sfGeonatureActions
         $station->id_support = $request->getParameter('id_support');
         $station->id_protocole = sfGeonatureConfig::$id_protocole_bryo;
         $station->id_lot = sfGeonatureConfig::$id_lot_bryo;
-        $station->id_organisme = $request->getParameter('id_organisme');
         if($request->getParameter('pdop')=='' OR $request->getParameter('pdop')==null){$pdop=sfGeonatureConfig::$default_pdop;} else{$pdop=$request->getParameter('pdop');}
         $station->pdop = $pdop;
         $station->surface = $request->getParameter('surface');
