@@ -58,6 +58,7 @@ application = function() {
             nom: null
             ,id_role:null
             ,status: null
+            ,id_organisme: null
         }
         ,checklog:function(){
             Ext.getCmp('station_list_grid').loadMask.hide();

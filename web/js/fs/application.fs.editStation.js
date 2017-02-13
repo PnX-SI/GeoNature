@@ -262,6 +262,9 @@ application.editStation = function() {
             xtype:'hidden'
             ,name: 'monaction'
         },{
+            xtype:'hidden'
+            ,name: 'id_organisme'
+        },{
             xtype: 'hidden'
             ,name: 'geometry' 
         },{
@@ -1727,6 +1730,7 @@ application.editStation = function() {
                 activateControls(true);
                 updateGeometryField(null);
                 Ext.getCmp('edit-station-form').getForm().findField('monaction').setValue('add');
+                Ext.getCmp('edit-station-form').getForm().findField('id_organisme').setValue(application.user.id_organisme);
                 Ext.getCmp('labelstation-station').setText( '<p class="redtext">Nouvelle station - saisir puis enregistrer pour obtenir un N° de station</p>',false);
                 this.window.setTitle('Ajout d\'une nouvelle station');
                 Ext.getCmp('taxons-liste-panel').hide();
