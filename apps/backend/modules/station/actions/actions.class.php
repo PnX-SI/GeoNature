@@ -242,7 +242,7 @@ class stationActions extends sfGeonatureActions
         $station->id_exposition = $request->getParameter('id_exposition');
         $station->id_protocole = sfGeonatureConfig::$id_protocole_florestation;
         $station->id_lot = sfGeonatureConfig::$id_lot_florestation;
-        $station->id_organisme = sfGeonatureConfig::$id_organisme;
+        $station->id_organisme = $request->getParameter('id_organisme');
         $station->complet_partiel = $request->getParameter('releve');
         $station->altitude_saisie = $request->getParameter('altitude');
         $station->id_programme_fs = $request->getParameter('id_programme_fs');
