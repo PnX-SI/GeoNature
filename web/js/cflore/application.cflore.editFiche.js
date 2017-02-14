@@ -583,11 +583,13 @@ application.cflore.editFiche = function() {
         var comboTaxonsFiltreClasse = function(classe){
             var pteridophytes = Ext.getCmp('cb-pteridophytes-cf').getValue();
             var monocotyledones = Ext.getCmp('cb-monocotyledones-cf').getValue();
+            var gymnospermes = Ext.getCmp('cb-gymnospermes-cf').getValue();
             var dicotyledones = Ext.getCmp('cb-dicotyledones-cf').getValue();
             var bryophytes = Ext.getCmp('cb-bryophytes-cf').getValue();
-            if((!pteridophytes&&!monocotyledones&&!dicotyledones&&!bryophytes)==true){return true;}
+            if((!pteridophytes&&!monocotyledones&&!gymnospermes&&!dicotyledones&&!bryophytes)==true){return true;}
             if(dicotyledones && classe==id_classe_dicotyledones){return true;}
             if(monocotyledones && classe==id_classe_monocotyledones){return true;}
+            if(gymnospermes && classe==id_classe_gymnospermes){return true;}
             if(pteridophytes && classe==id_classe_pteridophytes){return true;}
             if(bryophytes && classe==id_classe_bryophytes){return true;}
             return false;
@@ -857,6 +859,7 @@ application.cflore.editFiche = function() {
                                         check: function(checkbox,checked){
                                             if(checked){
                                                 Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-pteridophytes-cf').setValue(false);
                                                 Ext.getCmp('cb-bryophytes-cf').setValue(false);
                                             }
@@ -880,6 +883,7 @@ application.cflore.editFiche = function() {
                                         check: function(checkbox,checked) {
                                             if(checked){
                                                 Ext.getCmp('cb-monocotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-pteridophytes-cf').setValue(false);
                                                 Ext.getCmp('cb-bryophytes-cf').setValue(false);
                                             }
@@ -894,6 +898,30 @@ application.cflore.editFiche = function() {
                                         }
                                     }                                
                                 },{
+                                    id:'cb-gymnospermes-cf'
+                                    ,boxLabel: 'Gymnospermes'
+                                    ,name: 'cb-gymnospermes'
+                                    ,itemCls:'graytext'
+                                    ,checked: false                                    
+                                    ,listeners: {
+                                        check: function(checkbox,checked) {
+                                            if(checked){
+                                                Ext.getCmp('cb-monocotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-pteridophytes-cf').setValue(false);
+                                                Ext.getCmp('cb-bryophytes-cf').setValue(false);
+                                            }
+                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            comboTaxonsFiltre();
+                                        }
+                                        ,render: function(c) {
+                                            Ext.QuickTips.register({
+                                                target: c.getEl(),
+                                                text: 'Affiche les gymnospermes dans la liste si la case est cochée.'
+                                            });
+                                        }
+                                    }                                
+                                },{
                                     id:'cb-pteridophytes-cf'
                                     ,boxLabel: 'Ptéridophytes'
                                     ,name: 'cb-pteridophytes'
@@ -904,6 +932,7 @@ application.cflore.editFiche = function() {
                                             if(checked){
                                                 Ext.getCmp('cb-monocotyledones-cf').setValue(false);
                                                 Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-bryophytes-cf').setValue(false);
                                             }
                                             if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
@@ -927,6 +956,7 @@ application.cflore.editFiche = function() {
                                             if(checked){
                                                 Ext.getCmp('cb-monocotyledones-cf').setValue(false);
                                                 Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-pteridophytes-cf').setValue(false);
                                             }
                                             if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}

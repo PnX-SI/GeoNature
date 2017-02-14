@@ -46,6 +46,14 @@ id_classe_arachnides = 16;
 id_classe_myriapodes = 15;
 id_classe_gasteropodes = 8;
 
+//-----configuration du filtre par classes contact flore
+//Utiliser les identifiants id_liste de la table taxonomie.bib_listes
+id_classe_monocotyledones = 306;
+id_classe_dicotyledones = 307;
+id_classe_gymnospermes = 308;
+id_classe_pteridophytes = 305;
+id_classe_bryophytes= 301;
+
 //-----configuration du contact flore
 //activation/désactivation de la validation des données de contact flore
 //valeurs possibles true ou false
