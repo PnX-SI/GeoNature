@@ -775,14 +775,14 @@ application.cflore.editFiche = function() {
             ,labelAlign: 'left'
             ,title: 'Listes des taxons observés'
             ,bodyStyle:'padding:5px'
-            ,width: 600
+            ,width: 630
             ,layout: 'column'    // Specifies that the items will now be arranged in columns
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
                 ,labelWidth: 80
                 ,defaults: {
-                    width: 305
+                    width: 335
                     ,border:false
                     ,allowDecimals :false
                     ,allowNegative: false 
@@ -849,6 +849,7 @@ application.cflore.editFiche = function() {
                             ,cls:'graytext'
                             ,itemCls:'graytext'
                             ,columns: 2
+                            // ,vertical:true
                             ,items: [{
                                     id:'cb-monocotyledones-cf'
                                     ,boxLabel: 'Monocotylédones'
