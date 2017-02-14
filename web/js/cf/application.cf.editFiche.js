@@ -612,7 +612,9 @@ application.cf.editFiche = function() {
             if(mammiferes && classe==id_classe_mammiferes){return true;}
             if(amphibiens && classe==id_classe_amphibiens){return true;}
             if(reptiles && classe==id_classe_reptiles){return true;}
-            if(poissons && classe==id_classe_poissons){return true;}
+            if(poissons && classe==id_classe_poissons){
+                return true;
+            }
             return false;
         };
 
@@ -652,7 +654,10 @@ application.cf.editFiche = function() {
                 if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;return false;}
                 if(r.data.nom_taxon_saisi=='Saisie en cours'){isValid = false;return false;}
                 if(r.data.id_critere_cf==0 || r.data.id_critere_cf==null){isValid = false;return false;}
-                if((r.data.am+r.data.af+r.data.ai+r.data.na+r.data.jeune+r.data.yearling+r.data.sai) == 0){isValid = false;return false;}
+                if((r.data.am+r.data.af+r.data.ai+r.data.na+r.data.jeune+r.data.yearling+r.data.sai) == 0){
+                    isValid = false;
+                    return false;
+                }
                 return true;
             });
             return isValid;
@@ -660,10 +665,18 @@ application.cf.editFiche = function() {
         var isValidTaxon = function(r){
             var isValid = true;
             errorMsg = '';
-                if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;errorMsg='Veuillez choisir un taxon';return false;}
-                if(r.data.id_critere_cf==0 || r.data.id_critere_cf==null){isValid = false;errorMsg='Veuillez choisir un critère pour ce taxon';return false;}
-                if((r.data.am+r.data.af+r.data.ai+r.data.na+r.data.jeune+r.data.yearling+r.data.sai) == 0){isValid = false;errorMsg='Veuillez choisir une valeur de dénombrement pour au moins une classe d\'âge';return false;}
-                return true;
+            if(r.data.id_nom==0 || r.data.id_nom==null){
+                isValid = false;
+                errorMsg='Veuillez choisir un taxon';
+            }
+            if(r.data.id_critere_cf==0 || r.data.id_critere_cf==null){
+                isValid = false;
+                errorMsg='Veuillez choisir un critère pour ce taxon';
+            }
+            if((r.data.am+r.data.af+r.data.ai+r.data.na+r.data.jeune+r.data.yearling+r.data.sai) == 0){
+                isValid = false;
+                errorMsg='Veuillez choisir une valeur de dénombrement pour au moins une classe d\'âge';
+            }
             return isValid;
         };
         var manageValidationTaxon = function(isValid){
@@ -867,7 +880,8 @@ application.cf.editFiche = function() {
                                     ,inputValue: 'latin' 
                                     ,listeners: {
                                         check: function(checkbox,checked) {
-                                                if(checked){comboTaxonsTemplate('latin');
+                                            if(checked){
+                                                comboTaxonsTemplate('latin');
                                                 Ext.getCmp('combo-fiche-taxon').displayField = 'nom_latin'
                                                 Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('combo-fiche-taxon').getValue());//pas trouvé mieux pour rafraichier en live le taxon déjà affiché dans le combo
                                             }
@@ -896,7 +910,9 @@ application.cf.editFiche = function() {
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -920,7 +936,9 @@ application.cf.editFiche = function() {
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -944,7 +962,9 @@ application.cf.editFiche = function() {
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -968,7 +988,9 @@ application.cf.editFiche = function() {
                                                 Ext.getCmp('cb-reptiles-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -992,7 +1014,9 @@ application.cf.editFiche = function() {
                                                 Ext.getCmp('cb-reptiles-cf').setValue(false);
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -1018,8 +1042,11 @@ application.cf.editFiche = function() {
                                     ,itemCls:'graytext'                                    
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -1044,8 +1071,10 @@ application.cf.editFiche = function() {
                                     ,checked: true
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -1062,8 +1091,10 @@ application.cf.editFiche = function() {
                                     ,checked: true
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -1080,8 +1111,10 @@ application.cf.editFiche = function() {
                                     ,checked: true                                    
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -1160,7 +1193,9 @@ application.cf.editFiche = function() {
                                 ,change: function(combo, record) {
                                     Ext.getCmp('combo-fiche-critere').clearValue();
                                     if(record.data){
-                                        if(Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').getValue()=='update'){storeCriteresAdapte(record.data.id_classe)};
+                                        if(Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').getValue()=='update'){
+                                            storeCriteresAdapte(record.data.id_classe);
+                                        };
                                         manageValidationTaxon(isValidTaxon(record));
                                     }
                                 }
@@ -1281,7 +1316,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre d\'adultes mâles observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('am',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1298,7 +1335,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre d\'adultes femelles observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('af',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1315,7 +1354,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre d\'adultes de sexe indéterminé observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('ai',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1332,7 +1373,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre de non adultes observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('na',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1350,7 +1393,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre de jeunes observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('jeune',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1368,7 +1413,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre de yearlings observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('yearling',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1385,7 +1432,9 @@ application.cf.editFiche = function() {
                             ,listeners: {
                                 render: function(c){Ext.QuickTips.register({target: c.getEl(),text:'Nombre d\individus de sexe et âge indéterminés observés.' });}
                                 ,keyup: function(field) {
-                                    if(field.getValue()==null||field.getValue()==''){field.setValue(0);}
+                                    if(field.getValue()==null||field.getValue()==''){
+                                        field.setValue(0);
+                                    }
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sai',field.getValue());
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
@@ -1518,7 +1567,9 @@ application.cf.editFiche = function() {
                                 if(Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').getValue()=='add'){
                                     Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('update');
                                 }
-                                if(sm.getSelected()){manageValidationTaxon(isValidTaxon(sm.getSelected()));}
+                                if(sm.getSelected()){
+                                    manageValidationTaxon(isValidTaxon(sm.getSelected()));
+                                }
 
                             } 
                         }
@@ -1527,7 +1578,9 @@ application.cf.editFiche = function() {
                         // Return CSS class to apply to rows depending upon data values
                         getRowClass: function(r, index) {
                             var patri = r.get('patrimonial');
-                            if(patri){return 'gras';}
+                            if(patri){
+                                return 'gras';
+                            }
                         }
                     }
                     ,autoExpandColumn: 'taxonsaisi'
@@ -1598,7 +1651,9 @@ application.cf.editFiche = function() {
                     Ext.ux.Toast.msg('Echelle de saisie inadaptée', 'Vous ne pouvez pas pointer à cette échelle. <br />Merci de zoomer jusqu\'à la carte au 1/25 000ème.');
                     return false; //la fonction s'arrête là
                 }
-                if(vectorLayer.features[1]){vectorLayer.removeFeatures(vectorLayer.features[0])};//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                if(vectorLayer.features[1]){
+                    vectorLayer.removeFeatures(vectorLayer.features[0]);//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                }
                 updateGeometryField(feature);
                 Ext.getCmp('edit-fiche-form').enable();
                 Ext.getCmp('edit-fiche-form').ownerCt.ownerCt.doLayout();
@@ -1777,8 +1832,12 @@ application.cf.editFiche = function() {
      * geometry - {null|<OpenLayers.Geometry>} Geometry
      */
     var updateGeometryField = function(geometry) {
-        if (geometry == null) {wkt = '';}
-        else {var wkt = format.write(geometry);}
+        if (geometry == null) {
+            wkt = '';
+        }
+        else {
+            var wkt = format.write(geometry);
+        }
         Ext.getCmp('edit-fiche-form').getForm().findField('geometry').setValue(wkt);
         firstGeometryLoad = false;
     };
@@ -1857,8 +1916,12 @@ application.cf.editFiche = function() {
             var reg = new RegExp("(,)", "g");
             var val = null;
             for (key in rec.data) {
-                if(typeof rec.data[key]==="string"){val = rec.data[key].replace(reg,'<!>');} //gestion des virgules dans les commentaires
-                else{val = rec.data[key];}
+                if(typeof rec.data[key]==="string"){
+                val = rec.data[key].replace(reg,'<!>');
+                } //gestion des virgules dans les commentaires
+                else{
+                    val = rec.data[key];
+                }
                 attrib.push(val);
             }
             arrayGlobal.push(attrib);

@@ -441,7 +441,9 @@ application.cf.editFicheMortalite = function() {
                 load: function(store, records) {
                     Ext.getCmp('grid-taxons').getSelectionModel().selectRow(0);
                     var sexeage;
-                    if(Ext.getCmp('radiogroup-sexeage').getValue()){sexeage = Ext.getCmp('radiogroup-sexeage').getValue().initialConfig.boxLabel;}
+                    if(Ext.getCmp('radiogroup-sexeage').getValue()){
+                        sexeage = Ext.getCmp('radiogroup-sexeage').getValue().initialConfig.boxLabel;
+                    }
                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo',sexeage);
                     // Ext.getCmp('combo-fiche-taxon').fireEvent('change');
                 }
@@ -576,10 +578,19 @@ application.cf.editFicheMortalite = function() {
         var isValidTaxon = function(r){
             var isValid = true;
             errorMsg = '';
-            if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;errorMsg='Veuillez choisir un taxon';return false;}
-            if(!Ext.getCmp('radiogroup-sexeage').isValid()){isValid = false;errorMsg='Veuillez choisir une classe d\'âge pour cet individu';return false;}
+            if(r.data.id_nom==0 || r.data.id_nom==null){
+                isValid = false;
+                errorMsg='Veuillez choisir un taxon';
+            }
+            if(!Ext.getCmp('radiogroup-sexeage').isValid()){
+                isValid = false;
+                errorMsg='Veuillez choisir une classe d\'âge pour cet individu';
+            }
             var commentValue = Ext.getCmp('ta-fiche-commentaire').getValue();
-            if(Ext.getCmp('cb-prelevement').getValue() && (commentValue == null || commentValue == '')){isValid = false;errorMsg='Un commentaire est obligatoire en cas de prélèvement';return false;}
+            if(Ext.getCmp('cb-prelevement').getValue() && (commentValue == null || commentValue == '')){
+                isValid = false;
+                errorMsg='Un commentaire est obligatoire en cas de prélèvement';
+            }
             return isValid;
         };
         var manageValidationTaxon = function(isValid){
@@ -614,7 +625,9 @@ application.cf.editFicheMortalite = function() {
         };
         var returnTaxonSaisi = function(){
             var r = null;
-            if(Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())){r = Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())};
+            if(Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())){
+                r = Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue());
+            }
             if(Ext.getCmp('radiogroup-langue-cf').getValue().inputValue=='fr'){
                 if(r){return r.data.nom_francais;}
                 else{return 'en cours';}
@@ -722,7 +735,9 @@ application.cf.editFicheMortalite = function() {
                 ,disabled: true
                 ,handler: function() {
                 var sexeage = '';
-                    if(Ext.getCmp('radiogroup-sexeage').getValue()){sexeage = Ext.getCmp('radiogroup-sexeage').getValue().initialConfig.boxLabel;}
+                    if(Ext.getCmp('radiogroup-sexeage').getValue()){
+                        sexeage = Ext.getCmp('radiogroup-sexeage').getValue().initialConfig.boxLabel;
+                    }
                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo',sexeage);
                     manageValidationForm(isValidForm());
                 }
@@ -844,8 +859,9 @@ application.cf.editFicheMortalite = function() {
                                     ,inputValue: 'latin' 
                                     ,listeners: {
                                         check: function(checkbox,checked) {
-                                                if(checked){comboTaxonsTemplate('latin');
-                                                Ext.getCmp('combo-fiche-taxon').displayField = 'nom_latin'
+                                            if(checked){
+                                                comboTaxonsTemplate('latin');
+                                                Ext.getCmp('combo-fiche-taxon').displayField = 'nom_latin';
                                                 Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('combo-fiche-taxon').getValue());//pas trouvé mieux pour rafraichier en live le taxon déjà affiché dans le combo
                                             }
                                         }
@@ -873,7 +889,9 @@ application.cf.editFicheMortalite = function() {
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -897,7 +915,9 @@ application.cf.editFicheMortalite = function() {
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -921,7 +941,9 @@ application.cf.editFicheMortalite = function() {
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -945,7 +967,9 @@ application.cf.editFicheMortalite = function() {
                                                 Ext.getCmp('cb-reptiles-cf').setValue(false);
                                                 Ext.getCmp('cb-poissons-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -969,7 +993,9 @@ application.cf.editFicheMortalite = function() {
                                                 Ext.getCmp('cb-reptiles-cf').setValue(false);
                                                 Ext.getCmp('cb-amphibiens-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -1395,7 +1421,9 @@ application.cf.editFicheMortalite = function() {
                                 if(Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').getValue()=='add'){
                                     Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('update');
                                 }
-                                if(sm.getSelected()){manageValidationTaxon(isValidTaxon(sm.getSelected()));}
+                                if(sm.getSelected()){
+                                    manageValidationTaxon(isValidTaxon(sm.getSelected()));
+                                }
                             } 
                         }
                     })
@@ -1466,7 +1494,9 @@ application.cf.editFicheMortalite = function() {
                     Ext.ux.Toast.msg('Echelle de saisie inadaptée', 'Vous ne pouvez pas pointer à cette échelle. <br />Merci de zoomer jusqu\'à la carte au 1/25 000ème.');
                     return false; //la fonction s'arrête là
                 }
-                if(vectorLayer.features[1]){vectorLayer.removeFeatures(vectorLayer.features[0])};//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                if(vectorLayer.features[1]){
+                    vectorLayer.removeFeatures(vectorLayer.features[0]);//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                }
                 updateGeometryField(feature);
                 Ext.getCmp('edit-fiche-form').enable();
                 Ext.getCmp('edit-fiche-form').ownerCt.ownerCt.doLayout();
@@ -1642,8 +1672,12 @@ application.cf.editFicheMortalite = function() {
      * geometry - {null|<OpenLayers.Geometry>} Geometry
      */
     var updateGeometryField = function(geometry) {
-        if (geometry == null) {wkt = '';}
-        else {var wkt = format.write(geometry);}
+        if (geometry == null) {
+            wkt = '';
+        }
+        else {
+            var wkt = format.write(geometry);
+        }
         Ext.getCmp('edit-fiche-form').getForm().findField('geometry').setValue(wkt);
         firstGeometryLoad = false;
     };
@@ -1724,7 +1758,9 @@ application.cf.editFicheMortalite = function() {
             var reg = new RegExp("(,)", "g");
             var val = null;
             for (key in rec.data) {
-                if(typeof rec.data[key]==="string"){val = rec.data[key].replace(reg,'<!>');} //gestion des virgules dans les commentaires
+                if(typeof rec.data[key]==="string"){
+                    val = rec.data[key].replace(reg,'<!>');//gestion des virgules dans les commentaires
+                } 
                 else{val = rec.data[key];}
                 attrib.push(val);
             }
