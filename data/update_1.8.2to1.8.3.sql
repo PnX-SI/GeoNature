@@ -1,3 +1,7 @@
+------------------------------------------------------------------------------------
+--Mise à jour d'une vue pouvent provoquer un blocage de l'ouverture de la synthèse--
+------------------------------------------------------------------------------------
+
 CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS 
  WITH taxon AS (
          SELECT n.id_nom,
@@ -65,10 +69,18 @@ CREATE OR REPLACE VIEW synthese.v_tree_taxons_synthese AS
              LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
              LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
 
---Nettoyage
+
+-------------
+--Nettoyage--
+-------------
+
 DROP TABLE IF EXISTS utilisateurs.bib_observateurs;
 
---Index spatiaux gist manquants (amélioration des performances)
+
+-----------------------------------------------------------------
+--Index spatiaux gist manquants (amélioration des performances)--
+-----------------------------------------------------------------
+
 CREATE INDEX index_gist_l_communes_the_geom
   ON layers.l_communes
   USING gist
@@ -188,3 +200,115 @@ CREATE INDEX index_gist_t_zprospection_geom_mixte_3857
   ON florepatri.t_zprospection
   USING gist
   (geom_mixte_3857);
+
+-------------------------------------------------------------------
+--Modification de la gestion des noms dont la saisie est possible--
+--Gestion dans cor_nom_liste au lieu de cor_taxon_attribut---------
+-------------------------------------------------------------------
+
+--Création d'une nouvelle liste pour la saisie possible
+INSERT INTO taxonomie.bib_listes (id_liste, nom_liste, desc_liste, picto)
+VALUES(500,'Saisie possible','Liste des noms dont la saisie est autorisée','images/pictos/nopicto.gif');
+
+--Ajout de la liste gymnospermes oubliés
+--A vous de mettre dans cette liste (cor_nom_liste) les taxons correspondant
+INSERT INTO taxonomie.bib_listes (id_liste ,nom_liste,desc_liste,picto,regne,group2_inpn) 
+VALUES (308, 'Gymnospermes',null, 'images/pictos/nopicto.gif','Plantae','Gymnospermes');
+
+--correction
+UPDATE taxonomie.bib_listes SET group2_inpn = 'Fougères' WHERE id_liste = 305;
+
+--récupération des taxons avec l'attribut saisie possible = 'oui'
+--comme les attributs sont liés aux cd_ref, tous les synonymes d'un taxons ont le même attribut
+--donc on ne pouvait pas rendre un synonyme saisissable et l'autre non.
+INSERT INTO taxonomie.cor_nom_liste 
+SELECT 500 as id_liste, id_nom FROM taxonomie.bib_noms WHERE cd_ref IN(SELECT cd_ref FROM taxonomie.cor_taxon_attribut WHERE id_attribut = 3 AND valeur_attribut = 'oui');
+
+--mise à jour des vues permettant de construire les listes déroulantes des taxons dans les formulaires de saisie
+CREATE OR REPLACE VIEW contactflore.v_nomade_taxons_flore AS 
+  SELECT DISTINCT n.id_nom,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    tx.lb_nom AS nom_latin,
+    n.nom_francais,
+    g.id_classe,
+    f2.bool AS patrimonial,
+    m.texte_message_cflore AS message
+   FROM taxonomie.bib_noms n
+     LEFT JOIN contactflore.cor_message_taxon_cflore cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN contactflore.bib_messages_cflore m ON m.id_message_cflore = cmt.id_message_cflore
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom 
+     JOIN contactflore.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+   WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
+   ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cflore;
+
+CREATE OR REPLACE VIEW contactfaune.v_nomade_taxons_faune AS 
+  SELECT DISTINCT n.id_nom,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    tx.lb_nom AS nom_latin,
+    n.nom_francais,
+    g.id_classe,
+        CASE
+            WHEN tx.cd_nom = ANY (ARRAY[61098, 61119, 61000]) THEN 6
+            ELSE 5
+        END AS denombrement,
+    f2.bool AS patrimonial,
+    m.texte_message_cf AS message,
+        CASE
+            WHEN tx.cd_nom = ANY (ARRAY[60577, 60612]) THEN false
+            ELSE true
+        END AS contactfaune,
+    true AS mortalite
+  FROM taxonomie.bib_noms n
+     LEFT JOIN contactfaune.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN contactfaune.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+     JOIN contactfaune.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+  WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
+  ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cf;
+
+CREATE OR REPLACE VIEW contactinv.v_nomade_taxons_inv AS 
+  SELECT DISTINCT n.id_nom,
+    taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
+    tx.cd_nom,
+    tx.lb_nom AS nom_latin,
+    n.nom_francais,
+    g.id_classe,
+    f2.bool AS patrimonial,
+    m.texte_message_inv AS message
+  FROM taxonomie.bib_noms n
+     LEFT JOIN contactinv.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN contactinv.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+     JOIN contactinv.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+  WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
+  ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_inv;
+
+CREATE OR REPLACE VIEW florestation.v_taxons_fs AS 
+  SELECT tx.cd_nom,
+    tx.nom_complet
+  FROM taxonomie.bib_noms n
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+  WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
+  AND cnl.id_liste = ANY (ARRAY[305, 306, 307, 308]);
+
+--suppression de l'attribut saisie possible
+ALTER TABLE taxonomie.bib_attributs DISABLE TRIGGER USER;
+DELETE FROM taxonomie.cor_taxon_attribut WHERE id_attribut = 3;
+DELETE FROM taxonomie.bib_attributs WHERE id_attribut = 3;
+ALTER TABLE taxonomie.bib_attributs ENABLE TRIGGER USER;
+SELECT taxonomie.fct_build_bibtaxon_attributs_view('Animalia');
+SELECT taxonomie.fct_build_bibtaxon_attributs_view('Fungi');
+SELECT taxonomie.fct_build_bibtaxon_attributs_view('Plantae');
