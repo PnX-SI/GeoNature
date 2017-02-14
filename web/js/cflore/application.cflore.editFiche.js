@@ -558,7 +558,6 @@ application.cflore.editFiche = function() {
             ,method: 'GET'
         });
         var comboTaxonsFiltre = function(){
-            console.log('toto');
             var orange = Ext.getCmp('cb-orange-cf').getValue();
             var red = Ext.getCmp('cb-red-cf').getValue();
             var gray = Ext.getCmp('cb-gray-cf').getValue();
