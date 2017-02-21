@@ -10,7 +10,22 @@ Pré-requis
 
 - Un serveur Debian 8 (Ubuntu 16.04 LTS devrait fonctionner également - non testé)
 - Une clé IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur répond
-- TODO : proposer un sources.list valide et la procédure pour le mettre à jour
+- Disposer d'un fichier ``/etc/apt/sources.list`` adapté. Voici un fichier exemple permettant un bon fonctionnement sur debian 8 :
+
+::
+    
+    deb http://httpredir.debian.org/debian jessie main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie main contrib non-free
+    
+    deb http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    
+    deb http://security.debian.org/ jessie/updates main contrib non-free
+    deb-src http://security.debian.org/ jessie/updates main contrib non-free
+    
+    #Backports
+    deb http://http.debian.net/debian wheezy-backports main
+    
 
 Installation
 ------------
