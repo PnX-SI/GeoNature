@@ -678,7 +678,7 @@ application.synthese.editInvertebre = function() {
             }
             if(Ext.getCmp('radiogroup-langue-inv').getValue().inputValue=='fr'){
                 if(r){
-                    eturn r.data.nom_francais;
+                    return r.data.nom_francais;
                 }
                 return 'Saisie en cours';
             }
