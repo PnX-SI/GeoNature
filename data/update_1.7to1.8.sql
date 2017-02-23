@@ -1895,8 +1895,8 @@ AND tx.cd_nom = tx.cd_ref;
 
 ---- Nettoyage
 --suppression de l'ancien MCD
---DROP TABLE taxonomie.bib_filtres;
---DROP TABLE taxonomie.cor_taxon_liste;
---ALTER TABLE taxonomie.cor_taxon_attribut DROP CONSTRAINT cor_taxon_attrib_bib_taxons_fkey;
---ALTER TABLE taxonomie.cor_taxon_attribut DROP id_taxon;
---DROP TABLE taxonomie.bib_taxons;
+DROP TABLE taxonomie.bib_filtres;
+DROP TABLE taxonomie.cor_taxon_liste;
+ALTER TABLE taxonomie.cor_taxon_attribut DROP CONSTRAINT cor_taxon_attrib_bib_taxons_fkey;
+ALTER TABLE taxonomie.cor_taxon_attribut DROP id_taxon;
+DROP TABLE taxonomie.bib_taxons;

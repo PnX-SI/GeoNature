@@ -169,7 +169,7 @@ class invertebreActions extends sfGeonatureActions
             $id_inv = $new_id_inv;
             $fiche->id_inv = $id_inv;
             $fiche->saisie_initiale = 'web';
-            $fiche->id_organisme = sfGeonatureConfig::$id_organisme;
+            $fiche->id_organisme = $request->getParameter('id_organisme');
             $fiche->id_protocole = sfGeonatureConfig::$id_protocole_inv;
         }
         //remise au format de la date
