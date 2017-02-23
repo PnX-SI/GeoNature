@@ -2,23 +2,23 @@
 MISE A JOUR DE L'APPLICATION
 ============================
 
-Les différentes versions sont disponibles sur le Github du projet (https://github.com/PnEcrins/GeoNature/releases).
+Les diffÃ©rentes versions sont disponibles sur le Github du projet (https://github.com/PnEcrins/GeoNature/releases).
 
-* Télécharger et extraire la version souhaitée dans un répertoire séparé (où ``X.Y.Z`` est à remplacer par le numéro de la version que vous installez). 
-
-    ::
-
+* TÃ©lÃ©charger et extraire la version souhaitÃ©e dans un rÃ©pertoire sÃ©parÃ© (oÃ¹ ``X.Y.Z`` est Ã  remplacer par le numÃ©ro de la version que vous installez). 
+ 
+  ::  
+  
         cd /home/synthese/
-        wget https://github.com/PnEcrins/GeoNature/archive/vX.Y.Z.zip
-        unzip vX.Y.Z.zip
+        wget https://github.com/PnEcrins/GeoNature/archive/X.Y.Z.zip
+        unzip X.Y.Z.zip
         mv geonature geonature_old
         mv GeoNature-X.Y.Z/ geonature
-        rm vX.Y.Z.zip
+        rm X.Y.Z.zip
 
-* Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, si de nouveaux paramètres ont été ajoutés, ajoutez les dans ces fichiers.
-
-    ::
-    
+* Copier les anciens fichiers de configuration et les comparer avec les nouveaux. Attention, si de nouveaux paramÃ¨tres ont Ã©tÃ© ajoutÃ©s, ajoutez les dans ces fichiers.
+ 
+  ::  
+  
         cp geonature_old/wms/wms.map geonature/wms/wms.map
         cp geonature_old/web/js/config.js geonature/web/js/config.js
         cp geonature_old/web/js/configmap.js geonature/web/js/configmap.js
@@ -27,17 +27,16 @@ Les différentes versions sont disponibles sur le Github du projet (https://githu
         cd geonature
     
     
-* Si vous l'avez personnalisé, récupérez votre bandeau de l'application 
-
-    ::
-    
+* Si vous l'avez personnalisÃ©, rÃ©cupÃ©rez votre bandeau de l'application 
+ 
+  ::  
+  
         cp ../geonature_old/web/images/bandeau_geonature.jpg web/images/bandeau_geonature.jpg
 
-* Lire attentivement les notes de chaque version si il y a des spécificités (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise à jour.
+* Lire attentivement les notes de chaque version si il y a des spÃ©cificitÃ©s (https://github.com/PnEcrins/GeoNature/releases). Suivre ces instructions avant de continuer la mise Ã  jour.
        
-* Si vous avez ajouté des protocoles spécifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les récupérer dans la nouvelle version. 
+* Si vous avez ajoutÃ© des protocoles spÃ©cifiques dans GeoNature (https://github.com/PnEcrins/GeoNature/issues/54), il vous faut les rÃ©cupÃ©rer dans la nouvelle version. 
 
-Commencez par copier les modules Symfony correspondants dans le répertoire de la nouvelle version de GeoNature. 
+Commencez par copier les modules Symfony correspondants dans le rÃ©pertoire de la nouvelle version de GeoNature. 
 
-Il vous faut ensuite reporter les modifications réalisées dans les parties qui ne sont pas génériques (module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml`` et l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml``).
-
+Il vous faut ensuite reporter les modifications rÃ©alisÃ©es dans les parties qui ne sont pas gÃ©nÃ©riques (module Symfony ``bibs``, le fichier de routing, la description de la BDD dans le fichier ``config/doctrine/schema.yml`` et l'appel des JS et CSS dans ``apps/backend/modules/home/config/view.yml``).
