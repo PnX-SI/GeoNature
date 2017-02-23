@@ -661,20 +661,13 @@ CREATE OR REPLACE VIEW v_florestation_patrimoniale AS
 --
 
 CREATE VIEW v_taxons_fs AS
- SELECT t.cd_nom,
-    t.nom_complet
-   FROM (taxonomie.taxref t
-     JOIN (( SELECT DISTINCT t_1.cd_ref
-           FROM ((taxonomie.taxref t_1
-             JOIN cor_fs_taxon c ON ((c.cd_nom = t_1.cd_nom)))
-             RIGHT JOIN t_stations_fs s ON ((s.id_station = c.id_station)))
-          WHERE ((s.supprime = false) AND (c.supprime = false))
-          ORDER BY t_1.cd_ref)
-        UNION
-         SELECT t_1.cd_ref
-           FROM taxonomie.taxref t_1
-          WHERE (t_1.cd_nom = ANY (ARRAY[106226, 95136, 134738, 91823, 109422, 84904, 113388, 97502, 138537, 611325, 81376, 115437, 127191, 115228, 88108, 137138, 139803, 89840, 124967, 82656, 136028, 97785, 117952, 112747, 117933, 125337, 123156, 111297, 1000001, 131447, 122118, 134958, 99882, 111311, 123711, 90319, 111996, 89881, 97262, 117951, 95186, 98474, 115110, 90259, 119818, 126541, 117087, 87690, 131610, 127450, 116265, 97502, 125816, 104221, 95398, 138515, 86429, 83528, 110994, 121039, 110410, 87143, 110421, 82285, 126628, 103478, 129325, 81065, 81166, 106220, 90561, 86948, 73574, 73558]))) a ON ((a.cd_ref = t.cd_nom)));
-
+SELECT tx.cd_nom,
+    tx.nom_complet
+  FROM taxonomie.bib_noms n
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+  WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
+  AND cnl.id_liste = ANY (ARRAY[305, 306, 307, 308]);
 
 --
 -- TOC entry 3726 (class 2604 OID 2748296)

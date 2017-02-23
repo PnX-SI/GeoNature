@@ -335,7 +335,7 @@ $BODY$
 
 -- Function: contactflore.synthese_insert_releve_cflore()
 -- DROP FUNCTION contactflore.synthese_insert_releve_cflore();
-CREATE FUNCTION contactflore.synthese_insert_releve_cflore() RETURNS trigger
+CREATE OR REPLACE FUNCTION contactflore.synthese_insert_releve_cflore() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE

@@ -40,9 +40,6 @@ class sfGeonatureConfig extends sfActions
     // voir la valeur utilisée pour GeoNature dans les tables "utilisateurs.t_applications" et "utilisateurs.cor_role_droit_application"
     public static $id_application = 14;
     
-    //Organisme producteur et propriétaire des données
-    public static $id_organisme = 2;
-    
     //ID de l'unité où tous les observateurs s'y trouvant peuvent saisir des données mais ne peuvent exporter que leurs données personnelles
     public static $id_unite_fournisseur = 10;
     

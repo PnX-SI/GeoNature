@@ -132,7 +132,6 @@ class zpActions extends sfGeonatureActions
                 $zp->saisie_initiale = 'web';
                 $zp->id_protocole = sfGeonatureConfig::$id_protocole_florepatri;
                 $zp->id_lot = sfGeonatureConfig::$id_lot_florepatri;
-                // $station->id_organisme = sfGeonatureConfig::$id_organisme;
                 $zp->id_organisme = $request->getParameter('id_organisme');//si update d'un admin d'un autre organisme (cbna par ex) on ne change pas l'organisme source de la donnée
                 break;
             case 'update':

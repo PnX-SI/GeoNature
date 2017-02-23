@@ -884,7 +884,7 @@ CREATE VIEW v_nomade_observateurs_inv AS
 --
 
 CREATE VIEW v_nomade_taxons_inv AS
- SELECT DISTINCT n.id_nom,
+  SELECT DISTINCT n.id_nom,
     taxonomie.find_cdref(tx.cd_nom) AS cd_ref,
     tx.cd_nom,
     tx.lb_nom AS nom_latin,
@@ -892,18 +892,16 @@ CREATE VIEW v_nomade_taxons_inv AS
     g.id_classe,
     f2.bool AS patrimonial,
     m.texte_message_inv AS message
-   FROM ((((((((taxonomie.bib_noms n
-     LEFT JOIN cor_message_taxon cmt ON ((cmt.id_nom = n.id_nom)))
-     LEFT JOIN bib_messages_inv m ON ((m.id_message_inv = cmt.id_message_inv)))
-     LEFT JOIN taxonomie.cor_taxon_attribut cta ON ((cta.cd_ref = n.cd_ref)))
-     JOIN taxonomie.bib_attributs a ON ((a.id_attribut = cta.id_attribut)))
-     JOIN taxonomie.cor_nom_liste cnl ON ((cnl.id_nom = n.id_nom)))
-     JOIN v_nomade_classes g ON ((g.id_classe = cnl.id_liste)))
-     JOIN taxonomie.taxref tx ON ((tx.cd_nom = n.cd_nom)))
-     JOIN public.cor_boolean f2 ON ((((f2.expression)::text = cta.valeur_attribut) AND (cta.id_attribut = 1))))
-  WHERE (n.cd_ref IN ( SELECT cor_taxon_attribut.cd_ref
-           FROM taxonomie.cor_taxon_attribut
-          WHERE ((cor_taxon_attribut.valeur_attribut = 'oui'::text) AND (cor_taxon_attribut.id_attribut = 3))))
+  FROM taxonomie.bib_noms n
+     LEFT JOIN cor_message_taxon cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+     LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
+     JOIN taxonomie.bib_attributs a ON a.id_attribut = cta.id_attribut
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
+     JOIN v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
+     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+  WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
   ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_inv;
 
 

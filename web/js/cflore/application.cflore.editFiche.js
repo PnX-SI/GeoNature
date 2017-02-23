@@ -319,6 +319,9 @@ application.cflore.editFiche = function() {
             xtype:'hidden'
             ,name: 'monaction'
         },{
+            xtype:'hidden'
+            ,name: 'id_organisme'
+        },{
             xtype: 'hidden'
             ,name: 'geometry' 
         },{
@@ -580,13 +583,17 @@ application.cflore.editFiche = function() {
         var comboTaxonsFiltreClasse = function(classe){
             var pteridophytes = Ext.getCmp('cb-pteridophytes-cf').getValue();
             var monocotyledones = Ext.getCmp('cb-monocotyledones-cf').getValue();
+            var gymnospermes = Ext.getCmp('cb-gymnospermes-cf').getValue();
             var dicotyledones = Ext.getCmp('cb-dicotyledones-cf').getValue();
             var bryophytes = Ext.getCmp('cb-bryophytes-cf').getValue();
-            if((!pteridophytes&&!monocotyledones&&!dicotyledones&&!bryophytes)==true){return true;}
+            if((!pteridophytes&&!monocotyledones&&!gymnospermes&&!dicotyledones&&!bryophytes)==true){return true;}
             if(dicotyledones && classe==id_classe_dicotyledones){return true;}
             if(monocotyledones && classe==id_classe_monocotyledones){return true;}
+            if(gymnospermes && classe==id_classe_gymnospermes){return true;}
             if(pteridophytes && classe==id_classe_pteridophytes){return true;}
-            if(bryophytes && classe==id_classe_bryophytes){return true;}
+            if(bryophytes && classe==id_classe_bryophytes){
+                return true;
+            }
             return false;
         };
 
@@ -613,10 +620,22 @@ application.cflore.editFiche = function() {
         var isValidForm = function(){
             var isValid = true;
             Ext.getCmp('grid-taxons').getStore().each(function(r){
-                if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;return false;}
-                if(r.data.nom_taxon_saisi=='Saisie en cours'){isValid = false;return false;}
-                if(r.data.id_abondance_cflore==0 || r.data.id_abondance_cflore==null){isValid = false;return false;}
-                if(r.data.id_phenologie_cflore==0 || r.data.id_phenologie_cflore==null){isValid = false;return false;}
+                if(r.data.id_nom==0 || r.data.id_nom==null){
+                    isValid = false;
+                    return false;
+                }
+                if(r.data.nom_taxon_saisi=='Saisie en cours'){
+                    isValid = false;
+                    return false;
+                }
+                if(r.data.id_abondance_cflore==0 || r.data.id_abondance_cflore==null){
+                    isValid = false;
+                    return false;
+                }
+                if(r.data.id_phenologie_cflore==0 || r.data.id_phenologie_cflore==null){
+                    isValid = false;
+                    return false;
+                }
                 return true;
             });
             return isValid;
@@ -624,11 +643,27 @@ application.cflore.editFiche = function() {
         var isValidTaxon = function(r){
             var isValid = true;
             errorMsg = '';
-            if(r.data.id_nom==0 || r.data.id_nom==null){isValid = false;errorMsg='Veuillez choisir un taxon';return false;}
-            if(r.data.id_abondance_cflore==0 || r.data.id_abondance_cflore==null){isValid = false;errorMsg='Veuillez définir l\'abondance pour ce taxon';return false;}
-            if(r.data.id_phenologie_cflore==0 || r.data.id_phenologie_cflore==null){isValid = false;errorMsg='Veuillez définir la phénologie de ce taxon';return false;}
+            if(r.data.id_nom==0 || r.data.id_nom==null){
+                isValid = false;
+                errorMsg='Veuillez choisir un taxon';
+                return false;
+            }
+            if(r.data.id_abondance_cflore==0 || r.data.id_abondance_cflore==null){
+                isValid = false;
+                errorMsg='Veuillez définir l\'abondance pour ce taxon';
+                return false;
+            }
+            if(r.data.id_phenologie_cflore==0 || r.data.id_phenologie_cflore==null){
+                isValid = false;
+                errorMsg='Veuillez définir la phénologie de ce taxon';
+                return false;
+            }
             var commentValue = Ext.getCmp('ta-fiche-commentaire').getValue();
-            if(Ext.getCmp('cb-herbier').getValue() && (commentValue == null || commentValue == '')){isValid = false;errorMsg='Un commentaire est obligatoire en cas de mise en herbier';return false;}
+            if(Ext.getCmp('cb-herbier').getValue() && (commentValue == null || commentValue == '')){
+                isValid = false;
+                errorMsg='Un commentaire est obligatoire en cas de mise en herbier';
+                return false;
+            }
             return isValid;
         };
         var manageValidationTaxon = function(isValid){
@@ -693,7 +728,9 @@ application.cflore.editFiche = function() {
         };
         var returnTaxonSaisi = function(){
             var r = null;
-            if(Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())){r = Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())};
+            if(Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())){
+                r = Ext.getCmp('combo-fiche-taxon').findRecord('id_nom',Ext.getCmp('combo-fiche-taxon').getValue())
+            };
             if(Ext.getCmp('radiogroup-langue-cf').getValue().inputValue=='fr'){
                 if(r){return r.data.nom_francais;}
                 else{return 'en cours';}
@@ -770,14 +807,14 @@ application.cflore.editFiche = function() {
             ,labelAlign: 'left'
             ,title: 'Listes des taxons observés'
             ,bodyStyle:'padding:5px'
-            ,width: 600
+            ,width: 630
             ,layout: 'column'    // Specifies that the items will now be arranged in columns
             ,items: [{
                 columnWidth: 0.6
                 ,xtype: 'panel'
                 ,labelWidth: 80
                 ,defaults: {
-                    width: 305
+                    width: 335
                     ,border:false
                     ,allowDecimals :false
                     ,allowNegative: false 
@@ -819,6 +856,7 @@ application.cflore.editFiche = function() {
                                                 Ext.getCmp('combo-fiche-taxon').displayField = 'nom_francais';
                                                 Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('combo-fiche-taxon').getValue());//pas trouvé mieux pour rafraichier en live le taxon déjà affiché dans le combo
                                             }
+                                            comboTaxonsFiltre();
                                         }
                                     }
                                 },{
@@ -829,10 +867,12 @@ application.cflore.editFiche = function() {
                                     ,checked: true                                    
                                     ,listeners: {
                                         check: function(checkbox,checked) {
-                                                if(checked){comboTaxonsTemplate('latin');
+                                            if(checked){
+                                                comboTaxonsTemplate('latin');
                                                 Ext.getCmp('combo-fiche-taxon').displayField = 'nom_latin'
                                                 Ext.getCmp('combo-fiche-taxon').setValue(Ext.getCmp('combo-fiche-taxon').getValue());//pas trouvé mieux pour rafraichier en live le taxon déjà affiché dans le combo
                                             }
+                                            comboTaxonsFiltre();
                                         }
                                     }
                                 }
@@ -844,6 +884,7 @@ application.cflore.editFiche = function() {
                             ,cls:'graytext'
                             ,itemCls:'graytext'
                             ,columns: 2
+                            // ,vertical:true
                             ,items: [{
                                     id:'cb-monocotyledones-cf'
                                     ,boxLabel: 'Monocotylédones'
@@ -854,10 +895,13 @@ application.cflore.editFiche = function() {
                                         check: function(checkbox,checked){
                                             if(checked){
                                                 Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-pteridophytes-cf').setValue(false);
                                                 Ext.getCmp('cb-bryophytes-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -877,16 +921,45 @@ application.cflore.editFiche = function() {
                                         check: function(checkbox,checked) {
                                             if(checked){
                                                 Ext.getCmp('cb-monocotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-pteridophytes-cf').setValue(false);
                                                 Ext.getCmp('cb-bryophytes-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
                                                 target: c.getEl(),
                                                 text: 'Affiche les dicotylédones dans la liste si la case est cochée.'
+                                            });
+                                        }
+                                    }                                
+                                },{
+                                    id:'cb-gymnospermes-cf'
+                                    ,boxLabel: 'Gymnospermes'
+                                    ,name: 'cb-gymnospermes'
+                                    ,itemCls:'graytext'
+                                    ,checked: false                                    
+                                    ,listeners: {
+                                        check: function(checkbox,checked) {
+                                            if(checked){
+                                                Ext.getCmp('cb-monocotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-pteridophytes-cf').setValue(false);
+                                                Ext.getCmp('cb-bryophytes-cf').setValue(false);
+                                            }
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
+                                            comboTaxonsFiltre();
+                                        }
+                                        ,render: function(c) {
+                                            Ext.QuickTips.register({
+                                                target: c.getEl(),
+                                                text: 'Affiche les gymnospermes dans la liste si la case est cochée.'
                                             });
                                         }
                                     }                                
@@ -901,9 +974,12 @@ application.cflore.editFiche = function() {
                                             if(checked){
                                                 Ext.getCmp('cb-monocotyledones-cf').setValue(false);
                                                 Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-bryophytes-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -924,9 +1000,12 @@ application.cflore.editFiche = function() {
                                             if(checked){
                                                 Ext.getCmp('cb-monocotyledones-cf').setValue(false);
                                                 Ext.getCmp('cb-dicotyledones-cf').setValue(false);
+                                                Ext.getCmp('cb-gymnospermes-cf').setValue(false);
                                                 Ext.getCmp('cb-pteridophytes-cf').setValue(false);
                                             }
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
                                         }
                                         ,render: function(c) {
@@ -952,8 +1031,10 @@ application.cflore.editFiche = function() {
                                     ,itemCls:'graytext'                                    
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -978,8 +1059,10 @@ application.cflore.editFiche = function() {
                                     ,checked: true
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -996,8 +1079,10 @@ application.cflore.editFiche = function() {
                                     ,checked: true
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -1014,8 +1099,10 @@ application.cflore.editFiche = function() {
                                     ,checked: true                                    
                                     ,listeners: {
                                         check: function(checkbox,checked) {
+                                            if(Ext.getCmp('combo-fiche-taxon')){
+                                                Ext.getCmp('combo-fiche-taxon').clearValue();
+                                            }
                                             comboTaxonsFiltre();
-                                            if(Ext.getCmp('combo-fiche-taxon')){Ext.getCmp('combo-fiche-taxon').clearValue();}
                                         }
                                         ,render: function(c) {
                                             Ext.QuickTips.register({
@@ -1441,8 +1528,9 @@ application.cflore.editFiche = function() {
                                 if(Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').getValue()=='add'){
                                     Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('update');
                                 }
-                                if(sm.getSelected()){manageValidationTaxon(isValidTaxon(sm.getSelected()));}
-
+                                if(sm.getSelected()){
+                                    manageValidationTaxon(isValidTaxon(sm.getSelected()));
+                                }
                             } 
                         }
                     })
@@ -1450,7 +1538,9 @@ application.cflore.editFiche = function() {
                         // Return CSS class to apply to rows depending upon data values
                         getRowClass: function(r, index) {
                             var patri = r.get('patrimonial');
-                            if(patri){return 'gras';}
+                            if(patri){
+                                return 'gras';
+                            }
                         }
                     }
                     ,autoExpandColumn: 'taxonsaisi'
@@ -1521,7 +1611,9 @@ application.cflore.editFiche = function() {
                     Ext.ux.Toast.msg('Echelle de saisie inadaptée', 'Vous ne pouvez pas pointer à cette échelle. <br />Merci de zoomer jusqu\'à la carte au 1/25 000ème.');
                     return false; //la fonction s'arrête là
                 }
-                if(vectorLayer.features[1]){vectorLayer.removeFeatures(vectorLayer.features[0])};//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                if(vectorLayer.features[1]){
+                    vectorLayer.removeFeatures(vectorLayer.features[0]);//s'il y a déjà une géométrie, on la supprime pour ne garder que celle qui vient d'être ajoutée
+                }
                 updateGeometryField(feature);
                 Ext.getCmp('edit-fiche-form').enable();
                 Ext.getCmp('edit-fiche-form').ownerCt.ownerCt.doLayout();
@@ -1700,8 +1792,12 @@ application.cflore.editFiche = function() {
      * geometry - {null|<OpenLayers.Geometry>} Geometry
      */
     var updateGeometryField = function(geometry) {
-        if (geometry == null) {wkt = '';}
-        else {var wkt = format.write(geometry);}
+        if (geometry == null) {
+            wkt = '';
+        }
+        else {
+            var wkt = format.write(geometry);
+        }
         Ext.getCmp('edit-fiche-form').getForm().findField('geometry').setValue(wkt);
         firstGeometryLoad = false;
     };
@@ -1760,6 +1856,7 @@ application.cflore.editFiche = function() {
         vectorLayer.removeFeatures(vectorLayer.features);
         Ext.getCmp('edit-fiche-form').getForm().reset();
         Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
+        Ext.getCmp('edit-fiche-form').getForm().findField('id_organisme').setValue(application.cflore.user.id_organisme);
         Ext.getCmp('grid-taxons').getStore().removeAll();
         this.addNewTaxon();
         dragPanControl.activate();
@@ -1779,8 +1876,12 @@ application.cflore.editFiche = function() {
             var reg = new RegExp("(,)", "g");
             var val = null;
             for (key in rec.data) {
-                if(typeof rec.data[key]==="string"){val = rec.data[key].replace(reg,'<!>');} //gestion des virgules dans les commentaires
-                else{val = rec.data[key];}
+                if(typeof rec.data[key]==="string"){
+                    val = rec.data[key].replace(reg,'<!>');//gestion des virgules dans les commentaires
+                } 
+                else{
+                    val = rec.data[key];
+                }
                 attrib.push(val);
             }
             arrayGlobal.push(attrib);
@@ -1923,6 +2024,7 @@ application.cflore.editFiche = function() {
                 activateControls(true);
                 updateGeometryField(null);
                 Ext.getCmp('edit-fiche-form').getForm().findField('monaction').setValue('add');
+                Ext.getCmp('edit-fiche-form').getForm().findField('id_organisme').setValue(application.cflore.user.id_organisme);
                 Ext.getCmp('edit-fiche-form').getForm().findField('monactiontaxon').setValue('add');
                 Ext.getCmp('grid-taxons').getStore().removeAll();
                 Ext.getCmp('grid-taxons').getStore().add(new blankRecord({

@@ -733,8 +733,7 @@ class SyntheseffTable extends Doctrine_Table
     {
         $sql = "SELECT EXTRACT(YEAR FROM s.dateobs) AS subject, count(*) AS nb 
                 FROM synthese.syntheseff s
-                WHERE s.supprime = false 
-                AND id_organisme = ".sfGeonatureConfig::$id_organisme."
+                WHERE s.supprime = false
                 GROUP BY EXTRACT(YEAR FROM s.dateobs)
                 ORDER BY EXTRACT(YEAR FROM s.dateobs);";
         return self::getDatas($sql);
@@ -746,8 +745,7 @@ class SyntheseffTable extends Doctrine_Table
                 (SELECT DISTINCT EXTRACT(YEAR FROM s.dateobs) as annee, tr.cd_ref
                 FROM taxonomie.taxref tr 
                 LEFT JOIN synthese.syntheseff s ON tr.cd_nom = s.cd_nom
-                WHERE s.supprime = false
-                AND id_organisme = ".sfGeonatureConfig::$id_organisme.") a
+                WHERE s.supprime = false) a
                 GROUP by a.annee
                 ORDER BY a.annee; ";     
         return self::getDatas($sql);

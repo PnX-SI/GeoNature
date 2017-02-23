@@ -2,8 +2,28 @@
 CHANGELOG
 =========
 
-1.8.3dev (unreleased)
+1.8.4dev (unreleased)
 ----------------------
+
+
+1.8.3 (2017-02-14)
+----------------------
+
+**Nouveautés**
+
+* Multi-organisme : l'organisme attaché à la donnée est celui de l'utilisateur identifié dans l'application.
+* Correction de la vue ``synthese.v_tree_taxons_synthese`` potentiellement blocante à l'ouverture de la synthèse.
+* Nettoyage de la table ``utilisateurs.bib_observateurs`` inutile.
+* Création des index spatiaux manquants (performances)
+
+**Notes de versions**
+
+Vous pouvez supprimer les lignes concernant paramètre ``public static $id_organisme = ...`` dans ``lib/sfGeonatureConfig.php`` 
+
+Vous pouvez passer directement d'une 1.7.X à la 1.8.3, en prenant en compte les notes des différentes versions intermédiaires. 
+
+Si vous migrez depuis la version 1.8.2, éxécutez le fichier ``data/update_1.8.2to1.8.3.sql``.
+
 
 1.8.2 (2017-01-11)
 ------------------
