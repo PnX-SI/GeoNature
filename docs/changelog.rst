@@ -6,23 +6,27 @@ CHANGELOG
 ----------------------
 
 
-1.8.3 (2017-02-14)
+1.8.3 (2017-02-23)
 ----------------------
 
 **Nouveautés**
 
-* Multi-organisme : l'organisme attaché à la donnée est celui de l'utilisateur identifié dans l'application.
-* Correction de la vue ``synthese.v_tree_taxons_synthese`` potentiellement blocante à l'ouverture de la synthèse.
-* Nettoyage de la table ``utilisateurs.bib_observateurs`` inutile.
+* Multi-organisme : l'organisme associé à la donnée est désormais celui de l'utilisateur connecté dans l'application (lors de la création d'une observation uniquement).
+* Taxonomie : création d'une liste ``Saisie possible``, remplaçant l'attribut ``Saisie``. Cela permet de choisir les synonymes que l'on peut saisir ou non dans GeoNature en se basant sur les ``cd_nom`` (``bib_listes`` et ``cor_nom_liste``) et non plus sur les ``cd_ref`` (``bib_attributs`` et ``cor_taxon_attribut``). Voir le script de migration SQL ``data/update_1.8.2to1.8.3.sql`` pour bien basculer les informations de l'attribut dans la nouvelle liste. 
+* Correction de la vue ``synthese.v_tree_taxons_synthese`` potentiellement bloquante à l'ouverture de la synthèse.
+* Suppression de la table ``utilisateurs.bib_observateurs`` inutile.
 * Création des index spatiaux manquants (performances)
+* Clarification et corrections mineures du script ``install_all``
+* Ajout du MCD de la 1.8 (par @xavier-pnm)
+* Améliorations du nom des fichiers exportés depuis la Synthèse (par @sylvain-m)
 
 **Notes de versions**
 
-Vous pouvez supprimer les lignes concernant paramètre ``public static $id_organisme = ...`` dans ``lib/sfGeonatureConfig.php`` 
+Vous pouvez supprimer les lignes concernant le paramètre ``public static $id_organisme = ...`` dans ``lib/sfGeonatureConfig.php``, l'organisme n'étant plus un paramètre fixe mais désormais celui de l'utilisateur connecté.
 
 Vous pouvez passer directement d'une 1.7.X à la 1.8.3, en prenant en compte les notes des différentes versions intermédiaires. 
 
-Si vous migrez depuis la version 1.8.2, éxécutez le fichier ``data/update_1.8.2to1.8.3.sql``.
+Si vous migrez depuis la version 1.8.2, éxécutez le fichier SQL ``data/update_1.8.2to1.8.3.sql``.
 
 
 1.8.2 (2017-01-11)
