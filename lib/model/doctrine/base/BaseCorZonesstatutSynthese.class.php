@@ -10,14 +10,14 @@
  * @property Syntheseff $Syntheseff
  * @property LZonesstatut $LZonesstatut
  * 
- * @method integer                getIdZone()       Returns the current record's "id_zone" value
- * @method integer                getIdSynthese()   Returns the current record's "id_synthese" value
- * @method Syntheseff             getSyntheseff()   Returns the current record's "Syntheseff" value
- * @method LZonesstatut           getLZonesstatut() Returns the current record's "LZonesstatut" value
- * @method CorZonesstatutSynthese setIdZone()       Sets the current record's "id_zone" value
- * @method CorZonesstatutSynthese setIdSynthese()   Sets the current record's "id_synthese" value
- * @method CorZonesstatutSynthese setSyntheseff()   Sets the current record's "Syntheseff" value
- * @method CorZonesstatutSynthese setLZonesstatut() Sets the current record's "LZonesstatut" value
+ * @method integer                get()             Returns the current record's "id_zone" value
+ * @method integer                get()             Returns the current record's "id_synthese" value
+ * @method Syntheseff             get()             Returns the current record's "Syntheseff" value
+ * @method LZonesstatut           get()             Returns the current record's "LZonesstatut" value
+ * @method CorZonesstatutSynthese set()             Sets the current record's "id_zone" value
+ * @method CorZonesstatutSynthese set()             Sets the current record's "id_synthese" value
+ * @method CorZonesstatutSynthese set()             Sets the current record's "Syntheseff" value
+ * @method CorZonesstatutSynthese set()             Sets the current record's "LZonesstatut" value
  * 
  * @package    geonature
  * @subpackage model

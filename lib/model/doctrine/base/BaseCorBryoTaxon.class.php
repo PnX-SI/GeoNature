@@ -14,22 +14,22 @@
  * @property Taxref $Taxref
  * @property BibAbondancesBryo $BibAbondancesBryo
  * 
- * @method integer           getIdStation()         Returns the current record's "id_station" value
- * @method integer           getCdNom()             Returns the current record's "cd_nom" value
- * @method string            getIdAbondance()       Returns the current record's "id_abondance" value
- * @method string            getTaxonSaisi()        Returns the current record's "taxon_saisi" value
- * @method boolean           getSupprime()          Returns the current record's "supprime" value
- * @method TStationsBryo     getTStationsBryo()     Returns the current record's "TStationsBryo" value
- * @method Taxref            getTaxref()            Returns the current record's "Taxref" value
- * @method BibAbondancesBryo getBibAbondancesBryo() Returns the current record's "BibAbondancesBryo" value
- * @method CorBryoTaxon      setIdStation()         Sets the current record's "id_station" value
- * @method CorBryoTaxon      setCdNom()             Sets the current record's "cd_nom" value
- * @method CorBryoTaxon      setIdAbondance()       Sets the current record's "id_abondance" value
- * @method CorBryoTaxon      setTaxonSaisi()        Sets the current record's "taxon_saisi" value
- * @method CorBryoTaxon      setSupprime()          Sets the current record's "supprime" value
- * @method CorBryoTaxon      setTStationsBryo()     Sets the current record's "TStationsBryo" value
- * @method CorBryoTaxon      setTaxref()            Sets the current record's "Taxref" value
- * @method CorBryoTaxon      setBibAbondancesBryo() Sets the current record's "BibAbondancesBryo" value
+ * @method integer           get()                  Returns the current record's "id_station" value
+ * @method integer           get()                  Returns the current record's "cd_nom" value
+ * @method string            get()                  Returns the current record's "id_abondance" value
+ * @method string            get()                  Returns the current record's "taxon_saisi" value
+ * @method boolean           get()                  Returns the current record's "supprime" value
+ * @method TStationsBryo     get()                  Returns the current record's "TStationsBryo" value
+ * @method Taxref            get()                  Returns the current record's "Taxref" value
+ * @method BibAbondancesBryo get()                  Returns the current record's "BibAbondancesBryo" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "id_station" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "cd_nom" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "id_abondance" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "taxon_saisi" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "supprime" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "TStationsBryo" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "Taxref" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "BibAbondancesBryo" value
  * 
  * @package    geonature
  * @subpackage model

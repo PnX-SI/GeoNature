@@ -170,9 +170,7 @@ class cfActions extends sfGeonatureActions
                 $taxon->determinateur = str_replace('<!>',',',$determinateur);
                 $taxon->cd_ref_origine = $cd_ref_origine;
                 $taxon->save();
-                // return $this->renderText("{success: true,toto}");
             }
-            // return $this->renderText("{success: true,data:".print_r($taxon)."}");
             return true;
         }
         else{return sfView::ERROR;}
@@ -251,7 +249,6 @@ class cfActions extends sfGeonatureActions
             
             if($request->hasParameter('sting_taxons')){self::saveTaxons($id_cf,$request->getParameter('sting_taxons'),$monaction);}
             return $this->renderText("{success: true,id_cf:".$fiche->getId_cf()."}");
-            // return $this->renderSuccess();//retour ajax pour Extjs ; retourne {success: true}
         }
         else{
             $this->redirect('@login');

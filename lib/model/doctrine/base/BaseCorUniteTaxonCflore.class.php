@@ -14,22 +14,22 @@
  * @property LUnitesGeo $LUnitesGeo
  * @property Doctrine_Collection $VNomadeTaxonsFlore
  * 
- * @method integer             getIdNom()              Returns the current record's "id_nom" value
- * @method integer             getIdUniteGeo()         Returns the current record's "id_unite_geo" value
- * @method date                getDerniereDate()       Returns the current record's "derniere_date" value
- * @method string              getCouleur()            Returns the current record's "couleur" value
- * @method integer             getNbObs()              Returns the current record's "nb_obs" value
- * @method BibNoms             getBibNoms()            Returns the current record's "BibNoms" value
- * @method LUnitesGeo          getLUnitesGeo()         Returns the current record's "LUnitesGeo" value
- * @method Doctrine_Collection getVNomadeTaxonsFlore() Returns the current record's "VNomadeTaxonsFlore" collection
- * @method CorUniteTaxonCflore setIdNom()              Sets the current record's "id_nom" value
- * @method CorUniteTaxonCflore setIdUniteGeo()         Sets the current record's "id_unite_geo" value
- * @method CorUniteTaxonCflore setDerniereDate()       Sets the current record's "derniere_date" value
- * @method CorUniteTaxonCflore setCouleur()            Sets the current record's "couleur" value
- * @method CorUniteTaxonCflore setNbObs()              Sets the current record's "nb_obs" value
- * @method CorUniteTaxonCflore setBibNoms()            Sets the current record's "BibNoms" value
- * @method CorUniteTaxonCflore setLUnitesGeo()         Sets the current record's "LUnitesGeo" value
- * @method CorUniteTaxonCflore setVNomadeTaxonsFlore() Sets the current record's "VNomadeTaxonsFlore" collection
+ * @method integer             get()                   Returns the current record's "id_nom" value
+ * @method integer             get()                   Returns the current record's "id_unite_geo" value
+ * @method date                get()                   Returns the current record's "derniere_date" value
+ * @method string              get()                   Returns the current record's "couleur" value
+ * @method integer             get()                   Returns the current record's "nb_obs" value
+ * @method BibNoms             get()                   Returns the current record's "BibNoms" value
+ * @method LUnitesGeo          get()                   Returns the current record's "LUnitesGeo" value
+ * @method Doctrine_Collection get()                   Returns the current record's "VNomadeTaxonsFlore" collection
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "id_nom" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "id_unite_geo" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "derniere_date" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "couleur" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "nb_obs" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "BibNoms" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "LUnitesGeo" value
+ * @method CorUniteTaxonCflore set()                   Sets the current record's "VNomadeTaxonsFlore" collection
  * 
  * @package    geonature
  * @subpackage model

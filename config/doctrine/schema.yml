@@ -1077,7 +1077,7 @@ Syntheseff:
       type: boolean(1)
       notnull: true
     effectif_total: integer(4)
-    the_geom_2154: blob()
+    the_geom_local: blob()
     the_geom_3857: blob()
     the_geom_point: blob()
   relations:
@@ -1170,7 +1170,7 @@ TApresence:
     remarques: string()
     the_geom: blob()
     the_geom_3857: blob()
-    the_geom_2154: blob()
+    the_geom_local: blob()
   relations:
     TZprospection:
       class: TZprospection
@@ -1302,7 +1302,7 @@ TFichesCf:
     pdop: integer(4)
     srid_dessin: integer(8)
     saisie_initiale: string(20)
-    the_geom_2154: blob()
+    the_geom_local: blob()
     the_geom_3857: blob()
   relations:
     LCommunes:
@@ -1347,7 +1347,7 @@ TFichesCflore:
     pdop: integer(4)
     srid_dessin: integer(4)
     saisie_initiale: string(20)
-    the_geom_2154: blob()
+    the_geom_local: blob()
     the_geom_3857: blob()
   relations:
     LCommunes:
@@ -1394,7 +1394,7 @@ TFichesInv:
     pdop: integer(4)
     srid_dessin: integer(8)
     saisie_initiale: string(20)
-    the_geom_2154: blob()
+    the_geom_local: blob()
     the_geom_3857: blob()
   relations:
     LCommunes:
@@ -1663,7 +1663,7 @@ TStationsBryo:
     remarques: string()
     pdop: 
       type: 'decimal(10, 2)'
-    the_geom_2154: blob()
+    the_geom_local: blob()
     the_geom_3857: blob()
     srid_dessin: integer(4)
     supprime: boolean(1)
@@ -1753,7 +1753,7 @@ TStationsFs:
     remarques: string()
     pdop: 
       type: 'decimal(10, 2)'
-    the_geom_2154: blob()
+    the_geom_local: blob()
     the_geom_3857: blob()
     srid_dessin: integer(4)
     supprime: boolean(1)
@@ -1828,7 +1828,7 @@ TZprospection:
       notnull: true
     the_geom: blob()
     the_geom_3857: blob()
-    the_geom_2154: blob()
+    the_geom_local: blob()
     geom_mixte_3857: blob()
     geom_point_3857: blob()
     date_insert: timestamp(25)

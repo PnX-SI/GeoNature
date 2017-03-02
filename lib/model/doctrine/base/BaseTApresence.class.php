@@ -31,7 +31,7 @@
  * @property string $remarques
  * @property blob $the_geom
  * @property blob $the_geom_3857
- * @property blob $the_geom_2154
+ * @property blob $the_geom_local
  * @property TZprospection $TZprospection
  * @property BibPhenologies $BibPhenologies
  * @property BibFrequencesMethodo $BibFrequencesMethodo
@@ -40,74 +40,74 @@
  * @property Doctrine_Collection $CorApPerturb
  * @property Doctrine_Collection $CorApPhysionomie
  * 
- * @method integer                 getIndexap()                   Returns the current record's "indexap" value
- * @method integer                 getCodepheno()                 Returns the current record's "codepheno" value
- * @method integer                 getIndexzp()                   Returns the current record's "indexzp" value
- * @method integer                 getSurfaceap()                 Returns the current record's "surfaceap" value
- * @method string                  getIdFrequenceMethodo()        Returns the current record's "id_frequence_methodo" value
- * @method string                  getIdFrequenceMethodoNew()     Returns the current record's "id_frequence_methodo_new" value
- * @method integer                 getIdComptageMethodo()         Returns the current record's "id_comptage_methodo" value
- * @method integer                 getFrequenceap()               Returns the current record's "frequenceap" value
- * @method integer                 getApPdop()                    Returns the current record's "ap_pdop" value
- * @method integer                 getAltitudeSaisie()            Returns the current record's "altitude_saisie" value
- * @method integer                 getAltitudeSig()               Returns the current record's "altitude_sig" value
- * @method integer                 getAltitudeRetenue()           Returns the current record's "altitude_retenue" value
- * @method timestamp               getDateInsert()                Returns the current record's "date_insert" value
- * @method timestamp               getDateUpdate()                Returns the current record's "date_update" value
- * @method boolean                 getTopoValid()                 Returns the current record's "topo_valid" value
- * @method boolean                 getErreurSignalee()            Returns the current record's "erreur_signalee" value
- * @method boolean                 getSupprime()                  Returns the current record's "supprime" value
- * @method string                  getInsee()                     Returns the current record's "insee" value
- * @method integer                 getNbTransectsFrequence()      Returns the current record's "nb_transects_frequence" value
- * @method integer                 getNbPointsFrequence()         Returns the current record's "nb_points_frequence" value
- * @method integer                 getNbContactsFrequence()       Returns the current record's "nb_contacts_frequence" value
- * @method integer                 getNbPlacettesComptage()       Returns the current record's "nb_placettes_comptage" value
- * @method decimal                 getSurfacePlacetteComptage()   Returns the current record's "surface_placette_comptage" value
- * @method string                  getRemarques()                 Returns the current record's "remarques" value
- * @method blob                    getTheGeom()                   Returns the current record's "the_geom" value
- * @method blob                    getTheGeom3857()               Returns the current record's "the_geom_3857" value
- * @method blob                    getTheGeom2154()               Returns the current record's "the_geom_2154" value
- * @method TZprospection           getTZprospection()             Returns the current record's "TZprospection" value
- * @method BibPhenologies          getBibPhenologies()            Returns the current record's "BibPhenologies" value
- * @method BibFrequencesMethodo    getBibFrequencesMethodo()      Returns the current record's "BibFrequencesMethodo" value
- * @method BibFrequencesMethodoNew getBibFrequencesMethodoNew()   Returns the current record's "BibFrequencesMethodoNew" value
- * @method BibComptagesMethodo     getBibComptagesMethodo()       Returns the current record's "BibComptagesMethodo" value
- * @method Doctrine_Collection     getCorApPerturb()              Returns the current record's "CorApPerturb" collection
- * @method Doctrine_Collection     getCorApPhysionomie()          Returns the current record's "CorApPhysionomie" collection
- * @method TApresence              setIndexap()                   Sets the current record's "indexap" value
- * @method TApresence              setCodepheno()                 Sets the current record's "codepheno" value
- * @method TApresence              setIndexzp()                   Sets the current record's "indexzp" value
- * @method TApresence              setSurfaceap()                 Sets the current record's "surfaceap" value
- * @method TApresence              setIdFrequenceMethodo()        Sets the current record's "id_frequence_methodo" value
- * @method TApresence              setIdFrequenceMethodoNew()     Sets the current record's "id_frequence_methodo_new" value
- * @method TApresence              setIdComptageMethodo()         Sets the current record's "id_comptage_methodo" value
- * @method TApresence              setFrequenceap()               Sets the current record's "frequenceap" value
- * @method TApresence              setApPdop()                    Sets the current record's "ap_pdop" value
- * @method TApresence              setAltitudeSaisie()            Sets the current record's "altitude_saisie" value
- * @method TApresence              setAltitudeSig()               Sets the current record's "altitude_sig" value
- * @method TApresence              setAltitudeRetenue()           Sets the current record's "altitude_retenue" value
- * @method TApresence              setDateInsert()                Sets the current record's "date_insert" value
- * @method TApresence              setDateUpdate()                Sets the current record's "date_update" value
- * @method TApresence              setTopoValid()                 Sets the current record's "topo_valid" value
- * @method TApresence              setErreurSignalee()            Sets the current record's "erreur_signalee" value
- * @method TApresence              setSupprime()                  Sets the current record's "supprime" value
- * @method TApresence              setInsee()                     Sets the current record's "insee" value
- * @method TApresence              setNbTransectsFrequence()      Sets the current record's "nb_transects_frequence" value
- * @method TApresence              setNbPointsFrequence()         Sets the current record's "nb_points_frequence" value
- * @method TApresence              setNbContactsFrequence()       Sets the current record's "nb_contacts_frequence" value
- * @method TApresence              setNbPlacettesComptage()       Sets the current record's "nb_placettes_comptage" value
- * @method TApresence              setSurfacePlacetteComptage()   Sets the current record's "surface_placette_comptage" value
- * @method TApresence              setRemarques()                 Sets the current record's "remarques" value
- * @method TApresence              setTheGeom()                   Sets the current record's "the_geom" value
- * @method TApresence              setTheGeom3857()               Sets the current record's "the_geom_3857" value
- * @method TApresence              setTheGeom2154()               Sets the current record's "the_geom_2154" value
- * @method TApresence              setTZprospection()             Sets the current record's "TZprospection" value
- * @method TApresence              setBibPhenologies()            Sets the current record's "BibPhenologies" value
- * @method TApresence              setBibFrequencesMethodo()      Sets the current record's "BibFrequencesMethodo" value
- * @method TApresence              setBibFrequencesMethodoNew()   Sets the current record's "BibFrequencesMethodoNew" value
- * @method TApresence              setBibComptagesMethodo()       Sets the current record's "BibComptagesMethodo" value
- * @method TApresence              setCorApPerturb()              Sets the current record's "CorApPerturb" collection
- * @method TApresence              setCorApPhysionomie()          Sets the current record's "CorApPhysionomie" collection
+ * @method integer                 get()                          Returns the current record's "indexap" value
+ * @method integer                 get()                          Returns the current record's "codepheno" value
+ * @method integer                 get()                          Returns the current record's "indexzp" value
+ * @method integer                 get()                          Returns the current record's "surfaceap" value
+ * @method string                  get()                          Returns the current record's "id_frequence_methodo" value
+ * @method string                  get()                          Returns the current record's "id_frequence_methodo_new" value
+ * @method integer                 get()                          Returns the current record's "id_comptage_methodo" value
+ * @method integer                 get()                          Returns the current record's "frequenceap" value
+ * @method integer                 get()                          Returns the current record's "ap_pdop" value
+ * @method integer                 get()                          Returns the current record's "altitude_saisie" value
+ * @method integer                 get()                          Returns the current record's "altitude_sig" value
+ * @method integer                 get()                          Returns the current record's "altitude_retenue" value
+ * @method timestamp               get()                          Returns the current record's "date_insert" value
+ * @method timestamp               get()                          Returns the current record's "date_update" value
+ * @method boolean                 get()                          Returns the current record's "topo_valid" value
+ * @method boolean                 get()                          Returns the current record's "erreur_signalee" value
+ * @method boolean                 get()                          Returns the current record's "supprime" value
+ * @method string                  get()                          Returns the current record's "insee" value
+ * @method integer                 get()                          Returns the current record's "nb_transects_frequence" value
+ * @method integer                 get()                          Returns the current record's "nb_points_frequence" value
+ * @method integer                 get()                          Returns the current record's "nb_contacts_frequence" value
+ * @method integer                 get()                          Returns the current record's "nb_placettes_comptage" value
+ * @method decimal                 get()                          Returns the current record's "surface_placette_comptage" value
+ * @method string                  get()                          Returns the current record's "remarques" value
+ * @method blob                    get()                          Returns the current record's "the_geom" value
+ * @method blob                    get()                          Returns the current record's "the_geom_3857" value
+ * @method blob                    get()                          Returns the current record's "the_geom_local" value
+ * @method TZprospection           get()                          Returns the current record's "TZprospection" value
+ * @method BibPhenologies          get()                          Returns the current record's "BibPhenologies" value
+ * @method BibFrequencesMethodo    get()                          Returns the current record's "BibFrequencesMethodo" value
+ * @method BibFrequencesMethodoNew get()                          Returns the current record's "BibFrequencesMethodoNew" value
+ * @method BibComptagesMethodo     get()                          Returns the current record's "BibComptagesMethodo" value
+ * @method Doctrine_Collection     get()                          Returns the current record's "CorApPerturb" collection
+ * @method Doctrine_Collection     get()                          Returns the current record's "CorApPhysionomie" collection
+ * @method TApresence              set()                          Sets the current record's "indexap" value
+ * @method TApresence              set()                          Sets the current record's "codepheno" value
+ * @method TApresence              set()                          Sets the current record's "indexzp" value
+ * @method TApresence              set()                          Sets the current record's "surfaceap" value
+ * @method TApresence              set()                          Sets the current record's "id_frequence_methodo" value
+ * @method TApresence              set()                          Sets the current record's "id_frequence_methodo_new" value
+ * @method TApresence              set()                          Sets the current record's "id_comptage_methodo" value
+ * @method TApresence              set()                          Sets the current record's "frequenceap" value
+ * @method TApresence              set()                          Sets the current record's "ap_pdop" value
+ * @method TApresence              set()                          Sets the current record's "altitude_saisie" value
+ * @method TApresence              set()                          Sets the current record's "altitude_sig" value
+ * @method TApresence              set()                          Sets the current record's "altitude_retenue" value
+ * @method TApresence              set()                          Sets the current record's "date_insert" value
+ * @method TApresence              set()                          Sets the current record's "date_update" value
+ * @method TApresence              set()                          Sets the current record's "topo_valid" value
+ * @method TApresence              set()                          Sets the current record's "erreur_signalee" value
+ * @method TApresence              set()                          Sets the current record's "supprime" value
+ * @method TApresence              set()                          Sets the current record's "insee" value
+ * @method TApresence              set()                          Sets the current record's "nb_transects_frequence" value
+ * @method TApresence              set()                          Sets the current record's "nb_points_frequence" value
+ * @method TApresence              set()                          Sets the current record's "nb_contacts_frequence" value
+ * @method TApresence              set()                          Sets the current record's "nb_placettes_comptage" value
+ * @method TApresence              set()                          Sets the current record's "surface_placette_comptage" value
+ * @method TApresence              set()                          Sets the current record's "remarques" value
+ * @method TApresence              set()                          Sets the current record's "the_geom" value
+ * @method TApresence              set()                          Sets the current record's "the_geom_3857" value
+ * @method TApresence              set()                          Sets the current record's "the_geom_local" value
+ * @method TApresence              set()                          Sets the current record's "TZprospection" value
+ * @method TApresence              set()                          Sets the current record's "BibPhenologies" value
+ * @method TApresence              set()                          Sets the current record's "BibFrequencesMethodo" value
+ * @method TApresence              set()                          Sets the current record's "BibFrequencesMethodoNew" value
+ * @method TApresence              set()                          Sets the current record's "BibComptagesMethodo" value
+ * @method TApresence              set()                          Sets the current record's "CorApPerturb" collection
+ * @method TApresence              set()                          Sets the current record's "CorApPhysionomie" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -233,7 +233,7 @@ abstract class BaseTApresence extends sfDoctrineRecord
              'type' => 'blob',
              'length' => '',
              ));
-        $this->hasColumn('the_geom_2154', 'blob', null, array(
+        $this->hasColumn('the_geom_local', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

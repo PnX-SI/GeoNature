@@ -9,12 +9,12 @@
  * @property string $nom_abondance
  * @property Doctrine_Collection $CorBryoTaxon
  * 
- * @method string              getIdAbondance()   Returns the current record's "id_abondance" value
- * @method string              getNomAbondance()  Returns the current record's "nom_abondance" value
- * @method Doctrine_Collection getCorBryoTaxon()  Returns the current record's "CorBryoTaxon" collection
- * @method BibAbondancesBryo   setIdAbondance()   Sets the current record's "id_abondance" value
- * @method BibAbondancesBryo   setNomAbondance()  Sets the current record's "nom_abondance" value
- * @method BibAbondancesBryo   setCorBryoTaxon()  Sets the current record's "CorBryoTaxon" collection
+ * @method string              get()              Returns the current record's "id_abondance" value
+ * @method string              get()              Returns the current record's "nom_abondance" value
+ * @method Doctrine_Collection get()              Returns the current record's "CorBryoTaxon" collection
+ * @method BibAbondancesBryo   set()              Sets the current record's "id_abondance" value
+ * @method BibAbondancesBryo   set()              Sets the current record's "nom_abondance" value
+ * @method BibAbondancesBryo   set()              Sets the current record's "CorBryoTaxon" collection
  * 
  * @package    geonature
  * @subpackage model

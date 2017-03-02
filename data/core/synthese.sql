@@ -333,7 +333,7 @@ IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
 		INSERT INTO synthese.cor_unite_synthese (id_synthese, cd_nom, dateobs, id_unite_geo)
 		SELECT s.id_synthese, s.cd_nom, s.dateobs,u.id_unite_geo 
         FROM synthese.syntheseff s, layers.l_unites_geo u
-		WHERE public.st_intersects(u.the_geom, s.the_geom_2154) 
+		WHERE public.st_intersects(u.the_geom, s.the_geom_local) 
 		AND s.id_synthese = new.id_synthese;
 	END IF;
 END IF;	
@@ -363,7 +363,7 @@ IF (TG_OP = 'INSERT') or (TG_OP = 'UPDATE') THEN
 	IF new.supprime = FALSE THEN
 		INSERT INTO synthese.cor_zonesstatut_synthese (id_zone,id_synthese)
 		SELECT z.id_zone,s.id_synthese FROM synthese.syntheseff s, layers.l_zonesstatut z 
-		WHERE public.st_intersects(z.the_geom, s.the_geom_2154)
+		WHERE public.st_intersects(z.the_geom, s.the_geom_local)
 		AND z.id_type IN(1,4,5,6,7,8,9,10,11) -- typologie limitée au coeur, reserve, natura2000 etc...
 		AND s.id_synthese = new.id_synthese;
 	END IF;
@@ -422,7 +422,7 @@ CREATE TABLE l_unites_geo (
     the_geom public.geometry,
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -451,7 +451,7 @@ CREATE TABLE l_aireadhesion (
     the_geom public.geometry,
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'LINESTRING'::text) OR (public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR the_geom IS NULL)),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -485,7 +485,7 @@ CREATE TABLE l_communes (
     the_geom public.geometry,
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 --
@@ -498,7 +498,7 @@ CREATE TABLE l_isolines20 (
     the_geom public.geometry,
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTILINESTRING'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -531,7 +531,7 @@ CREATE TABLE l_secteurs (
     the_geom public.geometry,
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -547,7 +547,7 @@ CREATE TABLE l_zonesstatut (
     the_geom public.geometry,
     --CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2) OR (public.st_ndims(the_geom) = 4)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -661,14 +661,13 @@ CREATE TABLE syntheseff (
     id_critere_synthese integer,
     the_geom_3857 public.geometry,
     effectif_total integer,
-    the_geom_2154 public.geometry,
+    the_geom_local public.geometry,
     diffusable boolean DEFAULT true,
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
-    CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
 );
@@ -870,8 +869,8 @@ CREATE OR REPLACE VIEW v_export_sinp AS
     p.nom_programme,
     s.insee,
     s.altitude_retenue AS altitude,
-    public.st_x(public.st_transform(s.the_geom_point, 2154))::integer AS x,
-    public.st_y(public.st_transform(s.the_geom_point, 2154))::integer AS y,
+    public.st_x(public.st_transform(s.the_geom_point, MYLOCALSRID))::integer AS x,
+    public.st_y(public.st_transform(s.the_geom_point, MYLOCALSRID))::integer AS y,
     s.derniere_action,
     s.date_insert,
     s.date_update

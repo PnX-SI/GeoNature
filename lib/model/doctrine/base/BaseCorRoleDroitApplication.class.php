@@ -11,16 +11,16 @@
  * @property TRoles $TRoles
  * @property BibDroits $BibDroits
  * 
- * @method integer                 getIdRole()         Returns the current record's "id_role" value
- * @method integer                 getIdDroit()        Returns the current record's "id_droit" value
- * @method integer                 getIdApplication()  Returns the current record's "id_application" value
- * @method TRoles                  getTRoles()         Returns the current record's "TRoles" value
- * @method BibDroits               getBibDroits()      Returns the current record's "BibDroits" value
- * @method CorRoleDroitApplication setIdRole()         Sets the current record's "id_role" value
- * @method CorRoleDroitApplication setIdDroit()        Sets the current record's "id_droit" value
- * @method CorRoleDroitApplication setIdApplication()  Sets the current record's "id_application" value
- * @method CorRoleDroitApplication setTRoles()         Sets the current record's "TRoles" value
- * @method CorRoleDroitApplication setBibDroits()      Sets the current record's "BibDroits" value
+ * @method integer                 get()               Returns the current record's "id_role" value
+ * @method integer                 get()               Returns the current record's "id_droit" value
+ * @method integer                 get()               Returns the current record's "id_application" value
+ * @method TRoles                  get()               Returns the current record's "TRoles" value
+ * @method BibDroits               get()               Returns the current record's "BibDroits" value
+ * @method CorRoleDroitApplication set()               Sets the current record's "id_role" value
+ * @method CorRoleDroitApplication set()               Sets the current record's "id_droit" value
+ * @method CorRoleDroitApplication set()               Sets the current record's "id_application" value
+ * @method CorRoleDroitApplication set()               Sets the current record's "TRoles" value
+ * @method CorRoleDroitApplication set()               Sets the current record's "BibDroits" value
  * 
  * @package    geonature
  * @subpackage model

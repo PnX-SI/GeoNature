@@ -8,10 +8,10 @@
  * @property string $id_rang
  * @property string $nom_rang
  * 
- * @method string         getIdRang()   Returns the current record's "id_rang" value
- * @method string         getNomRang()  Returns the current record's "nom_rang" value
- * @method BibTaxrefRangs setIdRang()   Sets the current record's "id_rang" value
- * @method BibTaxrefRangs setNomRang()  Sets the current record's "nom_rang" value
+ * @method string         get()         Returns the current record's "id_rang" value
+ * @method string         get()         Returns the current record's "nom_rang" value
+ * @method BibTaxrefRangs set()         Sets the current record's "id_rang" value
+ * @method BibTaxrefRangs set()         Sets the current record's "nom_rang" value
  * 
  * @package    geonature
  * @subpackage model

@@ -10,14 +10,14 @@
  * @property string $nom_classe
  * @property string $desc_classe
  * 
- * @method integer    getIdClasse()         Returns the current record's "id_classe" value
- * @method integer    getIdEmbranchement()  Returns the current record's "id_embranchement" value
- * @method string     getNomClasse()        Returns the current record's "nom_classe" value
- * @method string     getDescClasse()       Returns the current record's "desc_classe" value
- * @method BibClasses setIdClasse()         Sets the current record's "id_classe" value
- * @method BibClasses setIdEmbranchement()  Sets the current record's "id_embranchement" value
- * @method BibClasses setNomClasse()        Sets the current record's "nom_classe" value
- * @method BibClasses setDescClasse()       Sets the current record's "desc_classe" value
+ * @method integer    get()                 Returns the current record's "id_classe" value
+ * @method integer    get()                 Returns the current record's "id_embranchement" value
+ * @method string     get()                 Returns the current record's "nom_classe" value
+ * @method string     get()                 Returns the current record's "desc_classe" value
+ * @method BibClasses set()                 Sets the current record's "id_classe" value
+ * @method BibClasses set()                 Sets the current record's "id_embranchement" value
+ * @method BibClasses set()                 Sets the current record's "nom_classe" value
+ * @method BibClasses set()                 Sets the current record's "desc_classe" value
  * @property BibEmbranchements $
  * 
  * @package    geonature

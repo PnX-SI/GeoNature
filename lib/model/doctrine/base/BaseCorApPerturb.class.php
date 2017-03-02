@@ -10,14 +10,14 @@
  * @property BibPerturbations $BibPerturbations
  * @property TApresence $TApresence
  * 
- * @method integer          getIndexap()          Returns the current record's "indexap" value
- * @method integer          getCodeper()          Returns the current record's "codeper" value
- * @method BibPerturbations getBibPerturbations() Returns the current record's "BibPerturbations" value
- * @method TApresence       getTApresence()       Returns the current record's "TApresence" value
- * @method CorApPerturb     setIndexap()          Sets the current record's "indexap" value
- * @method CorApPerturb     setCodeper()          Sets the current record's "codeper" value
- * @method CorApPerturb     setBibPerturbations() Sets the current record's "BibPerturbations" value
- * @method CorApPerturb     setTApresence()       Sets the current record's "TApresence" value
+ * @method integer          get()                 Returns the current record's "indexap" value
+ * @method integer          get()                 Returns the current record's "codeper" value
+ * @method BibPerturbations get()                 Returns the current record's "BibPerturbations" value
+ * @method TApresence       get()                 Returns the current record's "TApresence" value
+ * @method CorApPerturb     set()                 Sets the current record's "indexap" value
+ * @method CorApPerturb     set()                 Sets the current record's "codeper" value
+ * @method CorApPerturb     set()                 Sets the current record's "BibPerturbations" value
+ * @method CorApPerturb     set()                 Sets the current record's "TApresence" value
  * 
  * @package    geonature
  * @subpackage model

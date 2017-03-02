@@ -17,28 +17,28 @@
  * @property boolean $concerne_mon_territoire
  * @property Doctrine_Collection $TaxrefProtectionEspeces
  * 
- * @method string                   getCdProtection()            Returns the current record's "cd_protection" value
- * @method string                   getArticle()                 Returns the current record's "article" value
- * @method string                   getIntitule()                Returns the current record's "intitule" value
- * @method string                   getArrete()                  Returns the current record's "arrete" value
- * @method string                   getUrlInpn()                 Returns the current record's "url_inpn" value
- * @method integer                  getCdDoc()                   Returns the current record's "cd_doc" value
- * @method string                   getUrl()                     Returns the current record's "url" value
- * @method integer                  getDateArrete()              Returns the current record's "date_arrete" value
- * @method string                   getTypeProtection()          Returns the current record's "type_protection" value
- * @method boolean                  getConcerneMonTerritoire()   Returns the current record's "concerne_mon_territoire" value
- * @method Doctrine_Collection      getTaxrefProtectionEspeces() Returns the current record's "TaxrefProtectionEspeces" collection
- * @method TaxrefProtectionArticles setCdProtection()            Sets the current record's "cd_protection" value
- * @method TaxrefProtectionArticles setArticle()                 Sets the current record's "article" value
- * @method TaxrefProtectionArticles setIntitule()                Sets the current record's "intitule" value
- * @method TaxrefProtectionArticles setArrete()                  Sets the current record's "arrete" value
- * @method TaxrefProtectionArticles setUrlInpn()                 Sets the current record's "url_inpn" value
- * @method TaxrefProtectionArticles setCdDoc()                   Sets the current record's "cd_doc" value
- * @method TaxrefProtectionArticles setUrl()                     Sets the current record's "url" value
- * @method TaxrefProtectionArticles setDateArrete()              Sets the current record's "date_arrete" value
- * @method TaxrefProtectionArticles setTypeProtection()          Sets the current record's "type_protection" value
- * @method TaxrefProtectionArticles setConcerneMonTerritoire()   Sets the current record's "concerne_mon_territoire" value
- * @method TaxrefProtectionArticles setTaxrefProtectionEspeces() Sets the current record's "TaxrefProtectionEspeces" collection
+ * @method string                   get()                        Returns the current record's "cd_protection" value
+ * @method string                   get()                        Returns the current record's "article" value
+ * @method string                   get()                        Returns the current record's "intitule" value
+ * @method string                   get()                        Returns the current record's "arrete" value
+ * @method string                   get()                        Returns the current record's "url_inpn" value
+ * @method integer                  get()                        Returns the current record's "cd_doc" value
+ * @method string                   get()                        Returns the current record's "url" value
+ * @method integer                  get()                        Returns the current record's "date_arrete" value
+ * @method string                   get()                        Returns the current record's "type_protection" value
+ * @method boolean                  get()                        Returns the current record's "concerne_mon_territoire" value
+ * @method Doctrine_Collection      get()                        Returns the current record's "TaxrefProtectionEspeces" collection
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "cd_protection" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "article" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "intitule" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "arrete" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "url_inpn" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "cd_doc" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "url" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "date_arrete" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "type_protection" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "concerne_mon_territoire" value
+ * @method TaxrefProtectionArticles set()                        Sets the current record's "TaxrefProtectionEspeces" collection
  * 
  * @package    geonature
  * @subpackage model

@@ -8,10 +8,10 @@
  * @property integer $id_habitat
  * @property string $nom_habitat
  * 
- * @method integer           getIdHabitat()   Returns the current record's "id_habitat" value
- * @method string            getNomHabitat()  Returns the current record's "nom_habitat" value
- * @method BibTaxrefHabitats setIdHabitat()   Sets the current record's "id_habitat" value
- * @method BibTaxrefHabitats setNomHabitat()  Sets the current record's "nom_habitat" value
+ * @method integer           get()            Returns the current record's "id_habitat" value
+ * @method string            get()            Returns the current record's "nom_habitat" value
+ * @method BibTaxrefHabitats set()            Sets the current record's "id_habitat" value
+ * @method BibTaxrefHabitats set()            Sets the current record's "nom_habitat" value
  * 
  * @package    geonature
  * @subpackage model

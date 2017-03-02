@@ -10,14 +10,14 @@
  * @property TStationsFs $TStationsFs
  * @property BibMicroreliefs $BibMicroreliefs
  * 
- * @method integer          getIdStation()       Returns the current record's "id_station" value
- * @method integer          getIdMicrorelief()   Returns the current record's "id_microrelief" value
- * @method TStationsFs      getTStationsFs()     Returns the current record's "TStationsFs" value
- * @method BibMicroreliefs  getBibMicroreliefs() Returns the current record's "BibMicroreliefs" value
- * @method CorFsMicrorelief setIdStation()       Sets the current record's "id_station" value
- * @method CorFsMicrorelief setIdMicrorelief()   Sets the current record's "id_microrelief" value
- * @method CorFsMicrorelief setTStationsFs()     Sets the current record's "TStationsFs" value
- * @method CorFsMicrorelief setBibMicroreliefs() Sets the current record's "BibMicroreliefs" value
+ * @method integer          get()                Returns the current record's "id_station" value
+ * @method integer          get()                Returns the current record's "id_microrelief" value
+ * @method TStationsFs      get()                Returns the current record's "TStationsFs" value
+ * @method BibMicroreliefs  get()                Returns the current record's "BibMicroreliefs" value
+ * @method CorFsMicrorelief set()                Sets the current record's "id_station" value
+ * @method CorFsMicrorelief set()                Sets the current record's "id_microrelief" value
+ * @method CorFsMicrorelief set()                Sets the current record's "TStationsFs" value
+ * @method CorFsMicrorelief set()                Sets the current record's "BibMicroreliefs" value
  * 
  * @package    geonature
  * @subpackage model

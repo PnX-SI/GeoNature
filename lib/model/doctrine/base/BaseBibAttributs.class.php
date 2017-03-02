@@ -19,32 +19,32 @@
  * @property BibThemes $BibThemes
  * @property Doctrine_Collection $CorTaxonAttribut
  * 
- * @method integer             getIdAttribut()            Returns the current record's "id_attribut" value
- * @method string              getNomAttribut()           Returns the current record's "nom_attribut" value
- * @method string              getLabelAttribut()         Returns the current record's "label_attribut" value
- * @method string              getListeValeurAttribut()   Returns the current record's "liste_valeur_attribut" value
- * @method boolean             getObligatoire()           Returns the current record's "obligatoire" value
- * @method string              getDescAttribut()          Returns the current record's "desc_attribut" value
- * @method string              getTypeAttribut()          Returns the current record's "type_attribut" value
- * @method integer             getIdTheme()               Returns the current record's "id_theme" value
- * @method string              getTypeWidget()            Returns the current record's "type_widget" value
- * @method string              getRegne()                 Returns the current record's "regne" value
- * @method string              getGroup2Inpn()            Returns the current record's "group2_inpn" value
- * @method BibThemes           getBibThemes()             Returns the current record's "BibThemes" value
- * @method Doctrine_Collection getCorTaxonAttribut()      Returns the current record's "CorTaxonAttribut" collection
- * @method BibAttributs        setIdAttribut()            Sets the current record's "id_attribut" value
- * @method BibAttributs        setNomAttribut()           Sets the current record's "nom_attribut" value
- * @method BibAttributs        setLabelAttribut()         Sets the current record's "label_attribut" value
- * @method BibAttributs        setListeValeurAttribut()   Sets the current record's "liste_valeur_attribut" value
- * @method BibAttributs        setObligatoire()           Sets the current record's "obligatoire" value
- * @method BibAttributs        setDescAttribut()          Sets the current record's "desc_attribut" value
- * @method BibAttributs        setTypeAttribut()          Sets the current record's "type_attribut" value
- * @method BibAttributs        setIdTheme()               Sets the current record's "id_theme" value
- * @method BibAttributs        setTypeWidget()            Sets the current record's "type_widget" value
- * @method BibAttributs        setRegne()                 Sets the current record's "regne" value
- * @method BibAttributs        setGroup2Inpn()            Sets the current record's "group2_inpn" value
- * @method BibAttributs        setBibThemes()             Sets the current record's "BibThemes" value
- * @method BibAttributs        setCorTaxonAttribut()      Sets the current record's "CorTaxonAttribut" collection
+ * @method integer             get()                      Returns the current record's "id_attribut" value
+ * @method string              get()                      Returns the current record's "nom_attribut" value
+ * @method string              get()                      Returns the current record's "label_attribut" value
+ * @method string              get()                      Returns the current record's "liste_valeur_attribut" value
+ * @method boolean             get()                      Returns the current record's "obligatoire" value
+ * @method string              get()                      Returns the current record's "desc_attribut" value
+ * @method string              get()                      Returns the current record's "type_attribut" value
+ * @method integer             get()                      Returns the current record's "id_theme" value
+ * @method string              get()                      Returns the current record's "type_widget" value
+ * @method string              get()                      Returns the current record's "regne" value
+ * @method string              get()                      Returns the current record's "group2_inpn" value
+ * @method BibThemes           get()                      Returns the current record's "BibThemes" value
+ * @method Doctrine_Collection get()                      Returns the current record's "CorTaxonAttribut" collection
+ * @method BibAttributs        set()                      Sets the current record's "id_attribut" value
+ * @method BibAttributs        set()                      Sets the current record's "nom_attribut" value
+ * @method BibAttributs        set()                      Sets the current record's "label_attribut" value
+ * @method BibAttributs        set()                      Sets the current record's "liste_valeur_attribut" value
+ * @method BibAttributs        set()                      Sets the current record's "obligatoire" value
+ * @method BibAttributs        set()                      Sets the current record's "desc_attribut" value
+ * @method BibAttributs        set()                      Sets the current record's "type_attribut" value
+ * @method BibAttributs        set()                      Sets the current record's "id_theme" value
+ * @method BibAttributs        set()                      Sets the current record's "type_widget" value
+ * @method BibAttributs        set()                      Sets the current record's "regne" value
+ * @method BibAttributs        set()                      Sets the current record's "group2_inpn" value
+ * @method BibAttributs        set()                      Sets the current record's "BibThemes" value
+ * @method BibAttributs        set()                      Sets the current record's "CorTaxonAttribut" collection
  * 
  * @package    geonature
  * @subpackage model

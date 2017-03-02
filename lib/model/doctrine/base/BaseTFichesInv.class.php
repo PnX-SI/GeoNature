@@ -22,7 +22,7 @@
  * @property integer $pdop
  * @property integer $srid_dessin
  * @property string $saisie_initiale
- * @property blob $the_geom_2154
+ * @property blob $the_geom_local
  * @property blob $the_geom_3857
  * @property LCommunes $LCommunes
  * @property TProtocoles $TProtocoles
@@ -31,56 +31,56 @@
  * @property Doctrine_Collection $CorRoleFicheInv
  * @property Doctrine_Collection $TRelevesInv
  * 
- * @method integer             getIdInv()            Returns the current record's "id_inv" value
- * @method string              getInsee()            Returns the current record's "insee" value
- * @method integer             getIdOrganisme()      Returns the current record's "id_organisme" value
- * @method integer             getIdProtocole()      Returns the current record's "id_protocole" value
- * @method integer             getIdLot()            Returns the current record's "id_lot" value
- * @method date                getDateobs()          Returns the current record's "dateobs" value
- * @method integer             getHeure()            Returns the current record's "heure" value
- * @method integer             getIdMilieuInv()      Returns the current record's "id_milieu_inv" value
- * @method integer             getAltitudeSaisie()   Returns the current record's "altitude_saisie" value
- * @method integer             getAltitudeSig()      Returns the current record's "altitude_sig" value
- * @method integer             getAltitudeRetenue()  Returns the current record's "altitude_retenue" value
- * @method timestamp           getDateInsert()       Returns the current record's "date_insert" value
- * @method timestamp           getDateUpdate()       Returns the current record's "date_update" value
- * @method boolean             getSupprime()         Returns the current record's "supprime" value
- * @method integer             getPdop()             Returns the current record's "pdop" value
- * @method integer             getSridDessin()       Returns the current record's "srid_dessin" value
- * @method string              getSaisieInitiale()   Returns the current record's "saisie_initiale" value
- * @method blob                getTheGeom2154()      Returns the current record's "the_geom_2154" value
- * @method blob                getTheGeom3857()      Returns the current record's "the_geom_3857" value
- * @method LCommunes           getLCommunes()        Returns the current record's "LCommunes" value
- * @method TProtocoles         getTProtocoles()      Returns the current record's "TProtocoles" value
- * @method BibLots             getBibLots()          Returns the current record's "BibLots" value
- * @method BibMilieuxInv       getBibMilieuxInv()    Returns the current record's "BibMilieuxInv" value
- * @method Doctrine_Collection getCorRoleFicheInv()  Returns the current record's "CorRoleFicheInv" collection
- * @method Doctrine_Collection getTRelevesInv()      Returns the current record's "TRelevesInv" collection
- * @method TFichesInv          setIdInv()            Sets the current record's "id_inv" value
- * @method TFichesInv          setInsee()            Sets the current record's "insee" value
- * @method TFichesInv          setIdOrganisme()      Sets the current record's "id_organisme" value
- * @method TFichesInv          setIdProtocole()      Sets the current record's "id_protocole" value
- * @method TFichesInv          setIdLot()            Sets the current record's "id_lot" value
- * @method TFichesInv          setDateobs()          Sets the current record's "dateobs" value
- * @method TFichesInv          setHeure()            Sets the current record's "heure" value
- * @method TFichesInv          setIdMilieuInv()      Sets the current record's "id_milieu_inv" value
- * @method TFichesInv          setAltitudeSaisie()   Sets the current record's "altitude_saisie" value
- * @method TFichesInv          setAltitudeSig()      Sets the current record's "altitude_sig" value
- * @method TFichesInv          setAltitudeRetenue()  Sets the current record's "altitude_retenue" value
- * @method TFichesInv          setDateInsert()       Sets the current record's "date_insert" value
- * @method TFichesInv          setDateUpdate()       Sets the current record's "date_update" value
- * @method TFichesInv          setSupprime()         Sets the current record's "supprime" value
- * @method TFichesInv          setPdop()             Sets the current record's "pdop" value
- * @method TFichesInv          setSridDessin()       Sets the current record's "srid_dessin" value
- * @method TFichesInv          setSaisieInitiale()   Sets the current record's "saisie_initiale" value
- * @method TFichesInv          setTheGeom2154()      Sets the current record's "the_geom_2154" value
- * @method TFichesInv          setTheGeom3857()      Sets the current record's "the_geom_3857" value
- * @method TFichesInv          setLCommunes()        Sets the current record's "LCommunes" value
- * @method TFichesInv          setTProtocoles()      Sets the current record's "TProtocoles" value
- * @method TFichesInv          setBibLots()          Sets the current record's "BibLots" value
- * @method TFichesInv          setBibMilieuxInv()    Sets the current record's "BibMilieuxInv" value
- * @method TFichesInv          setCorRoleFicheInv()  Sets the current record's "CorRoleFicheInv" collection
- * @method TFichesInv          setTRelevesInv()      Sets the current record's "TRelevesInv" collection
+ * @method integer             get()                 Returns the current record's "id_inv" value
+ * @method string              get()                 Returns the current record's "insee" value
+ * @method integer             get()                 Returns the current record's "id_organisme" value
+ * @method integer             get()                 Returns the current record's "id_protocole" value
+ * @method integer             get()                 Returns the current record's "id_lot" value
+ * @method date                get()                 Returns the current record's "dateobs" value
+ * @method integer             get()                 Returns the current record's "heure" value
+ * @method integer             get()                 Returns the current record's "id_milieu_inv" value
+ * @method integer             get()                 Returns the current record's "altitude_saisie" value
+ * @method integer             get()                 Returns the current record's "altitude_sig" value
+ * @method integer             get()                 Returns the current record's "altitude_retenue" value
+ * @method timestamp           get()                 Returns the current record's "date_insert" value
+ * @method timestamp           get()                 Returns the current record's "date_update" value
+ * @method boolean             get()                 Returns the current record's "supprime" value
+ * @method integer             get()                 Returns the current record's "pdop" value
+ * @method integer             get()                 Returns the current record's "srid_dessin" value
+ * @method string              get()                 Returns the current record's "saisie_initiale" value
+ * @method blob                get()                 Returns the current record's "the_geom_local" value
+ * @method blob                get()                 Returns the current record's "the_geom_3857" value
+ * @method LCommunes           get()                 Returns the current record's "LCommunes" value
+ * @method TProtocoles         get()                 Returns the current record's "TProtocoles" value
+ * @method BibLots             get()                 Returns the current record's "BibLots" value
+ * @method BibMilieuxInv       get()                 Returns the current record's "BibMilieuxInv" value
+ * @method Doctrine_Collection get()                 Returns the current record's "CorRoleFicheInv" collection
+ * @method Doctrine_Collection get()                 Returns the current record's "TRelevesInv" collection
+ * @method TFichesInv          set()                 Sets the current record's "id_inv" value
+ * @method TFichesInv          set()                 Sets the current record's "insee" value
+ * @method TFichesInv          set()                 Sets the current record's "id_organisme" value
+ * @method TFichesInv          set()                 Sets the current record's "id_protocole" value
+ * @method TFichesInv          set()                 Sets the current record's "id_lot" value
+ * @method TFichesInv          set()                 Sets the current record's "dateobs" value
+ * @method TFichesInv          set()                 Sets the current record's "heure" value
+ * @method TFichesInv          set()                 Sets the current record's "id_milieu_inv" value
+ * @method TFichesInv          set()                 Sets the current record's "altitude_saisie" value
+ * @method TFichesInv          set()                 Sets the current record's "altitude_sig" value
+ * @method TFichesInv          set()                 Sets the current record's "altitude_retenue" value
+ * @method TFichesInv          set()                 Sets the current record's "date_insert" value
+ * @method TFichesInv          set()                 Sets the current record's "date_update" value
+ * @method TFichesInv          set()                 Sets the current record's "supprime" value
+ * @method TFichesInv          set()                 Sets the current record's "pdop" value
+ * @method TFichesInv          set()                 Sets the current record's "srid_dessin" value
+ * @method TFichesInv          set()                 Sets the current record's "saisie_initiale" value
+ * @method TFichesInv          set()                 Sets the current record's "the_geom_local" value
+ * @method TFichesInv          set()                 Sets the current record's "the_geom_3857" value
+ * @method TFichesInv          set()                 Sets the current record's "LCommunes" value
+ * @method TFichesInv          set()                 Sets the current record's "TProtocoles" value
+ * @method TFichesInv          set()                 Sets the current record's "BibLots" value
+ * @method TFichesInv          set()                 Sets the current record's "BibMilieuxInv" value
+ * @method TFichesInv          set()                 Sets the current record's "CorRoleFicheInv" collection
+ * @method TFichesInv          set()                 Sets the current record's "TRelevesInv" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -162,7 +162,7 @@ abstract class BaseTFichesInv extends sfDoctrineRecord
              'type' => 'string',
              'length' => 20,
              ));
-        $this->hasColumn('the_geom_2154', 'blob', null, array(
+        $this->hasColumn('the_geom_local', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

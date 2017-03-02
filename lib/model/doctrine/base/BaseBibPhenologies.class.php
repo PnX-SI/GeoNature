@@ -9,12 +9,12 @@
  * @property string $pheno
  * @property Doctrine_Collection $TApresence
  * 
- * @method integer             getCodepheno()  Returns the current record's "codepheno" value
- * @method string              getPheno()      Returns the current record's "pheno" value
- * @method Doctrine_Collection getTApresence() Returns the current record's "TApresence" collection
- * @method BibPhenologies      setCodepheno()  Sets the current record's "codepheno" value
- * @method BibPhenologies      setPheno()      Sets the current record's "pheno" value
- * @method BibPhenologies      setTApresence() Sets the current record's "TApresence" collection
+ * @method integer             get()           Returns the current record's "codepheno" value
+ * @method string              get()           Returns the current record's "pheno" value
+ * @method Doctrine_Collection get()           Returns the current record's "TApresence" collection
+ * @method BibPhenologies      set()           Sets the current record's "codepheno" value
+ * @method BibPhenologies      set()           Sets the current record's "pheno" value
+ * @method BibPhenologies      set()           Sets the current record's "TApresence" collection
  * 
  * @package    geonature
  * @subpackage model

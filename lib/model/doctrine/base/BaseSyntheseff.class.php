@@ -26,7 +26,7 @@
  * @property string $derniere_action
  * @property boolean $supprime
  * @property integer $effectif_total
- * @property blob $the_geom_2154
+ * @property blob $the_geom_local
  * @property blob $the_geom_3857
  * @property blob $the_geom_point
  * @property LCommunes $LCommunes
@@ -40,74 +40,74 @@
  * @property Doctrine_Collection $CorUniteSynthese
  * @property Doctrine_Collection $CorZonesstatutSynthese
  * 
- * @method integer             getIdSynthese()             Returns the current record's "id_synthese" value
- * @method integer             getIdSource()               Returns the current record's "id_source" value
- * @method string              getIdFicheSource()          Returns the current record's "id_fiche_source" value
- * @method string              getCodeFicheSource()        Returns the current record's "code_fiche_source" value
- * @method integer             getIdOrganisme()            Returns the current record's "id_organisme" value
- * @method integer             getIdProtocole()            Returns the current record's "id_protocole" value
- * @method integer             getIdPrecision()            Returns the current record's "id_precision" value
- * @method integer             getCdNom()                  Returns the current record's "cd_nom" value
- * @method integer             getIdLot()                  Returns the current record's "id_lot" value
- * @method integer             getIdCritereSynthese()      Returns the current record's "id_critere_synthese" value
- * @method string              getInsee()                  Returns the current record's "insee" value
- * @method date                getDateobs()                Returns the current record's "dateobs" value
- * @method string              getObservateurs()           Returns the current record's "observateurs" value
- * @method string              getDeterminateur()          Returns the current record's "determinateur" value
- * @method string              getRemarques()              Returns the current record's "remarques" value
- * @method integer             getAltitudeRetenue()        Returns the current record's "altitude_retenue" value
- * @method timestamp           getDateInsert()             Returns the current record's "date_insert" value
- * @method timestamp           getDateUpdate()             Returns the current record's "date_update" value
- * @method string              getDerniereAction()         Returns the current record's "derniere_action" value
- * @method boolean             getSupprime()               Returns the current record's "supprime" value
- * @method integer             getEffectifTotal()          Returns the current record's "effectif_total" value
- * @method blob                getTheGeom2154()            Returns the current record's "the_geom_2154" value
- * @method blob                getTheGeom3857()            Returns the current record's "the_geom_3857" value
- * @method blob                getTheGeomPoint()           Returns the current record's "the_geom_point" value
- * @method LCommunes           getLCommunes()              Returns the current record's "LCommunes" value
- * @method TProtocoles         getTProtocoles()            Returns the current record's "TProtocoles" value
- * @method BibOrganismes       getBibOrganismes()          Returns the current record's "BibOrganismes" value
- * @method BibSources          getBibSources()             Returns the current record's "BibSources" value
- * @method TPrecisions         getTPrecisions()            Returns the current record's "TPrecisions" value
- * @method Taxref              getTaxref()                 Returns the current record's "Taxref" value
- * @method BibLots             getBibLots()                Returns the current record's "BibLots" value
- * @method BibCriteresSynthese getBibCriteresSynthese()    Returns the current record's "BibCriteresSynthese" value
- * @method Doctrine_Collection getCorUniteSynthese()       Returns the current record's "CorUniteSynthese" collection
- * @method Doctrine_Collection getCorZonesstatutSynthese() Returns the current record's "CorZonesstatutSynthese" collection
- * @method Syntheseff          setIdSynthese()             Sets the current record's "id_synthese" value
- * @method Syntheseff          setIdSource()               Sets the current record's "id_source" value
- * @method Syntheseff          setIdFicheSource()          Sets the current record's "id_fiche_source" value
- * @method Syntheseff          setCodeFicheSource()        Sets the current record's "code_fiche_source" value
- * @method Syntheseff          setIdOrganisme()            Sets the current record's "id_organisme" value
- * @method Syntheseff          setIdProtocole()            Sets the current record's "id_protocole" value
- * @method Syntheseff          setIdPrecision()            Sets the current record's "id_precision" value
- * @method Syntheseff          setCdNom()                  Sets the current record's "cd_nom" value
- * @method Syntheseff          setIdLot()                  Sets the current record's "id_lot" value
- * @method Syntheseff          setIdCritereSynthese()      Sets the current record's "id_critere_synthese" value
- * @method Syntheseff          setInsee()                  Sets the current record's "insee" value
- * @method Syntheseff          setDateobs()                Sets the current record's "dateobs" value
- * @method Syntheseff          setObservateurs()           Sets the current record's "observateurs" value
- * @method Syntheseff          setDeterminateur()          Sets the current record's "determinateur" value
- * @method Syntheseff          setRemarques()              Sets the current record's "remarques" value
- * @method Syntheseff          setAltitudeRetenue()        Sets the current record's "altitude_retenue" value
- * @method Syntheseff          setDateInsert()             Sets the current record's "date_insert" value
- * @method Syntheseff          setDateUpdate()             Sets the current record's "date_update" value
- * @method Syntheseff          setDerniereAction()         Sets the current record's "derniere_action" value
- * @method Syntheseff          setSupprime()               Sets the current record's "supprime" value
- * @method Syntheseff          setEffectifTotal()          Sets the current record's "effectif_total" value
- * @method Syntheseff          setTheGeom2154()            Sets the current record's "the_geom_2154" value
- * @method Syntheseff          setTheGeom3857()            Sets the current record's "the_geom_3857" value
- * @method Syntheseff          setTheGeomPoint()           Sets the current record's "the_geom_point" value
- * @method Syntheseff          setLCommunes()              Sets the current record's "LCommunes" value
- * @method Syntheseff          setTProtocoles()            Sets the current record's "TProtocoles" value
- * @method Syntheseff          setBibOrganismes()          Sets the current record's "BibOrganismes" value
- * @method Syntheseff          setBibSources()             Sets the current record's "BibSources" value
- * @method Syntheseff          setTPrecisions()            Sets the current record's "TPrecisions" value
- * @method Syntheseff          setTaxref()                 Sets the current record's "Taxref" value
- * @method Syntheseff          setBibLots()                Sets the current record's "BibLots" value
- * @method Syntheseff          setBibCriteresSynthese()    Sets the current record's "BibCriteresSynthese" value
- * @method Syntheseff          setCorUniteSynthese()       Sets the current record's "CorUniteSynthese" collection
- * @method Syntheseff          setCorZonesstatutSynthese() Sets the current record's "CorZonesstatutSynthese" collection
+ * @method integer             get()                       Returns the current record's "id_synthese" value
+ * @method integer             get()                       Returns the current record's "id_source" value
+ * @method string              get()                       Returns the current record's "id_fiche_source" value
+ * @method string              get()                       Returns the current record's "code_fiche_source" value
+ * @method integer             get()                       Returns the current record's "id_organisme" value
+ * @method integer             get()                       Returns the current record's "id_protocole" value
+ * @method integer             get()                       Returns the current record's "id_precision" value
+ * @method integer             get()                       Returns the current record's "cd_nom" value
+ * @method integer             get()                       Returns the current record's "id_lot" value
+ * @method integer             get()                       Returns the current record's "id_critere_synthese" value
+ * @method string              get()                       Returns the current record's "insee" value
+ * @method date                get()                       Returns the current record's "dateobs" value
+ * @method string              get()                       Returns the current record's "observateurs" value
+ * @method string              get()                       Returns the current record's "determinateur" value
+ * @method string              get()                       Returns the current record's "remarques" value
+ * @method integer             get()                       Returns the current record's "altitude_retenue" value
+ * @method timestamp           get()                       Returns the current record's "date_insert" value
+ * @method timestamp           get()                       Returns the current record's "date_update" value
+ * @method string              get()                       Returns the current record's "derniere_action" value
+ * @method boolean             get()                       Returns the current record's "supprime" value
+ * @method integer             get()                       Returns the current record's "effectif_total" value
+ * @method blob                get()                       Returns the current record's "the_geom_local" value
+ * @method blob                get()                       Returns the current record's "the_geom_3857" value
+ * @method blob                get()                       Returns the current record's "the_geom_point" value
+ * @method LCommunes           get()                       Returns the current record's "LCommunes" value
+ * @method TProtocoles         get()                       Returns the current record's "TProtocoles" value
+ * @method BibOrganismes       get()                       Returns the current record's "BibOrganismes" value
+ * @method BibSources          get()                       Returns the current record's "BibSources" value
+ * @method TPrecisions         get()                       Returns the current record's "TPrecisions" value
+ * @method Taxref              get()                       Returns the current record's "Taxref" value
+ * @method BibLots             get()                       Returns the current record's "BibLots" value
+ * @method BibCriteresSynthese get()                       Returns the current record's "BibCriteresSynthese" value
+ * @method Doctrine_Collection get()                       Returns the current record's "CorUniteSynthese" collection
+ * @method Doctrine_Collection get()                       Returns the current record's "CorZonesstatutSynthese" collection
+ * @method Syntheseff          set()                       Sets the current record's "id_synthese" value
+ * @method Syntheseff          set()                       Sets the current record's "id_source" value
+ * @method Syntheseff          set()                       Sets the current record's "id_fiche_source" value
+ * @method Syntheseff          set()                       Sets the current record's "code_fiche_source" value
+ * @method Syntheseff          set()                       Sets the current record's "id_organisme" value
+ * @method Syntheseff          set()                       Sets the current record's "id_protocole" value
+ * @method Syntheseff          set()                       Sets the current record's "id_precision" value
+ * @method Syntheseff          set()                       Sets the current record's "cd_nom" value
+ * @method Syntheseff          set()                       Sets the current record's "id_lot" value
+ * @method Syntheseff          set()                       Sets the current record's "id_critere_synthese" value
+ * @method Syntheseff          set()                       Sets the current record's "insee" value
+ * @method Syntheseff          set()                       Sets the current record's "dateobs" value
+ * @method Syntheseff          set()                       Sets the current record's "observateurs" value
+ * @method Syntheseff          set()                       Sets the current record's "determinateur" value
+ * @method Syntheseff          set()                       Sets the current record's "remarques" value
+ * @method Syntheseff          set()                       Sets the current record's "altitude_retenue" value
+ * @method Syntheseff          set()                       Sets the current record's "date_insert" value
+ * @method Syntheseff          set()                       Sets the current record's "date_update" value
+ * @method Syntheseff          set()                       Sets the current record's "derniere_action" value
+ * @method Syntheseff          set()                       Sets the current record's "supprime" value
+ * @method Syntheseff          set()                       Sets the current record's "effectif_total" value
+ * @method Syntheseff          set()                       Sets the current record's "the_geom_local" value
+ * @method Syntheseff          set()                       Sets the current record's "the_geom_3857" value
+ * @method Syntheseff          set()                       Sets the current record's "the_geom_point" value
+ * @method Syntheseff          set()                       Sets the current record's "LCommunes" value
+ * @method Syntheseff          set()                       Sets the current record's "TProtocoles" value
+ * @method Syntheseff          set()                       Sets the current record's "BibOrganismes" value
+ * @method Syntheseff          set()                       Sets the current record's "BibSources" value
+ * @method Syntheseff          set()                       Sets the current record's "TPrecisions" value
+ * @method Syntheseff          set()                       Sets the current record's "Taxref" value
+ * @method Syntheseff          set()                       Sets the current record's "BibLots" value
+ * @method Syntheseff          set()                       Sets the current record's "BibCriteresSynthese" value
+ * @method Syntheseff          set()                       Sets the current record's "CorUniteSynthese" collection
+ * @method Syntheseff          set()                       Sets the current record's "CorZonesstatutSynthese" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -206,7 +206,7 @@ abstract class BaseSyntheseff extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('the_geom_2154', 'blob', null, array(
+        $this->hasColumn('the_geom_local', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

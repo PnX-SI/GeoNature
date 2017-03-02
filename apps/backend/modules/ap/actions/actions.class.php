@@ -25,7 +25,7 @@ class apActions extends sfGeonatureActions
     public function executeXls(sfRequest $request)
     {
         $aps = TApresenceTable::listXls($request);
-        $csv_output = "organisme_source\tsecteur\tcommune_zp\tindexzp\tindexap\tdateobs\ttaxon\tobservateurs\tphenologie\tmethode_frequence\tfrequenceap\tsurfaceap\tmethode_comptage\tdenombrement\tperturbations\tmilieux\tcommune_ap\taltitude\trelue\tap_topo_valid\tzp_topo_valid\tpdop\tremarques\tx_L2\ty_L2\tx_L93\ty_L93\tx_WGS84\ty_WGS84";
+        $csv_output = "organisme_source\tsecteur\tcommune_zp\tindexzp\tindexap\tdateobs\ttaxon\tobservateurs\tphenologie\tmethode_frequence\tfrequenceap\tsurfaceap\tmethode_comptage\tdenombrement\tperturbations\tmilieux\tcommune_ap\taltitude\trelue\tap_topo_valid\tzp_topo_valid\tpdop\tremarques\tx_Local\ty_Local\tx_WGS84\ty_WGS84";
         $csv_output .= "\n";
         foreach ($aps as $ap)
         {  
@@ -53,13 +53,11 @@ class apActions extends sfGeonatureActions
             if ($ap['pdop']==-1){$ap['pdop'] = 'non précisé';}
             $pdop = $ap['pdop'];
             $relue = $ap['relue'];
-            $x_l2 = $ap['x_l2'];
-            $y_l2 = $ap['y_l2'];
-            $x_l93 = $ap['x_l93'];
-            $y_l93 = $ap['y_l93'];
+            $x_local = $ap['x_local'];
+            $y_llocal = $ap['y_local'];
             $x_wgs84 = $ap['x_wgs84'];
             $y_wgs84 = $ap['y_wgs84'];
-            $csv_output .= "$organisme\t$secteur\t$communezp\t$indexzp\t$indexap\t$dateobs\t$taxon\t$observateurs\t$phenologie\t$methode_frequence\t$frequenceap\t$surfaceap\t$methode_comptage\t$denombrement\t$perturbations\t$milieux\t$communeap\t$altitude\t$relue\t$ap_topo_valid\t$zp_topo_valid\t$pdop\t$remarques\t$x_l2\t$y_l2\t$x_l93\t$y_l93\t$x_wgs84\t$y_wgs84\n";
+            $csv_output .= "$organisme\t$secteur\t$communezp\t$indexzp\t$indexap\t$dateobs\t$taxon\t$observateurs\t$phenologie\t$methode_frequence\t$frequenceap\t$surfaceap\t$methode_comptage\t$denombrement\t$perturbations\t$milieux\t$communeap\t$altitude\t$relue\t$ap_topo_valid\t$zp_topo_valid\t$pdop\t$remarques\t$x_local\t$y_local\t$x_wgs84\t$y_wgs84\n";
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=zp_".date("Y-m-d_His").".xls");
@@ -77,7 +75,7 @@ class apActions extends sfGeonatureActions
         if (empty($aps))
           return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
         else
-          return $this->renderText($this->geojson->encode($aps, 'the_geom_ignfxx', 'indexap'));
+          return $this->renderText($this->geojson->encode($aps, 'the_geom_3857', 'indexap'));
     }
   
     public function executeListone(sfRequest $request)
@@ -88,7 +86,7 @@ class apActions extends sfGeonatureActions
             if (empty($ap)){
                 return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);}
             else{//print_r($ap['observateurs']);
-                return $this->renderText($this->geojson->encode(array($ap), 'the_geom_ignfxx', 'indexap'));
+                return $this->renderText($this->geojson->encode(array($ap), 'the_geom_3857', 'indexap'));
                 //return $this->renderJson(array($ap));
                 }
                 
@@ -176,9 +174,7 @@ class apActions extends sfGeonatureActions
         $geometry = $request->getParameter('geometry');
         Doctrine_Query::create()
             ->update('TApresence')
-            ->set('the_geom_ignfxx','multi(geometryFromText(?, 310024001))', $geometry)
-            // ->set('the_geom','st_transform(multi(geometryFromText(?, 310024001)),27572)', $geometry)
-            // ->set('the_geom_2154','st_transform(multi(geometryFromText(?, 310024001)),2154)', $geometry)
+            ->set('the_geom_3857','multi(geometryFromText(?, 3857))', $geometry)
             ->where('indexap=?', $indexap)
             ->execute();
         //gestion du comptage selon ajout ou update ; on ne peut pas supprimer car il faut garder les infos pda non utilisées en mode web

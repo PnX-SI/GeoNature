@@ -104,16 +104,16 @@ INSERT INTO bib_typeszones (id_type, typezone) VALUES (20, 'Aire d''adhésion de
 
 SET search_path = public, pg_catalog;
 
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'synthese', 'syntheseff', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'synthese', 'syntheseff', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'synthese', 'syntheseff', 'the_geom_point', 2, 3857, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'synthese', 'syntheseff', 'the_geom_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_zonesstatut', 'the_geom', 2, 2154, 'MULTIPOLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_communes', 'the_geom', 2, 2154, 'MULTIPOLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_secteurs', 'the_geom', 2, 2154, 'MULTIPOLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_aireadhesion', 'the_geom', 2, 2154, 'MULTIPOLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_unites_geo', 'the_geom', 2, 2154, 'MULTIPOLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_isolines20', 'the_geom', 2, 2154, 'MULTILINESTRING');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_territoires', 'the_geom', 2, 2154, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_zonesstatut', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_communes', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_secteurs', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_aireadhesion', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_unites_geo', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_isolines20', 'the_geom', 2, MYLOCALSRID, 'MULTILINESTRING');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'layers', 'l_territoires', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');
 
 
 SET search_path = synthese, pg_catalog;

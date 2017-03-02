@@ -9,12 +9,12 @@
  * @property string $nom_surface
  * @property Doctrine_Collection $TStationsFs
  * 
- * @method integer             getIdSurface()   Returns the current record's "id_surface" value
- * @method string              getNomSurface()  Returns the current record's "nom_surface" value
- * @method Doctrine_Collection getTStationsFs() Returns the current record's "TStationsFs" collection
- * @method BibSurfaces         setIdSurface()   Sets the current record's "id_surface" value
- * @method BibSurfaces         setNomSurface()  Sets the current record's "nom_surface" value
- * @method BibSurfaces         setTStationsFs() Sets the current record's "TStationsFs" collection
+ * @method integer             get()            Returns the current record's "id_surface" value
+ * @method string              get()            Returns the current record's "nom_surface" value
+ * @method Doctrine_Collection get()            Returns the current record's "TStationsFs" collection
+ * @method BibSurfaces         set()            Sets the current record's "id_surface" value
+ * @method BibSurfaces         set()            Sets the current record's "nom_surface" value
+ * @method BibSurfaces         set()            Sets the current record's "TStationsFs" collection
  * 
  * @package    geonature
  * @subpackage model

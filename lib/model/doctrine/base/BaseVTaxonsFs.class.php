@@ -8,10 +8,10 @@
  * @property integer $cd_nom
  * @property string $nom_complet
  * 
- * @method integer   getCdNom()       Returns the current record's "cd_nom" value
- * @method string    getNomComplet()  Returns the current record's "nom_complet" value
- * @method VTaxonsFs setCdNom()       Sets the current record's "cd_nom" value
- * @method VTaxonsFs setNomComplet()  Sets the current record's "nom_complet" value
+ * @method integer   get()            Returns the current record's "cd_nom" value
+ * @method string    get()            Returns the current record's "nom_complet" value
+ * @method VTaxonsFs set()            Sets the current record's "cd_nom" value
+ * @method VTaxonsFs set()            Sets the current record's "nom_complet" value
  * 
  * @package    geonature
  * @subpackage model

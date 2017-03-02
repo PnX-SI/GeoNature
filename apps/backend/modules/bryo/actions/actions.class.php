@@ -225,8 +225,6 @@ class bryoActions extends sfGeonatureActions
         Doctrine_Query::create()
          ->update('TStationsBryo')
          ->set('the_geom_3857','st_geometryFromText(?, 3857)', $geometry)
-         // ->set('the_geom_27572','st_transform(st_geometryFromText(?, 3857),27572)', $geometry)
-         // ->set('the_geom_2154','st_transform(st_geometryFromText(?, 3857),2154)', $geometry)
          ->where('id_station= ?', $station->getIdStation())
          ->execute();
         // ensuite on commence par supprimer tout ce qui concerne ce relevé si on est en update
@@ -263,7 +261,7 @@ class bryoActions extends sfGeonatureActions
   public function executeXls(sfRequest $request)
     {
         $listes = CorBryoTaxonTable::listXls($request);
-        $csv_output = "Id_station\tTaxon_saisi\tTaxon enregistré\tTaxon_reference\tTaxon_complet\tAbondance\tDate\tSecteur\tCommune\tAcces\tObservateurs\tNiveau\tPointage\tSurface\tExposition\tAltitude\tRemarques\tPdop\tL93X\tL93Y";
+        $csv_output = "Id_station\tTaxon_saisi\tTaxon enregistré\tTaxon_reference\tTaxon_complet\tAbondance\tDate\tSecteur\tCommune\tAcces\tObservateurs\tNiveau\tPointage\tSurface\tExposition\tAltitude\tRemarques\tPdop\tx_local\ty_local";
         $csv_output .= "\n";
         foreach ($listes as $l)
         {  
@@ -283,11 +281,11 @@ class bryoActions extends sfGeonatureActions
             $nom_exposition = $l['nom_exposition'];
             $altitude = $l['altitude'];
             $remarques = str_replace( array( CHR(10), CHR(13), "\n", "\r" ), array( ' - ',' - ',' - ',' - '), $l['remarques'] );
-            $l93x = $l['l93x'];
-            $l93y = $l['l93y'];
+            $x_local = $l['x_local'];
+            $y_local = $l['y_local'];
             if ($l['pdop']==-1){$l['pdop'] = 'non précisé';}
             $pdop = $l['pdop'];
-            $csv_output .= "$id_station\t$taxon_saisi\t$taxon\t$taxon_ref\t$taxon_complet\t$abondance\t$dateobs\t$nom_secteur\t$nomcommune\t$info_acces\t$observateurs\t$complet_partiel\t$nom_support\t$surface\t$nom_exposition\t$altitude\t$remarques\t$pdop\t$l93x\t$l93y\n";
+            $csv_output .= "$id_station\t$taxon_saisi\t$taxon\t$taxon_ref\t$taxon_complet\t$abondance\t$dateobs\t$nom_secteur\t$nomcommune\t$info_acces\t$observateurs\t$complet_partiel\t$nom_support\t$surface\t$nom_exposition\t$altitude\t$remarques\t$pdop\t$x_local\t$y_local\n";
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=bryophytes_".date("Y-m-d_His").".xls");

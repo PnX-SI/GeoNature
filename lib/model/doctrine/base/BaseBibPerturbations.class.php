@@ -10,14 +10,14 @@
  * @property string $description
  * @property Doctrine_Collection $CorApPerturb
  * 
- * @method integer             getCodeper()        Returns the current record's "codeper" value
- * @method string              getClassification() Returns the current record's "classification" value
- * @method string              getDescription()    Returns the current record's "description" value
- * @method Doctrine_Collection getCorApPerturb()   Returns the current record's "CorApPerturb" collection
- * @method BibPerturbations    setCodeper()        Sets the current record's "codeper" value
- * @method BibPerturbations    setClassification() Sets the current record's "classification" value
- * @method BibPerturbations    setDescription()    Sets the current record's "description" value
- * @method BibPerturbations    setCorApPerturb()   Sets the current record's "CorApPerturb" collection
+ * @method integer             get()               Returns the current record's "codeper" value
+ * @method string              get()               Returns the current record's "classification" value
+ * @method string              get()               Returns the current record's "description" value
+ * @method Doctrine_Collection get()               Returns the current record's "CorApPerturb" collection
+ * @method BibPerturbations    set()               Sets the current record's "codeper" value
+ * @method BibPerturbations    set()               Sets the current record's "classification" value
+ * @method BibPerturbations    set()               Sets the current record's "description" value
+ * @method BibPerturbations    set()               Sets the current record's "CorApPerturb" collection
  * 
  * @package    geonature
  * @subpackage model

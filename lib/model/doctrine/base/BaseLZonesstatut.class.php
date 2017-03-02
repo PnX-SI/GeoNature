@@ -11,16 +11,16 @@
  * @property blob $the_geom
  * @property Doctrine_Collection $CorZonesstatutSynthese
  * 
- * @method integer             getIdZone()                 Returns the current record's "id_zone" value
- * @method string              getNomzone()                Returns the current record's "nomzone" value
- * @method integer             getIdType()                 Returns the current record's "id_type" value
- * @method blob                getTheGeom()                Returns the current record's "the_geom" value
- * @method Doctrine_Collection getCorZonesstatutSynthese() Returns the current record's "CorZonesstatutSynthese" collection
- * @method LZonesstatut        setIdZone()                 Sets the current record's "id_zone" value
- * @method LZonesstatut        setNomzone()                Sets the current record's "nomzone" value
- * @method LZonesstatut        setIdType()                 Sets the current record's "id_type" value
- * @method LZonesstatut        setTheGeom()                Sets the current record's "the_geom" value
- * @method LZonesstatut        setCorZonesstatutSynthese() Sets the current record's "CorZonesstatutSynthese" collection
+ * @method integer             get()                       Returns the current record's "id_zone" value
+ * @method string              get()                       Returns the current record's "nomzone" value
+ * @method integer             get()                       Returns the current record's "id_type" value
+ * @method blob                get()                       Returns the current record's "the_geom" value
+ * @method Doctrine_Collection get()                       Returns the current record's "CorZonesstatutSynthese" collection
+ * @method LZonesstatut        set()                       Sets the current record's "id_zone" value
+ * @method LZonesstatut        set()                       Sets the current record's "nomzone" value
+ * @method LZonesstatut        set()                       Sets the current record's "id_type" value
+ * @method LZonesstatut        set()                       Sets the current record's "the_geom" value
+ * @method LZonesstatut        set()                       Sets the current record's "CorZonesstatutSynthese" collection
  * 
  * @package    geonature
  * @subpackage model

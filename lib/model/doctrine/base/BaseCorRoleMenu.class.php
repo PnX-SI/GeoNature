@@ -10,14 +10,14 @@
  * @property TRoles $TRoles
  * @property Doctrine_Collection $CorRoles
  * 
- * @method integer             getIdRole()   Returns the current record's "id_role" value
- * @method integer             getIdMenu()   Returns the current record's "id_menu" value
- * @method TRoles              getTRoles()   Returns the current record's "TRoles" value
- * @method Doctrine_Collection getCorRoles() Returns the current record's "CorRoles" collection
- * @method CorRoleMenu         setIdRole()   Sets the current record's "id_role" value
- * @method CorRoleMenu         setIdMenu()   Sets the current record's "id_menu" value
- * @method CorRoleMenu         setTRoles()   Sets the current record's "TRoles" value
- * @method CorRoleMenu         setCorRoles() Sets the current record's "CorRoles" collection
+ * @method integer             get()         Returns the current record's "id_role" value
+ * @method integer             get()         Returns the current record's "id_menu" value
+ * @method TRoles              get()         Returns the current record's "TRoles" value
+ * @method Doctrine_Collection get()         Returns the current record's "CorRoles" collection
+ * @method CorRoleMenu         set()         Sets the current record's "id_role" value
+ * @method CorRoleMenu         set()         Sets the current record's "id_menu" value
+ * @method CorRoleMenu         set()         Sets the current record's "TRoles" value
+ * @method CorRoleMenu         set()         Sets the current record's "CorRoles" collection
  * 
  * @package    geonature
  * @subpackage model

@@ -15,24 +15,24 @@
  * @property TaxrefProtectionArticles $TaxrefProtectionArticles
  * @property Taxref $Taxref
  * 
- * @method integer                  getCdNom()                    Returns the current record's "cd_nom" value
- * @method string                   getCdProtection()             Returns the current record's "cd_protection" value
- * @method string                   getNomCite()                  Returns the current record's "nom_cite" value
- * @method string                   getSynCite()                  Returns the current record's "syn_cite" value
- * @method string                   getNomFrancaisCite()          Returns the current record's "nom_francais_cite" value
- * @method string                   getPrecisions()               Returns the current record's "precisions" value
- * @method string                   getCdNomCite()                Returns the current record's "cd_nom_cite" value
- * @method TaxrefProtectionArticles getTaxrefProtectionArticles() Returns the current record's "TaxrefProtectionArticles" value
- * @method Taxref                   getTaxref()                   Returns the current record's "Taxref" value
- * @method TaxrefProtectionEspeces  setCdNom()                    Sets the current record's "cd_nom" value
- * @method TaxrefProtectionEspeces  setCdProtection()             Sets the current record's "cd_protection" value
- * @method TaxrefProtectionEspeces  setNomCite()                  Sets the current record's "nom_cite" value
- * @method TaxrefProtectionEspeces  setSynCite()                  Sets the current record's "syn_cite" value
- * @method TaxrefProtectionEspeces  setNomFrancaisCite()          Sets the current record's "nom_francais_cite" value
- * @method TaxrefProtectionEspeces  setPrecisions()               Sets the current record's "precisions" value
- * @method TaxrefProtectionEspeces  setCdNomCite()                Sets the current record's "cd_nom_cite" value
- * @method TaxrefProtectionEspeces  setTaxrefProtectionArticles() Sets the current record's "TaxrefProtectionArticles" value
- * @method TaxrefProtectionEspeces  setTaxref()                   Sets the current record's "Taxref" value
+ * @method integer                  get()                         Returns the current record's "cd_nom" value
+ * @method string                   get()                         Returns the current record's "cd_protection" value
+ * @method string                   get()                         Returns the current record's "nom_cite" value
+ * @method string                   get()                         Returns the current record's "syn_cite" value
+ * @method string                   get()                         Returns the current record's "nom_francais_cite" value
+ * @method string                   get()                         Returns the current record's "precisions" value
+ * @method string                   get()                         Returns the current record's "cd_nom_cite" value
+ * @method TaxrefProtectionArticles get()                         Returns the current record's "TaxrefProtectionArticles" value
+ * @method Taxref                   get()                         Returns the current record's "Taxref" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "cd_nom" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "cd_protection" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "nom_cite" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "syn_cite" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "nom_francais_cite" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "precisions" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "cd_nom_cite" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "TaxrefProtectionArticles" value
+ * @method TaxrefProtectionEspeces  set()                         Sets the current record's "Taxref" value
  * 
  * @package    geonature
  * @subpackage model

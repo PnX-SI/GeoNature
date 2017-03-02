@@ -21,36 +21,36 @@
  * @property Doctrine_Collection $TStationsFs
  * @property Doctrine_Collection $TZprospection
  * 
- * @method integer             getIdLot()         Returns the current record's "id_lot" value
- * @method string              getNomLot()        Returns the current record's "nom_lot" value
- * @method string              getDescLots()      Returns the current record's "desc_lots" value
- * @method boolean             getMenuCf()        Returns the current record's "menu_cf" value
- * @method boolean             getMenuInv()       Returns the current record's "menu_inv" value
- * @method boolean             getPn()            Returns the current record's "pn" value
- * @method integer             getIdProgramme()   Returns the current record's "id_programme" value
- * @method BibProgrammes       getBibProgrammes() Returns the current record's "BibProgrammes" value
- * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
- * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
- * @method Doctrine_Collection getTFichesCflore() Returns the current record's "TFichesCflore" collection
- * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
- * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
- * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
- * @method Doctrine_Collection getTZprospection() Returns the current record's "TZprospection" collection
- * @method BibLots             setIdLot()         Sets the current record's "id_lot" value
- * @method BibLots             setNomLot()        Sets the current record's "nom_lot" value
- * @method BibLots             setDescLots()      Sets the current record's "desc_lots" value
- * @method BibLots             setMenuCf()        Sets the current record's "menu_cf" value
- * @method BibLots             setMenuInv()       Sets the current record's "menu_inv" value
- * @method BibLots             setPn()            Sets the current record's "pn" value
- * @method BibLots             setIdProgramme()   Sets the current record's "id_programme" value
- * @method BibLots             setBibProgrammes() Sets the current record's "BibProgrammes" value
- * @method BibLots             setSyntheseff()    Sets the current record's "Syntheseff" collection
- * @method BibLots             setTFichesCf()     Sets the current record's "TFichesCf" collection
- * @method BibLots             setTFichesCflore() Sets the current record's "TFichesCflore" collection
- * @method BibLots             setTFichesInv()    Sets the current record's "TFichesInv" collection
- * @method BibLots             setTStationsBryo() Sets the current record's "TStationsBryo" collection
- * @method BibLots             setTStationsFs()   Sets the current record's "TStationsFs" collection
- * @method BibLots             setTZprospection() Sets the current record's "TZprospection" collection
+ * @method integer             get()              Returns the current record's "id_lot" value
+ * @method string              get()              Returns the current record's "nom_lot" value
+ * @method string              get()              Returns the current record's "desc_lots" value
+ * @method boolean             get()              Returns the current record's "menu_cf" value
+ * @method boolean             get()              Returns the current record's "menu_inv" value
+ * @method boolean             get()              Returns the current record's "pn" value
+ * @method integer             get()              Returns the current record's "id_programme" value
+ * @method BibProgrammes       get()              Returns the current record's "BibProgrammes" value
+ * @method Doctrine_Collection get()              Returns the current record's "Syntheseff" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TFichesCf" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TFichesCflore" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TFichesInv" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TStationsFs" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TZprospection" collection
+ * @method BibLots             set()              Sets the current record's "id_lot" value
+ * @method BibLots             set()              Sets the current record's "nom_lot" value
+ * @method BibLots             set()              Sets the current record's "desc_lots" value
+ * @method BibLots             set()              Sets the current record's "menu_cf" value
+ * @method BibLots             set()              Sets the current record's "menu_inv" value
+ * @method BibLots             set()              Sets the current record's "pn" value
+ * @method BibLots             set()              Sets the current record's "id_programme" value
+ * @method BibLots             set()              Sets the current record's "BibProgrammes" value
+ * @method BibLots             set()              Sets the current record's "Syntheseff" collection
+ * @method BibLots             set()              Sets the current record's "TFichesCf" collection
+ * @method BibLots             set()              Sets the current record's "TFichesCflore" collection
+ * @method BibLots             set()              Sets the current record's "TFichesInv" collection
+ * @method BibLots             set()              Sets the current record's "TStationsBryo" collection
+ * @method BibLots             set()              Sets the current record's "TStationsFs" collection
+ * @method BibLots             set()              Sets the current record's "TZprospection" collection
  * 
  * @package    geonature
  * @subpackage model

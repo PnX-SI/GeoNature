@@ -10,14 +10,14 @@
  * @property string $desc_droit
  * @property Doctrine_Collection $CorRoleDroitApplication
  * 
- * @method integer             getIdDroit()                 Returns the current record's "id_droit" value
- * @method string              getNomDroit()                Returns the current record's "nom_droit" value
- * @method string              getDescDroit()               Returns the current record's "desc_droit" value
- * @method Doctrine_Collection getCorRoleDroitApplication() Returns the current record's "CorRoleDroitApplication" collection
- * @method BibDroits           setIdDroit()                 Sets the current record's "id_droit" value
- * @method BibDroits           setNomDroit()                Sets the current record's "nom_droit" value
- * @method BibDroits           setDescDroit()               Sets the current record's "desc_droit" value
- * @method BibDroits           setCorRoleDroitApplication() Sets the current record's "CorRoleDroitApplication" collection
+ * @method integer             get()                        Returns the current record's "id_droit" value
+ * @method string              get()                        Returns the current record's "nom_droit" value
+ * @method string              get()                        Returns the current record's "desc_droit" value
+ * @method Doctrine_Collection get()                        Returns the current record's "CorRoleDroitApplication" collection
+ * @method BibDroits           set()                        Sets the current record's "id_droit" value
+ * @method BibDroits           set()                        Sets the current record's "nom_droit" value
+ * @method BibDroits           set()                        Sets the current record's "desc_droit" value
+ * @method BibDroits           set()                        Sets the current record's "CorRoleDroitApplication" collection
  * 
  * @package    geonature
  * @subpackage model

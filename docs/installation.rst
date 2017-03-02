@@ -76,8 +76,10 @@ Configuration de la base de données PostgreSQL
 	nano config/settings.ini
 
 Renseigner le nom de la base de données, les utilisateurs PostgreSQL et les mots de passe. Il est possible mais non conseillé de laisser les valeurs proposées par défaut. 
+La projection locale peut être modifiés si vous n'êtes pas en métropole. Attention : les couches SIG ainsi que le jeu de données fournis avec l'application sont tous en lambert 93. Pour ne pas les insérer lors de la création de la base, vous devez mettre les paramètres ``install_sig_layers`` et ``add_sample_data``. 
+Si vous êtes en métropole il est conseillé de laisser la projection officielle en Lambert 93 (2154) et d'insérer au moins les couches sig fournies.
 
-ATTENTION : Les valeurs renseignées dans ce fichier sont utilisées par le script d'installation de la base de données ``install_db.sh``. Les utilisateurs PostgreSQL doivent être en concordance avec ceux créés lors de la dernière étape de l'installation du serveur (Création de 2 utilisateurs PostgreSQL). 
+ATTENTION : Les valeurs renseignées dans ce fichier sont utilisées par le script d'installation de la base de données ``install_db.sh`` ainsi que par le script d'installation de l'application ``install_app.sh``. Les utilisateurs PostgreSQL doivent être en concordance avec ceux créés lors de la dernière étape de l'installation du serveur (Création de 2 utilisateurs PostgreSQL). 
 
 
 Création de la base de données
@@ -115,13 +117,13 @@ Configuration de l'application
 
     - Renseigner votre clé API IGN Geoportail, 
     - l'extent max de l'affichage cartographique, le centrage initial, le nombre maximum de niveau de zoom de la carte, la résolution maximale (en lien avec le paramètre précédent et le tableau ``ign_resolutions``)
-    - Renseigner le système de coordonnées et la bbox des coordonnées utilisable pour le positionnement du pointage par coordonnées fournies (GPS)
+    - Renseigner le système de coordonnées et la bbox des coordonnées utilisables pour le positionnement du pointage par coordonnées fournies (GPS)
 	
 * Adapter le contenu du fichier ``lib/sfGeonatureConfig.php``. Il indique notamment les identifiants de chaque protocoles, lots et sources de données. 
 
 * Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature avec l'utilisateur et mot de passe : ``admin / admin``
 
-* Si vous souhaitez ajouter des données provenant d'autres protocoles non fournis avec GeoNature, créez leur chacun un schéma dans la BDD de GeoNature correspondant à la structure des données du protocole et ajouté un trigger qui alimentera le schéma ``synthèse`` existant à chaque fois qu'une donnée y est ajoutée ou modifiée. Pour cela vous pouvez vous appuyer sur les exemples existants dans les protocoles fournis (``contactfaune`` par exemple).
+* Si vous souhaitez ajouter des données provenant d'autres protocoles non fournis avec GeoNature, créez leur chacun un schéma dans la BDD de GeoNature correspondant à la structure des données du protocole et ajouté un trigger qui alimentera le schéma ``synthese`` existant à chaque fois qu'une donnée y est ajoutée ou modifiée. Pour cela vous pouvez vous appuyer sur les exemples existants dans les protocoles fournis (``contactfaune`` par exemple).
 
 * Si vous souhaitez ajouter des protocoles spécifiques dont les formulaires de saisie sont intégrés à votre GeoNature, référez vous à la discussion https://github.com/PnEcrins/GeoNature/issues/54
 

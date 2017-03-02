@@ -10,14 +10,14 @@
  * @property TRoles $TRoles
  * @property TFichesCf $TFichesCf
  * 
- * @method integer        getIdRole()    Returns the current record's "id_role" value
- * @method integer        getIdCf()      Returns the current record's "id_cf" value
- * @method TRoles         getTRoles()    Returns the current record's "TRoles" value
- * @method TFichesCf      getTFichesCf() Returns the current record's "TFichesCf" value
- * @method CorRoleFicheCf setIdRole()    Sets the current record's "id_role" value
- * @method CorRoleFicheCf setIdCf()      Sets the current record's "id_cf" value
- * @method CorRoleFicheCf setTRoles()    Sets the current record's "TRoles" value
- * @method CorRoleFicheCf setTFichesCf() Sets the current record's "TFichesCf" value
+ * @method integer        get()          Returns the current record's "id_role" value
+ * @method integer        get()          Returns the current record's "id_cf" value
+ * @method TRoles         get()          Returns the current record's "TRoles" value
+ * @method TFichesCf      get()          Returns the current record's "TFichesCf" value
+ * @method CorRoleFicheCf set()          Sets the current record's "id_role" value
+ * @method CorRoleFicheCf set()          Sets the current record's "id_cf" value
+ * @method CorRoleFicheCf set()          Sets the current record's "TRoles" value
+ * @method CorRoleFicheCf set()          Sets the current record's "TFichesCf" value
  * 
  * @package    geonature
  * @subpackage model

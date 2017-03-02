@@ -23,40 +23,40 @@
  * @property TFichesCflore $TFichesCflore
  * @property Doctrine_Collection $VNomadeTaxonsFlore
  * 
- * @method integer              getIdReleveCflore()       Returns the current record's "id_releve_cflore" value
- * @method integer              getIdCflore()             Returns the current record's "id_cflore" value
- * @method integer              getIdNom()                Returns the current record's "id_nom" value
- * @method integer              getIdAbondanceCflore()    Returns the current record's "id_abondance_cflore" value
- * @method integer              getIdPhenologieCflore()   Returns the current record's "id_phenologie_cflore" value
- * @method boolean              getValiditeCflore()       Returns the current record's "validite_cflore" value
- * @method integer              getCdRefOrigine()         Returns the current record's "cd_ref_origine" value
- * @method string               getNomTaxonSaisi()        Returns the current record's "nom_taxon_saisi" value
- * @method string               getCommentaire()          Returns the current record's "commentaire" value
- * @method string               getDeterminateur()        Returns the current record's "determinateur" value
- * @method boolean              getSupprime()             Returns the current record's "supprime" value
- * @method boolean              getHerbier()              Returns the current record's "herbier" value
- * @method BibAbondancesCflore  getBibAbondancesCflore()  Returns the current record's "BibAbondancesCflore" value
- * @method BibPhenologiesCflore getBibPhenologiesCflore() Returns the current record's "BibPhenologiesCflore" value
- * @method BibNoms              getBibNoms()              Returns the current record's "BibNoms" value
- * @method TFichesCflore        getTFichesCflore()        Returns the current record's "TFichesCflore" value
- * @method Doctrine_Collection  getVNomadeTaxonsFlore()   Returns the current record's "VNomadeTaxonsFlore" collection
- * @method TRelevesCflore       setIdReleveCflore()       Sets the current record's "id_releve_cflore" value
- * @method TRelevesCflore       setIdCflore()             Sets the current record's "id_cflore" value
- * @method TRelevesCflore       setIdNom()                Sets the current record's "id_nom" value
- * @method TRelevesCflore       setIdAbondanceCflore()    Sets the current record's "id_abondance_cflore" value
- * @method TRelevesCflore       setIdPhenologieCflore()   Sets the current record's "id_phenologie_cflore" value
- * @method TRelevesCflore       setValiditeCflore()       Sets the current record's "validite_cflore" value
- * @method TRelevesCflore       setCdRefOrigine()         Sets the current record's "cd_ref_origine" value
- * @method TRelevesCflore       setNomTaxonSaisi()        Sets the current record's "nom_taxon_saisi" value
- * @method TRelevesCflore       setCommentaire()          Sets the current record's "commentaire" value
- * @method TRelevesCflore       setDeterminateur()        Sets the current record's "determinateur" value
- * @method TRelevesCflore       setSupprime()             Sets the current record's "supprime" value
- * @method TRelevesCflore       setHerbier()              Sets the current record's "herbier" value
- * @method TRelevesCflore       setBibAbondancesCflore()  Sets the current record's "BibAbondancesCflore" value
- * @method TRelevesCflore       setBibPhenologiesCflore() Sets the current record's "BibPhenologiesCflore" value
- * @method TRelevesCflore       setBibNoms()              Sets the current record's "BibNoms" value
- * @method TRelevesCflore       setTFichesCflore()        Sets the current record's "TFichesCflore" value
- * @method TRelevesCflore       setVNomadeTaxonsFlore()   Sets the current record's "VNomadeTaxonsFlore" collection
+ * @method integer              get()                     Returns the current record's "id_releve_cflore" value
+ * @method integer              get()                     Returns the current record's "id_cflore" value
+ * @method integer              get()                     Returns the current record's "id_nom" value
+ * @method integer              get()                     Returns the current record's "id_abondance_cflore" value
+ * @method integer              get()                     Returns the current record's "id_phenologie_cflore" value
+ * @method boolean              get()                     Returns the current record's "validite_cflore" value
+ * @method integer              get()                     Returns the current record's "cd_ref_origine" value
+ * @method string               get()                     Returns the current record's "nom_taxon_saisi" value
+ * @method string               get()                     Returns the current record's "commentaire" value
+ * @method string               get()                     Returns the current record's "determinateur" value
+ * @method boolean              get()                     Returns the current record's "supprime" value
+ * @method boolean              get()                     Returns the current record's "herbier" value
+ * @method BibAbondancesCflore  get()                     Returns the current record's "BibAbondancesCflore" value
+ * @method BibPhenologiesCflore get()                     Returns the current record's "BibPhenologiesCflore" value
+ * @method BibNoms              get()                     Returns the current record's "BibNoms" value
+ * @method TFichesCflore        get()                     Returns the current record's "TFichesCflore" value
+ * @method Doctrine_Collection  get()                     Returns the current record's "VNomadeTaxonsFlore" collection
+ * @method TRelevesCflore       set()                     Sets the current record's "id_releve_cflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "id_cflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "id_nom" value
+ * @method TRelevesCflore       set()                     Sets the current record's "id_abondance_cflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "id_phenologie_cflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "validite_cflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "cd_ref_origine" value
+ * @method TRelevesCflore       set()                     Sets the current record's "nom_taxon_saisi" value
+ * @method TRelevesCflore       set()                     Sets the current record's "commentaire" value
+ * @method TRelevesCflore       set()                     Sets the current record's "determinateur" value
+ * @method TRelevesCflore       set()                     Sets the current record's "supprime" value
+ * @method TRelevesCflore       set()                     Sets the current record's "herbier" value
+ * @method TRelevesCflore       set()                     Sets the current record's "BibAbondancesCflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "BibPhenologiesCflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "BibNoms" value
+ * @method TRelevesCflore       set()                     Sets the current record's "TFichesCflore" value
+ * @method TRelevesCflore       set()                     Sets the current record's "VNomadeTaxonsFlore" collection
  * 
  * @package    geonature
  * @subpackage model

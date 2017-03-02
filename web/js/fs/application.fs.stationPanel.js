@@ -151,7 +151,7 @@ Ext.extend(application.stationPanel, Ext.Panel,  {
             ,'<tpl if="remarques"><p><b>Remarques :</b> {remarques}</p></tpl>'
             ,'<p><a href="{URI}">Lien vers cette fiche</a></p>'
             ,'<tpl if="x_utm"><p><b>Coordonnées UTM :</b> Longitude : {x_utm} - Latitude : {y_utm}</p></tpl>'
-            ,'<tpl if="x_l93"><p><b>Coordonnées Lambert 2 :</b> Longitude : {x_l93} - Latitude : {y_l93}</p></tpl>'
+            ,'<tpl if="x_local"><p><b>Coordonnées Lambert 2 :</b> Longitude : {x_local} - Latitude : {y_local}</p></tpl>'
             ,'<tpl if="validation==true">'
             ,'<p class="greenflag" title="Cette station et son contenu ont été relus par l\'un des référents"><img src="images/flag_green.png"><b>Cette fiche a été relue par l\'un des référents</b></p></tpl>'
             ,'<tpl if="validation==false">'
@@ -498,8 +498,8 @@ Ext.extend(application.stationPanel, Ext.Panel,  {
             ,'nb_taxons'
             ,'x_utm'
             ,'y_utm'
-            ,'x_l93'
-            ,'y_l93'
+            ,'x_local'
+            ,'y_local'
             ,{name:'dateobs', dateFormat:'d/m/Y'}
             ,{name:'date_insert', dateFormat:'d/m/Y'}
             ,{name:'date_update', dateFormat:'d/m/Y'}

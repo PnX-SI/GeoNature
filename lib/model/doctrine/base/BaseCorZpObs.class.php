@@ -10,14 +10,14 @@
  * @property TRoles $TRoles
  * @property TZprospection $TZprospection
  * 
- * @method integer       getIndexzp()       Returns the current record's "indexzp" value
- * @method integer       getCodeobs()       Returns the current record's "codeobs" value
- * @method TRoles        getTRoles()        Returns the current record's "TRoles" value
- * @method TZprospection getTZprospection() Returns the current record's "TZprospection" value
- * @method CorZpObs      setIndexzp()       Sets the current record's "indexzp" value
- * @method CorZpObs      setCodeobs()       Sets the current record's "codeobs" value
- * @method CorZpObs      setTRoles()        Sets the current record's "TRoles" value
- * @method CorZpObs      setTZprospection() Sets the current record's "TZprospection" value
+ * @method integer       get()              Returns the current record's "indexzp" value
+ * @method integer       get()              Returns the current record's "codeobs" value
+ * @method TRoles        get()              Returns the current record's "TRoles" value
+ * @method TZprospection get()              Returns the current record's "TZprospection" value
+ * @method CorZpObs      set()              Sets the current record's "indexzp" value
+ * @method CorZpObs      set()              Sets the current record's "codeobs" value
+ * @method CorZpObs      set()              Sets the current record's "TRoles" value
+ * @method CorZpObs      set()              Sets the current record's "TZprospection" value
  * 
  * @package    geonature
  * @subpackage model

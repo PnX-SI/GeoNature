@@ -11,16 +11,16 @@
  * @property TRoles $TRolesUtilisateur
  * @property CorRoleMenu $CorRoleMenu
  * 
- * @method integer     getIdRoleGroupe()        Returns the current record's "id_role_groupe" value
- * @method integer     getIdRoleUtilisateur()   Returns the current record's "id_role_utilisateur" value
- * @method TRoles      getTRolesGroupe()        Returns the current record's "TRolesGroupe" value
- * @method TRoles      getTRolesUtilisateur()   Returns the current record's "TRolesUtilisateur" value
- * @method CorRoleMenu getCorRoleMenu()         Returns the current record's "CorRoleMenu" value
- * @method CorRoles    setIdRoleGroupe()        Sets the current record's "id_role_groupe" value
- * @method CorRoles    setIdRoleUtilisateur()   Sets the current record's "id_role_utilisateur" value
- * @method CorRoles    setTRolesGroupe()        Sets the current record's "TRolesGroupe" value
- * @method CorRoles    setTRolesUtilisateur()   Sets the current record's "TRolesUtilisateur" value
- * @method CorRoles    setCorRoleMenu()         Sets the current record's "CorRoleMenu" value
+ * @method integer     get()                    Returns the current record's "id_role_groupe" value
+ * @method integer     get()                    Returns the current record's "id_role_utilisateur" value
+ * @method TRoles      get()                    Returns the current record's "TRolesGroupe" value
+ * @method TRoles      get()                    Returns the current record's "TRolesUtilisateur" value
+ * @method CorRoleMenu get()                    Returns the current record's "CorRoleMenu" value
+ * @method CorRoles    set()                    Sets the current record's "id_role_groupe" value
+ * @method CorRoles    set()                    Sets the current record's "id_role_utilisateur" value
+ * @method CorRoles    set()                    Sets the current record's "TRolesGroupe" value
+ * @method CorRoles    set()                    Sets the current record's "TRolesUtilisateur" value
+ * @method CorRoles    set()                    Sets the current record's "CorRoleMenu" value
  * 
  * @package    geonature
  * @subpackage model

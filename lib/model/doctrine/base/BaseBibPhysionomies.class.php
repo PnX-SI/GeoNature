@@ -12,18 +12,18 @@
  * @property string $code_physionomie
  * @property Doctrine_Collection $CorApPhysionomie
  * 
- * @method integer             getIdPhysionomie()          Returns the current record's "id_physionomie" value
- * @method string              getGroupePhysionomie()      Returns the current record's "groupe_physionomie" value
- * @method string              getNomPhysionomie()         Returns the current record's "nom_physionomie" value
- * @method string              getDefinitionPhysionomie()  Returns the current record's "definition_physionomie" value
- * @method string              getCodePhysionomie()        Returns the current record's "code_physionomie" value
- * @method Doctrine_Collection getCorApPhysionomie()       Returns the current record's "CorApPhysionomie" collection
- * @method BibPhysionomies     setIdPhysionomie()          Sets the current record's "id_physionomie" value
- * @method BibPhysionomies     setGroupePhysionomie()      Sets the current record's "groupe_physionomie" value
- * @method BibPhysionomies     setNomPhysionomie()         Sets the current record's "nom_physionomie" value
- * @method BibPhysionomies     setDefinitionPhysionomie()  Sets the current record's "definition_physionomie" value
- * @method BibPhysionomies     setCodePhysionomie()        Sets the current record's "code_physionomie" value
- * @method BibPhysionomies     setCorApPhysionomie()       Sets the current record's "CorApPhysionomie" collection
+ * @method integer             get()                       Returns the current record's "id_physionomie" value
+ * @method string              get()                       Returns the current record's "groupe_physionomie" value
+ * @method string              get()                       Returns the current record's "nom_physionomie" value
+ * @method string              get()                       Returns the current record's "definition_physionomie" value
+ * @method string              get()                       Returns the current record's "code_physionomie" value
+ * @method Doctrine_Collection get()                       Returns the current record's "CorApPhysionomie" collection
+ * @method BibPhysionomies     set()                       Sets the current record's "id_physionomie" value
+ * @method BibPhysionomies     set()                       Sets the current record's "groupe_physionomie" value
+ * @method BibPhysionomies     set()                       Sets the current record's "nom_physionomie" value
+ * @method BibPhysionomies     set()                       Sets the current record's "definition_physionomie" value
+ * @method BibPhysionomies     set()                       Sets the current record's "code_physionomie" value
+ * @method BibPhysionomies     set()                       Sets the current record's "CorApPhysionomie" collection
  * 
  * @package    geonature
  * @subpackage model

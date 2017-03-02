@@ -15,24 +15,24 @@
  * @property string $valeur_filtre
  * @property boolean $obligatoire
  * 
- * @method integer    getIdFiltre()      Returns the current record's "id_filtre" value
- * @method string     getNomFiltre()     Returns the current record's "nom_filtre" value
- * @method string     getLabel1()        Returns the current record's "label1" value
- * @method string     getLabel2()        Returns the current record's "label2" value
- * @method string     getLabel3()        Returns the current record's "label3" value
- * @method string     getDescFiltre()    Returns the current record's "desc_filtre" value
- * @method string     getImg()           Returns the current record's "img" value
- * @method string     getValeurFiltre()  Returns the current record's "valeur_filtre" value
- * @method boolean    getObligatoire()   Returns the current record's "obligatoire" value
- * @method BibFiltres setIdFiltre()      Sets the current record's "id_filtre" value
- * @method BibFiltres setNomFiltre()     Sets the current record's "nom_filtre" value
- * @method BibFiltres setLabel1()        Sets the current record's "label1" value
- * @method BibFiltres setLabel2()        Sets the current record's "label2" value
- * @method BibFiltres setLabel3()        Sets the current record's "label3" value
- * @method BibFiltres setDescFiltre()    Sets the current record's "desc_filtre" value
- * @method BibFiltres setImg()           Sets the current record's "img" value
- * @method BibFiltres setValeurFiltre()  Sets the current record's "valeur_filtre" value
- * @method BibFiltres setObligatoire()   Sets the current record's "obligatoire" value
+ * @method integer    get()              Returns the current record's "id_filtre" value
+ * @method string     get()              Returns the current record's "nom_filtre" value
+ * @method string     get()              Returns the current record's "label1" value
+ * @method string     get()              Returns the current record's "label2" value
+ * @method string     get()              Returns the current record's "label3" value
+ * @method string     get()              Returns the current record's "desc_filtre" value
+ * @method string     get()              Returns the current record's "img" value
+ * @method string     get()              Returns the current record's "valeur_filtre" value
+ * @method boolean    get()              Returns the current record's "obligatoire" value
+ * @method BibFiltres set()              Sets the current record's "id_filtre" value
+ * @method BibFiltres set()              Sets the current record's "nom_filtre" value
+ * @method BibFiltres set()              Sets the current record's "label1" value
+ * @method BibFiltres set()              Sets the current record's "label2" value
+ * @method BibFiltres set()              Sets the current record's "label3" value
+ * @method BibFiltres set()              Sets the current record's "desc_filtre" value
+ * @method BibFiltres set()              Sets the current record's "img" value
+ * @method BibFiltres set()              Sets the current record's "valeur_filtre" value
+ * @method BibFiltres set()              Sets the current record's "obligatoire" value
  * 
  * @package    geonature
  * @subpackage model

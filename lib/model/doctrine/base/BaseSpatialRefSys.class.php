@@ -11,16 +11,16 @@
  * @property string $srtext
  * @property string $proj4text
  * 
- * @method integer       getSrid()      Returns the current record's "srid" value
- * @method string        getAuthName()  Returns the current record's "auth_name" value
- * @method integer       getAuthSrid()  Returns the current record's "auth_srid" value
- * @method string        getSrtext()    Returns the current record's "srtext" value
- * @method string        getProj4text() Returns the current record's "proj4text" value
- * @method SpatialRefSys setSrid()      Sets the current record's "srid" value
- * @method SpatialRefSys setAuthName()  Sets the current record's "auth_name" value
- * @method SpatialRefSys setAuthSrid()  Sets the current record's "auth_srid" value
- * @method SpatialRefSys setSrtext()    Sets the current record's "srtext" value
- * @method SpatialRefSys setProj4text() Sets the current record's "proj4text" value
+ * @method integer       get()          Returns the current record's "srid" value
+ * @method string        get()          Returns the current record's "auth_name" value
+ * @method integer       get()          Returns the current record's "auth_srid" value
+ * @method string        get()          Returns the current record's "srtext" value
+ * @method string        get()          Returns the current record's "proj4text" value
+ * @method SpatialRefSys set()          Sets the current record's "srid" value
+ * @method SpatialRefSys set()          Sets the current record's "auth_name" value
+ * @method SpatialRefSys set()          Sets the current record's "auth_srid" value
+ * @method SpatialRefSys set()          Sets the current record's "srtext" value
+ * @method SpatialRefSys set()          Sets the current record's "proj4text" value
  * 
  * @package    geonature
  * @subpackage model
