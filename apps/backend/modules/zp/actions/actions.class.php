@@ -76,7 +76,7 @@ class zpActions extends sfGeonatureActions
             if (empty($zp))
                 return $this->renderText(sfGeonatureActions::$EmptyGeoJSON);
             else
-                return $this->renderText($this->geojson->encode(array($zp), 'the_geom_ignfxx', 'indexzp'));
+                return $this->renderText($this->geojson->encode(array($zp), 'the_geom_3857', 'indexzp'));
         }
         else if ($request->hasParameter('indexzp'))
         {
@@ -98,13 +98,13 @@ class zpActions extends sfGeonatureActions
             elseif($leszps=='trop'){return $this->renderText(sfGeonatureActions::$toManyFeatures);}
             else{
                 if($request->getParameter('zoom')<5){
-                    return $this->renderText($this->geojson->encode($leszps, 'geom_point_ignfxx', 'indexzp'));
+                    return $this->renderText($this->geojson->encode($leszps, 'geom_point_3857', 'indexzp'));
                 }
                 elseif($request->getParameter('zoom')<7 && $request->getParameter('zoom')>=5){
-                    return $this->renderText($this->geojson->encode($leszps, 'geom_mixte_ignfxx', 'indexzp'));
+                    return $this->renderText($this->geojson->encode($leszps, 'geom_mixte_3857', 'indexzp'));
                 }
                 else{
-                    return $this->renderText($this->geojson->encode($leszps, 'the_geom_ignfxx', 'indexzp')); 
+                    return $this->renderText($this->geojson->encode($leszps, 'the_geom_3857', 'indexzp')); 
                 }
             }
         }
@@ -154,9 +154,7 @@ class zpActions extends sfGeonatureActions
         $geometry = $request->getParameter('geometry');
         Doctrine_Query::create()
             ->update('TZprospection')
-            ->set('the_geom_ignfxx','multi(geometryFromText(?, 310024001))', $geometry)
-            // ->set('the_geom','st_transform(multi(geometryFromText(?, 310024001)),27572)', $geometry)
-            // ->set('the_geom_2154','st_transform(multi(geometryFromText(?, 310024001)),2154)', $geometry)
+            ->set('the_geom_3857','multi(geometryFromText(?, 3857))', $geometry)
             ->where('indexzp=?', $indexzp)
             ->execute();
         if($monaction =='update'){

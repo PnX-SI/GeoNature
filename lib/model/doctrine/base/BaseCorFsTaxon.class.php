@@ -20,34 +20,34 @@
  * @property BibAbondances $BibAbondancesDe14m
  * @property BibAbondances $BibAbondancesSup4m
  * 
- * @method integer       getIdStation()          Returns the current record's "id_station" value
- * @method integer       getCdNom()              Returns the current record's "cd_nom" value
- * @method string        getHerb()               Returns the current record's "herb" value
- * @method string        getInf1m()              Returns the current record's "inf_1m" value
- * @method string        getDe14m()              Returns the current record's "de_1_4m" value
- * @method string        getSup4m()              Returns the current record's "sup_4m" value
- * @method string        getTaxonSaisi()         Returns the current record's "taxon_saisi" value
- * @method boolean       getSupprime()           Returns the current record's "supprime" value
- * @method TStationsFs   getTStationsFs()        Returns the current record's "TStationsFs" value
- * @method Taxref        getTaxref()             Returns the current record's "Taxref" value
- * @method BibAbondances getBibAbondancesHerb()  Returns the current record's "BibAbondancesHerb" value
- * @method BibAbondances getBibAbondancesInf1m() Returns the current record's "BibAbondancesInf1m" value
- * @method BibAbondances getBibAbondancesDe14m() Returns the current record's "BibAbondancesDe14m" value
- * @method BibAbondances getBibAbondancesSup4m() Returns the current record's "BibAbondancesSup4m" value
- * @method CorFsTaxon    setIdStation()          Sets the current record's "id_station" value
- * @method CorFsTaxon    setCdNom()              Sets the current record's "cd_nom" value
- * @method CorFsTaxon    setHerb()               Sets the current record's "herb" value
- * @method CorFsTaxon    setInf1m()              Sets the current record's "inf_1m" value
- * @method CorFsTaxon    setDe14m()              Sets the current record's "de_1_4m" value
- * @method CorFsTaxon    setSup4m()              Sets the current record's "sup_4m" value
- * @method CorFsTaxon    setTaxonSaisi()         Sets the current record's "taxon_saisi" value
- * @method CorFsTaxon    setSupprime()           Sets the current record's "supprime" value
- * @method CorFsTaxon    setTStationsFs()        Sets the current record's "TStationsFs" value
- * @method CorFsTaxon    setTaxref()             Sets the current record's "Taxref" value
- * @method CorFsTaxon    setBibAbondancesHerb()  Sets the current record's "BibAbondancesHerb" value
- * @method CorFsTaxon    setBibAbondancesInf1m() Sets the current record's "BibAbondancesInf1m" value
- * @method CorFsTaxon    setBibAbondancesDe14m() Sets the current record's "BibAbondancesDe14m" value
- * @method CorFsTaxon    setBibAbondancesSup4m() Sets the current record's "BibAbondancesSup4m" value
+ * @method integer       get()                   Returns the current record's "id_station" value
+ * @method integer       get()                   Returns the current record's "cd_nom" value
+ * @method string        get()                   Returns the current record's "herb" value
+ * @method string        get()                   Returns the current record's "inf_1m" value
+ * @method string        get()                   Returns the current record's "de_1_4m" value
+ * @method string        get()                   Returns the current record's "sup_4m" value
+ * @method string        get()                   Returns the current record's "taxon_saisi" value
+ * @method boolean       get()                   Returns the current record's "supprime" value
+ * @method TStationsFs   get()                   Returns the current record's "TStationsFs" value
+ * @method Taxref        get()                   Returns the current record's "Taxref" value
+ * @method BibAbondances get()                   Returns the current record's "BibAbondancesHerb" value
+ * @method BibAbondances get()                   Returns the current record's "BibAbondancesInf1m" value
+ * @method BibAbondances get()                   Returns the current record's "BibAbondancesDe14m" value
+ * @method BibAbondances get()                   Returns the current record's "BibAbondancesSup4m" value
+ * @method CorFsTaxon    set()                   Sets the current record's "id_station" value
+ * @method CorFsTaxon    set()                   Sets the current record's "cd_nom" value
+ * @method CorFsTaxon    set()                   Sets the current record's "herb" value
+ * @method CorFsTaxon    set()                   Sets the current record's "inf_1m" value
+ * @method CorFsTaxon    set()                   Sets the current record's "de_1_4m" value
+ * @method CorFsTaxon    set()                   Sets the current record's "sup_4m" value
+ * @method CorFsTaxon    set()                   Sets the current record's "taxon_saisi" value
+ * @method CorFsTaxon    set()                   Sets the current record's "supprime" value
+ * @method CorFsTaxon    set()                   Sets the current record's "TStationsFs" value
+ * @method CorFsTaxon    set()                   Sets the current record's "Taxref" value
+ * @method CorFsTaxon    set()                   Sets the current record's "BibAbondancesHerb" value
+ * @method CorFsTaxon    set()                   Sets the current record's "BibAbondancesInf1m" value
+ * @method CorFsTaxon    set()                   Sets the current record's "BibAbondancesDe14m" value
+ * @method CorFsTaxon    set()                   Sets the current record's "BibAbondancesSup4m" value
  * 
  * @package    geonature
  * @subpackage model

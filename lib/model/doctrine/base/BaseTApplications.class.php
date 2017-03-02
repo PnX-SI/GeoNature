@@ -14,22 +14,22 @@
  * @property string $connect_pass
  * @property Doctrine_Collection $TMenus
  * 
- * @method integer             getIdApplication()    Returns the current record's "id_application" value
- * @method string              getNomApplication()   Returns the current record's "nom_application" value
- * @method string              getDescApplication()  Returns the current record's "desc_application" value
- * @method string              getConnectHost()      Returns the current record's "connect_host" value
- * @method string              getConnectDatabase()  Returns the current record's "connect_database" value
- * @method string              getConnectUser()      Returns the current record's "connect_user" value
- * @method string              getConnectPass()      Returns the current record's "connect_pass" value
- * @method Doctrine_Collection getTMenus()           Returns the current record's "TMenus" collection
- * @method TApplications       setIdApplication()    Sets the current record's "id_application" value
- * @method TApplications       setNomApplication()   Sets the current record's "nom_application" value
- * @method TApplications       setDescApplication()  Sets the current record's "desc_application" value
- * @method TApplications       setConnectHost()      Sets the current record's "connect_host" value
- * @method TApplications       setConnectDatabase()  Sets the current record's "connect_database" value
- * @method TApplications       setConnectUser()      Sets the current record's "connect_user" value
- * @method TApplications       setConnectPass()      Sets the current record's "connect_pass" value
- * @method TApplications       setTMenus()           Sets the current record's "TMenus" collection
+ * @method integer             get()                 Returns the current record's "id_application" value
+ * @method string              get()                 Returns the current record's "nom_application" value
+ * @method string              get()                 Returns the current record's "desc_application" value
+ * @method string              get()                 Returns the current record's "connect_host" value
+ * @method string              get()                 Returns the current record's "connect_database" value
+ * @method string              get()                 Returns the current record's "connect_user" value
+ * @method string              get()                 Returns the current record's "connect_pass" value
+ * @method Doctrine_Collection get()                 Returns the current record's "TMenus" collection
+ * @method TApplications       set()                 Sets the current record's "id_application" value
+ * @method TApplications       set()                 Sets the current record's "nom_application" value
+ * @method TApplications       set()                 Sets the current record's "desc_application" value
+ * @method TApplications       set()                 Sets the current record's "connect_host" value
+ * @method TApplications       set()                 Sets the current record's "connect_database" value
+ * @method TApplications       set()                 Sets the current record's "connect_user" value
+ * @method TApplications       set()                 Sets the current record's "connect_pass" value
+ * @method TApplications       set()                 Sets the current record's "TMenus" collection
  * 
  * @package    geonature
  * @subpackage model

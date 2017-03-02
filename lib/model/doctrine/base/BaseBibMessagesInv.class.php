@@ -9,12 +9,12 @@
  * @property string $texte_message_inv
  * @property Doctrine_Collection $CorMessageTaxonInv
  * 
- * @method integer             getIdMessageInv()       Returns the current record's "id_message_inv" value
- * @method string              getTexteMessageInv()    Returns the current record's "texte_message_inv" value
- * @method Doctrine_Collection getCorMessageTaxonInv() Returns the current record's "CorMessageTaxonInv" collection
- * @method BibMessagesInv      setIdMessageInv()       Sets the current record's "id_message_inv" value
- * @method BibMessagesInv      setTexteMessageInv()    Sets the current record's "texte_message_inv" value
- * @method BibMessagesInv      setCorMessageTaxonInv() Sets the current record's "CorMessageTaxonInv" collection
+ * @method integer             get()                   Returns the current record's "id_message_inv" value
+ * @method string              get()                   Returns the current record's "texte_message_inv" value
+ * @method Doctrine_Collection get()                   Returns the current record's "CorMessageTaxonInv" collection
+ * @method BibMessagesInv      set()                   Sets the current record's "id_message_inv" value
+ * @method BibMessagesInv      set()                   Sets the current record's "texte_message_inv" value
+ * @method BibMessagesInv      set()                   Sets the current record's "CorMessageTaxonInv" collection
  * 
  * @package    geonature
  * @subpackage model

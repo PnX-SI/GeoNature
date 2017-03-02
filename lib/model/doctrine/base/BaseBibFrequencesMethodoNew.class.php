@@ -9,12 +9,12 @@
  * @property string $nom_frequence_methodo_new
  * @property Doctrine_Collection $TApresence
  * 
- * @method string                  getIdFrequenceMethodoNew()     Returns the current record's "id_frequence_methodo_new" value
- * @method string                  getNomFrequenceMethodoNew()    Returns the current record's "nom_frequence_methodo_new" value
- * @method Doctrine_Collection     getTApresence()                Returns the current record's "TApresence" collection
- * @method BibFrequencesMethodoNew setIdFrequenceMethodoNew()     Sets the current record's "id_frequence_methodo_new" value
- * @method BibFrequencesMethodoNew setNomFrequenceMethodoNew()    Sets the current record's "nom_frequence_methodo_new" value
- * @method BibFrequencesMethodoNew setTApresence()                Sets the current record's "TApresence" collection
+ * @method string                  get()                          Returns the current record's "id_frequence_methodo_new" value
+ * @method string                  get()                          Returns the current record's "nom_frequence_methodo_new" value
+ * @method Doctrine_Collection     get()                          Returns the current record's "TApresence" collection
+ * @method BibFrequencesMethodoNew set()                          Sets the current record's "id_frequence_methodo_new" value
+ * @method BibFrequencesMethodoNew set()                          Sets the current record's "nom_frequence_methodo_new" value
+ * @method BibFrequencesMethodoNew set()                          Sets the current record's "TApresence" collection
  * 
  * @package    geonature
  * @subpackage model

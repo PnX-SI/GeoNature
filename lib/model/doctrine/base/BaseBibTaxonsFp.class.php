@@ -11,16 +11,16 @@
  * @property string $latin
  * @property Doctrine_Collection $TZprospection
  * 
- * @method integer             getCdNom()         Returns the current record's "cd_nom" value
- * @method integer             getEchelle()       Returns the current record's "echelle" value
- * @method string              getFrancais()      Returns the current record's "francais" value
- * @method string              getLatin()         Returns the current record's "latin" value
- * @method Doctrine_Collection getTZprospection() Returns the current record's "TZprospection" collection
- * @method BibTaxonsFp         setCdNom()         Sets the current record's "cd_nom" value
- * @method BibTaxonsFp         setEchelle()       Sets the current record's "echelle" value
- * @method BibTaxonsFp         setFrancais()      Sets the current record's "francais" value
- * @method BibTaxonsFp         setLatin()         Sets the current record's "latin" value
- * @method BibTaxonsFp         setTZprospection() Sets the current record's "TZprospection" collection
+ * @method integer             get()              Returns the current record's "cd_nom" value
+ * @method integer             get()              Returns the current record's "echelle" value
+ * @method string              get()              Returns the current record's "francais" value
+ * @method string              get()              Returns the current record's "latin" value
+ * @method Doctrine_Collection get()              Returns the current record's "TZprospection" collection
+ * @method BibTaxonsFp         set()              Sets the current record's "cd_nom" value
+ * @method BibTaxonsFp         set()              Sets the current record's "echelle" value
+ * @method BibTaxonsFp         set()              Sets the current record's "francais" value
+ * @method BibTaxonsFp         set()              Sets the current record's "latin" value
+ * @method BibTaxonsFp         set()              Sets the current record's "TZprospection" collection
  * 
  * @package    geonature
  * @subpackage model

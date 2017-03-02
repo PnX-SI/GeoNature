@@ -65,18 +65,18 @@ ELSE
 ------ gestion des géometries selon l'outil de saisie :
 ------ Attention !!! La saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
 	IF new.the_geom_3857 IS NOT NULL THEN -- saisie web avec the_geom_3857
-		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
-	ELSIF new.the_geom_2154 IS NOT NULL THEN	-- saisie avec outil nomade android avec the_geom_2154
-		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
+		new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
+	ELSIF new.the_geom_local IS NOT NULL THEN	-- saisie avec outil nomade android avec the_geom_local
+		new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
 	END IF;
 
 ------ calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
 ------ puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
 
-	IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
+	IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
 		new.topo_valid = 'true';
-		new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee avec la fonction f_insee
-		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig avec la fonction f_isolines20
+		new.insee = layers.f_insee(new.the_geom_local);-- mise a jour du code insee avec la fonction f_insee
+		new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig avec la fonction f_isolines20
 		IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -84,7 +84,7 @@ ELSE
 		END IF;
 	ELSE
 		new.topo_valid = 'false';
-		moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+		moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID); -- calcul le centroid de la bbox pour les croisements SIG
 		new.insee = layers.f_insee(moncentroide);-- mise a jour du code insee
 		new.altitude_sig = layers.f_isolines20(moncentroide); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
@@ -151,7 +151,7 @@ BEGIN
         supprime,
         id_lot,
         the_geom_3857,
-        the_geom_2154,
+        the_geom_local,
         the_geom_point
     )
     VALUES( 
@@ -171,7 +171,7 @@ BEGIN
         new.supprime,
         fiche.id_lot,
         new.the_geom_3857,
-        new.the_geom_2154,
+        new.the_geom_local,
         mongeompoint);
 	
 	RETURN NEW; 			
@@ -207,8 +207,8 @@ ELSE
 
 ------ gestion de la source des géometries selon l'outil de saisie :
     IF new.saisie_initiale = 'nomade' THEN
-		new.srid_dessin = 2154;
-		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
+		new.srid_dessin = MYLOCALSRID;
+		new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
 	ELSIF new.saisie_initiale = 'web' THEN
 		new.srid_dessin = 3857;
 		-- attention : pas de calcul sur les geoemtry car "the_geom_3857" est inseré par le trigger update !!
@@ -220,21 +220,21 @@ ELSE
 	------ début de calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
 	------ puis calcul du geom_point_3857 (selon validité de the_geom_3857)
 	------ puis gestion des croisements SIG avec les layers secteur et communes en projection Lambert93
-		IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
+		IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
 			new.topo_valid = 'true';
 			-- calcul du geom_point_3857 
 			new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857);  -- calcul du point pour le premier niveau de zoom appli web
 			-- croisement secteur (celui qui contient le plus de zp en surface)
-			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, new.the_geom_2154)
-			ORDER BY public.ST_area(public.ST_intersection(ls.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, new.the_geom_local)
+			ORDER BY public.ST_area(public.ST_intersection(ls.the_geom, new.the_geom_local)) DESC LIMIT 1;
 			-- croisement commune (celle qui contient le plus de zp en surface)
-			SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, new.the_geom_2154)
-			ORDER BY public.ST_area(public.ST_intersection(lc.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+			SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, new.the_geom_local)
+			ORDER BY public.ST_area(public.ST_intersection(lc.the_geom, new.the_geom_local)) DESC LIMIT 1;
 		ELSE
 			new.topo_valid = 'false';
 			-- calcul du geom_point_3857
 			new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
-			moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+			moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID); -- calcul le centroid de la bbox pour les croisements SIG
 			-- croisement secteur (celui qui contient moncentroide)
 			SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, moncentroide);
 			-- croisement commune (celle qui contient moncentroid)
@@ -312,17 +312,17 @@ BEGIN
 -----------------------------------------------------------------------------------------------------------------
 /*  section en attente : 
 on pourrait verifier le changement des 3 geom pour lancer les commandes de geometries
-car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
+car pour le moment on ne gere pas les 2 cas de changement sur le geom local ou the geom
 code ci dessous a revoir car public.st_equals ne marche pas avec les objets invalid
 
 IF 
-    (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL))
+    (NOT public.st_equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local IS null AND new.the_geom_local IS NOT NULL))
     OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857)OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL)) 
 THEN
     IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL) THEN
-		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
-	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 IS null AND new.the_geom_2154 IS NOT NULL) THEN
-		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
+		new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
+	ELSIF NOT public.st_equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local IS null AND new.the_geom_local IS NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
 	END IF;
 puis suite du THEN
 fin de section en attente */ 
@@ -335,14 +335,14 @@ IF ST_NumGeometries(new.the_geom_3857)=1 THEN	-- si le Multi objet renvoyé par 
 	new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
 END IF;
 
-new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
 
 ------ calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
 ------ puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
-IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
+IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
 	new.topo_valid = 'true';
-	new.insee = layers.f_insee(new.the_geom_2154);				-- mise a jour du code insee avec la fonction f_insee
-	new.altitude_sig = layers.f_isolines20(new.the_geom_2154);		-- mise à jour de l'altitude sig avec la fonction f_isolines20
+	new.insee = layers.f_insee(new.the_geom_local);				-- mise a jour du code insee avec la fonction f_insee
+	new.altitude_sig = layers.f_isolines20(new.the_geom_local);		-- mise à jour de l'altitude sig avec la fonction f_isolines20
 	IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN	-- mise à jour de l'altitude retenue
 		new.altitude_retenue = new.altitude_sig;
 	ELSE
@@ -350,7 +350,7 @@ IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
 	END IF;
 ELSE
 	new.topo_valid = 'false';
-	moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+	moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID); -- calcul le centroid de la bbox pour les croisements SIG
 	new.insee = layers.f_insee(moncentroide);
 	new.altitude_sig = layers.f_isolines20(moncentroide);
 	IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN
@@ -385,7 +385,7 @@ IF (
         OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
         OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
         OR new.supprime <> old.supprime 
-        OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154))
+        OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local))
     ) THEN
     -- création du geom_point
     IF st_isvalid(new.the_geom_3857) THEN mongeompoint = st_pointonsurface(new.the_geom_3857);
@@ -409,7 +409,7 @@ IF (
 		derniere_action = 'u',
 		supprime = new.supprime,
 		the_geom_3857 = new.the_geom_3857,
-		the_geom_2154 = new.the_geom_2154,
+		the_geom_local = new.the_geom_local,
 		the_geom_point = mongeompoint
 	WHERE id_source = 4 AND id_fiche_source = CAST(old.indexap AS VARCHAR(25));
 END IF;
@@ -515,20 +515,20 @@ END IF;
 -----------------------------------------------------------------------------------------------------------------
 /*  section en attente : 
 on pourrait verifier le changement des 3 geom pour lancer les commandes de geometries
-car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
+car pour le moment on ne gere pas les 2 cas de changement sur le geom local ou the geom
 code ci dessous a revoir car public.st_equals ne marche pas avec les objets invalid
  -- on verfie si 1 des 3 geom a changé
 IF((old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT public.st_equals(new.the_geom_3857,old.the_geom_3857))
-OR ((old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154)) THEN
+OR ((old.the_geom_local is null AND new.the_geom_local is NOT NULL) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local)) THEN
 
 -- si oui on regarde lequel et on repercute les modif :
 	IF (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) THEN
 		-- verif si on est en multipolygon ou pas : A FAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+		new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
 		new.srid_dessin = 3857;	
-	ELSIF (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) OR NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) THEN
-		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
-		new.srid_dessin = 2154;
+	ELSIF (old.the_geom_local is null AND new.the_geom_local is NOT NULL) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+		new.srid_dessin = MYLOCALSRID;
 	END IF;
 puis suite du THEN...
 fin de section en attente */ 
@@ -542,26 +542,26 @@ IF ST_NumGeometries(new.the_geom_3857)=1 THEN	-- si le Multi objet renvoyé par 
 	new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
 END IF;
 
-new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
 new.srid_dessin = 3857;
 
 ------ 2) puis on calcul la validité des geom + on refait les calcul du geom_point_3857 + on refait les croisements SIG secteurs + communes
 ------    c'est la même chose que lors d'un INSERT ( cf trigger insert_zp)
-IF ST_isvalid(new.the_geom_2154) AND ST_isvalid(new.the_geom_3857) THEN
+IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
 	new.topo_valid = 'true';
 	-- calcul du geom_point_3857 
 	new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857);  -- calcul du point pour le premier niveau de zoom appli web
 	-- croisement secteur (celui qui contient le plus de zp en surface)
-	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, new.the_geom_2154)
-	ORDER BY public.ST_area(public.ST_intersection(ls.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, new.the_geom_local)
+	ORDER BY public.ST_area(public.ST_intersection(ls.the_geom, new.the_geom_local)) DESC LIMIT 1;
 	-- croisement commune (celle qui contient le plus de zp en surface)
-	SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, new.the_geom_2154)
-	ORDER BY public.ST_area(public.ST_intersection(lc.the_geom, new.the_geom_2154)) DESC LIMIT 1;
+	SELECT INTO macommune lc.insee FROM layers.l_communes lc WHERE public.st_intersects(lc.the_geom, new.the_geom_local)
+	ORDER BY public.ST_area(public.ST_intersection(lc.the_geom, new.the_geom_local)) DESC LIMIT 1;
 ELSE
 	new.topo_valid = 'false';
 	-- calcul du geom_point_3857
 	new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
-	moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_2154)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+	moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID); -- calcul le centroid de la bbox pour les croisements SIG
 	-- croisement secteur (celui qui contient moncentroide)
 	SELECT INTO monsectfp ls.id_secteur FROM layers.l_secteurs ls WHERE public.st_intersects(ls.the_geom, moncentroide);
 	-- croisement commune (celle qui contient moncentroid)
@@ -772,16 +772,16 @@ CREATE TABLE t_apresence (
     nb_placettes_comptage integer,
     surface_placette_comptage real,
     remarques text,
-    the_geom_2154 public.geometry,
+    the_geom_local public.geometry,
     the_geom_3857 public.geometry,
     longueur_pas numeric(10,2),
     effectif_placettes_steriles integer,
     effectif_placettes_fertiles integer,
     total_steriles integer,
     total_fertiles integer,
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
@@ -808,7 +808,7 @@ CREATE TABLE t_zprospection (
     saisie_initiale character varying(20),
     insee character(5),
     taxon_saisi character varying(100),
-    the_geom_2154 public.geometry,
+    the_geom_local public.geometry,
     geom_point_3857 public.geometry,
     geom_mixte_3857 public.geometry,
     srid_dessin integer,
@@ -816,14 +816,14 @@ CREATE TABLE t_zprospection (
     id_rezo_ecrins integer DEFAULT 0 NOT NULL,
     CONSTRAINT enforce_dims_geom_mixte_3857 CHECK ((public.st_ndims(geom_mixte_3857) = 2)),
     CONSTRAINT enforce_dims_geom_point_3857 CHECK ((public.st_ndims(geom_point_3857) = 2)),
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_geotype_geom_point_3857 CHECK (((public.geometrytype(geom_point_3857) = 'POINT'::text) OR (geom_point_3857 IS NULL))),
-    CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POLYGON'::text) OR (the_geom_2154 IS NULL))),
+    CONSTRAINT enforce_geotype_the_geom_local CHECK (((public.geometrytype(the_geom_local) = 'POLYGON'::text) OR (the_geom_local IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_3857 CHECK (((public.geometrytype(the_geom_3857) = 'POLYGON'::text) OR (the_geom_3857 IS NULL))),
     CONSTRAINT enforce_srid_geom_mixte_3857 CHECK ((public.st_srid(geom_mixte_3857) = 3857)),
     CONSTRAINT enforce_srid_geom_point_3857 CHECK ((public.st_srid(geom_point_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
@@ -839,14 +839,14 @@ CREATE VIEW v_ap_line AS
     a.surfaceap AS surface,
     a.altitude_saisie AS altitude,
     a.id_frequence_methodo_new AS id_frequence_methodo,
-    a.the_geom_2154,
+    a.the_geom_local,
     a.frequenceap,
     a.topo_valid,
     a.date_update,
     a.supprime,
     a.date_insert
    FROM t_apresence a
-  WHERE ((public.geometrytype(a.the_geom_2154) = 'MULTILINESTRING'::text) OR (public.geometrytype(a.the_geom_2154) = 'LINESTRING'::text));
+  WHERE ((public.geometrytype(a.the_geom_local) = 'MULTILINESTRING'::text) OR (public.geometrytype(a.the_geom_local) = 'LINESTRING'::text));
 
 
 --
@@ -860,14 +860,14 @@ CREATE VIEW v_ap_point AS
     a.surfaceap AS surface,
     a.altitude_saisie AS altitude,
     a.id_frequence_methodo_new AS id_frequence_methodo,
-    a.the_geom_2154,
+    a.the_geom_local,
     a.frequenceap,
     a.topo_valid,
     a.date_update,
     a.supprime,
     a.date_insert
    FROM t_apresence a
-  WHERE ((public.geometrytype(a.the_geom_2154) = 'POINT'::text) OR (public.geometrytype(a.the_geom_2154) = 'MULTIPOINT'::text));
+  WHERE ((public.geometrytype(a.the_geom_local) = 'POINT'::text) OR (public.geometrytype(a.the_geom_local) = 'MULTIPOINT'::text));
 
 
 --
@@ -881,14 +881,14 @@ CREATE VIEW v_ap_poly AS
     a.surfaceap AS surface,
     a.altitude_saisie AS altitude,
     a.id_frequence_methodo_new AS id_frequence_methodo,
-    a.the_geom_2154,
+    a.the_geom_local,
     a.frequenceap,
     a.topo_valid,
     a.date_update,
     a.supprime,
     a.date_insert
    FROM t_apresence a
-  WHERE ((public.geometrytype(a.the_geom_2154) = 'POLYGON'::text) OR (public.geometrytype(a.the_geom_2154) = 'MULTIPOLYGON'::text));
+  WHERE ((public.geometrytype(a.the_geom_local) = 'POLYGON'::text) OR (public.geometrytype(a.the_geom_local) = 'MULTIPOLYGON'::text));
 
 
 --
@@ -985,7 +985,7 @@ CREATE VIEW v_mobile_taxons_fp AS
 CREATE VIEW v_mobile_visu_zp AS
  SELECT t_zprospection.indexzp,
     t_zprospection.cd_nom,
-    t_zprospection.the_geom_2154
+    t_zprospection.the_geom_local
    FROM t_zprospection
   WHERE (date_part('year'::text, t_zprospection.dateobs) = date_part('year'::text, now()));
 
@@ -1018,7 +1018,7 @@ CREATE VIEW v_nomade_zp AS
     vobs.codeobs,
     zp.dateobs,
     'Polygon'::character(7) AS montype,
-    substr(public.st_asgml(zp.the_geom_2154), (strpos(public.st_asgml(zp.the_geom_2154), '<gml:coordinates>'::text) + 17), (strpos(public.st_asgml(zp.the_geom_2154), '</gml:coordinates>'::text) - (strpos(public.st_asgml(zp.the_geom_2154), '<gml:coordinates>'::text) + 17))) AS coordinates,
+    substr(public.st_asgml(zp.the_geom_local), (strpos(public.st_asgml(zp.the_geom_local), '<gml:coordinates>'::text) + 17), (strpos(public.st_asgml(zp.the_geom_local), '</gml:coordinates>'::text) - (strpos(public.st_asgml(zp.the_geom_local), '<gml:coordinates>'::text) + 17))) AS coordinates,
     vap.indexap,
     zp.id_secteur AS id_secteur_fp
    FROM ((t_zprospection zp
@@ -1051,8 +1051,8 @@ CREATE VIEW v_nomade_zp AS
 CREATE VIEW v_nomade_ap AS
  SELECT ap.indexap,
     ap.codepheno,
-    letypedegeom(ap.the_geom_2154) AS montype,
-    substr(public.st_asgml(ap.the_geom_2154), (strpos(public.st_asgml(ap.the_geom_2154), '<gml:coordinates>'::text) + 17), (strpos(public.st_asgml(ap.the_geom_2154), '</gml:coordinates>'::text) - (strpos(public.st_asgml(ap.the_geom_2154), '<gml:coordinates>'::text) + 17))) AS coordinates,
+    letypedegeom(ap.the_geom_local) AS montype,
+    substr(public.st_asgml(ap.the_geom_local), (strpos(public.st_asgml(ap.the_geom_local), '<gml:coordinates>'::text) + 17), (strpos(public.st_asgml(ap.the_geom_local), '</gml:coordinates>'::text) - (strpos(public.st_asgml(ap.the_geom_local), '<gml:coordinates>'::text) + 17))) AS coordinates,
     ap.surfaceap,
     (((ap.id_frequence_methodo_new)::text || ';'::text) || (ap.frequenceap)::integer) AS frequence,
     vper.codeper,
@@ -1095,10 +1095,10 @@ CREATE VIEW v_nomade_classes AS
 
 --
 -- TOC entry 348 (class 1259 OID 2748191)
--- Name: v_touteslesap_2154_line; Type: VIEW; Schema: florepatri; Owner: -
+-- Name: v_touteslesap_sridlocal_line; Type: VIEW; Schema: florepatri; Owner: -
 --
 
-CREATE VIEW v_touteslesap_2154_line AS
+CREATE VIEW v_touteslesap_sridlocal_line AS
  SELECT ap.indexap AS gid,
     ap.indexzp,
     ap.indexap,
@@ -1118,7 +1118,7 @@ CREATE VIEW v_touteslesap_2154_line AS
     ap.total_steriles AS tot_steriles,
     per.perturbations,
     phy.physionomies,
-    ap.the_geom_2154,
+    ap.the_geom_local,
     ap.topo_valid AS ap_topo_valid,
     zp.validation AS relue,
     ap.remarques
@@ -1145,16 +1145,16 @@ CREATE VIEW v_touteslesap_2154_line AS
            FROM (cor_ap_physionomie p_1
              JOIN bib_physionomies phy_1 ON ((phy_1.id_physionomie = p_1.id_physionomie)))
           GROUP BY p_1.indexap) phy ON ((phy.indexap = ap.indexap)))
-  WHERE ((ap.supprime = false) AND (public.geometrytype(ap.the_geom_2154) = 'LINESTRING'::text))
+  WHERE ((ap.supprime = false) AND (public.geometrytype(ap.the_geom_local) = 'LINESTRING'::text))
   ORDER BY s.nom_secteur, ap.indexzp;
 
 
 --
 -- TOC entry 349 (class 1259 OID 2748196)
--- Name: v_touteslesap_2154_point; Type: VIEW; Schema: florepatri; Owner: -
+-- Name: v_touteslesap_sridlocal_point; Type: VIEW; Schema: florepatri; Owner: -
 --
 
-CREATE VIEW v_touteslesap_2154_point AS
+CREATE VIEW v_touteslesap_sridlocal_point AS
  SELECT ap.indexap AS gid,
     ap.indexzp,
     ap.indexap,
@@ -1174,7 +1174,7 @@ CREATE VIEW v_touteslesap_2154_point AS
     ap.total_steriles AS tot_steriles,
     per.perturbations,
     phy.physionomies,
-    ap.the_geom_2154,
+    ap.the_geom_local,
     ap.topo_valid AS ap_topo_valid,
     zp.validation AS relue,
     ap.remarques
@@ -1201,16 +1201,16 @@ CREATE VIEW v_touteslesap_2154_point AS
            FROM (cor_ap_physionomie p_1
              JOIN bib_physionomies phy_1 ON ((phy_1.id_physionomie = p_1.id_physionomie)))
           GROUP BY p_1.indexap) phy ON ((phy.indexap = ap.indexap)))
-  WHERE ((ap.supprime = false) AND (public.geometrytype(ap.the_geom_2154) = 'POINT'::text))
+  WHERE ((ap.supprime = false) AND (public.geometrytype(ap.the_geom_local) = 'POINT'::text))
   ORDER BY s.nom_secteur, ap.indexzp;
 
 
 --
 -- TOC entry 350 (class 1259 OID 2748201)
--- Name: v_touteslesap_2154_polygon; Type: VIEW; Schema: florepatri; Owner: -
+-- Name: v_touteslesap_sridlocal_polygon; Type: VIEW; Schema: florepatri; Owner: -
 --
 
-CREATE VIEW v_touteslesap_2154_polygon AS
+CREATE VIEW v_touteslesap_sridlocal_polygon AS
  SELECT ap.indexap AS gid,
     ap.indexzp,
     ap.indexap,
@@ -1230,7 +1230,7 @@ CREATE VIEW v_touteslesap_2154_polygon AS
     ap.total_steriles AS tot_steriles,
     per.perturbations,
     phy.physionomies,
-    ap.the_geom_2154,
+    ap.the_geom_local,
     ap.topo_valid AS ap_topo_valid,
     zp.validation AS relue,
     ap.remarques
@@ -1257,16 +1257,16 @@ CREATE VIEW v_touteslesap_2154_polygon AS
            FROM (cor_ap_physionomie p_1
              JOIN bib_physionomies phy_1 ON ((phy_1.id_physionomie = p_1.id_physionomie)))
           GROUP BY p_1.indexap) phy ON ((phy.indexap = ap.indexap)))
-  WHERE ((ap.supprime = false) AND (public.geometrytype(ap.the_geom_2154) = 'POLYGON'::text))
+  WHERE ((ap.supprime = false) AND (public.geometrytype(ap.the_geom_local) = 'POLYGON'::text))
   ORDER BY s.nom_secteur, ap.indexzp;
 
 
 --
 -- TOC entry 351 (class 1259 OID 2748206)
--- Name: v_toutesleszp_2154; Type: VIEW; Schema: florepatri; Owner: -
+-- Name: v_toutesleszp_sridlocal; Type: VIEW; Schema: florepatri; Owner: -
 --
 
-CREATE VIEW v_toutesleszp_2154 AS
+CREATE VIEW v_toutesleszp_sridlocal AS
  SELECT zp.indexzp AS gid,
     zp.indexzp,
     s.nom_secteur AS secteur,
@@ -1275,7 +1275,7 @@ CREATE VIEW v_toutesleszp_2154 AS
     t.latin AS taxon,
     zp.taxon_saisi,
     o.observateurs,
-    zp.the_geom_2154,
+    zp.the_geom_local,
     zp.insee,
     com.commune_min AS commune,
     org.nom_organisme AS organisme_producteur,
@@ -1295,7 +1295,7 @@ CREATE VIEW v_toutesleszp_2154 AS
              JOIN utilisateurs.t_roles r ON ((r.id_role = c.codeobs)))
           GROUP BY c.indexzp) o ON ((o.indexzp = zp.indexzp)))
   WHERE (zp.supprime = false)
-  GROUP BY s.nom_secteur, zp.indexzp, zp.dateobs, t.latin, zp.taxon_saisi, o.observateurs, zp.the_geom_2154, zp.insee, com.commune_min, org.nom_organisme, zp.topo_valid, zp.validation, zp.saisie_initiale, zp.srid_dessin
+  GROUP BY s.nom_secteur, zp.indexzp, zp.dateobs, t.latin, zp.taxon_saisi, o.observateurs, zp.the_geom_local, zp.insee, com.commune_min, org.nom_organisme, zp.topo_valid, zp.validation, zp.saisie_initiale, zp.srid_dessin
   ORDER BY s.nom_secteur, zp.indexzp;
 
 
@@ -1941,17 +1941,17 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 --------------------------------------------------------------------------------------
 
 SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_mobile_visu_zp', 'the_geom_2154', 2, 2154, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_poly', 'the_geom_2154', 2, 2154, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_point', 'the_geom_2154', 2, 2154, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_line', 'the_geom_2154', 2, 2154, 'LINESTRING');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_point', 'the_geom_2154', 2, 2154, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_line', 'the_geom_2154', 2, 2154, 'LINESTRING');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_2154_polygon', 'the_geom_2154', 2, 2154, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_toutesleszp_2154', 'the_geom_2154', 2, 2154, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_mobile_visu_zp', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_poly', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_point', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_line', 'the_geom_local', 2, MYLOCALSRID, 'LINESTRING');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_sridlocal_point', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_sridlocal_line', 'the_geom_local', 2, MYLOCALSRID, 'LINESTRING');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_sridlocal_polygon', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_toutesleszp_sridlocal', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_2154', 2, 2154, 'POLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'geom_point_3857', 2, 3857, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'geom_mixte_3857', 2, 3857, 'POLYGON');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_3857', 2, 3857, 'POLYGON');

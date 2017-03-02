@@ -23,40 +23,40 @@
  * @property boolean $actif
  * @property Doctrine_Collection $Syntheseff
  * 
- * @method integer             getIdSource()    Returns the current record's "id_source" value
- * @method string              getNomSource()   Returns the current record's "nom_source" value
- * @method string              getDescSource()  Returns the current record's "desc_source" value
- * @method string              getHost()        Returns the current record's "host" value
- * @method integer             getPort()        Returns the current record's "port" value
- * @method string              getUsername()    Returns the current record's "username" value
- * @method string              getPass()        Returns the current record's "pass" value
- * @method string              getDbName()      Returns the current record's "db_name" value
- * @method string              getDbSchema()    Returns the current record's "db_schema" value
- * @method string              getDbTable()     Returns the current record's "db_table" value
- * @method string              getDbField()     Returns the current record's "db_field" value
- * @method string              getUrl()         Returns the current record's "url" value
- * @method string              getTarget()      Returns the current record's "target" value
- * @method string              getPicto()       Returns the current record's "picto" value
- * @method string              getGroupe()      Returns the current record's "groupe" value
- * @method boolean             getActif()       Returns the current record's "actif" value
- * @method Doctrine_Collection getSyntheseff()  Returns the current record's "Syntheseff" collection
- * @method BibSources          setIdSource()    Sets the current record's "id_source" value
- * @method BibSources          setNomSource()   Sets the current record's "nom_source" value
- * @method BibSources          setDescSource()  Sets the current record's "desc_source" value
- * @method BibSources          setHost()        Sets the current record's "host" value
- * @method BibSources          setPort()        Sets the current record's "port" value
- * @method BibSources          setUsername()    Sets the current record's "username" value
- * @method BibSources          setPass()        Sets the current record's "pass" value
- * @method BibSources          setDbName()      Sets the current record's "db_name" value
- * @method BibSources          setDbSchema()    Sets the current record's "db_schema" value
- * @method BibSources          setDbTable()     Sets the current record's "db_table" value
- * @method BibSources          setDbField()     Sets the current record's "db_field" value
- * @method BibSources          setUrl()         Sets the current record's "url" value
- * @method BibSources          setTarget()      Sets the current record's "target" value
- * @method BibSources          setPicto()       Sets the current record's "picto" value
- * @method BibSources          setGroupe()      Sets the current record's "groupe" value
- * @method BibSources          setActif()       Sets the current record's "actif" value
- * @method BibSources          setSyntheseff()  Sets the current record's "Syntheseff" collection
+ * @method integer             get()            Returns the current record's "id_source" value
+ * @method string              get()            Returns the current record's "nom_source" value
+ * @method string              get()            Returns the current record's "desc_source" value
+ * @method string              get()            Returns the current record's "host" value
+ * @method integer             get()            Returns the current record's "port" value
+ * @method string              get()            Returns the current record's "username" value
+ * @method string              get()            Returns the current record's "pass" value
+ * @method string              get()            Returns the current record's "db_name" value
+ * @method string              get()            Returns the current record's "db_schema" value
+ * @method string              get()            Returns the current record's "db_table" value
+ * @method string              get()            Returns the current record's "db_field" value
+ * @method string              get()            Returns the current record's "url" value
+ * @method string              get()            Returns the current record's "target" value
+ * @method string              get()            Returns the current record's "picto" value
+ * @method string              get()            Returns the current record's "groupe" value
+ * @method boolean             get()            Returns the current record's "actif" value
+ * @method Doctrine_Collection get()            Returns the current record's "Syntheseff" collection
+ * @method BibSources          set()            Sets the current record's "id_source" value
+ * @method BibSources          set()            Sets the current record's "nom_source" value
+ * @method BibSources          set()            Sets the current record's "desc_source" value
+ * @method BibSources          set()            Sets the current record's "host" value
+ * @method BibSources          set()            Sets the current record's "port" value
+ * @method BibSources          set()            Sets the current record's "username" value
+ * @method BibSources          set()            Sets the current record's "pass" value
+ * @method BibSources          set()            Sets the current record's "db_name" value
+ * @method BibSources          set()            Sets the current record's "db_schema" value
+ * @method BibSources          set()            Sets the current record's "db_table" value
+ * @method BibSources          set()            Sets the current record's "db_field" value
+ * @method BibSources          set()            Sets the current record's "url" value
+ * @method BibSources          set()            Sets the current record's "target" value
+ * @method BibSources          set()            Sets the current record's "picto" value
+ * @method BibSources          set()            Sets the current record's "groupe" value
+ * @method BibSources          set()            Sets the current record's "actif" value
+ * @method BibSources          set()            Sets the current record's "Syntheseff" collection
  * 
  * @package    geonature
  * @subpackage model

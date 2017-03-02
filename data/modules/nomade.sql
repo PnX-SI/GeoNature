@@ -5,9 +5,9 @@ CREATE OR REPLACE VIEW v_mobile_recherche AS
     zp.dateobs,
     t.latin AS taxon,
     o.observateurs,
-    public.st_asgeojson(public.st_transform(ap.the_geom_2154, 4326)) AS geom_4326,
-    public.st_x(public.st_transform(public.st_centroid(ap.the_geom_2154), 4326)) AS centroid_x,
-    public.st_y(public.st_transform(public.st_centroid(ap.the_geom_2154), 4326)) AS centroid_y
+    public.st_asgeojson(public.st_transform(ap.the_geom_local, 4326)) AS geom_4326,
+    public.st_x(public.st_transform(public.st_centroid(ap.the_geom_local), 4326)) AS centroid_x,
+    public.st_y(public.st_transform(public.st_centroid(ap.the_geom_local), 4326)) AS centroid_y
    FROM florepatri.t_apresence ap
      JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
      JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
@@ -16,7 +16,7 @@ CREATE OR REPLACE VIEW v_mobile_recherche AS
            FROM florepatri.cor_zp_obs c
              JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
           GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
-  WHERE ap.supprime = false AND st_isvalid(ap.the_geom_2154) AND ap.topo_valid = true
+  WHERE ap.supprime = false AND st_isvalid(ap.the_geom_local) AND ap.topo_valid = true
   ORDER BY zp.dateobs DESC)
 UNION
 ( SELECT cft.id_station AS gid,

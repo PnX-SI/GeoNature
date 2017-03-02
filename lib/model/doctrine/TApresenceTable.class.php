@@ -97,15 +97,15 @@ class TApresenceTable extends Doctrine_Table
         }
         if ($request->getParameter('commune')!=''&& $request->getParameter('commune')!=null){
             $geomcommune=self::getGeomCommuneCbna($request->getParameter('commune'));
-            $addwhere = $addwhere." and st_intersects('$geomcommune',zp.the_geom_".$srid_local_export.")=true";
+            $addwhere = $addwhere." and st_intersects('$geomcommune',zp.the_geom_local)=true";
         }
         if ($request->getParameter('secteur')!=''&& $request->getParameter('secteur')!=null){
             $geomsecteur=self::getGeomSecteurCbna($request->getParameter('secteur'));
-            $addwhere = $addwhere." and st_intersects('$geomsecteur',zp.the_geom_".$srid_local_export.")=true";
+            $addwhere = $addwhere." and st_intersects('$geomsecteur',zp.the_geom_local)=true";
         }
         if ($request->getParameter('territoire')!=''&& $request->getParameter('territoire')!=null){
             $geomterritoire=self::getGeomTerritoire($request->getParameter('territoire'));
-            $addwhere = $addwhere." and st_intersects('$geomterritoire',zp.the_geom_".$srid_local_export.")=true";
+            $addwhere = $addwhere." and st_intersects('$geomterritoire',zp.the_geom_local)=true";
         }
         if ($request->getParameter('box')!=''&& $request->getParameter('box')!=null){
             $box=$request->getParameter('box');
@@ -119,7 +119,6 @@ class TApresenceTable extends Doctrine_Table
     public static function listXls($request)
     {
         sfContext::getInstance()->getConfiguration()->loadHelpers('Date');
-        $srid_local_export = sfGeonatureConfig::$srid_local;
         $addwhere = self::addwhere($request);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($request->getParameter('start')=="no"){$from = "  FROM florepatri.t_zprospection zp ";}
@@ -129,8 +128,7 @@ class TApresenceTable extends Doctrine_Table
             ap.surfaceap, compt.nom_comptage_methodo, ob.denombrement, per.perturbations, phy.milieux, f.nom_frequence_methodo_new as frequence_methodo, ap.altitude_retenue AS altitude, ap.the_geom, ap.remarques,
             ap.topo_valid AS ap_topo_valid, zp.topo_valid AS zp_topo_valid, 
             ap.ap_pdop as pdop, zp.validation AS relue,comap.nomcom AS communeap, comzp.nomcom AS communezp, 
-            CAST(st_x(layers.f_return_centroid(ap.the_geom_".$srid_local_export.")) AS int) AS x_l2, CAST(st_y(layers.f_return_centroid(ap.the_geom_".$srid_local_export.")) AS int) AS y_l2, 
-            CAST(st_x(layers.f_return_centroid(ap.the_geom_".$srid_local_export.")) AS int) AS x_l93, CAST(st_y(layers.f_return_centroid(ap.the_geom_".$srid_local_export.")) AS int) AS y_l93, 
+            CAST(st_x(layers.f_return_centroid(ap.the_geom_local)) AS int) AS x_local, CAST(st_y(layers.f_return_centroid(ap.the_geom_local)) AS int) AS y_local, 
             st_x(layers.f_return_centroid(st_transform(ap.the_geom_3857,4326))) AS x_wgs84, st_y(layers.f_return_centroid(st_transform(ap.the_geom_3857,4326))) AS y_wgs84"
             .$from.
             "LEFT JOIN florepatri.t_apresence ap ON ap.indexzp = zp.indexzp

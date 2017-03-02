@@ -11,16 +11,16 @@
  * @property BibAttributs $BibAttributs
  * @property BibNoms $BibNoms
  * 
- * @method integer          getCdRef()           Returns the current record's "cd_ref" value
- * @method integer          getIdAttribut()      Returns the current record's "id_attribut" value
- * @method string           getValeurAttribut()  Returns the current record's "valeur_attribut" value
- * @method BibAttributs     getBibAttributs()    Returns the current record's "BibAttributs" value
- * @method BibNoms          getBibNoms()         Returns the current record's "BibNoms" value
- * @method CorTaxonAttribut setCdRef()           Sets the current record's "cd_ref" value
- * @method CorTaxonAttribut setIdAttribut()      Sets the current record's "id_attribut" value
- * @method CorTaxonAttribut setValeurAttribut()  Sets the current record's "valeur_attribut" value
- * @method CorTaxonAttribut setBibAttributs()    Sets the current record's "BibAttributs" value
- * @method CorTaxonAttribut setBibNoms()         Sets the current record's "BibNoms" value
+ * @method integer          get()                Returns the current record's "cd_ref" value
+ * @method integer          get()                Returns the current record's "id_attribut" value
+ * @method string           get()                Returns the current record's "valeur_attribut" value
+ * @method BibAttributs     get()                Returns the current record's "BibAttributs" value
+ * @method BibNoms          get()                Returns the current record's "BibNoms" value
+ * @method CorTaxonAttribut set()                Sets the current record's "cd_ref" value
+ * @method CorTaxonAttribut set()                Sets the current record's "id_attribut" value
+ * @method CorTaxonAttribut set()                Sets the current record's "valeur_attribut" value
+ * @method CorTaxonAttribut set()                Sets the current record's "BibAttributs" value
+ * @method CorTaxonAttribut set()                Sets the current record's "BibNoms" value
  * 
  * @package    geonature
  * @subpackage model

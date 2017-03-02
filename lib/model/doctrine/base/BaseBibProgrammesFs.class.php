@@ -9,12 +9,12 @@
  * @property string $nom_programme_fs
  * @property Doctrine_Collection $TStationsFs
  * 
- * @method integer             getIdProgrammeFs()    Returns the current record's "id_programme_fs" value
- * @method string              getNomProgrammeFs()   Returns the current record's "nom_programme_fs" value
- * @method Doctrine_Collection getTStationsFs()      Returns the current record's "TStationsFs" collection
- * @method BibProgrammesFs     setIdProgrammeFs()    Sets the current record's "id_programme_fs" value
- * @method BibProgrammesFs     setNomProgrammeFs()   Sets the current record's "nom_programme_fs" value
- * @method BibProgrammesFs     setTStationsFs()      Sets the current record's "TStationsFs" collection
+ * @method integer             get()                 Returns the current record's "id_programme_fs" value
+ * @method string              get()                 Returns the current record's "nom_programme_fs" value
+ * @method Doctrine_Collection get()                 Returns the current record's "TStationsFs" collection
+ * @method BibProgrammesFs     set()                 Sets the current record's "id_programme_fs" value
+ * @method BibProgrammesFs     set()                 Sets the current record's "nom_programme_fs" value
+ * @method BibProgrammesFs     set()                 Sets the current record's "TStationsFs" collection
  * 
  * @package    geonature
  * @subpackage model

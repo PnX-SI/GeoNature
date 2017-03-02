@@ -50,10 +50,8 @@ class sfGeonatureConfig extends sfActions
     
     //SRID local des couches communes, secteurs, unites géographiques, isoline20 et zones à statuts
     //Ce srid est utilisé dans les exports. 
-    //Lorsque la base de données est créée avec les scripts SQL fournis (synthese_srid.sql), il faut choisir le script correspondant à la valeur portée ci-dessous. 
-    //Idem pour le script d'insertion des données (synthese_data_srid.sql)
-    //ATTENTION. Il faut mettre à jour le service WMS interne de l'application qui utilise ce script. Fichier wms/faune.map
-    public static $srid_local = 2154;
+    //ATTENTION. Veuillez controler que le script du service WMS interne de l'application comporte les bonnes projections. Fichier wms/wms.map
+    public static $srid_local = MYLOCALSRID;
     //SRID utilisé pour la map dans Openlayers
     public static $srid_ol_map = 3857;
     

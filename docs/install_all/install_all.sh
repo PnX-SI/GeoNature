@@ -123,12 +123,15 @@ sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
+sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
+sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 # sed -i "s/users_schema=.*$/user_schema=$geonature_users_schema_location/g" config/settings.ini
 # sed -i "s/usershub_host=.*$/usershub_host=$pg_host/g" config/settings.ini
 # sed -i "s/usershub_port=.*$/usershub_port=$pg_port/g" config/settings.ini
 # sed -i "s/usershub_db=.*$/usershub_db=$usershubdb_name/g" config/settings.ini
 # sed -i "s/usershub_user=.*$/usershub_user=$user_pg/g" config/settings.ini
 # sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" config/settings.ini
+sed -i "s/public static $srid_local =.*$/public static $srid_local = $srid_local/g" lib/sfGeonatureConfig.php
 sed -i -e "s/\/var\/www/$apache_document_root/g" install_app.sh
 # Installation de la base de données GeoNature en root
 sudo ./install_db.sh

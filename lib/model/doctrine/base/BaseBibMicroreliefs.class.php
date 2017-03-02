@@ -9,12 +9,12 @@
  * @property string $nom_microrelief
  * @property Doctrine_Collection $CorFsMicrorelief
  * 
- * @method integer             getIdMicrorelief()    Returns the current record's "id_microrelief" value
- * @method string              getNomMicrorelief()   Returns the current record's "nom_microrelief" value
- * @method Doctrine_Collection getCorFsMicrorelief() Returns the current record's "CorFsMicrorelief" collection
- * @method BibMicroreliefs     setIdMicrorelief()    Sets the current record's "id_microrelief" value
- * @method BibMicroreliefs     setNomMicrorelief()   Sets the current record's "nom_microrelief" value
- * @method BibMicroreliefs     setCorFsMicrorelief() Sets the current record's "CorFsMicrorelief" collection
+ * @method integer             get()                 Returns the current record's "id_microrelief" value
+ * @method string              get()                 Returns the current record's "nom_microrelief" value
+ * @method Doctrine_Collection get()                 Returns the current record's "CorFsMicrorelief" collection
+ * @method BibMicroreliefs     set()                 Sets the current record's "id_microrelief" value
+ * @method BibMicroreliefs     set()                 Sets the current record's "nom_microrelief" value
+ * @method BibMicroreliefs     set()                 Sets the current record's "CorFsMicrorelief" collection
  * 
  * @package    geonature
  * @subpackage model

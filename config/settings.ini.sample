@@ -11,3 +11,13 @@ user_pg=geonatuser
 
 #pass de l'utilisateur propriétaire de la base geonaturedb
 user_pg_pass=monpassachanger
+
+#SRID de la projection locale
+srid_local=2154
+
+# Permet l'installation des couches SIG nécessaires - communes, zones à status, etc.. 
+#Seules des couches de métropole sont fournies (false conseillé hors métropole)
+install_sig_layers=true
+
+#Installer les données exemples (valid pour la métropole uniquement ; false conseillé hors métropole)
+add_sample_data=true

@@ -19,8 +19,9 @@ class TApresence extends BaseTApresence
 	 */
 	public function updateGeometry($geometry)
 	{
+
     Doctrine_Query::create()->update('TApresence')
-      ->set('the_geom','multi(geometryFromText(?, 2154))', $geometry)
+      ->set('the_geom_local','multi(geometryFromText(?, '.sfGeonatureConfig::$srid_local.'))', $geometry)
       ->where('indexap=?', $this->getIndexap())
       ->execute();
 	}

@@ -280,11 +280,10 @@ class TStationsFsTable extends Doctrine_Table
     
     public static function findOne($id_station, $format = null)
     {
-        $srid_local_export = sfGeonatureConfig::$srid_local;
         $fields = 's.id_station,s.complet_partiel releve,s.dateobs,s.date_insert,s.date_update,s.validation,s.id_sophie,'.
                   's.info_acces,s.meso_longitudinal,s.meso_lateral,s.canopee,'.
                   's.ligneux_hauts,s.ligneux_bas,s.ligneux_tbas,s.herbaces,s.mousses,s.litiere,s.altitude_retenue altitude,s.remarques,s.pdop,'.
-                  'st_x(s.the_geom_'.$srid_local_export.') x_local, st_y(s.the_geom_'.$srid_local_export.') y_local,  st_x(ST_Transform(s.the_geom_3857,4326)) x_utm,  st_y(ST_Transform(s.the_geom_3857,4326)) y_utm,'.
+                  'st_x(s.the_geom_local) x_local, st_y(s.the_geom_local) y_local,  st_x(ST_Transform(s.the_geom_3857,4326)) x_utm,  st_y(ST_Transform(s.the_geom_3857,4326)) y_utm,'.
                   'bs.nom_support, p.nom_programme_fs, e.nom_exposition, h.nom_homogene,su.nom_surface,'.
                   'bs.id_support, p.id_programme_fs, e.id_exposition, h.id_homogene,su.id_surface,com.commune_min commune';
         if ( !is_null($format) && $format==='geoJSON' )

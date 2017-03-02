@@ -12,18 +12,18 @@
  * @property integer $id_critere_synthese
  * @property Doctrine_Collection $TRelevesInv
  * 
- * @method integer             getIdCritereInv()        Returns the current record's "id_critere_inv" value
- * @method string              getCodeCritereInv()      Returns the current record's "code_critere_inv" value
- * @method string              getNomCritereInv()       Returns the current record's "nom_critere_inv" value
- * @method integer             getTriInv()              Returns the current record's "tri_inv" value
- * @method integer             getIdCritereSynthese()   Returns the current record's "id_critere_synthese" value
- * @method Doctrine_Collection getTRelevesInv()         Returns the current record's "TRelevesInv" collection
- * @method BibCriteresInv      setIdCritereInv()        Sets the current record's "id_critere_inv" value
- * @method BibCriteresInv      setCodeCritereInv()      Sets the current record's "code_critere_inv" value
- * @method BibCriteresInv      setNomCritereInv()       Sets the current record's "nom_critere_inv" value
- * @method BibCriteresInv      setTriInv()              Sets the current record's "tri_inv" value
- * @method BibCriteresInv      setIdCritereSynthese()   Sets the current record's "id_critere_synthese" value
- * @method BibCriteresInv      setTRelevesInv()         Sets the current record's "TRelevesInv" collection
+ * @method integer             get()                    Returns the current record's "id_critere_inv" value
+ * @method string              get()                    Returns the current record's "code_critere_inv" value
+ * @method string              get()                    Returns the current record's "nom_critere_inv" value
+ * @method integer             get()                    Returns the current record's "tri_inv" value
+ * @method integer             get()                    Returns the current record's "id_critere_synthese" value
+ * @method Doctrine_Collection get()                    Returns the current record's "TRelevesInv" collection
+ * @method BibCriteresInv      set()                    Sets the current record's "id_critere_inv" value
+ * @method BibCriteresInv      set()                    Sets the current record's "code_critere_inv" value
+ * @method BibCriteresInv      set()                    Sets the current record's "nom_critere_inv" value
+ * @method BibCriteresInv      set()                    Sets the current record's "tri_inv" value
+ * @method BibCriteresInv      set()                    Sets the current record's "id_critere_synthese" value
+ * @method BibCriteresInv      set()                    Sets the current record's "TRelevesInv" collection
  * 
  * @package    geonature
  * @subpackage model

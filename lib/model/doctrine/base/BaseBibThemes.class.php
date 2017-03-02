@@ -11,16 +11,16 @@
  * @property integer $ordre
  * @property Doctrine_Collection $BibAttributs
  * 
- * @method integer             getIdTheme()      Returns the current record's "id_theme" value
- * @method string              getNomTheme()     Returns the current record's "nom_theme" value
- * @method string              getDescTheme()    Returns the current record's "desc_theme" value
- * @method integer             getOrdre()        Returns the current record's "ordre" value
- * @method Doctrine_Collection getBibAttributs() Returns the current record's "BibAttributs" collection
- * @method BibThemes           setIdTheme()      Sets the current record's "id_theme" value
- * @method BibThemes           setNomTheme()     Sets the current record's "nom_theme" value
- * @method BibThemes           setDescTheme()    Sets the current record's "desc_theme" value
- * @method BibThemes           setOrdre()        Sets the current record's "ordre" value
- * @method BibThemes           setBibAttributs() Sets the current record's "BibAttributs" collection
+ * @method integer             get()             Returns the current record's "id_theme" value
+ * @method string              get()             Returns the current record's "nom_theme" value
+ * @method string              get()             Returns the current record's "desc_theme" value
+ * @method integer             get()             Returns the current record's "ordre" value
+ * @method Doctrine_Collection get()             Returns the current record's "BibAttributs" collection
+ * @method BibThemes           set()             Sets the current record's "id_theme" value
+ * @method BibThemes           set()             Sets the current record's "nom_theme" value
+ * @method BibThemes           set()             Sets the current record's "desc_theme" value
+ * @method BibThemes           set()             Sets the current record's "ordre" value
+ * @method BibThemes           set()             Sets the current record's "BibAttributs" collection
  * 
  * @package    geonature
  * @subpackage model

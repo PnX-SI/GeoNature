@@ -9,12 +9,12 @@
  * @property string $texte_message_cflore
  * @property Doctrine_Collection $CorMessageTaxonCflore
  * 
- * @method integer             getIdMessageCflore()       Returns the current record's "id_message_cflore" value
- * @method string              getTexteMessageCflore()    Returns the current record's "texte_message_cflore" value
- * @method Doctrine_Collection getCorMessageTaxonCflore() Returns the current record's "CorMessageTaxonCflore" collection
- * @method BibMessagesCflore   setIdMessageCflore()       Sets the current record's "id_message_cflore" value
- * @method BibMessagesCflore   setTexteMessageCflore()    Sets the current record's "texte_message_cflore" value
- * @method BibMessagesCflore   setCorMessageTaxonCflore() Sets the current record's "CorMessageTaxonCflore" collection
+ * @method integer             get()                      Returns the current record's "id_message_cflore" value
+ * @method string              get()                      Returns the current record's "texte_message_cflore" value
+ * @method Doctrine_Collection get()                      Returns the current record's "CorMessageTaxonCflore" collection
+ * @method BibMessagesCflore   set()                      Sets the current record's "id_message_cflore" value
+ * @method BibMessagesCflore   set()                      Sets the current record's "texte_message_cflore" value
+ * @method BibMessagesCflore   set()                      Sets the current record's "CorMessageTaxonCflore" collection
  * 
  * @package    geonature
  * @subpackage model

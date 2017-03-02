@@ -9,12 +9,12 @@
  * @property string $nom_territoire
  * @property blob $the_geom
  * 
- * @method integer      getIdTerritoire()   Returns the current record's "id_territoire" value
- * @method string       getNomTerritoire()  Returns the current record's "nom_territoire" value
- * @method blob         getTheGeom()        Returns the current record's "the_geom" value
- * @method LTerritoires setIdTerritoire()   Sets the current record's "id_territoire" value
- * @method LTerritoires setNomTerritoire()  Sets the current record's "nom_territoire" value
- * @method LTerritoires setTheGeom()        Sets the current record's "the_geom" value
+ * @method integer      get()               Returns the current record's "id_territoire" value
+ * @method string       get()               Returns the current record's "nom_territoire" value
+ * @method blob         get()               Returns the current record's "the_geom" value
+ * @method LTerritoires set()               Sets the current record's "id_territoire" value
+ * @method LTerritoires set()               Sets the current record's "nom_territoire" value
+ * @method LTerritoires set()               Sets the current record's "the_geom" value
  * 
  * @package    geonature
  * @subpackage model

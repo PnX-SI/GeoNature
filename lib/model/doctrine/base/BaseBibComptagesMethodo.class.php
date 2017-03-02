@@ -9,12 +9,12 @@
  * @property string $nom_comptage_methodo
  * @property Doctrine_Collection $TApresence
  * 
- * @method integer             getIdComptageMethodo()    Returns the current record's "id_comptage_methodo" value
- * @method string              getNomComptageMethodo()   Returns the current record's "nom_comptage_methodo" value
- * @method Doctrine_Collection getTApresence()           Returns the current record's "TApresence" collection
- * @method BibComptagesMethodo setIdComptageMethodo()    Sets the current record's "id_comptage_methodo" value
- * @method BibComptagesMethodo setNomComptageMethodo()   Sets the current record's "nom_comptage_methodo" value
- * @method BibComptagesMethodo setTApresence()           Sets the current record's "TApresence" collection
+ * @method integer             get()                     Returns the current record's "id_comptage_methodo" value
+ * @method string              get()                     Returns the current record's "nom_comptage_methodo" value
+ * @method Doctrine_Collection get()                     Returns the current record's "TApresence" collection
+ * @method BibComptagesMethodo set()                     Sets the current record's "id_comptage_methodo" value
+ * @method BibComptagesMethodo set()                     Sets the current record's "nom_comptage_methodo" value
+ * @method BibComptagesMethodo set()                     Sets the current record's "TApresence" collection
  * 
  * @package    geonature
  * @subpackage model

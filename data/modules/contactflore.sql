@@ -95,32 +95,32 @@ ELSE
 	new.date_update= 'now';
 -------gestion des infos relatives a la numerisation (srid utilisé et support utilisé : nomade ou web ou autre)
 	IF new.saisie_initiale = 'pda' OR new.saisie_initiale = 'nomade' THEN
-		new.srid_dessin = 2154;
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
+		new.srid_dessin = MYLOCALSRID;
+		new.the_geom_3857 = st_transform(new.the_geom_local,3857);
 	ELSIF new.saisie_initiale = 'web' THEN
 		new.srid_dessin = 3857;
-		-- attention : pas de creation des geom 2154 car c'est fait par l'application web
+		-- attention : pas de creation des geom locaux car c'est fait par l'application web
 	ELSIF new.saisie_initiale ISNULL THEN
 		new.srid_dessin = 0;
 		-- pas d'info sur le srid utilisé, cas des importations à gérer manuellement. Ne devrait pas exister.
 	END IF;
 -------gestion des divers control avec attributions des secteurs + communes : dans le cas d'un insert depuis le nomade uniquement via the_geom !!!!
-	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+	IF st_isvalid(new.the_geom_local) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_local);
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 		    new.altitude_retenue = new.altitude_sig;
 		ELSE
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -156,7 +156,7 @@ BEGIN
 	new.cd_ref_origine = re;
     -- MAJ de la table cor_unite_taxon_cflore, on commence par récupérer l'unité à partir du pointage (table t_fiches_cf)
 	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
-	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE ST_INTERSECTS(fiche.the_geom_2154,u.the_geom);
+	SELECT INTO unite u.id_unite_geo FROM layers.l_unites_geo u WHERE ST_INTERSECTS(fiche.the_geom_local,u.the_geom);
 	--si on est dans une des unités on peut mettre à jour la table cor_unite_taxon_cflore, sinon on fait rien
 	IF unite>0 THEN
 		SELECT INTO line * FROM contactflore.cor_unite_taxon_cflore WHERE id_unite_geo = unite AND id_nom = new.id_nom;
@@ -166,7 +166,7 @@ BEGIN
 		END IF;
 		--on compte le nombre d'enregistrement pour ce taxon dans l'unité
 		SELECT INTO nbobs count(*) from synthese.syntheseff s
-		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_2154) AND u.id_unite_geo = unite
+		JOIN layers.l_unites_geo u ON ST_Intersects(u.the_geom, s.the_geom_local) AND u.id_unite_geo = unite
 		WHERE s.cd_nom = cdnom;
 		--on créé ou recréé la ligne
 		INSERT INTO contactflore.cor_unite_taxon_cflore VALUES(unite,new.id_nom,fiche.dateobs,contactflore.couleur_taxon(new.id_nom,fiche.dateobs), nbobs+1);
@@ -251,7 +251,7 @@ BEGIN
 		derniere_action,
 		supprime,
 		the_geom_3857,
-		the_geom_2154,
+		the_geom_local,
 		the_geom_point,
 		id_lot
 	)
@@ -272,7 +272,7 @@ BEGIN
 	'c',
 	false,
 	fiche.the_geom_3857,
-	fiche.the_geom_2154,
+	fiche.the_geom_local,
 	fiche.the_geom_3857,
 	fiche.id_lot
 	);
@@ -374,7 +374,7 @@ BEGIN
 				GROUP BY id_cflore
 			) o ON o.id_cflore = f.id_cflore
 			WHERE r.id_releve_cflore = releves.id_releve_cflore;
-			IF NOT St_Equals(new.the_geom_3857,old.the_geom_3857) OR NOT St_Equals(new.the_geom_2154,old.the_geom_2154) THEN
+			IF NOT St_Equals(new.the_geom_3857,old.the_geom_3857) OR NOT St_Equals(new.the_geom_local,old.the_geom_local) THEN
 				
 				--mise à jour de l'enregistrement correspondant dans syntheseff
 				UPDATE synthese.syntheseff SET
@@ -388,7 +388,7 @@ BEGIN
 				derniere_action = 'u',
 				supprime = new.supprime,
 				the_geom_3857 = new.the_geom_3857,
-				the_geom_2154 = new.the_geom_2154,
+				the_geom_local = new.the_geom_local,
 				the_geom_point = new.the_geom_3857,
 				id_lot = new.id_lot
 				WHERE id_fiche_source = releves.id_releve_cflore::text AND (id_source = idsourcecflore) ;
@@ -405,7 +405,7 @@ BEGIN
 				derniere_action = 'u',
 				supprime = new.supprime,
 				the_geom_3857 = new.the_geom_3857,
-				the_geom_2154 = new.the_geom_2154,
+				the_geom_local = new.the_geom_local,
 				the_geom_point = new.the_geom_3857,
 				id_lot = new.id_lot
 			    WHERE id_fiche_source = releves.id_releve_cflore::text AND (id_source = idsourcecflore);
@@ -483,33 +483,33 @@ macommune character(5);
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
-IF (NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+IF (NOT ST_Equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local is null AND new.the_geom_local is NOT NULL))
   OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
 	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
-		new.the_geom_2154 = st_transform(new.the_geom_3857,2154);
+		new.the_geom_local = st_transform(new.the_geom_3857,MYLOCALSRID);
 		new.srid_dessin = 3857;
-	ELSIF NOT ST_Equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
-		new.the_geom_3857 = st_transform(new.the_geom_2154,3857);
-		new.srid_dessin = 2154;
+	ELSIF NOT ST_Equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local is null AND new.the_geom_local is NOT NULL) THEN
+		new.the_geom_3857 = st_transform(new.the_geom_local,3857);
+		new.srid_dessin = MYLOCALSRID;
 	END IF;
--------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_2154 !!!!
-	IF st_isvalid(new.the_geom_2154) = true THEN	-- si la topologie est bonne alors...
+-------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_local !!!!
+	IF st_isvalid(new.the_geom_local) = true THEN	-- si la topologie est bonne alors...
 		-- on calcul la commune (celle qui contient le plus de zp en surface)...
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_2154);
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, new.the_geom_local);
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 		    new.altitude_retenue = new.altitude_sig;
 		ELSE
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_2154)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
@@ -692,12 +692,12 @@ CREATE TABLE t_fiches_cflore (
     id_protocole integer,
     id_lot integer,
     the_geom_3857 public.geometry,
-    the_geom_2154 public.geometry,
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    the_geom_local public.geometry,
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
+    CONSTRAINT enforce_geotype_the_geom_local CHECK (((public.geometrytype(the_geom_local) = 'POINT'::text) OR (the_geom_local IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_3857 CHECK (((public.geometrytype(the_geom_3857) = 'POINT'::text) OR (the_geom_3857 IS NULL))),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
@@ -834,7 +834,7 @@ CREATE OR REPLACE VIEW v_nomade_taxons_flore AS
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom 
      JOIN v_nomade_classes g ON g.id_classe = cnl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
-     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+     JOIN public.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
    WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
    ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cflore;
 
@@ -1203,5 +1203,5 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 
 SET search_path = public, pg_catalog;
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_2154', 2, 2154, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 'v_nomade_unites_geo_cflore', 'the_geom', 2, 2154, 'MULTIPOLYGON');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 't_fiches_cflore', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactflore', 'v_nomade_unites_geo_cflore', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');

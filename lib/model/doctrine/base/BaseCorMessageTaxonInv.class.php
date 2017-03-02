@@ -10,14 +10,14 @@
  * @property BibNoms $BibNoms
  * @property BibMessagesInv $BibMessagesInv
  * 
- * @method integer            getIdMessageInv()   Returns the current record's "id_message_inv" value
- * @method integer            getIdNom()          Returns the current record's "id_nom" value
- * @method BibNoms            getBibNoms()        Returns the current record's "BibNoms" value
- * @method BibMessagesInv     getBibMessagesInv() Returns the current record's "BibMessagesInv" value
- * @method CorMessageTaxonInv setIdMessageInv()   Sets the current record's "id_message_inv" value
- * @method CorMessageTaxonInv setIdNom()          Sets the current record's "id_nom" value
- * @method CorMessageTaxonInv setBibNoms()        Sets the current record's "BibNoms" value
- * @method CorMessageTaxonInv setBibMessagesInv() Sets the current record's "BibMessagesInv" value
+ * @method integer            get()               Returns the current record's "id_message_inv" value
+ * @method integer            get()               Returns the current record's "id_nom" value
+ * @method BibNoms            get()               Returns the current record's "BibNoms" value
+ * @method BibMessagesInv     get()               Returns the current record's "BibMessagesInv" value
+ * @method CorMessageTaxonInv set()               Sets the current record's "id_message_inv" value
+ * @method CorMessageTaxonInv set()               Sets the current record's "id_nom" value
+ * @method CorMessageTaxonInv set()               Sets the current record's "BibNoms" value
+ * @method CorMessageTaxonInv set()               Sets the current record's "BibMessagesInv" value
  * 
  * @package    geonature
  * @subpackage model

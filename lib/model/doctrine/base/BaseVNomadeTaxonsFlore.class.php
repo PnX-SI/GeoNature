@@ -17,28 +17,28 @@
  * @property CorUniteTaxonCflore $CorUniteTaxonCflore
  * @property TRelevesCflore $TRelevesCflore
  * 
- * @method integer             getIdNom()               Returns the current record's "id_nom" value
- * @method integer             getCdRef()               Returns the current record's "cd_ref" value
- * @method integer             getCdNom()               Returns the current record's "cd_nom" value
- * @method string              getNomLatin()            Returns the current record's "nom_latin" value
- * @method string              getNomFrancais()         Returns the current record's "nom_francais" value
- * @method integer             getIdClasse()            Returns the current record's "id_classe" value
- * @method boolean             getPatrimonial()         Returns the current record's "patrimonial" value
- * @method string              getMessage()             Returns the current record's "message" value
- * @method BibNoms             getBibNoms()             Returns the current record's "BibNoms" value
- * @method CorUniteTaxonCflore getCorUniteTaxonCflore() Returns the current record's "CorUniteTaxonCflore" value
- * @method TRelevesCflore      getTRelevesCflore()      Returns the current record's "TRelevesCflore" value
- * @method VNomadeTaxonsFlore  setIdNom()               Sets the current record's "id_nom" value
- * @method VNomadeTaxonsFlore  setCdRef()               Sets the current record's "cd_ref" value
- * @method VNomadeTaxonsFlore  setCdNom()               Sets the current record's "cd_nom" value
- * @method VNomadeTaxonsFlore  setNomLatin()            Sets the current record's "nom_latin" value
- * @method VNomadeTaxonsFlore  setNomFrancais()         Sets the current record's "nom_francais" value
- * @method VNomadeTaxonsFlore  setIdClasse()            Sets the current record's "id_classe" value
- * @method VNomadeTaxonsFlore  setPatrimonial()         Sets the current record's "patrimonial" value
- * @method VNomadeTaxonsFlore  setMessage()             Sets the current record's "message" value
- * @method VNomadeTaxonsFlore  setBibNoms()             Sets the current record's "BibNoms" value
- * @method VNomadeTaxonsFlore  setCorUniteTaxonCflore() Sets the current record's "CorUniteTaxonCflore" value
- * @method VNomadeTaxonsFlore  setTRelevesCflore()      Sets the current record's "TRelevesCflore" value
+ * @method integer             get()                    Returns the current record's "id_nom" value
+ * @method integer             get()                    Returns the current record's "cd_ref" value
+ * @method integer             get()                    Returns the current record's "cd_nom" value
+ * @method string              get()                    Returns the current record's "nom_latin" value
+ * @method string              get()                    Returns the current record's "nom_francais" value
+ * @method integer             get()                    Returns the current record's "id_classe" value
+ * @method boolean             get()                    Returns the current record's "patrimonial" value
+ * @method string              get()                    Returns the current record's "message" value
+ * @method BibNoms             get()                    Returns the current record's "BibNoms" value
+ * @method CorUniteTaxonCflore get()                    Returns the current record's "CorUniteTaxonCflore" value
+ * @method TRelevesCflore      get()                    Returns the current record's "TRelevesCflore" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "id_nom" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "cd_ref" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "cd_nom" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "nom_latin" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "nom_francais" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "id_classe" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "patrimonial" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "message" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "BibNoms" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "CorUniteTaxonCflore" value
+ * @method VNomadeTaxonsFlore  set()                    Sets the current record's "TRelevesCflore" value
  * 
  * @package    geonature
  * @subpackage model

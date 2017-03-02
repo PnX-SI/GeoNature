@@ -16,7 +16,7 @@ class TZprospection extends BaseTZprospection
     {
         Doctrine_Query::create()
           ->update('TZprospection')
-          ->set('the_geom','multi(geometryFromText(?, 2154))', $geometry)
+          ->set('the_geom_local','multi(geometryFromText(?, '.sfGeonatureConfig::$srid_local.'))', $geometry)
           ->where('indexzp=?', $this->getIndexzp())
           ->execute();
     }

@@ -11,16 +11,16 @@
  * @property boolean $actif
  * @property Doctrine_Collection $BibLots
  * 
- * @method integer             getIdProgramme()    Returns the current record's "id_programme" value
- * @method string              getNomProgramme()   Returns the current record's "nom_programme" value
- * @method string              getDescProgramme()  Returns the current record's "desc_programme" value
- * @method boolean             getActif()          Returns the current record's "actif" value
- * @method Doctrine_Collection getBibLots()        Returns the current record's "BibLots" collection
- * @method BibProgrammes       setIdProgramme()    Sets the current record's "id_programme" value
- * @method BibProgrammes       setNomProgramme()   Sets the current record's "nom_programme" value
- * @method BibProgrammes       setDescProgramme()  Sets the current record's "desc_programme" value
- * @method BibProgrammes       setActif()          Sets the current record's "actif" value
- * @method BibProgrammes       setBibLots()        Sets the current record's "BibLots" collection
+ * @method integer             get()               Returns the current record's "id_programme" value
+ * @method string              get()               Returns the current record's "nom_programme" value
+ * @method string              get()               Returns the current record's "desc_programme" value
+ * @method boolean             get()               Returns the current record's "actif" value
+ * @method Doctrine_Collection get()               Returns the current record's "BibLots" collection
+ * @method BibProgrammes       set()               Sets the current record's "id_programme" value
+ * @method BibProgrammes       set()               Sets the current record's "nom_programme" value
+ * @method BibProgrammes       set()               Sets the current record's "desc_programme" value
+ * @method BibProgrammes       set()               Sets the current record's "actif" value
+ * @method BibProgrammes       set()               Sets the current record's "BibLots" collection
  * 
  * @package    geonature
  * @subpackage model

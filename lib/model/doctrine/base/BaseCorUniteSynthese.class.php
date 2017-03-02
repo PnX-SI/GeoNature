@@ -10,14 +10,14 @@
  * @property Syntheseff $Syntheseff
  * @property LUnitesGeo $LUnitesGeo
  * 
- * @method integer          getIdSynthese()   Returns the current record's "id_synthese" value
- * @method integer          getIdUniteGeo()   Returns the current record's "id_unite_geo" value
- * @method Syntheseff       getSyntheseff()   Returns the current record's "Syntheseff" value
- * @method LUnitesGeo       getLUnitesGeo()   Returns the current record's "LUnitesGeo" value
- * @method CorUniteSynthese setIdSynthese()   Sets the current record's "id_synthese" value
- * @method CorUniteSynthese setIdUniteGeo()   Sets the current record's "id_unite_geo" value
- * @method CorUniteSynthese setSyntheseff()   Sets the current record's "Syntheseff" value
- * @method CorUniteSynthese setLUnitesGeo()   Sets the current record's "LUnitesGeo" value
+ * @method integer          get()             Returns the current record's "id_synthese" value
+ * @method integer          get()             Returns the current record's "id_unite_geo" value
+ * @method Syntheseff       get()             Returns the current record's "Syntheseff" value
+ * @method LUnitesGeo       get()             Returns the current record's "LUnitesGeo" value
+ * @method CorUniteSynthese set()             Sets the current record's "id_synthese" value
+ * @method CorUniteSynthese set()             Sets the current record's "id_unite_geo" value
+ * @method CorUniteSynthese set()             Sets the current record's "Syntheseff" value
+ * @method CorUniteSynthese set()             Sets the current record's "LUnitesGeo" value
  * 
  * @package    geonature
  * @subpackage model

@@ -9,12 +9,12 @@
  * @property string $nom_milieu_inv
  * @property Doctrine_Collection $TFichesInv
  * 
- * @method integer             getIdMilieuInv()    Returns the current record's "id_milieu_inv" value
- * @method string              getNomMilieuInv()   Returns the current record's "nom_milieu_inv" value
- * @method Doctrine_Collection getTFichesInv()     Returns the current record's "TFichesInv" collection
- * @method BibMilieuxInv       setIdMilieuInv()    Sets the current record's "id_milieu_inv" value
- * @method BibMilieuxInv       setNomMilieuInv()   Sets the current record's "nom_milieu_inv" value
- * @method BibMilieuxInv       setTFichesInv()     Sets the current record's "TFichesInv" collection
+ * @method integer             get()               Returns the current record's "id_milieu_inv" value
+ * @method string              get()               Returns the current record's "nom_milieu_inv" value
+ * @method Doctrine_Collection get()               Returns the current record's "TFichesInv" collection
+ * @method BibMilieuxInv       set()               Sets the current record's "id_milieu_inv" value
+ * @method BibMilieuxInv       set()               Sets the current record's "nom_milieu_inv" value
+ * @method BibMilieuxInv       set()               Sets the current record's "TFichesInv" collection
  * 
  * @package    geonature
  * @subpackage model

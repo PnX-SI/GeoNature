@@ -345,7 +345,6 @@ class SyntheseffTable extends Doctrine_Table
     
     public static function listXlsObs($params)
     {
-        $srid_local_export = sfGeonatureConfig::$srid_local;
         $addwhere = self::addwhere($params);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($params['start']=="no"){$from = " FROM synthese.syntheseff synt ";}
@@ -367,7 +366,7 @@ class SyntheseffTable extends Doctrine_Table
                 txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, txr.nom_valide, 
                 c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,
                 synt.id_synthese,
-                CAST(st_x(st_centroid(synt.the_geom_".$srid_local_export.")) AS int) AS x_srid_local_export, CAST(st_y(st_centroid(synt.the_geom_".$srid_local_export.")) AS int) AS y_srid_local_export,                    
+                CAST(st_x(st_centroid(synt.the_geom_local)) AS int) AS x_local, CAST(st_y(st_centroid(synt.the_geom_local)) AS int) AS y_local,                    
                 st_x(st_centroid(st_transform(synt.the_geom_3857,4326))) AS x_wgs84, st_y(st_centroid(st_transform(synt.the_geom_3857,4326))) AS y_wgs84,
                 st_geometrytype(synt.the_geom_3857) AS geom_type"
                 .$from.
@@ -466,7 +465,7 @@ class SyntheseffTable extends Doctrine_Table
                             WHEN 'ST_Line' THEN 'ligne'
                         END AS geom_src ";
             }
-            else{$sql .= "synt.the_geom_".$srid_local_export." AS the_geom";}
+            else{$sql .= "synt.the_geom_local AS the_geom";}
             $sql .= $from;
             $sql .= "LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = synt.cd_nom ";
             $sql .= "LEFT JOIN taxonomie.taxref txr ON txr.cd_nom = n.cd_nom ";
@@ -481,7 +480,7 @@ class SyntheseffTable extends Doctrine_Table
             $sql .= "LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1 ";
             $sql .= "LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2 ";
             $sql .= "WHERE synt.supprime = false ";
-            if($typ!='centroid'){$sql .= "AND ST_geometrytype(synt.the_geom_".$srid_local_export.") = '".$typ."'::text ";}
+            if($typ!='centroid'){$sql .= "AND ST_geometrytype(synt.the_geom_local) = '".$typ."'::text ";}
             $sql .= $addwhere;
             if($params['usage']=="demo"){$sql .= " LIMIT 100 ";}
             return $sql;

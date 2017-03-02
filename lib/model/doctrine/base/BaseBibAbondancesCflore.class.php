@@ -9,12 +9,12 @@
  * @property string $nom_abondance_cflore
  * @property Doctrine_Collection $TRelevesCflore
  * 
- * @method integer             getIdAbondanceCflore()    Returns the current record's "id_abondance_cflore" value
- * @method string              getNomAbondanceCflore()   Returns the current record's "nom_abondance_cflore" value
- * @method Doctrine_Collection getTRelevesCflore()       Returns the current record's "TRelevesCflore" collection
- * @method BibAbondancesCflore setIdAbondanceCflore()    Sets the current record's "id_abondance_cflore" value
- * @method BibAbondancesCflore setNomAbondanceCflore()   Sets the current record's "nom_abondance_cflore" value
- * @method BibAbondancesCflore setTRelevesCflore()       Sets the current record's "TRelevesCflore" collection
+ * @method integer             get()                     Returns the current record's "id_abondance_cflore" value
+ * @method string              get()                     Returns the current record's "nom_abondance_cflore" value
+ * @method Doctrine_Collection get()                     Returns the current record's "TRelevesCflore" collection
+ * @method BibAbondancesCflore set()                     Sets the current record's "id_abondance_cflore" value
+ * @method BibAbondancesCflore set()                     Sets the current record's "nom_abondance_cflore" value
+ * @method BibAbondancesCflore set()                     Sets the current record's "TRelevesCflore" collection
  * 
  * @package    geonature
  * @subpackage model

@@ -21,6 +21,7 @@ php symfony cc
 echo "Créer les fichiers de configurations en lien avec la base de données..."
 cp config/databases.yml.sample config/databases.yml
 cp wms/wms.map.sample wms/wms.map
+sed -i "s/MYLOCALSRID/$srid_local/g" wms/wms.map
 
 echo "configuration du fichier config/databases.yml..."
 sed -i "s/host=geonatdbhost;dbname=.*$/host=geonatdbhost;dbname=$db_name'/" config/databases.yml
@@ -42,6 +43,7 @@ echo "Création des fichiers de configuration de l'application..."
 cp web/js/config.js.sample web/js/config.js
 cp web/js/configmap.js.sample web/js/configmap.js
 cp lib/sfGeonatureConfig.php.sample lib/sfGeonatureConfig.php
+sed -i "s/MYLOCALSRID/$srid_local/g" lib/sfGeonatureConfig.php
 
 echo "Configuration du répertoire web de l'application..."
 sudo ln -s ${PWD}/web/ /var/www/geonature

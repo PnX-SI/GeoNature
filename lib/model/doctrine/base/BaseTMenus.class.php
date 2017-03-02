@@ -11,16 +11,16 @@
  * @property integer $id_application
  * @property TApplications $TApplications
  * 
- * @method integer       getIdMenu()         Returns the current record's "id_menu" value
- * @method string        getNomMenu()        Returns the current record's "nom_menu" value
- * @method string        getDescMenu()       Returns the current record's "desc_menu" value
- * @method integer       getIdApplication()  Returns the current record's "id_application" value
- * @method TApplications getTApplications()  Returns the current record's "TApplications" value
- * @method TMenus        setIdMenu()         Sets the current record's "id_menu" value
- * @method TMenus        setNomMenu()        Sets the current record's "nom_menu" value
- * @method TMenus        setDescMenu()       Sets the current record's "desc_menu" value
- * @method TMenus        setIdApplication()  Sets the current record's "id_application" value
- * @method TMenus        setTApplications()  Sets the current record's "TApplications" value
+ * @method integer       get()               Returns the current record's "id_menu" value
+ * @method string        get()               Returns the current record's "nom_menu" value
+ * @method string        get()               Returns the current record's "desc_menu" value
+ * @method integer       get()               Returns the current record's "id_application" value
+ * @method TApplications get()               Returns the current record's "TApplications" value
+ * @method TMenus        set()               Sets the current record's "id_menu" value
+ * @method TMenus        set()               Sets the current record's "nom_menu" value
+ * @method TMenus        set()               Sets the current record's "desc_menu" value
+ * @method TMenus        set()               Sets the current record's "id_application" value
+ * @method TMenus        set()               Sets the current record's "TApplications" value
  * 
  * @package    geonature
  * @subpackage model

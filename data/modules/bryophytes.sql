@@ -31,9 +31,9 @@ CREATE FUNCTION bryophytes_insert() RETURNS trigger
 BEGIN
 
 new.date_insert= 'now';	 -- mise a jour de date insert
-new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
-new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee
-new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
+new.insee = layers.f_insee(new.the_geom_local);-- mise a jour du code insee
+new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig
 
 
 IF new.altitude_saisie is null or new.altitude_saisie = 0 then -- mis à jour de l'altitude retenue
@@ -57,27 +57,27 @@ CREATE FUNCTION bryophytes_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-IF (NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL))
+IF (NOT public.st_equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local is null AND new.the_geom_local is NOT NULL))
   OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
 
 	IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
-		new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+		new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
 		new.srid_dessin = 3857;
-	ELSIF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) OR (old.the_geom_2154 is null AND new.the_geom_2154 is NOT NULL) THEN
-		new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
-		new.srid_dessin = 2154;
+	ELSIF NOT public.st_equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local is null AND new.the_geom_local is NOT NULL) THEN
+		new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+		new.srid_dessin = MYLOCALSRID;
 	END IF;
 
-        new.insee = layers.f_insee(new.the_geom_2154);-- mise à jour du code insee
-        new.altitude_sig = layers.f_isolines20(new.the_geom_2154); --mise à jour de l'altitude_sig
+        new.insee = layers.f_insee(new.the_geom_local);-- mise à jour du code insee
+        new.altitude_sig = layers.f_isolines20(new.the_geom_local); --mise à jour de l'altitude_sig
 
 END IF;
 
 IF (new.altitude_saisie <> old.altitude_saisie OR old.altitude_saisie is null OR new.altitude_saisie is null OR old.altitude_saisie=0 OR new.altitude_saisie=0) then  -- mis à jour de l'altitude retenue
 	BEGIN
 		if new.altitude_saisie is null or new.altitude_saisie = 0 then
-			new.altitude_retenue = layers.f_isolines20(new.the_geom_2154);
+			new.altitude_retenue = layers.f_isolines20(new.the_geom_local);
 		else
 			new.altitude_retenue = new.altitude_saisie;
 		end if;
@@ -149,7 +149,7 @@ BEGIN
       supprime,
       id_lot,
       the_geom_3857,
-      the_geom_2154,
+      the_geom_local,
       the_geom_point
     )
     VALUES
@@ -170,7 +170,7 @@ BEGIN
       new.supprime,
       fiche.id_lot,
       fiche.the_geom_3857,
-      fiche.the_geom_2154,
+      fiche.the_geom_local,
       fiche.the_geom_3857
     );
 	
@@ -274,7 +274,7 @@ FOR monreleve IN SELECT gid, cd_nom FROM bryophytes.cor_bryo_taxon WHERE id_stat
             remarques = new.remarques,
             derniere_action = 'u',
             the_geom_3857 = new.the_geom_3857,
-            the_geom_2154 = new.the_geom_2154,
+            the_geom_local = new.the_geom_local,
             the_geom_point = new.the_geom_3857
         WHERE id_source = 6 AND id_fiche_source = CAST(monreleve.gid AS VARCHAR(25));
     END IF;
@@ -397,14 +397,14 @@ CREATE TABLE t_stations_bryo (
     date_update timestamp without time zone,
     insee character(5),
     gid integer NOT NULL,
-    the_geom_2154 public.geometry,
+    the_geom_local public.geometry,
     srid_dessin integer,
     the_geom_3857 public.geometry,
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
+    CONSTRAINT enforce_geotype_the_geom_local CHECK (((public.geometrytype(the_geom_local) = 'POINT'::text) OR (the_geom_local IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_3857 CHECK (((public.geometrytype(the_geom_3857) = 'POINT'::text) OR (the_geom_3857 IS NULL))),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
@@ -730,5 +730,5 @@ INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, usernam
 --------------------------------------------------------------------------------------
 
 SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'bryophytes', 't_stations_bryo', 'the_geom_2154', 2, 2154, 'POINT');
+INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'bryophytes', 't_stations_bryo', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
 INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'bryophytes', 't_stations_bryo', 'the_geom_3857', 2, 3857, 'POINT');

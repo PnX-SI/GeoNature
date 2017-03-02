@@ -216,7 +216,6 @@ class CorFsTaxonTable extends Doctrine_Table
     public static function listXls($request)
     {
         sfContext::getInstance()->getConfiguration()->loadHelpers('Date');
-        $srid_local_export = sfGeonatureConfig::$srid_local;
         $addwhere = self::addwhere($request);
         $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
         if($request->getParameter('start')=="no"){$from = "  FROM florestation.t_stations_fs s ";}
@@ -227,7 +226,7 @@ class CorFsTaxonTable extends Doctrine_Table
             t.nom_complet AS taxon, o.observateurs, p.nom_programme_fs, mr.microreliefs, d.delphines,
             e.nom_exposition, su.nom_support, h.nom_homogene, g.nom_surface,com.commune_min as nomcommune, se.nom_secteur,
             cft.herb,cft.inf_1m,cft.de_1_4m,cft.sup_4m,cft.taxon_saisi, z.nom_complet AS taxon_ref, z.nom_complet AS taxon_complet,
-            st_x(s.the_geom_".$srid_local_export.") as x_local, st_y(s.the_geom_".$srid_local_export.") as y_local"
+            st_x(s.the_geom_local) as x_local, st_y(s.the_geom_local) as y_local"
             .$from.
             "LEFT JOIN florestation.cor_fs_taxon cft ON cft.id_station = s.id_station
             LEFT JOIN taxonomie.taxref t ON t.cd_nom = cft.cd_nom
