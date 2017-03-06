@@ -1208,7 +1208,7 @@ ALTER TABLE florepatri.t_apresence ADD CONSTRAINT enforce_dims_the_geom_local CH
 
 ALTER TABLE florepatri.t_zprospection RENAME the_geom_2154  TO the_geom_local;
 ALTER TABLE florepatri.t_zprospection DROP CONSTRAINT enforce_geotype_the_geom_2154;
-ALTER TABLE florepatri.t_zprospection ADD CONSTRAINT enforce_geotype_the_geom_2154 CHECK (geometrytype(the_geom_2154) = 'POLYGON'::text OR the_geom_2154 IS NULL);
+ALTER TABLE florepatri.t_zprospection ADD CONSTRAINT enforce_geotype_the_geom_2154 CHECK (geometrytype(the_geom_local) = 'POLYGON'::text OR the_geom_local IS NULL);
 ALTER TABLE florepatri.t_zprospection DROP CONSTRAINT enforce_srid_the_geom_2154;
 ALTER TABLE florepatri.t_zprospection ADD CONSTRAINT enforce_srid_the_geom_local CHECK (st_srid(the_geom_local) = 2154);
 ALTER TABLE florepatri.t_zprospection DROP CONSTRAINT enforce_dims_the_geom_2154;
