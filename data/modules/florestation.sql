@@ -810,6 +810,20 @@ CREATE INDEX fki_t_stations_fs_gid ON t_stations_fs USING btree (gid);
 
 
 --
+-- Name: index_gist_t_stations_fs_the_geom_local; Type: INDEX; Schema: florestation; Owner: -
+--
+
+CREATE INDEX index_gist_t_stations_fs_the_geom_local ON t_stations_fs USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_t_stations_fs_the_geom_3857; Type: INDEX; Schema: florestation; Owner: -
+--
+
+CREATE INDEX index_gist_t_stations_fs_the_geom_3857 ON t_stations_fs USING gist (the_geom_3857);
+
+
+--
 -- TOC entry 3976 (class 0 OID 0)
 -- Dependencies: 3773
 -- Name: INDEX fki_t_stations_fs_gid; Type: COMMENT; Schema: florestation; Owner: -

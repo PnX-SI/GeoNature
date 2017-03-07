@@ -981,6 +981,20 @@ CREATE INDEX i_fk_t_fiches_cflore_l_communes ON t_fiches_cflore USING btree (ins
 
 
 --
+-- Name: index_gist_t_fiches_cflore_the_geom_local; Type: INDEX; Schema: contactflore; 
+--
+
+CREATE INDEX index_gist_t_fiches_cflore_the_geom_local ON t_fiches_cflore USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_t_fiches_cflore_the_geom_3857; Type: INDEX; Schema: contactflore; 
+--
+
+CREATE INDEX index_gist_t_fiches_cflore_the_geom_3857 ON t_fiches_cflore USING gist (the_geom_3857);
+
+
+--
 -- TOC entry 3713 (class 2620 OID 1388074)
 -- Name: tri_insert_fiche_cflore; Type: TRIGGER; Schema: contactflore;
 --
