@@ -543,6 +543,20 @@ CREATE INDEX index_cd_nom ON cor_bryo_taxon USING btree (cd_nom);
 
 
 --
+-- Name: index_gist_t_stations_bryo_the_geom_local; Type: INDEX; Schema: bryophytes; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_t_stations_bryo_the_geom_local ON t_stations_bryo USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_t_stations_bryo_the_geom_3857; Type: INDEX; Schema: bryophytes; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_t_stations_bryo_the_geom_3857 ON t_stations_bryo USING gist (the_geom_3857);
+
+
+--
 -- TOC entry 3758 (class 2620 OID 2748518)
 -- Name: tri_delete_synthese_cor_bryo_taxon; Type: TRIGGER; Schema: bryophytes; Owner: -
 --

@@ -1467,6 +1467,48 @@ CREATE INDEX i_fk_t_zprospection_bib_secteu ON t_zprospection USING btree (id_se
 
 
 --
+-- Name: index_gist_t_apresence_the_geom_local; Type: INDEX; Schema: florepatri; Owner: -
+--
+
+CREATE INDEX index_gist_t_apresence_the_geom_local ON t_apresence USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_t_apresence_the_geom_3857; Type: INDEX; Schema: florepatri; Owner: -
+--
+
+CREATE INDEX index_gist_t_apresence_the_geom_3857 ON t_apresence USING gist (the_geom_3857);
+
+
+--
+-- Name: index_gist_t_zprospection_the_geom_local; Type: INDEX; Schema: florepatri; Owner: -
+--
+
+CREATE INDEX index_gist_t_zprospection_the_geom_local ON t_zprospection USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_t_zprospection_the_geom_3857; Type: INDEX; Schema: florepatri; Owner: -
+--
+
+CREATE INDEX index_gist_t_zprospection_the_geom_3857 ON t_zprospection USING gist (the_geom_3857);
+
+
+--
+-- Name: index_gist_t_zprospection_geom_point_3857; Type: INDEX; Schema: florepatri; Owner: -
+--
+
+CREATE INDEX index_gist_t_zprospection_geom_point_3857 ON t_zprospection USING gist (geom_point_3857);
+
+
+--
+-- Name: index_gist_t_zprospection_geom_mixte_3857; Type: INDEX; Schema: florepatri; Owner: -
+--
+
+CREATE INDEX index_gist_t_zprospection_geom_mixte_3857 ON t_zprospection USING gist (geom_mixte_3857);
+
+
+--
 -- TOC entry 3824 (class 2620 OID 2748525)
 -- Name: tri_delete_synthese_ap; Type: TRIGGER; Schema: florepatri; Owner: -
 --

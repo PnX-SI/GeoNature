@@ -1084,11 +1084,13 @@ CREATE INDEX fki_synthese_bib_proprietaires ON syntheseff USING btree (id_organi
 
 CREATE INDEX fki_synthese_bib_protocoles_id ON syntheseff USING btree (id_protocole);
 
+
 --
 -- Name: fki_synthese_insee_fkey; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
 --
 
 CREATE INDEX fki_synthese_insee_fkey ON syntheseff USING btree (insee);
+
 
 --
 -- Name: fki_syntheseff_bib_sources; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
@@ -1151,6 +1153,64 @@ CREATE INDEX i_synthese_id_lot ON syntheseff USING btree (id_lot);
 --
 
 CREATE INDEX index_gist_synthese_the_geom_point ON syntheseff USING gist (the_geom_point);
+
+
+--
+-- Name: index_gist_synthese_the_geom_2154; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_synthese_the_geom_2154 ON syntheseff USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_synthese_the_geom_3857; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_synthese_the_geom_3857 ON syntheseff USING gist (the_geom_3857);
+
+
+SET search_path = layers, pg_catalog;
+
+--
+-- Name: index_gist_l_communes_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_communes_the_geom ON l_communes USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_unites_geo_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_unites_geo_the_geom ON l_unites_geo USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_secteurs_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+
+CREATE INDEX index_gist_l_secteurs_the_geom ON l_secteurs USING gist (the_geom);
+
+--
+-- Name: index_gist_l_zonesstatut_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_zonesstatut_the_geom ON l_zonesstatut USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_aireadhesion_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_aireadhesion_the_geom ON l_aireadhesion USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_isolines20_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_isolines20_the_geom ON l_isolines20 USING gist (the_geom);
 
 
 SET search_path = synthese, pg_catalog;
