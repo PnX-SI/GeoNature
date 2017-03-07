@@ -579,8 +579,8 @@ CREATE TABLE t_stations_fs (
     date_insert timestamp without time zone,
     date_update timestamp without time zone,
     srid_dessin integer,
-    the_geom_3857 public.geometry,
-    the_geom_local public.geometry,
+    the_geom_3857 public.geometry(Point,3857),
+    the_geom_local public.geometry(Point,MYLOCALSRID),
     insee character(5),
     gid integer NOT NULL,
     validation boolean DEFAULT false,
@@ -1219,13 +1219,3 @@ INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_progr
 INSERT INTO t_protocoles VALUES (5, 'Flore station', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 SET search_path = synthese, pg_catalog;
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (5, 'Flore station', 'Données de relevés floristique stationnels complets ou partiel', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florestation', 'cor_fs_taxon', 'gid', 'fs', NULL, 'images/pictos/plante.gif', 'FLORE', true);
-
-
---------------------------------------------------------------------------------------
---------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
---------------------------------------------------------------------------------------
-
-SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 't_stations_fs', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 'v_florestation_all', 'the_geom', 2, MYLOCALSRID, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 'v_florestation_patrimoniale', 'the_geom', 2, 27572, 'POINT');

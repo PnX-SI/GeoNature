@@ -772,8 +772,8 @@ CREATE TABLE t_apresence (
     nb_placettes_comptage integer,
     surface_placette_comptage real,
     remarques text,
-    the_geom_local public.geometry,
-    the_geom_3857 public.geometry,
+    the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    the_geom_3857 public.geometry(Geometry,3857),
     longueur_pas numeric(10,2),
     effectif_placettes_steriles integer,
     effectif_placettes_fertiles integer,
@@ -808,11 +808,11 @@ CREATE TABLE t_zprospection (
     saisie_initiale character varying(20),
     insee character(5),
     taxon_saisi character varying(100),
-    the_geom_local public.geometry,
-    geom_point_3857 public.geometry,
-    geom_mixte_3857 public.geometry,
+    the_geom_local public.geometry(Polygon,MYLOCALSRID),
+    geom_point_3857 public.geometry(Point,3857),
+    geom_mixte_3857 public.geometry(Polygon,3857),
     srid_dessin integer,
-    the_geom_3857 public.geometry,
+    the_geom_3857 public.geometry(Geometry,3857),
     id_rezo_ecrins integer DEFAULT 0 NOT NULL,
     CONSTRAINT enforce_dims_geom_mixte_3857 CHECK ((public.st_ndims(geom_mixte_3857) = 2)),
     CONSTRAINT enforce_dims_geom_point_3857 CHECK ((public.st_ndims(geom_point_3857) = 2)),
@@ -1976,24 +1976,3 @@ INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_progr
 INSERT INTO t_protocoles VALUES (4, 'Flore prioritaire', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 SET search_path = synthese, pg_catalog;
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (4, 'Flore prioritaire', 'Relevés en présence-absence de la flore prioritaire', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florepatri', 't_apresence', 'indexap', 'pda', NULL, 'images/pictos/plante.gif', 'FLORE', false);
-
-
---------------------------------------------------------------------------------------
---------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
---------------------------------------------------------------------------------------
-
-SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_mobile_visu_zp', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_poly', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_point', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_ap_line', 'the_geom_local', 2, MYLOCALSRID, 'LINESTRING');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_sridlocal_point', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_sridlocal_line', 'the_geom_local', 2, MYLOCALSRID, 'LINESTRING');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_touteslesap_sridlocal_polygon', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 'v_toutesleszp_sridlocal', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_apresence', 'the_geom_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_local', 2, MYLOCALSRID, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'geom_point_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'geom_mixte_3857', 2, 3857, 'POLYGON');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florepatri', 't_zprospection', 'the_geom_3857', 2, 3857, 'POLYGON');

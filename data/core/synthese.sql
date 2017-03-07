@@ -419,7 +419,7 @@ CREATE TABLE l_unites_geo (
     reserve character varying(80),
     surface_ha character varying(80),
     n2000 character varying(50),
-    the_geom public.geometry,
+    the_geom public.geometry(Geometry,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
@@ -448,7 +448,7 @@ CREATE TABLE l_aireadhesion (
     nouveaucha integer,
     count integer,
     length double precision,
-    the_geom public.geometry,
+    the_geom public.geometry(Linestring,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'LINESTRING'::text) OR (public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR the_geom IS NULL)),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
@@ -482,7 +482,7 @@ CREATE TABLE l_communes (
     saisie boolean,
     organisme boolean,
     id_secteur_fp integer,
-    the_geom public.geometry,
+    the_geom public.geometry(MultiPolygon,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
@@ -495,7 +495,7 @@ CREATE TABLE l_communes (
 CREATE TABLE l_isolines20 (
     gid integer NOT NULL,
     iso bigint,
-    the_geom public.geometry,
+    the_geom public.geometry(MultiLinestring,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTILINESTRING'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
@@ -528,7 +528,7 @@ ALTER SEQUENCE l_isolines20_gid_seq OWNED BY l_isolines20.gid;
 CREATE TABLE l_secteurs (
     nom_secteur character varying(50),
     id_secteur integer NOT NULL,
-    the_geom public.geometry,
+    the_geom public.geometry(MultiPolygon,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
@@ -544,7 +544,7 @@ CREATE TABLE l_zonesstatut (
     id_type integer NOT NULL,
     id_mnhn character varying(20),
     nomzone character varying(250),
-    the_geom public.geometry,
+    the_geom public.geometry(MultiPolygon,2154),
     --CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2) OR (public.st_ndims(the_geom) = 4)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
@@ -656,12 +656,12 @@ CREATE TABLE syntheseff (
     date_update timestamp without time zone,
     derniere_action character(1),
     supprime boolean,
-    the_geom_point public.geometry,
+    the_geom_point public.geometry(Point,3857),
     id_lot integer,
     id_critere_synthese integer,
-    the_geom_3857 public.geometry,
+    the_geom_3857 public.geometry(Geometry,3857),
     effectif_total integer,
-    the_geom_local public.geometry,
+    the_geom_local public.geometry(Geometry,2154),
     diffusable boolean DEFAULT true,
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
