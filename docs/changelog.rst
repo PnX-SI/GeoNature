@@ -9,6 +9,7 @@ CHANGELOG
 **Nouveautés**
 
 * Ajout de la création des index spatiaux à la création initiale de la base.
+* Création ou mise à jour des géometries compatible postgis 2.
 * Multi-projection : Les versions antérieures de GeoNature n'étaient compatible qu'avec la projection lambert 93 (srid: 2154). Cette version permet de choisir sa projection locale. Elle ajoute un paramètre ``srid_local`` dans le ``config/settings.ini`` et renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` des tables "métier".
 Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs ``the_geom_local`` présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les geométries stockées dans les champs ``the_geom_local`` des tables "métier". Le paramétrage du service WMS dans wms/wms.map est également pris en charge par le script d'installation de l'application.
 

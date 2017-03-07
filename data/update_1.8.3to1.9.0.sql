@@ -2263,3 +2263,467 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+------------------------------
+--Mise à jour des Geométries--
+--Compatibilité postgis 2-----
+------------------------------
+ALTER TABLE layers.l_aireadhesion ALTER COLUMN the_geom TYPE geometry(Linestring,2154);
+ALTER TABLE layers.l_communes ALTER COLUMN the_geom TYPE geometry(MultiPolygon,2154);
+ALTER TABLE layers.l_isolines20 ALTER COLUMN the_geom TYPE geometry(MultiLinestring,2154);
+ALTER TABLE layers.l_secteurs ALTER COLUMN the_geom TYPE geometry(MultiPolygon,2154);
+UPDATE layers.l_zonesstatut SET the_geom = ST_Force2d(the_geom);
+ALTER TABLE layers.l_zonesstatut ALTER COLUMN the_geom TYPE geometry(Geometry,2154);
+
+ALTER TABLE contactfaune.t_fiches_cf ALTER COLUMN the_geom_local TYPE geometry(Point,2154);
+ALTER TABLE contactfaune.t_fiches_cf ALTER COLUMN the_geom_3857 TYPE geometry(Point,3857);
+
+ALTER TABLE contactflore.t_fiches_cflore ALTER COLUMN the_geom_local TYPE geometry(Point,2154);
+ALTER TABLE contactflore.t_fiches_cflore ALTER COLUMN the_geom_3857 TYPE geometry(Point,3857);
+
+ALTER TABLE contactinv.t_fiches_inv ALTER COLUMN the_geom_local TYPE geometry(Point,2154);
+ALTER TABLE contactinv.t_fiches_inv ALTER COLUMN the_geom_3857 TYPE geometry(Point,3857);
+
+ALTER TABLE bryophytes.t_stations_bryo ALTER COLUMN the_geom_local TYPE geometry(Point,2154);
+ALTER TABLE bryophytes.t_stations_bryo ALTER COLUMN the_geom_3857 TYPE geometry(Point,3857);
+
+------------------------------
+DROP VIEW synthese.v_export_sinp;
+ALTER TABLE synthese.syntheseff ALTER COLUMN the_geom_local TYPE geometry(Geometry,2154);
+ALTER TABLE synthese.syntheseff ALTER COLUMN the_geom_3857 TYPE geometry(Geometry,3857);
+ALTER TABLE synthese.syntheseff ALTER COLUMN the_geom_point TYPE geometry(Point,3857);
+CREATE OR REPLACE VIEW synthese.v_export_sinp AS 
+ SELECT s.id_synthese,
+    o.nom_organisme,
+    s.dateobs,
+    s.observateurs,
+    n.cd_nom,
+    tx.lb_nom AS nom_latin,
+    c.nom_critere_synthese AS critere,
+    s.effectif_total,
+    s.remarques,
+    p.nom_programme,
+    s.insee,
+    s.altitude_retenue AS altitude,
+    st_x(st_transform(s.the_geom_point, 2154))::integer AS x,
+    st_y(st_transform(s.the_geom_point, 2154))::integer AS y,
+    s.derniere_action,
+    s.date_insert,
+    s.date_update
+   FROM synthese.syntheseff s
+     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
+     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
+     JOIN taxonomie.bib_noms n ON n.cd_nom = s.cd_nom
+     LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = s.id_critere_synthese
+     LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
+     LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
+  WHERE s.supprime = false;
+
+---------------------------------
+DROP VIEW public.v_mobile_recherche;
+DROP VIEW florestation.v_florestation_patrimoniale;
+DROP VIEW florestation.v_florestation_all;
+DROP VIEW florepatri.v_ap_line;
+DROP VIEW florepatri.v_ap_point;
+DROP VIEW florepatri.v_ap_poly;
+DROP VIEW florepatri.v_mobile_visu_zp;
+DROP VIEW florepatri.v_nomade_ap;
+DROP VIEW florepatri.v_nomade_zp;
+DROP VIEW florepatri.v_touteslesap_sridlocal_line;
+DROP VIEW florepatri.v_touteslesap_sridlocal_point;
+DROP VIEW florepatri.v_touteslesap_sridlocal_polygon;
+DROP VIEW florepatri.v_toutesleszp_sridlocal;
+
+ALTER TABLE florestation.t_stations_fs ALTER COLUMN the_geom_local TYPE geometry(Point,2154);
+ALTER TABLE florestation.t_stations_fs ALTER COLUMN the_geom_3857 TYPE geometry(Point,3857);
+ALTER TABLE florepatri.t_apresence ALTER COLUMN the_geom_local TYPE geometry(Geometry,2154);
+ALTER TABLE florepatri.t_apresence ALTER COLUMN the_geom_3857 TYPE geometry(Geometry,3857);
+ALTER TABLE florepatri.t_zprospection ALTER COLUMN the_geom_local TYPE geometry(Geometry,2154);
+ALTER TABLE florepatri.t_zprospection ALTER COLUMN the_geom_3857 TYPE geometry(Geometry,3857);
+ALTER TABLE florepatri.t_zprospection ALTER COLUMN geom_mixte_3857 TYPE geometry(Geometry,3857);
+ALTER TABLE florepatri.t_zprospection ALTER COLUMN geom_point_3857 TYPE geometry(Point,3857);
+
+CREATE OR REPLACE VIEW florepatri.v_ap_line AS 
+ SELECT a.indexap,
+    a.indexzp,
+    a.surfaceap AS surface,
+    a.altitude_saisie AS altitude,
+    a.id_frequence_methodo_new AS id_frequence_methodo,
+    a.the_geom_local,
+    a.frequenceap,
+    a.topo_valid,
+    a.date_update,
+    a.supprime,
+    a.date_insert
+   FROM florepatri.t_apresence a
+  WHERE geometrytype(a.the_geom_local) = 'MULTILINESTRING'::text OR geometrytype(a.the_geom_local) = 'LINESTRING'::text;
+
+CREATE OR REPLACE VIEW florepatri.v_ap_point AS 
+ SELECT a.indexap,
+    a.indexzp,
+    a.surfaceap AS surface,
+    a.altitude_saisie AS altitude,
+    a.id_frequence_methodo_new AS id_frequence_methodo,
+    a.the_geom_local,
+    a.frequenceap,
+    a.topo_valid,
+    a.date_update,
+    a.supprime,
+    a.date_insert
+   FROM florepatri.t_apresence a
+  WHERE geometrytype(a.the_geom_local) = 'POINT'::text OR geometrytype(a.the_geom_local) = 'MULTIPOINT'::text;
+
+CREATE OR REPLACE VIEW florepatri.v_ap_poly AS 
+ SELECT a.indexap,
+    a.indexzp,
+    a.surfaceap AS surface,
+    a.altitude_saisie AS altitude,
+    a.id_frequence_methodo_new AS id_frequence_methodo,
+    a.the_geom_local,
+    a.frequenceap,
+    a.topo_valid,
+    a.date_update,
+    a.supprime,
+    a.date_insert
+   FROM florepatri.t_apresence a
+  WHERE geometrytype(a.the_geom_local) = 'POLYGON'::text OR geometrytype(a.the_geom_local) = 'MULTIPOLYGON'::text;
+
+CREATE OR REPLACE VIEW florepatri.v_mobile_visu_zp AS 
+ SELECT t_zprospection.indexzp,
+    t_zprospection.cd_nom,
+    t_zprospection.the_geom_local
+   FROM florepatri.t_zprospection
+  WHERE date_part('year'::text, t_zprospection.dateobs) = date_part('year'::text, now());
+
+CREATE OR REPLACE VIEW florepatri.v_nomade_zp AS 
+ SELECT zp.indexzp,
+    zp.cd_nom,
+    vobs.codeobs,
+    zp.dateobs,
+    'Polygon'::character(7) AS montype,
+    substr(st_asgml(zp.the_geom_local), strpos(st_asgml(zp.the_geom_local), '<gml:coordinates>'::text) + 17, strpos(st_asgml(zp.the_geom_local), '</gml:coordinates>'::text) - (strpos(st_asgml(zp.the_geom_local), '<gml:coordinates>'::text) + 17)) AS coordinates,
+    vap.indexap,
+    zp.id_secteur AS id_secteur_fp
+   FROM florepatri.t_zprospection zp
+     JOIN ( SELECT cor.indexzp,
+            substr(array_agg(cor.codeobs)::text, 2, strpos(array_agg(cor.codeobs)::text, '}'::text) - 2) AS codeobs
+           FROM ( SELECT aa.indexzp,
+                    aa.codeobs
+                   FROM florepatri.cor_zp_obs aa
+                  WHERE aa.codeobs <> 247
+                  ORDER BY aa.indexzp, aa.codeobs) cor
+          GROUP BY cor.indexzp) vobs ON vobs.indexzp = zp.indexzp
+     LEFT JOIN ( SELECT ap.indexzp,
+            substr(array_agg(ap.indexap)::text, 2, strpos(array_agg(ap.indexap)::text, '}'::text) - 2) AS indexap
+           FROM ( SELECT aa.indexzp,
+                    aa.indexap
+                   FROM florepatri.t_apresence aa
+                  WHERE aa.supprime = false
+                  ORDER BY aa.indexzp, aa.indexap) ap
+          GROUP BY ap.indexzp) vap ON vap.indexzp = zp.indexzp
+  WHERE zp.topo_valid = true AND zp.supprime = false AND zp.id_secteur < 9 AND zp.dateobs > '2010-01-01'::date AND (zp.cd_nom IN ( SELECT v_nomade_taxon.cd_nom
+           FROM florepatri.v_nomade_taxon))
+  ORDER BY zp.indexzp;
+
+CREATE OR REPLACE VIEW florepatri.v_nomade_ap AS 
+ SELECT ap.indexap,
+    ap.codepheno,
+    florepatri.letypedegeom(ap.the_geom_local) AS montype,
+    substr(st_asgml(ap.the_geom_local), strpos(st_asgml(ap.the_geom_local), '<gml:coordinates>'::text) + 17, strpos(st_asgml(ap.the_geom_local), '</gml:coordinates>'::text) - (strpos(st_asgml(ap.the_geom_local), '<gml:coordinates>'::text) + 17)) AS coordinates,
+    ap.surfaceap,
+    (ap.id_frequence_methodo_new::text || ';'::text) || ap.frequenceap::integer AS frequence,
+    vper.codeper,
+    (('TF;'::text || ap.total_fertiles::character(1)::text) || ',RS;'::text) || ap.total_steriles::character(1)::text AS denombrement,
+    zp.id_secteur_fp
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.v_nomade_zp zp ON ap.indexzp = zp.indexzp
+     LEFT JOIN ( SELECT ab.indexap,
+            substr(array_agg(ab.codeper)::text, 2, strpos(array_agg(ab.codeper)::text, '}'::text) - 2) AS codeper
+           FROM ( SELECT aa.indexap,
+                    aa.codeper
+                   FROM florepatri.cor_ap_perturb aa
+                  ORDER BY aa.indexap, aa.codeper) ab
+          GROUP BY ab.indexap) vper ON vper.indexap = ap.indexap
+  WHERE ap.supprime = false
+  ORDER BY ap.indexap;
+
+CREATE OR REPLACE VIEW florepatri.v_touteslesap_sridlocal_line AS 
+ SELECT ap.indexap AS gid,
+    ap.indexzp,
+    ap.indexap,
+    s.nom_secteur AS secteur,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    p.pheno AS phenologie,
+    ap.surfaceap,
+    ap.insee,
+    com.commune_min,
+    ap.altitude_retenue AS altitude,
+    f.nom_frequence_methodo_new AS met_frequence,
+    ap.frequenceap,
+    compt.nom_comptage_methodo AS met_comptage,
+    ap.total_fertiles AS tot_fertiles,
+    ap.total_steriles AS tot_steriles,
+    per.perturbations,
+    phy.physionomies,
+    ap.the_geom_local,
+    ap.topo_valid AS ap_topo_valid,
+    zp.validation AS relue,
+    ap.remarques
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN layers.l_secteurs s ON s.id_secteur = zp.id_secteur
+     JOIN florepatri.bib_phenologies p ON p.codepheno = ap.codepheno
+     JOIN layers.l_communes com ON com.insee = ap.insee
+     JOIN florepatri.bib_frequences_methodo_new f ON f.id_frequence_methodo_new = ap.id_frequence_methodo_new
+     JOIN florepatri.bib_comptages_methodo compt ON compt.id_comptage_methodo = ap.id_comptage_methodo
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+     LEFT JOIN ( SELECT c.indexap,
+            array_to_string(array_agg(((per_1.description::text || ' ('::text) || per_1.classification::text) || ')'::text), ', '::text) AS perturbations
+           FROM florepatri.cor_ap_perturb c
+             JOIN florepatri.bib_perturbations per_1 ON per_1.codeper = c.codeper
+          GROUP BY c.indexap) per ON per.indexap = ap.indexap
+     LEFT JOIN ( SELECT p_1.indexap,
+            array_to_string(array_agg(((phy_1.nom_physionomie::text || ' ('::text) || phy_1.groupe_physionomie::text) || ')'::text), ', '::text) AS physionomies
+           FROM florepatri.cor_ap_physionomie p_1
+             JOIN florepatri.bib_physionomies phy_1 ON phy_1.id_physionomie = p_1.id_physionomie
+          GROUP BY p_1.indexap) phy ON phy.indexap = ap.indexap
+  WHERE ap.supprime = false AND geometrytype(ap.the_geom_local) = 'LINESTRING'::text
+  ORDER BY s.nom_secteur, ap.indexzp;
+
+CREATE OR REPLACE VIEW florepatri.v_touteslesap_sridlocal_point AS 
+ SELECT ap.indexap AS gid,
+    ap.indexzp,
+    ap.indexap,
+    s.nom_secteur AS secteur,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    p.pheno AS phenologie,
+    ap.surfaceap,
+    ap.insee,
+    com.commune_min,
+    ap.altitude_retenue AS altitude,
+    f.nom_frequence_methodo_new AS met_frequence,
+    ap.frequenceap,
+    compt.nom_comptage_methodo AS met_comptage,
+    ap.total_fertiles AS tot_fertiles,
+    ap.total_steriles AS tot_steriles,
+    per.perturbations,
+    phy.physionomies,
+    ap.the_geom_local,
+    ap.topo_valid AS ap_topo_valid,
+    zp.validation AS relue,
+    ap.remarques
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN layers.l_secteurs s ON s.id_secteur = zp.id_secteur
+     JOIN florepatri.bib_phenologies p ON p.codepheno = ap.codepheno
+     JOIN layers.l_communes com ON com.insee = ap.insee
+     JOIN florepatri.bib_frequences_methodo_new f ON f.id_frequence_methodo_new = ap.id_frequence_methodo_new
+     JOIN florepatri.bib_comptages_methodo compt ON compt.id_comptage_methodo = ap.id_comptage_methodo
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+     LEFT JOIN ( SELECT c.indexap,
+            array_to_string(array_agg(((per_1.description::text || ' ('::text) || per_1.classification::text) || ')'::text), ', '::text) AS perturbations
+           FROM florepatri.cor_ap_perturb c
+             JOIN florepatri.bib_perturbations per_1 ON per_1.codeper = c.codeper
+          GROUP BY c.indexap) per ON per.indexap = ap.indexap
+     LEFT JOIN ( SELECT p_1.indexap,
+            array_to_string(array_agg(((phy_1.nom_physionomie::text || ' ('::text) || phy_1.groupe_physionomie::text) || ')'::text), ', '::text) AS physionomies
+           FROM florepatri.cor_ap_physionomie p_1
+             JOIN florepatri.bib_physionomies phy_1 ON phy_1.id_physionomie = p_1.id_physionomie
+          GROUP BY p_1.indexap) phy ON phy.indexap = ap.indexap
+  WHERE ap.supprime = false AND geometrytype(ap.the_geom_local) = 'POINT'::text
+  ORDER BY s.nom_secteur, ap.indexzp;
+
+CREATE OR REPLACE VIEW florepatri.v_touteslesap_sridlocal_polygon AS 
+ SELECT ap.indexap AS gid,
+    ap.indexzp,
+    ap.indexap,
+    s.nom_secteur AS secteur,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    p.pheno AS phenologie,
+    ap.surfaceap,
+    ap.insee,
+    com.commune_min,
+    ap.altitude_retenue AS altitude,
+    f.nom_frequence_methodo_new AS met_frequence,
+    ap.frequenceap,
+    compt.nom_comptage_methodo AS met_comptage,
+    ap.total_fertiles AS tot_fertiles,
+    ap.total_steriles AS tot_steriles,
+    per.perturbations,
+    phy.physionomies,
+    ap.the_geom_local,
+    ap.topo_valid AS ap_topo_valid,
+    zp.validation AS relue,
+    ap.remarques
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN layers.l_secteurs s ON s.id_secteur = zp.id_secteur
+     JOIN florepatri.bib_phenologies p ON p.codepheno = ap.codepheno
+     JOIN layers.l_communes com ON com.insee = ap.insee
+     JOIN florepatri.bib_frequences_methodo_new f ON f.id_frequence_methodo_new = ap.id_frequence_methodo_new
+     JOIN florepatri.bib_comptages_methodo compt ON compt.id_comptage_methodo = ap.id_comptage_methodo
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+     LEFT JOIN ( SELECT c.indexap,
+            array_to_string(array_agg(((per_1.description::text || ' ('::text) || per_1.classification::text) || ')'::text), ', '::text) AS perturbations
+           FROM florepatri.cor_ap_perturb c
+             JOIN florepatri.bib_perturbations per_1 ON per_1.codeper = c.codeper
+          GROUP BY c.indexap) per ON per.indexap = ap.indexap
+     LEFT JOIN ( SELECT p_1.indexap,
+            array_to_string(array_agg(((phy_1.nom_physionomie::text || ' ('::text) || phy_1.groupe_physionomie::text) || ')'::text), ', '::text) AS physionomies
+           FROM florepatri.cor_ap_physionomie p_1
+             JOIN florepatri.bib_physionomies phy_1 ON phy_1.id_physionomie = p_1.id_physionomie
+          GROUP BY p_1.indexap) phy ON phy.indexap = ap.indexap
+  WHERE ap.supprime = false AND geometrytype(ap.the_geom_local) = 'POLYGON'::text
+  ORDER BY s.nom_secteur, ap.indexzp;
+
+CREATE OR REPLACE VIEW florepatri.v_toutesleszp_sridlocal AS 
+ SELECT zp.indexzp AS gid,
+    zp.indexzp,
+    s.nom_secteur AS secteur,
+    count(ap.indexap) AS nbap,
+    zp.dateobs,
+    t.latin AS taxon,
+    zp.taxon_saisi,
+    o.observateurs,
+    zp.the_geom_local,
+    zp.insee,
+    com.commune_min AS commune,
+    org.nom_organisme AS organisme_producteur,
+    zp.topo_valid AS zp_topo_valid,
+    zp.validation AS relue,
+    zp.saisie_initiale,
+    zp.srid_dessin
+   FROM florepatri.t_zprospection zp
+     LEFT JOIN florepatri.t_apresence ap ON ap.indexzp = zp.indexzp
+     LEFT JOIN layers.l_communes com ON com.insee = zp.insee
+     LEFT JOIN utilisateurs.bib_organismes org ON org.id_organisme = zp.id_organisme
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN layers.l_secteurs s ON s.id_secteur = zp.id_secteur
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = zp.indexzp
+  WHERE zp.supprime = false
+  GROUP BY s.nom_secteur, zp.indexzp, zp.dateobs, t.latin, zp.taxon_saisi, o.observateurs, zp.the_geom_local, zp.insee, com.commune_min, org.nom_organisme, zp.topo_valid, zp.validation, zp.saisie_initiale, zp.srid_dessin
+  ORDER BY s.nom_secteur, zp.indexzp;
+
+CREATE OR REPLACE VIEW florestation.v_florestation_all AS 
+ SELECT cor.id_station_cd_nom AS indexbidon,
+    fs.id_station,
+    fs.dateobs,
+    cor.cd_nom,
+    btrim(tr.nom_valide::text) AS nom_valid,
+    btrim(tr.nom_vern::text) AS nom_vern,
+    the_geom_local AS the_geom
+   FROM florestation.t_stations_fs fs
+     JOIN florestation.cor_fs_taxon cor ON cor.id_station = fs.id_station
+     JOIN taxonomie.taxref tr ON cor.cd_nom = tr.cd_nom
+  WHERE fs.supprime = false AND cor.supprime = false;
+
+CREATE OR REPLACE VIEW florepatri.v_mobile_visu_zp AS 
+ SELECT t_zprospection.indexzp,
+    t_zprospection.cd_nom,
+    t_zprospection.the_geom_local
+   FROM florepatri.t_zprospection
+  WHERE date_part('year'::text, t_zprospection.dateobs) = date_part('year'::text, now());
+
+CREATE OR REPLACE VIEW florestation.v_florestation_patrimoniale AS 
+ SELECT cft.id_station_cd_nom AS indexbidon,
+    fs.id_station,
+    tx.nom_vern AS francais,
+    tx.nom_complet AS latin,
+    fs.dateobs,
+    fs.the_geom_local
+   FROM florestation.t_stations_fs fs
+     JOIN florestation.cor_fs_taxon cft ON cft.id_station = fs.id_station
+     JOIN taxonomie.bib_noms n ON n.cd_nom = cft.cd_nom
+     LEFT JOIN taxonomie.taxref tx ON tx.cd_nom = cft.cd_nom
+     JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref AND cta.id_attribut = 1 AND cta.valeur_attribut = 'oui'::text
+  WHERE fs.supprime = false AND cft.supprime = false
+  ORDER BY fs.id_station, tx.nom_vern;
+
+CREATE OR REPLACE VIEW public.v_mobile_recherche AS 
+( SELECT ap.indexap AS gid,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(ap.the_geom_local, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(ap.the_geom_local), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(ap.the_geom_local), 4326)) AS centroid_y
+   FROM florepatri.t_apresence ap
+     JOIN florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+  WHERE ap.supprime = false AND st_isvalid(ap.the_geom_local) AND ap.topo_valid = true
+  ORDER BY zp.dateobs DESC)
+UNION
+( SELECT cft.id_station AS gid,
+    s.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(s.the_geom_3857, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_y
+   FROM florestation.cor_fs_taxon cft
+     JOIN florestation.t_stations_fs s ON s.id_station = cft.id_station
+     JOIN florepatri.bib_taxons_fp t ON t.cd_nom = cft.cd_nom
+     JOIN ( SELECT c.id_station,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM florestation.cor_fs_observateur c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+          GROUP BY c.id_station) o ON o.id_station = cft.id_station
+  WHERE cft.supprime = false AND st_isvalid(s.the_geom_3857)
+  ORDER BY s.dateobs DESC);
+
+-------------------------------------------------
+DROP VIEW contactfaune.v_nomade_unites_geo_cf;
+DROP VIEW contactflore.v_nomade_unites_geo_cflore;
+DROP VIEW contactinv.v_nomade_unites_geo_inv;
+
+UPDATE layers.l_unites_geo SET the_geom = ST_Multi(the_geom);
+ALTER TABLE layers.l_unites_geo ALTER COLUMN the_geom TYPE geometry(MultiPolygon,2154);
+
+CREATE OR REPLACE VIEW contactfaune.v_nomade_unites_geo_cf AS 
+ SELECT st_simplifypreservetopology(l_unites_geo.the_geom, 15::double precision) AS the_geom,
+    l_unites_geo.id_unite_geo
+   FROM layers.l_unites_geo
+  GROUP BY l_unites_geo.the_geom, l_unites_geo.id_unite_geo;
+
+CREATE OR REPLACE VIEW contactflore.v_nomade_unites_geo_cflore AS 
+ SELECT st_simplifypreservetopology(l_unites_geo.the_geom, 15::double precision) AS the_geom,
+    l_unites_geo.id_unite_geo
+   FROM layers.l_unites_geo
+  GROUP BY l_unites_geo.the_geom, l_unites_geo.id_unite_geo;
+
+CREATE OR REPLACE VIEW contactinv.v_nomade_unites_geo_inv AS 
+ SELECT st_simplifypreservetopology(l_unites_geo.the_geom, 15::double precision) AS the_geom,
+    l_unites_geo.id_unite_geo
+   FROM layers.l_unites_geo
+  GROUP BY l_unites_geo.the_geom, l_unites_geo.id_unite_geo;

@@ -768,8 +768,8 @@ CREATE TABLE t_fiches_cf (
     srid_dessin integer,
     id_protocole integer,
     id_lot integer,
-    the_geom_3857 public.geometry,
-    the_geom_local public.geometry,
+    the_geom_3857 public.geometry(Point,3857),
+    the_geom_local public.geometry(Point,MYLOCALSRID),
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_geotype_the_geom_local CHECK (((public.geometrytype(the_geom_local) = 'POINT'::text) OR (the_geom_local IS NULL))),
@@ -1551,13 +1551,3 @@ INSERT INTO t_protocoles VALUES (2, 'mortalité', 'à compléter', 'à compléte
 SET search_path = synthese, pg_catalog;
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (1, 'Contact faune', 'Contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'geonaturedb', 'contactfaune', 't_releves_cf', 'id_releve_cf', 'cf', NULL, 'images/pictos/amphibien.gif', 'FAUNE', true);
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (2, 'Mortalité', 'Contenu des tables t_fiche_cf et t_releves_cf de la base faune postgres', 'localhost', 22, NULL, NULL, 'geonaturedb', 'contactfaune', 't_releves_cf', 'id_releve_cf', 'mortalite', NULL, 'images/pictos/squelette.png', 'FAUNE', true);
-
-
---------------------------------------------------------------------------------------
---------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
---------------------------------------------------------------------------------------
-
-SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactfaune', 't_fiches_cf', 'the_geom_3857', 2, 3857, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactfaune', 't_fiches_cf', 'the_geom_local', 2, MYLOCALSRID, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'contactfaune', 'v_nomade_unites_geo_cf', 'the_geom', 2, MYLOCALSRID, 'MULTIPOLYGON');

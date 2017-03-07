@@ -301,7 +301,7 @@ then
         echo "Aires de protection de biotope" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/apb/apb.shp layers.l_zonesstatut > data/layers/sql/apb.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/apb/apb.shp layers.l_zonesstatut > data/layers/sql/apb.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/apb.sql &>> log/install_db.log
         echo "...Réserves de biosphère"
         echo "" &>> log/install_db.log
@@ -310,7 +310,7 @@ then
         echo "Réserves de biosphère" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/bios/bios09_2013.shp layers.l_zonesstatut > data/layers/sql/bios.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/bios/bios09_2013.shp layers.l_zonesstatut > data/layers/sql/bios.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/bios.sql &>> log/install_db.log
         echo "...Sites du Conservatoire du Littoral..."
         echo "" &>> log/install_db.log
@@ -319,7 +319,7 @@ then
         echo "Sites du Conservatoire du Littoral" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/cdl/cdl2013.shp layers.l_zonesstatut > data/layers/sql/cdl.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/cdl/cdl2013.shp layers.l_zonesstatut > data/layers/sql/cdl.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/cdl.sql &>> log/install_db.log
         echo "Sites acquis des Conservatoires d'espaces naturels..."
         echo "" &>> log/install_db.log
@@ -328,7 +328,7 @@ then
         echo "Sites acquis des Conservatoires d'espaces naturels" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/cen/cen2013_09.shp layers.l_zonesstatut > data/layers/sql/cen.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/cen/cen2013_09.shp layers.l_zonesstatut > data/layers/sql/cen.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/cen.sql &>> log/install_db.log
         echo "...Parcs nationaux..."echo "" &>> log/install_db.log
         echo "" &>> log/install_db.log
@@ -336,7 +336,7 @@ then
         echo "Parcs nationaux" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/pn/pn.shp layers.l_zonesstatut > data/layers/sql/pn.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/pn/pn.shp layers.l_zonesstatut > data/layers/sql/pn.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/pn.sql &>> log/install_db.log
         echo "...Parcs naturels marins..."echo "" &>> log/install_db.log
         echo "" &>> log/install_db.log
@@ -344,7 +344,7 @@ then
         echo "Parcs naturels marins" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/pnm/pnm2014_07.shp layers.l_zonesstatut > data/layers/sql/pnm.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/pnm/pnm2014_07.shp layers.l_zonesstatut > data/layers/sql/pnm.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/pnm.sql &>> log/install_db.log
         echo "...Parcs naturels régionaux..."
         echo "" &>> log/install_db.log
@@ -353,7 +353,7 @@ then
         echo "Parcs naturels régionaux" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "UTF8"  data/layers/pnr/pnr2014_10.shp layers.l_zonesstatut > data/layers/sql/pnr.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "UTF8"  data/layers/pnr/pnr2014_10.shp layers.l_zonesstatut > data/layers/sql/pnr.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/pnr.sql &>> log/install_db.log
         echo "...Sites Ramsar..."
         echo "" &>> log/install_db.log
@@ -362,7 +362,7 @@ then
         echo "Sites Ramsar" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/ramsar/ramsar2013.shp layers.l_zonesstatut > data/layers/sql/ramsar.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/ramsar/ramsar2013.shp layers.l_zonesstatut > data/layers/sql/ramsar.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/ramsar.sql &>> log/install_db.log
         echo "...Réserves biologiques..."
         echo "" &>> log/install_db.log
@@ -371,7 +371,7 @@ then
         echo "Réserves biologiques" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rb/rb.shp layers.l_zonesstatut > data/layers/sql/rb.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rb/rb.shp layers.l_zonesstatut > data/layers/sql/rb.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/rb.sql &>> log/install_db.log
         echo "...Réserves intégrales de parc national..."
         echo "" &>> log/install_db.log
@@ -380,7 +380,7 @@ then
         echo "Réserves intégrales de parc national" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/ripn/ripn.shp layers.l_zonesstatut > data/layers/sql/ripn.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/ripn/ripn.shp layers.l_zonesstatut > data/layers/sql/ripn.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/ripn.sql &>> log/install_db.log
         echo "...Réserves naturelles de Corse..."
         echo "" &>> log/install_db.log
@@ -389,7 +389,7 @@ then
         echo "Réserves naturelles de Corse" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rnc/rnc2010.shp layers.l_zonesstatut > data/layers/sql/rnc.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rnc/rnc2010.shp layers.l_zonesstatut > data/layers/sql/rnc.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/rnc.sql &>> log/install_db.log
         echo "...Réserves naturelles de chasse et de faune sauvage..."
         echo "" &>> log/install_db.log
@@ -398,7 +398,7 @@ then
         echo "Réserves naturelles de chasse et de faune sauvage" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rncfs/rncfs_2010.shp layers.l_zonesstatut > data/layers/sql/rncfs.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rncfs/rncfs_2010.shp layers.l_zonesstatut > data/layers/sql/rncfs.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/rncfs.sql &>> log/install_db.log
         echo "...Réserves naturelles nationales..."
         echo "" &>> log/install_db.log
@@ -407,7 +407,7 @@ then
         echo "Réserves naturelles nationales" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "UTF8"  data/layers/rnn/rnn.shp layers.l_zonesstatut > data/layers/sql/rnn.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "UTF8"  data/layers/rnn/rnn.shp layers.l_zonesstatut > data/layers/sql/rnn.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/rnn.sql &>> log/install_db.log
         echo "...Réserves naturelles régionales..."
         echo "" &>> log/install_db.log
@@ -416,7 +416,7 @@ then
         echo "Réserves naturelles régionales" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rnr/rnr.shp layers.l_zonesstatut > data/layers/sql/rnr.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/rnr/rnr.shp layers.l_zonesstatut > data/layers/sql/rnr.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/rnr.sql &>> log/install_db.log
         echo "...Natura 2000 Sites d'importance communautaire..."
         echo "" &>> log/install_db.log
@@ -425,7 +425,7 @@ then
         echo "Natura 2000 Sites d'importance communautaire" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/sic/sic1409.shp layers.l_zonesstatut > data/layers/sql/sic.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/sic/sic1409.shp layers.l_zonesstatut > data/layers/sql/sic.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/sic.sql &>> log/install_db.log
         echo "...Natura 2000 Zones de protection spéciales..."
         echo "" &>> log/install_db.log
@@ -434,7 +434,7 @@ then
         echo "Natura 2000 Zones de protection spéciales" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/zps/zps1409.shp layers.l_zonesstatut > data/layers/sql/zps.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/zps/zps1409.shp layers.l_zonesstatut > data/layers/sql/zps.sql
         echo "...Zone d'importance pour la conservation des oiseaux..."
         echo "" &>> log/install_db.log
         echo "" &>> log/install_db.log
@@ -442,7 +442,7 @@ then
         echo "Zone d'importance pour la conservation des oiseaux" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/zico/zico.shp layers.l_zonesstatut > data/layers/sql/zico.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/zico/zico.shp layers.l_zonesstatut > data/layers/sql/zico.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/zico.sql &>> log/install_db.log
         echo "...ZNIEFF 1 continentales..."
         echo "" &>> log/install_db.log
@@ -451,7 +451,7 @@ then
         echo "ZNIEFF 1 continentales" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff1/znieff1.shp layers.l_zonesstatut > data/layers/sql/znieff1.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff1/znieff1.shp layers.l_zonesstatut > data/layers/sql/znieff1.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/znieff1.sql &>> log/install_db.log
         echo "...ZNIEFF 2 continentales..."
         echo "" &>> log/install_db.log
@@ -460,7 +460,7 @@ then
         echo "ZNIEFF 2 continentales" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff2/znieff2.shp layers.l_zonesstatut > data/layers/sql/znieff2.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff2/znieff2.shp layers.l_zonesstatut > data/layers/sql/znieff2.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/znieff2.sql &>> log/install_db.log
         echo "...ZNIEFF 1 mer..."
         echo "" &>> log/install_db.log
@@ -469,7 +469,7 @@ then
         echo "ZNIEFF 1 mer" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff1_mer/znieff1_mer.shp layers.l_zonesstatut > data/layers/sql/znieff1_mer.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff1_mer/znieff1_mer.shp layers.l_zonesstatut > data/layers/sql/znieff1_mer.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/znieff1_mer.sql &>> log/install_db.log
         echo "...ZNIEFF 2 mer..."
         echo "" &>> log/install_db.log
@@ -478,7 +478,7 @@ then
         echo "ZNIEFF 2 mer" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        sudo -n -u postgres -s shp2pgsql -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff2_mer/znieff2_mer.shp layers.l_zonesstatut > data/layers/sql/znieff2_mer.sql
+        sudo -n -u postgres -s shp2pgsql -t 2D -s $srid_local -a -g the_geom -W "LATIN1"  data/layers/znieff2_mer/znieff2_mer.shp layers.l_zonesstatut > data/layers/sql/znieff2_mer.sql
         export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name -f data/layers/sql/znieff2_mer.sql &>> log/install_db.log
         #export PGPASSWORD=$user_pg_pass;psql -h geonatdbhost -U $user_pg -d $db_name  -f data/layers/zonesstatut.sql &>> log/install_db.log
     fi
