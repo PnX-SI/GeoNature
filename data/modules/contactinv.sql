@@ -1112,14 +1112,14 @@ CREATE INDEX i_fk_t_releves_inv_t_fiches_inv ON t_releves_inv USING btree (id_in
 
 
 --
--- Name: index_gist_t_fiches_inv_the_geom_2154; Type: INDEX; Schema: contactinv; Owner: -
+-- Name: index_gist_t_fiches_inv_the_geom_local; Type: INDEX; Schema: contactinv; Owner: -
 --
 
 CREATE INDEX index_gist_t_fiches_inv_the_geom_local ON t_fiches_inv USING gist (the_geom_local);
 
 
 --
--- Name: index_gist_t_fiches_inv_the_geom_2154; Type: INDEX; Schema: contactinv; Owner: -
+-- Name: index_gist_t_fiches_inv_the_geom_3857; Type: INDEX; Schema: contactinv; Owner: -
 --
 
 CREATE INDEX index_gist_t_fiches_inv_the_geom_3857 ON t_fiches_inv USING gist (the_geom_3857);
