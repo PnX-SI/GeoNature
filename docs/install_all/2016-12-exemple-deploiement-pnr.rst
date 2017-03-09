@@ -52,12 +52,12 @@ On commence la procédure en se connectant au serveur en SSH avec l'utilisateur 
         usermod -g www-data geonatureadmin
         usermod -a -G root geonatureadmin
 
-* Recupèrer le script d'installation global
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
  
   ::  
   
-        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/master/docs/install_all/install_all.ini
-        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/master/docs/install_all/install_all.sh
+        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.ini
+        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.sh
 
 * Changer les droits du fichier d'installation pour pouvoir l'éxecuter
  
