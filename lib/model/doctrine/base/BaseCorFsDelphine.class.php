@@ -9,12 +9,12 @@
  * @property string $id_delphine
  * @property TStationsFs $TStationsFs
  * 
- * @method integer       getIdStation()   Returns the current record's "id_station" value
- * @method string        getIdDelphine()  Returns the current record's "id_delphine" value
- * @method TStationsFs   getTStationsFs() Returns the current record's "TStationsFs" value
- * @method CorFsDelphine setIdStation()   Sets the current record's "id_station" value
- * @method CorFsDelphine setIdDelphine()  Sets the current record's "id_delphine" value
- * @method CorFsDelphine setTStationsFs() Sets the current record's "TStationsFs" value
+ * @method integer       get()            Returns the current record's "id_station" value
+ * @method string        get()            Returns the current record's "id_delphine" value
+ * @method TStationsFs   get()            Returns the current record's "TStationsFs" value
+ * @method CorFsDelphine set()            Sets the current record's "id_station" value
+ * @method CorFsDelphine set()            Sets the current record's "id_delphine" value
+ * @method CorFsDelphine set()            Sets the current record's "TStationsFs" value
  * 
  * @package    geonature
  * @subpackage model

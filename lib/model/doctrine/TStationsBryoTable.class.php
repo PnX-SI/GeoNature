@@ -237,7 +237,7 @@ class TStationsBryoTable extends Doctrine_Table
     {
         $fields = 's.id_station,s.complet_partiel releve,s.dateobs,s.surface,s.date_insert,s.date_update,s.info_acces,'.
                   's.altitude_retenue altitude,s.remarques,s.pdop,'.
-                  'st_x(s.the_geom_2154) x_l93, st_y(s.the_geom_2154) y_l93,  st_x(ST_Transform(s.the_geom_2154,4326)) x_utm,  st_y(ST_Transform(s.the_geom_2154,4326)) y_utm,'.
+                  'st_x(s.the_geom_local) x_local, st_y(s.the_geom_local) y_local,  st_x(ST_Transform(s.the_geom_local,4326)) x_utm,  st_y(ST_Transform(s.the_geom_local,4326)) y_utm,'.
                   'bs.nom_support, e.nom_exposition,'.
                   'bs.id_support, e.id_exposition, com.commune_min commune';
         if ( !is_null($format) && $format==='geoJSON' )
@@ -282,8 +282,8 @@ class TStationsBryoTable extends Doctrine_Table
         $station['observateurs'] = self::listObservateurs($id_station);
         $station['x_utm'] = number_format($station['x_utm'],6);
         $station['y_utm'] = number_format($station['y_utm'],6);
-        $station['x_l93'] = sprintf("%.0f",$station['x_l93']);
-        $station['y_l93'] = sprintf("%.0f",$station['y_l93']);
+        $station['x_local'] = sprintf("%.0f",$station['x_local']);
+        $station['y_local'] = sprintf("%.0f",$station['y_local']);
         sfContext::getInstance()->getConfiguration()->loadHelpers('Url');
         $station['URI'] = url_for('@homepage', true).'/bryo?id_station='.$station['id_station'];
 

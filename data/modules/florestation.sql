@@ -123,9 +123,9 @@ CREATE FUNCTION florestation_insert() RETURNS trigger
 BEGIN	
 new.date_insert= 'now';	 -- mise a jour de date insert
 new.date_update= 'now';	 -- mise a jour de date update
---new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
---new.insee = layers.f_insee(new.the_geom_2154);-- mise a jour du code insee
---new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+--new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
+--new.insee = layers.f_insee(new.the_geom_local);-- mise a jour du code insee
+--new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig
 
 --if new.altitude_saisie is null or new.altitude_saisie = 0 then -- mis à jour de l'altitude retenue
   --new.altitude_retenue = new.altitude_sig;
@@ -149,19 +149,19 @@ CREATE FUNCTION florestation_update() RETURNS trigger
     AS $$
 BEGIN
 --si aucun geom n'existait et qu'au moins un geom est ajouté, on créé les 2 geom
-IF (old.the_geom_2154 is null AND old.the_geom_3857 is null) THEN
-    IF (new.the_geom_2154 is NOT NULL) THEN
-        new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
-		new.srid_dessin = 2154;
+IF (old.the_geom_local is null AND old.the_geom_3857 is null) THEN
+    IF (new.the_geom_local is NOT NULL) THEN
+        new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+		new.srid_dessin = MYLOCALSRID;
     END IF;
     IF (new.the_geom_3857 is NOT NULL) THEN
-        new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+        new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
 		new.srid_dessin = 3857;
     END IF;
     -- on calcul la commune...
-    new.insee = layers.f_insee(new.the_geom_2154);-- mise à jour du code insee
+    new.insee = layers.f_insee(new.the_geom_local);-- mise à jour du code insee
     -- on calcul l'altitude
-    new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+    new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig
     IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
     ELSE
@@ -169,25 +169,25 @@ IF (old.the_geom_2154 is null AND old.the_geom_3857 is null) THEN
     END IF;
 END IF;
 --si au moins un geom existait et qu'il a changé on fait une mise à jour
-IF (old.the_geom_2154 is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
-    --si c'est le 2154 qui existait on teste s'il a changé
-    IF (old.the_geom_2154 is NOT NULL AND new.the_geom_2154 is NOT NULL) THEN
-        IF NOT public.st_equals(new.the_geom_2154,old.the_geom_2154) THEN
-            new.the_geom_3857 = public.st_transform(new.the_geom_2154,3857);
-            new.srid_dessin = 2154;
+IF (old.the_geom_local is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
+    --si c'est le MYLOCALSRID qui existait on teste s'il a changé
+    IF (old.the_geom_local is NOT NULL AND new.the_geom_local is NOT NULL) THEN
+        IF NOT public.st_equals(new.the_geom_local,old.the_geom_local) THEN
+            new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+            new.srid_dessin = MYLOCALSRID;
         END IF;
     END IF;
     --si c'est le 3857 qui existait on teste s'il a changé
     IF (old.the_geom_3857 is NOT NULL AND new.the_geom_3857 is NOT NULL) THEN
         IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) THEN
-            new.the_geom_2154 = public.st_transform(new.the_geom_3857,2154);
+            new.the_geom_local = public.st_transform(new.the_geom_3857,MYLOCALSRID);
             new.srid_dessin = 3857;
         END IF;
     END IF;
     -- on calcul la commune...
-    new.insee = layers.f_insee(new.the_geom_2154);-- mise à jour du code insee
+    new.insee = layers.f_insee(new.the_geom_local);-- mise à jour du code insee
     -- on calcul l'altitude
-    new.altitude_sig = layers.f_isolines20(new.the_geom_2154); -- mise à jour de l'altitude sig
+    new.altitude_sig = layers.f_isolines20(new.the_geom_local); -- mise à jour de l'altitude sig
     IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
     ELSE
@@ -198,7 +198,7 @@ END IF;
 IF (new.altitude_saisie <> old.altitude_saisie OR old.altitude_saisie is null OR new.altitude_saisie is null OR old.altitude_saisie=0 OR new.altitude_saisie=0) then  -- mis à jour de l'altitude retenue
 	BEGIN
 		if new.altitude_saisie is null or new.altitude_saisie = 0 then
-			new.altitude_retenue = layers.f_isolines20(new.the_geom_2154);
+			new.altitude_retenue = layers.f_isolines20(new.the_geom_local);
 		else
 			new.altitude_retenue = new.altitude_saisie;
 		end if;
@@ -251,7 +251,7 @@ BEGIN
       supprime,
       id_lot,
       the_geom_3857,
-      the_geom_2154,
+      the_geom_local,
       the_geom_point
     )
     VALUES
@@ -272,7 +272,7 @@ BEGIN
       new.supprime,
       fiche.id_lot,
       fiche.the_geom_3857,
-      fiche.the_geom_2154,
+      fiche.the_geom_local,
       fiche.the_geom_3857
     );
 	
@@ -376,7 +376,7 @@ FOR monreleve IN SELECT gid, cd_nom FROM florestation.cor_fs_taxon WHERE id_stat
             remarques = new.remarques,
             derniere_action = 'u',
             the_geom_3857 = new.the_geom_3857,
-            the_geom_2154 = new.the_geom_2154,
+            the_geom_local = new.the_geom_local,
             the_geom_point = new.the_geom_3857
         WHERE id_source = 5 AND id_fiche_source = CAST(monreleve.gid AS VARCHAR(25));
     END IF;
@@ -579,16 +579,16 @@ CREATE TABLE t_stations_fs (
     date_insert timestamp without time zone,
     date_update timestamp without time zone,
     srid_dessin integer,
-    the_geom_3857 public.geometry,
-    the_geom_2154 public.geometry,
+    the_geom_3857 public.geometry(Point,3857),
+    the_geom_local public.geometry(Point,MYLOCALSRID),
     insee character(5),
     gid integer NOT NULL,
     validation boolean DEFAULT false,
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
+    CONSTRAINT enforce_geotype_the_geom_local CHECK (((public.geometrytype(the_geom_local) = 'POINT'::text) OR (the_geom_local IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_3857 CHECK (((public.geometrytype(the_geom_3857) = 'POINT'::text) OR (the_geom_3857 IS NULL))),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
@@ -627,7 +627,7 @@ CREATE VIEW v_florestation_all AS
     cor.cd_nom,
     btrim((tr.nom_valide)::text) AS nom_valid,
     btrim((tr.nom_vern)::text) AS nom_vern,
-    public.st_transform(fs.the_geom_2154, 2154) AS the_geom
+    public.st_transform(fs.the_geom_local, MYLOCALSRID) AS the_geom
    FROM ((t_stations_fs fs
      JOIN cor_fs_taxon cor ON ((cor.id_station = fs.id_station)))
      JOIN taxonomie.taxref tr ON ((cor.cd_nom = tr.cd_nom)))
@@ -645,7 +645,7 @@ CREATE OR REPLACE VIEW v_florestation_patrimoniale AS
     tx.nom_vern AS francais,
     tx.nom_complet AS latin,
     fs.dateobs,
-    fs.the_geom_2154
+    fs.the_geom_local
   FROM t_stations_fs fs
      JOIN cor_fs_taxon cft ON cft.id_station = fs.id_station
      JOIN taxonomie.bib_noms n ON n.cd_nom = cft.cd_nom
@@ -807,6 +807,20 @@ CREATE INDEX fki_t_stations_fs_bib_homogenes ON t_stations_fs USING btree (id_ho
 --
 
 CREATE INDEX fki_t_stations_fs_gid ON t_stations_fs USING btree (gid);
+
+
+--
+-- Name: index_gist_t_stations_fs_the_geom_local; Type: INDEX; Schema: florestation; Owner: -
+--
+
+CREATE INDEX index_gist_t_stations_fs_the_geom_local ON t_stations_fs USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_t_stations_fs_the_geom_3857; Type: INDEX; Schema: florestation; Owner: -
+--
+
+CREATE INDEX index_gist_t_stations_fs_the_geom_3857 ON t_stations_fs USING gist (the_geom_3857);
 
 
 --
@@ -1205,13 +1219,3 @@ INSERT INTO bib_lots (id_lot, nom_lot, desc_lot, menu_cf, pn, menu_inv, id_progr
 INSERT INTO t_protocoles VALUES (5, 'Flore station', 'à compléter', 'à compléter', 'à compléter', 'non', NULL, NULL);
 SET search_path = synthese, pg_catalog;
 INSERT INTO bib_sources (id_source, nom_source, desc_source, host, port, username, pass, db_name, db_schema, db_table, db_field, url, target, picto, groupe, actif) VALUES (5, 'Flore station', 'Données de relevés floristique stationnels complets ou partiel', 'localhost', 22, NULL, NULL, 'geonaturedb', 'florestation', 'cor_fs_taxon', 'gid', 'fs', NULL, 'images/pictos/plante.gif', 'FLORE', true);
-
-
---------------------------------------------------------------------------------------
---------------------AJOUT DU MODULE DANS LES TABLES SPATIALES-------------------------
---------------------------------------------------------------------------------------
-
-SET search_path = public, pg_catalog;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 't_stations_fs', 'the_geom_2154', 2, 2154, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 'v_florestation_all', 'the_geom', 2, 2154, 'POINT');
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'florestation', 'v_florestation_patrimoniale', 'the_geom', 2, 27572, 'POINT');

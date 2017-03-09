@@ -22,38 +22,38 @@
  * @property string $nom_famille
  * @property BibNoms $BibNoms
  * 
- * @method integer             getIdNom()             Returns the current record's "id_nom" value
- * @method integer             getCdRef()             Returns the current record's "cd_ref" value
- * @method string              getNomLatin()          Returns the current record's "nom_latin" value
- * @method string              getNomFrancais()       Returns the current record's "nom_francais" value
- * @method integer             getIdRegne()           Returns the current record's "id_regne" value
- * @method string              getNomRegne()          Returns the current record's "nom_regne" value
- * @method integer             getIdEmbranchement()   Returns the current record's "id_embranchement" value
- * @method string              getNomEmbranchement()  Returns the current record's "nom_embranchement" value
- * @method integer             getIdClasse()          Returns the current record's "id_classe" value
- * @method string              getNomClasse()         Returns the current record's "nom_classe" value
- * @method string              getDescClasse()        Returns the current record's "desc_classe" value
- * @method integer             getIdOrdre()           Returns the current record's "id_ordre" value
- * @method string              getNomOrdre()          Returns the current record's "nom_ordre" value
- * @method integer             getIdFamille()         Returns the current record's "id_famille" value
- * @method string              getNomFamille()        Returns the current record's "nom_famille" value
- * @method BibNoms             getBibNoms()           Returns the current record's "BibNoms" value
- * @method VTreeTaxonsSynthese setIdNom()             Sets the current record's "id_nom" value
- * @method VTreeTaxonsSynthese setCdRef()             Sets the current record's "cd_ref" value
- * @method VTreeTaxonsSynthese setNomLatin()          Sets the current record's "nom_latin" value
- * @method VTreeTaxonsSynthese setNomFrancais()       Sets the current record's "nom_francais" value
- * @method VTreeTaxonsSynthese setIdRegne()           Sets the current record's "id_regne" value
- * @method VTreeTaxonsSynthese setNomRegne()          Sets the current record's "nom_regne" value
- * @method VTreeTaxonsSynthese setIdEmbranchement()   Sets the current record's "id_embranchement" value
- * @method VTreeTaxonsSynthese setNomEmbranchement()  Sets the current record's "nom_embranchement" value
- * @method VTreeTaxonsSynthese setIdClasse()          Sets the current record's "id_classe" value
- * @method VTreeTaxonsSynthese setNomClasse()         Sets the current record's "nom_classe" value
- * @method VTreeTaxonsSynthese setDescClasse()        Sets the current record's "desc_classe" value
- * @method VTreeTaxonsSynthese setIdOrdre()           Sets the current record's "id_ordre" value
- * @method VTreeTaxonsSynthese setNomOrdre()          Sets the current record's "nom_ordre" value
- * @method VTreeTaxonsSynthese setIdFamille()         Sets the current record's "id_famille" value
- * @method VTreeTaxonsSynthese setNomFamille()        Sets the current record's "nom_famille" value
- * @method VTreeTaxonsSynthese setBibNoms()           Sets the current record's "BibNoms" value
+ * @method integer             get()                  Returns the current record's "id_nom" value
+ * @method integer             get()                  Returns the current record's "cd_ref" value
+ * @method string              get()                  Returns the current record's "nom_latin" value
+ * @method string              get()                  Returns the current record's "nom_francais" value
+ * @method integer             get()                  Returns the current record's "id_regne" value
+ * @method string              get()                  Returns the current record's "nom_regne" value
+ * @method integer             get()                  Returns the current record's "id_embranchement" value
+ * @method string              get()                  Returns the current record's "nom_embranchement" value
+ * @method integer             get()                  Returns the current record's "id_classe" value
+ * @method string              get()                  Returns the current record's "nom_classe" value
+ * @method string              get()                  Returns the current record's "desc_classe" value
+ * @method integer             get()                  Returns the current record's "id_ordre" value
+ * @method string              get()                  Returns the current record's "nom_ordre" value
+ * @method integer             get()                  Returns the current record's "id_famille" value
+ * @method string              get()                  Returns the current record's "nom_famille" value
+ * @method BibNoms             get()                  Returns the current record's "BibNoms" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "id_nom" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "cd_ref" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_latin" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_francais" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "id_regne" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_regne" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "id_embranchement" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_embranchement" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "id_classe" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_classe" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "desc_classe" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "id_ordre" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_ordre" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "id_famille" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "nom_famille" value
+ * @method VTreeTaxonsSynthese set()                  Sets the current record's "BibNoms" value
  * 
  * @package    geonature
  * @subpackage model

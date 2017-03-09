@@ -10,14 +10,14 @@
  * @property BibNoms $BibNoms
  * @property BibMessagesCflore $BibMessagesCflore
  * 
- * @method integer               getIdMessageCflore()   Returns the current record's "id_message_cflore" value
- * @method integer               getIdNom()             Returns the current record's "id_nom" value
- * @method BibNoms               getBibNoms()           Returns the current record's "BibNoms" value
- * @method BibMessagesCflore     getBibMessagesCflore() Returns the current record's "BibMessagesCflore" value
- * @method CorMessageTaxonCflore setIdMessageCflore()   Sets the current record's "id_message_cflore" value
- * @method CorMessageTaxonCflore setIdNom()             Sets the current record's "id_nom" value
- * @method CorMessageTaxonCflore setBibNoms()           Sets the current record's "BibNoms" value
- * @method CorMessageTaxonCflore setBibMessagesCflore() Sets the current record's "BibMessagesCflore" value
+ * @method integer               get()                  Returns the current record's "id_message_cflore" value
+ * @method integer               get()                  Returns the current record's "id_nom" value
+ * @method BibNoms               get()                  Returns the current record's "BibNoms" value
+ * @method BibMessagesCflore     get()                  Returns the current record's "BibMessagesCflore" value
+ * @method CorMessageTaxonCflore set()                  Sets the current record's "id_message_cflore" value
+ * @method CorMessageTaxonCflore set()                  Sets the current record's "id_nom" value
+ * @method CorMessageTaxonCflore set()                  Sets the current record's "BibNoms" value
+ * @method CorMessageTaxonCflore set()                  Sets the current record's "BibMessagesCflore" value
  * 
  * @package    geonature
  * @subpackage model

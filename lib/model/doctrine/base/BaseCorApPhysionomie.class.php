@@ -10,14 +10,14 @@
  * @property BibPhysionomies $BibPhysionomies
  * @property TApresence $TApresence
  * 
- * @method integer          getIndexap()         Returns the current record's "indexap" value
- * @method integer          getIdPhysionomie()   Returns the current record's "id_physionomie" value
- * @method BibPhysionomies  getBibPhysionomies() Returns the current record's "BibPhysionomies" value
- * @method TApresence       getTApresence()      Returns the current record's "TApresence" value
- * @method CorApPhysionomie setIndexap()         Sets the current record's "indexap" value
- * @method CorApPhysionomie setIdPhysionomie()   Sets the current record's "id_physionomie" value
- * @method CorApPhysionomie setBibPhysionomies() Sets the current record's "BibPhysionomies" value
- * @method CorApPhysionomie setTApresence()      Sets the current record's "TApresence" value
+ * @method integer          get()                Returns the current record's "indexap" value
+ * @method integer          get()                Returns the current record's "id_physionomie" value
+ * @method BibPhysionomies  get()                Returns the current record's "BibPhysionomies" value
+ * @method TApresence       get()                Returns the current record's "TApresence" value
+ * @method CorApPhysionomie set()                Sets the current record's "indexap" value
+ * @method CorApPhysionomie set()                Sets the current record's "id_physionomie" value
+ * @method CorApPhysionomie set()                Sets the current record's "BibPhysionomies" value
+ * @method CorApPhysionomie set()                Sets the current record's "TApresence" value
  * 
  * @package    geonature
  * @subpackage model

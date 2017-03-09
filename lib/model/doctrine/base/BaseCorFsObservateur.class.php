@@ -10,14 +10,14 @@
  * @property TStationsFs $TStationsFs
  * @property TRoles $TRoles
  * 
- * @method integer          getIdStation()   Returns the current record's "id_station" value
- * @method integer          getIdRole()      Returns the current record's "id_role" value
- * @method TStationsFs      getTStationsFs() Returns the current record's "TStationsFs" value
- * @method TRoles           getTRoles()      Returns the current record's "TRoles" value
- * @method CorFsObservateur setIdStation()   Sets the current record's "id_station" value
- * @method CorFsObservateur setIdRole()      Sets the current record's "id_role" value
- * @method CorFsObservateur setTStationsFs() Sets the current record's "TStationsFs" value
- * @method CorFsObservateur setTRoles()      Sets the current record's "TRoles" value
+ * @method integer          get()            Returns the current record's "id_station" value
+ * @method integer          get()            Returns the current record's "id_role" value
+ * @method TStationsFs      get()            Returns the current record's "TStationsFs" value
+ * @method TRoles           get()            Returns the current record's "TRoles" value
+ * @method CorFsObservateur set()            Sets the current record's "id_station" value
+ * @method CorFsObservateur set()            Sets the current record's "id_role" value
+ * @method CorFsObservateur set()            Sets the current record's "TStationsFs" value
+ * @method CorFsObservateur set()            Sets the current record's "TRoles" value
  * 
  * @package    geonature
  * @subpackage model

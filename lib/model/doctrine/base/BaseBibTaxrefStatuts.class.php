@@ -8,10 +8,10 @@
  * @property string $id_statut
  * @property string $nom_statut
  * 
- * @method string           getIdStatut()   Returns the current record's "id_statut" value
- * @method string           getNomStatut()  Returns the current record's "nom_statut" value
- * @method BibTaxrefStatuts setIdStatut()   Sets the current record's "id_statut" value
- * @method BibTaxrefStatuts setNomStatut()  Sets the current record's "nom_statut" value
+ * @method string           get()           Returns the current record's "id_statut" value
+ * @method string           get()           Returns the current record's "nom_statut" value
+ * @method BibTaxrefStatuts set()           Sets the current record's "id_statut" value
+ * @method BibTaxrefStatuts set()           Sets the current record's "nom_statut" value
  * 
  * @package    geonature
  * @subpackage model

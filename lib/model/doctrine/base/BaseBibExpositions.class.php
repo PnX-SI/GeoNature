@@ -10,14 +10,14 @@
  * @property integer $tri_exposition
  * @property Doctrine_Collection $TStationsFs
  * 
- * @method string              getIdExposition()   Returns the current record's "id_exposition" value
- * @method string              getNomExposition()  Returns the current record's "nom_exposition" value
- * @method integer             getTriExposition()  Returns the current record's "tri_exposition" value
- * @method Doctrine_Collection getTStationsFs()    Returns the current record's "TStationsFs" collection
- * @method BibExpositions      setIdExposition()   Sets the current record's "id_exposition" value
- * @method BibExpositions      setNomExposition()  Sets the current record's "nom_exposition" value
- * @method BibExpositions      setTriExposition()  Sets the current record's "tri_exposition" value
- * @method BibExpositions      setTStationsFs()    Sets the current record's "TStationsFs" collection
+ * @method string              get()               Returns the current record's "id_exposition" value
+ * @method string              get()               Returns the current record's "nom_exposition" value
+ * @method integer             get()               Returns the current record's "tri_exposition" value
+ * @method Doctrine_Collection get()               Returns the current record's "TStationsFs" collection
+ * @method BibExpositions      set()               Sets the current record's "id_exposition" value
+ * @method BibExpositions      set()               Sets the current record's "nom_exposition" value
+ * @method BibExpositions      set()               Sets the current record's "tri_exposition" value
+ * @method BibExpositions      set()               Sets the current record's "TStationsFs" collection
  * 
  * @package    geonature
  * @subpackage model

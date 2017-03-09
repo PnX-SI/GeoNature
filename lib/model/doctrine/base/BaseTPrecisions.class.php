@@ -10,14 +10,14 @@
  * @property string $desc_precision
  * @property Doctrine_Collection $Syntheseff
  * 
- * @method integer             getIdPrecision()    Returns the current record's "id_precision" value
- * @method string              getNomPrecision()   Returns the current record's "nom_precision" value
- * @method string              getDescPrecision()  Returns the current record's "desc_precision" value
- * @method Doctrine_Collection getSyntheseff()     Returns the current record's "Syntheseff" collection
- * @method TPrecisions         setIdPrecision()    Sets the current record's "id_precision" value
- * @method TPrecisions         setNomPrecision()   Sets the current record's "nom_precision" value
- * @method TPrecisions         setDescPrecision()  Sets the current record's "desc_precision" value
- * @method TPrecisions         setSyntheseff()     Sets the current record's "Syntheseff" collection
+ * @method integer             get()               Returns the current record's "id_precision" value
+ * @method string              get()               Returns the current record's "nom_precision" value
+ * @method string              get()               Returns the current record's "desc_precision" value
+ * @method Doctrine_Collection get()               Returns the current record's "Syntheseff" collection
+ * @method TPrecisions         set()               Sets the current record's "id_precision" value
+ * @method TPrecisions         set()               Sets the current record's "nom_precision" value
+ * @method TPrecisions         set()               Sets the current record's "desc_precision" value
+ * @method TPrecisions         set()               Sets the current record's "Syntheseff" collection
  * 
  * @package    geonature
  * @subpackage model

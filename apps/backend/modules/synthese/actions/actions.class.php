@@ -72,16 +72,6 @@ class syntheseActions extends sfGeonatureActions
             elseif($lesreleves=='trop'){return $this->renderText(sfGeonatureActions::$toManyFeatures);}
             else{
                 return $this->renderText($lesreleves);
-                // if($request->getParameter('zoom')<5){
-                    // return $this->renderText($this->geojson->encode($lesreleves, 'the_geom_point', 'id_synthese'));
-                    // return $this->renderText($this->geojson->encode($lesreleves, 'the_geom', 'id_synthese'));
-                    // return $this->renderText($lesreleves); 
-                // }
-                // else{
-                    // return $this->renderText($this->geojson->encode($lesreleves, 'the_geom_ignfxx', 'id_synthese')); 
-                    // return $this->renderText($this->geojson->encode($lesreleves, 'the_geom', 'id_synthese')); 
-                    // return $this->renderText($lesreleves); 
-                // }
             }
         }
         else{return sfGeonatureActions::comptFeatures($nbreleves);}
@@ -91,8 +81,7 @@ class syntheseActions extends sfGeonatureActions
     {
         $params = $request->getParams();
         $lesobs = SyntheseffTable::listXlsObs($params);
-        $srid_local_export = sfGeonatureConfig::$srid_local;
-        $csv_output = "id_synthese\tsource\tprogramme\tlot\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tnom_valide\tfamille\tordre\tclasse\tphylum\tregne\tcd_nom\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tx_".$srid_local_export."\ty_".$srid_local_export."\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source";
+        $csv_output = "id_synthese\tsource\tprogramme\tlot\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tnom_valide\tfamille\tordre\tclasse\tphylum\tregne\tcd_nom\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tx_local\ty_local\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source";
         $csv_output .= "\n";
         foreach ($lesobs as $obs)
         {  
@@ -121,13 +110,13 @@ class syntheseActions extends sfGeonatureActions
             $nom_source = $obs['nom_source'];
             $nom_programme = $obs['nom_programme'];
             $nom_lot = $obs['nom_lot'];
-            $x_srid_local_export = $obs['x_srid_local_export'];
-            $y_srid_local_export = $obs['y_srid_local_export'];
+            $x_local = $obs['x_local'];
+            $y_local = $obs['y_local'];
             $x_wgs84 = $obs['x_wgs84'];
             $y_wgs84 = $obs['y_wgs84'];
             $type_objet = 'point';
             $geom_type = ($obs['geom_type']=='ST_Point')?'point':'maille';
-            $csv_output .= "$id_synthese\t$nom_source\t$nom_programme\t$nom_lot\t$organisme\t$dateobs\t$observateurs\t$taxon_francais\t$taxon_latin\t$nom_valide\t$famille\t$ordre\t$classe\t$phylum\t$regne\t$cd_nom\t$cd_ref\t$patrimonial\t$nom_critere_synthese\t$effectif_total\t$remarques\t$secteur\t$commune\t$insee\t$altitude\t$x_srid_local_export\t$y_srid_local_export\t$x_wgs84\t$y_wgs84\t$type_objet\t$geom_type\n";
+            $csv_output .= "$id_synthese\t$nom_source\t$nom_programme\t$nom_lot\t$organisme\t$dateobs\t$observateurs\t$taxon_francais\t$taxon_latin\t$nom_valide\t$famille\t$ordre\t$classe\t$phylum\t$regne\t$cd_nom\t$cd_ref\t$patrimonial\t$nom_critere_synthese\t$effectif_total\t$remarques\t$secteur\t$commune\t$insee\t$altitude\t$x_local\t$y_local\t$x_wgs84\t$y_wgs84\t$type_objet\t$geom_type\n";
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=synthese_observations_".date("Y-m-d_His").".xls");
@@ -515,7 +504,7 @@ class syntheseActions extends sfGeonatureActions
                 // doctrine ne gère pas le  type geometry. Du coup on le fait en Update en SQL.
                 $sql = "UPDATE synthese.syntheseff 
                         SET the_geom_3857 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857)
-                        ,the_geom_2154 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),2154)
+                        ,the_geom_local = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),".sfGeonatureConfig::$srid_local.")
                         ,the_geom_point = ST_PointOnSurface(ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857))
                         WHERE id_synthese = ".$id_synthese;
                 $dbh->query($sql);
@@ -645,7 +634,7 @@ class syntheseActions extends sfGeonatureActions
                     // doctrine ne gère pas le type geometry. Du coup on le fait en Update en SQL.
                     $sql = "UPDATE synthese.syntheseff 
                             SET the_geom_3857 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857)
-                            ,the_geom_2154 = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),2154)
+                            ,the_geom_local = ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),".sfGeonatureConfig::$srid_local.")
                             ,the_geom_point = ST_PointOnSurface(ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON('".$json_geom."'),4326),3857))
                             WHERE id_synthese = ".$id_synthese;
                     $dbh->query($sql);

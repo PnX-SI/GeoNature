@@ -21,36 +21,36 @@
  * @property Doctrine_Collection $TStationsFs
  * @property Doctrine_Collection $TZprospection
  * 
- * @method integer             getIdProtocole()   Returns the current record's "id_protocole" value
- * @method string              getNomProtocole()  Returns the current record's "nom_protocole" value
- * @method string              getQuestion()      Returns the current record's "question" value
- * @method string              getObjectifs()     Returns the current record's "objectifs" value
- * @method string              getMethode()       Returns the current record's "methode" value
- * @method string              getAvancement()    Returns the current record's "avancement" value
- * @method date                getDateDebut()     Returns the current record's "date_debut" value
- * @method date                getDateFin()       Returns the current record's "date_fin" value
- * @method Doctrine_Collection getSyntheseff()    Returns the current record's "Syntheseff" collection
- * @method Doctrine_Collection getTFichesCf()     Returns the current record's "TFichesCf" collection
- * @method Doctrine_Collection getTFichesCflore() Returns the current record's "TFichesCflore" collection
- * @method Doctrine_Collection getTFichesInv()    Returns the current record's "TFichesInv" collection
- * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
- * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
- * @method Doctrine_Collection getTZprospection() Returns the current record's "TZprospection" collection
- * @method TProtocoles         setIdProtocole()   Sets the current record's "id_protocole" value
- * @method TProtocoles         setNomProtocole()  Sets the current record's "nom_protocole" value
- * @method TProtocoles         setQuestion()      Sets the current record's "question" value
- * @method TProtocoles         setObjectifs()     Sets the current record's "objectifs" value
- * @method TProtocoles         setMethode()       Sets the current record's "methode" value
- * @method TProtocoles         setAvancement()    Sets the current record's "avancement" value
- * @method TProtocoles         setDateDebut()     Sets the current record's "date_debut" value
- * @method TProtocoles         setDateFin()       Sets the current record's "date_fin" value
- * @method TProtocoles         setSyntheseff()    Sets the current record's "Syntheseff" collection
- * @method TProtocoles         setTFichesCf()     Sets the current record's "TFichesCf" collection
- * @method TProtocoles         setTFichesCflore() Sets the current record's "TFichesCflore" collection
- * @method TProtocoles         setTFichesInv()    Sets the current record's "TFichesInv" collection
- * @method TProtocoles         setTStationsBryo() Sets the current record's "TStationsBryo" collection
- * @method TProtocoles         setTStationsFs()   Sets the current record's "TStationsFs" collection
- * @method TProtocoles         setTZprospection() Sets the current record's "TZprospection" collection
+ * @method integer             get()              Returns the current record's "id_protocole" value
+ * @method string              get()              Returns the current record's "nom_protocole" value
+ * @method string              get()              Returns the current record's "question" value
+ * @method string              get()              Returns the current record's "objectifs" value
+ * @method string              get()              Returns the current record's "methode" value
+ * @method string              get()              Returns the current record's "avancement" value
+ * @method date                get()              Returns the current record's "date_debut" value
+ * @method date                get()              Returns the current record's "date_fin" value
+ * @method Doctrine_Collection get()              Returns the current record's "Syntheseff" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TFichesCf" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TFichesCflore" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TFichesInv" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TStationsFs" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TZprospection" collection
+ * @method TProtocoles         set()              Sets the current record's "id_protocole" value
+ * @method TProtocoles         set()              Sets the current record's "nom_protocole" value
+ * @method TProtocoles         set()              Sets the current record's "question" value
+ * @method TProtocoles         set()              Sets the current record's "objectifs" value
+ * @method TProtocoles         set()              Sets the current record's "methode" value
+ * @method TProtocoles         set()              Sets the current record's "avancement" value
+ * @method TProtocoles         set()              Sets the current record's "date_debut" value
+ * @method TProtocoles         set()              Sets the current record's "date_fin" value
+ * @method TProtocoles         set()              Sets the current record's "Syntheseff" collection
+ * @method TProtocoles         set()              Sets the current record's "TFichesCf" collection
+ * @method TProtocoles         set()              Sets the current record's "TFichesCflore" collection
+ * @method TProtocoles         set()              Sets the current record's "TFichesInv" collection
+ * @method TProtocoles         set()              Sets the current record's "TStationsBryo" collection
+ * @method TProtocoles         set()              Sets the current record's "TStationsFs" collection
+ * @method TProtocoles         set()              Sets the current record's "TZprospection" collection
  * 
  * @package    geonature
  * @subpackage model

@@ -9,12 +9,12 @@
  * @property string $nom_homogene
  * @property Doctrine_Collection $TStationsFs
  * 
- * @method integer             getIdHomogene()   Returns the current record's "id_homogene" value
- * @method string              getNomHomogene()  Returns the current record's "nom_homogene" value
- * @method Doctrine_Collection getTStationsFs()  Returns the current record's "TStationsFs" collection
- * @method BibHomogenes        setIdHomogene()   Sets the current record's "id_homogene" value
- * @method BibHomogenes        setNomHomogene()  Sets the current record's "nom_homogene" value
- * @method BibHomogenes        setTStationsFs()  Sets the current record's "TStationsFs" collection
+ * @method integer             get()             Returns the current record's "id_homogene" value
+ * @method string              get()             Returns the current record's "nom_homogene" value
+ * @method Doctrine_Collection get()             Returns the current record's "TStationsFs" collection
+ * @method BibHomogenes        set()             Sets the current record's "id_homogene" value
+ * @method BibHomogenes        set()             Sets the current record's "nom_homogene" value
+ * @method BibHomogenes        set()             Sets the current record's "TStationsFs" collection
  * 
  * @package    geonature
  * @subpackage model

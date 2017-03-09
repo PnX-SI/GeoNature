@@ -20,7 +20,7 @@
  * @property integer $altitude_retenue
  * @property string $remarques
  * @property decimal $pdop
- * @property blob $the_geom_2154
+ * @property blob $the_geom_local
  * @property blob $the_geom_3857
  * @property integer $srid_dessin
  * @property boolean $supprime
@@ -36,66 +36,66 @@
  * @property LCommunes $LCommunes
  * @property Doctrine_Collection $CorBryoObservateur
  * 
- * @method integer             getIdStation()          Returns the current record's "id_station" value
- * @method string              getIdExposition()       Returns the current record's "id_exposition" value
- * @method integer             getIdProtocole()        Returns the current record's "id_protocole" value
- * @method integer             getIdOrganisme()        Returns the current record's "id_organisme" value
- * @method integer             getIdLot()              Returns the current record's "id_lot" value
- * @method integer             getIdSupport()          Returns the current record's "id_support" value
- * @method date                getDateobs()            Returns the current record's "dateobs" value
- * @method integer             getSurface()            Returns the current record's "surface" value
- * @method string              getInfoAcces()          Returns the current record's "info_acces" value
- * @method string              getCompletPartiel()     Returns the current record's "complet_partiel" value
- * @method integer             getAltitudeSaisie()     Returns the current record's "altitude_saisie" value
- * @method integer             getAltitudeSig()        Returns the current record's "altitude_sig" value
- * @method integer             getAltitudeRetenue()    Returns the current record's "altitude_retenue" value
- * @method string              getRemarques()          Returns the current record's "remarques" value
- * @method decimal             getPdop()               Returns the current record's "pdop" value
- * @method blob                getTheGeom2154()        Returns the current record's "the_geom_2154" value
- * @method blob                getTheGeom3857()        Returns the current record's "the_geom_3857" value
- * @method integer             getSridDessin()         Returns the current record's "srid_dessin" value
- * @method boolean             getSupprime()           Returns the current record's "supprime" value
- * @method timestamp           getDateInsert()         Returns the current record's "date_insert" value
- * @method timestamp           getDateUpdate()         Returns the current record's "date_update" value
- * @method string              getInsee()              Returns the current record's "insee" value
- * @method BibExpositionsBryo  getBibExpositionsBryo() Returns the current record's "BibExpositionsBryo" value
- * @method BibSupports         getBibSupports()        Returns the current record's "BibSupports" value
- * @method BibOrganismes       getBibOrganismes()      Returns the current record's "BibOrganismes" value
- * @method BibLots             getBibLots()            Returns the current record's "BibLots" value
- * @method TProtocoles         getTProtocoles()        Returns the current record's "TProtocoles" value
- * @method CorBryoTaxon        getCorBryoTaxon()       Returns the current record's "CorBryoTaxon" value
- * @method LCommunes           getLCommunes()          Returns the current record's "LCommunes" value
- * @method Doctrine_Collection getCorBryoObservateur() Returns the current record's "CorBryoObservateur" collection
- * @method TStationsBryo       setIdStation()          Sets the current record's "id_station" value
- * @method TStationsBryo       setIdExposition()       Sets the current record's "id_exposition" value
- * @method TStationsBryo       setIdProtocole()        Sets the current record's "id_protocole" value
- * @method TStationsBryo       setIdOrganisme()        Sets the current record's "id_organisme" value
- * @method TStationsBryo       setIdLot()              Sets the current record's "id_lot" value
- * @method TStationsBryo       setIdSupport()          Sets the current record's "id_support" value
- * @method TStationsBryo       setDateobs()            Sets the current record's "dateobs" value
- * @method TStationsBryo       setSurface()            Sets the current record's "surface" value
- * @method TStationsBryo       setInfoAcces()          Sets the current record's "info_acces" value
- * @method TStationsBryo       setCompletPartiel()     Sets the current record's "complet_partiel" value
- * @method TStationsBryo       setAltitudeSaisie()     Sets the current record's "altitude_saisie" value
- * @method TStationsBryo       setAltitudeSig()        Sets the current record's "altitude_sig" value
- * @method TStationsBryo       setAltitudeRetenue()    Sets the current record's "altitude_retenue" value
- * @method TStationsBryo       setRemarques()          Sets the current record's "remarques" value
- * @method TStationsBryo       setPdop()               Sets the current record's "pdop" value
- * @method TStationsBryo       setTheGeom2154()        Sets the current record's "the_geom_2154" value
- * @method TStationsBryo       setTheGeom3857()        Sets the current record's "the_geom_3857" value
- * @method TStationsBryo       setSridDessin()         Sets the current record's "srid_dessin" value
- * @method TStationsBryo       setSupprime()           Sets the current record's "supprime" value
- * @method TStationsBryo       setDateInsert()         Sets the current record's "date_insert" value
- * @method TStationsBryo       setDateUpdate()         Sets the current record's "date_update" value
- * @method TStationsBryo       setInsee()              Sets the current record's "insee" value
- * @method TStationsBryo       setBibExpositionsBryo() Sets the current record's "BibExpositionsBryo" value
- * @method TStationsBryo       setBibSupports()        Sets the current record's "BibSupports" value
- * @method TStationsBryo       setBibOrganismes()      Sets the current record's "BibOrganismes" value
- * @method TStationsBryo       setBibLots()            Sets the current record's "BibLots" value
- * @method TStationsBryo       setTProtocoles()        Sets the current record's "TProtocoles" value
- * @method TStationsBryo       setCorBryoTaxon()       Sets the current record's "CorBryoTaxon" value
- * @method TStationsBryo       setLCommunes()          Sets the current record's "LCommunes" value
- * @method TStationsBryo       setCorBryoObservateur() Sets the current record's "CorBryoObservateur" collection
+ * @method integer             get()                   Returns the current record's "id_station" value
+ * @method string              get()                   Returns the current record's "id_exposition" value
+ * @method integer             get()                   Returns the current record's "id_protocole" value
+ * @method integer             get()                   Returns the current record's "id_organisme" value
+ * @method integer             get()                   Returns the current record's "id_lot" value
+ * @method integer             get()                   Returns the current record's "id_support" value
+ * @method date                get()                   Returns the current record's "dateobs" value
+ * @method integer             get()                   Returns the current record's "surface" value
+ * @method string              get()                   Returns the current record's "info_acces" value
+ * @method string              get()                   Returns the current record's "complet_partiel" value
+ * @method integer             get()                   Returns the current record's "altitude_saisie" value
+ * @method integer             get()                   Returns the current record's "altitude_sig" value
+ * @method integer             get()                   Returns the current record's "altitude_retenue" value
+ * @method string              get()                   Returns the current record's "remarques" value
+ * @method decimal             get()                   Returns the current record's "pdop" value
+ * @method blob                get()                   Returns the current record's "the_geom_local" value
+ * @method blob                get()                   Returns the current record's "the_geom_3857" value
+ * @method integer             get()                   Returns the current record's "srid_dessin" value
+ * @method boolean             get()                   Returns the current record's "supprime" value
+ * @method timestamp           get()                   Returns the current record's "date_insert" value
+ * @method timestamp           get()                   Returns the current record's "date_update" value
+ * @method string              get()                   Returns the current record's "insee" value
+ * @method BibExpositionsBryo  get()                   Returns the current record's "BibExpositionsBryo" value
+ * @method BibSupports         get()                   Returns the current record's "BibSupports" value
+ * @method BibOrganismes       get()                   Returns the current record's "BibOrganismes" value
+ * @method BibLots             get()                   Returns the current record's "BibLots" value
+ * @method TProtocoles         get()                   Returns the current record's "TProtocoles" value
+ * @method CorBryoTaxon        get()                   Returns the current record's "CorBryoTaxon" value
+ * @method LCommunes           get()                   Returns the current record's "LCommunes" value
+ * @method Doctrine_Collection get()                   Returns the current record's "CorBryoObservateur" collection
+ * @method TStationsBryo       set()                   Sets the current record's "id_station" value
+ * @method TStationsBryo       set()                   Sets the current record's "id_exposition" value
+ * @method TStationsBryo       set()                   Sets the current record's "id_protocole" value
+ * @method TStationsBryo       set()                   Sets the current record's "id_organisme" value
+ * @method TStationsBryo       set()                   Sets the current record's "id_lot" value
+ * @method TStationsBryo       set()                   Sets the current record's "id_support" value
+ * @method TStationsBryo       set()                   Sets the current record's "dateobs" value
+ * @method TStationsBryo       set()                   Sets the current record's "surface" value
+ * @method TStationsBryo       set()                   Sets the current record's "info_acces" value
+ * @method TStationsBryo       set()                   Sets the current record's "complet_partiel" value
+ * @method TStationsBryo       set()                   Sets the current record's "altitude_saisie" value
+ * @method TStationsBryo       set()                   Sets the current record's "altitude_sig" value
+ * @method TStationsBryo       set()                   Sets the current record's "altitude_retenue" value
+ * @method TStationsBryo       set()                   Sets the current record's "remarques" value
+ * @method TStationsBryo       set()                   Sets the current record's "pdop" value
+ * @method TStationsBryo       set()                   Sets the current record's "the_geom_local" value
+ * @method TStationsBryo       set()                   Sets the current record's "the_geom_3857" value
+ * @method TStationsBryo       set()                   Sets the current record's "srid_dessin" value
+ * @method TStationsBryo       set()                   Sets the current record's "supprime" value
+ * @method TStationsBryo       set()                   Sets the current record's "date_insert" value
+ * @method TStationsBryo       set()                   Sets the current record's "date_update" value
+ * @method TStationsBryo       set()                   Sets the current record's "insee" value
+ * @method TStationsBryo       set()                   Sets the current record's "BibExpositionsBryo" value
+ * @method TStationsBryo       set()                   Sets the current record's "BibSupports" value
+ * @method TStationsBryo       set()                   Sets the current record's "BibOrganismes" value
+ * @method TStationsBryo       set()                   Sets the current record's "BibLots" value
+ * @method TStationsBryo       set()                   Sets the current record's "TProtocoles" value
+ * @method TStationsBryo       set()                   Sets the current record's "CorBryoTaxon" value
+ * @method TStationsBryo       set()                   Sets the current record's "LCommunes" value
+ * @method TStationsBryo       set()                   Sets the current record's "CorBryoObservateur" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -175,7 +175,7 @@ abstract class BaseTStationsBryo extends sfDoctrineRecord
              'length' => 10,
              'scale' => '2',
              ));
-        $this->hasColumn('the_geom_2154', 'blob', null, array(
+        $this->hasColumn('the_geom_local', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

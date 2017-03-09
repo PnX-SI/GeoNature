@@ -10,14 +10,14 @@
  * @property BibListes $BibListes
  * @property BibCriteresCf $BibCriteresCf
  * 
- * @method integer         getIdCritereCf()   Returns the current record's "id_critere_cf" value
- * @method integer         getIdListe()       Returns the current record's "id_liste" value
- * @method BibListes       getBibListes()     Returns the current record's "BibListes" value
- * @method BibCriteresCf   getBibCriteresCf() Returns the current record's "BibCriteresCf" value
- * @method CorCritereListe setIdCritereCf()   Sets the current record's "id_critere_cf" value
- * @method CorCritereListe setIdListe()       Sets the current record's "id_liste" value
- * @method CorCritereListe setBibListes()     Sets the current record's "BibListes" value
- * @method CorCritereListe setBibCriteresCf() Sets the current record's "BibCriteresCf" value
+ * @method integer         get()              Returns the current record's "id_critere_cf" value
+ * @method integer         get()              Returns the current record's "id_liste" value
+ * @method BibListes       get()              Returns the current record's "BibListes" value
+ * @method BibCriteresCf   get()              Returns the current record's "BibCriteresCf" value
+ * @method CorCritereListe set()              Sets the current record's "id_critere_cf" value
+ * @method CorCritereListe set()              Sets the current record's "id_liste" value
+ * @method CorCritereListe set()              Sets the current record's "BibListes" value
+ * @method CorCritereListe set()              Sets the current record's "BibCriteresCf" value
  * 
  * @package    geonature
  * @subpackage model

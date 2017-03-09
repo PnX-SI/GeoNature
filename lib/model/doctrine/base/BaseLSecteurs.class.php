@@ -10,14 +10,14 @@
  * @property blob $the_geom
  * @property Doctrine_Collection $LCommunes
  * 
- * @method integer             getIdSecteur()   Returns the current record's "id_secteur" value
- * @method string              getNomSecteur()  Returns the current record's "nom_secteur" value
- * @method blob                getTheGeom()     Returns the current record's "the_geom" value
- * @method Doctrine_Collection getLCommunes()   Returns the current record's "LCommunes" collection
- * @method LSecteurs           setIdSecteur()   Sets the current record's "id_secteur" value
- * @method LSecteurs           setNomSecteur()  Sets the current record's "nom_secteur" value
- * @method LSecteurs           setTheGeom()     Sets the current record's "the_geom" value
- * @method LSecteurs           setLCommunes()   Sets the current record's "LCommunes" collection
+ * @method integer             get()            Returns the current record's "id_secteur" value
+ * @method string              get()            Returns the current record's "nom_secteur" value
+ * @method blob                get()            Returns the current record's "the_geom" value
+ * @method Doctrine_Collection get()            Returns the current record's "LCommunes" collection
+ * @method LSecteurs           set()            Sets the current record's "id_secteur" value
+ * @method LSecteurs           set()            Sets the current record's "nom_secteur" value
+ * @method LSecteurs           set()            Sets the current record's "the_geom" value
+ * @method LSecteurs           set()            Sets the current record's "LCommunes" collection
  * 
  * @package    geonature
  * @subpackage model

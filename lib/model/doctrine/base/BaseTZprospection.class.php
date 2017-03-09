@@ -14,7 +14,7 @@
  * @property date $dateobs
  * @property blob $the_geom
  * @property blob $the_geom_3857
- * @property blob $the_geom_2154
+ * @property blob $the_geom_local
  * @property blob $geom_mixte_3857
  * @property blob $geom_point_3857
  * @property timestamp $date_insert
@@ -34,62 +34,62 @@
  * @property Doctrine_Collection $CorZpObs
  * @property Doctrine_Collection $TApresence
  * 
- * @method integer             getIndexzp()         Returns the current record's "indexzp" value
- * @method integer             getCdNom()           Returns the current record's "cd_nom" value
- * @method integer             getIdSecteurFp()     Returns the current record's "id_secteur_fp" value
- * @method integer             getIdProtocole()     Returns the current record's "id_protocole" value
- * @method integer             getIdLot()           Returns the current record's "id_lot" value
- * @method integer             getIdOrganisme()     Returns the current record's "id_organisme" value
- * @method date                getDateobs()         Returns the current record's "dateobs" value
- * @method blob                getTheGeom()         Returns the current record's "the_geom" value
- * @method blob                getTheGeom3857()     Returns the current record's "the_geom_3857" value
- * @method blob                getTheGeom2154()     Returns the current record's "the_geom_2154" value
- * @method blob                getGeomMixte3857()   Returns the current record's "geom_mixte_3857" value
- * @method blob                getGeomPoint3857()   Returns the current record's "geom_point_3857" value
- * @method timestamp           getDateInsert()      Returns the current record's "date_insert" value
- * @method timestamp           getDateUpdate()      Returns the current record's "date_update" value
- * @method boolean             getValidation()      Returns the current record's "validation" value
- * @method boolean             getTopoValid()       Returns the current record's "topo_valid" value
- * @method boolean             getErreurSignalee()  Returns the current record's "erreur_signalee" value
- * @method boolean             getSupprime()        Returns the current record's "supprime" value
- * @method string              getSaisieInitiale()  Returns the current record's "saisie_initiale" value
- * @method string              getTaxonSaisi()      Returns the current record's "taxon_saisi" value
- * @method string              getInsee()           Returns the current record's "insee" value
- * @method integer             getSridDessin()      Returns the current record's "srid_dessin" value
- * @method BibTaxonsFp         getBibTaxonsFp()     Returns the current record's "BibTaxonsFp" value
- * @method BibOrganismes       getBibOrganismes()   Returns the current record's "BibOrganismes" value
- * @method BibLots             getBibLots()         Returns the current record's "BibLots" value
- * @method TProtocoles         getTProtocoles()     Returns the current record's "TProtocoles" value
- * @method Doctrine_Collection getCorZpObs()        Returns the current record's "CorZpObs" collection
- * @method Doctrine_Collection getTApresence()      Returns the current record's "TApresence" collection
- * @method TZprospection       setIndexzp()         Sets the current record's "indexzp" value
- * @method TZprospection       setCdNom()           Sets the current record's "cd_nom" value
- * @method TZprospection       setIdSecteurFp()     Sets the current record's "id_secteur_fp" value
- * @method TZprospection       setIdProtocole()     Sets the current record's "id_protocole" value
- * @method TZprospection       setIdLot()           Sets the current record's "id_lot" value
- * @method TZprospection       setIdOrganisme()     Sets the current record's "id_organisme" value
- * @method TZprospection       setDateobs()         Sets the current record's "dateobs" value
- * @method TZprospection       setTheGeom()         Sets the current record's "the_geom" value
- * @method TZprospection       setTheGeom3857()     Sets the current record's "the_geom_3857" value
- * @method TZprospection       setTheGeom2154()     Sets the current record's "the_geom_2154" value
- * @method TZprospection       setGeomMixte3857()   Sets the current record's "geom_mixte_3857" value
- * @method TZprospection       setGeomPoint3857()   Sets the current record's "geom_point_3857" value
- * @method TZprospection       setDateInsert()      Sets the current record's "date_insert" value
- * @method TZprospection       setDateUpdate()      Sets the current record's "date_update" value
- * @method TZprospection       setValidation()      Sets the current record's "validation" value
- * @method TZprospection       setTopoValid()       Sets the current record's "topo_valid" value
- * @method TZprospection       setErreurSignalee()  Sets the current record's "erreur_signalee" value
- * @method TZprospection       setSupprime()        Sets the current record's "supprime" value
- * @method TZprospection       setSaisieInitiale()  Sets the current record's "saisie_initiale" value
- * @method TZprospection       setTaxonSaisi()      Sets the current record's "taxon_saisi" value
- * @method TZprospection       setInsee()           Sets the current record's "insee" value
- * @method TZprospection       setSridDessin()      Sets the current record's "srid_dessin" value
- * @method TZprospection       setBibTaxonsFp()     Sets the current record's "BibTaxonsFp" value
- * @method TZprospection       setBibOrganismes()   Sets the current record's "BibOrganismes" value
- * @method TZprospection       setBibLots()         Sets the current record's "BibLots" value
- * @method TZprospection       setTProtocoles()     Sets the current record's "TProtocoles" value
- * @method TZprospection       setCorZpObs()        Sets the current record's "CorZpObs" collection
- * @method TZprospection       setTApresence()      Sets the current record's "TApresence" collection
+ * @method integer             get()                Returns the current record's "indexzp" value
+ * @method integer             get()                Returns the current record's "cd_nom" value
+ * @method integer             get()                Returns the current record's "id_secteur_fp" value
+ * @method integer             get()                Returns the current record's "id_protocole" value
+ * @method integer             get()                Returns the current record's "id_lot" value
+ * @method integer             get()                Returns the current record's "id_organisme" value
+ * @method date                get()                Returns the current record's "dateobs" value
+ * @method blob                get()                Returns the current record's "the_geom" value
+ * @method blob                get()                Returns the current record's "the_geom_3857" value
+ * @method blob                get()                Returns the current record's "the_geom_local" value
+ * @method blob                get()                Returns the current record's "geom_mixte_3857" value
+ * @method blob                get()                Returns the current record's "geom_point_3857" value
+ * @method timestamp           get()                Returns the current record's "date_insert" value
+ * @method timestamp           get()                Returns the current record's "date_update" value
+ * @method boolean             get()                Returns the current record's "validation" value
+ * @method boolean             get()                Returns the current record's "topo_valid" value
+ * @method boolean             get()                Returns the current record's "erreur_signalee" value
+ * @method boolean             get()                Returns the current record's "supprime" value
+ * @method string              get()                Returns the current record's "saisie_initiale" value
+ * @method string              get()                Returns the current record's "taxon_saisi" value
+ * @method string              get()                Returns the current record's "insee" value
+ * @method integer             get()                Returns the current record's "srid_dessin" value
+ * @method BibTaxonsFp         get()                Returns the current record's "BibTaxonsFp" value
+ * @method BibOrganismes       get()                Returns the current record's "BibOrganismes" value
+ * @method BibLots             get()                Returns the current record's "BibLots" value
+ * @method TProtocoles         get()                Returns the current record's "TProtocoles" value
+ * @method Doctrine_Collection get()                Returns the current record's "CorZpObs" collection
+ * @method Doctrine_Collection get()                Returns the current record's "TApresence" collection
+ * @method TZprospection       set()                Sets the current record's "indexzp" value
+ * @method TZprospection       set()                Sets the current record's "cd_nom" value
+ * @method TZprospection       set()                Sets the current record's "id_secteur_fp" value
+ * @method TZprospection       set()                Sets the current record's "id_protocole" value
+ * @method TZprospection       set()                Sets the current record's "id_lot" value
+ * @method TZprospection       set()                Sets the current record's "id_organisme" value
+ * @method TZprospection       set()                Sets the current record's "dateobs" value
+ * @method TZprospection       set()                Sets the current record's "the_geom" value
+ * @method TZprospection       set()                Sets the current record's "the_geom_3857" value
+ * @method TZprospection       set()                Sets the current record's "the_geom_local" value
+ * @method TZprospection       set()                Sets the current record's "geom_mixte_3857" value
+ * @method TZprospection       set()                Sets the current record's "geom_point_3857" value
+ * @method TZprospection       set()                Sets the current record's "date_insert" value
+ * @method TZprospection       set()                Sets the current record's "date_update" value
+ * @method TZprospection       set()                Sets the current record's "validation" value
+ * @method TZprospection       set()                Sets the current record's "topo_valid" value
+ * @method TZprospection       set()                Sets the current record's "erreur_signalee" value
+ * @method TZprospection       set()                Sets the current record's "supprime" value
+ * @method TZprospection       set()                Sets the current record's "saisie_initiale" value
+ * @method TZprospection       set()                Sets the current record's "taxon_saisi" value
+ * @method TZprospection       set()                Sets the current record's "insee" value
+ * @method TZprospection       set()                Sets the current record's "srid_dessin" value
+ * @method TZprospection       set()                Sets the current record's "BibTaxonsFp" value
+ * @method TZprospection       set()                Sets the current record's "BibOrganismes" value
+ * @method TZprospection       set()                Sets the current record's "BibLots" value
+ * @method TZprospection       set()                Sets the current record's "TProtocoles" value
+ * @method TZprospection       set()                Sets the current record's "CorZpObs" collection
+ * @method TZprospection       set()                Sets the current record's "TApresence" collection
  * 
  * @package    geonature
  * @subpackage model
@@ -143,7 +143,7 @@ abstract class BaseTZprospection extends sfDoctrineRecord
              'type' => 'blob',
              'length' => '',
              ));
-        $this->hasColumn('the_geom_2154', 'blob', null, array(
+        $this->hasColumn('the_geom_local', 'blob', null, array(
              'type' => 'blob',
              'length' => '',
              ));

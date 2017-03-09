@@ -10,14 +10,14 @@
  * @property Doctrine_Collection $TStationsBryo
  * @property Doctrine_Collection $TStationsFs
  * 
- * @method integer             getIdSupport()     Returns the current record's "id_support" value
- * @method string              getNomSupport()    Returns the current record's "nom_support" value
- * @method Doctrine_Collection getTStationsBryo() Returns the current record's "TStationsBryo" collection
- * @method Doctrine_Collection getTStationsFs()   Returns the current record's "TStationsFs" collection
- * @method BibSupports         setIdSupport()     Sets the current record's "id_support" value
- * @method BibSupports         setNomSupport()    Sets the current record's "nom_support" value
- * @method BibSupports         setTStationsBryo() Sets the current record's "TStationsBryo" collection
- * @method BibSupports         setTStationsFs()   Sets the current record's "TStationsFs" collection
+ * @method integer             get()              Returns the current record's "id_support" value
+ * @method string              get()              Returns the current record's "nom_support" value
+ * @method Doctrine_Collection get()              Returns the current record's "TStationsBryo" collection
+ * @method Doctrine_Collection get()              Returns the current record's "TStationsFs" collection
+ * @method BibSupports         set()              Sets the current record's "id_support" value
+ * @method BibSupports         set()              Sets the current record's "nom_support" value
+ * @method BibSupports         set()              Sets the current record's "TStationsBryo" collection
+ * @method BibSupports         set()              Sets the current record's "TStationsFs" collection
  * 
  * @package    geonature
  * @subpackage model

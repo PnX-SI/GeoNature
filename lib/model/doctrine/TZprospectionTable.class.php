@@ -177,11 +177,11 @@ class TZprospectionTable extends Doctrine_Table
             $query->addWhere('o.codeobs = ?', $params['id_role']);
         if (isset($params['commune']) && $params['commune']!=''){
             $geomcommune=self::getGeomCommune($params['commune']);
-            $query->addWhere("st_intersects(?,zp.the_geom_".sfGeonatureConfig::$srid_local.")=?",array($geomcommune,true));
+            $query->addWhere("st_intersects(?,zp.the_geom_local)=?",array($geomcommune,true));
         }
         if (isset($params['secteur']) && $params['secteur']!=''){
             $geomsecteur=self::getGeomSecteur($params['secteur']);
-            $query->addWhere("st_intersects(?,zp.the_geom_".sfGeonatureConfig::$srid_local.")=?",array($geomsecteur,true));
+            $query->addWhere("st_intersects(?,zp.the_geom_local)=?",array($geomsecteur,true));
         }
         if (isset($params['id_organisme']) && $params['id_organisme']!='')
             $query->addWhere('zp.id_organisme= ?', $params['id_organisme']);

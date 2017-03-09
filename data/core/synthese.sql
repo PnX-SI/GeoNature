@@ -333,7 +333,7 @@ IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
 		INSERT INTO synthese.cor_unite_synthese (id_synthese, cd_nom, dateobs, id_unite_geo)
 		SELECT s.id_synthese, s.cd_nom, s.dateobs,u.id_unite_geo 
         FROM synthese.syntheseff s, layers.l_unites_geo u
-		WHERE public.st_intersects(u.the_geom, s.the_geom_2154) 
+		WHERE public.st_intersects(u.the_geom, s.the_geom_local) 
 		AND s.id_synthese = new.id_synthese;
 	END IF;
 END IF;	
@@ -363,7 +363,7 @@ IF (TG_OP = 'INSERT') or (TG_OP = 'UPDATE') THEN
 	IF new.supprime = FALSE THEN
 		INSERT INTO synthese.cor_zonesstatut_synthese (id_zone,id_synthese)
 		SELECT z.id_zone,s.id_synthese FROM synthese.syntheseff s, layers.l_zonesstatut z 
-		WHERE public.st_intersects(z.the_geom, s.the_geom_2154)
+		WHERE public.st_intersects(z.the_geom, s.the_geom_local)
 		AND z.id_type IN(1,4,5,6,7,8,9,10,11) -- typologie limitée au coeur, reserve, natura2000 etc...
 		AND s.id_synthese = new.id_synthese;
 	END IF;
@@ -419,10 +419,10 @@ CREATE TABLE l_unites_geo (
     reserve character varying(80),
     surface_ha character varying(80),
     n2000 character varying(50),
-    the_geom public.geometry,
+    the_geom public.geometry(Geometry,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -448,10 +448,10 @@ CREATE TABLE l_aireadhesion (
     nouveaucha integer,
     count integer,
     length double precision,
-    the_geom public.geometry,
+    the_geom public.geometry(Linestring,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'LINESTRING'::text) OR (public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR the_geom IS NULL)),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -482,10 +482,10 @@ CREATE TABLE l_communes (
     saisie boolean,
     organisme boolean,
     id_secteur_fp integer,
-    the_geom public.geometry,
+    the_geom public.geometry(MultiPolygon,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 --
@@ -495,10 +495,10 @@ CREATE TABLE l_communes (
 CREATE TABLE l_isolines20 (
     gid integer NOT NULL,
     iso bigint,
-    the_geom public.geometry,
+    the_geom public.geometry(MultiLinestring,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTILINESTRING'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -528,10 +528,10 @@ ALTER SEQUENCE l_isolines20_gid_seq OWNED BY l_isolines20.gid;
 CREATE TABLE l_secteurs (
     nom_secteur character varying(50),
     id_secteur integer NOT NULL,
-    the_geom public.geometry,
+    the_geom public.geometry(MultiPolygon,2154),
     CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -544,10 +544,10 @@ CREATE TABLE l_zonesstatut (
     id_type integer NOT NULL,
     id_mnhn character varying(20),
     nomzone character varying(250),
-    the_geom public.geometry,
+    the_geom public.geometry(MultiPolygon,2154),
     --CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2) OR (public.st_ndims(the_geom) = 4)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
 );
 
 
@@ -656,19 +656,18 @@ CREATE TABLE syntheseff (
     date_update timestamp without time zone,
     derniere_action character(1),
     supprime boolean,
-    the_geom_point public.geometry,
+    the_geom_point public.geometry(Point,3857),
     id_lot integer,
     id_critere_synthese integer,
-    the_geom_3857 public.geometry,
+    the_geom_3857 public.geometry(Geometry,3857),
     effectif_total integer,
-    the_geom_2154 public.geometry,
+    the_geom_local public.geometry(Geometry,2154),
     diffusable boolean DEFAULT true,
-    CONSTRAINT enforce_dims_the_geom_2154 CHECK ((public.st_ndims(the_geom_2154) = 2)),
+    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
-    CONSTRAINT enforce_geotype_the_geom_2154 CHECK (((public.geometrytype(the_geom_2154) = 'POINT'::text) OR (the_geom_2154 IS NULL))),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
-    CONSTRAINT enforce_srid_the_geom_2154 CHECK ((public.st_srid(the_geom_2154) = 2154)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
 );
@@ -870,8 +869,8 @@ CREATE OR REPLACE VIEW v_export_sinp AS
     p.nom_programme,
     s.insee,
     s.altitude_retenue AS altitude,
-    public.st_x(public.st_transform(s.the_geom_point, 2154))::integer AS x,
-    public.st_y(public.st_transform(s.the_geom_point, 2154))::integer AS y,
+    public.st_x(public.st_transform(s.the_geom_point, MYLOCALSRID))::integer AS x,
+    public.st_y(public.st_transform(s.the_geom_point, MYLOCALSRID))::integer AS y,
     s.derniere_action,
     s.date_insert,
     s.date_update
@@ -1085,11 +1084,13 @@ CREATE INDEX fki_synthese_bib_proprietaires ON syntheseff USING btree (id_organi
 
 CREATE INDEX fki_synthese_bib_protocoles_id ON syntheseff USING btree (id_protocole);
 
+
 --
 -- Name: fki_synthese_insee_fkey; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
 --
 
 CREATE INDEX fki_synthese_insee_fkey ON syntheseff USING btree (insee);
+
 
 --
 -- Name: fki_syntheseff_bib_sources; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
@@ -1152,6 +1153,64 @@ CREATE INDEX i_synthese_id_lot ON syntheseff USING btree (id_lot);
 --
 
 CREATE INDEX index_gist_synthese_the_geom_point ON syntheseff USING gist (the_geom_point);
+
+
+--
+-- Name: index_gist_synthese_the_geom_2154; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_synthese_the_geom_2154 ON syntheseff USING gist (the_geom_local);
+
+
+--
+-- Name: index_gist_synthese_the_geom_3857; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_synthese_the_geom_3857 ON syntheseff USING gist (the_geom_3857);
+
+
+SET search_path = layers, pg_catalog;
+
+--
+-- Name: index_gist_l_communes_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_communes_the_geom ON l_communes USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_unites_geo_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_unites_geo_the_geom ON l_unites_geo USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_secteurs_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+
+CREATE INDEX index_gist_l_secteurs_the_geom ON l_secteurs USING gist (the_geom);
+
+--
+-- Name: index_gist_l_zonesstatut_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_zonesstatut_the_geom ON l_zonesstatut USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_aireadhesion_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_aireadhesion_the_geom ON l_aireadhesion USING gist (the_geom);
+
+
+--
+-- Name: index_gist_l_isolines20_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_gist_l_isolines20_the_geom ON l_isolines20 USING gist (the_geom);
 
 
 SET search_path = synthese, pg_catalog;

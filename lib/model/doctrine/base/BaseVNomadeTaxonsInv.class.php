@@ -17,28 +17,28 @@
  * @property CorUniteTaxonInv $CorUniteTaxonInv
  * @property TRelevesInv $TRelevesInv
  * 
- * @method integer          getIdNom()            Returns the current record's "id_nom" value
- * @method integer          getCdRef()            Returns the current record's "cd_ref" value
- * @method integer          getCdNom()            Returns the current record's "cd_nom" value
- * @method string           getNomLatin()         Returns the current record's "nom_latin" value
- * @method string           getNomFrancais()      Returns the current record's "nom_francais" value
- * @method integer          getIdClasse()         Returns the current record's "id_classe" value
- * @method boolean          getPatrimonial()      Returns the current record's "patrimonial" value
- * @method string           getMessage()          Returns the current record's "message" value
- * @method BibNoms          getBibNoms()          Returns the current record's "BibNoms" value
- * @method CorUniteTaxonInv getCorUniteTaxonInv() Returns the current record's "CorUniteTaxonInv" value
- * @method TRelevesInv      getTRelevesInv()      Returns the current record's "TRelevesInv" value
- * @method VNomadeTaxonsInv setIdNom()            Sets the current record's "id_nom" value
- * @method VNomadeTaxonsInv setCdRef()            Sets the current record's "cd_ref" value
- * @method VNomadeTaxonsInv setCdNom()            Sets the current record's "cd_nom" value
- * @method VNomadeTaxonsInv setNomLatin()         Sets the current record's "nom_latin" value
- * @method VNomadeTaxonsInv setNomFrancais()      Sets the current record's "nom_francais" value
- * @method VNomadeTaxonsInv setIdClasse()         Sets the current record's "id_classe" value
- * @method VNomadeTaxonsInv setPatrimonial()      Sets the current record's "patrimonial" value
- * @method VNomadeTaxonsInv setMessage()          Sets the current record's "message" value
- * @method VNomadeTaxonsInv setBibNoms()          Sets the current record's "BibNoms" value
- * @method VNomadeTaxonsInv setCorUniteTaxonInv() Sets the current record's "CorUniteTaxonInv" value
- * @method VNomadeTaxonsInv setTRelevesInv()      Sets the current record's "TRelevesInv" value
+ * @method integer          get()                 Returns the current record's "id_nom" value
+ * @method integer          get()                 Returns the current record's "cd_ref" value
+ * @method integer          get()                 Returns the current record's "cd_nom" value
+ * @method string           get()                 Returns the current record's "nom_latin" value
+ * @method string           get()                 Returns the current record's "nom_francais" value
+ * @method integer          get()                 Returns the current record's "id_classe" value
+ * @method boolean          get()                 Returns the current record's "patrimonial" value
+ * @method string           get()                 Returns the current record's "message" value
+ * @method BibNoms          get()                 Returns the current record's "BibNoms" value
+ * @method CorUniteTaxonInv get()                 Returns the current record's "CorUniteTaxonInv" value
+ * @method TRelevesInv      get()                 Returns the current record's "TRelevesInv" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "id_nom" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "cd_ref" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "cd_nom" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "nom_latin" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "nom_francais" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "id_classe" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "patrimonial" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "message" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "BibNoms" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "CorUniteTaxonInv" value
+ * @method VNomadeTaxonsInv set()                 Sets the current record's "TRelevesInv" value
  * 
  * @package    geonature
  * @subpackage model

@@ -13,20 +13,20 @@
  * @property Doctrine_Collection $CorCritereListe
  * @property Doctrine_Collection $TRelevesCf
  * 
- * @method integer             getIdCritereCf()         Returns the current record's "id_critere_cf" value
- * @method string              getCodeCritereCf()       Returns the current record's "code_critere_cf" value
- * @method string              getNomCritereCf()        Returns the current record's "nom_critere_cf" value
- * @method integer             getTriCf()               Returns the current record's "tri_cf" value
- * @method integer             getIdCritereSynthese()   Returns the current record's "id_critere_synthese" value
- * @method Doctrine_Collection getCorCritereListe()     Returns the current record's "CorCritereListe" collection
- * @method Doctrine_Collection getTRelevesCf()          Returns the current record's "TRelevesCf" collection
- * @method BibCriteresCf       setIdCritereCf()         Sets the current record's "id_critere_cf" value
- * @method BibCriteresCf       setCodeCritereCf()       Sets the current record's "code_critere_cf" value
- * @method BibCriteresCf       setNomCritereCf()        Sets the current record's "nom_critere_cf" value
- * @method BibCriteresCf       setTriCf()               Sets the current record's "tri_cf" value
- * @method BibCriteresCf       setIdCritereSynthese()   Sets the current record's "id_critere_synthese" value
- * @method BibCriteresCf       setCorCritereListe()     Sets the current record's "CorCritereListe" collection
- * @method BibCriteresCf       setTRelevesCf()          Sets the current record's "TRelevesCf" collection
+ * @method integer             get()                    Returns the current record's "id_critere_cf" value
+ * @method string              get()                    Returns the current record's "code_critere_cf" value
+ * @method string              get()                    Returns the current record's "nom_critere_cf" value
+ * @method integer             get()                    Returns the current record's "tri_cf" value
+ * @method integer             get()                    Returns the current record's "id_critere_synthese" value
+ * @method Doctrine_Collection get()                    Returns the current record's "CorCritereListe" collection
+ * @method Doctrine_Collection get()                    Returns the current record's "TRelevesCf" collection
+ * @method BibCriteresCf       set()                    Sets the current record's "id_critere_cf" value
+ * @method BibCriteresCf       set()                    Sets the current record's "code_critere_cf" value
+ * @method BibCriteresCf       set()                    Sets the current record's "nom_critere_cf" value
+ * @method BibCriteresCf       set()                    Sets the current record's "tri_cf" value
+ * @method BibCriteresCf       set()                    Sets the current record's "id_critere_synthese" value
+ * @method BibCriteresCf       set()                    Sets the current record's "CorCritereListe" collection
+ * @method BibCriteresCf       set()                    Sets the current record's "TRelevesCf" collection
  * 
  * @package    geonature
  * @subpackage model

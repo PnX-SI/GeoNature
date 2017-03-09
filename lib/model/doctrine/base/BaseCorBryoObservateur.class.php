@@ -10,14 +10,14 @@
  * @property TStationsBryo $TStationsBryo
  * @property TRoles $TRoles
  * 
- * @method integer            getIdStation()     Returns the current record's "id_station" value
- * @method integer            getIdRole()        Returns the current record's "id_role" value
- * @method TStationsBryo      getTStationsBryo() Returns the current record's "TStationsBryo" value
- * @method TRoles             getTRoles()        Returns the current record's "TRoles" value
- * @method CorBryoObservateur setIdStation()     Sets the current record's "id_station" value
- * @method CorBryoObservateur setIdRole()        Sets the current record's "id_role" value
- * @method CorBryoObservateur setTStationsBryo() Sets the current record's "TStationsBryo" value
- * @method CorBryoObservateur setTRoles()        Sets the current record's "TRoles" value
+ * @method integer            get()              Returns the current record's "id_station" value
+ * @method integer            get()              Returns the current record's "id_role" value
+ * @method TStationsBryo      get()              Returns the current record's "TStationsBryo" value
+ * @method TRoles             get()              Returns the current record's "TRoles" value
+ * @method CorBryoObservateur set()              Sets the current record's "id_station" value
+ * @method CorBryoObservateur set()              Sets the current record's "id_role" value
+ * @method CorBryoObservateur set()              Sets the current record's "TStationsBryo" value
+ * @method CorBryoObservateur set()              Sets the current record's "TRoles" value
  * 
  * @package    geonature
  * @subpackage model

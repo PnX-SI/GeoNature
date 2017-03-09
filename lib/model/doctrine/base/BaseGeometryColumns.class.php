@@ -13,20 +13,20 @@
  * @property integer $srid
  * @property string $type
  * 
- * @method string          getFTableCatalog()     Returns the current record's "f_table_catalog" value
- * @method string          getFTableSchema()      Returns the current record's "f_table_schema" value
- * @method string          getFTableName()        Returns the current record's "f_table_name" value
- * @method string          getFGeometryColumn()   Returns the current record's "f_geometry_column" value
- * @method integer         getCoordDimension()    Returns the current record's "coord_dimension" value
- * @method integer         getSrid()              Returns the current record's "srid" value
- * @method string          getType()              Returns the current record's "type" value
- * @method GeometryColumns setFTableCatalog()     Sets the current record's "f_table_catalog" value
- * @method GeometryColumns setFTableSchema()      Sets the current record's "f_table_schema" value
- * @method GeometryColumns setFTableName()        Sets the current record's "f_table_name" value
- * @method GeometryColumns setFGeometryColumn()   Sets the current record's "f_geometry_column" value
- * @method GeometryColumns setCoordDimension()    Sets the current record's "coord_dimension" value
- * @method GeometryColumns setSrid()              Sets the current record's "srid" value
- * @method GeometryColumns setType()              Sets the current record's "type" value
+ * @method string          get()                  Returns the current record's "f_table_catalog" value
+ * @method string          get()                  Returns the current record's "f_table_schema" value
+ * @method string          get()                  Returns the current record's "f_table_name" value
+ * @method string          get()                  Returns the current record's "f_geometry_column" value
+ * @method integer         get()                  Returns the current record's "coord_dimension" value
+ * @method integer         get()                  Returns the current record's "srid" value
+ * @method string          get()                  Returns the current record's "type" value
+ * @method GeometryColumns set()                  Sets the current record's "f_table_catalog" value
+ * @method GeometryColumns set()                  Sets the current record's "f_table_schema" value
+ * @method GeometryColumns set()                  Sets the current record's "f_table_name" value
+ * @method GeometryColumns set()                  Sets the current record's "f_geometry_column" value
+ * @method GeometryColumns set()                  Sets the current record's "coord_dimension" value
+ * @method GeometryColumns set()                  Sets the current record's "srid" value
+ * @method GeometryColumns set()                  Sets the current record's "type" value
  * 
  * @package    geonature
  * @subpackage model

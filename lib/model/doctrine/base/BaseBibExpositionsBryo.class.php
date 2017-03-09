@@ -10,14 +10,14 @@
  * @property integer $tri_exposition
  * @property Doctrine_Collection $TStationsBryo
  * 
- * @method string              getIdExposition()   Returns the current record's "id_exposition" value
- * @method string              getNomExposition()  Returns the current record's "nom_exposition" value
- * @method integer             getTriExposition()  Returns the current record's "tri_exposition" value
- * @method Doctrine_Collection getTStationsBryo()  Returns the current record's "TStationsBryo" collection
- * @method BibExpositionsBryo  setIdExposition()   Sets the current record's "id_exposition" value
- * @method BibExpositionsBryo  setNomExposition()  Sets the current record's "nom_exposition" value
- * @method BibExpositionsBryo  setTriExposition()  Sets the current record's "tri_exposition" value
- * @method BibExpositionsBryo  setTStationsBryo()  Sets the current record's "TStationsBryo" collection
+ * @method string              get()               Returns the current record's "id_exposition" value
+ * @method string              get()               Returns the current record's "nom_exposition" value
+ * @method integer             get()               Returns the current record's "tri_exposition" value
+ * @method Doctrine_Collection get()               Returns the current record's "TStationsBryo" collection
+ * @method BibExpositionsBryo  set()               Sets the current record's "id_exposition" value
+ * @method BibExpositionsBryo  set()               Sets the current record's "nom_exposition" value
+ * @method BibExpositionsBryo  set()               Sets the current record's "tri_exposition" value
+ * @method BibExpositionsBryo  set()               Sets the current record's "TStationsBryo" collection
  * 
  * @package    geonature
  * @subpackage model

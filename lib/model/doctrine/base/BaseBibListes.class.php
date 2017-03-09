@@ -12,18 +12,18 @@
  * @property Doctrine_Collection $CorCritereListe
  * @property Doctrine_Collection $CorNomListe
  * 
- * @method integer             getIdListe()         Returns the current record's "id_liste" value
- * @method string              getNomListe()        Returns the current record's "nom_liste" value
- * @method string              getDescListe()       Returns the current record's "desc_liste" value
- * @method string              getPicto()           Returns the current record's "picto" value
- * @method Doctrine_Collection getCorCritereListe() Returns the current record's "CorCritereListe" collection
- * @method Doctrine_Collection getCorNomListe()     Returns the current record's "CorNomListe" collection
- * @method BibListes           setIdListe()         Sets the current record's "id_liste" value
- * @method BibListes           setNomListe()        Sets the current record's "nom_liste" value
- * @method BibListes           setDescListe()       Sets the current record's "desc_liste" value
- * @method BibListes           setPicto()           Sets the current record's "picto" value
- * @method BibListes           setCorCritereListe() Sets the current record's "CorCritereListe" collection
- * @method BibListes           setCorNomListe()     Sets the current record's "CorNomListe" collection
+ * @method integer             get()                Returns the current record's "id_liste" value
+ * @method string              get()                Returns the current record's "nom_liste" value
+ * @method string              get()                Returns the current record's "desc_liste" value
+ * @method string              get()                Returns the current record's "picto" value
+ * @method Doctrine_Collection get()                Returns the current record's "CorCritereListe" collection
+ * @method Doctrine_Collection get()                Returns the current record's "CorNomListe" collection
+ * @method BibListes           set()                Sets the current record's "id_liste" value
+ * @method BibListes           set()                Sets the current record's "nom_liste" value
+ * @method BibListes           set()                Sets the current record's "desc_liste" value
+ * @method BibListes           set()                Sets the current record's "picto" value
+ * @method BibListes           set()                Sets the current record's "CorCritereListe" collection
+ * @method BibListes           set()                Sets the current record's "CorNomListe" collection
  * 
  * @package    geonature
  * @subpackage model

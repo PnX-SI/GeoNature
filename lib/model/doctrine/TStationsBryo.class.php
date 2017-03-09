@@ -14,10 +14,9 @@ class TStationsBryo extends BaseTStationsBryo
 {
     public function updateGeometry($geometry)
     {
-        $srid_local_export = sfGeonatureConfig::$srid_local;
         Doctrine_Query::create()
           ->update('TStationsBryo')
-          ->set('the_geom_'.$srid_local_export.'','multi(geometryFromText(?, '.$srid_local_export.'))', $geometry)
+          ->set('the_geom_local','multi(geometryFromText(?, '.sfGeonatureConfig::$srid_local.'))', $geometry)
           ->where('id_station=?', $this->getId_station())
           ->execute();
     }

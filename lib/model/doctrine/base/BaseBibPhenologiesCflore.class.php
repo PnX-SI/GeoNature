@@ -9,12 +9,12 @@
  * @property string $nom_phenologie_cflore
  * @property Doctrine_Collection $TRelevesCflore
  * 
- * @method integer              getIdPhenologieCflore()    Returns the current record's "id_phenologie_cflore" value
- * @method string               getNomPhenologieCflore()   Returns the current record's "nom_phenologie_cflore" value
- * @method Doctrine_Collection  getTRelevesCflore()        Returns the current record's "TRelevesCflore" collection
- * @method BibPhenologiesCflore setIdPhenologieCflore()    Sets the current record's "id_phenologie_cflore" value
- * @method BibPhenologiesCflore setNomPhenologieCflore()   Sets the current record's "nom_phenologie_cflore" value
- * @method BibPhenologiesCflore setTRelevesCflore()        Sets the current record's "TRelevesCflore" collection
+ * @method integer              get()                      Returns the current record's "id_phenologie_cflore" value
+ * @method string               get()                      Returns the current record's "nom_phenologie_cflore" value
+ * @method Doctrine_Collection  get()                      Returns the current record's "TRelevesCflore" collection
+ * @method BibPhenologiesCflore set()                      Sets the current record's "id_phenologie_cflore" value
+ * @method BibPhenologiesCflore set()                      Sets the current record's "nom_phenologie_cflore" value
+ * @method BibPhenologiesCflore set()                      Sets the current record's "TRelevesCflore" collection
  * 
  * @package    geonature
  * @subpackage model

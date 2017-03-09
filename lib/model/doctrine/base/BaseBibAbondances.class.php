@@ -9,12 +9,12 @@
  * @property string $nom_abondance
  * @property Doctrine_Collection $CorFsTaxon
  * 
- * @method string              getIdAbondance()   Returns the current record's "id_abondance" value
- * @method string              getNomAbondance()  Returns the current record's "nom_abondance" value
- * @method Doctrine_Collection getCorFsTaxon()    Returns the current record's "CorFsTaxon" collection
- * @method BibAbondances       setIdAbondance()   Sets the current record's "id_abondance" value
- * @method BibAbondances       setNomAbondance()  Sets the current record's "nom_abondance" value
- * @method BibAbondances       setCorFsTaxon()    Sets the current record's "CorFsTaxon" collection
+ * @method string              get()              Returns the current record's "id_abondance" value
+ * @method string              get()              Returns the current record's "nom_abondance" value
+ * @method Doctrine_Collection get()              Returns the current record's "CorFsTaxon" collection
+ * @method BibAbondances       set()              Sets the current record's "id_abondance" value
+ * @method BibAbondances       set()              Sets the current record's "nom_abondance" value
+ * @method BibAbondances       set()              Sets the current record's "CorFsTaxon" collection
  * 
  * @package    geonature
  * @subpackage model

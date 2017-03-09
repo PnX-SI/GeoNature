@@ -10,14 +10,14 @@
  * @property BibListes $BibListes
  * @property BibNoms $BibNoms
  * 
- * @method integer     getIdNom()     Returns the current record's "id_nom" value
- * @method integer     getIdListe()   Returns the current record's "id_liste" value
- * @method BibListes   getBibListes() Returns the current record's "BibListes" value
- * @method BibNoms     getBibNoms()   Returns the current record's "BibNoms" value
- * @method CorNomListe setIdNom()     Sets the current record's "id_nom" value
- * @method CorNomListe setIdListe()   Sets the current record's "id_liste" value
- * @method CorNomListe setBibListes() Sets the current record's "BibListes" value
- * @method CorNomListe setBibNoms()   Sets the current record's "BibNoms" value
+ * @method integer     get()          Returns the current record's "id_nom" value
+ * @method integer     get()          Returns the current record's "id_liste" value
+ * @method BibListes   get()          Returns the current record's "BibListes" value
+ * @method BibNoms     get()          Returns the current record's "BibNoms" value
+ * @method CorNomListe set()          Sets the current record's "id_nom" value
+ * @method CorNomListe set()          Sets the current record's "id_liste" value
+ * @method CorNomListe set()          Sets the current record's "BibListes" value
+ * @method CorNomListe set()          Sets the current record's "BibNoms" value
  * 
  * @package    geonature
  * @subpackage model
