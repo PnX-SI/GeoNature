@@ -10,7 +10,22 @@ Pré-requis
 
 - Un serveur Debian 8 (Ubuntu 16.04 LTS devrait fonctionner également - non testé)
 - Une clé IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur répond
-- TODO : proposer un sources.list valide et la procédure pour le mettre à jour
+- Disposer d'un fichier ``/etc/apt/sources.list`` adapté. Voici un fichier exemple permettant un bon fonctionnement sur debian 8 :
+
+::
+    
+    deb http://httpredir.debian.org/debian jessie main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie main contrib non-free
+    
+    deb http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    
+    deb http://security.debian.org/ jessie/updates main contrib non-free
+    deb-src http://security.debian.org/ jessie/updates main contrib non-free
+    
+    #Backports
+    deb http://http.debian.net/debian wheezy-backports main
+    
 
 Installation
 ------------
@@ -29,12 +44,12 @@ Après installation de l'OS avec OpenSSH server, placez vous dans le home de vot
     apt-get install -y sudo ca-certificates
     exit
     
-Récupérer les scripts d'installation
+Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
 
 ::  
     
-	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/install_all.ini
-	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/develop/docs/install_all/install_all.sh
+	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.ini
+	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.sh
 	chmod +x install_all.sh
 
 Mettez à jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas les fichiers .sh tant que vous n'avez pas totalement complété ce fichier.

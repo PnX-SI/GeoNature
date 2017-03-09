@@ -52,12 +52,12 @@ On commence la procédure en se connectant au serveur en SSH avec l'utilisateur 
         usermod -g www-data geonatureadmin
         usermod -a -G root geonatureadmin
 
-* Recupèrer le script d'installation global
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
  
   ::  
   
-        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/master/docs/install_all/install_all.ini
-        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/master/docs/install_all/install_all.sh
+        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.ini
+        wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.sh
 
 * Changer les droits du fichier d'installation pour pouvoir l'éxecuter
  
@@ -226,6 +226,9 @@ Idem avec les autres tables de geonaturedb qui contiennent quelques données exe
         INSERT INTO taxonomie.bib_noms (cd_nom,cd_ref,nom_francais) 
         SELECT DISTINCT	rnf.taxon_mnhn_id, t.cd_ref, t.nom_vern FROM serena_affo_pnr_vm.rnf_obse_geom rnf
         JOIN taxonomie.taxref t ON t.cd_nom = rnf.taxon_mnhn_id
+        -- pour éviter les doublons si des espèces sont déjà présentes dans bib_noms :
+        LEFT JOIN taxonomie.bib_noms tb ON tb.cd_nom = rnf.cd_nom
+        WHERE tb.cd_nom IS NULL
 
 Attention il semblerait que 39 taxons n'aient pas été intégrés, certainement car ils n'ont pas d'identifiant taxref ? A vérifier. 
 
