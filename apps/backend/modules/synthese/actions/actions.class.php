@@ -81,7 +81,7 @@ class syntheseActions extends sfGeonatureActions
     {
         $params = $request->getParams();
         $lesobs = SyntheseffTable::listXlsObs($params);
-        $csv_output = "id_synthese\tsource\tprogramme\tlot\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tnom_valide\tfamille\tordre\tclasse\tphylum\tregne\tcd_nom\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tx_local\ty_local\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source";
+        $csv_output = "id_synthese\tsource\tprogramme\tlot\torganisme\tdateobs\tobservateurs\ttaxon_francais\ttaxon_latin\tnom_valide\tfamille\tordre\tclasse\tphylum\tregne\tcd_nom\tcd_ref\tpatrimonial\tnom_critere_synthese\teffectif_total\tremarques\tsecteur\tcommune\tinsee\taltitude\tx_local\ty_local\tx_WGS84\ty_WGS84\ttype_objet\tgeometrie_source\tdiffusable";
         $csv_output .= "\n";
         foreach ($lesobs as $obs)
         {  
@@ -116,7 +116,8 @@ class syntheseActions extends sfGeonatureActions
             $y_wgs84 = $obs['y_wgs84'];
             $type_objet = 'point';
             $geom_type = ($obs['geom_type']=='ST_Point')?'point':'maille';
-            $csv_output .= "$id_synthese\t$nom_source\t$nom_programme\t$nom_lot\t$organisme\t$dateobs\t$observateurs\t$taxon_francais\t$taxon_latin\t$nom_valide\t$famille\t$ordre\t$classe\t$phylum\t$regne\t$cd_nom\t$cd_ref\t$patrimonial\t$nom_critere_synthese\t$effectif_total\t$remarques\t$secteur\t$commune\t$insee\t$altitude\t$x_local\t$y_local\t$x_wgs84\t$y_wgs84\t$type_objet\t$geom_type\n";
+            $diffusable = ($obs['diffusable']=='t')?'oui':'non';
+            $csv_output .= "$id_synthese\t$nom_source\t$nom_programme\t$nom_lot\t$organisme\t$dateobs\t$observateurs\t$taxon_francais\t$taxon_latin\t$nom_valide\t$famille\t$ordre\t$classe\t$phylum\t$regne\t$cd_nom\t$cd_ref\t$patrimonial\t$nom_critere_synthese\t$effectif_total\t$remarques\t$secteur\t$commune\t$insee\t$altitude\t$x_local\t$y_local\t$x_wgs84\t$y_wgs84\t$type_objet\t$geom_type\t$diffusable\n";
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=synthese_observations_".date("Y-m-d_His").".xls");

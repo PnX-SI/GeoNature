@@ -775,6 +775,7 @@ CREATE TABLE t_releves_inv (
     determinateur character varying(255),
     supprime boolean DEFAULT false NOT NULL,
     prelevement boolean DEFAULT false NOT NULL,
+    diffusable boolean DEFAULT true,
     gid integer NOT NULL
 );
 

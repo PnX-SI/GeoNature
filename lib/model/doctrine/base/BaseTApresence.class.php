@@ -22,6 +22,7 @@
  * @property boolean $topo_valid
  * @property boolean $erreur_signalee
  * @property boolean $supprime
+ * @property boolean $diffusable
  * @property string $insee
  * @property integer $nb_transects_frequence
  * @property integer $nb_points_frequence
@@ -57,6 +58,7 @@
  * @method boolean                 get()                          Returns the current record's "topo_valid" value
  * @method boolean                 get()                          Returns the current record's "erreur_signalee" value
  * @method boolean                 get()                          Returns the current record's "supprime" value
+ * @method boolean                 get()                          Returns the current record's "diffusable" value
  * @method string                  get()                          Returns the current record's "insee" value
  * @method integer                 get()                          Returns the current record's "nb_transects_frequence" value
  * @method integer                 get()                          Returns the current record's "nb_points_frequence" value
@@ -91,6 +93,7 @@
  * @method TApresence              set()                          Sets the current record's "topo_valid" value
  * @method TApresence              set()                          Sets the current record's "erreur_signalee" value
  * @method TApresence              set()                          Sets the current record's "supprime" value
+ * @method TApresence              set()                          Sets the current record's "diffusable" value
  * @method TApresence              set()                          Sets the current record's "insee" value
  * @method TApresence              set()                          Sets the current record's "nb_transects_frequence" value
  * @method TApresence              set()                          Sets the current record's "nb_points_frequence" value
@@ -195,6 +198,11 @@ abstract class BaseTApresence extends sfDoctrineRecord
         $this->hasColumn('supprime', 'boolean', 1, array(
              'type' => 'boolean',
              'notnull' => true,
+             'length' => 1,
+             ));
+        $this->hasColumn('diffusable', 'boolean', 1, array(
+             'type' => 'boolean',
+             'notnull' => false,
              'length' => 1,
              ));
         $this->hasColumn('insee', 'string', 5, array(

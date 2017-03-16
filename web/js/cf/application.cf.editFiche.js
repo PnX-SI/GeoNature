@@ -419,7 +419,8 @@ application.cf.editFiche = function() {
                 ,{name: 'cd_ref_origine', type: 'integer'}
                 ,{name: 'denombrement', type: 'integer'}
                 ,{name: 'id_classe', type: 'integer'}
-                ,{name: 'patrimonial'}
+                ,{name: 'patrimonial', type: 'boolean'}
+                ,{name: 'diffusable', type: 'boolean'}
             ];
             
         myProxyReleves = new Ext.data.HttpProxy({
@@ -487,6 +488,7 @@ application.cf.editFiche = function() {
             ,{id:'taxonsaisi',header: "Taxons saisis", width: 160, sortable: true, dataIndex: 'nom_taxon_saisi'}
             ,{header: "cd_ref", width: 135, sortable: true, dataIndex: 'cd_ref_origine',hidden:true}
             ,{header: "Patrimoniale", width: 50, sortable: true, renderer:isPatri,dataIndex: 'patrimonial',hidden:true}
+            ,{header: "Diffusable", width: 50, sortable: true,dataIndex: 'diffusable',hidden:true}
             ,{
                 xtype : 'actioncolumn'
                 ,sortable : false
@@ -734,11 +736,13 @@ application.cf.editFiche = function() {
                 ,denombrement:5
                 ,id_classe:null
                 ,patrimonial:false
+                ,diffusable:true
             }));
             Ext.getCmp('fieldset-critere').collapse();
             Ext.getCmp('fieldset-denombrement').collapse();
             Ext.getCmp('fieldset-commentaire').collapse();
             Ext.getCmp('fieldset-determinateur').collapse();
+            Ext.getCmp('fieldset-diffusable').collapse();
             Ext.getCmp('grid-taxons').getSelectionModel().selectLastRow(false);
             manageValidationTaxon(false); 
         };
@@ -792,6 +796,7 @@ application.cf.editFiche = function() {
                 ,'id_classe'
                 ,'denombrement'
                 ,'patrimonial'
+                ,'diffusable'
                 ,'message'
                 ,'couleur'
                 ,'nb_obs'
@@ -1184,6 +1189,8 @@ application.cf.editFiche = function() {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('commentaire',null);
                                     Ext.getCmp('ta-fiche-determinateur').setValue('');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',null);
+                                    Ext.getCmp('cb-diffusable').setValue(true);
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',true);
                                     manageValidationTaxon(isValidTaxon(record));//puisque le critère est obligatoire et qu'on vient de le vider
                                     manageDenombrementFields(record.data.denombrement,true);
                                     Ext.getCmp('fieldset-critere').expand();
@@ -1235,10 +1242,14 @@ application.cf.editFiche = function() {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('commentaire',null);
                                     Ext.getCmp('ta-fiche-determinateur').setValue('');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',null);
+                                    Ext.getCmp('cb-diffusable').setValue(true);
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',true);
                                     Ext.getCmp('fieldset-critere').collapse();
                                     Ext.getCmp('fieldset-denombrement').collapse();
                                     Ext.getCmp('fieldset-commentaire').collapse();
                                     Ext.getCmp('fieldset-determinateur').collapse();
+                                    Ext.getCmp('fieldset-prelevement').collapse();
+                                    Ext.getCmp('fieldset-diffusable').collapse();
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
                             }
@@ -1501,6 +1512,39 @@ application.cf.editFiche = function() {
                             }
                         }
                     ]
+                },{
+                    xtype:'fieldset'
+                    ,id:'fieldset-diffusable'
+                    ,columnWidth: 1
+                    ,title: 'Diffusion possible'
+                    ,collapsible: true
+                    ,collapsed: true
+                    ,autoHeight:true
+                    ,anchor:'100%'
+                    ,items :[{
+                        id:'cb-diffusable'
+                        ,xtype:'checkbox'
+                        ,fieldLabel: 'Diffusable'
+                        ,name: 'diffusable'
+                        ,inputValue: true
+                        ,checked: true                                   
+                        ,listeners: {
+                            check: function(checkbox,checked) {
+                                if(checked){
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',true);
+                                }
+                                else{
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',false);
+                                }
+                            }
+                            ,render: function(c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: 'Cochez si vous jugez que l\'observation présente un caractère sensible et ne doit pas être diffusée.'
+                                });
+                            }
+                        }                                
+                    }]
                 }
                 ,validTaxonButton
                 ,{xtype: 'label',id: 'error-message',cls: 'errormsg',text:''}
@@ -1539,12 +1583,14 @@ application.cf.editFiche = function() {
                                         Ext.getCmp('fieldset-denombrement').collapse();
                                         Ext.getCmp('fieldset-commentaire').collapse();
                                         Ext.getCmp('fieldset-determinateur').collapse();
+                                        Ext.getCmp('fieldset-diffusable').collapse();
                                     }
                                     else{Ext.getCmp('fieldset-critere').expand();}
                                     if(Ext.getCmp('combo-fiche-critere').getValue()==null){
                                         Ext.getCmp('fieldset-denombrement').collapse();
                                         Ext.getCmp('fieldset-commentaire').collapse();
                                         Ext.getCmp('fieldset-determinateur').collapse();
+                                        Ext.getCmp('fieldset-diffusable').collapse();
                                     }
                                     else{
                                         Ext.getCmp('fieldset-denombrement').expand();
@@ -2088,6 +2134,7 @@ application.cf.editFiche = function() {
                     ,denombrement:5
                     ,id_classe:null
                     ,patrimonial:false
+                    ,diffusable:true
                 }));
                 Ext.getCmp('grid-taxons').getSelectionModel().selectRow(0);
                 Ext.ux.Toast.msg('Information !', 'Commencez par pointer l\'observation sur la carte, puis saisissez les informations à droite');

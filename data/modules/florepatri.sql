@@ -761,6 +761,7 @@ CREATE TABLE t_apresence (
     topo_valid boolean,
     supprime boolean DEFAULT false NOT NULL,
     erreur_signalee boolean DEFAULT false,
+    diffusable boolean DEFAULT true,
     altitude_sig integer DEFAULT 0,
     altitude_retenue integer DEFAULT 0,
     insee character(5),

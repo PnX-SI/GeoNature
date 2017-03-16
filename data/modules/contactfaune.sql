@@ -322,7 +322,8 @@ BEGIN
 		the_geom_point,
 		id_lot,
 		id_critere_synthese,
-		effectif_total
+		effectif_total,
+		diffusable
 	)
 	VALUES(
 	idsource,
@@ -345,7 +346,8 @@ BEGIN
 	fiche.the_geom_3857,
 	fiche.id_lot,
 	criteresynthese,
-	new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai
+	new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai,
+	new.diffusable
 	);
 	RETURN NEW; 			
 END;
@@ -537,7 +539,8 @@ BEGIN
 			derniere_action = 'u',
 			supprime = new.supprime,
 			id_critere_synthese = criteresynthese,
-			effectif_total = new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai
+			effectif_total = new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai,
+			diffusable = new.diffusable
 		WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem); -- Ici on utilise le OLD id_releve_cf pour être sur 
 		--qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cf
 		--le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cf
@@ -802,6 +805,7 @@ CREATE TABLE t_releves_cf (
     determinateur character varying(255),
     supprime boolean DEFAULT false NOT NULL,
     prelevement boolean DEFAULT false NOT NULL,
+    diffusable boolean DEFAULT true,
     gid integer NOT NULL
 );
 

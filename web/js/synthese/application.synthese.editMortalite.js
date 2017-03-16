@@ -373,6 +373,7 @@ application.synthese.editMortalite = function() {
                 ,{name: 'id_classe', type: 'integer'}
                 ,{name: 'prelevement', type: 'boolean'}
                 ,{name: 'determinateur', type: 'string'}
+                ,{name: 'diffusable', type: 'boolean'}
             ];
             
         myProxyReleves = new Ext.data.HttpProxy({
@@ -420,6 +421,7 @@ application.synthese.editMortalite = function() {
             ,{id:'sexeageinfo',header: "Sexe et âge de l'individu", width: 160, sortable: true, dataIndex: 'sexeageinfo'}
             ,{header: "cd_ref", width: 135, sortable: true, dataIndex: 'cd_ref_origine',hidden:true}
             ,{header: "Prélèvement", width: 35, sortable: true, dataIndex: 'prelevement',hidden:true}
+            ,{header: "Diffusable", width: 35, sortable: true, dataIndex: 'diffusable',hidden:true}
             ,{
                 xtype : 'actioncolumn'
                 ,sortable : false
@@ -629,11 +631,13 @@ application.synthese.editMortalite = function() {
                 ,id_classe:null
                 ,prelevement:false
                 ,determinateur:''
+                ,diffusable:true
             }));
             Ext.getCmp('fieldset-sexeage').collapse();
             Ext.getCmp('fieldset-prelevement').collapse();
             Ext.getCmp('fieldset-commentaire').collapse();
             Ext.getCmp('fieldset-determinateur').collapse();
+            Ext.getCmp('fieldset-diffusable').collapse();
             Ext.getCmp('grid-taxons').getSelectionModel().selectLastRow(false);
             manageValidationTaxon(false); 
         };
@@ -724,6 +728,7 @@ application.synthese.editMortalite = function() {
                 ,{name:'nom_francais',sortType: Ext.data.SortTypes.asAccentuatedString}
                 ,'id_classe'
                 ,'denombrement'
+                ,'diffusable'
                 ,'message'
             ]
             ,sortInfo: {
@@ -992,10 +997,12 @@ application.synthese.editMortalite = function() {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo','Saisie en cours');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeage','');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('prelevement',false);
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',true);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('commentaire',null);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',null);
                                     resetSexeAgeValue();
                                     Ext.getCmp('cb-prelevement').setValue(false);
+                                    Ext.getCmp('cb-diffusable').setValue(true);
                                     Ext.getCmp('ta-fiche-commentaire').validate();
                                     Ext.getCmp('ta-fiche-commentaire').setValue('');
                                     Ext.getCmp('ta-fiche-determinateur').setValue('');
@@ -1026,10 +1033,12 @@ application.synthese.editMortalite = function() {
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeageinfo','Saisie en cours');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('sexeage','');
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('prelevement',false);
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',true);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('commentaire',null);
                                     Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('determinateur',null);
                                     resetSexeAgeValue();
                                     Ext.getCmp('cb-prelevement').setValue(false);
+                                    Ext.getCmp('cb-diffusable').setValue(true);
                                     Ext.getCmp('ta-fiche-commentaire').validate();
                                     Ext.getCmp('ta-fiche-commentaire').setValue('');
                                     Ext.getCmp('ta-fiche-determinateur').setValue('');
@@ -1038,6 +1047,7 @@ application.synthese.editMortalite = function() {
                                     Ext.getCmp('fieldset-prelevement').collapse();
                                     Ext.getCmp('fieldset-commentaire').collapse();
                                     Ext.getCmp('fieldset-determinateur').collapse();
+                                    Ext.getCmp('fieldset-diffusable').collapse();
                                     manageValidationTaxon(isValidTaxon(Ext.getCmp('grid-taxons').getSelectionModel().getSelected()));
                                 }
                             }
@@ -1319,6 +1329,39 @@ application.synthese.editMortalite = function() {
                             }
                         }
                     ]
+                },{
+                    xtype:'fieldset'
+                    ,id:'fieldset-diffusable'
+                    ,columnWidth: 1
+                    ,title: 'Diffusion possible'
+                    ,collapsible: true
+                    ,collapsed: true
+                    ,autoHeight:true
+                    ,anchor:'100%'
+                    ,items :[{
+                        id:'cb-diffusable'
+                        ,xtype:'checkbox'
+                        ,fieldLabel: 'Diffusable'
+                        ,name: 'diffusable'
+                        ,inputValue: true
+                        ,checked: true                                   
+                        ,listeners: {
+                            check: function(checkbox,checked) {
+                                if(checked){
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',true);
+                                }
+                                else{
+                                    Ext.getCmp('grid-taxons').getSelectionModel().getSelected().set('diffusable',false);
+                                }
+                            }
+                            ,render: function(c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: 'Cochez si vous jugez que l\'observation présente un caractère sensible et ne doit pas être diffusée.'
+                                });
+                            }
+                        }                                
+                    }]
                 }
                 ,validTaxonButton
                 ,{xtype: 'label',id: 'error-message',cls: 'errormsg',text:''}
@@ -1356,6 +1399,7 @@ application.synthese.editMortalite = function() {
                                         Ext.getCmp('fieldset-prelevement').collapse();
                                         Ext.getCmp('fieldset-commentaire').collapse();
                                         Ext.getCmp('fieldset-determinateur').collapse();
+                                        Ext.getCmp('fieldset-diffusable').collapse();
                                     }
                                     else{Ext.getCmp('fieldset-sexeage').expand();}
                                 }

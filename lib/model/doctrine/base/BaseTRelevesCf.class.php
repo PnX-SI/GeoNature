@@ -22,6 +22,7 @@
  * @property string $determinateur
  * @property boolean $supprime
  * @property boolean $prelevement
+ * @property boolean $diffusable
  * @property BibCriteresCf $BibCriteresCf
  * @property BibNoms $BibNoms
  * @property TFichesCf $TFichesCf
@@ -44,6 +45,7 @@
  * @method string              get()                   Returns the current record's "determinateur" value
  * @method boolean             get()                   Returns the current record's "supprime" value
  * @method boolean             get()                   Returns the current record's "prelevement" value
+ * @method boolean             get()                   Returns the current record's "diffusable" value
  * @method BibCriteresCf       get()                   Returns the current record's "BibCriteresCf" value
  * @method BibNoms             get()                   Returns the current record's "BibNoms" value
  * @method TFichesCf           get()                   Returns the current record's "TFichesCf" value
@@ -65,6 +67,7 @@
  * @method TRelevesCf          set()                   Sets the current record's "determinateur" value
  * @method TRelevesCf          set()                   Sets the current record's "supprime" value
  * @method TRelevesCf          set()                   Sets the current record's "prelevement" value
+ * @method TRelevesCf          set()                   Sets the current record's "diffusable" value
  * @method TRelevesCf          set()                   Sets the current record's "BibCriteresCf" value
  * @method TRelevesCf          set()                   Sets the current record's "BibNoms" value
  * @method TRelevesCf          set()                   Sets the current record's "TFichesCf" value
@@ -149,6 +152,11 @@ abstract class BaseTRelevesCf extends sfDoctrineRecord
         $this->hasColumn('prelevement', 'boolean', 1, array(
              'type' => 'boolean',
              'notnull' => true,
+             'length' => 1,
+             ));
+        $this->hasColumn('diffusable', 'boolean', 1, array(
+             'type' => 'boolean',
+             'notnull' => false,
              'length' => 1,
              ));
     }

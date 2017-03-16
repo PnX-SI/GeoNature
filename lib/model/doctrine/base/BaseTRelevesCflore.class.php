@@ -17,6 +17,7 @@
  * @property string $determinateur
  * @property boolean $supprime
  * @property boolean $herbier
+ * @property boolean $diffusable
  * @property BibAbondancesCflore $BibAbondancesCflore
  * @property BibPhenologiesCflore $BibPhenologiesCflore
  * @property BibNoms $BibNoms
@@ -35,6 +36,7 @@
  * @method string               get()                     Returns the current record's "determinateur" value
  * @method boolean              get()                     Returns the current record's "supprime" value
  * @method boolean              get()                     Returns the current record's "herbier" value
+ * @method boolean              get()                     Returns the current record's "diffusable" value
  * @method BibAbondancesCflore  get()                     Returns the current record's "BibAbondancesCflore" value
  * @method BibPhenologiesCflore get()                     Returns the current record's "BibPhenologiesCflore" value
  * @method BibNoms              get()                     Returns the current record's "BibNoms" value
@@ -52,6 +54,7 @@
  * @method TRelevesCflore       set()                     Sets the current record's "determinateur" value
  * @method TRelevesCflore       set()                     Sets the current record's "supprime" value
  * @method TRelevesCflore       set()                     Sets the current record's "herbier" value
+ * @method TRelevesCflore       set()                     Sets the current record's "diffusable" value
  * @method TRelevesCflore       set()                     Sets the current record's "BibAbondancesCflore" value
  * @method TRelevesCflore       set()                     Sets the current record's "BibPhenologiesCflore" value
  * @method TRelevesCflore       set()                     Sets the current record's "BibNoms" value
@@ -117,6 +120,11 @@ abstract class BaseTRelevesCflore extends sfDoctrineRecord
         $this->hasColumn('herbier', 'boolean', 1, array(
              'type' => 'boolean',
              'notnull' => true,
+             'length' => 1,
+             ));
+        $this->hasColumn('diffusable', 'boolean', 1, array(
+             'type' => 'boolean',
+             'notnull' => false,
              'length' => 1,
              ));
     }

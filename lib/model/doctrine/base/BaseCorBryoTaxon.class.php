@@ -10,6 +10,7 @@
  * @property string $id_abondance
  * @property string $taxon_saisi
  * @property boolean $supprime
+ * @property boolean $diffusable
  * @property TStationsBryo $TStationsBryo
  * @property Taxref $Taxref
  * @property BibAbondancesBryo $BibAbondancesBryo
@@ -19,6 +20,7 @@
  * @method string            get()                  Returns the current record's "id_abondance" value
  * @method string            get()                  Returns the current record's "taxon_saisi" value
  * @method boolean           get()                  Returns the current record's "supprime" value
+ * @method boolean           get()                  Returns the current record's "diffusable" value
  * @method TStationsBryo     get()                  Returns the current record's "TStationsBryo" value
  * @method Taxref            get()                  Returns the current record's "Taxref" value
  * @method BibAbondancesBryo get()                  Returns the current record's "BibAbondancesBryo" value
@@ -27,6 +29,7 @@
  * @method CorBryoTaxon      set()                  Sets the current record's "id_abondance" value
  * @method CorBryoTaxon      set()                  Sets the current record's "taxon_saisi" value
  * @method CorBryoTaxon      set()                  Sets the current record's "supprime" value
+ * @method CorBryoTaxon      set()                  Sets the current record's "diffusable" value
  * @method CorBryoTaxon      set()                  Sets the current record's "TStationsBryo" value
  * @method CorBryoTaxon      set()                  Sets the current record's "Taxref" value
  * @method CorBryoTaxon      set()                  Sets the current record's "BibAbondancesBryo" value
@@ -60,6 +63,10 @@ abstract class BaseCorBryoTaxon extends sfDoctrineRecord
              'length' => 150,
              ));
         $this->hasColumn('supprime', 'boolean', 1, array(
+             'type' => 'boolean',
+             'length' => 1,
+             ));
+        $this->hasColumn('diffusable', 'boolean', 1, array(
              'type' => 'boolean',
              'length' => 1,
              ));
