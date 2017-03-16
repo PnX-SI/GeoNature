@@ -19,6 +19,7 @@
  * @property string $determinateur
  * @property boolean $supprime
  * @property boolean $prelevement
+ * @property boolean $diffusable
  * @property BibCriteresInv $BibCriteresInv
  * @property BibNoms $BibNoms
  * @property TFichesInv $TFichesCf
@@ -38,6 +39,7 @@
  * @method string              get()                 Returns the current record's "determinateur" value
  * @method boolean             get()                 Returns the current record's "supprime" value
  * @method boolean             get()                 Returns the current record's "prelevement" value
+ * @method boolean             get()                 Returns the current record's "diffusable" value
  * @method BibCriteresInv      get()                 Returns the current record's "BibCriteresInv" value
  * @method BibNoms             get()                 Returns the current record's "BibNoms" value
  * @method TFichesInv          get()                 Returns the current record's "TFichesCf" value
@@ -56,6 +58,7 @@
  * @method TRelevesInv         set()                 Sets the current record's "determinateur" value
  * @method TRelevesInv         set()                 Sets the current record's "supprime" value
  * @method TRelevesInv         set()                 Sets the current record's "prelevement" value
+ * @method TRelevesInv         set()                 Sets the current record's "diffusable" value
  * @method TRelevesInv         set()                 Sets the current record's "BibCriteresInv" value
  * @method TRelevesInv         set()                 Sets the current record's "BibNoms" value
  * @method TRelevesInv         set()                 Sets the current record's "TFichesCf" value
@@ -128,6 +131,11 @@ abstract class BaseTRelevesInv extends sfDoctrineRecord
         $this->hasColumn('prelevement', 'boolean', 1, array(
              'type' => 'boolean',
              'notnull' => true,
+             'length' => 1,
+             ));
+        $this->hasColumn('diffusable', 'boolean', 1, array(
+             'type' => 'boolean',
+             'notnull' => false,
              'length' => 1,
              ));
     }

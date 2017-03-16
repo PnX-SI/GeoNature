@@ -10,7 +10,7 @@ class TRelevesCfTable extends Doctrine_Table
     }
     public static function getListRelevesCf($id_cf)
     {
-        $select = 'r.id_releve_cf, r.id_cf, r.id_nom, r.id_critere_cf, r.am, r.af, r.ai, r.na, r.jeune, r.yearling, r.sai, r.nom_taxon_saisi, r.prelevement, r.commentaire, r.determinateur,'.
+        $select = 'r.id_releve_cf, r.id_cf, r.id_nom, r.id_critere_cf, r.am, r.af, r.ai, r.na, r.jeune, r.yearling, r.sai, r.nom_taxon_saisi, r.prelevement, r.commentaire, r.determinateur, r.diffusable,'.
             'v.cd_ref, r.cd_ref_origine,v.nom_francais,v.nom_latin, v.patrimonial, v.id_classe, v.denombrement,v.message';
         $releves = Doctrine_Query::create()
           ->select($select)

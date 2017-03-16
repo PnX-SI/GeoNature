@@ -186,6 +186,7 @@ application.synthese.search = function() {
                 ,{name: 'nomcommune'}
                 ,{name: 'edit_ok',type:'boolean'}
                 ,{name: 'onscreen',type: 'string',defaultValue:'yes'}
+                ,{name: 'diffusable',type: 'string'}
             ])
             ,sortInfo: {
                 field: 'id_synthese'
@@ -263,6 +264,7 @@ application.synthese.search = function() {
                 ,'<tpl if="nomcommune"><p>Sur la commune de {nomcommune}</p></tpl> '
                 ,'<tpl if="code_fiche_source"><p>Code fiche : {code_fiche_source}</p></tpl> '
                 ,'<tpl if="remarques"><p><b>Remarques : </b>{remarques}</p></tpl>' 
+                ,'<tpl if="diffusable"><p><b>Diffusable : </b>{diffusable}</p></tpl>' 
             )
             ,new Ext.XTemplate(
                 '<p style="color:grey;"><b>'
@@ -613,6 +615,7 @@ application.synthese.search = function() {
                 ,{header: "Programme", width: 90, sortable: true, dataIndex: 'nom_programme'}
                 ,{header: "Observateurs",width: 90,  sortable: true, dataIndex: 'observateurs',hidden: true}
                 ,{header: "Patri", width: 30, sortable: true, dataIndex: 'patrimonial',hidden: true}
+                ,{header: "Diffusable", width: 50, sortable: true, dataIndex: 'diffusable',hidden: true}
                 ,{
                     xtype : 'actioncolumn'
                     ,sortable : false

@@ -13,6 +13,7 @@
  * @property string $sup_4m
  * @property string $taxon_saisi
  * @property boolean $supprime
+ * @property boolean $diffusable
  * @property TStationsFs $TStationsFs
  * @property Taxref $Taxref
  * @property BibAbondances $BibAbondancesHerb
@@ -28,6 +29,7 @@
  * @method string        get()                   Returns the current record's "sup_4m" value
  * @method string        get()                   Returns the current record's "taxon_saisi" value
  * @method boolean       get()                   Returns the current record's "supprime" value
+ * @method boolean       get()                   Returns the current record's "diffusable" value
  * @method TStationsFs   get()                   Returns the current record's "TStationsFs" value
  * @method Taxref        get()                   Returns the current record's "Taxref" value
  * @method BibAbondances get()                   Returns the current record's "BibAbondancesHerb" value
@@ -42,6 +44,7 @@
  * @method CorFsTaxon    set()                   Sets the current record's "sup_4m" value
  * @method CorFsTaxon    set()                   Sets the current record's "taxon_saisi" value
  * @method CorFsTaxon    set()                   Sets the current record's "supprime" value
+ * @method CorFsTaxon    set()                   Sets the current record's "diffusable" value
  * @method CorFsTaxon    set()                   Sets the current record's "TStationsFs" value
  * @method CorFsTaxon    set()                   Sets the current record's "Taxref" value
  * @method CorFsTaxon    set()                   Sets the current record's "BibAbondancesHerb" value
@@ -90,6 +93,10 @@ abstract class BaseCorFsTaxon extends sfDoctrineRecord
              'length' => 150,
              ));
         $this->hasColumn('supprime', 'boolean', 1, array(
+             'type' => 'boolean',
+             'length' => 1,
+             ));
+        $this->hasColumn('diffusable', 'boolean', 1, array(
              'type' => 'boolean',
              'length' => 1,
              ));

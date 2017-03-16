@@ -515,6 +515,7 @@ CREATE TABLE cor_fs_taxon (
     sup_4m character(1),
     taxon_saisi character varying(150),
     supprime boolean DEFAULT false,
+    diffusable boolean DEFAULT true,
     id_station_cd_nom integer NOT NULL,
     gid integer DEFAULT nextval('cor_fs_taxon_gid_seq'::regclass) NOT NULL
 );

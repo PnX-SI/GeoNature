@@ -206,7 +206,7 @@ class SyntheseffTable extends Doctrine_Table
             $dbh = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
             $sql = "
                 SELECT DISTINCT synt.id_synthese, synt.id_source, synt.id_fiche_source, synt.code_fiche_source, synt.id_organisme, id_protocole, synt.id_lot, l.nom_lot, p.nom_programme,
-                    synt.insee, synt.dateobs, synt.observateurs, synt.altitude_retenue AS altitude, synt.remarques, synt.cd_nom, synt.effectif_total,
+                    synt.insee, synt.dateobs, synt.observateurs, synt.altitude_retenue AS altitude, synt.remarques, synt.cd_nom, synt.effectif_total, synt.diffusable,
                     txr.lb_nom AS taxon_latin, 
                     CASE
                         WHEN n.nom_francais is null THEN txr.lb_nom
@@ -248,6 +248,7 @@ class SyntheseffTable extends Doctrine_Table
             foreach ($lesobs as $key => &$obs)
             {
                 $geometry = $obs['g'];
+                $obs['diffusable'] = ($obs['diffusable']==TRUE OR !isset($obs['diffusable']))?'oui':'non';
                 $obs['patrimonial'] = ($obs['patrimonial']=='t')?true:false;
                 $obs['no_patrimonial'] = ($obs['patrimonial']=='t')?false:true;
                 $obs['protection_stricte'] = ($obs['protection_stricte']=='t')?true:false;
@@ -365,7 +366,7 @@ class SyntheseffTable extends Doctrine_Table
                 END AS protection_stricte,
                 txr.famille, txr.ordre, txr.classe, txr.phylum, txr.regne, synt.cd_nom, txr.cd_ref, txr.nom_valide, 
                 c.nom_critere_synthese, synt.effectif_total, synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,
-                synt.id_synthese,
+                synt.id_synthese, synt.diffusable,
                 CAST(st_x(st_centroid(synt.the_geom_local)) AS int) AS x_local, CAST(st_y(st_centroid(synt.the_geom_local)) AS int) AS y_local,                    
                 st_x(st_centroid(st_transform(synt.the_geom_3857,4326))) AS x_wgs84, st_y(st_centroid(st_transform(synt.the_geom_3857,4326))) AS y_wgs84,
                 st_geometrytype(synt.the_geom_3857) AS geom_type"
@@ -455,7 +456,7 @@ class SyntheseffTable extends Doctrine_Table
                         WHEN 'non' THEN FALSE
                         ELSE NULL
                     END AS protection_stricte,";
-            $sql .= "txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref ,txr.nom_valide, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese,";
+            $sql .= "txr.famille, txr.ordre, txr.classe, synt.cd_nom, txr.cd_ref ,txr.nom_valide, synt.effectif_total AS eff_total,synt.id_synthese AS idsynthese, synt.diffusable,";
             $sql .= "c.nom_critere_synthese AS critere,synt.remarques, org.nom_organisme AS organisme, p.nom_programme, l.nom_lot, s.nom_source,";
             if($typ=='centroid'){
                 $sql .= "ST_transform(synt.the_geom_point,".$srid_local_export.") AS the_geom,

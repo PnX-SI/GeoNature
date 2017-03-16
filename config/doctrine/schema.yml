@@ -457,6 +457,7 @@ CorBryoTaxon:
       type: string(1)
     taxon_saisi: string(150)
     supprime: boolean(1)
+    diffusable: boolean(1)
   relations:
     TStationsBryo:
       class: TStationsBryo
@@ -547,6 +548,7 @@ CorFsTaxon:
       type: string(1)
     taxon_saisi: string(150)
     supprime: boolean(1)
+    diffusable: boolean(1)
   relations:
     TStationsFs:
       class: TStationsFs
@@ -1160,6 +1162,9 @@ TApresence:
     supprime: 
       type: boolean(1)
       notnull: true
+    diffusable: 
+      type: boolean(1)
+      notnull: false
     insee: string(5)
     nb_transects_frequence: integer
     nb_points_frequence: integer(4)
@@ -1464,7 +1469,10 @@ TRelevesCf:
       notnull: true
     prelevement: 
       type: boolean(1)
-      notnull: true   
+      notnull: true
+    diffusable: 
+      type: boolean(1)
+      notnull: false  
   relations:
     BibCriteresCf:
       class: BibCriteresCf
@@ -1501,7 +1509,10 @@ TRelevesCflore:
       notnull: true
     herbier: 
       type: boolean(1)
-      notnull: true   
+      notnull: true
+    diffusable: 
+      type: boolean(1)
+      notnull: false   
   relations:
     BibAbondancesCflore:
       class: BibAbondancesCflore
@@ -1545,7 +1556,10 @@ TRelevesInv:
       notnull: true
     prelevement: 
       type: boolean(1)
-      notnull: true   
+      notnull: true
+    diffusable: 
+      type: boolean(1)
+      notnull: false   
   relations:
     BibCriteresInv:
       class: BibCriteresInv

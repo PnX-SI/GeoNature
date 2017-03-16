@@ -353,7 +353,8 @@ BEGIN
     the_geom_point,
     id_lot,
     id_critere_synthese,
-    effectif_total
+    effectif_total,
+    diffusable
   )
   VALUES(
   idsource,
@@ -376,7 +377,8 @@ BEGIN
   fiche.the_geom_3857,
   fiche.id_lot,
   criteresynthese,
-  new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai
+  new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai,
+  new.diffusable
   );
   RETURN NEW;       
 END;
@@ -2727,3 +2729,70 @@ CREATE OR REPLACE VIEW contactinv.v_nomade_unites_geo_inv AS
     l_unites_geo.id_unite_geo
    FROM layers.l_unites_geo
   GROUP BY l_unites_geo.the_geom, l_unites_geo.id_unite_geo;
+
+
+----------------------------------------------
+--Ajout de la notion de diffusion-------------
+----------------------------------------------
+ALTER TABLE contactfaune.t_releves_cf ADD COLUMN diffusable boolean DEFAULT true;
+ALTER TABLE contactinv.t_releves_inv ADD COLUMN diffusable boolean DEFAULT true;
+ALTER TABLE contactflore.t_releves_cflore ADD COLUMN diffusable boolean DEFAULT true;
+ALTER TABLE florestation.cor_fs_taxon ADD COLUMN diffusable boolean DEFAULT true;
+ALTER TABLE bryophytes.cor_bryo_taxon ADD COLUMN diffusable boolean DEFAULT true;
+ALTER TABLE florepatri.t_apresence ADD COLUMN diffusable boolean DEFAULT true;
+
+-- Function: contactfaune.synthese_update_releve_cf()
+CREATE OR REPLACE FUNCTION contactfaune.synthese_update_releve_cf()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    test integer;
+    criteresynthese integer;
+    sources RECORD;
+    idsourcem integer;
+    idsourcecf integer;
+    cdnom integer;
+    nbreleves integer;
+BEGIN
+    
+  --on doit boucler pour récupérer le id_source car il y en a 2 possibles (cf et mortalité) pour le même schéma
+        FOR sources IN SELECT id_source, url  FROM synthese.bib_sources WHERE db_schema='contactfaune' AND db_field = 'id_releve_cf' LOOP
+      IF sources.url = 'cf' THEN
+          idsourcecf = sources.id_source;
+      ELSIF sources.url = 'mortalite' THEN
+          idsourcem = sources.id_source;
+      END IF;
+        END LOOP;
+    --récup du cd_nom du taxon
+  SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
+  --test si on a bien l'enregistrement dans la table syntheseff avant de le mettre à jour
+  SELECT INTO test id_fiche_source FROM synthese.syntheseff WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem);
+  IF test IS NOT NULL THEN
+    SELECT INTO criteresynthese id_critere_synthese FROM contactfaune.bib_criteres_cf WHERE id_critere_cf = new.id_critere_cf;
+
+    --mise à jour de l'enregistrement correspondant dans syntheseff
+    UPDATE synthese.syntheseff SET
+      id_fiche_source = new.id_releve_cf,
+      code_fiche_source = 'f'||new.id_cf||'-r'||new.id_releve_cf,
+      cd_nom = cdnom,
+      remarques = new.commentaire,
+      determinateur = new.determinateur,
+      derniere_action = 'u',
+      supprime = new.supprime,
+      id_critere_synthese = criteresynthese,
+      effectif_total = new.am+new.af+new.ai+new.na+new.jeune+new.yearling+new.sai,
+      diffusable = new.diffusable
+    WHERE id_fiche_source = old.id_releve_cf::text AND (id_source = idsourcecf OR id_source = idsourcem); -- Ici on utilise le OLD id_releve_cf pour être sur 
+    --qu'il existe dans la table synthese (cas improbable où on changerait la pk de la table t_releves_cf
+    --le trigger met à jour avec le NEW --> SET id_fiche_source = new.id_releve_cf
+  END IF;
+  -- SUPPRESSION (supprime = true) DE LA FICHE S'IL N'Y A PLUS DE RELEVE (supprime = false)
+  SELECT INTO nbreleves count(*) FROM contactfaune.t_releves_cf WHERE id_cf = new.id_cf AND supprime = false;
+  IF nbreleves < 1 THEN
+    UPDATE contactfaune.t_fiches_cf SET supprime = true WHERE id_cf = new.id_cf;
+  END IF;
+  RETURN NEW;       
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;

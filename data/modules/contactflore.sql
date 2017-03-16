@@ -719,6 +719,7 @@ CREATE TABLE t_releves_cflore (
     determinateur character varying(255),
     supprime boolean DEFAULT false NOT NULL,
     herbier boolean DEFAULT false NOT NULL,
+    diffusable boolean DEFAULT true,
     gid integer NOT NULL,
     validite_cflore boolean
 );

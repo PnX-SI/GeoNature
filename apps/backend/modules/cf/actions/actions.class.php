@@ -146,6 +146,7 @@ class cfActions extends sfGeonatureActions
                 $commentaire = $array_taxon[13];
                 $determinateur = $array_taxon[14];
                 $cd_ref_origine = $array_taxon[15];
+                $diffusable = $array_taxon[19];
                 //on récupère l'enregistrement ou on le crée
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){
@@ -169,6 +170,7 @@ class cfActions extends sfGeonatureActions
                 $taxon->commentaire = str_replace('<!>',',',$commentaire);
                 $taxon->determinateur = str_replace('<!>',',',$determinateur);
                 $taxon->cd_ref_origine = $cd_ref_origine;
+                $taxon->diffusable = $diffusable;
                 $taxon->save();
             }
             return true;
@@ -297,6 +299,7 @@ class cfActions extends sfGeonatureActions
                 $cd_ref_origine = $array_taxon[15];
                 $prelevement = $array_taxon[18];
                 $determinateur = $array_taxon[19];
+                $diffusable = $array_taxon[20];
                 //on récupère l'enregistrement ou on le crée
                 // $taxon = new TRelevesCf();
                 if($id_releve_cf==null OR $id_releve_cf==''){
@@ -321,6 +324,7 @@ class cfActions extends sfGeonatureActions
                 $taxon->determinateur = str_replace('<!>',',',$determinateur);
                 $taxon->cd_ref_origine = $cd_ref_origine;
                 $taxon->prelevement = $prelevement;
+                $taxon->diffusable = $diffusable;
                 $taxon->save();
             }
             // return $this->renderText("{success: true,data:".print_r($taxon)."}");
