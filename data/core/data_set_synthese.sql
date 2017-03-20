@@ -22,7 +22,7 @@ INSERT INTO cor_role_fiche_cf VALUES (1, 1);
 INSERT INTO cor_role_fiche_cf VALUES (4, 1);
 
 INSERT INTO t_releves_cf VALUES (1, 1, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'test','qq''un', false, false, true, 1);
-INSERT INTO t_releves_cf VALUES (2, 2, 704, 2, 0, 0, 0, 0, 1, 0, 0, 67111, 'Ablette', 'very bad ablette cévenole','Amandine', false, true,,true, 7);
+INSERT INTO t_releves_cf VALUES (2, 2, 704, 2, 0, 0, 0, 0, 1, 0, 0, 67111, 'Ablette', 'very bad ablette cévenole','Amandine', false, true, true, 7);
 INSERT INTO t_releves_cf VALUES (3, 3, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'la plus haute ablette du monde c''est dans les écrins','Gil', false, false, true, 6);
 INSERT INTO t_releves_cf VALUES (4, 1, 704, 36, 0, 0, 2, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, true, 4);
 INSERT INTO t_releves_cf VALUES (5, 4, 704, 37, 0, 1, 0, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, true, 5);
