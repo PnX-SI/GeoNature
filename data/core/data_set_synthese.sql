@@ -21,11 +21,11 @@ INSERT INTO cor_role_fiche_cf VALUES (3, 1);
 INSERT INTO cor_role_fiche_cf VALUES (1, 1);
 INSERT INTO cor_role_fiche_cf VALUES (4, 1);
 
-INSERT INTO t_releves_cf VALUES (1, 1, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'test','qq''un', false, false, 1);
-INSERT INTO t_releves_cf VALUES (2, 2, 704, 2, 0, 0, 0, 0, 1, 0, 0, 67111, 'Ablette', 'very bad ablette cévenole','Amandine', false, true, 7);
-INSERT INTO t_releves_cf VALUES (3, 3, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'la plus haute ablette du monde c''est dans les écrins','Gil', false, false, 6);
-INSERT INTO t_releves_cf VALUES (4, 1, 704, 36, 0, 0, 2, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, 4);
-INSERT INTO t_releves_cf VALUES (5, 4, 704, 37, 0, 1, 0, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, 5);
+INSERT INTO t_releves_cf VALUES (1, 1, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'test','qq''un', false, false, 1,true);
+INSERT INTO t_releves_cf VALUES (2, 2, 704, 2, 0, 0, 0, 0, 1, 0, 0, 67111, 'Ablette', 'very bad ablette cévenole','Amandine', false, true, 7,true);
+INSERT INTO t_releves_cf VALUES (3, 3, 704, 35, 1, 0, 0, 0, 0, 0, 0, 67111, 'Ablette', 'la plus haute ablette du monde c''est dans les écrins','Gil', false, false, 6,true);
+INSERT INTO t_releves_cf VALUES (4, 1, 704, 36, 0, 0, 2, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, 4,true);
+INSERT INTO t_releves_cf VALUES (5, 4, 704, 37, 0, 1, 0, 0, 0, 0, 0, 67111, 'Ablette', '','déterminateur test', false, false, 5,true);
 
 SELECT pg_catalog.setval('t_releves_cf_gid_seq', 6, true);
 
@@ -38,8 +38,8 @@ INSERT INTO t_fiches_inv VALUES (2, NULL, '2014-12-11', 10, 1047, 0, 1047, '2014
 INSERT INTO cor_role_fiche_inv VALUES (1, 1);
 INSERT INTO cor_role_fiche_inv VALUES (2, 1);
 
-INSERT INTO t_releves_inv VALUES (1, 1, 2804, 3, 0, 0, 1, 0, 11165, 'Coccinella septempunctata', 'test','Gil', false, false, 1);
-INSERT INTO t_releves_inv VALUES (2, 2, 816, 8, 100, 0, 0, 0, 18437, 'Ecrevisse à pieds blancs', 'test','Amandine', false, false, 2);
+INSERT INTO t_releves_inv VALUES (1, 1, 2804, 3, 0, 0, 1, 0, 11165, 'Coccinella septempunctata', 'test','Gil', false, false, 1,true);
+INSERT INTO t_releves_inv VALUES (2, 2, 816, 8, 100, 0, 0, 0, 18437, 'Ecrevisse à pieds blancs', 'test','Amandine', false, false, 2,true);
 
 SELECT pg_catalog.setval('t_releves_inv_gid_seq', 3, true);
 
