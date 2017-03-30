@@ -12,7 +12,8 @@ Prérequis
 
 * Ressources minimum serveur :
 
-Un serveur disposant d'au moins de 1 Go RAM et de 10 Go d'espace disque.
+Un serveur disposant d'au moins de 1 Go RAM et de 20-25 Go d'espace disque (une sauvegarde complète des bases et des données produites écrasée chaque jour).
+Prévoir environ 100 Go pour stratégie de sauvegarde plus complète.
 
 
 * Disposer d'un utilisateur linux nommé ``synthese`` (par exemple). Dans ce guide, le répertoire de cet utilisateur est dans ``/home/synthese``
