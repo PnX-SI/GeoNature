@@ -10,7 +10,38 @@ Pré-requis
 
 - Un serveur Debian 8 (Ubuntu 16.04 LTS devrait fonctionner également - non testé)
 - Une clé IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur répond
-- Disposer d'un fichier ``/etc/apt/sources.list`` adapté. Voici un fichier exemple permettant un bon fonctionnement sur debian 8 :
+
+Installation
+------------
+
+:notes:
+
+    Votre utilisateur linux doit disposer des droits administrateur avec sudo. Voir https://www.privateinternetaccess.com/forum/discussion/18063/debian-8-1-0-jessie-sudo-fix-not-installed-by-default
+
+Après installation de l'OS avec OpenSSH server, créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler avec le super-utilisateur ``root``. Donnez-lui des droits sudo pour qu'il puisse faire les taches d'administration :
+
+::
+    
+    adduser geonatureadmin sudo
+
+L’ajouter aussi aux groupes ``www-data`` et ``root``
+
+::
+    
+    usermod -g www-data geonatureadmin
+    usermod -a -G root geonatureadmin
+
+Reconnectez-vous au serveur en SSH avec votre utilisateur (``geonatureadmin`` dans notre cas) pour ne pas travailler avec le super-utilisateur ``root``. 
+
+Adapter votre fichier de sources de paquets ``/etc/apt/sources.list``.
+
+Pour cela, modifier le fichier
+
+::
+    
+    sudo nano /etc/apt/sources.list
+    
+Supprimer tout son contenu pour le remplacer par cet exemple permettant un bon fonctionnement sur Debian 8 :
 
 ::
     
@@ -26,25 +57,16 @@ Pré-requis
     #Backports
     deb http://http.debian.net/debian wheezy-backports main
     
+Enregistrer et fermer le fichier.
 
-Installation
-------------
-
-:notes:
-
-    Votre utilisateur linux doit disposer des droits administrateur avec sudo. Voir https://www.privateinternetaccess.com/forum/discussion/18063/debian-8-1-0-jessie-sudo-fix-not-installed-by-default
-
-
-Après installation de l'OS avec OpenSSH server, placez vous dans le home de votre utilisateur et entrez les commandes suivantes :
+Placez vous dans le répertoire ``home`` de votre utilisateur et entrez les commandes suivantes :
 
 ::
     
-    su
-    apt-get update
-    apt-get install -y sudo ca-certificates
-    exit
+    sudo apt-get update
+    sudo apt-get install -y sudo ca-certificates
     
-Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
+Récupérer les scripts d'installation (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
 
 ::  
     
@@ -60,7 +82,7 @@ TODO : détailler la procédure pour l'atlas avec :
 * mettre à jour les shapes territoire 
 * relancer le install.db de l'atlas.
 
-Lancez ensuite l'installation des applications:
+Lancez ensuite l'installation des applications :
  
 ::  
   
