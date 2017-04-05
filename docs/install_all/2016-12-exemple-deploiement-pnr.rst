@@ -16,7 +16,7 @@ Il se base sur les versions 1.8.0 de `GeoNature <https://github.com/PnEcrins/Geo
 
 Vérifiez les évolutions de ces applications et de leurs procédures si vous utilisez des versions plus récentes. 
 
-Documentation du script de déploiement global : https://github.com/PnEcrins/GeoNature/tree/master/docs/install_all
+Suivre la documentation de référence du script de déploiement global : https://github.com/PnEcrins/GeoNature/tree/master/docs/install_all
 
 Voir aussi http://geonature.fr et la documentation de chaque projet pour des informations complémentaires et plus détaillées sur chaque outil.
 
