@@ -54,13 +54,15 @@ then
 
     # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
     echo "Grant..."
+    cp data/grant.sql /tmp/grant.sql
+    sudo sed -i "s/MYPGUSER/$user_pg/g" /tmp/synthese.sql
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "Grant" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f data/grant.sql &>> log/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f /tmp/grant.sql &>> log/install_db.log
         
     echo "Récupération et création du schéma utilisateurs..."
     echo "" &>> log/install_db.log
