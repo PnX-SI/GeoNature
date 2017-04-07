@@ -137,10 +137,10 @@ Fonctionnement général
 - Celui-ci contient le référentiel taxref complet mais il permet d'y selectionner les taxons utilisés, d'y ajouter des informations et de créer des listes de taxons pour les différentes applications
 - ``bib_noms`` contient la liste de tous les taxons utilisés par la structure. Cette table s'alimente dans TaxHub en ajoutant des taxons depuis l'onglet TaxRef.
 - ``bib_attributs`` permet d'associer des informations complémentaires à chaque taxon. Chaque structure peut créer autant d'attributs qu'elle souhaite.
-- Certains attributs sont obligatoires au fonctionnement de GeoNature. ``Saisie`` permet de définir si il est possible de saisir le taxon. ``Patrimonialité`` et ``protégé`` sont requis pour la synthese
+- Certains attributs sont obligatoires au fonctionnement de GeoNature. ``Patrimonialité`` et ``protégé`` sont requis pour la synthese
 - Les attributs ``Description``, ``Commentaire``, ``Milieu`` et ``Chorologie`` sont utilisés par l'atlas
 - ``cor_taxon_attribut`` permet de stocker les valeurs des attributs pour chaque taxon
-- ``bib_listes`` et ``cor_nom_liste`` permettent de créer des listes de taxons pour les différents protocoles. Il est important de mettre chaque taxon dans les bonnes listes pour qu'ils soit possible de les saisir dans les protocoles correspondants
+- ``bib_listes`` et ``cor_nom_liste`` permettent de créer des listes de taxons pour les différents protocoles. Il est important de mettre chaque taxon dans les bonnes listes pour qu'il soit possible de les saisir dans les protocoles correspondants
 - ``t_medias`` contient les medias locaux (chemin) ou distants (URL) de chaque taxon pour l'atlas. Il peut s'agir de photos, audios, vidéos ou d'articles
 
 **GEONATURE**
@@ -249,6 +249,10 @@ Vérifier aussi la version de TaxRef utilisée pour les données sources et la v
         INSERT INTO taxonomie.cor_taxon_attribut (id_attribut,valeur_attribut,cd_ref)
         SELECT 3,'oui',n.cd_ref FROM taxonomie.bib_noms n
         GROUP BY n.cd_ref;
+
+:notes:
+
+    Depuis la version 1.8.3, cet attribut n'est plus utilisé et a été remplacé par une liste : https://github.com/PnEcrins/GeoNature/releases/tag/1.8.3
 
 * Mettre tous les taxons à non protégés et non patrimonial par défaut (dans ``taxonomie.cor_taxon_attribut``) car cette info est attendue par la synthèse. A retravailler au cas par cas ou à partir des infos présentes dans TaxRef
  
