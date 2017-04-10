@@ -2,9 +2,16 @@
 CHANGELOG
 =========
 
-1.8.4dev (unreleased)
+1.8.5dev (unreleased)
 ----------------------
 
+1.8.4 (2017-04-10)
+----------------------
+
+**Corrections**
+
+* Correction du script d'installation globale (``install_all``) si l'utilisateur de BDD par défaut a été renommé (``data/grant.sql``)
+* Correction de la création des vues qui remontent la liste des taxons dans les 3 contacts
 
 1.8.3 (2017-02-23)
 ----------------------
