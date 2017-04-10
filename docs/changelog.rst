@@ -2,7 +2,6 @@
 CHANGELOG
 =========
 
-
 1.9.0dev (unreleased)
 ----------------------
 
@@ -24,6 +23,15 @@ Vous pouvez passer directement d'une 1.7.X à la 1.9.0, en prenant en compte les
 
 Si vous migrez depuis la version 1.8.3, éxécutez le fichier SQL ``data/update_1.8.3to1.9.0.sql``. Comme GeoNature ne fonctionne jusque là que pour des structures de métropole, il est basé sur le fait que le champ ``the_geom_local`` reste en lambert 93 (2154). Assurer vous que le paramètre ``$srid_local`` dans ``lib/sfGeonatureConfig.php`` est égal à ``2154``.
 ATTENTION : ce script sql renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la base geonature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapater/compléter le script. Vous pouvez vous inspirer de son contenu.
+
+
+1.8.4 (2017-04-10)
+----------------------
+
+**Corrections**
+
+* Correction du script d'installation globale (``install_all``) si l'utilisateur de BDD par défaut a été renommé (``data/grant.sql``)
+* Correction de la création des vues qui remontent la liste des taxons dans les 3 contacts
 
 
 1.8.3 (2017-02-23)
@@ -80,6 +88,7 @@ Si vous migrez depuis la version 1.8.1, éxécutez le fichier ``data/update_1.8.
 Vous pouvez passer directement d'une 1.7.X à la 1.8.1, en prenant en compte les notes des différentes versions intermédiaires. 
 
 Si vous migrez depuis la version 1.8.0, éxécutez le fichier ``data/update_1.8to1.8.1.sql``
+
 
 1.8.0 (2016-12-14)
 ------------------
@@ -180,12 +189,14 @@ Rappel : commencez par suivre la procédure classique de mise à jour. http://ge
 
 * Vous pouvez passer directement de la version 1.6.0 à la 1.7.2 mais en vous référant aux notes de version de la 1.7.0.
 
+
 1.7.1 (2016-04-27)
 ----------------------
 
 **Corrections de bug**
 
 * Ajout des listes flore manquantes dans le script de mise à jour ``data/update_1.6to1.7.sql``.
+
 
 1.7.0 (2016-04-24)
 ----------------------
