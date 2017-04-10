@@ -612,7 +612,11 @@ Réactiver les autres triggers.
 Compléments GeoNature
 ---------------------
 
-Le "Où ?" de la synthèse n'est pas encore très au point. La liste des communes ne remonte pas car elles ne sont pas rattachées à un secteur (Généricité à revoir). 
+Dans la Synthèse, pour que la liste des communes s'affiche, ils faut passer leur champs ``layers.l_communes.saisie`` à true. 
+
+::  
+  
+        UPDATE layers.l_communes SET saisie = true
 
 Toutes les réserves et les sites Natura 2000 de France remontent. A nettoyer si besoin dans la base pour ne garder que celles du territoire étudié.
 
