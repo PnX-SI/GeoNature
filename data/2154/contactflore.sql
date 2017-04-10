@@ -834,7 +834,7 @@ CREATE OR REPLACE VIEW v_nomade_taxons_flore AS
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom 
      JOIN v_nomade_classes g ON g.id_classe = cnl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom
-     JOIN cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+     JOIN public.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
    WHERE n.id_nom IN(SELECT id_nom FROM taxonomie.cor_nom_liste WHERE id_liste = 500)
    ORDER BY n.id_nom, taxonomie.find_cdref(tx.cd_nom), tx.lb_nom, n.nom_francais, g.id_classe, f2.bool, m.texte_message_cflore;
 
