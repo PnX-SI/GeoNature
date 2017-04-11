@@ -1,8 +1,0 @@
-all:
-  is_secure: true
-add:
-  is_secure: false
-update:
-  is_secure: false
-delete:
-  is_secure: false
