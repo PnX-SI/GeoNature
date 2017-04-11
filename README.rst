@@ -1,5 +1,5 @@
-GeoNature
-=========
+GeoNature2
+==========
 
 Application de saisie et de synthèse des observations faune et flore.
 
@@ -12,14 +12,13 @@ Il est possible d'ajouter d'autres protocoles dans GeoNature. Pour cela suivez l
 Technologies
 ------------
 
-- Langages : PHP, HTML, JS, CSS
+- Langages : Python, HTML, JS, CSS
 - BDD : PostgreSQL, PostGIS
 - Serveur : Debian ou Ubuntu
-- Framework PHP : Symfony
-- Framework JS : ExtJS
-- Framework carto : GeoExtJS, MapFish et Openlayers
-- Serveur carto : MapServer
-- Fonds rasters : Geoportail, OpenStreetMap, Google Maps, WMS
+- Framework Python : Flask
+- Framework JS : Angularjs
+- Framework carto : 
+- Fonds rasters : Geoportail
 
 Présentation
 ------------
@@ -110,13 +109,13 @@ Pour cela GeoNature s'appuie depuis sa version 1.4.0 sur l'application TaxHub et
 Installation
 ------------
 
-Consulter la documentation :  `<http://geonature.rtfd.org>`_
+TODO_
 
 License
 -------
 
 * OpenSource - BSD
-* Copyright (c) 2014-2015 - Parc National des Écrins - Parc national des Cévennes
+* Copyright (c) 2017 - Parc National des Écrins - Parc national des Cévennes
 
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
