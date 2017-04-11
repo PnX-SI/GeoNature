@@ -27,31 +27,7 @@ Voir le chapitre sur l'installation du serveur (http://geonature.readthedocs.org
 
 Configuration Apache
 ====================
-* Adaptation des chemins de l'application pour la configuration Apache
-
-Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synthese.conf`` et ``apache/wms.conf`` et adapter les chemins à ceux de votre serveur. Pour Apache 2.4 et supérieur, le répertoire de publication web par défaut est ``/var/www/html/geonature`` ; à changer dans ``apache/synthese.conf``.
-
-* Prise en compte de la configuration Apache requises pour Symfony (avant Apache2.4) :
- 
-  ::  
-  
-	sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
-	sudo apache2ctl restart
-        
-* Prise en compte de la configuration Apache requises pour Symfony Apache 2.4 et supérieur :
- 
-  ::  
-  
-	sudo sh -c 'echo "IncludeOptional /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
-	sudo apache2ctl restart
-        
-* Pour les utilisateurs d'Apache 2.4 (par défaut dans Debian 8), installer perl et cgi
- 
-  ::  
-  
-    	sudo apt-get install libapache2-mod-perl2
-	sudo a2enmod cgi
-	sudo apache2ctl restart
+TODO
 	
 
 Configuration de la base de données PostgreSQL
@@ -109,25 +85,13 @@ Configuration de l'application
   
         ./install_app.sh
 
-* Adapter le contenu du fichier ``web/js/config.js``
 
-	- Changer ``mon-domaine.fr`` par votre propre URL (wms_uri, host_uri)
-    
-* Adapter le contenu du fichier ``web/js/configmap.js``
-
-    - Renseigner votre clé API IGN Geoportail, 
-    - l'extent max de l'affichage cartographique, le centrage initial, le nombre maximum de niveau de zoom de la carte, la résolution maximale (en lien avec le paramètre précédent et le tableau ``ign_resolutions``)
-    - Renseigner le système de coordonnées et la bbox des coordonnées utilisables pour le positionnement du pointage par coordonnées fournies (GPS)
-	
-* Adapter le contenu du fichier ``lib/sfGeonatureConfig.php``. Il indique notamment les identifiants de chaque protocoles, lots et sources de données. 
 
 * Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature avec l'utilisateur et mot de passe : ``admin / admin``
 
 * Si vous souhaitez ajouter des données provenant d'autres protocoles non fournis avec GeoNature, créez leur chacun un schéma dans la BDD de GeoNature correspondant à la structure des données du protocole et ajouté un trigger qui alimentera le schéma ``synthese`` existant à chaque fois qu'une donnée y est ajoutée ou modifiée. Pour cela vous pouvez vous appuyer sur les exemples existants dans les protocoles fournis (``contactfaune`` par exemple).
 
-* Si vous souhaitez ajouter des protocoles spécifiques dont les formulaires de saisie sont intégrés à votre GeoNature, référez vous à la discussion https://github.com/PnEcrins/GeoNature/issues/54
-
-* Si vous souhaitez désactiver certains programmes dans le critère de recherche COMMENT de l'application Synthèse, décochez leur champs ``actif`` dans la table ``meta.bib_programmes`` (https://github.com/PnEcrins/GeoNature/issues/67)
+* Si vous souhaitez ajouter des protocoles spécifiques : TODO
 
 * Si vous souhaitez ne pas afficher tous les liens vers les formulaires de saisie des protocoles fournis par défaut avec GeoNature, décochez leur champs ``actif`` dans la table ``synthese.bib_sources`` (https://github.com/PnEcrins/GeoNature/issues/69)
 
