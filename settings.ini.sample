@@ -1,10 +1,10 @@
 #config PostgreSQL
 
 #effacer la base de donnée existante lors de l'installation
-drop_apps_db=false
+drop_apps_db=true
 
 #nom de la base de données de l'application
-db_name=geonaturedb
+db_name=geonature2db
 
 #nom de l'utilisateur propriétaire de la base PostgreSQL
 user_pg=geonatuser
@@ -20,4 +20,4 @@ srid_local=2154
 install_sig_layers=true
 
 #Installer les données exemples (valid pour la métropole uniquement ; false conseillé hors métropole)
-add_sample_data=true
+add_sample_data=false
