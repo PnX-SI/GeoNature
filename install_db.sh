@@ -55,7 +55,7 @@ then
     # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
     echo "Grant..."
     cp data/grant.sql /tmp/grant.sql
-    sudo sed -i "s/MYPGUSER/$user_pg/g" /tmp/synthese.sql
+    sudo sed -i "s/MYPGUSER/$user_pg/g" /tmp/grant.sql
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
