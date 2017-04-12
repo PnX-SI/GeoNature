@@ -175,14 +175,24 @@ sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" settings.ini
 # Configuration Apache de TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
+# sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "WSGIScriptAlias /taxhub \"/home/'$monuser'/taxhub/app.wsgi\"" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "<Directory \"/home/'$monuser'/taxhub/\">" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "Order allow,deny" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "Allow from all" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/taxhub.conf'
+# sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "WSGIScriptAlias /taxhub \"/home/'$monuser'/taxhub/app.wsgi\"" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "<Directory \"/home/'$monuser'/taxhub/\">" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "Order allow,deny" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "Allow from all" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000/" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "</Location>"" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
+<Location /taxhub>
+        ProxyPass  http://127.0.0.1:8000/ retry=0
+        ProxyPassReverse  http://127.0.0.1:8000/
+    </Location> 
 sudo a2ensite taxhub
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
