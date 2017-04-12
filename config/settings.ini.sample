@@ -4,7 +4,7 @@
 drop_apps_db=false
 
 # DB host
-db_host=geonatdbhost
+db_host=localhost
 
 # Nom de la base de données de l'application
 db_name=geonaturedb
