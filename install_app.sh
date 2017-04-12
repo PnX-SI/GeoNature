@@ -24,12 +24,12 @@ cp wms/wms.map.sample wms/wms.map
 sed -i "s/MYLOCALSRID/$srid_local/g" wms/wms.map
 
 echo "configuration du fichier config/databases.yml..."
-sed -i "s/host=geonatdbhost;dbname=.*$/host=geonatdbhost;dbname=$db_name'/" config/databases.yml
+sed -i "s/host=geonatdbhost;dbname=.*$/host=$db_host;dbname=$db_name'/" config/databases.yml
 sed -i "s/username: .*$/username: $user_pg/" config/databases.yml
 sed -i "s/password: .*$/password: $user_pg_pass/" config/databases.yml
 
 echo "Configuration du fichier wms/wms.map ..."
-sed -i "s/CONNECTION \"host=geonatdbhost.*$/CONNECTION \"host=geonatdbhost dbname=$db_name user=$user_pg password=$user_pg_pass\"/" wms/wms.map
+sed -i "s/CONNECTION \"host=geonatdbhost.*$/CONNECTION \"host=$db_host dbname=$db_name user=$user_pg password=$user_pg_pass\"/" wms/wms.map
 
 #echo "Suppression des fichier de log de l'installation..."
 #rm log/*.log
