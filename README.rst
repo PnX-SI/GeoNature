@@ -1,5 +1,5 @@
-GeoNature2
-==========
+GeoNature V2
+============
 
 Application de saisie et de synthèse des observations faune et flore.
 
@@ -16,9 +16,9 @@ Technologies
 - BDD : PostgreSQL, PostGIS
 - Serveur : Debian ou Ubuntu
 - Framework Python : Flask
-- Framework JS : Angularjs
-- Framework carto : 
-- Fonds rasters : Geoportail
+- Framework JS : AngularJS
+- Framework carto : Leaflet
+- Fonds rasters : IGN (API Geoportail), OSM, WMS...
 
 Présentation
 ------------
@@ -115,7 +115,7 @@ License
 -------
 
 * OpenSource - BSD
-* Copyright (c) 2017 - Parc National des Écrins - Parc national des Cévennes
+* Copyright (c) 2012-2017 - Parc National des Écrins - Parc national des Cévennes
 
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
