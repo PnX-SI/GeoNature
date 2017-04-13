@@ -70,6 +70,7 @@ cd /home/$monuser/usershub
 echo "Installation de la base de données et configuration de l'application UsersHub ..."
 cp config/settings.ini.sample config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_usershubdb/g" config/settings.ini
+sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$usershubdb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
@@ -117,6 +118,7 @@ cp config/settings.ini.sample config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
+sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
