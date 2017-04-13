@@ -2,6 +2,6 @@ all:
   doctrine:
     class: sfDoctrineDatabase
     param:
-      dsn: 'pgsql:host=geonatdbhost;dbname=geonaturedb'
+      dsn: 'pgsql:host=localhost;dbname=geonaturedb'
       username: geonatuser
       password: monpassachanger
