@@ -72,7 +72,7 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     cd data/utilisateurs
-    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/master/data/usershub.sql
+    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql
     cd ../..
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/usershub.sql  &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
@@ -81,20 +81,20 @@ then
     echo "Création du schéma taxonomie..."
     echo "Téléchargement et décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/master/data/inpn/data_inpn_v9_taxhub.sql
-    wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/TAXREF_INPN_v9.0.zip
-    wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/ESPECES_REGLEMENTEES.zip
-    wget https://github.com/PnX-SI/TaxHub/raw/master/data/inpn/LR_FRANCE.zip
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql
+    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/TAXREF_INPN_v9.0.zip
+    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/ESPECES_REGLEMENTEES.zip
+    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/LR_FRANCE.zip
     unzip TAXREF_INPN_v9.0.zip -d /tmp
     unzip ESPECES_REGLEMENTEES.zip -d /tmp
     unzip LR_FRANCE.zip -d /tmp
     cd ..
 
     echo "Récupération des scripts de création du schéma taxonomie..."
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/master/data/taxhubdb.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/master/data/taxhubdata.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/master/data/taxhubdata_taxon_example.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/master/data/vm_hierarchie_taxo.sql
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/vm_hierarchie_taxo.sql
     cd ../..
 
     echo "Création du schéma taxonomie..."
