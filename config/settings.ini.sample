@@ -33,11 +33,11 @@ add_sample_data=true
 # Configuration taxonomie et utilisateurs
 #########################################
 
-# Les scripts sql de création des schémas utilisateurs et taxonomie de GeoNature sont téléchargés depuis le dépôt github des projets UsersHub et TaxHub
+# Les scripts SQL de création des schémas 'utilisateurs' et 'taxonomie' de GeoNature sont téléchargés depuis le dépôt github des projets UsersHub et TaxHub
 # Les deux paramètres ci-dessous visent à indiquer dans quelle version (release, branche ou tag) les scripts doivent être récupés
 
-# Définir dans quelle version (release, branche ou tag) prendre le code SQl permettant la création du schéma utilisateurs de la base de données de GeoNature
+# Définir dans quelle version de UsersHub (release, branche ou tag) prendre le code SQL permettant la création du schéma utilisateurs de la base de données de GeoNature
 usershub_release = 1.2.1
 
-# Définir dans quelle version (release, branche ou tag) prendre le code SQl permettant la création du schéma taxonomie de la base de données de GeoNature
+# Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
 taxhub_release = 1.2.0
