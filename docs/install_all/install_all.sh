@@ -124,7 +124,6 @@ sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
-sed -i "s/public static $srid_local =.*$/public static $srid_local = $srid_local/g" lib/sfGeonatureConfig.php
 sed -i -e "s/\/var\/www/$apache_document_root/g" install_app.sh
 # Installation de la base de données GeoNature en root
 sudo ./install_db.sh
@@ -234,7 +233,7 @@ echo "Configuration et installation de la base de données ..."
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_atlasdb/g" main/configuration/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_atlasdb/g" main/configuration/settings.ini
 sed -i "s/db_name=.*$/db_name=$atlasdb_name/g" main/configuration/settings.ini
-sed -i "s/db_source_name=.*$/db_source_name=$geonaturedb_name/g" config/settings.ini
+sed -i "s/db_source_name=.*$/db_source_name=$geonaturedb_name/g" main/configuration/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_atlas/g"  main/configuration/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_atlas_pass/g"  main/configuration/settings.ini
 sed -i "s/owner_atlas=.*$/owner_atlas=$user_pg/g"  main/configuration/settings.ini
