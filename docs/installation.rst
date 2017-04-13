@@ -2,7 +2,7 @@
 INSTALLATION DE L'APPLICATION
 =============================
 
-Cette procédure décrit l'installation de l'application GeoNature seule. Il est aussi possible d'installer plus facilement GeoNature et tout son environnement (UsersHub, TaxHub et GeoNature-atlas) avec le script `install_all` (voir chapitre INSTALLATION GLOBALE).
+Cette procédure décrit l'installation de l'application GeoNature seule. Il est aussi possible d'installer plus facilement GeoNature et tout son environnement (UsersHub, TaxHub et GeoNature-atlas) avec le script ``install_all`` (voir chapitre INSTALLATION GLOBALE).
 
 Prérequis
 =========
@@ -76,8 +76,10 @@ Configuration de la base de données PostgreSQL
 	nano config/settings.ini
 
 Renseigner le nom de la base de données, les utilisateurs PostgreSQL et les mots de passe. Il est possible mais non conseillé de laisser les valeurs proposées par défaut. 
-La projection locale peut être modifiés si vous n'êtes pas en métropole. Attention : les couches SIG ainsi que le jeu de données fournis avec l'application sont tous en lambert 93. Pour ne pas les insérer lors de la création de la base, vous devez mettre les paramètres ``install_sig_layers`` et ``add_sample_data``. 
-Si vous êtes en métropole il est conseillé de laisser la projection officielle en Lambert 93 (2154) et d'insérer au moins les couches sig fournies.
+
+La projection locale peut être modifiée si vous n'êtes pas en métropole. Attention : les couches SIG ainsi que le jeu de données fournis avec l'application sont tous en lambert 93 (2154). Pour ne pas les insérer lors de la création de la base, vous devez mettre les paramètres ``install_sig_layers`` et ``add_sample_data`` à ``false``. 
+
+Si vous êtes en métropole, il est conseillé de laisser la projection officielle en Lambert 93 (2154) et d'insérer au moins les couches SIG fournies.
 
 ATTENTION : Les valeurs renseignées dans ce fichier sont utilisées par le script d'installation de la base de données ``install_db.sh`` ainsi que par le script d'installation de l'application ``install_app.sh``. Les utilisateurs PostgreSQL doivent être en concordance avec ceux créés lors de la dernière étape de l'installation du serveur (Création de 2 utilisateurs PostgreSQL). 
 
@@ -93,11 +95,11 @@ Création de la base de données
         
 * Vous pouvez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. **Attention, ce fichier sera supprimé** lors de l'exécution de ``install_app.sh``
 
-* Vous pouvez intégrer l'exemple des données SIG du Parc national des Ecrins pour les tables du schéma ``layers``
+* Vous pouvez intégrer l'exemple des données SIG du Parc national des Ecrins des tables ``layers.l_unites_geo``, ``layers.l_aireadhesion`` et ``layers.l_secteurs``) :
  
   ::  
   
-        export PGPASSWORD=monpassachanger; sudo psql -h geonatdbhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
+        export PGPASSWORD=monpassachanger; sudo psql -h localhost -U geonatuser -d geonaturedb -f data/pne/data_sig_pne_2154.sql
 
 
 Configuration de l'application
@@ -110,22 +112,22 @@ Configuration de l'application
         ./install_app.sh
 
 * Adapter le contenu du fichier ``web/js/config.js``
-
-	- Changer ``mon-domaine.fr`` par votre propre URL (wms_uri, host_uri)
+ 
+  - Changer ``mon-domaine.fr`` par votre propre URL (wms_uri, host_uri)
     
 * Adapter le contenu du fichier ``web/js/configmap.js``
-
-    - Renseigner votre clé API IGN Geoportail, 
-    - l'extent max de l'affichage cartographique, le centrage initial, le nombre maximum de niveau de zoom de la carte, la résolution maximale (en lien avec le paramètre précédent et le tableau ``ign_resolutions``)
-    - Renseigner le système de coordonnées et la bbox des coordonnées utilisables pour le positionnement du pointage par coordonnées fournies (GPS)
+ 
+  - Renseigner votre clé API IGN Geoportail, 
+  - l'extent max de l'affichage cartographique, le centrage initial, le nombre maximum de niveau de zoom de la carte, la résolution maximale (en lien avec le paramètre précédent et le tableau ``ign_resolutions``)
+  - Renseigner le système de coordonnées et la bbox des coordonnées utilisables pour le positionnement du pointage par coordonnées fournies (GPS)
 	
 * Adapter le contenu du fichier ``lib/sfGeonatureConfig.php``. Il indique notamment les identifiants de chaque protocoles, lots et sources de données. 
 
 * Pour tester, se connecter à l'application via http://mon-domaine.fr/geonature avec l'utilisateur et mot de passe : ``admin / admin``
 
-* Si vous souhaitez ajouter des données provenant d'autres protocoles non fournis avec GeoNature, créez leur chacun un schéma dans la BDD de GeoNature correspondant à la structure des données du protocole et ajouté un trigger qui alimentera le schéma ``synthese`` existant à chaque fois qu'une donnée y est ajoutée ou modifiée. Pour cela vous pouvez vous appuyer sur les exemples existants dans les protocoles fournis (``contactfaune`` par exemple).
+* Si vous souhaitez ajouter des données provenant d'autres protocoles non fournis avec GeoNature, créez leur chacun un schéma dans la BDD de GeoNature correspondant à la structure des données du protocole et ajoutez un trigger qui alimentera le schéma ``synthese`` existant à chaque fois qu'une donnée y est ajoutée ou modifiée. Pour cela vous pouvez vous appuyer sur les exemples existants dans les protocoles fournis (``contactfaune`` par exemple).
 
-* Si vous souhaitez ajouter des protocoles spécifiques dont les formulaires de saisie sont intégrés à votre GeoNature, référez vous à la discussion https://github.com/PnEcrins/GeoNature/issues/54
+* Si vous souhaitez ajouter des protocoles spécifiques dont les formulaires de saisie sont intégrés à votre GeoNature, référez-vous à la discussion https://github.com/PnEcrins/GeoNature/issues/54
 
 * Si vous souhaitez désactiver certains programmes dans le critère de recherche COMMENT de l'application Synthèse, décochez leur champs ``actif`` dans la table ``meta.bib_programmes`` (https://github.com/PnEcrins/GeoNature/issues/67)
 
@@ -141,24 +143,21 @@ Si vous êtes un établissement public, commandez une clé IGN de type : Licence
 
 Selectionner les couches suivantes : 
 
+* Alticodage, 
+* WMTS-Géoportail - Cartes IGN, 
+* WMTS-Géoportail - Limites administratives
 * WMTS-Géoportail - Orthophotographies
 * WMTS-Géoportail - Parcelles cadastrales
-* WMTS-Géoportail - Cartes IGN
 
-Pour cela, il faut que vous disposiez d'un compte IGN pro. (http://professionnels.ign.fr)
-Une fois connecté au site: 
+Pour cela, il faut que vous disposiez d'un compte IGN pro (http://professionnels.ign.fr).
+
+Une fois connecté au site : 
 
 * Aller dans "Nouvelle commande"
 * Choisir "Géoservices IGN : Pour le web" dans la rubrique "LES GÉOSERVICES EN LIGNE"
 * Cocher l'option "Pour un site internet grand public"
 * Cocher l'option "Licence géoservices IGN pour usage grand public - gratuite"
 * Saisir votre URL. Attention, l'adresse doit être précédée de ``http://`` (même si il s'agit d'une IP)
-* Finir votre commande en selectionnant les couches utiles :
-
-    - Alticodage, 
-    - WMTS-Géoportail - Cartes IGN, 
-    - WMTS-Géoportail - Limites administratives, 
-    - WMTS-Géoportail - Orthophotographies
-    - WMTS-Géoportail - Parcelles cadastrales
+* Finir votre commande en selectionnant les couches utiles
 
 Une fois que votre commande est prête, saisissez la valeur de la clé IGN dans le fichier ``web/js/configmap.js``.
