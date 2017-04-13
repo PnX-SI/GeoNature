@@ -49,11 +49,6 @@ sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_atlas WITH LOGIN PASSWORD '$user_atlas_pass';"
 #sudo -n -u postgres -s psql -c "CREATE ROLE $admin_pg WITH SUPERUSER LOGIN PASSWORD '$admin_pg_pass';" 
 
-# Ajouter un alias du serveur de base de données dans le fichier /etc/hosts
-echo "Configuration de Apache..."
-echo "ajout d'un alias 'databases' et 'geonatdbhost' dans /etc/hosts..."
-sudo sh -c 'echo "127.0.1.1       databases" >> /etc/hosts'
-sudo sh -c 'echo "127.0.1.1       geonatdbhost" >> /etc/hosts'
 # Suppression de la notice au redémarrage d'apache
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 echo "Activation des modules apache rewrite, wsgi et cgi..."
