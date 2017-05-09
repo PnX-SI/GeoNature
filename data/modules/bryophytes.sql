@@ -193,7 +193,7 @@ DECLARE
 BEGIN
     --Récupération de la liste des observateurs	
     --ici on va mettre à jour l'enregistrement dans syntheseff autant de fois qu'on insert dans cette table
-	SELECT INTO mesobservateurs array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+	SELECT INTO mesobservateurs array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
     FROM bryophytes.cor_bryo_observateur c
     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
     JOIN bryophytes.t_stations_bryo s ON s.id_station = c.id_station
