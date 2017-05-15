@@ -131,7 +131,7 @@ DECLARE
 BEGIN
     SELECT INTO fiche * FROM bryophytes.t_stations_bryo WHERE id_station = new.id_station;
     --Récupération des données dans la table t_zprospection et de la liste des observateurs 
-    SELECT INTO mesobservateurs array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+    SELECT INTO mesobservateurs array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
     FROM bryophytes.cor_bryo_observateur c
     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
     JOIN bryophytes.t_stations_bryo s ON s.id_station = c.id_station
@@ -182,6 +182,35 @@ BEGIN
     );
   
 RETURN NEW;       
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION bryophytes.update_synthese_cor_bryo_observateur()
+  RETURNS trigger AS
+$BODY$
+DECLARE 
+    monreleve RECORD;
+    mesobservateurs character varying(255);
+BEGIN
+    --Récupération de la liste des observateurs 
+    --ici on va mettre à jour l'enregistrement dans syntheseff autant de fois qu'on insert dans cette table
+  SELECT INTO mesobservateurs array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
+    FROM bryophytes.cor_bryo_observateur c
+    JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+    JOIN bryophytes.t_stations_bryo s ON s.id_station = c.id_station
+    WHERE c.id_station = new.id_station;
+    --on boucle sur tous les enregistrements de la station
+    FOR monreleve IN SELECT gid FROM bryophytes.cor_bryo_taxon WHERE id_station = new.id_station  LOOP
+        --on fait le update du champ observateurs dans syntheseff
+        UPDATE synthese.syntheseff 
+        SET 
+            observateurs = mesobservateurs,
+            derniere_action = 'u'
+        WHERE id_source = 6 AND id_fiche_source = CAST(monreleve.gid AS VARCHAR(25));
+    END LOOP;
+  RETURN NEW;       
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -2068,7 +2097,7 @@ DECLARE
 BEGIN
     SELECT INTO fiche * FROM florestation.t_stations_fs WHERE id_station = new.id_station;
     --Récupération des données dans la table t_zprospection et de la liste des observateurs 
-    SELECT INTO mesobservateurs array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+    SELECT INTO mesobservateurs array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
     FROM florestation.cor_fs_observateur c
     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
     JOIN florestation.t_stations_fs s ON s.id_station = c.id_station
@@ -2117,6 +2146,35 @@ BEGIN
       fiche.the_geom_3857
     );
 RETURN NEW;       
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION florestation.update_synthese_cor_fs_observateur()
+  RETURNS trigger AS
+$BODY$
+DECLARE 
+    monreleve RECORD;
+    mesobservateurs character varying(255);
+BEGIN
+    --Récupération de la liste des observateurs 
+    --ici on va mettre à jour l'enregistrement dans syntheseff autant de fois qu'on insert dans cette table
+  SELECT INTO mesobservateurs array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+    FROM florestation.cor_fs_observateur c
+    JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+    JOIN florestation.t_stations_fs s ON s.id_station = c.id_station
+    WHERE c.id_station = new.id_station;
+    --on boucle sur tous les enregistrements de la station
+    FOR monreleve IN SELECT gid FROM florestation.cor_fs_taxon WHERE id_station = new.id_station  LOOP
+        --on fait le update du champ observateurs dans syntheseff
+        UPDATE synthese.syntheseff 
+        SET 
+            observateurs = mesobservateurs,
+            derniere_action = 'u'
+        WHERE id_source = 5 AND id_fiche_source = CAST(monreleve.gid AS VARCHAR(25));
+    END LOOP;
+  RETURN NEW;       
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
