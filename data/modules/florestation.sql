@@ -226,7 +226,7 @@ DECLARE
 BEGIN
     SELECT INTO fiche * FROM florestation.t_stations_fs WHERE id_station = new.id_station;
     --Récupération des données dans la table t_zprospection et de la liste des observateurs	
-    SELECT INTO mesobservateurs array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+    SELECT INTO mesobservateurs array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
     FROM florestation.cor_fs_observateur c
     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
     JOIN florestation.t_stations_fs s ON s.id_station = c.id_station
@@ -295,7 +295,7 @@ DECLARE
 BEGIN
     --Récupération de la liste des observateurs	
     --ici on va mettre à jour l'enregistrement dans syntheseff autant de fois qu'on insert dans cette table
-	SELECT INTO mesobservateurs array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+	SELECT INTO mesobservateurs array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
     FROM florestation.cor_fs_observateur c
     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
     JOIN florestation.t_stations_fs s ON s.id_station = c.id_station
