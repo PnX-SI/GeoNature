@@ -7,7 +7,7 @@ GeoNature est une application permettant de regrouper l'ensemble des données pr
 
 Elle regroupe toutes les données des différents protocoles FAUNE et FLORE en les limitant au niveau QUI QUOI QUAND OU.
 
-Il est possible d'ajouter d'autres protocoles dans GeoNature. Pour cela suivez les indications ici : `<https://github.com/PnEcrins/GeoNature/issues/54>`_.
+Il est possible d'ajouter d'autres protocoles dans GeoNature. Pour cela suivez les indications ici : `<https://github.com/PnX-SI/GeoNature/issues/54>`_.
 
 Technologies
 ------------
@@ -25,12 +25,12 @@ Présentation
 ------------
 
 - GeoNature comprend une application WEB de synthèse des observations 
-- GeoNature comprend aussi les formulaires de saisie des protocoles ContactFaune (vertébrés, invertébrés et mortalité), Flore station et Bryophytes. Ces protocoles peuvent être activés ou désactivés. Une discussion est aussi en cours pour y intégrer un Contact Flore sur le modèle de la Faune : https://github.com/PnEcrins/GeoNature/issues/59. Les protocoles de contact intègrent une orientation de la saisie en fonction de 3 critères combinés (localisation x date de la dernière observation x patrimonialité)
+- GeoNature comprend aussi les formulaires de saisie des protocoles ContactFaune (vertébrés, invertébrés et mortalité), Flore station et Bryophytes. Ces protocoles peuvent être activés ou désactivés. Une discussion est aussi en cours pour y intégrer un Contact Flore sur le modèle de la Faune : https://github.com/PnX-SI/GeoNature/issues/59. Les protocoles de contact intègrent une orientation de la saisie en fonction de 3 critères combinés (localisation x date de la dernière observation x patrimonialité)
 - GeoNature-mobile permet de saisir 4 de ces protocoles sur appareil mobile Android. https://github.com/PnEcrins/GeoNature-mobile, https://github.com/PnEcrins/GeoNature-mobile-sync, https://github.com/PnEcrins/GeoNature-mobile-webapi
 - Chaque protocole dispose de son propre schéma dans la base de données de GeoNature. Il est possible d'y ajouter d'autres schémas pour ses propres protocoles ou l'intégration des données des partenaires.
 - Il est aussi possible d'alimenter la synthèse de GeoNature depuis des protocoles qui ont leur propre base de données (SICEN, Suivi_chiro...) par des triggers, des jobs Talend ou depuis version 1.6.0 par une API REST.
 - Des webservices permettent de diffuser les données de la synthèse à des partenaires
-- Enfin nous prévoyons un stage l'année prochaine pour le développement d'un atlas public basé sur les données de la synthèse de GeoNature. 
+- Enfin un atlas public basé sur les données de la synthèse de GeoNature (https://github.com/PnEcrins/GeoNature-atlas). 
 
 .. image :: docs/images/schema-geonature-environnement.jpg
 
