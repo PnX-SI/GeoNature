@@ -1,8 +1,7 @@
 #!/bin/bash
 # TODO : 
     # Faire une install complète avec des données du PNE pour l'atlas
-    # Régler le soucis de la question posée ainsi que le doublement du prompt pour le user sudo
-    # Préparer une installation et une version de geonature compatible avec d'autres projections
+    # Régler le soucis de doublement du prompt pour le user sudo
 
 # Configuration initiale de l'installation serveur
 . install_all.ini
@@ -35,7 +34,6 @@ sudo sh -c 'echo "deb http://http.debian.net/debian wheezy-backports main" >> /e
 sudo apt-get update
 sudo apt-get -y -t wheezy-backports install nodejs
 sudo update-alternatives --install /usr/bin/node nodejs /usr/bin/nodejs 100
-#sudo curl https://www.npmjs.com/install.sh | sudo sh
 sudo sh -c 'curl https://www.npmjs.com/install.sh | sh'
 sudo npm install -g bower
 
@@ -166,15 +164,6 @@ sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" settings.ini
 
 # Configuration Apache de TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf
-sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
-# sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "WSGIScriptAlias /taxhub \"/home/'$monuser'/taxhub/app.wsgi\"" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "<Directory \"/home/'$monuser'/taxhub/\">" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "Order allow,deny" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "Allow from all" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/taxhub.conf'
-# sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
