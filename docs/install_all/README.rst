@@ -55,7 +55,7 @@ Supprimer tout son contenu pour le remplacer par cet exemple permettant un bon f
     deb-src http://security.debian.org/ jessie/updates main contrib non-free
     
     #Backports
-    deb http://http.debian.net/debian wheezy-backports main
+    deb http://http.debian.net/debian jessie-backports main contrib non-free
     
 Enregistrer et fermer le fichier.
 
@@ -64,7 +64,7 @@ Placez vous dans le répertoire ``home`` de votre utilisateur et entrez les comm
 ::
     
     sudo apt-get update
-    sudo apt-get install -y sudo ca-certificates
+    sudo apt-get install -y ca-certificates
     
 Récupérer les scripts d'installation (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
 

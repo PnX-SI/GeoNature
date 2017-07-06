@@ -15,9 +15,9 @@ fi
 
 # Installation de l'environnement nécessaire à UsersHub, GeoNature, TaxHub et GeoNature-atlas
 echo "Installation de l'environnement logiciel..."
-sudo sh -c 'echo "" >> /etc/apt/sources.list'
-sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb http://http.debian.net/debian jessie-backports main contrib non-free" >> /etc/apt/sources.list'
+#sudo sh -c 'echo "" >> /etc/apt/sources.list'
+#sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
+#sudo sh -c 'echo "deb http://http.debian.net/debian jessie-backports main contrib non-free" >> /etc/apt/sources.list'
 sudo apt-get update
 sudo apt-get -y install ntpdate
 sudo ntpdate-debian
