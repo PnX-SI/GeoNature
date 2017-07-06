@@ -4,6 +4,7 @@ CHANGELOG
 
 1.9.0dev (unreleased)
 ----------------------
+ATTENTION : Les évolutions de cette release concernent aussi la webapi. Si vous utilisez les applications GeoNature-Mobile, vous devez attendre la sortie d'une release de GeoNature-mobile-webapi compatible avec cette version 1.9.0. Comming soon !
 
 **Nouveautés**
 
@@ -12,6 +13,9 @@ CHANGELOG
 * Ajout de la possibilité d'éditer la notion de diffusable (oui/non) uniquement pour contactfaune et mortalité - TODO :faire la même chose pour les autres protocoles.
 * Multi-projection : Les versions antérieures de GeoNature n'étaient compatible qu'avec la projection lambert 93 (srid: 2154). Cette version permet de choisir sa projection locale. Elle ajoute un paramètre ``srid_local`` dans le ``config/settings.ini`` et renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` des tables "métier".
 Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs ``the_geom_local`` présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les geométries stockées dans les champs ``the_geom_local`` des tables "métier". Le paramétrage du service WMS dans wms/wms.map est également pris en charge par le script d'installation de l'application.
+* Correction de l'installation de npm
+* install all mis à jour avec les nouvelles versions de l'atlas, de TaxHub et de UsersHub.
+
 
 IMPORTANT : toutes les couches SIG insérées dans le schéma ``layers`` doivent être dans la projection fournie pour le paramètre ``srid_local``. L'application est livrée avec un ensemble de couches en Lambert 93 concernant la métropole. Une installation avec une autre projection, hors métropole, doit donc se faire sans l'insertion des couches SIG. Vous devrez manuellement fournir le contenu des tables du schéma ``layers`` dans la projection choisie.
 
@@ -23,6 +27,7 @@ Vous pouvez passer directement d'une 1.7.X à la 1.9.0, en prenant en compte les
 
 Si vous migrez depuis la version 1.8.3, éxécutez le fichier SQL ``data/update_1.8.3to1.9.0.sql``. Comme GeoNature ne fonctionne jusque là que pour des structures de métropole, il est basé sur le fait que le champ ``the_geom_local`` reste en lambert 93 (2154). Assurer vous que le paramètre ``$srid_local`` dans ``lib/sfGeonatureConfig.php`` est égal à ``2154``.
 ATTENTION : ce script sql renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la base geonature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapater/compléter le script. Vous pouvez vous inspirer de son contenu.
+RAPPEL : Ceci affecte également la webapi pour les applications mobiles; Vous devez donc mettre à jour votre webapi si vous utiliser la saisie sur les applications mobiles. Une release de la webapi devrait sortir bientôt 
 
 
 1.8.4 (2017-04-10)
