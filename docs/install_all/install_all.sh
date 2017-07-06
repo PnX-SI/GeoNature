@@ -15,6 +15,9 @@ fi
 
 # Installation de l'environnement nécessaire à UsersHub, GeoNature, TaxHub et GeoNature-atlas
 echo "Installation de l'environnement logiciel..."
+sudo sh -c 'echo "" >> /etc/apt/sources.list'
+sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb http://http.debian.net/debian jessie-backports main contrib non-free" >> /etc/apt/sources.list'
 sudo apt-get update
 sudo apt-get -y install ntpdate
 sudo ntpdate-debian
@@ -24,18 +27,10 @@ sudo apt-get install -y php5-gd php5-pgsql
 sudo apt-get install -y cgi-mapserver gdal-bin libgeos-dev
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
 sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
+sudo apt-get install npm
 # sudo apt-get install -y python3 python3-dev 
 
 sudo pip install virtualenv
-
-sudo sh -c 'echo "" >> /etc/apt/sources.list'
-sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb http://http.debian.net/debian wheezy-backports main" >> /etc/apt/sources.list'
-sudo apt-get update
-sudo apt-get -y -t wheezy-backports install nodejs
-sudo update-alternatives --install /usr/bin/node nodejs /usr/bin/nodejs 100
-sudo sh -c 'curl https://www.npmjs.com/install.sh | sh'
-sudo npm install -g bower
 
 echo "Configuration de postgreSQL..."
 sudo sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/*/main/postgresql.conf

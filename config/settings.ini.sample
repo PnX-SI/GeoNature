@@ -37,7 +37,7 @@ add_sample_data=true
 # Les deux paramètres ci-dessous visent à indiquer dans quelle version (release, branche ou tag) les scripts doivent être récupés
 
 # Définir dans quelle version de UsersHub (release, branche ou tag) prendre le code SQL permettant la création du schéma utilisateurs de la base de données de GeoNature
-usershub_release=1.2.1
+usershub_release=1.2.2
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.2.0
+taxhub_release=1.2.1
