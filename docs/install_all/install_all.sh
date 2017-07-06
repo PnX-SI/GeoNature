@@ -168,8 +168,8 @@ sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000/" >> /etc/apache2/site
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 
-sed -i "s/<\/VirtualHost>//g" /etc/apache2/sites-available/000-default.conf
-sed -i "s/# vim.*$//g" /etc/apache2/sites-available/000-default.conf
+sudo sed -i "s/<\/VirtualHost>//g" /etc/apache2/sites-available/000-default.conf
+sudo sed -i "s/# vim.*$//g" /etc/apache2/sites-available/000-default.conf
 sudo sh -c 'echo "# Configuration TaxHub - ne fonctionne pas dans le 000-default.conf" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/000-default.conf'
@@ -182,7 +182,7 @@ sudo a2enmod proxy
 sudo a2enmod proxy_http
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
-#sudo apache2ctl restart
+sudo apache2ctl restart
 
 # Installation de l'atlas avec l'utilisateur courant
 echo "Téléchargement et installation de GeoNature-atlas ..."
