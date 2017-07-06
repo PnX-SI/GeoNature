@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-1.9.0dev (unreleased)
+1.9.0
 ----------------------
 **ATTENTION : Les évolutions de cette release concernent aussi la webapi. Si vous utilisez les applications GeoNature-Mobile, vous devez attendre la sortie d'une release de GeoNature-mobile-webapi compatible avec cette version 1.9.0.** Comming soon !
 
