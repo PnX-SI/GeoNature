@@ -88,7 +88,7 @@ Lancez ensuite l'installation des applications :
   
 	./install_all.sh
 
-Le mot de passe sudo vous sera peut-être demandé une deuxième fois. 
+Le mot de passe sudo vous sera demandé a plusieurs reprise. 2 fichiers de la configuration de Taxhub seront affichés. Il vous est possible de les modifier mais vous pouvez laisser les valeurs par défaut. Pour enregistrer ``ctrl + o``, pour sortir et poursuivre l'installation : ``ctrl + x``.
 
 Vous devez pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre nom de domaine ou avec votre adresse IP) :
 
