@@ -27,7 +27,7 @@ sudo apt-get install -y php5-gd php5-pgsql
 sudo apt-get install -y cgi-mapserver gdal-bin libgeos-dev
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
 sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
-sudo apt-get install npm
+sudo apt-get install -y npm
 # sudo apt-get install -y python3 python3-dev 
 
 sudo pip install virtualenv
