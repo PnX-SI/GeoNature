@@ -1,0 +1,48 @@
+<!--Wrap all in page without scroll bar-->  
+  <md-sidenav-container>
+
+    <!--Side Bar-->
+    <md-sidenav class="appnav" #sidenav mode="side" opened="true">
+      <app-sidenav-items></app-sidenav-items>
+    </md-sidenav>
+    <!--End Side Bar-->
+
+    <!--Tool bar-->
+    <md-toolbar class="app-toolbar">
+        <!--sidenav button-->
+        <button md-icon-button (click)="sidenav.toggle()">
+          <md-icon class="icon-toolbar">apps</md-icon>
+        </button>
+
+        <span>{{appName}}</span>
+        <span class="toolbar-spacer"></span>
+        <button md-icon-button [mdMenuTriggerFor]="menu" >
+          <md-icon>language</md-icon>
+        </button>
+        <md-menu #menu="mdMenu">
+          <button md-menu-item (click)="changeLanguage('en')">
+            <span>{{ 'Languages.English' | translate }}</span>
+          </button>
+          <button md-menu-item (click)="changeLanguage('fr')">
+            <span>{{ 'Languages.French' | translate }}</span>
+          </button>
+          <button md-menu-item (click)="changeLanguage('cn')">
+            <span>{{ 'Languages.Chinese' | translate }}</span>
+          </button>
+        </md-menu>
+        <button md-icon-button >
+          <md-icon>account_circle</md-icon>
+        </button>
+    </md-toolbar>
+    <!--End tool bar-->
+
+    <div class="app-content">
+      <!--App content-->
+      <div>
+        <router-outlet></router-outlet>
+      </div>
+      <!--End app content-->
+
+    </div>
+
+  </md-sidenav-container>
