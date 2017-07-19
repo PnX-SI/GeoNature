@@ -1,0 +1,11 @@
+<md-card class="logo">
+ <a routerLink="/accueil" routerLinkActive="active">
+  <img md-card-image src="../../../assets/images/LogoGeonature.png">
+ </a>
+</md-card>
+<md-nav-list class="appnav">
+    <md-list-item *ngFor="let app of nav" (click)="onSetApp(app.appName)" routerLink={{app.route}} routerLinkActive="active" >
+      <md-icon md-list-icon>{{app.icon}}</md-icon>
+      <h3 md-line> {{app.appName}} </h3>
+    </md-list-item>
+</md-nav-list>

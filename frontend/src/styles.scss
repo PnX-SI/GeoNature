@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import 'conf/conf_style.scss';
+html, body, material-app, md-sidenav-container{
+  margin: 0;
+  width: 100%;
+  height: 100%;
+      
+}
+
+.app-content {
+    background-color: $solitude;
+    height: calc(100% - 64px);
+    overflow: auto;
+    padding: 20px 15px 20px 15px;
+    // min-height: 100vh;
+}
+
+.padding-0 {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.padding-sm {
+   padding: 2px !important;
+   margin: 2px !important;
+}
+.padding-md {
+   padding: 5px !important;
+   margin: 5px !important;
+}
+
+/*
+ * The /deep/ selector is simply to overcome view encapsulation
+ * and be able to select the div.md-sidenav-content generated at runtime
+*/
+md-sidenav-layout /deep/ .md-sidenav-content {
+  overflow: hidden;
+}

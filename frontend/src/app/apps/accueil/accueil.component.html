@@ -1,0 +1,145 @@
+
+<div class="container-fluid">
+  <!--Bienvenue part-->
+  <md-card class="mdCard">
+    <md-card-header>
+      <md-card-title > <h2> {{ 'MainTxt' | translate }} </h2> </md-card-title>
+    </md-card-header>
+    <div class="row">
+      <div class="col-md-7">
+        <md-card-content>
+            {{ 'demoLongMessage' | translate }} 
+        </md-card-content>
+      </div>
+      <div class="col-md-5">
+        <md-card-content>
+        <carousel>
+          <slide>
+            <img md-card-image src="assets/images/nature/4.jpg" alt="First slide">
+            <div class="carousel-caption">
+              <h3>First slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </div>
+          </slide>
+          <slide>
+            <img md-card-image src="assets/images/nature/5.jpg" alt="Second slide">
+            <div class="carousel-caption">
+              <h3>Second slide label</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </slide>
+          <slide>
+            <img md-card-image src="assets/images/nature/6.jpg" alt="Third slide">
+            <div class="carousel-caption">
+              <h3>Third slide label</h3>
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+            </div>
+          </slide>
+        </carousel>
+        </md-card-content>
+      </div>
+    </div>
+  </md-card>
+  <!--End of Bienvenue part-->
+
+  <!-- part 2 les chiffres-->
+  <div class="row">
+    <div class="col-md-3 col-sm-6 mdCard">
+      <md-card>
+        <md-card-content>
+          <p>
+            {{ 'demoShortMessage' | translate }}
+          </p>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="col-md-3 col-sm-6 mdCard">
+      <md-card>
+        <md-card-content>
+          <p>
+            {{ 'demoShortMessage' | translate }}
+          </p>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="col-md-3 col-sm-6 mdCard">
+      <md-card>
+        <md-card-content>
+          <p>
+            {{ 'demoShortMessage' | translate }}
+          </p>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="col-md-3 col-sm-6 mdCard">
+      <md-card>
+        <md-card-content>
+          <p>
+            {{ 'demoShortMessage' | translate }}
+          </p>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+  <!-- end part 2 -->
+
+  <!-- part 3 la carte-->
+    <md-card class="mdCard">
+      <md-card-header>
+        <md-card-title> <h3> Dernieres Observations </h3> </md-card-title>
+      </md-card-header>
+      <div class="row">  
+        <div class="col-md-7">
+          <md-card-content>
+            <app-map></app-map>
+          </md-card-content>
+        </div>
+        <div class="col-md-5">
+          <md-card-content>
+            <p>
+              {{ 'demoLongMessage' | translate }}
+            </p>
+          </md-card-content>
+        </div>
+      </div>
+    </md-card>
+  <!--end part 3-->
+
+  <!-- part 4  chartjs-->
+  <div class="row">
+    <div class="col-md-6 col-sm-12 mdCard">
+      <md-card>
+        <md-card-content>
+          <chart [type]="type1" [data]="data" [options]="options"></chart>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="col-md-6 col-sm-12 mdCard">
+      <md-card>
+        <md-card-content>
+          <chart [type]="type2" [data]="data" [options]="options"></chart>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="col-md-6 col-sm-12 mdCard">
+      <md-card>
+        <md-card-content>
+          <chart [type]="type3" [data]="data" [options]="options"></chart>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="col-md-6 col-sm-12 mdCard">
+      <md-card>
+        <md-card-content>
+          <chart [type]="type4" [data]="data" [options]="options"></chart>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+  <!-- end part chartjs -->
+</div>
+  
+
+
+
+
