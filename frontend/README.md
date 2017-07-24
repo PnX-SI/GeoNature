@@ -1,6 +1,6 @@
 # Geonature
 requirement for runing app: 
-Angular cli OR Docker on host machine.
+Angular cli OR Docker, Docker Compose on host machine.
 
 ## Run app with angular cli 
 ```bash
