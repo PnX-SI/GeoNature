@@ -8,14 +8,12 @@ import { NavService } from '../../services/nav.service';
 })
 export class SidenavItemsComponent implements OnInit {
 
-  private geonature_image;
   public nav = [{}];
 
   constructor(private _navService: NavService) {
     this.nav = _navService.getAppList();
   }
   ngOnInit() {
-      this.geonature_image = './../../../images/geonature_image3.png';
   }
   onSetApp(appName: string) {
     this._navService.setAppName(appName);

@@ -27,6 +27,6 @@ export class NavService {
     }
 
     getAppList(): any {
-      return this._nav
+      return this._nav;
     }
 }
