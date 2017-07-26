@@ -3,6 +3,8 @@ import { NavService } from './services/nav.service';
 import {TranslateService} from '@ngx-translate/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import * as firebase from 'firebase';
+import { AuthService } from './components/auth/auth.service';
 import {APP_CONFIG , CONFIG, AppConfig} from 'conf/app.config';
 
 @Component({
@@ -17,10 +19,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private _navService: NavService, private translate: TranslateService, private activatedRoute: ActivatedRoute, @Inject(APP_CONFIG) private config: AppConfig) {
-    _navService.gettingAppName.subscribe(ms => {
-      this.appName = ms;
-    })
+  constructor(private _navService: NavService, private translate: TranslateService,
+              private _authService: AuthService,
+              private activatedRoute: ActivatedRoute, @Inject(APP_CONFIG) private config: AppConfig) {
+      _navService.gettingAppName.subscribe(ms => {
+        this.appName = ms;
+    });
 
     translate.addLangs(['en', 'fr', 'cn']);
     translate.setDefaultLang(config.defaultLanguage);
@@ -43,6 +47,11 @@ export class AppComponent implements OnInit, OnDestroy {
             this.translate.use(locale);
         }
       });
+    // init firebase
+    firebase.initializeApp({
+      apiKey: 'AIzaSyBHvJhaMQdEFI0kM6LNagcFTQQWiDFCsOo',
+      authDomain: 'geonature-a568d.firebaseapp.com',
+    });
   }
 
   ngOnDestroy() {

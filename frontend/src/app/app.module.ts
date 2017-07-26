@@ -2,6 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {HttpModule, Http} from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 // For Angular Dependencies
 import 'hammerjs';
@@ -26,7 +27,9 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { MapService } from './services/map.service';
 import { NavService } from './services/nav.service';
 import { MapComponent } from './components/map/map.component';
-
+import { SigninComponent } from './components/auth/signin/signin.component';
+import { AuthService } from './components/auth/auth.service';
+import { AuthGuard } from './components/auth/auth-guard.service';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -39,10 +42,12 @@ export function HttpLoaderFactory(http: Http) {
     ContactFloreComponent,
     SidenavItemsComponent,
     PageNotFoundComponent,
-    MapComponent
+    MapComponent,
+    SigninComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     HttpModule,
     BrowserAnimationsModule,
     MaterialModule,
@@ -60,7 +65,7 @@ export function HttpLoaderFactory(http: Http) {
             }
         })
   ],
-  providers: [NavService, MapService],
+  providers: [NavService, MapService, AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
