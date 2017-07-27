@@ -13,7 +13,6 @@ export class MapComponent implements OnInit {
   constructor(public mapService: MapService) { }
 
   ngOnInit() {
-    console.log('init map');
     this.mapService.initialize();
     this.map = this.mapService.map;
   }

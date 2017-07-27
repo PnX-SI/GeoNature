@@ -16,7 +16,7 @@
 
         <span>{{appName}}</span>
         <span class="toolbar-spacer"></span>
-        <app-signin *ngIf="!_authService.isAuthenticated()"></app-signin>
+        <app-signin *ngIf="!authService.isAuthenticated()"></app-signin>
         <button md-icon-button [mdMenuTriggerFor]="menu" >
           <md-icon>language</md-icon>
         </button>
@@ -31,7 +31,7 @@
             <span>{{ 'Languages.Chinese' | translate }}</span>
           </button>
         </md-menu>
-        <button md-icon-button *ngIf="_authService.isAuthenticated()" (click)="_authService.logout()">
+        <button md-icon-button *ngIf="authService.isAuthenticated()" (click)="authService.logout()">
           <md-icon>exit_to_app</md-icon>
         </button>
     </md-toolbar>

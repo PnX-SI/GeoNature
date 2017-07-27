@@ -16,9 +16,6 @@ export class AuthService {
               (token: string) => this.token = token
             );
         }
-      )
-      .catch(
-        error => console.log(error)
       );
   }
 

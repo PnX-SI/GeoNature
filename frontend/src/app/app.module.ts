@@ -13,6 +13,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartModule } from 'angular2-chartjs';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { ToastrModule } from 'ngx-toastr';
 
 // Angular created component
 import { AppComponent } from './app.component';
@@ -63,7 +64,8 @@ export function HttpLoaderFactory(http: Http) {
                 useFactory: HttpLoaderFactory,
                 deps: [Http]
             }
-        })
+        }),
+    ToastrModule.forRoot()
   ],
   providers: [NavService, MapService, AuthService, AuthGuard],
   bootstrap: [AppComponent]
