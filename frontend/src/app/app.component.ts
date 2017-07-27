@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // tslint:disable-next-line:max-line-length
   constructor(private _navService: NavService, private translate: TranslateService,
-              private _authService: AuthService,
+              public authService: AuthService,
               private activatedRoute: ActivatedRoute, @Inject(APP_CONFIG) private config: AppConfig) {
       _navService.gettingAppName.subscribe(ms => {
         this.appName = ms;
