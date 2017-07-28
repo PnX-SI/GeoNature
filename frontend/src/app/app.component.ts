@@ -5,7 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as firebase from 'firebase';
 import { AuthService } from './components/auth/auth.service';
-import {APP_CONFIG , CONFIG, AppConfig} from 'conf/app.config';
+import {APP_CONFIG , CONFIG, AppConfig} from '../conf/app.config';
 
 @Component({
   selector: 'app-root',
