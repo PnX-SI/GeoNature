@@ -11,7 +11,7 @@ RUN npm install --global @angular/cli
 
 WORKDIR $APP_DIR
 COPY package.json $APP_DIR/package.json
-RUN npm install && npm cache clean --force
+RUN npm install && npm cache clean
 COPY . $APP_DIR
 RUN chown -R $APP_USER:$APP_USER $HOME/*
 
