@@ -1,0 +1,43 @@
+# Configuration PostgreSQL
+##########################
+
+# Effacer la base de donnée existante lors de l'installation
+drop_apps_db=false
+
+# DB host
+# Attention les scripts d'installation automatique (install_db.sh et install_all.sh) ne fonctionneront 
+# que si votre BDD est installée en local (localhost). Si vous souhaitez installer votre BDD sur un autre serveur, 
+# les scripts n'auront pas les droits suffisants pour créer la BDD sur un autre serveur et cela devra être fait manuellement. 
+db_host=localhost
+
+# Nom de la base de données de l'application
+db_name=geonature2db
+
+# Nom de l'utilisateur propriétaire de la base PostgreSQL geonaturedb
+user_pg=geonatuser
+
+# Pass de l'utilisateur propriétaire de la base PostgreSQL geonaturedb
+user_pg_pass=monpassachanger
+
+# SRID de la projection locale
+srid_local=2154
+
+# Permet l'installation des couches SIG nécessaires - communes, zones à statut, etc.. 
+# Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)
+install_sig_layers=true
+
+# Installer les données exemples en 2154 (valide pour la métropole uniquement, si srid_local=2154 ; false conseillé hors métropole)
+add_sample_data=true
+
+
+# Configuration taxonomie et utilisateurs
+#########################################
+
+# Les scripts SQL de création des schémas 'utilisateurs' et 'taxonomie' de GeoNature sont téléchargés depuis le dépôt github des projets UsersHub et TaxHub
+# Les deux paramètres ci-dessous visent à indiquer dans quelle version (release, branche ou tag) les scripts doivent être récupés
+
+# Définir dans quelle version de UsersHub (release, branche ou tag) prendre le code SQL permettant la création du schéma utilisateurs de la base de données de GeoNature
+usershub_release=1.2.2
+
+# Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
+taxhub_release=1.2.1
