@@ -142,7 +142,33 @@ then
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/vm_hierarchie_taxo.sql  &>> log/install_db.log
 
-    
+    echo "Création du schéma meta..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Création du schéma meta" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> log/install_db.log
+
+    echo "Ajouté un lien entre la nomenclature et la taxonomie (dans le schéma taxonomie)..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Ajouté un lien entre la nomenclature et la taxonomie (dans le schéma taxonomie)..." &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/complements_taxonomie.sql  &>> log/install_db.log
+
+    echo "Création et insertion du schéma medias..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Création et insertion du schéma medias..." &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> log/install_db.log
+
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
     rm /tmp/*.txt
