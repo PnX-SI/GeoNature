@@ -18,8 +18,7 @@ CREATE OR REPLACE FUNCTION medias.check_entity_field_exist(myentity character va
   RETURNS boolean AS
 $BODY$
 --fonction permettant de vérifier si le champ d'un entité de type table existe. Param : 'schema.table.field'
---usage 
---SELECT medias.check_entity_field_exist('schema.table.field');
+--USAGE : SELECT medias.check_entity_field_exist('schema.table.field');
   DECLARE
     entity_array character varying(255)[];
   BEGIN
@@ -32,16 +31,14 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
---USAGE SAMPLE
---SELECT medias.check_entity_field_exist('contactfaune.t_releves_cfaune.id_releve_cfaune');
+--USAGE : SELECT medias.check_entity_field_exist('contactfaune.t_releves_cfaune.id_releve_cfaune');
 
 
 CREATE OR REPLACE FUNCTION check_entity_value_exist(myentity character varying, myvalue integer)
   RETURNS boolean AS
 $BODY$
 --fonction permettant de vérifier si une valeur existe dans le champ d'une entité de type table.
---USAGE
---SELECT medias.check_entity_value_exist('schema.table.field', value);
+--USAGE : SELECT medias.check_entity_value_exist('schema.table.field', value);
   DECLARE
     entity_array character varying(255)[];
     r record;
