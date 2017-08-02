@@ -178,6 +178,17 @@ then
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> log/install_db.log
 
+    echo "Création du schéma synthese..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Création du schéma synthese" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    cp data/core/synthese.sql /tmp/synthese.sql
+    sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/synthese.sql
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/synthese.sql  &>> log/install_db.log
+
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
     rm /tmp/*.txt
