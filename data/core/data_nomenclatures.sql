@@ -1040,3 +1040,83 @@ INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Mammifères', now()
 --Aucun critère spécifique identifié pour les myriapodes
 --TODO : "Plathelminthes"
 
+---------------------
+--Statut biologique--
+---------------------
+INSERT INTO cor_taxref_nomenclature VALUES (29, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (30, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (31, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (41, 'all', 'all', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (32, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (38, 'Plantae', 'all', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (32, 'Fungi', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (38, 'Fungi', 'all', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (32, 'Animalia', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (38, 'Animalia', 'all', now(), NULL);
+
+--TODO : "Bacteria"
+--TODO : "Chromista"
+--TODO : "Protozoa"
+
+--Aucun critère spécifique identifié pour les bivalves
+
+INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Insectes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Insectes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Insectes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Insectes', now(), NULL);
+
+--TODO : "Acanthocéphales"
+
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Céphalopodes', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Reptiles', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (34, 'Animalia', 'Reptiles', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Reptiles', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Crustacés', now(), NULL);
+
+--TODO : "Scléractiniaires"
+--TODO : "Hydrozoaires"
+
+INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (34, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (36, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Oiseaux', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Poissons', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Poissons', now(), NULL);
+
+--TODO : "Némertes"
+
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Arachnides', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Gastéropodes', now(), NULL);
+
+
+INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Amphibiens', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Amphibiens', now(), NULL);
+
+--TODO : "Octocoralliaires"
+--TODO : "Entognathes"
+--TODO : "Annélides"
+--TODO : "Pycnogonides"
+--TODO : "Nématodes"
+--TODO : "Ascidies"
+--TODO : "Plathelminthes"
+
+INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Mammifères', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (34, 'Animalia', 'Mammifères', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Mammifères', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Mammifères', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Mammifères', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Mammifères', now(), NULL);
+
+--TODO : "Ascidies"
+--TODO : "Myriapodes
+--TODO : "Plathelminthes"
