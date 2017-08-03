@@ -19,7 +19,7 @@ CREATE OR REPLACE FUNCTION taxonomie.check_is_group2inpn(mygroup text)
 $BODY$
 --fonction permettant de vérifier si un texte proposé correspond à un group2_inpn dans la table taxref
   BEGIN
-    IF mygroup IN(SELECT DISTINCT group2_inpn FROM taxonomie.taxref) THEN
+    IF mygroup IN(SELECT DISTINCT group2_inpn FROM taxonomie.taxref) OR mygroup IS NULL THEN
       RETURN true;
     ELSE
       RETURN false;
@@ -35,7 +35,7 @@ CREATE OR REPLACE FUNCTION taxonomie.check_is_regne(myregne text)
 $BODY$
 --fonction permettant de vérifier si un texte proposé correspond à un regne dans la table taxref
   BEGIN
-    IF myregne IN(SELECT DISTINCT regne FROM taxonomie.taxref) THEN
+    IF myregne IN(SELECT DISTINCT regne FROM taxonomie.taxref) OR myregne IS NULL THEN
       return true;
     ELSE
       RETURN false;
@@ -71,8 +71,8 @@ CREATE TABLE taxonomie.cor_taxref_nomenclature
   CONSTRAINT cor_taxref_nomenclature_id_nomenclature_fkey FOREIGN KEY (id_nomenclature)
       REFERENCES meta.t_nomenclatures (id_nomenclature) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION,
-  CONSTRAINT cor_taxref_nomenclature_isgroup2inpn_check CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn = 'all'),
-  CONSTRAINT cor_taxref_nomenclature_isregne_check CHECK (taxonomie.check_is_regne(regne::text))
+  CONSTRAINT cor_taxref_nomenclature_isgroup2inpn_check CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = 'all'::text),
+  CONSTRAINT cor_taxref_nomenclature_isregne_check CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = 'all'::text)
 )
 WITH (
   OIDS=FALSE
