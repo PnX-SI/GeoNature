@@ -174,7 +174,7 @@ ALTER TABLE ONLY t_releves_cfaune
 ---------
 --VIEWS--
 ---------
-CREATE OR REPLACE VIEW contactfaune.v_techniques_observations AS(
+CREATE OR REPLACE VIEW contactfaune.v_technique_obs AS(
 SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.libelle_nomenclature, n.definition_nomenclature, n.id_parent, n.hierarchie
 FROM meta.t_nomenclatures n
 LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
@@ -182,11 +182,37 @@ WHERE n.id_type_nomenclature = 100
 AND n.id_parent != 0
 );
 --usage--
---SELECT * FROM contactfaune.v_techniques_observations
+--SELECT * FROM contactfaune.v_technique_obs
 --WHERE group2_inpn = 'Oiseaux';
---SELECT * FROM contactfaune.v_techniques_observations
+--SELECT * FROM contactfaune.v_technique_obs
 --WHERE regne = 'Plantae';
 
+CREATE OR REPLACE VIEW contactfaune.v_eta_bio AS 
+ SELECT 
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+  WHERE n.id_type_nomenclature = 7 AND n.id_parent <> 0;
+
+CREATE OR REPLACE VIEW contactfaune.v_stade_vie AS (
+SELECT 
+    ctn.regne,
+    ctn.group2_inpn, 
+    n.id_nomenclature, 
+    n.mnemonique, 
+    n.libelle_nomenclature, 
+    n.definition_nomenclature, 
+    n.id_parent, 
+    n.hierarchie
+FROM meta.t_nomenclatures n
+LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+WHERE n.id_type_nomenclature = 10
+AND n.id_parent != 0
+);
 
 ---------
 --DATAS--
