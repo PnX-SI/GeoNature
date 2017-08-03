@@ -47,12 +47,12 @@ CREATE TABLE t_releves_cfaune (
     date_insert timestamp without time zone DEFAULT now(),
     date_update timestamp without time zone DEFAULT now(),
     commentaire text,
-    the_geom_local public.geometry(Geometry,2154),
+    the_geom_local public.geometry(Geometry,MYLOCALSRID),
     the_geom_3857 public.geometry(Geometry,3857),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = 2154))
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID))
 );
 
 CREATE SEQUENCE t_releves_cfaune_id_releve_cfaune_seq
@@ -174,20 +174,59 @@ ALTER TABLE ONLY t_releves_cfaune
 ---------
 --VIEWS--
 ---------
-CREATE OR REPLACE VIEW contactfaune.v_techniques_observations AS(
+CREATE OR REPLACE VIEW contactfaune.v_technique_obs AS(
 SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.libelle_nomenclature, n.definition_nomenclature, n.id_parent, n.hierarchie
 FROM meta.t_nomenclatures n
 LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type_nomenclature = 100
 AND n.id_parent != 0
 );
---usage--
---SELECT * FROM contactfaune.v_techniques_observations
---WHERE group2_inpn = 'Oiseaux';
---SELECT * FROM contactfaune.v_techniques_observations
---WHERE regne = 'Plantae';
+--USAGE :
+--SELECT * FROM contactfaune.v_technique_obs WHERE group2_inpn = 'Oiseaux';
+--SELECT * FROM contactfaune.v_technique_obs WHERE regne = 'Plantae';
 
+CREATE OR REPLACE VIEW contactfaune.v_eta_bio AS 
+ SELECT 
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+  WHERE n.id_type_nomenclature = 7 AND n.id_parent <> 0;
 
+CREATE OR REPLACE VIEW contactfaune.v_stade_vie AS (
+SELECT 
+    ctn.regne,
+    ctn.group2_inpn, 
+    n.id_nomenclature, 
+    n.mnemonique, 
+    n.libelle_nomenclature, 
+    n.definition_nomenclature, 
+    n.id_parent, 
+    n.hierarchie
+FROM meta.t_nomenclatures n
+LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+WHERE n.id_type_nomenclature = 10
+AND n.id_parent != 0
+);
+--USAGE : 
+--SELECT * FROM contactfaune.v_stade_vie WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW contactfaune.v_sexe AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 9 AND n.id_parent <> 0;
+  
 ---------
 --DATAS--
 ---------
