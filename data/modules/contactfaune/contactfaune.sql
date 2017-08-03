@@ -47,12 +47,12 @@ CREATE TABLE t_releves_cfaune (
     date_insert timestamp without time zone DEFAULT now(),
     date_update timestamp without time zone DEFAULT now(),
     commentaire text,
-    the_geom_local public.geometry(Geometry,2154),
+    the_geom_local public.geometry(Geometry,MYLOCALSRID),
     the_geom_3857 public.geometry(Geometry,3857),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = 2154))
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID))
 );
 
 CREATE SEQUENCE t_releves_cfaune_id_releve_cfaune_seq
