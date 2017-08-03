@@ -1,0 +1,45 @@
+allow-shorthand: false
+
+inherits:
+  - strictness_low
+
+pylint:
+  disable:
+    - empty-docstring
+    - old-style-class
+    - notimplemented-raised
+    - missing-module-attribute
+    - super-on-old-class
+    - no-member
+    - not-callable
+    - assignment-from-no-return
+    - mixed-format-string
+    - abstract-class-not-used
+    - interface-not-implemented
+    - pointless-statement
+    - pointless-string-statement
+    - expression-not-assigned
+    - W0121
+    - assert-on-tuple
+    - attribute-defined-outside-init
+    - arguments-differ
+    - non-iterator-returned
+    - W0331
+    - W0333
+    - reimported
+    - global-at-module-level
+    - unbalanced-tuple-unpacking
+    - nonstandard-exception
+    - W0712
+
+mccabe:
+  options:
+    max-complexity: 25
+
+pep8:
+  disable:
+    - W601
+    - W602
+    - W603
+    - W604
+    - W293

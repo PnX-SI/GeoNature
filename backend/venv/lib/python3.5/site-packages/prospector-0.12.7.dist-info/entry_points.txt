@@ -1,0 +1,3 @@
+[console_scripts]
+prospector = prospector.run:main
+

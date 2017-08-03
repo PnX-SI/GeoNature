@@ -1,0 +1,127 @@
+allow-shorthand: false
+
+inherits:
+  - strictness_high
+
+pylint:
+  disable:
+    - invalid-name
+    - bad-classmethod-argument
+    - bad-mcs-method-argument
+    - bad-mcs-classmethod-argument
+    - too-many-lines
+    - multiple-statements
+    - C0322
+    - C0323
+    - C0324
+    - superfluous-parens
+    - bad-whitespace
+    - bad-continuation
+    - no-self-argument
+    - E1103
+    - I0014
+    - no-self-use
+    - too-many-ancestors
+    - too-many-instance-attributes
+    - too-many-return-statements
+    - abstract-class-little-used
+    - exec-used
+    - attribute-defined-outside-init
+    - abstract-method
+    - super-init-not-called
+    - no-init
+    - unnecessary-semicolon
+    - wildcard-import
+    - relative-import
+    - global-variable-undefined
+    - redefined-outer-name
+    - W0701
+    - broad-except
+    - pointless-except
+    - W0713
+    - property-on-old-class
+    - anomalous-backslash-in-string
+    - wrong-import-order
+    - ungrouped-imports
+  options:
+    max-line-length: 159
+
+mccabe:
+  options:
+    max-complexity: 15
+
+pyflakes:
+  disable:
+    - F403
+    - F810
+
+frosted:
+  disable:
+    - E103
+    - E306
+
+pep8:
+  disable:
+    - E111
+    - E121
+    - E122
+    - E123
+    - E124
+    - E125
+    - E126
+    - E127
+    - E128
+    - E133      
+    - E201
+    - E202
+    - E203
+    - E211
+    - E221
+    - E222
+    - E223
+    - E224
+    - E225
+    - E226
+    - E227
+    - E228
+    - E231
+    - E241
+    - E242
+    - E251
+    - E261
+    - E262
+    - E271
+    - E272
+    - E273
+    - E274
+    - E301
+    - E302
+    - E303
+    - E401
+    - E402
+    - E502
+    - E701
+    - E702
+    - E703
+    - E731
+    - N801
+    - N802
+    - N803
+    - N804
+    - N805
+    - N806
+    - W191
+    - W293
+  options:
+    max-line-length: 159
+
+pyroma:
+  disable:
+    - PYR04
+
+pep257:
+  disable:
+    - D100
+    - D101
+    - D102
+    - D103
