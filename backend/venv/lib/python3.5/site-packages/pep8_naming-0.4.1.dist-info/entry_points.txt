@@ -1,0 +1,7 @@
+[flake8.extension]
+N8 = pep8ext_naming:NamingChecker
+
+[flint.extension]
+N80 = pep8ext_naming:NamingChecker
+N81 = pep8ext_naming:NamingChecker
+

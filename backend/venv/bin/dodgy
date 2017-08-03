@@ -1,0 +1,4 @@
+#!/home/quang/geonature_v2/backend/venv/bin/python
+
+import dodgy.run
+dodgy.run.run()

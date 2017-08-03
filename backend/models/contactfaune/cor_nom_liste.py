@@ -14,3 +14,7 @@ class CorNomListeModel(db.Model):
 
     def json(self):
         return {'id_liste': self.id_liste, 'id_nom': self.id_nom}
+
+    @classmethod
+    def find_by_name(cls, id_nom):
+        return cls.query.filter_by(id_nom=id_nom).first()

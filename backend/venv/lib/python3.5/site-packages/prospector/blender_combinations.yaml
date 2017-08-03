@@ -1,0 +1,206 @@
+# 'combinations' is a list of lists of codes to merge together. The earlier
+# codes will take priority, so if all are found, only the first one will be
+# left after blending.
+#
+# Note that since not all tools will necessarily be run, the first message for
+# a line as sorted by the code list will be the one remaining after blending.
+
+combinations:
+    -   # Unused Import
+        - pylint: unused-import
+        - pyflakes: F401
+        - frosted: E101
+
+    -   # Syntax Error
+        - dodgy: diff
+        - pylint: syntax-error
+        - pyflakes: F999
+        - pep8: E901
+        - mccabe: MC0000
+        - frosted: E402
+
+    -   # Undefined local variable
+        - pylint: undefined-variable
+        - pyflakes: F821
+        - frosted: E303
+
+    -   # Unused variable
+        - pylint: unused-variable
+        - vulture: unused-variable
+        - pyflakes: F841
+        - frosted: E307
+
+    -   # Mixed tabs and spaces
+        - pep257: D206
+        - pep8: E101
+        - pylint: indentation-mixture
+
+    -   # Import from __future__ not first import
+        - pylint: misplaced-future
+        - pyflakes: F404
+        - frosted: E207
+
+    -   # Line too long
+        - pep8: E501
+        - pylint: line-too-long
+
+    -   # Trailing whitespace
+        - pep8: W291
+        - pylint: trailing-whitespace
+
+    -   # Blank line contains whitespace
+        - pep8: W293
+        - pylint: trailing-whitespace
+
+    -   # No newline at end of file
+        - pep8: W292
+        - pylint: missing-final-newline
+
+    -   # line ends with semi-colon
+        - pep8: E703
+        - pylint: unnecessary-semicolon
+
+    -   # multiple statements on one line (colon)
+        - pep8: E701
+        - pylint: multiple-statements
+
+    -   # multiple statements on one line (semicolon)
+        - pep8: E702
+        - pylint: multiple-statements
+
+    -   # incorrect indendation
+        - pep257: D207
+        - pep8: E111
+        - pylint: bad-indentation
+
+    -   # incorrect indendation
+        - pep257: D208
+        - pep8: E111
+        - pylint: bad-indentation
+
+    -   # comma not followed by a space
+        - pep8: E231
+        - pylint: C0324
+        - pylint: bad-whitespace
+
+    -   # missing whitespace around operator
+        - pep8: E225
+        - pylint: C0322
+        - pylint: bad-whitespace
+
+    -   # missing whitespace around operator
+        - pep8: E225
+        - pylint: C0323
+        - pylint: bad-whitespace
+
+    -   # undefined name in __all__
+        - pylint: undefined-all-variable
+        - pyflakes: F822
+        - frosted: E304
+
+    -   # duplicate argument in function definition
+        - pylint: duplicate-argument-name
+        - pyflakes: F831
+        - frosted: E206
+
+    -   # redefinition of unused function
+        - pyflakes: F811
+        - pylint: function-redefined
+
+    -   # first argument of a classmethod should be named 'cls'
+        - pep8: N804
+        - pylint: bad-classmethod-argument
+
+    -   # '<>' is deprecated, use '!='
+        - pep8: W603
+        - pylint: W0331
+
+    -   # backticks are deprecated, use 'repr()'
+        - pep8: W604
+        - pylint: W0333
+
+    -   # Redefining name from outer scope
+        - pylint: redefined-outer-name
+        - pyflakes: F810
+        - frosted: E306
+
+    -   # Wildcard import
+        - pylint: wildcard-import
+        - pyflakes: F403
+        - frosted: E103
+
+    -   # Return with argument inside generator
+        - pylint: return-arg-in-generator
+        - frosted: E208
+
+    -   # Too many positional arguments for function call
+        - pylint: too-many-function-args
+        - frosted: E203
+
+    -   # Passing unexpected keyword argument
+        - pylint: unexpected-keyword-arg
+        - frosted: E204
+
+    -   # Missing mandatory keyword argument
+        - pylint: missing-kwoa
+        - frosted: E205
+
+    -   # No exception type(s) specified
+        - pylint: bare-except
+        - frosted: W101
+
+    -   # Spaces around keyword/paramater equals
+        - pep8: E251
+        - pylint: bad-whitespace
+
+    -   # Missing space after a comma
+        - pep8: E231
+        - pylint: bad-whitespace
+
+    -   # redefinition of unused %r from line %r
+        - pyflakes: F811
+        - frosted: E301
+
+    -   # list comprehension redefines %r from line %r
+        - pyflakes: F812
+        - frosted: E302
+
+    -   # import %r from line %r shadowed by loop variable
+        - pyflakes: F402
+        - frosted: E102
+
+    -   # syntax error in doctest
+        - pyflakes: FL0007
+        - frosted: E401
+
+    -   # local variable %r referenced before assignment
+        - pyflakes: F823
+        - frosted: E305
+
+    -   # pep8-naming incorrectly suggests that the first argument of a metaclass __new__ method should be 'cls'
+        - pylint: bad-mcs-classmethod-argument
+        - pep8: N804
+
+    -   # class names should be camelcase
+        - pep8: N801
+        - pylint: invalid-name
+
+    -   # too complex
+        - mccabe: MC0001
+        - pylint: too-many-branches
+
+    -   # pep257 takes preference over pylint documentation warnings
+        - pep257: D100
+        - pylint: missing-docstring
+
+    -
+        - pep257: D101
+        - pylint: missing-docstring
+
+    -
+        - pep257: D102
+        - pylint: missing-docstring
+
+    -
+        - pep257: D103
+        - pylint: missing-docstring

@@ -1,0 +1,16 @@
+allow-shorthand: false
+
+ignore-patterns:
+  - ^docs?/
+
+pylint:
+  disable:
+    - empty-docstring
+    - missing-docstring
+
+frosted:
+  disable:
+    - E401
+
+pep257:
+  run: false
