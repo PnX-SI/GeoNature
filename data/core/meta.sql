@@ -259,6 +259,29 @@ ALTER TABLE ONLY t_nomenclatures
 
 
 ---------
+--VIEWS--
+---------
+
+CREATE OR REPLACE VIEW meta.v_nomenclature_taxonomie AS 
+ SELECT tn.id_type_nomenclature,
+    tn.libelle_type_nomenclature,
+    tn.definition_type_nomenclature,
+    ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     JOIN meta.bib_types_nomenclatures tn ON tn.id_type_nomenclature = n.id_type_nomenclature
+     JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_parent <> 0
+  ORDER BY tn.id_type_nomenclature, ctn.regne, ctn.group2_inpn, n.id_nomenclature;
+
+
+---------
 --DATAS--
 ---------
 INSERT INTO t_programmes VALUES (1, 'faune', 'programme faune', true);
