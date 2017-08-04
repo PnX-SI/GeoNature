@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Resource, Api
 from resources.contactfaune.cor_nom_liste import CorNom, CorNomAll
+from resources.contactfaune.t_releves_cfaune import RelevesCFaune, RelevesCFauneAll
 
 
 db = SQLAlchemy()
@@ -10,13 +11,12 @@ api = Api(app)
 
 app.config.from_pyfile('config.py')
 
-class Student(Resource):
-    def get(self, name):
-        return {'student': name}
-
-api.add_resource(Student, '/student/<string:name>')
 api.add_resource(CorNomAll, '/cornoms')
 api.add_resource(CorNom, '/cornoms/<string:name>')
+
+api.add_resource(RelevesCFauneAll, '/releves_cfaunes')
+api.add_resource(RelevesCFaune, '/releves_cfaunes/<string:id>')
+
 
 if __name__ == '__main__':
     db.init_app(app)
