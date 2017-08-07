@@ -26,7 +26,10 @@ CREATE TABLE cor_stade_sexe_effectif (
     id_occurence_cfaune bigint NOT NULL,
     id_nomenclature_stade_vie integer NOT NULL,
     id_nomenclature_sexe integer NOT NULL,
-    effectif integer
+    id_nomenclature_obj_denbr integer NOT NULL,
+    id_nomenclature_type_denbr integer,
+    denombrement_min integer,
+    denombrement_max integer,
 );
 
 
@@ -158,6 +161,12 @@ ALTER TABLE ONLY t_occurences_cfaune
 ALTER TABLE ONLY t_occurences_cfaune
     ADD CONSTRAINT fk_t_occurences_cfaune_statut_bio FOREIGN KEY (id_nomenclature_statut_bio) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY t_occurences_cfaune
+    ADD CONSTRAINT fk_t_occurences_cfaune_obj_denbr FOREIGN KEY (id_nomenclature_obj_denbr) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_occurences_cfaune
+    ADD CONSTRAINT fk_t_occurences_cfaune_type_denbr FOREIGN KEY (id_nomenclature_type_denbr) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 --------------
 --CONSTRAINS--
 --------------
@@ -169,6 +178,12 @@ ALTER TABLE t_occurences_cfaune
 
 ALTER TABLE t_occurences_cfaune
   ADD CONSTRAINT check_t_releves_cfaune_statut_bio CHECK (meta.check_type_nomenclature(id_nomenclature_statut_bio,13));
+  
+ALTER TABLE t_occurences_cfaune
+  ADD CONSTRAINT check_t_releves_cfaune_obj_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_obj_denbr,6));
+
+ALTER TABLE t_occurences_cfaune
+  ADD CONSTRAINT check_t_releves_cfaune_type_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_type_denbr,21));
 
 
 ALTER TABLE ONLY t_releves_cfaune
@@ -248,6 +263,36 @@ CREATE OR REPLACE VIEW contactfaune.v_sexe AS
   WHERE n.id_type_nomenclature = 9 AND n.id_parent <> 0;
 --USAGE : 
 --SELECT * FROM contactfaune.v_sexe WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW contactfaune.v_objet_denbr AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 6 AND n.id_parent <> 0;
+--USAGE : 
+--SELECT * FROM contactfaune.v_objet_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW contactfaune.v_type_denbr AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 21 AND n.id_parent <> 0;
+--USAGE : 
+--SELECT * FROM contactfaune.v_type_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
 CREATE OR REPLACE VIEW contactfaune.v_meth_obs AS 
  SELECT ctn.regne,

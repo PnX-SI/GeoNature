@@ -1,4 +1,4 @@
---
+<--></-->
 -- PostgreSQL database dump
 --
 
@@ -40,7 +40,7 @@ INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_t
 INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (18, 'STATUT_OBS', 'Statut d''observation', 'Nomenclature des statuts d''observation.', 'Validé', '2013-12-05 00:00:00', '2016-03-24 00:00:00');
 INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (19, 'STATUT_SOURCE', 'Statut de la source', 'Nomenclature des statuts possibles de la source.', 'Validé', '2013-12-04 00:00:00', '2013-12-04 00:00:00');
 INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (20, 'TYP_ATTR', 'Type de l''attribut', 'Nomenclature des types d''attributs additionnels.', 'Validé', '2015-09-16 00:00:00', '2015-12-07 00:00:00');
-INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (21, 'DENBR', 'Type de dénombrement', 'Nomenclature des types de dénombrement possibles (comptage, estimation...)', 'Validé', '2014-01-22 00:00:00', '2015-12-16 00:00:00');
+INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (21, 'TYP_DENBR', 'Type de dénombrement', 'Nomenclature des types de dénombrement possibles (comptage, estimation...)', 'Validé', '2014-01-22 00:00:00', '2015-12-16 00:00:00');
 INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (22, 'TYP_EN', 'Type d''espace naturel', 'Nomenclature des types d''espaces naturels.', 'Validé', '2014-01-22 00:00:00', '2016-06-15 00:00:00');
 INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (23, 'TYP_INF_GEO', 'Type d''information géographique', 'Nomenclature des types d''information géographique dans le cas de l''utilisation d''un rattachement à un objet géographique (commune, département, espace naturel, masse d''eau...).', 'Validé', '2015-09-18 00:00:00', '2015-12-16 00:00:00');
 INSERT INTO bib_types_nomenclatures (id_type_nomenclature, mnemonique, libelle_type_nomenclature, definition_type_nomenclature, statut_type_nomenclature, date_create, date_update) VALUES (24, 'TYP_GRP', 'Type de regroupement', 'Nomenclature listant les valeurs possibles pour le type de regroupement.', 'Validé', '2015-06-09 00:00:00', '2015-12-07 00:00:00');
@@ -111,7 +111,7 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclat
 INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (83, 14, 'METH_OBS', 'METH_OBS', 'Méthodes d''observation', 'Nomenclature des méthodes d''observation, indiquant de quelle manière ou avec quel indice on a pu observer le sujet.', 'GeoNature', 0, '014', '2017-06-15 13:55:01.757403', NULL, true);
 INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (98, 18, 'STATUT_OBS', 'STATUT_OBS', 'Statut d''observation', 'Nomenclature des statuts d''observation.', 'GeoNature', 0, '018', '2017-06-15 15:44:29.136533', NULL, true);
 INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (102, 20, 'TYP_ATTR', 'TYP_ATTR', 'Type de l''attribut', 'Nomenclature des types d''attributs additionnels.', 'GeoNature', 0, '020', '2017-06-15 15:47:46.088312', NULL, true);
-INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (105, 21, 'DENBR', 'DENBR', 'Type de dénombrement', 'Nomenclature des types de dénombrement possibles (comptage, estimation...)', 'GeoNature', 0, '021', '2017-06-15 15:50:10.679957', NULL, true);
+INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (105, 21, 'TYP_DENBR', 'TYP_DENBR', 'Type de dénombrement', 'Nomenclature des types de dénombrement possibles (comptage, estimation...)', 'GeoNature', 0, '021', '2017-06-15 15:50:10.679957', NULL, true);
 INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (175, 7, 'ETA_BIO', 'ETA_BIO', 'Etat biologique de l''observation', 'Nomenclature des états biologiques de l''observation.', 'GeoNature', 0, '007', '2017-06-15 16:40:08.476652', NULL, true);
 INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (164, 6, 'OBJ_DENBR', 'OBJ_DENBR', 'Objet du dénombrement', 'Nomenclature des objets qui peuvent être dénombrés', 'GeoNature', 0, '006', '2017-06-15 16:34:14.436954', NULL, true);
 INSERT INTO t_nomenclatures (id_nomenclature, id_type_nomenclature, cd_nomenclature, mnemonique, libelle_nomenclature, definition_nomenclature, statut_nomenclature, id_parent, hierarchie, date_create, date_update, actif) VALUES (157, 5, 'NIV_PRECIS', 'NIV_PRECIS', 'Niveaux de précision de diffusion souhaités', 'Nomenclature des niveaux de précision de diffusion souhaités par le producteur.', 'GeoNature', 0, '005', '2017-06-15 16:32:42.005049', NULL, true);
@@ -1116,6 +1116,94 @@ INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Mammifères', now()
 INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Mammifères', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Mammifères', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Mammifères', now(), NULL);
+
+--TODO : "Ascidies"
+--TODO : "Myriapodes
+--TODO : "Plathelminthes"
+
+
+------------------------
+--Type de dénombrement--
+------------------------
+INSERT INTO cor_taxref_nomenclature VALUES (106, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (107, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (108, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (109, 'all', 'all', now(), NULL);
+
+
+-------------------------
+--Objet du dénombrement--
+-------------------------
+INSERT INTO cor_taxref_nomenclature VALUES (165, 'all', 'all', now(), NULL);
+
+
+INSERT INTO cor_taxref_nomenclature VALUES (166, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (171, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (172, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (173, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (174, 'Plantae', 'all', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (166, 'Fungi', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (174, 'Fungi', 'all', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (166, 'Animalia', 'all', now(), NULL);
+
+
+--TODO : "Bacteria"
+--TODO : "Chromista"
+--TODO : "Protozoa"
+
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Bivalves', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Insectes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Insectes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (169, 'Animalia', 'Insectes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Insectes', now(), NULL);
+
+--TODO : "Acanthocéphales"
+
+INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Céphalopodes', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Reptiles', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Reptiles', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Crustacés', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Crustacés', now(), NULL);
+
+--TODO : "Scléractiniaires"
+--TODO : "Hydrozoaires"
+
+INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (169, 'Animalia', 'Oiseaux', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Oiseaux', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Poissons', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Poissons', now(), NULL);
+
+--TODO : "Némertes"
+
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Arachnides', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Arachnides', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Gastéropodes', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Gastéropodes', now(), NULL);
+
+
+INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Amphibiens', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Amphibiens', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Amphibiens', now(), NULL);
+
+--TODO : "Octocoralliaires"
+--TODO : "Entognathes"
+--TODO : "Annélides"
+--TODO : "Pycnogonides"
+--TODO : "Nématodes"
+--TODO : "Ascidies"
+--TODO : "Plathelminthes"
+
+INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Mammifères', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Mammifères', now(), NULL);
 
 --TODO : "Ascidies"
 --TODO : "Myriapodes
