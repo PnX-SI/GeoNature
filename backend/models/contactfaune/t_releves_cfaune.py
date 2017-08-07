@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask import json
 from geoalchemy2 import Geometry
 
 db = SQLAlchemy()
@@ -29,7 +30,7 @@ class RelevesCFauneModel(db.Model):
         self.id_releve_cfaune = id_releve_cfaune
     
     def json(self):
-        return {column.key: getattr(self, column.key) if not isinstance(column.type, db.Date) else str(getattr(self, column.key)) for column in self.__table__.columns }
+        return {column.key: getattr(self, column.key) if not isinstance(column.type, db.Date) else json.dumps(getattr(self, column.key)) for column in self.__table__.columns }
 
     @classmethod
     def find_by_id(cls, id_releve_cfaune):

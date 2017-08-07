@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class CorNomListeModel(db.Model):
+class CorNomListeTaxonomieModel(db.Model):
     __tablename__ = 'cor_nom_liste'
     __table_args__ = {'schema':'taxonomie'}
     id_liste = db.Column(db.Integer, db.ForeignKey("taxonomie.bib_listes.id_liste"), nullable=False, primary_key=True)
