@@ -1148,7 +1148,6 @@ INSERT INTO cor_taxref_nomenclature VALUES (174, 'Fungi', 'all', now(), NULL);
 
 INSERT INTO cor_taxref_nomenclature VALUES (166, 'Animalia', 'all', now(), NULL);
 
-
 --TODO : "Bacteria"
 --TODO : "Chromista"
 --TODO : "Protozoa"
@@ -1208,3 +1207,36 @@ INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Mammifères', now(
 --TODO : "Ascidies"
 --TODO : "Myriapodes
 --TODO : "Plathelminthes"
+
+--------------
+--Naturalité--
+--------------
+INSERT INTO cor_taxref_nomenclature VALUES (181, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (182, 'all', 'all', now(), NULL);
+
+
+INSERT INTO cor_taxref_nomenclature VALUES (183, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (184, 'Plantae', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (186, 'Plantae', 'all', now(), NULL);
+
+
+INSERT INTO cor_taxref_nomenclature VALUES (183, 'Fungi', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (184, 'Fungi', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (186, 'Fungi', 'all', now(), NULL);
+
+INSERT INTO cor_taxref_nomenclature VALUES (183, 'Animalia', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (185, 'Animalia', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (186, 'Animalia', 'all', now(), NULL);
+
+--TODO : "Bacteria"
+--TODO : "Chromista"
+--TODO : "Protozoa"
+
+
+--------------------
+--Preuve existance--
+--------------------
+INSERT INTO cor_taxref_nomenclature VALUES (91, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (92, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (93, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (94, 'all', 'all', now(), NULL);
