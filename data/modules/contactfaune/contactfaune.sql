@@ -114,14 +114,14 @@ ALTER TABLE ONLY t_releves_cfaune
 --FOREIGN KEY--
 ---------------
 ALTER TABLE ONLY cor_role_releve_cfaune
-    ADD CONSTRAINT fk_cor_role_releve_cfaune_t_releves_cfaune FOREIGN KEY (id_releve_cfaune) REFERENCES t_releves_cfaune(id_releve_cfaune) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_role_releve_cfaune_t_releves_cfaune FOREIGN KEY (id_releve_cfaune) REFERENCES t_releves_cfaune(id_releve_cfaune) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_role_releve_cfaune
     ADD CONSTRAINT fk_cor_role_releve_cfaune_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
-    ADD CONSTRAINT fk_cor_stade_effectif_id_taxon FOREIGN KEY (id_occurence_cfaune) REFERENCES t_occurences_cfaune(id_occurence_cfaune) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_stade_effectif_id_taxon FOREIGN KEY (id_occurence_cfaune) REFERENCES t_occurences_cfaune(id_occurence_cfaune) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
     ADD CONSTRAINT fk_cor_stade_sexe_effectif_sexe FOREIGN KEY (id_nomenclature_sexe) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -144,7 +144,7 @@ ALTER TABLE ONLY t_releves_cfaune
 
 
 ALTER TABLE ONLY t_occurences_cfaune
-    ADD CONSTRAINT fk_t_occurences_cfaune_t_releves_cfaune FOREIGN KEY (id_releve_cfaune) REFERENCES t_releves_cfaune(id_releve_cfaune) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurences_cfaune_t_releves_cfaune FOREIGN KEY (id_releve_cfaune) REFERENCES t_releves_cfaune(id_releve_cfaune) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY t_occurences_cfaune
     ADD CONSTRAINT fk_t_occurences_cfaune_t_roles FOREIGN KEY (id_valideur) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
@@ -162,7 +162,7 @@ ALTER TABLE ONLY t_occurences_cfaune
 --CONSTRAINS--
 --------------
 ALTER TABLE ONLY t_occurences_cfaune
-    ADD CONSTRAINT t_occurences_cfaune_cd_nom_isinbib_noms_chek CHECK (taxonomie.check_is_inbibnoms(cd_nom));
+    ADD CONSTRAINT check_t_occurences_cfaune_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom));
 
 ALTER TABLE t_occurences_cfaune
   ADD CONSTRAINT check_t_releves_cfaune_meth_obs CHECK (meta.check_type_nomenclature(id_nomenclature_meth_obs,14));
@@ -172,10 +172,10 @@ ALTER TABLE t_occurences_cfaune
 
 
 ALTER TABLE ONLY t_releves_cfaune
-    ADD CONSTRAINT t_releves_cfaune_check_altitude_max CHECK (altitude_max >= altitude_min);
+    ADD CONSTRAINT check_t_releves_cfaune_altitude_max CHECK (altitude_max >= altitude_min);
 
 ALTER TABLE ONLY t_releves_cfaune
-    ADD CONSTRAINT t_releves_cfaune_check_date_max CHECK (date_max >= date_min);
+    ADD CONSTRAINT check_t_releves_cfaune_date_max CHECK (date_max >= date_min);
 
 ALTER TABLE t_releves_cfaune
   ADD CONSTRAINT check_t_releves_cfaune_technique_obs CHECK (meta.check_type_nomenclature(id_nomenclature_technique_obs,100));
