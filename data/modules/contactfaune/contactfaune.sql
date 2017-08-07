@@ -357,6 +357,20 @@ CREATE OR REPLACE VIEW contactfaune.v_naturalite AS
 --USAGE : 
 --SELECT * FROM contactfaune.v_naturalite WHERE (regne = 'Animalia' OR regne = 'all');
 
+CREATE OR REPLACE VIEW contactfaune.v_preuve_exist AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 15 AND n.id_parent <> 0;
+--USAGE : 
+--SELECT * FROM contactfaune.v_preuve_exist WHERE (regne = 'Animalia' OR regne = 'all');
   
 
 ---------
