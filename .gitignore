@@ -2,5 +2,5 @@
 settings.ini
 log/*
 
-backend/venv/*
-__pycache__
+venv/*
+__pycache__/*
