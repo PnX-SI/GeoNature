@@ -7,8 +7,8 @@ class RelevesCFauneModel(db.Model):
     __tablename__       = 't_releves_cfaune'
     __table_args__      = {'schema':'contactfaune'}
     id_releve_cfaune    = db.Column(db.BigInteger, primary_key=True)
-    id_lot              = db.Column(db.Integer)
-    id_numerisateur     = db.Column(db.Integer)
+    id_lot              = db.Column(db.Integer, db.ForeignKey("meta.t_lots.id_lot"), nullable=False)
+    id_numerisateur     = db.Column(db.Integer, db.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
     date_min            = db.Column(db.Date, nullable=False)
     date_max            = db.Column(db.Date, nullable=False)
     heure_obs           = db.Column(db.Integer)
@@ -17,13 +17,13 @@ class RelevesCFauneModel(db.Model):
     altitude_max        = db.Column(db.Integer)
     saisie_initiale     = db.Column(db.Text(length='20'))
     supprime            = db.Column(db.BOOLEAN(create_constraint=False))
-    date_insert         = db.Column(db.Date, nullable=False)
-    date_update         = db.Column(db.Date, nullable=False)
+    date_insert         = db.Column(db.Date)
+    date_update         = db.Column(db.Date)
     commentaire         = db.Column(db.Text)
     the_geom_local      = db.Column(Geometry)
     the_geom_3857       = db.Column(Geometry)
-    id_nomenclature_technique_obs   = db.Column(db.Integer, nullable=False)
-    id_nomenclature_eta_bio         = db.Column(db.Integer, nullable=False)
+    id_nomenclature_technique_obs   = db.Column(db.Integer, db.ForeignKey("meta.t_nomenclatures.id_nomenclature"), nullable=False)
+    id_nomenclature_eta_bio         = db.Column(db.Integer, db.ForeignKey("meta.t_nomenclatures.id_nomenclature"), nullable=False)
 
     def __init__(self, id_releve_cfaune):
         self.id_releve_cfaune = id_releve_cfaune
