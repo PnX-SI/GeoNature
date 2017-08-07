@@ -29,7 +29,7 @@ CREATE TABLE cor_stade_sexe_effectif (
     id_nomenclature_obj_denbr integer NOT NULL,
     id_nomenclature_type_denbr integer,
     denombrement_min integer,
-    denombrement_max integer,
+    denombrement_max integer
 );
 
 
