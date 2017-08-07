@@ -12,6 +12,4 @@ class RelevesCFaune(Resource):
 
 class RelevesCFauneAll(Resource):
     def get(self):
-        # return {'releves_cfaunes': list(map(lambda x: x.json(), RelevesCFauneModel.query.all()))}
-        # return {'releves_cfaunes':  [x.json() for x in RelevesCFauneModel.query.all()]}
         return [x.json() for x in RelevesCFauneModel.query.all()]
