@@ -13,13 +13,17 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
+--Vue materialisée permettant d'améliorer fortement les performances des contraintes check sur les champ filtres 'regne' et 'group2_inpn'  
+
+CREATE MATERIALIZED VIEW taxonomie.vm_regne AS (SELECT DISTINCT regne FROM taxonomie.taxref);
+CREATE MATERIALIZED VIEW taxonomie.vm_group2_inpn AS (SELECT DISTINCT group2_inpn FROM taxonomie.taxref);
 
 CREATE OR REPLACE FUNCTION taxonomie.check_is_group2inpn(mygroup text)
   RETURNS boolean AS
 $BODY$
 --fonction permettant de vérifier si un texte proposé correspond à un group2_inpn dans la table taxref
   BEGIN
-    IF mygroup IN(SELECT DISTINCT group2_inpn FROM taxonomie.taxref) OR mygroup IS NULL THEN
+    IF mygroup IN(SELECT group2_inpn FROM taxonomie.vm_group2_inpn) OR mygroup IS NULL THEN
       RETURN true;
     ELSE
       RETURN false;
@@ -35,7 +39,7 @@ CREATE OR REPLACE FUNCTION taxonomie.check_is_regne(myregne text)
 $BODY$
 --fonction permettant de vérifier si un texte proposé correspond à un regne dans la table taxref
   BEGIN
-    IF myregne IN(SELECT DISTINCT regne FROM taxonomie.taxref) OR myregne IS NULL THEN
+    IF myregne IN(SELECT regne FROM taxonomie.vm_regne) OR myregne IS NULL THEN
       return true;
     ELSE
       RETURN false;
