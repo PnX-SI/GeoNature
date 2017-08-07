@@ -1,4 +1,5 @@
 // Placez vos paramètres dans ce fichier pour remplacer les paramètres par défaut et les paramètres utilisateur.
 {
-    "python.pythonPath": "/Users/kmilligan/.virtualenvs/flask/bin/python"
+    "python.pythonPath": "/Users/kmilligan/.virtualenvs/flask/bin/python",
+    "git.ignoreLimitWarning": true
 }
