@@ -1,3 +1,0 @@
-# Dummy profile used for 'strictness: none', which is necessary to
-# prevent a default of medium if no strictness is specified.
-allow-shorthand: false
