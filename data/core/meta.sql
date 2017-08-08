@@ -95,6 +95,20 @@ $$;
 
 SET default_with_oids = false;
 
+
+
+CREATE TABLE bib_types_nomenclatures (
+    id_type_nomenclature integer NOT NULL,
+    mnemonique character varying(255) NOT NULL,
+    libelle_type_nomenclature character varying(255),
+    definition_type_nomenclature text,
+    source_type_nomenclature character varying(50),
+    statut_type_nomenclature character varying(20),
+    date_create timestamp without time zone DEFAULT now(),
+    date_update timestamp without time zone DEFAULT now()
+);
+COMMENT ON TABLE bib_types_nomenclatures IS 'Description de la liste des nomenclatures du SINP.';
+
 CREATE TABLE t_nomenclatures (
     id_nomenclature integer NOT NULL,
     id_type_nomenclature integer,
@@ -102,7 +116,7 @@ CREATE TABLE t_nomenclatures (
     mnemonique character varying(255) NOT NULL,
     libelle_nomenclature character varying(255),
     definition_nomenclature text,
-    source character varying(255),
+    source_nomenclature character varying(50),
     statut_nomenclature character varying(20),
     id_parent integer,
     hierarchie character varying(255),
@@ -117,18 +131,6 @@ CREATE TABLE bib_nomenclatures_relations (
     id_nomenclature_r integer NOT NULL,
     type_relation character varying(250) NOT NULL
 );
-
-
-CREATE TABLE bib_types_nomenclatures (
-    id_type_nomenclature integer NOT NULL,
-    mnemonique character varying(255) NOT NULL,
-    libelle_type_nomenclature character varying(255),
-    definition_type_nomenclature text,
-    statut_type_nomenclature character varying(20),
-    date_create timestamp without time zone DEFAULT now(),
-    date_update timestamp without time zone DEFAULT now()
-);
-COMMENT ON TABLE bib_types_nomenclatures IS 'Description de la liste des nomenclatures du SINP.';
 
 
 CREATE TABLE cor_role_droit_entite (
