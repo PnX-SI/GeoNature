@@ -77,6 +77,7 @@ CREATE TABLE t_occurences_cfaune (
     id_nomenclature_statut_bio integer DEFAULT 30,
     id_nomenclature_naturalite integer DEFAULT 182,
     id_nomenclature_preuve_exist integer DEFAULT 91,
+    id_nomenclature_statut_obs integer DEFAULT 101,
     id_valideur integer,
     determinateur character varying(255),
     methode_determination character varying(255),
@@ -157,6 +158,9 @@ ALTER TABLE ONLY t_occurences_cfaune
 ALTER TABLE ONLY t_occurences_cfaune
     ADD CONSTRAINT fk_t_occurences_cfaune_preuve_exist FOREIGN KEY (id_nomenclature_preuve_exist) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY t_occurences_cfaune
+    ADD CONSTRAINT fk_t_occurences_cfaune_id_statut_obs FOREIGN KEY (id_nomenclature_statut_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
     ADD CONSTRAINT fk_cor_stade_effectif_id_taxon FOREIGN KEY (id_occurence_cfaune) REFERENCES t_occurences_cfaune(id_occurence_cfaune) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -193,19 +197,6 @@ ALTER TABLE t_releves_cfaune
   ADD CONSTRAINT check_t_releves_cfaune_technique_obs CHECK (meta.check_type_nomenclature(id_nomenclature_technique_obs,100));
 
 
-ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_stade_vie CHECK (meta.check_type_nomenclature(id_nomenclature_stade_vie,10));
-
-ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_sexe CHECK (meta.check_type_nomenclature(id_nomenclature_sexe,9));
-
-ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_obj_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_obj_denbr,6));
-
-ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_typ_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_typ_denbr,21));
-
-
 ALTER TABLE ONLY t_occurences_cfaune
     ADD CONSTRAINT check_t_occurences_cfaune_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom));
 
@@ -223,6 +214,23 @@ ALTER TABLE t_occurences_cfaune
 
 ALTER TABLE t_occurences_cfaune
   ADD CONSTRAINT check__occurences_cfaune_preuve_exist CHECK (meta.check_type_nomenclature(id_nomenclature_preuve_exis,15));
+
+ALTER TABLE t_occurences_cfaune
+  ADD CONSTRAINT check__occurences_cfaune_statut_obs CHECK (meta.check_type_nomenclature(id_nomenclature_statut_obs,18));
+
+
+ALTER TABLE cor_stade_sexe_effectif
+  ADD CONSTRAINT check_t_releves_cfaune_stade_vie CHECK (meta.check_type_nomenclature(id_nomenclature_stade_vie,10));
+
+ALTER TABLE cor_stade_sexe_effectif
+  ADD CONSTRAINT check_t_releves_cfaune_sexe CHECK (meta.check_type_nomenclature(id_nomenclature_sexe,9));
+
+ALTER TABLE cor_stade_sexe_effectif
+  ADD CONSTRAINT check_t_releves_cfaune_obj_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_obj_denbr,6));
+
+ALTER TABLE cor_stade_sexe_effectif
+  ADD CONSTRAINT check_t_releves_cfaune_typ_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_typ_denbr,21));
+
 
 ---------
 --VIEWS--
@@ -370,7 +378,22 @@ CREATE OR REPLACE VIEW contactfaune.v_preuve_exist AS
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 15 AND n.id_parent <> 0;
 --USAGE : 
---SELECT * FROM contactfaune.v_preuve_exist WHERE (regne = 'Animalia' OR regne = 'all');
+--SELECT * FROM contactfaune.v_preuve_exist;
+
+CREATE OR REPLACE VIEW contactfaune.v_statut_obs AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 18 AND n.id_parent <> 0;
+--USAGE : 
+--SELECT * FROM contactfaune.v_statut_obs;
   
 
 ---------
@@ -381,5 +404,5 @@ INSERT INTO meta.t_lots  VALUES (1, 'contactfaune', 'Observation aléatoire de l
 
 INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, actif) VALUES (1, 'contact faune', 'Données issues du contact faune', 'contactfaune.t_occurences_cfaune.id_occurence_cfaune', '/cfaune', NULL, NULL, 'FAUNE', true);
 
-INSERT INTO t_releves_cfaune VALUES(1,1,343,177,1,'2017-01-01','2017-01-01',12,'05100',5,10,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
+INSERT INTO t_releves_cfaune VALUES(1,1,343,1,'2017-01-01','2017-01-01',12,'05100',5,10,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
 SELECT pg_catalog.setval('t_releves_cfaune_id_releve_cfaune_seq', 2, true);

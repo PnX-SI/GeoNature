@@ -1240,3 +1240,11 @@ INSERT INTO cor_taxref_nomenclature VALUES (91, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (92, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (93, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (94, 'all', 'all', now(), NULL);
+
+
+---------------------------
+--Statut de l'observation--
+---------------------------
+INSERT INTO cor_taxref_nomenclature VALUES (99, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (100, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (101, 'all', 'all', now(), NULL);
