@@ -16,22 +16,6 @@ SET default_with_oids = false;
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
-CREATE TABLE cor_role_releve_cfaune (
-    id_releve_cfaune bigint NOT NULL,
-    id_role integer NOT NULL
-);
-
-
-CREATE TABLE cor_stade_sexe_effectif (
-    id_occurrence_cfaune bigint NOT NULL,
-    id_nomenclature_stade_vie integer NOT NULL,
-    id_nomenclature_sexe integer NOT NULL,
-    id_nomenclature_obj_denbr integer NOT NULL DEFAULT 166,
-    id_nomenclature_typ_denbr integer DEFAULT 107,
-    denombrement_min integer,
-    denombrement_max integer
-);
-
 
 CREATE TABLE t_releves_cfaune (
     id_releve_cfaune bigint NOT NULL,
@@ -79,6 +63,7 @@ CREATE TABLE t_occurrences_cfaune (
     id_nomenclature_preuve_exist integer DEFAULT 91,
     id_nomenclature_statut_obs integer DEFAULT 101,
     id_nomenclature_statut_valid integer DEFAULT 347,
+    id_nomenclature_niv_precis integer DEFAULT 163,
     id_valideur integer,
     determinateur character varying(255),
     methode_determination character varying(255),
@@ -88,7 +73,6 @@ CREATE TABLE t_occurrences_cfaune (
     num_prelevement_cfaune text,
     preuve_numerique text,
     preuve_non_numerique text,
-
     supprime boolean DEFAULT false NOT NULL,
     date_insert timestamp without time zone,
     date_update timestamp without time zone,
@@ -104,6 +88,23 @@ CREATE SEQUENCE t_occurrences_cfaune_id_occurrence_cfaune_seq
 ALTER SEQUENCE t_occurrences_cfaune_id_occurrence_cfaune_seq OWNED BY t_occurrences_cfaune.id_occurrence_cfaune;
 ALTER TABLE ONLY t_occurrences_cfaune ALTER COLUMN id_occurrence_cfaune SET DEFAULT nextval('t_occurrences_cfaune_id_occurrence_cfaune_seq'::regclass);
 SELECT pg_catalog.setval('t_occurrences_cfaune_id_occurrence_cfaune_seq', 1, false);
+
+
+CREATE TABLE cor_stade_sexe_effectif (
+    id_occurrence_cfaune bigint NOT NULL,
+    id_nomenclature_stade_vie integer NOT NULL,
+    id_nomenclature_sexe integer NOT NULL,
+    id_nomenclature_obj_denbr integer NOT NULL DEFAULT 166,
+    id_nomenclature_typ_denbr integer DEFAULT 107,
+    denombrement_min integer,
+    denombrement_max integer
+);
+
+
+CREATE TABLE cor_role_releve_cfaune (
+    id_releve_cfaune bigint NOT NULL,
+    id_role integer NOT NULL
+);
 
 
 ---------------
@@ -165,6 +166,9 @@ ALTER TABLE ONLY t_occurrences_cfaune
 ALTER TABLE ONLY t_occurrences_cfaune
     ADD CONSTRAINT fk_t_occurrences_cfaune_statut_valid FOREIGN KEY (id_nomenclature_statut_valid) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY t_occurrences_cfaune
+    ADD CONSTRAINT fk_t_occurrences_cfaune_niv_precis FOREIGN KEY (id_nomenclature_niv_precis) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
     ADD CONSTRAINT fk_cor_stade_effectif_id_taxon FOREIGN KEY (id_occurrence_cfaune) REFERENCES t_occurrences_cfaune(id_occurrence_cfaune) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -225,6 +229,9 @@ ALTER TABLE t_occurrences_cfaune
 ALTER TABLE t_occurrences_cfaune
   ADD CONSTRAINT check__occurrences_cfaune_statut_valid CHECK (meta.check_type_nomenclature(id_nomenclature_statut_valid,101));
 
+ALTER TABLE t_occurrences_cfaune
+  ADD CONSTRAINT check__occurrences_cfaune_niv_precis CHECK (meta.check_type_nomenclature(id_nomenclature_niv_precis,5));
+
 
 ALTER TABLE cor_stade_sexe_effectif
   ADD CONSTRAINT check_t_releves_cfaune_stade_vie CHECK (meta.check_type_nomenclature(id_nomenclature_stade_vie,10));
@@ -237,6 +244,56 @@ ALTER TABLE cor_stade_sexe_effectif
 
 ALTER TABLE cor_stade_sexe_effectif
   ADD CONSTRAINT check_t_releves_cfaune_typ_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_typ_denbr,21));
+
+
+----------------------
+--FUNCTIONS TRIGGERS--
+----------------------
+CREATE OR REPLACE FUNCTION insert_occurrences_cfaune()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    idsensibilite integer;
+BEGIN
+    --calcul de la valeur de la sensibilité
+    SELECT INTO idsensibilite taxonomie.calcul_sensibilite(new.cd_nom,new.id_nomenclature_meth_obs);
+    new.id_nomenclature_niv_precis = idsensibilite;
+    RETURN NEW;             
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION update_occurrences_cfaune()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+    idsensibilite integer;
+BEGIN
+    --calcul de la valeur de la sensibilité
+    SELECT INTO idsensibilite taxonomie.calcul_sensibilite(new.cd_nom,new.id_nomenclature_meth_obs);
+    new.id_nomenclature_niv_precis = idsensibilite;
+    RETURN NEW;             
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_insert_occurrences_cfaune
+  BEFORE INSERT
+  ON t_occurrences_cfaune
+  FOR EACH ROW
+  EXECUTE PROCEDURE insert_occurrences_cfaune();
+
+CREATE TRIGGER tri_update_occurrences_cfaune
+  BEFORE INSERT
+  ON t_occurrences_cfaune
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_occurrences_cfaune();
 
 
 ---------
@@ -435,6 +492,23 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_valid AS
   AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_statut_valid;
+
+CREATE OR REPLACE VIEW contactfaune.v_niv_precis AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 5
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM contactfaune.v_statut_valid;
   
 
 ---------
@@ -447,3 +521,5 @@ INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_mo
 
 INSERT INTO t_releves_cfaune VALUES(1,1,343,1,'2017-01-01','2017-01-01',12,'05100',5,10,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
 SELECT pg_catalog.setval('t_releves_cfaune_id_releve_cfaune_seq', 2, true);
+
+INSERT INTO t_roccurrences_cfaune VALUES('1';1;65;177;30;182;91;101;347;163;1;'gil';'gees';60612;'Lynx Boréal';'V9.0';'';'';'poil';FALSE;'';'';'test')
