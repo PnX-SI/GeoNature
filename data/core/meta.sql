@@ -172,7 +172,7 @@ CREATE SEQUENCE t_nomenclatures_id_nomenclature_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE t_nomenclatures_id_nomenclature_seq OWNED BY t_nomenclatures.id_nomenclature;
-
+ALTER TABLE ONLY t_nomenclatures ALTER COLUMN id_nomenclature SET DEFAULT nextval('t_nomenclatures_id_nomenclature_seq'::regclass);
 
 CREATE TABLE t_programmes (
     id_programme integer NOT NULL,
@@ -181,7 +181,8 @@ CREATE TABLE t_programmes (
     actif boolean
 );
 COMMENT ON TABLE t_programmes IS 'Les programmes sont des objets généraux pouvant englober des lots de données et/ou des protocoles (à discuter pour les protocoles). Exemple : ATBI, rapaces, plan national d''action, etc... Un backoffice de geonature V2 permet une gestion des programmes.';
-ALTER TABLE ONLY t_nomenclatures ALTER COLUMN id_nomenclature SET DEFAULT nextval('t_nomenclatures_id_nomenclature_seq'::regclass);
+
+
 
 ---------------
 --PRIMARY KEY--

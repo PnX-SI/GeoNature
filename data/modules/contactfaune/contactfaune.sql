@@ -217,7 +217,7 @@ ALTER TABLE t_occurrences_cfaune
   ADD CONSTRAINT check__occurrences_cfaune_naturalite CHECK (meta.check_type_nomenclature(id_nomenclature_naturalite,8));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_preuve_exist CHECK (meta.check_type_nomenclature(id_nomenclature_preuve_exis,15));
+  ADD CONSTRAINT check__occurrences_cfaune_preuve_exist CHECK (meta.check_type_nomenclature(id_nomenclature_preuve_exist,15));
 
 ALTER TABLE t_occurrences_cfaune
   ADD CONSTRAINT check__occurrences_cfaune_statut_obs CHECK (meta.check_type_nomenclature(id_nomenclature_statut_obs,18));
@@ -254,17 +254,18 @@ AND n.id_parent != 0
 --SELECT * FROM contactfaune.v_technique_obs WHERE regne = 'Plantae';
 
 CREATE OR REPLACE VIEW contactfaune.v_eta_bio AS 
- SELECT 
+  SELECT 
     n.id_nomenclature,
     n.mnemonique,
     n.libelle_nomenclature,
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-  WHERE n.id_type_nomenclature = 7 AND n.id_parent <> 0;
-
-CREATE OR REPLACE VIEW contactfaune.v_stade_vie AS (
+  FROM meta.t_nomenclatures n
+  WHERE n.id_type_nomenclature = 7 
+  AND n.id_parent <> 0
+  AND n.actif = true;
+CREATE OR REPLACE VIEW contactfaune.v_stade_vie AS 
 SELECT 
     ctn.regne,
     ctn.group2_inpn, 
@@ -278,7 +279,7 @@ FROM meta.t_nomenclatures n
 LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type_nomenclature = 10
 AND n.id_parent != 0
-);
+AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_stade_vie WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
@@ -293,7 +294,9 @@ CREATE OR REPLACE VIEW contactfaune.v_sexe AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 9 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 9
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_sexe WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
@@ -308,7 +311,9 @@ CREATE OR REPLACE VIEW contactfaune.v_objet_denbr AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 6 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 6
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_objet_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
@@ -323,7 +328,9 @@ CREATE OR REPLACE VIEW contactfaune.v_type_denbr AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 21 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 21
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_type_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
@@ -338,7 +345,9 @@ CREATE OR REPLACE VIEW contactfaune.v_meth_obs AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 14 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 14
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_meth_obs WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
@@ -353,7 +362,9 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_bio AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 13 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 13
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_statut_bio WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
@@ -368,7 +379,9 @@ CREATE OR REPLACE VIEW contactfaune.v_naturalite AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 8 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 8
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_naturalite WHERE (regne = 'Animalia' OR regne = 'all');
 
@@ -383,7 +396,9 @@ CREATE OR REPLACE VIEW contactfaune.v_preuve_exist AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 15 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 15 
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_preuve_exist;
 
@@ -398,7 +413,9 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_obs AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 18 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 18 
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_statut_obs;
 
@@ -413,7 +430,9 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_valid AS
     n.hierarchie
    FROM meta.t_nomenclatures n
      LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type_nomenclature = 101 AND n.id_parent <> 0;
+  WHERE n.id_type_nomenclature = 101 
+  AND n.id_parent <> 0
+  AND n.actif = true;
 --USAGE : 
 --SELECT * FROM contactfaune.v_statut_valid;
   
