@@ -522,4 +522,4 @@ INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_mo
 INSERT INTO t_releves_cfaune VALUES(1,1,343,1,'2017-01-01','2017-01-01',12,'05100',5,10,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
 SELECT pg_catalog.setval('t_releves_cfaune_id_releve_cfaune_seq', 2, true);
 
-INSERT INTO t_roccurrences_cfaune VALUES('1';1;65;177;30;182;91;101;347;163;1;'gil';'gees';60612;'Lynx Boréal';'V9.0';'';'';'poil';FALSE;'';'';'test')
+INSERT INTO t_occurrences_cfaune VALUES(1,1,65,177,30,182,91,101,347,163,1,'gil','gees',60612,'Lynx Boréal','V9.0','','','poil',FALSE, now(),now(),'test');
