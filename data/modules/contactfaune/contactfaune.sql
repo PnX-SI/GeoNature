@@ -78,6 +78,7 @@ CREATE TABLE t_occurences_cfaune (
     id_nomenclature_naturalite integer DEFAULT 182,
     id_nomenclature_preuve_exist integer DEFAULT 91,
     id_nomenclature_statut_obs integer DEFAULT 101,
+    id_nomenclature_statut_valid integer DEFAULT 347,
     id_valideur integer,
     determinateur character varying(255),
     methode_determination character varying(255),
@@ -87,7 +88,7 @@ CREATE TABLE t_occurences_cfaune (
     num_prelevement_cfaune text,
     preuve_numerique text,
     preuve_non_numerique text,
-    validition integer,
+
     supprime boolean DEFAULT false NOT NULL,
     date_insert timestamp without time zone,
     date_update timestamp without time zone,
@@ -159,7 +160,10 @@ ALTER TABLE ONLY t_occurences_cfaune
     ADD CONSTRAINT fk_t_occurences_cfaune_preuve_exist FOREIGN KEY (id_nomenclature_preuve_exist) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurences_cfaune
-    ADD CONSTRAINT fk_t_occurences_cfaune_id_statut_obs FOREIGN KEY (id_nomenclature_statut_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurences_cfaune_statut_obs FOREIGN KEY (id_nomenclature_statut_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_occurences_cfaune
+    ADD CONSTRAINT fk_t_occurences_cfaune_statut_valid FOREIGN KEY (id_nomenclature_statut_valid) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
@@ -217,6 +221,9 @@ ALTER TABLE t_occurences_cfaune
 
 ALTER TABLE t_occurences_cfaune
   ADD CONSTRAINT check__occurences_cfaune_statut_obs CHECK (meta.check_type_nomenclature(id_nomenclature_statut_obs,18));
+
+ALTER TABLE t_occurences_cfaune
+  ADD CONSTRAINT check__occurences_cfaune_statut_valid CHECK (meta.check_type_nomenclature(id_nomenclature_statut_valid,101));
 
 
 ALTER TABLE cor_stade_sexe_effectif
@@ -394,6 +401,21 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_obs AS
   WHERE n.id_type_nomenclature = 18 AND n.id_parent <> 0;
 --USAGE : 
 --SELECT * FROM contactfaune.v_statut_obs;
+
+CREATE OR REPLACE VIEW contactfaune.v_statut_valid AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM meta.t_nomenclatures n
+     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 101 AND n.id_parent <> 0;
+--USAGE : 
+--SELECT * FROM contactfaune.v_statut_valid;
   
 
 ---------
