@@ -1,10 +1,21 @@
+.map-card {
+    min-height: 87vh;
+    margin: -25px -15px -15px -15px;
+}
+
 #map {
     position: absolute;
     top:0;
     bottom:0;
-    width:100%;
-    // border-radius: 2px 2px 2px 2px;
+    left: 0;
+    right: 0;
+    width: inherit;
+    height: inherit;
+    // margin-top: 60px;
+    border-radius: 2px 2px 2px 2px;
 }
-.map-size {
-    min-height: 60vh;
+
+.map-header {
+    margin-top: -20px;
+    margin-left: -15px;
 }

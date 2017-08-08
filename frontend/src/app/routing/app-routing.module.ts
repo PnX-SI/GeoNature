@@ -11,7 +11,8 @@ import { AuthGuard } from '../components/auth/auth-guard.service';
 const appRoutes: Routes = [
   { path: '', redirectTo: '/accueil', pathMatch: 'full' },
   { path: 'accueil', component: AccueilComponent },
-  { path: 'contact-faune', component: ContactFauneComponent, canActivate: [AuthGuard]},
+  // { path: 'contact-faune', component: ContactFauneComponent, canActivate: [AuthGuard]},
+  { path: 'contact-faune', component: ContactFauneComponent},
   { path: 'contact-flore', component: ContactFloreComponent, canActivate: [AuthGuard]},
   { path: '**', component: PageNotFoundComponent }
 ];

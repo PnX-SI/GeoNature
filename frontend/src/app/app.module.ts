@@ -31,6 +31,7 @@ import { MapComponent } from './components/map/map.component';
 import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
+import { CfauneFormComponent } from './apps/contact-faune/cfaune-form/cfaune-form.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -44,7 +45,8 @@ export function HttpLoaderFactory(http: Http) {
     SidenavItemsComponent,
     PageNotFoundComponent,
     MapComponent,
-    SigninComponent
+    SigninComponent,
+    CfauneFormComponent
   ],
   imports: [
     BrowserModule,
