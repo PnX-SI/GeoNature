@@ -10,7 +10,6 @@ SET search_path = meta, pg_catalog;
 
 DELETE FROM t_nomenclatures;
 DELETE FROM bib_types_nomenclatures;
-DELETE FROM t_programmes;
 DELETE FROM t_lots;
 INSERT INTO bib_types_nomenclatures VALUES (2, 'DS_PUBLIQUE', 'Code d''origine de la donnée', 'Nomenclature des codes d''origine de la donnée : publique, privée, mixte...', 'SINP', 'Validé',  '2013-12-05 00:00:00', '2013-12-05 00:00:00');
 INSERT INTO bib_types_nomenclatures VALUES (3, 'NAT_OBJ_GEO', 'Nature d''objet géographique', 'Nomenclature des natures d''objets géographiques', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-10-15 00:00:00');
