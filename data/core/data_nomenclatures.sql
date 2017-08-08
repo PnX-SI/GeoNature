@@ -1248,6 +1248,7 @@ INSERT INTO cor_taxref_nomenclature VALUES (99, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (100, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (101, 'all', 'all', now(), NULL);
 
+
 ---------------------------
 --Statut de validation--
 ---------------------------
@@ -1257,3 +1258,14 @@ INSERT INTO cor_taxref_nomenclature VALUES (347, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (348, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (349, 'all', 'all', now(), NULL);
 INSERT INTO cor_taxref_nomenclature VALUES (350, 'all', 'all', now(), NULL);
+
+
+---------------------------------------
+--Niveau de précision de la diffusion--
+---------------------------------------
+INSERT INTO cor_taxref_nomenclature VALUES (158, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (159, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (160, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (161, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (162, 'all', 'all', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (163, 'all', 'all', now(), NULL);
