@@ -1,7 +1,10 @@
 /venv/*
-/__pycache__/*
+/__pycache__/
 /.vscode/*
 /models/__pycache__/
+/resources/__pycache__/
 /resources/contactfaune/__pycache__/
-
 /models/contactfaune/__pycache__/
+
+/resources/taxonomie/__pycache__/
+/models/taxonomie/__pycache__/
