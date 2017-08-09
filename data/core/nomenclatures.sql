@@ -274,3 +274,215 @@ CREATE OR REPLACE VIEW v_nomenclature_taxonomie AS
     JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_parent <> 0
   ORDER BY tn.id_type_nomenclature, ctn.regne, ctn.group2_inpn, n.id_nomenclature;
+
+CREATE OR REPLACE VIEW v_technique_obs AS(
+SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.libelle_nomenclature, n.definition_nomenclature, n.id_parent, n.hierarchie
+FROM nomenclatures.t_nomenclatures n
+LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+WHERE n.id_type_nomenclature = 100
+AND n.id_parent != 0
+);
+--USAGE :
+--SELECT * FROM nomenclatures.v_technique_obs WHERE group2_inpn = 'Oiseaux';
+--SELECT * FROM nomenclatures.v_technique_obs WHERE regne = 'Plantae';
+
+CREATE OR REPLACE VIEW v_eta_bio AS 
+  SELECT 
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+  FROM nomenclatures.t_nomenclatures n
+  WHERE n.id_type_nomenclature = 7 
+  AND n.id_parent <> 0
+  AND n.actif = true;
+  
+CREATE OR REPLACE VIEW v_stade_vie AS 
+SELECT 
+    ctn.regne,
+    ctn.group2_inpn, 
+    n.id_nomenclature, 
+    n.mnemonique, 
+    n.libelle_nomenclature, 
+    n.definition_nomenclature, 
+    n.id_parent, 
+    n.hierarchie
+FROM nomenclatures.t_nomenclatures n
+LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+WHERE n.id_type_nomenclature = 10
+AND n.id_parent != 0
+AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_stade_vie WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW v_sexe AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 9
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_sexe WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW v_objet_denbr AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 6
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_objet_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW v_type_denbr AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 21
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_type_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW v_meth_obs AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 14
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_meth_obs WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW v_statut_bio AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 13
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_statut_bio WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
+
+CREATE OR REPLACE VIEW v_naturalite AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 8
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_naturalite WHERE (regne = 'Animalia' OR regne = 'all');
+
+CREATE OR REPLACE VIEW v_preuve_exist AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 15 
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_preuve_exist;
+
+CREATE OR REPLACE VIEW v_statut_obs AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 18 
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_statut_obs;
+
+CREATE OR REPLACE VIEW v_statut_valid AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 101 
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_statut_valid;
+
+CREATE OR REPLACE VIEW v_niv_precis AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.libelle_nomenclature,
+    n.definition_nomenclature,
+    n.id_parent,
+    n.hierarchie
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type_nomenclature = 5
+  AND n.id_parent <> 0
+  AND n.actif = true;
+--USAGE : 
+--SELECT * FROM nomenclatures.v_statut_valid;
