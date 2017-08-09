@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CfauneFormComponent } from './cfaune-form.component';
+import { CfFormComponent } from './cf-form.component';
 
-describe('CfauneFormComponent', () => {
-  let component: CfauneFormComponent;
-  let fixture: ComponentFixture<CfauneFormComponent>;
+describe('CfFormComponent', () => {
+  let component: CfFormComponent;
+  let fixture: ComponentFixture<CfFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CfauneFormComponent ]
+      declarations: [ CfFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CfauneFormComponent);
+    fixture = TestBed.createComponent(CfFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

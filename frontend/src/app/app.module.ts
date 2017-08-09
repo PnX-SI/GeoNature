@@ -2,12 +2,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {HttpModule, Http} from '@angular/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // For Angular Dependencies
 import 'hammerjs';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MaterialModule, MdIconModule, MdNativeDateModule } from '@angular/material';
+import { CdkTableModule } from '@angular/cdk';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartModule } from 'angular2-chartjs';
@@ -31,7 +32,7 @@ import { MapComponent } from './components/map/map.component';
 import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
-import { CfauneFormComponent } from './apps/contact-faune/cfaune-form/cfaune-form.component';
+import { CfFormComponent } from './components/cf-form/cf-form.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -46,13 +47,15 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     MapComponent,
     SigninComponent,
-    CfauneFormComponent
+    CfFormComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     BrowserAnimationsModule,
+    CdkTableModule,
     MaterialModule,
     FlexLayoutModule,
     AppRoutingModule,

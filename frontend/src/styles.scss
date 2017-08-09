@@ -17,16 +17,16 @@ html, body, material-app, md-sidenav-container{
 }
 
 .padding-0 {
-   padding: 0 !important;
-   margin: 0 !important;
+   padding-right: 0 !important;
+   padding-left: 0 !important;
 }
 .padding-sm {
-   padding: 2px !important;
-   margin: 2px !important;
+   padding-right: 2px !important;
+   padding-left: 2px !important;
 }
 .padding-md {
-   padding: 5px !important;
-   margin: 5px !important;
+   padding-right: 5px !important;
+   padding-left: 5px !important;
 }
 
 /*
@@ -36,3 +36,7 @@ html, body, material-app, md-sidenav-container{
 md-sidenav-layout /deep/ .md-sidenav-content {
   overflow: hidden;
 }
+
+ .mat-autocomplete-panel {
+   position: absolute !important;
+ }
