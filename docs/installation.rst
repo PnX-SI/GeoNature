@@ -58,4 +58,4 @@ Installation d'un module
  
   ::  
   
-        sudo ./data/modules/contactfaune/install_schema.sh
+        sudo ./data/modules/contact/install_schema.sh
