@@ -83,7 +83,6 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 
 ALTER TABLE ONLY bib_modules ADD CONSTRAINT bib_modules_pkey PRIMARY KEY (id_module);
 
-
 ALTER TABLE ONLY synthese ADD CONSTRAINT synthese_pkey PRIMARY KEY (id_synthese);
 
 
@@ -110,6 +109,7 @@ CREATE INDEX index_gist_synthese_the_geom_3857 ON synthese USING gist (the_geom_
 
 CREATE INDEX index_gist_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 
+
 ---------------
 --FOREIGN KEY--
 ---------------
@@ -123,31 +123,31 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES bib_modules(id_module) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_meth_obs FOREIGN KEY (id_nomenclature_meth_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_meth_obs FOREIGN KEY (id_nomenclature_meth_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_technique_obs FOREIGN KEY (id_nomenclature_technique_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_technique_obs FOREIGN KEY (id_nomenclature_technique_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_statut_bio FOREIGN KEY (id_nomenclature_statut_bio) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_statut_bio FOREIGN KEY (id_nomenclature_statut_bio) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_stade_vie FOREIGN KEY (id_nomenclature_stade_vie) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_stade_vie FOREIGN KEY (id_nomenclature_stade_vie) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_sexe FOREIGN KEY (id_nomenclature_sexe) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_sexe FOREIGN KEY (id_nomenclature_sexe) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_eta_bio FOREIGN KEY (id_nomenclature_eta_bio) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_eta_bio FOREIGN KEY (id_nomenclature_eta_bio) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_naturalite FOREIGN KEY (id_nomenclature_naturalite) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_naturalite FOREIGN KEY (id_nomenclature_naturalite) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 --------
 --DATA--
 --------
-
 INSERT INTO bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, actif) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_module_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);

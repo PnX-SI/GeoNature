@@ -64,6 +64,7 @@ then
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -f /tmp/grant.sql &>> log/install_db.log
         
+    
     echo "Récupération et création du schéma utilisateurs..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
@@ -78,7 +79,6 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
 
 
-    echo "Création du schéma taxonomie..."
     echo "Téléchargement et décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql
@@ -142,6 +142,16 @@ then
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/vm_hierarchie_taxo.sql  &>> log/install_db.log
 
+    echo "Compléter le schéma taxonomie..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Compléter le schéma taxonomie" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/complements_taxonomie.sql  &>> log/install_db.log
+
+
     echo "Création du schéma meta..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
@@ -151,16 +161,17 @@ then
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> log/install_db.log
 
-    echo "Ajouté un lien entre la nomenclature et la taxonomie (dans le schéma taxonomie)..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Ajout d'un lien entre la nomenclature et la taxonomie (dans le schéma taxonomie)" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/complements_taxonomie.sql  &>> log/install_db.log
 
-    echo "Insertion de la nomenclature - cette opération peut être longue..."
+    echo "Création du schéma nomenclatures..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Création du schéma nomenclatures" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/nomenclatures.sql  &>> log/install_db.log
+
+    echo "Insertion de la nomenclature..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
@@ -168,6 +179,7 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/data_nomenclatures.sql  &>> log/install_db.log
+
 
     echo "Création et insertion du schéma medias..."
     echo "" &>> log/install_db.log
@@ -177,6 +189,7 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> log/install_db.log
+
 
     echo "Création du schéma synthese..."
     echo "" &>> log/install_db.log
@@ -188,6 +201,7 @@ then
     cp data/core/synthese.sql /tmp/synthese.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/synthese.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/synthese.sql  &>> log/install_db.log
+
 
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."

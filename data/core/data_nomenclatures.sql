@@ -6,11 +6,11 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 --SET row_security = off;
 
-SET search_path = meta, pg_catalog;
+SET search_path = nomenclatures, pg_catalog;
 
 DELETE FROM t_nomenclatures;
 DELETE FROM bib_types_nomenclatures;
-DELETE FROM t_lots;
+
 INSERT INTO bib_types_nomenclatures VALUES (2, 'DS_PUBLIQUE', 'Code d''origine de la donnée', 'Nomenclature des codes d''origine de la donnée : publique, privée, mixte...', 'SINP', 'Validé',  '2013-12-05 00:00:00', '2013-12-05 00:00:00');
 INSERT INTO bib_types_nomenclatures VALUES (3, 'NAT_OBJ_GEO', 'Nature d''objet géographique', 'Nomenclature des natures d''objets géographiques', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-10-15 00:00:00');
 INSERT INTO bib_types_nomenclatures VALUES (4, 'DEE_FLOU', 'Existence d''un floutage sur la donnée', 'Nomenclature indiquant l''existence d''un floutage sur la donnée lors de sa création en tant que DEE.', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-10-15 00:00:00');
@@ -448,8 +448,6 @@ INSERT INTO t_nomenclatures VALUES (350, 101, '5', 'Douteux', 'Douteux', 'La don
 
 SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 351, true);
 
-
-SET search_path = taxonomie, pg_catalog;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
 ----------------------------

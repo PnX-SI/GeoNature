@@ -130,7 +130,7 @@ ALTER TABLE ONLY t_releves_cfaune
     ADD CONSTRAINT fk_t_releves_cfaune_t_lots FOREIGN KEY (id_lot) REFERENCES meta.t_lots(id_lot) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_cfaune
-    ADD CONSTRAINT fk_t_releves_cfaune_technique_obs FOREIGN KEY (id_nomenclature_technique_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_cfaune_technique_obs FOREIGN KEY (id_nomenclature_technique_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_cfaune
     ADD CONSTRAINT fk_t_releves_cfaune_t_roles FOREIGN KEY (id_numerisateur) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
@@ -146,44 +146,44 @@ ALTER TABLE ONLY t_occurrences_cfaune
     ADD CONSTRAINT fk_t_occurrences_cfaune_taxref FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_meth_obs FOREIGN KEY (id_nomenclature_meth_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_meth_obs FOREIGN KEY (id_nomenclature_meth_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_eta_bio FOREIGN KEY (id_nomenclature_eta_bio) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_eta_bio FOREIGN KEY (id_nomenclature_eta_bio) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_statut_bio FOREIGN KEY (id_nomenclature_statut_bio) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_statut_bio FOREIGN KEY (id_nomenclature_statut_bio) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_naturalite FOREIGN KEY (id_nomenclature_naturalite) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_naturalite FOREIGN KEY (id_nomenclature_naturalite) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_preuve_exist FOREIGN KEY (id_nomenclature_preuve_exist) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_preuve_exist FOREIGN KEY (id_nomenclature_preuve_exist) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_statut_obs FOREIGN KEY (id_nomenclature_statut_obs) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_statut_obs FOREIGN KEY (id_nomenclature_statut_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_statut_valid FOREIGN KEY (id_nomenclature_statut_valid) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_statut_valid FOREIGN KEY (id_nomenclature_statut_valid) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_cfaune
-    ADD CONSTRAINT fk_t_occurrences_cfaune_niv_precis FOREIGN KEY (id_nomenclature_niv_precis) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_cfaune_niv_precis FOREIGN KEY (id_nomenclature_niv_precis) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
     ADD CONSTRAINT fk_cor_stade_effectif_id_taxon FOREIGN KEY (id_occurrence_cfaune) REFERENCES t_occurrences_cfaune(id_occurrence_cfaune) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
-    ADD CONSTRAINT fk_cor_stade_sexe_effectif_sexe FOREIGN KEY (id_nomenclature_sexe) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_stade_sexe_effectif_sexe FOREIGN KEY (id_nomenclature_sexe) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
-    ADD CONSTRAINT fk_cor_stade_sexe_effectif_stade_vie FOREIGN KEY (id_nomenclature_stade_vie) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_stade_sexe_effectif_stade_vie FOREIGN KEY (id_nomenclature_stade_vie) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
-    ADD CONSTRAINT fk_cor_stade_sexe_effectif_obj_denbr FOREIGN KEY (id_nomenclature_obj_denbr) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_stade_sexe_effectif_obj_denbr FOREIGN KEY (id_nomenclature_obj_denbr) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_stade_sexe_effectif
-    ADD CONSTRAINT fk_cor_stade_sexe_effectif_typ_denbr FOREIGN KEY (id_nomenclature_typ_denbr) REFERENCES meta.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_stade_sexe_effectif_typ_denbr FOREIGN KEY (id_nomenclature_typ_denbr) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_role_releve_cfaune
@@ -202,48 +202,48 @@ ALTER TABLE ONLY t_releves_cfaune
     ADD CONSTRAINT check_t_releves_cfaune_date_max CHECK (date_max >= date_min);
 
 ALTER TABLE t_releves_cfaune
-  ADD CONSTRAINT check_t_releves_cfaune_technique_obs CHECK (meta.check_type_nomenclature(id_nomenclature_technique_obs,100));
+  ADD CONSTRAINT check_t_releves_cfaune_technique_obs CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_technique_obs,100));
 
 
 ALTER TABLE ONLY t_occurrences_cfaune
     ADD CONSTRAINT check_t_occurrences_cfaune_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check_t_releves_cfaune_meth_obs CHECK (meta.check_type_nomenclature(id_nomenclature_meth_obs,14));
+  ADD CONSTRAINT check_t_releves_cfaune_meth_obs CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_meth_obs,14));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check_t_occurrences_cfaune_eta_bio CHECK (meta.check_type_nomenclature(id_nomenclature_eta_bio,7));
+  ADD CONSTRAINT check_t_occurrences_cfaune_eta_bio CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_eta_bio,7));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_statut_bio CHECK (meta.check_type_nomenclature(id_nomenclature_statut_bio,13));
+  ADD CONSTRAINT check__occurrences_cfaune_statut_bio CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_statut_bio,13));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_naturalite CHECK (meta.check_type_nomenclature(id_nomenclature_naturalite,8));
+  ADD CONSTRAINT check__occurrences_cfaune_naturalite CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_naturalite,8));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_preuve_exist CHECK (meta.check_type_nomenclature(id_nomenclature_preuve_exist,15));
+  ADD CONSTRAINT check__occurrences_cfaune_preuve_exist CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_preuve_exist,15));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_statut_obs CHECK (meta.check_type_nomenclature(id_nomenclature_statut_obs,18));
+  ADD CONSTRAINT check__occurrences_cfaune_statut_obs CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_statut_obs,18));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_statut_valid CHECK (meta.check_type_nomenclature(id_nomenclature_statut_valid,101));
+  ADD CONSTRAINT check__occurrences_cfaune_statut_valid CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_statut_valid,101));
 
 ALTER TABLE t_occurrences_cfaune
-  ADD CONSTRAINT check__occurrences_cfaune_niv_precis CHECK (meta.check_type_nomenclature(id_nomenclature_niv_precis,5));
+  ADD CONSTRAINT check__occurrences_cfaune_niv_precis CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_niv_precis,5));
 
 
 ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_stade_vie CHECK (meta.check_type_nomenclature(id_nomenclature_stade_vie,10));
+  ADD CONSTRAINT check_t_releves_cfaune_stade_vie CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_stade_vie,10));
 
 ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_sexe CHECK (meta.check_type_nomenclature(id_nomenclature_sexe,9));
+  ADD CONSTRAINT check_t_releves_cfaune_sexe CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_sexe,9));
 
 ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_obj_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_obj_denbr,6));
+  ADD CONSTRAINT check_t_releves_cfaune_obj_denbr CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_obj_denbr,6));
 
 ALTER TABLE cor_stade_sexe_effectif
-  ADD CONSTRAINT check_t_releves_cfaune_typ_denbr CHECK (meta.check_type_nomenclature(id_nomenclature_typ_denbr,21));
+  ADD CONSTRAINT check_t_releves_cfaune_typ_denbr CHECK (nomenclatures.check_type_nomenclature(id_nomenclature_typ_denbr,21));
 
 
 ----------------------
@@ -256,7 +256,7 @@ DECLARE
     idsensibilite integer;
 BEGIN
     --calcul de la valeur de la sensibilité
-    SELECT INTO idsensibilite taxonomie.calcul_sensibilite(new.cd_nom,new.id_nomenclature_meth_obs);
+    SELECT INTO idsensibilite nomenclatures.calcul_sensibilite(new.cd_nom,new.id_nomenclature_meth_obs);
     new.id_nomenclature_niv_precis = idsensibilite;
     RETURN NEW;             
 END;
@@ -271,7 +271,7 @@ DECLARE
     idsensibilite integer;
 BEGIN
     --calcul de la valeur de la sensibilité
-    SELECT INTO idsensibilite taxonomie.calcul_sensibilite(new.cd_nom,new.id_nomenclature_meth_obs);
+    SELECT INTO idsensibilite nomenclatures.calcul_sensibilite(new.cd_nom,new.id_nomenclature_meth_obs);
     new.id_nomenclature_niv_precis = idsensibilite;
     RETURN NEW;             
 END;
@@ -301,8 +301,8 @@ CREATE TRIGGER tri_update_occurrences_cfaune
 ---------
 CREATE OR REPLACE VIEW contactfaune.v_technique_obs AS(
 SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.libelle_nomenclature, n.definition_nomenclature, n.id_parent, n.hierarchie
-FROM meta.t_nomenclatures n
-LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+FROM nomenclatures.t_nomenclatures n
+LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type_nomenclature = 100
 AND n.id_parent != 0
 );
@@ -318,7 +318,7 @@ CREATE OR REPLACE VIEW contactfaune.v_eta_bio AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-  FROM meta.t_nomenclatures n
+  FROM nomenclatures.t_nomenclatures n
   WHERE n.id_type_nomenclature = 7 
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -332,8 +332,8 @@ SELECT
     n.definition_nomenclature, 
     n.id_parent, 
     n.hierarchie
-FROM meta.t_nomenclatures n
-LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+FROM nomenclatures.t_nomenclatures n
+LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type_nomenclature = 10
 AND n.id_parent != 0
 AND n.actif = true;
@@ -349,8 +349,8 @@ CREATE OR REPLACE VIEW contactfaune.v_sexe AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 9
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -366,8 +366,8 @@ CREATE OR REPLACE VIEW contactfaune.v_objet_denbr AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 6
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -383,8 +383,8 @@ CREATE OR REPLACE VIEW contactfaune.v_type_denbr AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 21
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -400,8 +400,8 @@ CREATE OR REPLACE VIEW contactfaune.v_meth_obs AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 14
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -417,8 +417,8 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_bio AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 13
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -434,8 +434,8 @@ CREATE OR REPLACE VIEW contactfaune.v_naturalite AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 8
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -451,8 +451,8 @@ CREATE OR REPLACE VIEW contactfaune.v_preuve_exist AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 15 
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -468,8 +468,8 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_obs AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 18 
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -485,8 +485,8 @@ CREATE OR REPLACE VIEW contactfaune.v_statut_valid AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 101 
   AND n.id_parent <> 0
   AND n.actif = true;
@@ -502,8 +502,8 @@ CREATE OR REPLACE VIEW contactfaune.v_niv_precis AS
     n.definition_nomenclature,
     n.id_parent,
     n.hierarchie
-   FROM meta.t_nomenclatures n
-     LEFT JOIN taxonomie.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+   FROM nomenclatures.t_nomenclatures n
+     LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type_nomenclature = 5
   AND n.id_parent <> 0
   AND n.actif = true;
