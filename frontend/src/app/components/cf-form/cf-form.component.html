@@ -38,15 +38,19 @@
       <input type="text" mdInput placeholder="Lot de donneés">
     </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-sm">
-      <input type="text" mdInput placeholder="Contexte">
-    </md-input-container>
+    <div>
+      <md-input-container class="input-alignment-sm input-width-max">
+        <md-icon mdPrefix class="input-alignment-sm">mode_comment</md-icon>
+        <input type="text" mdInput placeholder="Contexte">
+      </md-input-container>
+    </div>
 
-    <md-input-container class="input-alignment-sm input-width-lg">
-      <input type="text" mdInput placeholder="Commentaire">
-      <md-icon mdSuffix>comment</md-icon>
-    </md-input-container>
-
+    <div>
+      <md-input-container class="input-alignment-sm input-width-max">
+        <md-icon mdPrefix class="input-alignment-sm">comment</md-icon>
+        <input type="text" mdInput placeholder="Commentaire">
+      </md-input-container>
+    </div>
 
   </md-card> <!--END Pannel-->
 
@@ -66,7 +70,7 @@
           </div>
         </div>
       <div> <!--Auto complete noms de taxon-->
-        <md-input-container class="input-alignment input-width-lg">
+        <md-input-container class="input-width-lg">
           <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
           <md-icon mdSuffix>pets</md-icon>
         </md-input-container>
@@ -79,12 +83,15 @@
         <!--END Auto complete-->
 
         <!-- Btn filter options taxon-->
-        <button class="input-alignment" md-raised-button data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          <md-icon>filter_list</md-icon> Filter
+<!--         <button class="input-alignment" md-raised-button data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <md-icon>filter_list</md-icon>
+        </button> -->
+        <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <md-icon>filter_list</md-icon>
         </button>
 
         <!--Technique observation-->
-        <md-input-container class=" input-width-lg" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample">
+        <md-input-container class=" input-width-lg input-alignment-md" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample">
           <input mdInput placeholder="Technique observation" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
           <md-icon mdSuffix>description</md-icon>
         </md-input-container>
