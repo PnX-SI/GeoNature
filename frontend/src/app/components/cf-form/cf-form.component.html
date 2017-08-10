@@ -26,17 +26,34 @@
   </md-card>
   <md-card class="cf-card-option padding-md">
     <h4> <b> <u>Taxon observé</u>: </b></h4>
-    <!--Auto complete taxon-->
-    <md-input-container class="input-alignment input-width-md">
-      <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
-      <md-icon mdSuffix>pets</md-icon>
-    </md-input-container>
+      <!--Auto complete taxon-->
+        <md-input-container class="input-alignment input-width-lg">
+          <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
+          <md-icon mdSuffix>pets</md-icon>
+        </md-input-container>
 
-    <md-autocomplete #auto="mdAutocomplete">
-      <md-option *ngFor="let taxon of filteredTaxons | async" [value]="taxon">
-        {{ taxon }}
-      </md-option>
-    </md-autocomplete>
+        <md-autocomplete #auto="mdAutocomplete">
+          <md-option *ngFor="let taxon of filteredTaxons | async" [value]="taxon">
+            {{ taxon }}
+          </md-option>
+        </md-autocomplete>
+
+        <button md-raised-button data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <md-icon>filter_list</md-icon> Filter options
+        </button>
+        <div class="collapse" id="collapseExample">
+          <div class="well">
+            <md-select placeholder="Taxonomiques" class="input-alignment input-width-sm">
+              <md-option *ngFor="let taxo of taxonomiques" [value]="taxo.value">
+                {{ taxo.viewValue }}
+              </md-option>
+            </md-select>
+            <label class="checkbox-inline"><input type="checkbox" value="">Patrimoniaux</label>
+            <label class="checkbox-inline"><input type="checkbox" value="">Priorité</label>
+            <label class="checkbox-inline"><input type="checkbox" value="">Nouveau</label>
+            <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
+          </div>
+        </div>
   </md-card>
 
   <md-card-actions class="card-action">
