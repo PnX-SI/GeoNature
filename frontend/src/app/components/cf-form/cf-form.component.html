@@ -1,46 +1,57 @@
 <md-card class="cf-card-background">
-  <md-card class="cf-card-required padding-md">
-  <h4> <b> <u>Observations</u>: </b></h4>
 
-    <md-input-container class="input-alignment input-width-md">
+  <md-card class="cf-card-required padding-md"> <!--Pannel Observations-->
+    <h4> <b> <u>Observations</u>: </b></h4>
+
+    <md-input-container class="input-alignment-sm input-width-md">
       <input type="text" mdInput placeholder="Observateurs">
       <md-icon mdSuffix>supervisor_account</md-icon>
     </md-input-container>
 
-    <md-input-container class="input-alignment input-width-sm">
-      <input mdInput [mdDatepicker]="picker" placeholder="Choose a date">
-      <button mdSuffix [mdDatepickerToggle]="picker"></button>
+    <md-input-container class="input-alignment-sm input-width-xs">
+      <input mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
+      <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
     </md-input-container>
-    <md-datepicker #picker></md-datepicker>
+    <md-datepicker #pickerdatemin></md-datepicker>
+    <md-input-container class="input-alignment-sm input-width-xs">
+      <input mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max">
+      <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
+    </md-input-container>
+    <md-datepicker #pickerdatemax></md-datepicker>
 
-    <md-input-container class="input-alignment input-width-sm">
+    <md-input-container class="input-alignment-sm input-width-xxs">
+      <input type="text" mdInput placeholder="Alt min">
+      <md-icon mdSuffix>terrain</md-icon>
+    </md-input-container>
+
+    <md-input-container class="input-alignment-sm input-width-xxs">
+      <input type="text" mdInput placeholder="Alt max">
+      <md-icon mdSuffix>terrain</md-icon>
+    </md-input-container>
+
+    <md-input-container class="input-alignment-sm input-width-sm">
       <input type="text" mdInput placeholder="Commune">
       <md-icon mdSuffix>pin_drop</md-icon>
     </md-input-container>
 
-    <md-input-container class="input-alignment input-width-xs">
-      <input type="text" mdInput placeholder="Altitude">
-      <md-icon mdSuffix>terrain</md-icon>
+    <md-input-container class="input-alignment-sm input-width-sm">
+      <input type="text" mdInput placeholder="Lot de donneés">
     </md-input-container>
 
-  </md-card>
-  <md-card class="cf-card-option padding-md">
+    <md-input-container class="input-alignment-sm input-width-sm">
+      <input type="text" mdInput placeholder="Contexte">
+    </md-input-container>
+
+    <md-input-container class="input-alignment-sm input-width-lg">
+      <input type="text" mdInput placeholder="Commentaire">
+      <md-icon mdSuffix>comment</md-icon>
+    </md-input-container>
+
+
+  </md-card> <!--END Pannel-->
+
+  <md-card class="cf-card-option padding-md"> <!--Pannel Taxon observé-->
     <h4> <b> <u>Taxon observé</u>: </b></h4>
-      <!--Auto complete taxon-->
-        <md-input-container class="input-alignment input-width-lg">
-          <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
-          <md-icon mdSuffix>pets</md-icon>
-        </md-input-container>
-
-        <md-autocomplete #auto="mdAutocomplete">
-          <md-option *ngFor="let taxon of filteredTaxons | async" [value]="taxon">
-            {{ taxon }}
-          </md-option>
-        </md-autocomplete>
-
-        <button md-raised-button data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          <md-icon>filter_list</md-icon> Filter options
-        </button>
         <div class="collapse" id="collapseExample">
           <div class="well">
             <md-select placeholder="Taxonomiques" class="input-alignment input-width-sm">
@@ -54,13 +65,63 @@
             <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
           </div>
         </div>
-  </md-card>
+      <div> <!--Auto complete noms de taxon-->
+        <md-input-container class="input-alignment input-width-lg">
+          <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
+          <md-icon mdSuffix>pets</md-icon>
+        </md-input-container>
 
-  <md-card-actions class="card-action">
+        <md-autocomplete #auto="mdAutocomplete">
+          <md-option *ngFor="let taxon of filteredTaxons | async" [value]="taxon">
+            {{ taxon }}
+          </md-option>
+        </md-autocomplete>
+        <!--END Auto complete-->
+
+        <!-- Btn filter options taxon-->
+        <button class="input-alignment" md-raised-button data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <md-icon>filter_list</md-icon> Filter
+        </button>
+
+        <!--Technique observation-->
+        <md-input-container class=" input-width-lg" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample">
+          <input mdInput placeholder="Technique observation" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
+          <md-icon mdSuffix>description</md-icon>
+        </md-input-container>
+
+        <md-autocomplete #auto2="mdAutocomplete" >
+          <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
+            {{ crit }}
+          </md-option>
+        </md-autocomplete>
+
+        <!--Method observation-->
+        <md-input-container class=" input-width-lg" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample">
+          <input mdInput placeholder="Methode observation" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
+          <md-icon mdSuffix>description</md-icon>
+        </md-input-container>
+
+        <md-autocomplete #auto2="mdAutocomplete" >
+          <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
+            {{ crit }}
+          </md-option>
+        </md-autocomplete>
+
+        <div class="collapse" id="collapseExample2">
+          <div class="well">
+            ....
+          </div>
+        </div>
+
+      </div> <!--END Auto complete-->
+
+  </md-card> <!--END Pannel-->
+
+  <md-card-actions class="card-action"> <!--Btn Valider taxon-->
     <button md-raised-button class="btn-form">Valider taxon</button>
-  </md-card-actions>
+  </md-card-actions> <!--END Btn-->
 
-  <md-card class="cf-card-table padding-md">
+  <md-card class="cf-card-table padding-md"> <!--Pannel Taxons saisis-->
     <h4> <b> <u>Taxons saisis</u>: </b></h4>
     <table  class="table table-hover">
       <thead>
@@ -101,8 +162,10 @@
         </tr>
       <tbody>
     </table>
-  </md-card>
-  <md-card-actions class="card-action">
+  </md-card> <!--END Pannel-->
+
+  <md-card-actions class="card-action"> <!--Btn Valider taxon-->
     <button md-raised-button class="btn-form">Ajouter taxons</button>
-  </md-card-actions>
+  </md-card-actions> <!--END Btn-->
+
 </md-card>

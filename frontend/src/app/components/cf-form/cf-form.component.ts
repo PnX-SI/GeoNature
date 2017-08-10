@@ -18,6 +18,7 @@ export class CfFormComponent implements OnInit {
   ];
   stateCtrl: FormControl;
   filteredTaxons: any;
+  filteredCriteres: any;
   taxons = [
     'Abacoproeces',
     'Abarenicola claparedi ',
@@ -31,11 +32,27 @@ export class CfFormComponent implements OnInit {
     'Lathyrus linifolius (Reichard) Bässler',
     'Leuzea conifera (L.) DC.'
   ];
+
+    criteres = [
+    'Adulte transportant des sacs fécaux ou de la nourriture pour les jeunes',
+    'Nid occupé',
+    'Couple',
+    'Comportements territoriaux ',
+    'Eumeella',
+    'Jeunes fraîchement envolés ou poussins',
+    'Mâle chanteur',
+    'Parades nuptiales',
+  ];
+
+
   constructor() {
     this.stateCtrl = new FormControl();
     this.filteredTaxons = this.stateCtrl.valueChanges
         .startWith(null)
         .map(name => this.filterTaxons(name));
+    this.filteredCriteres = this.stateCtrl.valueChanges
+        .startWith(null)
+        .map(name => this.filterCriteres(name));
   }
 
   ngOnInit() {
@@ -44,6 +61,11 @@ export class CfFormComponent implements OnInit {
   filterTaxons(val: string) {
     return val ? this.taxons.filter(s => s.toLowerCase().indexOf(val.toLowerCase()) === 0)
                : this.taxons;
+  }
+
+  filterCriteres(val: string) {
+    return val ? this.criteres.filter(s => s.toLowerCase().indexOf(val.toLowerCase()) === 0)
+               : this.criteres;
   }
 
 }
