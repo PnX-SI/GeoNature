@@ -9,6 +9,13 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./cf-form.component.scss']
 })
 export class CfFormComponent implements OnInit {
+  taxonomiques = [
+    {value: 'Mammifères', viewValue: 'Mammifères'},
+    {value: 'Oiseaux', viewValue: 'Oiseaux'},
+    {value: 'Reptiles', viewValue: 'Reptiles'},
+    {value: 'Amphibiens', viewValue: 'Amphibiens'},
+    {value: 'Poissons', viewValue: 'Poissons'},
+  ];
   stateCtrl: FormControl;
   filteredTaxons: any;
   taxons = [
