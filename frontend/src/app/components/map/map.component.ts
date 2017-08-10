@@ -10,10 +10,14 @@ import {Map} from 'leaflet';
 export class MapComponent implements OnInit {
   public map: Map;
 
-  constructor(public mapService: MapService) { }
+  constructor(public mapService: MapService) {
+    this.mapService.editing = false;
+    this.mapService.removing = false;
+  }
 
   ngOnInit() {
     this.mapService.initialize();
+    this.mapService.onMapClick();
     this.map = this.mapService.map;
   }
 

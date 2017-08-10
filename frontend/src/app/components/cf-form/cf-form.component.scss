@@ -14,20 +14,37 @@
 }
 
 .input-alignment {
-    margin-right: 30px;
+    margin-right: 20px;
 }
+
+.input-alignment-md {
+    margin-right: 20px;
+}
+
+.input-alignment-sm {
+    margin-right: 15px;
+}
+
 .input-width-sm {
     width: 120px;
+    font-size: small;
 }
 .input-width-xs {
+    width: 95px;
+    font-size: small;
+}
+.input-width-xxs {
     width: 80px;
+    font-size: small;
 }
 .input-width-md {
     width: 160px;
+    font-size: small;
 }
 
 .input-width-lg {
     width: 230px;
+    font-size: small;
 }
 
 .card-action {
@@ -44,4 +61,8 @@
 
 .input-center {
     text-align: center;
+}
+
+.font-sm {
+    font-size: small;
 }
