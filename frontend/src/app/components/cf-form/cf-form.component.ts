@@ -10,6 +10,7 @@ import 'rxjs/add/operator/map';
 })
 export class CfFormComponent implements OnInit {
   taxonomiques = [
+    {value: 'None', viewValue: 'None'},
     {value: 'Mammifères', viewValue: 'Mammifères'},
     {value: 'Oiseaux', viewValue: 'Oiseaux'},
     {value: 'Reptiles', viewValue: 'Reptiles'},

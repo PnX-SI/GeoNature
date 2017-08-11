@@ -29,6 +29,10 @@
     margin-right: 15px;
 }
 
+.input-alignment-xs {
+    margin-right: 5px;
+}
+
 .input-width-sm {
     width: 120px;
     font-size: small;
@@ -38,7 +42,7 @@
     font-size: small;
 }
 .input-width-xxs {
-    width: 80px;
+    width: 65px;
     font-size: small;
 }
 .input-width-md {
@@ -72,6 +76,14 @@
     text-align: center;
 }
 
+.font-md {
+    font-size: medium;
+}
+
 .font-sm {
     font-size: small;
+}
+
+.well-margin {
+    margin-bottom: -1px;
 }
