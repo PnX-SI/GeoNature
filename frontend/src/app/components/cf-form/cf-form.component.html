@@ -177,7 +177,8 @@
       </div>
 
       <!--Dénombrement-->
-      <table  class="table table-hover font-sm">
+      <div style="overflow-x:auto;"> <!-- scroll for table with small size -->
+      <table  class="table table-hover font-sm table-responsive">
         <thead>
           <tr>
             <th>Stade vie</th>
@@ -188,7 +189,7 @@
             <th>Ajouter</th>
           </tr>
         </thead>
-        <tbody class="table-hover ">
+        <tbody class="table-hover">
           <tr>
             <td>
               <select class="input-sm font-sm" id="sel1">
@@ -224,7 +225,8 @@
             </td>
           </tr>
         <tbody>
-      </table>
+      </table> <!-- End table -->
+      </div> <!-- End scroll table -->
       <div class="form-group">
         <label for="commentaire" class="font-sm">Commentaire:</label>
         <textarea class="form-control" rows="2" id="commentaire"></textarea>
@@ -238,6 +240,7 @@
 
   <md-card class="cf-card-table padding-md"> <!--Pannel Taxons saisis-->
     <h4> <b> <u>Taxons saisis</u>: </b></h4>
+    <div style="overflow-x:auto;"> <!-- scroll for table with small size -->
     <table  class="table table-hover">
       <thead>
         <tr>
@@ -277,6 +280,7 @@
         </tr>
       <tbody>
     </table>
+    </div> <!-- END scroll table -->
   </md-card> <!--END Pannel-->
 
   <md-card-actions class="card-action"> <!--Btn Valider taxon-->
