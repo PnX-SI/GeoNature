@@ -3,7 +3,7 @@
     <md-card-title  class="map-header">
 
       <md-input-container>
-        <input mdInput placeholder="Search">
+        <input mdInput placeholder="Search location" id="place-input" [(ngModel)]="searchLocation" (keyup.enter)="gotoLocation()">
       </md-input-container>
       
       <button md-icon-button mdTooltip="Add location" class="margin-right-sm" id="add-marker"
