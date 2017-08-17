@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Http} from '@angular/http';
 import { Map, GeoJSON } from 'leaflet';
+import { ToastrService, ToastrConfig } from 'ngx-toastr';
 
 @Injectable()
 export class MapService {
@@ -10,8 +11,14 @@ export class MapService {
     public editing: boolean;
     public removing: boolean;
     public marker: any;
+    toastrConfig: ToastrConfig;
 
-    constructor(private http: Http) {
+    constructor(private http: Http, private toastrService: ToastrService) {
+        this.toastrConfig = {
+            positionClass: 'toast-top-center',
+            tapToDismiss: true,
+            timeOut: 3000
+        };
         this.baseMaps = {
         OpenStreetMap: L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
             attribution: '&copy OpenStreetMap'
@@ -91,12 +98,15 @@ export class MapService {
         let results = [];
         this.http
             .get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&polygon_geojson=1`)
-            .map(res => res.json())
-            .subscribe(r => {
-            results = r.filter(result => {
-                this.gotoLocation(result.geojson);
-            });
-        });
+            .subscribe(
+                res => {
+                    results = res.json();
+                    results = results.filter(result => {
+                        this.gotoLocation(result.geojson);
+                    });
+                },
+                error => this.toastrService.error('', 'Location not found', this.toastrConfig)
+            );
     }
 
     gotoLocation(geometry) {

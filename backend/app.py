@@ -6,11 +6,11 @@ app = Flask(__name__)
 
 app.config.from_pyfile('config.py')
 
-from resources.contactfaune.routes import adresses
-app.register_blueprint(adresses, url_prefix='/contactfaune')
+from resources.contact.routes import routes
+app.register_blueprint(routes, url_prefix='/contact')
 
-from resources.taxonomie.routes import adresses
-app.register_blueprint(adresses, url_prefix='/taxonomie')
+from resources.taxonomie.routes import routes
+app.register_blueprint(routes, url_prefix='/taxonomie')
 
 if __name__ == '__main__':
     db.init_app(app)
