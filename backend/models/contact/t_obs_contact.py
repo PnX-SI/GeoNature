@@ -35,3 +35,11 @@ class T_ObsContact(db.Model):
     @classmethod
     def find_by_id(cls, id_obs_contact):
         return cls.query.filter_by(id_obs_contact=id_obs_contact).first()
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
