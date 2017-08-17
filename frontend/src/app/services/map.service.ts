@@ -46,8 +46,8 @@ export class MapService {
                         }
                     this.marker = L.marker(e.latlng, {
                         icon: L.icon({
-                            iconUrl: '../../images/marker-icon.png',
-                            shadowUrl: '../../images/marker-shadow.png',
+                            iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
+                            shadowUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-shadow.png'),
                         }),
                         draggable: true,
                     })
@@ -93,13 +93,5 @@ export class MapService {
         this.currentLayer = undefined;
         }
     }
-
-    disableMouseEvent(elementId: string) {
-            const element = <HTMLElement>document.getElementById(elementId);
-            // stops the bubbling of an event to parent elements,
-            // preventing any parent event handlers from being executed.
-            L.DomEvent.disableClickPropagation(element);
-            L.DomEvent.disableScrollPropagation(element);
-        }
 
 }
