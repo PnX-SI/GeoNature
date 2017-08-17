@@ -11,7 +11,8 @@
         <md-icon>add_location</md-icon>
       </button>
       
-      <button md-icon-button mdTooltip="Remove location" class="margin-right-sm">
+      <button md-icon-button mdTooltip="Remove location" class="margin-right-sm" id="remove-marker"
+              (click)="mapService.toggleRemoving()" [class.btn-map-clicked]="mapService.removing">
         <md-icon>delete_forever</md-icon>
       </button>
     

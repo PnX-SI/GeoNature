@@ -22,7 +22,9 @@ export class MapService {
         Esri: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
         })
-        };
+    };
+        this.editing = false;
+        this.removing = false;
     }
 
     initialize() {
@@ -38,38 +40,36 @@ export class MapService {
         this.map = map;
     }
 
-    onMapClick() {
-        this.map.on('click', (e: any) => {
-                if (this.editing) {
-                        if ( this.marker != null ) {
-                        this.marker.remove();
-                        }
-                    this.marker = L.marker(e.latlng, {
-                        icon: L.icon({
+  onMapClick() {
+    this.map.on('click', (e: any) => {
+              if (this.editing) {
+                  if ( this.marker != null ) { this.marker.remove(); }
+                  this.marker = L.marker(e.latlng, {
+                    icon: L.icon({
                             iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
                             shadowUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-shadow.png'),
-                        }),
-                        draggable: true,
-                    })
-                    .bindPopup('Marker at ' + e.latlng, {
-                        offset: L.point(12, 6)
-                    })
-                    .addTo(this.map)
-                    .openPopup();
-                    this.marker.on('click', (event: MouseEvent) => {
-                        if (this.removing) {
-                                this.map.removeLayer(this.marker);
-                        }
-                    });
+                    }),
+                    draggable: true,
+                  })
+                  .bindPopup('GPS ' + e.latlng, {
+                      offset: L.point(12, 6)
+                  })
+                  .addTo(this.map)
+                  .openPopup();
+                  this.marker.on('click', (event: MouseEvent) => {
+                      if (this.removing) {
+                            this.map.removeLayer(this.marker);
+                      }
+                  });
 
-                    this.marker.on('move', (event: MouseEvent) => {
-                        this.marker.bindPopup('Marker at ' + this.marker.getLatLng(), {
-                        offset: L.point(12, 6)
-                        });
+                  this.marker.on('move', (event: MouseEvent) => {
+                    this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
+                      offset: L.point(12, 6)
                     });
-                }
-        });
-    }
+                  });
+              }
+      });
+  }
 
     toggleEditing() {
         this.editing = !this.editing;
@@ -85,13 +85,4 @@ export class MapService {
             this.editing = false;
         }
     }
-
-
-    clear() {
-        if (this.currentLayer) {
-        this.map.removeLayer(this.currentLayer);
-        this.currentLayer = undefined;
-        }
-    }
-
 }
