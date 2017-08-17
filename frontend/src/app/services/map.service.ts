@@ -19,8 +19,9 @@ export class MapService {
         OpenTopoMap: L.tileLayer('http://a.tile.opentopomap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenTopoMap'
         }),
-        Esri: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+        GoogleSatellite : L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '&copy; GoogleMap'
         })
     };
         this.editing = false;
@@ -40,36 +41,36 @@ export class MapService {
         this.map = map;
     }
 
-  onMapClick() {
-    this.map.on('click', (e: any) => {
-              if (this.editing) {
-                  if ( this.marker != null ) { this.marker.remove(); }
-                  this.marker = L.marker(e.latlng, {
-                    icon: L.icon({
-                            iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                            shadowUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-shadow.png'),
-                    }),
-                    draggable: true,
-                  })
-                  .bindPopup('GPS ' + e.latlng, {
-                      offset: L.point(12, 6)
-                  })
-                  .addTo(this.map)
-                  .openPopup();
-                  this.marker.on('click', (event: MouseEvent) => {
-                      if (this.removing) {
-                            this.map.removeLayer(this.marker);
-                      }
-                  });
-
-                  this.marker.on('move', (event: MouseEvent) => {
-                    this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
-                      offset: L.point(12, 6)
+    onMapClick() {
+        this.map.on('click', (e: any) => {
+                if (this.editing) {
+                    if ( this.marker != null ) { this.marker.remove(); }
+                    this.marker = L.marker(e.latlng, {
+                        icon: L.icon({
+                                iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
+                                shadowUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-shadow.png'),
+                        }),
+                        draggable: true,
+                    })
+                    .bindPopup('GPS ' + e.latlng, {
+                        offset: L.point(12, 6)
+                    })
+                    .addTo(this.map)
+                    .openPopup();
+                    this.marker.on('click', (event: MouseEvent) => {
+                        if (this.removing) {
+                                this.map.removeLayer(this.marker);
+                        }
                     });
-                  });
-              }
-      });
-  }
+
+                    this.marker.on('move', (event: MouseEvent) => {
+                        this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
+                        offset: L.point(12, 6)
+                        });
+                    });
+                }
+        });
+    }
 
     toggleEditing() {
         this.editing = !this.editing;
@@ -83,6 +84,44 @@ export class MapService {
 
         if (this.editing && this.removing) {
             this.editing = false;
+        }
+    }
+
+    search(address: string) {
+        let results = [];
+        this.http
+            .get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&polygon_geojson=1`)
+            .map(res => res.json())
+            .subscribe(r => {
+            results = r.filter(result => {
+                this.gotoLocation(result.geojson);
+            });
+        });
+    }
+
+    gotoLocation(geometry) {
+        const featureCollection: GeoJSON.FeatureCollection<any> = {
+        type: 'FeatureCollection',
+        features: [
+            {
+            type: 'Feature',
+            geometry: geometry,
+            properties: {}
+            }
+        ]
+        };
+
+        this.currentLayer = L.geoJSON(featureCollection).addTo(this.map);
+
+
+        this.map.fitBounds(this.currentLayer.getBounds());
+        this.clear();
+    }
+
+    clear() {
+        if (this.currentLayer) {
+        this.map.removeLayer(this.currentLayer);
+        this.currentLayer = undefined;
         }
     }
 }

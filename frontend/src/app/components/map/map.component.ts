@@ -9,10 +9,11 @@ import {Map} from 'leaflet';
 })
 export class MapComponent implements OnInit {
   public map: Map;
-
+  searchLocation: string;
   constructor(public mapService: MapService) {
     this.mapService.editing = false;
     this.mapService.removing = false;
+    this.searchLocation = '';
   }
 
   ngOnInit() {
@@ -20,5 +21,10 @@ export class MapComponent implements OnInit {
     this.mapService.onMapClick();
     this.map = this.mapService.map;
   }
+
+    gotoLocation() {
+        if (!this.searchLocation) { return; }
+        this.mapService.search(this.searchLocation);
+    }
 
 }
