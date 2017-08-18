@@ -14,37 +14,34 @@ class T_ObsContactByID(Resource):
         if T_ObsContact.find_by_id(id):
             return {'message': "this id: '{}' already exists.".format(id)}, 400
         res = request.get_json(silent=True)
-
-        # item = T_ObsContact(id, data['price'], data['store_id'])
-
-        # try:
-        #     item.save_to_db()
-        # except:
-        #     return {"message": "An error occurred inserting the item."}, 500
-
-        # return item.json(), 201
-        return "toto"
+        insert_data = T_ObsContact(**res)
+        try:
+            insert_data.save_to_db()
+        except Exception as e:
+            insert_data.rollback()
+            return {e}, 500
+        return insert_data.json(), 200
 
     def delete(self, id):
-        item = T_ObsContact.find_by_id(id)
-        if item:
-            item.delete_from_db()
-
-        return {'message': 'Item deleted'}
+        row = T_ObsContact.find_by_id(id)
+        if row:
+            try:
+                row.delete_from_db()
+            except Exception as e:
+                return {e}, 500
+        return {'message': "data id: '{}' deleted".format(id)}, 200
 
     def put(self, id):
-        data = Item.parser.parse_args()
-
-        item = T_ObsContact.find_by_id(id)
-
-        if item:
-            item.price = data['price']
-        else:
-            item = T_ObsContact(id, data['price'])
-
-        item.save_to_db()
-
-        return item.json()
+        if not T_ObsContact.find_by_id(id):
+            return {'message': "this id: '{}' does not exist in database.".format(id)}, 404
+        res = request.get_json(silent=True)
+        modif_data = T_ObsContact(**res)
+        try:
+            modif_data.modif_db()
+        except Exception as e:
+            modif_data.rollback()
+            return {e}, 500
+        return modif_data.json(), 200
 
 class T_ObsContactAll(Resource):
     def get(self):
