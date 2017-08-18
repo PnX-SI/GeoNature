@@ -3,7 +3,7 @@
 Fichier de configuration générale de l'application
 '''
 
-SQLALCHEMY_DATABASE_URI = "postgresql://geonatuser:Q;0320;Q@localhost:5432/geonature2db"
+SQLALCHEMY_DATABASE_URI = "postgresql://geonatuser:T,0602,L@51.254.242.81:5432/geonature2db"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
