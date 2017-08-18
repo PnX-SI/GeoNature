@@ -5,8 +5,8 @@ from geoalchemy2 import Geometry
 db = SQLAlchemy()
 
 class T_ObsContact(db.Model):
-    __tablename__       = 't_obs_contact'
-    __table_args__      = {'schema':'contact'}
+    # __tablename__       = 't_obs_contact'
+    # __table_args__      = {'schema':'contact'}
     # id_obs_contact      = db.Column(db.BigInteger, primary_key=True)
     # id_lot              = db.Column(db.Integer, db.ForeignKey("meta.t_lots.id_lot"), nullable=False)
     # id_nomenclature_technique_obs   = db.Column(db.Integer, db.ForeignKey("meta.t_nomenclatures.id_nomenclature"), nullable=False)
@@ -26,6 +26,8 @@ class T_ObsContact(db.Model):
     # the_geom_local      = db.Column(Geometry)
     # the_geom_3857       = db.Column(Geometry)
 
+    __tablename__       = 't_obs_contact'
+    __table_args__      = {'schema':'contact'}
     id_obs_contact      = db.Column(db.BigInteger, primary_key=True)
     id_lot              = db.Column(db.Integer, nullable=False)
     id_nomenclature_technique_obs   = db.Column(db.Integer, nullable=False)
@@ -44,18 +46,18 @@ class T_ObsContact(db.Model):
     commentaire         = db.Column(db.Text)
     the_geom_local      = db.Column(Geometry)
     the_geom_3857       = db.Column(Geometry)
-
-    # def __init__(self, id_obs_contact):
-    #     self.id_obs_contact = id_obs_contact
     
     def json(self):
-        return {column.key: getattr(self, column.key) if not isinstance(column.type, (db.Date, db.DateTime)) else json.dumps(getattr(self, column.key)) for column in self.__table__.columns }
+        return {column.key: getattr(self, column.key) 
+                if not isinstance(column.type, (db.Date, db.DateTime)) 
+                else json.dumps(getattr(self, column.key)) 
+                for column in self.__table__.columns }
 
     @classmethod
-    def find_by_id(cls, id_obs_contact):
-        return cls.query.filter_by(id_obs_contact=id_obs_contact).first()
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id_obs_contact=id).first()
 
-    def save_to_db(self):
+    def add_to_db(self):
         db.session.add(self)
         db.session.commit()
 

@@ -16,7 +16,7 @@ class T_ObsContactByID(Resource):
         res = request.get_json(silent=True)
         insert_data = T_ObsContact(**res)
         try:
-            insert_data.save_to_db()
+            insert_data.add_to_db()
         except Exception as e:
             insert_data.rollback()
             return {e}, 500
