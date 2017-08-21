@@ -17,7 +17,7 @@ SET default_with_oids = false;
 CREATE OR REPLACE FUNCTION medias.check_entity_field_exist(myentity character varying)
   RETURNS boolean AS
 $BODY$
---fonction permettant de vérifier si le champ d'un entité de type table existe. Param : 'schema.table.field'
+--Function that allows to check if the field of an entity of a table type exists. Parameter : 'schema.table.field'
 --USAGE : SELECT medias.check_entity_field_exist('schema.table.field');
   DECLARE
     entity_array character varying(255)[];
@@ -37,7 +37,7 @@ $BODY$
 CREATE OR REPLACE FUNCTION check_entity_value_exist(myentity character varying, myvalue integer)
   RETURNS boolean AS
 $BODY$
---fonction permettant de vérifier si une valeur existe dans le champ d'une entité de type table.
+--Function that allows to check if a value exists in the field of a table type.
 --USAGE : SELECT medias.check_entity_value_exist('schema.table.field', value);
   DECLARE
     entity_array character varying(255)[];
@@ -58,11 +58,15 @@ $BODY$
 --USAGE
 --SELECT medias.check_entity_value_exist('contactfaune.t_releves_cfaune.id_releve_cfaune', 1);
 
-CREATE TABLE bib_types_media
+CREATE TABLE bib_media_types
 (
   id_type integer NOT NULL,
-  nom_type_media character varying(100) NOT NULL,
-  desc_type_media text
+  label_fr character varying(100) NOT NULL,
+  label_en character varying(100) NOT NULL,
+  label_it character varying(100) NOT NULL,
+  label_es character varying(100) NOT NULL,
+  label_de character varying(100) NOT NULL,
+  description text
 );
 
 --DROP TABLE medias.t_medias;
@@ -72,15 +76,15 @@ CREATE TABLE t_medias
   id_type integer NOT NULL,
   entity_name character varying(255) NOT NULL,
   entity_value integer NOT NULL,
-  titre character varying(255) NOT NULL,
+  title character varying(255) NOT NULL,
   url character varying(255),
-  chemin character varying(255),
-  auteur character varying(100),
-  desc_media text,
-  date_insert timestamp without time zone,
-  date_update timestamp without time zone,
+  path character varying(255),
+  author character varying(100),
+  description text,
+  meta_create_date timestamp without time zone,
+  meta_update_date timestamp without time zone,
   is_public boolean NOT NULL DEFAULT true,
-  supprime boolean NOT NULL DEFAULT false
+  deleted boolean NOT NULL DEFAULT false
 );
 
 CREATE SEQUENCE t_medias_id_media_seq
@@ -98,8 +102,8 @@ SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
 ---------------
 --PRIMARY KEY--
 ---------------
-ALTER TABLE ONLY bib_types_media
-    ADD CONSTRAINT pk_types_media PRIMARY KEY (id_type);
+ALTER TABLE ONLY bib_media_types
+    ADD CONSTRAINT pk_media_types PRIMARY KEY (id_type);
 
 ALTER TABLE ONLY t_medias
     ADD CONSTRAINT pk_t_medias PRIMARY KEY (id_media);
@@ -109,7 +113,7 @@ ALTER TABLE ONLY t_medias
 --FOREIGN KEY--
 ---------------
 ALTER TABLE ONLY t_medias
-  ADD CONSTRAINT fk_t_medias_bib_types_media FOREIGN KEY (id_type) REFERENCES bib_types_media (id_type) ON UPDATE CASCADE;
+  ADD CONSTRAINT fk_t_medias_bib_media_types FOREIGN KEY (id_type) REFERENCES bib_media_types (id_type) ON UPDATE CASCADE;
 
 
 --------------
@@ -124,14 +128,14 @@ ALTER TABLE ONLY t_medias
 ---------
 --DATAS--
 ---------
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (2, 'Photo', 'photos');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (3, 'Page web', 'URL d''une page web');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (4, 'PDF', 'Document de type PDF');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (5, 'Audio', 'Fichier audio MP3');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (6, 'Video (fichier)', 'Fichier video hébergé');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (7, 'Video Youtube', 'ID d''une video hébergée sur Youtube');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (8, 'Video Dailymotion', 'ID d''une video hébergée sur Dailymotion');
-INSERT INTO bib_types_media (id_type, nom_type_media, desc_type_media) VALUES (9, 'Video Vimeo', 'ID d''une video hébergée sur Vimeo');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (2, 'Photo', 'Photo', 'photos');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (3, 'Page web', 'Web page', 'URL d''une page web');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (4, 'PDF', 'PDF', 'Document de type PDF');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (5, 'Audio', 'Audio', 'Fichier audio MP3');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (6, 'Video (fichier)', 'Video (file)', 'Fichier video hébergé');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (7, 'Video Youtube', 'Youtube video', 'ID d''une video hébergée sur Youtube');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (8, 'Video Dailymotion', 'Dailymotion video', 'ID d''une video hébergée sur Dailymotion');
+INSERT INTO bib_media_types (id_type, label_fr, description) VALUES (9, 'Video Vimeo', 'Vimeo video', 'ID d''une video hébergée sur Vimeo');
 
 
 SELECT pg_catalog.setval('t_medias_id_media_seq', 10, true);
