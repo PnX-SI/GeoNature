@@ -15,7 +15,7 @@ SET search_path = nomenclatures, pg_catalog;
 CREATE FUNCTION check_type_nomenclature(id integer, id_type integer) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
---fonction permettant de vérifier si un id_nomenclature correspond au type de nomenclature souhaité
+--Function that checks if an id_nomenclature matches with wanted nomenclature type
   BEGIN
     IF id IN(SELECT id_nomenclature FROM nomenclatures.t_nomenclatures WHERE id_type_nomenclature = id_type ) THEN
       return true;
@@ -29,7 +29,7 @@ $$;
 CREATE FUNCTION get_filtered_nomenclature(idtype integer, myregne character varying, mygroup character varying) RETURNS SETOF integer
     LANGUAGE plpgsql IMMUTABLE
     AS $$
---fonction permettant de retourner une liste d'id_nomenclature selon le regne et/ou le group2_inpn transmis en paramètre.
+--Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
   DECLARE
     thegroup character varying(255);
     theregne character varying(255);
@@ -100,7 +100,7 @@ CREATE OR REPLACE FUNCTION calcul_sensibilite(
     idnomenclature integer)
   RETURNS integer AS
 $BODY$
-  --fonction permettant de renvoyer l'id nomenclature correspondant à la sensibilité de l'observation
+  --Function to return id_nomenclature depending on observation sensibility
   --USAGE : SELECT nomenclatures.calcul_sensibilite(240,21);
   DECLARE
   idsensibilite integer;
@@ -132,7 +132,7 @@ CREATE TABLE bib_types_nomenclatures (
     date_create timestamp without time zone DEFAULT now(),
     date_update timestamp without time zone DEFAULT now()
 );
-COMMENT ON TABLE bib_types_nomenclatures IS 'Description de la liste des nomenclatures du SINP.';
+COMMENT ON TABLE bib_types_nomenclatures IS 'Description of the SINP nomenclatures list.';
 
 CREATE TABLE t_nomenclatures (
     id_nomenclature integer NOT NULL,
