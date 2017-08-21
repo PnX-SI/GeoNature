@@ -32,8 +32,8 @@ then
         else
             echo "La base de données existe et le fichier de settings indique de ne pas la supprimer."
         fi
-fi 
-if ! database_exists $db_name 
+fi
+if ! database_exists $db_name
 then
     echo "Création de la base..."
     echo "--------------------" &> log/install_db.log
@@ -63,8 +63,8 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -f /tmp/grant.sql &>> log/install_db.log
-        
-    
+
+
     echo "Récupération et création du schéma utilisateurs..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
@@ -81,13 +81,22 @@ then
 
     echo "Téléchargement et décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
+
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql
-    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/TAXREF_INPN_v9.0.zip
-    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/ESPECES_REGLEMENTEES.zip
-    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/LR_FRANCE.zip
-    unzip TAXREF_INPN_v9.0.zip -d /tmp
-    unzip ESPECES_REGLEMENTEES.zip -d /tmp
-    unzip LR_FRANCE.zip -d /tmp
+
+    array=( TAXREF_INPN_v9.0.zip ESPECES_REGLEMENTEES.zip LR_FRANCE.zip )
+    for i in "${array[@]}"
+    do
+      if [ ! -f $i ]
+      then
+          wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/$i -P /tmp
+      else
+          echo $i exists
+      fi
+    done
+    unzip /tmp/TAXREF_INPN_v9.0.zip -d /tmp
+    unzip /tmp/ESPECES_REGLEMENTEES.zip -d /tmp
+    unzip /tmp/LR_FRANCE.zip -d /tmp
     cd ..
 
     echo "Récupération des scripts de création du schéma taxonomie..."
@@ -212,6 +221,6 @@ then
     rm data/taxonomie/vm_hierarchie_taxo.sql
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
-    rm data/taxonomie/inpn/*.zip
+    #rm data/taxonomie/inpn/*.zip
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
 fi

@@ -61,11 +61,11 @@ $BODY$
 CREATE TABLE bib_media_types
 (
   id_type integer NOT NULL,
-  label_fr character varying(100) NOT NULL,
-  label_en character varying(100) NOT NULL,
-  label_it character varying(100) NOT NULL,
-  label_es character varying(100) NOT NULL,
-  label_de character varying(100) NOT NULL,
+  label_fr character varying(100),
+  label_en character varying(100),
+  label_it character varying(100),
+  label_es character varying(100),
+  label_de character varying(100),
   description_fr text,
   description_en text,
   description_it text,
@@ -80,13 +80,19 @@ CREATE TABLE t_medias
   id_type integer NOT NULL,
   entity_name character varying(255) NOT NULL,
   entity_value integer NOT NULL,
-  title_fr character varying(255) NOT NULL,
-  title_en character varying(255) NOT NULL,
+  title_fr character varying(255),
+  title_en character varying(255),
+  title_it character varying(255),
+  title_es character varying(255),
+  title_de character varying(255),
   url character varying(255),
   path character varying(255),
   author character varying(100),
   description_fr text,
   description_en text,
+  description_it text,
+  description_es text,
+  description_de text,
   meta_create_date timestamp without time zone,
   meta_update_date timestamp without time zone,
   is_public boolean NOT NULL DEFAULT true,
@@ -134,14 +140,15 @@ ALTER TABLE ONLY t_medias
 ---------
 --DATAS--
 ---------
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (2, 'Photo', 'Photo', 'photos');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (3, 'Page web', 'Web page', 'URL d''une page web');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (4, 'PDF', 'PDF', 'Document de type PDF');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (5, 'Audio', 'Audio', 'Fichier audio MP3');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (6, 'Video (fichier)', 'Video (file)', 'Fichier video hébergé');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (7, 'Video Youtube', 'Youtube video', 'ID d''une video hébergée sur Youtube');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (8, 'Video Dailymotion', 'Dailymotion video', 'ID d''une video hébergée sur Dailymotion');
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description) VALUES (9, 'Video Vimeo', 'Vimeo video', 'ID d''une video hébergée sur Vimeo');
+INSERT INTO bib_media_types (id_type, label_fr, label_en, description_fr) VALUES
+  (2, 'Photo', 'Photo', 'photos'),
+  (3, 'Page web', 'Web page', 'URL d''une page web'),
+  (4, 'PDF', 'PDF', 'Document de type PDF'),
+  (5, 'Audio', 'Audio', 'Fichier audio MP3'),
+  (6, 'Video (fichier)', 'Video (file)', 'Fichier video hébergé'),
+  (7, 'Video Youtube', 'Youtube video', 'ID d''une video hébergée sur Youtube'),
+  (8, 'Video Dailymotion', 'Dailymotion video', 'ID d''une video hébergée sur Dailymotion'),
+  (9, 'Video Vimeo', 'Vimeo video', 'ID d''une video hébergée sur Vimeo');
 
 
 SELECT pg_catalog.setval('t_medias_id_media_seq', 10, true);
