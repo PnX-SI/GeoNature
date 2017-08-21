@@ -1,16 +1,18 @@
 .cf-page-size {
-    min-height: 91vh;
+    max-height: 87vh;
+    min-height: 87vh;
+    overflow-y: auto;
 }
 .cf-card-required {
-    margin: -10px -10px 5px -10px;
+    margin: -10px -10px 5px 0px;
 }
 
 .cf-card-option {
-    margin: 0px -10px 5px -10px;
+    margin: 0px -10px 5px 0px;
 }
 
 .cf-card-table {
-    margin: 40px -10px 5px -10px;
+    margin: 40px -10px 5px 0px;
 }
 
 .input-alignment {
