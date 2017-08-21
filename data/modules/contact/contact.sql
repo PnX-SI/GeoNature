@@ -78,14 +78,14 @@ CREATE TABLE t_occurrences_contact (
     meta_update_date timestamp without time zone,
     comment character varying
 );
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_obs_meth IS 'Corespondance nomenclature INPN = methode_obs';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_bio_condition IS 'Corespondance nomenclature INPN = etat_bio';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_bio_status IS 'Corespondance nomenclature INPN = statut_bio';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_naturalness IS 'Corespondance nomenclature INPN = naturalite';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_exist_proof IS 'Corespondance nomenclature INPN = preuve_exist';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_obs_status IS 'Corespondance nomenclature INPN = statut_obs';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_valid_status IS 'Corespondance nomenclature INPN = statut_valide';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_accur_level IS 'Corespondance nomenclature INPN = niv_precis';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_obs_status IS 'Correspondance nomenclature INPN = statut_obs';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
+COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_accur_level IS 'Correspondance nomenclature INPN = niv_precis';
 
 CREATE SEQUENCE t_occurrences_contact_id_occurrence_contact_seq
     START WITH 1
