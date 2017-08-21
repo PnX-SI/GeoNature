@@ -21,12 +21,12 @@ CREATE MATERIALIZED VIEW vm_group2_inpn AS (SELECT DISTINCT group2_inpn FROM tax
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION check_is_inbibnoms(cdnom integer)
+CREATE OR REPLACE FUNCTION check_is_inbibnoms(mycdnom integer)
   RETURNS boolean AS
 $BODY$
 --fonction permettant de vérifier si un texte proposé correspond à un group2_inpn dans la table taxref
   BEGIN
-    IF cdnom IN(SELECT cd_nom FROM taxonomie.bib_noms) THEN
+    IF mycdnom IN(SELECT cd_nom FROM taxonomie.bib_noms) THEN
       RETURN true;
     ELSE
       RETURN false;
@@ -69,13 +69,13 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION find_group2inpn(id integer)
+CREATE OR REPLACE FUNCTION find_group2inpn(mycdnom integer)
   RETURNS text AS
 $BODY$
 --fonction permettant de renvoyer le group2_inpn d'un taxon à partir de son cd_nom
   DECLARE group2 character varying(255);
   BEGIN
-    SELECT INTO group2 group2_inpn FROM taxonomie.taxref WHERE cd_nom = id;
+    SELECT INTO group2 group2_inpn FROM taxonomie.taxref WHERE cd_nom = mycdnom;
     return group2;
   END;
 $BODY$
