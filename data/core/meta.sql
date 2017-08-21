@@ -20,7 +20,7 @@ CREATE TABLE cor_role_droit_entite (
     id_droit integer NOT NULL,
     nom_entite character varying(255) NOT NULL
 );
-COMMENT ON TABLE cor_role_droit_entite IS 'Permet de gérer les droits d''un groupe ou d''un utilisateur sur les différentes entités (tables) gérées par le backoffice (CRUD selon droits).';
+COMMENT ON TABLE cor_role_droit_entite IS 'Allow to manage rights of a group or user on entities (tables) into backoffice (CRUD depending on rights).';
 
 
 CREATE TABLE cor_role_lot_application (
@@ -28,7 +28,7 @@ CREATE TABLE cor_role_lot_application (
     id_lot integer NOT NULL,
     id_application integer NOT NULL
 );
-COMMENT ON TABLE cor_role_lot_application IS 'Permet d''identifier pour chaque module GeoNature (un module = 1 application dans UsersHub) parmi quels lots l''utilisateur logué peut rattacher ses observations. Rappel : un lot est un jeu de données ou une étude et chaque observation est rattachée à un lot. Un backoffice de geonature V2 permet une gestion des lots.';
+COMMENT ON TABLE cor_role_lot_application IS 'Allow to identify for each GeoNature module (1 module = 1 application in UsersHub) among which dataset connected user can create observations. Reminder : A dataset is a dataset or a survey and each observation is attached to a dataset. GeoNature V2 backoffice allows to manage datasets.';
 
 
 CREATE TABLE t_lots (
@@ -45,7 +45,7 @@ CREATE TABLE t_lots (
     date_create timestamp without time zone,
     date_update timestamp without time zone
 );
-COMMENT ON TABLE t_lots IS 'Un lot est un jeu de données ou une étude et chaque observation est rattachée à un lot. Le lot permet de qualifier les données auxquelles il se rapporte (producteur, propriétaire, gestionnaire, financeur, donnée publique oui/non). Un lot peut être rattaché à un programme. Un backoffice de geonature V2 permet une gestion des lots.';
+COMMENT ON TABLE t_lots IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
 
 
 CREATE TABLE t_programmes (
@@ -54,7 +54,7 @@ CREATE TABLE t_programmes (
     desc_programme text,
     actif boolean
 );
-COMMENT ON TABLE t_programmes IS 'Les programmes sont des objets généraux pouvant englober des lots de données et/ou des protocoles (à discuter pour les protocoles). Exemple : ATBI, rapaces, plan national d''action, etc... Un backoffice de geonature V2 permet une gestion des programmes.';
+COMMENT ON TABLE t_programmes IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
 
 
 ---------------
