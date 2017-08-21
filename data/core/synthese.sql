@@ -21,7 +21,7 @@ CREATE TABLE bib_modules (
     target character varying(10),
     picto_module character varying(255),
     groupe_module character varying(50) NOT NULL,
-    actif boolean NOT NULL
+    active boolean NOT NULL
 );
 
 
@@ -31,14 +31,14 @@ CREATE TABLE synthese (
     entity_module_pk_value integer,
     id_organisme integer,
     id_nomenclature_typ_inf_geo integer DEFAULT 143,
-    id_lot integer,
-    id_nomenclature_meth_obs integer DEFAULT 42,
-    id_nomenclature_technique_obs integer DEFAULT 343,
-    id_nomenclature_statut_bio integer DEFAULT 30,
-    id_nomenclature_stade_vie integer DEFAULT 3,
+    id_dataset integer,
+    id_nomenclature_obs_meth integer DEFAULT 42,
+    id_nomenclature_obs_technique integer DEFAULT 343,
+    id_nomenclature_bio_status integer DEFAULT 30,
+    id_nomenclature_life_stage integer DEFAULT 3,
     id_nomenclature_sexe integer DEFAULT 189,
-    id_nomenclature_eta_bio integer DEFAULT 177,
-    id_nomenclature_naturalite integer DEFAULT 181,
+    id_nomenclature_bio_condition integer DEFAULT 177,
+    id_nomenclature_naturalness integer DEFAULT 181,
     cd_nom integer,
     insee character(5),
     altitude_min integer,
@@ -48,15 +48,15 @@ CREATE TABLE synthese (
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
     date_min date NOT NULL,
     date_max date NOT NULL,
-    observateurs character varying(255),
-    determinateur character varying(255),
-    effectif integer,
-    remarques text,
-    diffusable boolean DEFAULT true,
-    supprime boolean DEFAULT false,
-    date_insert timestamp without time zone DEFAULT now(),
-    date_update timestamp without time zone DEFAULT now(),
-    derniere_action character(1),
+    observers character varying(255),
+    determiner character varying(255),
+    total_number integer,
+    comment text,
+    sensitivity INTEGER NOT NULL,
+    deleted boolean DEFAULT false,
+    meta_create_date timestamp without time zone DEFAULT now(),
+    meta_update_date timestamp without time zone DEFAULT now(),
+    last_action character(1),
     CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
@@ -66,6 +66,12 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
+COMMENT ON COLUMN synthese.synthese.id_nomenclature_obs_meth IS 'Corespondance nomenclature INPN = methode_obs';
+COMMENT ON COLUMN synthese.synthese.id_nomenclature_obs_technique IS 'Corespondance nomenclature INPN = technique_obs';
+COMMENT ON COLUMN synthese.synthese.id_nomenclature_life_stage IS 'Corespondance nomenclature INPN = stade_vie';
+COMMENT ON COLUMN synthese.synthese.id_nomenclature_bio_status IS 'Corespondance nomenclature INPN = statut_bio';
+COMMENT ON COLUMN synthese.synthese.id_nomenclature_bio_condition IS 'Corespondance nomenclature INPN = etat_bio';
+COMMENT ON COLUMN synthese.synthese.id_nomenclature_naturalness IS 'Corespondance nomenclature INPN = naturalite';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -81,9 +87,9 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 --PRIMARY KEY--
 ---------------
 
-ALTER TABLE ONLY bib_modules ADD CONSTRAINT bib_modules_pkey PRIMARY KEY (id_module);
+ALTER TABLE ONLY bib_modules ADD CONSTRAINT pk_bib_modules PRIMARY KEY (id_module);
 
-ALTER TABLE ONLY synthese ADD CONSTRAINT synthese_pkey PRIMARY KEY (id_synthese);
+ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
 
 
 ---------
@@ -101,7 +107,7 @@ CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
 
 CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
 
-CREATE INDEX i_synthese_id_lot ON synthese USING btree (id_lot);
+CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
 
 CREATE INDEX index_gist_synthese_the_geom_local ON synthese USING gist (the_geom_local);
 
@@ -117,7 +123,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_bib_organismes FOREIGN KEY (id_organisme) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_lot FOREIGN KEY (id_lot) REFERENCES meta.t_lots(id_lot) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES meta.t_lots(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES bib_modules(id_module) ON UPDATE CASCADE;
@@ -126,28 +132,28 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_meth_obs FOREIGN KEY (id_nomenclature_meth_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_technique_obs FOREIGN KEY (id_nomenclature_technique_obs) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_statut_bio FOREIGN KEY (id_nomenclature_statut_bio) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_bio_status FOREIGN KEY (id_nomenclature_bio_status) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_stade_vie FOREIGN KEY (id_nomenclature_stade_vie) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_life_stage FOREIGN KEY (id_nomenclature_life_stage) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_sexe FOREIGN KEY (id_nomenclature_sexe) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_eta_bio FOREIGN KEY (id_nomenclature_eta_bio) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_bio_condition FOREIGN KEY (id_nomenclature_bio_condition) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_naturalite FOREIGN KEY (id_nomenclature_naturalite) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_naturalness FOREIGN KEY (id_nomenclature_naturalness) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 --------
 --DATA--
 --------
-INSERT INTO bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, actif) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_module_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
+INSERT INTO bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_module_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
