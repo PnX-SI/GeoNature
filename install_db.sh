@@ -84,19 +84,19 @@ then
 
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql
 
-    array=( TAXREF_INPN_v9.0.zip ESPECES_REGLEMENTEES.zip LR_FRANCE.zip )
+    array=( TAXREF_INPN_v9.0.zip    ESPECES_REGLEMENTEES_20161103.zip    LR_FRANCE_20160000.zip )
     for i in "${array[@]}"
     do
       if [ ! -f '/tmp/'$i ]
       then
-          wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/$i -P /tmp
+          wget http://geonature.fr/data/inpn/taxonomie/$i -P /tmp
       else
           echo $i exists
       fi
     done
     unzip /tmp/TAXREF_INPN_v9.0.zip -d /tmp
-    unzip /tmp/ESPECES_REGLEMENTEES.zip -d /tmp
-    unzip /tmp/LR_FRANCE.zip -d /tmp
+    unzip /tmp/ESPECES_REGLEMENTEES_20161103.zip -d /tmp
+    unzip /tmp/LR_FRANCE_20160000.zip -d /tmp
     cd ..
 
     echo "Récupération des scripts de création du schéma taxonomie..."
