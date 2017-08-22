@@ -9,12 +9,12 @@ fi
 . config/settings.ini
 
 echo "Création du schéma contact..."
-echo "" &>> log/install_db.log
-echo "" &>> log/install_db.log
-echo "--------------------" &>> log/install_db.log
-echo "Création du schéma contact" &>> log/install_db.log
-echo "--------------------" &>> log/install_db.log
-echo "" &>> log/install_db.log
+echo "" &>> log/install_schemas.log
+echo "" &>> log/install_schemas.log
+echo "--------------------" &>> log/install_schemas.log
+echo "Création du schéma contact" &>> log/install_schemas.log
+echo "--------------------" &>> log/install_schemas.log
+echo "" &>> log/install_schemas.log
 cp data/modules/contact/contact.sql /tmp/contact.sql
 sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/contact.sql
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/contact.sql  &>> log/install_db.log
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/contact.sql  &>> log/install_schemas.log
