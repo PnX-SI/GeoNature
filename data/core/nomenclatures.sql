@@ -12,12 +12,12 @@ SET search_path = nomenclatures, pg_catalog;
 -------------
 --FUNCTIONS--
 -------------
-CREATE FUNCTION check_nomenclature_type(id integer, id_type integer) RETURNS boolean
+CREATE FUNCTION check_nomenclature_type(id integer, myidtype integer) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
 --Function that checks if an id_nomenclature matches with wanted nomenclature type
   BEGIN
-    IF id IN(SELECT id_nomenclature FROM nomenclatures.t_nomenclatures WHERE id_type = id_type ) THEN
+    IF id IN(SELECT id_nomenclature FROM nomenclatures.t_nomenclatures WHERE id_type = myidtype ) THEN
       return true;
     ELSE
       RETURN false;
@@ -272,7 +272,6 @@ CREATE OR REPLACE VIEW v_nomenclature_taxonomie AS
   FROM nomenclatures.t_nomenclatures n
     JOIN nomenclatures.bib_nomenclatures_types tn ON tn.id_type = n.id_type
     JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_broader <> 0
   ORDER BY tn.id_type, ctn.regne, ctn.group2_inpn, n.id_nomenclature;
 
 CREATE OR REPLACE VIEW v_technique_obs AS(
@@ -280,7 +279,6 @@ SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.label_fr, n
 FROM nomenclatures.t_nomenclatures n
 LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type = 100
-AND n.id_broader != 0
 );
 --USAGE :
 --SELECT * FROM nomenclatures.v_technique_obs WHERE group2_inpn = 'Oiseaux';
@@ -296,7 +294,6 @@ CREATE OR REPLACE VIEW v_eta_bio AS
     n.hierarchy
   FROM nomenclatures.t_nomenclatures n
   WHERE n.id_type = 7 
-  AND n.id_broader <> 0
   AND n.active = true;
   
 CREATE OR REPLACE VIEW v_stade_vie AS 
@@ -312,7 +309,6 @@ SELECT
 FROM nomenclatures.t_nomenclatures n
 LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type = 10
-AND n.id_broader != 0
 AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_stade_vie WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
@@ -329,7 +325,6 @@ CREATE OR REPLACE VIEW v_sexe AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 9
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_sexe WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
@@ -346,7 +341,6 @@ CREATE OR REPLACE VIEW v_objet_denbr AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 6
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_objet_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
@@ -363,7 +357,6 @@ CREATE OR REPLACE VIEW v_type_denbr AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 21
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_type_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
@@ -380,7 +373,6 @@ CREATE OR REPLACE VIEW v_meth_obs AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 14
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_meth_obs WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
@@ -397,7 +389,6 @@ CREATE OR REPLACE VIEW v_statut_bio AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 13
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_statut_bio WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
@@ -414,7 +405,6 @@ CREATE OR REPLACE VIEW v_naturalite AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 8
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_naturalite WHERE (regne = 'Animalia' OR regne = 'all');
@@ -431,7 +421,6 @@ CREATE OR REPLACE VIEW v_preuve_exist AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 15 
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_preuve_exist;
@@ -448,7 +437,6 @@ CREATE OR REPLACE VIEW v_statut_obs AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 18 
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_statut_obs;
@@ -465,7 +453,6 @@ CREATE OR REPLACE VIEW v_statut_valid AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 101 
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_statut_valid;
@@ -482,7 +469,6 @@ CREATE OR REPLACE VIEW v_niv_precis AS
    FROM nomenclatures.t_nomenclatures n
      LEFT JOIN nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 5
-  AND n.id_broader <> 0
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM nomenclatures.v_statut_valid;
