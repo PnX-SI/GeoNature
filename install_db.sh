@@ -87,8 +87,9 @@ then
     array=( TAXREF_INPN_v9.0.zip ESPECES_REGLEMENTEES.zip LR_FRANCE.zip )
     for i in "${array[@]}"
     do
-      if [ ! -f $i ]
+      if [ ! -f '/tmp/'$i ]
       then
+        echo '/tmp/'$i
           wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/$i -P /tmp
       else
           echo $i exists
