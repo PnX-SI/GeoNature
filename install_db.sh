@@ -89,7 +89,6 @@ then
     do
       if [ ! -f '/tmp/'$i ]
       then
-        echo '/tmp/'$i
           wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/$i -P /tmp
       else
           echo $i exists
