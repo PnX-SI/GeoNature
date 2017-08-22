@@ -7,10 +7,10 @@ SET client_min_messages = warning;
 --SET row_security = off;
 
 
-CREATE SCHEMA contact;
+CREATE SCHEMA pr_contact;
 
 
-SET search_path = contact, pg_catalog;
+SET search_path = pr_contact, pg_catalog;
 SET default_with_oids = false;
 
 ------------------------
@@ -75,13 +75,13 @@ CREATE TABLE t_occurrences_contact (
     meta_update_date timestamp without time zone,
     comment character varying
 );
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
-COMMENT ON COLUMN contact.t_occurrences_contact.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
 
 CREATE SEQUENCE t_occurrences_contact_id_occurrence_contact_seq
     START WITH 1
@@ -319,9 +319,9 @@ CREATE TRIGGER tri_update_occurrences_contact
 
 INSERT INTO meta.t_lots  VALUES (1, 'contact', 'Observation aléatoire de la faune, de la flore ou de la fonge', 1, 2, 2, 2, 2, true, NULL, '2017-06-01 00:00:00', '2017-06-01 00:00:00');
 
-INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (1, 'contact', 'Données issues du contact aléatoire', 'contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
+INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (1, 'contact', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
 
-INSERT INTO contact.t_releves_contact VALUES(1,1,343,1,'2017-01-01','2017-01-01',1500,1565,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
+INSERT INTO t_releves_contact VALUES(1,1,343,1,'2017-01-01','2017-01-01',1500,1565,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
 SELECT pg_catalog.setval('t_releves_contact_id_releve_contact_seq', 2, true);
 
 INSERT INTO t_occurrences_contact VALUES(1,1,65,177,30,182,91,347,163,1,'gil','gees',60612,'Lynx Boréal','Taxref V9.0','','','poil',FALSE, now(),now(),'test');
