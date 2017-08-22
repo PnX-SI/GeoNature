@@ -325,7 +325,7 @@ INSERT INTO contact.t_releves_contact VALUES(1,1,343,1,'2017-01-01','2017-01-01'
 SELECT pg_catalog.setval('t_releves_contact_id_releve_contact_seq', 2, true);
 
 INSERT INTO t_occurrences_contact VALUES(1,1,65,177,30,182,91,347,163,1,'gil','gees',60612,'Lynx Boréal','Taxref V9.0','','','poil',FALSE, now(),now(),'test');
-INSERT INTO cor_role_releves_contact(1,1);
+INSERT INTO cor_role_releves_contact VALUES(1,1);
 INSERT INTO cor_municipality_releves_contact VALUES(1,'05004');
 INSERT INTO  cor_counting_contact VALUES
 (1,4,190,166,107,5,5)
