@@ -33,6 +33,11 @@ then
             echo "La base de données existe et le fichier de settings indique de ne pas la supprimer."
         fi
 fi
+
+if [ ! -d "log" ]; then
+    mkdir log
+fi
+
 if ! database_exists $db_name
 then
     echo "Création de la base..."
@@ -223,4 +228,7 @@ then
     rm data/taxonomie/taxhubdata_taxon_example.sql
     #rm data/taxonomie/inpn/*.zip
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
+
+    echo "Droit sur le répertoire log..."
+    chmod -R 777 log
 fi

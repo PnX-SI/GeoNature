@@ -61,36 +61,36 @@ COMMENT ON TABLE t_programmes IS 'Programs are general objects that can embed da
 --PRIMARY KEY--
 ---------------
 ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT cor_role_privilege_entity_pkey PRIMARY KEY (id_role, id_privilege, entity_name);
+    ADD CONSTRAINT pk_cor_role_privilege_entity PRIMARY KEY (id_role, id_privilege, entity_name);
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT cor_role_dataset_application_pkey PRIMARY KEY (id_role, id_dataset, id_application);
+    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
 
 ALTER TABLE ONLY t_lots
-    ADD CONSTRAINT t_lots_pkey PRIMARY KEY (id_dataset);
+    ADD CONSTRAINT pk_t_lots PRIMARY KEY (id_dataset);
 
 ALTER TABLE ONLY t_programmes
-    ADD CONSTRAINT t_programmes_pkey PRIMARY KEY (id_programme);
+    ADD CONSTRAINT pk_t_programmes PRIMARY KEY (id_programme);
 
 
 ---------------
 --FOREIGN KEY--
 ---------------
 ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT cor_role_droit_application_id_privilege_fkey FOREIGN KEY (id_privilege) REFERENCES utilisateurs.bib_droits(id_droit) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_droit_application_id_privilege FOREIGN KEY (id_privilege) REFERENCES utilisateurs.bib_droits(id_droit) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT cor_role_privilege_entity_t_roles_fkey FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_privilege_entity_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT cor_role_droit_application_id_role_fkey FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_droit_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT cor_role_dataset_application_id_application_fkey FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT cor_role_dataset_application_id_privilege_fkey FOREIGN KEY (id_dataset) REFERENCES t_lots(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_lots(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 ALTER TABLE ONLY t_lots
@@ -107,6 +107,7 @@ ALTER TABLE ONLY t_lots
 
 ALTER TABLE ONLY t_lots
     ADD CONSTRAINT fk_bib_lots_t_programmes FOREIGN KEY (id_programme) REFERENCES t_programmes(id_programme) ON UPDATE CASCADE;
+
 
 ---------
 --DATAS--
