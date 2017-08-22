@@ -82,12 +82,12 @@ then
     echo "Téléchargement et décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql
-    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/TAXREF_INPN_v9.0.zip
-    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/ESPECES_REGLEMENTEES.zip
-    wget https://github.com/PnX-SI/TaxHub/raw/$taxhub_release/data/inpn/LR_FRANCE.zip
+    wget http://geonature.fr/data/inpn/taxonomie/TAXREF_INPN_v9.0.zip
+    wget http://geonature.fr/data/inpn/taxonomie/ESPECES_REGLEMENTEES_20161103.zip
+    wget http://geonature.fr/data/inpn/taxonomie/LR_FRANCE_20160000.zip
     unzip TAXREF_INPN_v9.0.zip -d /tmp
-    unzip ESPECES_REGLEMENTEES.zip -d /tmp
-    unzip LR_FRANCE.zip -d /tmp
+    unzip ESPECES_REGLEMENTEES_20161103.zip -d /tmp
+    unzip LR_FRANCE_20160000.zip -d /tmp
     cd ..
 
     echo "Récupération des scripts de création du schéma taxonomie..."
@@ -265,8 +265,29 @@ then
         echo "" &>> log/install_db.log
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name  -f data/layers/communes_metropole.sql &>> log/install_db.log
 
-        echo "Décompression des fichiers du référentiel géographique..."
+        echo "Téléchargement et décompression des fichiers du référentiel géographique..."
         cd data/layers
+        wget http://geonature.fr/data/inpn/layers/apb_2016.zip
+        wget http://geonature.fr/data/inpn/layers/bios_2016.zip
+        wget http://geonature.fr/data/inpn/layers/cdl_2016.zip
+        wget http://geonature.fr/data/inpn/layers/cen_2016.zip
+        wget http://geonature.fr/data/inpn/layers/pn_2016.zip
+        wget http://geonature.fr/data/inpn/layers/pnr_2016.zip
+        wget http://geonature.fr/data/inpn/layers/pnm_2016.zip
+        wget http://geonature.fr/data/inpn/layers/ramsar_2016.zip
+        wget http://geonature.fr/data/inpn/layers/rb_2016.zip
+        wget http://geonature.fr/data/inpn/layers/ripn_2016.zip
+        wget http://geonature.fr/data/inpn/layers/rnc_2016.zip
+        wget http://geonature.fr/data/inpn/layers/rncfs_2016.zip
+        wget http://geonature.fr/data/inpn/layers/rnn_2016.zip
+        wget http://geonature.fr/data/inpn/layers/rnr_2016.zip
+        wget http://geonature.fr/data/inpn/layers/sic_2016.zip
+        wget http://geonature.fr/data/inpn/layers/zps_2016.zip
+        wget http://geonature.fr/data/inpn/layers/zico_2016.zip
+        wget http://geonature.fr/data/inpn/layers/znieff1_2016.zip
+        wget http://geonature.fr/data/inpn/layers/znieff2_2016.zip
+        wget http://geonature.fr/data/inpn/layers/znieff1_mer.zip
+        wget http://geonature.fr/data/inpn/layers/znieff2_mer.zip
         unzip apb.zip
         unzip bios.zip
         unzip cdl.zip
@@ -291,11 +312,11 @@ then
         mkdir sql
         cd ../..
 
-        echo "Insertion  du référentiel géographique : zones à statut de france métropolitaine..."
+        echo "Insertion du référentiel géographique : zones à statut de France métropolitaine..."
         echo "" &>> log/install_db.log
         echo "" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
-        echo "Insertion  du référentiel géographique : zones à statut de france métropolitaine" &>> log/install_db.log
+        echo "Insertion du référentiel géographique : zones à statut de France métropolitaine" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         echo "" &>> log/install_db.log
         echo "...Aires de protection de biotope..."
