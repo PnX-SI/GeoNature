@@ -31,7 +31,7 @@ CREATE TABLE cor_role_dataset_application (
 COMMENT ON TABLE cor_role_dataset_application IS 'Allow to identify for each GeoNature module (1 module = 1 application in UsersHub) among which dataset connected user can create observations. Reminder : A dataset is a dataset or a survey and each observation is attached to a dataset. GeoNature V2 backoffice allows to manage datasets.';
 
 
-CREATE TABLE t_lots (
+CREATE TABLE t_datasets (
     id_dataset integer NOT NULL,
     dataset_name character varying(255),
     dataset_desc text,
@@ -45,7 +45,7 @@ CREATE TABLE t_lots (
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone
 );
-COMMENT ON TABLE t_lots IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
+COMMENT ON TABLE t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
 
 
 CREATE TABLE t_programmes (
@@ -66,8 +66,8 @@ ALTER TABLE ONLY cor_role_privilege_entity
 ALTER TABLE ONLY cor_role_dataset_application
     ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
 
-ALTER TABLE ONLY t_lots
-    ADD CONSTRAINT pk_t_lots PRIMARY KEY (id_dataset);
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
 
 ALTER TABLE ONLY t_programmes
     ADD CONSTRAINT pk_t_programmes PRIMARY KEY (id_programme);
@@ -90,22 +90,22 @@ ALTER TABLE ONLY cor_role_dataset_application
     ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_lots(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
-ALTER TABLE ONLY t_lots
+ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_bib_lots_financeur FOREIGN KEY (id_organisme_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_lots
+ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_bib_lots_gestionnaire FOREIGN KEY (id_organisme_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_lots
+ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_bib_lots_producteur FOREIGN KEY (id_organisme_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_lots
+ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_bib_lots_proprietaire FOREIGN KEY (id_organisme_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_lots
+ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_bib_lots_t_programmes FOREIGN KEY (id_programme) REFERENCES t_programmes(id_programme) ON UPDATE CASCADE;
 
 
