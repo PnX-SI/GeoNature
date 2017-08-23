@@ -55,12 +55,14 @@ export class MapService {
                     this.marker = L.marker(e.latlng, {
                         icon: L.icon({
                                 iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                                shadowUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-shadow.png'),
+                                //shadowUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-shadow.png'),
+                                iconSize: [24,36],
+                                iconAnchor: [12,36]
                         }),
                         draggable: true,
                     })
                     .bindPopup('GPS ' + e.latlng, {
-                        offset: L.point(12, 6)
+                        offset: L.point(0, -30)
                     })
                     .addTo(this.map)
                     .openPopup();
@@ -72,7 +74,7 @@ export class MapService {
 
                     this.marker.on('move', (event: MouseEvent) => {
                         this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
-                        offset: L.point(12, 6)
+                        offset: L.point(0, -30)
                         });
                     });
                 }
