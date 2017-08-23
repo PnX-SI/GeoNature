@@ -123,7 +123,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_bib_organismes FOREIGN KEY (id_organisme) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES meta.t_lots(id_dataset) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_lots(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES bib_modules(id_module) ON UPDATE CASCADE;
