@@ -54,8 +54,37 @@ Création de la base de données
 Installation d'un module
 ========================
 
-	* Installation du schéma du module dans la base de données Exemple pour le module contact faune.
+  * Installation du schéma du module dans la base de données Exemple pour le module contact faune.
  
   ::  
   
         sudo ./data/modules/contact/install_schema.sh
+
+
+Mise en place du backend (doc developpeur)
+==========================================
+
+  * Installation du backend.
+ 
+  ::  
+  
+        cd
+        cd geonature/backend/
+        ./install_app.sh
+
+
+	* Installation du sous-module en mode develop
+
+  On assume que le sous module est installé au même niveau que geonature, dans le home de l'utilisateur
+ 
+  ::  
+  
+        cd
+        git clone https://github.com/PnX-SI/Nomenclature-api-module.git nomenclature-api-module
+        cd nomenclature-api-module/
+        source ../geonature/backend/venv/bin/activate
+        cp ../geonature/backend/config.py.sample ../geonature/backend/config.py
+        python setup.py develop
+        cd ../geonature2/backend/
+        make develop
+        deativate
