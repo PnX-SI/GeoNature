@@ -35,6 +35,7 @@ import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { CfFormComponent } from './components/cf-form/cf-form.component';
 import { FormService } from './components/cf-form/service/form.service';
+import { TaxonomyComponent } from './components/cf-form/taxonomy/taxonomy.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -50,7 +51,8 @@ export function HttpLoaderFactory(http: Http) {
     MapComponent,
     SigninComponent,
     CfFormComponent,
-    NomenclatureComponent
+    NomenclatureComponent,
+    TaxonomyComponent
   ],
   imports: [
     BrowserModule,
