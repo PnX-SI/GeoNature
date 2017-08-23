@@ -25,10 +25,17 @@ export class FormService {
   }
 
   getNomenclature(id_nomenclature:number, regne?:string, group2_inpn?:string){
-    // let params = {id: id_nomenclature, regne: regne, group2_inpn:group2_inpn};
-    // this._http.get(`${baseUrl}/nomenclature/${id_nomenclature}`, params)
+    // const params = {id: id_nomenclature, regne: regne, group2_inpn:group2_inpn};
+    // if (regne){
+    //   params.regne = regne
+    // };
+    // if (group2_inpn){
+    //   params.group2_inpn = group2_inpn
+    // }
+    // return this._http.get(`${baseUrl}/nomenclature/${id_nomenclature}`, params)
     //   .subscribe(response=>{
     //     console.log(response.data)
+    //      return response.data;
     //   })
     return [{'id':1, 'name': 'lala' }, {'id':2, 'name': 'lolo' }, {'id':3, 'name': 'toto' } ]
   }
