@@ -4,7 +4,7 @@ import { HttpModule } from '@angular/http';
 @Injectable()
 export class FormService {
   taxonomy: any;
-  constructor(private _http: HttpModule) {
+  constructor(private _http: HttpModule,) {
     this.taxonomy = [
       {
         cd_nom: 5422,
@@ -32,7 +32,7 @@ export class FormService {
     // if (group2_inpn){
     //   params.group2_inpn = group2_inpn
     // }
-    // return this._http.get(`${baseUrl}/nomenclature/${id_nomenclature}`, params)
+    // return this._http.get(`${AppSetting.API_ENDPOINT}/nomenclatures/`, params)
     //   .subscribe(response=>{
     //     console.log(response.data)
     //      return response.data;

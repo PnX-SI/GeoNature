@@ -27,6 +27,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import {NomenclatureComponent} from './components/cf-form/nomenclature/nomenclature.component'
 
 // Service
+import { AppConfigs } from '../conf/app.configs'
 import { MapService } from './services/map.service';
 import { NavService } from './services/nav.service';
 import { MapComponent } from './components/map/map.component';
@@ -77,7 +78,7 @@ export function HttpLoaderFactory(http: Http) {
         }),
     ToastrModule.forRoot()
   ],
-  providers: [NavService, MapService, AuthService, AuthGuard, FormService],
+  providers: [AppConfigs, NavService, MapService, AuthService, AuthGuard, FormService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
