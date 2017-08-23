@@ -10,6 +10,9 @@ drop_apps_db=false
 # les scripts n'auront pas les droits suffisants pour créer la BDD sur un autre serveur et cela devra être fait manuellement.
 db_host=localhost
 
+# Port postgresql
+db_port=5432
+
 # Nom de la base de données de l'application
 db_name=geonature2db
 
