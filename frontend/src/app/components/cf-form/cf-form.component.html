@@ -42,7 +42,7 @@
     <!--Technique observation-->
 
 
-    <app-nomenclature placeholder="Technique d'observation" id_nomenclature="1" regne="lala" group2_inpn="lala"> </app-nomenclature>
+    <app-nomenclature placeholder="Technique d'observation" id_nomenclature="100" regne="lala" group2_inpn="lala"> </app-nomenclature>
 
     <!--<div>
       <md-input-container class="input-alignment-sm input-width-max">
@@ -129,8 +129,8 @@
           </md-option>
         </md-autocomplete>
 
-        <!--Method observation-->
-        <md-input-container class="input-alignment-md input-width-lg ">
+        <!--Method observation: VOIR POUR md-autocomplete-->
+        <!-- <md-input-container class="input-alignment-md input-width-lg ">
           <input mdInput placeholder="Methode observation" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
           <md-icon mdSuffix>local_library</md-icon>
         </md-input-container>
@@ -139,7 +139,9 @@
           <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
             {{ crit }}
           </md-option>
-        </md-autocomplete>
+        </md-autocomplete> -->
+
+        <app-nomenclature placeholder="Méthode d'observation" id_nomenclature="14" regne="lala" group2_inpn="lala"> </app-nomenclature> 
       
 
       <!--Avancé-->
@@ -184,7 +186,6 @@
             <th>Stade vie</th>
             <th>Sexe</th>
             <th>Type</th>
-            <th>Obf</th>
             <th>Denom</th>
             <th>Ajouter</th>
           </tr>
@@ -192,32 +193,16 @@
         <tbody class="table-hover">
           <tr>
             <td>
-              <select class="input-sm" id="sel1">
-                <option>Adulte</option>
-                <option>Juvenile</option>
-              </select>
-            </td>
-            <td>
-              <select class="input-sm" id="sel1">
-                <option>Inconnu</option>
-                <option>Femelle</option>
-                <option>Male</option>
-              </select>
-            </td>
-            <td>
-              <select class="input-sm" id="sel1">
+              <!-- <select class="input-sm" id="sel1">
                 <option>Type</option>
-              </select>
+              </select> -->
+              <app-nomenclature placeholder="Stade de vie" id_nomenclature="10" regne="lala" group2_inpn="lala"> </app-nomenclature>
             </td>
             <td>
-              <select class="input-sm" id="sel1">
-                <option>Obf</option>
-              </select>
+                <app-nomenclature placeholder="Sexe" id_nomenclature="9" regne="lala" group2_inpn="lala"> </app-nomenclature>
             </td>
             <td>
-              <select class="input-sm" id="sel1">
-                <option>1</option>
-              </select>
+                <app-nomenclature placeholder="Type" id_nomenclature="21" regne="lala" group2_inpn="lala"> </app-nomenclature>  
             </td>
             <td><button type="button" class="btn btn-default btn-sm">
                   <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
