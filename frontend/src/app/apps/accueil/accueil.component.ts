@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {APP_CONFIG , CONFIG, AppConfig} from 'conf/app.config';
+// import {APP_CONFIG , CONFIG, AppConfig} from 'conf/app.config';
+import { AppConfigs } from '../../../conf/app.configs'
 import { NavService } from '../../services/nav.service';
 import { MapService } from '../../services/map.service';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
@@ -8,7 +9,7 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.scss'],
-  providers: [MapService, { provide: APP_CONFIG, useValue: CONFIG }, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
+  providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
 })
 export class AccueilComponent implements OnInit {
   private appName: string;
@@ -55,11 +56,10 @@ export class AccueilComponent implements OnInit {
         }
     }
 
-  constructor(private mapService: MapService, @Inject(APP_CONFIG) private config: AppConfig, private _navService: NavService) {
+  constructor(private mapService: MapService, private _navService: NavService) {
     _navService.setAppName('Accueil');
-    this.appName =  config.appName;
-    this.welcomeMessage = config.welcomeMessage;
-    this.shortMessage = config.shortMessage;
+    this.appName =  AppConfigs.appName;
+
   }
 
   ngOnInit() {
