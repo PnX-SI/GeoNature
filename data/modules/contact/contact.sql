@@ -31,13 +31,13 @@ CREATE TABLE t_releves_contact (
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
     comment text,
-    the_geom_local public.geometry(Geometry,MYLOCALSRID),
-    the_geom_3857 public.geometry(Geometry,3857),
+    geom_local public.geometry(Geometry,MYLOCALSRID),
+    geom_4326 public.geometry(Geometry,4326),
     precision integer DEFAULT 10,
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID))
+    CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
+    CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
+    CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
+    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = MYLOCALSRID))
 );
 
 CREATE SEQUENCE t_releves_contact_id_releve_contact_seq

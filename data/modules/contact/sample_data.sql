@@ -13,7 +13,7 @@ INSERT INTO gn_meta.t_datasets  VALUES (1, 'contact', 'Observation aléatoire de
 
 INSERT INTO gn_synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (1, 'contact', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
 
-INSERT INTO pr_contact.t_releves_contact VALUES(1,1,343,1,'2017-01-01','2017-01-01',1500,1565,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
+INSERT INTO pr_contact.t_releves_contact VALUES(1,1,343,1,'2017-01-01','2017-01-01',1500,1565,'web',FALSE,NULL,NULL,'exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640');
 SELECT pg_catalog.setval('pr_contact.t_releves_contact_id_releve_contact_seq', 2, true);
 
 INSERT INTO pr_contact.t_occurrences_contact VALUES(1,1,65,177,30,182,91,347,163,1,'gil','gees',60612,'Lynx Boréal','Taxref V9.0','','','poil',FALSE, now(),now(),'test');
