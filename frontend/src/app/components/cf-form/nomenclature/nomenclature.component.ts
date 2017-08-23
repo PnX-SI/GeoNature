@@ -9,6 +9,7 @@ import {FormService} from '../service/form.service';
 export class NomenclatureComponent implements OnInit {
   labels:any;
   selectedId:number;
+  @Input() placeholder:string;
   @Input() id_nomenclature:number;
   @Input() regne:string;
   @Input() group2_inpn:string;
@@ -17,7 +18,7 @@ export class NomenclatureComponent implements OnInit {
   constructor(private _formService:FormService) { }
 
   ngOnInit() {
-    this.labels = this._formService.getNomenclature(1, 212, 'fr');
+    this.labels = this._formService.getNomenclature(this.id_nomenclature, this.regne, this.group2_inpn);
   }
 
 }

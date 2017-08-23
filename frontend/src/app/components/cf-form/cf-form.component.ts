@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {NomenclatureComponent} from './nomenclature/nomenclature.component'
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
