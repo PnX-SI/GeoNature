@@ -7,18 +7,18 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
-CREATE SCHEMA medias;
+CREATE SCHEMA gn_medias;
 
 
-SET search_path = medias, pg_catalog;
+SET search_path = gn_medias, pg_catalog;
 SET default_with_oids = false;
 
 
-CREATE OR REPLACE FUNCTION medias.check_entity_field_exist(myentity character varying)
+CREATE OR REPLACE FUNCTION check_entity_field_exist(myentity character varying)
   RETURNS boolean AS
 $BODY$
 --Function that allows to check if the field of an entity of a table type exists. Parameter : 'schema.table.field'
---USAGE : SELECT medias.check_entity_field_exist('schema.table.field');
+--USAGE : SELECT gn_medias.check_entity_field_exist('schema.table.field');
   DECLARE
     entity_array character varying(255)[];
   BEGIN
@@ -31,14 +31,14 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
---USAGE : SELECT medias.check_entity_field_exist('contactfaune.t_releves_cfaune.id_releve_cfaune');
+--USAGE : SELECT gn_medias.check_entity_field_exist('contactfaune.t_releves_cfaune.id_releve_cfaune');
 
 
 CREATE OR REPLACE FUNCTION check_entity_value_exist(myentity character varying, myvalue integer)
   RETURNS boolean AS
 $BODY$
 --Function that allows to check if a value exists in the field of a table type.
---USAGE : SELECT medias.check_entity_value_exist('schema.table.field', value);
+--USAGE : SELECT gn_medias.check_entity_value_exist('schema.table.field', value);
   DECLARE
     entity_array character varying(255)[];
     r record;
@@ -56,7 +56,7 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 --USAGE
---SELECT medias.check_entity_value_exist('contactfaune.t_releves_cfaune.id_releve_cfaune', 1);
+--SELECT gn_medias.check_entity_value_exist('contactfaune.t_releves_cfaune.id_releve_cfaune', 1);
 
 CREATE TABLE bib_media_types
 (
@@ -73,7 +73,7 @@ CREATE TABLE bib_media_types
   description_de text
 );
 
---DROP TABLE medias.t_medias;
+--DROP TABLE gn_medias.t_medias;
 CREATE TABLE t_medias
 (
   id_media integer NOT NULL,
