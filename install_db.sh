@@ -192,7 +192,9 @@ then
     echo "Insertion de la nomenclature" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/data_nomenclatures.sql  &>> log/install_db.log
+    cp data/core/data_nomenclatures.sql /tmp/data_nomenclatures.sql
+    sudo sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" /tmp/data_nomenclatures.sql
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/data_nomenclatures.sql  &>> log/install_db.log
 
 
     echo "Création et insertion du schéma medias..."
