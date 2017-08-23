@@ -22,6 +22,10 @@ user_pg_pass=monpassachanger
 # SRID de la projection locale
 srid_local=2154
 
+# default language (locale)
+# availaible language value : fr
+default_language=fr
+
 # Permet l'installation des couches SIG nécessaires - communes, zones à statut, etc.. 
 # Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)
 install_sig_layers=true

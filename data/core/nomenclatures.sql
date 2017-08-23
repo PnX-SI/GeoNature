@@ -123,9 +123,19 @@ $BODY$
 ----------
 CREATE TABLE bib_nomenclatures_types (
     id_type integer NOT NULL,
-    mnemonique character varying(255) NOT NULL,
+    mnemonique character varying(255),
+    label_default character varying(255),
+    definition_default text,
     label_fr character varying(255),
     definition_fr text,
+    label_en character varying(255),
+    definition_en text,
+    label_es character varying(255),
+    definition_es text,
+    label_de character varying(255),
+    definition_de text,
+    label_it character varying(255),
+    definition_it text,
     source character varying(50),
     statut character varying(20),
     meta_create_date timestamp without time zone DEFAULT now(),
@@ -137,9 +147,19 @@ CREATE TABLE t_nomenclatures (
     id_nomenclature integer NOT NULL,
     id_type integer,
     cd_nomenclature character varying(255) NOT NULL,
-    mnemonique character varying(255) NOT NULL,
+    mnemonique character varying(255),
+    label_default character varying(255),
+    definition_default text,
     label_fr character varying(255),
     definition_fr text,
+    label_en character varying(255),
+    definition_en text,
+    label_es character varying(255),
+    definition_es text,
+    label_de character varying(255),
+    definition_de text,
+    label_it character varying(255),
+    definition_it text,
     source character varying(50),
     statut character varying(20),
     id_broader integer,
@@ -258,23 +278,44 @@ CREATE INDEX fki_t_nomenclatures_bib_nomenclatures_types_fkey ON t_nomenclatures
 ---------
 CREATE OR REPLACE VIEW v_nomenclature_taxonomie AS 
   SELECT tn.id_type,
-    tn.label_fr AS type_nomenclature_label_fr,
-    tn.definition_fr AS type_nomenclature_definition_fr,
+    tn.label_default AS type_label,
+    tn.definition_default AS type_definition,
+    tn.label_fr AS type_label_fr,
+    tn.definition_fr AS type_definition_fr,
+    tn.label_en AS type_label_en,
+    tn.definition_en AS type_definition_en,
+    tn.label_es AS type_label_es,
+    tn.definition_es AS type_definition_es,
+    tn.label_de AS type_label_de,
+    tn.definition_de AS type_definition_de,
+    tn.label_it AS type_label_it,
+    tn.definition_it AS type_definition_it,
     ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
+    n.label_default AS nomenclature_label,
+    n.definition_default AS nomenclature_definition,
     n.label_fr AS nomenclature_label_fr,
     n.definition_fr AS nomenclature_definition_fr,
+    n.label_en AS nomenclature_label_en,
+    n.definition_en AS nomenclature_definition_en,
+    n.label_es AS nomenclature_label_es,
+    n.definition_es AS nomenclature_definition_es,
+    n.label_de AS nomenclature_label_de,
+    n.definition_de AS nomenclature_definition_de,
+    n.label_it AS nomenclature_label_it,
+    n.definition_it AS nomenclature_definition_it,
     n.id_broader,
     n.hierarchy
   FROM ref_nomenclatures.t_nomenclatures n
     JOIN ref_nomenclatures.bib_nomenclatures_types tn ON tn.id_type = n.id_type
     JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.active = true
   ORDER BY tn.id_type, ctn.regne, ctn.group2_inpn, n.id_nomenclature;
 
 CREATE OR REPLACE VIEW v_technique_obs AS(
-SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.label_fr, n.definition_fr, n.id_broader, n.hierarchy
+SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.label_default AS label, n.definition_default AS definition, n.id_broader, n.hierarchy
 FROM ref_nomenclatures.t_nomenclatures n
 LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type = 100
@@ -287,8 +328,8 @@ CREATE OR REPLACE VIEW v_eta_bio AS
   SELECT 
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
   FROM ref_nomenclatures.t_nomenclatures n
@@ -301,8 +342,8 @@ SELECT
     ctn.group2_inpn, 
     n.id_nomenclature, 
     n.mnemonique, 
-    n.label_fr, 
-    n.definition_fr, 
+    n.label_default AS label, 
+    n.definition_default AS definition, 
     n.id_broader, 
     n.hierarchy
 FROM ref_nomenclatures.t_nomenclatures n
@@ -317,8 +358,8 @@ CREATE OR REPLACE VIEW v_sexe AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -333,8 +374,8 @@ CREATE OR REPLACE VIEW v_objet_denbr AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -349,8 +390,8 @@ CREATE OR REPLACE VIEW v_type_denbr AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -365,8 +406,8 @@ CREATE OR REPLACE VIEW v_meth_obs AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -381,8 +422,8 @@ CREATE OR REPLACE VIEW v_statut_bio AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -397,8 +438,8 @@ CREATE OR REPLACE VIEW v_naturalite AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -413,8 +454,8 @@ CREATE OR REPLACE VIEW v_preuve_exist AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -429,8 +470,8 @@ CREATE OR REPLACE VIEW v_statut_obs AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -445,8 +486,8 @@ CREATE OR REPLACE VIEW v_statut_valid AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
@@ -461,8 +502,8 @@ CREATE OR REPLACE VIEW v_niv_precis AS
     ctn.group2_inpn,
     n.id_nomenclature,
     n.mnemonique,
-    n.label_fr,
-    n.definition_fr,
+    n.label_default AS label,
+    n.definition_default AS definition,
     n.id_broader,
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
