@@ -5,9 +5,9 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-CREATE SCHEMA meta;
+CREATE SCHEMA gn_meta;
 
-SET search_path = meta, pg_catalog;
+SET search_path = gn_meta, pg_catalog;
 
 SET default_with_oids = false;
 
