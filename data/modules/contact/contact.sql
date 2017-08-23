@@ -319,7 +319,7 @@ CREATE TRIGGER tri_update_occurrences_contact
 
 INSERT INTO gn_meta.t_datasets  VALUES (1, 'contact', 'Observation aléatoire de la faune, de la flore ou de la fonge', 1, 2, 2, 2, 2, true, NULL, '2017-06-01 00:00:00', '2017-06-01 00:00:00');
 
-INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (1, 'contact', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
+INSERT INTO gn_synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (1, 'contact', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
 
 INSERT INTO t_releves_contact VALUES(1,1,343,1,'2017-01-01','2017-01-01',1500,1565,'web',FALSE,NULL,NULL,'exemple test',NULL,NULL);
 SELECT pg_catalog.setval('t_releves_contact_id_releve_contact_seq', 2, true);

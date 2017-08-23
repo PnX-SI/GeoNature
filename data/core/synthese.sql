@@ -5,9 +5,9 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-CREATE SCHEMA synthese;
+CREATE SCHEMA gn_synthese;
 
-SET search_path = synthese, pg_catalog;
+SET search_path = gn_synthese, pg_catalog;
 
 SET default_with_oids = false;
 
@@ -66,12 +66,12 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
-COMMENT ON COLUMN synthese.synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
-COMMENT ON COLUMN synthese.synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature INPN = technique_obs';
-COMMENT ON COLUMN synthese.synthese.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie';
-COMMENT ON COLUMN synthese.synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
-COMMENT ON COLUMN synthese.synthese.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
-COMMENT ON COLUMN synthese.synthese.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
+COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
+COMMENT ON COLUMN synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature INPN = technique_obs';
+COMMENT ON COLUMN synthese.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie';
+COMMENT ON COLUMN synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
+COMMENT ON COLUMN synthese.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
+COMMENT ON COLUMN synthese.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
