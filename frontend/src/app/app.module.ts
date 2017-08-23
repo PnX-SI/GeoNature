@@ -50,7 +50,7 @@ export function HttpLoaderFactory(http: Http) {
     MapComponent,
     SigninComponent,
     CfFormComponent,
-    NomenclatureComponent
+    NomenclatureComponent,
   ],
   imports: [
     BrowserModule,
