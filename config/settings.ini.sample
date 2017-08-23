@@ -22,6 +22,10 @@ user_pg_pass=monpassachanger
 # SRID de la projection locale
 srid_local=2154
 
+# default language (locale)
+# availaible language value : fr
+default_language=fr
+
 # Permet l'installation des couches SIG nécessaires - communes, zones à statut, etc.. 
 # Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)
 install_sig_layers=true
@@ -40,4 +44,4 @@ add_sample_data=true
 usershub_release=1.2.2
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.2.1
+taxhub_release=develop

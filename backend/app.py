@@ -12,6 +12,9 @@ app.register_blueprint(routes, url_prefix='/contact')
 from resources.taxonomie.routes import routes
 app.register_blueprint(routes, url_prefix='/taxonomie')
 
+from pypnnomenclature.routes import routes
+app.register_blueprint(routes, url_prefix='/nomenclatures')
+
 if __name__ == '__main__':
     db.init_app(app)
     app.run(port=5000, debug=True)
