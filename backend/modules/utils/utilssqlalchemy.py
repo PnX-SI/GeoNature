@@ -10,8 +10,13 @@ from flask import jsonify,  Response, current_app
 import json
 from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Table, create_engine, MetaData
 from werkzeug.datastructures import Headers
+
+
+from geoalchemy2.shape import to_shape, from_shape
+from geojson import Feature
+
+from geoalchemy2 import Geometry
 
 db = SQLAlchemy()
 
@@ -23,10 +28,23 @@ class serializableModel(db.Model):
     def as_dict(self, recursif=False):
         return {column.key: getattr(self, column.key)
                 if not isinstance(column.type, (db.Date, db.DateTime))
-                else json.dumps(getattr(self, column.key))
-                for column in self.__table__.columns }
+                else str(getattr(self, column.key))
+                for column in self.__table__.columns  if not isinstance(column.type, Geometry)}
 
+class serializableGeoModel(serializableModel, db.Model):
+    __abstract__ = True
 
+    def as_geofeature(self, geoCol, idCol):
+        geometry = to_shape(getattr(self, geoCol))
+        feature = Feature(
+                id=getattr(self, idCol),
+                geometry=geometry,
+                properties= {column.key: getattr(self, column.key)
+                        if not isinstance(column.type, (db.Date, db.DateTime))
+                        else str(getattr(self, column.key))
+                        for column in self.__table__.columns  if not isinstance(column.type, Geometry) }
+            )
+        return feature
 
 def json_resp(fn):
     '''
