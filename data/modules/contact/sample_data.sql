@@ -20,5 +20,5 @@ INSERT INTO pr_contact.t_occurrences_contact VALUES(1,1,65,177,30,182,91,347,163
 INSERT INTO pr_contact.cor_role_releves_contact VALUES(1,1);
 INSERT INTO pr_contact.cor_municipality_releves_contact VALUES(1,'05004');
 INSERT INTO  pr_contact.cor_counting_contact VALUES
-(1,4,190,166,107,5,5)
-,(1,4,191,166,107,1,1);
+(1,1,4,190,166,107,5,5)
+,(2,1,4,191,166,107,1,1);
