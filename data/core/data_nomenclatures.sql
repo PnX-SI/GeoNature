@@ -95,7 +95,7 @@ Une technique est définie par rapport à une cible. Dans le cadre d’un protoc
 ,(101, 'STATUT_VALID', 'Statut de validation', 'Nomenclature des statuts de validations de la données', 'GeoNature', 'Non validé', '2017-08-08 00:00:00', '2017-08-08 00:00:00');
 
 UPDATE bib_nomenclatures_types SET label_default = label_MYDEFAULTLANGUAGE;
-UPDATE bib_nomenclatures_types SET definition_default = label_MYDEFAULTLANGUAGE;
+UPDATE bib_nomenclatures_types SET definition_default = definition_MYDEFAULTLANGUAGE;
 ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_default SET NOT NULL;
 ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
 
@@ -427,7 +427,7 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 351, true);
 
 UPDATE t_nomenclatures SET label_default = label_MYDEFAULTLANGUAGE;
-UPDATE t_nomenclatures SET definition_default = label_MYDEFAULTLANGUAGE;
+UPDATE t_nomenclatures SET definition_default = definition_MYDEFAULTLANGUAGE;
 ALTER TABLE t_nomenclatures ALTER COLUMN label_default SET NOT NULL;
 ALTER TABLE t_nomenclatures ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
 
