@@ -108,7 +108,7 @@ then
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/vm_hierarchie_taxo.sql
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql
     cd ../..
 
     echo "Création du schéma taxonomie..."
@@ -154,16 +154,7 @@ then
     echo "Création de la vue représentant la hierarchie taxonomique" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/vm_hierarchie_taxo.sql  &>> log/install_db.log
-
-    echo "Compléter le schéma taxonomie..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Compléter le schéma taxonomie" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/complements_taxonomie.sql  &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/materialized_views.sql  &>> log/install_db.log
 
 
     echo "Création du schéma meta..."
@@ -192,7 +183,9 @@ then
     echo "Insertion de la nomenclature" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/data_nomenclatures.sql  &>> log/install_db.log
+    cp data/core/data_nomenclatures.sql /tmp/data_nomenclatures.sql
+    sudo sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" /tmp/data_nomenclatures.sql
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/data_nomenclatures.sql  &>> log/install_db.log
 
 
     echo "Création et insertion du schéma medias..."
@@ -223,7 +216,7 @@ then
     rm /tmp/*.csv
     rm data/utilisateurs/usershub.sql
     rm data/taxonomie/taxhubdb.sql
-    rm data/taxonomie/vm_hierarchie_taxo.sql
+    rm data/taxonomie/materialized_views.sql
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
     #rm data/taxonomie/inpn/*.zip

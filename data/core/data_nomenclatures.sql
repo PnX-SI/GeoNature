@@ -11,87 +11,93 @@ SET search_path = ref_nomenclatures, pg_catalog;
 DELETE FROM t_nomenclatures;
 DELETE FROM bib_nomenclatures_types;
 
-INSERT INTO bib_nomenclatures_types VALUES (2, 'DS_PUBLIQUE', 'Code d''origine de la donnée', 'Nomenclature des codes d''origine de la donnée : publique, privée, mixte...', 'SINP', 'Validé',  '2013-12-05 00:00:00', '2013-12-05 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (3, 'NAT_OBJ_GEO', 'Nature d''objet géographique', 'Nomenclature des natures d''objets géographiques', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-10-15 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (4, 'DEE_FLOU', 'Existence d''un floutage sur la donnée', 'Nomenclature indiquant l''existence d''un floutage sur la donnée lors de sa création en tant que DEE.', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-10-15 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (5, 'NIV_PRECIS', 'Niveaux de précision de diffusion souhaités', 'Nomenclature des niveaux de précision de diffusion souhaités par le producteur.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-15 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (6, 'OBJ_DENBR', 'Objet du dénombrement', 'Nomenclature des objets qui peuvent être dénombrés', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-10-15 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (7, 'ETA_BIO', 'Etat biologique de l''observation', 'Nomenclature des états biologiques de l''observation.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-19 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (8, 'NATURALITE', 'Niveau de naturalité', 'Nomenclature des niveaux de naturalité', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-19 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (9, 'SEXE', 'Sexe', 'Nomenclature des sexes', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-19 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (10, 'STADE_VIE', 'Stade de vie : stade de développement du sujet', 'Nomenclature des stades de vie : stades de développement du sujet de l''observation.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2016-03-24 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (11, 'STAT_BIOGEO', 'Statut biogéographique', 'Nomenclature des statuts biogéographiques.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-15 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (12, 'REF_HAB', 'Référentiels d''habitats et typologies', 'Nomenclature des référentiels d''habitats et typologies utilisés pour rapporter un habitat au sein du standard. La référence à paraître prochainement est HABREF. http://inpn.mnhn.fr/telechargement/referentiels/habitats Les typologies sont disponibles à la même adresse, mais seront prochainement à l''adresse suivante : http://inpn.mnhn.fr/telechargement/referentiels/habitats/typologies', 'SINP', 'Validé',  '2013-03-13 00:00:00', '2016-06-23 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (13, 'STATUT_BIO', 'Statut biologique', 'Nomenclature des statuts biologiques.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-12-16 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (14, 'METH_OBS', 'Méthodes d''observation', 'Nomenclature des méthodes d''observation, indiquant de quelle manière ou avec quel indice on a pu observer le sujet.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-12-16 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (15, 'PREUVE_EXIST', 'Preuve existante', 'Nomenclature de l''existence des preuves.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-12-16 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (16, 'SENSIBILITE', 'Niveaux de sensibilité', 'Nomenclature des niveaux de sensibilité possibles', 'SINP', 'Validé',  '2015-06-10 00:00:00', '2016-06-23 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (17, 'SENSIBLE', 'Valeurs de sensibilité qualitative', 'Nomenclature des valeurs de sensibilité qualitative (oui/non)', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2016-04-07 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (18, 'STATUT_OBS', 'Statut d''observation', 'Nomenclature des statuts d''observation.', 'SINP', 'Validé',  '2013-12-05 00:00:00', '2016-03-24 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (19, 'STATUT_SOURCE', 'Statut de la source', 'Nomenclature des statuts possibles de la source.', 'SINP', 'Validé',  '2013-12-04 00:00:00', '2013-12-04 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (20, 'TYP_ATTR', 'Type de l''attribut', 'Nomenclature des types d''attributs additionnels.', 'SINP', 'Validé',  '2015-09-16 00:00:00', '2015-12-07 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (21, 'TYP_DENBR', 'Type de dénombrement', 'Nomenclature des types de dénombrement possibles (comptage, estimation...)', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-12-16 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (22, 'TYP_EN', 'Type d''espace naturel', 'Nomenclature des types d''espaces naturels.', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2016-06-15 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (23, 'TYP_INF_GEO', 'Type d''information géographique', 'Nomenclature des types d''information géographique dans le cas de l''utilisation d''un rattachement à un objet géographique (commune, département, espace naturel, masse d''eau...).', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-12-16 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (24, 'TYP_GRP', 'Type de regroupement', 'Nomenclature listant les valeurs possibles pour le type de regroupement.', 'SINP', 'Validé',  '2015-06-09 00:00:00', '2015-12-07 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (25, 'VERS_ME', 'Version des masses d''eau', 'Nomenclature des versions du référentiel SANDRE utilisé pour les masses d''eau.', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-12-16 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (26, 'ACC2', 'Raison de niveau d''accessibilité', 'Nomenclature des raisons d''un niveau d''accessibilité', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (27, 'ACC', 'Niveau d''accessibilité', 'Nomenclature des niveaux d''accessibilité à un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (28, 'AUTPREAL', 'Autorisation préalable pour accès', 'Nomenclature des valeurs concernant l''éventuelle délivrance d''une autorisation préalable pour accéder à un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (29, 'GILGES', 'Code Gilges', 'Nomenclature des codes Gilges', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (30, 'REGION', 'Code région', 'Nomenclature des codes région', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (31, 'CONFID', 'Valeur de confidentialité', 'Nomenclatures des valeurs de confidentialité', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (32, 'COUPGEOL', 'Présence/absence de coupe géologique', 'Nomenclature de présence/absence de coupe géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (33, 'ETAT1', 'Niveau d''état d''un site géologique', 'Nomenclature des niveaux d''état potentiels d''un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (34, 'ETAT2', 'Raison du niveau d''état d''un site géologique', 'Nomenclature indiquant les raisons du niveau d''état du site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (35, 'EXISTPROT', 'Existence d''une protection pour un site géologique', 'Nomenclature indiquant si une protection existe ou non', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (36, 'INTGEOL', 'Intérêt géologique du site géologique', 'Nomenclature des intérêts géologiques que peut avoir un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (37, 'INTSECTYP', 'Type d''intérêt secondaire du site géologique', 'Nomenclature des types d''intérêt secondaire potentiels d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (38, 'INTSEC', 'Intérêt secondaire du site géologique', 'Nomenclature des intérêts secondaires potentiels, fonction des types d''intérêts secondaires.', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (39, 'MODIF', 'Statut de modification de fiche de site géologique', 'Nomenclature des statuts de modification de fiche de site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (40, 'PAY', 'Paiement spécifique à l''accès du site géologique', 'Nomenclature qui indique si un site nécessite un paiement spécifique pour y accéder', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (41, 'PEROUV', 'Périodes d''ouverture du site géologique', 'Nomenclature des périodes d''ouverture d''un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (42, 'PHENGEOL', 'Phénomène géologique', 'Nomenclature des phénomènes géologiques', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (43, 'RARETE', 'Niveau de rareté du site géologique', 'Nomenclature des niveaux de rareté pour les sites géologiques', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (44, 'JUR1', 'Statut de protection, éléments primaires, pour un site géologique', 'Nomenclature des statuts de protection, éléments primaires', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (45, 'JUR2', 'Statut de protection, éléments secondaires, pour un site géologique', 'Nomenclature des statuts de protection, éléments secondaires', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (46, 'PROT1', 'Type générique de statut de protection pour un site géologique', 'Nomenclature des types génériques (ou primaires) de statuts de protection et/ou de gestion', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (47, 'PROT2', 'Type spécifique de statut de protection pour un site  géologique', 'Nomenclature des types spécifiques (ou secondaires) de statuts de protection et/ou gestion d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (48, 'VALNAT', 'Statut de validation nationale pour un site géologique', 'Nomenclature des statuts de validation nationaux pour un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (49, 'VALREG', 'Statut de validation régionale pour un site géologique', 'Nomenclature des statuts de validation régionaux pour le site considéré.', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (50, 'DOC', 'Type de document', 'Nomenclature des types de documents', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (51, 'INVGEOL', 'Type d''inventaire géologique', 'Nomenclature des types d''inventaires géologiques pouvant être réalisés sur un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-09-01 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (52, 'TYPPERS', 'Intervenant fiche (type de personne)', 'Nomenclature des types de personnes ayant pu intervenir sur une fiche de site géologique, de quelque manière que ce soit, ou types de personnes.', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (53, 'TYPO1', 'Typologie primaire d''un site géologique', 'Nomenclature des éléments de typologie primaire d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (54, 'TYPO2', 'Typologie secondaire d''un site géologique', 'Nomenclature des éléments secondaires de typologie du site géologique. Certains éléments de cette liste sont restreints à certains éléments primaires uniquement (cf. nomenclature 53).', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (55, 'TYPO3', 'Typologie tertiaire d''un site géologique', 'Nomenclature des éléments tertiaires de typologie du site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (56, 'UNITSURF', 'Unité de superficie pour un site géologique', 'Nomenclature des unités de superficie pouvant être utilisées pour indiquer la surface d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (57, 'USEACTU', 'Usage d''un site géologique', 'Nomenclature des usages qui peuvent être faits d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (58, 'AIRECONNUE', 'Aire connue', 'Nomenclature des valeurs indiquant si la surface d''un relevé est connue ou non', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (59, 'BRANCHEMETH', 'Méthodes phytosociologiques, branches', 'Nomenclature des branches de méthodes phytosociologiques', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (60, 'BRAUNBLANQABDOM', 'Braun Blanquet Pavillard, abondance-dominance', 'Nomenclature des valeurs pour l''échelle d''abondance-dominance de Braun-Blanquet Pavillard (1928)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (61, 'BRAUNBARK', 'Braun Blanquet Barkman, abondance-dominance', 'Nomenclature des valeurs de l''échelle de Braun-Blanquet Barkman complétée telle que dans le dictionnaire de sociologie et synécologie végétales (Géhu, 2006)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (62, 'BRAUNPAV', 'Braun Blanquet Pavillard, abondance', 'Nomenclature des valeurs de l''échelle d''abondance de Braun-Blanquet Pavillard (1928)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (63, 'COMPLETREL', 'Complétude des relevés', 'Nomenclature des valeurs de complétude des relevés phytosociologiques détaillés', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (64, 'RATTACH', 'Rattachement au syntaxon, confère', 'Nomenclature des indicateurs de doute dans le rattachement au syntaxon (confère).', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (65, 'DOMIN', 'Echelle de Domin', 'Nomenclature des valeurs de l''échelle de Domin (Source : Evans & Dahl, 1955)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (66, 'EXPOSITION', 'Exposition d''un terrain', 'Nomenclature des points cardinaux et intercardinaux permettant d''indiquer l''exposition d''un terrain.', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (67, 'FORMES', 'Formes du relevé', 'Nomenclature des formes possibles pour un relevé phytosociologique', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (68, 'LONDO', 'Echelle de Londo', 'Nomenclature des valeurs de l''échelle d''abondance-dominnance de Londo suivant Londo, 1976 (The decimal scale for releves of permanent quadrats)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (69, 'NIVORGA', 'Niveaux d''organisation des relevés', 'Nomenclature des niveaux d''organisation auxquels peuvent se trouver des relevés phytosociologiques détaillés', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (70, 'ORDIN', 'Echelle ordinale', 'Nomenclature des valeurs de l''échelle ordinale d''abondance-dominance, suivant Barkman (1964)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (71, 'PRES', 'Présence', 'Nomenclature des cas de présence d''un taxon', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (72, 'SOCIAB', 'Sociabilité', 'Nomenclature des valeurs de sociabilité des taxons végétaux suivant Braun Blanquet (1964)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (73, 'TYPEAIRE', 'Types de surface', 'Nomenclature des types de surfaces utilisées pour les relevés phytosociologiques', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (74, 'TYPCORR', 'Type de correspondance avec le syntaxon', 'Nomenclature des types de correspondance entre relevés synusiaux et syntaxons sigmatistes', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (75, 'TYPECH', 'Type d''échelle', 'Nomenclature des types d''échelles utilisées pour l''évaluation d''un paramètre de taxon en phytosociologie', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (76, 'TYPEPARM', 'Paramètres suivis pour un taxon, phytosociologie', 'Nomenclature des types de paramètres potentiellement suivis pour un taxon en phytosociologie', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (77, 'UNITOP', 'Unités opérationnelles', 'Liste des modifications morphologiques végétales particulières, génétiquement non fixées (unités morphologiques opérationnelles, unités biologiques opérationnelles, et/ou accommodats), imposées par le milieu', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00');
-INSERT INTO bib_nomenclatures_types VALUES (0, 'ROOT', 'Racine des nomenclatures', 'Racine. Parent de toutes les nomenclatures', 'GeoNature', 'Non validé', '2017-06-15 12:51:30.197042', '2017-06-15 12:51:30.197042');
-INSERT INTO bib_nomenclatures_types VALUES (100, 'TECHNIQUE_OBS', 'Techniques d''observation', 'Une technique désigne l’ensemble des savoirs-faire, procédés et outils spécifiques, mobilisés de manière logique (règles, étapes et principes) pour collecter des données associées à un paramètre à observer ou à un facteur écologique à prendre en compte.
+INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_fr, source, statut, meta_create_date, meta_update_date) VALUES 
+(2, 'DS_PUBLIQUE', 'Code d''origine de la donnée', 'Nomenclature des codes d''origine de la donnée : publique, privée, mixte...', 'SINP', 'Validé',  '2013-12-05 00:00:00', '2013-12-05 00:00:00')
+,(3, 'NAT_OBJ_GEO', 'Nature d''objet géographique', 'Nomenclature des natures d''objets géographiques', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-10-15 00:00:00')
+,(4, 'DEE_FLOU', 'Existence d''un floutage sur la donnée', 'Nomenclature indiquant l''existence d''un floutage sur la donnée lors de sa création en tant que DEE.', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-10-15 00:00:00')
+,(5, 'NIV_PRECIS', 'Niveaux de précision de diffusion souhaités', 'Nomenclature des niveaux de précision de diffusion souhaités par le producteur.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-15 00:00:00')
+,(6, 'OBJ_DENBR', 'Objet du dénombrement', 'Nomenclature des objets qui peuvent être dénombrés', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-10-15 00:00:00')
+,(7, 'ETA_BIO', 'Etat biologique de l''observation', 'Nomenclature des états biologiques de l''observation.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-19 00:00:00')
+,(8, 'NATURALITE', 'Niveau de naturalité', 'Nomenclature des niveaux de naturalité', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-19 00:00:00')
+,(9, 'SEXE', 'Sexe', 'Nomenclature des sexes', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-19 00:00:00')
+,(10, 'STADE_VIE', 'Stade de vie : stade de développement du sujet', 'Nomenclature des stades de vie : stades de développement du sujet de l''observation.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2016-03-24 00:00:00')
+,(11, 'STAT_BIOGEO', 'Statut biogéographique', 'Nomenclature des statuts biogéographiques.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-10-15 00:00:00')
+,(12, 'REF_HAB', 'Référentiels d''habitats et typologies', 'Nomenclature des référentiels d''habitats et typologies utilisés pour rapporter un habitat au sein du standard. La référence à paraître prochainement est HABREF. http://inpn.mnhn.fr/telechargement/referentiels/habitats Les typologies sont disponibles à la même adresse, mais seront prochainement à l''adresse suivante : http://inpn.mnhn.fr/telechargement/referentiels/habitats/typologies', 'SINP', 'Validé',  '2013-03-13 00:00:00', '2016-06-23 00:00:00')
+,(13, 'STATUT_BIO', 'Statut biologique', 'Nomenclature des statuts biologiques.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-12-16 00:00:00')
+,(14, 'METH_OBS', 'Méthodes d''observation', 'Nomenclature des méthodes d''observation, indiquant de quelle manière ou avec quel indice on a pu observer le sujet.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-12-16 00:00:00')
+,(15, 'PREUVE_EXIST', 'Preuve existante', 'Nomenclature de l''existence des preuves.', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2015-12-16 00:00:00')
+,(16, 'SENSIBILITE', 'Niveaux de sensibilité', 'Nomenclature des niveaux de sensibilité possibles', 'SINP', 'Validé',  '2015-06-10 00:00:00', '2016-06-23 00:00:00')
+,(17, 'SENSIBLE', 'Valeurs de sensibilité qualitative', 'Nomenclature des valeurs de sensibilité qualitative (oui/non)', 'SINP', 'Validé',  '2015-07-29 00:00:00', '2016-04-07 00:00:00')
+,(18, 'STATUT_OBS', 'Statut d''observation', 'Nomenclature des statuts d''observation.', 'SINP', 'Validé',  '2013-12-05 00:00:00', '2016-03-24 00:00:00')
+,(19, 'STATUT_SOURCE', 'Statut de la source', 'Nomenclature des statuts possibles de la source.', 'SINP', 'Validé',  '2013-12-04 00:00:00', '2013-12-04 00:00:00')
+,(20, 'TYP_ATTR', 'Type de l''attribut', 'Nomenclature des types d''attributs additionnels.', 'SINP', 'Validé',  '2015-09-16 00:00:00', '2015-12-07 00:00:00')
+,(21, 'TYP_DENBR', 'Type de dénombrement', 'Nomenclature des types de dénombrement possibles (comptage, estimation...)', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2015-12-16 00:00:00')
+,(22, 'TYP_EN', 'Type d''espace naturel', 'Nomenclature des types d''espaces naturels.', 'SINP', 'Validé',  '2014-01-22 00:00:00', '2016-06-15 00:00:00')
+,(23, 'TYP_INF_GEO', 'Type d''information géographique', 'Nomenclature des types d''information géographique dans le cas de l''utilisation d''un rattachement à un objet géographique (commune, département, espace naturel, masse d''eau...).', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-12-16 00:00:00')
+,(24, 'TYP_GRP', 'Type de regroupement', 'Nomenclature listant les valeurs possibles pour le type de regroupement.', 'SINP', 'Validé',  '2015-06-09 00:00:00', '2015-12-07 00:00:00')
+,(25, 'VERS_ME', 'Version des masses d''eau', 'Nomenclature des versions du référentiel SANDRE utilisé pour les masses d''eau.', 'SINP', 'Validé',  '2015-09-18 00:00:00', '2015-12-16 00:00:00')
+,(26, 'ACC2', 'Raison de niveau d''accessibilité', 'Nomenclature des raisons d''un niveau d''accessibilité', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(27, 'ACC', 'Niveau d''accessibilité', 'Nomenclature des niveaux d''accessibilité à un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(28, 'AUTPREAL', 'Autorisation préalable pour accès', 'Nomenclature des valeurs concernant l''éventuelle délivrance d''une autorisation préalable pour accéder à un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(29, 'GILGES', 'Code Gilges', 'Nomenclature des codes Gilges', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(30, 'REGION', 'Code région', 'Nomenclature des codes région', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(31, 'CONFID', 'Valeur de confidentialité', 'Nomenclatures des valeurs de confidentialité', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(32, 'COUPGEOL', 'Présence/absence de coupe géologique', 'Nomenclature de présence/absence de coupe géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(33, 'ETAT1', 'Niveau d''état d''un site géologique', 'Nomenclature des niveaux d''état potentiels d''un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(34, 'ETAT2', 'Raison du niveau d''état d''un site géologique', 'Nomenclature indiquant les raisons du niveau d''état du site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(35, 'EXISTPROT', 'Existence d''une protection pour un site géologique', 'Nomenclature indiquant si une protection existe ou non', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(36, 'INTGEOL', 'Intérêt géologique du site géologique', 'Nomenclature des intérêts géologiques que peut avoir un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(37, 'INTSECTYP', 'Type d''intérêt secondaire du site géologique', 'Nomenclature des types d''intérêt secondaire potentiels d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(38, 'INTSEC', 'Intérêt secondaire du site géologique', 'Nomenclature des intérêts secondaires potentiels, fonction des types d''intérêts secondaires.', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(39, 'MODIF', 'Statut de modification de fiche de site géologique', 'Nomenclature des statuts de modification de fiche de site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(40, 'PAY', 'Paiement spécifique à l''accès du site géologique', 'Nomenclature qui indique si un site nécessite un paiement spécifique pour y accéder', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(41, 'PEROUV', 'Périodes d''ouverture du site géologique', 'Nomenclature des périodes d''ouverture d''un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(42, 'PHENGEOL', 'Phénomène géologique', 'Nomenclature des phénomènes géologiques', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(43, 'RARETE', 'Niveau de rareté du site géologique', 'Nomenclature des niveaux de rareté pour les sites géologiques', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(44, 'JUR1', 'Statut de protection, éléments primaires, pour un site géologique', 'Nomenclature des statuts de protection, éléments primaires', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(45, 'JUR2', 'Statut de protection, éléments secondaires, pour un site géologique', 'Nomenclature des statuts de protection, éléments secondaires', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(46, 'PROT1', 'Type générique de statut de protection pour un site géologique', 'Nomenclature des types génériques (ou primaires) de statuts de protection et/ou de gestion', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(47, 'PROT2', 'Type spécifique de statut de protection pour un site  géologique', 'Nomenclature des types spécifiques (ou secondaires) de statuts de protection et/ou gestion d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(48, 'VALNAT', 'Statut de validation nationale pour un site géologique', 'Nomenclature des statuts de validation nationaux pour un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(49, 'VALREG', 'Statut de validation régionale pour un site géologique', 'Nomenclature des statuts de validation régionaux pour le site considéré.', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(50, 'DOC', 'Type de document', 'Nomenclature des types de documents', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(51, 'INVGEOL', 'Type d''inventaire géologique', 'Nomenclature des types d''inventaires géologiques pouvant être réalisés sur un site', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-09-01 00:00:00')
+,(52, 'TYPPERS', 'Intervenant fiche (type de personne)', 'Nomenclature des types de personnes ayant pu intervenir sur une fiche de site géologique, de quelque manière que ce soit, ou types de personnes.', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(53, 'TYPO1', 'Typologie primaire d''un site géologique', 'Nomenclature des éléments de typologie primaire d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(54, 'TYPO2', 'Typologie secondaire d''un site géologique', 'Nomenclature des éléments secondaires de typologie du site géologique. Certains éléments de cette liste sont restreints à certains éléments primaires uniquement (cf. nomenclature 53).', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(55, 'TYPO3', 'Typologie tertiaire d''un site géologique', 'Nomenclature des éléments tertiaires de typologie du site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(56, 'UNITSURF', 'Unité de superficie pour un site géologique', 'Nomenclature des unités de superficie pouvant être utilisées pour indiquer la surface d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(57, 'USEACTU', 'Usage d''un site géologique', 'Nomenclature des usages qui peuvent être faits d''un site géologique', 'SINP', 'Validé',  '2016-04-07 00:00:00', '2016-04-08 00:00:00')
+,(58, 'AIRECONNUE', 'Aire connue', 'Nomenclature des valeurs indiquant si la surface d''un relevé est connue ou non', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(59, 'BRANCHEMETH', 'Méthodes phytosociologiques, branches', 'Nomenclature des branches de méthodes phytosociologiques', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(60, 'BRAUNBLANQABDOM', 'Braun Blanquet Pavillard, abondance-dominance', 'Nomenclature des valeurs pour l''échelle d''abondance-dominance de Braun-Blanquet Pavillard (1928)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(61, 'BRAUNBARK', 'Braun Blanquet Barkman, abondance-dominance', 'Nomenclature des valeurs de l''échelle de Braun-Blanquet Barkman complétée telle que dans le dictionnaire de sociologie et synécologie végétales (Géhu, 2006)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(62, 'BRAUNPAV', 'Braun Blanquet Pavillard, abondance', 'Nomenclature des valeurs de l''échelle d''abondance de Braun-Blanquet Pavillard (1928)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(63, 'COMPLETREL', 'Complétude des relevés', 'Nomenclature des valeurs de complétude des relevés phytosociologiques détaillés', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(64, 'RATTACH', 'Rattachement au syntaxon, confère', 'Nomenclature des indicateurs de doute dans le rattachement au syntaxon (confère).', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(65, 'DOMIN', 'Echelle de Domin', 'Nomenclature des valeurs de l''échelle de Domin (Source : Evans & Dahl, 1955)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(66, 'EXPOSITION', 'Exposition d''un terrain', 'Nomenclature des points cardinaux et intercardinaux permettant d''indiquer l''exposition d''un terrain.', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(67, 'FORMES', 'Formes du relevé', 'Nomenclature des formes possibles pour un relevé phytosociologique', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(68, 'LONDO', 'Echelle de Londo', 'Nomenclature des valeurs de l''échelle d''abondance-dominnance de Londo suivant Londo, 1976 (The decimal scale for releves of permanent quadrats)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(69, 'NIVORGA', 'Niveaux d''organisation des relevés', 'Nomenclature des niveaux d''organisation auxquels peuvent se trouver des relevés phytosociologiques détaillés', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(70, 'ORDIN', 'Echelle ordinale', 'Nomenclature des valeurs de l''échelle ordinale d''abondance-dominance, suivant Barkman (1964)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(71, 'PRES', 'Présence', 'Nomenclature des cas de présence d''un taxon', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(72, 'SOCIAB', 'Sociabilité', 'Nomenclature des valeurs de sociabilité des taxons végétaux suivant Braun Blanquet (1964)', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(73, 'TYPEAIRE', 'Types de surface', 'Nomenclature des types de surfaces utilisées pour les relevés phytosociologiques', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(74, 'TYPCORR', 'Type de correspondance avec le syntaxon', 'Nomenclature des types de correspondance entre relevés synusiaux et syntaxons sigmatistes', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(75, 'TYPECH', 'Type d''échelle', 'Nomenclature des types d''échelles utilisées pour l''évaluation d''un paramètre de taxon en phytosociologie', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(76, 'TYPEPARM', 'Paramètres suivis pour un taxon, phytosociologie', 'Nomenclature des types de paramètres potentiellement suivis pour un taxon en phytosociologie', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(77, 'UNITOP', 'Unités opérationnelles', 'Liste des modifications morphologiques végétales particulières, génétiquement non fixées (unités morphologiques opérationnelles, unités biologiques opérationnelles, et/ou accommodats), imposées par le milieu', 'SINP', 'Validé',  '2016-06-21 00:00:00', '2016-06-21 00:00:00')
+,(0, 'ROOT', 'Racine des nomenclatures', 'Racine. Parent de toutes les nomenclatures', 'GeoNature', 'Non validé', '2017-06-15 12:51:30.197042', '2017-06-15 12:51:30.197042')
+,(100, 'TECHNIQUE_OBS', 'Techniques d''observation', 'Une technique désigne l’ensemble des savoirs-faire, procédés et outils spécifiques, mobilisés de manière logique (règles, étapes et principes) pour collecter des données associées à un paramètre à observer ou à un facteur écologique à prendre en compte.
 Ce sont les moyens mis en oeuvre sur le terrain pour l''observation d''espèces ou d''habitats.
-Une technique est définie par rapport à une cible. Dans le cadre d’un protocole, elle doit être reproductible dans le temps et dans l’espace.', 'CAMPANULE', 'Validation en cours', '2017-06-19 15:03:31.135525', '2017-06-19 15:03:31.135525');
-INSERT INTO bib_nomenclatures_types VALUES (101, 'STATUT_VALID', 'Statut de validation', 'Nomenclature des statuts de validations de la données', 'GeoNature', 'Non validé', '2017-08-08 00:00:00', '2017-08-08 00:00:00');
+Une technique est définie par rapport à une cible. Dans le cadre d’un protocole, elle doit être reproductible dans le temps et dans l’espace.', 'CAMPANULE', 'Validation en cours', '2017-06-19 15:03:31.135525', '2017-06-19 15:03:31.135525')
+,(101, 'STATUT_VALID', 'Statut de validation', 'Nomenclature des statuts de validations de la données', 'GeoNature', 'Non validé', '2017-08-08 00:00:00', '2017-08-08 00:00:00');
+
+UPDATE bib_nomenclatures_types SET label_default = label_MYDEFAULTLANGUAGE;
+UPDATE bib_nomenclatures_types SET definition_default = definition_MYDEFAULTLANGUAGE;
+ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_default SET NOT NULL;
+ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
 
 INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemonique, label_fr, definition_fr, source, statut, id_broader, hierarchy, meta_create_date, meta_update_date, active) VALUES 
 (81, 2, 'Re', 'Publique Régie', 'Publique Régie', 'Publique Régie : La Donnée Source est publique et a été produite directement par un organisme ayant autorité publique avec ses moyens humains et techniques propres.', 'SINP', 'Validé', 80, '002.001.001', '2013-12-05 00:00:00', '2013-12-05 00:00:00', true)
@@ -418,371 +424,374 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(348, 101, '3', 'Valide', 'Valide', 'La donnée d''observation est valide', 'GeoNature', 'non validé', 0, '101.003', '2017-08-08 10:05:18.16107', NULL, true)
 ,(349, 101, '4', 'Non valide', 'Non valide', 'La donnée d''observation n''est pas valide', 'GeoNature', 'non validé', 0, '101.004', '2017-08-08 10:05:18.161071', NULL, true)
 ,(350, 101, '5', 'Douteux', 'Douteux', 'La donnée est douteuse. Sans information complémentaire permettant d''étayer l''observation, elle ne peut pas être validée', 'GeoNature', 'non validé', 0, '101.005', '2017-08-08 10:05:18.161072', NULL, true);
-
 SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 351, true);
 
+UPDATE t_nomenclatures SET label_default = label_MYDEFAULTLANGUAGE;
+UPDATE t_nomenclatures SET definition_default = definition_MYDEFAULTLANGUAGE;
+ALTER TABLE t_nomenclatures ALTER COLUMN label_default SET NOT NULL;
+ALTER TABLE t_nomenclatures ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
 ----------------------------
 --TECHNIQUES D'OBSERVATION--
 ----------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (212, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (221, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (223, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (228, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (230, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (234, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (236, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (238, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (261, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (267, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (268, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (273, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (274, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (276, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (277, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (278, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (287, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (289, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (290, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (291, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (292, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (293, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (294, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (295, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (212, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (214, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (215, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (216, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (218, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (220, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (222, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (223, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (224, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (225, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (226, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (227, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (228, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (229, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (231, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (232, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (233, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (234, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (236, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (238, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (242, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (243, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (244, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (245, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (246, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (248, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (249, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (250, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (251, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (257, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (258, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (259, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (260, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (261, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (262, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (263, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (264, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (265, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (266, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (267, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (270, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (272, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (282, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (286, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (296, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (297, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (299, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (300, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (301, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (302, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (303, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (304, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (305, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (306, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (307, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (308, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (309, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (310, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (311, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (312, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (313, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (314, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (315, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (316, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (317, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (318, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (319, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (320, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (325, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (326, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (327, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (328, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (329, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (330, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (331, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (332, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (341, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (342, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (287, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (295, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (223, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (225, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (226, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (232, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (234, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (235, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (236, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (237, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (238, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (253, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (256, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (258, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (261, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (267, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (268, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (270, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (273, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (274, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (275, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (276, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (277, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (278, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (282, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (283, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (285, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (298, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (321, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (322, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (323, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (324, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (333, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (341, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (287, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (295, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (223, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (225, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (226, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (232, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (234, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (235, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (236, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (237, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (238, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (253, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (256, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (258, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (261, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (267, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (268, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (270, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (273, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (274, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (275, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (276, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (277, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (278, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (282, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (283, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (285, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (298, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (321, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (322, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (323, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (324, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (333, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (341, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (213, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (239, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (241, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (242, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (243, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (244, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (245, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (247, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (248, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (251, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (252, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (268, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (273, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (274, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (275, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (276, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (278, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (339, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (340, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (218, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (233, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (246, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (341, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (212, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (217, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (219, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (221, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (223, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (231, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (234, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (236, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (238, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (267, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (268, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (269, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (270, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (271, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (273, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (274, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (275, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (276, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (277, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (278, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (283, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (298, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (334, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (335, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (337, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (338, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (341, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (287, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (288, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (223, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (232, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (240, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (247, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (248, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (255, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (258, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (261, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (268, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (273, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (274, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (275, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (276, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (277, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (278, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (279, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (281, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (282, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (283, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (284, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (285, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (286, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (321, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (322, 'Animalia', 'Poissons', now(), NULL);
+INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), NULL)
+,(212, 'Animalia', 'Oiseaux', now(), NULL)
+,(221, 'Animalia', 'Oiseaux', now(), NULL)
+,(223, 'Animalia', 'Oiseaux', now(), NULL)
+,(228, 'Animalia', 'Oiseaux', now(), NULL)
+,(230, 'Animalia', 'Oiseaux', now(), NULL)
+,(234, 'Animalia', 'Oiseaux', now(), NULL)
+,(236, 'Animalia', 'Oiseaux', now(), NULL)
+,(238, 'Animalia', 'Oiseaux', now(), NULL)
+,(255, 'Animalia', 'Oiseaux', now(), NULL)
+,(261, 'Animalia', 'Oiseaux', now(), NULL)
+,(267, 'Animalia', 'Oiseaux', now(), NULL)
+,(268, 'Animalia', 'Oiseaux', now(), NULL)
+,(269, 'Animalia', 'Oiseaux', now(), NULL)
+,(273, 'Animalia', 'Oiseaux', now(), NULL)
+,(274, 'Animalia', 'Oiseaux', now(), NULL)
+,(276, 'Animalia', 'Oiseaux', now(), NULL)
+,(277, 'Animalia', 'Oiseaux', now(), NULL)
+,(278, 'Animalia', 'Oiseaux', now(), NULL)
+,(279, 'Animalia', 'Oiseaux', now(), NULL)
+,(287, 'Animalia', 'Insectes', now(), NULL)
+,(289, 'Animalia', 'Insectes', now(), NULL)
+,(290, 'Animalia', 'Insectes', now(), NULL)
+,(291, 'Animalia', 'Insectes', now(), NULL)
+,(292, 'Animalia', 'Insectes', now(), NULL)
+,(293, 'Animalia', 'Insectes', now(), NULL)
+,(294, 'Animalia', 'Insectes', now(), NULL)
+,(295, 'Animalia', 'Insectes', now(), NULL)
+,(211, 'Animalia', 'Insectes', now(), NULL)
+,(212, 'Animalia', 'Insectes', now(), NULL)
+,(214, 'Animalia', 'Insectes', now(), NULL)
+,(215, 'Animalia', 'Insectes', now(), NULL)
+,(216, 'Animalia', 'Insectes', now(), NULL)
+,(218, 'Animalia', 'Insectes', now(), NULL)
+,(220, 'Animalia', 'Insectes', now(), NULL)
+,(222, 'Animalia', 'Insectes', now(), NULL)
+,(223, 'Animalia', 'Insectes', now(), NULL)
+,(224, 'Animalia', 'Insectes', now(), NULL)
+,(225, 'Animalia', 'Insectes', now(), NULL)
+,(226, 'Animalia', 'Insectes', now(), NULL)
+,(227, 'Animalia', 'Insectes', now(), NULL)
+,(228, 'Animalia', 'Insectes', now(), NULL)
+,(229, 'Animalia', 'Insectes', now(), NULL)
+,(231, 'Animalia', 'Insectes', now(), NULL)
+,(232, 'Animalia', 'Insectes', now(), NULL)
+,(233, 'Animalia', 'Insectes', now(), NULL)
+,(234, 'Animalia', 'Insectes', now(), NULL)
+,(236, 'Animalia', 'Insectes', now(), NULL)
+,(238, 'Animalia', 'Insectes', now(), NULL)
+,(242, 'Animalia', 'Insectes', now(), NULL)
+,(243, 'Animalia', 'Insectes', now(), NULL)
+,(244, 'Animalia', 'Insectes', now(), NULL)
+,(245, 'Animalia', 'Insectes', now(), NULL)
+,(246, 'Animalia', 'Insectes', now(), NULL)
+,(248, 'Animalia', 'Insectes', now(), NULL)
+,(249, 'Animalia', 'Insectes', now(), NULL)
+,(250, 'Animalia', 'Insectes', now(), NULL)
+,(251, 'Animalia', 'Insectes', now(), NULL)
+,(255, 'Animalia', 'Insectes', now(), NULL)
+,(257, 'Animalia', 'Insectes', now(), NULL)
+,(258, 'Animalia', 'Insectes', now(), NULL)
+,(259, 'Animalia', 'Insectes', now(), NULL)
+,(260, 'Animalia', 'Insectes', now(), NULL)
+,(261, 'Animalia', 'Insectes', now(), NULL)
+,(262, 'Animalia', 'Insectes', now(), NULL)
+,(263, 'Animalia', 'Insectes', now(), NULL)
+,(264, 'Animalia', 'Insectes', now(), NULL)
+,(265, 'Animalia', 'Insectes', now(), NULL)
+,(266, 'Animalia', 'Insectes', now(), NULL)
+,(267, 'Animalia', 'Insectes', now(), NULL)
+,(269, 'Animalia', 'Insectes', now(), NULL)
+,(270, 'Animalia', 'Insectes', now(), NULL)
+,(272, 'Animalia', 'Insectes', now(), NULL)
+,(279, 'Animalia', 'Insectes', now(), NULL)
+,(282, 'Animalia', 'Insectes', now(), NULL)
+,(286, 'Animalia', 'Insectes', now(), NULL)
+,(296, 'Animalia', 'Insectes', now(), NULL)
+,(297, 'Animalia', 'Insectes', now(), NULL)
+,(299, 'Animalia', 'Insectes', now(), NULL)
+,(300, 'Animalia', 'Insectes', now(), NULL)
+,(301, 'Animalia', 'Insectes', now(), NULL)
+,(302, 'Animalia', 'Insectes', now(), NULL)
+,(303, 'Animalia', 'Insectes', now(), NULL)
+,(304, 'Animalia', 'Insectes', now(), NULL)
+,(305, 'Animalia', 'Insectes', now(), NULL)
+,(306, 'Animalia', 'Insectes', now(), NULL)
+,(307, 'Animalia', 'Insectes', now(), NULL)
+,(308, 'Animalia', 'Insectes', now(), NULL)
+,(309, 'Animalia', 'Insectes', now(), NULL)
+,(310, 'Animalia', 'Insectes', now(), NULL)
+,(311, 'Animalia', 'Insectes', now(), NULL)
+,(312, 'Animalia', 'Insectes', now(), NULL)
+,(313, 'Animalia', 'Insectes', now(), NULL)
+,(314, 'Animalia', 'Insectes', now(), NULL)
+,(315, 'Animalia', 'Insectes', now(), NULL)
+,(316, 'Animalia', 'Insectes', now(), NULL)
+,(317, 'Animalia', 'Insectes', now(), NULL)
+,(318, 'Animalia', 'Insectes', now(), NULL)
+,(319, 'Animalia', 'Insectes', now(), NULL)
+,(320, 'Animalia', 'Insectes', now(), NULL)
+,(325, 'Animalia', 'Insectes', now(), NULL)
+,(326, 'Animalia', 'Insectes', now(), NULL)
+,(327, 'Animalia', 'Insectes', now(), NULL)
+,(328, 'Animalia', 'Insectes', now(), NULL)
+,(329, 'Animalia', 'Insectes', now(), NULL)
+,(330, 'Animalia', 'Insectes', now(), NULL)
+,(331, 'Animalia', 'Insectes', now(), NULL)
+,(332, 'Animalia', 'Insectes', now(), NULL)
+,(341, 'Animalia', 'Insectes', now(), NULL)
+,(342, 'Animalia', 'Insectes', now(), NULL)
+,(287, 'Animalia', 'Amphibiens', now(), NULL)
+,(295, 'Animalia', 'Amphibiens', now(), NULL)
+,(211, 'Animalia', 'Amphibiens', now(), NULL)
+,(223, 'Animalia', 'Amphibiens', now(), NULL)
+,(225, 'Animalia', 'Amphibiens', now(), NULL)
+,(226, 'Animalia', 'Amphibiens', now(), NULL)
+,(232, 'Animalia', 'Amphibiens', now(), NULL)
+,(234, 'Animalia', 'Amphibiens', now(), NULL)
+,(235, 'Animalia', 'Amphibiens', now(), NULL)
+,(236, 'Animalia', 'Amphibiens', now(), NULL)
+,(237, 'Animalia', 'Amphibiens', now(), NULL)
+,(238, 'Animalia', 'Amphibiens', now(), NULL)
+,(253, 'Animalia', 'Amphibiens', now(), NULL)
+,(255, 'Animalia', 'Amphibiens', now(), NULL)
+,(256, 'Animalia', 'Amphibiens', now(), NULL)
+,(258, 'Animalia', 'Amphibiens', now(), NULL)
+,(261, 'Animalia', 'Amphibiens', now(), NULL)
+,(267, 'Animalia', 'Amphibiens', now(), NULL)
+,(268, 'Animalia', 'Amphibiens', now(), NULL)
+,(269, 'Animalia', 'Amphibiens', now(), NULL)
+,(270, 'Animalia', 'Amphibiens', now(), NULL)
+,(273, 'Animalia', 'Amphibiens', now(), NULL)
+,(274, 'Animalia', 'Amphibiens', now(), NULL)
+,(275, 'Animalia', 'Amphibiens', now(), NULL)
+,(276, 'Animalia', 'Amphibiens', now(), NULL)
+,(277, 'Animalia', 'Amphibiens', now(), NULL)
+,(278, 'Animalia', 'Amphibiens', now(), NULL)
+,(279, 'Animalia', 'Amphibiens', now(), NULL)
+,(282, 'Animalia', 'Amphibiens', now(), NULL)
+,(283, 'Animalia', 'Amphibiens', now(), NULL)
+,(285, 'Animalia', 'Amphibiens', now(), NULL)
+,(298, 'Animalia', 'Amphibiens', now(), NULL)
+,(321, 'Animalia', 'Amphibiens', now(), NULL)
+,(322, 'Animalia', 'Amphibiens', now(), NULL)
+,(323, 'Animalia', 'Amphibiens', now(), NULL)
+,(324, 'Animalia', 'Amphibiens', now(), NULL)
+,(333, 'Animalia', 'Amphibiens', now(), NULL)
+,(341, 'Animalia', 'Amphibiens', now(), NULL)
+,(287, 'Animalia', 'Reptiles', now(), NULL)
+,(295, 'Animalia', 'Reptiles', now(), NULL)
+,(211, 'Animalia', 'Reptiles', now(), NULL)
+,(223, 'Animalia', 'Reptiles', now(), NULL)
+,(225, 'Animalia', 'Reptiles', now(), NULL)
+,(226, 'Animalia', 'Reptiles', now(), NULL)
+,(232, 'Animalia', 'Reptiles', now(), NULL)
+,(234, 'Animalia', 'Reptiles', now(), NULL)
+,(235, 'Animalia', 'Reptiles', now(), NULL)
+,(236, 'Animalia', 'Reptiles', now(), NULL)
+,(237, 'Animalia', 'Reptiles', now(), NULL)
+,(238, 'Animalia', 'Reptiles', now(), NULL)
+,(253, 'Animalia', 'Reptiles', now(), NULL)
+,(255, 'Animalia', 'Reptiles', now(), NULL)
+,(256, 'Animalia', 'Reptiles', now(), NULL)
+,(258, 'Animalia', 'Reptiles', now(), NULL)
+,(261, 'Animalia', 'Reptiles', now(), NULL)
+,(267, 'Animalia', 'Reptiles', now(), NULL)
+,(268, 'Animalia', 'Reptiles', now(), NULL)
+,(269, 'Animalia', 'Reptiles', now(), NULL)
+,(270, 'Animalia', 'Reptiles', now(), NULL)
+,(273, 'Animalia', 'Reptiles', now(), NULL)
+,(274, 'Animalia', 'Reptiles', now(), NULL)
+,(275, 'Animalia', 'Reptiles', now(), NULL)
+,(276, 'Animalia', 'Reptiles', now(), NULL)
+,(277, 'Animalia', 'Reptiles', now(), NULL)
+,(278, 'Animalia', 'Reptiles', now(), NULL)
+,(279, 'Animalia', 'Reptiles', now(), NULL)
+,(282, 'Animalia', 'Reptiles', now(), NULL)
+,(283, 'Animalia', 'Reptiles', now(), NULL)
+,(285, 'Animalia', 'Reptiles', now(), NULL)
+,(298, 'Animalia', 'Reptiles', now(), NULL)
+,(321, 'Animalia', 'Reptiles', now(), NULL)
+,(322, 'Animalia', 'Reptiles', now(), NULL)
+,(323, 'Animalia', 'Reptiles', now(), NULL)
+,(324, 'Animalia', 'Reptiles', now(), NULL)
+,(333, 'Animalia', 'Reptiles', now(), NULL)
+,(341, 'Animalia', 'Reptiles', now(), NULL)
+,(211, 'Plantae', 'all', now(), NULL)
+,(213, 'Plantae', 'all', now(), NULL)
+,(239, 'Plantae', 'all', now(), NULL)
+,(241, 'Plantae', 'all', now(), NULL)
+,(242, 'Plantae', 'all', now(), NULL)
+,(243, 'Plantae', 'all', now(), NULL)
+,(244, 'Plantae', 'all', now(), NULL)
+,(245, 'Plantae', 'all', now(), NULL)
+,(247, 'Plantae', 'all', now(), NULL)
+,(248, 'Plantae', 'all', now(), NULL)
+,(251, 'Plantae', 'all', now(), NULL)
+,(252, 'Plantae', 'all', now(), NULL)
+,(255, 'Plantae', 'all', now(), NULL)
+,(268, 'Plantae', 'all', now(), NULL)
+,(269, 'Plantae', 'all', now(), NULL)
+,(273, 'Plantae', 'all', now(), NULL)
+,(274, 'Plantae', 'all', now(), NULL)
+,(275, 'Plantae', 'all', now(), NULL)
+,(276, 'Plantae', 'all', now(), NULL)
+,(278, 'Plantae', 'all', now(), NULL)
+,(279, 'Plantae', 'all', now(), NULL)
+,(339, 'Plantae', 'all', now(), NULL)
+,(340, 'Plantae', 'all', now(), NULL)
+,(211, 'Fungi', 'all', now(), NULL)
+,(218, 'Fungi', 'all', now(), NULL)
+,(233, 'Fungi', 'all', now(), NULL)
+,(246, 'Fungi', 'all', now(), NULL)
+,(269, 'Fungi', 'all', now(), NULL)
+,(279, 'Fungi', 'all', now(), NULL)
+,(341, 'Fungi', 'all', now(), NULL)
+,(211, 'Animalia', 'Mammifères', now(), NULL)
+,(212, 'Animalia', 'Mammifères', now(), NULL)
+,(217, 'Animalia', 'Mammifères', now(), NULL)
+,(219, 'Animalia', 'Mammifères', now(), NULL)
+,(221, 'Animalia', 'Mammifères', now(), NULL)
+,(223, 'Animalia', 'Mammifères', now(), NULL)
+,(231, 'Animalia', 'Mammifères', now(), NULL)
+,(234, 'Animalia', 'Mammifères', now(), NULL)
+,(236, 'Animalia', 'Mammifères', now(), NULL)
+,(238, 'Animalia', 'Mammifères', now(), NULL)
+,(255, 'Animalia', 'Mammifères', now(), NULL)
+,(267, 'Animalia', 'Mammifères', now(), NULL)
+,(268, 'Animalia', 'Mammifères', now(), NULL)
+,(269, 'Animalia', 'Mammifères', now(), NULL)
+,(270, 'Animalia', 'Mammifères', now(), NULL)
+,(271, 'Animalia', 'Mammifères', now(), NULL)
+,(273, 'Animalia', 'Mammifères', now(), NULL)
+,(274, 'Animalia', 'Mammifères', now(), NULL)
+,(275, 'Animalia', 'Mammifères', now(), NULL)
+,(276, 'Animalia', 'Mammifères', now(), NULL)
+,(277, 'Animalia', 'Mammifères', now(), NULL)
+,(278, 'Animalia', 'Mammifères', now(), NULL)
+,(279, 'Animalia', 'Mammifères', now(), NULL)
+,(283, 'Animalia', 'Mammifères', now(), NULL)
+,(298, 'Animalia', 'Mammifères', now(), NULL)
+,(334, 'Animalia', 'Mammifères', now(), NULL)
+,(335, 'Animalia', 'Mammifères', now(), NULL)
+,(337, 'Animalia', 'Mammifères', now(), NULL)
+,(338, 'Animalia', 'Mammifères', now(), NULL)
+,(341, 'Animalia', 'Mammifères', now(), NULL)
+,(287, 'Animalia', 'Poissons', now(), NULL)
+,(288, 'Animalia', 'Poissons', now(), NULL)
+,(211, 'Animalia', 'Poissons', now(), NULL)
+,(223, 'Animalia', 'Poissons', now(), NULL)
+,(232, 'Animalia', 'Poissons', now(), NULL)
+,(240, 'Animalia', 'Poissons', now(), NULL)
+,(247, 'Animalia', 'Poissons', now(), NULL)
+,(248, 'Animalia', 'Poissons', now(), NULL)
+,(255, 'Animalia', 'Poissons', now(), NULL)
+,(258, 'Animalia', 'Poissons', now(), NULL)
+,(261, 'Animalia', 'Poissons', now(), NULL)
+,(268, 'Animalia', 'Poissons', now(), NULL)
+,(273, 'Animalia', 'Poissons', now(), NULL)
+,(274, 'Animalia', 'Poissons', now(), NULL)
+,(275, 'Animalia', 'Poissons', now(), NULL)
+,(276, 'Animalia', 'Poissons', now(), NULL)
+,(277, 'Animalia', 'Poissons', now(), NULL)
+,(278, 'Animalia', 'Poissons', now(), NULL)
+,(279, 'Animalia', 'Poissons', now(), NULL)
+,(281, 'Animalia', 'Poissons', now(), NULL)
+,(282, 'Animalia', 'Poissons', now(), NULL)
+,(283, 'Animalia', 'Poissons', now(), NULL)
+,(284, 'Animalia', 'Poissons', now(), NULL)
+,(285, 'Animalia', 'Poissons', now(), NULL)
+,(286, 'Animalia', 'Poissons', now(), NULL)
+,(321, 'Animalia', 'Poissons', now(), NULL)
+,(322, 'Animalia', 'Poissons', now(), NULL)
 
 -----------------
 --STADES DE VIE--
 -----------------
-INSERT INTO cor_taxref_nomenclature VALUES (2, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (3, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (20, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (21, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (22, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (24, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (25, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (26, 'Plantae', 'all', now(), NULL);
+,(2, 'all', 'all', now(), NULL)
+,(3, 'all', 'all', now(), NULL)
+,(20, 'Plantae', 'all', now(), NULL)
+,(21, 'Plantae', 'all', now(), NULL)
+,(22, 'Plantae', 'all', now(), NULL)
+,(24, 'Plantae', 'all', now(), NULL)
+,(25, 'Plantae', 'all', now(), NULL)
+,(26, 'Plantae', 'all', now(), NULL)
 
 --TODO : "Acanthocéphales"
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Bivalves', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (8, 'Animalia', 'Bivalves', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Bivalves', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Bivalves', now(), NULL);
+,(11, 'Animalia', 'Bivalves', now(), NULL)
+,(8, 'Animalia', 'Bivalves', now(), NULL)
+,(5, 'Animalia', 'Bivalves', now(), NULL)
+,(4, 'Animalia', 'Bivalves', now(), NULL)
 
 --TODO : "Céphalopodes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (8, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (9, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (12, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (13, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (14, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (15, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (16, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (17, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (18, 'Animalia', 'Insectes', now(), NULL);
+,(11, 'Animalia', 'Insectes', now(), NULL)
+,(8, 'Animalia', 'Insectes', now(), NULL)
+,(9, 'Animalia', 'Insectes', now(), NULL)
+,(12, 'Animalia', 'Insectes', now(), NULL)
+,(13, 'Animalia', 'Insectes', now(), NULL)
+,(14, 'Animalia', 'Insectes', now(), NULL)
+,(15, 'Animalia', 'Insectes', now(), NULL)
+,(16, 'Animalia', 'Insectes', now(), NULL)
+,(17, 'Animalia', 'Insectes', now(), NULL)
+,(18, 'Animalia', 'Insectes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (28, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (6, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (12, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Reptiles', now(), NULL);
+,(11, 'Animalia', 'Reptiles', now(), NULL)
+,(28, 'Animalia', 'Reptiles', now(), NULL)
+,(5, 'Animalia', 'Reptiles', now(), NULL)
+,(6, 'Animalia', 'Reptiles', now(), NULL)
+,(12, 'Animalia', 'Reptiles', now(), NULL)
+,(4, 'Animalia', 'Reptiles', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (8, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (28, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (7, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Crustacés', now(), NULL);
+,(11, 'Animalia', 'Crustacés', now(), NULL)
+,(8, 'Animalia', 'Crustacés', now(), NULL)
+,(28, 'Animalia', 'Crustacés', now(), NULL)
+,(5, 'Animalia', 'Crustacés', now(), NULL)
+,(7, 'Animalia', 'Crustacés', now(), NULL)
+,(4, 'Animalia', 'Crustacés', now(), NULL)
 
 --TODO : "Scléractiniaires"
 
 --TODO : "Hydrozoaires"
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (27, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (6, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (7, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (12, 'Animalia', 'Oiseaux', now(), NULL);
+,(11, 'Animalia', 'Oiseaux', now(), NULL)
+,(27, 'Animalia', 'Oiseaux', now(), NULL)
+,(5, 'Animalia', 'Oiseaux', now(), NULL)
+,(6, 'Animalia', 'Oiseaux', now(), NULL)
+,(7, 'Animalia', 'Oiseaux', now(), NULL)
+,(4, 'Animalia', 'Oiseaux', now(), NULL)
+,(12, 'Animalia', 'Oiseaux', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (27, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (19, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (6, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (7, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Poissons', now(), NULL);
+,(11, 'Animalia', 'Poissons', now(), NULL)
+,(27, 'Animalia', 'Poissons', now(), NULL)
+,(19, 'Animalia', 'Poissons', now(), NULL)
+,(6, 'Animalia', 'Poissons', now(), NULL)
+,(7, 'Animalia', 'Poissons', now(), NULL)
+,(4, 'Animalia', 'Poissons', now(), NULL)
 
 --TODO : "Némertes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Arachnides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Arachnides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (12, 'Animalia', 'Arachnides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Arachnides', now(), NULL);
+,(11, 'Animalia', 'Arachnides', now(), NULL)
+,(5, 'Animalia', 'Arachnides', now(), NULL)
+,(12, 'Animalia', 'Arachnides', now(), NULL)
+,(4, 'Animalia', 'Arachnides', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Gastéropodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Gastéropodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Gastéropodes', now(), NULL);
+,(11, 'Animalia', 'Gastéropodes', now(), NULL)
+,(5, 'Animalia', 'Gastéropodes', now(), NULL)
+,(4, 'Animalia', 'Gastéropodes', now(), NULL)
 --A compléter : Gastéropodes
 
-INSERT INTO cor_taxref_nomenclature VALUES (11, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (27, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (8, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (10, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (28, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Amphibiens', now(), NULL);
+,(11, 'Animalia', 'Amphibiens', now(), NULL)
+,(27, 'Animalia', 'Amphibiens', now(), NULL)
+,(8, 'Animalia', 'Amphibiens', now(), NULL)
+,(10, 'Animalia', 'Amphibiens', now(), NULL)
+,(28, 'Animalia', 'Amphibiens', now(), NULL)
+,(4, 'Animalia', 'Amphibiens', now(), NULL)
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
@@ -790,11 +799,11 @@ INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Amphibiens', now(), 
 --TODO : "Pycnogonides"
 --TODO : "Nématodes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (5, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (6, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (7, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (4, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (12, 'Animalia', 'Mammifères', now(), NULL);
+,(5, 'Animalia', 'Mammifères', now(), NULL)
+,(6, 'Animalia', 'Mammifères', now(), NULL)
+,(7, 'Animalia', 'Mammifères', now(), NULL)
+,(4, 'Animalia', 'Mammifères', now(), NULL)
+,(12, 'Animalia', 'Mammifères', now(), NULL)
 
 -- TODO : "Ascidies"
 -- TODO : "Myriapodes"
@@ -811,79 +820,79 @@ INSERT INTO cor_taxref_nomenclature VALUES (12, 'Animalia', 'Mammifères', now()
 --------
 --SEXE--
 --------
-INSERT INTO cor_taxref_nomenclature VALUES (188, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (189, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (194, 'all', 'all', now(), NULL);
+,(188, 'all', 'all', now(), NULL)
+,(189, 'all', 'all', now(), NULL)
+,(194, 'all', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (193, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (193, 'Animalia', 'all', now(), NULL);
+,(193, 'Plantae', 'all', now(), NULL)
+,(193, 'Animalia', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (192, 'Plantae', 'all', now(), NULL);
+,(190, 'Plantae', 'all', now(), NULL)
+,(191, 'Plantae', 'all', now(), NULL)
+,(192, 'Plantae', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Bivalves', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Bivalves', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (192, 'Animalia', 'Bivalves', now(), NULL);
+,(190, 'Animalia', 'Bivalves', now(), NULL)
+,(191, 'Animalia', 'Bivalves', now(), NULL)
+,(192, 'Animalia', 'Bivalves', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Insectes', now(), NULL);
+,(190, 'Animalia', 'Insectes', now(), NULL)
+,(191, 'Animalia', 'Insectes', now(), NULL)
 
 --TODO : "Acanthocéphales"
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Céphalopodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Céphalopodes', now(), NULL);
+,(190, 'Animalia', 'Céphalopodes', now(), NULL)
+,(191, 'Animalia', 'Céphalopodes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Reptiles', now(), NULL);
+,(190, 'Animalia', 'Reptiles', now(), NULL)
+,(191, 'Animalia', 'Reptiles', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Crustacés', now(), NULL);
+,(190, 'Animalia', 'Crustacés', now(), NULL)
+,(191, 'Animalia', 'Crustacés', now(), NULL)
 
 --TODO : "Scléractiniaires"
 
 --TODO : "Hydrozoaires"
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Oiseaux', now(), NULL);
+,(190, 'Animalia', 'Oiseaux', now(), NULL)
+,(191, 'Animalia', 'Oiseaux', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Poissons', now(), NULL);
+,(190, 'Animalia', 'Poissons', now(), NULL)
+,(191, 'Animalia', 'Poissons', now(), NULL)
 
 --TODO : "Némertes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Arachnides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Arachnides', now(), NULL);
+,(190, 'Animalia', 'Arachnides', now(), NULL)
+,(191, 'Animalia', 'Arachnides', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Gastéropodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Gastéropodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (192, 'Animalia', 'Gastéropodes', now(), NULL);
+,(190, 'Animalia', 'Gastéropodes', now(), NULL)
+,(191, 'Animalia', 'Gastéropodes', now(), NULL)
+,(192, 'Animalia', 'Gastéropodes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Amphibiens', now(), NULL);
+,(190, 'Animalia', 'Amphibiens', now(), NULL)
+,(191, 'Animalia', 'Amphibiens', now(), NULL)
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Annélides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Annélides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (192, 'Animalia', 'Annélides', now(), NULL);
+,(190, 'Animalia', 'Annélides', now(), NULL)
+,(191, 'Animalia', 'Annélides', now(), NULL)
+,(192, 'Animalia', 'Annélides', now(), NULL)
 
 
 --TODO : "Pycnogonides"
 --TODO : "Nématodes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Mammifères', now(), NULL);
+,(190, 'Animalia', 'Mammifères', now(), NULL)
+,(191, 'Animalia', 'Mammifères', now(), NULL)
 
 --TODO : "Ascidies"
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Myriapodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Myriapodes', now(), NULL);
+,(190, 'Animalia', 'Myriapodes', now(), NULL)
+,(191, 'Animalia', 'Myriapodes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (190, 'Animalia', 'Plathelminthes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (191, 'Animalia', 'Plathelminthes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (192, 'Animalia', 'Plathelminthes', now(), NULL);
+,(190, 'Animalia', 'Plathelminthes', now(), NULL)
+,(191, 'Animalia', 'Plathelminthes', now(), NULL)
+,(192, 'Animalia', 'Plathelminthes', now(), NULL)
 
 
 --TODO : "Fungi" à priori il n'y a pas de notion de sexe chez les champignons. Au mieux de polarité + et -.
@@ -898,30 +907,30 @@ INSERT INTO cor_taxref_nomenclature VALUES (192, 'Animalia', 'Plathelminthes', n
 -------------------------
 --METHODE D'OBSERVATION--
 -------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (42, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (61, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (62, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (63, 'all', 'all', now(), NULL);
+,(42, 'all', 'all', now(), NULL)
+,(61, 'all', 'all', now(), NULL)
+,(62, 'all', 'all', now(), NULL)
+,(63, 'all', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (57, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (58, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (60, 'Plantae', 'all', now(), NULL);
+,(57, 'Plantae', 'all', now(), NULL)
+,(58, 'Plantae', 'all', now(), NULL)
+,(60, 'Plantae', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (56, 'Plantae', 'Angiospermes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (59, 'Plantae', 'Angiospermes', now(), NULL);
+,(56, 'Plantae', 'Angiospermes', now(), NULL)
+,(59, 'Plantae', 'Angiospermes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (56, 'Plantae', 'Gymnospermes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (59, 'Plantae', 'Gymnospermes', now(), NULL);
+,(56, 'Plantae', 'Gymnospermes', now(), NULL)
+,(59, 'Plantae', 'Gymnospermes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (55, 'Plantae', 'Fougères', now(), NULL);
+,(55, 'Plantae', 'Fougères', now(), NULL)
 
 --TODO : "Algues vertes"
 --TODO : "Algues rouges"
 
-INSERT INTO cor_taxref_nomenclature VALUES (55, 'Plantae', 'Mousses', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (55, 'Plantae', 'Hépatiques et Anthocérotes', now(), NULL);
+,(55, 'Plantae', 'Mousses', now(), NULL)
+,(55, 'Plantae', 'Hépatiques et Anthocérotes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (55, 'Fungi', 'all', now(), NULL);
+,(55, 'Fungi', 'all', now(), NULL)
 
 --TODO : "Bacteria"
 --TODO : "Chromista"
@@ -929,61 +938,61 @@ INSERT INTO cor_taxref_nomenclature VALUES (55, 'Fungi', 'all', now(), NULL);
 
 --Aucun critère spécifique identifié pour les bivalves
 
-INSERT INTO cor_taxref_nomenclature VALUES (43, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (45, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (47, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (48, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (49, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (50, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (53, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (64, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (65, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (66, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Insectes', now(), NULL);
+,(43, 'Animalia', 'Insectes', now(), NULL)
+,(45, 'Animalia', 'Insectes', now(), NULL)
+,(47, 'Animalia', 'Insectes', now(), NULL)
+,(48, 'Animalia', 'Insectes', now(), NULL)
+,(49, 'Animalia', 'Insectes', now(), NULL)
+,(50, 'Animalia', 'Insectes', now(), NULL)
+,(52, 'Animalia', 'Insectes', now(), NULL)
+,(53, 'Animalia', 'Insectes', now(), NULL)
+,(64, 'Animalia', 'Insectes', now(), NULL)
+,(65, 'Animalia', 'Insectes', now(), NULL)
+,(66, 'Animalia', 'Insectes', now(), NULL)
+,(67, 'Animalia', 'Insectes', now(), NULL)
 
 --Aucun critère spécifique identifié pour les acanthocéphales
 --Aucun critère spécifique identifié pour les céphalopodes
 
-INSERT INTO cor_taxref_nomenclature VALUES (44, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (46, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (49, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Reptiles', now(), NULL);
+,(44, 'Animalia', 'Reptiles', now(), NULL)
+,(46, 'Animalia', 'Reptiles', now(), NULL)
+,(49, 'Animalia', 'Reptiles', now(), NULL)
+,(52, 'Animalia', 'Reptiles', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (49, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Crustacés', now(), NULL);
+,(49, 'Animalia', 'Crustacés', now(), NULL)
+,(52, 'Animalia', 'Crustacés', now(), NULL)
 
 --TODO : "Scléractiniaires"
 --TODO : "Hydrozoaires"
 
-INSERT INTO cor_taxref_nomenclature VALUES (43, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (44, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (46, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (48, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (49, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (50, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (51, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (53, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (54, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Oiseaux', now(), NULL);
+,(43, 'Animalia', 'Oiseaux', now(), NULL)
+,(44, 'Animalia', 'Oiseaux', now(), NULL)
+,(46, 'Animalia', 'Oiseaux', now(), NULL)
+,(48, 'Animalia', 'Oiseaux', now(), NULL)
+,(49, 'Animalia', 'Oiseaux', now(), NULL)
+,(50, 'Animalia', 'Oiseaux', now(), NULL)
+,(51, 'Animalia', 'Oiseaux', now(), NULL)
+,(52, 'Animalia', 'Oiseaux', now(), NULL)
+,(53, 'Animalia', 'Oiseaux', now(), NULL)
+,(54, 'Animalia', 'Oiseaux', now(), NULL)
+,(67, 'Animalia', 'Oiseaux', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Poissons', now(), NULL);
+,(52, 'Animalia', 'Poissons', now(), NULL)
 
 --TODO : "Némertes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (49, 'Animalia', 'Arachnides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (53, 'Animalia', 'Arachnides', now(), NULL);
+,(49, 'Animalia', 'Arachnides', now(), NULL)
+,(53, 'Animalia', 'Arachnides', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Gastéropodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (66, 'Animalia', 'Gastéropodes', now(), NULL);
+,(52, 'Animalia', 'Gastéropodes', now(), NULL)
+,(66, 'Animalia', 'Gastéropodes', now(), NULL)
 --manque l'identificatino par la coquille. TODO : proposer l'ajout à l'INPN
 
-INSERT INTO cor_taxref_nomenclature VALUES (43, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (46, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (48, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Amphibiens', now(), NULL);
+,(43, 'Animalia', 'Amphibiens', now(), NULL)
+,(46, 'Animalia', 'Amphibiens', now(), NULL)
+,(48, 'Animalia', 'Amphibiens', now(), NULL)
+,(52, 'Animalia', 'Amphibiens', now(), NULL)
+,(67, 'Animalia', 'Amphibiens', now(), NULL)
 --manque l'identificatino par la ponte. TODO : proposer l'ajout à l'INPN
 
 --TODO : "Octocoralliaires"
@@ -994,17 +1003,17 @@ INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Amphibiens', now(),
 --TODO : "Ascidies"
 --TODO : "Plathelminthes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (43, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (45, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (46, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (48, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (49, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (50, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (52, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (53, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (54, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (65, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Mammifères', now(), NULL);
+,(43, 'Animalia', 'Mammifères', now(), NULL)
+,(45, 'Animalia', 'Mammifères', now(), NULL)
+,(46, 'Animalia', 'Mammifères', now(), NULL)
+,(48, 'Animalia', 'Mammifères', now(), NULL)
+,(49, 'Animalia', 'Mammifères', now(), NULL)
+,(50, 'Animalia', 'Mammifères', now(), NULL)
+,(52, 'Animalia', 'Mammifères', now(), NULL)
+,(53, 'Animalia', 'Mammifères', now(), NULL)
+,(54, 'Animalia', 'Mammifères', now(), NULL)
+,(65, 'Animalia', 'Mammifères', now(), NULL)
+,(67, 'Animalia', 'Mammifères', now(), NULL)
 
 --TODO : "Ascidies"
 --Aucun critère spécifique identifié pour les myriapodes
@@ -1013,19 +1022,19 @@ INSERT INTO cor_taxref_nomenclature VALUES (67, 'Animalia', 'Mammifères', now()
 ---------------------
 --Statut biologique--
 ---------------------
-INSERT INTO cor_taxref_nomenclature VALUES (29, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (30, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (31, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (41, 'all', 'all', now(), NULL);
+,(29, 'all', 'all', now(), NULL)
+,(30, 'all', 'all', now(), NULL)
+,(31, 'all', 'all', now(), NULL)
+,(41, 'all', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (32, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (38, 'Plantae', 'all', now(), NULL);
+,(32, 'Plantae', 'all', now(), NULL)
+,(38, 'Plantae', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (32, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (38, 'Fungi', 'all', now(), NULL);
+,(32, 'Fungi', 'all', now(), NULL)
+,(38, 'Fungi', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (32, 'Animalia', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (38, 'Animalia', 'all', now(), NULL);
+,(32, 'Animalia', 'all', now(), NULL)
+,(38, 'Animalia', 'all', now(), NULL)
 
 --TODO : "Bacteria"
 --TODO : "Chromista"
@@ -1033,44 +1042,44 @@ INSERT INTO cor_taxref_nomenclature VALUES (38, 'Animalia', 'all', now(), NULL);
 
 --Aucun critère spécifique identifié pour les bivalves
 
-INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Insectes', now(), NULL);
+,(35, 'Animalia', 'Insectes', now(), NULL)
+,(37, 'Animalia', 'Insectes', now(), NULL)
+,(39, 'Animalia', 'Insectes', now(), NULL)
+,(40, 'Animalia', 'Insectes', now(), NULL)
 
 --TODO : "Acanthocéphales"
 
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Céphalopodes', now(), NULL);
+,(37, 'Animalia', 'Céphalopodes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (34, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Reptiles', now(), NULL);
+,(33, 'Animalia', 'Reptiles', now(), NULL)
+,(34, 'Animalia', 'Reptiles', now(), NULL)
+,(37, 'Animalia', 'Reptiles', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Crustacés', now(), NULL);
+,(37, 'Animalia', 'Crustacés', now(), NULL)
 
 --TODO : "Scléractiniaires"
 --TODO : "Hydrozoaires"
 
-INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (34, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (36, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Oiseaux', now(), NULL);
+,(33, 'Animalia', 'Oiseaux', now(), NULL)
+,(34, 'Animalia', 'Oiseaux', now(), NULL)
+,(35, 'Animalia', 'Oiseaux', now(), NULL)
+,(36, 'Animalia', 'Oiseaux', now(), NULL)
+,(37, 'Animalia', 'Oiseaux', now(), NULL)
+,(39, 'Animalia', 'Oiseaux', now(), NULL)
+,(40, 'Animalia', 'Oiseaux', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Poissons', now(), NULL);
+,(35, 'Animalia', 'Poissons', now(), NULL)
+,(37, 'Animalia', 'Poissons', now(), NULL)
 
 --TODO : "Némertes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Arachnides', now(), NULL);
+,(37, 'Animalia', 'Arachnides', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Gastéropodes', now(), NULL);
+,(37, 'Animalia', 'Gastéropodes', now(), NULL)
 
 
-INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Amphibiens', now(), NULL);
+,(33, 'Animalia', 'Amphibiens', now(), NULL)
+,(37, 'Animalia', 'Amphibiens', now(), NULL)
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
@@ -1080,12 +1089,12 @@ INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Amphibiens', now(),
 --TODO : "Ascidies"
 --TODO : "Plathelminthes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (33, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (34, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (35, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (37, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (39, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Mammifères', now(), NULL);
+,(33, 'Animalia', 'Mammifères', now(), NULL)
+,(34, 'Animalia', 'Mammifères', now(), NULL)
+,(35, 'Animalia', 'Mammifères', now(), NULL)
+,(37, 'Animalia', 'Mammifères', now(), NULL)
+,(39, 'Animalia', 'Mammifères', now(), NULL)
+,(40, 'Animalia', 'Mammifères', now(), NULL)
 
 --TODO : "Ascidies"
 --TODO : "Myriapodes
@@ -1095,73 +1104,73 @@ INSERT INTO cor_taxref_nomenclature VALUES (40, 'Animalia', 'Mammifères', now()
 ------------------------
 --Type de dénombrement--
 ------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (106, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (107, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (108, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (109, 'all', 'all', now(), NULL);
+,(106, 'all', 'all', now(), NULL)
+,(107, 'all', 'all', now(), NULL)
+,(108, 'all', 'all', now(), NULL)
+,(109, 'all', 'all', now(), NULL)
 
 
 -------------------------
 --Objet du dénombrement--
 -------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (165, 'all', 'all', now(), NULL);
+,(165, 'all', 'all', now(), NULL)
 
 
-INSERT INTO cor_taxref_nomenclature VALUES (166, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (171, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (172, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (173, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (174, 'Plantae', 'all', now(), NULL);
+,(166, 'Plantae', 'all', now(), NULL)
+,(171, 'Plantae', 'all', now(), NULL)
+,(172, 'Plantae', 'all', now(), NULL)
+,(173, 'Plantae', 'all', now(), NULL)
+,(174, 'Plantae', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (166, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (174, 'Fungi', 'all', now(), NULL);
+,(166, 'Fungi', 'all', now(), NULL)
+,(174, 'Fungi', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (166, 'Animalia', 'all', now(), NULL);
+,(166, 'Animalia', 'all', now(), NULL)
 
 --TODO : "Bacteria"
 --TODO : "Chromista"
 --TODO : "Protozoa"
 
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Bivalves', now(), NULL);
+,(168, 'Animalia', 'Bivalves', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (169, 'Animalia', 'Insectes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Insectes', now(), NULL);
+,(167, 'Animalia', 'Insectes', now(), NULL)
+,(168, 'Animalia', 'Insectes', now(), NULL)
+,(169, 'Animalia', 'Insectes', now(), NULL)
+,(170, 'Animalia', 'Insectes', now(), NULL)
 
 --TODO : "Acanthocéphales"
 
-INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Céphalopodes', now(), NULL);
+,(167, 'Animalia', 'Céphalopodes', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Reptiles', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Reptiles', now(), NULL);
+,(167, 'Animalia', 'Reptiles', now(), NULL)
+,(170, 'Animalia', 'Reptiles', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Crustacés', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Crustacés', now(), NULL);
+,(168, 'Animalia', 'Crustacés', now(), NULL)
+,(170, 'Animalia', 'Crustacés', now(), NULL)
 
 --TODO : "Scléractiniaires"
 --TODO : "Hydrozoaires"
 
-INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (169, 'Animalia', 'Oiseaux', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Oiseaux', now(), NULL);
+,(167, 'Animalia', 'Oiseaux', now(), NULL)
+,(168, 'Animalia', 'Oiseaux', now(), NULL)
+,(169, 'Animalia', 'Oiseaux', now(), NULL)
+,(170, 'Animalia', 'Oiseaux', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Poissons', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Poissons', now(), NULL);
+,(168, 'Animalia', 'Poissons', now(), NULL)
+,(170, 'Animalia', 'Poissons', now(), NULL)
 
 --TODO : "Némertes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Arachnides', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Arachnides', now(), NULL);
+,(168, 'Animalia', 'Arachnides', now(), NULL)
+,(170, 'Animalia', 'Arachnides', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Gastéropodes', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Gastéropodes', now(), NULL);
+,(168, 'Animalia', 'Gastéropodes', now(), NULL)
+,(170, 'Animalia', 'Gastéropodes', now(), NULL)
 
 
-INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Amphibiens', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Amphibiens', now(), NULL);
+,(167, 'Animalia', 'Amphibiens', now(), NULL)
+,(168, 'Animalia', 'Amphibiens', now(), NULL)
+,(170, 'Animalia', 'Amphibiens', now(), NULL)
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
@@ -1171,8 +1180,8 @@ INSERT INTO cor_taxref_nomenclature VALUES (170, 'Animalia', 'Amphibiens', now()
 --TODO : "Ascidies"
 --TODO : "Plathelminthes"
 
-INSERT INTO cor_taxref_nomenclature VALUES (167, 'Animalia', 'Mammifères', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Mammifères', now(), NULL);
+,(167, 'Animalia', 'Mammifères', now(), NULL)
+,(168, 'Animalia', 'Mammifères', now(), NULL)
 
 --TODO : "Ascidies"
 --TODO : "Myriapodes
@@ -1181,22 +1190,22 @@ INSERT INTO cor_taxref_nomenclature VALUES (168, 'Animalia', 'Mammifères', now(
 --------------
 --Naturalité--
 --------------
-INSERT INTO cor_taxref_nomenclature VALUES (181, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (182, 'all', 'all', now(), NULL);
+,(181, 'all', 'all', now(), NULL)
+,(182, 'all', 'all', now(), NULL)
 
 
-INSERT INTO cor_taxref_nomenclature VALUES (183, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (184, 'Plantae', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (186, 'Plantae', 'all', now(), NULL);
+,(183, 'Plantae', 'all', now(), NULL)
+,(184, 'Plantae', 'all', now(), NULL)
+,(186, 'Plantae', 'all', now(), NULL)
 
 
-INSERT INTO cor_taxref_nomenclature VALUES (183, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (184, 'Fungi', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (186, 'Fungi', 'all', now(), NULL);
+,(183, 'Fungi', 'all', now(), NULL)
+,(184, 'Fungi', 'all', now(), NULL)
+,(186, 'Fungi', 'all', now(), NULL)
 
-INSERT INTO cor_taxref_nomenclature VALUES (183, 'Animalia', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (185, 'Animalia', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (186, 'Animalia', 'all', now(), NULL);
+,(183, 'Animalia', 'all', now(), NULL)
+,(185, 'Animalia', 'all', now(), NULL)
+,(186, 'Animalia', 'all', now(), NULL)
 
 --TODO : "Bacteria"
 --TODO : "Chromista"
@@ -1206,37 +1215,37 @@ INSERT INTO cor_taxref_nomenclature VALUES (186, 'Animalia', 'all', now(), NULL)
 --------------------
 --Preuve existance--
 --------------------
-INSERT INTO cor_taxref_nomenclature VALUES (91, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (92, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (93, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (94, 'all', 'all', now(), NULL);
+,(91, 'all', 'all', now(), NULL)
+,(92, 'all', 'all', now(), NULL)
+,(93, 'all', 'all', now(), NULL)
+,(94, 'all', 'all', now(), NULL)
 
 
 ---------------------------
 --Statut de l'observation--
 ---------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (99, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (100, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (101, 'all', 'all', now(), NULL);
+,(99, 'all', 'all', now(), NULL)
+,(100, 'all', 'all', now(), NULL)
+,(101, 'all', 'all', now(), NULL)
 
 
 ---------------------------
 --Statut de validation--
 ---------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (345, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (346, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (347, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (348, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (349, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (350, 'all', 'all', now(), NULL);
+,(345, 'all', 'all', now(), NULL)
+,(346, 'all', 'all', now(), NULL)
+,(347, 'all', 'all', now(), NULL)
+,(348, 'all', 'all', now(), NULL)
+,(349, 'all', 'all', now(), NULL)
+,(350, 'all', 'all', now(), NULL)
 
 
 ---------------------------------------
 --Niveau de précision de la diffusion--
 ---------------------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (158, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (159, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (160, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (161, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (162, 'all', 'all', now(), NULL);
-INSERT INTO cor_taxref_nomenclature VALUES (163, 'all', 'all', now(), NULL);
+,(158, 'all', 'all', now(), NULL)
+,(159, 'all', 'all', now(), NULL)
+,(160, 'all', 'all', now(), NULL)
+,(161, 'all', 'all', now(), NULL)
+,(162, 'all', 'all', now(), NULL)
+,(163, 'all', 'all', now(), NULL);
