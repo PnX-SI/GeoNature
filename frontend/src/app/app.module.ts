@@ -24,6 +24,7 @@ import { ContactFauneComponent } from './apps/contact-faune/contact-faune.compon
 import { ContactFloreComponent } from './apps/contact-flore/contact-flore.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import {NomenclatureComponent} from './components/cf-form/nomenclature/nomenclature.component'
 
 // Service
 import { MapService } from './services/map.service';
@@ -33,6 +34,7 @@ import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { CfFormComponent } from './components/cf-form/cf-form.component';
+import { FormService } from './components/cf-form/service/form.service';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,7 +49,8 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     MapComponent,
     SigninComponent,
-    CfFormComponent
+    CfFormComponent,
+    NomenclatureComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +75,7 @@ export function HttpLoaderFactory(http: Http) {
         }),
     ToastrModule.forRoot()
   ],
-  providers: [NavService, MapService, AuthService, AuthGuard],
+  providers: [NavService, MapService, AuthService, AuthGuard, FormService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
