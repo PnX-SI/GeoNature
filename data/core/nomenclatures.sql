@@ -156,7 +156,6 @@ CREATE SEQUENCE t_nomenclatures_id_nomenclature_seq
     CACHE 1;
 ALTER SEQUENCE t_nomenclatures_id_nomenclature_seq OWNED BY t_nomenclatures.id_nomenclature;
 ALTER TABLE ONLY t_nomenclatures ALTER COLUMN id_nomenclature SET DEFAULT nextval('t_nomenclatures_id_nomenclature_seq'::regclass);
-SET search_path = nomenclatures, pg_catalog;
 
 CREATE TABLE cor_nomenclatures_relations (
     id_nomenclature_l integer NOT NULL,
