@@ -44,4 +44,4 @@ add_sample_data=true
 usershub_release=1.2.2
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.2.1
+taxhub_release=develop
