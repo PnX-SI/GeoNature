@@ -30,7 +30,7 @@ if $add_sample_data
 	echo "Insert sample data in contact schema..." &>> log/install_contact_schema.log
 	echo "--------------------" &>> log/install_contact_schema.log
 	echo "" &>> log/install_contact_schema.log
-	export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /data/modules/contact/sample_data.sql  &>> log/install_contact_schema.log
+	export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/modules/contact/sample_data.sql  &>> log/install_contact_schema.log
 fi
 
 echo "Privileges on log folder..."
