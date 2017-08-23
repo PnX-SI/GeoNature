@@ -139,7 +139,7 @@ ALTER TABLE ONLY cor_municipality_releves_contact
 --FOREIGN KEY--
 ---------------
 ALTER TABLE ONLY t_releves_contact
-    ADD CONSTRAINT fk_t_releves_contact_t_lots FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_lots(id_dataset) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_contact_t_datasets FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT fk_t_releves_contact_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -317,7 +317,7 @@ CREATE TRIGGER tri_update_occurrences_contact
 --DATAS--
 ---------
 
-INSERT INTO gn_meta.t_lots  VALUES (1, 'contact', 'Observation aléatoire de la faune, de la flore ou de la fonge', 1, 2, 2, 2, 2, true, NULL, '2017-06-01 00:00:00', '2017-06-01 00:00:00');
+INSERT INTO gn_meta.t_datasets  VALUES (1, 'contact', 'Observation aléatoire de la faune, de la flore ou de la fonge', 1, 2, 2, 2, 2, true, NULL, '2017-06-01 00:00:00', '2017-06-01 00:00:00');
 
 INSERT INTO synthese.bib_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (1, 'contact', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
 
