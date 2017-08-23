@@ -21,4 +21,9 @@ export class NomenclatureComponent implements OnInit {
     this.labels = this._formService.getNomenclature(this.id_nomenclature, this.regne, this.group2_inpn);
   }
 
+  ngOnChanges(){
+    // todo
+    // when input language change, change which values are display
+  }
+
 }
