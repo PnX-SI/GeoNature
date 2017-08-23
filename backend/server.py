@@ -7,6 +7,7 @@ Démarrage de l'application
 
 import flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 db = SQLAlchemy()
 
@@ -32,7 +33,7 @@ def get_app():
     return app
 
 app = get_app()
-
+CORS(app)
 
 if __name__ == '__main__':
     from flask_script import Manager
