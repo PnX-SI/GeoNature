@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {FormService} from '../service/form.service';
 
 @Component({
@@ -10,8 +10,10 @@ export class NomenclatureComponent implements OnInit {
   labels:any;
   selectedId:number;
   @Input() id_nomenclature:number;
-  @Input() cd_nom:number;
+  @Input() regne:string;
+  @Input() group2_inpn:string;
   @Input() lang:string;
+  @Output('labelSelected') emitter = new EventEmitter<number>();
   constructor(private _formService:FormService) { }
 
   ngOnInit() {
