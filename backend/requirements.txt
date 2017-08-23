@@ -2,11 +2,13 @@ aniso8601==1.2.1
 click==6.7
 Flask==0.12.2
 Flask-RESTful==0.3.6
+Flask-Script==2.0.5
 Flask-SQLAlchemy==2.2
 GeoAlchemy2==0.4.0
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
+psycopg2==2.7.3
 python-dateutil==2.6.1
 pytz==2017.2
 six==1.10.0
