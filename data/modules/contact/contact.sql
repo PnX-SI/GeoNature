@@ -142,7 +142,7 @@ ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT fk_t_releves_contact_t_datasets FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_contact
-    ADD CONSTRAINT fk_t_releves_contact_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_contact_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT fk_t_releves_contact_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
@@ -158,41 +158,41 @@ ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_taxref FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_bio_condition FOREIGN KEY (id_nomenclature_bio_condition) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_bio_condition FOREIGN KEY (id_nomenclature_bio_condition) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_bio_status FOREIGN KEY (id_nomenclature_bio_status) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_bio_status FOREIGN KEY (id_nomenclature_bio_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_naturalness FOREIGN KEY (id_nomenclature_naturalness) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_naturalness FOREIGN KEY (id_nomenclature_naturalness) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_accur_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_accur_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_counting_contact
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_contact) REFERENCES t_occurrences_contact(id_occurrence_contact) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_counting_contact
-    ADD CONSTRAINT fk_cor_counting_contact_sexe FOREIGN KEY (id_nomenclature_sex) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_counting_contact_sexe FOREIGN KEY (id_nomenclature_sex) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_contact
-    ADD CONSTRAINT fk_cor_counting_contact_life_stage FOREIGN KEY (id_nomenclature_life_stage) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_counting_contact_life_stage FOREIGN KEY (id_nomenclature_life_stage) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_contact
-    ADD CONSTRAINT fk_cor_counting_contact_obj_count FOREIGN KEY (id_nomenclature_obj_count) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_counting_contact_obj_count FOREIGN KEY (id_nomenclature_obj_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_contact
-    ADD CONSTRAINT fk_cor_counting_contact_typ_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_counting_contact_typ_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_role_releves_contact
@@ -217,45 +217,45 @@ ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT check_t_releves_contact_date_max CHECK (date_max >= date_min);
 
 ALTER TABLE t_releves_contact
-  ADD CONSTRAINT check_t_releves_contact_obs_technique CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100));
+  ADD CONSTRAINT check_t_releves_contact_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100));
 
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT check_t_occurrences_contact_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check_t_releves_contact_obs_meth CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
+  ADD CONSTRAINT check_t_releves_contact_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check_t_occurrences_contact_bio_condition CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_bio_condition,7));
+  ADD CONSTRAINT check_t_occurrences_contact_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_condition,7));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_bio_status CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_bio_status,13));
+  ADD CONSTRAINT check__occurrences_contact_bio_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_status,13));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_naturalness CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_naturalness,8));
+  ADD CONSTRAINT check__occurrences_contact_naturalness CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_naturalness,8));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_exist_proof CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15));
+  ADD CONSTRAINT check__occurrences_contact_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_valid_status CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
+  ADD CONSTRAINT check__occurrences_contact_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_accur_level CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
+  ADD CONSTRAINT check__occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
 
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_life_stage CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_life_stage,10));
+  ADD CONSTRAINT check_t_releves_contact_life_stage CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_life_stage,10));
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_sexe CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_sex,9));
+  ADD CONSTRAINT check_t_releves_contact_sexe CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sex,9));
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_obj_count CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_obj_count,6));
+  ADD CONSTRAINT check_t_releves_contact_obj_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obj_count,6));
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_type_count CHECK (nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
+  ADD CONSTRAINT check_t_releves_contact_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
 
 ALTER TABLE cor_counting_contact
     ADD CONSTRAINT check_cor_counting_contact_count_min CHECK (count_min > 0);
@@ -273,7 +273,7 @@ DECLARE
     idsensibilite integer;
 BEGIN
     --calcul de la valeur de la sensibilité
-    SELECT INTO idsensibilite nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
+    SELECT INTO idsensibilite ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
     new.id_nomenclature_diffusion_level = idsensibilite;
     RETURN NEW;             
 END;
@@ -288,7 +288,7 @@ DECLARE
     idsensibilite integer;
 BEGIN
     --calcul de la valeur de la sensibilité
-    SELECT INTO idsensibilite nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
+    SELECT INTO idsensibilite ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
     new.id_nomenclature_diffusion_level = idsensibilite;
     RETURN NEW;             
 END;
