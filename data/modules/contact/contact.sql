@@ -31,13 +31,13 @@ CREATE TABLE t_releves_contact (
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
     comment text,
-    the_geom_local public.geometry(Geometry,MYLOCALSRID),
-    the_geom_3857 public.geometry(Geometry,3857),
+    geom_local public.geometry(Geometry,MYLOCALSRID),
+    geom_4326 public.geometry(Geometry,4326),
     precision integer DEFAULT 10,
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
-    CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID))
+    CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
+    CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
+    CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
+    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = MYLOCALSRID))
 );
 
 CREATE SEQUENCE t_releves_contact_id_releve_contact_seq
@@ -95,6 +95,7 @@ SELECT pg_catalog.setval('t_occurrences_contact_id_occurrence_contact_seq', 1, f
 
 
 CREATE TABLE cor_counting_contact (
+    id_counting_contact bigint NOT NULL,
     id_occurrence_contact bigint NOT NULL,
     id_nomenclature_life_stage integer NOT NULL,
     id_nomenclature_sex integer NOT NULL,
@@ -103,6 +104,15 @@ CREATE TABLE cor_counting_contact (
     count_min integer,
     count_max integer
 );
+CREATE SEQUENCE cor_counting_contact_id_counting_contact_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE cor_counting_contact_id_counting_contact_seq OWNED BY t_occurrences_contact.id_occurrence_contact;
+ALTER TABLE ONLY cor_counting_contact ALTER COLUMN id_counting_contact SET DEFAULT nextval('cor_counting_contact_id_counting_contact_seq'::regclass);
+SELECT pg_catalog.setval('cor_counting_contact_id_counting_contact_seq', 1, false);
 
 
 CREATE TABLE cor_role_releves_contact (
@@ -126,7 +136,7 @@ ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT pk_t_releves_contact PRIMARY KEY (id_releve_contact);
 
 ALTER TABLE ONLY cor_counting_contact
-    ADD CONSTRAINT pk_cor_counting_contact_contact PRIMARY KEY (id_occurrence_contact, id_nomenclature_life_stage, id_nomenclature_sex);
+    ADD CONSTRAINT pk_cor_counting_contact_contact PRIMARY KEY (id_counting_contact);
 
 ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT pk_cor_role_releves_contact PRIMARY KEY (id_releve_contact, id_role);
