@@ -102,7 +102,7 @@
           </div>
         </div>
       <div> <!--Auto complete noms de taxon-->
-        <md-input-container class="input-width-lg">
+        <!-- <md-input-container class="input-width-lg">
           <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
           <md-icon mdSuffix>pets</md-icon>
         </md-input-container>
@@ -111,7 +111,8 @@
           <md-option *ngFor="let taxon of filteredTaxons | async" [value]="taxon">
             {{ taxon }}
           </md-option>
-        </md-autocomplete>
+        </md-autocomplete> -->
+        <app-taxonomy></app-taxonomy>
         <!--END Auto complete-->
 
         <!-- Btn filter options taxon-->
