@@ -9,7 +9,7 @@ fi
 . config/settings.ini
 
 echo "Create contact schema..."
-echo "" &>> log/install_contact_schema.log
+echo "" &> log/install_contact_schema.log
 echo "" &>> log/install_contact_schema.log
 echo "" &>> log/install_contact_schema.log
 echo "--------------------" &>> log/install_contact_schema.log
