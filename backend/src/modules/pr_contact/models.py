@@ -26,7 +26,7 @@ class TRelevesContact(serializableGeoModel):
     id_releve_contact = db.Column(db.Integer, primary_key=True)
     id_dataset = db.Column(db.Integer)
     id_nomenclature_obs_technique = db.Column(db.Integer)
-    id_digitiser = db.Column(db.Integer)
+    id_digitiser = db.Column(db.Integer, ForeignKey('utilisateurs.t_roles.id_role'))
     date_min = db.Column(db.DateTime)
     date_max = db.Column(db.DateTime)
     altitude_min = db.Column(db.Integer)
@@ -41,12 +41,15 @@ class TRelevesContact(serializableGeoModel):
 
     occurrences = relationship("TOccurrencesContact", lazy='joined')
 
-    observer = db.relationship('TRoles',
-                               secondary=corRoleRelevesContact,
-                               primaryjoin=(corRoleRelevesContact.c.id_releve_contact == id_releve_contact),
-                               secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
-                               foreign_keys =[corRoleRelevesContact.c.id_releve_contact,corRoleRelevesContact.c.id_role]
-                               )
+    observer = db.relationship(
+        'TRoles',
+        secondary=corRoleRelevesContact,
+        primaryjoin=(corRoleRelevesContact.c.id_releve_contact == id_releve_contact),
+        secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+        foreign_keys =[corRoleRelevesContact.c.id_releve_contact,corRoleRelevesContact.c.id_role]
+    )
+
+    digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
