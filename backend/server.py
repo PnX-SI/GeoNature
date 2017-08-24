@@ -31,6 +31,9 @@ def get_app():
     from src.modules.pr_contact.routes import routes
     app.register_blueprint(routes, url_prefix='/pr_contact')
 
+    from src.core.gn_meta.routes import routes
+    app.register_blueprint(routes, url_prefix='/meta')
+
 
     app_globals['app'] = app
     return app
