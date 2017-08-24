@@ -3,10 +3,12 @@
   <md-card class="cf-card-required padding-md"> <!--Pannel Observations-->
     <h4> <b> <u>Observations</u>: </b></h4>
 
-    <md-input-container class="input-alignment-sm input-width-md">
+    <!-- <md-input-container class="input-alignment-sm input-width-md">
       <input type="text" mdInput placeholder="Observateurs">
       <md-icon mdSuffix>supervisor_account</md-icon>
-    </md-input-container>
+    </md-input-container> -->
+
+    <app-observers [idMenu]="9" placeholder="Observateur" > </app-observers>
 
     <md-input-container class="input-alignment-sm input-width-xs">
       <input mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
