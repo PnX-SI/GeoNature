@@ -109,4 +109,14 @@ L'installation des bases de données est loguée dans le répertoire ``log`` des
     L'application GeoNature-atlas est livrée avec des données exemples. Une fois l'installation de l'atlas terminée, vous devez l'adapter à votre territoire. 
     
     - Remplacez les shapes ``territoire.shp`` et ``communes.shp`` dans ``data/ref`` avec celles de votre territoire.
-    - Relancer le sript ``install.db``.
+    - Relancer le script ``install.db`` dans le répertoire de l'atlas.
+    
+Voir la documentation de GeoNature-atlas pour plus d'informations sur le sujet : https://github.com/PnEcrins/GeoNature-atlas/tree/master/docs.
+
+Le script install_all déploie toutes les applications de manière automatisée et globale. Mais il est important de consulter ensuite les présentations et documentations des différents outils pour comprendre leur fonctionnement et leurs interactions : 
+
+- `UsersHub <https://github.com/PnEcrins/UsersHub>`_
+- `TaxHub <https://github.com/PnX-SI/TaxHub>`_ 
+- `GeoNature-atlas <https://github.com/PnEcrins/GeoNature-atlas>`_
+
+Lisez aussi l'exemple suivant de déploiement global qui apporte de nombreuses informations complémentaires. 
