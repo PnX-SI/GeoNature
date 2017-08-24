@@ -94,4 +94,4 @@ class CorCountingContact(serializableModel):
     id_nomenclature_type_count = db.Column(db.Integer)
     count_min = db.Column(db.Integer)
     count_max = db.Column(db.Integer)
-    unique_id_sinp = db.Column(db.Unicode)
+    unique_id_sinp = db.Column(db.Unicode, default="SELECT ('http://ecrins-parcnational.fr/data/'::text || uuid_generate_v4())")
