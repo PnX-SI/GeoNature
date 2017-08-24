@@ -28,3 +28,11 @@ class BibOrganismes(serializableModel):
     tel_organisme = db.Column(db.Unicode)
     fax_organisme = db.Column(db.Unicode)
     email_organisme = db.Column(db.Unicode)
+
+
+class TRoles (serializableModel):
+    __tablename__ = 't_roles'
+    __table_args__ = {'schema':'utilisateurs'}
+    id_role = db.Column(db.Integer, primary_key=True)
+    nom_role = db.Column(db.Unicode)
+    prenom_role = db.Column(db.Unicode)
