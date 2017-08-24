@@ -1,3 +1,4 @@
-<md-select [placeholder]="placeholder" [(ngModel)]="selectedId">
-    <md-option *ngFor="let observer of observers" [value]="observer.id"> {{observer.name}} </md-option>
+<md-select [placeholder]="placeholder">
+    <md-option *ngFor="let observer of observers" [value]="observer.nom_complet"> {{observer.nom_complet}} </md-option>
 </md-select>
+{{idMenu}} {{placeHolder}}

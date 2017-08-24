@@ -8,13 +8,17 @@ import {FormService} from '../service/form.service';
 })
 export class ObserversComponent implements OnInit {
 
-  @Input()id_module: number;
-  observers:Array<any>;
+  @Input()idMenu: number;
+  @Input() placeholder: string;
+  observers: Array<any>;
 
-  constructor(private _formService:FormService) { }
+  constructor(private _formService: FormService) { }
 
   ngOnInit() {
-    //this.formService.getObservers(this.id_module);
+    this._formService.getObservers(this.idMenu)
+      .then(d => {
+        this.observers = d;
+      });
   }
 
 }

@@ -24,7 +24,8 @@ import { ContactFauneComponent } from './apps/contact-faune/contact-faune.compon
 import { ContactFloreComponent } from './apps/contact-flore/contact-flore.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { NomenclatureComponent } from './components/cf-form/nomenclature/nomenclature.component'
+import { NomenclatureComponent } from './components/cf-form/nomenclature/nomenclature.component';
+import { ObserversComponent } from './components/cf-form/observers/observers.component';
 
 // Service
 import { AppConfigs } from '../conf/app.configs'
@@ -53,7 +54,8 @@ export function HttpLoaderFactory(http: Http) {
     SigninComponent,
     CfFormComponent,
     NomenclatureComponent,
-    TaxonomyComponent
+    TaxonomyComponent,
+    ObserversComponent
   ],
   imports: [
     BrowserModule,
