@@ -22,6 +22,9 @@ def get_app():
     db.init_app(app)
 
 
+    from pypnusershub.routes import routes
+    app.register_blueprint(routes, url_prefix='/auth')
+
     from pypnnomenclature.routes import routes
     app.register_blueprint(routes, url_prefix='/nomenclatures')
 
