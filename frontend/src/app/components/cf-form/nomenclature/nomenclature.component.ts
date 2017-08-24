@@ -7,13 +7,13 @@ import {FormService} from '../service/form.service';
   styleUrls: ['./nomenclature.component.scss']
 })
 export class NomenclatureComponent implements OnInit {
-  labels:any[];
-  selectedId:number;
-  @Input() placeholder:string;
-  @Input() id_nomenclature:number;
-  @Input() regne:string;
-  @Input() group2_inpn:string;
-  @Input() lang:string;
+  labels: any[];
+  selectedId: number;
+  @Input() placeholder: string;
+  @Input() id_nomenclature: number;
+  @Input() regne: string;
+  @Input() group2_inpn: string;
+  @Input() lang: string;
   @Output('labelSelected') emitter = new EventEmitter<number>();
   constructor(private _formService:FormService) { }
 
