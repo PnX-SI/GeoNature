@@ -1,5 +1,11 @@
 {
-	"geometry": {"type": "Point", "coordinates": [6.5, 44.85]}, 
+	"geometry": {
+		"type": "Point", 
+		"coordinates": [
+			6.5, 
+			44.85
+		]
+	},  
 	"properties": {	 
 		"id_releve_contact": 1,
 		"id_dataset": 1,
