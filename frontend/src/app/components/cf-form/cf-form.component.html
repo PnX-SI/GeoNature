@@ -33,12 +33,12 @@
     </md-input-container>
 
     <md-input-container class="input-alignment-sm input-width-xxs">
-      <input [(ngModel)]="dataForm.altitudeMin" type="number" mdInput placeholder="Alt max">
+      <input [(ngModel)]="dataForm.altitudeMax" type="number" mdInput placeholder="Alt max">
       <md-icon mdSuffix>terrain</md-icon>
     </md-input-container>
 
     <md-input-container class="input-alignment-sm input-width-sm">
-      <input [(ngModel)]="dataForm.altitudeMax" type="text" mdInput placeholder="Commune">
+      <input [(ngModel)]="dataForm.municipality" type="text" mdInput placeholder="Commune">
       <md-icon mdSuffix>pin_drop</md-icon>
     </md-input-container>
 
@@ -50,21 +50,14 @@
     <!--Technique observation-->
 
 
-    <app-nomenclature placeholder="Technique d'observation" [idNomenclature]="100" [regne]="lala" [group2Inpn]="lala"> </app-nomenclature>
+    <app-nomenclature 
+      placeholder="Technique d'observation" 
+      [idNomenclature]="100" 
+      [regne]="lala" 
+      [group2Inpn]="lala"
+      (labelSelected)= "updateModelWithLabel($event)" >
+    </app-nomenclature>
 
-    <!--<div>
-      <md-input-container class="input-alignment-sm input-width-max">
-        <md-icon mdPrefix class="input-alignment-sm">mode_comment</md-icon>
-        <input type="text" mdInput placeholder="Contexte">
-      </md-input-container>
-    </div>
-
-    <div>
-      <md-input-container class="input-alignment-sm input-width-max">
-        <md-icon mdPrefix class="input-alignment-sm">comment</md-icon>
-        <input type="text" mdInput placeholder="Commentaire">
-      </md-input-container>
-    </div>-->
     <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
       <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Contexte & Commentaire
     </button>
@@ -149,7 +142,13 @@
           </md-option>
         </md-autocomplete> -->
 
-        <app-nomenclature placeholder="Méthode d'observation" [idNomenclature]="14" [regne]="lala" [group2Inpn]="lala"> </app-nomenclature> 
+        <app-nomenclature 
+          placeholder="Méthode d'observation"
+          [idNomenclature]="14" 
+          [regne]="lala" 
+          [group2Inpn]="lala"
+          (labelSelected)= "updateModelWithLabel($event)" > 
+        </app-nomenclature> 
       
 
       <!--Avancé-->
@@ -189,29 +188,43 @@
       <!--Dénombrement-->
       <div style="overflow-x:auto;"> <!-- scroll for table with small size -->
       <table  class="table table-hover font-sm table-responsive">
-        <thead>
-          <tr>
-            <th>Stade vie</th>
-            <th>Sexe</th>
-            <th>Type</th>
-            <th>Denom</th>
-            <th>Ajouter</th>
-          </tr>
-        </thead>
         <tbody class="table-hover">
           <tr>
             <td>
               <!-- <select class="input-sm" id="sel1">
                 <option>Type</option>
               </select> -->
-              <app-nomenclature placeholder="Stade de vie" [idNomenclature]="10" [regne]="lala" [group2Inpn]="lala"> </app-nomenclature>
+              <app-nomenclature
+                placeholder="Stade de vie" 
+                [idNomenclature]="10" 
+                [regne]="lala" 
+                [group2Inpn]="lala"
+                (labelSelected)= "updateModelWithLabel($event)" > 
+              </app-nomenclature>
             </td>
             <td>
-                <app-nomenclature placeholder="Sexe" [idNomenclature]="9" [regne]="lala" [group2Inpn]="lala"> </app-nomenclature>
+                <app-nomenclature 
+                  placeholder="Sexe" 
+                  [idNomenclature]="9" 
+                  [regne]="lala" 
+                  [group2Inpn]="lala"
+                  (labelSelected)= "updateModelWithLabel($event)" >
+                </app-nomenclature>
             </td>
             <td>
-                <app-nomenclature placeholder="Type" [idNomenclature]="21" [regne]="lala" [group2Inpn]="lala"> </app-nomenclature>  
+                <app-nomenclature
+                  placeholder="Type"
+                  [idNomenclature]="21"
+                  [regne]="lala"
+                  [group2Inpn]="lala"
+                  (labelSelected)= "updateModelWithLabel($event)" >
+                </app-nomenclature>  
             </td>
+            <td>
+              <md-input-container>
+                  <input type="number" mdInput placeholder="Nombre">
+                </md-input-container>
+            </td> 
             <td><button type="button" class="btn btn-default btn-sm">
                   <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </button>
