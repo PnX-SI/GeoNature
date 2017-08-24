@@ -89,7 +89,7 @@ get one releve
 						]
 					}
 				],
-				"digitiser": {"prenom_role": "test", "nom_role": "Administrateur", "id_role": 1}, 
+				"digitiser": {"prenom_role": "test", "nom_role": "Administrateur", "id_role": 1} 
 			}
 		}
 
