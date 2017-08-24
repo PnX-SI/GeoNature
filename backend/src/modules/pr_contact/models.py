@@ -7,13 +7,18 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
-
+from ...core.users.models import TRoles
 from pypnnomenclature.models import TNomenclatures
 
 from geoalchemy2 import Geometry
 
 db = SQLAlchemy()
 
+
+corRoleRelevesContact = db.Table('cor_role_releves_contact',db.MetaData(schema='pr_contact'),
+    db.Column('id_releve_contact', db.Integer, ForeignKey('pr_contact.t_releves_contact.id_releve_contact'), primary_key=True),
+    db.Column('id_role', db.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
+)
 
 class TRelevesContact(serializableGeoModel):
     __tablename__ = 't_releves_contact'
@@ -35,6 +40,13 @@ class TRelevesContact(serializableGeoModel):
     geom_4326 = db.Column(Geometry)
 
     occurrences = relationship("TOccurrencesContact", lazy='joined')
+
+    observer = db.relationship('TRoles',
+                               secondary=corRoleRelevesContact,
+                               primaryjoin=(corRoleRelevesContact.c.id_releve_contact == id_releve_contact),
+                               secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+                               foreign_keys =[corRoleRelevesContact.c.id_releve_contact,corRoleRelevesContact.c.id_role]
+                               )
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
