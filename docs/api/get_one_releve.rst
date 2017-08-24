@@ -97,7 +97,15 @@ get one releve
  
   ::  
   
-        observers = array[] = monobjet.properties.observers
+        coordinates = array[] = myobject.geometry.coordinates
+	long = array[] = myobject.geometry.coordinates[0]
+	lat = array[] = myobject.geometry.coordinates[1]
+	geometry_type = myobject.geometry.type
+	
+	altitude_min = monobjet.properties.altitude_min
+	date_max = monobjet.properties.date_max
+	
+	observers = array[] = monobjet.properties.observers
 	observateur1 = monobjet.properties.observer[0].id_role
 
 	occurrences = array[] = monobjet.properties.occurrences
