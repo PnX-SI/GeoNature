@@ -6,11 +6,11 @@ get one releve
 ================
 
 * url : ../pr_contact/releve/<id_releve_contact:interger>
-return json  :
+* return json :
  
   ::  
   
-        {
+	{
 			"geometry": 
 				{
 					"coordinates": [
@@ -98,11 +98,11 @@ return json  :
   ::  
   
         observers = array[] = monobjet.properties.observers
-		observateur1 = monobjet.properties.observer[0].id_role
+	observateur1 = monobjet.properties.observer[0].id_role
 
-		occurrences = array[] = monobjet.properties.occurrences
-		cd_nom = monobjet.properties.occurrences[0].cd_nom
+	occurrences = array[] = monobjet.properties.occurrences
+	cd_nom = monobjet.properties.occurrences[0].cd_nom
 
-		countings = array[] = monobjet.properties.occurrences.countingContact
-		sex = monobjet.properties.occurrences[0].countingContact[0].sex
-		count_min = monobjet.properties.occurrences[0].countingContact[0].count_min
+	countings = array[] = monobjet.properties.occurrences.countingContact
+	sex = monobjet.properties.occurrences[0].countingContact[0].sex
+	count_min = monobjet.properties.occurrences[0].countingContact[0].count_min
