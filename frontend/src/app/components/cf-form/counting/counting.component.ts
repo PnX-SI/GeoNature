@@ -11,7 +11,9 @@ import { Counting } from './counting.type';
 export class CountingComponent implements OnInit {
   counting: Counting;
   @Input() index: string;
+  @Input() length: number;
   @Output() countingAdded = new EventEmitter<any>();
+  @Output() countingRemoved = new EventEmitter<any>();
   @Output() inputAdded = new EventEmitter<any>();
   constructor() { }
 
@@ -31,5 +33,8 @@ export class CountingComponent implements OnInit {
 
   addCounting(): void {
     this.countingAdded.emit();
+  }
+  onRemoveCounting(index): void {
+    this.countingRemoved.emit(index);
   }
 }

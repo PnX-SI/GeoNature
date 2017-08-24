@@ -55,6 +55,12 @@
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           </button>
       </td>
+      <td *ngIf="index == length -1 && index != 0">
+        <button type="button" class="btn btn-default btn-sm" (click)="onRemoveCounting(index)">
+            <i class="material-icons">clear</i> Click
+        </button>
+      </td>
+
     </tr>
   <tbody>
 </table> <!-- End table -->
