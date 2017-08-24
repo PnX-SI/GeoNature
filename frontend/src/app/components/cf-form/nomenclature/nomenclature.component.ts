@@ -10,17 +10,17 @@ export class NomenclatureComponent implements OnInit {
   labels: any[];
   selectedId: number;
   @Input() placeholder: string;
-  @Input() id_nomenclature: number;
+  @Input() idNomenclature: number;
   @Input() regne: string;
-  @Input() group2_inpn: string;
+  @Input() group2Inpn: string;
   @Input() lang: string;
   @Output('labelSelected') emitter = new EventEmitter<number>();
   constructor(private _formService:FormService) { }
 
   ngOnInit() {
-     this._formService.getNomenclature(this.id_nomenclature, this.regne, this.group2_inpn).then( 
+     this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn).then(
       data => {
-        this.labels = data
+        this.labels = data;
       }
     );
   }
