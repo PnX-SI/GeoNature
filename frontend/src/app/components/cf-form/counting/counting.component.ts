@@ -14,22 +14,15 @@ export class CountingComponent implements OnInit {
   @Input() length: number;
   @Output() countingAdded = new EventEmitter<any>();
   @Output() countingRemoved = new EventEmitter<any>();
-  @Output() inputAdded = new EventEmitter<any>();
+  @Output() inputUpdated = new EventEmitter<any>();
   constructor() { }
 
   ngOnInit() {
     this.counting = new Counting();
   }
-  updateModelWithLabel(nomenclatureObj, index): void {
-    console.log(nomenclatureObj);
-    this.inputAdded.emit({nomenclatureObj, index});
-
+  updateCountingInput(key, value, index): void {
+    this.inputUpdated.emit({key, value, index});
   }
-  simpleUpdateModel(key, value, index): void {
-    const nomenclatureObj = {nomenclature: key, idLabel: value};
-    console.log(nomenclatureObj);
-    this.inputAdded.emit({nomenclatureObj, index});
-   }
 
   addCounting(): void {
     this.countingAdded.emit();

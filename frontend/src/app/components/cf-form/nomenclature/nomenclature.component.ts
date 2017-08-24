@@ -10,7 +10,6 @@ export class NomenclatureComponent implements OnInit {
   labels: any[];
   nomenclature: any;
   selectedId: number;
-  selectedLabel: any;
   @Input() placeholder: string;
   @Input() idNomenclature: number;
   @Input() regne: string;
@@ -29,7 +28,7 @@ export class NomenclatureComponent implements OnInit {
   }
 
   onLabelChange() {
-    this.labelSelected.emit({nomenclature: this.nomenclature, idLabel: this.selectedLabel});
+    this.labelSelected.emit(this.selectedId);
   }
 
 

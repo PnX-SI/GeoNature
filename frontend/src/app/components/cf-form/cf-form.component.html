@@ -55,7 +55,7 @@
       [idNomenclature]="100" 
       [regne]="lala" 
       [group2Inpn]="lala"
-      (labelSelected)= "updateModelWithLabel($event)" >
+      (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
     </app-nomenclature>
 
     <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
@@ -147,7 +147,7 @@
           [idNomenclature]="14" 
           [regne]="lala" 
           [group2Inpn]="lala"
-          (labelSelected)= "updateModelWithLabel($event)" > 
+          (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
         </app-nomenclature> 
       
 
@@ -190,7 +190,7 @@
         <app-counting 
           [index]="i"
           [length] = "nbCounting.length"
-          (inputAdded)="updateCountingModel($event)"
+          (inputUpdated)="updateCountingContact($event)"
           (countingAdded)="addCounting()"
           (countingRemoved)="removeCounting($event)">
         </app-counting>
@@ -259,4 +259,5 @@
 </md-card>
 
 
-DATA: {{dataForm | json}}
+occurence: {{occurenceContact | json}}
+countings: {{countingsContact | json}}
