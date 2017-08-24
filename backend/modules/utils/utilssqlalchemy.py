@@ -12,6 +12,8 @@ from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import Headers
 
+from sqlalchemy import inspect
+from sqlalchemy.orm import class_mapper, ColumnProperty, RelationshipProperty
 
 from geoalchemy2.shape import to_shape, from_shape
 from geojson import Feature
@@ -24,25 +26,29 @@ db = SQLAlchemy()
 
 class serializableModel(db.Model):
     __abstract__ = True
-
     def as_dict(self, recursif=False):
-        return {column.key: getattr(self, column.key)
-                if not isinstance(column.type, (db.Date, db.DateTime))
-                else str(getattr(self, column.key))
-                for column in self.__table__.columns  if not isinstance(column.type, Geometry)}
+        obj={}
+        for prop in class_mapper(self.__class__).iterate_properties:
+            if isinstance(prop, ColumnProperty)  :
+                column = self.__table__.columns[prop.key]
+                if isinstance(column.type, (db.Date, db.DateTime)) :
+                    obj[prop.key] =str(getattr(self, prop.key))
+                elif not isinstance(column.type, Geometry) :
+                    obj[prop.key] =getattr(self, prop.key)
+            if ((isinstance(prop,RelationshipProperty)) and (recursif)):
+                obj[prop.key] = [d.as_dict(recursif) for d in getattr(self, prop.key)]
 
-class serializableGeoModel(serializableModel, db.Model):
+        return obj
+
+class serializableGeoModel(serializableModel):
     __abstract__ = True
 
-    def as_geofeature(self, geoCol, idCol):
+    def as_geofeature(self, geoCol, idCol, recursif=False):
         geometry = to_shape(getattr(self, geoCol))
         feature = Feature(
                 id=getattr(self, idCol),
                 geometry=geometry,
-                properties= {column.key: getattr(self, column.key)
-                        if not isinstance(column.type, (db.Date, db.DateTime))
-                        else str(getattr(self, column.key))
-                        for column in self.__table__.columns  if not isinstance(column.type, Geometry) }
+                properties=self.as_dict(recursif)
             )
         return feature
 
