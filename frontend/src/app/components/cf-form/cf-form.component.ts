@@ -30,4 +30,10 @@ export class CfFormComponent implements OnInit {
     const index = this.dataForm.observers.indexOf(observer);
     this.dataForm.observers.split(index, 1);
   }
+
+  updateModelWithLabel(nomclatureObj) {
+    const nomenclatureName = nomclatureObj.nomenclature;
+    const idLabel = nomclatureObj.idLabel;
+    this.dataForm[nomenclatureName] = idLabel;
+  }
 }
