@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request
 
 from .models import VUserslistForallMenu
-from ..utils.utilssqlalchemy import json_resp
+from ...utils.utilssqlalchemy import json_resp
 
 routes = Blueprint('users', __name__)
 
