@@ -55,6 +55,7 @@ then
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> log/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' &>> log/install_db.log
 
 
     # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
