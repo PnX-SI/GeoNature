@@ -14,7 +14,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./cf-form.component.scss']
 })
 export class CfFormComponent implements OnInit {
-  nbCounting: Array<any>;
+  nbCounting: Array<string>;
   countings: Array<Counting>;
   stateCtrl: FormControl;
   dataForm: any;
@@ -34,7 +34,7 @@ export class CfFormComponent implements OnInit {
 
   deleteObservers(observer) {
     const index = this.dataForm.observers.indexOf(observer);
-    this.dataForm.observers.split(index, 1);
+    this.dataForm.observers.splice(index, 1);
   }
 
   // nomenclature component
@@ -55,5 +55,10 @@ export class CfFormComponent implements OnInit {
     // add a new counting component in the form
     this.dataForm.countings.push(new Counting());
     this.nbCounting.push('');
+  }
+  removeCounting(index) {
+    // remove the indexed component in the form
+    this.dataForm.countings.splice(index, 1);
+    this.nbCounting.splice(index, 1);
   }
 }

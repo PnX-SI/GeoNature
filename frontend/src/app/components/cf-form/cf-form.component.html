@@ -189,8 +189,10 @@
       <div *ngFor="let counting of nbCounting; let i = index">
         <app-counting 
           [index]="i"
+          [length] = "nbCounting.length"
           (inputAdded)="updateCountingModel($event)"
-          (countingAdded)="addCounting()">
+          (countingAdded)="addCounting()"
+          (countingRemoved)="removeCounting($event)">
         </app-counting>
       </div>
       <div class="form-group">
