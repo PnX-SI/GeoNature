@@ -15,50 +15,62 @@ import 'rxjs/add/operator/map';
 })
 export class CfFormComponent implements OnInit {
   nbCounting: Array<string>;
-  countings: Array<Counting>;
+  observationContact: any;
+  occurenceContact: Array<any>;
+  countingsContact: Array<any>;
   stateCtrl: FormControl;
   dataForm: any;
   constructor() {  }
+
   ngOnInit() {
+    this.occurenceContact = [{}];
+    this.countingsContact = [{}];
     this.nbCounting = [''];
     this.dataForm = {
+      geometry: {
+        type: '',
+        coordinates: []
+      },
+      properties: {
       observers : [],
-      countings: [new Counting()]
+      t_occurrences_contact: [{
+        cor_counting_contact: []
+      }]
+      }
     };
-  }
+  }// end ngOnInit
 
   // Observer component
   addObservers(observer) {
-    this.dataForm.observers.push(observer);
+    this.dataForm.properties.observers.push(observer);
   }
 
   deleteObservers(observer) {
     const index = this.dataForm.observers.indexOf(observer);
-    this.dataForm.observers.splice(index, 1);
+    this.dataForm.properties.observers.splice(index, 1);
   }
 
   // nomenclature component
-  updateModelWithLabel(nomclatureObj) {
-    const nomenclatureName = nomclatureObj.nomenclature.toLowerCase();
-    const idLabel = nomclatureObj.idLabel;
-    this.dataForm[nomenclatureName] = idLabel;
+  updateOccurenceContact(idLabel, fieldName) {
+    this.occurenceContact[0][fieldName] = idLabel;
   }
 
   // counting component
-  updateCountingModel(countingInput) {
-    // update the current changed Input
-    const nomenclatureName = countingInput.nomenclatureObj.nomenclature.toLowerCase();
-    const idLabel = countingInput.nomenclatureObj.idLabel;
-    this.dataForm.countings[countingInput.index][nomenclatureName] = idLabel;
+  updateCountingContact(countingInput) {
+    const index = countingInput.index;
+    const fieldName = countingInput.key;
+    const idLabel = countingInput.value;
+    this.countingsContact[index][fieldName] = idLabel;
   }
   addCounting() {
     // add a new counting component in the form
-    this.dataForm.countings.push(new Counting());
+    this.countingsContact.push(new Counting());
     this.nbCounting.push('');
   }
   removeCounting(index) {
     // remove the indexed component in the form
-    this.dataForm.countings.splice(index, 1);
+    this.countingsContact.splice(index, 1);
     this.nbCounting.splice(index, 1);
   }
+
 }

@@ -11,7 +11,7 @@
           [idNomenclature]="10" 
           [regne]="lala" 
           [group2Inpn]="lala"
-          (labelSelected)= "updateModelWithLabel($event, index)" > 
+          (labelSelected)= "updateCountingInput('id_nomenclature_life_stage', $event, index)" > 
         </app-nomenclature>
       </td>
       <td>
@@ -20,7 +20,7 @@
             [idNomenclature]="9" 
             [regne]="lala" 
             [group2Inpn]="lala"
-            (labelSelected)= "updateModelWithLabel($event, index)" >
+            (labelSelected)= "updateCountingInput('id_nomenclature_sex', $event, index)" >
           </app-nomenclature>
       </td>
       <td>
@@ -29,7 +29,7 @@
           [idNomenclature]="6" 
           [regne]="lala" 
           [group2Inpn]="lala"
-          (labelSelected)= "updateModelWithLabel($event, index)" >
+          (labelSelected)= "updateCountingInput('id_nomenclature_obj_count', $event, index )" >
         </app-nomenclature>
       </td>
       <td>
@@ -38,17 +38,17 @@
             [idNomenclature]="21"
             [regne]="lala"
             [group2Inpn]="lala"
-            (labelSelected)= "updateModelWithLabel($event, index)" >
+            (labelSelected)= "updateCountingInput('id_nomenclature_type_count', $event, index)" >
           </app-nomenclature>  
       </td>
       <td>
         <md-input-container>
-            <input [(ngModel)]="countMin" (change)="simpleUpdateModel('countMin', countMin, index)" type="number" mdInput placeholder="Nombre min">
+            <input [(ngModel)]="countMin" (change)="updateCountingInput('count_min', countMin, index)" type="number" mdInput placeholder="Nombre min">
           </md-input-container>
       </td>
       <td>
         <md-input-container>
-            <input [(ngModel)]="countMax" (change)="simpleUpdateModel('countMax', countMax, index)" type="number" mdInput placeholder="Nombre max">
+            <input [(ngModel)]="countMax" (change)="updateCountingInput('count_max', countMax, index)" type="number" mdInput placeholder="Nombre max">
           </md-input-container>
       </td>  
       <td><button type="button" class="btn btn-default btn-sm" (click)="addCounting()">
@@ -57,7 +57,7 @@
       </td>
       <td *ngIf="index == length -1 && index != 0">
         <button type="button" class="btn btn-default btn-sm" (click)="onRemoveCounting(index)">
-            <i class="material-icons">clear</i> Click
+            <i class="material-icons">clear</i>
         </button>
       </td>
 
