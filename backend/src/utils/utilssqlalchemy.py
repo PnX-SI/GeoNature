@@ -26,10 +26,10 @@ db = SQLAlchemy()
 
 class serializableModel(db.Model):
     __abstract__ = True
-    def as_dict(self, recursif=False):
+    def as_dict(self, recursif=False, columns=()):
         obj={}
         for prop in class_mapper(self.__class__).iterate_properties:
-            if isinstance(prop, ColumnProperty)  :
+            if (isinstance(prop, ColumnProperty) and (prop.key in columns) ) :
                 column = self.__table__.columns[prop.key]
                 if isinstance(column.type, (db.Date, db.DateTime)) :
                     obj[prop.key] =str(getattr(self, prop.key))
@@ -40,7 +40,6 @@ class serializableModel(db.Model):
                     obj[prop.key] = [d.as_dict(recursif) for d in getattr(self, prop.key)]
                 else :
                     obj[prop.key] = getattr(self, prop.key).as_dict(recursif)
-
 
         return obj
 
