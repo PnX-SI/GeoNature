@@ -12,31 +12,33 @@
        [idMenu]="9"
        placeholder="Observateur"
       (observerSelected)="addObservers($event)"
-      (observersDeleted)= "deleteObservers($event)" > </app-observers>
+      (observerDeleted)= "deleteObservers($event)" >
+    </app-observers>
 
     <md-input-container class="input-alignment-sm input-width-xs">
-      <input mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
+      <input [(ngModel)]="dataForm.dateMin" mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
       <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
     </md-input-container>
     <md-datepicker #pickerdatemin></md-datepicker>
+
     <md-input-container class="input-alignment-sm input-width-xs">
-      <input mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max">
+      <input [(ngModel)]="dataForm.dateMax" mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max">
       <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
     </md-input-container>
     <md-datepicker #pickerdatemax></md-datepicker>
 
     <md-input-container class="input-alignment-sm input-width-xxs">
-      <input type="text" mdInput placeholder="Alt min">
+      <input [(ngModel)]="dataForm.altitudeMin" type="number" mdInput placeholder="Alt min">
       <md-icon mdSuffix>terrain</md-icon>
     </md-input-container>
 
     <md-input-container class="input-alignment-sm input-width-xxs">
-      <input type="text" mdInput placeholder="Alt max">
+      <input [(ngModel)]="dataForm.altitudeMin" type="number" mdInput placeholder="Alt max">
       <md-icon mdSuffix>terrain</md-icon>
     </md-input-container>
 
     <md-input-container class="input-alignment-sm input-width-sm">
-      <input type="text" mdInput placeholder="Commune">
+      <input [(ngModel)]="dataForm.altitudeMax" type="text" mdInput placeholder="Commune">
       <md-icon mdSuffix>pin_drop</md-icon>
     </md-input-container>
 
@@ -280,3 +282,6 @@
 
 </md-card-content>
 </md-card>
+
+
+DATA: {{dataForm | json}}

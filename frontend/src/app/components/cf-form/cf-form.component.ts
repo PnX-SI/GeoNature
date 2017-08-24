@@ -15,10 +15,7 @@ export class CfFormComponent implements OnInit {
   dataForm: any;
   constructor() {
     this.dataForm = {
-      observers : [],
-      dateMin: '',
-      dateMax: '',
-      altitude: ''
+      observers : []
     };
   }
 
