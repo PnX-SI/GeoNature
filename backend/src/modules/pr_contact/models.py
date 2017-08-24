@@ -25,23 +25,22 @@ class TRelevesContact(serializableGeoModel):
     __table_args__ = {'schema':'pr_contact'}
     id_releve_contact = db.Column(db.Integer, primary_key=True)
     id_dataset = db.Column(db.Integer)
-    id_nomenclature_obs_technique = db.Column(db.Integer)
     id_digitiser = db.Column(db.Integer, ForeignKey('utilisateurs.t_roles.id_role'))
     date_min = db.Column(db.DateTime)
     date_max = db.Column(db.DateTime)
     altitude_min = db.Column(db.Integer)
     altitude_max = db.Column(db.Integer)
     meta_device_entry = db.Column(db.Unicode)
-    deleted = db.Column(db.Boolean)
+    deleted = db.Column(db.Boolean, default=False)
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
     comment = db.Column(db.Unicode)
     geom_local = db.Column(Geometry)
-    geom_4326 = db.Column(Geometry)
+    geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
 
     occurrences = relationship("TOccurrencesContact", lazy='joined')
 
-    observer = db.relationship(
+    observers = db.relationship(
         'TRoles',
         secondary=corRoleRelevesContact,
         primaryjoin=(corRoleRelevesContact.c.id_releve_contact == id_releve_contact),
@@ -60,12 +59,14 @@ class TOccurrencesContact(serializableModel):
     __table_args__ = {'schema':'pr_contact'}
     id_occurrence_contact = db.Column(db.Integer, primary_key=True)
     id_releve_contact = db.Column(db.Integer, ForeignKey('pr_contact.t_releves_contact.id_releve_contact'))
+    id_nomenclature_obs_technique = db.Column(db.Integer)
     id_nomenclature_obs_meth = db.Column(db.Integer)
     id_nomenclature_bio_condition = db.Column(db.Integer)
     id_nomenclature_bio_status = db.Column(db.Integer)
     id_nomenclature_naturalness = db.Column(db.Integer)
     id_nomenclature_exist_proof = db.Column(db.Integer)
     id_nomenclature_valid_status = db.Column(db.Integer)
+    id_nomenclature_diffusion_level = db.Column(db.Integer)
     id_validator = db.Column(db.Integer)
     determiner = db.Column(db.Unicode)
     determination_method = db.Column(db.Unicode)
@@ -93,3 +94,4 @@ class CorCountingContact(serializableModel):
     id_nomenclature_type_count = db.Column(db.Integer)
     count_min = db.Column(db.Integer)
     count_max = db.Column(db.Integer)
+    unique_id_sinp = db.Column(db.Unicode)
