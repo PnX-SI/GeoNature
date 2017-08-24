@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact
 from ...utils.utilssqlalchemy import json_resp
-
+from ...core.users.models import TRoles
 from pypnusershub import routes as fnauth
 
 from geojson import Feature, FeatureCollection, dumps
@@ -55,13 +55,16 @@ def insertOrUpdateOneReleve():
             occurrences_contact = data['properties']['t_occurrences_contact']
             data['properties'].pop('t_occurrences_contact')
         if data['properties']['observers']:
-            observers =  data['properties']['observers']
+            observersList =  data['properties']['observers']
             data['properties'].pop('observers')
 
+        observers = db.session.query(TRoles).filter(TRoles.id_role.in_(observersList)).all()
 
         releve = TRelevesContact(**data['properties'])
         shape = asShape(data['geometry'])
         releve.geom_4326 =from_shape(shape, srid=4326)
+        for o in observers :
+            releve.observers.append(o)
         try:
             if releve.id_releve_contact :
                 db.session.merge(releve)
