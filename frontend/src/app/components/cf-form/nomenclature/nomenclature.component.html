@@ -1,3 +1,16 @@
-<md-select [placeholder]="placeholder" [(ngModel)]="selectedId">
-  <md-option *ngFor="let label of labels" [value]="label.id"> {{label.name}} </md-option>
+<md-select [placeholder]="placeholder">
+  <md-option *ngFor="let label of labels" [value]="label.definition_fr"> {{label.definition_fr}} </md-option>
 </md-select>
+
+
+
+<!-- <md-input-container class="input-alignment-md input-width-lg ">
+    <input mdInput [placeholder]="placeholder" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
+    <md-icon mdSuffix>local_library</md-icon>
+  </md-input-container>
+
+  <md-autocomplete #auto2="mdAutocomplete" >
+    <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
+      {{ crit }}
+    </md-option>
+  </md-autocomplete> -->
