@@ -20,14 +20,13 @@ SET default_with_oids = false;
 CREATE TABLE t_releves_contact (
     id_releve_contact bigint NOT NULL,
     id_dataset integer NOT NULL,
-    id_nomenclature_obs_technique integer NOT NULL DEFAULT 343,
     id_digitiser integer,
     date_min timestamp without time zone DEFAULT now() NOT NULL,
     date_max timestamp without time zone DEFAULT now() NOT NULL,
     altitude_min integer,
     altitude_max integer,
-    meta_device_entry character varying(20),
     deleted boolean DEFAULT false NOT NULL,
+    meta_device_entry character varying(20),
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
     comment text,
@@ -54,6 +53,7 @@ SELECT pg_catalog.setval('t_releves_contact_id_releve_contact_seq', 1, false);
 CREATE TABLE t_occurrences_contact (
     id_occurrence_contact bigint NOT NULL,
     id_releve_contact bigint NOT NULL,
+    id_nomenclature_obs_technique integer NOT NULL DEFAULT 343,
     id_nomenclature_obs_meth integer DEFAULT 42,
     id_nomenclature_bio_condition integer NOT NULL DEFAULT 177,
     id_nomenclature_bio_status integer DEFAULT 30,
@@ -75,6 +75,7 @@ CREATE TABLE t_occurrences_contact (
     meta_update_date timestamp without time zone,
     comment character varying
 );
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_obs_technique IS 'Correspondance nomenclature INPN = technique_obs';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
@@ -153,14 +154,14 @@ ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT fk_t_releves_contact_t_datasets FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_contact
-    ADD CONSTRAINT fk_t_releves_contact_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT fk_t_releves_contact_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_t_releves_contact FOREIGN KEY (id_releve_contact) REFERENCES t_releves_contact(id_releve_contact) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY t_occurrences_contact
+    ADD CONSTRAINT fk_t_occurrences_contact_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
@@ -227,12 +228,12 @@ ALTER TABLE ONLY t_releves_contact
 ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT check_t_releves_contact_date_max CHECK (date_max >= date_min);
 
-ALTER TABLE t_releves_contact
-  ADD CONSTRAINT check_t_releves_contact_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100));
-
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT check_t_occurrences_contact_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom));
+
+ALTER TABLE t_occurrences_contact
+  ADD CONSTRAINT check_t_occurrences_contact_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100));
 
 ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_releves_contact_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
