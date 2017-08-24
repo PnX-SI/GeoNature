@@ -9,7 +9,7 @@ from ...utils.utilssqlalchemy import serializableModel
 db = SQLAlchemy()
 
 
-class VUserslistForallMenu(serializableModel, db.Model):
+class VUserslistForallMenu(serializableModel):
     __tablename__ = 'v_userslist_forall_menu'
     __table_args__ = {'schema':'utilisateurs'}
     id_role = db.Column(db.Integer, primary_key=True)
@@ -17,3 +17,14 @@ class VUserslistForallMenu(serializableModel, db.Model):
     prenom_role = db.Column(db.Unicode)
     nom_complet = db.Column(db.Unicode)
     id_menu = db.Column(db.Integer, primary_key=True)
+
+class BibOrganismes(serializableModel):
+    __tablename__ = 'bib_organismes'
+    __table_args__ = {'schema':'utilisateurs'}
+    id_organisme = db.Column(db.Integer, primary_key=True)
+    nom_organisme = db.Column(db.Unicode)
+    cp_organisme = db.Column(db.Unicode)
+    ville_organisme = db.Column(db.Unicode)
+    tel_organisme = db.Column(db.Unicode)
+    fax_organisme = db.Column(db.Unicode)
+    email_organisme = db.Column(db.Unicode)
