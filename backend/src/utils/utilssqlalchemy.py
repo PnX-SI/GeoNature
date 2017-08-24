@@ -30,12 +30,14 @@ class serializableModel(db.Model):
         obj={}
         if  (not columns) :
             columns = self.__table__.columns
-        print (columns)
+
         for prop in class_mapper(self.__class__).iterate_properties:
             if (isinstance(prop, ColumnProperty) and (prop.key in columns)) :
                 column = self.__table__.columns[prop.key]
                 if isinstance(column.type, (db.Date, db.DateTime)) :
                     obj[prop.key] =str(getattr(self, prop.key))
+                elif isinstance(column.type, db.Numeric) :
+                    obj[prop.key] =float(getattr(self, prop.key))
                 elif not isinstance(column.type, Geometry) :
                     obj[prop.key] =getattr(self, prop.key)
             if ((isinstance(prop,RelationshipProperty)) and (recursif)):
