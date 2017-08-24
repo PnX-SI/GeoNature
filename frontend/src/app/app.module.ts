@@ -26,9 +26,10 @@ import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { NomenclatureComponent } from './components/cf-form/nomenclature/nomenclature.component';
 import { ObserversComponent } from './components/cf-form/observers/observers.component';
+import { CountingComponent } from './components/cf-form/counting/counting.component';
 
 // Service
-import { AppConfigs } from '../conf/app.configs'
+import { AppConfigs } from '../conf/app.configs';
 import { MapService } from './services/map.service';
 import { NavService } from './services/nav.service';
 import { MapComponent } from './components/map/map.component';
@@ -55,7 +56,8 @@ export function HttpLoaderFactory(http: Http) {
     CfFormComponent,
     NomenclatureComponent,
     TaxonomyComponent,
-    ObserversComponent
+    ObserversComponent,
+    CountingComponent
   ],
   imports: [
     BrowserModule,
