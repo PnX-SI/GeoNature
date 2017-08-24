@@ -35,9 +35,5 @@ def getDatasets():
     data = q.all()
     results = []
     if data:
-        for n in data :
-            r = n.as_dict()
-            r['owner'] =  n.owner.as_dict()
-            results.append(r)
-        return results
+        return [d.as_dict(True) for d in data]
     return {'message': 'not found'}, 404

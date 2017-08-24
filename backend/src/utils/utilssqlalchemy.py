@@ -36,7 +36,11 @@ class serializableModel(db.Model):
                 elif not isinstance(column.type, Geometry) :
                     obj[prop.key] =getattr(self, prop.key)
             if ((isinstance(prop,RelationshipProperty)) and (recursif)):
-                obj[prop.key] = [d.as_dict(recursif) for d in getattr(self, prop.key)]
+                if hasattr( getattr(self, prop.key), '__iter__') :
+                    obj[prop.key] = [d.as_dict(recursif) for d in getattr(self, prop.key)]
+                else :
+                    obj[prop.key] = getattr(self, prop.key).as_dict(recursif)
+
 
         return obj
 
