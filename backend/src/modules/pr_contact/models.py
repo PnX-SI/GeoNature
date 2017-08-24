@@ -6,7 +6,7 @@ from __future__ import (unicode_literals, print_function,
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from ..utils.utilssqlalchemy import serializableModel, serializableGeoModel
+from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
 
 from pypnnomenclature.models import TNomenclatures
 

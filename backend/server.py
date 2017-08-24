@@ -25,10 +25,10 @@ def get_app():
     from pypnnomenclature.routes import routes
     app.register_blueprint(routes, url_prefix='/nomenclatures')
 
-    from modules.users.routes import routes
+    from src.users.routes import routes
     app.register_blueprint(routes, url_prefix='/users')
 
-    from modules.pr_contact.routes import routes
+    from src.modules.pr_contact.routes import routes
     app.register_blueprint(routes, url_prefix='/pr_contact')
 
 
