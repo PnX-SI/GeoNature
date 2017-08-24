@@ -38,12 +38,11 @@ def serializeQuery( data, columnDef):
     rows = [
         {c['name'] : getattr(row, c['name']) for c in columnDef if getattr(row, c['name']) != None } for row in data
     ]
-    print(rows)
     return rows
 
 def serializeQueryOneResult( row, columnDef):
     row = {c['name'] : getattr(row, c['name']) for c in columnDef if getattr(row, c['name']) != None }
-return row
+    return row
 
 class serializableModel(db.Model):
     """
