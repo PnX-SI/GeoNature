@@ -4,7 +4,7 @@ from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
 from flask_sqlalchemy import SQLAlchemy
-from ..utils.utilssqlalchemy import serializableModel
+from ...utils.utilssqlalchemy import serializableModel
 
 db = SQLAlchemy()
 
