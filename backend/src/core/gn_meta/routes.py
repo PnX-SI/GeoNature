@@ -33,6 +33,11 @@ def getProgrammesWithDatasets():
 def getDatasets():
     q = TDatasets.query
     data = q.all()
+    results = []
     if data:
-        return ([n.as_dict() for n in data])
+        for n in data :
+            r = n.as_dict()
+            r['owner'] =  n.owner.as_dict()
+            results.append(r)
+        return results
     return {'message': 'not found'}, 404
