@@ -28,8 +28,11 @@ class serializableModel(db.Model):
     __abstract__ = True
     def as_dict(self, recursif=False, columns=()):
         obj={}
+        if  (not columns) :
+            columns = self.__table__.columns
+        print (columns)
         for prop in class_mapper(self.__class__).iterate_properties:
-            if (isinstance(prop, ColumnProperty) and (prop.key in columns) ) :
+            if (isinstance(prop, ColumnProperty) and (prop.key in columns)) :
                 column = self.__table__.columns[prop.key]
                 if isinstance(column.type, (db.Date, db.DateTime)) :
                     obj[prop.key] =str(getattr(self, prop.key))
