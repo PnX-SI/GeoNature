@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {FormService} from '../service/form.service';
 
 @Component({
@@ -10,15 +10,28 @@ export class ObserversComponent implements OnInit {
 
   @Input()idMenu: number;
   @Input() placeholder: string;
-  observers: Array<any>;
+  @Output() observerSelected = new EventEmitter<string>();
+  @Output() obseverDeleted = new EventEmitter<string>();
+  inputObservers: Array<any>;
+  selectedObserver: string;
+  selectedObservers: Array<string>;
 
   constructor(private _formService: FormService) { }
 
   ngOnInit() {
+    this.selectedObservers = [];
     this._formService.getObservers(this.idMenu)
       .then(d => {
-        this.observers = d;
+        this.inputObservers = d;
       });
   }
 
+  onAddObserver() {
+    this.observerSelected.emit(this.selectedObserver);
+  }
+
+  onDeleteObserver() {
+    // TODO
+    // this.obseverDeleted.emit(observer);
+  }
 }

@@ -8,7 +8,11 @@
       <md-icon mdSuffix>supervisor_account</md-icon>
     </md-input-container> -->
 
-    <app-observers [idMenu]="9" placeholder="Observateur" > </app-observers>
+    <app-observers
+       [idMenu]="9"
+       placeholder="Observateur"
+      (observerSelected)="addObservers($event)"
+      (observersDeleted)= "deleteObservers($event)" > </app-observers>
 
     <md-input-container class="input-alignment-sm input-width-xs">
       <input mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
