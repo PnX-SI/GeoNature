@@ -1,5 +1,4 @@
 import { Component, OnInit, Inject } from '@angular/core';
-// import {APP_CONFIG , CONFIG, AppConfig} from 'conf/app.config';
 import { AppConfigs } from '../../../conf/app.configs'
 import { NavService } from '../../services/nav.service';
 import { MapService } from '../../services/map.service';
@@ -59,7 +58,6 @@ export class AccueilComponent implements OnInit {
   constructor(private mapService: MapService, private _navService: NavService) {
     _navService.setAppName('Accueil');
     this.appName =  AppConfigs.appName;
-
   }
 
   ngOnInit() {

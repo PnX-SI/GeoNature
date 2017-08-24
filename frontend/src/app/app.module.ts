@@ -24,7 +24,7 @@ import { ContactFauneComponent } from './apps/contact-faune/contact-faune.compon
 import { ContactFloreComponent } from './apps/contact-flore/contact-flore.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import {NomenclatureComponent} from './components/cf-form/nomenclature/nomenclature.component'
+import { NomenclatureComponent } from './components/cf-form/nomenclature/nomenclature.component'
 
 // Service
 import { AppConfigs } from '../conf/app.configs'
@@ -78,7 +78,7 @@ export function HttpLoaderFactory(http: Http) {
         }),
     ToastrModule.forRoot()
   ],
-  providers: [AppConfigs, NavService, MapService, AuthService, AuthGuard, FormService],
+  providers: [NavService, MapService, AuthService, AuthGuard, FormService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
