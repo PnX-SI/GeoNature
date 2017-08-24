@@ -32,7 +32,7 @@ export class CfFormComponent implements OnInit {
   }
 
   updateModelWithLabel(nomclatureObj) {
-    const nomenclatureName = nomclatureObj.nomenclature;
+    const nomenclatureName = nomclatureObj.nomenclature.toLowerCase();
     const idLabel = nomclatureObj.idLabel;
     this.dataForm[nomenclatureName] = idLabel;
   }
