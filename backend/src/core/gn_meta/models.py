@@ -47,5 +47,7 @@ class TDatasets(serializableModel):
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
-    owner = relationship("BibOrganismes", foreign_keys=[id_organisme_owner])
-    producer = relationship("BibOrganismes", foreign_keys=[id_organisme_producer])
+    organism_producer = relationship("BibOrganismes", foreign_keys=[id_organisme_producer])
+    organism_owner = relationship("BibOrganismes", foreign_keys=[id_organisme_owner])
+    organism_administrator = relationship("BibOrganismes", foreign_keys=[id_organisme_administrator])
+    organism_funder = relationship("BibOrganismes", foreign_keys=[id_organisme_funder])
