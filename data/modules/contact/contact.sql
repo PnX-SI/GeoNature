@@ -102,7 +102,8 @@ CREATE TABLE cor_counting_contact (
     id_nomenclature_obj_count integer NOT NULL DEFAULT 166,
     id_nomenclature_type_count integer DEFAULT 107,
     count_min integer,
-    count_max integer
+    count_max integer,
+    unique_id_sinp text NOT NULL DEFAULT 'http://ecrins-parcnational.fr/data/'||public.uuid_generate_v4()
 );
 CREATE SEQUENCE cor_counting_contact_id_counting_contact_seq
     START WITH 1
