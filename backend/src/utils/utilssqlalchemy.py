@@ -23,10 +23,41 @@ from geoalchemy2 import Geometry
 db = SQLAlchemy()
 
 
+class GenericTable:
+    def __init__(self, tableName, schemaName):
+        engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
+        meta = MetaData(bind=engine)
+        meta.reflect(schema=schemaName, views=True)
+        self.tableDef = meta.tables[tableName]
+        self.columns = [column.name for column in self.tableDef.columns]
+
+    def serialize(self, data):
+        return serializeQuery(data, self.columns)
+
+def serializeQuery( data, columnDef):
+    rows = [
+        {c['name'] : getattr(row, c['name']) for c in columnDef if getattr(row, c['name']) != None } for row in data
+    ]
+    print(rows)
+    return rows
+
+def serializeQueryOneResult( row, columnDef):
+    row = {c['name'] : getattr(row, c['name']) for c in columnDef if getattr(row, c['name']) != None }
+return row
 
 class serializableModel(db.Model):
+    """
+    Classe qui ajoute une méthode de transformation des données de l'objet en tableau json
+    Paramètres :
+       -
+    """
     __abstract__ = True
     def as_dict(self, recursif=False, columns=()):
+        """
+        Méthode qui renvoie les données de l'objet sous la forme d'un dictionnaire
+        :param recursif: Spécifie si on veut que les sous objet (relationship) soit égalament sérialisé
+        :param columns: liste des columns qui doivent être prisent en compte
+        """
         obj={}
         if  (not columns) :
             columns = self.__table__.columns
@@ -51,12 +82,19 @@ class serializableModel(db.Model):
 class serializableGeoModel(serializableModel):
     __abstract__ = True
 
-    def as_geofeature(self, geoCol, idCol, recursif=False):
+    def as_geofeature(self, geoCol, idCol, recursif=False, columns=()):
+        """
+        Méthode qui renvoie les données de l'objet sous la forme d'une Feature geojson
+        :param geoCol : Nom de la colonne géométrie
+        :param idCol : Nom de la colonne primary key
+        :param recursif: Spécifie si on veut que les sous objet (relationship) soit égalament sérialisé
+        :param columns: liste des columns qui doivent être prisent en compte
+        """
         geometry = to_shape(getattr(self, geoCol))
         feature = Feature(
                 id=getattr(self, idCol),
                 geometry=geometry,
-                properties=self.as_dict(recursif)
+                properties=self.as_dict(recursif, columns)
             )
         return feature
 
