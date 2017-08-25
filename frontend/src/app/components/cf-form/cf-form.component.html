@@ -42,13 +42,13 @@
       <md-icon mdSuffix>pin_drop</md-icon>
     </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-sm">
+    <!-- <md-input-container class="input-alignment-sm input-width-sm">
       <input type="text" mdInput placeholder="Lot de donneés">
       <md-icon mdSuffix>folder_open</md-icon>
-    </md-input-container>
-
-    <!--Technique observation-->
-
+    </md-input-container> -->
+    <md-select placeholder="Lot de données">
+      <md-option *ngFor="let dataSet of dataSets" [value]="dataSet">{{ dataSet }}</md-option>
+   </md-select>
 
     <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
       <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire
@@ -65,15 +65,11 @@
     </div>
   </md-card> <!--END releve Pannel-->
 
+  <!-- Occurence taxon  -->
   <md-card class="cf-card-option padding-md"> <!--Pannel Taxon observé-->
     <h4> <b> <u>Taxon observé</u>: </b></h4>
         <div class="collapse" id="collapseExample">
           <div class="well well-sm well-margin">
-            <!--<md-select placeholder="Taxonomiques" class="input-alignment input-width-sm">
-              <md-option *ngFor="let taxo of taxonomiques" [value]="taxo.value">
-                {{ taxo.viewValue }}
-              </md-option>
-            </md-select>-->
             <div >
               <label class="font-sm">Groupe:</label>
               <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
@@ -87,23 +83,11 @@
           </div>
         </div>
       <div> <!--Auto complete noms de taxon-->
-        <!-- <md-input-container class="input-width-lg">
-          <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="stateCtrl">
-          <md-icon mdSuffix>pets</md-icon>
-        </md-input-container>
 
-        <md-autocomplete #auto="mdAutocomplete">
-          <md-option *ngFor="let taxon of filteredTaxons | async" [value]="taxon">
-            {{ taxon }}
-          </md-option>
-        </md-autocomplete> -->
         <app-taxonomy></app-taxonomy>
         <!--END Auto complete-->
 
-        <!-- Btn filter options taxon-->
-<!--         <button class="input-alignment" md-raised-button data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          <md-icon>filter_list</md-icon>
-        </button> -->
+
         <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
           <md-icon>filter_list</md-icon>
         </button>
@@ -114,23 +98,11 @@
           </md-option>
         </md-autocomplete>
 
-        <!--Method observation: VOIR POUR md-autocomplete-->
-        <!-- <md-input-container class="input-alignment-md input-width-lg ">
-          <input mdInput placeholder="Methode observation" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
-          <md-icon mdSuffix>local_library</md-icon>
-        </md-input-container>
-
-        <md-autocomplete #auto2="mdAutocomplete" >
-          <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
-            {{ crit }}
-          </md-option>
-        </md-autocomplete> -->
-
         <app-nomenclature 
           placeholder="Méthode d'observation"
           [idNomenclature]="14" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
+          [regne]="formService.taxon.regne" 
+          [group2Inpn]="formService.taxon.group2_inpn"
           (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
         </app-nomenclature> 
 
@@ -147,7 +119,7 @@
         <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
           <md-icon mdPrefix class="font-md">settings</md-icon> Avancé
         </button>
-      </div> <!--END Auto complete-->
+      </div> 
       <div class="collapse" id="collapseAvance">
         <div class="well well-sm">
             <app-nomenclature 
@@ -206,6 +178,10 @@
       </app-nomenclature>
 
         </div>
+        <div class="form-group">
+            <label for="commentaire" class="font-sm">Commentaire:</label>
+            <textarea class="form-control" rows="2" id="commentaire"></textarea>
+          </div>
       </div>
 
       <h5> <b> <u>Dénombrement</u>: </b></h5>
@@ -219,69 +195,16 @@
           (countingRemoved)="removeCounting($event)">
         </app-counting>
       </div>
-      <div class="form-group">
-        <label for="commentaire" class="font-sm">Commentaire:</label>
-        <textarea class="form-control" rows="2" id="commentaire"></textarea>
-      </div>
 
-  </md-card> <!--END Pannel-->
+      <md-card-actions class="card-action"> <!--Btn Valider taxon-->
+        <button md-raised-button class="btn-form" (click)="addCurrentTaxon()" >Ajouter un taxon</button>
+      </md-card-actions> <!--END Btn-->
+  </md-card> <!--END OCCURENCE PANEL-->
 
-  <md-card-actions class="card-action"> <!--Btn Valider taxon-->
-    <button md-raised-button class="btn-form">Valider taxon</button>
-  </md-card-actions> <!--END Btn-->
 
-  <md-card class="cf-card-table padding-md"> <!--Pannel Taxons saisis-->
-    <h4> <b> <u>Taxons saisis</u>: </b></h4>
-    <div style="overflow-x:auto;"> <!-- scroll for table with small size -->
-    <table  class="table table-hover">
-      <thead>
-        <tr>
-          <th>Num</th>
-          <th>Observateur</th>
-          <th>Taxon</th>
-          <th>Modif</th>
-          <th>Suppr</th>
-        </tr>
-      </thead>
-      <tbody class="table-hover">
-        <tr>
-          <td>1</td>
-          <td>admin</td>
-          <td>Bouquetin des Alpes</td>
-          <td><button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-              </button>
-          </td>
-          <td><button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-              </button>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>geonatuser</td>
-          <td>Campagnol amphibie</td>
-          <td><button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-              </button>
-          </td>
-          <td><button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-              </button>
-          </td>
-        </tr>
-      <tbody>
-    </table>
-    </div> <!-- END scroll table -->
-  </md-card> <!--END Pannel-->
+
+  <app-taxons-list [list]="taxonList"> </app-taxons-list>
 
   <md-card-actions class="card-action"> <!--Btn Valider taxon-->
-    <button md-raised-button class="btn-form">Ajouter taxons</button>
+    <button md-raised-button class="btn-form" color="primary">Valider le relevé</button>
   </md-card-actions> <!--END Btn-->
-
-</md-card-content>
-</md-card>
-
-observation: {{observationContact | json}}
-occurence: {{occurenceContact | json}}
-countings: {{countingsContact | json}}
