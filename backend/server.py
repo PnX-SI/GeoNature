@@ -32,7 +32,7 @@ def get_app():
     app.register_blueprint(routes, url_prefix='/users')
 
     from src.modules.pr_contact.routes import routes
-    app.register_blueprint(routes, url_prefix='/pr_contact')
+    app.register_blueprint(routes, url_prefix='/contact')
 
     from src.core.gn_meta.routes import routes
     app.register_blueprint(routes, url_prefix='/meta')
