@@ -23,6 +23,7 @@ export class CfFormComponent implements OnInit {
   constructor() {  }
 
   ngOnInit() {
+    this.observationContact = {'observers': []};
     this.occurenceContact = [{}];
     this.countingsContact = [{}];
     this.nbCounting = [''];
@@ -42,7 +43,7 @@ export class CfFormComponent implements OnInit {
 
   // Observer component
   addObservers(observer) {
-    this.dataForm.properties.observers.push(observer);
+    this.observationContact.observers.push(observer);
   }
 
   deleteObservers(observer) {
