@@ -97,7 +97,13 @@
             {{ crit }}
           </md-option>
         </md-autocomplete>
-
+        <app-nomenclature 
+          placeholder="Technique d'observation" 
+          [idNomenclature]="100" 
+          [regne]="formService.taxon.regne" 
+          [group2Inpn]="formService.taxon.group2_inpn"
+          (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
+        </app-nomenclature>
         <app-nomenclature 
           placeholder="Méthode d'observation"
           [idNomenclature]="14" 
@@ -105,14 +111,6 @@
           [group2Inpn]="formService.taxon.group2_inpn"
           (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
         </app-nomenclature> 
-
-        <app-nomenclature 
-          placeholder="Technique d'observation" 
-          [idNomenclature]="100" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
-          (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
-      </app-nomenclature>
       
 
       <!--Avancé-->
@@ -125,32 +123,32 @@
             <app-nomenclature 
               placeholder="Etat biologique"
               [idNomenclature]="7" 
-              [regne]="lala" 
-              [group2Inpn]="lala"
+              [regne]="formService.taxon.regne" 
+              [group2Inpn]="formService.taxon.group2_inpn"
               (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_condition' )" > 
           </app-nomenclature> 
 
           <app-nomenclature 
             placeholder="Statut biologique"
             [idNomenclature]="13" 
-            [regne]="lala" 
-            [group2Inpn]="lala"
+            [regne]="formService.taxon.regne" 
+            [group2Inpn]="formService.taxon.group2_inpn"
             (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_status' )" > 
         </app-nomenclature>           
 
           <app-nomenclature 
             placeholder="Naturalité"
             [idNomenclature]="8" 
-            [regne]="lala" 
-            [group2Inpn]="lala"
+            [regne]="formService.taxon.regne" 
+            [group2Inpn]="formService.taxon.group2_inpn"
             (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_naturalness' )" > 
         </app-nomenclature>             
 
         <app-nomenclature 
           placeholder="Méthode determ"
           [idNomenclature]="" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
+          [regne]="formService.taxon.regne" 
+          [group2Inpn]="formService.taxon.group2_inpn"
           (labelSelected)= "updateOccurenceContact($event, 'determination_method' )" > 
         </app-nomenclature>
 
@@ -165,15 +163,15 @@
         <app-nomenclature 
           placeholder="Preuve numérique"
           [idNomenclature]="" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
+          [regne]="formService.taxon.regne" 
+          [group2Inpn]="formService.taxon.group2_inpn"
           (labelSelected)= "updateOccurenceContact($event, 'digital_proof' )" > 
         </app-nomenclature>
         <app-nomenclature 
           placeholder="Preuve non numérique"
           [idNomenclature]="" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
+          [regne]="formService.taxon.regne" 
+          [group2Inpn]="formService.taxon.group2_inpn"
           (labelSelected)= "updateOccurenceContact($event, 'non_digital_proof' )" > 
       </app-nomenclature>
 
@@ -203,8 +201,12 @@
 
 
 
-  <app-taxons-list [list]="taxonList"> </app-taxons-list>
+  <app-taxons-list [list]="taxonList" (taxonRemoved)="removeOneOccurenceTaxon()">  </app-taxons-list>
 
   <md-card-actions class="card-action"> <!--Btn Valider taxon-->
     <button md-raised-button class="btn-form" color="primary">Valider le relevé</button>
   </md-card-actions> <!--END Btn-->
+
+
+
+  <h5> Occurence List  </h5> {{occurenceContact |json}} 
