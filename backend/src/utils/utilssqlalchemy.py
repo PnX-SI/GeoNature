@@ -15,6 +15,8 @@ from werkzeug.datastructures import Headers
 from sqlalchemy import inspect
 from sqlalchemy.orm import class_mapper, ColumnProperty, RelationshipProperty
 
+from sqlalchemy.dialects.postgresql import UUID
+
 from geoalchemy2.shape import to_shape, from_shape
 from geojson import Feature
 
@@ -64,7 +66,7 @@ class serializableModel(db.Model):
         for prop in class_mapper(self.__class__).iterate_properties:
             if (isinstance(prop, ColumnProperty) and (prop.key in columns)) :
                 column = self.__table__.columns[prop.key]
-                if isinstance(column.type, (db.Date, db.DateTime)) :
+                if isinstance(column.type, (db.Date, db.DateTime, UUID)) :
                     obj[prop.key] =str(getattr(self, prop.key))
                 elif isinstance(column.type, db.Numeric) :
                     obj[prop.key] =float(getattr(self, prop.key))
@@ -74,7 +76,8 @@ class serializableModel(db.Model):
                 if hasattr( getattr(self, prop.key), '__iter__') :
                     obj[prop.key] = [d.as_dict(recursif) for d in getattr(self, prop.key)]
                 else :
-                    obj[prop.key] = getattr(self, prop.key).as_dict(recursif)
+                    if (getattr(getattr(self, prop.key), "as_dict", None)) :
+                        obj[prop.key] = getattr(self, prop.key).as_dict(recursif)
 
         return obj
 

@@ -12,7 +12,7 @@ export class MapComponent implements OnInit {
   searchLocation: string;
   constructor(public mapService: MapService) {
     this.mapService.editing = false;
-    this.mapService.removing = false;
+    // this.mapService.removing = false;
     this.searchLocation = '';
   }
 
