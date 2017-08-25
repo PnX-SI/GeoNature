@@ -3,10 +3,10 @@
     <md-card-title  class="map-header">
 
       <md-input-container>
-        <input mdInput placeholder="Search location" id="place-input" [(ngModel)]="searchLocation" (keyup.enter)="gotoLocation()">
+        <input mdInput placeholder="{{ 'Map.SearchLocation' | translate }}" id="place-input" [(ngModel)]="searchLocation" (keyup.enter)="gotoLocation()">
       </md-input-container>
       
-      <button md-icon-button mdTooltip="Add location" class="margin-right-sm" id="add-marker"
+      <button md-icon-button mdTooltip="{{ 'Map.AddPoint' | translate }}" class="margin-right-sm" id="add-marker"
               (click)="mapService.toggleEditing()" [class.btn-map-clicked]="mapService.editing">
         <md-icon>add_location</md-icon>
       </button>
