@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import TProgrammes, TDatasets
+from .models import TPrograms, TDatasets
 from ...utils.utilssqlalchemy import json_resp
 
 db = SQLAlchemy()
@@ -13,28 +13,28 @@ db = SQLAlchemy()
 routes = Blueprint('gn_meta', __name__)
 
 
-@routes.route('/list/programmes', methods=['GET'])
+@routes.route('/list/programs', methods=['GET'])
 @json_resp
-def getProgrammesList():
-    q = TProgrammes.query
+def getProgramsList():
+    q = TPrograms.query
     data = q.all()
     if data:
-         return [d.as_dict(columns=('id_programme','programme_desc')) for d in data]
+         return [d.as_dict(columns=('id_program','program_desc')) for d in data]
     return {'message': 'not found'}, 404
 
-@routes.route('/programmes', methods=['GET'])
+@routes.route('/programs', methods=['GET'])
 @json_resp
-def getProgrammes():
-    q = TProgrammes.query
+def getPrograms():
+    q = TPrograms.query
     data = q.all()
     if data:
         return ([n.as_dict(False) for n in data])
     return {'message': 'not found'}, 404
 
-@routes.route('/programmeswithdatasets', methods=['GET'])
+@routes.route('/programswithdatasets', methods=['GET'])
 @json_resp
-def getProgrammesWithDatasets():
-    q = TProgrammes.query
+def getProgramsWithDatasets():
+    q = TPrograms.query
     data = q.all()
     if data:
         return ([n.as_dict(True) for n in data])

@@ -14,7 +14,18 @@ SET default_with_oids = false;
 
 ----------
 --TABLES--
+CREATE TABLE t_parameters (
+    id_parameter integer NOT NULL,
+    id_organism integer,
+    parameter_name character varying(100) NOT NULL,
+    parameter_desc text,
+    parameter_value text NOT NULL,
+    parameter_extra_value character varying(255)
+);
+COMMENT ON TABLE t_parameters IS 'Allow to manage content configuration depending on organism or not (CRUD depending on privileges).';
 ----------
+
+
 CREATE TABLE cor_role_privilege_entity (
     id_role integer NOT NULL,
     id_privilege integer NOT NULL,
@@ -35,11 +46,11 @@ CREATE TABLE t_datasets (
     id_dataset integer NOT NULL,
     dataset_name character varying(255),
     dataset_desc text,
-    id_programme integer NOT NULL,
-    id_organisme_owner integer NOT NULL,
-    id_organisme_producer integer NOT NULL,
-    id_organisme_administrator integer NOT NULL,
-    id_organisme_funder integer NOT NULL,
+    id_program integer NOT NULL,
+    id_organism_owner integer NOT NULL,
+    id_organism_producer integer NOT NULL,
+    id_organism_administrator integer NOT NULL,
+    id_organism_funder integer NOT NULL,
     public_data boolean DEFAULT true NOT NULL,
     default_validity boolean,
     meta_create_date timestamp without time zone,
@@ -48,18 +59,21 @@ CREATE TABLE t_datasets (
 COMMENT ON TABLE t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
 
 
-CREATE TABLE t_programmes (
-    id_programme integer NOT NULL,
-    programme_name character varying(255),
-    programme_desc text,
+CREATE TABLE t_programs (
+    id_program integer NOT NULL,
+    program_name character varying(255),
+    program_desc text,
     active boolean
 );
-COMMENT ON TABLE t_programmes IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
+COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
 
 
 ---------------
 --PRIMARY KEY--
 ---------------
+ALTER TABLE ONLY t_parameters
+    ADD CONSTRAINT pk_t_parameters PRIMARY KEY (id_parameter);
+
 ALTER TABLE ONLY cor_role_privilege_entity
     ADD CONSTRAINT pk_cor_role_privilege_entity PRIMARY KEY (id_role, id_privilege, entity_name);
 
@@ -69,48 +83,56 @@ ALTER TABLE ONLY cor_role_dataset_application
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
 
-ALTER TABLE ONLY t_programmes
-    ADD CONSTRAINT pk_t_programmes PRIMARY KEY (id_programme);
+ALTER TABLE ONLY t_programs
+    ADD CONSTRAINT pk_t_programs PRIMARY KEY (id_program);
 
 
 ---------------
 --FOREIGN KEY--
 ---------------
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT fk_cor_role_droit_application_id_privilege FOREIGN KEY (id_privilege) REFERENCES utilisateurs.bib_droits(id_droit) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY t_parameters
+    ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT fk_cor_role_privilege_entity_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_droit_application_id_privilege FOREIGN KEY (id_privilege) REFERENCES utilisateurs.bib_droits(id_droit) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_role_privilege_entity
+    ADD CONSTRAINT fk_cor_role_privilege_entity_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_droit_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_droit_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_financeur FOREIGN KEY (id_organisme_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_financeur FOREIGN KEY (id_organism_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_gestionnaire FOREIGN KEY (id_organisme_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_gestionnaire FOREIGN KEY (id_organism_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_producteur FOREIGN KEY (id_organisme_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_producteur FOREIGN KEY (id_organism_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_proprietaire FOREIGN KEY (id_organisme_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_proprietaire FOREIGN KEY (id_organism_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_t_programmes FOREIGN KEY (id_programme) REFERENCES t_programmes(id_programme) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE NO ACTION;
 
 
 ---------
 --DATAS--
 ---------
-INSERT INTO t_programmes VALUES (1, 'faune', 'programme faune', true);
-INSERT INTO t_programmes VALUES (2, 'flore', 'programme flore', true);
+INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
+INSERT INTO t_programs VALUES (2, 'test', 'test', false);
+
+INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
+(1,NULL,'taxref_version','version du référentiel taxonomique','Taxref V9.0',NULL)
+,(2,2,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
+,(3,1,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL);
