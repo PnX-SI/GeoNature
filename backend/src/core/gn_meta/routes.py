@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import TPrograms, TDatasets
+from .models import TPrograms, TDatasets, TParameters
 from ...utils.utilssqlalchemy import json_resp
 
 db = SQLAlchemy()
@@ -59,3 +59,13 @@ def getDatasets():
     if data:
         return [d.as_dict(True) for d in data]
     return {'message': 'not found'}, 404
+
+
+@routes.route('/list/parameters', methods=['GET'])
+@json_resp
+def getParametersList():
+    q = TParameters.query
+    data = q.all()
+    if data:
+         return [d.as_dict() for d in data]
+    return {'message': 'not found'}, 404    
