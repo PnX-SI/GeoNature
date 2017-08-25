@@ -240,16 +240,17 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/bryophytes.sql  &>> log/install_db.log
 
     #TODO : revoir la requête de ce script à partir de la synthese
-    echo "Création des éléments nécessaire au fonctionnement de GeoNature-mobile..."
+    echo "Création des éléments nécessaires au fonctionnement de GeoNature-mobile..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
-    echo "Création des éléments nécessaire au fonctionnement des mobiles." &>> log/install_db.log
+    echo "Création des éléments nécessaires au fonctionnement de GeoNature-mobile." &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/modules/nomade.sql  &>> log/install_db.log
 
     echo "Décompression des fichiers des communes de France métropolitaine..."
+    mkdir -p data/layers
     cd data/layers
     wget http://geonature.fr/data/inpn/layers/2016/communes_metropole.tar.gz
     tar -xzvf communes_metropole.tar.gz
@@ -267,7 +268,6 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name  -f data/layers/communes_metropole.sql &>> log/install_db.log
 
         echo "Téléchargement et décompression des fichiers du référentiel géographique..."
-        mkdir -p data/layers
         cd data/layers
         wget http://geonature.fr/data/inpn/layers/2016/apb.zip
         wget http://geonature.fr/data/inpn/layers/2016/bios.zip
