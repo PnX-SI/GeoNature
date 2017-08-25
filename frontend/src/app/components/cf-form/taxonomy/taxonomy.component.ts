@@ -15,7 +15,6 @@ export class TaxonomyComponent implements OnInit {
   constructor(private _formService: FormService) {
       this.stateCtrl = new FormControl();
       this.filteredTaxons = this.stateCtrl.valueChanges
-      .startWith(null)
       .map(searchString => this._formService.searchTaxonomy(searchString,'1001')
                            .subscribe(
                               res => this.searchString = res.filter(s => s.search_name.toLowerCase().indexOf(searchString.toLowerCase()) === 0)
