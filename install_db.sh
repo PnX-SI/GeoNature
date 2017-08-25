@@ -240,7 +240,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/bryophytes.sql  &>> log/install_db.log
 
     #TODO : revoir la requête de ce script à partir de la synthese
-    echo "Création des éléments nécessaire au fonctionnement des mobiles..."
+    echo "Création des éléments nécessaire au fonctionnement de GeoNature-mobile..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
@@ -251,6 +251,7 @@ then
 
     echo "Décompression des fichiers des communes de France métropolitaine..."
     cd data/layers
+    wget http://geonature.fr/data/inpn/layers/2016/communes_metropole.tar.gz
     tar -xzvf communes_metropole.tar.gz
     cd ../..
 
@@ -266,28 +267,29 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name  -f data/layers/communes_metropole.sql &>> log/install_db.log
 
         echo "Téléchargement et décompression des fichiers du référentiel géographique..."
+        mkdir -p data/layers
         cd data/layers
-        wget http://geonature.fr/data/inpn/layers/apb_2016.zip
-        wget http://geonature.fr/data/inpn/layers/bios_2016.zip
-        wget http://geonature.fr/data/inpn/layers/cdl_2016.zip
-        wget http://geonature.fr/data/inpn/layers/cen_2016.zip
-        wget http://geonature.fr/data/inpn/layers/pn_2016.zip
-        wget http://geonature.fr/data/inpn/layers/pnr_2016.zip
-        wget http://geonature.fr/data/inpn/layers/pnm_2016.zip
-        wget http://geonature.fr/data/inpn/layers/ramsar_2016.zip
-        wget http://geonature.fr/data/inpn/layers/rb_2016.zip
-        wget http://geonature.fr/data/inpn/layers/ripn_2016.zip
-        wget http://geonature.fr/data/inpn/layers/rnc_2016.zip
-        wget http://geonature.fr/data/inpn/layers/rncfs_2016.zip
-        wget http://geonature.fr/data/inpn/layers/rnn_2016.zip
-        wget http://geonature.fr/data/inpn/layers/rnr_2016.zip
-        wget http://geonature.fr/data/inpn/layers/sic_2016.zip
-        wget http://geonature.fr/data/inpn/layers/zps_2016.zip
-        wget http://geonature.fr/data/inpn/layers/zico_2016.zip
-        wget http://geonature.fr/data/inpn/layers/znieff1_2016.zip
-        wget http://geonature.fr/data/inpn/layers/znieff2_2016.zip
-        wget http://geonature.fr/data/inpn/layers/znieff1_mer.zip
-        wget http://geonature.fr/data/inpn/layers/znieff2_mer.zip
+        wget http://geonature.fr/data/inpn/layers/2016/apb.zip
+        wget http://geonature.fr/data/inpn/layers/2016/bios.zip
+        wget http://geonature.fr/data/inpn/layers/2016/cdl.zip
+        wget http://geonature.fr/data/inpn/layers/2016/cen.zip
+        wget http://geonature.fr/data/inpn/layers/2016/pn.zip
+        wget http://geonature.fr/data/inpn/layers/2016/pnr.zip
+        wget http://geonature.fr/data/inpn/layers/2016/pnm.zip
+        wget http://geonature.fr/data/inpn/layers/2016/ramsar.zip
+        wget http://geonature.fr/data/inpn/layers/2016/rb.zip
+        wget http://geonature.fr/data/inpn/layers/2016/ripn.zip
+        wget http://geonature.fr/data/inpn/layers/2016/rnc.zip
+        wget http://geonature.fr/data/inpn/layers/2016/rncfs.zip
+        wget http://geonature.fr/data/inpn/layers/2016/rnn.zip
+        wget http://geonature.fr/data/inpn/layers/2016/rnr.zip
+        wget http://geonature.fr/data/inpn/layers/2016/sic.zip
+        wget http://geonature.fr/data/inpn/layers/2016/zps.zip
+        wget http://geonature.fr/data/inpn/layers/2016/zico.zip
+        wget http://geonature.fr/data/inpn/layers/2016/znieff1.zip
+        wget http://geonature.fr/data/inpn/layers/2016/znieff2.zip
+        wget http://geonature.fr/data/inpn/layers/2016/znieff1_mer.zip
+        wget http://geonature.fr/data/inpn/layers/2016/znieff2_mer.zip
         unzip apb.zip
         unzip bios.zip
         unzip cdl.zip
