@@ -16,11 +16,12 @@ export class TaxonomyComponent implements OnInit {
       this.stateCtrl = new FormControl();
       this.filteredTaxons = this.stateCtrl.valueChanges
       .startWith(null)
-      .map(searchString => this._formService.searchTaxonomy(searchString,'1001')
+      .map(searchString => this._formService.searchTaxonomy(searchString, '1001')
                            .subscribe(
-                              res => this.searchString = res.filter(s => s.search_name.toLowerCase().indexOf(searchString.toLowerCase()) === 0)
+                              res => this.searchString = res.filter(s => s.search_name.toLowerCase()
+                                .indexOf(searchString.toLowerCase()) === 0)
                            )).delay(300)
-      .map(res => this.searchString)
+      .map(res => this.searchString);
    }
 
   ngOnInit() {
