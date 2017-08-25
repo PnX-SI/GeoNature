@@ -68,4 +68,18 @@ def getParametersList():
     data = q.all()
     if data:
          return [d.as_dict() for d in data]
-    return {'message': 'not found'}, 404    
+    return {'message': 'not found'}, 404
+
+@routes.route('/parameters/<param_name>', methods=['GET'])
+@routes.route('/parameters/<param_name>/<int:id_org>', methods=['GET'])
+@json_resp
+def getOneParameter(param_name, id_org=None):
+    q= TParameters.query
+    q = q.filter(TParameters.parameter_name==param_name)
+    if id_org:
+        q = q.filter(TParameters.id_organism==id_org)
+    data = q.all()
+    print(q)
+    if data:
+        return [d.as_dict() for d in data]
+    return {'message': 'not found'}, 404   
