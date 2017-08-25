@@ -48,5 +48,63 @@
         "btn":"Send"
     },
     "demoShortMessage": "Even though using lorem ipsum often arouses curiosity due to its resemblance to classical Latin, it is not intended to have meaning. Where text is visible in a document, people tend to focus on the textual content rather than upon overall presentation, so publishers use lorem ipsum when displaying a typeface or design in order to direct the focus to presentation. Lorem ipsum also approximates a typical distribution of spaces in English.",
-    "demoLongMessage": "Even though using lorem ipsum often arouses curiosity due to its resemblance to classical Latin, it is not intended to have meaning. Where text is visible in a document, people tend to focus on the textual content rather than upon overall presentation, so publishers use lorem ipsum when displaying a typeface or design in order to direct the focus to presentation. Lorem ipsum also approximates a typical distribution of spaces in English.\r The most common lorem ipsum text reads as follows: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\rThe text is derived from Cicero's De Finibus Bonorum et Malorum (On the Ends of Goods and Evils, or alternatively [About] The Purposes of Good and Evil ). The original passage began: Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit (Translation: Neither is there anyone who loves grief itself since it is grief and thus wants to obtain it). It is not known exactly when the text acquired its current standard form; it may have been as late as the 1960s. The passage was discovered by Richard McClintock, a Latin scholar who is the publications director at Hampden-Sydney College in Virginia, by searching for citings of the rarely used word 'consectetur' in classical literature. "
-  }
+    "demoLongMessage": "Even though using lorem ipsum often arouses curiosity due to its resemblance to classical Latin, it is not intended to have meaning. Where text is visible in a document, people tend to focus on the textual content rather than upon overall presentation, so publishers use lorem ipsum when displaying a typeface or design in order to direct the focus to presentation. Lorem ipsum also approximates a typical distribution of spaces in English.\r The most common lorem ipsum text reads as follows: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\rThe text is derived from Cicero's De Finibus Bonorum et Malorum (On the Ends of Goods and Evils, or alternatively [About] The Purposes of Good and Evil ). The original passage began: Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit (Translation: Neither is there anyone who loves grief itself since it is grief and thus wants to obtain it). It is not known exactly when the text acquired its current standard form; it may have been as late as the 1960s. The passage was discovered by Richard McClintock, a Latin scholar who is the publications director at Hampden-Sydney College in Virginia, by searching for citings of the rarely used word 'consectetur' in classical literature. ",
+    
+    "Map":{
+        "SearchLocation":"Search a location",
+        "AddPoint":"Locate observation (point)",
+        "AddLine":"Locate observation (line)",
+        "AddPolygon":"Locate observation (polygon)"
+    },
+    "Releve":{
+        "Releve":"Relevé",
+        "Observer":"Observer",
+        "Observers":"Observers",
+        "MinDate":"Min date",
+        "MaxDate":"Max date",
+        "MinAltitude":"Min altitude",
+        "MaxAltitude":"Max altitude",
+        "Municipality":"Municipality",
+        "Municipalities":"Municipalities",
+        "Dataset":"Dataset",
+        "Comment":"Comment"
+    },
+    "Taxon":{
+        "ObservedTaxon":"Observed taxon",
+        "Observation":"Observation",
+        "Observations":"Observations",
+        "Group":"Group",
+        "New":"New",
+        "Priority":"Priority",
+        "Optional":"Optional",
+        "Taxon":"Taxon",
+        "Taxons":"Taxons",
+        "TaxonName":"Taxon name",
+        "ObsTechnique":"Observation technique",
+        "ObsMethod":"Observation method",
+        "Advanced":"Advanced",
+        "BiologicalCondition":"Biological condition",
+        "BiologicalStatus":"Biological status",
+        "Naturalness":"Naturalness",
+        "Determiner":"Determiner",
+        "SampleNumber":"Sample number",
+        "DigitalProof":"Digital proof",
+        "NonDigitalProof":"Non digital proff",
+        "SaveTaxon":"Save taxon",
+        "AddTaxon":"Add taxon"
+    },
+    "Counting":{
+        "Counting":"Counting",
+        "Number":"Number",
+        "Type":"Type",
+        "LifeStage":"Life stage",
+        "Sex":"Sex",
+        "Phenology":"Phénology",
+        "CountingObject":"Counting object",
+        "CountingType":"Counting type",
+        "Numbers":"Numbers",
+        "Total":"Total"
+    },
+    "IntroMessage":"Welcome in CONTACT module. It allows to record observations based on Taxon Occurrencies SINP standard.",
+    "ErrorMessage":"Game over"
+}

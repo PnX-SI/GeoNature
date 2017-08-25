@@ -12,8 +12,6 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 })
 export class AccueilComponent implements OnInit {
   private appName: string;
-  private welcomeMessage: string;
-  private shortMessage: string;
 
   // test chartjs
   type1 = 'line';
