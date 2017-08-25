@@ -137,6 +137,16 @@ ALTER TABLE ONLY t_medias
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
 
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_meta_dates_change_t_medias
+  BEFORE INSERT OR UPDATE
+  ON t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+
 ---------
 --DATAS--
 ---------

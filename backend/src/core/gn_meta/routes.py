@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import TPrograms, TDatasets
+from .models import TPrograms, TDatasets, TParameters
 from ...utils.utilssqlalchemy import json_resp
 
 db = SQLAlchemy()
@@ -59,3 +59,27 @@ def getDatasets():
     if data:
         return [d.as_dict(True) for d in data]
     return {'message': 'not found'}, 404
+
+
+@routes.route('/list/parameters', methods=['GET'])
+@json_resp
+def getParametersList():
+    q = TParameters.query
+    data = q.all()
+    if data:
+         return [d.as_dict() for d in data]
+    return {'message': 'not found'}, 404
+
+@routes.route('/parameters/<param_name>', methods=['GET'])
+@routes.route('/parameters/<param_name>/<int:id_org>', methods=['GET'])
+@json_resp
+def getOneParameter(param_name, id_org=None):
+    q= TParameters.query
+    q = q.filter(TParameters.parameter_name==param_name)
+    if id_org:
+        q = q.filter(TParameters.id_organism==id_org)
+    data = q.all()
+    print(q)
+    if data:
+        return [d.as_dict() for d in data]
+    return {'message': 'not found'}, 404   

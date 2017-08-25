@@ -37,6 +37,9 @@ def get_app():
     from src.core.gn_meta.routes import routes
     app.register_blueprint(routes, url_prefix='/meta')
 
+    from src.core.ref_geo.routes import routes
+    app.register_blueprint(routes, url_prefix='/geo')
+
 
     app_globals['app'] = app
     return app

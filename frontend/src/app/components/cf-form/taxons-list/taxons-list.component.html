@@ -1,6 +1,10 @@
 <table  class="table table-hover">
-  <tr *ngFor="let taxon of list">
-    <td> {{taxon.nom_vern}} </td>
-    <td (click)="deleteTaxon()" > Supprimer </td>
-
+  <tr *ngFor="let taxon of list; let i = index">
+    <td> {{i +1 }} </td>
+    <td> {{taxon.nom_valide}} </td>
+    <button type="button" class="btn btn-default btn-sm" (click)="deleteTaxon(i)">
+        <i class="material-icons">clear</i>
+    </button>
+  </tr>
 </table>
+

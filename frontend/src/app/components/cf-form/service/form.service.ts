@@ -1,44 +1,47 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { AppConfigs } from '../../../../conf/app.configs'
+import { AppConfigs } from '../../../../conf/app.configs';
 
 @Injectable()
 export class FormService {
   taxon: any;
+  indexContact: number;
   constructor(private _http: Http) {
-    this.taxon= {};
+    this.taxon = {};
+    this.indexContact = 0;
    }
 
-  getNomenclature(id_nomenclature: number, regne?:string, group2_inpn?: string){
-    const params = {id: id_nomenclature, regne: regne, group2_inpn:group2_inpn};
-    if (regne) {
-      params.regne = regne;
-    }
-    if (group2_inpn) {
-      params.group2_inpn = group2_inpn;
-    }
+  getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
+    const params: URLSearchParams = new URLSearchParams();
+    // const params = {id: id_nomenclature, regne: regne, group2_inpn:group2_inpn};
+    // if (regne !== undefined) {
+    //   params.set('regne', regne);
+    // }
+    // if (group2_inpn !== undefined) {
+    //   params.set('group2_inpn', group2_inpn);
+    // }
     // TODO: insert regne and group2INPN in the request
-    return this._http.get(`${AppConfigs.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`)
+    return this._http.get(`${AppConfigs.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}?regne=${regne}?group2_inpn=${group2_inpn}`)
     .toPromise()
     .then(
       response => {
         return response.json();
       });
     }
-  
-  getDatasets(){
-    
+  getDatasets() {
+    return this._http.get(`${AppConfigs.API_ENDPOINT}/meta/datasets`)
+      .toPromise();
   }
 
   getObservers(idMenu) {
-     return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`).
-      toPromise()
+     return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`)
+      .toPromise()
       .then(response => {
         return response.json();
       });
   }
-  
+
   searchTaxonomy (taxonName: string, id: string) {
     return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
     .map(res => res.json());

@@ -51,3 +51,15 @@ class TDatasets(serializableModel):
     organism_owner = relationship("BibOrganismes", foreign_keys=[id_organism_owner])
     organism_administrator = relationship("BibOrganismes", foreign_keys=[id_organism_administrator])
     organism_funder = relationship("BibOrganismes", foreign_keys=[id_organism_funder])
+
+
+class TParameters(serializableModel):
+    __tablename__ = 't_parameters'
+    __table_args__ = {'schema':'gn_meta'}
+    id_parameter = db.Column(db.Integer, primary_key=True)
+    id_organism = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
+    parameter_name = db.Column(db.Unicode)
+    parameter_desc = db.Column(db.Unicode)
+    parameter_value = db.Column(db.Unicode)
+    parameter_extra_value = db.Column(db.Unicode)
+    
