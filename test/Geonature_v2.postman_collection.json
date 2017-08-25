@@ -1,0 +1,185 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Geonature_v2",
+		"_postman_id": "ec7ff5a6-b762-4a62-fd52-7ecfef377e26",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "contact/releves",
+			"request": {
+				"url": "http://localhost:8000/contact/releves",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Return all releve"
+			},
+			"response": []
+		},
+		{
+			"name": "contact/occurrences",
+			"request": {
+				"url": "http://localhost:8000/contact/occurrences",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Return all occurences"
+			},
+			"response": []
+		},
+		{
+			"name": "users/menu/9",
+			"request": {
+				"url": "http://localhost:8000/users/menu/9",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Return all role for one menu"
+			},
+			"response": []
+		},
+		{
+			"name": "nomenclatures/nomenclature/6?regne=Animalia",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8000/nomenclatures/nomenclature/6?regne=Animalia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"nomenclatures",
+						"nomenclature",
+						"6"
+					],
+					"query": [
+						{
+							"key": "regne",
+							"value": "Animalia",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Return all nomenclature for one type"
+			},
+			"response": []
+		},
+		{
+			"name": "nomenclatures/nomenclatures?id_type=22&id_type=6",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8000/nomenclatures/nomenclatures?id_type=22&id_type=6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"nomenclatures",
+						"nomenclatures"
+					],
+					"query": [
+						{
+							"key": "id_type",
+							"value": "22",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "id_type",
+							"value": "6",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Return all nomenclature for several types"
+			},
+			"response": []
+		},
+		{
+			"name": "meta/datasets",
+			"request": {
+				"url": "http://localhost:8000/meta/datasets",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Liste des datasets"
+			},
+			"response": []
+		},
+		{
+			"name": "contact/releve/1",
+			"request": {
+				"url": "http://localhost:8000/contact/releve/1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "contact/releve",
+			"request": {
+				"url": "http://localhost:8000/contact/releve",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic Og==",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"geometry\": {\"type\": \"Point\", \"coordinates\": [4.563980749, 45.19474135]},\n\t\"properties\": {\t \n\t\t\"id_dataset\": 1,\n\t\t\"id_digitiser\": 1,  \n\t\t\"date_min\": \"2017-01-01 00:00:00\",\n\t\t\"date_max\": \"2017-01-01 00:00:00\", \n\t\t\"altitude_min\": 1500,\n\t\t\"altitude_max\": 1565, \n\t\t\"meta_device_entry\": \"web\",\n\t\t\"comment\": \"exemple test comment\",\n\t\t\"observers\": [1,2,3],\n\t\t\"t_occurrences_contact\": [\n\t\t\t{\n\t\t\t\t\"id_nomenclature_obs_technique\": 343,\n\t\t\t\t\"id_nomenclature_obs_meth\": 65,\n\t\t\t\t\"id_nomenclature_bio_condition\": 177,\n\t\t\t\t\"id_nomenclature_bio_status\": 30,\n\t\t\t\t\"id_nomenclature_naturalness\": 182,\n\t\t\t\t\"id_nomenclature_exist_proof\": 91,\n\t\t\t\t\"id_nomenclature_valid_status\": 347, \n\t\t\t\t\"id_nomenclature_diffusion_level\": 163,\n\t\t\t\t\"id_validator\": 1,\n\t\t\t\t\"determiner\": \"gil\",\n\t\t\t\t\"determination_method\": \"gees\",  \n\t\t\t\t\"cd_nom\": 60612,\n\t\t\t\t\"nom_cite\": \"Lynx Bor\\u00e9al\",\n\t\t\t\t\"meta_v_taxref\": \"Taxref V9.0\",\n\t\t\t\t\"sample_number_proof\": \"Herbier_Dentant-15-37869\", \n\t\t\t\t\"digital_proof\": \"\", \n\t\t\t\t\"non_digital_proof\": \"plante en herbier\",\n\t\t\t\t\"deleted\": false, \n\t\t\t\t\"comment\": \"MODIF\",\n\t\t\t\t\"cor_counting_contact\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"id_nomenclature_life_stage\": 4,\n\t\t\t\t\t\t\"id_nomenclature_sex\": 190,\n\t\t\t\t\t\t\"id_nomenclature_obj_count\": 166,\n\t\t\t\t\t\t\"id_nomenclature_type_count\": 107, \n\t\t\t\t\t\t\"count_min\": 15,\n\t\t\t\t\t\t\"count_max\": 20\n\t\t\t\t\t},\n\t\t\t\t\t{\n\t\t\t\t\t\t\"id_nomenclature_life_stage\": 4,\n\t\t\t\t\t\t\"id_nomenclature_sex\": 191,\n\t\t\t\t\t\t\"id_nomenclature_obj_count\": 166,\n\t\t\t\t\t\t\"id_nomenclature_type_count\": 107, \n\t\t\t\t\t\t\"count_min\": 1,\n\t\t\t\t\t\t\"count_max\": 1\n\t\t\t\t\t}\n\t\t\t\t] \n\t\t\t}\n\t\t] \n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "geo/info",
+			"request": {
+				"url": "http://localhost:8000/geo/info",
+				"method": "POST",
+				"header": [
+					{
+						"key": "conte",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
