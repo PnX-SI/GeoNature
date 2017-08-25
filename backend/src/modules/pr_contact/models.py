@@ -76,7 +76,7 @@ class TOccurrencesContact(serializableModel):
     determination_method = db.Column(db.Unicode)
     cd_nom = db.Column(db.Integer)
     nom_cite = db.Column(db.Unicode)
-    meta_v_taxref = db.Column(db.Unicode, default=select('SELECT parameter_value FROM gn_meta.t_parameters WHERE parameter_name = ''taxref_version'''))
+    meta_v_taxref = db.Column(db.Unicode, default=select([func.get_default_parameter('taxref_version','NULL')]))
     sample_number_proof = db.Column(db.Unicode)
     digital_proof = db.Column(db.Unicode)
     non_digital_proof = db.Column(db.Unicode)
