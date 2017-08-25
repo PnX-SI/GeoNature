@@ -48,5 +48,63 @@
         "btn":"Envoyer"
     },
     "demoShortMessage": "Généralement, on utilise un texte en faux latin (le texte ne veut rien dire, il a été modifié), le Lorem ipsum ou Lipsum, qui permet donc de faire office de texte d'attente. L'avantage de le mettre en latin est que l'opérateur sait au premier coup d'oeil que la page contenant ces lignes n'est pas valide, et surtout l'attention du client n'est pas dérangée par le contenu, il demeure concentré seulement sur l'aspect graphique.",
-    "demoLongMessage": "Généralement, on utilise un texte en faux latin (le texte ne veut rien dire, il a été modifié), le Lorem ipsum ou Lipsum, qui permet donc de faire office de texte d'attente. L'avantage de le mettre en latin est que l'opérateur sait au premier coup d'oeil que la page contenant ces lignes n'est pas valide, et surtout l'attention du client n'est pas dérangée par le contenu, il demeure concentré seulement sur l'aspect graphique. Ce texte a pour autre avantage d'utiliser des mots de longueur variable, essayant de simuler une occupation normale. La méthode simpliste consistant à copier-coller un court texte plusieurs fois (« ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ») a l'inconvénient de ne pas permettre une juste appréciation typographique du résultat final. Il circule des centaines de versions différentes du Lorem ipsum, mais ce texte aurait originellement été tiré de l'ouvrage de Cicéron, De Finibus Bonorum et Malorum (Liber Primus, 32), texte populaire à cette époque, dont l'une des premières phrases est : « Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... » (« Il n'existe personne qui aime la souffrance pour elle-même, ni qui la recherche ni qui la veuille pour ce qu'elle est... »). Expert en utilisabilité des sites web et des logiciels, Jakob Nielsen souligne que l'une des limites de l'utilisation du faux-texte dans la conception de sites web est que ce texte n'étant jamais lu, il ne permet pas de vérifier sa lisibilité effective. La lecture à l'écran étant plus difficile, cet aspect est pourtant essentiel. Nielsen préconise donc l'utilisation de textes représentatifs plutôt que du lorem ipsum. On peut aussi faire remarquer que les formules conçues avec du faux-texte ont tendance à sous-estimer l'espace nécessaire à une titraille immédiatement intelligible, ce qui oblige les rédactions à formuler ensuite des titres simplificateurs, voire inexacts, pour ne pas dépasser l'espace imparti."
-  }
+    "demoLongMessage": "Généralement, on utilise un texte en faux latin (le texte ne veut rien dire, il a été modifié), le Lorem ipsum ou Lipsum, qui permet donc de faire office de texte d'attente. L'avantage de le mettre en latin est que l'opérateur sait au premier coup d'oeil que la page contenant ces lignes n'est pas valide, et surtout l'attention du client n'est pas dérangée par le contenu, il demeure concentré seulement sur l'aspect graphique. Ce texte a pour autre avantage d'utiliser des mots de longueur variable, essayant de simuler une occupation normale. La méthode simpliste consistant à copier-coller un court texte plusieurs fois (« ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ») a l'inconvénient de ne pas permettre une juste appréciation typographique du résultat final. Il circule des centaines de versions différentes du Lorem ipsum, mais ce texte aurait originellement été tiré de l'ouvrage de Cicéron, De Finibus Bonorum et Malorum (Liber Primus, 32), texte populaire à cette époque, dont l'une des premières phrases est : « Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... » (« Il n'existe personne qui aime la souffrance pour elle-même, ni qui la recherche ni qui la veuille pour ce qu'elle est... »). Expert en utilisabilité des sites web et des logiciels, Jakob Nielsen souligne que l'une des limites de l'utilisation du faux-texte dans la conception de sites web est que ce texte n'étant jamais lu, il ne permet pas de vérifier sa lisibilité effective. La lecture à l'écran étant plus difficile, cet aspect est pourtant essentiel. Nielsen préconise donc l'utilisation de textes représentatifs plutôt que du lorem ipsum. On peut aussi faire remarquer que les formules conçues avec du faux-texte ont tendance à sous-estimer l'espace nécessaire à une titraille immédiatement intelligible, ce qui oblige les rédactions à formuler ensuite des titres simplificateurs, voire inexacts, pour ne pas dépasser l'espace imparti.",
+    
+    "Map":{
+        "SearchLocation":"Rechercher un lieu",
+        "AddPoint":"Localisez l'observation (point)",
+        "AddLine":"Localisez l'observation (ligne)",
+        "AddPolygon":"Localisez l'observation (polygone)"
+    },
+    "Releve":{
+        "Releve":"Relevé",
+        "Observer":"Observateur",
+        "Observers":"Observateurs",
+        "MinDate":"Date min",
+        "MaxDate":"Date max",
+        "MinAltitude":"Alt min",
+        "MaxAltitude":"Alt max",
+        "Municipality":"Commune",
+        "Municipalities":"Communes",
+        "Dataset":"Jeu de données",
+        "Comment":"Commentaire"
+    },
+    "Taxon":{
+        "ObservedTaxon":"Taxon observé",
+        "Observation":"Observation",
+        "Observations":"Observations",
+        "Group":"Groupe",
+        "New":"Nouveau",
+        "Priority":"Prioritaire",
+        "Optional":"Facultatif",
+        "Taxon":"Taxon",
+        "Taxons":"Taxons",
+        "TaxonName":"Nom du taxon",
+        "ObsTechnique":"Technique d'observation",
+        "ObsMethod":"Méthode d'observation",
+        "Advanced":"Avancé",
+        "BiologicalCondition":"Etat biologique",
+        "BiologicalStatus":"Statut biologique",
+        "Naturalness":"Naturalite",
+        "Determiner":"Déterminateur",
+        "SampleNumber":"Numéro du prélevement",
+        "DigitalProof":"Preuve digitale",
+        "NonDigitalProof":"Preuve non digitale",
+        "SaveTaxon":"Enregistrer le taxon",
+        "AddTaxon":"Ajouter un taxon"
+    },
+    "Counting":{
+        "Counting":"Dénombrement",
+        "Number":"Nombre",
+        "Type":"Type",
+        "LifeStage":"Stade de vie",
+        "Sex":"Sexe",
+        "Phenology":"Phénologie",
+        "CountingObject":"Objet du dénombrement",
+        "CountingType":"Type de dénombrement",
+        "Numbers":"Effectif",
+        "Total":"Total"
+    },
+    "IntroMessage":"Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
+    "ErrorMessage":"Dommage, c'est pas bon"
+}
