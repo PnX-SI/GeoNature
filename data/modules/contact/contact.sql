@@ -66,7 +66,7 @@ CREATE TABLE t_occurrences_contact (
     determination_method character varying(255),
     cd_nom integer,
     nom_cite character varying(255),
-    meta_v_taxref character varying(50) DEFAULT 'Taxref V9.0',
+    meta_v_taxref character varying(50) DEFAULT 'SELECT parameter_value FROM gn_meta.t_parameters WHERE parameter_name = ''taxref_version'' LIMIT 1',
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
@@ -104,7 +104,7 @@ CREATE TABLE cor_counting_contact (
     id_nomenclature_type_count integer DEFAULT 107,
     count_min integer,
     count_max integer,
-    unique_id_sinp text NOT NULL DEFAULT 'http://ecrins-parcnational.fr/data/'||public.uuid_generate_v4()
+    unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4()
 );
 CREATE SEQUENCE cor_counting_contact_id_counting_contact_seq
     START WITH 1

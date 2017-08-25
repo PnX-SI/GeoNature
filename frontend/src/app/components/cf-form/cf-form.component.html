@@ -16,29 +16,29 @@
     </app-observers>
 
     <md-input-container class="input-alignment-sm input-width-xs">
-      <input [(ngModel)]="dataForm.dateMin" mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
+      <input [(ngModel)]="observationContact.date_min" mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
       <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
     </md-input-container>
     <md-datepicker #pickerdatemin></md-datepicker>
 
     <md-input-container class="input-alignment-sm input-width-xs">
-      <input [(ngModel)]="dataForm.dateMax" mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max">
+      <input [(ngModel)]="observationContact.date_max" mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max">
       <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
     </md-input-container>
     <md-datepicker #pickerdatemax></md-datepicker>
 
     <md-input-container class="input-alignment-sm input-width-xxs">
-      <input [(ngModel)]="dataForm.altitudeMin" type="number" mdInput placeholder="Alt min">
+      <input [(ngModel)]="observationContact.altitude_min" type="number" mdInput placeholder="Alt min">
       <md-icon mdSuffix>terrain</md-icon>
     </md-input-container>
 
     <md-input-container class="input-alignment-sm input-width-xxs">
-      <input [(ngModel)]="dataForm.altitudeMax" type="number" mdInput placeholder="Alt max">
+      <input [(ngModel)]="observationContact.altitude_max" type="number" mdInput placeholder="Alt max">
       <md-icon mdSuffix>terrain</md-icon>
     </md-input-container>
 
     <md-input-container class="input-alignment-sm input-width-sm">
-      <input [(ngModel)]="dataForm.municipality" type="text" mdInput placeholder="Commune">
+      <input [(ngModel)]="observationContact.municipality" type="text" mdInput placeholder="Commune">
       <md-icon mdSuffix>pin_drop</md-icon>
     </md-input-container>
 
@@ -50,36 +50,20 @@
     <!--Technique observation-->
 
 
-    <app-nomenclature 
-      placeholder="Technique d'observation" 
-      [idNomenclature]="100" 
-      [regne]="lala" 
-      [group2Inpn]="lala"
-      (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
-    </app-nomenclature>
-
     <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
-      <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Contexte & Commentaire
+      <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire
     </button>
     <!--<button md-button class ="input-alignment-sm"> <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire</button>-->
 
-  <div class="row collapse" id="collapseContexteCommentaire">
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <div class="form-group">
-          <label for="contexte" class="font-sm">Contexte:</label>
-          <textarea class="form-control" rows="2" id="contexte"></textarea>
-        </div>
+    <div class="row collapse" id="collapseContexteCommentaire">
+      <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+          <div class="form-group">
+            <label for="commentaire" class="font-sm">Commentaire:</label>
+            <textarea [(ngModel)]="observationContact.comment" class="form-control" rows="2" id="commentaire"></textarea>
+          </div>
+      </div>
     </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <div class="form-group">
-          <label for="commentaire" class="font-sm">Commentaire:</label>
-          <textarea class="form-control" rows="2" id="commentaire"></textarea>
-        </div>
-    </div>
-    
-  </div>
-
-  </md-card> <!--END Pannel-->
+  </md-card> <!--END releve Pannel-->
 
   <md-card class="cf-card-option padding-md"> <!--Pannel Taxon observé-->
     <h4> <b> <u>Taxon observé</u>: </b></h4>
@@ -149,6 +133,14 @@
           [group2Inpn]="lala"
           (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
         </app-nomenclature> 
+
+        <app-nomenclature 
+          placeholder="Technique d'observation" 
+          [idNomenclature]="100" 
+          [regne]="lala" 
+          [group2Inpn]="lala"
+          (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
+      </app-nomenclature>
       
 
       <!--Avancé-->
@@ -158,33 +150,65 @@
       </div> <!--END Auto complete-->
       <div class="collapse" id="collapseAvance">
         <div class="well well-sm">
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Etat Bio</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Statut Bio</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Naturalite</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Déterminateur</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Method déter</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Num prelev</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>Preuve num</option>
-          </select>
-          <select class="input-sm input-width-sm app-margin-top-xs" id="sel1">
-            <option>PreuveNom num</option>
-          </select>
+            <app-nomenclature 
+              placeholder="Etat biologique"
+              [idNomenclature]="7" 
+              [regne]="lala" 
+              [group2Inpn]="lala"
+              (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_condition' )" > 
+          </app-nomenclature> 
+
+          <app-nomenclature 
+            placeholder="Statut biologique"
+            [idNomenclature]="13" 
+            [regne]="lala" 
+            [group2Inpn]="lala"
+            (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_status' )" > 
+        </app-nomenclature>           
+
+          <app-nomenclature 
+            placeholder="Naturalité"
+            [idNomenclature]="8" 
+            [regne]="lala" 
+            [group2Inpn]="lala"
+            (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_naturalness' )" > 
+        </app-nomenclature>             
+
+        <app-nomenclature 
+          placeholder="Méthode determ"
+          [idNomenclature]="" 
+          [regne]="lala" 
+          [group2Inpn]="lala"
+          (labelSelected)= "updateOccurenceContact($event, 'determination_method' )" > 
+        </app-nomenclature>
+
+        <md-input-container class="input-alignment-sm input-width-sm">
+            <input mdInput [(ngModel)]="determiner" (change)="updateOccurenceContact(determiner, 'determiner')"  type="text"  placeholder="Déterminateur">
+        </md-input-container>
+
+        <md-input-container class="input-alignment-sm input-width-sm">
+            <input mdInput [(ngModel)]="sample_number_proof" (change)="updateOccurenceContact(sample_number_proof, 'sample_number_proof')"  type="text"  placeholder="Echantillon">
+        </md-input-container>
+
+        <app-nomenclature 
+          placeholder="Preuve numérique"
+          [idNomenclature]="" 
+          [regne]="lala" 
+          [group2Inpn]="lala"
+          (labelSelected)= "updateOccurenceContact($event, 'digital_proof' )" > 
+        </app-nomenclature>
+        <app-nomenclature 
+          placeholder="Preuve non numérique"
+          [idNomenclature]="" 
+          [regne]="lala" 
+          [group2Inpn]="lala"
+          (labelSelected)= "updateOccurenceContact($event, 'non_digital_proof' )" > 
+      </app-nomenclature>
+
         </div>
       </div>
 
+      <h5> <b> <u>Dénombrement</u>: </b></h5>
       <!-- DENOMBREMENT -->
       <div *ngFor="let counting of nbCounting; let i = index">
         <app-counting 
@@ -258,6 +282,6 @@
 </md-card-content>
 </md-card>
 
-
+observation: {{observationContact | json}}
 occurence: {{occurenceContact | json}}
 countings: {{countingsContact | json}}
