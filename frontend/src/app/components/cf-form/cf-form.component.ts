@@ -89,6 +89,7 @@ export class CfFormComponent implements OnInit {
     // add to the taxon-list component
     this.taxonList.push(currentTaxon);
     // add into occurence contact dict
+    this.occurenceContact.push({});
     this.occurenceContact[this.formService.indexContact].nom_cite = currentTaxon.nom_cite;
     this.occurenceContact[this.formService.indexContact].cd_nom = currentTaxon.cd_nom;
     // add the coutings into occurence contact dict
@@ -100,6 +101,10 @@ export class CfFormComponent implements OnInit {
     this.formService.taxon = {};
     // update the index of the current contact
     this.formService.indexContact += 1;
+  }
+
+  removeOneOccurenceTaxon(index): void {
+    this.occurenceContact.splice(index, 1);
   }
 
 }
