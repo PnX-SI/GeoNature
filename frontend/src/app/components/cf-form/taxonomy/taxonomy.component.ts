@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { FormService } from '../service/form.service';
+import 'rxjs/add/operator/delay';
 
 @Component({
   selector: 'app-taxonomy',
@@ -9,20 +10,21 @@ import { FormService } from '../service/form.service';
 })
 export class TaxonomyComponent implements OnInit {
   stateCtrl: FormControl;
+  searchString: any;
   filteredTaxons: any;
   constructor(private _formService: FormService) {
-        this.stateCtrl = new FormControl();
-    this.filteredTaxons = this.stateCtrl.valueChanges
-        .startWith(null)
-        .map(name => this.filterTaxons(name));
+      this.stateCtrl = new FormControl();
+      this.filteredTaxons = this.stateCtrl.valueChanges
+      .startWith(null)
+      .map(searchString => this._formService.searchTaxonomy(searchString,'1001')
+                           .subscribe(
+                              res => this.searchString = res.filter(s => s.search_name.toLowerCase().indexOf(searchString.toLowerCase()) === 0)
+                           )).delay(300)
+      .map(res => this.searchString)
    }
 
   ngOnInit() {
   }
 
-  filterTaxons(val: string) {
-    return val ? this._formService.getTaxonomy().filter(s => s.taxonName.toLowerCase().indexOf(val.toLowerCase()) === 0)
-              : null;
-  }
 
 }

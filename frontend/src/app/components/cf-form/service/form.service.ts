@@ -25,32 +25,20 @@ export class FormService {
       });
     }
 
-  getTaxonomy () {
-    return [
-      {
-        cd_nom: 5422,
-        taxonName: 'Abietinella abietina (Hedw.) M.Fleisch.',
-        groupe2INPN: 'Algues'
-      },
-      {
-        cd_nom: 1111,
-        taxonName: 'Geotriton fuscus Bonaparte, 1837',
-        groupe2INPN: 'Amphibiens'
-      },
-        {
-        cd_nom: 2222,
-        taxonName: 'Hemitriton asper Dugès, 1852',
-        groupe2INPN: 'Amphibiens'
-      }
-    ];
-  }
-
   getObservers(idMenu) {
      return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`).
       toPromise()
       .then(response => {
         return response.json();
       });
+  }
+  
+  searchTaxonomy (taxonName,id) {
+    console.log(
+      `${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`
+    );
+    return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/1001?search_name=${taxonName}`)
+    .map(res => res.json());
   }
 
 }
