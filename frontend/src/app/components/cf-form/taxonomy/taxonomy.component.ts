@@ -26,5 +26,8 @@ export class TaxonomyComponent implements OnInit {
   ngOnInit() {
   }
 
+  getTaxonInfo(taxon) {
+    this._formService.taxon = taxon;
+  }
 
 }
