@@ -119,4 +119,10 @@ export class MapService {
         this.currentLayer = undefined;
         }
     }
+
+    getGeometry() {
+        if( this.marker != null ){
+            return this.marker.getLatLng();
+        }
+    }
 }
