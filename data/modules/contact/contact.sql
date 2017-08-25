@@ -66,7 +66,7 @@ CREATE TABLE t_occurrences_contact (
     determination_method character varying(255),
     cd_nom integer,
     nom_cite character varying(255),
-    meta_v_taxref character varying(50) DEFAULT 'SELECT parameter_value FROM gn_meta.t_parameters WHERE parameter_name = ''taxref_version'' LIMIT 1',
+    meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'',NULL)',
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
