@@ -104,6 +104,8 @@ CREATE TABLE cor_counting_contact (
     id_nomenclature_type_count integer DEFAULT 107,
     count_min integer,
     count_max integer,
+    meta_create_date timestamp without time zone,
+    meta_update_date timestamp without time zone,
     unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4()
 );
 CREATE SEQUENCE cor_counting_contact_id_counting_contact_seq
@@ -323,3 +325,21 @@ CREATE TRIGGER tri_update_occurrences_contact
   ON t_occurrences_contact
   FOR EACH ROW
   EXECUTE PROCEDURE update_occurrences_contact();
+
+CREATE TRIGGER tri_meta_dates_change_occurrences_contact
+  BEFORE INSERT OR UPDATE
+  ON t_occurrences_contact
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+CREATE TRIGGER tri_meta_dates_change_t_releves_contact
+  BEFORE INSERT OR UPDATE
+  ON t_releves_contact
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+CREATE TRIGGER tri_meta_dates_change_cor_counting_contact
+  BEFORE INSERT OR UPDATE
+  ON cor_counting_contact
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
