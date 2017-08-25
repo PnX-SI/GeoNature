@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { AppConfigs } from '../../../../conf/app.configs'
+import { AppConfigs } from '../../../../conf/app.configs';
 
 @Injectable()
 export class FormService {
   taxon: any;
+  indexContact: number;
   constructor(private _http: Http) {
-    this.taxon= {};
+    this.taxon = {};
+    this.indexContact = 0;
    }
 
   getNomenclature(id_nomenclature: number, regne?:string, group2_inpn?: string){
@@ -26,19 +28,19 @@ export class FormService {
         return response.json();
       });
     }
-  
-  getDatasets(){
-    
+  getDatasets() {
+    return this._http.get(`${AppConfigs.API_ENDPOINT}/meta/datasets`)
+      .toPromise();
   }
 
   getObservers(idMenu) {
-     return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`).
-      toPromise()
+     return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`)
+      .toPromise()
       .then(response => {
         return response.json();
       });
   }
-  
+
   searchTaxonomy (taxonName: string, id: string) {
     return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
     .map(res => res.json());

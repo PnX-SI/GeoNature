@@ -39,6 +39,7 @@ import { AuthGuard } from './components/auth/auth-guard.service';
 import { CfFormComponent } from './components/cf-form/cf-form.component';
 import { FormService } from './components/cf-form/service/form.service';
 import { TaxonomyComponent } from './components/cf-form/taxonomy/taxonomy.component';
+import { TaxonsListComponent } from './components/cf-form/taxons-list/taxons-list.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -57,7 +58,8 @@ export function HttpLoaderFactory(http: Http) {
     NomenclatureComponent,
     TaxonomyComponent,
     ObserversComponent,
-    CountingComponent
+    CountingComponent,
+    TaxonsListComponent
   ],
   imports: [
     BrowserModule,
