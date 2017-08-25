@@ -5,8 +5,12 @@ from __future__ import (unicode_literals, print_function,
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
+from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
 from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
+
+from sqlalchemy.dialects.postgresql import UUID
+
 from ...core.users.models import TRoles
 from pypnnomenclature.models import TNomenclatures
 
@@ -38,7 +42,7 @@ class TRelevesContact(serializableGeoModel):
     geom_local = db.Column(Geometry)
     geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
 
-    occurrences = relationship("TOccurrencesContact", lazy='joined')
+    occurrences = relationship("TOccurrencesContact", lazy='joined' , cascade="all, delete-orphan")
 
     observers = db.relationship(
         'TRoles',
@@ -72,7 +76,7 @@ class TOccurrencesContact(serializableModel):
     determination_method = db.Column(db.Unicode)
     cd_nom = db.Column(db.Integer)
     nom_cite = db.Column(db.Unicode)
-    meta_v_taxref = db.Column(db.Unicode)
+    meta_v_taxref = db.Column(db.Unicode, default=select('SELECT parameter_value FROM gn_meta.t_parameters WHERE parameter_name = ''taxref_version'''))
     sample_number_proof = db.Column(db.Unicode)
     digital_proof = db.Column(db.Unicode)
     non_digital_proof = db.Column(db.Unicode)
@@ -81,7 +85,7 @@ class TOccurrencesContact(serializableModel):
     meta_update_date = db.Column(db.DateTime)
     comment = db.Column(db.Unicode)
 
-    countingContact = relationship("CorCountingContact", lazy='joined')
+    countingContact = relationship("CorCountingContact", lazy='joined',  cascade="all, delete-orphan")
 
 class CorCountingContact(serializableModel):
     __tablename__ = 'cor_counting_contact'
@@ -94,4 +98,4 @@ class CorCountingContact(serializableModel):
     id_nomenclature_type_count = db.Column(db.Integer)
     count_min = db.Column(db.Integer)
     count_max = db.Column(db.Integer)
-    unique_id_sinp = db.Column(db.Unicode, default="SELECT ('http://ecrins-parcnational.fr/data/'::text || uuid_generate_v4())")
+    unique_id_sinp = db.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
