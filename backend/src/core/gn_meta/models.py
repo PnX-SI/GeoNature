@@ -35,7 +35,7 @@ class TDatasets(serializableModel):
     __tablename__ = 't_datasets'
     __table_args__ = {'schema':'gn_meta'}
     id_dataset = db.Column(db.Integer, primary_key=True)
-    id_program = db.Column(db.Integer, ForeignKey('gn_meta.t_programmes.id_programme'))
+    id_program = db.Column(db.Integer, ForeignKey('gn_meta.t_programs.id_program'))
     dataset_name = db.Column(db.Unicode)
     dataset_desc = db.Column(db.Unicode)
     id_organism_owner = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))

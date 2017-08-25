@@ -17,10 +17,10 @@ SET default_with_oids = false;
 CREATE TABLE t_parameters (
     id_parameter integer NOT NULL,
     id_organism integer,
-    param_name character varying(100) NOT NULL,
-    param_desc text,
-    param_value text NOT NULL,
-    param_extra_value character varying(255)
+    parameter_name character varying(100) NOT NULL,
+    parameter_desc text,
+    parameter_value text NOT NULL,
+    parameter_extra_value character varying(255)
 );
 COMMENT ON TABLE t_parameters IS 'Allow to manage content configuration depending on organism or not (CRUD depending on privileges).';
 ----------
@@ -111,19 +111,19 @@ ALTER TABLE ONLY cor_role_dataset_application
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_financeur FOREIGN KEY (id_organism_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_financeur FOREIGN KEY (id_organism_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_gestionnaire FOREIGN KEY (id_organism_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_gestionnaire FOREIGN KEY (id_organism_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_producteur FOREIGN KEY (id_organism_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_producteur FOREIGN KEY (id_organism_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_proprietaire FOREIGN KEY (id_organism_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_proprietaire FOREIGN KEY (id_organism_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_bib_lots_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE NO ACTION;
 
 
 ---------
@@ -132,7 +132,7 @@ ALTER TABLE ONLY t_datasets
 INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
 INSERT INTO t_programs VALUES (2, 'test', 'test', false);
 
-INSERT INTO t_parameters (id_parameter, id_organism, param_name, param_desc, param_value, param_extra_value) VALUES
+INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
 (1,NULL,'taxref_version','version du référentiel taxonomique','Taxref V9.0',NULL)
 ,(2,2,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
 ,(3,1,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL);
