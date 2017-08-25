@@ -9,7 +9,6 @@ export class MapService {
     public baseMaps: any;
     private currentLayer: GeoJSON;
     public editing: boolean;
-    public removing: boolean;
     public marker: any;
     toastrConfig: ToastrConfig;
 
@@ -32,7 +31,6 @@ export class MapService {
         })
     };
         this.editing = false;
-        this.removing = false;
     }
 
     initialize() {
@@ -51,7 +49,9 @@ export class MapService {
     onMapClick() {
         this.map.on('click', (e: any) => {
                 if (this.editing) {
-                    if ( this.marker != null ) { this.marker.remove(); }
+                    if ( this.marker != null )
+                            this.marker.remove();
+
                     this.marker = L.marker(e.latlng, {
                         icon: L.icon({
                                 iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
@@ -65,16 +65,11 @@ export class MapService {
                     })
                     .addTo(this.map)
                     .openPopup();
-                    this.marker.on('click', (event: MouseEvent) => {
-                        if (this.removing) {
-                                this.map.removeLayer(this.marker);
-                        }
-                    });
 
                     this.marker.on('move', (event: MouseEvent) => {
                         this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
                         offset: L.point(0, -30)
-                        });
+                        }).openPopup();
                     });
                 }
         });
@@ -82,17 +77,8 @@ export class MapService {
 
     toggleEditing() {
         this.editing = !this.editing;
-        if (this.editing && this.removing) {
-            this.removing = false;
-        }
-    }
-
-    toggleRemoving() {
-        this.removing = !this.removing;
-
-        if (this.editing && this.removing) {
-            this.editing = false;
-        }
+        if ( this.marker != null )
+             this.map.removeLayer(this.marker);
     }
 
     search(address: string) {

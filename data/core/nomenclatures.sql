@@ -512,3 +512,30 @@ CREATE OR REPLACE VIEW v_niv_precis AS
   AND n.active = true;
 --USAGE : 
 --SELECT * FROM ref_nomenclatures.v_statut_valid;
+
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_meta_dates_change_bib_nomenclatures_types
+  BEFORE INSERT OR UPDATE
+  ON bib_nomenclatures_types
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  
+CREATE TRIGGER tri_meta_dates_change_cor_taxref_nomenclature
+  BEFORE INSERT OR UPDATE
+  ON cor_taxref_nomenclature
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  
+CREATE TRIGGER tri_meta_dates_change_cor_taxref_sensitivity
+  BEFORE INSERT OR UPDATE
+  ON cor_taxref_sensitivity
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  
+CREATE TRIGGER tri_meta_dates_change_t_nomenclatures
+  BEFORE INSERT OR UPDATE
+  ON t_nomenclatures
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
