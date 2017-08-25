@@ -5,8 +5,10 @@ import { AppConfigs } from '../../../../conf/app.configs'
 
 @Injectable()
 export class FormService {
-  taxonomy: any;
-  constructor(private _http: Http) { }
+  taxon: any;
+  constructor(private _http: Http) {
+    this.taxon= {};
+   }
 
   getNomenclature(id_nomenclature: number, regne?:string, group2_inpn?: string){
     console.log(AppConfigs.API_ENDPOINT);
@@ -33,11 +35,8 @@ export class FormService {
       });
   }
   
-  searchTaxonomy (taxonName,id) {
-    console.log(
-      `${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`
-    );
-    return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/1001?search_name=${taxonName}`)
+  searchTaxonomy (taxonName: string,id: string) {
+    return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
     .map(res => res.json());
   }
 
