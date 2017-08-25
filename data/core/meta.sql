@@ -5,6 +5,28 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+
+-----------------------
+--PUBLIQUES FUNCTIONS--
+-----------------------
+CREATE OR REPLACE FUNCTION public.fct_trg_meta_dates_change()
+  RETURNS trigger AS
+$BODY$
+begin
+        if(TG_OP = 'INSERT') THEN
+                NEW.meta_create_date = NOW();
+        ELSIF(TG_OP = 'UPDATE') THEN
+                NEW.meta_update_date = NOW();
+                if(NEW.meta_create_date IS NULL) THEN
+                        NEW.meta_create_date = NOW();
+                END IF;
+        end IF;
+        return NEW;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 CREATE SCHEMA gn_meta;
 
 SET search_path = gn_meta, pg_catalog;
@@ -147,6 +169,16 @@ ALTER TABLE ONLY t_datasets
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE NO ACTION;
+
+
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_meta_dates_change_t_datasets
+  BEFORE INSERT OR UPDATE
+  ON t_datasets
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 ---------
