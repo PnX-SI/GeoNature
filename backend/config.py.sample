@@ -3,7 +3,7 @@
 Fichier de configuration générale de l'application
 '''
 
-SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost/taxhubdb"
+SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
