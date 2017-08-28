@@ -18,18 +18,8 @@ export class NomenclatureComponent implements OnInit, OnChanges {
   @Output() labelSelected = new EventEmitter<any>();
   constructor(private _formService: FormService) { }
 
-  // loadNomenclature(idNomenclature, regne, group2Inpn): any {
-  //   let labels = {};
-  //   this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn).then(
-  //     data => {
-  //       labels = data.values;
-  //     }
-  //   );
-  //   return labels;
-  // }
 
   ngOnInit() {
-    // this.labels = this.loadNomenclature(this.idNomenclature, this.regne, this.group2Inpn);
      this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => this.labels = data.values);
   }
@@ -51,6 +41,4 @@ export class NomenclatureComponent implements OnInit, OnChanges {
   onLabelChange() {
     this.labelSelected.emit(this.selectedId);
   }
-
-
 }
