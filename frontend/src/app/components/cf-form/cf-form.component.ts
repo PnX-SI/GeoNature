@@ -45,7 +45,7 @@ export class CfFormComponent implements OnInit {
     };
     // releve get dataSet
     this.formService.getDatasets()
-      .then(res => {this.dataSets = res; });
+      .subscribe(res => this.dataSets = res);
     // provisoire:
     this.dataSets = [1, 2, 3];
   }// end ngOnInit

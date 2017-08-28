@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfigs } from '../../../../conf/app.configs';
 
@@ -14,30 +14,23 @@ export class FormService {
 
   getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
     const params: URLSearchParams = new URLSearchParams();
-    // const params = {id: id_nomenclature, regne: regne, group2_inpn:group2_inpn};
-    // if (regne !== undefined) {
-    //   params.set('regne', regne);
-    // }
-    // if (group2_inpn !== undefined) {
-    //   params.set('group2_inpn', group2_inpn);
-    // }
-    // TODO: insert regne and group2INPN in the request
-    return this._http.get(`${AppConfigs.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}?regne=${regne}?group2_inpn=${group2_inpn}`)
-    .toPromise()
-    .then(
-      response => {
+    regne ? params.set('regne', regne) : params.set('regne', '');
+    group2_inpn ? params.set('group2_inpn', group2_inpn) : params.set('group2_inpn', '');
+    return this._http.get(`${AppConfigs.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {search: params})
+    .map(response => {
         return response.json();
       });
     }
   getDatasets() {
-    return this._http.get(`${AppConfigs.API_ENDPOINT}/meta/datasets`)
-      .toPromise();
+    return this._http.get(`${AppConfigs.API_ENDPOINT}meta/datasets`)
+      .map(response => {
+        return response.json();
+      });
   }
 
   getObservers(idMenu) {
      return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`)
-      .toPromise()
-      .then(response => {
+      .map(response => {
         return response.json();
       });
   }
