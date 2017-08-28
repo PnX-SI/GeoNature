@@ -284,11 +284,11 @@ CREATE OR REPLACE FUNCTION insert_occurrences_contact()
   RETURNS trigger AS
 $BODY$
 DECLARE
-    idsensibilite integer;
+    idsensitivity integer;
 BEGIN
-    --calcul de la valeur de la sensibilité
-    SELECT INTO idsensibilite ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
-    new.id_nomenclature_diffusion_level = idsensibilite;
+    --Calculate sensitivity value
+    SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
+    new.id_nomenclature_diffusion_level = idsensitivity;
     RETURN NEW;             
 END;
 $BODY$
@@ -299,11 +299,11 @@ CREATE OR REPLACE FUNCTION update_occurrences_contact()
   RETURNS trigger AS
 $BODY$
 DECLARE
-    idsensibilite integer;
+    idsensitivity integer;
 BEGIN
-    --calcul de la valeur de la sensibilité
-    SELECT INTO idsensibilite ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
-    new.id_nomenclature_diffusion_level = idsensibilite;
+    --Calculate sensitivity value
+    SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
+    new.id_nomenclature_diffusion_level = idsensitivity;
     RETURN NEW;             
 END;
 $BODY$
