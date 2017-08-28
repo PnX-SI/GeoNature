@@ -190,5 +190,5 @@ INSERT INTO t_programs VALUES (2, 'test', 'test', false);
 INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
 (1,NULL,'taxref_version','version du référentiel taxonomique','Taxref V9.0',NULL)
 ,(2,2,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
-,(3,1,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL);
+,(3,1,'uuid_url_value','valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
 ,(4,1,'local_srid','valeur du srid local','2154',NULL);
