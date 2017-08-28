@@ -8,37 +8,37 @@
         </select> -->
         <app-nomenclature
           placeholder="Stade de vie" 
-          [idNomenclature]="10" 
+          [idTypeNomenclature]="10" 
           [regne]="lala" 
           [group2Inpn]="lala"
-          (labelSelected)= "updateCountingInput('id_nomenclature_life_stage', $event, index)" > 
+          (valueSelected)= "updateCountingInput('id_nomenclature_life_stage', $event, index)" > 
         </app-nomenclature>
       </td>
       <td>
           <app-nomenclature 
             placeholder="Sexe" 
-            [idNomenclature]="9" 
+            [idTypeNomenclature]="9" 
             [regne]="lala" 
             [group2Inpn]="lala"
-            (labelSelected)= "updateCountingInput('id_nomenclature_sex', $event, index)" >
+            (valueSelected)= "updateCountingInput('id_nomenclature_sex', $event, index)" >
           </app-nomenclature>
       </td>
       <td>
           <app-nomenclature 
           placeholder="Objet" 
-          [idNomenclature]="6" 
+          [idTypeNomenclature]="6" 
           [regne]="lala" 
           [group2Inpn]="lala"
-          (labelSelected)= "updateCountingInput('id_nomenclature_obj_count', $event, index )" >
+          (valueSelected)= "updateCountingInput('id_nomenclature_obj_count', $event, index )" >
         </app-nomenclature>
       </td>
       <td>
           <app-nomenclature
             placeholder="Type"
-            [idNomenclature]="21"
+            [idTypeNomenclature]="21"
             [regne]="lala"
             [group2Inpn]="lala"
-            (labelSelected)= "updateCountingInput('id_nomenclature_type_count', $event, index)" >
+            (valueSelected)= "updateCountingInput('id_nomenclature_type_count', $event, index)" >
           </app-nomenclature>  
       </td>
       <td>
