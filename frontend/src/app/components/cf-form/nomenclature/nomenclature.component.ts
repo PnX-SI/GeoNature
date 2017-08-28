@@ -11,34 +11,34 @@ export class NomenclatureComponent implements OnInit, OnChanges {
   nomenclature: any;
   selectedId: number;
   @Input() placeholder: string;
-  @Input() idNomenclature: number;
+  @Input() idTypeNomenclature: number;
   @Input() regne: string;
   @Input() group2Inpn: string;
   @Input() lang: string;
-  @Output() labelSelected = new EventEmitter<any>();
+  @Output() valueSelected = new EventEmitter<any>();
   constructor(private _formService: FormService) { }
 
 
   ngOnInit() {
-     this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn)
+     this._formService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => this.labels = data.values);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
-      this._formService.getNomenclature(this.idNomenclature, changes.regne.currentValue, changes.group2Inpn.currentValue)
+      this._formService.getNomenclature(this.idTypeNomenclature, changes.regne.currentValue, changes.group2Inpn.currentValue)
         .subscribe(data => this.labels = data.values);
     }
     // if only change groupe2inpn
     if (changes.regne === undefined && changes.group2Inpn !== undefined && !changes.group2Inpn.firstChange) {
-        this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn)
+        this._formService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
           .subscribe(data => this.labels = data.values);
       }
     }
 
   // Output
   onLabelChange() {
-    this.labelSelected.emit(this.selectedId);
+    this.valueSelected.emit(this.selectedId);
   }
 }
