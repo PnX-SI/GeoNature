@@ -144,36 +144,25 @@
             (labelSelected)= "updateOccurenceContact($event, 'id_nomenclature_naturalness' )" > 
         </app-nomenclature>             
 
-        <app-nomenclature 
-          placeholder="Méthode determ"
-          [idNomenclature]="" 
-          [regne]="formService.taxon.regne" 
-          [group2Inpn]="formService.taxon.group2_inpn"
-          (labelSelected)= "updateOccurenceContact($event, 'determination_method' )" > 
-        </app-nomenclature>
+        <md-input-container class="input-alignment-sm input-width-sm">
+          <input mdInput [(ngModel)]="determination_method" (change)="updateOccurenceContact(determination_method, 'determination_method')"  type="text"  placeholder="Méthode de détermination">
+        </md-input-container>
 
         <md-input-container class="input-alignment-sm input-width-sm">
             <input mdInput [(ngModel)]="determiner" (change)="updateOccurenceContact(determiner, 'determiner')"  type="text"  placeholder="Déterminateur">
         </md-input-container>
 
         <md-input-container class="input-alignment-sm input-width-sm">
-            <input mdInput [(ngModel)]="sample_number_proof" (change)="updateOccurenceContact(sample_number_proof, 'sample_number_proof')"  type="text"  placeholder="Echantillon">
+            <input mdInput [(ngModel)]="digital_proof" (change)="updateOccurenceContact(digital_proof, 'digital_proof')"  type="text"  placeholder="Preuve numérique">
         </md-input-container>
 
-        <app-nomenclature 
-          placeholder="Preuve numérique"
-          [idNomenclature]="" 
-          [regne]="formService.taxon.regne" 
-          [group2Inpn]="formService.taxon.group2_inpn"
-          (labelSelected)= "updateOccurenceContact($event, 'digital_proof' )" > 
-        </app-nomenclature>
-        <app-nomenclature 
-          placeholder="Preuve non numérique"
-          [idNomenclature]="" 
-          [regne]="formService.taxon.regne" 
-          [group2Inpn]="formService.taxon.group2_inpn"
-          (labelSelected)= "updateOccurenceContact($event, 'non_digital_proof' )" > 
-      </app-nomenclature>
+        <md-input-container class="input-alignment-sm input-width-sm">
+          <input mdInput [(ngModel)]="determination_method" (change)="updateOccurenceContact(determination_method, 'determination_method')"  type="text"  placeholder="Méthode de détermination">
+        </md-input-container>
+
+        <md-input-container class="input-alignment-sm input-width-sm">
+          <input mdInput [(ngModel)]="non_digital_proof" (change)="updateOccurenceContact(non_digital_proof, 'non_digital_proof')"  type="text"  placeholder="Preuve non numérique">
+        </md-input-container>
 
         </div>
         <div class="form-group">
@@ -208,3 +197,4 @@
   </md-card-actions> <!--END Btn-->
 
 
+<h5> current Taxon </h5> {{formService.taxon |json}}
