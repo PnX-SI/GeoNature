@@ -30,34 +30,20 @@ export class NomenclatureComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     // this.labels = this.loadNomenclature(this.idNomenclature, this.regne, this.group2Inpn);
-     this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn).then(
-      data => {
-        this.labels = data.values;
-      }
-    );
+     this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn)
+      .subscribe(data => this.labels = data.values);
   }
 
-  // a revoir ...
   ngOnChanges(changes: SimpleChanges) {
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
-      console.log("change regne");
       this._formService.getNomenclature(this.idNomenclature, changes.regne.currentValue, changes.group2Inpn.currentValue)
-        .subscribe(
-        data => {
-          this.labels = data.values;
-        }
-      );
+        .subscribe(data => this.labels = data.values);
     }
     // if only change groupe2inpn
     if (changes.regne === undefined && changes.group2Inpn !== undefined && !changes.group2Inpn.firstChange) {
-      console.log("only change groupe");
-      
-        this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn).then(
-          data => {
-            this.labels = data.values;
-          }
-        );
+        this._formService.getNomenclature(this.idNomenclature, this.regne, this.group2Inpn)
+          .subscribe(data => this.labels = data.values);
       }
     }
 
@@ -66,11 +52,5 @@ export class NomenclatureComponent implements OnInit, OnChanges {
     this.labelSelected.emit(this.selectedId);
   }
 
-
-
-  // ngOnChanges(){
-    // TODO
-    // when input language change, change which values are display
-  // }
 
 }
