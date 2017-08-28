@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import {FormService} from '../service/form.service';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'app-nomenclature',

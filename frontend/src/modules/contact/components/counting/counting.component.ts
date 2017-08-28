@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import {NomenclatureComponent} from '../nomenclature/nomenclature.component';
+import { NomenclatureComponent } from '../../../../core/components/nomenclature/nomenclature.component';
 import { Counting } from './counting.type';
 
 

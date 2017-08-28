@@ -11,7 +11,7 @@ export class NavService {
     constructor() {
         this._nav = [{route: '/accueil', appName: 'Accueil', icon: 'home'},
             {route: '/synthese', appName: 'Synthèse', icon: 'assessment'},
-            {route: '/contact-faune', appName: 'Contact Faune', icon: 'pets'},
+            {route: '/contact', appName: 'Contact Faune', icon: 'pets'},
             {route: '/contact-flore', appName: 'Contact Flore', icon: 'filter_vintage'},
             {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist'},
             {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'visibility'},

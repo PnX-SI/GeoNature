@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {NomenclatureComponent} from './nomenclature/nomenclature.component';
-import { CountingComponent } from './counting/counting.component';
-import { Counting } from './counting/counting.type';
-import { FormService } from './service/form.service';
+import { NomenclatureComponent } from '../../../../core/components/nomenclature/nomenclature.component';
+import { CountingComponent } from '../counting/counting.component';
+import { Counting } from '../counting/counting.type';
+import { FormService } from '../../../../core/services/form.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
