@@ -21,9 +21,7 @@ export class ObserversComponent implements OnInit {
   ngOnInit() {
     this.selectedObservers = [];
     this._formService.getObservers(this.idMenu)
-      .then(d => {
-        this.inputObservers = d;
-      });
+      .subscribe(data => this.inputObservers = data);
   }
 
   onAddObserver() {

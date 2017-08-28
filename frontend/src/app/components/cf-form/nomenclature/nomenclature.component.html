@@ -1,6 +1,7 @@
-<md-select [placeholder]="placeholder" [(ngModel)]= "selectedId" (change)= onLabelChange() >
-  <md-option *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label.definition_fr}} </md-option>
+<md-select [placeholder]="placeholder" [(ngModel)]= "selectedId" (change)= onLabelChange() [disabled]="labels == undefined" >
+  <md-option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label.definition_fr}} </md-option>
 </md-select>
+
 
 
 
