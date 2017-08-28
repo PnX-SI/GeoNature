@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { FormService } from '../service/form.service';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'app-taxonomy',
