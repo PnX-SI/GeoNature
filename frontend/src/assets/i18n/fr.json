@@ -9,47 +9,13 @@
         "Chinese":"Chinois"
     },
     "Title": "Traduire App",
-    "MainTxt": "Bienvenue",
-    "LeadTxt": "Ceci est une application de démonstration traduire angulaire. L'utilisateur peut voir la langue par défaut en fonction de la localisation ou l'utilisateur peut choisir la langue de son choix de ce qui précède.",
-    "MainBnt": "Commençons",
-    "Head1": "Commencer",
-    "Text1": "Une documentation détaillée et un guide de développeur peuvent être trouvés ici.",
-    "Head2": "Référence de l'API",
-    "Text2": "Détail de référence de l'API angulaire-translate peut être trouvée ici.",
-    "Head3": "Github",
-    "Text3": "Voir angulaire traduire sur github ici.",
-    "About": {
-        "PgTitle":"Sur",
-        "PgText":"Cette application web montre l'utilisation de Tranlate angulaire et ses caractéristiques. Angular traduire est très simple à utiliser et peut être facilement intégré à toute application angulaire. Il est chargé avec des tonnes de fonctionnalités et d'options qui rend notre vie facile."
-    },
-    "Contact":{
-        "PgTitle":"Contact",
-        "fname": "Prénom",
-        "fname-placeholder":"Entrez votre prénom",
-        "lname":"Nom de famille",
-        "lname-placeholder":"Entrez Nom",
-        "email":"E-Mail",
-        "email-placeholder":"Entrez E-Mail",
-        "phone":"Téléphone #",
-        "phone-placeholder":"(555)555-1212",
-        "add":"Adresse",
-        "add-placeholder":"Entrer l'adresse",
-        "hobby":"Loisirs",
-        "hobbies":{
-            "Movies": "Films",
-            "Walking":"En marchant",
-            "Swimming":"La natation",
-            "Running":"Fonctionnement"
-        },
-        "web":"Site Internet",
-        "web-placeholder":"Entrez Site",
-        "comment":"Commentaires",
-        "comment-placeholder":"Entrez vos commentaires",
-        "btn":"Envoyer"
-    },
-    "demoShortMessage": "Généralement, on utilise un texte en faux latin (le texte ne veut rien dire, il a été modifié), le Lorem ipsum ou Lipsum, qui permet donc de faire office de texte d'attente. L'avantage de le mettre en latin est que l'opérateur sait au premier coup d'oeil que la page contenant ces lignes n'est pas valide, et surtout l'attention du client n'est pas dérangée par le contenu, il demeure concentré seulement sur l'aspect graphique.",
-    "demoLongMessage": "Généralement, on utilise un texte en faux latin (le texte ne veut rien dire, il a été modifié), le Lorem ipsum ou Lipsum, qui permet donc de faire office de texte d'attente. L'avantage de le mettre en latin est que l'opérateur sait au premier coup d'oeil que la page contenant ces lignes n'est pas valide, et surtout l'attention du client n'est pas dérangée par le contenu, il demeure concentré seulement sur l'aspect graphique. Ce texte a pour autre avantage d'utiliser des mots de longueur variable, essayant de simuler une occupation normale. La méthode simpliste consistant à copier-coller un court texte plusieurs fois (« ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ceci est un faux-texte ») a l'inconvénient de ne pas permettre une juste appréciation typographique du résultat final. Il circule des centaines de versions différentes du Lorem ipsum, mais ce texte aurait originellement été tiré de l'ouvrage de Cicéron, De Finibus Bonorum et Malorum (Liber Primus, 32), texte populaire à cette époque, dont l'une des premières phrases est : « Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... » (« Il n'existe personne qui aime la souffrance pour elle-même, ni qui la recherche ni qui la veuille pour ce qu'elle est... »). Expert en utilisabilité des sites web et des logiciels, Jakob Nielsen souligne que l'une des limites de l'utilisation du faux-texte dans la conception de sites web est que ce texte n'étant jamais lu, il ne permet pas de vérifier sa lisibilité effective. La lecture à l'écran étant plus difficile, cet aspect est pourtant essentiel. Nielsen préconise donc l'utilisation de textes représentatifs plutôt que du lorem ipsum. On peut aussi faire remarquer que les formules conçues avec du faux-texte ont tendance à sous-estimer l'espace nécessaire à une titraille immédiatement intelligible, ce qui oblige les rédactions à formuler ensuite des titres simplificateurs, voire inexacts, pour ne pas dépasser l'espace imparti.",
-    
+    "IntroTitle": "Bienvenue dans GeoNature V2",
+    "IntroText": "Vous êtes sur l'instance de démonstration de GeoNature V2. Elle est actuellement en développement et est mise à jour quotidiennement. Les développements et fonctionnalités sont détaillés sur https://github.com/PnX-SI/GeoNature/. Cette zone permet d'afficher un message aux utilisateurs, configurable pour le modifier régulièrement ou le désactiver. Cette page d'accueil propose aussi des statistiques globales sur la base de données (nombre d'observations, d'espèces, de programmes, de jeux de données... Elle affiche ensuite les 50 dernières observations présentes dans la synthèse puis des statistiques globales sur les données et leur évolution. La barre de navigation latérale permet d'accéder aux différents modules en fonction des droits dont dispose l'utilisateur connecté. Actuellement seul le formulaire du mobule CONTACT (= Occurrences de taxon) est disponible et est en cours de développement.",
+    "Observations": "Observations",
+    "Sepcies": "Espèces",
+    "Programs": "Programmes",
+    "Datasets": "Jeux de données",
+  
     "Map":{
         "SearchLocation":"Rechercher un lieu",
         "AddPoint":"Localisez l'observation (point)",
