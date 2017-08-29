@@ -433,7 +433,7 @@ ALTER TABLE t_nomenclatures ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
 ----------------------------
---TECHNIQUES D'OBSERVATION--
+--OBSERVATION TECHNIQUES--
 ----------------------------
 INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), NULL)
 ,(212, 'Animalia', 'Oiseaux', now(), NULL)
@@ -710,7 +710,7 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 ,(322, 'Animalia', 'Poissons', now(), NULL)
 
 -----------------
---STADES DE VIE--
+--LIFE STAGES--
 -----------------
 ,(2, 'all', 'all', now(), NULL)
 ,(3, 'all', 'all', now(), NULL)
@@ -817,9 +817,9 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 
 -- TODO : "Protozoa"
 
---------
---SEXE--
---------
+-------
+--SEX--
+-------
 ,(188, 'all', 'all', now(), NULL)
 ,(189, 'all', 'all', now(), NULL)
 ,(194, 'all', 'all', now(), NULL)
@@ -904,9 +904,9 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 -- TODO : "Protozoa"
 
 
--------------------------
---METHODE D'OBSERVATION--
--------------------------
+-----------------------
+--OBSERVATION METHODS--
+-----------------------
 ,(42, 'all', 'all', now(), NULL)
 ,(61, 'all', 'all', now(), NULL)
 ,(62, 'all', 'all', now(), NULL)
@@ -986,14 +986,14 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 
 ,(52, 'Animalia', 'Gastéropodes', now(), NULL)
 ,(66, 'Animalia', 'Gastéropodes', now(), NULL)
---manque l'identificatino par la coquille. TODO : proposer l'ajout à l'INPN
+--Manque l'identification par la coquille. TODO : proposer l'ajout à l'INPN
 
 ,(43, 'Animalia', 'Amphibiens', now(), NULL)
 ,(46, 'Animalia', 'Amphibiens', now(), NULL)
 ,(48, 'Animalia', 'Amphibiens', now(), NULL)
 ,(52, 'Animalia', 'Amphibiens', now(), NULL)
 ,(67, 'Animalia', 'Amphibiens', now(), NULL)
---manque l'identificatino par la ponte. TODO : proposer l'ajout à l'INPN
+--Manque l'identification par la ponte. TODO : proposer l'ajout à l'INPN
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
@@ -1020,7 +1020,7 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 --TODO : "Plathelminthes"
 
 ---------------------
---Statut biologique--
+--Biological status--
 ---------------------
 ,(29, 'all', 'all', now(), NULL)
 ,(30, 'all', 'all', now(), NULL)
@@ -1101,18 +1101,18 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 --TODO : "Plathelminthes"
 
 
-------------------------
---Type de dénombrement--
-------------------------
+------------------
+--Counting types--
+------------------
 ,(106, 'all', 'all', now(), NULL)
 ,(107, 'all', 'all', now(), NULL)
 ,(108, 'all', 'all', now(), NULL)
 ,(109, 'all', 'all', now(), NULL)
 
 
--------------------------
---Objet du dénombrement--
--------------------------
+--------------------
+--Counting objects--
+--------------------
 ,(165, 'all', 'all', now(), NULL)
 
 
@@ -1187,9 +1187,9 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 --TODO : "Myriapodes
 --TODO : "Plathelminthes"
 
---------------
---Naturalité--
---------------
+---------------
+--Naturalness--
+---------------
 ,(181, 'all', 'all', now(), NULL)
 ,(182, 'all', 'all', now(), NULL)
 
@@ -1212,26 +1212,26 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 --TODO : "Protozoa"
 
 
---------------------
---Preuve existance--
---------------------
+-------------------
+--Proof existence--
+-------------------
 ,(91, 'all', 'all', now(), NULL)
 ,(92, 'all', 'all', now(), NULL)
 ,(93, 'all', 'all', now(), NULL)
 ,(94, 'all', 'all', now(), NULL)
 
 
----------------------------
---Statut de l'observation--
----------------------------
+----------------------
+--Observation status--
+----------------------
 ,(99, 'all', 'all', now(), NULL)
 ,(100, 'all', 'all', now(), NULL)
 ,(101, 'all', 'all', now(), NULL)
 
 
----------------------------
---Statut de validation--
----------------------------
+---------------------
+--Validation status--
+---------------------
 ,(345, 'all', 'all', now(), NULL)
 ,(346, 'all', 'all', now(), NULL)
 ,(347, 'all', 'all', now(), NULL)
@@ -1240,9 +1240,9 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 ,(350, 'all', 'all', now(), NULL)
 
 
----------------------------------------
---Niveau de précision de la diffusion--
----------------------------------------
+-----------------------------
+--Diffusion precision level--
+-----------------------------
 ,(158, 'all', 'all', now(), NULL)
 ,(159, 'all', 'all', now(), NULL)
 ,(160, 'all', 'all', now(), NULL)
