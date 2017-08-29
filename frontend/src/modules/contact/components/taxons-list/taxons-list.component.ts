@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-taxons-list',
+  selector: 'pnx-taxons-list',
   templateUrl: './taxons-list.component.html',
   styleUrls: ['./taxons-list.component.scss']
 })

@@ -6,40 +6,40 @@
         <!-- <select class="input-sm" id="sel1">
           <option>Type</option>
         </select> -->
-        <app-nomenclature
+        <pnx-nomenclature
           placeholder="Stade de vie" 
           [idTypeNomenclature]="10" 
           [regne]="lala" 
           [group2Inpn]="lala"
           (valueSelected)= "updateCountingInput('id_nomenclature_life_stage', $event, index)" > 
-        </app-nomenclature>
+        </pnx-nomenclature>
       </td>
       <td>
-          <app-nomenclature 
+          <pnx-nomenclature 
             placeholder="Sexe" 
             [idTypeNomenclature]="9" 
             [regne]="lala" 
             [group2Inpn]="lala"
             (valueSelected)= "updateCountingInput('id_nomenclature_sex', $event, index)" >
-          </app-nomenclature>
+          </pnx-nomenclature>
       </td>
       <td>
-          <app-nomenclature 
+          <pnx-nomenclature 
           placeholder="Objet" 
           [idTypeNomenclature]="6" 
           [regne]="lala" 
           [group2Inpn]="lala"
           (valueSelected)= "updateCountingInput('id_nomenclature_obj_count', $event, index )" >
-        </app-nomenclature>
+        </pnx-nomenclature>
       </td>
       <td>
-          <app-nomenclature
+          <pnx-nomenclature
             placeholder="Type"
             [idTypeNomenclature]="21"
             [regne]="lala"
             [group2Inpn]="lala"
             (valueSelected)= "updateCountingInput('id_nomenclature_type_count', $event, index)" >
-          </app-nomenclature>  
+          </pnx-nomenclature>  
       </td>
       <td>
         <md-input-container>

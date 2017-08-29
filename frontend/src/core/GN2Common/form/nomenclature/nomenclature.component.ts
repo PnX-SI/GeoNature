@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form.service';
 
 @Component({
-  selector: 'app-nomenclature',
+  selector: 'pnx-nomenclature',
   templateUrl: './nomenclature.component.html',
   styleUrls: ['./nomenclature.component.scss']
 })

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { AppConfigs } from '../../conf/app.configs';
+import { AppConfigs } from '../../../conf/app.configs';
 
 @Injectable()
 export class FormService {

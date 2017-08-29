@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { NomenclatureComponent } from '../../../../core/components/nomenclature/nomenclature.component';
+//import { NomenclatureComponent } from '../../../../core/components/nomenclature/nomenclature.component';
 import { CountingComponent } from '../counting/counting.component';
 import { Counting } from '../counting/counting.type';
-import { FormService } from '../../../../core/services/form.service';
+import { FormService } from '../../../../core/GN2Common/form/form.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
 
 
 @Component({
-  selector: 'app-cf-form',
-  templateUrl: './cf-form.component.html',
-  styleUrls: ['./cf-form.component.scss']
+  selector: 'pnx-contact-form',
+  templateUrl: './contact-form.component.html',
+  styleUrls: ['./contact-form.component.scss']
 })
-export class CfFormComponent implements OnInit {
+export class ContactFormComponent implements OnInit {
   nbCounting: Array<string>;
   observationContact: any;
   occurenceContact: Array<any>;
