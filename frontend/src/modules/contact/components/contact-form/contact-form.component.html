@@ -80,7 +80,7 @@
         </div>
       <div> <!--Auto complete noms de taxon-->
 
-        <pnx-taxonomy taxonChanged="updateTaxon($event)" ></pnx-taxonomy>
+        <pnx-taxonomy (taxonChanged)="contactFormService.updateTaxon($event)" ></pnx-taxonomy>
 
 
         <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -191,3 +191,9 @@
     <button md-raised-button class="btn-form" color="primary">Valider le relevé</button>
   </md-card-actions> <!--END Btn-->
 
+
+  Current Taxon = {{contactFormService.taxon |json}}
+
+  index = {{ contactFormService.indexContact }}
+
+  update = {{ contactFormService.updateTaxon |json }}

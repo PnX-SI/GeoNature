@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Counting } from './counting.type';
+import { ContactFormService } from '../contact-form/contact-form.service'
 
 
 @Component({
@@ -14,7 +15,7 @@ export class CountingComponent implements OnInit {
   @Output() countingAdded = new EventEmitter<any>();
   @Output() countingRemoved = new EventEmitter<any>();
   @Output() inputUpdated = new EventEmitter<any>();
-  constructor() { }
+  constructor(public contactFormService: ContactFormService) { }
 
   ngOnInit() {
     this.counting = new Counting();

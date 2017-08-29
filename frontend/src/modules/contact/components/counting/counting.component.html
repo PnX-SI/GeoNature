@@ -9,8 +9,8 @@
         <pnx-nomenclature
           placeholder="Stade de vie" 
           [idTypeNomenclature]="10" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
+          [regne]="contactFormService.taxon.regne"  
+          [group2Inpn]="contactFormService.taxon.group2_inpn" 
           (valueSelected)= "updateCountingInput('id_nomenclature_life_stage', $event, index)" > 
         </pnx-nomenclature>
       </td>
@@ -18,8 +18,8 @@
           <pnx-nomenclature 
             placeholder="Sexe" 
             [idTypeNomenclature]="9" 
-            [regne]="lala" 
-            [group2Inpn]="lala"
+            [regne]="contactFormService.taxon.regne" 
+            [group2Inpn]="contactFormService.taxon.group2_inpn"
             (valueSelected)= "updateCountingInput('id_nomenclature_sex', $event, index)" >
           </pnx-nomenclature>
       </td>
@@ -27,8 +27,8 @@
           <pnx-nomenclature 
           placeholder="Objet" 
           [idTypeNomenclature]="6" 
-          [regne]="lala" 
-          [group2Inpn]="lala"
+          [regne]="contactFormService.taxon.regne"
+          [group2Inpn]="contactFormService.taxon.group2_inpn"
           (valueSelected)= "updateCountingInput('id_nomenclature_obj_count', $event, index )" >
         </pnx-nomenclature>
       </td>
@@ -36,8 +36,8 @@
           <pnx-nomenclature
             placeholder="Type"
             [idTypeNomenclature]="21"
-            [regne]="lala"
-            [group2Inpn]="lala"
+            [regne]="contactFormService.taxon.regne"
+            [group2Inpn]="contactFormService.taxon.group2_inpn"
             (valueSelected)= "updateCountingInput('id_nomenclature_type_count', $event, index)" >
           </pnx-nomenclature>  
       </td>
