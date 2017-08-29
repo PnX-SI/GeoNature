@@ -5,11 +5,8 @@ import { AppConfigs } from '../../../conf/app.configs';
 
 @Injectable()
 export class FormService {
-  taxon: any;
-  indexContact: number;
+
   constructor(private _http: Http) {
-    this.taxon = {};
-    this.indexContact = 0;
    }
 
   getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {

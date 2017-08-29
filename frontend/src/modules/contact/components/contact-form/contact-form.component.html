@@ -80,7 +80,7 @@
         </div>
       <div> <!--Auto complete noms de taxon-->
 
-        <pnx-taxonomy></pnx-taxonomy>
+        <pnx-taxonomy taxonChanged="updateTaxon($event)" ></pnx-taxonomy>
 
 
         <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -95,15 +95,15 @@
         <pnx-nomenclature 
           placeholder="Technique d'observation" 
           [idTypeNomenclature]="100" 
-          [regne]="formService.taxon.regne" 
-          [group2Inpn]="formService.taxon.group2_inpn"
+          [regne]="contactFormService.taxon.regne" 
+          [group2Inpn]="contactFormService.taxon.group2_inpn"
           (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
         </pnx-nomenclature>
         <pnx-nomenclature 
           placeholder="Méthode d'observation"
           [idTypeNomenclature]="14" 
-          [regne]="formService.taxon.regne" 
-          [group2Inpn]="formService.taxon.group2_inpn"
+          [regne]="contactFormService.taxon.regne" 
+          [group2Inpn]="contactFormService.taxon.group2_inpn"
           (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
         </pnx-nomenclature> 
       
@@ -118,24 +118,24 @@
             <pnx-nomenclature 
               placeholder="Etat biologique"
               [idTypeNomenclature]="7" 
-              [regne]="formService.taxon.regne" 
-              [group2Inpn]="formService.taxon.group2_inpn"
+              [regne]="contactFormService.taxon.regne" 
+              [group2Inpn]="contactFormService.taxon.group2_inpn"
               (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_condition' )" > 
           </pnx-nomenclature> 
 
           <pnx-nomenclature 
             placeholder="Statut biologique"
             [idTypeNomenclature]="13" 
-            [regne]="formService.taxon.regne" 
-            [group2Inpn]="formService.taxon.group2_inpn"
+            [regne]="contactFormService.taxon.regne" 
+            [group2Inpn]="contactFormService.taxon.group2_inpn"
             (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_status' )" > 
         </pnx-nomenclature>           
 
           <pnx-nomenclature 
             placeholder="Naturalité"
             [idTypeNomenclature]="8" 
-            [regne]="formService.taxon.regne" 
-            [group2Inpn]="formService.taxon.group2_inpn"
+            [regne]="contactFormService.taxon.regne" 
+            [group2Inpn]="contactFormService.taxon.group2_inpn"
             (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_naturalness' )" > 
         </pnx-nomenclature>             
 
