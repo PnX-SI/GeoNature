@@ -121,16 +121,16 @@ ALTER TABLE ONLY t_medias
     ADD CONSTRAINT pk_t_medias PRIMARY KEY (id_media);
 
 
----------------
---FOREIGN KEY--
----------------
+----------------
+--FOREIGN KEYS--
+----------------
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_bib_media_types FOREIGN KEY (id_type) REFERENCES bib_media_types (id_type) ON UPDATE CASCADE;
 
 
---------------
---CONSTRAINS--
---------------
+---------------
+--CONSTRAINTS--
+---------------
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_check_entity_exist CHECK (check_entity_field_exist(entity_name));
 
