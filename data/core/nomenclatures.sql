@@ -99,7 +99,7 @@ CREATE OR REPLACE FUNCTION calculate_sensitivity(
     mynomenclatureid integer)
   RETURNS integer AS
 $BODY$
-  --Function to return id_nomenclature depending on observation sensibility
+  --Function to return id_nomenclature depending on observation sensitivity
   --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
   DECLARE
   sensitivityid integer;
