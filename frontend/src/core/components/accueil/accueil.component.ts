@@ -2,12 +2,13 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { AppConfigs } from '../../../conf/app.configs'
 import { NavService } from '../../services/nav.service';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
+import { MapService } from '../../GN2Common/map/map.service'
 
 @Component({
   selector: 'pnx-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.scss'],
-  providers: [{provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
+  providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
 })
 export class AccueilComponent implements OnInit {
   private appName: string;

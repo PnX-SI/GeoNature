@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
-//import { NomenclatureComponent } from '../../../../core/components/nomenclature/nomenclature.component';
 import { CountingComponent } from '../counting/counting.component';
 import { Counting } from '../counting/counting.type';
 import { FormService } from '../../../../core/GN2Common/form/form.service';
+import { ContactFormService }  from './contact-form.service'
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
@@ -23,7 +23,7 @@ export class ContactFormComponent implements OnInit {
   dataForm: any;
   dataSets: any;
   taxonList: Array<any>;
-  constructor(public formService: FormService) {  }
+  constructor(public formService: FormService, public contactFormService: ContactFormService) {  }
 
   ngOnInit() {
     this.observationContact = {'observers': []};
@@ -84,23 +84,26 @@ export class ContactFormComponent implements OnInit {
   }
 
   // taxonList component
+  updateTaxon(taxon){
+    this.contactFormService.updateTaxon(taxon);
+  }
   addCurrentTaxon() {
-    const currentTaxon = this.formService.taxon;
+    const currentTaxon = this.contactFormService.taxon;
     // add to the taxon-list component
     this.taxonList.push(currentTaxon);
     // add into occurence contact dict
     this.occurenceContact.push({});
-    this.occurenceContact[this.formService.indexContact].nom_cite = currentTaxon.nom_cite;
-    this.occurenceContact[this.formService.indexContact].cd_nom = currentTaxon.cd_nom;
+    this.occurenceContact[this.contactFormService.indexContact].nom_cite = currentTaxon.nom_cite;
+    this.occurenceContact[this.contactFormService.indexContact].cd_nom = currentTaxon.cd_nom;
     // add the coutings into occurence contact dict
-    this.occurenceContact[this.formService.indexContact]['cor_counting_contact'] = this.countingsContact;
+    this.occurenceContact[this.contactFormService.indexContact]['cor_counting_contact'] = this.countingsContact;
     // clear counting contact
     this.countingsContact = [{}];
     this.nbCounting = [''];
     // clear the current taxon
-    this.formService.taxon = {};
+    this.contactFormService.taxon = {};
     // update the index of the current contact
-    this.formService.indexContact += 1;
+    this.contactFormService.indexContact += 1;
   }
 
   removeOneOccurenceTaxon(index): void {

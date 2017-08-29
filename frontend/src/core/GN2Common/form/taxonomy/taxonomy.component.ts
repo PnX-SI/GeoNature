@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { FormService } from '../form.service';
 
@@ -12,6 +12,7 @@ export class TaxonomyComponent implements OnInit {
   taxonsList: Array<any>;
   searchString: any;
   filteredTaxons: any;
+  @Output() taxonChanged = new EventEmitter<any>();
   constructor(private _formService: FormService) {}
 
   ngOnInit() {
@@ -25,8 +26,12 @@ export class TaxonomyComponent implements OnInit {
         .subscribe(response => this.taxonsList = response);
   }
 
-  getTaxonInfo(taxon) {
-    this._formService.taxon = taxon;
+  // getTaxonInfo(taxon) {
+  //   this._formService.taxon = taxon;
+  // }
+
+  onTaxonSelected(taxon){
+    this.taxonChanged.emit(taxon);
   }
 
 }
