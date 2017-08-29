@@ -23,7 +23,7 @@ export class ContactFormComponent implements OnInit {
   dataForm: any;
   dataSets: any;
   taxonList: Array<any>;
-  constructor(public formService: FormService, public contactFormService: ContactFormService) {  }
+  constructor(private _formService: FormService, public contactFormService: ContactFormService) {  }
 
   ngOnInit() {
     this.observationContact = {'observers': []};
@@ -44,7 +44,7 @@ export class ContactFormComponent implements OnInit {
       }
     };
     // releve get dataSet
-    this.formService.getDatasets()
+    this._formService.getDatasets()
       .subscribe(res => this.dataSets = res);
     // provisoire:
     this.dataSets = [1, 2, 3];
@@ -84,9 +84,6 @@ export class ContactFormComponent implements OnInit {
   }
 
   // taxonList component
-  updateTaxon(taxon){
-    this.contactFormService.updateTaxon(taxon);
-  }
   addCurrentTaxon() {
     const currentTaxon = this.contactFormService.taxon;
     // add to the taxon-list component
