@@ -10,15 +10,14 @@ export class NavService {
     private _nav = [{}];
     constructor() {
         this._nav = [{route: '/accueil', appName: 'Accueil', icon: 'home'},
-            {route: '/synthese', appName: 'Synthèse', icon: 'assessment'},
-            {route: '/contact', appName: 'Contact Faune', icon: 'pets'},
-            {route: '/contact-flore', appName: 'Contact Flore', icon: 'filter_vintage'},
+            {route: '/synthese', appName: 'Synthèse', icon: 'device_hub'},
+            {route: '/contact', appName: 'Contact Faune', icon: 'visibility'},
             {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist'},
-            {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'visibility'},
-            {route: '/parametres', appName: 'Paramètres', icon: 'settings'},
+            {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'filter_vintage'},
             {route: '/suivi-chiro', appName: 'Suivi Chiro', icon: 'youtube_searched_for'},
             {route: '/exports', appName: 'Exports', icon: 'cloud_download'},
-            {route: '/prospections', appName: 'Prospections', icon: 'feedback'}
+            {route: '/prospections', appName: 'Prospections', icon: 'feedback'},
+            {route: '/parametres', appName: 'Paramètres', icon: 'settings'}
             ];
   }
 
