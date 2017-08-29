@@ -6,9 +6,9 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
------------------------
---PUBLIQUES FUNCTIONS--
------------------------
+--------------------
+--PUBLIC FUNCTIONS--
+--------------------
 CREATE OR REPLACE FUNCTION public.fct_trg_meta_dates_change()
   RETURNS trigger AS
 $BODY$
@@ -41,7 +41,7 @@ CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme
 $BODY$
     DECLARE
         theparamvalue text; 
---fonction permettant de récupérer la valeur d'un paramètre selon son nom et l'organisme
+-- Function that allows to get value of a parameter depending on his name and organism
 -- USAGE : SELECT gn_meta.get_default_parameter('taxref_version',NULL);
 -- OR      SELECT gn_meta.get_default_parameter('uuid_url_value', 1);
   BEGIN
@@ -113,9 +113,9 @@ CREATE TABLE t_programs (
 COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
 
 
----------------
---PRIMARY KEY--
----------------
+----------------
+--PRIMARY KEYS--
+----------------
 ALTER TABLE ONLY t_parameters
     ADD CONSTRAINT pk_t_parameters PRIMARY KEY (id_parameter);
 
@@ -132,9 +132,9 @@ ALTER TABLE ONLY t_programs
     ADD CONSTRAINT pk_t_programs PRIMARY KEY (id_program);
 
 
----------------
---FOREIGN KEY--
----------------
+----------------
+--FOREIGN KEYS--
+----------------
 ALTER TABLE ONLY t_parameters
     ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
 
@@ -181,9 +181,9 @@ CREATE TRIGGER tri_meta_dates_change_t_datasets
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
----------
---DATAS--
----------
+---------------
+--SAMPLE DATA--
+---------------
 INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
 INSERT INTO t_programs VALUES (2, 'test', 'test', false);
 
