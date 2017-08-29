@@ -1,14 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppConfigs } from '../../../conf/app.configs'
 import { NavService } from '../../services/nav.service';
-import { MapService } from '../../services/map.service';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 
 @Component({
-  selector: 'app-accueil',
+  selector: 'pnx-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.scss'],
-  providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
+  providers: [{provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
 })
 export class AccueilComponent implements OnInit {
   private appName: string;
@@ -53,7 +52,7 @@ export class AccueilComponent implements OnInit {
         }
     }
 
-  constructor(private mapService: MapService, private _navService: NavService) {
+  constructor(private _navService: NavService) {
     _navService.setAppName('Accueil');
     this.appName =  AppConfigs.appName;
   }

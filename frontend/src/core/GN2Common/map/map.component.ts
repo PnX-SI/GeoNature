@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MapService } from '../../services/map.service';
+import { MapService } from './map.service';
 import {Map} from 'leaflet';
 
 @Component({
-  selector: 'app-map',
+  selector: 'pnx-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })

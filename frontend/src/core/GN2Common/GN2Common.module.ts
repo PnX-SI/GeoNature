@@ -5,14 +5,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
 
 // Components
-import { NomenclatureComponent } from './nomenclature/nomenclature.component';
-import { ObserversComponent } from './observers/observers.component';
-import { TaxonomyComponent } from './taxonomy/taxonomy.component';
+import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
+import { ObserversComponent } from './form/observers/observers.component';
+import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { MapComponent } from './map/map.component';
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // Service
+import  { MapService } from './map/map.service';
+import  { FormService } from './form/form.service';
+
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -32,15 +35,16 @@ export function HttpLoaderFactory(http: Http) {
           deps: [Http]
       }
   }),
-
   ],
   declarations: [
     NomenclatureComponent,
     ObserversComponent,
     TaxonomyComponent,
-    MapComponent
+    MapComponent,
+
   ],
-  providers : [],
+  providers : [MapService,
+    FormService],
   exports: [    
     NomenclatureComponent,
     ObserversComponent,
@@ -51,9 +55,8 @@ export function HttpLoaderFactory(http: Http) {
     MaterialModule,
     MdIconModule,
     MdNativeDateModule,
-    TranslateModule
-
+    TranslateModule,
   ]
 })
-export class SharedModule {
+export class GN2CommonModule {
 }

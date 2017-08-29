@@ -54,7 +54,7 @@ export class MapService {
 
                     this.marker = L.marker(e.latlng, {
                         icon: L.icon({
-                                iconUrl: require<any>('../../../node_modules/leaflet/dist/images/marker-icon.png'),
+                                iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
                                 iconSize: [24,36],
                                 iconAnchor: [12,36]
                         }),

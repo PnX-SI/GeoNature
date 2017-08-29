@@ -10,7 +10,7 @@ import 'rxjs/Rx';
 
 
 @Component({
-  selector: 'app-root',
+  selector: 'pnx-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   providers: [{ provide: APP_CONFIG, useValue: CONFIG }]

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form.service';
 
 @Component({
-  selector: 'app-taxonomy',
+  selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
   styleUrls: ['./taxonomy.component.scss']
 })

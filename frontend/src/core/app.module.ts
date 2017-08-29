@@ -15,7 +15,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
 
 // Modules
-import  { SharedModule }  from './components/shared.module'
+import { GN2CommonModule }  from './GN2Common/GN2Common.module'
 import { ContactModule } from '../modules/contact/contact.module'
 
 // Angular created component
@@ -24,12 +24,10 @@ import { AppRoutingModule } from './routing/app-routing.module'; // RoutingModul
 import { AccueilComponent } from './components/accueil/accueil.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { MapComponent } from './components/map/map.component';
 
 
 // Service
 import { AppConfigs } from '../conf/app.configs';
-import { MapService } from './services/map.service';
 import { NavService } from './services/nav.service';
 import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
@@ -51,7 +49,7 @@ export function HttpLoaderFactory(http: Http) {
     CarouselModule.forRoot(),
     ChartModule,
     ToastrModule.forRoot(),
-    SharedModule,
+    GN2CommonModule,
     ContactModule,
   ],
   declarations: [
@@ -61,7 +59,7 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     SigninComponent,
   ],
-  providers: [NavService, MapService, AuthService, AuthGuard],
+  providers: [NavService, AuthService, AuthGuard],
   bootstrap: [AppComponent],
 })
 

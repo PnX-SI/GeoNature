@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form.service';
 
 @Component({
-  selector: 'app-observers',
+  selector: 'pnx-observers',
   templateUrl: './observers.component.html',
   styleUrls: ['./observers.component.scss']
 })

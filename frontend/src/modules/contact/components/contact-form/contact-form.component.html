@@ -8,12 +8,12 @@
       <md-icon mdSuffix>supervisor_account</md-icon>
     </md-input-container> -->
 
-    <app-observers
+    <pnx-observers
        [idMenu]="9"
        placeholder="Observateur"
       (observerSelected)="addObservers($event)"
       (observerDeleted)= "deleteObservers($event)" >
-    </app-observers>
+    </pnx-observers>
 
     <md-input-container class="input-alignment-sm input-width-xs">
       <input [(ngModel)]="observationContact.date_min" mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
@@ -80,7 +80,7 @@
         </div>
       <div> <!--Auto complete noms de taxon-->
 
-        <app-taxonomy></app-taxonomy>
+        <pnx-taxonomy></pnx-taxonomy>
 
 
         <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -92,20 +92,20 @@
             {{ crit }}
           </md-option>
         </md-autocomplete>
-        <app-nomenclature 
+        <pnx-nomenclature 
           placeholder="Technique d'observation" 
           [idTypeNomenclature]="100" 
           [regne]="formService.taxon.regne" 
           [group2Inpn]="formService.taxon.group2_inpn"
           (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
-        </app-nomenclature>
-        <app-nomenclature 
+        </pnx-nomenclature>
+        <pnx-nomenclature 
           placeholder="Méthode d'observation"
           [idTypeNomenclature]="14" 
           [regne]="formService.taxon.regne" 
           [group2Inpn]="formService.taxon.group2_inpn"
           (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
-        </app-nomenclature> 
+        </pnx-nomenclature> 
       
 
       <!--Avancé-->
@@ -115,29 +115,29 @@
       </div> 
       <div class="collapse" id="collapseAvance">
         <div class="well well-sm">
-            <app-nomenclature 
+            <pnx-nomenclature 
               placeholder="Etat biologique"
               [idTypeNomenclature]="7" 
               [regne]="formService.taxon.regne" 
               [group2Inpn]="formService.taxon.group2_inpn"
               (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_condition' )" > 
-          </app-nomenclature> 
+          </pnx-nomenclature> 
 
-          <app-nomenclature 
+          <pnx-nomenclature 
             placeholder="Statut biologique"
             [idTypeNomenclature]="13" 
             [regne]="formService.taxon.regne" 
             [group2Inpn]="formService.taxon.group2_inpn"
             (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_status' )" > 
-        </app-nomenclature>           
+        </pnx-nomenclature>           
 
-          <app-nomenclature 
+          <pnx-nomenclature 
             placeholder="Naturalité"
             [idTypeNomenclature]="8" 
             [regne]="formService.taxon.regne" 
             [group2Inpn]="formService.taxon.group2_inpn"
             (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_naturalness' )" > 
-        </app-nomenclature>             
+        </pnx-nomenclature>             
 
         <md-input-container class="input-alignment-sm input-width-sm">
           <input mdInput [(ngModel)]="determination_method" (change)="updateOccurenceContact(determination_method, 'determination_method')"  type="text"  placeholder="Méthode de détermination">
@@ -169,13 +169,13 @@
       <h5> <b> <u>Dénombrement</u>: </b></h5>
       <!-- DENOMBREMENT -->
       <div *ngFor="let counting of nbCounting; let i = index">
-        <app-counting 
+        <pnx-counting 
           [index]="i"
           [length] = "nbCounting.length"
           (inputUpdated)="updateCountingContact($event)"
           (countingAdded)="addCounting()"
           (countingRemoved)="removeCounting($event)">
-        </app-counting>
+        </pnx-counting>
       </div>
 
       <md-card-actions class="card-action"> <!--Btn Valider taxon-->
@@ -185,7 +185,7 @@
 
 
 
-  <app-taxons-list [list]="taxonList" (taxonRemoved)="removeOneOccurenceTaxon()">  </app-taxons-list>
+  <pnx-taxons-list [list]="taxonList" (taxonRemoved)="removeOneOccurenceTaxon()">  </pnx-taxons-list>
 
   <md-card-actions class="card-action"> <!--Btn Valider taxon-->
     <button md-raised-button class="btn-form" color="primary">Valider le relevé</button>

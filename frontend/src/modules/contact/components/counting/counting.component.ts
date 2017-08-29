@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NomenclatureComponent } from '../../../../core/components/nomenclature/nomenclature.component';
 import { Counting } from './counting.type';
 
 
 @Component({
-  selector: 'app-counting',
+  selector: 'pnx-counting',
   templateUrl: './counting.component.html',
   styleUrls: ['./counting.component.scss']
 })

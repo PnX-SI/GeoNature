@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-sidenav-items',
+  selector: 'pnx-sidenav-items',
   templateUrl: './sidenav-items.component.html',
   styleUrls: ['./sidenav-items.component.scss']
 })
