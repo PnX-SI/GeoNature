@@ -12,7 +12,7 @@
     "IntroTitle": "Welcome in GeoNature V2",
     "IntroText": "You are on GeoNature V2 demonstration instance. It is actually in development and is updated daily with still many bugs. Developments and funactionalities can be followed on https://github.com/PnX-SI/GeoNature/. This area allows to display a message to users, configurable to be updated regulary or desactivated. This home page also provides global statistics about the database (amount of observations, of species, of programs, of datasets...). Then it displays the latest 50 observations from the synthesis and finally statistics about data and its daily evolution. The navigation sidebar gives access to modules depending on connected user privileges. Actually on CONTACT module (Occurrences de taxon) is available, development in progress.",
     "Observations": "Observations",
-    "Sepcies": "Species",
+    "Species": "Species",
     "Programs": "Programs",
     "Datasets": "Datasets",
     "LatestObservations": "Latest observations",
