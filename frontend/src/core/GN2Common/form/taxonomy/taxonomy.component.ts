@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { FormService } from '../form.service';
 
@@ -8,7 +8,7 @@ import { FormService } from '../form.service';
   styleUrls: ['./taxonomy.component.scss']
 })
 export class TaxonomyComponent implements OnInit {
-  inputTaxon: FormControl;
+  @Input() inputTaxon: FormControl;
   taxonsList: Array<any>;
   searchString: any;
   filteredTaxons: any;
@@ -16,7 +16,6 @@ export class TaxonomyComponent implements OnInit {
   constructor(private _formService: FormService) {}
 
   ngOnInit() {
-    this.inputTaxon = new FormControl();
 
     this.inputTaxon.valueChanges
       .filter(value => (value.length >= 3 && value.length <= 20))

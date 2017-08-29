@@ -80,7 +80,10 @@
         </div>
       <div> <!--Auto complete noms de taxon-->
 
-        <pnx-taxonomy (taxonChanged)="contactFormService.updateTaxon($event)" ></pnx-taxonomy>
+        <pnx-taxonomy
+          [inputTaxon]="contactFormService.inputTaxon" 
+          (taxonChanged)="contactFormService.updateTaxon($event)">
+        </pnx-taxonomy>
 
 
         <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -196,4 +199,4 @@
 
   index = {{ contactFormService.indexContact }}
 
-  update = {{ contactFormService.updateTaxon |json }}
+ <h4> FormControl </h4> {{  contactFormService.inputTaxon.value | json}}

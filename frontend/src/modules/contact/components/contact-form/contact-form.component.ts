@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { CountingComponent } from '../counting/counting.component';
 import { Counting } from '../counting/counting.type';
 import { FormService } from '../../../../core/GN2Common/form/form.service';
@@ -85,6 +85,7 @@ export class ContactFormComponent implements OnInit {
 
   // taxonList component
   addCurrentTaxon() {
+    console.log('addCurrent taxon')
     const currentTaxon = this.contactFormService.taxon;
     // add to the taxon-list component
     this.taxonList.push(currentTaxon);
@@ -101,6 +102,8 @@ export class ContactFormComponent implements OnInit {
     this.contactFormService.taxon = {};
     // update the index of the current contact
     this.contactFormService.indexContact += 1;
+
+    this.contactFormService.inputTaxon.setValue('');
   }
 
   removeOneOccurenceTaxon(index): void {
