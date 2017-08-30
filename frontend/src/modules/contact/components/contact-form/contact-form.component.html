@@ -1,202 +1,195 @@
-<md-card >
-<md-card-content class="cf-page-size">
-  <md-card class="cf-card-required padding-md"> <!--Pannel Observations-->
-    <h4> <b> <u>Observations</u>: </b></h4>
+<form [formGroup]="cfs.contactForm" >
+  <md-card >
+    <md-card-content class="cf-page-size">
+      <md-card class="cf-card-required padding-md"> <!--Pannel Releve-->
+        <h4> <b> <u>Observations</u>: </b></h4>
+        <pnx-observers
+          [parentFormControl]="cfs.contactForm.controls.observers"
+          [idMenu]="9"
+          placeholder="Observateur"
+          (observerSelected)="addObservers($event)"
+          (observerDeleted)= "deleteObservers($event)" >
+        </pnx-observers>
 
-    <!-- <md-input-container class="input-alignment-sm input-width-md">
-      <input type="text" mdInput placeholder="Observateurs">
-      <md-icon mdSuffix>supervisor_account</md-icon>
-    </md-input-container> -->
+        <md-input-container class="input-alignment-sm input-width-xs" >
+          <input  mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min" [formControl]="cfs.contactForm.controls.dateMin">
+          <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
+        </md-input-container>
+        <md-datepicker #pickerdatemin></md-datepicker>
 
-    <pnx-observers
-       [idMenu]="9"
-       placeholder="Observateur"
-      (observerSelected)="addObservers($event)"
-      (observerDeleted)= "deleteObservers($event)" >
-    </pnx-observers>
+        <md-input-container class="input-alignment-sm input-width-xs">
+          <input mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max" [formControl]="cfs.contactForm.controls.dateMax">
+          <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
+        </md-input-container>
+        <md-datepicker #pickerdatemax></md-datepicker>
 
-    <md-input-container class="input-alignment-sm input-width-xs">
-      <input [(ngModel)]="observationContact.date_min" mdInput [mdDatepicker]="pickerdatemin" placeholder="Date min">
-      <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
-    </md-input-container>
-    <md-datepicker #pickerdatemin></md-datepicker>
+        <md-input-container class="input-alignment-sm input-width-xxs">
+          <input  type="number" mdInput placeholder="Alt min">
+          <md-icon mdSuffix>terrain</md-icon>
+        </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-xs">
-      <input [(ngModel)]="observationContact.date_max" mdInput [mdDatepicker]="pickerdatemax" placeholder="Date max">
-      <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
-    </md-input-container>
-    <md-datepicker #pickerdatemax></md-datepicker>
+        <md-input-container class="input-alignment-sm input-width-xxs">
+          <input  type="number" mdInput placeholder="Alt max">
+          <md-icon mdSuffix>terrain</md-icon>
+        </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-xxs">
-      <input [(ngModel)]="observationContact.altitude_min" type="number" mdInput placeholder="Alt min">
-      <md-icon mdSuffix>terrain</md-icon>
-    </md-input-container>
+        <md-input-container class="input-alignment-sm input-width-sm">
+          <input type="text" mdInput placeholder="Commune">
+          <md-icon mdSuffix>pin_drop</md-icon>
+        </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-xxs">
-      <input [(ngModel)]="observationContact.altitude_max" type="number" mdInput placeholder="Alt max">
-      <md-icon mdSuffix>terrain</md-icon>
-    </md-input-container>
+        <md-select placeholder="Lot de données" [formControl]="cfs.contactForm.controls.dataSet">
+          <md-option *ngFor="let dataSet of dataSets" [value]="dataSet">{{ dataSet }}</md-option>
+        </md-select>
 
-    <md-input-container class="input-alignment-sm input-width-sm">
-      <input [(ngModel)]="observationContact.municipality" type="text" mdInput placeholder="Commune">
-      <md-icon mdSuffix>pin_drop</md-icon>
-    </md-input-container>
+        <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
+          <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire
+        </button>
+        <!--<button md-button class ="input-alignment-sm"> <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire</button>-->
 
-    <md-select placeholder="Lot de données">
-      <md-option *ngFor="let dataSet of dataSets" [value]="dataSet">{{ dataSet }}</md-option>
-   </md-select>
-
-    <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
-      <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire
-    </button>
-    <!--<button md-button class ="input-alignment-sm"> <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire</button>-->
-
-    <div class="row collapse" id="collapseContexteCommentaire">
-      <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-          <div class="form-group">
-            <label for="commentaire" class="font-sm">Commentaire:</label>
-            <textarea [(ngModel)]="observationContact.comment" class="form-control" rows="2" id="commentaire"></textarea>
+        <div class="row collapse" id="collapseContexteCommentaire">
+          <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+              <div class="form-group">
+                <label for="commentaire" class="font-sm">Commentaire:</label>
+                <textarea class="form-control" rows="2" id="commentaire"></textarea>
+              </div>
           </div>
-      </div>
-    </div>
-  </md-card> <!--END releve Pannel-->
+        </div>
+      </md-card> <!--END releve Pannel-->
 
-  <!-- Occurence taxon  -->
-  <md-card class="cf-card-option padding-md"> <!--Pannel Taxon observé-->
-    <h4> <b> <u>Taxon observé</u>: </b></h4>
-        <div class="collapse" id="collapseExample">
-          <div class="well well-sm well-margin">
-            <div >
-              <label class="font-sm">Groupe:</label>
-              <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
-                <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option>
-              </select>
-              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Patrimoniaux</label>
-              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Priorité</label>
-              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Nouveau</label>
-              <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
+        <!-- Occurence taxon  -->
+      <md-card [formGroup]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence]" class="cf-card-option padding-md"> <!--Pannel Taxon observé-->
+          <h4> <b> <u>Taxon observé</u>: </b></h4>
+              <div class="collapse" id="collapseExample">
+                <div class="well well-sm well-margin">
+                  <div>
+                    <label class="font-sm">Groupe:</label>
+                    <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
+                      <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option>
+                    </select>
+                    <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Patrimoniaux</label>
+                    <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Priorité</label>
+                    <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Nouveau</label>
+                    <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
+                  </div>
+                </div>
+              </div>
+
+              <pnx-taxonomy
+                [parentFormControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.cd_nom"
+                (taxonChanged)="cfs.updateTaxon($event)" >
+              </pnx-taxonomy>
+            
+              <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <md-icon>filter_list</md-icon>
+              </button>
+
+              <pnx-nomenclature 
+                [parentFormControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.id_nomenclature_obs_technique"
+                placeholder="Technique d'observation" 
+                [idTypeNomenclature]="100" 
+                [regne]="cfs.currentTaxon.regne" 
+                [group2Inpn]="cfs.currentTaxon.group2_inpn">
+              </pnx-nomenclature>
+
+              <pnx-nomenclature 
+                placeholder="Méthode d'observation"
+                [parentFormControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.id_nomenclature_obs_meth"
+                [idTypeNomenclature]="14" 
+                [regne]="cfs.currentTaxon.regne" 
+                [group2Inpn]="cfs.currentTaxon.group2_inpn" > 
+              </pnx-nomenclature>
+            <!--Avancé-->
+              <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+                <md-icon mdPrefix class="font-md">settings</md-icon> Avancé
+              </button>
+              <div class="collapse" id="collapseAvance">
+                <div class="well well-sm">
+                  <pnx-nomenclature 
+                    placeholder="Etat biologique"
+                    [parentFormControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.id_nomenclature_bio_condition"
+                    [idTypeNomenclature]="7" 
+                    [regne]="cfs.currentTaxon.regne" 
+                    [group2Inpn]="cfs.currentTaxon.group2_inpn" > 
+                  </pnx-nomenclature>
+
+                  <pnx-nomenclature 
+                    placeholder="Statut biologique"
+                    [parentFormControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.id_nomenclature_bio_status"
+                    [idTypeNomenclature]="13" 
+                    [regne]="cfs.currentTaxon.regne" 
+                    [group2Inpn]="cfs.currentTaxon.group2_inpn"> 
+                  </pnx-nomenclature>           
+
+                  <pnx-nomenclature 
+                    placeholder="Naturalité"
+                    [parentFormControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.id_nomenclature_naturalness"
+                    [idTypeNomenclature]="8" 
+                    [regne]="cfs.currentTaxon.regne" 
+                    [group2Inpn]="cfs.currentTaxon.group2_inpn">
+                  </pnx-nomenclature>   
+
+                  <md-input-container class="input-alignment-sm input-width-sm">
+                    <input mdInput [formControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.determination_method"   type="text"  placeholder="Méthode de détermination">
+                  </md-input-container>
+
+                  <md-input-container class="input-alignment-sm input-width-sm">
+                      <input mdInput [formControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.determiner" type="text"  placeholder="Déterminateur">
+                  </md-input-container>
+
+                  <md-input-container class="input-alignment-sm input-width-sm">
+                      <input mdInput [formControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.digital_proof" type="text"  placeholder="Preuve numérique">
+                  </md-input-container>
+
+                  <md-input-container class="input-alignment-sm input-width-sm">
+                    <input mdInput [formControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.non_digital_proof"  type="text"  placeholder="Preuve non numérique">
+                  </md-input-container>
+                </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="commentaire" class="font-sm">Commentaire:</label>
+                  <textarea class="form-control" [formControl]="cfs.contactForm.controls.t_occurrences_contact.controls[cfs.indexOccurence].controls.comment" 
+                    rows="2" id="commentaire">
+                  </textarea>
+              </div>
+
+            <h5> <b> <u>Dénombrement</u>: </b></h5>
+            <!-- DENOMBREMENT -->
+            <div *ngFor="let counting of cfs.nbCounting; let i = index">
+              <pnx-counting 
+                [formGroup]="cfs.countingForm"
+                [index]="i"
+                [length]="i+1"
+                (inputUpdated)="updateCountingContact($event)"
+                (countingAdded)="addCounting()"
+                (countingRemoved)="removeCounting($event)">
+              </pnx-counting>
             </div>
-          </div>
-        </div>
-      <div> <!--Auto complete noms de taxon-->
+            <md-card-actions class="card-action"> <!--Btn Valider taxon-->
+              <button md-raised-button class="btn-form" (click)="cfs.addOccurence()" >Ajouter un taxon</button>
+            </md-card-actions> <!--END Btn-->
+      </md-card> <!--END OCCURENCE PANEL-->
 
-        <pnx-taxonomy
-          [inputTaxon]="contactFormService.inputTaxon" 
-          (taxonChanged)="contactFormService.updateTaxon($event)">
-        </pnx-taxonomy>
+      <!-- Md card taxon list -->
+      <md-card> 
+        <md-card-content>
+          <pnx-taxons-list [list]="cfs.taxonsList" (taxonRemoved)="cfs.removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
+        </md-card-content>
+      </md-card>
+      <!-- End Md card taxon list -->
 
-
-        <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          <md-icon>filter_list</md-icon>
-        </button>
-
-        <md-autocomplete #auto2="mdAutocomplete" >
-          <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
-            {{ crit }}
-          </md-option>
-        </md-autocomplete>
-        <pnx-nomenclature 
-          placeholder="Technique d'observation" 
-          [idTypeNomenclature]="100" 
-          [regne]="contactFormService.taxon.regne" 
-          [group2Inpn]="contactFormService.taxon.group2_inpn"
-          (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_technique')" >
-        </pnx-nomenclature>
-        <pnx-nomenclature 
-          placeholder="Méthode d'observation"
-          [idTypeNomenclature]="14" 
-          [regne]="contactFormService.taxon.regne" 
-          [group2Inpn]="contactFormService.taxon.group2_inpn"
-          (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_obs_meth' )" > 
-        </pnx-nomenclature> 
-      
-
-      <!--Avancé-->
-        <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-          <md-icon mdPrefix class="font-md">settings</md-icon> Avancé
-        </button>
-      </div> 
-      <div class="collapse" id="collapseAvance">
-        <div class="well well-sm">
-            <pnx-nomenclature 
-              placeholder="Etat biologique"
-              [idTypeNomenclature]="7" 
-              [regne]="contactFormService.taxon.regne" 
-              [group2Inpn]="contactFormService.taxon.group2_inpn"
-              (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_condition' )" > 
-          </pnx-nomenclature> 
-
-          <pnx-nomenclature 
-            placeholder="Statut biologique"
-            [idTypeNomenclature]="13" 
-            [regne]="contactFormService.taxon.regne" 
-            [group2Inpn]="contactFormService.taxon.group2_inpn"
-            (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_bio_status' )" > 
-        </pnx-nomenclature>           
-
-          <pnx-nomenclature 
-            placeholder="Naturalité"
-            [idTypeNomenclature]="8" 
-            [regne]="contactFormService.taxon.regne" 
-            [group2Inpn]="contactFormService.taxon.group2_inpn"
-            (valueSelected)= "updateOccurenceContact($event, 'id_nomenclature_naturalness' )" > 
-        </pnx-nomenclature>             
-
-        <md-input-container class="input-alignment-sm input-width-sm">
-          <input mdInput [(ngModel)]="determination_method" (change)="updateOccurenceContact(determination_method, 'determination_method')"  type="text"  placeholder="Méthode de détermination">
-        </md-input-container>
-
-        <md-input-container class="input-alignment-sm input-width-sm">
-            <input mdInput [(ngModel)]="determiner" (change)="updateOccurenceContact(determiner, 'determiner')"  type="text"  placeholder="Déterminateur">
-        </md-input-container>
-
-        <md-input-container class="input-alignment-sm input-width-sm">
-            <input mdInput [(ngModel)]="digital_proof" (change)="updateOccurenceContact(digital_proof, 'digital_proof')"  type="text"  placeholder="Preuve numérique">
-        </md-input-container>
-
-        <md-input-container class="input-alignment-sm input-width-sm">
-          <input mdInput [(ngModel)]="determination_method" (change)="updateOccurenceContact(determination_method, 'determination_method')"  type="text"  placeholder="Méthode de détermination">
-        </md-input-container>
-
-        <md-input-container class="input-alignment-sm input-width-sm">
-          <input mdInput [(ngModel)]="non_digital_proof" (change)="updateOccurenceContact(non_digital_proof, 'non_digital_proof')"  type="text"  placeholder="Preuve non numérique">
-        </md-input-container>
-
-        </div>
-        <div class="form-group">
-            <label for="commentaire" class="font-sm">Commentaire:</label>
-            <textarea class="form-control" rows="2" id="commentaire"></textarea>
-          </div>
-      </div>
-
-      <h5> <b> <u>Dénombrement</u>: </b></h5>
-      <!-- DENOMBREMENT -->
-      <div *ngFor="let counting of nbCounting; let i = index">
-        <pnx-counting 
-          [index]="i"
-          [length] = "nbCounting.length"
-          (inputUpdated)="updateCountingContact($event)"
-          (countingAdded)="addCounting()"
-          (countingRemoved)="removeCounting($event)">
-        </pnx-counting>
-      </div>
-
-      <md-card-actions class="card-action"> <!--Btn Valider taxon-->
-        <button md-raised-button class="btn-form" (click)="addCurrentTaxon()" >Ajouter un taxon</button>
-      </md-card-actions> <!--END Btn-->
-  </md-card> <!--END OCCURENCE PANEL-->
+    <md-card-actions class="card-action"> <!--Btn Valider taxon-->
+      <button md-raised-button class="btn-form" color="primary" (click)="submitData()" >Valider le relevé</button>
+    </md-card-actions> <!--END Btn-->
+    <pre>form value: <br>{{cfs.contactForm.value | json}}</pre>
+ 
+  </md-card-content>  
+  </md-card>
+</form>
 
 
 
-  <pnx-taxons-list [list]="taxonList" (taxonRemoved)="removeOneOccurenceTaxon()">  </pnx-taxons-list>
-
-  <md-card-actions class="card-action"> <!--Btn Valider taxon-->
-    <button md-raised-button class="btn-form" color="primary">Valider le relevé</button>
-  </md-card-actions> <!--END Btn-->
 
 
-  Current Taxon = {{contactFormService.taxon |json}}
 
-  index = {{ contactFormService.indexContact }}
-
- <h4> FormControl </h4> {{  contactFormService.inputTaxon.value | json}}

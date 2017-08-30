@@ -1,17 +1,6 @@
-<md-select [placeholder]="placeholder" [(ngModel)]= "selectedId" (change)= onLabelChange() [disabled]="labels == undefined" >
-  <md-option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label.definition_fr}} </md-option>
+<md-select [placeholder]="placeholder" [disabled]="labels == undefined" [formControl]="parentFormControl">
+    <md-option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label.definition_fr}} </md-option>
 </md-select>
 
 
 
-
-<!-- <md-input-container class="input-alignment-md input-width-lg ">
-    <input mdInput [placeholder]="placeholder" [mdAutocomplete]="auto2" [formControl]="stateCtrl">
-    <md-icon mdSuffix>local_library</md-icon>
-  </md-input-container>
-
-  <md-autocomplete #auto2="mdAutocomplete" >
-    <md-option *ngFor="let crit of filteredCriteres | async" [value]="crit">
-      {{ crit }}
-    </md-option>
-  </md-autocomplete> -->
