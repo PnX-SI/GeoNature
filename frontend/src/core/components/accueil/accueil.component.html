@@ -1,14 +1,14 @@
 
 <div class="container-fluid">
-  <!--Bienvenue part-->
+  <!--Welcome part-->
   <md-card class="mdCard">
     <md-card-header>
-      <md-card-title > <h2> {{ 'MainTxt' | translate }} </h2> </md-card-title>
+      <md-card-title > <h2> {{ 'IntroTitle' | translate }} </h2> </md-card-title>
     </md-card-header>
     <div class="row">
       <div class="col-md-7">
-        <md-card-content>            
-            {{ 'demoLongMessage' | translate }} 
+        <md-card-content>
+          <p [innerHTML]="'IntroText' | translate"></p>
         </md-card-content>
       </div>
       <div class="col-md-5">
@@ -40,15 +40,15 @@
       </div>
     </div>
   </md-card>
-  <!--End of Bienvenue part-->
+  <!--End of Welcome part-->
 
-  <!-- part 2 les chiffres-->
+  <!--Part 2 - Global stats-->
   <div class="row">
     <div class="col-md-3 col-sm-6 mdCard">
       <md-card>
         <md-card-content>
           <p>
-            {{ 'demoShortMessage' | translate }}
+            <i class="material-icons">search</i> 537601 {{ 'Observations' | translate }}
           </p>
         </md-card-content>
       </md-card>
@@ -57,7 +57,7 @@
       <md-card>
         <md-card-content>
           <p>
-            {{ 'demoShortMessage' | translate }}
+            <i class="material-icons">bug_report</i> 4203 {{ 'Species' | translate }}
           </p>
         </md-card-content>
       </md-card>
@@ -66,7 +66,7 @@
       <md-card>
         <md-card-content>
           <p>
-            {{ 'demoShortMessage' | translate }}
+            <i class="material-icons">folder_open</i> 24 {{ 'Programs' | translate }}
           </p>
         </md-card-content>
       </md-card>
@@ -75,7 +75,7 @@
       <md-card>
         <md-card-content>
           <p>
-            {{ 'demoShortMessage' | translate }}
+            <i class="material-icons">pageview</i> 59 {{ 'Datasets' | translate }}
           </p>
         </md-card-content>
       </md-card>
@@ -83,7 +83,7 @@
   </div>
   <!-- end part 2 -->
 
-  <!-- part 3 la carte-->
+  <!-- part 3 Last observations Map-->
     <md-card class="mdCard">
       <md-card-header>
         <md-card-title> <h3> Dernieres Observations </h3> </md-card-title>
@@ -97,7 +97,7 @@
         <div class="col-md-5">
           <md-card-content>
             <p>
-              {{ 'demoLongMessage' | translate }}
+              Liste des 50 dernières observations + Interaction avec la carte
             </p>
           </md-card-content>
         </div>
