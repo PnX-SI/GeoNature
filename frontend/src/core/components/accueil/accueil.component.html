@@ -7,8 +7,7 @@
     </md-card-header>
     <div class="row">
       <div class="col-md-7">
-        <md-card-content>            
-            {{ 'IntroText' | translate }} 
+        <md-card-content [innerHTML]="'IntroText' | translate">
         </md-card-content>
       </div>
       <div class="col-md-5">
