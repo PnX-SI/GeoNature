@@ -23,8 +23,8 @@ SELECT pg_catalog.setval('pr_contact.t_releves_contact_id_releve_contact_seq', 2
 
 INSERT INTO pr_contact.t_occurrences_contact VALUES 
 (1,1,343,65,177,30,182,91,347,163,1,'Gil','Gees',60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
-,(2,1,343,65,177,30,182,91,347,163,1,'Gil D','Gees',380270,'Requin baleine','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
-,(3,2,343,65,177,30,182,91,347,163,1,'Donovan M','Gees',528747,'Singe hurleur roux','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');;
+,(2,1,343,65,177,30,182,91,347,163,1,'Gil D','Gees',351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
+,(3,2,343,65,177,30,182,91,347,163,1,'Donovan M','Gees',67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');;
 SELECT pg_catalog.setval('pr_contact.t_occurrences_contact_id_occurrence_contact_seq', 3, true);
 
 INSERT INTO pr_contact.cor_role_releves_contact VALUES 
