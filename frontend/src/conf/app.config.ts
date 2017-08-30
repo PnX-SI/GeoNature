@@ -11,7 +11,7 @@ export class AppConfig {
 // Configuration values for our app
 export const CONFIG: AppConfig = {
   appName: 'Geonature 2',
-  defaultLanguage: 'en', // value obligatory 'en' or 'fr'
+  defaultLanguage: 'fr', // value obligatory 'en' or 'fr'
   API_ENDPOINT:'http://127.0.0.1:5050/',
   API_TAXHUB_ENDPOINT: 'http:127.0.0.1:5000/api',
 };
