@@ -17,10 +17,10 @@
         <span>{{appName}}</span>
         <span class="toolbar-spacer"></span>
         <app-signin *ngIf="!authService.isAuthenticated()"></app-signin>
-        <button md-icon-button *ngIf="authService.isAuthenticated()" (click)="authService.logout()" mdTooltip="Log out">
+        <button md-icon-button *ngIf="authService.isAuthenticated()" (click)="authService.logout()" mdTooltip="{{ 'LogOut' | translate }}">
           <md-icon>exit_to_app</md-icon>
         </button>
-        <button md-icon-button [mdMenuTriggerFor]="menu" mdTooltip="Language">
+        <button md-icon-button [mdMenuTriggerFor]="menu" mdTooltip="{{ 'Language' | translate }}">
           <md-icon>language</md-icon>
         </button>
         <md-menu #menu="mdMenu">
