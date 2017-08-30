@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FormService } from '../form.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class NomenclatureComponent implements OnInit, OnChanges {
   nomenclature: any;
   selectedId: number;
   @Input() placeholder: string;
+  @Input() parentFormControl: FormGroup;
   @Input() idTypeNomenclature: number;
   @Input() regne: string;
   @Input() group2Inpn: string;
@@ -19,9 +21,11 @@ export class NomenclatureComponent implements OnInit, OnChanges {
   constructor(private _formService: FormService) { }
 
 
-  ngOnInit() {
+  ngOnInit() {    
+    // load the data
      this._formService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => this.labels = data.values);
+    
   }
 
   ngOnChanges(changes: SimpleChanges) {

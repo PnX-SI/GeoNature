@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Counting } from './counting.type';
 import { ContactFormService } from '../contact-form/contact-form.service'
+import { FormControl, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 
 
 @Component({
@@ -9,25 +9,12 @@ import { ContactFormService } from '../contact-form/contact-form.service'
   styleUrls: ['./counting.component.scss']
 })
 export class CountingComponent implements OnInit {
-  counting: Counting;
-  @Input() index: string;
-  @Input() length: number;
-  @Output() countingAdded = new EventEmitter<any>();
-  @Output() countingRemoved = new EventEmitter<any>();
-  @Output() inputUpdated = new EventEmitter<any>();
-  constructor(public contactFormService: ContactFormService) { }
+  @Input() index: number;
+  @Input() length :number; 
+  @Input() formGroup: FormGroup;
+  constructor(public cfs: ContactFormService) { }
 
-  ngOnInit() {
-    this.counting = new Counting();
-  }
-  updateCountingInput(key, value, index): void {
-    this.inputUpdated.emit({key, value, index});
-  }
+  ngOnInit() {}
 
-  addCounting(): void {
-    this.countingAdded.emit();
-  }
-  onRemoveCounting(index): void {
-    this.countingRemoved.emit(index);
-  }
+  
 }

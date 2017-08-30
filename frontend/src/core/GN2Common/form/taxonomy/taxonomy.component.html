@@ -1,11 +1,10 @@
 <md-input-container>
-  <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" 
-    [formControl]="inputTaxon">
+  <input mdInput placeholder="Noms de taxon" [mdAutocomplete]="auto" [formControl]="inputTaxon">
   <md-icon mdSuffix>pets</md-icon>
 </md-input-container>
 
-<md-autocomplete #auto="mdAutocomplete">
-  <md-option *ngFor="let taxon of taxonsList" [value]="taxon.search_name" (click)="onTaxonSelected(taxon)">
+<md-autocomplete #auto="mdAutocomplete" [displayWith]="displaySearchName">
+  <md-option *ngFor="let taxon of taxons" [value]="taxon"  (click)="onTaxonSelected(taxon)">
     {{ taxon.search_name}}
   </md-option>
 </md-autocomplete>

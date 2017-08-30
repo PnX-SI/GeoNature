@@ -8,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class TaxonsListComponent implements OnInit {
   @Input() list: Array<any>;
   @Output() taxonRemoved = new EventEmitter<number>();
-  // @Output
+  
   constructor() { }
 
   ngOnInit() {

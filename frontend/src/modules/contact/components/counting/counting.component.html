@@ -3,55 +3,52 @@
   <tbody class="table-hover">
     <tr>
       <td>
-        <!-- <select class="input-sm" id="sel1">
-          <option>Type</option>
-        </select> -->
         <pnx-nomenclature
           placeholder="Stade de vie" 
+          [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_life_stage"
           [idTypeNomenclature]="10" 
-          [regne]="contactFormService.taxon.regne"  
-          [group2Inpn]="contactFormService.taxon.group2_inpn" 
-          (valueSelected)= "updateCountingInput('id_nomenclature_life_stage', $event, index)" > 
+          [regne]="cfs.currentTaxon.regne"  
+          [group2Inpn]="cfs.currentTaxon.group2_inpn"> 
         </pnx-nomenclature>
       </td>
       <td>
-          <pnx-nomenclature 
-            placeholder="Sexe" 
+          <pnx-nomenclature
+            placeholder="Sexe"
+            [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_sex"
             [idTypeNomenclature]="9" 
-            [regne]="contactFormService.taxon.regne" 
-            [group2Inpn]="contactFormService.taxon.group2_inpn"
-            (valueSelected)= "updateCountingInput('id_nomenclature_sex', $event, index)" >
+            [regne]="cfs.currentTaxon.regne" 
+            [group2Inpn]="cfs.currentTaxon.group2_inpn">
           </pnx-nomenclature>
       </td>
       <td>
           <pnx-nomenclature 
-            placeholder="Objet" 
+            placeholder="Objet"
+            [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_obj_count"
             [idTypeNomenclature]="6" 
-            [regne]="contactFormService.taxon.regne"
-            [group2Inpn]="contactFormService.taxon.group2_inpn"
-            (valueSelected)= "updateCountingInput('id_nomenclature_obj_count', $event, index )" >
+            [regne]="cfs.currentTaxon.regne"
+            [group2Inpn]="cfs.currentTaxon.group2_inpn">
         </pnx-nomenclature>
       </td>
       <td>
           <pnx-nomenclature
             placeholder="Type"
+            [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_type_count"
             [idTypeNomenclature]="21"
-            [regne]="contactFormService.taxon.regne"
-            [group2Inpn]="contactFormService.taxon.group2_inpn"
-            (valueSelected)= "updateCountingInput('id_nomenclature_type_count', $event, index)" >
+            [regne]="cfs.currentTaxon.regne"
+            [group2Inpn]="cfs.currentTaxon.group2_inpn">
           </pnx-nomenclature>  
       </td>
       <td>
         <md-input-container>
-            <input [(ngModel)]="countMin" (change)="updateCountingInput('count_min', countMin, index)" type="number" mdInput placeholder="Nombre min">
+            <input [formControl]="formGroup.controls[index].controls.count_min" type="number" mdInput placeholder="Nombre min">
           </md-input-container>
       </td>
       <td>
         <md-input-container>
-            <input [(ngModel)]="countMax" (change)="updateCountingInput('count_max', countMax, index)" type="number" mdInput placeholder="Nombre max">
+            <input [formControl]="formGroup.controls[index].controls.count_max" type="number" mdInput placeholder="Nombre max">
           </md-input-container>
       </td>  
-      <td><button type="button" class="btn btn-default btn-sm" (click)="addCounting()">
+      <td><button type="button" class="btn btn-default btn-sm" (click)="cfs.addCounting()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           </button>
       </td>

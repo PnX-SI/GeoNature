@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FormService } from '../form.service';
 
 @Component({
@@ -10,26 +11,24 @@ export class ObserversComponent implements OnInit {
 
   @Input()idMenu: number;
   @Input() placeholder: string;
-  @Output() observerSelected = new EventEmitter<string>();
-  @Output() obseverDeleted = new EventEmitter<string>();
+  @Input() parentFormControl:FormControl;
   inputObservers: Array<any>;
   selectedObserver: string;
   selectedObservers: Array<string>;
+  observerInput: FormControl;
 
-  constructor(private _formService: FormService) { }
+  constructor(private _formService: FormService) {
+   }
 
   ngOnInit() {
     this.selectedObservers = [];
     this._formService.getObservers(this.idMenu)
       .subscribe(data => this.inputObservers = data);
+    
   }
 
-  onAddObserver() {
-    this.observerSelected.emit(this.selectedObserver);
-  }
+  // onAddObserver() {
+  //   this.observerSelected.emit(this.selectedObserver);
+  // }
 
-  onDeleteObserver() {
-    // TODO
-    // this.obseverDeleted.emit(observer);
-  }
 }
