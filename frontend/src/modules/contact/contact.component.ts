@@ -11,7 +11,7 @@ import { MapService } from '../../core/GN2Common/map/map.service';
 })
 export class ContactComponent implements OnInit {
 
-  constructor(private _navService: NavService) {
+  constructor(private _navService: NavService, private _ms: MapService) {
       _navService.setAppName('Contact Faune');
   }
 
