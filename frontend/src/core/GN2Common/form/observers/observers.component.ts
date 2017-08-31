@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormService } from '../form.service';
+import { DataFormService } from '../data-form.service';
+
 
 @Component({
   selector: 'pnx-observers',
@@ -17,12 +18,12 @@ export class ObserversComponent implements OnInit {
   selectedObservers: Array<string>;
   observerInput: FormControl;
 
-  constructor(private _formService: FormService) {
+  constructor(private _dfService: DataFormService) {
    }
 
   ngOnInit() {
     this.selectedObservers = [];
-    this._formService.getObservers(this.idMenu)
+    this._dfService.getObservers(this.idMenu)
       .subscribe(data => this.inputObservers = data);
     
   }
