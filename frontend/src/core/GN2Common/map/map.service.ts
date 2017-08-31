@@ -72,6 +72,7 @@ export class MapService {
                         }).openPopup();
                     });
                 }
+                
         });
     }
 
