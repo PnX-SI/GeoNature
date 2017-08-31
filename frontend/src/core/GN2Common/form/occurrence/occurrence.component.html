@@ -1,0 +1,103 @@
+<md-card [formGroup]="occurrenceForm" class="cf-card-option padding-md"> 
+    <h4> <b> <u>Taxon observé</u>: </b></h4>
+
+    
+        <!-- <div class="collapse" id="collapseExample">
+          <div class="well well-sm well-margin">
+            <div>
+              <label class="font-sm">Groupe:</label>
+              <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
+                <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option>
+              </select>
+              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Patrimoniaux</label>
+              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Priorité</label>
+              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Nouveau</label>
+              <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
+            </div>
+          </div>
+        </div> -->
+
+        <pnx-taxonomy
+          [parentFormControl]="occurrenceForm.controls.cd_nom"
+          (taxonChanged)="fs.updateTaxon($event)" >
+        </pnx-taxonomy>
+      
+        <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <md-icon>filter_list</md-icon>
+        </button>
+
+        <pnx-nomenclature 
+          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
+          placeholder="Technique d'observation" 
+          [idTypeNomenclature]="100" 
+          [regne]="fs.currentTaxon.regne" 
+          [group2Inpn]="fs.currentTaxon.group2_inpn">
+        </pnx-nomenclature>
+
+        <pnx-nomenclature 
+          placeholder="Méthode d'observation"
+          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
+          [idTypeNomenclature]="14" 
+          [regne]="fs.currentTaxon.regne" 
+          [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+        </pnx-nomenclature>
+        
+
+        <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+          <md-icon mdPrefix class="font-md">settings</md-icon> Avancé
+        </button>
+        <div class="collapse" id="collapseAvance">
+          <div class="well well-sm">
+            <pnx-nomenclature 
+              placeholder="Etat biologique"
+              [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
+              [idTypeNomenclature]="7" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+            </pnx-nomenclature>
+
+            <pnx-nomenclature 
+              placeholder="Statut biologique"
+              [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
+              [idTypeNomenclature]="13" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn"> 
+            </pnx-nomenclature>           
+
+            <pnx-nomenclature 
+              placeholder="Naturalité"
+              [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
+              [idTypeNomenclature]="8" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn">
+            </pnx-nomenclature>   
+
+            <md-input-container class="input-alignment-sm input-width-sm">
+              <input mdInput [formControl]="occurrenceForm.controls.determination_method"   type="text"  placeholder="Méthode de détermination">
+            </md-input-container>
+
+            <md-input-container class="input-alignment-sm input-width-sm">
+                <input mdInput [formControl]="occurrenceForm.controls.determiner" type="text"  placeholder="Déterminateur">
+            </md-input-container>
+
+            <md-input-container class="input-alignment-sm input-width-sm">
+                <input mdInput [formControl]="occurrenceForm.controls.digital_proof" type="text"  placeholder="Preuve numérique">
+            </md-input-container>
+
+            <md-input-container class="input-alignment-sm input-width-sm">
+              <input mdInput [formControl]="occurrenceForm.controls.non_digital_proof"  type="text"  placeholder="Preuve non numérique">
+            </md-input-container>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label for="commentaire" class="font-sm">Commentaire:</label>
+            <textarea class="form-control" [formControl]="occurrenceForm.controls.comment" 
+              rows="2" id="commentaire">
+            </textarea>
+        </div>
+
+
+</md-card>
+
+

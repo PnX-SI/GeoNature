@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { FormService } from '../form.service';
+import { DataFormService } from '../data-form.service';
 
 @Component({
   selector: 'pnx-taxonomy',
@@ -13,19 +13,15 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   searchString: any;
   filteredTaxons: any;
   @Output() taxonChanged = new EventEmitter<any>();
-  constructor(private _formService: FormService) {}
+  constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
     this.inputTaxon.valueChanges
       .filter(value => (value.length >= 3 && value.length <= 20))
       .debounceTime(400)
       .distinctUntilChanged()
-      .switchMap(value => this._formService.searchTaxonomy(value, '1001'))
+      .switchMap(value => this._dfService.searchTaxonomy(value, '1001'))
         .subscribe(response => this.taxons = response);
-    this.taxons = [];
-    this.inputTaxon.valueChanges.subscribe(value=>{
-      console.log(value);
-    })
   }
 
   displaySearchName(taxon): string {
@@ -39,14 +35,11 @@ export class TaxonomyComponent implements OnInit, OnChanges {
       .filter(value => (value.length >= 3 && value.length <= 20))
       .debounceTime(400)
       .distinctUntilChanged()
-      .switchMap(value => this._formService.searchTaxonomy(value, '1001'))
+      .switchMap(value => this._dfService.searchTaxonomy(value, '1001'))
         .subscribe(response => this.taxons = response);
     }
   }
   
-
-
-
   onTaxonSelected(taxon){    
     this.taxonChanged.emit(taxon);
   }

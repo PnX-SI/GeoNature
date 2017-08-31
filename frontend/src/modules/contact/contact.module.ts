@@ -4,9 +4,8 @@ import { GN2CommonModule } from '../../core/GN2Common/GN2Common.module'
 // Components
 import { ContactComponent } from './contact.component';
 import { ContactFormComponent } from './components/contact-form/contact-form.component';
-import { CountingComponent } from './components/counting/counting.component';
 import { TaxonsListComponent } from './components/taxons-list/taxons-list.component';
-import { ContactFormService } from './components/contact-form/contact-form.service'
+//import { FormService } from '../../components/contact-form/contact-form.service'
 
 @NgModule({
   imports: [
@@ -16,10 +15,9 @@ import { ContactFormService } from './components/contact-form/contact-form.servi
   declarations: [
     ContactComponent,
     ContactFormComponent,
-    CountingComponent,
     TaxonsListComponent,
   ],
-  providers : [ContactFormService],
+  providers : [],
   bootstrap: [ContactComponent]
 })
 export class ContactModule {
