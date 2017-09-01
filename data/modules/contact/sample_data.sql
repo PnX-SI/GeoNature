@@ -18,13 +18,13 @@ INSERT INTO gn_synthese.t_modules (id_module, name_module, desc_module, entity_m
 
 INSERT INTO pr_contact.t_releves_contact VALUES 
 (1,1,1,'2017-01-01','2017-01-01',1500,1565,FALSE,'web',now(),now(),'Exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640')
-,(2,1,1,'2017-01-08','2017-01-08',1600,1600,FALSE,'web',now(),now(),'Autre exemple test','01010000206A08000000C60EAE8C922D4173407D272D755841','01010000009A999999999919400000000000604640');;
+,(2,1,1,'2017-01-08','2017-01-08',1600,1600,FALSE,'web',now(),now(),'Autre exemple test','01010000206A08000000C60EAE8C922D4173407D272D755841','01010000009A999999999919400000000000604640');
 SELECT pg_catalog.setval('pr_contact.t_releves_contact_id_releve_contact_seq', 2, true);
 
 INSERT INTO pr_contact.t_occurrences_contact VALUES 
 (1,1,343,65,177,30,182,91,347,163,1,'Gil','Gees',60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
 ,(2,1,343,65,177,30,182,91,347,163,1,'Gil D','Gees',351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
-,(3,2,343,65,177,30,182,91,347,163,1,'Donovan M','Gees',67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');;
+,(3,2,343,65,177,30,182,91,347,163,1,'Donovan M','Gees',67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');
 SELECT pg_catalog.setval('pr_contact.t_occurrences_contact_id_occurrence_contact_seq', 3, true);
 
 INSERT INTO pr_contact.cor_role_releves_contact VALUES 
