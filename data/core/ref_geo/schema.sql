@@ -22,13 +22,13 @@ CREATE TABLE l_areas (
     id_type integer NOT NULL,
     id_mnhn character varying(20),
     name character varying(250),
-    geom public.geometry,
+    geom public.geometry(MultiPolygon,MYLOCALSRID),
     source character varying(250),
     comment text,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(geom) = 2154))
+    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(geom) = MYLOCALSRID))
 );
 
 
@@ -52,7 +52,7 @@ CREATE TABLE bib_areas_types (
 --
 
 CREATE TABLE l_municipalities (
-    geom public.geometry(MultiPolygon,2154),
+    geom public.geometry(MultiPolygon,MYLOCALSRID),
     id character varying(25) NOT NULL,
     plani_precision double precision,
     name character varying(250),
@@ -83,8 +83,8 @@ CREATE TABLE l_municipalities (
 
 CREATE TABLE l_grids (
     code_grid character varying(50) NOT NULL,
-    geom public.geometry(Polygon,2154),
-    centroid public.geometry(Point,2154),
+    geom public.geometry(Polygon,MYLOCALSRID),
+    centroid public.geometry(Point,MYLOCALSRID),
     cxmin integer,
     cxmax integer,
     cymin integer,
