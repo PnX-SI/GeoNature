@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DataFormService } from '../data-form.service';
 
-
 @Component({
   selector: 'pnx-observers',
   templateUrl: './observers.component.html',
@@ -27,9 +26,5 @@ export class ObserversComponent implements OnInit {
       .subscribe(data => this.inputObservers = data);
     
   }
-
-  // onAddObserver() {
-  //   this.observerSelected.emit(this.selectedObserver);
-  // }
 
 }

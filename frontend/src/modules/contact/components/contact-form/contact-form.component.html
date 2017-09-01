@@ -1,97 +1,38 @@
-<form [formGroup]="observationForm" >
-  <md-card >
-    <md-card-content class="cf-page-size">
-      <md-card class="cf-card-required padding-md"> <!--Releve panel-->
-        <h4> <b> <u>{{ 'Releve.Releve' | translate }}</u> : </b></h4>
-        <pnx-observers
-          [parentFormControl]="observationForm.controls.observers"
-          [idMenu]="9"
-          placeholder="{{ 'Releve.Observers' | translate }}"
-          (observerSelected)="addObservers($event)"
-          (observerDeleted)= "deleteObservers($event)" >
-        </pnx-observers>
 
-        <md-input-container class="input-alignment-sm input-width-xs" >
-          <input  mdInput [mdDatepicker]="pickerdatemin" placeholder="{{ 'Releve.MinDate' | translate }}" [formControl]="observationForm.controls.dateMin">
-          <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
-        </md-input-container>
-        <md-datepicker #pickerdatemin></md-datepicker>
-
-        <md-input-container class="input-alignment-sm input-width-xs">
-          <input mdInput [mdDatepicker]="pickerdatemax" placeholder="{{ 'Releve.MaxDate' | translate }}" [formControl]="observationForm.controls.dateMax">
-          <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
-        </md-input-container>
-        <md-datepicker #pickerdatemax></md-datepicker>
-
-        <md-input-container class="input-alignment-sm input-width-xxs">
-          <input  type="number" mdInput placeholder="{{ 'Releve.MinAltitude' | translate }}">
-          <md-icon mdSuffix></md-icon>
-        </md-input-container>
-
-        <md-input-container class="input-alignment-sm input-width-xxs">
-          <input  type="number" mdInput placeholder="{{ 'Releve.MaxAltitude' | translate }}">
-          <md-icon mdSuffix>terrain</md-icon>
-        </md-input-container>
-
-        <md-input-container class="input-alignment-sm input-width-sm">
-          <input type="text" mdInput placeholder="{{ 'Releve.Municipality' | translate }}">
-          <md-icon mdSuffix>pin_drop</md-icon>
-        </md-input-container>
-
-        <md-select placeholder="{{ 'Releve.Dataset' | translate }}" [formControl]="observationForm.controls.dataSet">
-          <md-option *ngFor="let dataSet of dataSets" [value]="dataSet">{{ dataSet }}</md-option>
-        </md-select>
-
-        <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
-          <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}
-        </button>
-        <!--<button md-button class ="input-alignment-sm"> <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire</button>-->
-
-        <div class="row collapse" id="collapseContexteCommentaire">
-          <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-              <div class="form-group">
-                <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
-                <textarea [formControl]="observationForm.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
-              </div>
-          </div>
+    <pnx-observation
+      [releveForm]="releveForm">
+    </pnx-observation>
+      <!-- Occurrence taxon  -->
+      <md-card [formGroup]="occurrenceForm" class="cf-card-option padding-md"> 
+        <pnx-occurrence
+          [occurrenceForm]="occurrenceForm">
+        </pnx-occurrence>
+        <h5> <b> <u>{{ 'Counting.Counting' | translate }}</u> : </b></h5>
+        <!-- COUNTING -->
+        <div *ngFor="let counting of fs.nbCounting; let i = index">
+          <pnx-counting 
+            [formGroup]="countingForm"
+            [index]="i"
+            [length]="fs.nbCounting.length"
+            (countingRemoved)="fs.removeCounting($event, countingForm)"
+            (countingAdded)="fs.addCounting(countingForm)">
+          </pnx-counting>
         </div>
-      </md-card> <!--END Releve Panel-->
+        <md-card-actions class="card-action"> 
+          <button md-raised-button class="btn-form" (click)="addOccurence()" >{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+        </md-card-actions> 
+      </md-card>
 
-        <!-- Occurrence taxon  -->
-      <pnx-occurrence
-        [occurrenceForm]="occurrenceForm">
-      </pnx-occurrence>
-
-      <h5> <b> <u>{{ 'Counting.Counting' | translate }}</u> : </b></h5>
-      <!-- COUNTING -->
-      <div *ngFor="let counting of fs.nbCounting; let i = index">
-        <pnx-counting 
-          [formGroup]="countingForm"
-          [index]="i"
-          [length]="fs.nbCounting.length"
-          (countingRemoved)="fs.removeCounting($event, countingForm)"
-          (countingAdded)="fs.addCounting(countingForm)">
-        </pnx-counting>
-      </div>
-      <md-card-actions class="card-action"> 
-        <button md-raised-button class="btn-form" (click)="addOccurence()" >{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
-      </md-card-actions> 
-      
       <!-- Md card taxon list -->
-      <md-card> 
+      <md-card *ngIf="taxonsList.length > 0"> 
         <md-card-content>
           <pnx-taxons-list [list]="taxonsList" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
         </md-card-content>
       </md-card>
       <!-- End Md card taxon list -->
-      <pre>form value: <br>{{observationForm.value | json}}</pre>
-      Coord: {{coord?.lat}}
-      
-    <md-card-actions class="card-action"> <!--Btn Valider taxon-->
-      <button md-raised-button class="btn-form" color="primary" (click)="submitData()" >{{ 'Releve.SaveReleve' | translate }}</button>
-    </md-card-actions> <!--END Btn-->
-  </md-card-content>  
-  </md-card>
-</form>
+      <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
 
+      <md-card-actions class="card-action"> <!--Btn Valider taxon-->
+      <button md-raised-button class="btn-form" color="primary" (click)="submitData()" >{{ 'Releve.SaveReleve' | translate }}</button>
+      </md-card-actions> <!--END Btn-->
 

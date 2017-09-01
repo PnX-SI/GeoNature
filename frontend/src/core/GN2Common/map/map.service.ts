@@ -18,7 +18,7 @@ export class MapService {
     toastrConfig: ToastrConfig;
     private _Le: any;
     private _geojsonCoord = new Subject<any>();
-    public gettingCoord$:Observable<any> = this._geojsonCoord.asObservable();
+    public gettingGeojson$:Observable<any> = this._geojsonCoord.asObservable();
 
     constructor(private http: Http, private toastrService: ToastrService) {
         this._Le = L as any;
