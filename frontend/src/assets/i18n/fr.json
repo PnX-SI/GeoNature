@@ -38,7 +38,8 @@
         "Municipality":"Commune",
         "Municipalities":"Communes",
         "Dataset":"Jeu de données",
-        "Comment":"Commentaire"
+        "Comment":"Commentaire",
+        "SaveReleve":"Enregistrer le relevé"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon observé",
