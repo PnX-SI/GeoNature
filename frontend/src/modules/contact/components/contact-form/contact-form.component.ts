@@ -44,10 +44,9 @@ export class ContactFormComponent implements OnInit, OnDestroy {
 
     // subscription to the coord observable
     this.geojsonSubscription = this._ms.gettingCoord$
-      .subscribe(geojson =>{
-      console.log(geojson);
-      
-       this.geojson = geojson
+      .subscribe(geojson => {
+        this.geojson = geojson;
+        this.observationForm.value.geometry = geojson.geometry;
       });
 
   }

@@ -21,6 +21,7 @@ export class FormService {
 
    initObservationForm(): FormGroup{
     return this._fb.group({
+      geometry:'',
       observers:'',
       dateMin: '',
       dateMax: '',
