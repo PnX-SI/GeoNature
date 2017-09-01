@@ -4,7 +4,7 @@
     <tr>
       <td>
         <pnx-nomenclature
-          placeholder="Stade de vie" 
+          placeholder="{{ 'Counting.LifeStage' | translate }}" 
           [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_life_stage"
           [idTypeNomenclature]="10" 
           [regne]="fs.currentTaxon.regne"  
@@ -13,7 +13,7 @@
       </td>
       <td>
           <pnx-nomenclature
-            placeholder="Sexe"
+            placeholder="{{ 'Counting.Sex' | translate }}"
             [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_sex"
             [idTypeNomenclature]="9" 
             [regne]="fs.currentTaxon.regne" 
@@ -22,7 +22,7 @@
       </td>
       <td>
           <pnx-nomenclature 
-            placeholder="Objet"
+            placeholder="{{ 'Counting.CountingObject' | translate }}"
             [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_obj_count"
             [idTypeNomenclature]="6" 
             [regne]="fs.currentTaxon.regne"
@@ -31,7 +31,7 @@
       </td>
       <td>
           <pnx-nomenclature
-            placeholder="Type"
+            placeholder="{{ 'Counting.CountingType' | translate }}"
             [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_type_count"
             [idTypeNomenclature]="21"
             [regne]="fs.currentTaxon.regne"
@@ -40,12 +40,12 @@
       </td>
       <td>
         <md-input-container>
-            <input [formControl]="formGroup.controls[index].controls.count_min" type="number" mdInput placeholder="Nombre min">
+            <input [formControl]="formGroup.controls[index].controls.count_min" type="number" mdInput placeholder="{{ 'Counting.Number' | translate }}">
           </md-input-container>
       </td>
       <td>
         <md-input-container>
-            <input [formControl]="formGroup.controls[index].controls.count_max" type="number" mdInput placeholder="Nombre max">
+            <input [formControl]="formGroup.controls[index].controls.count_max" type="number" mdInput placeholder="{{ 'Counting.Number' | translate }}">
           </md-input-container>
       </td>  
       <td><button type="button" class="btn btn-default btn-sm" (click)="onAddCounting()">
