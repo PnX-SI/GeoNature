@@ -1,0 +1,65 @@
+<div style="overflow-x:auto;"> <!-- scroll for table with small size -->
+  <table  class="table table-hover font-sm table-responsive">
+    <tbody class="table-hover">
+      <tr>
+        <td>
+          <pnx-nomenclature
+            placeholder="{{ 'Counting.LifeStage' | translate }}" 
+            [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_life_stage"
+            [idTypeNomenclature]="10" 
+            [regne]="fs.currentTaxon.regne"  
+            [group2Inpn]="fs.currentTaxon.group2_inpn"> 
+          </pnx-nomenclature>
+        </td>
+        <td>
+            <pnx-nomenclature
+              placeholder="{{ 'Counting.Sex' | translate }}"
+              [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_sex"
+              [idTypeNomenclature]="9" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn">
+            </pnx-nomenclature>
+        </td>
+        <td>
+            <pnx-nomenclature 
+              placeholder="{{ 'Counting.CountingObject' | translate }}"
+              [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_obj_count"
+              [idTypeNomenclature]="6" 
+              [regne]="fs.currentTaxon.regne"
+              [group2Inpn]="fs.currentTaxon.group2_inpn">
+          </pnx-nomenclature>
+        </td>
+        <td>
+            <pnx-nomenclature
+              placeholder="{{ 'Counting.CountingType' | translate }}"
+              [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_type_count"
+              [idTypeNomenclature]="21"
+              [regne]="fs.currentTaxon.regne"
+              [group2Inpn]="fs.currentTaxon.group2_inpn">
+            </pnx-nomenclature>  
+        </td>
+        <td>
+          <md-input-container>
+              <input [formControl]="formGroup.controls[index].controls.count_min" type="number" mdInput placeholder="{{ 'Counting.Number' | translate }}">
+            </md-input-container>
+        </td>
+        <td>
+          <md-input-container>
+              <input [formControl]="formGroup.controls[index].controls.count_max" type="number" mdInput placeholder="{{ 'Counting.Number' | translate }}">
+            </md-input-container>
+        </td>  
+        <td><button type="button" class="btn btn-default btn-sm" (click)="onAddCounting()">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td *ngIf="index == length -1 && index != 0">
+          <button type="button" class="btn btn-default btn-sm" (click)="onRemoveCounting(index)">
+              <i class="material-icons">clear</i>
+          </button>
+        </td>
+  
+      </tr>
+    <tbody>
+  </table> <!-- End table -->
+  </div> <!-- End scroll table -->
+  
