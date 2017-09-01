@@ -5,7 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as firebase from 'firebase';
 import { AuthService } from './components/auth/auth.service';
-import {APP_CONFIG , CONFIG, AppConfig} from '../conf/app.config';
+import {AppConfigs} from '../conf/app.configs';
 import 'rxjs/Rx';
 
 
@@ -13,7 +13,7 @@ import 'rxjs/Rx';
   selector: 'pnx-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [{ provide: APP_CONFIG, useValue: CONFIG }]
+  providers: [{ provide: AppConfigs, useValue: AppConfigs }]
 })
 
 export class AppComponent implements OnInit, OnDestroy {
@@ -23,13 +23,13 @@ export class AppComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:max-line-length
   constructor(private _navService: NavService, private translate: TranslateService,
               public authService: AuthService,
-              private activatedRoute: ActivatedRoute, @Inject(APP_CONFIG) private config: AppConfig) {
+              private activatedRoute: ActivatedRoute,) {
       _navService.gettingAppName.subscribe(ms => {
         this.appName = ms;
     });
 
     translate.addLangs(['en', 'fr', 'cn']);
-    translate.setDefaultLang(config.defaultLanguage);
+    translate.setDefaultLang(AppConfigs.defaultLanguage);
 
     // Get Lang of browser but if chose lang default in CONF we can not use this functionality
     // const browserLang = translate.getBrowserLang();

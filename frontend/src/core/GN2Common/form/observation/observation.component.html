@@ -1,57 +1,55 @@
-<md-card [formGroup]="releveForm"  class="cf-card-required padding-md">
-  <md-card-content>
-    <h4> <b> <u>{{ 'Releve.Releve' | translate }}</u> : </b></h4>
-    <pnx-observers
-      [parentFormControl]="releveForm.controls.observers"
-      [idMenu]="9"
-      placeholder="{{ 'Releve.Observers' | translate }}"
-      (observerSelected)="addObservers($event)"
-      (observerDeleted)= "deleteObservers($event)" >
-    </pnx-observers>
+<div [formGroup]="releveForm">
+  <h4> <b> <u>{{ 'Releve.Releve' | translate }}</u> : </b></h4>
+  <pnx-observers
+    [parentFormControl]="releveForm.controls.observers"
+    [idMenu]="9"
+    placeholder="{{ 'Releve.Observers' | translate }}"
+    (observerSelected)="addObservers($event)"
+    (observerDeleted)= "deleteObservers($event)" >
+  </pnx-observers>
 
-    <md-input-container class="input-alignment-sm input-width-xs" >
-      <input  mdInput [mdDatepicker]="pickerdatemin" placeholder="{{ 'Releve.MinDate' | translate }}" [formControl]="releveForm.controls.dateMin">
-      <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
-    </md-input-container>
-    <md-datepicker #pickerdatemin></md-datepicker>
+  <md-input-container class="input-alignment-sm input-width-xs" >
+    <input  mdInput [mdDatepicker]="pickerdatemin" placeholder="{{ 'Releve.MinDate' | translate }}" [formControl]="releveForm.controls.date_min">
+    <button mdSuffix [mdDatepickerToggle]="pickerdatemin"></button>
+  </md-input-container>
+  <md-datepicker #pickerdatemin></md-datepicker>
 
-    <md-input-container class="input-alignment-sm input-width-xs">
-      <input mdInput [mdDatepicker]="pickerdatemax" placeholder="{{ 'Releve.MaxDate' | translate }}" [formControl]="releveForm.controls.dateMax">
-      <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
-    </md-input-container>
-    <md-datepicker #pickerdatemax></md-datepicker>
+  <md-input-container class="input-alignment-sm input-width-xs">
+    <input mdInput [mdDatepicker]="pickerdatemax" placeholder="{{ 'Releve.MaxDate' | translate }}" [formControl]="releveForm.controls.date_max">
+    <button mdSuffix [mdDatepickerToggle]="pickerdatemax"></button>
+  </md-input-container>
+  <md-datepicker #pickerdatemax></md-datepicker>
 
-    <md-input-container class="input-alignment-sm input-width-xxs">
-      <input  type="number" mdInput placeholder="{{ 'Releve.MinAltitude' | translate }}">
-      <md-icon mdSuffix></md-icon>
-    </md-input-container>
+  <md-input-container class="input-alignment-sm input-width-xxs">
+    <input  type="number" mdInput placeholder="{{ 'Releve.MinAltitude' | translate }}">
+    <md-icon mdSuffix></md-icon>
+  </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-xxs">
-      <input  type="number" mdInput placeholder="{{ 'Releve.MaxAltitude' | translate }}">
-      <md-icon mdSuffix>terrain</md-icon>
-    </md-input-container>
+  <md-input-container class="input-alignment-sm input-width-xxs">
+    <input  type="number" mdInput placeholder="{{ 'Releve.MaxAltitude' | translate }}">
+    <md-icon mdSuffix>terrain</md-icon>
+  </md-input-container>
 
-    <md-input-container class="input-alignment-sm input-width-sm">
-      <input type="text" mdInput placeholder="{{ 'Releve.Municipality' | translate }}">
-      <md-icon mdSuffix>pin_drop</md-icon>
-    </md-input-container>
+  <md-input-container class="input-alignment-sm input-width-sm">
+    <input type="text" mdInput placeholder="{{ 'Releve.Municipality' | translate }}">
+    <md-icon mdSuffix>pin_drop</md-icon>
+  </md-input-container>
 
-    <md-select placeholder="{{ 'Releve.Dataset' | translate }}" [formControl]="releveForm.controls.dataSet">
-      <md-option *ngFor="let dataSet of dataSets" [value]="dataSet">{{ dataSet }}</md-option>
-    </md-select>
+  <md-select placeholder="{{ 'Releve.Dataset' | translate }}" [formControl]="releveForm.controls.id_dataset">
+    <md-option *ngFor="let dataSet of dataSets" [value]="dataSet">{{ dataSet }}</md-option>
+  </md-select>
 
-    <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
-      <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}
-    </button>
-    <!--<button md-button class ="input-alignment-sm"> <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire</button>-->
+  <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
+    <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}
+  </button>
+  <!--<button md-button class ="input-alignment-sm"> <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> Commentaire</button>-->
 
-    <div class="row collapse" id="collapseContexteCommentaire">
-      <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-          <div class="form-group">
-            <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
-            <textarea [formControl]="releveForm.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
-          </div>
-      </div>
+  <div class="row collapse" id="collapseContexteCommentaire">
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+        <div class="form-group">
+          <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
+          <textarea [formControl]="releveForm.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
+        </div>
     </div>
-  </md-card-content>
-</md-card> <!--END Observation Panel-->
+  </div>
+</div>

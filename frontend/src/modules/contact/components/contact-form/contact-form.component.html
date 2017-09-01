@@ -1,7 +1,11 @@
-
-    <pnx-observation
-      [releveForm]="releveForm">
-    </pnx-observation>
+<md-card class="cf-card-option padding-md">
+    <md-card [formGroup]="releveForm"  class="cf-card-required padding-md">
+      <md-card-content>
+        <pnx-observation
+          [releveForm]="releveForm">
+        </pnx-observation>
+      </md-card-content>
+    </md-card>
       <!-- Occurrence taxon  -->
       <md-card [formGroup]="occurrenceForm" class="cf-card-option padding-md"> 
         <pnx-occurrence
@@ -19,7 +23,7 @@
           </pnx-counting>
         </div>
         <md-card-actions class="card-action"> 
-          <button md-raised-button class="btn-form" (click)="addOccurence()" >{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+          <button md-raised-button class="btn-form" (click)="addOccurence()">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
         </md-card-actions> 
       </md-card>
 
@@ -31,8 +35,10 @@
       </md-card>
       <!-- End Md card taxon list -->
       <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
+ 
+  <md-card-actions class="card-action"> <!--Btn Valider taxon-->
+    <button md-raised-button class="btn-form" color="primary" (click)="submitData()" >{{ 'Releve.SaveReleve' | translate }}</button>
+  </md-card-actions> 
+</md-card>
 
-      <md-card-actions class="card-action"> <!--Btn Valider taxon-->
-      <button md-raised-button class="btn-form" color="primary" (click)="submitData()" >{{ 'Releve.SaveReleve' | translate }}</button>
-      </md-card-actions> <!--END Btn-->
 

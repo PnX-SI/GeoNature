@@ -22,11 +22,15 @@ export class FormService {
    initObservationForm(): FormGroup{
     return this._fb.group({
       geometry:'',
+      id_dataset: '',
+      id_digitiser :'',
+      date_min: '',
+      date_max: '',
+      altitude_min:'',
+      altitude_max :'',
+      meta_device_entry: 'web',
+      comment: '',
       observers:'',
-      dateMin: '',
-      dateMax: '',
-      dataSet: '',
-      comment: '',
       t_occurrences_contact: this._fb.array([])
       }); 
    }
