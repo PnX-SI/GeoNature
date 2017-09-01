@@ -38,7 +38,8 @@
         "Municipality":"Municipality",
         "Municipalities":"Municipalities",
         "Dataset":"Dataset",
-        "Comment":"Comment"
+        "Comment":"Comment",
+        "SaveReleve":"Save releve"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",
