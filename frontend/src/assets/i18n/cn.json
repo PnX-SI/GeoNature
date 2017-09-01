@@ -38,7 +38,8 @@
         "Municipality":"Commune",
         "Municipalities":"Communes",
         "Dataset":"Jeu de données",
-        "Comment":"评论"
+        "Comment":"评论",
+        "SaveReleve": "保存声明"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon observé",
