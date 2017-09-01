@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Http} from '@angular/http';
-import { Map, GeoJSON, Layer, FeatureGroup } from 'leaflet';
+import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
@@ -12,13 +12,13 @@ export class MapService {
     public baseMaps: any;
     private currentLayer: GeoJSON;
     public editingMarker: boolean;
-    public marker: any;
+    public marker: Marker;
     private _drawFeatureGroup:FeatureGroup;
-    private _currentDraw: Layer;
+    private _currentDraw: any;
     toastrConfig: ToastrConfig;
     private _Le: any;
-    private _coord = new Subject<any>();
-    public gettingCoord$:Observable<any> = this._coord.asObservable();
+    private _geojsonCoord = new Subject<any>();
+    public gettingCoord$:Observable<any> = this._geojsonCoord.asObservable();
 
     constructor(private http: Http, private toastrService: ToastrService) {
         this._Le = L as any;
@@ -56,95 +56,117 @@ export class MapService {
     }
 
     enableMarkerOnClick() {
-        this.map.on('click', (e: any) => {
-                    if ( this.marker != null )
-                            this.marker.remove();
+      this.map.on('click', (e: any) => {
+        if ( this.marker != null )
+                this.marker.remove();
 
-                    this.marker = L.marker(e.latlng, {
-                        icon: L.icon({
-                                iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                                iconSize: [24,36],
-                                iconAnchor: [12,36]
-                        }),
-                        draggable: true,
-                    })
-                    .bindPopup('GPS ' + e.latlng, {
-                        offset: L.point(0, -30)
-                    })
-                    .addTo(this.map)
-                    .openPopup();
+        this.marker = L.marker(e.latlng, {
+            icon: L.icon({
+                    iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
+                    iconSize: [24,36],
+                    iconAnchor: [12,36]
+            }),
+            draggable: true,
+        })
+        .bindPopup('GPS ' + e.latlng, {
+            offset: L.point(0, -30)
+        })
+        .addTo(this.map)
+        .openPopup();
 
-                    this.marker.on('move', (event: MouseEvent) => {
-                        this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
-                        offset: L.point(0, -30)
-                        }).openPopup();
-                      // observable if marker move
-                      this.setCoord(this.marker.getLatLng());
-                    });
-                // observable if map click
-                this.setCoord(this.marker.getLatLng());
-
+        this.marker.on('moveend', (event: MouseEvent) => {
+            this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
+            offset: L.point(0, -30)
+            }).openPopup();
+          // observable if marker move
+          this.setGeojsonCoord(this.coordToGeojson('Point', this.marker.getLatLng()));
         });
+      //observable if map click
+      this.setGeojsonCoord(this.coordToGeojson('Point', this.marker.getLatLng()))
+      });
     }
 
     toggleEditing() {
-        this.editingMarker = !this.editingMarker;
-        if ( this.marker !== null ){
+      this.editingMarker = !this.editingMarker;
+      if(!this.editingMarker){
+        if ( this.marker !== undefined ){
           this.map.removeLayer(this.marker);
         }
-        if (this._currentDraw !== null ){
+      }
+      else{
+        if (this._currentDraw !== undefined ){
           this._drawFeatureGroup.removeLayer(this._currentDraw)
         }
         this.enableMarkerOnClick();
+      }
     }
 
     search(address: string) {
-        let results = [];
-        this.http
-            .get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&polygon_geojson=1`)
-            .subscribe(
-                res => {
-                    results = res.json();
-                    results = results.filter(result => {
-                        this.gotoLocation(result.geojson);
-                    });
-                },
-                error => this.toastrService.error('', 'Location not found', this.toastrConfig)
-            );
+      let results = [];
+      this.http
+          .get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&polygon_geojson=1`)
+          .subscribe(
+              res => {
+                  results = res.json();
+                  results = results.filter(result => {
+                      this.gotoLocation(result.geojson);
+                  });
+              },
+              error => this.toastrService.error('', 'Location not found', this.toastrConfig)
+          );
     }
 
     gotoLocation(geometry) {
-        const featureCollection: GeoJSON.FeatureCollection<any> = {
-        type: 'FeatureCollection',
-        features: [
-            {
-            type: 'Feature',
-            geometry: geometry,
-            properties: {}
-            }
-        ]
-        };
-
-        this.currentLayer = L.geoJSON(featureCollection).addTo(this.map);
-        this.map.fitBounds(this.currentLayer.getBounds());
-        this.clear();
+      const featureCollection: GeoJSON.FeatureCollection<any> = {
+      type: 'FeatureCollection',
+      features: [
+          {
+          type: 'Feature',
+          geometry: geometry,
+          properties: {}
+          }
+      ]
+      };
+      this.currentLayer = L.geoJSON(featureCollection).addTo(this.map);
+      this.map.fitBounds(this.currentLayer.getBounds());
+      this.clear();
     }
 
+    // clear the marker when search
     clear() {
-        if (this.currentLayer) {
+      if (this.currentLayer) {
         this.map.removeLayer(this.currentLayer);
         this.currentLayer = undefined;
-        }
+      }
     }
 
-    getGeometry() {
-        if( this.marker != null ){
-            return this.marker.getLatLng();
+    coordToGeojson(layerType, latLngTab){
+      let coordTab = [];
+      let arrayLatLng = latLngTab;
+      if(layerType == 'polygon'){
+        arrayLatLng = latLngTab[0];
+      }
+      if (layerType == 'polyline' || layerType == 'polygon'){
+        for(let latlng of arrayLatLng){
+          let inter = []
+          inter.push(latlng.lng)
+          inter.push(latlng.lat)
+          coordTab.push(inter);
         }
+      }
+      else {
+        coordTab = [latLngTab.lng, latLngTab.lat]
+      }
+       return {
+          "geometry":{
+            "type": layerType,
+            "coordinates": coordTab
+            }
+          }
     }
 
-    setCoord(coord){        
-      this._coord.next(coord);
+    setGeojsonCoord(geojsonCoord){
+      this._geojsonCoord.next(geojsonCoord);
     }
 
     enableLeafletDraw(){
@@ -168,11 +190,14 @@ export class MapService {
           this.map.removeLayer(this.marker);
       });
 
-      // Create the draw layer
-      this.map.on(this._Le.Draw.Event.CREATED, (e) => {
+      // on draw layer created
+      this.map.on(this._Le.Draw.Event.CREATED, (e) => {        
         this._currentDraw = (e as any).layer;
+        const layerType = (e as any).layerType;
+        const latlngTab = this._currentDraw._latlngs;
         this._drawFeatureGroup.addLayer(this._currentDraw);
         // observable
+        this.setGeojsonCoord(this.coordToGeojson(layerType, latlngTab));
 
       })
     }
