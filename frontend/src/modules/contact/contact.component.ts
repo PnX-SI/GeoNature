@@ -10,12 +10,16 @@ import { MapService } from '../../core/GN2Common/map/map.service';
   providers: [MapService]
 })
 export class ContactComponent implements OnInit {
+  public coord: any;
 
   constructor(private _navService: NavService, private _ms: MapService) {
-      _navService.setAppName('Contact Faune');
+      _navService.setAppName('Contact Faune - Flore ');
   }
 
   ngOnInit() {
+    this._ms.gettingCoord$.subscribe(coord => {
+      this.coord = coord;
+    });
   }
 
 }
