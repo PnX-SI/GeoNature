@@ -58,6 +58,7 @@
         "BiologicalCondition":"Etat biologique",
         "BiologicalStatus":"Statut biologique",
         "Naturalness":"Naturalite",
+        "DeterminationMethod":"Méthode de détermination",
         "Determiner":"Déterminateur",
         "SampleNumber":"Numéro du prélevement",
         "DigitalProof":"Preuve digitale",
