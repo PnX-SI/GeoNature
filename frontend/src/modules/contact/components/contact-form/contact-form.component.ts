@@ -23,8 +23,8 @@ export class ContactFormComponent implements OnInit, OnDestroy {
   public occurrenceForm:FormGroup;
   public countingForm: FormArray;
   public contactForm: FormGroup;
-  public coord: string;
-  private coordSubscription: Subscription;
+  public geojson: any;
+  private geojsonSubscription: Subscription;
   constructor(private _dfService: DataFormService, public fs: FormService, private _ms: MapService) {  }
 
   ngOnInit() {
@@ -43,8 +43,12 @@ export class ContactFormComponent implements OnInit, OnDestroy {
     this.taxonsList = [];
 
     // subscription to the coord observable
-    this.coordSubscription = this._ms.gettingCoord$
-      .subscribe(coord => this.coord = coord);
+    this.geojsonSubscription = this._ms.gettingCoord$
+      .subscribe(geojson =>{
+      console.log(geojson);
+      
+       this.geojson = geojson
+      });
 
   }
 
@@ -69,7 +73,7 @@ export class ContactFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.coordSubscription.unsubscribe();
+    this.geojsonSubscription.unsubscribe();
   }
 
 }
