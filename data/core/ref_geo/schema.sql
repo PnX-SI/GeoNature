@@ -32,7 +32,6 @@ CREATE TABLE l_areas (
 );
 
 
-
 --
 -- TOC entry 304 (class 1259 OID 111572)
 -- Name: bib_areas_types; Type: TABLE; Schema: ref_geo
@@ -43,7 +42,6 @@ CREATE TABLE bib_areas_types (
     area_type character varying(200),
     code character varying(5)
 );
-
 
 
 --
@@ -80,7 +78,6 @@ CREATE TABLE l_municipalities (
 );
 
 
-
 CREATE TABLE l_grids (
     code_grid character varying(50) NOT NULL,
     geom public.geometry(Polygon,MYLOCALSRID),
@@ -92,7 +89,6 @@ CREATE TABLE l_grids (
     code_grid_10k character varying(20),
     zc boolean
 );
-
 
 
 -- Add sequence on l_areas ?
@@ -111,7 +107,7 @@ ALTER TABLE ONLY l_municipalities
     ADD CONSTRAINT l_municipalities_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY l_grids
-    ADD CONSTRAINT l_grids_pkey PRIMARY KEY (code_maille);
+    ADD CONSTRAINT l_grids_pkey PRIMARY KEY (code_grid);
 
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT pk_l_areas PRIMARY KEY (id_zone);
