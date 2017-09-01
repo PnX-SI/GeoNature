@@ -9,6 +9,7 @@ import { NomenclatureComponent } from './form/nomenclature/nomenclature.componen
 import { ObserversComponent } from './form/observers/observers.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { CountingComponent } from './form/counting/counting.component'
+import { ObservationComponent } from './form/observation/observation.component'
 import { MapComponent } from './map/map.component';
 import { OccurrenceComponent } from './form/occurrence/occurrence.component'
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
@@ -45,7 +46,8 @@ export function HttpLoaderFactory(http: Http) {
     TaxonomyComponent,
     MapComponent,
     OccurrenceComponent,
-    CountingComponent
+    CountingComponent,
+    ObservationComponent
 
   ],
   providers : [
@@ -59,6 +61,7 @@ export function HttpLoaderFactory(http: Http) {
     MapComponent,
     OccurrenceComponent,
     CountingComponent,
+    ObservationComponent,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,

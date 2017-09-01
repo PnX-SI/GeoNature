@@ -16,10 +16,6 @@ export class ContactComponent implements OnInit {
       _navService.setAppName('Contact Faune - Flore ');
   }
 
-  ngOnInit() {
-    this._ms.gettingCoord$.subscribe(coord => {
-      this.coord = coord;
-    });
-  }
+  ngOnInit() { }
 
 }
