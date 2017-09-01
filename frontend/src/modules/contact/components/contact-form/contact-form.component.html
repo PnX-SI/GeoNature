@@ -85,6 +85,7 @@
       </md-card>
       <!-- End Md card taxon list -->
       <pre>form value: <br>{{observationForm.value | json}}</pre>
+      Coord: {{coord?.lat}}
       
     <md-card-actions class="card-action"> <!--Btn Valider taxon-->
       <button md-raised-button class="btn-form" color="primary" (click)="submitData()" >Valider le relevé</button>

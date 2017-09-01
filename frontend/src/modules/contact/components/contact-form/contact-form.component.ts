@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { FormService }  from '../../../../core/GN2Common/form/form.service'
+import { MapService } from '../../../../core/GN2Common/map/map.service';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
@@ -13,16 +15,17 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./contact-form.component.scss'],
   providers: [FormService]
 })
-export class ContactFormComponent implements OnInit {
-  dataForm: any;
-  dataSets: any;
-  taxonsList: Array<any>;
-  observationForm:FormGroup;
-  occurrenceForm:FormGroup;
-  countingForm: FormArray;
-
-  contactForm: FormGroup;
-  constructor(private _dfService: DataFormService, public fs: FormService) {  }
+export class ContactFormComponent implements OnInit, OnDestroy {
+  public dataForm: any;
+  public dataSets: any;
+  public taxonsList: Array<any>;
+  public observationForm:FormGroup;
+  public occurrenceForm:FormGroup;
+  public countingForm: FormArray;
+  public contactForm: FormGroup;
+  public coord: string;
+  private coordSubscription: Subscription;
+  constructor(private _dfService: DataFormService, public fs: FormService, private _ms: MapService) {  }
 
   ngOnInit() {
     // releve get dataSet
@@ -38,6 +41,10 @@ export class ContactFormComponent implements OnInit {
     
     // init the taxons list
     this.taxonsList = [];
+
+    // subscription to the coord observable
+    this.coordSubscription = this._ms.gettingCoord$
+      .subscribe(coord => this.coord = coord);
 
   }
 
@@ -55,9 +62,14 @@ export class ContactFormComponent implements OnInit {
   }
 
   submitData() {
+    // resert the forms
     this.observationForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
+  }
+
+  ngOnDestroy(){
+    this.coordSubscription.unsubscribe();
   }
 
 }

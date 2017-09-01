@@ -1,18 +1,27 @@
 import { Injectable } from '@angular/core';
 import {Http} from '@angular/http';
-import { Map, GeoJSON } from 'leaflet';
+import { Map, GeoJSON, Layer, FeatureGroup } from 'leaflet';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs';
+import { leafletDrawOptions } from './leaflet-draw-options'
 
 @Injectable()
 export class MapService {
     public map: Map;
     public baseMaps: any;
     private currentLayer: GeoJSON;
-    public editing: boolean;
+    public editingMarker: boolean;
     public marker: any;
+    private _drawFeatureGroup:FeatureGroup;
+    private _currentDraw: Layer;
     toastrConfig: ToastrConfig;
+    private _Le: any;
+    private _coord = new Subject<any>();
+    public gettingCoord$:Observable<any> = this._coord.asObservable();
 
     constructor(private http: Http, private toastrService: ToastrService) {
+        this._Le = L as any;
         this.toastrConfig = {
             positionClass: 'toast-top-center',
             tapToDismiss: true,
@@ -30,7 +39,7 @@ export class MapService {
             attribution: '&copy; GoogleMap'
         })
     };
-        this.editing = false;
+        this.editingMarker = true;
     }
 
     initialize() {
@@ -46,9 +55,8 @@ export class MapService {
         this.map = map;
     }
 
-    onMapClick() {
+    enableMarkerOnClick() {
         this.map.on('click', (e: any) => {
-                if (this.editing) {
                     if ( this.marker != null )
                             this.marker.remove();
 
@@ -70,16 +78,24 @@ export class MapService {
                         this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
                         offset: L.point(0, -30)
                         }).openPopup();
+                      // observable if marker move
+                      this.setCoord(this.marker.getLatLng());
                     });
-                }
-                
+                // observable if map click
+                this.setCoord(this.marker.getLatLng());
+
         });
     }
 
     toggleEditing() {
-        this.editing = !this.editing;
-        if ( this.marker != null )
-             this.map.removeLayer(this.marker);
+        this.editingMarker = !this.editingMarker;
+        if ( this.marker !== null ){
+          this.map.removeLayer(this.marker);
+        }
+        if (this._currentDraw !== null ){
+          this._drawFeatureGroup.removeLayer(this._currentDraw)
+        }
+        this.enableMarkerOnClick();
     }
 
     search(address: string) {
@@ -125,5 +141,39 @@ export class MapService {
         if( this.marker != null ){
             return this.marker.getLatLng();
         }
+    }
+
+    setCoord(coord){        
+      this._coord.next(coord);
+    }
+
+    enableLeafletDraw(){
+      this._drawFeatureGroup = new L.FeatureGroup();
+      this.map.addLayer(this._drawFeatureGroup);
+      leafletDrawOptions.edit['featureGroup'] = this._drawFeatureGroup;
+
+  
+      const drawControl =  new this._Le.Control.Draw(leafletDrawOptions);
+      this.map.addControl(drawControl);
+
+      this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
+        // remove the current draw
+        if(this._currentDraw !== null){
+          this._drawFeatureGroup.removeLayer(this._currentDraw);
+        }
+        // remove the current marker
+        this.editingMarker = false;
+        this.map.off('click');
+        if(this.marker)
+          this.map.removeLayer(this.marker);
+      });
+
+      // Create the draw layer
+      this.map.on(this._Le.Draw.Event.CREATED, (e) => {
+        this._currentDraw = (e as any).layer;
+        this._drawFeatureGroup.addLayer(this._currentDraw);
+        // observable
+
+      })
     }
 }
