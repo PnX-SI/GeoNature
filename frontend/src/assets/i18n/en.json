@@ -58,6 +58,7 @@
         "BiologicalCondition":"Biological condition",
         "BiologicalStatus":"Biological status",
         "Naturalness":"Naturalness",
+        "DeterminationMethod":"Determination method",
         "Determiner":"Determiner",
         "SampleNumber":"Sample number",
         "DigitalProof":"Digital proof",
