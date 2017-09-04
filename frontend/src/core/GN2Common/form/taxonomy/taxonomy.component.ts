@@ -20,7 +20,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   }
 
   displaySearchName(taxon): string {
-    return taxon ? taxon.lb_nom : '';
+    return taxon ? taxon.nom_valide : '';
   }
 
   ngOnChanges(changes){
