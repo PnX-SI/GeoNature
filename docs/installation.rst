@@ -54,17 +54,17 @@ Création de la base de données
 Installation d'un module
 ========================
 
-  * Installation du schéma du module dans la base de données Exemple pour le module contact faune.
+* Installation du schéma du module dans la base de données. Exemple pour le module contact faune.
  
   ::  
   
-        sudo ./data/modules/contact/install_schema.sh
+	sudo ./data/modules/contact/install_schema.sh
 
 
 Mise en place du backend (doc developpeur)
 ==========================================
 
-  * Installation du backend.
+* Installation du backend.
  
   ::  
   
@@ -73,9 +73,7 @@ Mise en place du backend (doc developpeur)
         ./install_app.sh
 
 
-	* Installation du sous-module en mode develop
-
-  On assume que le sous module est installé au même niveau que geonature, dans le home de l'utilisateur
+* Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire `home` de l'utilisateur
  
   ::  
   
