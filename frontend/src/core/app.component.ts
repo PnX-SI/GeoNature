@@ -30,6 +30,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     translate.addLangs(['en', 'fr', 'cn']);
     translate.setDefaultLang(AppConfigs.defaultLanguage);
+    translate.use(AppConfigs.defaultLanguage);
+    
 
     // Get Lang of browser but if chose lang default in CONF we can not use this functionality
     // const browserLang = translate.getBrowserLang();

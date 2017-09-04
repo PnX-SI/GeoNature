@@ -3,7 +3,7 @@
   <md-icon mdSuffix>pets</md-icon>
 </md-input-container>
 
-<md-autocomplete #auto="mdAutocomplete" [displayWith]="displaySearchName">
+<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayValidName">
   <md-option *ngFor="let taxon of taxons" [value]="taxon"  (click)="onTaxonSelected(taxon)">
     <span [innerHTML]="taxon.search_name" >  </span>
   </md-option>
