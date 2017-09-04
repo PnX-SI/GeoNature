@@ -42,7 +42,7 @@ BEGIN
     WITH d  as (
         SELECT st_transform(myGeom,isrid) geom_trans
     )
-    SELECT c.insee_code , name FROM ref_geo.l_municipalities c , d WHERE st_intersects(geom_trans, geom);
+    SELECT c.insee_code , municipality_name FROM ref_geo.l_municipalities c , d WHERE st_intersects(geom_trans, geom);
 
 END;
 $BODY$
