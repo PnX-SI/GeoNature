@@ -1,4 +1,4 @@
 <md-select [placeholder]="placeholder" [formControl]="parentFormControl">
-    <md-option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label.definition_fr}} </md-option>
+    <md-option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label[labelLang]}} </md-option>
 </md-select>
 

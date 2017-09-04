@@ -19,7 +19,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
     this.autocompleteTaxons(3, 20);
   }
 
-  displaySearchName(taxon): string {
+  displayValidName(taxon): string {
     return taxon ? taxon.nom_valide : '';
   }
 
