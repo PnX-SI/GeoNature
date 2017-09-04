@@ -212,11 +212,11 @@ then
 
 if $install_sig_layers
   then
-    echo "Création du schéma REF_GEO..."
+    echo "Creating REF_GEO schema..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
-    echo "Création du schéma REF_GEO" &>> log/install_db.log
+    echo "Creating REF_GEO schema..." &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     cp data/ref_geo/schema.sql /tmp/ref_geo.sql
@@ -224,8 +224,24 @@ if $install_sig_layers
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/ref_geo.sql  &>> log/install_db.log
 fi
 
+if $install_default_dem
+  then
+    echo "Insert default French DEM (IGN 250m BD alti)"
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Insert default French DEM (IGN 250m BD alti)" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    wget http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp
+	unzip /tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp
+	# TODO : Verifier si on a deja téléchargé le fichier. 
+	# Inserer le MNT ascii dans la BDD (raster2pgsql) avec data/ref_geo/load_dem.sh
+	# Vectoriser le MNT (ST_DumpAsPolygons, voir data/ref_geo/create_function.sql)
+fi
+
     # Suppression des fichiers : on ne conserve que les fichiers compressés
-    echo "nettoyage..."
+    echo "Cleaning files..."
     rm /tmp/*.txt
     rm /tmp/*.csv
     rm data/utilisateurs/usershub.sql
@@ -236,6 +252,6 @@ fi
     #rm data/taxonomie/inpn/*.zip
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
 
-    echo "Droit sur le répertoire log..."
+    echo "Permission on log folder..."
     chmod -R 777 log
 fi
