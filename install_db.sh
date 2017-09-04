@@ -219,7 +219,7 @@ if $install_sig_layers
     echo "Création du schéma REF_GEO" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    cp data/core/ref_geo/schema.sql /tmp/ref_geo.sql
+    cp data/ref_geo/schema.sql /tmp/ref_geo.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/ref_geo.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/ref_geo.sql  &>> log/install_db.log
 fi
