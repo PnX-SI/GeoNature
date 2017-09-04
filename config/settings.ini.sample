@@ -1,7 +1,7 @@
-# Configuration PostgreSQL
+# PostgreSQL Configuration
 ##########################
 
-# Effacer la base de donnée existante lors de l'installation
+# Drop eventual existing database during installation
 drop_apps_db=false
 
 # DB host
@@ -10,19 +10,19 @@ drop_apps_db=false
 # les scripts n'auront pas les droits suffisants pour créer la BDD sur un autre serveur et cela devra être fait manuellement.
 db_host=localhost
 
-# Port postgresql
+# PostgreSQL port
 db_port=5432
 
-# Nom de la base de données de l'application
+# GeoNature database name
 db_name=geonature2db
 
-# Nom de l'utilisateur propriétaire de la base PostgreSQL geonaturedb
+# GeoNature database owner username
 user_pg=geonatuser
 
-# Pass de l'utilisateur propriétaire de la base PostgreSQL geonaturedb
+# GeoNature database owner password
 user_pg_pass=monpassachanger
 
-# SRID de la projection locale
+# Local projection SRID
 srid_local=2154
 
 # default language (locale)
@@ -33,13 +33,16 @@ default_language=fr
 # Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)
 install_sig_layers=true
 
-# Installer les données exemples en 2154 (valide pour la métropole uniquement, si srid_local=2154 ; false conseillé hors métropole)
+# Install default French DEM (Mainland France only - BD alti 250m))
+install_default_dem=true
+
+# Insert sample data (available only in Mainland France with srid_local=2154 ; false otherwise)
 add_sample_data=true
 
 
 python_path=/usr/bin/python3.5
 
-# Configuration taxonomie et utilisateurs
+# Taxonomy and Users configuration
 #########################################
 
 # Les scripts SQL de création des schémas 'utilisateurs' et 'taxonomie' de GeoNature sont téléchargés depuis le dépôt github des projets UsersHub et TaxHub
