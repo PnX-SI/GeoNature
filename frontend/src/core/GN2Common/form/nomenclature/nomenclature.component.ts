@@ -18,13 +18,16 @@ export class NomenclatureComponent implements OnInit, OnChanges {
   @Input() group2Inpn: string;
   @Input() lang: string;
   @Output() valueSelected = new EventEmitter<any>();
+
   constructor(private _dfService: DataFormService) { }
 
-
-  ngOnInit() {    
+  ngOnInit() {
+    
     // load the data
      this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
-      .subscribe(data => this.labels = data.values);
+      .subscribe(data => {
+        this.initLabels(data);
+      });
     
   }
 
@@ -32,14 +35,26 @@ export class NomenclatureComponent implements OnInit, OnChanges {
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
       this._dfService.getNomenclature(this.idTypeNomenclature, changes.regne.currentValue, changes.group2Inpn.currentValue)
-        .subscribe(data => this.labels = data.values);
+        .subscribe(data => {
+          this.initLabels(data);
+        });
     }
     // if only change groupe2inpn
     if (changes.regne === undefined && changes.group2Inpn !== undefined && !changes.group2Inpn.firstChange) {
         this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
-          .subscribe(data => this.labels = data.values);
+          .subscribe(data => {
+            this.initLabels(data);
+          });
       }
     }
+
+  initLabels(data){
+    this.labels = data.values;
+    // disable the input if undefined
+    if(this.labels === undefined){
+      this.parentFormControl.disable();
+    }
+  }
 
   // Output
   onLabelChange() {

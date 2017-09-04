@@ -1,6 +1,4 @@
-<md-select [placeholder]="placeholder" [disabled]="labels == undefined" [formControl]="parentFormControl">
+<md-select [placeholder]="placeholder" [formControl]="parentFormControl">
     <md-option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label.definition_fr}} </md-option>
 </md-select>
-
-
 
