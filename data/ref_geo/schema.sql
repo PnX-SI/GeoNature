@@ -1,4 +1,4 @@
-DROP SCHEMA IF EXISTS ref_geo CASCADE;
+-- DROP SCHEMA IF EXISTS ref_geo CASCADE;
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
