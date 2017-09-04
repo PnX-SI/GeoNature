@@ -1,3 +1,4 @@
-<md-select [formControl]="parentFormControl" [placeholder]="placeholder" >
-    <md-option *ngFor="let observer of inputObservers" [value]="observer.nom_complet"> {{observer.nom_complet}} </md-option>
-</md-select>
+<label> {{placeholder}} </label>
+<select class="form-control"  [formControl]="parentFormControl" >
+    <option *ngFor="let observer of inputObservers" [value]="observer.nom_complet"> {{observer.nom_complet}} </option>
+</select>

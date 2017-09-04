@@ -1,13 +1,12 @@
 <div [formGroup]="occurrenceForm">
     <h4> <b> <u>{{ 'Taxon.ObservedTaxon' | translate }}</u>: </b></h4>
 
-    
-        <!-- <div class="collapse" id="collapseExample">
+        <div class="collapse" id="collapseExample">
           <div class="well well-sm well-margin">
             <div>
               <label class="font-sm">Groupe:</label>
               <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
-                <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option>
+                <!-- <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option> -->
               </select>
               <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Patrimoniaux</label>
               <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Priorité</label>
@@ -15,37 +14,40 @@
               <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
             </div>
           </div>
-        </div> -->
-
-        <pnx-taxonomy
-          [parentFormControl]="occurrenceForm.controls.cd_nom"
-          (taxonChanged)="fs.updateTaxon($event)" >
-        </pnx-taxonomy>
-      
-        <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          <md-icon>filter_list</md-icon>
-        </button>
-
-        <pnx-nomenclature 
-          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
-          placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
-          [idTypeNomenclature]="100" 
-          [regne]="fs.currentTaxon.regne" 
-          [group2Inpn]="fs.currentTaxon.group2_inpn">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature 
-          placeholder="{{ 'Taxon.ObsMethod' | translate }}"
-          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
-          [idTypeNomenclature]="14" 
-          [regne]="fs.currentTaxon.regne" 
-          [group2Inpn]="fs.currentTaxon.group2_inpn" > 
-        </pnx-nomenclature>
-        
-
+        </div>
+        <div>
+          <pnx-taxonomy
+            [parentFormControl]="occurrenceForm.controls.cd_nom"
+            (taxonChanged)="fs.updateTaxon($event)" >
+          </pnx-taxonomy>
+          <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              <md-icon>filter_list</md-icon>
+            </button>
+        </div>
+        <div class="row">
+          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+              <pnx-nomenclature 
+              [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
+              placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
+              [idTypeNomenclature]="100" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn">
+            </pnx-nomenclature>
+          </div>
+          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            <pnx-nomenclature 
+              placeholder="{{ 'Taxon.ObsMethod' | translate }}"
+              [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
+              [idTypeNomenclature]="14" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+            </pnx-nomenclature>
+          </div>
+        </div>
         <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-          <md-icon mdPrefix class="font-md">settings</md-icon> {{ 'Taxon.Advanced' | translate }}
-        </button>
+            <md-icon mdPrefix class="font-md">settings</md-icon> {{ 'Taxon.Advanced' | translate }}
+          </button>
+      
         <div class="collapse" id="collapseAvance">
           <div class="well well-sm">
             <pnx-nomenclature 
@@ -87,14 +89,13 @@
             <md-input-container class="input-alignment-sm input-width-sm">
               <input mdInput [formControl]="occurrenceForm.controls.non_digital_proof"  type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}">
             </md-input-container>
+            <div class="form-group">
+                <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
+                <textarea class="form-control" [formControl]="occurrenceForm.controls.comment" 
+                  rows="2" id="commentaire">
+                </textarea>
+            </div>
           </div>
-        </div>
-
-        <div class="form-group">
-            <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
-            <textarea class="form-control" [formControl]="occurrenceForm.controls.comment" 
-              rows="2" id="commentaire">
-            </textarea>
         </div>
 </div>
 

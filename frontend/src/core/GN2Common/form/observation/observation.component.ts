@@ -6,7 +6,8 @@ import { DataFormService } from '../data-form.service';
 
 @Component({
   selector: 'pnx-observation',
-  templateUrl: 'observation.component.html'
+  templateUrl: 'observation.component.html',
+  styleUrls: ['./observation.component.scss']
 })
 
 export class ObservationComponent implements OnInit, OnDestroy {

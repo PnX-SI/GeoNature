@@ -11,7 +11,6 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   labels: any[];
-  nomenclature: any;
   selectedId: number;
   labelLang:string;
   subscription: Subscription;
