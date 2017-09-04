@@ -4,9 +4,8 @@
 </md-input-container>
 
 <md-autocomplete #auto="mdAutocomplete" [displayWith]="displaySearchName">
-  
   <md-option *ngFor="let taxon of taxons" [value]="taxon"  (click)="onTaxonSelected(taxon)">
-          <span [innerHTML]="taxon.search_name" >  </span>
+    <span [innerHTML]="taxon.search_name" >  </span>
   </md-option>
 </md-autocomplete>
 
