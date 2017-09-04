@@ -18,19 +18,18 @@ SET search_path = ref_geo, pg_catalog;
 --
 
 CREATE TABLE l_areas (
-    id_zone integer NOT NULL,
+    id_area integer NOT NULL,
     id_type integer NOT NULL,
-    id_mnhn character varying(20),
-    name character varying(250),
+    area_name character varying(250),
     geom public.geometry(MultiPolygon,MYLOCALSRID),
     source character varying(250),
+    code_source character varying(20),
     comment text,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(geom) = MYLOCALSRID))
 );
-
 
 
 --
@@ -40,10 +39,10 @@ CREATE TABLE l_areas (
 
 CREATE TABLE bib_areas_types (
     id_type integer NOT NULL,
-    area_type character varying(200),
+    type_name character varying(200),
+    type_desc text,
     code character varying(5)
 );
-
 
 
 --
@@ -52,10 +51,10 @@ CREATE TABLE bib_areas_types (
 --
 
 CREATE TABLE l_municipalities (
+    id_municipality character varying(25) NOT NULL,
     geom public.geometry(MultiPolygon,MYLOCALSRID),
-    id character varying(25) NOT NULL,
     plani_precision double precision,
-    name character varying(250),
+    municipality_name character varying(250),
     insee_code character varying(5),
     siren_code character varying(10),
     status character varying(20),
@@ -64,7 +63,7 @@ CREATE TABLE l_municipalities (
     depart_code character varying(3),
     depart character varying(30),
     region character varying(30),
-    popul integer,
+    population integer,
     multican character varying(3),
     cc_nom character varying(250),
     cc_siren bigint,
@@ -80,7 +79,6 @@ CREATE TABLE l_municipalities (
 );
 
 
-
 CREATE TABLE l_grids (
     code_grid character varying(50) NOT NULL,
     geom public.geometry(Polygon,MYLOCALSRID),
@@ -92,7 +90,6 @@ CREATE TABLE l_grids (
     code_grid_10k character varying(20),
     zc boolean
 );
-
 
 
 -- Add sequence on l_areas ?
@@ -111,7 +108,7 @@ ALTER TABLE ONLY l_municipalities
     ADD CONSTRAINT l_municipalities_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY l_grids
-    ADD CONSTRAINT l_grids_pkey PRIMARY KEY (code_maille);
+    ADD CONSTRAINT l_grids_pkey PRIMARY KEY (code_grid);
 
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT pk_l_areas PRIMARY KEY (id_zone);

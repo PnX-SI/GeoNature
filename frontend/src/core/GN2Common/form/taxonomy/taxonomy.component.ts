@@ -16,12 +16,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    this.inputTaxon.valueChanges
-      .filter(value => (value.length >= 3 && value.length <= 20))
-      .debounceTime(400)
-      .distinctUntilChanged()
-      .switchMap(value => this._dfService.searchTaxonomy(value, '1001'))
-        .subscribe(response => this.taxons = response);
+    this.autocompleteTaxons(3, 20);
   }
 
   displaySearchName(taxon): string {
@@ -31,13 +26,17 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   ngOnChanges(changes){
     // if the formcontroller change, we have to reload the observable
     if(changes.inputTaxon){
-      this.inputTaxon.valueChanges
-      .filter(value => (value.length >= 3 && value.length <= 20))
-      .debounceTime(400)
-      .distinctUntilChanged()
-      .switchMap(value => this._dfService.searchTaxonomy(value, '1001'))
-        .subscribe(response => this.taxons = response);
+      this.autocompleteTaxons(3, 20);
     }
+  }
+
+  autocompleteTaxons (keyoardNumber, listLength){
+    this.inputTaxon.valueChanges
+    .filter(value => (value.length >= keyoardNumber && value.length <= 20))
+    .debounceTime(400)
+    .distinctUntilChanged()
+    .switchMap(value => this._dfService.searchTaxonomy(value, '1001'))
+      .subscribe(response => this.taxons = response.slice(0, listLength));
   }
   
   onTaxonSelected(taxon){    
