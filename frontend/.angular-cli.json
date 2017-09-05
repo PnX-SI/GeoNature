@@ -19,13 +19,17 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "pnx",
       "styles": [
+        "../node_modules/font-awesome/css/font-awesome.min.css",
+        "../node_modules/tether/dist/css/tether.min.css",
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/ngx-toastr/toastr.css",
         "../node_modules/leaflet-draw/dist/leaflet.draw.css",
+        "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
         "styles.scss"
       ],
       "scripts": [
+        "../node_modules/tether/dist/js/tether.min.js",
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/chart.js/dist/Chart.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",

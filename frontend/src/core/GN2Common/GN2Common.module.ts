@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule, MdIconModule, MdNativeDateModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -39,6 +40,7 @@ export function HttpLoaderFactory(http: Http) {
           deps: [Http]
       }
   }),
+  NgbModule.forRoot()
   ],
   declarations: [
     NomenclatureComponent,
@@ -68,6 +70,7 @@ export function HttpLoaderFactory(http: Http) {
     MdIconModule,
     MdNativeDateModule,
     TranslateModule,
+    NgbModule
   ]
 })
 export class GN2CommonModule {
