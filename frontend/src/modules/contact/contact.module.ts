@@ -10,7 +10,7 @@ import { TaxonsListComponent } from './components/taxons-list/taxons-list.compon
 @NgModule({
   imports: [
     CommonModule,
-    GN2CommonModule
+    GN2CommonModule,
   ],
   declarations: [
     ContactComponent,
