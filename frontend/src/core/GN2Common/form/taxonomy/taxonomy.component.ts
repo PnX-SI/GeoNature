@@ -1,46 +1,45 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
 import { DataFormService } from '../data-form.service';
+import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
   styleUrls: ['./taxonomy.component.scss']
 })
-export class TaxonomyComponent implements OnInit, OnChanges {
+export class TaxonomyComponent implements OnInit {
   @Input('parentFormControl') inputTaxon: FormControl;
+  @Input() idList: string;
+  @Input() charNumber:number;
+  @Input() listLength:number;
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
+
   @Output() taxonChanged = new EventEmitter<any>();
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    this.autocompleteTaxons(3, 20);
   }
 
-  displayValidName(taxon): string {
-    return taxon ? taxon.nom_valide : '';
+  taxonSelected(e:NgbTypeaheadSelectItemEvent){
+    this.taxonChanged.emit(e.item)
+    this.inputTaxon.setValue(e.item.cd_nom);    
   }
 
-  ngOnChanges(changes){
-    // if the formcontroller change, we have to reload the observable
-    if(changes.inputTaxon){
-      this.autocompleteTaxons(3, 20);
-    }
+  formatter(taxon){
+    return taxon.nom_valide;
   }
 
-  autocompleteTaxons (keyoardNumber, listLength){
-    this.inputTaxon.valueChanges
-    .filter(value => (value.length >= keyoardNumber && value.length <= 20))
-    .debounceTime(400)
-    .distinctUntilChanged()
-    .switchMap(value => this._dfService.searchTaxonomy(value, '1001'))
-      .subscribe(response => this.taxons = response.slice(0, listLength));
-  }
-  
-  onTaxonSelected(taxon){    
-    this.taxonChanged.emit(taxon);
-  }
-
+  searchTaxon = (text$: Observable<string>) =>
+    text$
+      .filter(value => (value.length >= this.charNumber && value.length <= 20))
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(value => this._dfService.searchTaxonomy(value, this.idList))
+        .map(response => response.slice(0, this.listLength))
+      
 }

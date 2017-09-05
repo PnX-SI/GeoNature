@@ -3,6 +3,7 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../map/map.service';
 import { DataFormService } from '../data-form.service';
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'pnx-observation',
@@ -12,6 +13,9 @@ import { DataFormService } from '../data-form.service';
 
 export class ObservationComponent implements OnInit, OnDestroy {
   @Input() releveForm: FormGroup;
+  public dateMin: any;
+  public dateMax: any;
+  public bsRangeValue: any = [new Date(2017, 7, 4), new Date(2017, 7, 20)];
   public geojson: any;
   public dataSets: any;
   public geoInfo: any;
