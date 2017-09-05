@@ -1,4 +1,4 @@
-<label> {{placeholder}} </label>
 <select class="form-control"  [formControl]="parentFormControl" >
+    <option value=""> {{placeholder}} </option> 
     <option *ngFor="let observer of inputObservers" [value]="observer.nom_complet"> {{observer.nom_complet}} </option>
 </select>

@@ -1,101 +1,117 @@
 <div [formGroup]="occurrenceForm">
-    <h4> <b> <u>{{ 'Taxon.ObservedTaxon' | translate }}</u>: </b></h4>
-
-        <div class="collapse" id="collapseExample">
-          <div class="well well-sm well-margin">
-            <div>
-              <label class="font-sm">Groupe:</label>
-              <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
-                <!-- <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option> -->
-              </select>
-              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Patrimoniaux</label>
-              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Priorité</label>
-              <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Nouveau</label>
-              <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
-            </div>
-          </div>
-        </div>
+    <h5> <b>{{ 'Taxon.ObservedTaxon' | translate }}: </b></h5>
+    <div class="collapse" id="collapseExample">
+      <div class="well well-sm well-margin">
         <div>
-          <pnx-taxonomy
-            [parentFormControl]="occurrenceForm.controls.cd_nom"
-            (taxonChanged)="fs.updateTaxon($event)" >
-          </pnx-taxonomy>
-          <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-              <md-icon>filter_list</md-icon>
-            </button>
+          <label class="font-sm">Groupe:</label>
+          <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
+            <!-- <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option> -->
+          </select>
+          <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Patrimoniaux</label>
+          <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Priorité</label>
+          <label class="checkbox-inline input-alignment-sm"><input type="checkbox" value="">Nouveau</label>
+          <label class="checkbox-inline"><input type="checkbox" value="">Facultatif</label>
         </div>
-        <div class="row">
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-              <pnx-nomenclature 
-              [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
-              placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
-              [idTypeNomenclature]="100" 
-              [regne]="fs.currentTaxon.regne" 
-              [group2Inpn]="fs.currentTaxon.group2_inpn">
-            </pnx-nomenclature>
-          </div>
-          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-            <pnx-nomenclature 
-              placeholder="{{ 'Taxon.ObsMethod' | translate }}"
-              [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
-              [idTypeNomenclature]="14" 
-              [regne]="fs.currentTaxon.regne" 
-              [group2Inpn]="fs.currentTaxon.group2_inpn" > 
-            </pnx-nomenclature>
-          </div>
+      </div>
+    </div>
+    <div>
+      <pnx-taxonomy
+        [parentFormControl]="occurrenceForm.controls.cd_nom"
+        [idList]="1001"
+        [charNumber]="3"
+        [listLength]="20"
+        (taxonChanged)="fs.updateTaxon($event)"
+         >
+      </pnx-taxonomy>
+      <button md-icon-button mdTooltip="Taxons filter options" class="input-alignment-md" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <md-icon>filter_list</md-icon>
+        </button>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <pnx-nomenclature 
+          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
+          placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
+          [idTypeNomenclature]="100" 
+          [regne]="fs.currentTaxon.regne" 
+          [group2Inpn]="fs.currentTaxon.group2_inpn">
+        </pnx-nomenclature>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <pnx-nomenclature 
+          placeholder="{{ 'Taxon.ObsMethod' | translate }}"
+          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
+          [idTypeNomenclature]="14" 
+          [regne]="fs.currentTaxon.regne" 
+          [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+        </pnx-nomenclature>
+      </div>
+    </div>
+    <button id="advanced-button" type="button" class="btn btn-info" data-toggle="collapse" data-target="#collapseAvance">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+        {{ 'Taxon.Advanced' | translate }}
+    </button>
+  
+    <div class="collapse" id="collapseAvance">
+      <div class="row form-group">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <pnx-nomenclature 
+            placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
+            [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
+            [idTypeNomenclature]="7" 
+            [regne]="fs.currentTaxon.regne" 
+            [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+          </pnx-nomenclature>
         </div>
-        <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-            <md-icon mdPrefix class="font-md">settings</md-icon> {{ 'Taxon.Advanced' | translate }}
-          </button>
-      
-        <div class="collapse" id="collapseAvance">
-          <div class="well well-sm">
-            <pnx-nomenclature 
-              placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
-              [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
-              [idTypeNomenclature]="7" 
-              [regne]="fs.currentTaxon.regne" 
-              [group2Inpn]="fs.currentTaxon.group2_inpn" > 
-            </pnx-nomenclature>
-
-            <pnx-nomenclature 
-              placeholder="{{ 'Taxon.BiologicalStatus' | translate }}"
-              [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
-              [idTypeNomenclature]="13" 
-              [regne]="fs.currentTaxon.regne" 
-              [group2Inpn]="fs.currentTaxon.group2_inpn"> 
-            </pnx-nomenclature>           
-
-            <pnx-nomenclature 
-              placeholder="{{ 'Taxon.Naturalness' | translate }}"
-              [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
-              [idTypeNomenclature]="8" 
-              [regne]="fs.currentTaxon.regne" 
-              [group2Inpn]="fs.currentTaxon.group2_inpn">
-            </pnx-nomenclature>   
-
-            <md-input-container class="input-alignment-sm input-width-sm">
-              <input mdInput [formControl]="occurrenceForm.controls.determination_method"   type="text"  placeholder="{{ 'Taxon.DeterminationMethod' | translate }}">
-            </md-input-container>
-
-            <md-input-container class="input-alignment-sm input-width-sm">
-                <input mdInput [formControl]="occurrenceForm.controls.determiner" type="text"  placeholder="{{ 'Taxon.Determiner' | translate }}">
-            </md-input-container>
-
-            <md-input-container class="input-alignment-sm input-width-sm">
-                <input mdInput [formControl]="occurrenceForm.controls.digital_proof" type="text"  placeholder="{{ 'Taxon.DigitalProof' | translate }}">
-            </md-input-container>
-
-            <md-input-container class="input-alignment-sm input-width-sm">
-              <input mdInput [formControl]="occurrenceForm.controls.non_digital_proof"  type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}">
-            </md-input-container>
-            <div class="form-group">
-                <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
-                <textarea class="form-control" [formControl]="occurrenceForm.controls.comment" 
-                  rows="2" id="commentaire">
-                </textarea>
-            </div>
-          </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <pnx-nomenclature 
+            placeholder="{{ 'Taxon.BiologicalStatus' | translate }}"
+            [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
+            [idTypeNomenclature]="13" 
+            [regne]="fs.currentTaxon.regne" 
+            [group2Inpn]="fs.currentTaxon.group2_inpn"> 
+          </pnx-nomenclature> 
+        </div>          
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <pnx-nomenclature 
+            placeholder="{{ 'Taxon.Naturalness' | translate }}"
+            [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
+            [idTypeNomenclature]="8" 
+            [regne]="fs.currentTaxon.regne" 
+            [group2Inpn]="fs.currentTaxon.group2_inpn">
+          </pnx-nomenclature>
         </div>
+      </div>
+
+      <div class="row form-group">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+          <input class="form-control" [formControl]="occurrenceForm.controls.determination_method"
+            type="text"  placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
+          >
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <input class="form-control" [formControl]="occurrenceForm.controls.determiner"
+              type="text"  placeholder="{{ 'Taxon.Determiner' | translate }}"
+            >
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <input class="form-control" [formControl]="occurrenceForm.controls.digital_proof"
+              type="text"  placeholder="{{ 'Taxon.DigitalProof' | translate }}">
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+          <input class="form-control" [formControl]="occurrenceForm.controls.non_digital_proof"
+            type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}"
+          > 
+        </div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">               
+            <textarea placeholder="{{ 'Releve.Comment' | translate }}" class="form-control" [formControl]="occurrenceForm.controls.comment" 
+              rows="2" id="commentaire">
+            </textarea>
+          </div>
+      </div>
+  </div>
 </div>
 
