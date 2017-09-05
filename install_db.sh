@@ -121,7 +121,7 @@ then
     echo "" &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/taxhubdb.sql  &>> log/install_db.log
 
-    echo "Inserting INPN taxonomic data... (cette opération peut être longue)"
+    echo "Inserting INPN taxonomic data... (This may take a few minutes)"
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
@@ -211,11 +211,11 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/synthese.sql  &>> log/install_db.log
 
 
-    echo "Creating REF_GEO schema..."
+    echo "Creating 'ref_geo' schema..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
-    echo "Creating REF_GEO schema..." &>> log/install_db.log
+    echo "Creating 'ref_geo' schema..." &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     cp data/core/ref_geo.sql /tmp/ref_geo.sql
@@ -260,9 +260,9 @@ then
         #gdalwarp -t_srs EPSG:$srid_local /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc /tmp/dem.tif &>> log/install_db.log
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 100x100 /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> log/install_db.log
     	echo "Vectorisation of dem raster. This may take a few minutes..."
-        sudo -n -u postgres -s psql -d $db_name -c "CREATE TABLE ref_geo.dem_vector AS SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> log/install_db.log
-        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.dem_vector OWNER TO $user_pg;" &>> log/install_db.log
-        echo "Create dem vector spatial index. This may take a few minutes...)"
+        sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> log/install_db.log
+        #sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.dem_vector OWNER TO $user_pg;" &>> log/install_db.log
+        echo "Create dem vector spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "CREATE INDEX index_dem_vector_geom ON ref_geo.dem_vector USING gist (geom);" &>> log/install_db.log
     fi
 

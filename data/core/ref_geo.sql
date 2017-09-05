@@ -142,6 +142,13 @@ CREATE TABLE l_grids (
     zc boolean
 );
 
+CREATE TABLE dem_vector
+(
+  gid serial NOT NULL,
+  geom public.geometry(Geometry,2154),
+  val double precision
+);
+
 
 
 ----------------
@@ -161,6 +168,9 @@ ALTER TABLE ONLY l_areas
 
 ALTER TABLE ONLY bib_areas_types
     ADD CONSTRAINT pk_bib_areas_types PRIMARY KEY (id_type);
+
+ALTER TABLE ONLY dem_vector
+    ADD CONSTRAINT pk_dem_vector PRIMARY KEY (gid);
 
 
 ----------------
