@@ -1,9 +1,41 @@
-<input type="text" class="form-control"
-  [ngbTypeahead]="searchTaxon" 
-  [inputFormatter]="formatter" 
-  [resultTemplate]="rt"
-  (selectItem)="taxonSelected($event)"/>
-<ng-template #rt let-r="result" let-t="term">
+<div class="collapse" id="collapseExample">
+    <div class="well well-sm well-margin">
+      <div class="form-group">
+        <label class="font-sm">Groupe:</label>
+        <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
+          <!-- <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option> -->
+        </select>
+        <label class="checkbox-inline custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" value="">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description"> Patrimoniaux </span>
+        </label>
+        <label class="checkbox-inline custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" value="">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description"> Protégé </span>
+        </label>
+        <label class="checkbox-inline custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" value="">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description"> Nouveau </span>
+        </label>
+      </div>
+    </div>
+</div>
+<div class="input-group">
+  <input type="text" class="form-control"
+    placeholder="{{ 'Taxon.Taxon' | translate }}"
+    [ngbTypeahead]="searchTaxon" 
+    [inputFormatter]="formatter" 
+    [resultTemplate]="rt"
+    (selectItem)="taxonSelected($event)"/>
+    <span class="input-group-addon" id="filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      <i class="fa fa-filter" aria-hidden="true"></i>
+    </span>
+    
+  <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r.search_name">  </span>{{ r.search_name}}
-</ng-template>
+  </ng-template>
+</div>
 
