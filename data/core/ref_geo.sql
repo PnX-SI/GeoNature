@@ -144,14 +144,14 @@ CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
 ------------
 --TRIGGERS--
 ------------
-CREATE TRIGGER tri_ref_geo_dates_change_l_areas BEFORE INSERT OR UPDATE ON l_areas FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-CREATE TRIGGER tri_ref_geo_dates_change_l_municipalities_additional BEFORE INSERT OR UPDATE ON l_municipalities_additional FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+CREATE TRIGGER tri_meta_dates_change_l_areas BEFORE INSERT OR UPDATE ON l_areas FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+CREATE TRIGGER tri_meta_dates_change_l_municipalities_additional BEFORE INSERT OR UPDATE ON l_municipalities_additional FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION fct_get_altitude_intersection(IN mygeom geometry)
+CREATE OR REPLACE FUNCTION fct_get_altitude_intersection(IN mygeom public.geometry)
   RETURNS TABLE(altitude_min integer, altitude_max integer) AS
 $BODY$
 DECLARE
@@ -163,7 +163,7 @@ BEGIN
         SELECT st_transform(myGeom,isrid) a
      )
     SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
-    FROM ref_geo.dem_vector,d
+    FROM ref_geo.dem_vector, d
     WHERE st_intersects(a,geom);
 
 END;
@@ -173,7 +173,7 @@ $BODY$
   ROWS 1000;
 
 
-CREATE OR REPLACE FUNCTION fct_get_municipality_intersection(IN mygeom geometry)
+CREATE OR REPLACE FUNCTION fct_get_municipality_intersection(IN mygeom public.geometry)
   RETURNS TABLE(insee_code character varying, municipality_name character varying) AS
 $BODY$
 DECLARE
@@ -184,7 +184,7 @@ BEGIN
     WITH d  as (
         SELECT st_transform(myGeom,isrid) geom_trans
     )
-    SELECT c.id_municipality , c.municipality_name FROM ref_geo.l_municipalities c , d WHERE st_intersects(geom_trans, geom);
+    SELECT c.id_municipality , c.municipality_name FROM ref_geo.l_municipalities c, d WHERE st_intersects(geom_trans, geom);
 
 END;
 $BODY$
