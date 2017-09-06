@@ -48,10 +48,7 @@
               <input [formControl]="formGroup.controls[index].controls.count_max" type="number" mdInput placeholder="{{ 'Counting.Number' | translate }}">
             </md-input-container>
         </td>  
-        <td><button type="button" class="btn btn-default btn-sm" (click)="onAddCounting()">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
-        </td>
+
         <td *ngIf="index == length -1 && index != 0">
           <button type="button" class="btn btn-default btn-sm" (click)="onRemoveCounting(index)">
               <i class="material-icons">clear</i>

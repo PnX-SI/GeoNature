@@ -25,6 +25,7 @@
 </div>
 <div class="input-group">
   <input type="text" class="form-control"
+    [formControl]="inputTaxon"
     placeholder="{{ 'Taxon.Taxon' | translate }}"
     [ngbTypeahead]="searchTaxon" 
     [inputFormatter]="formatter" 
