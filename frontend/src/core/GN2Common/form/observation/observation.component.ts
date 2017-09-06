@@ -47,6 +47,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
             this.municipalities = res.municipality.map(m => m.name).join();
           });
       });
+      //this.releveForm.controls.properties.controls.date_max.
   }
 
   ngOnDestroy() {
