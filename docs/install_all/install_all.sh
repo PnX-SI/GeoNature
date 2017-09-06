@@ -256,7 +256,10 @@ sed -i "s/'LAT_LONG':.*$/\'LAT_LONG\': [$y, $x],/g" main/configuration/config.py
 sudo ./install_db.sh
 
 # Configuration Apache de GeoNature-atlas
-sudo rm /etc/apache2/sites-available/atlas.conf
+if [ -f '/etc/apache2/sites-available/atlas.conf' ]
+then
+    sudo rm /etc/apache2/sites-available/atlas.conf
+fi
 sudo touch /etc/apache2/sites-available/atlas.conf
 sudo sh -c 'echo "# Configuration de GeoNature-atlas" >> /etc/apache2/sites-available/atlas.conf'
 sudo sh -c 'echo "WSGIScriptAlias /atlas \"/home/'$monuser'/atlas/atlas.wsgi\"" >> /etc/apache2/sites-available/atlas.conf'
