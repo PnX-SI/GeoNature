@@ -25,7 +25,6 @@
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/ngx-toastr/toastr.css",
         "../node_modules/leaflet-draw/dist/leaflet.draw.css",
-        "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
         "styles.scss"
       ],
       "scripts": [
