@@ -19,21 +19,23 @@ export class FormService {
     this.taxonsList = [];
    }// end constructor
 
-   initObservationForm(): FormGroup{
+   initObservationForm(): FormGroup {
     return this._fb.group({
       geometry: '',
-      id_dataset:  '',
-      id_digitiser : '',
-      date_min: '',
-      date_max: '',
-      altitude_min: '',
-      altitude_max : '',
-      id_municipality : '',
-      meta_device_entry: 'web',
-      comment: '',
-      observers: '',
-      t_occurrences_contact: this._fb.array([])
-      });
+      properties: this._fb.group({
+        id_dataset:  '',
+        id_digitiser : '',
+        date_min: '',
+        date_max: '',
+        altitude_min: '',
+        altitude_max : '',
+        id_municipality : '',
+        meta_device_entry: 'web',
+        comment: '',
+        observers: '',
+        t_occurrences_contact: this._fb.array([])
+      })
+    });
    }
 
    initOccurrenceForm(): FormGroup {
