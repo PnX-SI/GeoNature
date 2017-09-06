@@ -40,17 +40,17 @@ fi
 
 if ! database_exists $db_name
 then
-    echo "Create database..."
+    echo "Creating GeoNature database..."
     echo "--------------------" &> log/install_db.log
-    echo "Create database" &>> log/install_db.log
+    echo "Creating GeoNature database" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s createdb -O $user_pg $db_name
-    echo "Add PostGIS to database..."
+    echo "Adding PostGIS and PLPGSQL extensions..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
-    echo "Add PostGIS to database" &>> log/install_db.log
+    echo "Adding PostGIS and PLPGSQL extensions" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> log/install_db.log
@@ -71,11 +71,11 @@ then
     sudo -n -u postgres -s psql -d $db_name -f /tmp/grant.sql &>> log/install_db.log
 
 
-    echo "Get and create USERS schema (utilisateurs)..."
+    echo "Getting and creating USERS schema (utilisateurs)..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
-    echo "Get and create USERS schema (utilisateurs)" &>> log/install_db.log
+    echo "Creating USERS schema (utilisateurs)" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     cd data/utilisateurs
@@ -105,7 +105,7 @@ then
     unzip /tmp/LR_FRANCE_20160000.zip -d /tmp
     cd ..
 
-    echo "Get 'taxonomie' schema creation scripts..."
+    echo "Getting 'taxonomie' schema creation scripts..."
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql
@@ -126,7 +126,7 @@ then
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "Inserting INPN taxonomic data" &>> log/install_db.log
-    echo "--------------------" &>> log/installsert INPN taxonomic data_db.log
+    echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -f data/taxonomie/inpn/data_inpn_v9_taxhub.sql &>> log/install_db.log
 
@@ -261,7 +261,6 @@ then
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 100x100 /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> log/install_db.log
     	echo "Vectorisation of dem raster. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> log/install_db.log
-        #sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.dem_vector OWNER TO $user_pg;" &>> log/install_db.log
         echo "Create dem vector spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "CREATE INDEX index_dem_vector_geom ON ref_geo.dem_vector USING gist (geom);" &>> log/install_db.log
     fi
@@ -279,7 +278,7 @@ then
     rm /tmp/communes_fr.sql
     rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
     rm /tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
-    rm /tmp/dem.tif
+    # rm /tmp/dem.tif
 
     echo "Permission on log folder..."
     chmod -R 777 log
