@@ -33,7 +33,7 @@ export class DataFormService {
   }
 
   getGeoInfo(geojson) {
-    return this._http.post(`${AppConfigs.API_ENDPOINT}/geo/info`, geojson)
+    return this._http.post(`${AppConfigs.API_ENDPOINT}geo/info`, geojson)
       .map(response => response.json());
   }
 

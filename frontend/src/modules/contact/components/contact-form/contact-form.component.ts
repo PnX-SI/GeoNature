@@ -12,8 +12,8 @@ import { MapService } from '../../../../core/GN2Common/map/map.service';
 })
 export class ContactFormComponent implements OnInit {
   public taxonsList: Array<any>;
-  public releveForm:FormGroup;
-  public occurrenceForm:FormGroup;
+  public releveForm: FormGroup;
+  public occurrenceForm: FormGroup;
   public countingForm: FormArray;
   public contactForm: FormGroup;
 
@@ -28,13 +28,13 @@ export class ContactFormComponent implements OnInit {
     this.taxonsList = [];
   }
 
-  addOccurence(){
+  addOccurence() {
     // add an occurrence
     this.fs.addOccurence(this.occurrenceForm, this.releveForm, this.countingForm);
     // reset the occurence
     this.occurrenceForm = this.fs.initOccurrenceForm();
-    //reset the counting
-    this.countingForm = this.fs.initCountingArray()
+    // reset the counting
+    this.countingForm = this.fs.initCountingArray();
 
     // push the current taxon in the taxon list and refresh the currentTaxon
     this.taxonsList.push(this.fs.currentTaxon);

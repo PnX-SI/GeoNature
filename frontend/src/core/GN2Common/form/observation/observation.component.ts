@@ -19,29 +19,39 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public geojson: any;
   public dataSets: any;
   public geoInfo: any;
-  private geojsonSubscription: Subscription;
-  
-  constructor(private _ms:MapService, private _dfs: DataFormService) {  }
+  public municipalities: string;
+  private geojsonSubscription$: Subscription;
+
+  constructor(private _ms: MapService, private _dfs: DataFormService) {  }
 
   ngOnInit() {
-    //load datasets
+    // load datasets
     this._dfs.getDatasets()
     .subscribe(res => this.dataSets = res);
     // provisoire:
     this.dataSets = [1, 2, 3];
 
     // subscription to the geojson observable
-    this.geojsonSubscription = this._ms.gettingGeojson$
+    this.geojsonSubscription$ = this._ms.gettingGeojson$
     .subscribe(geojson => {
-      this.releveForm.value.geometry = geojson.geometry;
-      this.geojson = geojson;
-      // subscribe to geo info
-      // this._dfs.getGeoInfo(geojson)
-      //   .subscribe(res => this.geoInfo = res);
-    });
+        this.releveForm.patchValue({geometry: geojson});
+        this.geojson = geojson;
+        // subscribe to geo info
+        this._dfs.getGeoInfo(geojson)
+          .subscribe(res => {
+            this.releveForm.patchValue({
+              altitude_min: res.altitude[0].altitude_min,
+              altitude_max: res.altitude[0].altitude_max,
+              id_municipality : res.municipality[0]
+            });
+            this.municipalities = res.municipality.map(m => m.name).join();
+
+
+          });
+      });
   }
-  
-  ngOnDestroy(){
-    this.geojsonSubscription.unsubscribe();
+
+  ngOnDestroy() {
+    this.geojsonSubscription$.unsubscribe();
   }
 }
