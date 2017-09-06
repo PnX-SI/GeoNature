@@ -1,6 +1,5 @@
-<label> {{placeholder}}</label>
 <select class="form-control"  [formControl]="parentFormControl">
-    <option value=""> </option>
+    <option value=""> {{placeholder}} </option>
     <option  *ngFor="let label of labels" [value]="label.id_nomenclature"> {{label[labelLang]}} </option>
 </select>
 
