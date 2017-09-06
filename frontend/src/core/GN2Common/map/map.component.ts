@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MapService } from './map.service';
 import {Map} from 'leaflet';
 import 'leaflet-draw';
+import * as L from 'leaflet';
 
 
 @Component({
@@ -20,10 +21,10 @@ export class MapComponent implements OnInit {
     this.Le = L as any;
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.mapService.initialize();
     this.map = this.mapService.map;
-    if(this.editable !== undefined){
+    if (this.editable !== undefined){
       this.mapService.enableMarkerOnClick();
       this.mapService.enableEditMap();
     }

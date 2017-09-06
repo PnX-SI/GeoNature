@@ -4,7 +4,8 @@ import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
-import { leafletDrawOptions } from './leaflet-draw-options'
+import { leafletDrawOptions } from './leaflet-draw-options';
+import * as L from 'leaflet';
 
 @Injectable()
 export class MapService {
@@ -14,12 +15,12 @@ export class MapService {
     public editingMarker: boolean;
     public marker: Marker;
     public markerLegend: HTMLElement;
-    private _drawFeatureGroup:FeatureGroup;
+    private _drawFeatureGroup: FeatureGroup;
     private _currentDraw: any;
     toastrConfig: ToastrConfig;
     private _Le: any;
     private _geojsonCoord = new Subject<any>();
-    public gettingGeojson$:Observable<any> = this._geojsonCoord.asObservable();
+    public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
 
     constructor(private http: Http, private toastrService: ToastrService) {
         this._Le = L as any;
