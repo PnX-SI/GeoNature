@@ -43,6 +43,7 @@
     "ngx-bootstrap": "^1.7.1",
     "ngx-toastr": "^5.3.1",
     "rxjs": "^5.1.0",
+    "tether": "^1.4.0",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
