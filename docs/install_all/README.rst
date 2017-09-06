@@ -88,9 +88,9 @@ Lancez ensuite l'installation des applications :
   
 	./install_all.sh
 
-Le mot de passe sudo vous sera demandé a plusieurs reprise. 2 fichiers de la configuration de Taxhub seront affichés. Il vous est possible de les modifier mais vous pouvez laisser les valeurs par défaut. Pour enregistrer ``ctrl + o``, pour sortir et poursuivre l'installation : ``ctrl + x``.
+Le mot de passe sudo vous sera demandé a plusieurs reprises. 2 fichiers de la configuration de Taxhub seront affichés. Il vous est possible de les modifier mais vous pouvez laisser les valeurs par défaut. Pour enregistrer ``ctrl + o``, pour sortir et poursuivre l'installation : ``ctrl + x``.
 
-Vous devez pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre nom de domaine ou avec votre adresse IP) :
+Vous devriez alors pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre nom de domaine ou avec votre adresse IP) :
 
 - http://mondomaine.fr/usershub
 - http://mondomaine.fr/geonature
@@ -109,4 +109,14 @@ L'installation des bases de données est loguée dans le répertoire ``log`` des
     L'application GeoNature-atlas est livrée avec des données exemples. Une fois l'installation de l'atlas terminée, vous devez l'adapter à votre territoire. 
     
     - Remplacez les shapes ``territoire.shp`` et ``communes.shp`` dans ``data/ref`` avec celles de votre territoire.
-    - Relancer le sript ``install.db``.
+    - Relancer le script ``install.db`` dans le répertoire de l'atlas.
+    
+Voir la documentation de GeoNature-atlas pour plus d'informations sur le sujet : https://github.com/PnEcrins/GeoNature-atlas/tree/master/docs.
+
+Le script install_all déploie toutes les applications de manière automatisée et globale. Mais il est important de consulter ensuite les présentations et documentations des différents outils pour comprendre leur fonctionnement et leurs interactions : 
+
+- `UsersHub <https://github.com/PnEcrins/UsersHub>`_
+- `TaxHub <https://github.com/PnX-SI/TaxHub>`_ 
+- `GeoNature-atlas <https://github.com/PnEcrins/GeoNature-atlas>`_
+
+Lisez aussi l'exemple suivant de déploiement global qui apporte de nombreuses informations complémentaires. 

@@ -2,8 +2,22 @@
 CHANGELOG
 =========
 
+1.9.1 (2017-08-25)
+----------------------
+
+**Nouveautés**
+
+* Installation - Suppression des couches SIG (communes, znieff...) pour les télécharger sur http://geonature.fr/data/inpn/layers/ et ainsi alléger le dépôt de 158 Mo.
+* Compléments mineurs de la documentation
+
+**Notes de version**
+
+* Vous pouvez passer directement d'une 1.7.X à la 1.9.1, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
+
+
 1.9.0 (2017-07-06)
 ----------------------
+
 **ATTENTION : Les évolutions de cette version concernent aussi la webapi. Si vous utilisez les applications GeoNature-mobile, vous devez attendre la sortie d'une version de GeoNature-mobile-webapi (https://github.com/PnEcrins/GeoNature-mobile-webapi) compatible avec cette version 1.9.0 de GeoNature.** Coming soon !
 
 A noter aussi que cette version de GeoNature est compatible avec GeoNature-atlas 1.2.4 et +.
