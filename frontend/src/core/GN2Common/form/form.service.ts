@@ -21,21 +21,22 @@ export class FormService {
 
    initObservationForm(): FormGroup{
     return this._fb.group({
-      geometry:'',
-      id_dataset: '',
-      id_digitiser :'',
+      geometry: '',
+      id_dataset:  '',
+      id_digitiser : '',
       date_min: '',
       date_max: '',
-      altitude_min:'',
-      altitude_max :'',
+      altitude_min: '',
+      altitude_max : '',
+      id_municipality : '',
       meta_device_entry: 'web',
       comment: '',
-      observers:'',
+      observers: '',
       t_occurrences_contact: this._fb.array([])
-      }); 
+      });
    }
 
-   initOccurrenceForm():FormGroup{
+   initOccurrenceForm(): FormGroup {
     return this._fb.group({
       id_nomenclature_obs_technique :'',
       id_nomenclature_obs_meth: '',

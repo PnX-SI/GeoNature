@@ -62,8 +62,9 @@ export class MapService {
 
     enableMarkerOnClick() {
       this.map.on('click', (e: any) => {
-        if ( this.marker != null )
-                this.marker.remove();
+        if ( this.marker != null ) {
+          this.marker.remove();
+        }
 
         this.marker = L.marker(e.latlng, {
             icon: L.icon({
@@ -84,25 +85,28 @@ export class MapService {
             offset: L.point(0, -30)
             }).openPopup();
           // observable if marker move
-          this.setGeojsonCoord(this.coordToGeojson('Point', this.marker.getLatLng()));
+          this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
         });
-      //observable if map click
-      this.setGeojsonCoord(this.coordToGeojson('Point', this.marker.getLatLng()))
+      // observable if map click
+      this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
       });
+    }
+
+    markerToGeojson(latLng) {
+      return {'geometry': {'type': 'Point', 'coordinates': [latLng.lng, latLng.lat]}};
     }
 
     toggleEditing() {
       this.editingMarker = !this.editingMarker;
-      this.markerLegend.style.backgroundColor = this.editingMarker ? '#c8c8cc': 'white';
-      if(!this.editingMarker){
+      this.markerLegend.style.backgroundColor = this.editingMarker ? '#c8c8cc' : 'white';
+      if (!this.editingMarker) {
         // disable event
         this.map.off('click');
         this.markerLegend.style.backgroundColor = 'white;';
-        if ( this.marker !== undefined ){
+        if ( this.marker !== undefined ) {
           this.map.removeLayer(this.marker);
         }
-      }
-      else{
+      } else {
         this.markerLegend.style.backgroundColor = '#c8c8cc';
         if (this._currentDraw !== undefined ){
           this._drawFeatureGroup.removeLayer(this._currentDraw)
@@ -150,61 +154,37 @@ export class MapService {
       }
     }
 
-    coordToGeojson(layerType, latLngTab){
-      let coordTab = [];
-      let arrayLatLng = latLngTab;
-      if(layerType == 'polygon'){
-        arrayLatLng = latLngTab[0];
-      }
-      if (layerType == 'polyline' || layerType == 'polygon'){
-        for(let latlng of arrayLatLng){
-          let inter = []
-          inter.push(latlng.lng)
-          inter.push(latlng.lat)
-          coordTab.push(inter);
-        }
-      }
-      else {
-        coordTab = [latLngTab.lng, latLngTab.lat]
-      }
-       return {
-          "geometry":{
-            "type": layerType,
-            "coordinates": coordTab
-            }
-          }
-    }
 
-    setGeojsonCoord(geojsonCoord){
+
+    setGeojsonCoord(geojsonCoord) {
       this._geojsonCoord.next(geojsonCoord);
     }
 
-    enableEditMap(){
+    enableEditMap() {
       // Marker
       const LayerControl = L.Control.extend({
         options: {
-          position: 'topleft' 
+          position: 'topleft'
         },
-        onAdd: (map)=>{
+        onAdd: (map) => {
           this.markerLegend = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
           this.markerLegend.style.width = '34px';
           this.markerLegend.style.height = '34px';
           this.markerLegend.style.lineHeight = '30px';
-          this.markerLegend.style.backgroundColor = '#c8c8cc';            
+          this.markerLegend.style.backgroundColor = '#c8c8cc';
           this.markerLegend.style.cursor = 'pointer';
           this.markerLegend.style.border = '2px solid rgba(0,0,0,0.2)';
-          this.markerLegend.style.backgroundImage = "url(assets/images/location-pointer.png)" 
+          this.markerLegend.style.backgroundImage = 'url(assets/images/location-pointer.png)';
           this.markerLegend.style.backgroundRepeat = 'no-repeat';
           this.markerLegend.style.backgroundPosition = '7px';
 
           this.markerLegend.onclick = () => {
             this.toggleEditing();
-            
-          }
+          };
           return this.markerLegend;
 
         }
-      })
+      });
       this.map.addControl(new LayerControl());
         L.DomEvent.disableClickPropagation(this.markerLegend);
 
@@ -213,32 +193,34 @@ export class MapService {
       this.map.addLayer(this._drawFeatureGroup);
       leafletDrawOptions.edit['featureGroup'] = this._drawFeatureGroup;
 
-  
       const drawControl =  new this._Le.Control.Draw(leafletDrawOptions);
       this.map.addControl(drawControl);
 
       this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
         // remove the current draw
-        if(this._currentDraw !== null){
+        if (this._currentDraw !== null){
           this._drawFeatureGroup.removeLayer(this._currentDraw);
         }
         // remove the current marker
         this.markerLegend.style.backgroundColor = 'white';
         this.editingMarker = false;
         this.map.off('click');
-        if(this.marker)
+        if (this.marker) {
           this.map.removeLayer(this.marker);
+        }
       });
 
       // on draw layer created
-      this.map.on(this._Le.Draw.Event.CREATED, (e) => {        
+      this.map.on(this._Le.Draw.Event.CREATED, (e) => {
         this._currentDraw = (e as any).layer;
         const layerType = (e as any).layerType;
         const latlngTab = this._currentDraw._latlngs;
         this._drawFeatureGroup.addLayer(this._currentDraw);
+        let geojson = this._drawFeatureGroup.toGeoJSON();
+        geojson = (geojson as any).features[0];
         // observable
-        this.setGeojsonCoord(this.coordToGeojson(layerType, latlngTab));
+        this.setGeojsonCoord(geojson);
 
-      })
+      });
     }
 }
