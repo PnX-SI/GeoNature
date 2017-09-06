@@ -13,6 +13,7 @@ export class MapService {
     private currentLayer: GeoJSON;
     public editingMarker: boolean;
     public marker: Marker;
+    public markerLegend: HTMLElement;
     private _drawFeatureGroup:FeatureGroup;
     private _currentDraw: any;
     toastrConfig: ToastrConfig;
@@ -53,7 +54,10 @@ export class MapService {
         L.control.layers(this.baseMaps).addTo(map);
         L.control.scale().addTo(map);
         this.map = map;
+
     }
+
+
 
     enableMarkerOnClick() {
       this.map.on('click', (e: any) => {
@@ -88,12 +92,17 @@ export class MapService {
 
     toggleEditing() {
       this.editingMarker = !this.editingMarker;
+      this.markerLegend.style.backgroundColor = this.editingMarker ? '#c8c8cc': 'white';
       if(!this.editingMarker){
+        // disable event
+        this.map.off('click');
+        this.markerLegend.style.backgroundColor = 'white;';
         if ( this.marker !== undefined ){
           this.map.removeLayer(this.marker);
         }
       }
       else{
+        this.markerLegend.style.backgroundColor = '#c8c8cc';
         if (this._currentDraw !== undefined ){
           this._drawFeatureGroup.removeLayer(this._currentDraw)
         }
@@ -169,7 +178,36 @@ export class MapService {
       this._geojsonCoord.next(geojsonCoord);
     }
 
-    enableLeafletDraw(){
+    enableEditMap(){
+      // Marker
+      const LayerControl = L.Control.extend({
+        options: {
+          position: 'topleft' 
+        },
+        onAdd: (map)=>{
+          this.markerLegend = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+          this.markerLegend.style.width = '34px';
+          this.markerLegend.style.height = '34px';
+          this.markerLegend.style.lineHeight = '30px';
+          this.markerLegend.style.backgroundColor = '#c8c8cc';            
+          this.markerLegend.style.cursor = 'pointer';
+          this.markerLegend.style.border = '2px solid rgba(0,0,0,0.2)';
+          this.markerLegend.style.backgroundImage = "url(assets/images/location-pointer.png)" 
+          this.markerLegend.style.backgroundRepeat = 'no-repeat';
+          this.markerLegend.style.backgroundPosition = '7px';
+
+          this.markerLegend.onclick = () => {
+            this.toggleEditing();
+            
+          }
+          return this.markerLegend;
+
+        }
+      })
+      this.map.addControl(new LayerControl());
+        L.DomEvent.disableClickPropagation(this.markerLegend);
+
+      // Leaflet Draw
       this._drawFeatureGroup = new L.FeatureGroup();
       this.map.addLayer(this._drawFeatureGroup);
       leafletDrawOptions.edit['featureGroup'] = this._drawFeatureGroup;
@@ -184,6 +222,7 @@ export class MapService {
           this._drawFeatureGroup.removeLayer(this._currentDraw);
         }
         // remove the current marker
+        this.markerLegend.style.backgroundColor = 'white';
         this.editingMarker = false;
         this.map.off('click');
         if(this.marker)

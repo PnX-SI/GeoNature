@@ -6,11 +6,6 @@
         <input mdInput placeholder="{{ 'Map.SearchLocation' | translate }}" id="place-input" [(ngModel)]="searchLocation" (keyup.enter)="gotoLocation()">
       </md-input-container>
       
-      <button md-icon-button mdTooltip="{{ 'Map.AddPoint' | translate }}" class="margin-right-sm" id="add-marker"
-              (click)="mapService.toggleEditing()" [class.btn-map-clicked]="mapService.editingMarker">
-        <md-icon>add_location</md-icon>
-      </button>
-      
     </md-card-title>
   
   </md-card-header>

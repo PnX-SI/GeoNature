@@ -25,7 +25,7 @@ export class MapComponent implements OnInit {
     this.map = this.mapService.map;
     if(this.editable !== undefined){
       this.mapService.enableMarkerOnClick();
-      this.mapService.enableLeafletDraw();
+      this.mapService.enableEditMap();
     }
 
 
