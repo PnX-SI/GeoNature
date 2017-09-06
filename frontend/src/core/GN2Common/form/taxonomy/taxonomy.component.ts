@@ -26,7 +26,7 @@ export class TaxonomyComponent implements OnInit {
   }
 
   taxonSelected(e:NgbTypeaheadSelectItemEvent){
-    this.taxonChanged.emit(e.item)
+    this.taxonChanged.emit(e.item);
     this.inputTaxon.setValue(e.item.cd_nom);    
   }
 
