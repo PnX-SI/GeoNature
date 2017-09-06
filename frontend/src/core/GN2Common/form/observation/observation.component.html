@@ -15,7 +15,9 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
       <div class="input-group">
           <input class="form-control" placeholder="{{ 'Releve.MinDate' | translate }}"
-            ngbDatepicker #d1="ngbDatepicker" [formControl]="releveForm.controls.properties.controls.date_min">
+            ngbDatepicker #d1="ngbDatepicker"
+            [formControl]="releveForm.controls.properties.controls.date_min"
+            (click)="d1.toggle()">
           <button class="input-group-addon" (click)="d1.toggle()" type="button">
           <i class="fa fa-calendar" aria-hidden="true"></i>
         </button>
@@ -24,7 +26,9 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
       <div class="input-group">
           <input class="form-control" placeholder="{{ 'Releve.MaxDate' | translate }}"
-            ngbDatepicker #d2="ngbDatepicker" [formControl]="releveForm.controls.properties.controls.date_max">
+            ngbDatepicker #d2="ngbDatepicker"
+            [formControl]="releveForm.controls.properties.controls.date_max"
+            (click)="d2.toggle()">
             <button class="input-group-addon" (click)="d2.toggle()" type="button">
             <i class="fa fa-calendar" aria-hidden="true"></i>
             </button> 

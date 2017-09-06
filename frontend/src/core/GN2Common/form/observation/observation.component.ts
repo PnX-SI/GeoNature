@@ -39,7 +39,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
         // subscribe to geo info
         this._dfs.getGeoInfo(geojson)
           .subscribe(res => {
-            this.releveForm.patchValue({
+            this.releveForm.controls.properties.patchValue({
               altitude_min: res.altitude[0].altitude_min,
               altitude_max: res.altitude[0].altitude_max,
               id_municipality : res.municipality.map(m => m.code)
