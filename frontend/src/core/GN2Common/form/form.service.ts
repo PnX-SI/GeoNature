@@ -5,6 +5,7 @@ import {  } from '@angular/forms';
 @Injectable()
 export class FormService {
   currentTaxon:any;
+  municipalities: string;
   taxonsList: Array<any>;
   indexCounting: number;
   nbCounting: Array<string>;
@@ -23,7 +24,7 @@ export class FormService {
     return this._fb.group({
       geometry: '',
       properties: this._fb.group({
-        id_dataset: '',
+        id_dataset: null,
         id_digitiser : null,
         date_min: '',
         date_max: '',
@@ -45,12 +46,19 @@ export class FormService {
       id_nomenclature_bio_condition: null,
       id_nomenclature_bio_status : null,
       id_nomenclature_naturalness : null,
-      determination_method: '',
+      id_nomenclature_exist_proof: null,
+      id_nomenclature_valid_status: null, 
+      id_nomenclature_diffusion_level: null,
+      id_validator: null,
       determiner:'',
+      determination_method: '',
+      cd_nom: null,
+      nom_cite: '',
+      meta_v_taxref: "Taxref V9.0",
+      sample_number_proof: '',
       digital_proof:'',
       non_digital_proof:'',
-      cd_nom:'',
-      nom_cite: '',
+      deleted: false, 
       comment:'',
       cor_counting_contact: ''
     })
@@ -59,12 +67,12 @@ export class FormService {
 
    initCounting(): FormGroup {
     return this._fb.group({
-      id_nomenclature_life_stage:'',
-      id_nomenclature_sex:'',
-      id_nomenclature_obj_count: '',
-      id_nomenclature_type_count:'',
-      count_min :'',
-      count_max :''
+      id_nomenclature_life_stage: null,
+      id_nomenclature_sex: null,
+      id_nomenclature_obj_count: null,
+      id_nomenclature_type_count: null,
+      count_min : null,
+      count_max : null
     })
   }
 
