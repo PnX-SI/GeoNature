@@ -3,7 +3,6 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../map/map.service';
 import { DataFormService } from '../data-form.service';
-import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'pnx-observation',
@@ -26,15 +25,12 @@ export class ObservationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // load datasets
-    this._dfs.getDatasets()
-      .subscribe(res => this.dataSets = res);
+    // this._dfs.getDatasets()
+    //   .subscribe(res => this.dataSets = res);
       // provisoire:
       this.dataSets = [1, 2, 3];
 
-    (this.releveForm.controls.properties as any).controls.date_min.valueChanges
-      .subscribe(value => {
-        console.log(value);
-      });
+
 
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
