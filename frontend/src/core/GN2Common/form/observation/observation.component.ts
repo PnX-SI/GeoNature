@@ -41,8 +41,8 @@ export class ObservationComponent implements OnInit, OnDestroy {
         this._dfs.getGeoInfo(geojson)
           .subscribe(res => {
             this.releveForm.controls.properties.patchValue({
-              altitude_min: res.altitude[0].altitude_min,
-              altitude_max: res.altitude[0].altitude_max,
+              altitude_min: res.altitude.altitude_min,
+              altitude_max: res.altitude.altitude_max,
               id_municipality : res.municipality.map(m => m.code)
             });
             this.municipalities = res.municipality.map(m => m.name).join();
