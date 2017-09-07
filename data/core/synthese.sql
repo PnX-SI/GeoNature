@@ -29,11 +29,12 @@ CREATE TABLE t_modules (
 
 CREATE TABLE synthese (
     id_synthese integer NOT NULL,
+    unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     id_module integer,
     entity_module_pk_value integer,
-    id_organisme integer,
-    id_nomenclature_typ_inf_geo integer DEFAULT 143,
     id_dataset integer,
+
+    id_nomenclature_typ_inf_geo,
     id_nomenclature_obs_meth integer DEFAULT 42,
     id_nomenclature_obs_technique integer DEFAULT 343,
     id_nomenclature_bio_status integer DEFAULT 30,
@@ -41,17 +42,33 @@ CREATE TABLE synthese (
     id_nomenclature_sexe integer DEFAULT 189,
     id_nomenclature_bio_condition integer DEFAULT 177,
     id_nomenclature_naturalness integer DEFAULT 181,
+
+    id_nomenclature_exist_proof integer DEFAULT 91,
+    id_nomenclature_valid_status integer DEFAULT 347,
+    id_nomenclature_diffusion_level integer DEFAULT 163,
+
+    id_nomenclature_life_stage integer NOT NULL,
+    id_nomenclature_sex integer NOT NULL,
+    id_nomenclature_obj_count integer NOT NULL DEFAULT 166,
+    id_nomenclature_type_count integer DEFAULT 107,
+    count_min integer,
+    count_max integer,
+
     cd_nom integer,
-    insee character(5),
+    nom_cite character varying(255),
+    meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'',NULL)',
+    id_municipality character(25),
     altitude_min integer,
     altitude_max integer,
-    the_geom_3857 public.geometry(Geometry,3857),
-    the_geom_point public.geometry(Point,3857),
+    the_geom_4326 public.geometry(Geometry,4326),
+    the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
     date_min date NOT NULL,
     date_max date NOT NULL,
+    id_validator integer,
     observers character varying(255),
     determiner character varying(255),
+    determination_method character varying(255),
     total_number integer,
     comment text,
     sensitivity INTEGER NOT NULL,
@@ -59,21 +76,23 @@ CREATE TABLE synthese (
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
     last_action character(1),
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
+    CONSTRAINT enforce_dims_the_geom_4326 CHECK ((public.st_ndims(the_geom_4326) = 2)),
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
+    CONSTRAINT enforce_srid_the_geom_4326 CHECK ((public.st_srid(the_geom_4326) = 4326)),
     CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
-    CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
+    CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
-COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
 COMMENT ON COLUMN synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature INPN = technique_obs';
-COMMENT ON COLUMN synthese.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie';
-COMMENT ON COLUMN synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
+COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
 COMMENT ON COLUMN synthese.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
+COMMENT ON COLUMN synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
 COMMENT ON COLUMN synthese.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
+COMMENT ON COLUMN synthese.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
+COMMENT ON COLUMN synthese.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
+COMMENT ON COLUMN synthese.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -99,7 +118,7 @@ ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
 ---------
 CREATE INDEX fki_synthese_bib_proprietaires ON synthese USING btree (id_organisme);
 
-CREATE INDEX fki_synthese_insee_fkey ON synthese USING btree (insee);
+CREATE INDEX fki_synthese_id_municipality_fkey ON synthese USING btree (id_municipality);
 
 CREATE INDEX fki_synthese_t_modules ON synthese USING btree (id_module);
 
@@ -113,7 +132,7 @@ CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
 
 CREATE INDEX index_gist_synthese_the_geom_local ON synthese USING gist (the_geom_local);
 
-CREATE INDEX index_gist_synthese_the_geom_3857 ON synthese USING gist (the_geom_3857);
+CREATE INDEX index_gist_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
 
 CREATE INDEX index_gist_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 
@@ -153,6 +172,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_naturalness FOREIGN KEY (id_nomenclature_naturalness) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ------------
