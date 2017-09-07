@@ -1,4 +1,13 @@
-<select class="form-control"  [formControl]="parentFormControl" >
-    <option value=""> {{placeholder}} </option> 
-    <option *ngFor="let observer of inputObservers" [value]="observer.nom_complet"> {{observer.nom_complet}} </option>
-</select>
+<span class="ui-fluid">
+    <p-autoComplete 
+      styleClass="wid100"
+      (completeMethod)="filterObservers($event)"
+      (onSelect)="addObservers($event)"
+      (onUnselect)="removeObservers($event)"
+      [suggestions]="filteredObservers" field="nom_complet"
+      [minLength]="1" placeholder="Observateurs"[multiple]="true">
+    </p-autoComplete>
+</span>
+
+
+
