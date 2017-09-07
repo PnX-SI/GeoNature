@@ -23,8 +23,8 @@ export class FormService {
     return this._fb.group({
       geometry: '',
       properties: this._fb.group({
-        id_dataset:  '',
-        id_digitiser : '',
+        id_dataset: '',
+        id_digitiser : null,
         date_min: '',
         date_max: '',
         altitude_min: '',
@@ -50,6 +50,7 @@ export class FormService {
       digital_proof:'',
       non_digital_proof:'',
       cd_nom:'',
+      nom_cite: '',
       comment:'',
       cor_counting_contact: ''
     })

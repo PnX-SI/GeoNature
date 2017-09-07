@@ -27,13 +27,18 @@ export class DataFormService {
       .map(response => response.json());
   }
 
-  searchTaxonomy (taxonName: string, id: string) {
+  searchTaxonomy(taxonName: string, id: string) {
     return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
     .map(res => res.json());
   }
 
   getGeoInfo(geojson) {
     return this._http.post(`${AppConfigs.API_ENDPOINT}geo/info`, geojson)
+      .map(response => response.json());
+  }
+
+  postContact(form) {
+    return this._http.post(`${AppConfigs.API_ENDPOINT}contact/releve`, form)
       .map(response => response.json());
   }
 

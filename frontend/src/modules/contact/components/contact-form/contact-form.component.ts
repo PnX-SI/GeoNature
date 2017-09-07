@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { FormService }  from '../../../../core/GN2Common/form/form.service'
+import { DataFormService }  from '../../../../core/GN2Common/form/data-form.service'
 import { MapService } from '../../../../core/GN2Common/map/map.service';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+
 
 
 @Component({
@@ -17,7 +20,9 @@ export class ContactFormComponent implements OnInit {
   public countingForm: FormArray;
   public contactForm: FormGroup;
 
-  constructor(public fs: FormService, private _ms: MapService) {  }
+  constructor(public fs: FormService, private _ms: MapService,
+     private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService
+    ) {  }
 
   ngOnInit() {
     // init the formsGroups
@@ -42,10 +47,37 @@ export class ContactFormComponent implements OnInit {
   }
 
   submitData() {
+    // parse the final form
+    const finalForm = this.releveForm.value;
+    finalForm.geometry = finalForm.geometry.geometry;
+    finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
+    finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
+    finalForm.properties.t_occurrences_contact.forEach(occ => {
+      occ.nom_cite = occ.cd_nom.nom_valide;
+      occ.cd_nom = occ.cd_nom.cd_nom;
+      
+    });
+
+    //provisoire test
+    delete finalForm.properties.id_municipality;
+    delete finalForm.properties.observers;
+    finalForm.properties.observers = new Array();
+    finalForm.properties.observers.push(1);
+    console.log(finalForm);
+    
+    console.log(JSON.stringify(finalForm));
+    
+
+    // Post
+    // this._dfs.postContact(finalForm)
+    //   .subscribe(response => console.log(response));
+
     // resert the forms
     this.releveForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
+
+    
   }
 
 
