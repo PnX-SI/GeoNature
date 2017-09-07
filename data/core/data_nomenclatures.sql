@@ -1212,6 +1212,15 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 --TODO : "Protozoa"
 
 
+-----------
+--ETA BIO--
+-----------
+,(176, 'all', 'all', now(), NULL)
+,(177, 'all', 'all', now(), NULL)
+,(178, 'all', 'all', now(), NULL)
+,(179, 'all', 'all', now(), NULL)
+
+
 -------------------
 --Proof existence--
 -------------------
