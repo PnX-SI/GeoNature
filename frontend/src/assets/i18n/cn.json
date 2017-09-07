@@ -60,6 +60,8 @@
         "Naturalness":"Naturalite",
         "DeterminationMethod":"测定方法",
         "Determiner":"确定",
+        "ValidationStatus": "法官验证",
+        "ExistProof": "存在证明",
         "SampleNumber":"Numéro du prélevement",
         "DigitalProof":"Preuve digitale",
         "NonDigitalProof":"Preuve non digitale",

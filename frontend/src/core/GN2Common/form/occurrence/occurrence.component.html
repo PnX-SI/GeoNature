@@ -72,31 +72,48 @@
       <div class="row form-group">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
           <input class="form-control" [formControl]="occurrenceForm.controls.determination_method"
-            type="text"  placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
-          >
+            type="text"  placeholder="{{ 'Taxon.DeterminationMethod' | translate }}">
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
             <input class="form-control" [formControl]="occurrenceForm.controls.determiner"
-              type="text"  placeholder="{{ 'Taxon.Determiner' | translate }}"
-            >
+              type="text"  placeholder="{{ 'Taxon.Determiner' | translate }}">
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <input class="form-control" [formControl]="occurrenceForm.controls.digital_proof"
-              type="text"  placeholder="{{ 'Taxon.DigitalProof' | translate }}">
+          <pnx-nomenclature 
+            placeholder="{{ 'Taxon.ValidationStatus' | translate }}"
+            [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
+            [idTypeNomenclature]="101" 
+            [regne]="fs.currentTaxon.regne" 
+            [group2Inpn]="fs.currentTaxon.group2_inpn">
+          </pnx-nomenclature>
         </div>
       </div>
 
       <div class="row form-group">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-          <input class="form-control" [formControl]="occurrenceForm.controls.non_digital_proof"
-            type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}"
-          > 
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <pnx-nomenclature 
+            placeholder="{{ 'Taxon.ExistProof' | translate }}"
+            [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
+            [idTypeNomenclature]="15" 
+            [regne]="fs.currentTaxon.regne" 
+            [group2Inpn]="fs.currentTaxon.group2_inpn">
+          </pnx-nomenclature>
         </div>
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">               
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <input class="form-control" [formControl]="occurrenceForm.controls.digital_proof"
+              type="text"  placeholder="{{ 'Taxon.DigitalProof' | translate }}">
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <input class="form-control" [formControl]="occurrenceForm.controls.non_digital_proof"
+            type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}"> 
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">               
             <textarea placeholder="{{ 'Releve.Comment' | translate }}" class="form-control" [formControl]="occurrenceForm.controls.comment" 
               rows="2" id="commentaire">
             </textarea>
-          </div>
+        </div>
       </div>
   </div>
 </div>
