@@ -27,9 +27,14 @@ export class ObservationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // load datasets
     this._dfs.getDatasets()
-    .subscribe(res => this.dataSets = res);
-    // provisoire:
-    this.dataSets = [1, 2, 3];
+      .subscribe(res => this.dataSets = res);
+      // provisoire:
+      this.dataSets = [1, 2, 3];
+
+    (this.releveForm.controls.properties as any).controls.date_min.valueChanges
+      .subscribe(value => {
+        console.log(value);
+      });
 
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
@@ -47,7 +52,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
             this.municipalities = res.municipality.map(m => m.name).join();
           });
       });
-      //this.releveForm.controls.properties.controls.date_max.
+
   }
 
   ngOnDestroy() {
