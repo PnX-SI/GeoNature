@@ -69,13 +69,15 @@ export class ContactFormComponent implements OnInit {
     
 
     // Post
-    // this._dfs.postContact(finalForm)
-    //   .subscribe(response => console.log(response));
+    this._dfs.postContact(finalForm)
+      .subscribe(response => console.log(response));
 
     // resert the forms
     this.releveForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
+    
+    this.fs.municipalities = "";
 
     
   }

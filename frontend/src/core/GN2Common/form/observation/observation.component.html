@@ -64,14 +64,14 @@
         </div> -->
         <div class="card">
           <div class="card-block">
-            {{municipalities | json}}
+            {{fs.municipalities | json}}
           </div>
         </div>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
             <select class="form-control" [formControl]="releveForm.controls.properties.controls.id_dataset">
-                <option value="">  {{ 'Releve.Dataset' | translate }}</option>
-                <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">{{ dataSet }}</option>
+                <option [ngValue]="null">  {{ 'Releve.Dataset' | translate }}</option>
+                <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option>
             </select>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
