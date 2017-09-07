@@ -40,12 +40,12 @@ export class FormService {
 
    initOccurrenceForm(): FormGroup {
     return this._fb.group({
-      id_nomenclature_obs_technique :'',
-      id_nomenclature_obs_meth: '',
-      id_nomenclature_bio_condition:'',
-      id_nomenclature_bio_status :'',
-      id_nomenclature_naturalness :'',
-      determination_method:'',
+      id_nomenclature_obs_technique :null,
+      id_nomenclature_obs_meth: null,
+      id_nomenclature_bio_condition: null,
+      id_nomenclature_bio_status : null,
+      id_nomenclature_naturalness : null,
+      determination_method: '',
       determiner:'',
       digital_proof:'',
       non_digital_proof:'',
