@@ -4,6 +4,7 @@ import { MaterialModule, MdIconModule, MdNativeDateModule } from '@angular/mater
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AutoCompleteModule } from 'primeng/primeng';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -40,7 +41,8 @@ export function HttpLoaderFactory(http: Http) {
           deps: [Http]
       }
   }),
-  NgbModule.forRoot()
+  NgbModule.forRoot(),
+  AutoCompleteModule
   ],
   declarations: [
     NomenclatureComponent,
