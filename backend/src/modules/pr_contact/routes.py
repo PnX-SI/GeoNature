@@ -8,6 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact
 from ...utils.utilssqlalchemy import json_resp
 from ...core.users.models import TRoles
+from ...core.ref_geo.models import LMunicipalities
+
 from pypnusershub import routes as fnauth
 
 from geojson import Feature, FeatureCollection, dumps
@@ -57,6 +59,9 @@ def insertOrUpdateOneReleve():
         if data['properties']['observers']:
             observersList =  data['properties']['observers']
             data['properties'].pop('observers')
+        if data['properties']['municipalities']:
+            municipalities = data['properties']['municipalities']
+            data['properties'].pop('municipalities')
 
         releve = TRelevesContact(**data['properties'])
         shape = asShape(data['geometry'])
@@ -65,6 +70,9 @@ def insertOrUpdateOneReleve():
         observers = db.session.query(TRoles).filter(TRoles.id_role.in_(observersList)).all()
         for o in observers :
             releve.observers.append(o)
+
+        for m in municipalities :
+            releve.municipalities.append(LMunicipalities(**m))
 
         for occ in occurrences_contact :
             if occ['cor_counting_contact']:
