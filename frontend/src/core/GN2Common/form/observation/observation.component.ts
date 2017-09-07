@@ -26,10 +26,8 @@ export class ObservationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // load datasets
-    // this._dfs.getDatasets()
-    //   .subscribe(res => this.dataSets = res);
-      // provisoire:
-      this.dataSets = [1, 2, 3];
+    this._dfs.getDatasets()
+      .subscribe(res => this.dataSets = res);
 
 
 
