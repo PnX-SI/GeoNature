@@ -21,6 +21,7 @@ routes = Blueprint('ref_geo', __name__)
 def getGeoInfo():
     data = dict(request.get_json())
     sql = text('SELECT (ref_geo.fct_get_municipality_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*')
+    print (str(data['geometry']))
     result = db.engine.execute(sql, geom = str(data['geometry']))
     municipality = []
     for row in result:
@@ -28,8 +29,8 @@ def getGeoInfo():
 
     sql = text('SELECT (ref_geo.fct_get_altitude_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*')
     result = db.engine.execute(sql, geom = str(data['geometry']))
-    alt = []
+    alt = {}
     for row in result:
-        alt.append({"altitude_min" : row[0], "altitude_max" : row[1]})
+        alt = {"altitude_min" : row[0], "altitude_max" : row[1]}
 
     return {'municipality': municipality, 'altitude':alt}
