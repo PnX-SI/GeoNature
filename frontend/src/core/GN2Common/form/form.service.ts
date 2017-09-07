@@ -74,10 +74,10 @@ export class FormService {
   }
 
   addOccurence(occurenceForm:FormGroup, observationForm: FormGroup, countingForm:FormArray){
-    // push the counting(s) in occurrenceForm
-    occurenceForm.value.cor_counting_contact = countingForm.value;
+    // push the counting(s) in occurrenceForm  
+    occurenceForm.controls.cor_counting_contact.patchValue(countingForm.value);  
     // push the current occurence in the observationForm   
-    observationForm.value.t_occurrences_contact.push(occurenceForm.value)
+    observationForm.value.properties.t_occurrences_contact.push(occurenceForm.value)
     // reset counting
     this.nbCounting = [''];
     this.indexCounting = 0;
