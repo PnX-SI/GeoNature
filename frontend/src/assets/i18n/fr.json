@@ -60,6 +60,8 @@
         "Naturalness":"Naturalite",
         "DeterminationMethod":"Méthode de détermination",
         "Determiner":"Déterminateur",
+        "ValidationStatus": "Statut de validation",
+        "ExistProof": "Preuve d'existance",
         "SampleNumber":"Numéro du prélevement",
         "DigitalProof":"Preuve digitale",
         "NonDigitalProof":"Preuve non digitale",

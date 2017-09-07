@@ -60,6 +60,8 @@
         "Naturalness":"Naturalness",
         "DeterminationMethod":"Determination method",
         "Determiner":"Determiner",
+        "ValidationStatus": "Validation status",
+        "ExistProof": "Existence proof",
         "SampleNumber":"Sample number",
         "DigitalProof":"Digital proof",
         "NonDigitalProof":"Non digital proff",

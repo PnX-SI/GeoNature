@@ -3,6 +3,7 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../map/map.service';
 import { DataFormService } from '../data-form.service';
+import { FormService } from '../form.service';
 
 @Component({
   selector: 'pnx-observation',
@@ -21,14 +22,12 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public municipalities: string;
   private geojsonSubscription$: Subscription;
 
-  constructor(private _ms: MapService, private _dfs: DataFormService) {  }
+  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: FormService) {  }
 
   ngOnInit() {
     // load datasets
-    // this._dfs.getDatasets()
-    //   .subscribe(res => this.dataSets = res);
-      // provisoire:
-      this.dataSets = [1, 2, 3];
+    this._dfs.getDatasets()
+      .subscribe(res => this.dataSets = res);
 
 
 
@@ -45,10 +44,9 @@ export class ObservationComponent implements OnInit, OnDestroy {
               altitude_max: res.altitude.altitude_max,
               id_municipality : res.municipality.map(m => m.code)
             });
-            this.municipalities = res.municipality.map(m => m.name).join();
+            this.fs.municipalities = res.municipality.map(m => m.name).join();
           });
       });
-
   }
 
   ngOnDestroy() {
