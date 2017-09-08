@@ -29,8 +29,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
     this._dfs.getDatasets()
       .subscribe(res => this.dataSets = res);
 
-
-
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
     .subscribe(geojson => {
@@ -42,11 +40,17 @@ export class ObservationComponent implements OnInit, OnDestroy {
             this.releveForm.controls.properties.patchValue({
               altitude_min: res.altitude.altitude_min,
               altitude_max: res.altitude.altitude_max,
-              id_municipality : res.municipality.map(m => m.code)
+              municipalities : res.municipality.map(m =>  m.code)
             });
             this.fs.municipalities = res.municipality.map(m => m.name).join();
           });
       });
+
+    // date max autocomplete
+    (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
+      .subscribe(value => {
+        this.releveForm.controls.properties.patchValue({date_max: value})
+      })
   }
 
   ngOnDestroy() {
