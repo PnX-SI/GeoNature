@@ -27,7 +27,7 @@ corRoleRelevesContact = db.Table('cor_role_releves_contact',db.MetaData(schema='
 
 corMunicipalityRelevesContact = db.Table('cor_municipality_releves_contact',db.MetaData(schema='pr_contact'),
     db.Column('id_releve_contact', db.Integer, ForeignKey('pr_contact.t_releves_contact.id_releve_contact'), primary_key=True),
-    db.Column('id_municipality', db.Integer, ForeignKey('ref_geo.l_municipalities'), primary_key=True)
+    db.Column('id_municipality', db.Unicode, ForeignKey('ref_geo.l_municipalities.id_municipality'), primary_key=True)
 )
 
 
