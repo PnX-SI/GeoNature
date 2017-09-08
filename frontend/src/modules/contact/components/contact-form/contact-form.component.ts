@@ -47,7 +47,7 @@ export class ContactFormComponent implements OnInit {
   }
 
   submitData() {
-    // parse the final form
+    // Format the final form
     const finalForm = this.releveForm.value;
     finalForm.geometry = finalForm.geometry.geometry;
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);

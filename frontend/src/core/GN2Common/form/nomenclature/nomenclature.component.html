@@ -1,5 +1,8 @@
-<select class="form-control"  [formControl]="parentFormControl">
-    <option [ngValue]="null"> {{placeholder}} </option>
-    <option  *ngFor="let label of labels" [ngValue]="label.id_nomenclature"> {{label[labelLang]}} </option>
-</select>
-
+<div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <select 
+    class="form-control"
+    [formControl]="parentFormControl">
+      <option [ngValue]="null"> {{placeholder}} </option>
+      <option  *ngFor="let label of labels" [ngValue]="label.id_nomenclature"> {{label[labelLang]}} </option>
+  </select>
+</div>
