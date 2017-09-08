@@ -1,6 +1,7 @@
 <span class="ui-fluid">
     <p-autoComplete 
       styleClass="wid100"
+      [formControl]="parentFormControl"        
       (completeMethod)="filterObservers($event)"
       (onSelect)="addObservers($event)"
       (onUnselect)="removeObservers($event)"

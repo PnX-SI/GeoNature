@@ -14,6 +14,9 @@ export class ObserversComponent implements OnInit {
   @Input()idMenu: number;
   @Input() placeholder: string;
   @Input() parentFormControl:FormControl;
+  @Output() observerSelected = new EventEmitter<any>();
+  @Output() observerDeleted = new EventEmitter<any>();
+
   observers: Array<any>;
   selectedObservers: Array<string>;
 
@@ -26,20 +29,17 @@ export class ObserversComponent implements OnInit {
       .subscribe(data => this.observers = data);
   }
 
-  filterObservers(event){
+  filterObservers(event) {
     const query = event.query;
     this.filteredObservers = this.observers.filter(obs => {
       return obs.nom_complet.toLowerCase().indexOf(query.toLowerCase()) === 0
     })
   }
-  addObservers(observer){    
-    this.selectedObservers.push(observer.id_role)
-    this.parentFormControl.patchValue(this.selectedObservers);
+  addObservers(observer) {
+    this.observerSelected.emit(observer.id_role);  
   }
-  removeObservers(observer){
-    const index = this.selectedObservers.indexOf(observer.id_role)
-    this.selectedObservers.splice(index, 1);
-    this.parentFormControl.patchValue(this.selectedObservers);
+  removeObservers(observer) {
+    this.observerDeleted.emit(observer.id_role);
   }
 
     
