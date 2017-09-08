@@ -1,14 +1,16 @@
-<span class="ui-fluid">
-    <p-autoComplete 
-      styleClass="wid100"
-      [formControl]="parentFormControl"        
-      (completeMethod)="filterObservers($event)"
-      (onSelect)="addObservers($event)"
-      (onUnselect)="removeObservers($event)"
-      [suggestions]="filteredObservers" field="nom_complet"
-      [minLength]="1" placeholder="Observateurs"[multiple]="true">
-    </p-autoComplete>
-</span>
+<div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <span class="ui-fluid">
+      <p-autoComplete 
+        [inputStyle]="has-error"
+        [formControl]="parentFormControl"        
+        (completeMethod)="filterObservers($event)"
+        (onSelect)="addObservers($event)"
+        (onUnselect)="removeObservers($event)"
+        [suggestions]="filteredObservers" field="nom_complet"
+        [minLength]="1" placeholder="Observateurs"[multiple]="true">
+      </p-autoComplete>
+  </span>
+  <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
 
 
 

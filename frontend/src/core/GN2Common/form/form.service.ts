@@ -44,7 +44,7 @@ export class FormService {
     return this._fb.group({
       id_nomenclature_obs_technique :[null, Validators.required],
       id_nomenclature_obs_meth: null,
-      id_nomenclature_bio_condition: null,
+      id_nomenclature_bio_condition: [null, Validators.required],
       id_nomenclature_bio_status : null,
       id_nomenclature_naturalness : null,
       id_nomenclature_exist_proof: null,
