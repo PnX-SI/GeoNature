@@ -20,10 +20,10 @@ AS $$
   BEGIN
     IF (id IN (SELECT id_nomenclature FROM ref_nomenclatures.t_nomenclatures WHERE id_type = myidtype )
         OR id IS NULL) THEN
-      return true;
-    ELSE
-      RETURN false;
+      RETURN true;
     END IF;
+    RETURN false;
+    
   END;
 $$;
 
