@@ -74,7 +74,7 @@ export class ContactFormComponent implements OnInit {
     this.releveForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
-    
+    this.taxonsList = [];
     this.fs.municipalities = "";
 
     
