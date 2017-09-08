@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import {  } from '@angular/forms';
 
 @Injectable()
@@ -22,18 +22,19 @@ export class FormService {
 
    initObservationForm(): FormGroup {
     return this._fb.group({
-      geometry: '',
+      geometry: ['', Validators.required],
       properties: this._fb.group({
-        id_dataset: null,
+        id_dataset: [null, Validators.required],
         id_digitiser : null,
-        date_min: '',
-        date_max: '',
+        date_min: ['', Validators.required],
+        date_max: ['', Validators.required],
         altitude_min: '',
         altitude_max : '',
-        id_municipality : '',
+        deleted: false, 
+        id_municipality : ['', Validators.required],
         meta_device_entry: 'web',
         comment: '',
-        observers: null,
+        observers: [null, Validators.required],
         t_occurrences_contact: this._fb.array([])
       })
     });
@@ -41,7 +42,7 @@ export class FormService {
 
    initOccurrenceForm(): FormGroup {
     return this._fb.group({
-      id_nomenclature_obs_technique :null,
+      id_nomenclature_obs_technique :[null, Validators.required],
       id_nomenclature_obs_meth: null,
       id_nomenclature_bio_condition: null,
       id_nomenclature_bio_status : null,
@@ -52,7 +53,7 @@ export class FormService {
       id_validator: null,
       determiner:'',
       determination_method: '',
-      cd_nom: null,
+      cd_nom: [null, Validators.required],
       nom_cite: '',
       meta_v_taxref: "Taxref V9.0",
       sample_number_proof: '',
@@ -67,9 +68,9 @@ export class FormService {
 
    initCounting(): FormGroup {
     return this._fb.group({
-      id_nomenclature_life_stage: null,
-      id_nomenclature_sex: null,
-      id_nomenclature_obj_count: null,
+      id_nomenclature_life_stage: [null, Validators.required],
+      id_nomenclature_sex: [null, Validators.required],
+      id_nomenclature_obj_count: [null, Validators.required],
       id_nomenclature_type_count: null,
       count_min : null,
       count_max : null
