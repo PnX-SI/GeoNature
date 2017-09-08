@@ -1,12 +1,22 @@
 <div [formGroup]="releveForm">
 
-  <div class="row form-group">
+  <div class="row">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
       <pnx-observers
         [parentFormControl]="releveForm.controls.properties.controls.observers"
         [idMenu]="9"
         placeholder="{{ 'Releve.Observers' | translate }}">
       </pnx-observers>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.id_dataset.invalid}">
+        <select class="form-control" [formControl]="releveForm.controls.properties.controls.id_dataset">
+            <option [ngValue]="null"> --  {{ 'Releve.Dataset' | translate }} --</option>
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option>
+        </select>
+      </div>
     </div>
   </div>
   <div class="form-group row">
@@ -31,65 +41,46 @@
             <i class="fa fa-calendar" aria-hidden="true"></i>
             </button> 
       </div> 
-    </div>
-         
+    </div>  
   </div>
-
-  <div class="form-group">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        <div class="input-group">
-          <input class="form-control" type="number" placeholder="{{ 'Releve.MinAltitude' | translate }}"
-          [formControl]="releveForm.controls.properties.controls.altitude_min" readonly>
-          <span class="input-group-addon"><md-icon mdSuffix>terrain</md-icon></span>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-          <div class="input-group">
-            <input class="form-control" type="number" placeholder="{{ 'Releve.MaxAltitude' | translate }}"
-            [formControl]="releveForm.controls.properties.controls.altitude_max" readonly>
-            <span class="input-group-addon"><md-icon mdSuffix>terrain</md-icon></span>
-          </div>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <!-- <div class="input-group">
-          <input [formControl]="releveForm.controls.id_municipality" value="" class="form-control" type="text" placeholder="{{ 'Releve.Municipality' | translate }}">
-          <span class="input-group-addon"><md-icon mdSuffix>pin_drop</md-icon></span>
-        </div> -->
-        <div class="card">
-          <div class="card-block">
-            {{fs.municipalities | json}}
-          </div>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.id_dataset.invalid}">
-          <select class="form-control" [formControl]="releveForm.controls.properties.controls.id_dataset">
-              <option [ngValue]="null"> --  {{ 'Releve.Dataset' | translate }} --</option>
-              <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option>
-          </select>
-        </div>
-      </div>
+  <div class="row form-group">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
           <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}
         </button>
       </div>
-
-    </div>
-
   </div>
-    
   <div class="row collapse" id="collapseContexteCommentaire">
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-        <div class="form-group">
-          <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
-          <textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
-        </div>
+      <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+          <div class="form-group">
+            <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
+            <textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
+          </div>
+      </div>
     </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="input-group">
+          <input class="form-control" type="number" placeholder="{{ 'Releve.MinAltitude' | translate }}"
+          [formControl]="releveForm.controls.properties.controls.altitude_min" >
+          <span class="input-group-addon"><md-icon mdSuffix>terrain</md-icon></span>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <div class="input-group">
+            <input class="form-control" type="number" placeholder="{{ 'Releve.MaxAltitude' | translate }}"
+            [formControl]="releveForm.controls.properties.controls.altitude_max" >
+            <span class="input-group-addon"><md-icon mdSuffix>terrain</md-icon></span>
+          </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <div class="municipalities">
+              {{ 'Releve.Municipalities' | translate }}: <i> {{fs.municipalities }} </i>
+          </div>
+        </div>
+      </div>
   </div>
+
 </div>

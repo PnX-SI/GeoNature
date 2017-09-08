@@ -31,7 +31,7 @@ export class FormService {
         altitude_min: '',
         altitude_max : '',
         deleted: false, 
-        id_municipality : ['', Validators.required],
+        municipalities : [null, Validators.required],
         meta_device_entry: 'web',
         comment: '',
         observers: [null, Validators.required],
@@ -77,7 +77,7 @@ export class FormService {
     })
   }
 
-  initCountingArray():FormArray{
+  initCountingArray():FormArray {
     const arrayForm = this._fb.array([])
     arrayForm.push(this.initCounting());
     return arrayForm

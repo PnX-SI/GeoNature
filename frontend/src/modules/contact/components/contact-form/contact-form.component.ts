@@ -61,8 +61,10 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role )
 
-    //provisoire test
-    delete finalForm.properties.id_municipality;
+    // provisoire test
+    // delete finalForm.properties.municipalities;
+    console.log(finalForm);
+    
     console.log(JSON.stringify(finalForm));
     
 
