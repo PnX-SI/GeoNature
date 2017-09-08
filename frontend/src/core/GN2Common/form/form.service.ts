@@ -33,7 +33,7 @@ export class FormService {
         id_municipality : '',
         meta_device_entry: 'web',
         comment: '',
-        observers: '',
+        observers: null,
         t_occurrences_contact: this._fb.array([])
       })
     });
@@ -104,7 +104,7 @@ export class FormService {
     this.nbCounting.splice(index, 1);
   }
 
-   updateTaxon(taxon) {
+  updateTaxon(taxon) {
      this.currentTaxon = taxon;
    }
 
