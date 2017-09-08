@@ -1,14 +1,16 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../map/map.service';
 import { DataFormService } from '../data-form.service';
 import { FormService } from '../form.service';
+import {ViewEncapsulation} from '@angular/core';
 
 @Component({
   selector: 'pnx-observation',
   templateUrl: 'observation.component.html',
-  styleUrls: ['./observation.component.scss']
+  styleUrls: ['./observation.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class ObservationComponent implements OnInit, OnDestroy {
@@ -20,6 +22,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public dataSets: any;
   public geoInfo: any;
   public municipalities: string;
+  public municipalitiesControl = new FormControl({'disabled':true});
   private geojsonSubscription$: Subscription;
 
   constructor(private _ms: MapService, private _dfs: DataFormService, public fs: FormService) {  }
@@ -42,6 +45,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
               altitude_max: res.altitude.altitude_max,
               municipalities : res.municipality.map(m =>  m.code)
             });
+            this.municipalitiesControl.setValue('lalal');
             this.fs.municipalities = res.municipality.map(m => m.name).join();
           });
       });

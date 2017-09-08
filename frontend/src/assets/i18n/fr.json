@@ -36,7 +36,7 @@
         "MinAltitude":"Alt min",
         "MaxAltitude":"Alt max",
         "Municipality":"Commune",
-        "Municipalities":"Communes",
+        "Municipalities":"Commune(s)",
         "Dataset":"Jeu de données",
         "Comment":"Commentaire",
         "SaveReleve":"Enregistrer le relevé"
