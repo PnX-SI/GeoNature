@@ -60,7 +60,7 @@ def insertOrUpdateOneReleve():
             observersList =  data['properties']['observers']
             data['properties'].pop('observers')
         if data['properties']['municipalities']:
-            municipalities = data['properties']['municipalities']
+            municipalitiesList = data['properties']['municipalities']
             data['properties'].pop('municipalities')
 
         releve = TRelevesContact(**data['properties'])
@@ -71,8 +71,9 @@ def insertOrUpdateOneReleve():
         for o in observers :
             releve.observers.append(o)
 
+        municipalities = db.session.query(LMunicipalities).filter(LMunicipalities.id_municipality.in_(municipalitiesList)).all()
         for m in municipalities :
-            releve.municipalities.append(LMunicipalities(**m))
+            releve.municipalities.append(m)
 
         for occ in occurrences_contact :
             if occ['cor_counting_contact']:
@@ -94,7 +95,7 @@ def insertOrUpdateOneReleve():
             db.session.flush()
         except Exception as e:
             raise
-
+            
         return releve.get_geofeature()
 
     except Exception as e:
