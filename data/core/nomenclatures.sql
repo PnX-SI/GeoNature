@@ -12,12 +12,14 @@ SET search_path = ref_nomenclatures, pg_catalog;
 -------------
 --FUNCTIONS--
 -------------
-CREATE FUNCTION check_nomenclature_type(id integer, myidtype integer) RETURNS boolean
-    LANGUAGE plpgsql IMMUTABLE
-    AS $$
+create OR REPLACE function ref_nomenclatures.check_nomenclature_type(id integer , myidtype integer) returns boolean
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
 --Function that checks if an id_nomenclature matches with wanted nomenclature type
   BEGIN
-    IF id IN(SELECT id_nomenclature FROM ref_nomenclatures.t_nomenclatures WHERE id_type = myidtype ) THEN
+    IF (id IN (SELECT id_nomenclature FROM ref_nomenclatures.t_nomenclatures WHERE id_type = myidtype )
+        OR id IS NULL) THEN
       return true;
     ELSE
       RETURN false;
