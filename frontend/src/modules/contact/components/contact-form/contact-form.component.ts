@@ -52,19 +52,17 @@ export class ContactFormComponent implements OnInit {
     finalForm.geometry = finalForm.geometry.geometry;
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
+    // format cd_nom
     finalForm.properties.t_occurrences_contact.forEach(occ => {
       occ.nom_cite = occ.cd_nom.nom_valide;
       occ.cd_nom = occ.cd_nom.cd_nom;
-      
     });
+    // format observers
+    finalForm.properties.observers = finalForm.properties.observers
+      .map(observer => observer.id_role )
 
     //provisoire test
     delete finalForm.properties.id_municipality;
-    delete finalForm.properties.observers;
-    finalForm.properties.observers = new Array();
-    finalForm.properties.observers.push(1);
-    console.log(finalForm);
-    
     console.log(JSON.stringify(finalForm));
     
 
