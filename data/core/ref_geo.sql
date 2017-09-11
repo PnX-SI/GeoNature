@@ -140,6 +140,9 @@ ALTER TABLE ONLY l_areas
 ---------
 CREATE INDEX index_l_municipalities_geom ON l_municipalities USING gist (geom);
 CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
+CREATE INDEX index_l_grids_geom ON synthese USING gist (geom);
+CREATE INDEX index_l_grids_centroid ON synthese USING gist (centroid);
+CREATE INDEX index_dem_vector_geom ON synthese USING gist (centroid);
 
 ------------
 --TRIGGERS--

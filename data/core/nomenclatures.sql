@@ -272,7 +272,7 @@ ALTER TABLE ONLY cor_taxref_sensitivity
 ---------
 --INDEX--
 ---------
-CREATE INDEX fki_t_nomenclatures_bib_nomenclatures_types_fkey ON t_nomenclatures USING btree (id_type);
+CREATE INDEX index_t_nomenclatures_bib_nomenclatures_types_fkey ON t_nomenclatures USING btree (id_type);
 
 
 ---------
