@@ -218,7 +218,10 @@ ALTER TABLE ONLY cor_role_releves_contact
 
 ALTER TABLE ONLY cor_municipality_releves_contact
      ADD CONSTRAINT fk_cor_municipality_releves_contact_t_releves_contact FOREIGN KEY (id_releve_contact) REFERENCES t_releves_contact(id_releve_contact) ON UPDATE CASCADE ON DELETE CASCADE;
---TODO FK on municipality table
+
+ALTER TABLE ONLY cor_municipality_releves_contact
+     ADD CONSTRAINT fk_cor_municipality_releves_contact_l_municipalities FOREIGN KEY (id_municipality) REFERENCES ref_geo.l_municipalities(id_municipality) ON UPDATE CASCADE;
+
 
 
 --------------
