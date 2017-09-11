@@ -189,29 +189,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/data_nomenclatures.sql  &>> log/install_db.log
 
 
-    echo "Creating 'medias' schema..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Creating 'medias' schema" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> log/install_db.log
-
-
-    echo "Creating 'synthese' schema..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Creating 'synthese' schema" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    cp data/core/synthese.sql /tmp/synthese.sql
-    sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/synthese.sql
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/synthese.sql  &>> log/install_db.log
-
-
-    echo "Creating 'ref_geo' schema..."
+echo "Creating 'ref_geo' schema..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
@@ -238,7 +216,19 @@ then
             echo "/tmp/communes_fr_admin_express_2017-06.zip already exist"
         fi
         unzip /tmp/communes_fr_admin_express_2017-06.zip -d /tmp
-        sudo -n -u postgres -s psql -d $db_name -f /tmp/communes_fr.sql &>> log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -f /tmp/fr_municipalities.sql &>> log/install_db.log
+        echo "" &>> log/install_db.log
+        echo "Restore $user_pg owner" &>> log/install_db.log
+        echo "--------------------" &>> log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $user_pg;" &>> log/install_db.log
+        echo "" &>> log/install_db.log
+        echo "Insert data in l_areas and l_municipalities tables" &>> log/install_db.log
+        echo "--------------------" &>> log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_data.sql  &>> log/install_db.log
+        echo "" &>> log/install_db.log
+        echo "Drop french municipalities temp table" &>> log/install_db.log
+        echo "--------------------" &>> log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> log/install_db.log
     fi
 
     if $install_default_dem
@@ -265,6 +255,29 @@ then
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> log/install_db.log
     fi
 
+
+    echo "Creating 'medias' schema..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Creating 'medias' schema" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> log/install_db.log
+
+
+    echo "Creating 'synthese' schema..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Creating 'synthese' schema" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    cp data/core/synthese.sql /tmp/synthese.sql
+    sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/synthese.sql
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/synthese.sql  &>> log/install_db.log
+
+
     # Suppression des fichiers : on ne conserve que les fichiers compressés
     echo "Cleaning files..."
     rm /tmp/*.txt
@@ -275,7 +288,7 @@ then
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
-    rm /tmp/communes_fr.sql
+    rm /tmp/fr_municipalities.sql
     rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
     rm /tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
     # rm /tmp/dem.tif

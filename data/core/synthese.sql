@@ -33,7 +33,7 @@ CREATE TABLE synthese (
     id_module integer,
     entity_module_pk_value integer,
     id_dataset integer,
-    id_nomenclature_typ_inf_geo,
+    id_nomenclature_typ_inf_geo integer,
     id_nomenclature_obs_meth integer DEFAULT 42,
     id_nomenclature_obs_technique integer DEFAULT 343,
     id_nomenclature_bio_status integer DEFAULT 30,
@@ -81,20 +81,20 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
-COMMENT ON COLUMN synthese.id_nomenclature_typ_inf_geo, IS 'Correspondance nomenclature INPN = type_info_geo = 23';
-COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs = 14';
-COMMENT ON COLUMN synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature CAMPANULE = technique_obs = 100';
-COMMENT ON COLUMN synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio = 13';
-COMMENT ON COLUMN synthese.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio = 7';
-COMMENT ON COLUMN synthese.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite = 8';
-COMMENT ON COLUMN synthese.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist = 15';
-COMMENT ON COLUMN synthese.id_nomenclature_valid_status IS 'Correspondance nomenclature GEONATURE = statut_valide = 101';
-COMMENT ON COLUMN synthese.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis = 5';
-COMMENT ON COLUMN synthese.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie = 10';
-COMMENT ON COLUMN synthese.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe = 9';
-COMMENT ON COLUMN synthese.id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr = 6';
-COMMENT ON COLUMN synthese.id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr = 21';
-COMMENT ON COLUMN synthese.id_nomenclature_sensitivity IS 'Correspondance nomenclature INPN = sensibilite = 16';
+COMMENT ON COLUMN id_nomenclature_typ_inf_geo IS 'Correspondance nomenclature INPN = type_info_geo = 23';
+COMMENT ON COLUMN id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs = 14';
+COMMENT ON COLUMN id_nomenclature_obs_technique IS 'Correspondance nomenclature CAMPANULE = technique_obs = 100';
+COMMENT ON COLUMN id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio = 13';
+COMMENT ON COLUMN id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio = 7';
+COMMENT ON COLUMN id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite = 8';
+COMMENT ON COLUMN id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist = 15';
+COMMENT ON COLUMN id_nomenclature_valid_status IS 'Correspondance nomenclature GEONATURE = statut_valide = 101';
+COMMENT ON COLUMN id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis = 5';
+COMMENT ON COLUMN id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie = 10';
+COMMENT ON COLUMN id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe = 9';
+COMMENT ON COLUMN id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr = 6';
+COMMENT ON COLUMN id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr = 21';
+COMMENT ON COLUMN id_nomenclature_sensitivity IS 'Correspondance nomenclature INPN = sensibilite = 16';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -105,6 +105,11 @@ CREATE SEQUENCE synthese_id_synthese_seq
 ALTER SEQUENCE synthese_id_synthese_seq OWNED BY synthese.id_synthese;
 ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese_id_synthese_seq'::regclass);
 
+CREATE TABLE cor_area_synthese (
+    id_synthese integer, 
+    id_area integer,  
+    id_nomenclature_typ_inf_geo integer
+)
 
 ---------------
 --PRIMARY KEY--
@@ -114,12 +119,12 @@ ALTER TABLE ONLY t_modules ADD CONSTRAINT pk_t_modules PRIMARY KEY (id_module);
 
 ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
 
+ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area);
+
 
 ---------
 --INDEX--
 ---------
-CREATE INDEX index_synthese_bib_proprietaires ON synthese USING btree (id_organisme);
-
 CREATE INDEX index_synthese_id_municipality_fkey ON synthese USING btree (id_municipality);
 
 CREATE INDEX index_synthese_t_modules ON synthese USING btree (id_module);
@@ -143,16 +148,10 @@ CREATE INDEX index_synthese_the_geom_point ON synthese USING gist (the_geom_poin
 --FOREIGN KEY--
 ---------------
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_bib_organismes FOREIGN KEY (id_organisme) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES t_modules(id_module) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -200,6 +199,15 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
+ALTER TABLE ONLY cor_area_synthese
+    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY cor_area_synthese
+    ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_area_synthese
+    ADD CONSTRAINT fk_cor_area_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 --------------
 --CONSTRAINS--
 --------------
@@ -212,9 +220,6 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
 
-
-ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_typ_inf_geo CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_typ_inf_geo,23));
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
@@ -255,11 +260,10 @@ ALTER TABLE synthese
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sensitivity,16));
 
-ALTER TABLE synthese
-    ADD CONSTRAINT check_synthese_count_min CHECK (count_min > 0);
 
-ALTER TABLE synthese
-    ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min AND count_max > 0);
+ALTER TABLE cor_area_synthese
+  ADD CONSTRAINT check_cor_area_synthese_typ_inf_geo CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_typ_inf_geo,23));
+
 
 ------------
 --TRIGGERS--
