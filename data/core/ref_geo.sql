@@ -15,8 +15,18 @@ SET search_path = ref_geo, pg_catalog;
 ----------------------
 --TABLES & SEQUENCES--
 ----------------------
+CREATE TABLE bib_areas_types (
+    id_type integer NOT NULL,
+    type_name character varying(200),
+    type_desc text,
+    ref_name character varying(200), 
+    ref_version integer
+);
+COMMENT ON COLUMN bib_areas_types.ref_name IS 'Indique le nom du référentiel géographique utilisé pour ce type';
+COMMENT ON COLUMN bib_areas_types.ref_version IS 'Indique l''année du référentiel utilisé';
+
 CREATE SEQUENCE l_areas_id_area_seq
-    START WITH 1000000
+    START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -27,34 +37,23 @@ CREATE TABLE l_areas (
     id_type integer NOT NULL,
     area_name character varying(250),
     geom public.geometry(MultiPolygon,MYLOCALSRID),
+    centroid public.geometry(Point,MYLOCALSRID),
     source character varying(250),
-    code_source character varying(20),
+    source_code character varying(25),
     comment text,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(geom) = MYLOCALSRID))
+    CONSTRAINT enforce_geotype_l_areas_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
+    CONSTRAINT enforce_srid_l_areas_geom CHECK ((public.st_srid(geom) = MYLOCALSRID)),
+    CONSTRAINT enforce_geotype_l_areas_centroid CHECK (((public.geometrytype(centroid) = 'POINT'::text) OR (centroid IS NULL))),
+    CONSTRAINT enforce_srid_l_areas_centroid CHECK ((public.st_srid(centroid) = MYLOCALSRID))
 );
-
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
 
-CREATE TABLE bib_areas_types (
-    id_type integer NOT NULL,
-    type_name character varying(200),
-    type_desc text,
-    code character varying(5)
-);
-
-
 CREATE TABLE l_municipalities (
     id_municipality character varying(25) NOT NULL,
-    municipality_name character varying(250) NOT NULL,
-    geom public.geometry(MultiPolygon,MYLOCALSRID)
-);
-
-CREATE TABLE l_municipalities_additional (
-    id_municipality character varying(25) NOT NULL,
+    id_area integer NOT NULL,
     status character varying(22),
     fr_insee_com character varying(5),
     fr_nom_com character varying(50),
@@ -74,7 +73,7 @@ CREATE TABLE l_municipalities_additional (
     cc_nature character varying(5),
     cc_date_creation character varying(10),
     cc_date_effet character varying(10),
-    zc boolean,
+    coeur boolean,
     aa boolean,
     pec boolean,
     apa boolean,
@@ -83,7 +82,6 @@ CREATE TABLE l_municipalities_additional (
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone
 );
-
 
 CREATE TABLE l_grids (
     id_grid character varying(50) NOT NULL,
@@ -94,7 +92,7 @@ CREATE TABLE l_grids (
     cymin integer,
     cymax integer,
     code_grid_10k character varying(20),
-    zc boolean
+    coeur boolean
 );
 
 CREATE TABLE dem_vector
@@ -111,9 +109,6 @@ CREATE TABLE dem_vector
 ----------------
 ALTER TABLE ONLY l_municipalities
     ADD CONSTRAINT pk_l_municipalities PRIMARY KEY (id_municipality);
-
-ALTER TABLE ONLY l_municipalities_additional
-    ADD CONSTRAINT pk_l_municipalitie_complements PRIMARY KEY (id_municipality);
 
 ALTER TABLE ONLY l_grids
     ADD CONSTRAINT pk_l_grids PRIMARY KEY (id_grid);
@@ -134,21 +129,24 @@ ALTER TABLE ONLY dem_vector
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES bib_areas_types(id_type) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY l_municipalities
+    ADD CONSTRAINT fk_l_municipalities_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
+
 
 ---------
 --INDEX--
 ---------
-CREATE INDEX index_l_municipalities_geom ON l_municipalities USING gist (geom);
 CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
-CREATE INDEX index_l_grids_geom ON synthese USING gist (geom);
-CREATE INDEX index_l_grids_centroid ON synthese USING gist (centroid);
-CREATE INDEX index_dem_vector_geom ON synthese USING gist (centroid);
+CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
+CREATE INDEX index_l_grids_geom ON l_grids USING gist (geom);
+CREATE INDEX index_l_grids_centroid ON l_grids USING gist (centroid);
+CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
 
 ------------
 --TRIGGERS--
 ------------
 CREATE TRIGGER tri_meta_dates_change_l_areas BEFORE INSERT OR UPDATE ON l_areas FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-CREATE TRIGGER tri_meta_dates_change_l_municipalities_additional BEFORE INSERT OR UPDATE ON l_municipalities_additional FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+CREATE TRIGGER tri_meta_dates_change_l_municipalities BEFORE INSERT OR UPDATE ON l_municipalities FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 -------------
@@ -187,10 +185,26 @@ BEGIN
     WITH d  as (
         SELECT st_transform(myGeom,isrid) geom_trans
     )
-    SELECT c.id_municipality , c.municipality_name FROM ref_geo.l_municipalities c, d WHERE st_intersects(geom_trans, geom);
+    SELECT a.source_code AS id_municipality, a.area_name 
+    FROM ref_geo.l_areas a, d 
+    WHERE a.id_type = 1 
+    AND st_intersects(geom_trans, a.geom);
 
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
+
+
+--------
+--DATA--
+--------
+
+INSERT INTO bib_areas_types (id_type, type_name, type_desc, ref_name, ref_version) VALUES
+(1,'communes', 'type communes', 'IGN admin_express', 2017)
+,(2,'département', 'type département', 'IGN admin_express', 2017)
+,(3,'maille 10*10', 'type maille inpn 10*10', NULL, NULL)
+,(4,'espace naturel', 'type espace naturel', NULL, NULL)
+,(5,'masse d''eau', 'type masse d''eau', NULL, NULL)
+;
