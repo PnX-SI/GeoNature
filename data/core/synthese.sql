@@ -12,15 +12,15 @@ SET search_path = gn_synthese, pg_catalog;
 SET default_with_oids = false;
 
 
-CREATE TABLE t_modules (
-    id_module integer NOT NULL,
-    name_module character varying(255) NOT NULL,
-    desc_module text,
-    entity_module_pk_field character varying(255),
-    url_module character varying(255),
+CREATE TABLE t_sources (
+    id_source integer NOT NULL,
+    name_source character varying(255) NOT NULL,
+    desc_source text,
+    entity_source_pk_field character varying(255),
+    url_source character varying(255),
     target character varying(10),
-    picto_module character varying(255),
-    groupe_module character varying(50) NOT NULL,
+    picto_source character varying(255),
+    groupe_source character varying(50) NOT NULL,
     active boolean NOT NULL,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now()
@@ -30,8 +30,8 @@ CREATE TABLE t_modules (
 CREATE TABLE synthese (
     id_synthese integer NOT NULL,
     unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    id_module integer,
-    entity_module_pk_value integer,
+    id_source integer,
+    entity_source_pk_value integer,
     id_dataset integer,
     id_nomenclature_typ_inf_geo integer,
     id_nomenclature_obs_meth integer DEFAULT 42,
@@ -115,7 +115,7 @@ CREATE TABLE cor_area_synthese (
 --PRIMARY KEY--
 ---------------
 
-ALTER TABLE ONLY t_modules ADD CONSTRAINT pk_t_modules PRIMARY KEY (id_module);
+ALTER TABLE ONLY t_sources ADD CONSTRAINT pk_t_sources PRIMARY KEY (id_source);
 
 ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
 
@@ -127,7 +127,7 @@ ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY K
 ---------
 CREATE INDEX index_synthese_id_municipality_fkey ON synthese USING btree (id_municipality);
 
-CREATE INDEX index_synthese_t_modules ON synthese USING btree (id_module);
+CREATE INDEX index_synthese_t_sources ON synthese USING btree (id_source);
 
 CREATE INDEX index_synthese_cd_nom ON synthese USING btree (cd_nom);
 
@@ -151,7 +151,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES t_modules(id_module) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -274,9 +274,9 @@ CREATE TRIGGER tri_meta_dates_change_synthese
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-CREATE TRIGGER tri_meta_dates_t_modules
+CREATE TRIGGER tri_meta_dates_t_sources
   BEFORE INSERT OR UPDATE
-  ON t_modules
+  ON t_sources
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
@@ -284,4 +284,4 @@ CREATE TRIGGER tri_meta_dates_t_modules
 --------
 --DATA--
 --------
-INSERT INTO t_modules (id_module, name_module, desc_module, entity_module_pk_field, url_module, target, picto_module, groupe_module, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_module_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
+INSERT INTO t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_source_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
