@@ -50,8 +50,8 @@ CREATE TABLE synthese (
     id_municipality character(25),
     count_min integer,
     count_max integer,
-    cd_nom integer NOT NULL,
-    nom_cite character varying(255),
+    cd_nom integer,
+    nom_cite character varying(255) NOT NULL,
     meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'',NULL)',
     sample_number_proof text,
     digital_proof text,
@@ -194,6 +194,9 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_sensitivity FOREIGN KEY (id_nomenclature_sensitivity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
@@ -252,11 +255,11 @@ ALTER TABLE synthese
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sensitivity,16));
 
-ALTER TABLE cor_counting_contact
-    ADD CONSTRAINT check_cor_counting_contact_count_min CHECK (count_min > 0);
+ALTER TABLE synthese
+    ADD CONSTRAINT check_synthese_count_min CHECK (count_min > 0);
 
-ALTER TABLE cor_counting_contact
-    ADD CONSTRAINT check_cor_counting_contact_count_max CHECK (count_max >= count_min AND count_max > 0);
+ALTER TABLE synthese
+    ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min AND count_max > 0);
 
 ------------
 --TRIGGERS--
