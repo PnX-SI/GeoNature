@@ -190,7 +190,7 @@ ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_accur_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_counting_contact
@@ -244,38 +244,46 @@ ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_occurrences_contact_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_condition,7));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_bio_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_status,13));
+  ADD CONSTRAINT check_t_occurrences_contact_bio_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_status,13));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_naturalness CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_naturalness,8));
+  ADD CONSTRAINT check_t_occurrences_contact_naturalness CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_naturalness,8));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15));
+  ADD CONSTRAINT check_t_occurrences_contact_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
+  ADD CONSTRAINT check_t_occurrences_contact_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check__occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
+  ADD CONSTRAINT check_t_occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
 
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_life_stage CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_life_stage,10));
+  ADD CONSTRAINT check_cor_counting_contact_life_stage CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_life_stage,10));
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_sexe CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sex,9));
+  ADD CONSTRAINT check_cor_counting_contact_sexe CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sex,9));
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_obj_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obj_count,6));
+  ADD CONSTRAINT check_cor_counting_contact_obj_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obj_count,6));
 
 ALTER TABLE cor_counting_contact
-  ADD CONSTRAINT check_t_releves_contact_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
+  ADD CONSTRAINT check_cor_counting_contact_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
 
 ALTER TABLE cor_counting_contact
     ADD CONSTRAINT check_cor_counting_contact_count_min CHECK (count_min > 0);
 
 ALTER TABLE cor_counting_contact
     ADD CONSTRAINT check_cor_counting_contact_count_max CHECK (count_max >= count_min AND count_max > 0);
+
+
+---------
+--INDEX--
+---------
+CREATE INDEX index_t_releves_contact_geom_local ON l_municipalities USING gist (geom_local);
+CREATE INDEX index_t_releves_contact_geom_4326 ON l_municipalities USING gist (geom_4326);
+
 
 ----------------------
 --FUNCTIONS TRIGGERS--

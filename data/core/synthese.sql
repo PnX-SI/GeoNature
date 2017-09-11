@@ -115,25 +115,25 @@ ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
 ---------
 --INDEX--
 ---------
-CREATE INDEX fki_synthese_bib_proprietaires ON synthese USING btree (id_organisme);
+CREATE INDEX index_synthese_bib_proprietaires ON synthese USING btree (id_organisme);
 
-CREATE INDEX fki_synthese_id_municipality_fkey ON synthese USING btree (id_municipality);
+CREATE INDEX index_synthese_id_municipality_fkey ON synthese USING btree (id_municipality);
 
-CREATE INDEX fki_synthese_t_modules ON synthese USING btree (id_module);
+CREATE INDEX index_synthese_t_modules ON synthese USING btree (id_module);
 
-CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
+CREATE INDEX index_synthese_cd_nom ON synthese USING btree (cd_nom);
 
-CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
+CREATE INDEX index_synthese_date_min ON synthese USING btree (date_min DESC);
 
-CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
+CREATE INDEX index_synthese_date_max ON synthese USING btree (date_max DESC);
 
-CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
+CREATE INDEX index_synthese_id_dataset ON synthese USING btree (id_dataset);
 
-CREATE INDEX index_gist_synthese_the_geom_local ON synthese USING gist (the_geom_local);
+CREATE INDEX index_synthese_the_geom_local ON synthese USING gist (the_geom_local);
 
-CREATE INDEX index_gist_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
+CREATE INDEX index_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
 
-CREATE INDEX index_gist_synthese_the_geom_point ON synthese USING gist (the_geom_point);
+CREATE INDEX index_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 
 
 ---------------
