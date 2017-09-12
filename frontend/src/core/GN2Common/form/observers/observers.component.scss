@@ -1,28 +1,3 @@
-// .has-danger{
-//   border-color: #d9534f;
-// }
-
-// ng-invalid{
-//   border-color: #d9534f !important;
-// }
-// p-dropdown.ng-valid[required] > ul,
-// p-autocomplete.ng-valid > ul {
-// border: 5px solid #3EC218; /* green */
-// }
-
-// p-autocomplete.ng-invalid > span > ul {
-// border: 5px solid #d9534f !important; 
-// }
-
-// p-dropdown.ng-valid[required], p-dropdown.ng-valid.required {
-// border: 0 none;
-// }
-
-// p-dropdown.ng-invalid {
-// border: 0 none;
-// }
-
-
 p-autocomplete.ng-invalid > .ui-autocomplete > .ui-inputtext {
   border-color: #d9534f;
 }

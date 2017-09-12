@@ -12,7 +12,7 @@ export class SideNavService {
         sidenav.mode = 'over';
         sidenav.opened = false;
     }
-    setAccueil(sidenav) {
+    setHome(sidenav) {
         sidenav.mode = 'side';
         sidenav.opened = true;
     }
