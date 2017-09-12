@@ -32,6 +32,7 @@ import { NavService } from './services/nav.service';
 import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
+import { SideNavService } from './components/sidenav-items/sidenav.service';
 
 
 // AoT requires an exported function for factories
@@ -59,7 +60,7 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     SigninComponent,
   ],
-  providers: [NavService, AuthService, AuthGuard],
+  providers: [NavService, AuthService, AuthGuard, SideNavService],
   bootstrap: [AppComponent],
 })
 
