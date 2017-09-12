@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NavService } from '../../services/nav.service';
 import { AuthService } from '../auth/auth.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { SideNavService } from './sidenav.service';
 
 @Component({
   selector: 'pnx-sidenav-items',
@@ -14,7 +15,7 @@ export class SidenavItemsComponent implements OnInit {
   public toastrConfig: ToastrConfig;
 
   constructor(private _navService: NavService, private _authService: AuthService,
-              private router: Router,  private toastrService: ToastrService) {
+              private router: Router,  private toastrService: ToastrService, private _sideNavService: SideNavService) {
     this.toastrConfig = {
         positionClass: 'toast-top-center',
         tapToDismiss: true,
@@ -34,5 +35,11 @@ export class SidenavItemsComponent implements OnInit {
     //   this._navService.setAppName(appName);
     // }
     this._navService.setAppName(appName);
+    if(appName == 'Accueil') {
+      this._sideNavService.setAccueil(this._sideNavService.sidenav);
+    } else {
+      this._sideNavService.setAppSideNav(this._sideNavService.sidenav);
+    }
+    
   }
 }
