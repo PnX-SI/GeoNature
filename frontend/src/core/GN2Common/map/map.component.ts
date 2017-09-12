@@ -16,7 +16,6 @@ export class MapComponent implements OnInit {
   public Le: any;
   searchLocation: string;
   constructor(public mapService: MapService) {
-    // this.mapService.removing = false;
     this.searchLocation = '';
     this.Le = L as any;
   }

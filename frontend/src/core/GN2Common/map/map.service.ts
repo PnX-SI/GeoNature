@@ -62,33 +62,37 @@ export class MapService {
 
     enableMarkerOnClick() {
       this.map.on('click', (e: any) => {
-        if ( this.marker != null ) {
-          this.marker.remove();
+        // check zoom level
+        if(this.map.getZoom()<15){
+          this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','', this.toastrConfig)
+        }else{
+          if ( this.marker != null ) {
+            this.marker.remove();
+          }
+          this.marker = L.marker(e.latlng, {
+              icon: L.icon({
+                      iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
+                      iconSize: [24,36],
+                      iconAnchor: [12,36]
+              }),
+              draggable: true,
+          })
+          .bindPopup('GPS ' + e.latlng, {
+              offset: L.point(0, -30)
+          })
+          .addTo(this.map)
+          .openPopup();
+  
+          this.marker.on('moveend', (event: MouseEvent) => {
+              this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
+              offset: L.point(0, -30)
+              }).openPopup();
+            // observable if marker move
+            this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
+          });
+        // observable if map click
+        this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
         }
-
-        this.marker = L.marker(e.latlng, {
-            icon: L.icon({
-                    iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                    iconSize: [24,36],
-                    iconAnchor: [12,36]
-            }),
-            draggable: true,
-        })
-        .bindPopup('GPS ' + e.latlng, {
-            offset: L.point(0, -30)
-        })
-        .addTo(this.map)
-        .openPopup();
-
-        this.marker.on('moveend', (event: MouseEvent) => {
-            this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
-            offset: L.point(0, -30)
-            }).openPopup();
-          // observable if marker move
-          this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
-        });
-      // observable if map click
-      this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
       });
     }
 
