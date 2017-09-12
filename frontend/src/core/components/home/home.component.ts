@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
     }
 
   constructor(private _navService: NavService) {
-    _navService.setAppName('Home');
+    _navService.setAppName('Accueil');
     this.appName =  AppConfigs.appName;
   }
 
