@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DataFormService } from '../data-form.service';
 import { Observable } from 'rxjs/Observable';
@@ -6,7 +6,8 @@ import { Observable } from 'rxjs/Observable';
 @Component({
   selector: 'pnx-observers',
   templateUrl: './observers.component.html',
-  styleUrls: ['./observers.component.scss']
+  styleUrls: ['./observers.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ObserversComponent implements OnInit {
 

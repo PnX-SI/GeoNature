@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import { DataFormService } from '../data-form.service';
@@ -8,7 +8,8 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
-  styleUrls: ['./taxonomy.component.scss']
+  styleUrls: ['./taxonomy.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class TaxonomyComponent implements OnInit {
   @Input('parentFormControl') inputTaxon: FormControl;

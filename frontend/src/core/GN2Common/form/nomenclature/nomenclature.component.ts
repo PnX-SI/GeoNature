@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent} from '@ngx-translate/core';
@@ -7,7 +7,8 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'pnx-nomenclature',
   templateUrl: './nomenclature.component.html',
-  styleUrls: ['./nomenclature.component.scss']
+  styleUrls: ['./nomenclature.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   labels: any[];
