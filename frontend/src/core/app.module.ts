@@ -27,7 +27,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 
 
 // Service
-import { AppConfigs } from '../conf/app.configs';
+import { AppConfig } from '../conf/app.config';
 import { NavService } from './services/nav.service';
 import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { AppConfigs } from '../../../conf/app.configs'
+import { AppConfig } from '../../../conf/app.config'
 import { NavService } from '../../services/nav.service';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 import { MapService } from '../../GN2Common/map/map.service'
@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private _navService: NavService) {
     _navService.setAppName('Accueil');
-    this.appName =  AppConfigs.appName;
+    this.appName =  AppConfig.appName;
   }
 
   ngOnInit() {

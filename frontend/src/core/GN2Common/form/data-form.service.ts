@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { AppConfigs } from '../../../conf/app.configs';
+import { AppConfig } from '../../../conf/app.config';
 
 @Injectable()
 export class DataFormService {
@@ -13,32 +13,32 @@ export class DataFormService {
     const params: URLSearchParams = new URLSearchParams();
     regne ? params.set('regne', regne) : params.set('regne', '');
     group2_inpn ? params.set('group2_inpn', group2_inpn) : params.set('group2_inpn', '');
-    return this._http.get(`${AppConfigs.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {search: params})
+    return this._http.get(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {search: params})
     .map(response => response.json());
     }
 
   getDatasets() {
-    return this._http.get(`${AppConfigs.API_ENDPOINT}meta/datasets`)
+    return this._http.get(`${AppConfig.API_ENDPOINT}meta/datasets`)
       .map(response => response.json());
   }
 
   getObservers(idMenu) {
-     return this._http.get(`${AppConfigs.API_ENDPOINT}users/menu/${idMenu}`)
+     return this._http.get(`${AppConfig.API_ENDPOINT}users/menu/${idMenu}`)
       .map(response => response.json());
   }
 
   searchTaxonomy(taxonName: string, id: string) {
-    return this._http.get(`${AppConfigs.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
+    return this._http.get(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
     .map(res => res.json());
   }
 
   getGeoInfo(geojson) {
-    return this._http.post(`${AppConfigs.API_ENDPOINT}geo/info`, geojson)
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/info`, geojson)
       .map(response => response.json());
   }
 
   postContact(form) {
-    return this._http.post(`${AppConfigs.API_ENDPOINT}contact/releve`, form)
+    return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form)
       .map(response => {
         if(response.status != 200){
           throw new Error('Post Error')
