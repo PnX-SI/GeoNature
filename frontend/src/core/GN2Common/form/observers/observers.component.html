@@ -1,6 +1,7 @@
 <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
   <span class="ui-fluid">
       <p-autoComplete 
+        styleClass="wid100"
         [inputStyle]="has-error"
         [formControl]="parentFormControl"        
         (completeMethod)="filterObservers($event)"

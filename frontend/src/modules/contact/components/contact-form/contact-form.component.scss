@@ -107,3 +107,11 @@
     margin-left: 95%;
     cursor: pointer;
 }
+
+select.form-control-sm:not([size]):not([multiple]) {
+    height: 1.8125rem;
+}
+input.form-control-sm:not([size]):not([multiple]) {
+    height: 1.8125rem;
+}
+
