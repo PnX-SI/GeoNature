@@ -5,12 +5,12 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 import { MapService } from '../../GN2Common/map/map.service'
 
 @Component({
-  selector: 'pnx-accueil',
-  templateUrl: './accueil.component.html',
-  styleUrls: ['./accueil.component.scss'],
+  selector: 'pnx-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
   providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
 })
-export class AccueilComponent implements OnInit {
+export class HomeComponent implements OnInit {
   private appName: string;
 
   // test chartjs
@@ -54,7 +54,7 @@ export class AccueilComponent implements OnInit {
     }
 
   constructor(private _navService: NavService) {
-    _navService.setAppName('Accueil');
+    _navService.setAppName('Home');
     this.appName =  AppConfigs.appName;
   }
 

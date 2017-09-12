@@ -21,7 +21,7 @@ import { ContactModule } from '../modules/contact/contact.module'
 // Angular created component
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './routing/app-routing.module'; // RoutingModule
-import { AccueilComponent } from './components/accueil/accueil.component';
+import { HomeComponent } from './components/home/home.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
@@ -55,7 +55,7 @@ export function HttpLoaderFactory(http: Http) {
   ],
   declarations: [
     AppComponent,
-    AccueilComponent,
+    HomeComponent,
     SidenavItemsComponent,
     PageNotFoundComponent,
     SigninComponent,

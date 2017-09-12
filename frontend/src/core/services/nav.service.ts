@@ -9,7 +9,7 @@ export class NavService {
     // List of the apps
     private _nav = [{}];
     constructor() {
-        this._nav = [{route: '/accueil', appName: 'Accueil', icon: 'home'},
+        this._nav = [{route: '/home', appName: 'Accueil', icon: 'home'},
             {route: '/synthese', appName: 'Synthèse', icon: 'device_hub'},
             {route: '/contact', appName: 'Contact FF', icon: 'visibility'},
             {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist'},
