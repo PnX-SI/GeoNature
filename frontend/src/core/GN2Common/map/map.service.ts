@@ -6,6 +6,9 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
 import { leafletDrawOptions } from './leaflet-draw-options';
 import * as L from 'leaflet';
+import { AppConfig } from '../../../conf/app.config'
+import { MapUtils } from './map.utils';
+import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
 export class MapService {
@@ -14,15 +17,16 @@ export class MapService {
     private currentLayer: GeoJSON;
     public editingMarker: boolean;
     public marker: Marker;
-    public markerLegend: HTMLElement;
     private _drawFeatureGroup: FeatureGroup;
     private _currentDraw: any;
     toastrConfig: ToastrConfig;
     private _Le: any;
     private _geojsonCoord = new Subject<any>();
+    public modalContent:any;
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
 
-    constructor(private http: Http, private toastrService: ToastrService) {
+    constructor(private http: Http, private toastrService: ToastrService, private Maputils:MapUtils,
+      private modalService: NgbModal) {
         this._Le = L as any;
         this.toastrConfig = {
             positionClass: 'toast-top-center',
@@ -55,7 +59,7 @@ export class MapService {
         L.control.layers(this.baseMaps).addTo(map);
         L.control.scale().addTo(map);
         this.map = map;
-
+        this.enableGps(); 
     }
 
 
@@ -63,8 +67,8 @@ export class MapService {
     enableMarkerOnClick() {
       this.map.on('click', (e: any) => {
         // check zoom level
-        if(this.map.getZoom()<15){
-          this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','', this.toastrConfig)
+        if(this.map.getZoom()< AppConfig.MAP.ZOOM_LEVEL_RELEVE){
+          this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','Echelle de saisie inadaptée', this.toastrConfig)
         }else{
           if ( this.marker != null ) {
             this.marker.remove();
@@ -82,16 +86,20 @@ export class MapService {
           })
           .addTo(this.map)
           .openPopup();
-  
-          this.marker.on('moveend', (event: MouseEvent) => {
-              this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
-              offset: L.point(0, -30)
-              }).openPopup();
-            // observable if marker move
-            this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
-          });
         // observable if map click
         this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
+        }
+        if (this.marker != null){
+          this.marker.on('moveend', (event: MouseEvent) => {
+            this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
+            offset: L.point(0, -30)
+            }).openPopup();
+          // observable if marker move
+          if(this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE){
+            this.toastrService.warning('Veuillez zoomer davantage pour déplacer le relevé','', this.toastrConfig)
+          }
+          this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
+          });
         }
       });
     }
@@ -102,16 +110,16 @@ export class MapService {
 
     toggleEditing() {
       this.editingMarker = !this.editingMarker;
-      this.markerLegend.style.backgroundColor = this.editingMarker ? '#c8c8cc' : 'white';
+      document.getElementById('markerLegend').style.backgroundColor = this.editingMarker ? '#c8c8cc' : 'white';
       if (!this.editingMarker) {
         // disable event
         this.map.off('click');
-        this.markerLegend.style.backgroundColor = 'white;';
+        document.getElementById('markerLegend').style.backgroundColor = 'white;';
         if ( this.marker !== undefined ) {
           this.map.removeLayer(this.marker);
         }
       } else {
-        this.markerLegend.style.backgroundColor = '#c8c8cc';
+        document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
         if (this._currentDraw !== undefined ){
           this._drawFeatureGroup.removeLayer(this._currentDraw)
         }
@@ -158,39 +166,45 @@ export class MapService {
       }
     }
 
-
-
     setGeojsonCoord(geojsonCoord) {
       this._geojsonCoord.next(geojsonCoord);
     }
 
+    enableGps() {
+      const GPSLegend = this.Maputils.addCustomLegend('topleft','GPSLegend');
+      this.map.addControl(new GPSLegend());
+      const gpsElement:HTMLElement = document.getElementById('GPSLegend');
+      L.DomEvent.disableClickPropagation(gpsElement);
+      gpsElement.innerHTML = "<span> <b> GPS </span> <b>";
+      gpsElement.style.paddingLeft = '3px';
+      gpsElement.onclick = () => {
+        this.modalService.open(this.modalContent);
+      }
+    }
+
+    setMarkerFromGps(x, y){
+      if ( this.marker != null ) {
+        this.marker.remove();
+      }
+      this.marker = L.marker([y, x], {
+          icon: L.icon({
+                  iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
+                  iconSize: [24,36],
+                  iconAnchor: [12,36]
+          }),
+          draggable: true,
+      })
+      .addTo(this.map)
+
+    }
+
     enableEditMap() {
       // Marker
-      const LayerControl = L.Control.extend({
-        options: {
-          position: 'topleft'
-        },
-        onAdd: (map) => {
-          this.markerLegend = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-          this.markerLegend.style.width = '34px';
-          this.markerLegend.style.height = '34px';
-          this.markerLegend.style.lineHeight = '30px';
-          this.markerLegend.style.backgroundColor = '#c8c8cc';
-          this.markerLegend.style.cursor = 'pointer';
-          this.markerLegend.style.border = '2px solid rgba(0,0,0,0.2)';
-          this.markerLegend.style.backgroundImage = 'url(assets/images/location-pointer.png)';
-          this.markerLegend.style.backgroundRepeat = 'no-repeat';
-          this.markerLegend.style.backgroundPosition = '7px';
-
-          this.markerLegend.onclick = () => {
-            this.toggleEditing();
-          };
-          return this.markerLegend;
-
-        }
-      });
-      this.map.addControl(new LayerControl());
-        L.DomEvent.disableClickPropagation(this.markerLegend);
+      const MarkerLegend = this.Maputils.addCustomLegend('topleft', 'markerLegend','url(assets/images/location-pointer.png)', this.toggleEditing);
+      this.map.addControl(new MarkerLegend());
+      // custom the marker
+      document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
+      L.DomEvent.disableClickPropagation(document.getElementById('markerLegend'));
 
       // Leaflet Draw
       this._drawFeatureGroup = new L.FeatureGroup();
@@ -206,7 +220,8 @@ export class MapService {
           this._drawFeatureGroup.removeLayer(this._currentDraw);
         }
         // remove the current marker
-        this.markerLegend.style.backgroundColor = 'white';
+        document.getElementById('markerLegend').style.backgroundColor = 'white';
+        //element.style.backgroundColor = 'white';
         this.editingMarker = false;
         this.map.off('click');
         if (this.marker) {
@@ -216,14 +231,18 @@ export class MapService {
 
       // on draw layer created
       this.map.on(this._Le.Draw.Event.CREATED, (e) => {
-        this._currentDraw = (e as any).layer;
-        const layerType = (e as any).layerType;
-        const latlngTab = this._currentDraw._latlngs;
-        this._drawFeatureGroup.addLayer(this._currentDraw);
-        let geojson = this._drawFeatureGroup.toGeoJSON();
-        geojson = (geojson as any).features[0];
-        // observable
-        this.setGeojsonCoord(geojson);
+        if(this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE){
+        this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','Echelle de saisie inadaptée', this.toastrConfig)
+        }else{
+          this._currentDraw = (e as any).layer;
+          const layerType = (e as any).layerType;
+          const latlngTab = this._currentDraw._latlngs;
+          this._drawFeatureGroup.addLayer(this._currentDraw);
+          let geojson = this._drawFeatureGroup.toGeoJSON();
+          geojson = (geojson as any).features[0];
+          // observable
+          this.setGeojsonCoord(geojson);
+        }
 
       });
     }

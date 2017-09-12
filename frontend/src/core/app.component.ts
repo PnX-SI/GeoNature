@@ -5,7 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as firebase from 'firebase';
 import { AuthService } from './components/auth/auth.service';
-import {AppConfigs} from '../conf/app.configs';
+import {AppConfig} from '../conf/app.config';
 import 'rxjs/Rx';
 import {MdSidenavModule, MdSidenav} from '@angular/material';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
@@ -15,7 +15,7 @@ import { SideNavService } from './components/sidenav-items/sidenav.service';
   selector: 'pnx-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [{ provide: AppConfigs, useValue: AppConfigs }]
+  providers: [{ provide: AppConfig, useValue: AppConfig }]
 })
 
 export class AppComponent implements OnInit, OnDestroy {
@@ -35,8 +35,8 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     translate.addLangs(['en', 'fr', 'cn']);
-    translate.setDefaultLang(AppConfigs.defaultLanguage);
-    translate.use(AppConfigs.defaultLanguage);
+    translate.setDefaultLang(AppConfig.defaultLanguage);
+    translate.use(AppConfig.defaultLanguage);
     
   }
 
