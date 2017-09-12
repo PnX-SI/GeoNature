@@ -24,7 +24,7 @@
     </div>
 </div>
 <div class="input-group" [ngClass]="{'has-danger' : inputTaxon.invalid}">
-  <input type="text" class="form-control"
+  <input type="text" class="form-control form-control-sm"
     [formControl]="inputTaxon"
     placeholder="{{ 'Taxon.Taxon' | translate }}"
     [ngbTypeahead]="searchTaxon" 
