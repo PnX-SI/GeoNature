@@ -22,6 +22,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public dataSets: any;
   public geoInfo: any;
   public municipalities: string;
+  public showTime: boolean = false;
   public municipalitiesControl = new FormControl({'disabled':true});
   private geojsonSubscription$: Subscription;
 
@@ -55,6 +56,10 @@ export class ObservationComponent implements OnInit, OnDestroy {
       .subscribe(value => {
         this.releveForm.controls.properties.patchValue({date_max: value})
       })
+  }
+
+  toggleDate() {
+    this.showTime = !this.showTime;
   }
 
   ngOnDestroy() {

@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="form-group row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
       <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.date_min.invalid}">
           <input class="form-control form-control-sm" placeholder="{{ 'Releve.MinDate' | translate }}"
             ngbDatepicker #d1="ngbDatepicker"
@@ -31,7 +31,7 @@
         </button>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
       <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.date_max.invalid}">
           <input class="form-control form-control-sm" placeholder="{{ 'Releve.MaxDate' | translate }}"
             ngbDatepicker #d2="ngbDatepicker"
@@ -40,10 +40,24 @@
             <button class="input-group-addon" (click)="d2.toggle()" type="button">
             <i class="fa fa-calendar" aria-hidden="true"></i>
             </button> 
-      </div> 
-    </div>  
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+      <span class="time-button" (click)="toggleDate()">
+        <i *ngIf="!showTime" class="fa fa-plus time-plus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
+        <i *ngIf="showTime" class="fa fa-minus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
+      </span>
+    </div>
   </div>
-  <div class="row form-group">
+  <div class="row collapse" id="collapseTime">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <input class="form-control form-control-sm" type="text" placeholder="Heure min hh:mm">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <input class="form-control form-control-sm" type="text" placeholder="Heure max hh:mm">
+    </div>
+  </div>
+  <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
           <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}

@@ -4,13 +4,12 @@
     <div class="form-group row">
       <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
           <pnx-taxonomy
-          [parentFormControl]="occurrenceForm.controls.cd_nom"
-          [idList]="1001"
-          [charNumber]="3"
-          [listLength]="20"
-          (taxonChanged)="fs.updateTaxon($event)">
-        </pnx-taxonomy>
-
+            [parentFormControl]="occurrenceForm.controls.cd_nom"
+            [idList]="1001"
+            [charNumber]="3"
+            [listLength]="20"
+            (taxonChanged)="fs.updateTaxon($event)">
+          </pnx-taxonomy>
       </div>
     </div>
     <div class="row">
