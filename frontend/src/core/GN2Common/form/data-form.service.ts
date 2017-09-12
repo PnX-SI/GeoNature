@@ -39,7 +39,13 @@ export class DataFormService {
 
   postContact(form) {
     return this._http.post(`${AppConfigs.API_ENDPOINT}contact/releve`, form)
-      .map(response => response.json());
+      .map(response => {
+        if(response.status != 200){
+          throw new Error('Post Error')
+        }else{
+          return response.json();
+        } 
+      });
   }
 
 }

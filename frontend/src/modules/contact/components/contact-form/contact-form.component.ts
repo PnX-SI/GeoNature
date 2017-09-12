@@ -4,6 +4,7 @@ import { FormService }  from '../../../../core/GN2Common/form/form.service'
 import { DataFormService }  from '../../../../core/GN2Common/form/data-form.service'
 import { MapService } from '../../../../core/GN2Common/map/map.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService, ToastrConfig } from 'ngx-toastr';
 
 
 
@@ -21,7 +22,8 @@ export class ContactFormComponent implements OnInit {
   public contactForm: FormGroup;
 
   constructor(public fs: FormService, private _ms: MapService,
-     private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService
+     private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
+     private toastr: ToastrService
     ) {  }
 
   ngOnInit() {
@@ -61,8 +63,6 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role )
 
-    // provisoire test
-    // delete finalForm.properties.municipalities;
     console.log(finalForm);
     
     console.log(JSON.stringify(finalForm));
@@ -70,14 +70,19 @@ export class ContactFormComponent implements OnInit {
 
     // Post
     this._dfs.postContact(finalForm)
-      .subscribe(response => console.log(response));
+      .subscribe(
+        (response) => {
+          this.toastr.success('Relevé enregistré', '', {positionClass:'toast-top-center'});
+        // resert the forms
+        this.releveForm = this.fs.initObservationForm();
+        this.occurrenceForm = this.fs.initOccurrenceForm();
+        this.countingForm = this.fs.initCountingArray();
+        this.taxonsList = [];
+        this.fs.municipalities = "";
+        },
+        (error) => { this.toastr.error("Une erreur s'est produite!", '', {positionClass:'toast-top-center'});}
+      );
 
-    // resert the forms
-    this.releveForm = this.fs.initObservationForm();
-    this.occurrenceForm = this.fs.initOccurrenceForm();
-    this.countingForm = this.fs.initCountingArray();
-    this.taxonsList = [];
-    this.fs.municipalities = "";
 
     
   }

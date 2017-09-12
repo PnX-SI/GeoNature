@@ -48,7 +48,7 @@
     </button>
   
     <div class="collapse" id="collapseAvance">
-      <div class="row form-group">
+      <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.BiologicalStatus' | translate }}"
@@ -69,13 +69,13 @@
         </div>
       </div>
 
-      <div class="row form-group">
+      <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-          <input class="form-control" [formControl]="occurrenceForm.controls.determination_method"
+          <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determination_method"
             type="text"  placeholder="{{ 'Taxon.DeterminationMethod' | translate }}">
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <input class="form-control" [formControl]="occurrenceForm.controls.determiner"
+            <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determiner"
               type="text"  placeholder="{{ 'Taxon.Determiner' | translate }}">
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
@@ -89,7 +89,7 @@
         </div>
       </div>
 
-      <div class="row form-group">
+      <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.ExistProof' | translate }}"
@@ -100,11 +100,11 @@
           </pnx-nomenclature>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-            <input class="form-control" [formControl]="occurrenceForm.controls.digital_proof"
+            <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
               type="text"  placeholder="{{ 'Taxon.DigitalProof' | translate }}">
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-          <input class="form-control" [formControl]="occurrenceForm.controls.non_digital_proof"
+          <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
             type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}"> 
         </div>
       </div>

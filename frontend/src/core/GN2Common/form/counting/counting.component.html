@@ -1,5 +1,5 @@
     <div class="row row-counting">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting">
           <pnx-nomenclature
             placeholder="{{ 'Counting.LifeStage' | translate }}" 
             [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_life_stage"
@@ -17,7 +17,7 @@
               [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting">
             <pnx-nomenclature 
               placeholder="{{ 'Counting.CountingObject' | translate }}"
               [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_obj_count"
@@ -29,7 +29,7 @@
 
     </div>
     <div class="form-group row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting">
             <pnx-nomenclature
               placeholder="{{ 'Counting.CountingType' | translate }}"
               [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_type_count"
@@ -46,7 +46,6 @@
               <input class="form-control form-control-sm" type="number" placeholder="{{ 'Counting.Number' | translate }}"
               [formControl]="formGroup.controls[index].controls.count_max">
         </div>
-        <div class="offset-md-1 offset-lg-1"> </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 col-counting" *ngIf="index == length -1 && index != 0">
           <button type="button" class="btn btn-danger btn-sm" (click)="onRemoveCounting(index)">
               <i class="fa fa-times" aria-hidden="true"></i>

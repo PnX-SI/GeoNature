@@ -35,6 +35,7 @@
         </div>
 
         <div class="section" *ngIf="taxonsList.length > 0"> 
+            <h5> Taxon(s) enregistré(s) </h5>
             <pnx-taxons-list [list]="taxonsList" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
         </div>
         <md-card-actions class="card-action"> 
