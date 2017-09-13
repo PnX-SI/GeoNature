@@ -22,7 +22,7 @@ export class MapUtils {
         customLegend.style.backgroundPosition = '7px';
 
         customLegend.onclick = () => {
-          if(func){
+          if (func) {
             func();
           }
         };
