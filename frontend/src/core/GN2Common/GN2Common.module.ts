@@ -10,18 +10,21 @@ import { AutoCompleteModule } from 'primeng/primeng';
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
 import { ObserversComponent } from './form/observers/observers.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
-import { CountingComponent } from './form/counting/counting.component'
-import { ObservationComponent } from './form/observation/observation.component'
+import { CountingComponent } from './form/counting/counting.component';
+import { ObservationComponent } from './form/observation/observation.component';
 import { MapComponent } from './map/map.component';
-import { OccurrenceComponent } from './form/occurrence/occurrence.component'
+import { MapListComponent } from './map-list/map-list.component';
+import { MapDataComponent } from './map-list/map-data/map-data.component';
+
+import { OccurrenceComponent } from './form/occurrence/occurrence.component';
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // Service
-import  { MapService } from './map/map.service';
+import { MapService } from './map/map.service';
 import { MapUtils } from './map/map.utils';
-import  { DataFormService } from './form/data-form.service';
-import  { FormService } from './form/form.service';
+import { DataFormService } from './form/data-form.service';
+import { FormService } from './form/form.service';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -50,6 +53,8 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     TaxonomyComponent,
     MapComponent,
+    MapListComponent,
+    MapDataComponent,
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent
@@ -60,11 +65,13 @@ export function HttpLoaderFactory(http: Http) {
     MapUtils,
     DataFormService,
     FormService],
-  exports: [    
+  exports: [
     NomenclatureComponent,
     ObserversComponent,
     TaxonomyComponent,
     MapComponent,
+    MapListComponent,
+    MapDataComponent,
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent,
