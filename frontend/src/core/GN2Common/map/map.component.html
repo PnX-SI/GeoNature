@@ -28,8 +28,14 @@
     </button>
   </div>
   <div class="modal-body">
-    X: <input class="form-control" [(ngModel)]='x' type="number" name="" value="" placeholder="X">
-    Y: <input class="form-control" [(ngModel)]='y' type="number" name="" value="" placeholder="Y">
+    <div class="form-inline">
+      <div class="form-group ">
+        <label > X </label>
+          <input class="form-control mx-sm-2" [(ngModel)]='x' type="number">
+        <label > Y </label>
+          <input class="form-control mx-sm-2" [(ngModel)]='y' type="number">
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-success"(click)="d()"  (click)="mapService.setMarkerFromGps(x, y)">Valider</button>
@@ -37,5 +43,3 @@
 </ng-template>
 
 <hr>
-
-{{x}}
