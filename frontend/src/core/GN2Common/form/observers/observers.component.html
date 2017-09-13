@@ -1,4 +1,5 @@
 <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <small> {{ 'Releve.Observers' | translate }} </small>
   <span class="ui-fluid">
       <p-autoComplete 
         styleClass="wid100"
@@ -8,7 +9,7 @@
         (onSelect)="addObservers($event)"
         (onUnselect)="removeObservers($event)"
         [suggestions]="filteredObservers" field="nom_complet"
-        [minLength]="1" placeholder="Observateurs"[multiple]="true">
+        [minLength]="1" [multiple]="true">
       </p-autoComplete>
   </span>
   <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">

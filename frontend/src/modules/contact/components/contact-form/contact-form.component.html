@@ -3,7 +3,7 @@
       <h5 class="card-title"> <b>{{ 'Releve.Releve' | translate }}: </b></h5>
       <div [formGroup]="releveForm">
         <pnx-observation
-          [releveForm]="releveForm">
+          [releveForm]="releveForm  ">
         </pnx-observation>
       </div>
   </div>
@@ -18,7 +18,7 @@
               [occurrenceForm]="occurrenceForm">
             </pnx-occurrence>
           </div>
-            <h5> <b> {{ 'Counting.Counting' | translate }}: </b></h5>
+            <b> {{ 'Counting.Counting' | translate }}: </b>
             <!-- COUNTING -->
             <div *ngFor="let counting of fs.nbCounting; let i = index">
               <pnx-counting 
@@ -34,10 +34,6 @@
 
         </div>
 
-        <div class="section" *ngIf="taxonsList.length > 0"> 
-            <h5> Taxon(s) enregistré(s) </h5>
-            <pnx-taxons-list [list]="taxonsList" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
-        </div>
         <md-card-actions class="card-action"> 
           <button md-raised-button 
             class="btn-form"
@@ -48,6 +44,12 @@
         <pre>form value: <br>{{occurrenceForm.value | json}}</pre> -->
         <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
     </div>
+</div>
+<div class="card" *ngIf="taxonsList.length > 0">
+  <div class="card-body">
+      <b> Taxon(s) enregistré(s) </b>
+      <pnx-taxons-list [list]="taxonsList" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
+  </div>
 </div>
 
     <md-card-actions class="card-action"> <!--Btn Valider taxon-->
