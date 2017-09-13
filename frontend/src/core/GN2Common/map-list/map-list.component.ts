@@ -6,7 +6,7 @@ import { MapService } from '../map/map.service';
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
   styleUrls: ['./map-list.component.scss'],
-    providers: [MapService]
+  providers: [MapService]
 })
 export class MapListComponent implements OnInit {
   constructor(private _ms: MapService) {
