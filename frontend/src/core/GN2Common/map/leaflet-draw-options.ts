@@ -1,12 +1,7 @@
 export const leafletDrawOptions = {
   position: 'topleft',
   draw: {
-      polyline: {
-          shapeOptions: {
-              color: '#f357a1',
-              weight: 10
-          }
-      },
+      polyline: true,
       polygon: {
           allowIntersection: false, // Restricts shapes to simple polygons
           drawError: {
