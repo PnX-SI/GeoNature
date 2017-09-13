@@ -6,7 +6,6 @@ import {HttpModule, Http} from '@angular/http';
 // For Angular Dependencies
 import 'hammerjs';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { CdkTableModule } from '@angular/cdk';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartModule } from 'angular2-chartjs';
@@ -44,7 +43,6 @@ export function HttpLoaderFactory(http: Http) {
     BrowserModule,
     HttpModule,
     BrowserAnimationsModule,
-    CdkTableModule,
     FlexLayoutModule,
     AppRoutingModule,
     CarouselModule.forRoot(),

@@ -12,6 +12,7 @@ export class NavService {
         this._nav = [{route: '/home', appName: 'Accueil', icon: 'home'},
             {route: '/synthese', appName: 'Synthèse', icon: 'device_hub'},
             {route: '/contact', appName: 'Contact FF', icon: 'visibility'},
+            {route: '/map-list', appName: 'Dev Map List', icon: 'build'},
             {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist'},
             {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'filter_vintage'},
             {route: '/suivi-chiro', appName: 'Suivi Chiro', icon: 'youtube_searched_for'},
