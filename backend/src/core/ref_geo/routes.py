@@ -20,12 +20,11 @@ routes = Blueprint('ref_geo', __name__)
 @json_resp
 def getGeoInfo():
     data = dict(request.get_json())
-    sql = text('SELECT (ref_geo.fct_get_municipality_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*')
-    print (str(data['geometry']))
+    sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 1)).*')
     result = db.engine.execute(sql, geom = str(data['geometry']))
     municipality = []
     for row in result:
-        municipality.append({"code" : row[0], "name" : row[1]})
+        municipality.append({"id_area" : row[0], "id_type" : row[1], "source_code" : row[2], "area_name" : row[3]})
 
     sql = text('SELECT (ref_geo.fct_get_altitude_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*')
     result = db.engine.execute(sql, geom = str(data['geometry']))

@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact
 from ...utils.utilssqlalchemy import json_resp
 from ...core.users.models import TRoles
-from ...core.ref_geo.models import LMunicipalities
+from ...core.ref_geo.models import LAreasWithoutGeom
 
 from pypnusershub import routes as fnauth
 
@@ -71,8 +71,9 @@ def insertOrUpdateOneReleve():
         for o in observers :
             releve.observers.append(o)
 
-        municipalities = db.session.query(LMunicipalities).filter(LMunicipalities.id_municipality.in_(municipalitiesList)).all()
+        municipalities = db.session.query(LAreasWithoutGeom).filter(LAreasWithoutGeom.id_area.in_(municipalitiesList)).all()
         for m in municipalities :
+            print(m)
             releve.municipalities.append(m)
 
         for occ in occurrences_contact :
