@@ -89,19 +89,9 @@ export class MapService {
           if ( this.marker != null ) {
             this.marker.remove();
           }
-          this.marker = L.marker(e.latlng, {
-              icon: L.icon({
-                      iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                      iconSize: [24, 36],
-                      iconAnchor: [12, 36]
-              }),
-              draggable: true,
-          })
-          .bindPopup('GPS ' + e.latlng, {
-              offset: L.point(0, -30)
-          })
-          .addTo(this.map)
-          .openPopup();
+          console.log(e);
+          
+          this.marker = this.Maputils.createMarker(this.map, e.latlng.lng, e.latlng.lat);
         // observable if map click
         this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
         }
@@ -210,15 +200,7 @@ export class MapService {
       if ( this.marker != null ) {
         this.marker.remove();
       }
-      this.marker = L.marker([y, x], {
-          icon: L.icon({
-                  iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                  iconSize: [24, 36],
-                  iconAnchor: [12, 36]
-          }),
-          draggable: true,
-      })
-      .addTo(this.map);
+      this.marker = this.Maputils.createMarker(this.map, x, y);
       this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
 
     }
