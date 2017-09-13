@@ -89,8 +89,7 @@ export class MapService {
           if ( this.marker != null ) {
             this.marker.remove();
           }
-          console.log(e);
-          
+
           this.marker = this.Maputils.createMarker(this.map, e.latlng.lng, e.latlng.lat);
         // observable if map click
         this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
