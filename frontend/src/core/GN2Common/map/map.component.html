@@ -23,7 +23,7 @@
 <ng-template #modalContent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Coordonnées GPS</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="d()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -32,7 +32,7 @@
     Y: <input class="form-control" [(ngModel)]='y' type="number" name="" value="" placeholder="Y">
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-success" (click)="mapService.setMarkerFromGps(x, y)">Valider</button>
+    <button type="button" class="btn btn-success"(click)="d()"  (click)="mapService.setMarkerFromGps(x, y)">Valider</button>
   </div>
 </ng-template>
 
