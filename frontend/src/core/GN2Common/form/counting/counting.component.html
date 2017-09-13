@@ -39,12 +39,14 @@
             </pnx-nomenclature> 
       </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
-              <input class="form-control form-control-sm" type="number" placeholder="{{ 'Counting.Number' | translate }}"
-              [formControl]="formGroup.controls[index].controls.count_min">
+          <small> {{ 'Counting.NumberMin' | translate }} </small>
+          <input class="form-control form-control-sm" type="number" 
+          [formControl]="formGroup.controls[index].controls.count_min">
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
-              <input class="form-control form-control-sm" type="number" placeholder="{{ 'Counting.Number' | translate }}"
-              [formControl]="formGroup.controls[index].controls.count_max">
+            <small> {{ 'Counting.NumberMax' | translate }} </small>
+          <input class="form-control form-control-sm" type="number" 
+          [formControl]="formGroup.controls[index].controls.count_max">
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 col-counting" *ngIf="index == length -1 && index != 0">
           <button type="button" class="btn btn-danger btn-sm" (click)="onRemoveCounting(index)">

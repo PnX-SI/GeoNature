@@ -5,6 +5,8 @@ import { MapService } from '../../map/map.service';
 import { DataFormService } from '../data-form.service';
 import { FormService } from '../form.service';
 import {ViewEncapsulation} from '@angular/core';
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'pnx-observation',
@@ -23,7 +25,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public geoInfo: any;
   public municipalities: string;
   public showTime: boolean = false;
-  public municipalitiesControl = new FormControl({'disabled':true});
+  public today: NgbDateStruct;
   private geojsonSubscription$: Subscription;
 
   constructor(private _ms: MapService, private _dfs: DataFormService, public fs: FormService) {  }
@@ -46,7 +48,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
               altitude_max: res.altitude.altitude_max,
               municipalities : res.municipality.map(m =>  m.code)
             });
-            this.municipalitiesControl.setValue('lalal');
             this.fs.municipalities = res.municipality.map(m => m.name).join();
           });
       });
@@ -54,8 +55,11 @@ export class ObservationComponent implements OnInit, OnDestroy {
     // date max autocomplete
     (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
       .subscribe(value => {
-        this.releveForm.controls.properties.patchValue({date_max: value})
-      })
+        this.releveForm.controls.properties.patchValue({date_max: value});
+      });
+    // set today
+    const today = new Date();
+    this.today = { year: today.getFullYear(), month: today.getMonth(), day: today.getDay() };
   }
 
   toggleDate() {

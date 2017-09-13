@@ -10,5 +10,11 @@
 .time-button{
   cursor: pointer;
   color:#5cb85c;
-  margin-top: 7px;
+}
+.time-button > i {
+  margin-top: 30px;
+}
+
+.form-group{
+  margin-bottom: 0px !important;
 }

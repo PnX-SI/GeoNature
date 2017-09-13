@@ -72,7 +72,8 @@
     },
     "Counting":{
         "Counting":"Counting",
-        "Number":"Number",
+        "NumberMin":"Number min",
+        "NumberMax":"Number max",
         "Type":"Type",
         "LifeStage":"Life stage",
         "Sex":"Sex",

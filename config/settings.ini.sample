@@ -53,3 +53,7 @@ usershub_release=develop
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
 taxhub_release=develop
+
+#Configuration python
+###########################
+python_path=/usr/bin/python3
