@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from ...core.users.models import TRoles
 from pypnnomenclature.models import TNomenclatures
-from src.core.ref_geo.models import LMunicipalities
+from src.core.ref_geo.models import LAreasWithoutGeom
 
 from geoalchemy2 import Geometry
 
@@ -27,7 +27,7 @@ corRoleRelevesContact = db.Table('cor_role_releves_contact',db.MetaData(schema='
 
 corMunicipalityRelevesContact = db.Table('cor_municipality_releves_contact',db.MetaData(schema='pr_contact'),
     db.Column('id_releve_contact', db.Integer, ForeignKey('pr_contact.t_releves_contact.id_releve_contact'), primary_key=True),
-    db.Column('id_municipality', db.Unicode, ForeignKey('ref_geo.l_municipalities.id_municipality'), primary_key=True)
+    db.Column('id_area', db.Integer, ForeignKey('ref_geo.l_areas.id_area'), primary_key=True)
 )
 
 
@@ -59,11 +59,11 @@ class TRelevesContact(serializableGeoModel):
         foreign_keys =[corRoleRelevesContact.c.id_releve_contact,corRoleRelevesContact.c.id_role]
     )
     municipalities = db.relationship(
-        'LMunicipalities',
+        'LAreasWithoutGeom',
         secondary=corMunicipalityRelevesContact,
         primaryjoin=(corMunicipalityRelevesContact.c.id_releve_contact == id_releve_contact),
-        secondaryjoin=(corMunicipalityRelevesContact.c.id_municipality == LMunicipalities.id_municipality),
-        foreign_keys =[corMunicipalityRelevesContact.c.id_releve_contact,corMunicipalityRelevesContact.c.id_municipality]
+        secondaryjoin=(corMunicipalityRelevesContact.c.id_area == LAreasWithoutGeom.id_area),
+        foreign_keys =[corMunicipalityRelevesContact.c.id_releve_contact,corMunicipalityRelevesContact.c.id_area]
     )
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
