@@ -25,6 +25,7 @@
           <input class="form-control form-control-sm" placeholder="{{ 'Releve.MinDate' | translate }}"
             ngbDatepicker #d1="ngbDatepicker"
             [formControl]="releveForm.controls.properties.controls.date_min"
+            [maxDate]="today"
             (click)="d1.toggle()">
           <button class="input-group-addon" (click)="d1.toggle()" type="button">
           <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -36,6 +37,7 @@
           <input class="form-control form-control-sm" placeholder="{{ 'Releve.MaxDate' | translate }}"
             ngbDatepicker #d2="ngbDatepicker"
             [formControl]="releveForm.controls.properties.controls.date_max"
+            [maxDate]="today"
             (click)="d2.toggle()">
             <button class="input-group-addon" (click)="d2.toggle()" type="button">
             <i class="fa fa-calendar" aria-hidden="true"></i>
