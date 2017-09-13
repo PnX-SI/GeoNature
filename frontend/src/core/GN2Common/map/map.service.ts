@@ -160,7 +160,7 @@ export class MapService {
               error => {
                 this.translate.get('Map.LocationError', {value: 'Map.ZoomWarning'})
                   .subscribe(res => {
-                    this.toastrService.error(res, '', this.toastrConfig)
+                    this.toastrService.error(res, '', this.toastrConfig);
                   });
               }
           );
@@ -203,7 +203,7 @@ export class MapService {
       gpsElement.style.paddingLeft = '3px';
       gpsElement.onclick = () => {
         this.modalService.open(this.modalContent);
-      }
+      };
     }
 
     setMarkerFromGps(x, y) {
@@ -219,6 +219,7 @@ export class MapService {
           draggable: true,
       })
       .addTo(this.map);
+      this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
 
     }
 
