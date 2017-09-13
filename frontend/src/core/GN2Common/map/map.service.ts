@@ -4,7 +4,6 @@ import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
-import { leafletDrawOptions } from './leaflet-draw-options';
 import { mapOptions } from './map.options';
 import * as L from 'leaflet';
 import { AppConfig } from '../../../conf/app.config';

@@ -4,8 +4,6 @@ import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Map} from 'leaflet';
 import 'leaflet-draw';
 import * as L from 'leaflet';
-import { leafletDrawOptions } from './leaflet-draw-options';
-
 
 @Component({
   selector: 'pnx-map',
