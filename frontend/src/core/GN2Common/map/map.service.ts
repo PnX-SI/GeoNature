@@ -5,10 +5,12 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
 import { leafletDrawOptions } from './leaflet-draw-options';
+import { mapOptions } from './map.options';
 import * as L from 'leaflet';
-import { AppConfig } from '../../../conf/app.config'
+import { AppConfig } from '../../../conf/app.config';
 import { MapUtils } from './map.utils';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class MapService {
@@ -22,11 +24,11 @@ export class MapService {
     toastrConfig: ToastrConfig;
     private _Le: any;
     private _geojsonCoord = new Subject<any>();
-    public modalContent:any;
+    public modalContent: any;
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
 
-    constructor(private http: Http, private toastrService: ToastrService, private Maputils:MapUtils,
-      private modalService: NgbModal) {
+    constructor(private http: Http, private toastrService: ToastrService, private Maputils: MapUtils,
+      private modalService: NgbModal, private translate: TranslateService) {
         this._Le = L as any;
         this.toastrConfig = {
             positionClass: 'toast-top-center',
@@ -59,44 +61,50 @@ export class MapService {
         L.control.layers(this.baseMaps).addTo(map);
         L.control.scale().addTo(map);
         this.map = map;
-        this.enableGps(); 
     }
 
+    configureMap(mapOptions) {
+      if (mapOptions.GPS) {
+        this.enableGps();
+      }
+      if (mapOptions.marker) {
+        this.setMarkerLegend();
+        this.enableMarkerOnClick();
+      }
+      if (mapOptions.leafletDraw) {
+        this.enableLeafletDraw();
+      }
 
+    }
 
     enableMarkerOnClick() {
       this.map.on('click', (e: any) => {
         // check zoom level
-        if(this.map.getZoom()< AppConfig.MAP.ZOOM_LEVEL_RELEVE){
-          this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','Echelle de saisie inadaptée', this.toastrConfig)
-        }else{
+        if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+          this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+          .subscribe(res =>
+            this.toastrService.warning(res, '', this.toastrConfig)
+          );
+        } else {
           if ( this.marker != null ) {
             this.marker.remove();
           }
-          this.marker = L.marker(e.latlng, {
-              icon: L.icon({
-                      iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                      iconSize: [24,36],
-                      iconAnchor: [12,36]
-              }),
-              draggable: true,
-          })
-          .bindPopup('GPS ' + e.latlng, {
-              offset: L.point(0, -30)
-          })
-          .addTo(this.map)
-          .openPopup();
+
+          this.marker = this.Maputils.createMarker(this.map, e.latlng.lng, e.latlng.lat);
         // observable if map click
         this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
         }
-        if (this.marker != null){
+        if (this.marker != null) {
           this.marker.on('moveend', (event: MouseEvent) => {
             this.marker.bindPopup('GPS ' + this.marker.getLatLng(), {
             offset: L.point(0, -30)
             }).openPopup();
           // observable if marker move
-          if(this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE){
-            this.toastrService.warning('Veuillez zoomer davantage pour déplacer le relevé','', this.toastrConfig)
+          if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+            this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+              .subscribe(res =>
+                this.toastrService.warning(res, '', this.toastrConfig)
+            );
           }
           this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
           });
@@ -120,8 +128,8 @@ export class MapService {
         }
       } else {
         document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
-        if (this._currentDraw !== undefined ){
-          this._drawFeatureGroup.removeLayer(this._currentDraw)
+        if (this._currentDraw !== undefined ) {
+          this._drawFeatureGroup.removeLayer(this._currentDraw);
         }
         this.enableMarkerOnClick();
       }
@@ -138,7 +146,12 @@ export class MapService {
                       this.gotoLocation(result.geojson);
                   });
               },
-              error => this.toastrService.error('', 'Location not found', this.toastrConfig)
+              error => {
+                this.translate.get('Map.LocationError', {value: 'Map.ZoomWarning'})
+                  .subscribe(res => {
+                    this.toastrService.error(res, '', this.toastrConfig);
+                  });
+              }
           );
     }
 
@@ -171,57 +184,54 @@ export class MapService {
     }
 
     enableGps() {
-      const GPSLegend = this.Maputils.addCustomLegend('topleft','GPSLegend');
+      const GPSLegend = this.Maputils.addCustomLegend('topleft', 'GPSLegend');
       this.map.addControl(new GPSLegend());
-      const gpsElement:HTMLElement = document.getElementById('GPSLegend');
+      const gpsElement: HTMLElement = document.getElementById('GPSLegend');
       L.DomEvent.disableClickPropagation(gpsElement);
-      gpsElement.innerHTML = "<span> <b> GPS </span> <b>";
+      gpsElement.innerHTML = '<span> <b> GPS </span> <b>';
       gpsElement.style.paddingLeft = '3px';
       gpsElement.onclick = () => {
         this.modalService.open(this.modalContent);
-      }
+      };
     }
 
-    setMarkerFromGps(x, y){
+    setMarkerFromGps(x, y) {
       if ( this.marker != null ) {
         this.marker.remove();
       }
-      this.marker = L.marker([y, x], {
-          icon: L.icon({
-                  iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                  iconSize: [24,36],
-                  iconAnchor: [12,36]
-          }),
-          draggable: true,
-      })
-      .addTo(this.map)
+      this.marker = this.Maputils.createMarker(this.map, x, y);
+      this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
 
     }
 
-    enableEditMap() {
+    setMarkerLegend() {
       // Marker
-      const MarkerLegend = this.Maputils.addCustomLegend('topleft', 'markerLegend','url(assets/images/location-pointer.png)', this.toggleEditing);
+      const MarkerLegend = this.Maputils.addCustomLegend('topleft', 'markerLegend', 'url(assets/images/location-pointer.png)',
+      this.toggleEditing);
       this.map.addControl(new MarkerLegend());
       // custom the marker
       document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
       L.DomEvent.disableClickPropagation(document.getElementById('markerLegend'));
+    }
+
+    enableLeafletDraw() {
 
       // Leaflet Draw
       this._drawFeatureGroup = new L.FeatureGroup();
       this.map.addLayer(this._drawFeatureGroup);
-      leafletDrawOptions.edit['featureGroup'] = this._drawFeatureGroup;
+      console.log(mapOptions.leafletDraw);
+      mapOptions.leafletDraw.options.edit['featureGroup'] = this._drawFeatureGroup;
 
-      const drawControl =  new this._Le.Control.Draw(leafletDrawOptions);
+      const drawControl =  new this._Le.Control.Draw(mapOptions.leafletDraw.options);
       this.map.addControl(drawControl);
 
       this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
         // remove the current draw
-        if (this._currentDraw !== null){
+        if (this._currentDraw !== null) {
           this._drawFeatureGroup.removeLayer(this._currentDraw);
         }
         // remove the current marker
         document.getElementById('markerLegend').style.backgroundColor = 'white';
-        //element.style.backgroundColor = 'white';
         this.editingMarker = false;
         this.map.off('click');
         if (this.marker) {
@@ -231,9 +241,12 @@ export class MapService {
 
       // on draw layer created
       this.map.on(this._Le.Draw.Event.CREATED, (e) => {
-        if(this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE){
-        this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','Echelle de saisie inadaptée', this.toastrConfig)
-        }else{
+        if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+          this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+            .subscribe(res =>
+              this.toastrService.warning(res, '', this.toastrConfig)
+            );
+        }else {
           this._currentDraw = (e as any).layer;
           const layerType = (e as any).layerType;
           const latlngTab = this._currentDraw._latlngs;
