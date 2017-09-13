@@ -1,10 +1,8 @@
-<md-card class="cf-page-size">
-<div class="example-container mat-elevation-z8">
-  <div class="example-header">
+<md-card class="page-size">
+
     <md-form-field floatPlaceholder="never">
-      <input mdInput #filter placeholder="Filter users">
+      <input mdInput #filter placeholder="Filter">
     </md-form-field>
-  </div>
 
   <md-table #table [dataSource]="dataSource">
 
@@ -38,5 +36,4 @@
     <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
     <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
   </md-table>
-</div>
 </md-card>
