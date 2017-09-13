@@ -23,9 +23,11 @@
   
     "Map":{
         "SearchLocation":"Search a location",
+        "LocationError": "Location not found",
         "AddPoint":"Locate observation (point)",
         "AddLine":"Locate observation (line)",
-        "AddPolygon":"Locate observation (polygon)"
+        "AddPolygon":"Locate observation (polygon)",
+        "ZoomWarning": "Inappropriate scale, zoom more "
     },
     "Releve":{
         "Releve":"Relevé",

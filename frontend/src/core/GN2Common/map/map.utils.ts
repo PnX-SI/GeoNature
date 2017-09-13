@@ -1,16 +1,15 @@
-//import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
 
 export class MapUtils {
-  constructor(){}
+  constructor() {}
 
-  addCustomLegend(position, id, logoUrl?, func?){
+  addCustomLegend(position, id, logoUrl?, func?) {
     const LayerControl = L.Control.extend({
       options: {
         position: position
       },
       onAdd: (map) => {
-        let customLegend = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+        const customLegend = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
         customLegend.id = id;
         customLegend.style.width = '34px';
         customLegend.style.height = '34px';
@@ -32,4 +31,17 @@ export class MapUtils {
     });
     return LayerControl;
   }
+
+  createMarker(map, x, y) {
+   return L.marker([y, x], {
+      icon: L.icon({
+              iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
+              iconSize: [24, 36],
+              iconAnchor: [12, 36]
+      }),
+      draggable: true,
+  })
+  .addTo(map);
+  }
+
 }

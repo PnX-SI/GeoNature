@@ -30,7 +30,7 @@ export class FormService {
         date_max: ['', Validators.required],
         altitude_min: '',
         altitude_max : '',
-        deleted: false, 
+        deleted: false,
         municipalities : [null, Validators.required],
         meta_device_entry: 'web',
         comment: '',
