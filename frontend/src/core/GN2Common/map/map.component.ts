@@ -30,7 +30,7 @@ export class MapComponent implements OnInit {
       this.mapService.configureMap(this.editionOptions);
     }
 
-    // reference the modal content in the map servuce
+    // reference the modal content in the map service
     this.mapService.modalContent = this.modalContent;
 
   }

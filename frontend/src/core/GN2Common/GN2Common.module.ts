@@ -18,10 +18,10 @@ import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // Service
-import  { MapService } from './map/map.service';
+import { MapService } from './map/map.service';
 import { MapUtils } from './map/map.utils';
-import  { DataFormService } from './form/data-form.service';
-import  { FormService } from './form/form.service';
+import { DataFormService } from './form/data-form.service';
+import { FormService } from './form/form.service';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

@@ -10,6 +10,7 @@ import * as L from 'leaflet';
 import { AppConfig } from '../../../conf/app.config';
 import { MapUtils } from './map.utils';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class MapService {
@@ -26,8 +27,8 @@ export class MapService {
     public modalContent: any;
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
 
-    constructor(private http: Http, private toastrService: ToastrService, private Maputils:MapUtils,
-      private modalService: NgbModal) {
+    constructor(private http: Http, private toastrService: ToastrService, private Maputils: MapUtils,
+      private modalService: NgbModal, private translate: TranslateService) {
         this._Le = L as any;
         this.toastrConfig = {
             positionClass: 'toast-top-center',
@@ -76,13 +77,14 @@ export class MapService {
 
     }
 
-
-
     enableMarkerOnClick() {
       this.map.on('click', (e: any) => {
         // check zoom level
         if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
-          this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé', 'Echelle de saisie inadaptée', this.toastrConfig);
+          this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+          .subscribe(res =>
+            this.toastrService.warning(res, '', this.toastrConfig)
+          );
         } else {
           if ( this.marker != null ) {
             this.marker.remove();
@@ -109,8 +111,11 @@ export class MapService {
             offset: L.point(0, -30)
             }).openPopup();
           // observable if marker move
-          if(this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE){
-            this.toastrService.warning('Veuillez zoomer davantage pour déplacer le relevé','', this.toastrConfig)
+          if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+            this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+              .subscribe(res =>
+                this.toastrService.warning(res, '', this.toastrConfig)
+            );
           }
           this.setGeojsonCoord(this.markerToGeojson(this.marker.getLatLng()));
           });
@@ -134,8 +139,8 @@ export class MapService {
         }
       } else {
         document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
-        if (this._currentDraw !== undefined ){
-          this._drawFeatureGroup.removeLayer(this._currentDraw)
+        if (this._currentDraw !== undefined ) {
+          this._drawFeatureGroup.removeLayer(this._currentDraw);
         }
         this.enableMarkerOnClick();
       }
@@ -152,7 +157,12 @@ export class MapService {
                       this.gotoLocation(result.geojson);
                   });
               },
-              error => this.toastrService.error('', 'Location not found', this.toastrConfig)
+              error => {
+                this.translate.get('Map.LocationError', {value: 'Map.ZoomWarning'})
+                  .subscribe(res => {
+                    this.toastrService.error(res, '', this.toastrConfig)
+                  });
+              }
           );
     }
 
@@ -196,15 +206,15 @@ export class MapService {
       }
     }
 
-    setMarkerFromGps(x, y){
+    setMarkerFromGps(x, y) {
       if ( this.marker != null ) {
         this.marker.remove();
       }
       this.marker = L.marker([y, x], {
           icon: L.icon({
                   iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
-                  iconSize: [24,36],
-                  iconAnchor: [12,36]
+                  iconSize: [24, 36],
+                  iconAnchor: [12, 36]
           }),
           draggable: true,
       })
@@ -249,9 +259,12 @@ export class MapService {
 
       // on draw layer created
       this.map.on(this._Le.Draw.Event.CREATED, (e) => {
-        if(this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE){
-        this.toastrService.warning('Veuillez zoomer davantage pour pointer le relevé','Echelle de saisie inadaptée', this.toastrConfig)
-        }else{
+        if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+          this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+            .subscribe(res =>
+              this.toastrService.warning(res, '', this.toastrConfig)
+            );
+        }else {
           this._currentDraw = (e as any).layer;
           const layerType = (e as any).layerType;
           const latlngTab = this._currentDraw._latlngs;
