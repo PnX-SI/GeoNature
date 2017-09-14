@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavService } from '../../core/services/nav.service';
 import { MapService } from '../../core/GN2Common/map/map.service';
 import { AppConfig } from '../../conf/app.config';
-import { mapOptions } from '../../core/GN2Common/map/map.options';
+import { leafletDrawOption } from '../../core/GN2Common/map/leaflet-draw.options';
+
 
 
 @Component({
@@ -12,13 +13,16 @@ import { mapOptions } from '../../core/GN2Common/map/map.options';
   providers: [MapService]
 })
 export class ContactComponent implements OnInit {
-  public mapEditionOptions: any;
+  public leafletDrawOptions: any;
   constructor(private _navService: NavService, private _ms: MapService) {
       _navService.setAppName('Contact Faune - Flore ');
   }
 
   ngOnInit() {
-    this.mapEditionOptions = mapOptions;
+    // overight the leaflet draw object to set options
+    // examples: enable circle =>  leafletDrawOption.draw.circle = true;
+    this.leafletDrawOptions = leafletDrawOption;
+
    }
 
   sendGeoIngo(geojson) {
