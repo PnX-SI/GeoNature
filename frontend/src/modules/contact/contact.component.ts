@@ -21,4 +21,8 @@ export class ContactComponent implements OnInit {
     this.mapEditionOptions = mapOptions;
    }
 
+  sendGeoIngo(geojson) {
+    this._ms.setGeojsonCoord(geojson);
+  }
+
 }
