@@ -13,6 +13,8 @@ import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { CountingComponent } from './form/counting/counting.component'
 import { ObservationComponent } from './form/observation/observation.component'
 import { MapComponent } from './map/map.component';
+import { MarkerComponent } from './map/marker/marker.component'
+import { LeafletDrawComponent } from  './map/leaflet-draw/leaflet-draw.component'
 import { OccurrenceComponent } from './form/occurrence/occurrence.component'
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -50,6 +52,8 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     TaxonomyComponent,
     MapComponent,
+    MarkerComponent,
+    LeafletDrawComponent,
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent
@@ -65,6 +69,8 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     TaxonomyComponent,
     MapComponent,
+    MarkerComponent,
+    LeafletDrawComponent,
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent,

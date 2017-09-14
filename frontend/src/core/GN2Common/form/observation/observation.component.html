@@ -37,7 +37,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
       <small> {{ 'Releve.MaxDate' | translate }} </small>
       <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.date_max.invalid}">
-          <input class="form-control form-control-sm" placeholder="{{ 'Releve.MaxDate' | translate }}"
+          <input class="form-control form-control-sm"
             ngbDatepicker #d2="ngbDatepicker"
             [formControl]="releveForm.controls.properties.controls.date_max"
             [maxDate]="today"
@@ -54,7 +54,7 @@
       </span>
     </div>
   </div>
-  <div class="row collapse" id="collapseTime">
+  <div class="row form-group collapse" id="collapseTime">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
       <input class="form-control form-control-sm" type="text" placeholder="Heure min hh:mm">
     </div>

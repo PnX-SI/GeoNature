@@ -4,8 +4,6 @@ import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Map} from 'leaflet';
 import 'leaflet-draw';
 import * as L from 'leaflet';
-import { leafletDrawOptions } from './leaflet-draw-options';
-
 
 @Component({
   selector: 'pnx-map',
@@ -13,7 +11,6 @@ import { leafletDrawOptions } from './leaflet-draw-options';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @Input() editionOptions: any;
   public map: Map;
   public Le: any;
   @ViewChild('modalContent') public modalContent: any;
@@ -26,9 +23,7 @@ export class MapComponent implements OnInit {
   ngOnInit() {
     this.mapService.initialize();
     this.map = this.mapService.map;
-    if (this.editionOptions !== undefined) {
-      this.mapService.configureMap(this.editionOptions);
-    }
+
     // reference the modal content in the map service
     this.mapService.modalContent = this.modalContent;
   }
