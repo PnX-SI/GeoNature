@@ -24,6 +24,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapService } from './map/map.service';
 import { MapUtils } from './map/map.utils';
 import { DataFormService } from './form/data-form.service';
+import { MapListService } from './map-list/map-list.service';
 import { FormService } from './form/form.service';
 
 export function HttpLoaderFactory(http: Http) {
@@ -62,6 +63,7 @@ export function HttpLoaderFactory(http: Http) {
   ],
   providers : [
     MapService,
+    MapListService,
     MapUtils,
     DataFormService,
     FormService],

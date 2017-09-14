@@ -4,7 +4,7 @@
       <input mdInput #filter placeholder="Filter">
     </md-form-field>
 
-  <md-table #table [dataSource]="dataSource">
+  <md-table #table [dataSource]="releves">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
@@ -37,3 +37,5 @@
     <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
   </md-table>
 </md-card>
+<!--<p>{{releves | async | json}}</p>-->
+<p>{{releves | json}}</p>

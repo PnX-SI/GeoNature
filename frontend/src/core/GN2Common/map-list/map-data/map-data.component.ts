@@ -1,5 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { MapService } from '../../map/map.service';
+import {MapListService} from '../../map-list/map-list.service';
 
 import { ElementRef, ViewChild} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
@@ -23,9 +24,11 @@ export class MapDataComponent implements OnInit {
   displayedColumns = ['taxon', 'observateurs', 'dataset', 'date'];
   dataSource: any | null;
   @ViewChild('filter') filter: ElementRef;
+  // releves: Observable<any>;
+  releves: any;
 
-
-  constructor() {
+  constructor(private _mapListService: MapListService) {
+    _mapListService.getReleves().subscribe(res => this.releves = res);
   }
 
   ngOnInit() {
