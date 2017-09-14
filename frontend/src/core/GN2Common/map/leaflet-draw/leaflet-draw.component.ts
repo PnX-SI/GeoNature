@@ -14,8 +14,8 @@ import * as L from 'leaflet';
 
 export class LeafletDrawComponent implements OnInit {
   public map: Map;
+  private _currentDraw:any;
   private _drawFeatureGroup: FeatureGroup;
-  private _currentDraw: any;
   private _Le: any;
   @Input() options: any;
   @Output() layerDrawed = new EventEmitter<any>();
@@ -29,17 +29,14 @@ export class LeafletDrawComponent implements OnInit {
    }
 
    enableLeafletDraw() {
-    this._drawFeatureGroup = new L.FeatureGroup();
-    this.map.addLayer(this._drawFeatureGroup);
-    mapOptions.leafletDraw.options.edit['featureGroup'] = this._drawFeatureGroup;
-
+    mapOptions.leafletDraw.options.edit['featureGroup'] = this.mapservice.releveFeatureGroup;
     const drawControl =  new this._Le.Control.Draw(mapOptions.leafletDraw.options);
     this.map.addControl(drawControl);
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
       // remove the current draw
       if (this._currentDraw !== null) {
-        this._drawFeatureGroup.removeLayer(this._currentDraw);
+        this._maputils.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
       }
       // remove the current marker
       const markerLegend = document.getElementById('markerLegend');
@@ -64,8 +61,8 @@ export class LeafletDrawComponent implements OnInit {
         this._currentDraw = (e as any).layer;
         const layerType = (e as any).layerType;
         const latlngTab = this._currentDraw._latlngs;
-        this._drawFeatureGroup.addLayer(this._currentDraw);
-        let geojson = this._drawFeatureGroup.toGeoJSON();
+        this.mapservice.releveFeatureGroup.addLayer(this._currentDraw);
+        let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
         geojson = (geojson as any).features[0];
         // output
         this.layerDrawed.emit(geojson);

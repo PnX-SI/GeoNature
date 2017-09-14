@@ -32,7 +32,7 @@ export class MapUtils {
     return LayerControl;
   }
 
-  createMarker(map, x, y) {
+  createMarker(x, y) {
    return L.marker([y, x], {
       icon: L.icon({
               iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
@@ -41,7 +41,12 @@ export class MapUtils {
       }),
       draggable: true,
   })
-  .addTo(map);
+  }
+
+  removeAllLayers(map, featureGroup){
+    featureGroup.eachLayer((layer)=>{
+      map.removeLayer(layer);
+    })
   }
 
 }
