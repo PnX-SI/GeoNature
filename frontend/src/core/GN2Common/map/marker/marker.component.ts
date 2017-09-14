@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {Map, Marker} from 'leaflet';
 import { MapService } from '../map.service';
 import { MapUtils } from '../map.utils';
+import { AppConfig } from '../../../../conf/app.config';
 import * as L from 'leaflet';
 
 @Component({
@@ -37,16 +38,20 @@ export class MarkerComponent implements OnInit {
   enableMarkerOnClick() {
     this.map.on('click', (e: any) => {
       // check zoom level
+      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+        this.mapservice.sendWarningMessage();
+      } else{
         if (this.mapservice.marker !== undefined ) {
           this.mapservice.marker.remove();
           this.mapservice.marker = this._maputils.createMarker(e.latlng.lng, e.latlng.lat).addTo(this.map);
-          this.markerMoveEvent(this.mapservice.marker);
+          this.markerMoveEvent(this.mapservice.marker);      
         } else {
           this.mapservice.marker = this._maputils.createMarker(e.latlng.lng, e.latlng.lat).addTo(this.map);
           this.markerMoveEvent(this.mapservice.marker);
         }
-      // observable if map click
-      this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
+        // observable if map click
+        this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng())); 
+        }
       });
     }
 
