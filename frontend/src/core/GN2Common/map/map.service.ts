@@ -4,11 +4,9 @@ import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
-import { mapOptions } from './map.options';
 import * as L from 'leaflet';
 import { AppConfig } from '../../../conf/app.config';
 import { MapUtils } from './map.utils';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
@@ -25,7 +23,7 @@ export class MapService {
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
 
     constructor(private http: Http, private toastrService: ToastrService, private maputils: MapUtils,
-      private modalService: NgbModal, private translate: TranslateService) {
+      private translate: TranslateService) {
         this.toastrConfig = {
             positionClass: 'toast-top-center',
             tapToDismiss: true,
@@ -116,17 +114,6 @@ export class MapService {
       this._geojsonCoord.next(geojsonCoord);
     }
 
-    enableGps() {
-      const GPSLegend = this.maputils.addCustomLegend('topleft', 'GPSLegend');
-      this.map.addControl(new GPSLegend());
-      const gpsElement: HTMLElement = document.getElementById('GPSLegend');
-      L.DomEvent.disableClickPropagation(gpsElement);
-      gpsElement.innerHTML = '<span> <b> GPS </span> <b>';
-      gpsElement.style.paddingLeft = '3px';
-      gpsElement.onclick = () => {
-        this.modalService.open(this.modalContent);
-      };
-    }
 
     sendWarningMessage(){
       this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})

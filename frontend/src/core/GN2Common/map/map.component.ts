@@ -13,7 +13,6 @@ import * as L from 'leaflet';
 export class MapComponent implements OnInit {
   public map: Map;
   public Le: any;
-  @ViewChild('modalContent') public modalContent: any;
   searchLocation: string;
   constructor(public mapService: MapService, private modalService: NgbModal) {
     this.searchLocation = '';
@@ -25,7 +24,7 @@ export class MapComponent implements OnInit {
     this.map = this.mapService.map;
 
     // reference the modal content in the map service
-    this.mapService.modalContent = this.modalContent;
+    //this.mapService.modalContent = this.modalContent;
   }
 
     gotoLocation() {

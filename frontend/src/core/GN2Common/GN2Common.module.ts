@@ -15,6 +15,7 @@ import { ObservationComponent } from './form/observation/observation.component'
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component'
 import { LeafletDrawComponent } from  './map/leaflet-draw/leaflet-draw.component'
+import { GPSComponent } from  './map/gps/gps.component'
 import { OccurrenceComponent } from './form/occurrence/occurrence.component'
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -54,6 +55,7 @@ export function HttpLoaderFactory(http: Http) {
     MapComponent,
     MarkerComponent,
     LeafletDrawComponent,
+    GPSComponent,
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent
@@ -71,6 +73,7 @@ export function HttpLoaderFactory(http: Http) {
     MapComponent,
     MarkerComponent,
     LeafletDrawComponent,
+    GPSComponent,
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent,
