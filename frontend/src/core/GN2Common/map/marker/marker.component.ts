@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {Map, Marker} from 'leaflet';
 import { MapService } from '../map.service';
-import { MapUtils } from '../map.utils';
 import { AppConfig } from '../../../../conf/app.config';
 import * as L from 'leaflet';
 
@@ -15,7 +14,7 @@ export class MarkerComponent implements OnInit {
   public editingMarker = true;
   @Input() onclick: any;
   @Output() markerChanged = new EventEmitter<any>();
-  constructor(public mapservice: MapService, private _maputils: MapUtils) { }
+  constructor(public mapservice: MapService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -25,7 +24,7 @@ export class MarkerComponent implements OnInit {
 
    setMarkerLegend() {
     // Marker
-    const MarkerLegend = this._maputils.addCustomLegend('topleft', 'markerLegend', 'url(assets/images/location-pointer.png)');
+    const MarkerLegend = this.mapservice.addCustomLegend('topleft', 'markerLegend', 'url(assets/images/location-pointer.png)');
     this.map.addControl(new MarkerLegend());
     // custom the marker
     document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
@@ -41,18 +40,18 @@ export class MarkerComponent implements OnInit {
       if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {        
         this.mapservice.sendWarningMessage();
       } else{
-        this.generateMarker(e.latlng.lng, e.latlng.lat);
+        this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
       }      
 
       });
     }
-  generateMarker(x,y){
+  generateMarkerAndEvent(x,y){
     if (this.mapservice.marker !== undefined ) {
       this.mapservice.marker.remove();
-      this.mapservice.marker = this._maputils.createMarker(x,y).addTo(this.map);
+      this.mapservice.marker = this.mapservice.createMarker(x,y).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);      
     } else {
-      this.mapservice.marker = this._maputils.createMarker(x,y).addTo(this.map);
+      this.mapservice.marker = this.mapservice.createMarker(x,y).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
     }
     // observable if map click
@@ -80,7 +79,7 @@ export class MarkerComponent implements OnInit {
         this.map.removeLayer(this.mapservice.marker);
       }
     } else {
-      this._maputils.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
+      this.mapservice.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
       this.enableMarkerOnClick();
     }
   }

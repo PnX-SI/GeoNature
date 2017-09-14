@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Map, FeatureGroup } from 'leaflet';
 import { MapService } from '../map.service';
-import { MapUtils } from '../map.utils';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
@@ -18,7 +17,7 @@ export class LeafletDrawComponent implements OnInit {
   @Input() options: any;
   @Output() layerDrawed = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _maputils: MapUtils) { }
+  constructor(public mapservice: MapService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -34,7 +33,7 @@ export class LeafletDrawComponent implements OnInit {
     this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
       // remove the current draw
       if (this._currentDraw !== null) {
-        this._maputils.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
+        this.mapservice.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
       }
       // remove the current marker
       const markerLegend = document.getElementById('markerLegend');
