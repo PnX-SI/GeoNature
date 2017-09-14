@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
-import { MapUtils } from '../map.utils';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -11,8 +10,8 @@ import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 export class GPSComponent extends MarkerComponent implements OnInit  {
   @ViewChild('modalContent') public modalContent: any;
-  constructor(public mapService: MapService, private maputils: MapUtils, public modalService: NgbModal) { 
-    super(mapService, maputils);
+  constructor(public mapService: MapService, public modalService: NgbModal) { 
+    super(mapService);
   }
 
   ngOnInit() { 
@@ -20,7 +19,7 @@ export class GPSComponent extends MarkerComponent implements OnInit  {
     this.enableGps();
   }
   enableGps() {
-    const GPSLegend = this.maputils.addCustomLegend('topleft', 'GPSLegend');
+    const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
     this.map.addControl(new GPSLegend());
     const gpsElement: HTMLElement = document.getElementById('GPSLegend');
     L.DomEvent.disableClickPropagation(gpsElement);
@@ -32,6 +31,6 @@ export class GPSComponent extends MarkerComponent implements OnInit  {
   }
 
   setMarkerFromGps(x, y) {
-    super.generateMarker(x,y);
+    super.generateMarkerAndEvent(x,y);
   }
 }
