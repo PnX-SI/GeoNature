@@ -128,4 +128,11 @@ export class MapService {
       };
     }
 
+    sendWarningMessage(){
+      this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
+      .subscribe(res =>
+        this.toastrService.warning(res, '', this.toastrConfig)
+      );
+    }
+
 }

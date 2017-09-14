@@ -51,10 +51,8 @@ export class LeafletDrawComponent implements OnInit {
     // on draw layer created
     this.map.on(this._Le.Draw.Event.CREATED, (e) => {
       if (this.map.getZoom() < 5) {
-        // this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
-        //   .subscribe(res =>
-        //     this.toastrService.warning(res, '', this.toastrConfig)
-        //   );
+        this.mapservice.sendWarningMessage();
+
       }else {
         this._currentDraw = (e as any).layer;
         const layerType = (e as any).layerType;
