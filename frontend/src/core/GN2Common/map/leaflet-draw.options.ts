@@ -1,9 +1,4 @@
-export const mapOptions: any = {
-  marker: true,
-  GPS: true,
-  leafletDraw: {
-    enable: true,
-    options: {
+export const leafletDrawOption: any = {
       position: 'topleft',
       draw: {
           polyline: true,
@@ -24,6 +19,4 @@ export const mapOptions: any = {
         remove: true,
         moveMarker: true
       }
-    }
-  }
 };

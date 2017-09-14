@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Map, FeatureGroup } from 'leaflet';
 import { MapService } from '../map.service';
 import { MapUtils } from '../map.utils';
-import { mapOptions } from '../map.options';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
@@ -15,7 +14,6 @@ import * as L from 'leaflet';
 export class LeafletDrawComponent implements OnInit {
   public map: Map;
   private _currentDraw:any;
-  private _drawFeatureGroup: FeatureGroup;
   private _Le: any;
   @Input() options: any;
   @Output() layerDrawed = new EventEmitter<any>();
@@ -29,8 +27,8 @@ export class LeafletDrawComponent implements OnInit {
    }
 
    enableLeafletDraw() {
-    mapOptions.leafletDraw.options.edit['featureGroup'] = this.mapservice.releveFeatureGroup;
-    const drawControl =  new this._Le.Control.Draw(mapOptions.leafletDraw.options);
+    this.options.edit['featureGroup'] = this.mapservice.releveFeatureGroup;
+    const drawControl =  new this._Le.Control.Draw(this.options);
     this.map.addControl(drawControl);
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {

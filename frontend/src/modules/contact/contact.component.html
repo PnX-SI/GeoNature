@@ -2,7 +2,7 @@
     <div class="col-sm-12 col-md-6 padding-sm">
         <pnx-map class="map-card">
             <pnx-marker (markerChanged)="sendGeoIngo($event)" > </pnx-marker>
-            <pnx-leaflet-draw (layerDrawed)="sendGeoIngo($event)" > </pnx-leaflet-draw>
+            <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoIngo($event)" > </pnx-leaflet-draw>
         </pnx-map>
     </div>
     <div class="col-sm-12 col-md-6 padding-sm">
