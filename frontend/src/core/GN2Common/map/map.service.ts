@@ -28,34 +28,20 @@ export class MapService {
             tapToDismiss: true,
             timeOut: 3000
         };
-        this.baseMaps = {
-        OpenStreetMap: L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-            attribution: '&copy OpenStreetMap'
-        }),
-        OpenTopoMap: L.tileLayer('http://a.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenTopoMap'
-        }),
-        GoogleSatellite : L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: '&copy; GoogleMap'
-        })
-    };
         this.editingMarker = true;
     }
 
-    initialize() {
-        const map = L.map('map', {
-            zoomControl: false,
-            center: L.latLng(46.52863469527167, 2.43896484375),
-            zoom: 6,
-            layers: [this.baseMaps.OpenTopoMap]
-        });
-        L.control.zoom({ position: 'topright' }).addTo(map);
-        L.control.layers(this.baseMaps).addTo(map);
-        L.control.scale().addTo(map);
-        this.map = map;
-        this.releveFeatureGroup = new L.FeatureGroup();
-        this.map.addLayer(this.releveFeatureGroup);
+    setMap(map){
+      this.map = map;
+    }
+
+    getMap(){
+      return this.map
+    }
+
+    initializeReleveFeatureGroup() {
+      this.releveFeatureGroup = new L.FeatureGroup();
+      this.map.addLayer(this.releveFeatureGroup);
     }
 
     search(address: string) {
