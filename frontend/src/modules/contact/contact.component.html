@@ -1,7 +1,8 @@
 <div class="row">
     <div class="col-sm-12 col-md-6 padding-sm">
         <pnx-map editable [editionOptions]="mapEditionOptions" class="map-card">
-            <pnx-marker (onMarkerChange)="sendGeoIngo($event)" > </pnx-marker>
+            <pnx-marker (markerChanged)="sendGeoIngo($event)" > </pnx-marker>
+            <pnx-leaflet-draw (layerDrawed)="sendGeoIngo($event)" > </pnx-leaflet-draw>
         </pnx-map>
     </div>
     <div class="col-sm-12 col-md-6 padding-sm">
