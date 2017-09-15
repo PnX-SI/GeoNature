@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'pnx-gps',
