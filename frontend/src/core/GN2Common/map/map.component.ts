@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MapService } from './map.service';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {Map} from 'leaflet';
+import {Map, LatLngExpression} from 'leaflet';
+import { AppConfig } from '../../../conf/app.config';
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
@@ -11,29 +12,45 @@ import * as L from 'leaflet';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @Input() editionOptions: any;
-  public map: Map;
-  public Le: any;
-  @ViewChild('modalContent') public modalContent: any;
+  @Input() baseMaps:any;
+  @Input() center: Array<number>;
+  @Input() zoom: number;
   searchLocation: string;
   constructor(public mapService: MapService, private modalService: NgbModal) {
     this.searchLocation = '';
-    this.Le = L as any;
   }
 
   ngOnInit() {
-    this.mapService.initialize();
-    this.map = this.mapService.map;
-    if (this.editionOptions !== undefined) {
-      this.mapService.configureMap(this.editionOptions);
+    const baseMaps = this.baseMaps || AppConfig.MAP.BASEMAP;
+    const zoom = this.zoom || AppConfig.MAP.ZOOM_LEVEL;
+    let center:LatLngExpression;
+    if(this.center !== undefined){
+       center = L.latLng(this.center[0],this.center[1])
+    }else{
+       center = L.latLng(AppConfig.MAP.CENTER[0], AppConfig.MAP.CENTER[1]);
     }
-    // reference the modal content in the map service
-    this.mapService.modalContent = this.modalContent;
+    
+    const map = L.map('map', {
+        zoomControl: false,
+        center: center,
+        zoom: zoom,
+        layers: [baseMaps[0].layer]
+    });
+    L.control.zoom({ position: 'topright' }).addTo(map);
+    const baseControl = {};
+    AppConfig.MAP.BASEMAP.forEach((el)=>{
+      baseControl[el.name] = el.layer
+    })
+    L.control.layers(baseControl).addTo(map);
+    L.control.scale().addTo(map);
+
+    this.mapService.setMap(map);
+    this.mapService.initializeReleveFeatureGroup();
   }
 
     gotoLocation() {
-        if (!this.searchLocation) { return; }
-        this.mapService.search(this.searchLocation);
+      if (!this.searchLocation) { return; }
+      this.mapService.search(this.searchLocation);
     }
 
 }
