@@ -31,26 +31,57 @@
   </md-table>
 </md-card>-->
 
-  <div>
+
   <md-card>
-      <input
-        type='text'
-        style='padding:8px;margin:15px auto;width:30%;'
-        placeholder='Type to filter the name column...'
-        (keyup)='updateFilter($event)'
-      />
+    <div class="row">
+      <!--Filter-->
+      <div class="input-group width-50 alignment-xs">
+        <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button">
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Par Taxons
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item font-md" >Par Taxons</a>
+            <a class="dropdown-item font-md" >Par Observers</a>
+            <a class="dropdown-item font-md" >Par Date</a>
+          </div>
+        </div>
+      </div>
+
+
+
+        <!--<md-input-container class="width-lg">
+          <input mdInput placeholder="Search">
+          <md-icon mdSuffix>filter_list</md-icon>
+        </md-input-container>-->
+
+      <!--Filter Avancé-->
+        <button  md-icon-button mdTooltip="Taxons filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+          <md-icon>filter_list</md-icon>
+        </button>
+      </div>
+      <!--collapseAvance-->
+    <div class="row">
+        <div class="collapse width-100" id="collapseAvance">
+          <div class="card card-block margin-top-md">
+            ... filter avancé
+          </div>
+        </div>
+    </div>
+
   </md-card>
 
     <ngx-datatable 
-      class="material striped"
+      class="material striped margin-top-xs table-size"
       [rows]="rows | async"
       [columns]="columns"
       [columnMode]="'force'"
       [headerHeight]="50"
+      [scrollbarV]="true"
       [footerHeight]="50"
       [rowHeight]="50">
     </ngx-datatable>
-  </div>
 
 
 
