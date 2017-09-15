@@ -2,6 +2,88 @@
 INSTALLATION DE L'APPLICATION
 =============================
 
+Prérequis
+=========
+
+- Ressources minimum serveur :
+
+Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+
+L'installation complète de l'environnement est réalisée automatiquement sur un serveur Debian 9 vierge grace au script ``backend/install_app.sh``.
+
+Celui-ci installe : 
+
+- PostgreSQL / PostGIS
+- Python 3 et dépendances Python nécessaires à l'application
+- Flask (framework web Python)
+- Apache
+- Angular 4, Angular CLI, NodeJS
+- Librairies javascript (Leaflet, ChartJS)
+- Librairies CSS (Bootstrap, Material Design)
+
+Installation de l'application
+=============================
+
+Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
+
+* Mettre à jour de la liste des dépôts Linux
+ 
+  ::  
+  
+        apt-get update
+
+* Installer sudo
+ 
+  ::  
+  
+        apt-get install -y sudo ca-certificates
+
+* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ROOT (en lui donnant les droits sudo)
+ 
+  ::  
+  
+        adduser geonatureadmin sudo
+
+* L'ajouter aussi aux groupes www-data et root
+ 
+  ::  
+  
+        usermod -g www-data geonatureadmin
+        usermod -a -G root geonatureadmin
+
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
+ 
+  ::  
+  
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/backend/install_app.ini
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/backend/install_app.sh
+
+* Changer les droits du fichier d'installation pour pouvoir l'éxecuter
+ 
+  ::  
+  
+        chmod +x install_all.sh
+	
+Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
+
+On ne se connectera plus en ROOT. Si besoin d'executer des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+
+Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
+
+Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur. 
+
+* Lancer l'installation
+ 
+  ::  
+  
+        ./install_all.sh
+
+Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_app.ini``.
+
+Une fois l'installation terminée, vous pourrez accéder aux applications : 
+
+- http://monip.com/geonature
+- http://monip.com/taxhub
 
 Configuration de la base de données PostgreSQL
 ==============================================
