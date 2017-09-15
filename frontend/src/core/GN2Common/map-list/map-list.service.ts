@@ -10,7 +10,6 @@ export class MapListService {
 
 getReleves() {
     return this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
-      .map(res => res.json())
-      .map(res => res.features);
+      .map(res => res.json());
   }
 }
