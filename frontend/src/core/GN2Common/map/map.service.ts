@@ -4,10 +4,7 @@ import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
-<<<<<<< HEAD
-=======
-import { mapOptions } from './map.options';
->>>>>>> origin/map-list
+
 import * as L from 'leaflet';
 import { AppConfig } from '../../../conf/app.config';
 import {TranslateService} from '@ngx-translate/core';
