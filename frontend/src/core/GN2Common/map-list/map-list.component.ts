@@ -23,7 +23,7 @@ export class MapListComponent implements OnInit {
 
  selectedStyle = {
   'color': '#ff0000',
-   'weight':3
+   'weight': 3
 };
 
   constructor(private _ms: MapService, private _mapListService: MapListService) {
@@ -36,7 +36,6 @@ export class MapListComponent implements OnInit {
   }
 
   onEachFeature(feature, layer) {
-    console.log(this.originStyle);
     this.layerDict[feature.id] = layer;
      layer.on({
        click : (e) => {
