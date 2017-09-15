@@ -19,6 +19,7 @@ import { GPSComponent } from  './map/gps/gps.component'
 import { OccurrenceComponent } from './form/occurrence/occurrence.component'
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 // Service
 import { MapService } from './map/map.service';
@@ -38,6 +39,7 @@ export function HttpLoaderFactory(http: Http) {
     MdNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxDatatableModule,
     TranslateModule.forRoot({
       loader: {
           provide: TranslateLoader,
@@ -81,6 +83,7 @@ export function HttpLoaderFactory(http: Http) {
     MaterialModule,
     MdIconModule,
     MdNativeDateModule,
+    NgxDatatableModule,
     TranslateModule,
     NgbModule
   ]
