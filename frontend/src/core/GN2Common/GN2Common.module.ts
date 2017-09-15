@@ -13,17 +13,23 @@ import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { CountingComponent } from './form/counting/counting.component';
 import { ObservationComponent } from './form/observation/observation.component';
 import { MapComponent } from './map/map.component';
+<<<<<<< HEAD
+import { MarkerComponent } from './map/marker/marker.component'
+import { LeafletDrawComponent } from  './map/leaflet-draw/leaflet-draw.component'
+import { GPSComponent } from  './map/gps/gps.component'
+import { OccurrenceComponent } from './form/occurrence/occurrence.component'
+=======
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
 
 import { OccurrenceComponent } from './form/occurrence/occurrence.component';
+>>>>>>> origin/map-list
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 // Service
 import { MapService } from './map/map.service';
-import { MapUtils } from './map/map.utils';
 import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
 import { FormService } from './form/form.service';
@@ -56,8 +62,14 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     TaxonomyComponent,
     MapComponent,
+<<<<<<< HEAD
+    MarkerComponent,
+    LeafletDrawComponent,
+    GPSComponent,
+=======
     MapListComponent,
     MapDataComponent,
+>>>>>>> origin/map-list
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent
@@ -65,8 +77,11 @@ export function HttpLoaderFactory(http: Http) {
   ],
   providers : [
     MapService,
+<<<<<<< HEAD
+=======
     MapListService,
     MapUtils,
+>>>>>>> origin/map-list
     DataFormService,
     FormService],
   exports: [
@@ -74,8 +89,14 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     TaxonomyComponent,
     MapComponent,
+<<<<<<< HEAD
+    MarkerComponent,
+    LeafletDrawComponent,
+    GPSComponent,
+=======
     MapListComponent,
     MapDataComponent,
+>>>>>>> origin/map-list
     OccurrenceComponent,
     CountingComponent,
     ObservationComponent,
