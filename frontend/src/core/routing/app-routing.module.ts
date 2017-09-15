@@ -4,12 +4,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { ContactComponent } from '../../modules/contact/contact.component';
 import { HomeComponent } from '../components/home/home.component';
 import { PageNotFoundComponent } from '../components/page-not-found/page-not-found.component';
+import { MapListComponent } from '../GN2Common/map-list/map-list.component';
 import { AuthGuard } from '../components/auth/auth-guard.service';
 
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
+  { path: 'map-list', component: MapListComponent },
   // { path: 'contact-faune', component: ContactComponent, canActivate: [AuthGuard]},
   { path: 'contact', component: ContactComponent},
   { path: '**', component: PageNotFoundComponent }
