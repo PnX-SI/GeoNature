@@ -15,11 +15,12 @@ import { ObservationComponent } from './form/observation/observation.component';
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component'
 import { LeafletDrawComponent } from  './map/leaflet-draw/leaflet-draw.component'
-import { GPSComponent } from  './map/gps/gps.component'
+
+import { GPSComponent } from  './map/gps/gps.component';
+import { GeojsonComponent } from './map/geojson/geojson.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
-
-import { OccurrenceComponent } from './form/occurrence/occurrence.component';
+import { OccurrenceComponent } from './form/occurrence/occurrence.component'
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -59,6 +60,7 @@ export function HttpLoaderFactory(http: Http) {
     TaxonomyComponent,
     MapComponent,
     MarkerComponent,
+    GeojsonComponent,
     LeafletDrawComponent,
     GPSComponent,
     MapListComponent,
@@ -80,6 +82,7 @@ export function HttpLoaderFactory(http: Http) {
     MapComponent,
     MarkerComponent,
     LeafletDrawComponent,
+    GeojsonComponent,
     GPSComponent,
     MapListComponent,
     MapDataComponent,

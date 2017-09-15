@@ -2,7 +2,6 @@ import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import { MapService } from '../../map/map.service';
 import {MapListService} from '../../map-list/map-list.service';
 
-import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
