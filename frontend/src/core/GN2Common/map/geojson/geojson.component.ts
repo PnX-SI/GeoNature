@@ -18,8 +18,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.map = this.mapservice.map;
-    this.loadGeojson(this.geojson);
-   }
+  }
 
    loadGeojson(geojson) {
     this.currentGeojson = L.geoJSON(geojson, {
@@ -33,9 +32,11 @@ export class GeojsonComponent implements OnInit, OnChanges {
    }
 
    ngOnChanges(changes) {
-       if (changes.geojson && !changes.geojson.firstChange) {
-          this.map.removeLayer(this.currentGeojson);
-          this.loadGeojson(changes.geojson.currentValue);
-       }
+    if (changes.geojson && changes.geojson.currentValue !== undefined) {
+      if (this.currentGeojson !== undefined) {
+        this.map.removeLayer(this.currentGeojson);
+      }
+      this.loadGeojson(changes.geojson.currentValue);
+    }
    }
 }

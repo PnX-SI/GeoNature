@@ -10,9 +10,12 @@ import {MapListService} from '../map-list/map-list.service';
   providers: [MapService, MapListService]
 })
 export class MapListComponent implements OnInit {
-  constructor(private _ms: MapService) {
+  public geojson: any;
+  constructor(private _ms: MapService, private _mapListService: MapListService) {
   }
 
   ngOnInit() {
-}
+    this._mapListService.getReleves()
+      .subscribe(res => this.geojson = res);
+  }
 }
