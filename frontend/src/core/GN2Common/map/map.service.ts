@@ -31,12 +31,12 @@ export class MapService {
         this.editingMarker = true;
     }
 
-    setMap(map){
+    setMap(map) {
       this.map = map;
     }
 
-    getMap(){
-      return this.map
+    getMap() {
+      return this.map;
     }
 
     initializeReleveFeatureGroup() {
