@@ -27,6 +27,7 @@
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.3",
     "@ngx-translate/core": "^7.0.0",
     "@ngx-translate/http-loader": "^0.1.0",
+    "@swimlane/ngx-datatable": "^10.2.3",
     "@types/geojson": "^1.0.2",
     "@types/leaflet": "^1.0.65",
     "@types/leaflet-draw": "^0.4.8",
@@ -46,10 +47,11 @@
     "primeng": "^4.2.0-rc.1",
     "rxjs": "^5.1.0",
     "tether": "^1.4.0",
+    "typescript": "^2.5.2",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "^1.2.4",
+    "@angular/cli": "^1.4.2",
     "@angular/compiler-cli": "^4.0.0",
     "@angular/language-service": "^4.0.0",
     "@types/jasmine": "~2.5.53",
