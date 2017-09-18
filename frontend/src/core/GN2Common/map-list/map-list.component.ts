@@ -36,17 +36,7 @@ export class MapListComponent implements OnInit {
         // set selected style
         this._mapListService.selectedLayer = layer;
         layer.setStyle(this._mapListService.selectedStyle);
-        // popup
-        const taxonsList = feature.properties.occurrences.map(occ => {
-            return occ.nom_cite;
-        }).join(', ');
-        const observersList = feature.properties.observers.map(obs => {
-          return obs.prenom_role + ' ' + obs.nom_role;
-      }).join(', ');
-        const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
-                              <b> Observateur(s): </b> ${observersList} <br>
-                              <b> Taxon(s): </b> ${taxonsList}`;
-        this._mapListService.selectedLayer.bindPopup(popupContent).openPopup();
+
         // observable
         this._mapListService.setCurrentLayerId(feature.id);
       }

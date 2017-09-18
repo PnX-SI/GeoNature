@@ -16,7 +16,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   @Input() geojson: any;
   @Input() onEachFeature: any;
   @Input() style: any;
-  constructor(public mapservice: MapService, public _mapListService: MapListService) { }
+  constructor(public mapservice: MapService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
