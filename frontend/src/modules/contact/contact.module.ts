@@ -21,7 +21,7 @@ import { MapListService } from '../../core/GN2Common/map-list/map-list.service';
     TaxonsListComponent,
     ContactMapListComponent,
   ],
-  providers : [MapListService],
+  providers : [],
   bootstrap: [ContactFormComponent]
 })
 export class ContactModule {

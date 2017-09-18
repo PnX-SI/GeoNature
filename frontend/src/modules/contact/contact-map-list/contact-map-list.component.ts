@@ -20,8 +20,7 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
     .map(res => res.json())
     .subscribe(res =>  this.data = res );
 
-  console.log(this._mapListService.gettingLayerId$);
-
+    console.log(this._mapListService);
 
   this.idSubscription = this._mapListService.gettingLayerId$
     .subscribe(id => {

@@ -24,6 +24,8 @@ export class MapListComponent implements OnInit {
       const selectedLayer = this._mapListService.layerDict[res];
       this._mapListService.setStyle(selectedLayer);
     });
+    console.log(this._mapListService);
+    
   }
   onEachFeature(feature, layer) {
     this._mapListService.layerDict[feature.id] = layer;
