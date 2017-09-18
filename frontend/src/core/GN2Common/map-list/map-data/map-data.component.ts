@@ -42,10 +42,13 @@ export class MapDataComponent implements OnInit {
 
       this.rows.next(this.releves);
     });
-    this._mapListService.gettingLayerId$.subscribe(res => {
+    this._mapListService.gettingTableId$.subscribe(res => {
       this.selected = [];
-      this.selected = [ this.releves[1], this.releves[3] ];
-      console.log(this.selected);
+      for ( const i in this.releves) {
+        if (this.releves[i].id === res ) {
+          this.selected.push(this.releves[i]);
+        }
+      }
     });
   }
 
@@ -60,7 +63,7 @@ export class MapDataComponent implements OnInit {
 }
 
 export interface RowsData {
-  id: any;
+  id: string;
   taxon: any;
   observer: any;
   date: any;
