@@ -17,7 +17,7 @@ export class ContactMapListComponent implements OnInit {
   ngOnInit() {
   this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
     .map(res => res.json())
-    .subscribe(res =>  {console.log(res); this.data = res; } );
+    .subscribe(res =>  { this.data = res; } );
    }
 
 
