@@ -20,6 +20,13 @@ export class MapListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._mapListService.gettingLayerId$.subscribe(res => {
+      console.log('from map');
+      console.log(res);
+      console.log(this._mapListService.layerDict[res]);
+      
+      this._mapListService.layerDict[res].setStyle(this._mapListService.selectedLayer);
+    });
   }
   onEachFeature(feature, layer) {
     this._mapListService.layerDict[feature.id] = layer;
