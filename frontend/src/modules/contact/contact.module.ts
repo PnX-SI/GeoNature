@@ -6,8 +6,6 @@ import { ContactFormComponent } from './contact-form/contact-form.component';
 import { ContactCreateFormComponent } from './contact-form/contact-create-form/contact-create-form.component';
 import { TaxonsListComponent } from './contact-form/taxons-list/taxons-list.component';
 import { ContactMapListComponent } from './contact-map-list/contact-map-list.component';
-//services 
-import { MapListService } from '../../core/GN2Common/map-list/map-list.service';
 
 
 @NgModule({

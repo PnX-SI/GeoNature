@@ -28,7 +28,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 // Service
 import { MapService } from './map/map.service';
 import { DataFormService } from './form/data-form.service';
-import { MapListService } from './map-list/map-list.service';
 import { FormService } from './form/form.service';
 
 export function HttpLoaderFactory(http: Http) {
@@ -73,8 +72,8 @@ export function HttpLoaderFactory(http: Http) {
   providers : [
     MapService,
     DataFormService,
-    FormService,
-    MapListService],
+    FormService
+    ],
   exports: [
     NomenclatureComponent,
     ObserversComponent,

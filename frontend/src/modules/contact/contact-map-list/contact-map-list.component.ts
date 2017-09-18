@@ -19,8 +19,11 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
   this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
     .map(res => res.json())
     .subscribe(res =>  this.data = res );
+    setTimeout( () => {
+        console.log('from contact');
+          console.log(this._mapListService);
+    }, 5000);
 
-    console.log(this._mapListService);
 
   this.idSubscription = this._mapListService.gettingLayerId$
     .subscribe(id => {
@@ -38,7 +41,7 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
     });
    }
 
-  ngOnDestroy() {
+  ngOnDestroy(){
     this.idSubscription.unsubscribe();
   }
 }

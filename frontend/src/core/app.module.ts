@@ -32,6 +32,7 @@ import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
+import { MapListService } from './GN2Common/map-list/map-list.service';
 
 
 // AoT requires an exported function for factories
@@ -58,7 +59,7 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     SigninComponent,
   ],
-  providers: [NavService, AuthService, AuthGuard, SideNavService],
+  providers: [NavService, AuthService, AuthGuard, SideNavService, MapListService],
   bootstrap: [AppComponent],
 })
 
