@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
           private _sideBarService :SideNavService) {
       _navService.gettingAppName.subscribe(ms => {
         this.appName = ms;
-        
+
     });
 
     translate.addLangs(['en', 'fr', 'cn']);
