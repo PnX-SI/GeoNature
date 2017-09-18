@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { MapService } from '../map/map.service';
 import {MapListService} from '../map-list/map-list.service';
 import { GeoJSON } from 'leaflet';
@@ -11,41 +11,27 @@ import { GeoJSON } from 'leaflet';
   providers: [MapService, MapListService]
 })
 export class MapListComponent implements OnInit {
-  public geojson: any;
   public layerDict: any;
   public selectedLayer: any;
-  originStyle = {
-    'color': '#3388ff',
-    'fill': true,
-    'fillOpacity': 0.2,
-    'weight': 3
-};
+  @Input() data: GeoJSON;
 
- selectedStyle = {
-  'color': '#ff0000',
-   'weight': 3
-};
 
   constructor(private _ms: MapService, private _mapListService: MapListService) {
   }
 
   ngOnInit() {
-    this.layerDict = {};
-    this._mapListService.getReleves()
-      .subscribe(res => this.geojson = res);
   }
-
   onEachFeature(feature, layer) {
-    this.layerDict[feature.id] = layer;
+    this._mapListService.layerDict[feature.id] = layer;
     layer.on({
       click : (e) => {
         // remove selected style
-        if (this.selectedLayer !== undefined) {
-          this.selectedLayer.setStyle(this.originStyle);
+        if (this._mapListService.selectedLayer !== undefined) {
+          this._mapListService.selectedLayer.setStyle(this._mapListService.originStyle);
         }
         // set selected style
-        this.selectedLayer = layer;
-        layer.setStyle(this.selectedStyle);
+        this._mapListService.selectedLayer = layer;
+        layer.setStyle(this._mapListService.selectedStyle);
         // popup
         const taxonsList = feature.properties.occurrences.map(occ => {
             return occ.nom_cite;
@@ -56,12 +42,13 @@ export class MapListComponent implements OnInit {
         const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
                               <b> Observateur(s): </b> ${observersList} <br>
                               <b> Taxon(s): </b> ${taxonsList}`;
-        this.selectedLayer.bindPopup(popupContent).openPopup();
+        this._mapListService.selectedLayer.bindPopup(popupContent).openPopup();
         // observable
         this._mapListService.setCurrentLayerId(feature.id);
       }
     });
   }
+
 
 
 }
