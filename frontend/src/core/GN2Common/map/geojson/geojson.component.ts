@@ -25,7 +25,6 @@ export class GeojsonComponent implements OnInit, OnChanges {
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng);
       },
-      style: this.style,
       onEachFeature: this.onEachFeature
     });
     this.currentGeojson.addTo(this.map);
