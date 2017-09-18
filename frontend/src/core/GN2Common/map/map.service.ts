@@ -21,6 +21,7 @@ export class MapService {
     private _geojsonCoord = new Subject<any>();
     public modalContent: any;
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
+    public layerGroup: any;
 
     constructor(private http: Http, private toastrService: ToastrService,
       private translate: TranslateService) {
