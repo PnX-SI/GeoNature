@@ -35,32 +35,32 @@ export class MapListComponent implements OnInit {
       .subscribe(res => this.geojson = res);
   }
 
-    onEachFeature(feature, layer) {
-      this.layerDict[feature.id] = layer;
-      layer.on({
-        click : (e) => {
-          // remove selected style
-          if (this.selectedLayer !== undefined) {
-            this.selectedLayer.setStyle(this.originStyle);
-          }
-          // set selected style
-          this.selectedLayer = layer;
-          layer.setStyle(this.selectedStyle);
-          // popup
-          const taxonsList = feature.properties.occurrences.map(occ => {
-              return occ.nom_cite;
-          }).join(', ');
-          const observersList = feature.properties.observers.map(obs => {
-            return obs.prenom_role + ' ' + obs.nom_role;
-        }).join(', ');
-          const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
-                                <b> Observateur(s): </b> ${observersList} <br>
-                                <b> Taxon(s): </b> ${taxonsList}`;
-          this.selectedLayer.bindPopup(popupContent).openPopup();
-          // observable
-          this._mapListService.setCurrentLayerId(feature.id);
+  onEachFeature(feature, layer) {
+    this.layerDict[feature.id] = layer;
+    layer.on({
+      click : (e) => {
+        // remove selected style
+        if (this.selectedLayer !== undefined) {
+          this.selectedLayer.setStyle(this.originStyle);
         }
-      });
+        // set selected style
+        this.selectedLayer = layer;
+        layer.setStyle(this.selectedStyle);
+        // popup
+        const taxonsList = feature.properties.occurrences.map(occ => {
+            return occ.nom_cite;
+        }).join(', ');
+        const observersList = feature.properties.observers.map(obs => {
+          return obs.prenom_role + ' ' + obs.nom_role;
+      }).join(', ');
+        const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
+                              <b> Observateur(s): </b> ${observersList} <br>
+                              <b> Taxon(s): </b> ${taxonsList}`;
+        this.selectedLayer.bindPopup(popupContent).openPopup();
+        // observable
+        this._mapListService.setCurrentLayerId(feature.id);
+      }
+    });
   }
 
 
