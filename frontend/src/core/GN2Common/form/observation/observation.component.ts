@@ -61,7 +61,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
       });
     // set today
     const today = new Date();
-    this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDay() };
+    this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
     console.log(this.today);
 
   }
