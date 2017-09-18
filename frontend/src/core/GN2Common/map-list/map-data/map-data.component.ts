@@ -25,11 +25,11 @@ export class MapDataComponent implements OnInit {
     { prop: 'date' }
   ];
   selected = [];
+  releves = [];
   rows: BehaviorSubject<RowsData[]> = new BehaviorSubject<RowsData[]>([]);
 
   constructor(private _mapListService: MapListService) {
     _mapListService.getReleves().subscribe(res => {
-      const releves = [];
       res.features.forEach(el => {
         const row: RowsData = {
           id : el.id,
@@ -37,18 +37,23 @@ export class MapDataComponent implements OnInit {
           observer : el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
           date  : el.properties.meta_create_date
         };
-        releves.push(row);
+        this.releves.push(row);
       });
 
-      this.rows.next(releves);
+      this.rows.next(this.releves);
+    });
+    this._mapListService.gettingLayerId$.subscribe(res => {
+      this.selected = [];
+      this.selected = [ this.releves[1], this.releves[3] ];
+      console.log(this.selected);
     });
   }
 
   ngOnInit() {
-    this._mapListService.gettingLayerId$.subscribe(res => console.log(res));
   }
 
   onSelect({ selected }) {
+    console.log(selected);
     this._mapListService.setCurrentLayerId(this.selected[0].id);
   }
 
