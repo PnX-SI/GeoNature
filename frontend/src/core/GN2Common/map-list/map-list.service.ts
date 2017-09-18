@@ -3,7 +3,6 @@ import { Subject } from 'rxjs/Subject';
 import { Http, URLSearchParams } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs';
-
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
@@ -24,12 +23,21 @@ export class MapListService {
     constructor(private _http: Http) {
   }
 
-getReleves() {
+  getReleves() {
     return this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
       .map(res => res.json());
   }
 
   setCurrentLayerId(id: number) {
     this._layerId.next(id);
+  }
+
+  setStyle(selectedLayer ) {
+    if ( this.selectedLayer !== undefined) {
+      this.selectedLayer.setStyle(this.originStyle);
+      this.selectedLayer.closePopup();
+    }
+    this.selectedLayer = selectedLayer;
+    this.selectedLayer.setStyle(this.selectedStyle);
   }
 }
