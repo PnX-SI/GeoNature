@@ -49,7 +49,6 @@ export class MapDataComponent implements OnInit {
   }
 
   onSelect({ selected }) {
-    console.log(this.selected);
     this._mapListService.setCurrentLayerId(this.selected[0].id);
   }
 
