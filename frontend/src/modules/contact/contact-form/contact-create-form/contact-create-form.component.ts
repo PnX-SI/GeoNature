@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
-import { FormService }  from '../../../../core/GN2Common/form/form.service'
-import { DataFormService }  from '../../../../core/GN2Common/form/data-form.service'
+import { FormService } from '../../../../core/GN2Common/form/form.service'
+import { DataFormService } from '../../../../core/GN2Common/form/data-form.service'
 import { MapService } from '../../../../core/GN2Common/map/map.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
@@ -9,12 +9,12 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 
 
 @Component({
-  selector: 'pnx-contact-form',
-  templateUrl: './contact-form.component.html',
-  styleUrls: ['./contact-form.component.scss'],
+  selector: 'pnx-contact-create-form',
+  templateUrl: './contact-create-form.component.html',
+  styleUrls: ['./contact-create-form.component.scss'],
   providers: [FormService]
 })
-export class ContactFormComponent implements OnInit {
+export class ContactCreateFormComponent implements OnInit {
   public taxonsList: Array<any>;
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;

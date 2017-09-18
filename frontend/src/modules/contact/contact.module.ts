@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GN2CommonModule } from '../../core/GN2Common/GN2Common.module'
+import { GN2CommonModule } from '../../core/GN2Common/GN2Common.module';
 // Components
-import { ContactComponent } from './contact.component';
-import { ContactFormComponent } from './components/contact-form/contact-form.component';
-import { TaxonsListComponent } from './components/taxons-list/taxons-list.component';
-//import { FormService } from '../../components/contact-form/contact-form.service'
+import { ContactFormComponent } from './contact-form/contact-form.component';
+import { ContactCreateFormComponent } from './contact-form/contact-create-form/contact-create-form.component';
+import { TaxonsListComponent } from './contact-form/taxons-list/taxons-list.component';
+import { ContactMapListComponent } from './contact-map-list/contact-map-list.component';
+//services 
+import { MapListService } from '../../core/GN2Common/map-list/map-list.service';
+
 
 @NgModule({
   imports: [
@@ -13,12 +16,13 @@ import { TaxonsListComponent } from './components/taxons-list/taxons-list.compon
     GN2CommonModule,
   ],
   declarations: [
-    ContactComponent,
     ContactFormComponent,
+    ContactCreateFormComponent,
     TaxonsListComponent,
+    ContactMapListComponent,
   ],
-  providers : [],
-  bootstrap: [ContactComponent]
+  providers : [MapListService],
+  bootstrap: [ContactFormComponent]
 })
 export class ContactModule {
 }
