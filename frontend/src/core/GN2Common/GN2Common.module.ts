@@ -14,9 +14,9 @@ import { CountingComponent } from './form/counting/counting.component';
 import { ObservationComponent } from './form/observation/observation.component';
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component'
-import { LeafletDrawComponent } from  './map/leaflet-draw/leaflet-draw.component'
+import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component'
 
-import { GPSComponent } from  './map/gps/gps.component';
+import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
@@ -72,9 +72,9 @@ export function HttpLoaderFactory(http: Http) {
   ],
   providers : [
     MapService,
-    MapListService,
     DataFormService,
-    FormService],
+    FormService,
+    MapListService],
   exports: [
     NomenclatureComponent,
     ObserversComponent,
