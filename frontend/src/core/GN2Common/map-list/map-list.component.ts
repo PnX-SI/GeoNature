@@ -21,10 +21,13 @@ export class MapListComponent implements OnInit {
 
   ngOnInit() {
     this._mapListService.gettingLayerId$.subscribe(res => {
-      const selectedLayer = this._mapListService.layerDict[res];
-      this._mapListService.setStyle(selectedLayer);
+      this._mapListService.layerDict[res].setStyle(this._mapListService.selectedLayer);
     });
+    this._mapListService.test = 'testtttttt';
+    console.log('from map list');
+    
     console.log(this._mapListService);
+
     
   }
   onEachFeature(feature, layer) {
@@ -40,7 +43,7 @@ export class MapListComponent implements OnInit {
         layer.setStyle(this._mapListService.selectedStyle);
 
         // observable
-        this._mapListService.setCurrentLayerId(feature.id);
+        this._mapListService.setCurrentTableId(feature.id);
       }
     });
   }

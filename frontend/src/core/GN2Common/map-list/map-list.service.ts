@@ -6,9 +6,12 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
+  private _tableId = new Subject<any>();
   public layerDict= {};
   public selectedLayer: any;
   public gettingLayerId$: Observable<number> = this._layerId.asObservable();
+  public gettingTableId$: Observable<number> = this._tableId.asObservable();
+  public test:any;
   originStyle = {
     'color': '#3388ff',
     'fill': true,
@@ -30,6 +33,10 @@ export class MapListService {
 
   setCurrentLayerId(id: number) {
     this._layerId.next(id);
+  }
+
+  setCurrentTableId(id: number) {
+    this._tableId.next(id);
   }
 
   setStyle(selectedLayer ) {
