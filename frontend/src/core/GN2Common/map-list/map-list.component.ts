@@ -1,7 +1,7 @@
 import { Component, OnInit, Input} from '@angular/core';
 import { MapService } from '../map/map.service';
 import {MapListService} from '../map-list/map-list.service';
-import { GeoJSON } from 'leaflet';
+import { GeoJSON, Layer } from 'leaflet';
 
 
 @Component({
@@ -21,11 +21,8 @@ export class MapListComponent implements OnInit {
 
   ngOnInit() {
     this._mapListService.gettingLayerId$.subscribe(res => {
-      console.log('from map');
-      console.log(res);
-      console.log(this._mapListService.layerDict[res]);
-      
-      this._mapListService.layerDict[res].setStyle(this._mapListService.selectedLayer);
+      const selectedLayer = this._mapListService.layerDict[res];
+      this._mapListService.setStyle(selectedLayer);
     });
   }
   onEachFeature(feature, layer) {
