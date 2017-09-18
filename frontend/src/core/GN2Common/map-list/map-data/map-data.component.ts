@@ -19,56 +19,46 @@ import 'rxjs/add/observable/fromEvent';
 })
 export class MapDataComponent implements OnInit {
 
-  rows: Observable<any[]>;
   columns = [
-    { name: 'Name' },
-    { name: 'Gender' },
-    { name: 'Company' }
+    { prop: 'taxon' },
+    { prop: 'observer' },
+    { prop: 'date' }
   ];
-
-  // displayedColumns = ['taxon', 'observateurs', 'dataset', 'date'];
-  // releves: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  // dataSource = new MapListDataSource(this.releves);
+  selected = [];
+  rows: BehaviorSubject<RowsData[]> = new BehaviorSubject<RowsData[]>([]);
 
   constructor(private _mapListService: MapListService) {
-    // _mapListService.getReleves().subscribe(res => this.releves.next(res));
-    this.rows = Observable.create((subscriber) => {
-      this.fetch((data) => {
-        subscriber.next(data.splice(0, 15));
-        subscriber.next(data.splice(15, 30));
-        subscriber.complete();
+    _mapListService.getReleves().subscribe(res => {
+      const releves = [];
+      res.features.forEach(el => {
+        const row: RowsData = {
+          id : el.id,
+          taxon : el.properties.occurrences.map(occ => occ.nom_cite ).join(', '),
+          observer : el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
+          date  : el.properties.meta_create_date
+        };
+        releves.push(row);
       });
+
+      this.rows.next(releves);
     });
-
-
-    // Rx.DOM.ajax({ url: '/products', responseType: 'json'}).subscribe()
-    // this.rows = Observable.from(rows);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this._mapListService.gettingLayerId$.subscribe(res => console.log(res));
+  }
 
-  fetch(cb) {
-    const req = new XMLHttpRequest();
-    req.open('GET', `assets/data/company.json`);
-
-    req.onload = () => {
-      cb(JSON.parse(req.response));
-    };
-
-    req.send();
+  onSelect({ selected }) {
+    console.log(this.selected);
+    this._mapListService.setCurrentLayerId(this.selected[0].id);
   }
 
 }
 
-// export class MapListDataSource extends DataSource<any> {
+export interface RowsData {
+  id: any;
+  taxon: any;
+  observer: any;
+  date: any;
+}
 
-//   constructor(private _releves: BehaviorSubject<any[]>) {
-//     super();
-//   }
-//   /** Connect function called by the table to retrieve one stream containing the data to render. */
-//   connect() {
-//     return this._releves;
-//   }
-
-//   disconnect() {}
-// }

@@ -1,87 +1,54 @@
-<!--<md-card class="page-size">
-    <md-form-field floatPlaceholder="never">
-      <input mdInput #filter placeholder="Filter">
-    </md-form-field>
 
-  <md-table #table [dataSource]="dataSource">
-
-    <ng-container mdColumnDef="taxon">
-      <md-header-cell *mdHeaderCellDef> Taxon </md-header-cell>
-      <md-cell *mdCellDef="let row"> {{row.properties.occurrences[0].nom_cite}} </md-cell>
-    </ng-container>
-
-
-    <ng-container mdColumnDef="observateurs">
-      <md-header-cell *mdHeaderCellDef> Observers </md-header-cell>
-      <md-cell *mdCellDef="let row"> {{row.properties.observers[0].nom_role}} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="dataset">
-      <md-header-cell *mdHeaderCellDef> Data set </md-header-cell>
-      <md-cell *mdCellDef="let row"> {{row.properties.id_dataset}} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="date">
-      <md-header-cell *mdHeaderCellDef> Date </md-header-cell>
-      <md-cell *mdCellDef="let row"> {{row.properties.meta_create_date}} </md-cell>
-    </ng-container>
-
-    <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-    <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-  </md-table>
-</md-card>-->
-
-
-  <md-card>
-    <div class="row">
-      <!--Filter-->
-      <div class="input-group width-50 alignment-xs">
-        <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button">
-        <div class="input-group-btn">
-          <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Par Taxons
-          </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item font-md" >Par Taxons</a>
-            <a class="dropdown-item font-md" >Par Observers</a>
-            <a class="dropdown-item font-md" >Par Date</a>
-          </div>
-        </div>
-      </div>
-
-
-
-        <!--<md-input-container class="width-lg">
-          <input mdInput placeholder="Search">
-          <md-icon mdSuffix>filter_list</md-icon>
-        </md-input-container>-->
-
-      <!--Filter Avancé-->
-        <button  md-icon-button mdTooltip="Taxons filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-          <md-icon>filter_list</md-icon>
+<md-card>
+  <div class="row">
+    <!--Filter-->
+    <div class="input-group width-50 alignment-xs">
+      <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Par Taxons
         </button>
-      </div>
-      <!--collapseAvance-->
-    <div class="row">
-        <div class="collapse width-100" id="collapseAvance">
-          <div class="card card-block margin-top-md">
-            ... filter avancé
-          </div>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item font-md" >Par Taxons</a>
+          <a class="dropdown-item font-md" >Par Observers</a>
+          <a class="dropdown-item font-md" >Par Date</a>
         </div>
+      </div>
     </div>
 
-  </md-card>
+    <!--Filter Avancé-->
+      <button  md-icon-button mdTooltip="Taxons filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+        <md-icon>filter_list</md-icon>
+      </button>
+    </div>
+    <!--collapseAvance-->
+  <div class="row">
+      <div class="collapse width-100" id="collapseAvance">
+        <div class="card card-block margin-top-md">
+          ... filter avancé
+        </div>
+      </div>
+  </div>
 
-    <ngx-datatable 
-      class="material striped margin-top-xs table-size"
-      [rows]="rows | async"
-      [columns]="columns"
-      [columnMode]="'force'"
-      [headerHeight]="50"
-      [scrollbarV]="true"
-      [footerHeight]="50"
-      [rowHeight]="50">
-    </ngx-datatable>
+</md-card>
 
+<!--Table-->
+<ngx-datatable 
+  class="material striped margin-top-xs table-size"
+  [rows]="rows | async"
+  [columns]="columns"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [scrollbarV]="true"
+  [footerHeight]="50"
+  [rowHeight]="50"
+  [draggable]="true"
+  [selected]="selected"
+  [selectionType]="'multi'"
+  (select)='onSelect($event)'
+  >
 
+</ngx-datatable>
+
+<!--{{ rows | async | json }}-->
 
