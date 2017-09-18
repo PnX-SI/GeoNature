@@ -37,21 +37,21 @@ export class MarkerComponent implements OnInit {
   enableMarkerOnClick() {
     this.map.on('click', (e: any) => {
       // check zoom level
-      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {        
+      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
         this.mapservice.sendWarningMessage();
-      } else{
+      } else {
         this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
-      }      
+      }
 
       });
     }
-  generateMarkerAndEvent(x,y){
+  generateMarkerAndEvent(x, y) {
     if (this.mapservice.marker !== undefined ) {
       this.mapservice.marker.remove();
       this.mapservice.marker = this.mapservice.createMarker(x,y).addTo(this.map);
-      this.markerMoveEvent(this.mapservice.marker);      
+      this.markerMoveEvent(this.mapservice.marker);
     } else {
-      this.mapservice.marker = this.mapservice.createMarker(x,y).addTo(this.map);
+      this.mapservice.marker = this.mapservice.createMarker(x, y).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
     }
     // observable if map click
@@ -60,7 +60,7 @@ export class MarkerComponent implements OnInit {
 
   markerMoveEvent(marker: Marker) {
     marker.on('moveend', (event: MouseEvent) => {
-      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {        
+      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
         this.mapservice.sendWarningMessage();
       } else {
         this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));

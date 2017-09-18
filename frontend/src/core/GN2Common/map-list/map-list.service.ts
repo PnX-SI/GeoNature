@@ -7,7 +7,20 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
+  public layerDict= {};
+  public selectedLayer: any;
   public gettingLayerId$: Observable<number> = this._layerId.asObservable();
+  originStyle = {
+    'color': '#3388ff',
+    'fill': true,
+    'fillOpacity': 0.2,
+    'weight': 3
+  };
+
+ selectedStyle = {
+  'color': '#ff0000',
+   'weight': 3
+  };
     constructor(private _http: Http) {
   }
 
