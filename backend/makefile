@@ -9,7 +9,8 @@ develop:
 
 
 prod:
-	@/bin/bash -c "source $(VENV)/bin/activate&&gunicorn --daemon --pid='$(APP_NAME).pid' --error-log /tmp/errors.log -w $(WORKERS) -b '$(HOST):$(PORT)' -n '$(APP_NAME)' server:app"&&echo "Serveur activé sur '$(HOST):$(PORT)'"
+	@/bin/bash -c "source $(VENV)/bin/activate&&gunicorn --daemon --pid='$(APP_NAME).pid' --error-log /tmp/errors_gn.log -w $(WORKERS) -b '$(HOST):$(PORT)' -n '$(APP_NAME)' server:app"&&echo "Serveur activé sur '$(HOST):$(PORT)'"
+
 
 prod-stop:
 	@kill `cat $(APP_NAME).pid`&&echo "Terminé."
