@@ -34,7 +34,7 @@
 <!--Table-->
 <ngx-datatable
   #table
-  class="material striped margin-top-xs table-size"
+  class="material striped margin-top-xs table-size expandable"
   [rows]="rows"
   [columns]="columns"
   [columnMode]="'force'"
@@ -42,11 +42,65 @@
   [scrollbarV]="true"
   [footerHeight]="50"
   [rowHeight]="50"
-  [draggable]="true"
+  [draggable]="false"
   [selected]="selected"
   [selectionType]="'multi'"
-  (select)='onSelect($event)'
-  >
+  (select)='onSelect($event)'>
+
+    <!-- Row Detail Template -->
+    <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow (toggle)="onDetailToggle($event)">
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+          <div class="card card-block width-100">
+            <div><strong>Taxon:</strong> {{row.taxon}}</div>
+            <div><strong>Observer:</strong> {{row.observer}}</div>
+            <div><strong>Date:</strong> {{row.date}}</div>
+            <div><strong>Id:</strong> {{row.id}}</div>
+          </div>
+      </ng-template>
+    </ngx-datatable-row-detail>
+
+    <ngx-datatable-column
+      [width]="50"
+      [resizeable]="false"
+      [sortable]="false"
+      [draggable]="false"
+      [canAutoResize]="false">
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+        <a
+          [class.datatable-icon-right]="!expanded"
+          [class.datatable-icon-down]="expanded"
+          title="Expand/Collapse Row"
+          (click)="toggleExpandRow(row)">
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Taxon">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <p [mdTooltip]="value">{{value}}</p>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Observer">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <p [mdTooltip]="value">{{value}}</p>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Date">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <p [mdTooltip]="value">{{value}}</p>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column>
+      <ng-template let-row="row" ngx-datatable-cell-template> 
+        <button type="button" class="btn btn-default btn-sm" mdTooltip="Edit relevé {{row.id}}">
+          <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row.id)"></i>
+        </button>
+      </ng-template>
+    </ngx-datatable-column>
+
 
 </ngx-datatable>
 
