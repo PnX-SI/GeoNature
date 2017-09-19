@@ -43,7 +43,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
         // subscribe to geo info
         this._dfs.getGeoInfo(geojson)
           .subscribe(res => {
-            console.log(res);
             
             this.releveForm.controls.properties.patchValue({
               altitude_min: res.altitude.altitude_min,
@@ -62,7 +61,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
     // set today
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-    console.log(this.today);
 
   }
 

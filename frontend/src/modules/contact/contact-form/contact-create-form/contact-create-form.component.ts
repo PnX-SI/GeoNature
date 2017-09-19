@@ -5,6 +5,7 @@ import { DataFormService } from '../../../../core/GN2Common/form/data-form.servi
 import { MapService } from '../../../../core/GN2Common/map/map.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { ContactFormService } from './contact-form.service';
 
 
 
@@ -12,7 +13,7 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
   selector: 'pnx-contact-create-form',
   templateUrl: './contact-create-form.component.html',
   styleUrls: ['./contact-create-form.component.scss'],
-  providers: [FormService]
+  providers: [FormService, ContactFormService]
 })
 export class ContactCreateFormComponent implements OnInit {
   public taxonsList: Array<any>;
@@ -23,14 +24,20 @@ export class ContactCreateFormComponent implements OnInit {
 
   constructor(public fs: FormService, private _ms: MapService,
      private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
-     private toastr: ToastrService
+     private toastr: ToastrService, private _cfs: ContactFormService
     ) {  }
 
   ngOnInit() {
-    // init the formsGroups
     this.releveForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
+    // load one releve
+    // this._cfs.getReleve(1)
+    //   .subscribe(data => {
+    //     this.releveForm = this.fs.initObservationForm(data);
+    //   })
+    // init the formsGroups
+
     // init the taxons list
     this.taxonsList = [];
   }

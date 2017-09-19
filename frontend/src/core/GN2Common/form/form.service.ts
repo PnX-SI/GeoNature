@@ -20,27 +20,27 @@ export class FormService {
     this.taxonsList = [];
    }// end constructor
 
-   initObservationForm(): FormGroup {
+   initObservationForm(data?): FormGroup {
     return this._fb.group({
-      geometry: ['', Validators.required],
+      geometry: [data? data.geometry:null, Validators.required],
       properties: this._fb.group({
-        id_dataset: [null, Validators.required],
+        id_dataset: [data? data.properties.id_dataset:null, Validators.required],
         id_digitiser : null,
-        date_min: ['', Validators.required],
-        date_max: ['', Validators.required],
-        altitude_min: '',
-        altitude_max : '',
+        date_min: [data? this.formatDate(data.properties.date_min):null, Validators.required],
+        date_max: [data? this.formatDate(data.properties.date_max):null, Validators.required],
+        altitude_min: data? data.properties.altitude_min:null,
+        altitude_max : data? data.properties.altitude_max:null,
         deleted: false,
         municipalities : [null, Validators.required],
         meta_device_entry: 'web',
-        comment: '',
-        observers: [null, Validators.required],
+        comment: data? data.properties.comment:null,
+        observers: [data? this.formatObservers(data.properties.observers):null, Validators.required],
         t_occurrences_contact: this._fb.array([])
       })
     });
    }
 
-   initOccurrenceForm(): FormGroup {
+   initOccurrenceForm(data?): FormGroup {
     return this._fb.group({
       id_nomenclature_obs_technique :[null, Validators.required],
       id_nomenclature_obs_meth: null,
@@ -66,7 +66,7 @@ export class FormService {
   }
 
 
-   initCounting(): FormGroup {
+   initCounting(data?): FormGroup {
     return this._fb.group({
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
@@ -108,5 +108,23 @@ export class FormService {
   updateTaxon(taxon) {
      this.currentTaxon = taxon;
    }
+
+  formatObservers(observers){
+    const observersTab = [];
+    observers.forEach(observer => {
+      observer['nom_complet'] = observer.nom_role + ' ' + observer.prenom_role
+      observersTab.push(observer);
+    });
+    return observersTab;
+  }
+
+  formatDate(strDate){
+    let date = new Date(strDate);
+    return {
+      'year': date.getFullYear(),
+      'month': date.getMonth() + 1,
+      'day': date.getDate()
+    }
+  }
 
 }

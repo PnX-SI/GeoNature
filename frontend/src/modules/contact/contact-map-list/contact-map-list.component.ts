@@ -21,8 +21,7 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
     .map(res => res.json())
     .subscribe(res => {
       
-      
-       this.geojsonData = res
+       this.geojsonData = res;
        // format data for the table
        res.features.forEach(el => {
         const row: RowsData = {
@@ -31,7 +30,7 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
           observer: el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
           date: el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
         };
-        // cache our list in releves use for filter
+
         this.releves.push(row);
                 
       });
