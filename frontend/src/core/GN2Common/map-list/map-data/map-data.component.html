@@ -3,7 +3,8 @@
   <div class="row">
     <!--Filter-->
     <div class="input-group width-50 alignment-xs">
-      <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button">
+      <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
+      (keyup)='updateFilter($event)'>
       <div class="input-group-btn">
         <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Par Taxons
@@ -33,9 +34,10 @@
 </md-card>
 
 <!--Table-->
-<ngx-datatable 
+<ngx-datatable
+  #table
   class="material striped margin-top-xs table-size"
-  [rows]="rows | async"
+  [rows]="rows"
   [columns]="columns"
   [columnMode]="'force'"
   [headerHeight]="50"

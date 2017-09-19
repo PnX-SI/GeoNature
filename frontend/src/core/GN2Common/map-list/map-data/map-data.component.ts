@@ -1,15 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import { MapService } from '../../map/map.service';
 import {MapListService} from '../../map-list/map-list.service';
-
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/fromEvent';
+import {DatatableComponent} from '@swimlane/ngx-datatable';
 
 
 @Component({
@@ -18,6 +10,7 @@ import 'rxjs/add/observable/fromEvent';
   styleUrls: ['./map-data.component.scss']
 })
 export class MapDataComponent implements OnInit {
+  @ViewChild(DatatableComponent) table: DatatableComponent;
 
   columns = [
     { prop: 'taxon' },
@@ -26,7 +19,7 @@ export class MapDataComponent implements OnInit {
   ];
   selected = [];
   releves = [];
-  rows: BehaviorSubject<RowsData[]> = new BehaviorSubject<RowsData[]>([]);
+  rows = [];
 
   constructor(private _mapListService: MapListService) {
     _mapListService.getReleves().subscribe(res => {
@@ -37,10 +30,11 @@ export class MapDataComponent implements OnInit {
           observer : el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
           date  : el.properties.meta_create_date
         };
+        // cache our list in releves use for filter
         this.releves.push(row);
       });
 
-      this.rows.next(this.releves);
+      this.rows = [...this.releves];
     });
     this._mapListService.gettingTableId$.subscribe(res => {
       this.selected = [];
@@ -56,8 +50,22 @@ export class MapDataComponent implements OnInit {
   }
 
   onSelect({ selected }) {
-    console.log(selected);
     this._mapListService.setCurrentLayerId(this.selected[0].id);
+  }
+
+  updateFilter(event) {
+
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.releves.filter(function(d) {
+      return d.taxon.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.rows = temp;
+    // Whenever the filter changes, always go back to the first page
+    this.table.offset = 0;
   }
 
 }
