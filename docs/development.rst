@@ -99,7 +99,7 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
         :``markerChanged``:
                 Output permettant de récupérer les coordonnées du marker quand celui-ci est déplacé. Retourne un geojson des coordonnées du marker
 
-- **leafletDrawComponent**
+- **LeafletDrawComponent**
         Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
         
         **Selector**: ``pnx-leaflet-draw``
@@ -117,7 +117,7 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
                 Output renvoyant le geojson de l'objet dessiné.
 
 - **GPSComponent**
-        Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des même input et output.
+        Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.
         
         **Selector**: ``pnx-gps``
         
