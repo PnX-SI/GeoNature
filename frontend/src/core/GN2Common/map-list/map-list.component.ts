@@ -14,12 +14,14 @@ export class MapListComponent implements OnInit {
   public layerDict: any;
   public selectedLayer: any;
   @Input() data: GeoJSON;
+  @Input() tableData: Array<any>;
 
 
   constructor(private _ms: MapService, private _mapListService: MapListService) {
   }
 
   ngOnInit() {
+    
     // event from the list
     this._mapListService.gettingLayerId$.subscribe(res => {
       const selectedLayer = this._mapListService.layerDict[res];
@@ -39,6 +41,7 @@ export class MapListComponent implements OnInit {
       }
     });
   }
+
 
 
 
