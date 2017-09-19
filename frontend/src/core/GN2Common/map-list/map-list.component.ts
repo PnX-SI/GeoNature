@@ -13,7 +13,7 @@ import { GeoJSON, Layer } from 'leaflet';
 export class MapListComponent implements OnInit {
   public layerDict: any;
   public selectedLayer: any;
-  @Input() data: GeoJSON;
+  @Input() geojsonData: GeoJSON;
   @Input() tableData: Array<any>;
 
 
