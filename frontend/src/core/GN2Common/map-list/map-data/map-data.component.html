@@ -2,23 +2,21 @@
 <md-card>
   <div class="row">
     <!--Filter-->
-    <div class="input-group width-50 alignment-xs">
+    <div class="input-group width-60 alignment-xs">
       <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
       (keyup)='updateFilter($event)'>
       <div class="input-group-btn">
         <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Par Taxons
+          Par {{filterSelected | titlecase}}
         </button>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item font-md" >Par Taxons</a>
-          <a class="dropdown-item font-md" >Par Observers</a>
-          <a class="dropdown-item font-md" >Par Date</a>
+          <a class="dropdown-item font-md" *ngFor="let list of filterList" (click)="onChangeFilterOps(list)">Par {{list | titlecase}}</a>
         </div>
       </div>
     </div>
 
     <!--Filter Avancé-->
-      <button  md-icon-button mdTooltip="Taxons filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+      <button  md-icon-button mdTooltip="Filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
         <md-icon>filter_list</md-icon>
       </button>
     </div>
