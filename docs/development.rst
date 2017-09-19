@@ -93,3 +93,11 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
                 Fonction executée au clic sur le marker
                 
                 *Type*: ``any``: fonction prenant en paramètre un `event leaflet <http://leafletjs.com/reference-1.2.0.html#event>`_
+
+        **Ouputs**:
+        
+        :``markerChanged``:
+                Output permettant de récupérer les coordonnées du marker quand celui-ci est déplacé. Retourne un geojson des coordonnées du marker.
+ 
+ 
+
