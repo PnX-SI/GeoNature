@@ -25,7 +25,7 @@ export class ContactFormComponent implements OnInit {
 
    }
 
-  sendGeoIngo(geojson) {
+  sendGeoInfo(geojson) {
     this._ms.setGeojsonCoord(geojson);
   }
 
