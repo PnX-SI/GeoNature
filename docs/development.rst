@@ -87,13 +87,6 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
         
         **Selector**: ``pnx-marker``
         
-        **Inputs**:
-        
-        :``onclick``:
-                Fonction executée au clic sur le marker
-                
-                *Type*: ``any``: fonction prenant en paramètre un `event leaflet <http://leafletjs.com/reference-1.2.0.html#event>`_
-
         **Ouputs**:
         
         :``markerChanged``:
