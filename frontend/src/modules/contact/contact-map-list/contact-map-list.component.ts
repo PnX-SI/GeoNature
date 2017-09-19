@@ -13,18 +13,36 @@ import { Subscription } from 'rxjs/Subscription';
 export class ContactMapListComponent implements OnInit, OnDestroy {
   public data: GeoJSON;
   private idSubscription: Subscription;
+  public releves= new Array();
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
   this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
     .map(res => res.json())
-    .subscribe(res =>  this.data = res );
+    .subscribe(res => {
+      
+      
+       this.data = res
+       
+       res.features.forEach(el => {
+         
+        const row: RowsData = {
+          id: el.id,
+          taxon: el.properties.occurrences.map(occ => occ.nom_cite).join(', '),
+          observer: el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
+          date: el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
+        };
+        // cache our list in releves use for filter
+        this.releves.push(row);
+                
+      });
+            
+      } );
 
 
 
   this.idSubscription = this._mapListService.gettingTableId$
     .subscribe(id => {
-      console.log('from contactttttt');
 
       const selectedLayer = this._mapListService.layerDict[id];
       const feature = selectedLayer.feature;
@@ -35,10 +53,20 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
                               <b> Observateur(s): </b> ${observersList} <br>
                               <b> Taxon(s): </b> ${taxonsList}`;
       selectedLayer.bindPopup(popupContent).openPopup();
+
+      
+
     });
    }
 
   ngOnDestroy() {
     this.idSubscription.unsubscribe();
   }
+}
+
+export interface RowsData {
+  id: string;
+  taxon: any;
+  observer: any;
+  date: any;
 }
