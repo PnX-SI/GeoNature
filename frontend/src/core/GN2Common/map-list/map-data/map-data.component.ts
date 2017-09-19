@@ -12,14 +12,19 @@ import {DatatableComponent} from '@swimlane/ngx-datatable';
 export class MapDataComponent implements OnInit {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
+  // colums on datatable
   columns = [
     { prop: 'taxon' },
     { prop: 'observer' },
     { prop: 'date' }
   ];
-  selected = [];
-  releves = [];
-  rows = [];
+
+  filterList = [...this.columns.map(res => res.prop)];
+  filterSelected = this.filterList[0];
+
+  selected = []; // list of row selected
+  releves = []; // cache our list in releves use for filter
+  rows = []; // rows in data table
 
   constructor(private _mapListService: MapListService) {
     _mapListService.getReleves().subscribe(res => {
@@ -28,7 +33,7 @@ export class MapDataComponent implements OnInit {
           id : el.id,
           taxon : el.properties.occurrences.map(occ => occ.nom_cite ).join(', '),
           observer : el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
-          date  : el.properties.meta_create_date
+          date  : el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
         };
         // cache our list in releves use for filter
         this.releves.push(row);
@@ -36,8 +41,9 @@ export class MapDataComponent implements OnInit {
 
       this.rows = [...this.releves];
     });
+
     this._mapListService.gettingTableId$.subscribe(res => {
-      this.selected = [];
+      this.selected = []; // clear selected list
       for ( const i in this.releves) {
         if (this.releves[i].id === res ) {
           this.selected.push(this.releves[i]);
@@ -58,14 +64,18 @@ export class MapDataComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
-    const temp = this.releves.filter(function(d) {
-      return d.taxon.toLowerCase().indexOf(val) !== -1 || !val;
+    const temp = this.releves.filter(res => {
+      return res[this.filterSelected].toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
     this.rows = temp;
-    // Whenever the filter changes, always go back to the first page
+    // whenever the filter changes, always go back to the first page
     this.table.offset = 0;
+  }
+
+  onChangeFilterOps(list) {
+    this.filterSelected = list; // change filter selected
   }
 
 }
