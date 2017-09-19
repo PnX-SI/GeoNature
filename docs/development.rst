@@ -59,7 +59,7 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
 1. Les composant cartographiques
 
 - **MapComponent**
-        Ce composant affiche une carte leaflet ainsi qu'un outil de recherche de lieux dits et d'adresse (basé sur l'API OpenStreetMap). 
+        Ce composant affiche une carte leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
 
         **Selector**: ``pnx-map``
 
@@ -134,7 +134,7 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
                 Type: ``GeoJSON``
                 
         :``onEachFeature``:
-                Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définit un style etc...)
+                Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définir un style etc...)
                 
                 Type: ``any``: fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
         :``style``: 
