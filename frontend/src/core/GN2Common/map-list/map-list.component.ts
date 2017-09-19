@@ -8,7 +8,7 @@ import { GeoJSON, Layer } from 'leaflet';
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
   styleUrls: ['./map-list.component.scss'],
-  providers: [MapService, MapListService]
+  providers: [MapService]
 })
 export class MapListComponent implements OnInit {
   public layerDict: any;
@@ -20,28 +20,21 @@ export class MapListComponent implements OnInit {
   }
 
   ngOnInit() {
+    // event from the list
     this._mapListService.gettingLayerId$.subscribe(res => {
-      this._mapListService.layerDict[res].setStyle(this._mapListService.selectedLayer);
+      console.log('layer id changes');
+      const selectedLayer = this._mapListService.layerDict[res];
+      this._mapListService.toggleStyle(selectedLayer);
+      this._mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
-    this._mapListService.test = 'testtttttt';
-    console.log('from map list');
-    
-    console.log(this._mapListService);
-
-    
   }
   onEachFeature(feature, layer) {
+    // event from the map
     this._mapListService.layerDict[feature.id] = layer;
     layer.on({
       click : (e) => {
-        // remove selected style
-        if (this._mapListService.selectedLayer !== undefined) {
-          this._mapListService.selectedLayer.setStyle(this._mapListService.originStyle);
-        }
-        // set selected style
-        this._mapListService.selectedLayer = layer;
-        layer.setStyle(this._mapListService.selectedStyle);
-
+        // toggle style
+        this._mapListService.toggleStyle(layer);
         // observable
         this._mapListService.setCurrentTableId(feature.id);
       }

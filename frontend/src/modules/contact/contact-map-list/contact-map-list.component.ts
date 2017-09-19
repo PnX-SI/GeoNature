@@ -19,13 +19,10 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
   this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
     .map(res => res.json())
     .subscribe(res =>  this.data = res );
-    setTimeout( () => {
-        console.log('from contact');
-          console.log(this._mapListService);
-    }, 5000);
 
 
-  this.idSubscription = this._mapListService.gettingLayerId$
+
+  this.idSubscription = this._mapListService.gettingTableId$
     .subscribe(id => {
       console.log('from contactttttt');
 
@@ -34,14 +31,14 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
       // popup
       const taxonsList = feature.properties.occurrences.map(occ => occ.nom_cite).join(', ');
       const observersList = feature.properties.observers.map(obs =>  obs.prenom_role + ' ' + obs.nom_role).join(', ');
-        const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
+      const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
                               <b> Observateur(s): </b> ${observersList} <br>
                               <b> Taxon(s): </b> ${taxonsList}`;
       selectedLayer.bindPopup(popupContent).openPopup();
     });
    }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.idSubscription.unsubscribe();
   }
 }
