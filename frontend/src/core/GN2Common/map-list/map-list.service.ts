@@ -3,6 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { Http, URLSearchParams } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs';
+import * as L from 'leaflet';
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
