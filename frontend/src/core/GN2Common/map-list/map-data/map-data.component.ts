@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MapService } from '../../map/map.service';
-import {MapListService} from '../../map-list/map-list.service';
-import {DatatableComponent} from '@swimlane/ngx-datatable';
+import { MapListService } from '../../map-list/map-list.service';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 
 @Component({
@@ -30,10 +30,10 @@ export class MapDataComponent implements OnInit {
     _mapListService.getReleves().subscribe(res => {
       res.features.forEach(el => {
         const row: RowsData = {
-          id : el.id,
-          taxon : el.properties.occurrences.map(occ => occ.nom_cite ).join(', '),
-          observer : el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
-          date  : el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
+          id: el.id,
+          taxon: el.properties.occurrences.map(occ => occ.nom_cite).join(', '),
+          observer: el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
+          date: el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
         };
         // cache our list in releves use for filter
         this.releves.push(row);
@@ -44,8 +44,8 @@ export class MapDataComponent implements OnInit {
 
     this._mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
-      for ( const i in this.releves) {
-        if (this.releves[i].id === res ) {
+      for (const i in this.releves) {
+        if (this.releves[i].id === res) {
           this.selected.push(this.releves[i]);
         }
       }
@@ -76,6 +76,15 @@ export class MapDataComponent implements OnInit {
 
   onChangeFilterOps(list) {
     this.filterSelected = list; // change filter selected
+  }
+
+  toggleExpandRow(row) {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
+  onEditReleve(idReleve) {
+    // TODO
+    // console.log(idReleve);
   }
 
 }
