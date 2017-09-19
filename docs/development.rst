@@ -97,7 +97,47 @@ Chaque module de Géonature doit être un module Angular indépendant https://an
         **Ouputs**:
         
         :``markerChanged``:
-                Output permettant de récupérer les coordonnées du marker quand celui-ci est déplacé. Retourne un geojson des coordonnées du marker.
- 
- 
+                Output permettant de récupérer les coordonnées du marker quand celui-ci est déplacé. Retourne un geojson des coordonnées du marker
 
+- **leafletDrawComponent**
+        Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
+        
+        **Selector**: ``pnx-leaflet-draw``
+        
+        **Inputs**:
+        
+        :``options``:
+                Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
+                
+                Par défault le fichier ``leaflet-draw.option.ts` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/src/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
+                
+        **Output**
+        
+        :``layerDrawed``:
+                Output renvoyant le geojson de l'objet dessiné.
+
+- **GPSComponent**
+        Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des même input et output.
+        
+        **Selector**: ``pnx-gps``
+        
+- **GeojsonComponent**
+        Affiche sur la carte les geojson passé en *input*
+        
+        **Selector**: ``pnx-geojson``
+        
+        **Inputs**:
+        
+        :``geojson``:
+                Objet geojson à afficher sur la carte
+                
+                Type: ``GeoJSON``
+                
+        :``onEachFeature``:
+                Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définit un style etc...)
+                
+                Type: ``any``: fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
+        :``style``: 
+                Fonction ou object définissant le style des layers du geojson
+                
+                Type: ``any`` `voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
