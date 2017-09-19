@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 
 export class ContactMapListComponent implements OnInit, OnDestroy {
-  public data: GeoJSON;
+  public geojsonData: GeoJSON;
   private idSubscription: Subscription;
   public releves= new Array();
   constructor( private _http: Http, private _mapListService: MapListService) { }
@@ -22,10 +22,9 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
     .subscribe(res => {
       
       
-       this.data = res
-       
+       this.geojsonData = res
+       // format data for the table
        res.features.forEach(el => {
-         
         const row: RowsData = {
           id: el.id,
           taxon: el.properties.occurrences.map(occ => occ.nom_cite).join(', '),
