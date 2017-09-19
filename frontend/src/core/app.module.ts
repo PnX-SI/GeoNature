@@ -35,6 +35,9 @@ import { SideNavService } from './components/sidenav-items/sidenav.service';
 import { MapListService } from './GN2Common/map-list/map-list.service';
 
 
+// test 
+
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,7 +62,7 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     SigninComponent,
   ],
-  providers: [NavService, AuthService, AuthGuard, SideNavService, MapListService],
+  providers: [NavService, AuthService, AuthGuard, SideNavService],
   bootstrap: [AppComponent],
 })
 
