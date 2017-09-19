@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-sm-12 col-md-6 padding-sm">
         <pnx-map class="map-card">
-            <pnx-gps (markerChanged)="sendGeoIngo($event)"> </pnx-gps>
-            <pnx-marker (markerChanged)="sendGeoIngo($event)"> </pnx-marker>
-            <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoIngo($event)" > </pnx-leaflet-draw>
+            <pnx-gps (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
+            <pnx-marker (markerChanged)="sendGeoInfo($event)"> </pnx-marker>
+            <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoInfo($event)" > </pnx-leaflet-draw>
         </pnx-map>
     </div>
     <div class="col-sm-12 col-md-6 padding-sm">
