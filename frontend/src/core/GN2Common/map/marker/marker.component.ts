@@ -12,7 +12,6 @@ import * as L from 'leaflet';
 export class MarkerComponent implements OnInit {
   public map: Map;
   public editingMarker = true;
-  @Input() onclick: any;
   @Output() markerChanged = new EventEmitter<any>();
   constructor(public mapservice: MapService) { }
 
