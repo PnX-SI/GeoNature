@@ -39,7 +39,7 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "jquery": "^3.2.1",
-    "leaflet": "^1.0.3",
+    "leaflet": "1.0.3",
     "leaflet-draw": "^0.4.12",
     "ngx-bootstrap": "^1.7.1",
     "ngx-toastr": "^5.3.1",

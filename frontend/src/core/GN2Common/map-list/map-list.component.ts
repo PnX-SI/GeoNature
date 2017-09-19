@@ -22,7 +22,6 @@ export class MapListComponent implements OnInit {
   ngOnInit() {
     // event from the list
     this._mapListService.gettingLayerId$.subscribe(res => {
-      console.log('layer id changes');
       const selectedLayer = this._mapListService.layerDict[res];
       this._mapListService.toggleStyle(selectedLayer);
       this._mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
