@@ -21,6 +21,7 @@ export class ContactCreateFormComponent implements OnInit {
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
   public contactForm: FormGroup;
+  public releveFormData: any;
   @Input() id: number;
 
   constructor(public fs: FormService, private _ms: MapService,
@@ -38,8 +39,15 @@ export class ContactCreateFormComponent implements OnInit {
       // load one releve
       this._cfs.getReleve(this.id)
         .subscribe(data => {
+
           this.releveForm = this.fs.initObservationForm(data);
-          this.occurrenceForm = this.fs.initOccurrenceForm(data.occurrences);
+          for (const occ of data.properties.t_occurrences_contact){
+            this.releveForm.value.properties.t_occurrences_contact.push(occ);
+          }
+          for (const occ of data.properties.t_occurrences_contact){
+            this.taxonsList.push({'nom_valide': occ.nom_cite});
+          }
+          this.releveFormData = this.releveForm.value;
       });
     }
 
@@ -48,26 +56,33 @@ export class ContactCreateFormComponent implements OnInit {
   }
 
   addOccurence(index) {
+    // push the current taxon in the taxon list and refresh the currentTaxon
+    // FIX en attendant la vue avec l'objet taxon
+    let taxon = {};
+    if (this.fs.currentTaxon !== undefined) {
+      taxon = {'nom_valide': this.fs.currentTaxon.nom_valide};
+    } else {
+      taxon = {'nom_valide': this.fs.currentTaxon};
+    }
+    this.taxonsList.push(taxon);
     // add an occurrence
     this.fs.addOccurence(this.occurrenceForm, this.releveForm, this.countingForm);
+    // save the data of form
+    this.releveFormData = this.releveForm.value;
     // set the index occurence
     this.fs.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length ;
     // reset occurrence form
     this.occurrenceForm = this.fs.initOccurrenceForm();
     // reset the counting
     this.countingForm = this.fs.initCountingArray();
-
-    // push the current taxon in the taxon list and refresh the currentTaxon
-    this.taxonsList.push(this.fs.currentTaxon);
   }
 
   editOccurence(index) {
     // set the current index
     this.fs.indexOccurrence = index;
     // get the occurrence data from releve form
-    const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    const occurenceData = this.releveFormData.properties.t_occurrences_contact[index];
     const countingData = occurenceData.cor_counting_contact;
-
     const nbCounting = countingData.length;
     // init occurence form with the data to edit
     this.occurrenceForm = this.fs.initOccurrenceForm(occurenceData);
@@ -79,7 +94,9 @@ export class ContactCreateFormComponent implements OnInit {
      }
     this.countingForm = this.fs.initCountingArray(countingData);
     // set the current taxon
-    this.fs.currentTaxon = occurenceData.cd_nom;
+    console.log(occurenceData);
+    // TODO post the all taxon object quand la vue le renverra 
+    this.fs.currentTaxon = occurenceData.nom_cite;
   }
 
   submitData() {
