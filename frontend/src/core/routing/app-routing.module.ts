@@ -12,6 +12,7 @@ const appRoutes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'contact-form', component: ContactFormComponent },
+  { path: 'contact-form/:id', component: ContactFormComponent },
   // { path: 'contact-faune', component: ContactComponent, canActivate: [AuthGuard]},
   { path: 'contact', component: ContactMapListComponent},
   { path: '**', component: PageNotFoundComponent }
