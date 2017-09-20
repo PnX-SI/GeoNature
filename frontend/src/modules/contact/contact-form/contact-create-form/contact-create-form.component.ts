@@ -33,29 +33,53 @@ export class ContactCreateFormComponent implements OnInit {
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
     console.log('id from route' + this.id);
-    
-    // load one releve
-    // this._cfs.getReleve(1)
-    //   .subscribe(data => {
-    //     this.releveForm = this.fs.initObservationForm(data);
-    //   })
-    // init the formsGroups
+
+    if (this.id !== undefined) {
+      // load one releve
+      this._cfs.getReleve(this.id)
+        .subscribe(data => {
+          this.releveForm = this.fs.initObservationForm(data);
+          this.occurrenceForm = this.fs.initOccurrenceForm(data.occurrences);
+      });
+    }
 
     // init the taxons list
     this.taxonsList = [];
   }
 
-  addOccurence() {
+  addOccurence(index) {
     // add an occurrence
     this.fs.addOccurence(this.occurrenceForm, this.releveForm, this.countingForm);
-    // reset the occurence
+    // set the index occurence
+    this.fs.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length ;
+    // reset occurrence form
     this.occurrenceForm = this.fs.initOccurrenceForm();
     // reset the counting
     this.countingForm = this.fs.initCountingArray();
 
     // push the current taxon in the taxon list and refresh the currentTaxon
     this.taxonsList.push(this.fs.currentTaxon);
-    this.fs.currentTaxon = {};
+  }
+
+  editOccurence(index) {
+    // set the current index
+    this.fs.indexOccurrence = index;
+    // get the occurrence data from releve form
+    const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    const countingData = occurenceData.cor_counting_contact;
+
+    const nbCounting = countingData.length;
+    // init occurence form with the data to edit
+    this.occurrenceForm = this.fs.initOccurrenceForm(occurenceData);
+    // get counting data from occurence
+
+    // init the counting form with the data to edit
+    for (let i = 1; i < nbCounting; i++) {
+      this.fs.nbCounting.push('');
+     }
+    this.countingForm = this.fs.initCountingArray(countingData);
+    // set the current taxon
+    this.fs.currentTaxon = occurenceData.cd_nom;
   }
 
   submitData() {

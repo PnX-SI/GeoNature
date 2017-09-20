@@ -38,17 +38,17 @@
           <button md-raised-button 
             class="btn-form"
             [disabled]="occurrenceForm.invalid || countingForm.invalid"
-           (click)="addOccurence()">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+           (click)="addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
         </md-card-actions> 
-        <!-- <pre>form value: <br>{{countingForm.value | json}}</pre>
-        <pre>form value: <br>{{occurrenceForm.value | json}}</pre> -->
+        <!-- <pre>form value: <br>{{countingForm.value | json}}</pre> -->
+        <!-- <pre>form value: <br>{{occurrenceForm.value | json}}</pre> -->
         <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
     </div>
 </div>
 <div class="card" *ngIf="taxonsList.length > 0">
   <div class="card-body">
       <b> Taxon(s) enregistré(s) </b>
-      <pnx-taxons-list [list]="taxonsList" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
+      <pnx-taxons-list [list]="taxonsList" (taxonEdited)="editOccurence($event)" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
   </div>
 </div>
 
