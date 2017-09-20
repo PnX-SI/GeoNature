@@ -45,14 +45,12 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
       const selectedLayer = this._mapListService.layerDict[id];
       const feature = selectedLayer.feature;
       // popup
-      const taxonsList = feature.properties.occurrences.map(occ => occ.nom_cite).join(', ');
+      const taxonsList = feature.properties.t_occurrences_contact.map(occ => occ.nom_cite).join(', ');
       const observersList = feature.properties.observers.map(obs =>  obs.prenom_role + ' ' + obs.nom_role).join(', ');
       const popupContent = `<b> Id relevé: </b>: ${feature.id} <br>
                               <b> Observateur(s): </b> ${observersList} <br>
                               <b> Taxon(s): </b> ${taxonsList}`;
       selectedLayer.bindPopup(popupContent).openPopup();
-
-      
 
     });
    }
