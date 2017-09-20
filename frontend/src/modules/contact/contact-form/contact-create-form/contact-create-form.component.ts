@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { FormService } from '../../../../core/GN2Common/form/form.service'
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service'
@@ -21,6 +21,7 @@ export class ContactCreateFormComponent implements OnInit {
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
   public contactForm: FormGroup;
+  @Input() id: number;
 
   constructor(public fs: FormService, private _ms: MapService,
      private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
@@ -31,6 +32,8 @@ export class ContactCreateFormComponent implements OnInit {
     this.releveForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
+    console.log('id from route' + this.id);
+    
     // load one releve
     // this._cfs.getReleve(1)
     //   .subscribe(data => {
