@@ -49,7 +49,7 @@ class TRelevesContact(serializableGeoModel):
     geom_local = db.Column(Geometry)
     geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
 
-    occurrences = relationship("TOccurrencesContact", lazy='joined' , cascade="all, delete-orphan")
+    t_occurrences_contact = relationship("TOccurrencesContact", lazy='joined' , cascade="all, delete-orphan")
 
     observers = db.relationship(
         'TRoles',
@@ -98,8 +98,8 @@ class TOccurrencesContact(serializableModel):
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
     comment = db.Column(db.Unicode)
-
-    countingContact = relationship("CorCountingContact", lazy='joined',  cascade="all, delete-orphan")
+    
+    cor_counting_contact = relationship("CorCountingContact", lazy='joined',  cascade="all, delete-orphan")
 
 class CorCountingContact(serializableModel):
     __tablename__ = 'cor_counting_contact'
