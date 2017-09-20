@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input, OnChanges } from '@ang
 import { MapService } from '../../map/map.service';
 import { MapListService } from '../../map-list/map-list.service';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'pnx-map-data',
@@ -28,7 +28,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   //releves = []; // cache our list in releves use for filter
   rows = []; // rows in data table
 
-  constructor(private _mapListService: MapListService) {
+  constructor(private _mapListService: MapListService, private _router: Router) {
 
     this._mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
@@ -73,6 +73,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   onEditReleve(idReleve) {
     // TODO
     // console.log(idReleve);
+    this._router.navigate(['contact-form', idReleve]);
   }
 
   ngOnChanges(changes){
