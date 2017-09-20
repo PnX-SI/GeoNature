@@ -1,6 +1,9 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+
+
+
 import {HttpModule, Http} from '@angular/http';
 
 // For Angular Dependencies
@@ -14,8 +17,8 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
 
 // Modules
-import { GN2CommonModule }  from './GN2Common/GN2Common.module'
-import { ContactModule } from '../modules/contact/contact.module'
+import { GN2CommonModule } from './GN2Common/GN2Common.module';
+import { ContactModule } from '../modules/contact/contact.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
