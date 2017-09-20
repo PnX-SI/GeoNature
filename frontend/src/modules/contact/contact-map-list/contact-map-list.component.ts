@@ -20,21 +20,21 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
   this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
     .map(res => res.json())
     .subscribe(res => {
-      
+
        this.geojsonData = res;
        // format data for the table
        res.features.forEach(el => {
         const row: RowsData = {
           id: el.id,
-          taxon: el.properties.occurrences.map(occ => occ.nom_cite).join(', '),
+          taxon: el.properties.t_occurrences_contact.map(occ => occ.nom_cite).join(', '),
           observer: el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
           date: el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
         };
 
         this.releves.push(row);
-                
+
       });
-            
+
       } );
 
 
