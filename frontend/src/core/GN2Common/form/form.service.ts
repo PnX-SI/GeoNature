@@ -79,7 +79,6 @@ export class FormService {
 
   initCountingArray(data?: Array<any>): FormArray {
     const arrayForm = this._fb.array([]);
-    console.log(data);
 
     if (data) {
       for (let i = 0; i < data.length; i++) {
@@ -95,8 +94,6 @@ export class FormService {
     // push the counting(s) in occurrenceForm
     occurenceForm.controls.cor_counting_contact.patchValue(countingForm.value);
     // push or edit the current occurence in the observationForm
-    console.log('longueur tableau: '+ observationForm.value.properties.t_occurrences_contact.length);
-    console.log('index: '+ this.indexOccurrence);
     if (observationForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
       observationForm.value.properties.t_occurrences_contact.push(occurenceForm.value);
     }else {
