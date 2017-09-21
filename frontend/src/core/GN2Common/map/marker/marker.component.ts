@@ -19,6 +19,11 @@ export class MarkerComponent implements OnInit {
     this.map = this.mapservice.map;
     this.setMarkerLegend();
     this.enableMarkerOnClick();
+
+    this.mapservice.isMarkerEditing$
+      .subscribe(isEditing => {
+        this.toggleEditing();
+      });
    }
 
    setMarkerLegend() {
@@ -41,7 +46,6 @@ export class MarkerComponent implements OnInit {
       } else {
         this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
       }
-
       });
     }
   generateMarkerAndEvent(x, y) {
@@ -68,13 +72,13 @@ export class MarkerComponent implements OnInit {
   }
 
   toggleEditing() {
-    this.mapservice.editingMarker = !this.mapservice.editingMarker;
+    this.editingMarker = !this.editingMarker;
     document.getElementById('markerLegend').style.backgroundColor = this.editingMarker ? '#c8c8cc' : 'white';
     if (!this.editingMarker) {
       // disable event
-      this.map.off('click');
-      this.mapservice.marker.off('moveend');
+      this.mapservice.map.off('click');
       if ( this.mapservice.marker !== undefined ) {
+        this.mapservice.marker.off('moveend');
         this.map.removeLayer(this.mapservice.marker);
       }
     } else {

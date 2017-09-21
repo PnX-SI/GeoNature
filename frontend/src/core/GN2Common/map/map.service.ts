@@ -14,13 +14,14 @@ export class MapService {
     public map: Map;
     public baseMaps: any;
     private currentLayer: GeoJSON;
-    public editingMarker: boolean;
     public marker: Marker;
     public releveFeatureGroup: FeatureGroup;
     toastrConfig: ToastrConfig;
-    private _geojsonCoord = new Subject<any>();
     public modalContent: any;
+    private _geojsonCoord = new Subject<any>();
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
+    private _editingMarker = new Subject<boolean>();
+    public isMarkerEditing$: Observable<any> = this._editingMarker.asObservable();
     public layerGroup: any;
 
     constructor(private http: Http, private toastrService: ToastrService,
@@ -30,7 +31,6 @@ export class MapService {
             tapToDismiss: true,
             timeOut: 3000
         };
-        this.editingMarker = true;
     }
 
     setMap(map) {
@@ -86,7 +86,6 @@ export class MapService {
         style: style
       }).addTo(this.map);
       this.map.fitBounds(this.currentLayer.getBounds());
-      
     }
 
     // clear the marker when search
@@ -99,6 +98,10 @@ export class MapService {
 
     setGeojsonCoord(geojsonCoord) {
       this._geojsonCoord.next(geojsonCoord);
+    }
+
+    setEditingMarker(isEditing) {
+      this._editingMarker.next(isEditing);
     }
 
 
