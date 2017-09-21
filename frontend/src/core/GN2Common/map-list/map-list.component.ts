@@ -21,7 +21,7 @@ export class MapListComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
     // event from the list
     this._mapListService.gettingLayerId$.subscribe(res => {
       const selectedLayer = this._mapListService.layerDict[res];
