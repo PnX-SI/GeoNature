@@ -16,7 +16,7 @@ export class MapService {
     private currentLayer: GeoJSON;
     public editingMarker: boolean;
     public marker: Marker;
-    public releveFeatureGroup : FeatureGroup;
+    public releveFeatureGroup: FeatureGroup;
     toastrConfig: ToastrConfig;
     private _geojsonCoord = new Subject<any>();
     public modalContent: any;
@@ -137,7 +137,7 @@ export class MapService {
       });
       return LayerControl;
     }
-  
+
     createMarker(x, y) {
      return L.marker([y, x], {
         icon: L.icon({
@@ -148,7 +148,7 @@ export class MapService {
         draggable: true,
     })
     }
-  
+
     removeAllLayers(map, featureGroup){
       featureGroup.eachLayer((layer)=>{
         map.removeLayer(layer);
