@@ -65,7 +65,14 @@ export class LeafletDrawComponent implements OnInit {
         // output
         this.layerDrawed.emit(geojson);
       }
+    });
 
+    // on draw edited
+    this.mapservice.map.on('draw:edited', (e) => {
+      let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
+      geojson = (geojson as any).features[0];
+      // output
+      this.layerDrawed.emit(geojson);
     });
   }
 }
