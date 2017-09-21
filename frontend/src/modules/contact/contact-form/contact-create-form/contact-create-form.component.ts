@@ -55,10 +55,17 @@ export class ContactCreateFormComponent implements OnInit {
           if (data.geometry.type === 'Point') {
             this._ms.marker = this._ms.createMarker(coordinates[0], coordinates[1]);
             this._ms.map.addLayer(this._ms.marker);
+            //zoom to the layer
+            this._ms.map.setView(this._ms.marker.getLatLng(), 15);
           } else {
+            // if polyline or polygon
             const geojsonLayer = L.geoJSON(data);
             this._ms.releveFeatureGroup.addLayer(geojsonLayer);
-          }// end else
+            // zoom to the layer
+            this._ms.map.fitBounds(geojsonLayer.getBounds());
+            // disable point edition
+            this._ms.setEditingMarker(false);
+          }
 
 
       });// end subscribe
