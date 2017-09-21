@@ -40,7 +40,7 @@ export class MapListService {
     this._tableId.next(id);
   }
 
-  toggleStyle(selectedLayer ) {
+  toggleStyle(selectedLayer) {
     // togle the style of selected layer
     if ( this.selectedLayer !== undefined) {
       this.selectedLayer.setStyle(this.originStyle);
@@ -50,21 +50,20 @@ export class MapListService {
     this.selectedLayer.setStyle(this.selectedStyle);
   }
 
-  zoomOnSelectedLayer(map, layer){
+  zoomOnSelectedLayer(map, layer) {
     const zoom = map.getZoom();
     // latlng is different between polygons and point
     let latlng;
-    
+
     if(layer instanceof L.Polygon || layer instanceof L.Polyline){
       latlng = (layer as any)._bounds._northEast;
-    }
-    else {
+    }else {
       latlng = layer._latlng;
     }
-    if (zoom>=12) {
+    if (zoom >= 12) {
       map.setView(latlng, zoom);
-    } else{
+    } else {
       map.setView(latlng, 12);
-  } 
+  }
   }
 }

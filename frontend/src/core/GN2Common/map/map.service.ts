@@ -15,14 +15,21 @@ export class MapService {
     public baseMaps: any;
     private currentLayer: GeoJSON;
     public marker: Marker;
+    public editingMarker = true;
     public releveFeatureGroup: FeatureGroup;
     toastrConfig: ToastrConfig;
     public modalContent: any;
     private _geojsonCoord = new Subject<any>();
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
-    private _editingMarker = new Subject<boolean>();
-    public isMarkerEditing$: Observable<any> = this._editingMarker.asObservable();
+    private _isEditingMarker = new Subject<boolean>();
+    public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
     public layerGroup: any;
+    originStyle = {
+      'color': '#3388ff',
+      'fill': true,
+      'fillOpacity': 0.2,
+      'weight': 3
+    };
 
     constructor(private http: Http, private toastrService: ToastrService,
       private translate: TranslateService) {
@@ -101,11 +108,11 @@ export class MapService {
     }
 
     setEditingMarker(isEditing) {
-      this._editingMarker.next(isEditing);
+      this._isEditingMarker.next(isEditing);
     }
 
 
-    sendWarningMessage(){
+    sendWarningMessage() {
       this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
       .subscribe(res =>
         this.toastrService.warning(res, '', this.toastrConfig)
@@ -149,11 +156,21 @@ export class MapService {
                 iconAnchor: [12, 36]
         }),
         draggable: true,
-    })
+    });
     }
 
-    removeAllLayers(map, featureGroup){
-      featureGroup.eachLayer((layer)=>{
+    createGeojson(geojson, onEachFeature?): GeoJSON {
+      return L.geoJSON(geojson, {
+        style: (this.originStyle as any),
+        pointToLayer:  (feature, latlng) => {
+          return L.circleMarker(latlng);
+        },
+        onEachFeature: onEachFeature
+      });
+    }
+
+    removeAllLayers(map, featureGroup) {
+      featureGroup.eachLayer((layer) => {
         map.removeLayer(layer);
       })
     }

@@ -11,7 +11,6 @@ import * as L from 'leaflet';
 
 export class MarkerComponent implements OnInit {
   public map: Map;
-  public editingMarker = true;
   @Output() markerChanged = new EventEmitter<any>();
   constructor(public mapservice: MapService) { }
 
@@ -72,9 +71,9 @@ export class MarkerComponent implements OnInit {
   }
 
   toggleEditing() {
-    this.editingMarker = !this.editingMarker;
-    document.getElementById('markerLegend').style.backgroundColor = this.editingMarker ? '#c8c8cc' : 'white';
-    if (!this.editingMarker) {
+    this.mapservice.editingMarker = !this.mapservice.editingMarker;
+    document.getElementById('markerLegend').style.backgroundColor = this.mapservice.editingMarker ? '#c8c8cc' : 'white';
+    if (!this.mapservice.editingMarker) {
       // disable event
       this.mapservice.map.off('click');
       if ( this.mapservice.marker !== undefined ) {

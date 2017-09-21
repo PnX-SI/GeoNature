@@ -60,6 +60,7 @@ export class MapComponent implements OnInit {
 
     this.mapService.setMap(map);
     this.mapService.initializeReleveFeatureGroup();
+
   }
 
 }

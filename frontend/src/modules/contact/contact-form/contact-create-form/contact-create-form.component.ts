@@ -55,12 +55,15 @@ export class ContactCreateFormComponent implements OnInit {
           if (data.geometry.type === 'Point') {
             this._ms.marker = this._ms.createMarker(coordinates[0], coordinates[1]);
             this._ms.map.addLayer(this._ms.marker);
-            //zoom to the layer
+            // zoom to the layer
             this._ms.map.setView(this._ms.marker.getLatLng(), 15);
           } else {
             // if polyline or polygon
-            const geojsonLayer = L.geoJSON(data);
+            const geojsonLayer = this._ms.createGeojson(data);
             this._ms.releveFeatureGroup.addLayer(geojsonLayer);
+            console.log('from contact');
+            console.log(this._ms.releveFeatureGroup);
+
             // zoom to the layer
             this._ms.map.fitBounds(geojsonLayer.getBounds());
             // disable point edition
@@ -68,12 +71,12 @@ export class ContactCreateFormComponent implements OnInit {
           }
 
 
-      });// end subscribe
+      }); // end subscribe
     }
 
     // init the taxons list
     this.taxonsList = [];
-  }
+  } // end ngOnInit
 
   addOccurence(index) {
     // push the current taxon in the taxon list and refresh the currentTaxon
