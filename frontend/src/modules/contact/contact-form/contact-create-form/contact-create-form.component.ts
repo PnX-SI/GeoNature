@@ -48,28 +48,10 @@ export class ContactCreateFormComponent implements OnInit {
           for (const occ of data.properties.t_occurrences_contact){
             this.taxonsList.push({'nom_valide': occ.nom_cite});
           }
+          // copy the form data
           this.releveFormData = this.releveForm.value;
           // load the geometry
-          // if point
-          const coordinates = data.geometry.coordinates;
-          if (data.geometry.type === 'Point') {
-            this._ms.marker = this._ms.createMarker(coordinates[0], coordinates[1]);
-            this._ms.map.addLayer(this._ms.marker);
-            // zoom to the layer
-            this._ms.map.setView(this._ms.marker.getLatLng(), 15);
-          } else {
-            // if polyline or polygon
-            const geojsonLayer = this._ms.createGeojson(data);
-            this._ms.releveFeatureGroup.addLayer(geojsonLayer);
-            console.log('from contact');
-            console.log(this._ms.releveFeatureGroup);
-
-            // zoom to the layer
-            this._ms.map.fitBounds(geojsonLayer.getBounds());
-            // disable point edition
-            this._ms.setEditingMarker(false);
-          }
-
+          this._ms.loadGeometryReleve(data);
 
       }); // end subscribe
     }

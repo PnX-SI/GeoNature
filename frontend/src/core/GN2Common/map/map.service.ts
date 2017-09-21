@@ -172,7 +172,36 @@ export class MapService {
     removeAllLayers(map, featureGroup) {
       featureGroup.eachLayer((layer) => {
         map.removeLayer(layer);
-      })
+      });
     }
 
+    loadGeometryReleve(data) {
+      const coordinates = data.geometry.coordinates;
+      if (data.geometry.type === 'Point') {
+        console.log('ppoinnnnnnnnt');
+        this.marker = this.createMarker(coordinates[0], coordinates[1]);
+        this.map.addLayer(this.marker);
+        // zoom to the layer
+        this.map.setView(this.marker.getLatLng(), 15);
+      } else {
+        let layer;
+        if (data.geometry.type === 'LineString') {
+          const myLatLong = coordinates.map(point => {
+            return L.latLng(point[1], point[0]);
+          });
+           layer = L.polyline(myLatLong);
+          this.releveFeatureGroup.addLayer(layer);
+        }
+        if (data.geometry.type === 'Polygon') {
+          const myLatLong = coordinates[0].map(point => {
+            return L.latLng(point[1], point[0]);
+          });
+          layer = L.polygon(myLatLong);
+          this.releveFeatureGroup.addLayer(layer);
+        }
+        this.map.fitBounds(layer.getBounds());
+        // disable point event on the map
+          this.setEditingMarker(false);
+    }
+  }
 }
