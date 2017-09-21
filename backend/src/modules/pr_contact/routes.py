@@ -84,8 +84,8 @@ def insertOrUpdateOneReleve():
             contact = TOccurrencesContact(**occ)
             for cnt in cor_counting_contact :
                 countingContact = CorCountingContact(**cnt)
-                contact.countingContact.append(countingContact)
-            releve.occurrences.append(contact)
+                contact.cor_counting_contact.append(countingContact)
+            releve.t_occurrences_contact.append(contact)
 
         try:
             if releve.id_releve_contact :
