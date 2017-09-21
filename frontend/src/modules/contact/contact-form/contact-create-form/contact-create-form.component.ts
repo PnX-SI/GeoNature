@@ -6,6 +6,7 @@ import { MapService } from '../../../../core/GN2Common/map/map.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
+import * as L from 'leaflet';
 
 
 
@@ -54,8 +55,13 @@ export class ContactCreateFormComponent implements OnInit {
           if (data.geometry.type === 'Point') {
             this._ms.marker = this._ms.createMarker(coordinates[0], coordinates[1]);
             this._ms.map.addLayer(this._ms.marker);
-          }
-      });
+          } else {
+            const geojsonLayer = L.geoJSON(data);
+            this._ms.releveFeatureGroup.addLayer(geojsonLayer);
+          }// end else
+
+
+      });// end subscribe
     }
 
     // init the taxons list

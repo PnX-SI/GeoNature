@@ -40,9 +40,8 @@
             [disabled]="occurrenceForm.invalid || countingForm.invalid"
            (click)="addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
         </md-card-actions>
-        occurence valid ? {{occurrenceForm.valid }} 
-        counting valid ? {{countingForm.valid }} 
-        <pre>form value: <br>{{countingForm.value | json}}</pre>
+
+        <!-- <pre>form value: <br>{{countingForm.value | json}}</pre> -->
         <!-- <pre>form value: <br>{{occurrenceForm.value | json}}</pre> -->
         <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
     </div>
