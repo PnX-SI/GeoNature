@@ -113,9 +113,22 @@ export class FormService {
     countingForm.push(countingCtrl);
     }
 
-  removeCounting(index: number, coutingForm: FormArray) {
-    coutingForm.value.splice(index, 1);
+  removeCounting(index: number, countingForm: FormArray) {
+    //countingForm.controls.splice(index, 1);
+    countingForm.removeAt(index);
+    countingForm.value.splice(index, 1);
     this.nbCounting.splice(index, 1);
+    console.log(countingForm);
+    // check if is valid
+    let valid = true;
+    countingForm.controls.forEach((control) => {
+      if (!control.valid) {
+        valid = false;
+      }
+    });
+     
+
+
   }
 
   updateTaxon(taxon) {

@@ -33,13 +33,13 @@ export class ContactCreateFormComponent implements OnInit {
     this.releveForm = this.fs.initObservationForm();
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
-    console.log('id from route' + this.id);
 
+    // if its edition mode
     if (this.id !== undefined) {
       // load one releve
       this._cfs.getReleve(this.id)
         .subscribe(data => {
-
+          // pre fill the form
           this.releveForm = this.fs.initObservationForm(data);
           for (const occ of data.properties.t_occurrences_contact){
             this.releveForm.value.properties.t_occurrences_contact.push(occ);
@@ -48,6 +48,13 @@ export class ContactCreateFormComponent implements OnInit {
             this.taxonsList.push({'nom_valide': occ.nom_cite});
           }
           this.releveFormData = this.releveForm.value;
+          // load the geometry
+          // if point
+          const coordinates = data.geometry.coordinates;
+          if (data.geometry.type === 'Point') {
+            this._ms.marker = this._ms.createMarker(coordinates[0], coordinates[1]);
+            this._ms.map.addLayer(this._ms.marker);
+          }
       });
     }
 
@@ -98,6 +105,7 @@ export class ContactCreateFormComponent implements OnInit {
     // TODO post the all taxon object quand la vue le renverra 
     this.fs.currentTaxon = occurenceData.nom_cite;
   }
+
 
   submitData() {
     // Format the final form
