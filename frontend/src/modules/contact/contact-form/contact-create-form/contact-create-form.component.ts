@@ -6,6 +6,7 @@ import { MapService } from '../../../../core/GN2Common/map/map.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
 
 
@@ -27,7 +28,8 @@ export class ContactCreateFormComponent implements OnInit {
 
   constructor(public fs: FormService, private _ms: MapService,
      private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
-     private toastr: ToastrService, private _cfs: ContactFormService
+     private toastr: ToastrService, private _cfs: ContactFormService,
+     private router: Router
     ) {  }
 
   ngOnInit() {
@@ -142,6 +144,8 @@ export class ContactCreateFormComponent implements OnInit {
         this.countingForm = this.fs.initCountingArray();
         this.taxonsList = [];
         this.fs.municipalities = "";
+        // redirect
+        this.router.navigate(['/contact']);
         },
         (error) => { this.toastr.error("Une erreur s'est produite!", '', {positionClass:'toast-top-center'});}
       );
