@@ -38,16 +38,15 @@ export class ObservationComponent implements OnInit, OnDestroy {
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
       .subscribe(geojson => {
-        this.releveForm.patchValue({geometry: geojson});
+        this.releveForm.patchValue({geometry: geojson.geometry});
         this.geojson = geojson;
         // subscribe to geo info
         this._dfs.getGeoInfo(geojson)
           .subscribe(res => {
-            
             this.releveForm.controls.properties.patchValue({
               altitude_min: res.altitude.altitude_min,
               altitude_max: res.altitude.altitude_max,
-              municipalities : res.municipality.map(m =>  m.code)
+              municipalities : res.municipality.map(m =>  m.source_code)
             });
             this.fs.municipalities = res.municipality.map(m => m.area_name).join();
           });

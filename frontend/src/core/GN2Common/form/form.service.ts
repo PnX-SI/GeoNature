@@ -30,7 +30,7 @@ export class FormService {
         altitude_min: data ? data.properties.altitude_min: null,
         altitude_max : data ? data.properties.altitude_max: null,
         deleted: false,
-        municipalities : [null, Validators.required],
+        municipalities : null,
         meta_device_entry: 'web',
         comment: data ? data.properties.comment: null,
         observers: [data ? this.formatObservers(data.properties.observers): null, Validators.required],
