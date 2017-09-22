@@ -41,7 +41,7 @@
           </pnx-nomenclature>
       </div>
     </div>
-    <button id="advanced-button" type="button" class="btn btn-info btn-sm" data-toggle="collapse" data-target="#collapseAvance">
+    <button id="advanced-button" type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#collapseAvance">
         <i class="fa fa-cog" aria-hidden="true"></i>
         {{ 'Taxon.Advanced' | translate }}
     </button>
@@ -70,14 +70,16 @@
 
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <small> {{ 'Taxon.DeterminationMethod' | translate }} </small>
           <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determination_method"
-            type="text"  placeholder="{{ 'Taxon.DeterminationMethod' | translate }}">
+            type="text">
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <small> {{ 'Taxon.Determiner' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determiner"
-              type="text"  placeholder="{{ 'Taxon.Determiner' | translate }}">
+              type="text">
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"> 
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.ValidationStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
@@ -99,15 +101,17 @@
           </pnx-nomenclature>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <small> {{ 'Taxon.DigitalProof' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
-              type="text"  placeholder="{{ 'Taxon.DigitalProof' | translate }}">
+              type="text">
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
           <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
-            type="text"  placeholder="{{ 'Taxon.NonDigitalProof' | translate }}"> 
+            type="text"> 
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="row-commentaire">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">               
             <textarea placeholder="{{ 'Releve.Comment' | translate }}" class="form-control" [formControl]="occurrenceForm.controls.comment" 
               rows="2" id="commentaire">
