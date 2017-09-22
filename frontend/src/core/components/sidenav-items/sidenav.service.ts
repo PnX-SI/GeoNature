@@ -8,12 +8,10 @@ export class SideNavService {
     setSideNav(sidenav){
         this.sidenav = sidenav;
     }
-    setAppSideNav(sidenav) {
-        sidenav.mode = 'over';
-        sidenav.opened = false;
+    setModule(sidenav: MdSidenav) {
+        sidenav.close()
     }
-    setHome(sidenav) {
-        sidenav.mode = 'side';
-        sidenav.opened = true;
+    setHome(sidenav: MdSidenav) {
+        sidenav.open()
     }
 }
