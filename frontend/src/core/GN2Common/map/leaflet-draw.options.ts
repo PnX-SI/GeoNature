@@ -16,7 +16,7 @@ export const leafletDrawOption: any = {
 
       },
       edit: {
-        remove: true,
+        remove: false,
         moveMarker: true
       }
 };
