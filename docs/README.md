@@ -1,8 +1,9 @@
 # Geonature
-requirement for runing app: 
+
+Requirement to run the FRONTEND app: 
 Angular cli OR Docker on host machine.
 
-## Run app with angular cli 
+## Run FRONTEND app with angular cli 
 ```bash
 git clone https://github.com/PnX-SI/GeoNature.git
 git checkout docker
@@ -15,7 +16,7 @@ ng serve
 That's it! :tada: :sparkles: :sparkles:
 
 
-## Run app with Docker
+## Run FRONTEND app with Docker
 
 ```bash
 git clone https://github.com/PnX-SI/GeoNature.git
