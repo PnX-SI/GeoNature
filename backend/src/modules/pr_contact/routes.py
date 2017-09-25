@@ -49,7 +49,34 @@ def getOneReleve(id_releve):
 @routes.route('/vrelevecontact', methods=['GET'])
 @json_resp
 def getViewReleveContact():
-    data = VReleveContact.query.all()
+    q = VReleveContact.query
+
+    parameters = request.args
+
+    limit = int(parameters.get('limit')) if parameters.get('limit') else 100
+    page = int(parameters.get('offset')) if parameters.get('offset') else 0
+
+    #Filters
+    for param in parameters:
+        if param in VReleveContact.__table__.columns:
+            col = getattr( VReleveContact.__table__.columns,param)
+            q = q.filter(col == parameters[param])
+
+    #Order by
+    if 'orderby' in parameters:
+        if parameters.get('orderby') in VReleveContact.__table__.columns:
+             orderCol =  getattr(VReleveContact.__table__.columns,parameters['orderby'])
+        else:
+            orderCol = getattr(VReleveContact.__table__.columns,'occ_meta_create_date')
+
+        if 'order' in parameters:
+            if (parameters['order'] == 'desc'):
+                orderCol = orderCol.desc()
+
+        q= q.order_by(orderCol)
+
+
+    data = q.limit(limit).offset(page*limit).all()
     if data:
         return FeatureCollection([n.get_geofeature() for n in data])
     return {'message': 'not found'}, 404
