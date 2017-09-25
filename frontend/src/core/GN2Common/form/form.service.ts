@@ -90,21 +90,6 @@ export class FormService {
     return arrayForm;
   }
 
-  addOccurence(occurenceForm: FormGroup, observationForm: FormGroup, countingForm: FormArray, edit?) {
-    // push the counting(s) in occurrenceForm
-    occurenceForm.controls.cor_counting_contact.patchValue(countingForm.value);
-    // push or edit the current occurence in the observationForm
-    if (observationForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
-      observationForm.value.properties.t_occurrences_contact.push(occurenceForm.value);
-    }else {
-      observationForm.value.properties.t_occurrences_contact[this.indexOccurrence] = occurenceForm.value;
-    }
-    // reset counting
-    this.nbCounting = [''];
-    this.indexCounting = 0;
-    // reset current taxon
-    this.currentTaxon = {};
-  }
 
   addCounting(countingForm: FormArray) {
     this.indexCounting += 1;
@@ -118,16 +103,6 @@ export class FormService {
     countingForm.removeAt(index);
     countingForm.value.splice(index, 1);
     this.nbCounting.splice(index, 1);
-    console.log(countingForm);
-    // check if is valid
-    let valid = true;
-    countingForm.controls.forEach((control) => {
-      if (!control.valid) {
-        valid = false;
-      }
-    });
-     
-
 
   }
 
