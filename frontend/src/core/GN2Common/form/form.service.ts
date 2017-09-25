@@ -23,6 +23,7 @@ export class FormService {
     return this._fb.group({
       geometry: [data ? data.geometry: null, Validators.required],
       properties: this._fb.group({
+        id_releve_contact : [data ? data.properties.id_releve_contact : null],
         id_dataset: [data ? data.properties.id_dataset:null, Validators.required],
         id_digitiser : null,
         date_min: [data ? this.formatDate(data.properties.date_min): null, Validators.required],
@@ -41,6 +42,7 @@ export class FormService {
 
    initOccurrenceForm(data?): FormGroup {
     return this._fb.group({
+      id_releve_contact : [data ? data.id_releve_contact : null],
       id_nomenclature_obs_technique : [data ? data.id_nomenclature_obs_technique : null, Validators.required],
       id_nomenclature_obs_meth: data ? data.id_nomenclature_obs_meth : null,
       id_nomenclature_bio_condition: [data ? data.id_nomenclature_bio_condition : null, Validators.required],
