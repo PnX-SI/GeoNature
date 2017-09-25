@@ -38,6 +38,8 @@ export class ContactCreateFormComponent implements OnInit {
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
 
+    this.releveFormData = this.releveForm.value;
+
     // if its edition mode
     if (!isNaN(this.id )) {
       // load one releve
@@ -79,7 +81,10 @@ export class ContactCreateFormComponent implements OnInit {
     }
     this.taxonsList.push(taxon);
 
+    // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
+    // format the taxon
+    this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;  
     if (this.releveFormData.properties.t_occurrences_contact.length === this.fs.indexOccurrence) {
       this.releveFormData.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
@@ -103,21 +108,31 @@ export class ContactCreateFormComponent implements OnInit {
     // set the current index
     this.fs.indexOccurrence = index;
     // get the occurrence data from releve form
-    const occurenceData = this.releveFormData.properties.t_occurrences_contact[index];
-    // const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    let occurenceData = this.releveFormData.properties.t_occurrences_contact[index];
     const countingData = occurenceData.cor_counting_contact;
     const nbCounting = countingData.length;
-    // init occurence form with the data to edit
-    this.occurrenceForm = this.fs.initOccurrenceForm(occurenceData);
+    // load the taxons info
+    this._dfs.getTaxonInfo(occurenceData.cd_nom)
+      .subscribe(taxon => {
+        occurenceData['cd_nom'] = {
+          'cd_nom': taxon.cd_nom,
+          'group2_inpn': taxon.group2_inpn,
+          'lb_nom': taxon.lb_nom,
+          'nom_valide': taxon.nom_valide,
+          'regne': taxon.regne,
+          
+        }
+        // init occurence form with the data to edit
+        this.occurrenceForm = this.fs.initOccurrenceForm(occurenceData);
+        // set the current taxon
+        this.fs.currentTaxon = occurenceData.cd_nom;
+      });
     // init the counting form with the data to edit
     for (let i = 1; i < nbCounting; i++) {
       this.fs.nbCounting.push('');
      }
     this.countingForm = this.fs.initCountingArray(countingData);
-    // set the current taxon
-    // TODO post the all taxon object quand la vue le renverra
-    this.fs.currentTaxon = occurenceData.nom_cite;
-    
+
   }
 
   removeOneOccurrence(index){

@@ -19,8 +19,8 @@ export class TaxonomyComponent implements OnInit {
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
-
   @Output() taxonChanged = new EventEmitter<any>();
+
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
@@ -28,7 +28,6 @@ export class TaxonomyComponent implements OnInit {
 
   taxonSelected(e:NgbTypeaheadSelectItemEvent){
     this.taxonChanged.emit(e.item);
-    this.inputTaxon.setValue(e.item.cd_nom);    
   }
 
   formatter(taxon){
