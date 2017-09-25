@@ -15,11 +15,9 @@ export class TaxonsListComponent implements OnInit {
   ngOnInit() {
   }
   deleteTaxon(index): void {
-    this.list.splice(index, 1);
     this.taxonRemoved.emit(index);
   }
   editTaxons(index): void {
-    this.list.splice(index, 1);
     this.taxonEdited.emit(index);
   }
 
