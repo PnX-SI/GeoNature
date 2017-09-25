@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import TRelevesContact, TOccurrencesContact, CorCountingContact
+from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, VReleveContact
 from ...utils.utilssqlalchemy import json_resp
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
@@ -44,6 +44,14 @@ def getOneReleve(id_releve):
     data = TRelevesContact.query.get(id_releve)
     if data:
         return data.get_geofeature()
+    return {'message': 'not found'}, 404
+
+@routes.route('/vrelevecontact', methods=['GET'])
+@json_resp
+def getViewReleveContact():
+    data = VReleveContact.query.all()
+    if data:
+        return FeatureCollection([n.get_geofeature() for n in data])
     return {'message': 'not found'}, 404
 
 @routes.route('/releve', methods=['POST'])
@@ -96,7 +104,7 @@ def insertOrUpdateOneReleve():
             db.session.flush()
         except Exception as e:
             raise
-            
+
         return releve.get_geofeature()
 
     except Exception as e:

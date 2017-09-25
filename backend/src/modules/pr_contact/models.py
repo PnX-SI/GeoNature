@@ -98,7 +98,7 @@ class TOccurrencesContact(serializableModel):
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
     comment = db.Column(db.Unicode)
-    
+
     cor_counting_contact = relationship("CorCountingContact", lazy='joined',  cascade="all, delete-orphan")
 
 class CorCountingContact(serializableModel):
@@ -113,3 +113,35 @@ class CorCountingContact(serializableModel):
     count_min = db.Column(db.Integer)
     count_max = db.Column(db.Integer)
     unique_id_sinp = db.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+
+
+class VReleveContact(serializableGeoModel):
+    __tablename__ = 'v_releve_contact'
+    __table_args__ = {'schema':'pr_contact'}
+    id_releve_contact = db.Column(db.Integer)
+    id_dataset = db.Column(db.Integer)
+    id_digitiser = db.Column(db.Integer)
+    date_min = db.Column(db.DateTime)
+    date_max = db.Column(db.DateTime)
+    altitude_min = db.Column(db.Integer)
+    altitude_max = db.Column(db.Integer)
+    meta_device_entry = db.Column(db.Unicode)
+    deleted = db.Column(db.Boolean, default=False)
+    meta_create_date = db.Column(db.DateTime)
+    meta_update_date = db.Column(db.DateTime)
+    comment = db.Column(db.Unicode)
+    geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
+    id_occurrence_contact = db.Column(db.Integer, primary_key=True)
+    cd_nom = db.Column(db.Integer)
+    nom_cite = db.Column(db.Unicode)
+    occ_deleted = db.Column(db.Boolean)
+    occ_meta_create_date = db.Column(db.DateTime)
+    occ_meta_update_date = db.Column(db.DateTime)
+    lb_nom = db.Column(db.Unicode)
+    nom_valide = db.Column(db.Unicode)
+    nom_vern = db.Column(db.Unicode)
+    leaflet_popup = db.Column(db.Unicode)
+    observateurs = db.Column(db.Unicode)
+
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature('geom_4326', 'id_occurrence_contact', recursif)
