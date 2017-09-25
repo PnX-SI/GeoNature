@@ -34,7 +34,7 @@ export class FormService {
         meta_device_entry: 'web',
         comment: data ? data.properties.comment: null,
         observers: [data ? this.formatObservers(data.properties.observers): null, Validators.required],
-        t_occurrences_contact: this._fb.array([])
+        t_occurrences_contact: [new Array()]
       })
     });
    }
