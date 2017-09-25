@@ -94,7 +94,6 @@ export class ContactCreateFormComponent implements OnInit {
     // set the current index
     this.fs.indexOccurrence = index;
     // get the occurrence data from releve form
-    // LAAAAAAAAAA
     const occurenceData = this.releveFormData.properties.t_occurrences_contact[index];
     // const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
     const countingData = occurenceData.cor_counting_contact;

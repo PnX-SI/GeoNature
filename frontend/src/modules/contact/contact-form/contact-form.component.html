@@ -1,14 +1,12 @@
-<div class="row">
-    <div class="col-sm-12 col-md-6 padding-sm">
-        <pnx-map class="map-card">
-            <pnx-gps (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
-            <pnx-marker (markerChanged)="sendGeoInfo($event)"> </pnx-marker>
-            <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoInfo($event)" > </pnx-leaflet-draw>
-        </pnx-map>
-    </div>
-    <div class="col-sm-12 col-md-6 padding-sm">
-        <pnx-contact-create-form [id]="id"></pnx-contact-create-form>
-    </div>
+<div class="row row-sm">
+        <div class="col-sm-12 col-md-6 padding-sm">
+            <pnx-map class="map-card">
+                <pnx-gps (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
+                <pnx-marker (markerChanged)="sendGeoInfo($event)"> </pnx-marker>
+                <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoInfo($event)" > </pnx-leaflet-draw>
+            </pnx-map>
+        </div>
+        <div class="col-sm-12 col-md-6 padding-sm">
+            <pnx-contact-create-form [id]="id"></pnx-contact-create-form>
+        </div>
 </div>
-
-<button (click)="test()" > test </button>
