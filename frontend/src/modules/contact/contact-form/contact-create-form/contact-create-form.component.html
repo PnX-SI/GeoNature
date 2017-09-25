@@ -1,62 +1,61 @@
-<div class="card">
-  <div class="card-body">
-      <h5 class="card-title"> <b>{{ 'Releve.Releve' | translate }}: </b></h5>
-      <div [formGroup]="releveForm">
-        <pnx-observation
-          [releveForm]="releveForm  ">
-        </pnx-observation>
-      </div>
-  </div>
-</div>
-    
-<div class="card">
+<div class=form-containter>
+  <div class="card">
     <div class="card-body">
-        <!-- Occurrence taxon  -->
-        <div [formGroup]="occurrenceForm">
-          <div class="section"> 
-            <pnx-occurrence
-              [occurrenceForm]="occurrenceForm">
-            </pnx-occurrence>
-          </div>
-            <b> {{ 'Counting.Counting' | translate }}: </b>
-            <!-- COUNTING -->
-            <div *ngFor="let counting of fs.nbCounting; let i = index">
-              <pnx-counting 
-                [formGroup]="countingForm"
-                [index]="i"
-                [length]="fs.nbCounting.length"
-                (countingRemoved)="fs.removeCounting($event, countingForm)">
-              </pnx-counting>
-            </div>
-            <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting(countingForm)">
-              <i class="fa fa-plus-circle" aria-hidden="true"></i>          
-            </button>
-
+        <h5 class="card-title"> <b>{{ 'Releve.Releve' | translate }}: </b></h5>
+        <div [formGroup]="releveForm">
+          <pnx-observation
+            [releveForm]="releveForm  ">
+          </pnx-observation>
         </div>
+        <hr> 
 
-        <md-card-actions class="card-action"> 
-          <button class="btn btn-primary btn-sm "
-            [disabled]="occurrenceForm.invalid || countingForm.invalid"
-           (click)="addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
-        </md-card-actions>
+      <!-- Occurrence taxon  -->
+      <div [formGroup]="occurrenceForm">
+        <div class="section"> 
+          <pnx-occurrence
+            [occurrenceForm]="occurrenceForm">
+          </pnx-occurrence>
+        </div>
+          <b> {{ 'Counting.Counting' | translate }}: </b>
+          <!-- COUNTING -->
+          <div *ngFor="let counting of fs.nbCounting; let i = index">
+            <pnx-counting 
+              [formGroup]="countingForm"
+              [index]="i"
+              [length]="fs.nbCounting.length"
+              (countingRemoved)="fs.removeCounting($event, countingForm)">
+            </pnx-counting>
+          </div>
+          <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting(countingForm)">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>          
+          </button>
 
-        <!-- <pre>form value: <br>{{countingForm.value | json}}</pre> -->
-        <!-- <pre>form value: <br>{{occurrenceForm.value | json}}</pre> -->
-        <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
+      </div>
+
+      <md-card-actions class="card-action"> 
+        <button class="btn btn-primary btn-sm "
+          [disabled]="occurrenceForm.invalid || countingForm.invalid"
+          (click)="addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+      </md-card-actions>
+
+      <!-- <pre>form value: <br>{{countingForm.value | json}}</pre> -->
+      <!-- <pre>form value: <br>{{occurrenceForm.value | json}}</pre> -->
+      <!-- <pre>form value: <br>{{releveForm.value | json}}</pre> -->
+
+    <div *ngIf="taxonsList.length > 0">
+          <b> Taxon(s) enregistré(s) </b>
+          <pnx-taxons-list [list]="taxonsList" (taxonEdited)="editOccurence($event)" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
     </div>
-</div>
-<div class="card" *ngIf="taxonsList.length > 0">
-  <div class="card-body">
-      <b> Taxon(s) enregistré(s) </b>
-      <pnx-taxons-list [list]="taxonsList" (taxonEdited)="editOccurence($event)" (taxonRemoved)="removeOneOccurenceTaxon($event)">  </pnx-taxons-list>
-  </div>
-</div>
-
     <md-card-actions class="card-action"> <!--Btn Valider taxon-->
       <button class="btn btn-success" 
-       [disabled]="(releveForm.invalid || taxonsList == 0)"
-       (click)="submitData()" >{{ 'Releve.SaveReleve' | translate }}</button>
+      [disabled]="(releveForm.invalid || taxonsList == 0)"
+      (click)="submitData()" >{{ 'Releve.SaveReleve' | translate }}</button>
     </md-card-actions> 
+    </div>
+
+  </div>
+</div>
+
 
 
 
