@@ -23,7 +23,6 @@ export class ContactCreateFormComponent implements OnInit {
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
   public contactForm: FormGroup;
-  public releveFormData: any;
   @Input() id: number;
 
   constructor(public fs: FormService, private _ms: MapService,
@@ -38,7 +37,7 @@ export class ContactCreateFormComponent implements OnInit {
     this.occurrenceForm = this.fs.initOccurrenceForm();
     this.countingForm = this.fs.initCountingArray();
 
-    this.releveFormData = this.releveForm.value;
+    //this.releveForm.value = this.releveForm.value;
 
     // if its edition mode
     if (!isNaN(this.id )) {
@@ -50,15 +49,17 @@ export class ContactCreateFormComponent implements OnInit {
           for (const occ of data.properties.t_occurrences_contact){
             // push the occ in releveForm
             this.releveForm.value.properties.t_occurrences_contact.push(occ);
-            // push the taxon list
+            // push the taxon list  
             this.taxonsList.push({'nom_valide': occ.nom_cite});
           }
+          console.log(this.releveForm.value.properties.t_occurrences_contact);
+          
           // set the occurrence
           this.fs.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length;
           // push the geometry in releveForm
           this.releveForm.patchValue({geometry: data.geometry});
           // copy the form data
-          this.releveFormData = this.releveForm.value;
+          //this.releveForm.value = this.releveForm.value;
           // load the geometry in the map
           this._ms.loadGeometryReleve(data);
           // get geoInfo to get municipalities
@@ -72,26 +73,18 @@ export class ContactCreateFormComponent implements OnInit {
 
   addOccurence(index) {
     // push the current taxon in the taxon list and refresh the currentTaxon
-    // FIX en attendant la vue avec l'objet taxon
-    let taxon = {};
-    if (this.fs.currentTaxon !== undefined) {
-      taxon = {'nom_valide': this.fs.currentTaxon.nom_valide};
-    } else {
-      taxon = {'nom_valide': this.fs.currentTaxon};
-    }
-    this.taxonsList.push(taxon);
-
+    this.taxonsList.push(this.fs.currentTaxon);
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
     this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;  
-    if (this.releveFormData.properties.t_occurrences_contact.length === this.fs.indexOccurrence) {
-      this.releveFormData.properties.t_occurrences_contact.push(this.occurrenceForm.value);
+    if (this.releveForm.value.properties.t_occurrences_contact.length === this.fs.indexOccurrence) {
+      this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
-      this.releveFormData.properties.t_occurrences_contact[this.fs.indexOccurrence] = this.occurrenceForm.value;
+      this.releveForm.value.properties.t_occurrences_contact[this.fs.indexOccurrence] = this.occurrenceForm.value;
     }
     // set occurrence index  
-    this.fs.indexOccurrence = this.releveFormData.properties.t_occurrences_contact.length;
+    this.fs.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length;
     // reset counting
     this.fs.nbCounting = [''];
     this.fs.indexCounting = 0;
@@ -108,7 +101,7 @@ export class ContactCreateFormComponent implements OnInit {
     // set the current index
     this.fs.indexOccurrence = index;
     // get the occurrence data from releve form
-    let occurenceData = this.releveFormData.properties.t_occurrences_contact[index];
+    let occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
     const countingData = occurenceData.cor_counting_contact;
     const nbCounting = countingData.length;
     // load the taxons info
@@ -137,23 +130,23 @@ export class ContactCreateFormComponent implements OnInit {
 
   removeOneOccurrence(index){
     this.taxonsList.splice(index, 1);
-    this.releveFormData.properties.t_occurrences_contact.splice(index, 1);
+    this.releveForm.value.properties.t_occurrences_contact.splice(index, 1);
     this.fs.indexOccurrence = this.fs.indexOccurrence - 1 ;
   }
 
   submitData() {
-    // Format the final form
-    // const finalForm = this.releveForm.value;
-    const finalForm = this.releveFormData;
+    // set the releveForm
+    const finalForm = this.releveForm.value;
+    //format date
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
-    // format cd_nom and update date
-    finalForm.properties.t_occurrences_contact.forEach(occ => {
-      occ.nom_cite = occ.cd_nom.nom_valide;
-      occ.cd_nom = occ.cd_nom.cd_nom;
+    // format nom_cite and update date
+    finalForm.properties.t_occurrences_contact.forEach((occ, index) => {
+      occ.nom_cite = this.taxonsList[index].nom_valide;
       occ.meta_update_date = new Date();
     });
     // format observers
+    
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
 
