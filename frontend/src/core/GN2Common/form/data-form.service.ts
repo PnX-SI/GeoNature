@@ -32,6 +32,11 @@ export class DataFormService {
     .map(res => res.json());
   }
 
+  getTaxonInfo(cd_nom: number){
+   return this._http.get(`${AppConfig.API_TAXHUB}taxref/${cd_nom}`)
+    .map(res => res.json())
+  }
+
   getGeoInfo(geojson) {
     return this._http.post(`${AppConfig.API_ENDPOINT}geo/info`, geojson)
       .map(response => response.json());
