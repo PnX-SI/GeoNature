@@ -51,6 +51,10 @@ export class MapListComponent implements OnInit {
         this._mapListService.toggleStyle(layer);
         // observable
         this._mapListService.setCurrentTableId(feature.id);
+        // open popup
+        console.log(feature);
+
+        layer.bindPopup(feature.properties.leaflet_popup).openPopup();
       }
     });
   }
