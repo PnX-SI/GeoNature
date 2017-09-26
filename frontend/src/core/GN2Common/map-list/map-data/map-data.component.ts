@@ -12,23 +12,21 @@ import { Router } from '@angular/router';
 export class MapDataComponent implements OnInit, OnChanges {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @Input() tableData: Array<any>;
-
-
-  // colums on datatable
-  columns = [
-    { prop: 'taxon' },
-    { prop: 'observer' },
-    { prop: 'date' }
-  ];
-
-  filterList = [...this.columns.map(res => res.prop)];
-  filterSelected = this.filterList[0];
+  @Input() columns: Array<any>;
+  filterList: Array<any>;
+  filterSelected: any;
 
   selected = []; // list of row selected
-  //releves = []; // cache our list in releves use for filter
   rows = []; // rows in data table
 
+  // tslint:disable-next-line
+  //myDatas = 
   constructor(private _mapListService: MapListService, private _router: Router) {
+  }
+
+  ngOnInit() {
+    this.filterList = [...this.columns.map(res => res.prop)];
+    this.filterSelected = this.filterList[0];
 
     this._mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
@@ -38,9 +36,6 @@ export class MapDataComponent implements OnInit, OnChanges {
         }
       }
     });
-  }
-
-  ngOnInit() {
   }
 
   onSelect({ selected }) {
@@ -71,17 +66,18 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   onEditReleve(idReleve) {
-    // TODO
-    // console.log(idReleve);
     this._router.navigate(['contact-form', idReleve]);
   }
 
-  ngOnChanges(changes){
-    if(changes.tableData.currentValue !== undefined){
-      this.rows = changes.tableData.currentValue;      
+  onDetailReleve(id_releve) {
+    // TODO
+  }
+
+  ngOnChanges(changes) {
+    // init the rows
+    if (changes.tableData.currentValue !== undefined) {
+      this.rows = changes.tableData.currentValue;
     }
-      
-    
   }
 }
 

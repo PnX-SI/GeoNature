@@ -13,30 +13,15 @@ import { Subscription } from 'rxjs/Subscription';
 export class ContactMapListComponent implements OnInit, OnDestroy {
   public geojsonData: GeoJSON;
   private idSubscription: Subscription;
-  public releves= new Array();
+  public tableData= new Array();
+  public columns: Array<any>;
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
-  this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
-    .map(res => res.json())
-    .subscribe(res => {
-
-       this.geojsonData = res;
-       // format data for the table
-       res.features.forEach(el => {
-        const row: RowsData = {
-          id: el.id,
-          taxon: el.properties.t_occurrences_contact.map(occ => occ.nom_cite).join(', '),
-          observer: el.properties.observers.map(obs => obs.prenom_role + ' ' + obs.nom_role).join(', '),
-          date: el.properties.meta_create_date.substring(0, 10) // get date and cut time of datetime
-        };
-
-        this.releves.push(row);
-
-      });
-
-      } );
-
+  this.columns = [
+   {prop: 'nom_valide', name: 'Taxon'},
+   {prop: 'observateurs', 'name': 'Observateurs'}
+  ];
 
 
   this.idSubscription = this._mapListService.gettingTableId$
