@@ -10,11 +10,12 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: 'contact-map-list.component.html'
 })
 
-export class ContactMapListComponent implements OnInit, OnDestroy {
+export class ContactMapListComponent implements OnInit {
   public geojsonData: GeoJSON;
   private idSubscription: Subscription;
   public tableData= new Array();
   public columns: Array<any>;
+  public pathRedirect: string;
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
@@ -22,23 +23,21 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
    {prop: 'nom_valide', name: 'Taxon'},
    {prop: 'observateurs', 'name': 'Observateurs'}
   ];
+  this.pathRedirect = 'contact-form';
 
-
-  this.idSubscription = this._mapListService.gettingTableId$
-    .subscribe(id => {
-      const selectedLayer = this._mapListService.layerDict[id];
-      const feature = selectedLayer.feature;
+  this._mapListService.getData('contact/vrelevecontact')
+  .subscribe(res => {
+    this.geojsonData = res;
+    res.features.forEach(feature => {
+      const obj = feature.properties;
+      obj['id'] = feature.id;
+      this.tableData.push(obj);
     });
+  });
+
    }
 
-  ngOnDestroy() {
-    this.idSubscription.unsubscribe();
-  }
+
 }
 
-export interface RowsData {
-  id: string;
-  taxon: any;
-  observer: any;
-  date: any;
-}
+

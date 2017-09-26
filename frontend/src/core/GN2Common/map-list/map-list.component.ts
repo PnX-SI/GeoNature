@@ -13,27 +13,16 @@ import { GeoJSON, Layer } from 'leaflet';
 export class MapListComponent implements OnInit {
   public layerDict: any;
   public selectedLayer: any;
-  public geojsonData: GeoJSON;
-  public  tableData = [];
-  public formatedColumns = [];
+  @Input() geojsonData: GeoJSON;
+  @Input() tableData = [];
   @Input() apiEndPoint: string;
   @Input() columns: Array<string>;
-
+  @Input() pathRedirect: string;
 
   constructor(private _ms: MapService, private _mapListService: MapListService) {
   }
 
   ngOnInit() {
-    this._mapListService.getData(this.apiEndPoint)
-      .subscribe(res => {
-        this.geojsonData = res;
-        res.features.forEach(feature => {
-          const obj = feature.properties;
-          obj['id'] = feature.id;
-          this.tableData.push(obj);
-        });
-      });
-
     // event from the list
     this._mapListService.gettingLayerId$.subscribe(res => {
       const selectedLayer = this._mapListService.layerDict[res];
@@ -52,8 +41,6 @@ export class MapListComponent implements OnInit {
         // observable
         this._mapListService.setCurrentTableId(feature.id);
         // open popup
-        console.log(feature);
-
         layer.bindPopup(feature.properties.leaflet_popup).openPopup();
       }
     });
