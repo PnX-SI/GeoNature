@@ -28,8 +28,11 @@ export class MapListService {
       this.columns = [];
   }
 
-  getData(endPoint, limit?, offset?, colomn?, order?) {
-    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`)
+  getData(endPoint, param?) {
+    console.log(param);
+    const params: URLSearchParams = new URLSearchParams();
+     param  ? params.append(param.param, param.value) : params.set('', '');
+    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: params.toString()})
       .map(res => res.json());
   }
 
@@ -66,5 +69,15 @@ export class MapListService {
     } else {
       map.setView(latlng, 12);
   }
+  }
+
+  loadTableData(data) {
+    const tableData = [];
+    data.features.forEach(feature => {
+      const obj = feature.properties;
+      obj['id'] = feature.id;
+      tableData.push(obj);
+    });
+    return tableData;
   }
 }

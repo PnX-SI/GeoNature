@@ -23,9 +23,9 @@
       </div>
     </div>
 </div>
-<div class="input-group" [ngClass]="{'has-danger' : inputTaxon.invalid}">
+<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
   <input type="text" class="form-control form-control-sm"
-    [formControl]="inputTaxon"
+    [formControl]="parentFormControl"
     placeholder="{{ 'Taxon.Taxon' | translate }}"
     [ngbTypeahead]="searchTaxon" 
     [inputFormatter]="formatter" 
@@ -39,4 +39,5 @@
     <span [innerHTML]="r.search_name">  </span>
   </ng-template>
 </div>
+
 

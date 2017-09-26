@@ -1,8 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { MapService } from '../../map/map.service';
 import { MapListService } from '../../map-list/map-list.service';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
+
+import { FormControl } from '@angular/forms';
+
 
 @Component({
   selector: 'pnx-map-data',
@@ -14,8 +17,10 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Input() tableData: Array<any>;
   @Input() columns: Array<any>;
   @Input() pathRedirect: string;
+  @Output() paramChanged = new EventEmitter<any>();
   filterList: Array<any>;
   filterSelected: any;
+  inputTaxon: FormControl;
 
   selected = []; // list of row selected
   rows = []; // rows in data table
@@ -26,7 +31,13 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.filterList = [...this.columns.map(res => res.prop)];
+    console.log('init map data');
+
+    // test taxonomie
+    this.inputTaxon = new FormControl();
+
+    this.filterList = this.columns;
+
     this.filterSelected = this.filterList[0];
 
     this._mapListService.gettingTableId$.subscribe(res => {
@@ -49,7 +60,7 @@ export class MapDataComponent implements OnInit, OnChanges {
 
     // filter our data
     const temp = this.tableData.filter(res => {
-      return res[this.filterSelected].toLowerCase().indexOf(val) !== -1 || !val;
+      return res[this.filterSelected.prop].toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
@@ -76,6 +87,10 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   redirect() {
     this._router.navigate([this.pathRedirect]);
+  }
+
+  taxonChanged(taxonObj) {
+    this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
 
   ngOnChanges(changes) {
