@@ -8,11 +8,11 @@ import * as L from 'leaflet';
 export class MapListService {
   private _layerId = new Subject<any>();
   private _tableId = new Subject<any>();
+  public columns = [];
   public layerDict= {};
   public selectedLayer: any;
   public gettingLayerId$: Observable<number> = this._layerId.asObservable();
   public gettingTableId$: Observable<number> = this._tableId.asObservable();
-  public test:any;
   originStyle = {
     'color': '#3388ff',
     'fill': true,
@@ -25,10 +25,11 @@ export class MapListService {
    'weight': 3
   };
     constructor(private _http: Http) {
+      this.columns = [];
   }
 
-  getReleves() {
-    return this._http.get(`${AppConfig.API_ENDPOINT}contact/releves`)
+  getData(endPoint, limit?, offset?, colomn?, order?) {
+    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`)
       .map(res => res.json());
   }
 

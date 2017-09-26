@@ -13,14 +13,26 @@ import { GeoJSON, Layer } from 'leaflet';
 export class MapListComponent implements OnInit {
   public layerDict: any;
   public selectedLayer: any;
-  @Input() geojsonData: GeoJSON;
-  @Input() tableData: Array<any>;
+  public geojsonData: GeoJSON;
+  public  tableData = [];
+  public formatedColumns = [];
+  @Input() apiEndPoint: string;
+  @Input() columns: Array<string>;
 
 
   constructor(private _ms: MapService, private _mapListService: MapListService) {
   }
 
   ngOnInit() {
+    this._mapListService.getData(this.apiEndPoint)
+      .subscribe(res => {
+        this.geojsonData = res;
+        res.features.forEach(feature => {
+          const obj = feature.properties;
+          obj['id'] = feature.id;
+          this.tableData.push(obj);
+        });
+      });
 
     // event from the list
     this._mapListService.gettingLayerId$.subscribe(res => {
@@ -29,6 +41,7 @@ export class MapListComponent implements OnInit {
       this._mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
   }
+
   onEachFeature(feature, layer) {
     // event from the map
     this._mapListService.layerDict[feature.id] = layer;
