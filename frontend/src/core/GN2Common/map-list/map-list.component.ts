@@ -31,6 +31,16 @@ export class MapListComponent implements OnInit {
     });
   }
 
+  refreshValue(params) {
+    console.log(params);
+    this._mapListService.getData('contact/vrelevecontact', params)
+      .subscribe(res => {
+        this.geojsonData = res;
+        this.tableData = this._mapListService.loadTableData(res);
+      });
+
+  }
+
   onEachFeature(feature, layer) {
     // event from the map
     this._mapListService.layerDict[feature.id] = layer;

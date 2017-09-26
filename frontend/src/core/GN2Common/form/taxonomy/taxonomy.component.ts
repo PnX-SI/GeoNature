@@ -12,7 +12,7 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
   encapsulation: ViewEncapsulation.None
 })
 export class TaxonomyComponent implements OnInit {
-  @Input('parentFormControl') inputTaxon: FormControl;
+  @Input() parentFormControl: FormControl;
   @Input() idList: string;
   @Input() charNumber:number;
   @Input() listLength:number;
@@ -26,11 +26,11 @@ export class TaxonomyComponent implements OnInit {
   ngOnInit() {
   }
 
-  taxonSelected(e:NgbTypeaheadSelectItemEvent){
+  taxonSelected(e: NgbTypeaheadSelectItemEvent) {
     this.taxonChanged.emit(e.item);
   }
 
-  formatter(taxon){
+  formatter(taxon) {
     return taxon.nom_valide;
   }
 
@@ -41,5 +41,5 @@ export class TaxonomyComponent implements OnInit {
       .distinctUntilChanged()
       .switchMap(value => this._dfService.searchTaxonomy(value, this.idList))
         .map(response => response.slice(0, this.listLength))
-      
+
 }
