@@ -26,7 +26,6 @@ export class ContactMapListComponent implements OnInit, OnDestroy {
 
   this.idSubscription = this._mapListService.gettingTableId$
     .subscribe(id => {
-
       const selectedLayer = this._mapListService.layerDict[id];
       const feature = selectedLayer.feature;
       // popup
