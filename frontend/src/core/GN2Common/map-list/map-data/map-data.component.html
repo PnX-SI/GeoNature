@@ -20,12 +20,9 @@
         <md-icon>filter_list</md-icon>
       </button>
       <span class="spacer"> </span>
-      <a href="./#/contact-form">
-      <div class="offset-md-6"> </div>
-        <button  mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success">
+        <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
           <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </button>
-        </a>
       
     </div>
     <!--collapseAvance-->
@@ -90,7 +87,7 @@
 <ngx-datatable-column
  maxWidth="50">
 <ng-template let-row="row" ngx-datatable-cell-template> 
-  <i mdTooltip="Info relevé {{row.id}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row.id)"></i>
+  <i  mdTooltip="Info relevé {{row.id}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row.id)"></i>
 </ng-template>
 </ngx-datatable-column>
   <ngx-datatable-column

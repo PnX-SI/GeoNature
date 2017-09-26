@@ -13,6 +13,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @Input() tableData: Array<any>;
   @Input() columns: Array<any>;
+  @Input() pathRedirect: string;
   filterList: Array<any>;
   filterSelected: any;
 
@@ -71,6 +72,10 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   onDetailReleve(id_releve) {
     // TODO
+  }
+
+  redirect() {
+    this._router.navigate([this.pathRedirect]);
   }
 
   ngOnChanges(changes) {
