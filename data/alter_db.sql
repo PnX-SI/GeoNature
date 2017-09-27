@@ -54,3 +54,33 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_contact AS
        rel.meta_update_date, rel.comment, geom_4326, "precision", t.cd_nom, nom_cite,
        id_occurrence_contact, occ_deleted, occ_meta_create_date, occ_meta_update_date, lb_nom,
        nom_valide, nom_complet_html, nom_vern;
+
+
+
+
+--Vue représentant l'ensemble des relevés du protocole contact pour la représentation du module carte liste
+CREATE OR REPLACE VIEW pr_contact.v_releve_list AS
+SELECT rel.id_releve_contact,
+   rel.id_dataset,
+   rel.id_digitiser,
+   rel.date_min,
+   rel.date_max,
+   rel.altitude_min,
+   rel.altitude_max,
+   rel.deleted,
+   rel.meta_device_entry,
+   rel.meta_create_date,
+   rel.meta_update_date,
+   rel.comment,
+   rel.geom_4326,
+   rel."precision",
+   string_agg(nom_valide, ',') AS taxons,
+   string_agg(nom_valide, ',') || '<br/>' || rel.date_min::date || '<br/>' || string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ') AS leaflet_popup,
+   string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS observateurs
+  FROM pr_contact.t_releves_contact rel
+    LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
+    LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+    LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
+    LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+ GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted,
+  rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";

@@ -145,3 +145,28 @@ class VReleveContact(serializableGeoModel):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_occurrence_contact', recursif)
+
+
+
+class VReleveList(serializableGeoModel):
+    __tablename__ = 'v_releve_list'
+    __table_args__ = {'schema':'pr_contact'}
+    id_releve_contact = db.Column(db.Integer, primary_key=True)
+    id_dataset = db.Column(db.Integer)
+    id_digitiser = db.Column(db.Integer)
+    date_min = db.Column(db.DateTime)
+    date_max = db.Column(db.DateTime)
+    altitude_min = db.Column(db.Integer)
+    altitude_max = db.Column(db.Integer)
+    meta_device_entry = db.Column(db.Unicode)
+    deleted = db.Column(db.Boolean, default=False)
+    meta_create_date = db.Column(db.DateTime)
+    meta_update_date = db.Column(db.DateTime)
+    comment = db.Column(db.Unicode)
+    geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
+    taxons = db.Column(db.Unicode)
+    leaflet_popup = db.Column(db.Unicode)
+    observateurs = db.Column(db.Unicode)
+
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)

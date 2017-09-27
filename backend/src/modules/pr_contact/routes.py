@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, VReleveContact
+from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, VReleveContact, VReleveList
 from ...utils.utilssqlalchemy import json_resp
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
@@ -91,6 +91,67 @@ def getViewReleveContact():
         raise
     if data:
         return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter, 'total_filtered': nbResults}
+    return {'message': 'not found'}, 404
+
+
+@routes.route('/vreleve', methods=['GET'])
+@json_resp
+def getViewReleveList():
+    q = VReleveList.query
+
+    parameters = request.args
+    nbResultsWithoutFilter = VReleveList.query.count()
+
+    limit = int(parameters.get('limit')) if parameters.get('limit') else 100
+    page = int(parameters.get('offset')) if parameters.get('offset') else 0
+
+    #Specific Filters
+    if 'cd_nom' in parameters:
+        q = q.join(TOccurrencesContact, TOccurrencesContact.id_releve_contact == VReleveList.id_releve_contact)\
+            .filter(TOccurrencesContact.cd_nom == parameters.get('cd_nom'))
+
+    if 'date_up' in parameters:
+        q = q.filter(VReleveList.date_min >= parameters.get('date_up'))
+    if 'date_low' in parameters:
+         q = q.filter(VReleveList.date_max <= parameters.get('date_low'))
+    if 'date_eq' in parameters:
+         q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
+
+    #Generic Filters
+    for param in parameters:
+        if param in VReleveList.__table__.columns:
+            col = getattr( VReleveList.__table__.columns,param)
+            q = q.filter(col == parameters[param])
+
+    nbResults = q.count()
+
+    #Order by
+    if 'orderby' in parameters:
+        if parameters.get('orderby') in VReleveList.__table__.columns:
+             orderCol =  getattr(VReleveList.__table__.columns,parameters['orderby'])
+        else:
+            orderCol = getattr(VReleveList.__table__.columns,'occ_meta_create_date')
+
+        if 'order' in parameters:
+            if (parameters['order'] == 'desc'):
+                orderCol = orderCol.desc()
+
+        q= q.order_by(orderCol)
+
+
+    try :
+        data = q.limit(limit).offset(page*limit).all()
+    except:
+        db.session.close()
+        raise
+    if data:
+        return {
+            'total': nbResultsWithoutFilter,
+            'total_filtered': nbResults ,
+            'page': page,
+            'limit': limit,
+            'items': FeatureCollection([n.get_geofeature() for n in data])
+        }
     return {'message': 'not found'}, 404
 
 @routes.route('/releve', methods=['POST'])
