@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs';
 import * as L from 'leaflet';
+import { URLSearchParams } from '@angular/http';
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
@@ -37,14 +38,17 @@ export class MapListService {
 
   getData(endPoint, param?) {
     if (param) {
+      console.log(param);
       if (param.param === 'offset') {
         this.urlQuery.set('offset', param.value);
       }else {
         this.urlQuery.append(param.param, param.value);
+        console.log(this.urlQuery.toString());
+
       }
 
     }
-    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: this.urlQuery.toString()})
+    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: this.urlQuery})
       .map(res => res.json());
   }
 

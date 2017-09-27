@@ -9,6 +9,7 @@ import { AutoCompleteModule } from 'primeng/primeng';
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
 import { ObserversComponent } from './form/observers/observers.component';
+import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { CountingComponent } from './form/counting/counting.component';
 import { ObservationComponent } from './form/observation/observation.component';
@@ -57,6 +58,7 @@ export function HttpLoaderFactory(http: Http) {
   declarations: [
     NomenclatureComponent,
     ObserversComponent,
+    DateComponent,
     TaxonomyComponent,
     MapComponent,
     MarkerComponent,
@@ -79,6 +81,7 @@ export function HttpLoaderFactory(http: Http) {
   exports: [
     NomenclatureComponent,
     ObserversComponent,
+    DateComponent,
     TaxonomyComponent,
     MapComponent,
     MarkerComponent,
