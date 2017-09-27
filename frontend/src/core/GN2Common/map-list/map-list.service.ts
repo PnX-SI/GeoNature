@@ -13,6 +13,8 @@ export class MapListService {
   public selectedLayer: any;
   public gettingLayerId$: Observable<number> = this._layerId.asObservable();
   public gettingTableId$: Observable<number> = this._tableId.asObservable();
+  public urlQuery: URLSearchParams = new URLSearchParams ();
+  public page = new Page();
   originStyle = {
     'color': '#3388ff',
     'fill': true,
@@ -26,15 +28,26 @@ export class MapListService {
   };
     constructor(private _http: Http) {
       this.columns = [];
+      this.page.pageNumber = 0;
+      this.page.size = 15;
+      this.urlQuery.set('limit', '15');
+      this.urlQuery.set('offset', '0');
+
   }
 
   getData(endPoint, param?) {
-    console.log(param);
-    const params: URLSearchParams = new URLSearchParams();
-     param  ? params.append(param.param, param.value) : params.set('', '');
-    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: params.toString()})
+    if (param) {
+      if (param.param === 'offset') {
+        this.urlQuery.set('offset', param.value);
+      }else {
+        this.urlQuery.append(param.param, param.value);
+      }
+
+    }
+    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: this.urlQuery.toString()})
       .map(res => res.json());
   }
+
 
   setCurrentLayerId(id: number) {
     this._layerId.next(id);
@@ -80,4 +93,17 @@ export class MapListService {
     });
     return tableData;
   }
+
+}
+
+
+export class Page {
+  // The number of elements in the page
+  size: number = 5;
+  // The total number of elements
+  totalElements: number = 0;
+  // The total number of pages
+  totalPages: number = 2;
+  // The current page number
+  pageNumber: number = 0;
 }
