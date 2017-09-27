@@ -28,9 +28,7 @@ export class ContactMapListComponent implements OnInit {
   this._mapListService.getData('contact/vrelevecontact')
   .subscribe(res => {
     this._mapListService.page.totalElements = res.total;
-    console.log(this._mapListService.page.pageNumber);
-    
-    
+
     this.geojsonData = res.items;
     res.items.features.forEach(feature => {
       const obj = feature.properties;
