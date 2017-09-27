@@ -14,12 +14,12 @@ export class ContactMapListComponent implements OnInit {
   public geojsonData: GeoJSON;
   private idSubscription: Subscription;
   public tableData= new Array();
-  public columns: Array<any>;
+  public displayColumns: Array<any>;
   public pathRedirect: string;
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
-  this.columns = [
+  this.displayColumns = [
    {prop: 'taxons', name: 'Taxon'},
    {prop: 'observateurs', 'name': 'Observateurs'}
   ];
@@ -28,7 +28,6 @@ export class ContactMapListComponent implements OnInit {
   this._mapListService.getData('contact/vreleve')
   .subscribe(res => {
     this._mapListService.page.totalElements = res.total;
-
     this.geojsonData = res.items;
     res.items.features.forEach(feature => {
       const obj = feature.properties;
