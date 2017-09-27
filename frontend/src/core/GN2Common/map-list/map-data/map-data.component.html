@@ -1,20 +1,10 @@
 
-
-<pnx-taxonomy
-[parentFormControl]="inputTaxon"
-[idList]="1001"
-[charNumber]="3"
-[listLength]="20"
-(taxonChanged)="taxonChanged($event)">
-</pnx-taxonomy>
-
-
 <!-- <input type="text" class="form-control form-control-sm"
 [formControl]="taxonCtrl" placeholder="la"> -->
 <md-card>
   <div class="row">
     <!--Filter-->
-    <div class="input-group width-60 alignment-xs">
+    <!-- <div class="input-group width-60 alignment-xs">
       <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
       (keyup)='updateFilter($event)'>
       <div class="input-group-btn">
@@ -25,7 +15,22 @@
           <a class="dropdown-item font-md" *ngFor="let list of filterList" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
         </div>
       </div>
-    </div>
+    </div> -->
+    <pnx-taxonomy
+    [parentFormControl]="inputTaxon"
+    [idList]="1001"
+    [charNumber]="3"
+    [listLength]="20"
+    (taxonChanged)="taxonChanged($event)">
+    </pnx-taxonomy>
+
+    <pnx-observers
+    [parentFormControl]="inputObservers"
+    [idMenu]="9"
+    (observerSelected)="observerChanged($event)"
+    placeholder="{{ 'Releve.Observers' | translate }}">
+    </pnx-observers>
+    
 
     <!--Filter Avancé-->
       <button  md-icon-button mdTooltip="Filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
@@ -47,7 +52,6 @@
   </div>
 
 </md-card>
-
 <!--Table-->
 <ngx-datatable
   #table
@@ -56,13 +60,17 @@
   [columns]="columns"
   [columnMode]="'force'"
   [headerHeight]="50"
-  [scrollbarV]="true"
   [footerHeight]="50"
   [rowHeight]="50"
   [draggable]="false"
   [selected]="selected"
-  [selectionType]="'multi'"
-  (select)='onSelect($event)'>
+  [externalPaging]="true"
+  [count]="mapListService.page.totalElements"
+  [offset]="mapListService.page.pageNumber"
+  [limit]="mapListService.page.size"
+  (page)='setPage($event)'
+  (select)='onSelect($event)'
+  >
 
 <!-- <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow (toggle)="onDetailToggle($event)">
   <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
