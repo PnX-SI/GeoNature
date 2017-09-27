@@ -46,12 +46,21 @@ def getOneReleve(id_releve):
         return data.get_geofeature()
     return {'message': 'not found'}, 404
 
+# @routes.route('/nbOccurrences', methods=['GET'])
+# @json_resp
+# def getNbCounting():
+#     q = TOccurrencesContact.query.count()
+#     return q
+
 @routes.route('/vrelevecontact', methods=['GET'])
 @json_resp
 def getViewReleveContact():
     q = VReleveContact.query
 
     parameters = request.args
+
+    nbResultsWithoutFilter = VReleveContact.query.count()
+    print(nbResultsWithoutFilter)
 
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
     page = int(parameters.get('offset')) if parameters.get('offset') else 0
@@ -62,6 +71,7 @@ def getViewReleveContact():
             col = getattr( VReleveContact.__table__.columns,param)
             q = q.filter(col == parameters[param])
 
+    nbResults = q.count()
     #Order by
     if 'orderby' in parameters:
         if parameters.get('orderby') in VReleveContact.__table__.columns:
@@ -78,7 +88,7 @@ def getViewReleveContact():
 
     data = q.limit(limit).offset(page*limit).all()
     if data:
-        return FeatureCollection([n.get_geofeature() for n in data])
+        return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter, 'total_filtered': nbResults}
     return {'message': 'not found'}, 404
 
 @routes.route('/releve', methods=['POST'])
