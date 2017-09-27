@@ -5,7 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, VReleveContact, VReleveList
+from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, VReleveContact, VReleveList, corRoleRelevesContact
 from ...utils.utilssqlalchemy import json_resp
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
@@ -109,6 +109,10 @@ def getViewReleveList():
         q = q.join(TOccurrencesContact, TOccurrencesContact.id_releve_contact == VReleveList.id_releve_contact)\
             .filter(TOccurrencesContact.cd_nom == parameters.get('cd_nom'))
 
+    if 'observer' in parameters:
+        q = q.join(corRoleRelevesContact, corRoleRelevesContact.columns.id_releve_contact == VReleveList.id_releve_contact)\
+            .filter(corRoleRelevesContact.columns.id_role.in_(parameters.getlist('observer')))
+
     if 'date_up' in parameters:
         q = q.filter(VReleveList.date_min >= parameters.get('date_up'))
     if 'date_low' in parameters:
@@ -141,7 +145,7 @@ def getViewReleveList():
     try :
         data = q.limit(limit).offset(page*limit).all()
     except:
-        db.session.close()
+        db.session.rollback()
         raise
     if data:
         return {

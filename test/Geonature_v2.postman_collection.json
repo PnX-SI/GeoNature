@@ -234,7 +234,7 @@
 			"name": "contact/vreleve?cd_nom=351",
 			"request": {
 				"url": {
-					"raw": "http://localhost:8000/contact/vreleve?cd_nom=351&date_up=2016-01-01&date_low=2018-01-01&date_eq=2017-01-01",
+					"raw": "http://localhost:8000/contact/vreleve?cd_nom=351&date_up=2016-01-01&date_low=2018-01-01&date_eq=2017-01-01&observer=1&observer=3",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -266,6 +266,18 @@
 						{
 							"key": "date_eq",
 							"value": "2017-01-01",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "observer",
+							"value": "1",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "observer",
+							"value": "3",
 							"equals": true,
 							"description": ""
 						}
