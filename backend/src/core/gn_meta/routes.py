@@ -79,7 +79,6 @@ def getOneParameter(param_name, id_org=None):
     if id_org:
         q = q.filter(TParameters.id_organism==id_org)
     data = q.all()
-    print(q)
     if data:
         return [d.as_dict() for d in data]
-    return {'message': 'not found'}, 404   
+    return {'message': 'not found'}, 404
