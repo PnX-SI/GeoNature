@@ -60,7 +60,6 @@ def getViewReleveContact():
     parameters = request.args
 
     nbResultsWithoutFilter = VReleveContact.query.count()
-    print(nbResultsWithoutFilter)
 
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
     page = int(parameters.get('offset')) if parameters.get('offset') else 0
@@ -84,8 +83,11 @@ def getViewReleveContact():
 
         q= q.order_by(orderCol)
 
-
-    data = q.limit(limit).offset(page*limit).all()
+    try :
+        data = q.limit(limit).offset(page*limit).all()
+    except:
+        db.session.close()
+        raise
     if data:
         return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter}
     return {'message': 'not found'}, 404
@@ -117,7 +119,6 @@ def insertOrUpdateOneReleve():
 
         municipalities = db.session.query(LAreasWithoutGeom).filter(LAreasWithoutGeom.id_area.in_(municipalitiesList)).all()
         for m in municipalities :
-            print(m)
             releve.municipalities.append(m)
 
         for occ in occurrences_contact :
