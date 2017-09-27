@@ -20,12 +20,12 @@ export class ContactMapListComponent implements OnInit {
 
   ngOnInit() {
   this.columns = [
-   {prop: 'nom_valide', name: 'Taxon'},
+   {prop: 'taxons', name: 'Taxon'},
    {prop: 'observateurs', 'name': 'Observateurs'}
   ];
   this.pathRedirect = 'contact-form';
 
-  this._mapListService.getData('contact/vrelevecontact')
+  this._mapListService.getData('contact/vreleve')
   .subscribe(res => {
     this._mapListService.page.totalElements = res.total;
 

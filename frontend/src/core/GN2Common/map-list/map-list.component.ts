@@ -32,9 +32,9 @@ export class MapListComponent implements OnInit, OnChanges {
   }
 
   refreshValue(params) {
-    this.mapListService.getData('contact/vrelevecontact', params)
+    this.mapListService.getData('contact/vreleve', params)
       .subscribe(res => {
-        this.mapListService.page.totalElements = res.total;
+        this.mapListService.page.totalElements = res.total_filtered;
         this.geojsonData = res.items;
         this.tableData = this.mapListService.loadTableData(res.items);
       });

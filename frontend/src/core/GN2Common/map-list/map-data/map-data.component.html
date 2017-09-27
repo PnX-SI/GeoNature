@@ -4,50 +4,78 @@
 <md-card>
   <div class="row">
     <!--Filter-->
-    <!-- <div class="input-group width-60 alignment-xs">
-      <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
-      (keyup)='updateFilter($event)'>
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Par {{filterSelected.name | titlecase}}
-        </button>
-        <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item font-md" *ngFor="let list of filterList" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
-        </div>
-      </div>
-    </div> -->
-    <pnx-taxonomy
-    [parentFormControl]="inputTaxon"
-    [idList]="1001"
-    [charNumber]="3"
-    [listLength]="20"
-    (taxonChanged)="taxonChanged($event)">
-    </pnx-taxonomy>
-
-    <pnx-observers
-    [parentFormControl]="inputObservers"
-    [idMenu]="9"
-    (observerSelected)="observerChanged($event)"
-    placeholder="{{ 'Releve.Observers' | translate }}">
-    </pnx-observers>
+    
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <pnx-taxonomy
+      [parentFormControl]="inputTaxon"
+      [idList]="1001"
+      [charNumber]="3"
+      [listLength]="20"
+      (taxonChanged)="taxonChanged($event)">
+      </pnx-taxonomy>
+    </div>
     
 
-    <!--Filter Avancé-->
-      <button  md-icon-button mdTooltip="Filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+    
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <pnx-observers
+      [parentFormControl]="inputObservers"
+      [idMenu]="9"
+      (observerSelected)="observerChanged($event)"
+      (observerDeleted)="observerDeleted($event)"
+      placeholder="{{ 'Releve.Observers' | translate }}">
+      </pnx-observers>
+    </div>
+    
+    
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+      <pnx-date
+        placeholder="{{ 'Releve.MinDate' | translate }} "
+        [parentFormControl]="dateMin"
+        (dateChanged)="dateMinChanged($event)">
+      </pnx-date>
+    </div>
+    
+    
+    <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2">
+        <pnx-date
+          placeholder="{{ 'Releve.MaxDate' | translate }} "
+          [parentFormControl]="dateMax"
+          (dateChanged)="dateMaxChanged($event)">
+        </pnx-date>   
+    </div>
+    
+
+    
+
+
+
+    <button id="to-collapse"  md-icon-button mdTooltip="Filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
         <md-icon>filter_list</md-icon>
-      </button>
-      <span class="spacer"> </span>
-        <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
-          <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </button>
-      
+    </button>
+    <span class="spacer"> </span>
+    <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    </button>
     </div>
     <!--collapseAvance-->
   <div class="row">
+
+        <!--Filter Avancé-->
+
       <div class="collapse width-100" id="collapseAvance">
-        <div class="card card-block margin-top-md">
-          ... filter avancé
-        </div>
+          <div class="input-group width-60 alignment-xs">
+            <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
+            (keyup)='updateFilter($event)'>
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Par {{filterSelected.name | titlecase}}
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item font-md" *ngFor="let list of filterList" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
+              </div>
+            </div>
+          </div>
       </div>
   </div>
 

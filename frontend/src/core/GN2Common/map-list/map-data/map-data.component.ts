@@ -21,8 +21,10 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Output() pageChanged = new EventEmitter<any>();
   filterList: Array<any>;
   filterSelected: any;
-  inputTaxon: FormControl;
-  inputObservers: FormControl;
+  inputTaxon = new FormControl();
+  inputObservers = new FormControl();
+  dateMin = new FormControl();
+  dateMax = new FormControl();
 
 
   selected = []; // list of row selected
@@ -33,10 +35,6 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-
-    this.inputTaxon = new FormControl();
-    this.inputObservers = new FormControl();
-
     this.filterList = this.columns;
 
     this.filterSelected = this.filterList[0];
@@ -48,6 +46,10 @@ export class MapDataComponent implements OnInit, OnChanges {
           this.selected.push(this.tableData[i]);
         }
       }
+    });
+
+    this.dateMin.valueChanges.subscribe(res => {
+      console.log(res);
     });
   }
 
@@ -97,12 +99,29 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
   observerChanged(observer) {
     console.log(observer);
+     this.paramChanged.emit({param: 'observer', 'value': observer.id_role});
+  }
+
+  observerDeleted(observer) {
+    const idObservers = this.mapListService.urlQuery.getAll('observer');
+    idObservers.splice(idObservers.indexOf(observer.id_role));
+    idObservers.forEach(id => {
+      this.mapListService.urlQuery.set('observer', id);
+    });
+  }
+
+  dateMinChanged(date) {
+    this.mapListService.urlQuery.delete('date_up');
+    this.paramChanged.emit({param: 'date_up', 'value': date});
+  }
+  dateMaxChanged(date) {
+    this.mapListService.urlQuery.delete('date_low');
+    this.paramChanged.emit({param: 'date_low', 'value': date});
   }
 
   setPage(pageInfo) {
     this.mapListService.page.pageNumber = pageInfo.offset;
     this.paramChanged.emit({param: 'offset', 'value': pageInfo.offset});
-
   }
   ngOnChanges(changes) {
     // init the rows
