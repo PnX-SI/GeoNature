@@ -18,29 +18,30 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Input() columns: Array<any>;
   @Input() pathRedirect: string;
   @Output() paramChanged = new EventEmitter<any>();
+  @Output() pageChanged = new EventEmitter<any>();
   filterList: Array<any>;
   filterSelected: any;
   inputTaxon: FormControl;
+  inputObservers: FormControl;
+
 
   selected = []; // list of row selected
   rows = []; // rows in data table
 
-  // tslint:disable-next-line
-  //myDatas = 
-  constructor(private _mapListService: MapListService, private _router: Router) {
+  constructor(private mapListService: MapListService, private _router: Router) {
+
   }
 
   ngOnInit() {
-    console.log('init map data');
 
-    // test taxonomie
     this.inputTaxon = new FormControl();
+    this.inputObservers = new FormControl();
 
     this.filterList = this.columns;
 
     this.filterSelected = this.filterList[0];
 
-    this._mapListService.gettingTableId$.subscribe(res => {
+    this.mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
       for (const i in this.tableData) {
         if (this.tableData[i].id === res) {
@@ -51,7 +52,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   onSelect({ selected }) {
-    this._mapListService.setCurrentLayerId(this.selected[0].id);
+    this.mapListService.setCurrentLayerId(this.selected[0].id);
   }
 
   updateFilter(event) {
@@ -90,9 +91,22 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   taxonChanged(taxonObj) {
+    // refresh taxon in url query
+    this.mapListService.urlQuery.delete('cd_nom');
     this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
+  observerChanged(observer) {
+    console.log(observer);
+  }
 
+  setPage(pageInfo) {
+    
+    this.mapListService.page.pageNumber = pageInfo.offset;
+    //this.mapListService.urlQuery.set('offset', )
+    // load queried page
+    this.paramChanged.emit({param: 'offset', 'value': pageInfo.offset});
+
+  }
   ngOnChanges(changes) {
     // init the rows
     if (changes.tableData.currentValue !== undefined) {
@@ -100,5 +114,7 @@ export class MapDataComponent implements OnInit, OnChanges {
     }
   }
 }
+
+
 
 

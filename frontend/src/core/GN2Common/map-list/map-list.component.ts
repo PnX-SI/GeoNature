@@ -1,4 +1,4 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, OnChanges} from '@angular/core';
 import { MapService } from '../map/map.service';
 import {MapListService} from '../map-list/map-list.service';
 import { GeoJSON, Layer } from 'leaflet';
@@ -10,7 +10,7 @@ import { GeoJSON, Layer } from 'leaflet';
   styleUrls: ['./map-list.component.scss'],
   providers: [MapService]
 })
-export class MapListComponent implements OnInit {
+export class MapListComponent implements OnInit, OnChanges {
   public layerDict: any;
   public selectedLayer: any;
   @Input() geojsonData: GeoJSON;
@@ -19,44 +19,47 @@ export class MapListComponent implements OnInit {
   @Input() columns: Array<string>;
   @Input() pathRedirect: string;
 
-  constructor(private _ms: MapService, private _mapListService: MapListService) {
+  constructor(private _ms: MapService, private mapListService: MapListService) {
   }
 
   ngOnInit() {
     // event from the list
-    this._mapListService.gettingLayerId$.subscribe(res => {
-      const selectedLayer = this._mapListService.layerDict[res];
-      this._mapListService.toggleStyle(selectedLayer);
-      this._mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
+    this.mapListService.gettingLayerId$.subscribe(res => {
+      const selectedLayer = this.mapListService.layerDict[res];
+      this.mapListService.toggleStyle(selectedLayer);
+      this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
   }
 
   refreshValue(params) {
-    console.log(params);
-    this._mapListService.getData('contact/vrelevecontact', params)
+    this.mapListService.getData('contact/vrelevecontact', params)
       .subscribe(res => {
-        this.geojsonData = res;
-        this.tableData = this._mapListService.loadTableData(res);
+        this.mapListService.page.totalElements = res.total;
+        this.geojsonData = res.items;
+        this.tableData = this.mapListService.loadTableData(res.items);
       });
 
   }
 
   onEachFeature(feature, layer) {
     // event from the map
-    this._mapListService.layerDict[feature.id] = layer;
+    this.mapListService.layerDict[feature.id] = layer;
     layer.on({
       click : (e) => {
         // toggle style
-        this._mapListService.toggleStyle(layer);
+        this.mapListService.toggleStyle(layer);
         // observable
-        this._mapListService.setCurrentTableId(feature.id);
+        this.mapListService.setCurrentTableId(feature.id);
         // open popup
         layer.bindPopup(feature.properties.leaflet_popup).openPopup();
       }
     });
   }
 
-
-
+  ngOnChanges(changes) {
+    if (changes.geojsonData.currentValue !== undefined) {
+      //this.mapListService.page.totalElements = changes.geojsonData.currentValue.features.length;
+    }
+  }
 
 }
