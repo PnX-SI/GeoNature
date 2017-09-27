@@ -100,10 +100,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   setPage(pageInfo) {
-    
     this.mapListService.page.pageNumber = pageInfo.offset;
-    //this.mapListService.urlQuery.set('offset', )
-    // load queried page
     this.paramChanged.emit({param: 'offset', 'value': pageInfo.offset});
 
   }

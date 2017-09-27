@@ -65,11 +65,12 @@
   [draggable]="false"
   [selected]="selected"
   [externalPaging]="true"
+  [selectionType]="'single'"
   [count]="mapListService.page.totalElements"
   [offset]="mapListService.page.pageNumber"
   [limit]="mapListService.page.size"
-  (page)='setPage($event)'
-  (select)='onSelect($event)'
+  (page)="setPage($event)"
+  (select)="onSelect($event)"
   >
 
 <!-- <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow (toggle)="onDetailToggle($event)">
