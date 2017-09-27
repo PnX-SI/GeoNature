@@ -15,7 +15,8 @@ import { FormControl } from '@angular/forms';
 export class MapDataComponent implements OnInit, OnChanges {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @Input() tableData: Array<any>;
-  @Input() columns: Array<any>;
+  @Input() allColumns: Array<any>;
+  @Input() displayColumns: Array<any>;
   @Input() pathRedirect: string;
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
@@ -25,6 +26,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   inputObservers = new FormControl();
   dateMin = new FormControl();
   dateMax = new FormControl();
+  index = 0;
 
 
   selected = []; // list of row selected
@@ -35,9 +37,10 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.filterList = this.columns;
 
-    this.filterSelected = this.filterList[0];
+    this.filterList = [{'name': '', 'prop': ''}];
+
+    this.filterSelected = {'name': '', 'prop': ''};
 
     this.mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
@@ -46,10 +49,6 @@ export class MapDataComponent implements OnInit, OnChanges {
           this.selected.push(this.tableData[i]);
         }
       }
-    });
-
-    this.dateMin.valueChanges.subscribe(res => {
-      console.log(res);
     });
   }
 
@@ -71,6 +70,31 @@ export class MapDataComponent implements OnInit, OnChanges {
     // whenever the filter changes, always go back to the first page
     this.table.offset = 0;
   }
+
+
+  toggle(col) {
+    const isChecked = this.isChecked(col);
+    console.log(isChecked);
+
+    if (isChecked) {
+      this.displayColumns = this.displayColumns.filter(c => {
+        return c.prop !== col.prop;
+      });
+    } else {
+      this.displayColumns = [...this.displayColumns, col];
+    }
+  }
+
+
+  isChecked(col) {
+    let i = 0;
+    while (i < this.displayColumns.length && this.displayColumns[i].prop !== col.prop) {
+      i = i + 1;
+    }
+    return i === this.displayColumns.length ? false : true;
+    }
+
+
 
   onChangeFilterOps(list) {
     this.filterSelected = list; // change filter selected
@@ -125,9 +149,20 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
   ngOnChanges(changes) {
     // init the rows
-    if (changes.tableData.currentValue !== undefined) {
-      this.rows = changes.tableData.currentValue;
+    if (changes.tableData) {
+      if (changes.tableData.currentValue !== undefined) {
+        this.rows = changes.tableData.currentValue;
+      }
     }
+    // init the columns
+    if (changes.allColumns) {
+      if (changes.allColumns.currentValue !== undefined ) {
+        this.allColumns = changes.allColumns.currentValue;
+        console.log(this.allColumns);
+      }
+    }
+
+
   }
 }
 

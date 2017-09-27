@@ -16,8 +16,9 @@ export class MapListComponent implements OnInit, OnChanges {
   @Input() geojsonData: GeoJSON;
   @Input() tableData = [];
   @Input() apiEndPoint: string;
-  @Input() columns: Array<string>;
+  @Input() displayColumns: Array<any>;
   @Input() pathRedirect: string;
+  allColumns = [];
 
   constructor(private _ms: MapService, private mapListService: MapListService) {
   }
@@ -38,7 +39,6 @@ export class MapListComponent implements OnInit, OnChanges {
         this.geojsonData = res.items;
         this.tableData = this.mapListService.loadTableData(res.items);
       });
-
   }
 
   onEachFeature(feature, layer) {
@@ -58,7 +58,16 @@ export class MapListComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (changes.geojsonData.currentValue !== undefined) {
-      //this.mapListService.page.totalElements = changes.geojsonData.currentValue.features.length;
+      const features = changes.geojsonData.currentValue.features;
+      const keyColumns = [];
+      if (features.length > 0) {
+      // tslint:disable-next-line
+        for (let key in features[0].properties){
+          keyColumns.push({prop: key, name: key});
+        }
+        this.allColumns = keyColumns;
+      }
+
     }
   }
 

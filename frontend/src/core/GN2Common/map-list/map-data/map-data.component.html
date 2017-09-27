@@ -2,10 +2,10 @@
 <!-- <input type="text" class="form-control form-control-sm"
 [formControl]="taxonCtrl" placeholder="la"> -->
 <md-card>
-  <div class="row">
+  <div class="row row-sm">
     <!--Filter-->
     
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
       <pnx-taxonomy
       [parentFormControl]="inputTaxon"
       [idList]="1001"
@@ -16,8 +16,7 @@
     </div>
     
 
-    
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
       <pnx-observers
       [parentFormControl]="inputObservers"
       [idMenu]="9"
@@ -28,7 +27,7 @@
     </div>
     
     
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
       <pnx-date
         placeholder="{{ 'Releve.MinDate' | translate }} "
         [parentFormControl]="dateMin"
@@ -37,7 +36,7 @@
     </div>
     
     
-    <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2">
+    <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
         <pnx-date
           placeholder="{{ 'Releve.MaxDate' | translate }} "
           [parentFormControl]="dateMax"
@@ -45,11 +44,6 @@
         </pnx-date>   
     </div>
     
-
-    
-
-
-
     <button id="to-collapse"  md-icon-button mdTooltip="Filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
         <md-icon>filter_list</md-icon>
     </button>
@@ -58,12 +52,27 @@
       <i class="fa fa-plus-circle" aria-hidden="true"></i>
     </button>
     </div>
+
     <!--collapseAvance-->
   <div class="row">
-
+    
         <!--Filter Avancé-->
-
       <div class="collapse width-100" id="collapseAvance">
+          <div class='selected-column'>
+              <h5>Colonnes</h5>
+              <ul>
+                <li *ngFor='let col of allColumns '>
+                  <input
+                    type='checkbox'
+                    [id]="col.name"
+                    (click)='toggle(col)'
+                    [checked]='isChecked(col)'
+                  />
+                  <label [attr.for]="col.name">{{col.name}}</label>
+                </li>
+              </ul>
+            </div>
+
           <div class="input-group width-60 alignment-xs">
             <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
             (keyup)='updateFilter($event)'>
@@ -85,7 +94,7 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="rows"
-  [columns]="columns"
+  [columns]="displayColumns"
   [columnMode]="'force'"
   [headerHeight]="50"
   [footerHeight]="50"
@@ -140,7 +149,7 @@
 </ng-template>
 </ngx-datatable-column>
   <ngx-datatable-column
-   *ngFor="let col of columns"
+   *ngFor="let col of displayColumns"
    [name]="col.name"
    [prop]="col.prop">
   </ngx-datatable-column>
