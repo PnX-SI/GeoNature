@@ -70,7 +70,6 @@ def getViewReleveContact():
             col = getattr( VReleveContact.__table__.columns,param)
             q = q.filter(col == parameters[param])
 
-    nbResults = q.count()
     #Order by
     if 'orderby' in parameters:
         if parameters.get('orderby') in VReleveContact.__table__.columns:
@@ -90,7 +89,7 @@ def getViewReleveContact():
         db.session.close()
         raise
     if data:
-        return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter, 'total_filtered': nbResults}
+        return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter}
     return {'message': 'not found'}, 404
 
 

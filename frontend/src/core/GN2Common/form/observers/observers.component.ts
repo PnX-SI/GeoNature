@@ -37,10 +37,10 @@ export class ObserversComponent implements OnInit {
     })
   }
   addObservers(observer) {
-    this.observerSelected.emit(observer.id_role);  
+    this.observerSelected.emit(observer);
   }
   removeObservers(observer) {
-    this.observerDeleted.emit(observer.id_role);
+    this.observerDeleted.emit(observer);
   }
 
     
