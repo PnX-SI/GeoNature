@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, ViewChild } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ContactFormService } from '../contact-form.service';
 
 
@@ -13,7 +13,7 @@ import { ContactFormService } from '../contact-form.service';
 export class CountingComponent implements OnInit {
   @Input() index: number;
   @Input() length :number; 
-  @Input() formGroup: FormGroup;
+  @Input() formArray: FormArray;
   @Output() countingRemoved = new EventEmitter<any>();
   @Output() countingAdded = new EventEmitter<any>();
   @ViewChild('typeDenombrement') public typeDenombrement: any;
@@ -21,11 +21,23 @@ export class CountingComponent implements OnInit {
   constructor(public fs: ContactFormService) { }
 
   ngOnInit() {
-
+    console.log(this.formArray);
+    const formGroup: FormGroup = <FormGroup>this.fs.countingForm.controls[0];
+    formGroup.controls['count_min'].valueChanges
+      .subscribe(truc => {
+        console.log(formGroup.controls['count_min'].valid);
+        
+      })
   }
 
   typeDenombrementChanged(event) {
-    console.log(event);
+    // Test validation conditionelle
+    if (event !== null && event !== 109) {
+      console.log(this.fs.countingForm.controls);
+      const formGroup: FormGroup = <FormGroup>this.fs.countingForm.controls[0];
+       formGroup.controls['count_min'].setErrors([Validators.required]);
+       formGroup.controls['count_max'].setErrors([Validators.required]);
+    }
   }
 
   onAddCounting() {

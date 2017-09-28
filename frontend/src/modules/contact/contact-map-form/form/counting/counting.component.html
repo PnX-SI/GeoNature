@@ -2,7 +2,7 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting">
           <pnx-nomenclature
             placeholder="{{ 'Counting.LifeStage' | translate }}" 
-            [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_life_stage"
+            [parentFormControl]="formArray.controls[index].controls.id_nomenclature_life_stage"
             [idTypeNomenclature]="10" 
             [regne]="fs.currentTaxon.regne"  
             [group2Inpn]="fs.currentTaxon.group2_inpn"> 
@@ -11,7 +11,7 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
             <pnx-nomenclature
               placeholder="{{ 'Counting.Sex' | translate }}"
-              [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_sex"
+              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_sex"
               [idTypeNomenclature]="9" 
               [regne]="fs.currentTaxon.regne" 
               [group2Inpn]="fs.currentTaxon.group2_inpn">
@@ -20,7 +20,7 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting">
             <pnx-nomenclature 
               placeholder="{{ 'Counting.CountingObject' | translate }}"
-              [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_obj_count"
+              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_obj_count"
               [idTypeNomenclature]="6" 
               [regne]="fs.currentTaxon.regne"
               [group2Inpn]="fs.currentTaxon.group2_inpn">
@@ -33,7 +33,7 @@
             <pnx-nomenclature
               #typeDenombrement
               placeholder="{{ 'Counting.CountingType' | translate }}"
-              [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_type_count"
+              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_type_count"
               [idTypeNomenclature]="21"
               [regne]="fs.currentTaxon.regne"
               [group2Inpn]="fs.currentTaxon.group2_inpn"
@@ -41,14 +41,18 @@
             </pnx-nomenclature> 
       </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
-          <small> {{ 'Counting.NumberMin' | translate }} </small>
-          <input class="form-control form-control-sm" type="number" 
-          [formControl]="formGroup.controls[index].controls.count_min">
+          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].controls.count_min.invalid}">
+            <small> {{ 'Counting.NumberMin' | translate }} </small>
+            <input class="form-control form-control-sm" type="number" 
+            [formControl]="formArray.controls[index].controls.count_min">
+          </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
-            <small> {{ 'Counting.NumberMax' | translate }} </small>
-          <input class="form-control form-control-sm" type="number" 
-          [formControl]="formGroup.controls[index].controls.count_max">
+          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].controls.count_max.invalid}">
+              <small> {{ 'Counting.NumberMax' | translate }} </small>
+            <input class="form-control form-control-sm" type="number" 
+            [formControl]="formArray.controls[index].controls.count_max">
+          </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 col-counting" *ngIf="index == length -1 && index != 0">
           <button id="add-counting" type="button" class="btn btn-danger btn-sm" (click)="onRemoveCounting(index)">
