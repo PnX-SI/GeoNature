@@ -21,13 +21,7 @@ export class CountingComponent implements OnInit {
   constructor(public fs: ContactFormService) { }
 
   ngOnInit() {
-    console.log(this.formArray);
-    const formGroup: FormGroup = <FormGroup>this.fs.countingForm.controls[0];
-    formGroup.controls['count_min'].valueChanges
-      .subscribe(truc => {
-        console.log(formGroup.controls['count_min'].valid);
-        
-      })
+
   }
 
   typeDenombrementChanged(event) {
