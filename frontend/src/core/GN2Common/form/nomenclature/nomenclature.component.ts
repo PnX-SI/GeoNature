@@ -15,12 +15,13 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   selectedId: number;
   labelLang:string;
   subscription: Subscription;
+  valueSubscription: Subscription;
   @Input() placeholder: string;
-  @Input() parentFormControl: FormGroup;
+  @Input() parentFormControl: FormControl;
   @Input() idTypeNomenclature: number;
   @Input() regne: string;
   @Input() group2Inpn: string;
-  @Output() valueSelected = new EventEmitter<any>();
+  @Output() valueSelected = new EventEmitter<number>();
 
   constructor(private _dfService: DataFormService, private _translate:TranslateService) { }
 
@@ -32,7 +33,12 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
     this.subscription = this._translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.labelLang = 'label_'+this._translate.currentLang;  
     });
-  
+
+    // output
+    this.valueSubscription = this.parentFormControl.valueChanges
+      .subscribe(id => {
+        this.valueSelected.emit(id);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -46,22 +52,20 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  initLabels(){
+  initLabels() {
     this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => {
         this.labels = data.values;
         // disable the input if undefined
-        if(this.labels === undefined){
+        if (this.labels === undefined) {
           this.parentFormControl.disable();
         }
       });
   }
-  // Output
-  onLabelChange() {
-    this.valueSelected.emit(this.selectedId);
-  }
 
-  ngOnDestroy(){
+
+  ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.valueSubscription.unsubscribe();
   }
 }

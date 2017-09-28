@@ -9,12 +9,12 @@ import { Subscription } from 'rxjs/Subscription';
 
 
 @Component({
-  selector: 'pnx-contact',
-  templateUrl: './contact-form.component.html',
-  styleUrls: ['./contact-form.component.scss'],
+  selector: 'pnx-contact-map-form',
+  templateUrl: './contact-map-form.component.html',
+  styleUrls: ['./contact-map-form.component.scss'],
   providers: [MapService]
 })
-export class ContactFormComponent implements OnInit, OnDestroy {
+export class ContactMapFormComponent implements OnInit, OnDestroy {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;

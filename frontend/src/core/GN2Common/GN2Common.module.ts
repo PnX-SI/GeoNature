@@ -11,8 +11,7 @@ import { NomenclatureComponent } from './form/nomenclature/nomenclature.componen
 import { ObserversComponent } from './form/observers/observers.component';
 import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
-import { CountingComponent } from './form/counting/counting.component';
-import { ObservationComponent } from './form/observation/observation.component';
+
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component'
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component'
@@ -21,7 +20,6 @@ import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
-import { OccurrenceComponent } from './form/occurrence/occurrence.component'
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -30,7 +28,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MapService } from './map/map.service';
 import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
-import { FormService } from './form/form.service';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -67,15 +64,10 @@ export function HttpLoaderFactory(http: Http) {
     GPSComponent,
     MapListComponent,
     MapDataComponent,
-    OccurrenceComponent,
-    CountingComponent,
-    ObservationComponent
-
   ],
   providers : [
     MapService,
     DataFormService,
-    FormService,
     MapListService
     ],
   exports: [
@@ -90,9 +82,6 @@ export function HttpLoaderFactory(http: Http) {
     GPSComponent,
     MapListComponent,
     MapDataComponent,
-    OccurrenceComponent,
-    CountingComponent,
-    ObservationComponent,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
