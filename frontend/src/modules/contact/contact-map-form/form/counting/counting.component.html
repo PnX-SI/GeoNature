@@ -31,11 +31,13 @@
     <div class="form-group row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting">
             <pnx-nomenclature
+              #typeDenombrement
               placeholder="{{ 'Counting.CountingType' | translate }}"
               [parentFormControl]="formGroup.controls[index].controls.id_nomenclature_type_count"
               [idTypeNomenclature]="21"
               [regne]="fs.currentTaxon.regne"
-              [group2Inpn]="fs.currentTaxon.group2_inpn">
+              [group2Inpn]="fs.currentTaxon.group2_inpn"
+              (valueSelected)= "typeDenombrementChanged($event)">
             </pnx-nomenclature> 
       </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">

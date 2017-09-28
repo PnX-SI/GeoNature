@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { FormService } from '../form.service'
+import { ContactFormService } from '../contact-form.service';
+
 
 
 @Component({
@@ -15,17 +16,25 @@ export class CountingComponent implements OnInit {
   @Input() formGroup: FormGroup;
   @Output() countingRemoved = new EventEmitter<any>();
   @Output() countingAdded = new EventEmitter<any>();
-  constructor(public fs: FormService) { }
+  @ViewChild('typeDenombrement') public typeDenombrement: any;
 
-  ngOnInit() {}
+  constructor(public fs: ContactFormService) { }
 
-  onAddCounting(){
+  ngOnInit() {
+
+  }
+
+  typeDenombrementChanged(event) {
+    console.log(event);
+  }
+
+  onAddCounting() {
     this.countingAdded.emit();
   }
 
-  onRemoveCounting(){    
+  onRemoveCounting() {
     this.countingRemoved.emit(this.index);
   }
 
-  
+
 }

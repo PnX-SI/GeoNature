@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
-import { MapService } from '../../map/map.service';
-import { DataFormService } from '../data-form.service';
-import { FormService } from '../form.service';
+import { MapService } from '../../../../../core/GN2Common/map/map.service';
+import { DataFormService } from '../../../../../core/GN2Common/form/data-form.service';
+import { ContactFormService } from '../contact-form.service';
 import {ViewEncapsulation} from '@angular/core';
 import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
@@ -28,7 +28,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public today: NgbDateStruct;
   private geojsonSubscription$: Subscription;
 
-  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: FormService) {  }
+  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService) {  }
 
   ngOnInit() {
     // load datasets

@@ -32,13 +32,13 @@
         </pnx-nomenclature>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-          <pnx-nomenclature 
-            placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
-            [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
-            [idTypeNomenclature]="7" 
-            [regne]="fs.currentTaxon.regne" 
-            [group2Inpn]="fs.currentTaxon.group2_inpn" > 
-          </pnx-nomenclature>
+        <pnx-nomenclature 
+          placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
+          [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
+          [idTypeNomenclature]="7" 
+          [regne]="fs.currentTaxon.regne" 
+          [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+        </pnx-nomenclature>
       </div>
     </div>
     <button id="advanced-button" type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#collapseAvance">

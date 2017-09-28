@@ -1,23 +1,31 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import {  } from '@angular/forms';
+import { AppConfig } from '../../../../conf/app.config';
+import { Http } from '@angular/http';
+
 
 @Injectable()
-export class FormService {
+export class ContactFormService {
   currentTaxon:any;
   municipalities: string;
   indexCounting: number;
   nbCounting: Array<string>;
-  contactForm: FormGroup;
-  occurrenceForm : FormGroup;
-  countingForm: FormArray;
   indexOccurrence: number = 0;
 
-  constructor(private _fb: FormBuilder) {
+  public releveForm: FormGroup;
+  public occurrenceForm: FormGroup;
+  public countingForm: FormArray;
+
+  constructor(private _fb: FormBuilder, private _http:Http) {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
    }// end constructor
+
+   getReleve(id){
+    return this._http.get(`${AppConfig.API_ENDPOINT}contact/releve/${id}`)
+    .map(res => res.json());
+  }  
 
    initObservationForm(data?): FormGroup {
     return this._fb.group({

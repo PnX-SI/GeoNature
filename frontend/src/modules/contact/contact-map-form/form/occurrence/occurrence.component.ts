@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormService }  from '../form.service'
+import { ContactFormService } from '../contact-form.service';
 
 @Component({
   selector: 'pnx-occurrence',
@@ -12,7 +12,7 @@ export class OccurrenceComponent implements OnInit {
 
   @Input() occurrenceForm: FormGroup;
 
-  constructor(public fs: FormService) {
+  constructor(public fs: ContactFormService) {
    }
 
   ngOnInit() {
