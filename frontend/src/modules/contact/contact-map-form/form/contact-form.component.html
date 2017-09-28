@@ -20,7 +20,7 @@
           <!-- COUNTING -->
           <div *ngFor="let counting of fs.nbCounting; let i = index">
             <pnx-counting 
-              [formGroup]="fs.countingForm"
+              [formArray]="fs.countingForm"
               [index]="i"
               [length]="fs.nbCounting.length"
               (countingRemoved)="fs.removeCounting($event, countingForm)">
