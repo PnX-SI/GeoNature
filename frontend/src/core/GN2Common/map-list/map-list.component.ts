@@ -17,7 +17,8 @@ export class MapListComponent implements OnInit, OnChanges {
   @Input() tableData = [];
   @Input() apiEndPoint: string;
   @Input() displayColumns: Array<any>;
-  @Input() pathRedirect: string;
+  @Input() pathEdit: string;
+  @Input() pathInfo: string;
   allColumns = [];
 
   constructor(private _ms: MapService, private mapListService: MapListService) {

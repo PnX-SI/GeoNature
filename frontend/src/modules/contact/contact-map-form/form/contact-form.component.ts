@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
-import { DataFormService } from '../../../../core/GN2Common/form/data-form.service'
+import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { MapService } from '../../../../core/GN2Common/map/map.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
@@ -39,7 +39,6 @@ export class ContactFormComponent implements OnInit {
       // load one releve
       this.fs.getReleve(this.id)
         .subscribe(data => {
-          console.log(data);
 
           // pre fill the form
           this.fs.releveForm = this.fs.initObservationForm(data);
@@ -143,7 +142,6 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
 
-    console.log(finalForm);
     // FIX
     finalForm.properties.municipalities = [74000];
 

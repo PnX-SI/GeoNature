@@ -38,12 +38,10 @@ export class MapListService {
 
   getData(endPoint, param?) {
     if (param) {
-      console.log(param);
       if (param.param === 'offset') {
         this.urlQuery.set('offset', param.value);
       }else {
         this.urlQuery.append(param.param, param.value);
-        console.log(this.urlQuery.toString());
 
       }
 
@@ -89,7 +87,6 @@ export class MapListService {
   }
 
   loadTableData(data) {
-    console.log(data);
     const tableData = [];
     data.features.forEach(feature => {
       const obj = feature.properties;

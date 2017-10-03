@@ -22,10 +22,10 @@ export class ContactFormService {
     this.nbCounting = [''];
    }// end constructor
 
-   getReleve(id){
+   getReleve(id) {
     return this._http.get(`${AppConfig.API_ENDPOINT}contact/releve/${id}`)
     .map(res => res.json());
-  }  
+  }
 
    initObservationForm(data?): FormGroup {
     return this._fb.group({

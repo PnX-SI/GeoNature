@@ -16,7 +16,8 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Input() tableData: Array<any>;
   @Input() allColumns: Array<any>;
   @Input() displayColumns: Array<any>;
-  @Input() pathRedirect: string;
+  @Input() pathInfo: string;
+  @Input() pathEdit: string;
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
   filterList: Array<any>;
@@ -37,7 +38,6 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-
     this.filterList = [{'name': '', 'prop': ''}];
 
     this.filterSelected = {'name': '', 'prop': ''};
@@ -53,8 +53,9 @@ export class MapDataComponent implements OnInit, OnChanges {
 
     this.genericFilter.valueChanges
       .filter(value => value.length > 0)
+      .debounceTime(400)
+      .distinctUntilChanged()
       .subscribe(value => {
-        console.log(this.filterSelected.prop);
         this.mapListService.urlQuery.delete(this.filterSelected.prop);
         this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
       });
@@ -82,7 +83,6 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   toggle(col) {
     const isChecked = this.isChecked(col);
-    console.log(isChecked);
 
     if (isChecked) {
       this.displayColumns = this.displayColumns.filter(c => {
@@ -115,15 +115,15 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   onEditReleve(idReleve) {
-    this._router.navigate(['contact-form', idReleve]);
+    this._router.navigate([this.pathEdit, idReleve]);
   }
 
-  onDetailReleve(id_releve) {
-    // TODO
+  onDetailReleve(idReleve) {
+    this._router.navigate([this.pathInfo, idReleve]);
   }
 
   redirect() {
-    this._router.navigate([this.pathRedirect]);
+    this._router.navigate([this.pathEdit]);
   }
 
   taxonChanged(taxonObj) {
@@ -132,7 +132,6 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
   observerChanged(observer) {
-    console.log(observer);
      this.paramChanged.emit({param: 'observer', 'value': observer.id_role});
   }
 
@@ -145,12 +144,20 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   dateMinChanged(date) {
+    console.log(date === undefined);
+    console.log(date);
+
+
     this.mapListService.urlQuery.delete('date_up');
-    this.paramChanged.emit({param: 'date_up', 'value': date});
+    if (date.length > 0) {
+      this.paramChanged.emit({param: 'date_up', 'value': date});
+    }
   }
   dateMaxChanged(date) {
     this.mapListService.urlQuery.delete('date_low');
-    this.paramChanged.emit({param: 'date_low', 'value': date});
+    if (date.length > 0) {
+      this.paramChanged.emit({param: 'date_low', 'value': date});
+    }
   }
 
   setPage(pageInfo) {
@@ -167,8 +174,9 @@ export class MapDataComponent implements OnInit, OnChanges {
     // init the columns
     if (changes.allColumns) {
       if (changes.allColumns.currentValue !== undefined ) {
-        this.allColumns = changes.allColumns.currentValue;
         console.log(this.allColumns);
+        
+        this.allColumns = changes.allColumns.currentValue;
       }
     }
 
