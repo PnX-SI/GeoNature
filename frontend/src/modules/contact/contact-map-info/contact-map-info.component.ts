@@ -13,6 +13,8 @@ import { MapService } from '../../../core/GN2Common/map/map.service';
 export class ContactMapInfoComponent implements OnInit {
   private _sub: Subscription;
   public id: number;
+  public releve: any;
+  public observers: any;
   constructor(private _cfs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService) { }
 
   ngOnInit() {
@@ -22,7 +24,10 @@ export class ContactMapInfoComponent implements OnInit {
         // load one releve
         this._cfs.getReleve(this.id)
           .subscribe(data => {
-            console.log(data);
+            this.releve = data;
+            this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
+            console.log(this.observers);
+
             this._ms.loadGeometryReleve(data);
         });
       }

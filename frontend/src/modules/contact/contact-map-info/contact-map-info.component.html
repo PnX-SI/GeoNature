@@ -2,3 +2,16 @@
   <div class="col-sm-12 col-md-5 padding-sm">
       <pnx-map class="map-card"> </pnx-map>
   </div>
+  <div class="col-sm-12 col-md-6 padding-sm">
+    <div class="card">
+      <h3> Relevé </h3>
+      <div class="card-body>">
+        <label> Observateurs </label>: {{observers}}
+        <label> Altitude min  </label>: {{releve.properties.altitude_min}}
+        <label> Altitude max  </label>: {{releve.properties.altitude_max}}
+      </div>
+    </div>
+  </div>
+</div>
+.
+{{releve.properties | json}}
