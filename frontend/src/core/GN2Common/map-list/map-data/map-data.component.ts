@@ -3,7 +3,6 @@ import { MapService } from '../../map/map.service';
 import { MapListService } from '../../map-list/map-list.service';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
-
 import { FormControl } from '@angular/forms';
 
 
@@ -26,6 +25,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   inputObservers = new FormControl();
   dateMin = new FormControl();
   dateMax = new FormControl();
+  genericFilter = new FormControl();
   index = 0;
 
 
@@ -50,6 +50,14 @@ export class MapDataComponent implements OnInit, OnChanges {
         }
       }
     });
+
+    this.genericFilter.valueChanges
+      .filter(value => value.length > 0)
+      .subscribe(value => {
+        console.log(this.filterSelected.prop);
+        this.mapListService.urlQuery.delete(this.filterSelected.prop);
+        this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
+      });
   }
 
   onSelect({ selected }) {
@@ -97,6 +105,8 @@ export class MapDataComponent implements OnInit, OnChanges {
 
 
   onChangeFilterOps(list) {
+    // reset url query
+    this.mapListService.urlQuery.delete(this.filterSelected.prop);
     this.filterSelected = list; // change filter selected
   }
 
