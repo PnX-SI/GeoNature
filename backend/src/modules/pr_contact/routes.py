@@ -143,7 +143,6 @@ def getViewReleveList():
 
 
     try :
-        test = 5/0
         data = q.limit(limit).offset(page*limit).all()
     except:
         db.session.rollback()
