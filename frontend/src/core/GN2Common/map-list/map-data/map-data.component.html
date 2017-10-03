@@ -115,31 +115,6 @@
   (select)="onSelect($event)"
   >
 
-<!-- <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow (toggle)="onDetailToggle($event)">
-  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-      <div class="card card-block width-100">
-        <div><strong>Taxon:</strong> {{row.taxon}}</div>
-        <div><strong>Observer:</strong> {{row.observer}}</div>
-        <div><strong>Date:</strong> {{row.date}}</div>
-        <div><strong>Id:</strong> {{row.id}}</div>
-      </div>
-  </ng-template>
-  </ngx-datatable-row-detail>
-  <ngx-datatable-column
-  [width]="50"
-  [resizeable]="false"
-  [sortable]="false"
-  [draggable]="false"
-  [canAutoResize]="false">
-  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
-    <a
-      [class.datatable-icon-right]="!expanded"
-      [class.datatable-icon-down]="expanded"
-      title="Expand/Collapse Row"
-      (click)="toggleExpandRow(row)">
-    </a>
-  </ng-template>
-</ngx-datatable-column> -->
 <ngx-datatable-column
  maxWidth="50">
 <ng-template let-row="row" ngx-datatable-cell-template>

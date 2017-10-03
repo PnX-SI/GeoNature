@@ -15,7 +15,8 @@ export class ContactMapListComponent implements OnInit {
   private idSubscription: Subscription;
   public tableData= new Array();
   public displayColumns: Array<any>;
-  public pathRedirect: string;
+  public pathEdit: string;
+  public pathInfo: string;
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
@@ -23,7 +24,8 @@ export class ContactMapListComponent implements OnInit {
    {prop: 'taxons', name: 'Taxon'},
    {prop: 'observateurs', 'name': 'Observateurs'}
   ];
-  this.pathRedirect = 'contact-form';
+  this.pathEdit = 'contact-form';
+  this.pathInfo = 'contact/info';
 
   this._mapListService.getData('contact/vreleve')
   .subscribe(res => {
