@@ -125,8 +125,11 @@ def getViewReleveList():
         if param in VReleveList.__table__.columns:
             col = getattr( VReleveList.__table__.columns,param)
             q = q.filter(col == parameters[param])
-
-    nbResults = q.count()
+    try:
+        nbResults = q.count()
+    except:
+        db.session.rollback()
+        raise
 
     #Order by
     if 'orderby' in parameters:
@@ -140,7 +143,6 @@ def getViewReleveList():
                 orderCol = orderCol.desc()
 
         q= q.order_by(orderCol)
-
 
     try :
         data = q.limit(limit).offset(page*limit).all()
