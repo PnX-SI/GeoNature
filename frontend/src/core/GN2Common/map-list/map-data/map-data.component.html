@@ -1,7 +1,5 @@
 
-<!-- <input type="text" class="form-control form-control-sm"
-[formControl]="taxonCtrl" placeholder="la"> -->
-<md-card>
+<md-card class="padding-md-all">
   <div class="row row-sm">
     <!--Filter-->
     
@@ -44,48 +42,55 @@
         </pnx-date>   
     </div>
     
-    <button id="to-collapse"  md-icon-button mdTooltip="Filter options" class ="margin-left-md" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-        <md-icon>filter_list</md-icon>
+    <button md-icon-button mdTooltip="Filter columns" class="margin-left-md to-collapse" data-toggle="collapse" data-target="#collapseColumns" aria-expanded="false" aria-controls="contexte">
+      <i class="fa fa-columns" aria-hidden="true"></i>
     </button>
-    <span class="spacer"> </span>
-    <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
-      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    
+
+    <button md-icon-button mdTooltip="Filter options" class="margin-left-md to-collapse" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+        <md-icon>filter_list</md-icon>
     </button>
     </div>
 
     <!--collapseAvance-->
-  <div class="row">
-    
+  <div class="row row-sm">
+    <!-- Filtre columns -->
+    <div class="selected-column collapse width-100" id="collapseColumns">
+      <h5>Colonnes</h5>
+      <ul>
+        <li *ngFor='let col of allColumns '>
+          <input
+            type='checkbox'
+            [id]="col.name"
+            (click)='toggle(col)'
+            [checked]='isChecked(col)'
+          />
+          <label [attr.for]="col.name">{{col.name}}</label>
+        </li>
+      </ul>
+    </div>
         <!--Filter Avancé-->
       <div class="collapse width-100" id="collapseAvance">
-          <div class='selected-column'>
-              <h5>Colonnes</h5>
-              <ul>
-                <li *ngFor='let col of allColumns '>
-                  <input
-                    type='checkbox'
-                    [id]="col.name"
-                    (click)='toggle(col)'
-                    [checked]='isChecked(col)'
-                  />
-                  <label [attr.for]="col.name">{{col.name}}</label>
-                </li>
-              </ul>
-            </div>
-
           <div class="input-group width-60 alignment-xs">
-            <input type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" 
-            (keyup)='updateFilter($event)'>
+            <input [formControl]="genericFilter" type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" >
             <div class="input-group-btn">
               <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Par {{filterSelected.name | titlecase}}
               </button>
               <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item font-md" *ngFor="let list of filterList" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
+                <a class="dropdown-item font-md" *ngFor="let list of allColumns" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
               </div>
             </div>
           </div>
       </div>
+  </div>
+
+  <div class="row row-sm">
+    <div class="offset-md-11">
+      <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      </button>
+    </div>
   </div>
 
 </md-card>

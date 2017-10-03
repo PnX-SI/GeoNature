@@ -38,6 +38,10 @@ html, body, material-app, md-sidenav-container{
    padding-left: 5px !important;
 }
 
+.padding-md-all{
+  padding: 5px !important;
+}
+
 /*
  * The /deep/ selector is simply to overcome view encapsulation
  * and be able to select the div.md-sidenav-content generated at runtime

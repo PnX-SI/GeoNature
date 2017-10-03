@@ -89,6 +89,7 @@ export class MapListService {
   }
 
   loadTableData(data) {
+    console.log(data);
     const tableData = [];
     data.features.forEach(feature => {
       const obj = feature.properties;

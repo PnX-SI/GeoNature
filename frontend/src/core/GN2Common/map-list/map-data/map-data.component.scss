@@ -33,7 +33,6 @@
 }
 
 #redirect{
-    margin-top: 15px;
     padding-right: 0px;
     padding-left: 0px;
     cursor: pointer;
@@ -44,7 +43,7 @@
     //padding: 0px;
 }
 
-#to-collapse{
+.to-collapse{
     margin-top: 15px;
 }
 
@@ -60,3 +59,7 @@
 i{
 cursor: pointer;
 }
+
+ul {
+    list-style-type: none;
+  }
