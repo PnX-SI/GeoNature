@@ -143,19 +143,19 @@ def getViewReleveList():
 
 
     try :
+        test = 5/0
         data = q.limit(limit).offset(page*limit).all()
     except:
         db.session.rollback()
         raise
-    if data:
-        return {
-            'total': nbResultsWithoutFilter,
-            'total_filtered': nbResults ,
-            'page': page,
-            'limit': limit,
-            'items': FeatureCollection([n.get_geofeature() for n in data])
-        }
-    return {'message': 'not found'}, 404
+    return {
+        'total': nbResultsWithoutFilter,
+        'total_filtered': nbResults ,
+        'page': page,
+        'limit': limit,
+        'items': FeatureCollection([n.get_geofeature() for n in data])
+    }
+
 
 @routes.route('/releve', methods=['POST'])
 @json_resp
