@@ -40,28 +40,24 @@ export class ContactFormComponent implements OnInit {
       this.fs.getReleve(this.id)
         .subscribe(data => {
           console.log(data);
-          
+
           // pre fill the form
           this.fs.releveForm = this.fs.initObservationForm(data);
           for (const occ of data.properties.t_occurrences_contact){
             // push the occ in releveForm
             this.fs.releveForm.value.properties.t_occurrences_contact.push(occ);
-            // push the taxon list  
+            // push the taxon list
             this.taxonsList.push({'nom_valide': occ.nom_cite});
           }
-          console.log(this.fs.releveForm.value.properties.t_occurrences_contact);
-          
           // set the occurrence
           this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;
           // push the geometry in releveForm
           this.fs.releveForm.patchValue({geometry: data.geometry});
-          // copy the form data
-          //this.releveForm.value = this.releveForm.value;
           // load the geometry in the map
           this._ms.loadGeometryReleve(data);
           // get geoInfo to get municipalities
           this._dfs.getGeoInfo(data)
-            .subscribe(data => { this.fs.municipalities = data.municipality.map(m => m.area_name).join(', ')})
+            .subscribe(data => { this.fs.municipalities = data.municipality.map(m => m.area_name).join(', ')});
       }); // end subscribe
     }
     // init the taxons list
@@ -80,7 +76,7 @@ export class ContactFormComponent implements OnInit {
     }else {
       this.fs.releveForm.value.properties.t_occurrences_contact[this.fs.indexOccurrence] = this.fs.occurrenceForm.value;
     }
-    // set occurrence index  
+    // set occurrence index
     this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;
     // reset counting
     this.fs.nbCounting = [''];
