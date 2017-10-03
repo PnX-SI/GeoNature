@@ -178,8 +178,17 @@ export class MapService {
     loadGeometryReleve(data) {
       const coordinates = data.geometry.coordinates;
       if (data.geometry.type === 'Point') {
-        console.log('ppoinnnnnnnnt');
         this.marker = this.createMarker(coordinates[0], coordinates[1]);
+        this.marker.on('moveend', (event: MouseEvent) => {
+          if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+            this.sendWarningMessage();
+          } else {
+            const markerCoord = this.marker.getLatLng();
+            const geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+            this.setGeojsonCoord(geojson);
+          }
+        });
+
         this.map.addLayer(this.marker);
         // zoom to the layer
         this.map.setView(this.marker.getLatLng(), 15);
@@ -204,4 +213,6 @@ export class MapService {
           this.setEditingMarker(false);
     }
   }
+
+
 }

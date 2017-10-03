@@ -30,6 +30,7 @@ export class ContactMapFormComponent implements OnInit, OnDestroy {
     // get the id from the route
     this._sub = this._route.params.subscribe(params => {
       this.id = +params['id'];
+
     });
    }
 
