@@ -2,21 +2,23 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { AppConfig } from '../../../../conf/app.config';
 import { Http } from '@angular/http';
+import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 
 
 @Injectable()
 export class ContactFormService {
-  currentTaxon:any;
+  currentTaxon: any;
   municipalities: string;
   indexCounting: number;
   nbCounting: Array<string>;
   indexOccurrence: number = 0;
+  taxonsList = [];
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
 
-  constructor(private _fb: FormBuilder, private _http:Http) {
+  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService) {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
@@ -114,6 +116,68 @@ export class ContactFormService {
     countingForm.value.splice(index, 1);
     this.nbCounting.splice(index, 1);
 
+  }
+
+  addOccurence(index) {
+    // push the current taxon in the taxon list and refresh the currentTaxon
+    this.taxonsList.push(this.currentTaxon);
+    // push the counting
+    this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
+    // format the taxon
+    this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;
+    if (this.releveForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
+      this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
+    }else {
+      this.releveForm.value.properties.t_occurrences_contact[this.indexOccurrence] = this.occurrenceForm.value;
+    }
+    // set occurrence index
+    this.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length;
+    // reset counting
+    this.nbCounting = [''];
+    this.indexCounting = 0;
+    // reset current taxon
+    this.currentTaxon = {};
+    // reset occurrence form
+    this.occurrenceForm = this.initOccurrenceForm();
+    // reset the counting
+    this.countingForm = this.initCountingArray();
+  }
+
+  editOccurence(index) {
+    this.taxonsList.splice(index, 1);
+    // set the current index
+    this.indexOccurrence = index;
+    // get the occurrence data from releve form
+    let occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    const countingData = occurenceData.cor_counting_contact;
+    const nbCounting = countingData.length;
+    // load the taxons info
+    this._dfs.getTaxonInfo(occurenceData.cd_nom)
+      .subscribe(taxon => {
+        occurenceData['cd_nom'] = {
+          'cd_nom': taxon.cd_nom,
+          'group2_inpn': taxon.group2_inpn,
+          'lb_nom': taxon.lb_nom,
+          'nom_valide': taxon.nom_valide,
+          'regne': taxon.regne,
+        };
+        // init occurence form with the data to edit
+        this.occurrenceForm = this.initOccurrenceForm(occurenceData);
+        // set the current taxon
+        this.currentTaxon = occurenceData.cd_nom;
+      });
+    // init the counting form with the data to edit
+    for (let i = 1; i < nbCounting; i++) {
+      this.nbCounting.push('');
+     }
+    this.countingForm = this.initCountingArray(countingData);
+
+  }
+
+  removeOneOccurrence(index) {
+    this.taxonsList.splice(index, 1);
+    this.releveForm.value.properties.t_occurrences_contact.splice(index, 1);
+    this.indexOccurrence = this.indexOccurrence - 1 ;
   }
 
   updateTaxon(taxon) {

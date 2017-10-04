@@ -35,7 +35,7 @@
       <md-card-actions class="card-action"> 
         <button class="btn btn-primary btn-sm "
           [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
-          (click)="addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+          (click)="fs.addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
       </md-card-actions>
 
       <!-- <pre>form value: <br>{{fs.countingForm.value | json}}</pre> -->
@@ -43,10 +43,7 @@
       <!-- <pre>form value: <br>{{fs.releveForm.value | json}}</pre> -->
 
 
-    <div *ngIf="taxonsList.length > 0">
-          <b> Taxon(s) enregistré(s) </b>
-          <pnx-taxons-list [list]="taxonsList" (taxonEdited)="editOccurence($event)" (taxonRemoved)="removeOneOccurrence($event)">  </pnx-taxons-list>
-    </div>
+
     <md-card-actions class="card-action"> <!--Btn Valider taxon-->
       <button class="btn btn-success" 
       [disabled]="(fs.releveForm.invalid || taxonsList == 0)"
