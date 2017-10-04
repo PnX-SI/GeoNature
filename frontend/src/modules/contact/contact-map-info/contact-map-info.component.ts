@@ -43,7 +43,7 @@ export class ContactMapInfoComponent implements OnInit {
             this.dateMin = data.properties.date_min.substring(0, 10);
             this.dateMax = data.properties.date_max.substring(0, 10);
 
-            this._ms.loadGeometryReleve(data);
+            this._ms.loadGeometryReleve(data, false);
             // load taxonomy info
             data.properties.t_occurrences_contact.forEach(occ => {
               this._dfs.getTaxonInfo(occ.cd_nom)

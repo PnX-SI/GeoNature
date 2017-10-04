@@ -50,10 +50,10 @@ export class MarkerComponent implements OnInit {
   generateMarkerAndEvent(x, y) {
     if (this.mapservice.marker !== undefined ) {
       this.mapservice.marker.remove();
-      this.mapservice.marker = this.mapservice.createMarker(x,y).addTo(this.map);
+      this.mapservice.marker = this.mapservice.createMarker(x,y, true).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
     } else {
-      this.mapservice.marker = this.mapservice.createMarker(x, y).addTo(this.map);
+      this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
     }
     // observable if map click

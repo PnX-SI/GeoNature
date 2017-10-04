@@ -53,7 +53,7 @@ export class ContactFormComponent implements OnInit {
           // push the geometry in releveForm
           this.fs.releveForm.patchValue({geometry: data.geometry});
           // load the geometry in the map
-          this._ms.loadGeometryReleve(data);
+          this._ms.loadGeometryReleve(data, true);
           // get geoInfo to get municipalities
           this._dfs.getGeoInfo(data)
             .subscribe(data => { this.fs.municipalities = data.municipality.map(m => m.area_name).join(', ')});
