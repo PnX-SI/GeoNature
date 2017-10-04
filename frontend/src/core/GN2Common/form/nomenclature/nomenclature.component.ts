@@ -21,17 +21,18 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   @Input() idTypeNomenclature: number;
   @Input() regne: string;
   @Input() group2Inpn: string;
+  @Input() disabled: boolean;
   @Output() valueSelected = new EventEmitter<number>();
 
   constructor(private _dfService: DataFormService, private _translate:TranslateService) { }
 
   ngOnInit() {
-    this.labelLang = 'label_'+this._translate.currentLang;    
+    this.labelLang = 'label_'+this._translate.currentLang;
     // load the data
     this.initLabels();
     // subscrib to the language change
     this.subscription = this._translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.labelLang = 'label_'+this._translate.currentLang;  
+      this.labelLang = 'label_'+this._translate.currentLang;
     });
 
     // output

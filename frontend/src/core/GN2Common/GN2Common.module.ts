@@ -23,6 +23,8 @@ import { MapDataComponent } from './map-list/map-data/map-data.component';
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+// directive
+import { DisableControlDirective } from './form/disable-control.directive';
 
 // Service
 import { MapService } from './map/map.service';
@@ -64,6 +66,7 @@ export function HttpLoaderFactory(http: Http) {
     GPSComponent,
     MapListComponent,
     MapDataComponent,
+    DisableControlDirective,
   ],
   providers : [
     MapService,
@@ -82,6 +85,7 @@ export function HttpLoaderFactory(http: Http) {
     GPSComponent,
     MapListComponent,
     MapDataComponent,
+    DisableControlDirective,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,

@@ -17,6 +17,15 @@ export class DataFormService {
     .map(response => response.json());
     }
 
+  getNomenclatures(id_nomenclatures: Array<any>) {
+    const params: URLSearchParams = new URLSearchParams();
+    id_nomenclatures.forEach(id => {
+      params.append('id_type', id);
+    });
+    return this._http.get(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclatures`, {search: params})
+      .map(response => response.json());
+  }
+
   getDatasets() {
     return this._http.get(`${AppConfig.API_ENDPOINT}meta/datasets`)
       .map(response => response.json());
