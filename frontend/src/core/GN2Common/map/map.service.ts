@@ -148,14 +148,14 @@ export class MapService {
       return LayerControl;
     }
 
-    createMarker(x, y) {
+    createMarker(x, y, isDraggable) {
      return L.marker([y, x], {
         icon: L.icon({
                 iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
                 iconSize: [24, 36],
                 iconAnchor: [12, 36]
         }),
-        draggable: true,
+        draggable: isDraggable,
     });
     }
 
@@ -175,10 +175,10 @@ export class MapService {
       });
     }
 
-    loadGeometryReleve(data) {
+    loadGeometryReleve(data, isDraggable) {
       const coordinates = data.geometry.coordinates;
       if (data.geometry.type === 'Point') {
-        this.marker = this.createMarker(coordinates[0], coordinates[1]);
+        this.marker = this.createMarker(coordinates[0], coordinates[1], isDraggable);
         this.marker.on('moveend', (event: MouseEvent) => {
           if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
             this.sendWarningMessage();
