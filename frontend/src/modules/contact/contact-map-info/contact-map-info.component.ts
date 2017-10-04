@@ -22,10 +22,11 @@ export class ContactMapInfoComponent implements OnInit {
   public occurrenceForm: FormGroup;
   public countingFormArray: FormArray;
   public disabled = true;
-  public selectedIndex = 0;
+  public selectedIndex: number;
   public municipalities: string;
   public dateMin: string;
   public dateMax: string;
+  public showSpinner = true;
   constructor(private _cfs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService,
     private _dfs: DataFormService, private _router: Router) { }
 
@@ -38,23 +39,20 @@ export class ContactMapInfoComponent implements OnInit {
           .subscribe(data => {
             this.releve = data;
             this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
-            this.municipalities = data.properties.observers.map(muni => muni.area_name).join(', ');            
+            this.municipalities = data.properties.observers.map(muni => muni.area_name).join(', ');
             this.dateMin = data.properties.date_min.substring(0, 10);
             this.dateMax = data.properties.date_max.substring(0, 10);
 
             this._ms.loadGeometryReleve(data);
-            // init selected occurrence with the first one
-            this.selectedOccurrence = data.properties.t_occurrences_contact[0];
-            console.log(this.selectedOccurrence);
-
-            this.occurrenceForm = this._cfs.initOccurrenceForm(this.selectedOccurrence);
-            // init form array
-            this.countingFormArray = this._cfs.initCountingArray(this.selectedOccurrence.cor_counting_contact);
             // load taxonomy info
             data.properties.t_occurrences_contact.forEach(occ => {
               this._dfs.getTaxonInfo(occ.cd_nom)
-                .subscribe(taxon => occ['taxon'] = taxon);
+                .subscribe(taxon => {
+                  occ['taxon'] = taxon;
+                  this.showSpinner = false;
+                 });
             });
+
             console.log(data.properties);
 
         });
@@ -64,6 +62,9 @@ export class ContactMapInfoComponent implements OnInit {
 
   onEditReleve(id) {
     this._router.navigate(['contact-form', id]);
+  }
+  backToList() {
+    this._router.navigate(['contact']);
   }
 
   selectOccurrence(occ, index) {

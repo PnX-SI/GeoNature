@@ -4,35 +4,54 @@
   </div>
   <div class="col-sm-12 col-md-7 padding-sm">
     <div class="card">
-      <h4> Relevé <i mdTooltip="Edit relevé {{id}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(id)"></i>
-      </h4>
-
-      <div class="card-body>">
-        Relevé numéro {{releve?.id}}
-        <label> Observateurs </label>: {{observers}}
-        Date min: 
-        <label> Communnes </label>: {{municipalities}}
-        Entre le {{dateMin}} et le {{dateMax}}
-        <label> Altitude min  </label>: {{releve?.properties.altitude_min }}
-        <label> Altitude max  </label>: {{releve?.properties.altitude_max }}
-
+      <div class="card-header">
+              <h4 > Relevé
+                 <i mdTooltip="Edit relevé {{id}}"
+                  class="fa fa-pencil-square-o fa-lg toolbar-spacer"
+                  aria-hidden="true" 
+                  (click)="onEditReleve(id)">
+                </i>
+                <i class="fa fa-list"
+                 aria-hidden="true"
+                 mdTooltip="Retour à la liste"
+                 (click)="backToList()">
+                </i>
+                
+                </h4>
       </div>
-    </div>
 
-    <div class="card">
-      <h5> Taxons observé(s): </h5>
-      <table class="table table-hover">
-        <tr [ngClass]="{'table-warning': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 
-        (click)="selectOccurrence(occ, i)">
-          <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
-        </tr>
-      </table>    
+      <div class="card-block releve">
+        <b> Relevé numéro </b>: {{releve?.id}} <b> Observateurs </b>: {{observers}} <br>
+        <b> Communnes </b>: {{municipalities}} <br>
+        <b> Entre le  </b>: {{dateMin}}  <b> et le </b>: {{dateMax}} <br>
+        <b> Altitude min  </b>: {{releve?.properties.altitude_min }}<b> Altitude max  </b>: {{releve?.properties.altitude_max }} <br>
+
+          <label> Taxons observé(s): </label>
+          <div >
+              <img *ngIf="showSpinner" src="assets/images/spinner.gif" 
+              id="il_fi" 
+              alt="Chargement..." 
+              height="70" 
+              width="70">
+          </div>
+          <div *ngIf="!showSpinner">
+            <table class="table table-hover ">
+              <tr [ngClass]="{'table-warning': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 
+              (click)="selectOccurrence(occ, i)">
+                <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
+              </tr>
+            </table>
+          </div>
+
+    </div>    
     </div>
-    <div *ngIf="selectedOccurrence" class="card">
+    
+    <div *ngIf="selectedOccurrence" class="card info-occurrence">
+      <label class="card-header"> <b> Détails: </b>  {{selectedOccurrence?.taxon?.nom_valide}} </label>
       <div class="card-block">
         <ul class="nav nav-tabs" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#occurrence" role="tab">Infos observations</a>
+            <a class="nav-link active" data-toggle="tab" href="#occurrence" role="tab">Infos observation</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#counting" role="tab">Dénombrement</a>
