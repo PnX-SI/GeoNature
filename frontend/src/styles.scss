@@ -53,3 +53,7 @@ md-sidenav-layout /deep/ .md-sidenav-content {
  .mat-autocomplete-panel {
    position: absolute !important;
  }
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
