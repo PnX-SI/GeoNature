@@ -5,7 +5,7 @@ Démarrage de l'application
 '''
 
 
-import flask
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -15,9 +15,10 @@ app_globals = {}
 
 
 def get_app():
+    print(get_app)
     if app_globals.get('app', False):
         return app_globals['app']
-    app = flask.Flask(__name__)
+    app = Flask(__name__)
     app.config.from_pyfile('./config.py')
     db.init_app(app)
 
@@ -39,6 +40,8 @@ def get_app():
 
     from src.core.ref_geo.routes import routes
     app.register_blueprint(routes, url_prefix='/geo')
+
+
 
 
     app_globals['app'] = app
