@@ -51,10 +51,9 @@ export class ContactFormComponent implements OnInit {
           for (const occ of data.properties.t_occurrences_contact){
             // push the occ in releveForm
             this.fs.releveForm.value.properties.t_occurrences_contact.push(occ);
-            // push the taxon list
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)
-              .subscribe(taxons => this.fs.taxonsList.push({'nom_valide': occ.nom_cite}));
+              .subscribe(taxon => this.fs.taxonsList.push(taxon));
           }
           // set the occurrence
           this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;

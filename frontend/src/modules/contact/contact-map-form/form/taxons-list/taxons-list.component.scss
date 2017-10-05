@@ -24,3 +24,8 @@ table {
     max-height: 100px;
     overflow-y: scroll
 }
+
+
+.table th, .table tr.first > td { 
+  border-top: none !important; 
+}
