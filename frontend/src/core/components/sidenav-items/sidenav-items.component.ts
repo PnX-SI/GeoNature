@@ -5,6 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { SideNavService } from './sidenav.service';
 
+
 @Component({
   selector: 'pnx-sidenav-items',
   templateUrl: './sidenav-items.component.html',
@@ -35,12 +36,10 @@ export class SidenavItemsComponent implements OnInit {
     //   this._navService.setAppName(appName);
     // }
     this._navService.setAppName(appName);
-    
     if(appName == 'Accueil') {
       this._sideNavService.setHome(this._sideNavService.sidenav);
     } else {
       this._sideNavService.setModule(this._sideNavService.sidenav);
     }
-    
   }
 }

@@ -10,8 +10,16 @@
     <!--Tool bar-->
     <md-toolbar class="app-toolbar">
         <!--sidenav button-->
+
+
+        <button md-icon-button (click)="backPage()">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </button>
         <button md-icon-button (click)="closeSideBar()">
-          <md-icon class="icon-toolbar">apps</md-icon>
+            <md-icon class="icon-toolbar">apps</md-icon>
+        </button>
+        <button md-icon-button (click)="forwardPage()">
+          <i class="fa fa-chevron-right clickable" aria-hidden="true"></i>
         </button>
 
         <span>{{appName}}</span>
