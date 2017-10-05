@@ -50,7 +50,9 @@ export class ContactFormComponent implements OnInit {
             // push the occ in releveForm
             this.fs.releveForm.value.properties.t_occurrences_contact.push(occ);
             // push the taxon list
-            this.fs.taxonsList.push({'nom_valide': occ.nom_cite});
+            // load taxon info in ajax
+            this._dfs.getTaxonInfo(occ.cd_nom)
+              .subscribe(taxons => this.fs.taxonsList.push({'nom_valide': occ.nom_cite}));
           }
           // set the occurrence
           this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;
@@ -63,8 +65,7 @@ export class ContactFormComponent implements OnInit {
             .subscribe(data => { this.fs.municipalities = data.municipality.map(m => m.area_name).join(', ')});
       }); // end subscribe
     }
-    // init the taxons list
-    // this.taxonsList = [];
+
   } // end ngOnInit
 
 

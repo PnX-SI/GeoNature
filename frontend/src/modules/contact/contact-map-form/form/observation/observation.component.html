@@ -10,6 +10,11 @@
     </div>
     
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <img *ngIf="fs.taxonsList.length === 0" src="assets/images/spinner.gif" 
+        id="il_fi" 
+        alt="Chargement..." 
+        height="70" 
+        width="70">
         <div *ngIf="fs.taxonsList.length > 0">
             <b> Taxon(s) enregistré(s) </b>
             <pnx-taxons-list [list]="fs.taxonsList" (taxonEdited)="fs.editOccurence($event)" (taxonRemoved)="fs.removeOneOccurrence($event)">  </pnx-taxons-list>
