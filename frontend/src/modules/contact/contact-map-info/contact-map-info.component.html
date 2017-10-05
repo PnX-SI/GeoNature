@@ -9,41 +9,41 @@
                  <i mdTooltip="Edit relevé {{id}}"
                   class="fa fa-pencil-square-o fa-lg toolbar-spacer"
                   aria-hidden="true" 
-                  (click)="onEditReleve(id)">
+                  (click)="fs.onEditReleve(id)">
                 </i>
                 <i class="fa fa-list"
                  aria-hidden="true"
                  mdTooltip="Retour à la liste"
-                 (click)="backToList()">
+                 (click)="fs.backToList()">
                 </i>
                 
                 </h4>
       </div>
 
       <div class="card-block releve">
-        <b> Relevé numéro </b>: {{releve?.id}} <b> Observateurs </b>: {{observers}} <br>
-        <b> Communnes </b>: {{municipalities}} <br>
-        <b> Entre le  </b>: {{dateMin}}  <b> et le </b>: {{dateMax}} <br>
-        <b> Altitude min  </b>: {{releve?.properties.altitude_min }}<b> Altitude max  </b>: {{releve?.properties.altitude_max }} <br>
+        <p><b> Relevé numéro </b>: {{releve?.id}} <b> Observateurs </b>: {{observers}} </p>
+        <p> <b> Communne(s) </b>: {{municipalities}}  </p> 
+        <p> <b> Entre le  </b>: {{dateMin}}  <b> et le </b>: {{dateMax}}  </p> 
+        <p> <b> Altitude min  </b>: {{releve?.properties.altitude_min }}<b> Altitude max  </b>: {{releve?.properties.altitude_max }} </p>
 
           <label> Taxons observé(s): </label>
-          <div >
+          <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
               <img *ngIf="showSpinner" src="assets/images/spinner.gif" 
               id="il_fi" 
               alt="Chargement..." 
               height="70" 
               width="70">
-          </div>
-          <div *ngIf="!showSpinner">
-            <table class="table table-hover ">
-              <tr [ngClass]="{'table-warning': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 
-              (click)="selectOccurrence(occ, i)">
-                <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
-              </tr>
-            </table>
-          </div>
-
-    </div>    
+              <div *ngIf="!showSpinner">
+                <table class="table table-hover ">
+                  <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 
+                  (click)="selectOccurrence(occ, i)">
+                    <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
+                  </tr>
+                </table>
+              </div> 
+            </div>
+          </div>          
     </div>
     
     <div *ngIf="selectedOccurrence" class="card info-occurrence">

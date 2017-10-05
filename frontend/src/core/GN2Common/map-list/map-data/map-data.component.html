@@ -41,98 +41,97 @@
           (dateChanged)="dateMaxChanged($event)">
         </pnx-date>   
     </div>
-    
-    <button md-icon-button mdTooltip="Filter columns" class="margin-left-md to-collapse" data-toggle="collapse" data-target="#collapseColumns" aria-expanded="false" aria-controls="contexte">
-      <i class="fa fa-columns" aria-hidden="true"></i>
-    </button>
-    
-
+ 
     <button md-icon-button mdTooltip="Filter options" class="margin-left-md to-collapse" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
         <md-icon>filter_list</md-icon>
     </button>
     </div>
 
-    <!--collapseAvance-->
-  <div class="row row-sm">
-    <!-- Filtre columns -->
-    <div class="selected-column collapse width-100" id="collapseColumns">
-      <h5>Colonnes</h5>
-      <ul>
-        <li *ngFor='let col of allColumns '>
-          <input
-            type='checkbox'
-            [id]="col.name"
-            (click)='toggle(col)'
-            [checked]='isChecked(col)'
-          />
-          <label [attr.for]="col.name">{{col.name}}</label>
-        </li>
-      </ul>
-    </div>
-        <!--Filter Avancé-->
-      <div class="collapse width-100" id="collapseAvance">
-          <div class="input-group width-60 alignment-xs">
-            <input [formControl]="genericFilter" type="text" class="form-control font-md" placeholder="Search" aria-label="Text input with dropdown button" >
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-secondary dropdown-toggle font-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Par {{filterSelected.name | titlecase}}
-              </button>
-              <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item font-md" *ngFor="let list of allColumns" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
+    <!--Filter Avancé-->
+    <div class="collapse width-100" id="collapseAvance">
+      <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="input-group">
+              <input [formControl]="genericFilter" type="text" class="form-control form-control-sm" placeholder="Search" >
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Par {{filterSelected.name | titlecase}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item font-md" *ngFor="let list of allColumns" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
+                </div>
               </div>
-            </div>
+            </div>        
+          </div>
+          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="dropdown">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Colonnes
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a *ngFor="let col of allColumns" class="dropdown-item">
+                    <input
+                    type='checkbox'
+                    [id]="col.name"
+                    (click)='toggle(col)'
+                    [checked]='isChecked(col)'
+                  />
+                  <label [attr.for]="col.name">{{col.name}}</label></a>
+
+                </div>
+              </div>
           </div>
       </div>
-  </div>
-
-  <div class="row row-sm">
-    <div class="offset-md-11">
-      <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
-        <i class="fa fa-plus-circle" aria-hidden="true"></i>
-      </button>
     </div>
-  </div>
 
-</md-card>
-<!--Table-->
-<ngx-datatable
-  #table
-  class="material striped margin-top-xs table-size expandable"
-  [rows]="rows"
-  [columns]="displayColumns"
-  [columnMode]="'force'"
-  [headerHeight]="50"
-  [footerHeight]="50"
-  [rowHeight]="50"
-  [draggable]="false"
-  [selected]="selected"
-  [externalPaging]="true"
-  [selectionType]="'single'"
-  [count]="mapListService.page.totalElements"
-  [offset]="mapListService.page.pageNumber"
-  [limit]="mapListService.page.size"
-  (page)="setPage($event)"
-  (select)="onSelect($event)"
-  >
+    <div class="row row-sm">
+      <div class="offset-md-11">
+        <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
 
-<ngx-datatable-column
- maxWidth="50">
-<ng-template let-row="row" ngx-datatable-cell-template>
-  <i mdTooltip="Edit relevé {{row.id}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row.id)"></i>
-</ng-template>
-</ngx-datatable-column>
+  </md-card>
+  <!--Table-->
+  <ngx-datatable
+    #table
+    class="material striped margin-top-xs table-size expandable"
+    [rows]="rows"
+    [columns]="displayColumns"
+    [columnMode]="'force'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="50"
+    [draggable]="false"
+    [selected]="selected"
+    [externalPaging]="true"
+    [selectionType]="'single'"
+    [count]="mapListService.page.totalElements"
+    [offset]="mapListService.page.pageNumber"
+    [limit]="mapListService.page.size"
+    (page)="setPage($event)"
+    (select)="onSelect($event)"
+    >
 
-<ngx-datatable-column
- maxWidth="50">
-<ng-template let-row="row" ngx-datatable-cell-template> 
-  <i  mdTooltip="Info relevé {{row.id}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row.id)"></i>
-</ng-template>
-</ngx-datatable-column>
   <ngx-datatable-column
-   *ngFor="let col of displayColumns"
-   [name]="col.name"
-   [prop]="col.prop">
+  maxWidth="50">
+  <ng-template let-row="row" ngx-datatable-cell-template>
+    <i mdTooltip="Edit relevé {{row.id}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row.id)"></i>
+  </ng-template>
   </ngx-datatable-column>
-</ngx-datatable>
+
+  <ngx-datatable-column
+  maxWidth="50">
+  <ng-template let-row="row" ngx-datatable-cell-template> 
+    <i  mdTooltip="Info relevé {{row.id}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row.id)"></i>
+  </ng-template>
+  </ngx-datatable-column>
+    <ngx-datatable-column
+    *ngFor="let col of displayColumns"
+    [name]="col.name"
+    [prop]="col.prop">
+    </ngx-datatable-column>
+  </ngx-datatable>
 
 

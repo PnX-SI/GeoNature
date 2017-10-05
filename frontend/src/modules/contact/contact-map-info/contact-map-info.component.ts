@@ -27,7 +27,7 @@ export class ContactMapInfoComponent implements OnInit {
   public dateMin: string;
   public dateMax: string;
   public showSpinner = true;
-  constructor(private _cfs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService,
+  constructor(public fs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService,
     private _dfs: DataFormService, private _router: Router) { }
 
   ngOnInit() {
@@ -35,7 +35,7 @@ export class ContactMapInfoComponent implements OnInit {
       this.id = +params['id'];
       if (!isNaN(this.id )) {
         // load one releve
-        this._cfs.getReleve(this.id)
+        this.fs.getReleve(this.id)
           .subscribe(data => {
             this.releve = data;
             this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
@@ -60,19 +60,14 @@ export class ContactMapInfoComponent implements OnInit {
   });
   }
 
-  onEditReleve(id) {
-    this._router.navigate(['contact-form', id]);
-  }
-  backToList() {
-    this._router.navigate(['contact']);
-  }
+
 
   selectOccurrence(occ, index) {
     this.selectedIndex = index;
     this.selectedOccurrence = occ;
     this.loadNomenclaturesOccurrence();
-    this.occurrenceForm = this._cfs.initOccurrenceForm(occ);
-    this.countingFormArray = this._cfs.initCountingArray(occ.cor_counting_contact);
+    this.occurrenceForm = this.fs.initOccurrenceForm(occ);
+    this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_contact);
   }
 
   loadNomenclaturesOccurrence() {
