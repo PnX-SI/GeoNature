@@ -1,42 +1,49 @@
 <div class=form-containter>
   <div class="card">
+    <h5 class="card-header"> <b>{{ 'Releve.Releve' | translate }}: </b></h5>
     <div class="card-body">
-        <h5 class="card-title"> <b>{{ 'Releve.Releve' | translate }}: </b></h5>
+        
         <div [formGroup]="fs.releveForm">
           <pnx-observation
             [releveForm]="fs.releveForm  ">
           </pnx-observation>
         </div>
-        <hr> 
-
+        
+    </div>
+  </div>        
       <!-- Occurrence taxon  -->
-      <div [formGroup]="fs.occurrenceForm">
-        <div class="section"> 
-          <pnx-occurrence
-            [occurrenceForm]="fs.occurrenceForm">
-          </pnx-occurrence>
-        </div>
-          <b> {{ 'Counting.Counting' | translate }}: </b>
-          <!-- COUNTING -->
-          <div *ngFor="let counting of fs.nbCounting; let i = index">
-            <pnx-counting 
-              [formArray]="fs.countingForm"
-              [index]="i"
-              [length]="fs.nbCounting.length"
-              (countingRemoved)="fs.removeCounting($event, countingForm)">
-            </pnx-counting>
-          </div>
-          <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting(countingForm)">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>          
-          </button>
-
+      <div class="card card-occurrence">
+          <p class="card-header"> Taxons 
+            <button type="button" class="btn btn-success btn-sm toggle-btn" (click)="fs.toggleOccurrence()"> 
+              <span *ngIf="!fs.showOccurrence"> + </span>
+              <span *ngIf="fs.showOccurrence"> - </span>
+             </button></p>              
+          <div class="card-body" *ngIf="fs.showOccurrence"> 
+              <pnx-occurrence
+                [occurrenceForm]="fs.occurrenceForm">
+              </pnx-occurrence>
+            <div [formGroup]="fs.occurrenceForm">
+                <b> {{ 'Counting.Counting' | translate }}: </b>
+                <!-- COUNTING -->
+                <div *ngFor="let counting of fs.nbCounting; let i = index">
+                  <pnx-counting 
+                    [formArray]="fs.countingForm"
+                    [index]="i"
+                    [length]="fs.nbCounting.length"
+                    (countingRemoved)="fs.removeCounting($event, countingForm)">
+                  </pnx-counting>
+                </div>
+                <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting(countingForm)">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>          
+                </button>
+            </div>
+            <md-card-actions class="card-action"> 
+                <button class="btn btn-primary btn-sm "
+                  [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
+                  (click)="fs.addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+            </md-card-actions>
       </div>
-
-      <md-card-actions class="card-action"> 
-        <button class="btn btn-primary btn-sm "
-          [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
-          (click)="fs.addOccurence(fs.indexOccurrence)">{{ 'Taxon.SaveTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
-      </md-card-actions>
+    </div>
 
       <!-- <pre>form value: <br>{{fs.countingForm.value | json}}</pre> -->
       <!-- <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre> -->
@@ -51,8 +58,6 @@
     </md-card-actions> 
     </div>
 
-  </div>
-</div>
 
 
 

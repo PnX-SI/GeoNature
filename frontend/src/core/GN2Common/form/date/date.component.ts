@@ -21,8 +21,6 @@ export class DateComponent implements OnInit {
   public today: NgbDateStruct;
   constructor(private _dateParser: NgbDateParserFormatter, myElement:ElementRef) {
     this.elementRef = myElement;
-    console.log(this.elementRef);
-
    }
 
   ngOnInit() {
@@ -39,10 +37,12 @@ export class DateComponent implements OnInit {
   }
 
    onClick(event) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      setTimeout(() => {
-        this.dynamicId.close();
-      }, 10);
+    if (this.dynamicId){
+      if (!this.elementRef.nativeElement.contains(event.target)) {
+        setTimeout(() => {
+          this.dynamicId.close();
+        }, 10);
+      }
     }
   }
 

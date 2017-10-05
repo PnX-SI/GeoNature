@@ -13,6 +13,7 @@ export class ContactFormService {
   nbCounting: Array<string>;
   indexOccurrence: number = 0;
   taxonsList = [];
+  showOccurrence: boolean;
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -22,6 +23,7 @@ export class ContactFormService {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
+    this.showOccurrence = false;
    }// end constructor
 
    getReleve(id) {
@@ -141,9 +143,12 @@ export class ContactFormService {
     this.occurrenceForm = this.initOccurrenceForm();
     // reset the counting
     this.countingForm = this.initCountingArray();
+    this.showOccurrence = false;
   }
 
   editOccurence(index) {
+    // set showOccurrence to true
+    this.showOccurrence = true;
     this.taxonsList.splice(index, 1);
     // set the current index
     this.indexOccurrence = index;
@@ -172,6 +177,10 @@ export class ContactFormService {
      }
     this.countingForm = this.initCountingArray(countingData);
 
+  }
+
+  toggleOccurrence() {
+    this.showOccurrence = !this.showOccurrence;
   }
 
   removeOneOccurrence(index) {
