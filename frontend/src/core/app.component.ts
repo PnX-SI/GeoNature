@@ -9,6 +9,8 @@ import {AppConfig} from '../conf/app.config';
 import 'rxjs/Rx';
 import {MdSidenavModule, MdSidenav} from '@angular/material';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
+import { Location } from '@angular/common';
+
 
 
 @Component({
@@ -28,7 +30,8 @@ export class AppComponent implements OnInit, OnDestroy {
           private translate: TranslateService,
           public authService: AuthService,
           private activatedRoute: ActivatedRoute,
-          private _sideBarService :SideNavService) {
+          private _sideBarService: SideNavService,
+          private _location: Location) {
       _navService.gettingAppName.subscribe(ms => {
         this.appName = ms;
 
@@ -65,6 +68,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   closeSideBar(){
     this._sideBarService.sidenav.toggle();
+  }
+
+  backPage() {
+    this._location.back();
+  }
+  forwardPage() {
+    this._location.forward();
   }
 
   ngOnDestroy() {
