@@ -35,11 +35,13 @@ export class ContactFormComponent implements OnInit {
     this.fs.countingForm = this.fs.initCountingArray();
     // reset taxon list of service
     this.fs.taxonsList = [];
+    this.fs.editionMode = false;
 
     // if its edition mode
     if (!isNaN(this.id )) {
       // set showOccurrence to false;
       this.fs.showOccurrence = false;
+      this.fs.editionMode = true;
       // load one releve
       this.fs.getReleve(this.id)
         .subscribe(data => {

@@ -15,6 +15,7 @@ export class ContactFormService {
   indexOccurrence: number = 0;
   taxonsList = [];
   showOccurrence: boolean;
+  editionMode: boolean;
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
