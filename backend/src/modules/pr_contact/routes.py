@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, VReleveContact, VReleveList, corRoleRelevesContact
-from ...utils.utilssqlalchemy import json_resp
+from ...utils.utilssqlalchemy import json_resp, testDataType
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
 
@@ -115,27 +115,41 @@ def getViewReleveList():
 
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
     page = int(parameters.get('offset')) if parameters.get('offset') else 0
-
     #Specific Filters
     if 'cd_nom' in parameters:
+        testT = testDataType(parameters.get('cd_nom'), db.Integer, 'cd_nom')
+        if testT:
+            return {'error':testT},500
         q = q.join(TOccurrencesContact, TOccurrencesContact.id_releve_contact == VReleveList.id_releve_contact)\
-            .filter(TOccurrencesContact.cd_nom == parameters.get('cd_nom'))
+                .filter(TOccurrencesContact.cd_nom == int(parameters.get('cd_nom')))
 
     if 'observer' in parameters:
         q = q.join(corRoleRelevesContact, corRoleRelevesContact.columns.id_releve_contact == VReleveList.id_releve_contact)\
             .filter(corRoleRelevesContact.columns.id_role.in_(parameters.getlist('observer')))
 
     if 'date_up' in parameters:
+        testT = testDataType(parameters.get('date_up'), db.DateTime, 'date_up')
+        if testT:
+            return {'error':testT},500
         q = q.filter(VReleveList.date_min >= parameters.get('date_up'))
     if 'date_low' in parameters:
-         q = q.filter(VReleveList.date_max <= parameters.get('date_low'))
+        testT = testDataType(parameters.get('date_low'), db.DateTime, 'date_low')
+        if testT:
+            return {'error':testT},500
+        q = q.filter(VReleveList.date_max <= parameters.get('date_low'))
     if 'date_eq' in parameters:
-         q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
+        testT = testDataType(parameters.get('date_eq'), db.DateTime, 'date_eq')
+        if testT:
+            return {'error':testT},500
+        q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
 
     #Generic Filters
     for param in parameters:
         if param in VReleveList.__table__.columns:
             col = getattr( VReleveList.__table__.columns,param)
+            testT = testDataType(parameters[param], col.type, param)
+            if testT:
+                return {'error':testT},500
             q = q.filter(col == parameters[param])
     try:
         nbResults = q.count()
