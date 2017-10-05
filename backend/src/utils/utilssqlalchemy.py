@@ -39,7 +39,10 @@ def testDataType(value, sqlType, paramName):
         except:
             return  '{0} must be an float (decimal separator .)'.format(paramName)
     elif sqlType == db.DateTime or isinstance(sqlType, (db.Date, db.DateTime)):
-        if not(isinstance(value, date) and isinstance(value, datetime)):
+        try :
+            from dateutil import parser
+            dt = parser.parse(value)
+        except:
             return  '{0} must be an date (yyyy-mm-dd)'.format(paramName)
     return None
 
