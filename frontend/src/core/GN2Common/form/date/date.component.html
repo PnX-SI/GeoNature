@@ -4,8 +4,8 @@
       ngbDatepicker #d1="ngbDatepicker"
       [formControl]="parentFormControl"
       [maxDate]="today"
-      (click)="d1.toggle()">
-    <button class="input-group-addon" (click)="d1.toggle()" type="button">
+      (click)="d1.toggle(); openDatepicker(d1)">
+    <button class="input-group-addon" (click)="d1.toggle(); openDatepicker(d1)" type="button">
     <i class="fa fa-calendar" aria-hidden="true"></i>
   </button>
 </div>
