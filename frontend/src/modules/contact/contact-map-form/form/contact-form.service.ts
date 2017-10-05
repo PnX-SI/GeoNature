@@ -3,6 +3,7 @@ import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@ang
 import { AppConfig } from '../../../../conf/app.config';
 import { Http } from '@angular/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Injectable()
@@ -19,7 +20,7 @@ export class ContactFormService {
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
 
-  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService) {
+  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService, private _router: Router) {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
@@ -211,6 +212,12 @@ export class ContactFormService {
     }
   }
 
+  onEditReleve(id) {
+    this._router.navigate(['contact-form', id]);
+  }
+  backToList() {
+    this._router.navigate(['contact']);
+  }
 
 
 }

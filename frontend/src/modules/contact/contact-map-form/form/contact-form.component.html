@@ -1,6 +1,11 @@
 <div class=form-containter>
   <div class="card">
-    <h5 class="card-header"> <b>{{ 'Releve.Releve' | translate }}: </b></h5>
+    <h5 class="card-header"> <b>{{ 'Releve.Releve' | translate }} </b>
+      <i class="fa fa-list"
+      aria-hidden="true"
+      mdTooltip="Retour à la liste"
+      (click)="fs.backToList()">
+     </i></h5>
     <div class="card-body">
         
         <div [formGroup]="fs.releveForm">
