@@ -26,6 +26,9 @@ export class ContactFormComponent implements OnInit {
     ) {  }
 
   ngOnInit() {
+    // set show occurrence to false:
+    this.fs.showOccurrence = false;
+    this.fs.municipalities = '';
     // init the form
     this.fs.releveForm = this.fs.initObservationForm();
     this.fs.occurrenceForm = this.fs.initOccurrenceForm();
