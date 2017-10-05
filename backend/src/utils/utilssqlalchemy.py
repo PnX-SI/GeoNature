@@ -22,8 +22,26 @@ from geojson import Feature
 
 from geoalchemy2 import Geometry
 
+from datetime import date, datetime
+
 db = SQLAlchemy()
 
+
+def testDataType(value, sqlType, paramName):
+    if sqlType == db.Integer or isinstance(sqlType, (db.Integer)) :
+        try :
+            int(value)
+        except:
+            return  '{0} must be an integer'.format(paramName)
+    if sqlType == db.Numeric or isinstance(sqlType, (db.Numeric)) :
+        try :
+            float(value)
+        except:
+            return  '{0} must be an float (decimal separator .)'.format(paramName)
+    elif sqlType == db.DateTime or isinstance(sqlType, (db.Date, db.DateTime)):
+        if not(isinstance(value, date) and isinstance(value, datetime)):
+            return  '{0} must be an date (yyyy-mm-dd)'.format(paramName)
+    return None
 
 class GenericTable:
     def __init__(self, tableName, schemaName):
