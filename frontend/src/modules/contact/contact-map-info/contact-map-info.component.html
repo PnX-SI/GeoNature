@@ -7,7 +7,7 @@
       <div class="card-header">
               <h4 > Relevé
                  <i mdTooltip="Edit relevé {{id}}"
-                  class="fa fa-pencil-square-o fa-lg toolbar-spacer"
+                  class="fa fa-pencil-square-o fa-lg clickable"
                   aria-hidden="true" 
                   (click)="fs.onEditReleve(id)">
                 </i>
@@ -33,6 +33,7 @@
                   <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 
                   (click)="selectOccurrence(occ, i)">
                     <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
+                    <td><i class="fa fa-eye clickable" aria-hidden="true"></i></td>
                   </tr>
                 </table>
               </div> 
