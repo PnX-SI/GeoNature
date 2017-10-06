@@ -124,12 +124,6 @@ CREATE TABLE cor_role_releves_contact (
     id_role integer NOT NULL
 );
 
-
-CREATE TABLE cor_municipality_releves_contact (
-    id_releve_contact bigint NOT NULL,
-    id_municipality character varying(20) NOT NULL
-);
-
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -144,9 +138,6 @@ ALTER TABLE ONLY cor_counting_contact
 
 ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT pk_cor_role_releves_contact PRIMARY KEY (id_releve_contact, id_role);
-
-ALTER TABLE ONLY cor_municipality_releves_contact
-    ADD CONSTRAINT pk_cor_municipality_releves_contact PRIMARY KEY (id_releve_contact, id_municipality);
 
 
 ---------------
@@ -216,14 +207,6 @@ ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT fk_cor_role_releves_contact_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
-ALTER TABLE ONLY cor_municipality_releves_contact
-     ADD CONSTRAINT fk_cor_municipality_releves_contact_t_releves_contact FOREIGN KEY (id_releve_contact) REFERENCES t_releves_contact(id_releve_contact) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY cor_municipality_releves_contact
-     ADD CONSTRAINT fk_cor_municipality_releves_contact_l_municipalities FOREIGN KEY (id_municipality) REFERENCES ref_geo.l_municipalities(id_municipality) ON UPDATE CASCADE;
-
-
-
 --------------
 --CONSTRAINS--
 --------------
@@ -281,12 +264,6 @@ ALTER TABLE cor_counting_contact
     ADD CONSTRAINT check_cor_counting_contact_count_max CHECK (count_max >= count_min AND count_max > 0);
 
 
----------
---INDEX--
----------
-CREATE INDEX index_t_releves_contact_geom_local ON l_municipalities USING gist (geom_local);
-CREATE INDEX index_t_releves_contact_geom_4326 ON l_municipalities USING gist (geom_4326);
-
 
 ----------------------
 --FUNCTIONS TRIGGERS--
@@ -300,7 +277,7 @@ BEGIN
     --Calculate sensitivity value
     SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
     new.id_nomenclature_diffusion_level = idsensitivity;
-    RETURN NEW;             
+    RETURN NEW;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -315,7 +292,7 @@ BEGIN
     --Calculate sensitivity value
     SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
     new.id_nomenclature_diffusion_level = idsensitivity;
-    RETURN NEW;             
+    RETURN NEW;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -354,3 +331,76 @@ CREATE TRIGGER tri_meta_dates_change_cor_counting_contact
   ON cor_counting_contact
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+
+------------
+--VIEWS--
+------------
+--Vue représentant l'ensemble des observations du protocole contact pour la représentation du module carte liste
+DROP VIEW IF EXISTS v_releve_contact;
+CREATE OR REPLACE VIEW v_releve_contact AS
+ SELECT rel.id_releve_contact,
+    rel.id_dataset,
+    rel.id_digitiser,
+    rel.date_min,
+    rel.date_max,
+    rel.altitude_min,
+    rel.altitude_max,
+    rel.deleted,
+    rel.meta_device_entry,
+    rel.meta_create_date,
+    rel.meta_update_date,
+    rel.comment,
+    rel.geom_4326,
+    rel."precision",
+    occ.id_occurrence_contact,
+    occ.cd_nom,
+    occ.nom_cite,
+    occ.deleted as occ_deleted,
+    occ.meta_create_date as occ_meta_create_date,
+    occ.meta_update_date as occ_meta_update_date,
+    t.lb_nom,
+    t.nom_valide,
+    t.nom_vern,
+    nom_complet_html || ' ' || date_min::date || '<br/>' || string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ')as leaflet_popup,
+    string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ') as observateurs
+   FROM pr_contact.t_releves_contact rel
+   LEFT JOIN pr_contact.t_occurrences_contact occ  ON rel.id_releve_contact = occ.id_releve_contact
+   LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+   LEFT JOIN  pr_contact.cor_role_releves_contact cor_role on cor_role.id_releve_contact = rel.id_releve_contact
+   LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+   GROUP BY rel.id_releve_contact, id_dataset, id_digitiser, date_min, date_max,
+       altitude_min, altitude_max, rel.deleted, meta_device_entry, rel.meta_create_date,
+       rel.meta_update_date, rel.comment, geom_4326, "precision", t.cd_nom, nom_cite,
+       id_occurrence_contact, occ_deleted, occ_meta_create_date, occ_meta_update_date, lb_nom,
+       nom_valide, nom_complet_html, nom_vern;
+
+
+
+
+--Vue représentant l'ensemble des relevés du protocole contact pour la représentation du module carte liste
+CREATE OR REPLACE VIEW v_releve_list AS
+SELECT rel.id_releve_contact,
+   rel.id_dataset,
+   rel.id_digitiser,
+   rel.date_min,
+   rel.date_max,
+   rel.altitude_min,
+   rel.altitude_max,
+   rel.deleted,
+   rel.meta_device_entry,
+   rel.meta_create_date,
+   rel.meta_update_date,
+   rel.comment,
+   rel.geom_4326,
+   rel."precision",
+   string_agg(nom_valide, ',') AS taxons,
+   string_agg(nom_valide, ',') || '<br/>' || rel.date_min::date || '<br/>' || string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ') AS leaflet_popup,
+   string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS observateurs
+  FROM pr_contact.t_releves_contact rel
+    LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
+    LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+    LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
+    LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+ GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted,
+  rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";

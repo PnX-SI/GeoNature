@@ -20,7 +20,7 @@ routes = Blueprint('ref_geo', __name__)
 @json_resp
 def getGeoInfo():
     data = dict(request.get_json())
-    sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 1)).*')
+    sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*')
     result = db.engine.execute(sql, geom = str(data['geometry']))
     municipality = []
     for row in result:

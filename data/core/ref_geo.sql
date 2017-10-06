@@ -18,9 +18,11 @@ SET search_path = ref_geo, pg_catalog;
 CREATE TABLE bib_areas_types (
     id_type integer NOT NULL,
     type_name character varying(200),
+    type_code character varying(25),
     type_desc text,
-    ref_name character varying(200), 
-    ref_version integer
+    ref_name character varying(200),
+    ref_version integer,
+    num_version character varying(50)
 );
 COMMENT ON COLUMN bib_areas_types.ref_name IS 'Indique le nom du référentiel géographique utilisé pour ce type';
 COMMENT ON COLUMN bib_areas_types.ref_version IS 'Indique l''année du référentiel utilisé';
@@ -36,11 +38,12 @@ CREATE TABLE l_areas (
     id_area integer NOT NULL,
     id_type integer NOT NULL,
     area_name character varying(250),
+    area_code character varying(25),
     geom public.geometry(MultiPolygon,MYLOCALSRID),
     centroid public.geometry(Point,MYLOCALSRID),
     source character varying(250),
-    source_code character varying(25),
     comment text,
+    enable boolean NOT NULL DEFAULT (TRUE),
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     CONSTRAINT enforce_geotype_l_areas_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
@@ -55,14 +58,14 @@ CREATE TABLE l_municipalities (
     id_municipality character varying(25) NOT NULL,
     id_area integer NOT NULL,
     status character varying(22),
-    fr_insee_com character varying(5),
-    fr_nom_com character varying(50),
-    fr_insee_arr character varying(2),
-    fr_nom_dep character varying(30),
-    fr_insee_dep character varying(3),
-    fr_nom_reg character varying(35),
-    fr_insee_reg character varying(2),
-    fr_code_epci character varying(9),
+    insee_com character varying(5),
+    nom_com character varying(50),
+    insee_arr character varying(2),
+    nom_dep character varying(30),
+    insee_dep character varying(3),
+    nom_reg character varying(35),
+    insee_reg character varying(2),
+    code_epci character varying(9),
     plani_precision double precision,
     siren_code character varying(10),
     canton character varying(200),
@@ -73,11 +76,6 @@ CREATE TABLE l_municipalities (
     cc_nature character varying(5),
     cc_date_creation character varying(10),
     cc_date_effet character varying(10),
-    coeur boolean,
-    aa boolean,
-    pec boolean,
-    apa boolean,
-    massif character varying(50),
     insee_commune_nouvelle character varying(5),
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone
@@ -85,14 +83,11 @@ CREATE TABLE l_municipalities (
 
 CREATE TABLE l_grids (
     id_grid character varying(50) NOT NULL,
-    geom public.geometry(Polygon,MYLOCALSRID),
-    centroid public.geometry(Point,MYLOCALSRID),
+    id_area integer NOT NULL,
     cxmin integer,
     cxmax integer,
     cymin integer,
-    cymax integer,
-    code_grid_10k character varying(20),
-    coeur boolean
+    cymax integer
 );
 
 CREATE TABLE dem_vector
@@ -132,14 +127,14 @@ ALTER TABLE ONLY l_areas
 ALTER TABLE ONLY l_municipalities
     ADD CONSTRAINT fk_l_municipalities_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY l_grids
+    ADD CONSTRAINT fk_l_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
 
 ---------
 --INDEX--
 ---------
 CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
 CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
-CREATE INDEX index_l_grids_geom ON l_grids USING gist (geom);
-CREATE INDEX index_l_grids_centroid ON l_grids USING gist (centroid);
 CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
 
 ------------
@@ -185,9 +180,9 @@ BEGIN
     WITH d  as (
         SELECT st_transform(myGeom,isrid) geom_trans
     )
-    SELECT a.source_code AS id_municipality, a.area_name 
-    FROM ref_geo.l_areas a, d 
-    WHERE a.id_type = 1 
+    SELECT a.source_code AS id_municipality, a.area_name
+    FROM ref_geo.l_areas a, d
+    WHERE a.id_type = 1
     AND st_intersects(geom_trans, a.geom);
 
 END;
@@ -197,14 +192,62 @@ $BODY$
   ROWS 1000;
 
 
+CREATE OR REPLACE FUNCTION fct_get_area_intersection(
+  IN mygeom geometry,
+  IN myidtype integer DEFAULT NULL::integer)
+RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
+$BODY$
+DECLARE
+  isrid int;
+BEGIN
+  SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+  RETURN QUERY
+  WITH d  as (
+      SELECT st_transform(myGeom,isrid) geom_trans
+  )
+  SELECT a.id_area, a.id_type, a.area_code, a.area_name
+  FROM ref_geo.l_areas a, d
+  WHERE a.id_type = myidtype
+  AND st_intersects(geom_trans, a.geom) AND (myIdType IS NULL OR a.id_type = myIdType)
+  AND enable=true;
+
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100
+ROWS 1000;
+
 --------
 --DATA--
 --------
 
-INSERT INTO bib_areas_types (id_type, type_name, type_desc, ref_name, ref_version) VALUES
-(1,'communes', 'type communes', 'IGN admin_express', 2017)
-,(2,'département', 'type département', 'IGN admin_express', 2017)
-,(3,'maille 10*10', 'type maille inpn 10*10', NULL, NULL)
-,(4,'espace naturel', 'type espace naturel', NULL, NULL)
-,(5,'masse d''eau', 'type masse d''eau', NULL, NULL)
-;
+INSERT INTO bib_areas_types (id_type, type_name, type_code, type_desc, ref_name, ref_version) VALUES
+(1, 'Coeurs des Parcs nationaux', 'ZC', NULL, NULL,NULL),
+(2, 'znieff2', NULL, NULL, NULL,NULL),
+(3, 'znieff1', NULL, NULL, NULL,NULL),
+(4, 'Aires de protection de biotope', NULL, NULL, NULL,NULL),
+(5, 'Réserves naturelles nationales', NULL, NULL, NULL,NULL),
+(6, 'Réserves naturelles regionales', NULL, NULL, NULL,NULL),
+(7, 'Natura 2000 - Zones de protection spéciales', 'ZPS', NULL, NULL,NULL),
+(8, 'Natura 2000 - Sites d''importance communautaire', 'SIC', NULL, NULL,NULL),
+(9, 'Zone d''importance pour la conservation des oiseaux', 'ZICO', NULL, NULL,NULL),
+(10, 'Réserves nationales de chasse et faune sauvage', NULL, NULL, NULL,NULL),
+(11, 'Réserves intégrales de parc national', NULL, NULL, NULL,NULL),
+(12, 'Sites acquis des Conservatoires d''espaces naturels', NULL, NULL, NULL,NULL),
+(13, 'Sites du Conservatoire du Littoral', NULL, NULL, NULL,NULL),
+(14, 'Parcs naturels marins', NULL, NULL, NULL,NULL),
+(15, 'Parcs naturels régionaux', 'PNR', NULL, NULL,NULL),
+(16, 'Réserves biologiques', NULL, NULL, NULL,NULL),
+(17, 'Réserves de biosphère', NULL, NULL, NULL,NULL),
+(18, 'Réserves naturelles de Corse', NULL, NULL, NULL,NULL),
+(19, 'Sites Ramsar', NULL, NULL, NULL,NULL),
+(20, 'Aire d''adhésion des Parcs nationaux', 'AA', NULL, NULL,NULL),
+(21, 'Natura 2000 - Zones spéciales de conservation', 'ZSC', NULL, NULL,NULL),
+(22, 'Natura 2000 - Proposition de sites d''intéret communautaire', 'pSIC', NULL, NULL,NULL),
+(23, 'Périmètre d''étude de la charte des Parcs nationaux', 'PEC', NULL, NULL,NULL),
+(101, 'Communes', NULL, 'type commune', 'IGN admin_express',2017),
+(102, 'Départements', NULL, 'type département', 'IGN admin_express',2017),
+(201, 'Mailles10*10', NULL, 'type maille inpn 10*10', NULL,NULL),
+(10001, 'Secteurs', NULL, NULL, NULL,NULL),
+(10002, 'Massifs', NULL, NULL, NULL,NULL),
+(10003, 'Zones biogéographiques', NULL, NULL, NULL,NULL);

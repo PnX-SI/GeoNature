@@ -105,18 +105,11 @@ CREATE SEQUENCE synthese_id_synthese_seq
 ALTER SEQUENCE synthese_id_synthese_seq OWNED BY synthese.id_synthese;
 ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese_id_synthese_seq'::regclass);
 
-CREATE TABLE cor_municipality_synthese (
-    id_synthese integer, 
-    id_municipality integer,  
-    id_nomenclature_typ_inf_geo integer
-)
-
 CREATE TABLE cor_area_synthese (
-    id_synthese integer, 
-    id_area integer,  
+    id_synthese integer,
+    id_area integer,
     id_nomenclature_typ_inf_geo integer
-)
-
+);
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -124,8 +117,6 @@ CREATE TABLE cor_area_synthese (
 ALTER TABLE ONLY t_sources ADD CONSTRAINT pk_t_sources PRIMARY KEY (id_source);
 
 ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
-
-ALTER TABLE ONLY cor_municipality_synthese ADD CONSTRAINT pk_cor_municipality_synthese PRIMARY KEY (id_synthese, id_municipality);
 
 ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area);
 
@@ -203,16 +194,6 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
-
-ALTER TABLE ONLY cor_municipality_synthese
-    ADD CONSTRAINT fk_cor_municipality_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY cor_municipality_synthese
-    ADD CONSTRAINT fk_cor_municipality_synthese_id_municipality FOREIGN KEY (id_municipality) REFERENCES ref_geo.l_municipalities(id_municipality) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY cor_municipality_synthese
-    ADD CONSTRAINT fk_cor_municipality_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_area_synthese
