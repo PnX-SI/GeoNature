@@ -169,28 +169,6 @@ $BODY$
   ROWS 1000;
 
 
-CREATE OR REPLACE FUNCTION fct_get_municipality_intersection(IN mygeom public.geometry)
-  RETURNS TABLE(insee_code character varying, municipality_name character varying) AS
-$BODY$
-DECLARE
-    isrid int;
-BEGIN
-    SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
-    RETURN QUERY
-    WITH d  as (
-        SELECT st_transform(myGeom,isrid) geom_trans
-    )
-    SELECT a.source_code AS id_municipality, a.area_name
-    FROM ref_geo.l_areas a, d
-    WHERE a.id_type = 1
-    AND st_intersects(geom_trans, a.geom);
-
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100
-  ROWS 1000;
-
 
 CREATE OR REPLACE FUNCTION fct_get_area_intersection(
   IN mygeom geometry,
@@ -207,9 +185,9 @@ BEGIN
   )
   SELECT a.id_area, a.id_type, a.area_code, a.area_name
   FROM ref_geo.l_areas a, d
-  WHERE a.id_type = myidtype
-  AND st_intersects(geom_trans, a.geom) AND (myIdType IS NULL OR a.id_type = myIdType)
-  AND enable=true;
+  WHERE st_intersects(geom_trans, a.geom)
+    AND (myIdType IS NULL OR a.id_type = myIdType)
+    AND enable=true;
 
 END;
 $BODY$
