@@ -290,6 +290,46 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "geo/areas - alltype",
+			"request": {
+				"url": "http://localhost:8000/geo/areas",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "geo/areas - filterby communes",
+			"request": {
+				"url": "http://localhost:8000/geo/areas",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]},\n  \"id_type\":101\n}"
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
