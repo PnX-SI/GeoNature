@@ -222,7 +222,7 @@ echo "Creating 'ref_geo' schema..."
         echo "--------------------" &>> log/install_db.log
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $user_pg;" &>> log/install_db.log
         echo "" &>> log/install_db.log
-        echo "Insert data in l_areas and l_municipalities tables" &>> log/install_db.log
+        echo "Insert data in l_areas and li_municipalities tables" &>> log/install_db.log
         echo "--------------------" &>> log/install_db.log
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_data.sql  &>> log/install_db.log
         echo "" &>> log/install_db.log

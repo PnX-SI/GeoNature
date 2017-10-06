@@ -54,7 +54,7 @@ CREATE TABLE l_areas (
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
 
-CREATE TABLE l_municipalities (
+CREATE TABLE li_municipalities (
     id_municipality character varying(25) NOT NULL,
     id_area integer NOT NULL,
     status character varying(22),
@@ -81,7 +81,7 @@ CREATE TABLE l_municipalities (
     meta_update_date timestamp without time zone
 );
 
-CREATE TABLE l_grids (
+CREATE TABLE li_grids (
     id_grid character varying(50) NOT NULL,
     id_area integer NOT NULL,
     cxmin integer,
@@ -102,11 +102,11 @@ CREATE TABLE dem_vector
 ----------------
 --PRIMARY KEYS--
 ----------------
-ALTER TABLE ONLY l_municipalities
-    ADD CONSTRAINT pk_l_municipalities PRIMARY KEY (id_municipality);
+ALTER TABLE ONLY li_municipalities
+    ADD CONSTRAINT pk_li_municipalities PRIMARY KEY (id_municipality);
 
-ALTER TABLE ONLY l_grids
-    ADD CONSTRAINT pk_l_grids PRIMARY KEY (id_grid);
+ALTER TABLE ONLY li_grids
+    ADD CONSTRAINT pk_li_grids PRIMARY KEY (id_grid);
 
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT pk_l_areas PRIMARY KEY (id_area);
@@ -124,11 +124,11 @@ ALTER TABLE ONLY dem_vector
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES bib_areas_types(id_type) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY l_municipalities
-    ADD CONSTRAINT fk_l_municipalities_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
+ALTER TABLE ONLY li_municipalities
+    ADD CONSTRAINT fk_li_municipalities_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY l_grids
-    ADD CONSTRAINT fk_l_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
+ALTER TABLE ONLY li_grids
+    ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
 
 ---------
 --INDEX--
@@ -141,7 +141,7 @@ CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
 --TRIGGERS--
 ------------
 CREATE TRIGGER tri_meta_dates_change_l_areas BEFORE INSERT OR UPDATE ON l_areas FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-CREATE TRIGGER tri_meta_dates_change_l_municipalities BEFORE INSERT OR UPDATE ON l_municipalities FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+CREATE TRIGGER tri_meta_dates_change_li_municipalities BEFORE INSERT OR UPDATE ON li_municipalities FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 -------------
