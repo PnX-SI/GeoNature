@@ -201,9 +201,6 @@ def insertOrUpdateOneReleve():
         if data['properties']['observers']:
             observersList =  data['properties']['observers']
             data['properties'].pop('observers')
-        if data['properties']['municipalities']:
-            municipalitiesList = data['properties']['municipalities']
-            data['properties'].pop('municipalities')
 
         releve = TRelevesContact(**data['properties'])
         shape = asShape(data['geometry'])
@@ -213,9 +210,6 @@ def insertOrUpdateOneReleve():
         for o in observers :
             releve.observers.append(o)
 
-        municipalities = db.session.query(LAreasWithoutGeom).filter(LAreasWithoutGeom.id_area.in_(municipalitiesList)).all()
-        for m in municipalities :
-            releve.municipalities.append(m)
 
         for occ in occurrences_contact :
             if occ['cor_counting_contact']:

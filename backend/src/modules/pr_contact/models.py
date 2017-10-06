@@ -25,11 +25,6 @@ corRoleRelevesContact = db.Table('cor_role_releves_contact',db.MetaData(schema='
     db.Column('id_role', db.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
 )
 
-corMunicipalityRelevesContact = db.Table('cor_municipality_releves_contact',db.MetaData(schema='pr_contact'),
-    db.Column('id_releve_contact', db.Integer, ForeignKey('pr_contact.t_releves_contact.id_releve_contact'), primary_key=True),
-    db.Column('id_area', db.Integer, ForeignKey('ref_geo.l_areas.id_area'), primary_key=True)
-)
-
 
 class TRelevesContact(serializableGeoModel):
     __tablename__ = 't_releves_contact'
@@ -58,13 +53,7 @@ class TRelevesContact(serializableGeoModel):
         secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
         foreign_keys =[corRoleRelevesContact.c.id_releve_contact,corRoleRelevesContact.c.id_role]
     )
-    municipalities = db.relationship(
-        'LAreasWithoutGeom',
-        secondary=corMunicipalityRelevesContact,
-        primaryjoin=(corMunicipalityRelevesContact.c.id_releve_contact == id_releve_contact),
-        secondaryjoin=(corMunicipalityRelevesContact.c.id_area == LAreasWithoutGeom.id_area),
-        foreign_keys =[corMunicipalityRelevesContact.c.id_releve_contact,corMunicipalityRelevesContact.c.id_area]
-    )
+
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
 

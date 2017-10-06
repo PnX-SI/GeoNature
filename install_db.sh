@@ -199,7 +199,7 @@ echo "Creating 'ref_geo' schema..."
     cp data/core/ref_geo.sql /tmp/ref_geo.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/ref_geo.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/ref_geo.sql  &>> log/install_db.log
-    
+
     if $install_sig_layers
     then
         echo "Insert default French municipalities (IGN admin-express)"
@@ -245,8 +245,8 @@ echo "Creating 'ref_geo' schema..."
             wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp
         else
             echo "/tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip already exist"
-        fi       
-	    unzip /tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp
+        fi
+	      unzip /tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp
         #gdalwarp -t_srs EPSG:$srid_local /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc /tmp/dem.tif &>> log/install_db.log
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 100x100 /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> log/install_db.log
     	echo "Vectorisation of dem raster. This may take a few minutes..."
