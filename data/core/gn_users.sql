@@ -79,6 +79,71 @@ ALTER SEQUENCE t_applications_id_application_seq OWNED BY t_applications.id_appl
 ALTER TABLE ONLY t_applications ALTER COLUMN id_application SET DEFAULT nextval('t_applications_id_application_seq'::regclass);
 
 
+
+CREATE OR REPLACE VIEW v_userslist_forall_menu AS 
+ SELECT a.groupe,
+    a.id_role,
+    a.identifiant,
+    a.nom_role,
+    a.prenom_role,
+    (upper(a.nom_role::text) || ' '::text) || a.prenom_role::text AS nom_complet,
+    a.desc_role,
+    a.pass,
+    a.email,
+    a.id_organisme,
+    a.organisme,
+    a.id_unite,
+    a.remarques,
+    a.pn,
+    a.session_appli,
+    a.date_insert,
+    a.date_update,
+    a.id_menu
+   FROM ( SELECT u.groupe,
+            u.id_role,
+            u.identifiant,
+            u.nom_role,
+            u.prenom_role,
+            u.desc_role,
+            u.pass,
+            u.email,
+            u.id_organisme,
+            u.organisme,
+            u.id_unite,
+            u.remarques,
+            u.pn,
+            u.session_appli,
+            u.date_insert,
+            u.date_update,
+            c.id_menu
+           FROM utilisateurs.t_roles u
+             JOIN utilisateurs.cor_role_menu c ON c.id_role = u.id_role
+          WHERE u.groupe = false
+        UNION
+         SELECT u.groupe,
+            u.id_role,
+            u.identifiant,
+            u.nom_role,
+            u.prenom_role,
+            u.desc_role,
+            u.pass,
+            u.email,
+            u.id_organisme,
+            u.organisme,
+            u.id_unite,
+            u.remarques,
+            u.pn,
+            u.session_appli,
+            u.date_insert,
+            u.date_update,
+            c.id_menu
+           FROM utilisateurs.t_roles u
+             JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
+             JOIN utilisateurs.cor_role_menu c ON c.id_role = g.id_role_groupe
+          WHERE u.groupe = false) a;
+
+
+
 CREATE SEQUENCE t_tags_id_tag_seq
     START WITH 1000000
     INCREMENT BY 1
@@ -256,7 +321,7 @@ ALTER TABLE ONLY cor_data_type_privilege_tag ADD CONSTRAINT fk_cor_data_type_pri
 ---------
 --VIEWS--
 ---------
-CREATE OR REPLACE VIEW gn_users.v_usersprivilege_forall_gn_modules AS 
+CREATE OR REPLACE VIEW gn_users.v_usersprivilege_forall_gn_modules AS
  WITH all_users_tags AS (
          WITH a1 AS (
                  SELECT u.id_role,
@@ -410,7 +475,7 @@ $BODY$
 -- SAMPLE :SELECT gn_users.can_user_do_in_module(2,5,14);
   BEGIN
     IF myprivilege IN (
-	SELECT id_gn_privilege FROM gn_users.v_usersprivilege_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule) 
+	SELECT id_gn_privilege FROM gn_users.v_usersprivilege_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule)
 	THEN
 	RETURN true;
     END IF;
@@ -432,7 +497,7 @@ DECLARE
 -- USAGE : SELECT gn_users.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
 -- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,2,14);
   BEGIN
-	SELECT max(max_gn_data_type) INTO themaxleveldatatype FROM gn_users.v_usersprivilege_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_gn_privilege = myaction; 
+	SELECT max(max_gn_data_type) INTO themaxleveldatatype FROM gn_users.v_usersprivilege_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_gn_privilege = myaction;
 	RETURN themaxleveldatatype;
   END;
 $BODY$
@@ -444,21 +509,21 @@ CREATE OR REPLACE FUNCTION find_all_modules_childs(myidapplication integer)
 $BODY$
  --Param : id_application d'un module ou d'une application quelque soit son rang
  --Retourne le id_application de tous les modules enfants sous forme d'un jeu de données utilisable comme une table
- --Usage SELECT gn_users.find_all_modules_childs(14); 
+ --Usage SELECT gn_users.find_all_modules_childs(14);
  --ou SELECT * FROM gn_users.t_applications WHERE id_application IN(SELECT * FROM gn_users.find_all_modules_childs(14))
-  DECLARE 
+  DECLARE
     inf RECORD;
     c integer;
   BEGIN
     SELECT INTO c count(*) FROM gn_users.t_applications WHERE id_parent = myidapplication;
     IF c > 0 THEN
-        FOR inf IN 
+        FOR inf IN
       WITH RECURSIVE modules AS (
       SELECT a1.id_application FROM gn_users.t_applications a1 WHERE a1.id_parent = myidapplication
       UNION ALL
       SELECT a2.id_application FROM modules m JOIN gn_users.t_applications a2 ON a2.id_parent = m.id_application
-      ) 
-      SELECT id_application FROM modules 
+      )
+      SELECT id_application FROM modules
   LOOP
       RETURN NEXT inf.id_application;
   END LOOP;
@@ -476,7 +541,7 @@ $BODY$
 DO
 $$
 BEGIN
-INSERT INTO bib_gn_data_types (id_gn_data_type, gn_data_type_name, gn_data_type_desc) VALUES 
+INSERT INTO bib_gn_data_types (id_gn_data_type, gn_data_type_name, gn_data_type_desc) VALUES
 (1,'my data','user data')
 ,(2,'my organization data', 'data that''s owned by the user''s organization')
 ,(3,'all data', 'All the data that is contained in this GeoNaute instance')
@@ -490,7 +555,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO bib_gn_privileges (id_gn_privilege, gn_privilege_name, gn_privilege_desc) VALUES 
+INSERT INTO bib_gn_privileges (id_gn_privilege, gn_privilege_name, gn_privilege_desc) VALUES
 (1,'create','can create/add new data')
 ,(2,'read', 'can read data')
 ,(3,'update', 'can edit data')
@@ -507,7 +572,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_organisms (id_organism, organism_name, adresse, organism_code, city, tel, fax, email, id_parent) VALUES 
+INSERT INTO t_organisms (id_organism, organism_name, adresse, organism_code, city, tel, fax, email, id_parent) VALUES
 (1,'PNF', NULL, NULL, 'Montpellier', NULL, NULL, NULL,NULL)
 ,(2,'Parc National des Ecrins', 'Domaine de Charance', '05000', 'GAP', '04 92 40 20 10', NULL, NULL, NULL)
 ,(99,'Autre', NULL, NULL, NULL, NULL, NULL, NULL, NULL)
@@ -522,7 +587,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (id_role, identifiant, last_name, first_name, desc_role, pass_md5, pass_sha, email, id_organism, comment) VALUES 
+INSERT INTO t_roles (id_role, identifiant, last_name, first_name, desc_role, pass_md5, pass_sha, email, id_organism, comment) VALUES
 (20001, NULL, 'grp_bureau_etude', NULL, 'Bureau d''étude', NULL, NULL, NULL, 99, 'groupe test à modifier ou supprimer')
 ,(20002, NULL, 'grp_en_poste', NULL, 'Tous les agents en poste', NULL, NULL, NULL, 99, 'groupe test à modifier ou supprimer')
 ,(1, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 99, 'utilisateur test à modifier')
@@ -541,7 +606,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES 
+INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES
 (20002, 1)
 ,(20002, 2)
 ,(20002, 5)
@@ -556,7 +621,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_applications (id_application, nom_application, desc_application, id_parent) VALUES 
+INSERT INTO t_applications (id_application, nom_application, desc_application, id_parent) VALUES
 (1, 'UsersHub', 'application permettant d''administrer le contenu du schéma utilisateurs de usershub.', NULL)
 ,(2, 'TaxHub', 'application permettant d''administrer la liste des taxons.', NULL)
 ,(14, 'application geonature', 'Application permettant la consultation et la gestion des relevés faune et flore.', NULL)
@@ -571,7 +636,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_tags (id_tag, tag_name, tag_desc) VALUES 
+INSERT INTO t_tags (id_tag, tag_name, tag_desc) VALUES
 (1, 'utilisateur', 'Ne peut que consulter')
 ,(2, 'rédacteur', 'Il possède des droit d''écriture pour créer des enregistrements')
 ,(3, 'référent', 'utilisateur ayant des droits complémentaires au rédacteur (par exemple exporter des données ou autre)')
@@ -614,8 +679,8 @@ $$;
 
 DO
 $$
-BEGIN 
-INSERT INTO cor_role_tag_application (id_role, id_tag, id_application) VALUES 
+BEGIN
+INSERT INTO cor_role_tag_application (id_role, id_tag, id_application) VALUES
 --administrateur sur UsersHub et TaxHub
 (1, 6, 1)
 ,(1, 6, 2)
@@ -658,7 +723,7 @@ $$;
 
 DO
 $$
-BEGIN 
+BEGIN
 INSERT INTO gn_users.cor_data_type_privilege_tag (id_gn_data_type, id_gn_privilege, id_tag, comment) VALUES
 (3,6,25,'This user can delete all data')
 ,(2,6,24,'This user can delete only the data of his organization')
@@ -687,8 +752,8 @@ $$;
 
 DO
 $$
-BEGIN 
-INSERT INTO cor_tags_relations (id_tag_l, id_tag_r, relation_type) VALUES 
+BEGIN
+INSERT INTO cor_tags_relations (id_tag_l, id_tag_r, relation_type) VALUES
 (100, 1003, 'est de type')
 , (101, 1003, 'est de type')
 , (102, 1003, 'est de type')
