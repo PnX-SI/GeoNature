@@ -20,6 +20,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Input() pathEdit: string;
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
+  @Output() paramDeleted = new EventEmitter<any>();
   filterList: Array<any>;
   filterSelected: any;
   inputTaxon = new FormControl();
@@ -50,6 +51,7 @@ export class MapDataComponent implements OnInit, OnChanges {
         }
       }
     });
+
 
     this.genericFilter.valueChanges
       .debounceTime(400)
@@ -119,6 +121,10 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.mapListService.urlQuery.delete('cd_nom');
     this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
+  taxonDeleted() {
+    this.mapListService.urlQuery.delete('cd_nom');
+    this.paramDeleted.emit();
+  }
   observerChanged(observer) {
      this.paramChanged.emit({param: 'observer', 'value': observer.id_role});
   }
@@ -132,10 +138,6 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   dateMinChanged(date) {
-    console.log(date === undefined);
-    console.log(date);
-
-
     this.mapListService.urlQuery.delete('date_up');
     if (date.length > 0) {
       this.paramChanged.emit({param: 'date_up', 'value': date});

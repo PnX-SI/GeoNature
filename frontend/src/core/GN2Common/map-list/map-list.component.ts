@@ -33,17 +33,18 @@ export class MapListComponent implements OnInit, OnChanges {
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
     // set the idName in the service
-    this.mapListService.idName = 'id_releve_contact';
+    this.mapListService.idName = this.idName;
   }
 
-  refreshValue(params) {
-    this.mapListService.getData('contact/vreleve', params)
+  refreshValue(params?) {
+    this.mapListService.getData(this.apiEndPoint, params)
       .subscribe(res => {
         this.mapListService.page.totalElements = res.total_filtered;
         this.geojsonData = res.items;
         this.tableData = this.mapListService.loadTableData(res.items);
       });
   }
+
 
   onEachFeature(feature, layer) {
     // event from the map

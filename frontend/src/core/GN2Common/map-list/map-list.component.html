@@ -11,7 +11,8 @@
          [allColumns]="allColumns"
          [pathEdit]="pathEdit"
          [pathInfo]="pathInfo"
-         (paramChanged)="refreshValue($event)" >
+         (paramChanged)="refreshValue($event)"
+         (paramDeleted)="refreshValue()" >
         </pnx-map-data>
     </div>
 </div>
