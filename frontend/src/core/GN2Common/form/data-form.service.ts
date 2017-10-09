@@ -41,9 +41,9 @@ export class DataFormService {
     .map(res => res.json());
   }
 
-  getTaxonInfo(cd_nom: number){
+  getTaxonInfo(cd_nom: number) {
    return this._http.get(`${AppConfig.API_TAXHUB}taxref/${cd_nom}`)
-    .map(res => res.json())
+    .map(res => res.json());
   }
 
   getGeoInfo(geojson) {
@@ -51,14 +51,23 @@ export class DataFormService {
       .map(response => response.json());
   }
 
+  getGeoIntersection(geojson, idType?) {
+    const obj = {'geometry': geojson };
+    if (idType) {
+      obj['id_type'] = idType;
+    }
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, obj)
+    .map(response => response.json());
+  }
+
   postContact(form) {
     return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form)
       .map(response => {
-        if(response.status != 200){
-          throw new Error('Post Error')
-        }else{
+        if (response.status !== 200) {
+          throw new Error('Post Error');
+        }else {
           return response.json();
-        } 
+        }
       });
   }
 

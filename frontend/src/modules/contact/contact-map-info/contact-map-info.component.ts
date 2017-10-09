@@ -39,11 +39,15 @@ export class ContactMapInfoComponent implements OnInit {
           .subscribe(data => {
             this.releve = data;
             this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
-            this.municipalities = data.properties.municipalities.map(muni => muni.area_name).join(', ');
             this.dateMin = data.properties.date_min.substring(0, 10);
             this.dateMax = data.properties.date_max.substring(0, 10);
 
             this._ms.loadGeometryReleve(data, false);
+            // load municipalities info 
+            this._dfs.getGeoIntersection(data.geometry, 101)
+              .subscribe(areas => {
+                this.municipalities = areas['101'].areas.map(obj => obj.area_name).join(', ')
+              });
             // load taxonomy info
             data.properties.t_occurrences_contact.forEach(occ => {
               this._dfs.getTaxonInfo(occ.cd_nom)
@@ -52,9 +56,6 @@ export class ContactMapInfoComponent implements OnInit {
                   this.showSpinner = false;
                  });
             });
-
-            console.log(data.properties);
-
         });
       }
   });
