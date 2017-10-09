@@ -20,6 +20,9 @@
     "Programs": "Programmes",
     "Datasets": "Jeux de données",
     "LatestObservations": "Dernières observations",
+    "Search": "Rechercher",
+    "By": "Par",
+    "Columns": "Colonnes",
   
     "Map":{
         "SearchLocation":"Rechercher un lieu",

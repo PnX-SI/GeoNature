@@ -20,6 +20,9 @@
     "Programs": "程式",
     "Datasets": "数据集",
     "LatestObservations": "最新观察",
+    "Search": "Search",
+    "By": "By",
+    "Columns": "Columns",
   
     "Map":{
         "SearchLocation":"搜索位置",
