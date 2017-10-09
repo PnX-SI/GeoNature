@@ -22,6 +22,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Output() pageChanged = new EventEmitter<any>();
   @Output() paramDeleted = new EventEmitter<any>();
   filterList: Array<any>;
+  filteredColumns: Array<any>;
   filterSelected: any;
   inputTaxon = new FormControl();
   inputObservers = new FormControl();
@@ -168,6 +169,10 @@ export class MapDataComponent implements OnInit, OnChanges {
     if (changes.allColumns) {
       if (changes.allColumns.currentValue !== undefined ) {
         this.allColumns = changes.allColumns.currentValue;
+        const doubleColumns = ['taxons', 'observateurs', 'date_min', 'date_max', 'leaflet_popup', 'observers'];
+        this.filteredColumns = this.allColumns.filter(res => {
+          return doubleColumns.indexOf(res.prop) === -1 ;
+        });
       }
     }
 
