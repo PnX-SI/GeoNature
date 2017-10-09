@@ -116,15 +116,17 @@ export class MapDataComponent implements OnInit, OnChanges {
     this._router.navigate([this.pathEdit]);
   }
 
+  deleteAndRefresh(param) {
+    this.mapListService.urlQuery.delete(param);
+    this.paramDeleted.emit();
+  }
+
   taxonChanged(taxonObj) {
     // refresh taxon in url query
     this.mapListService.urlQuery.delete('cd_nom');
     this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
-  taxonDeleted() {
-    this.mapListService.urlQuery.delete('cd_nom');
-    this.paramDeleted.emit();
-  }
+
   observerChanged(observer) {
      this.paramChanged.emit({param: 'observer', 'value': observer.id_role});
   }

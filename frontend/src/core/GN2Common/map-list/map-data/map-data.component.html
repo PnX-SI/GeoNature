@@ -10,7 +10,7 @@
       [charNumber]="3"
       [listLength]="20"
       (taxonChanged)="taxonChanged($event)"
-      (taxonDeleted)="taxonDeleted()">
+      (taxonDeleted)="deleteAndRefresh('cd_nom')">
       </pnx-taxonomy>
     </div>
     
@@ -30,7 +30,8 @@
       <pnx-date
         placeholder="{{ 'Releve.MinDate' | translate }} "
         [parentFormControl]="dateMin"
-        (dateChanged)="dateMinChanged($event)">
+        (dateChanged)="dateMinChanged($event)"
+        (dateDeleted)= "deleteAndRefresh('date_up')">
       </pnx-date>
     </div>
     
@@ -39,7 +40,8 @@
         <pnx-date
           placeholder="{{ 'Releve.MaxDate' | translate }} "
           [parentFormControl]="dateMax"
-          (dateChanged)="dateMaxChanged($event)">
+          (dateChanged)="dateMaxChanged($event)"
+          (dateDeleted)= "deleteAndRefresh('date_low')">
         </pnx-date>   
     </div>
  
