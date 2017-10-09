@@ -45,7 +45,6 @@ export class ContactFormService {
         altitude_min: data ? data.properties.altitude_min: null,
         altitude_max : data ? data.properties.altitude_max: null,
         deleted: false,
-        municipalities : null,
         meta_device_entry: 'web',
         comment: data ? data.properties.comment: null,
         observers: [data ? this.formatObservers(data.properties.observers): null, Validators.required],
@@ -94,6 +93,7 @@ export class ContactFormService {
 
 
   initCountingArray(data?: Array<any>): FormArray {
+    // init the counting form with the data, or emty
     const arrayForm = this._fb.array([]);
 
     if (data) {
@@ -129,6 +129,7 @@ export class ContactFormService {
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
     this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;
+    // push or update the occurrence
     if (this.releveForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
       this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
@@ -155,7 +156,7 @@ export class ContactFormService {
     // set the current index
     this.indexOccurrence = index;
     // get the occurrence data from releve form
-    let occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
     const countingData = occurenceData.cor_counting_contact;
     const nbCounting = countingData.length;
     // load the taxons info
@@ -198,7 +199,7 @@ export class ContactFormService {
   formatObservers(observers){
     const observersTab = [];
     observers.forEach(observer => {
-      observer['nom_complet'] = observer.nom_role + ' ' + observer.prenom_role
+      observer['nom_complet'] = observer.nom_role + ' ' + observer.prenom_role;
       observersTab.push(observer);
     });
     return observersTab;

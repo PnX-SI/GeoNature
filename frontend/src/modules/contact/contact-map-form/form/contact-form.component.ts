@@ -54,6 +54,7 @@ export class ContactFormComponent implements OnInit {
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)
               .subscribe(taxon => this.fs.taxonsList.push(taxon));
+            // load municipalities
           }
           // set the occurrence
           this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;
@@ -85,9 +86,6 @@ export class ContactFormComponent implements OnInit {
     // format observers
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
-
-    // FIX
-    finalForm.properties.municipalities = [74000];
 
     console.log(JSON.stringify(finalForm));
 
