@@ -25,6 +25,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
+// pipe
+
+import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 
 // Service
 import { MapService } from './map/map.service';
@@ -67,6 +70,7 @@ export function HttpLoaderFactory(http: Http) {
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
+    ReadablePropertiePipe
   ],
   providers : [
     MapService,
@@ -86,6 +90,7 @@ export function HttpLoaderFactory(http: Http) {
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
+    ReadablePropertiePipe,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
