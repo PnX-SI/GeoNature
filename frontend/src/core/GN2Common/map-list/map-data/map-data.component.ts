@@ -133,10 +133,11 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   observerDeleted(observer) {
     const idObservers = this.mapListService.urlQuery.getAll('observer');
-    idObservers.splice(idObservers.indexOf(observer.id_role));
+    idObservers.splice(idObservers.indexOf(observer.id_role), 1);
     idObservers.forEach(id => {
       this.mapListService.urlQuery.set('observer', id);
     });
+    this.paramDeleted.emit();
   }
 
   dateMinChanged(date) {

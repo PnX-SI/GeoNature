@@ -20,7 +20,6 @@ export class DateComponent implements OnInit, OnDestroy {
   @Output() dateChanged = new EventEmitter<any>();
   @Output() dateDeleted = new EventEmitter<any>();
   dynamicId;
-  public deleteSub: Subscription;
   public changeSub: Subscription;
   public today: NgbDateStruct;
   constructor(private _dateParser: NgbDateParserFormatter, myElement:ElementRef) {
@@ -31,7 +30,7 @@ export class DateComponent implements OnInit, OnDestroy {
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
 
-    this.deleteSub = this.parentFormControl.valueChanges
+    this.changeSub = this.parentFormControl.valueChanges
       .subscribe(date => {
         if (date !== null) {
           this.dateChanged.emit(this._dateParser.format(date));
@@ -56,7 +55,6 @@ export class DateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.deleteSub.unsubscribe();
     this.changeSub.unsubscribe();
   }
 
