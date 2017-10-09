@@ -9,6 +9,7 @@ import { URLSearchParams } from '@angular/http';
 export class MapListService {
   private _layerId = new Subject<any>();
   private _tableId = new Subject<any>();
+  public idName: string;
   public columns = [];
   public layerDict= {};
   public selectedLayer: any;
@@ -90,7 +91,6 @@ export class MapListService {
     const tableData = [];
     data.features.forEach(feature => {
       const obj = feature.properties;
-      obj['id'] = feature.id;
       tableData.push(obj);
     });
     return tableData;
