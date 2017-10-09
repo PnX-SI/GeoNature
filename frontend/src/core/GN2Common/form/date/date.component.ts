@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, ElementRef, OnDestroy } from '@angular/core';
-import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Subscription';
 
 

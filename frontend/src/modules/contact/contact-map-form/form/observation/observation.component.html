@@ -42,12 +42,13 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
       <pnx-date
-        placeholder="{{ 'Releve.MinDate' | translate }} "
-        [parentFormControl]="releveForm.controls.properties.controls.date_max">
+        placeholder="{{ 'Releve.MaxDate' | translate }} "
+        [parentFormControl]="releveForm.controls.properties.controls.date_max"
+        (dateChanged)="dateChanged($event)">
       </pnx-date>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
-      <span class="time-button" (click)="toggleDate()">
+      <span class="time-button" (click)="toggleTime()">
         <i *ngIf="!showTime" class="fa fa-plus time-plus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
         <i *ngIf="showTime" class="fa fa-minus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
       </span>

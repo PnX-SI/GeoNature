@@ -33,6 +33,7 @@ import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 import { MapService } from './map/map.service';
 import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
+import { CommonService } from './service/common.service';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -75,7 +76,8 @@ export function HttpLoaderFactory(http: Http) {
   providers : [
     MapService,
     DataFormService,
-    MapListService
+    MapListService,
+    CommonService
     ],
   exports: [
     NomenclatureComponent,

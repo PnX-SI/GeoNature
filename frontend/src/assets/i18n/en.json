@@ -44,7 +44,8 @@
         "Municipalities":"Municipalities",
         "Dataset":"Dataset",
         "Comment":"Comment",
-        "SaveReleve":"Save releve"
+        "SaveReleve":"Save releve",
+        "DateMaxError": "Date max can not be inferior to the date min"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",
