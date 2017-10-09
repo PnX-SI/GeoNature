@@ -60,6 +60,7 @@ export class MapListComponent implements OnInit, OnChanges {
     });
   }
 
+
   ngOnChanges(changes) {
     if (changes.geojsonData.currentValue !== undefined) {
       console.log(changes.geojsonData.currentValue.features);
@@ -71,6 +72,19 @@ export class MapListComponent implements OnInit, OnChanges {
         for (let key in features[0].properties){
           keyColumns.push({prop: key, name: key});
         }
+        // sort the columns
+        keyColumns.sort(function(a, b) {
+          const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+          const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          // names must be equal
+          return 0;
+        });
         this.allColumns = keyColumns;
       }
 
