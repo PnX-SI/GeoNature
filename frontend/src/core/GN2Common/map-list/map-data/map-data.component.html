@@ -61,7 +61,7 @@
                     {{ 'By' | translate }} {{filterSelected.name | readablePropertie}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item font-md" *ngFor="let list of allColumns" (click)="onChangeFilterOps(list)"> {{ 'By' | translate }} {{list.name | readablePropertie}}</a>
+                  <a class="dropdown-item font-md" *ngFor="let list of filteredColumns" (click)="onChangeFilterOps(list)"> {{ 'By' | translate }} {{list.name | readablePropertie}}</a>
                 </div>
               </div>
             </div>        
