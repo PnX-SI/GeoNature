@@ -42,7 +42,8 @@
         "Municipalities":"各市",
         "Dataset":"数据集",
         "Comment":"评论",
-        "SaveReleve": "保存声明"
+        "SaveReleve": "保存声明",
+        "DateMaxError": "Date max can not be inferior to the date min"
     },
     "Taxon":{
         "ObservedTaxon":"观察到的红豆杉",

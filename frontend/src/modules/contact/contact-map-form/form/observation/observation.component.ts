@@ -1,11 +1,13 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormArray, FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../../../../core/GN2Common/map/map.service';
 import { DataFormService } from '../../../../../core/GN2Common/form/data-form.service';
+import { CommonService } from '../../../../../core/GN2Common/service/common.service';
 import { ContactFormService } from '../contact-form.service';
 import {ViewEncapsulation} from '@angular/core';
 import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+
 
 
 @Component({
@@ -28,7 +30,8 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public today: NgbDateStruct;
   private geojsonSubscription$: Subscription;
 
-  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService) {  }
+  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService,
+  private _commonService: CommonService) {  }
 
   ngOnInit() {
     // load datasets
@@ -56,16 +59,37 @@ export class ObservationComponent implements OnInit, OnDestroy {
     (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
       .subscribe(value => {
         this.releveForm.controls.properties.patchValue({date_max: value});
+        console.log(this.releveForm.value);
+
       });
-    // set today
+    // set today for the datepicker limit
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
 
+    // check if dateMax is not < dateMin
+    (this.releveForm.controls.properties as FormGroup).controls.date_max.valueChanges
+    .debounceTime(500)
+    .subscribe(value => {
+      let dateMin = this.releveForm.value.properties.date_min;
+      if (dateMin) {
+        dateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
+        const dateMax = new Date(value.year, value.month, value.day);
+        if (dateMax < dateMin) {
+          (this.releveForm.controls.properties as FormGroup).controls.date_max.setErrors([Validators.required]);
+          this._commonService.translateToaster('error', 'Releve.DateMaxError');
+        }
+      }
+    });
   }
 
-  toggleDate() {
+  toggleTime() {
     this.showTime = !this.showTime;
   }
+
+  dateChanged(date) {
+    const newDate = new Date(date);
+  }
+
 
   ngOnDestroy() {
     this.geojsonSubscription$.unsubscribe();

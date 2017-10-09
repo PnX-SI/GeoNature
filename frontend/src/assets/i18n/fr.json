@@ -44,7 +44,8 @@
         "Municipalities":"Commune(s)",
         "Dataset":"Jeu de données",
         "Comment":"Commentaire",
-        "SaveReleve":"Enregistrer le relevé"
+        "SaveReleve":"Enregistrer le relevé",
+        "DateMaxError": "La date max ne peut pas être superieure à la date min"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon observé",
