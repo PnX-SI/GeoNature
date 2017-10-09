@@ -12,11 +12,11 @@ import { Subscription } from 'rxjs/Subscription';
 
 export class ContactMapListComponent implements OnInit {
   public geojsonData: GeoJSON;
-  private idSubscription: Subscription;
   public displayColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
   public idName: string;
+  public apiEndPoint: string;
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
@@ -27,6 +27,7 @@ export class ContactMapListComponent implements OnInit {
   this.pathEdit = 'contact-form';
   this.pathInfo = 'contact/info';
   this.idName = 'id_releve_contact';
+  this.apiEndPoint = 'contact/vreleve';
 
   this._mapListService.getData('contact/vreleve')
   .subscribe(res => {

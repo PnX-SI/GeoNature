@@ -20,10 +20,16 @@ export class TaxonomyComponent implements OnInit {
   searchString: any;
   filteredTaxons: any;
   @Output() taxonChanged = new EventEmitter<any>();
+  @Output() taxonDeleted = new EventEmitter<any>();
 
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
+    this.parentFormControl.valueChanges
+      .filter(value => value.length === 0)
+      .subscribe(data => {
+        this.taxonDeleted.emit();
+      });
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
