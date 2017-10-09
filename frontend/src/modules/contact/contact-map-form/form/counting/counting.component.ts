@@ -26,11 +26,11 @@ export class CountingComponent implements OnInit {
 
   typeDenombrementChanged(event) {
     // Test validation conditionelle
-    if (event !== null && event !== 109) {
-      const formGroup: FormGroup = <FormGroup>this.fs.countingForm.controls[0];
-       formGroup.controls['count_min'].setErrors([Validators.required]);
-       formGroup.controls['count_max'].setErrors([Validators.required]);
-    }
+    // if (event !== null && event !== 109) {
+    //   const formGroup: FormGroup = <FormGroup>this.fs.countingForm.controls[0];
+    //    formGroup.controls['count_min'].setErrors([Validators.required]);
+    //    formGroup.controls['count_max'].setErrors([Validators.required]);
+    // }
   }
 
   onAddCounting() {

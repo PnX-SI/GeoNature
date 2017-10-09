@@ -14,11 +14,12 @@ export class MapListComponent implements OnInit, OnChanges {
   public layerDict: any;
   public selectedLayer: any;
   @Input() geojsonData: GeoJSON;
-  @Input() tableData = [];
+  @Input() idName: string;
   @Input() apiEndPoint: string;
   @Input() displayColumns: Array<any>;
   @Input() pathEdit: string;
   @Input() pathInfo: string;
+  public tableData = new Array();
   allColumns = [];
 
   constructor(private _ms: MapService, private mapListService: MapListService) {
@@ -31,6 +32,8 @@ export class MapListComponent implements OnInit, OnChanges {
       this.mapListService.toggleStyle(selectedLayer);
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
+    // set the idName in the service
+    this.mapListService.idName = 'id_releve_contact';
   }
 
   refreshValue(params) {
@@ -59,6 +62,8 @@ export class MapListComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (changes.geojsonData.currentValue !== undefined) {
+      console.log(changes.geojsonData.currentValue.features);
+      this.tableData = this.mapListService.loadTableData(changes.geojsonData.currentValue);
       const features = changes.geojsonData.currentValue.features;
       const keyColumns = [];
       if (features.length > 0) {

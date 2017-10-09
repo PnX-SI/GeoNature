@@ -52,32 +52,20 @@ export class MapDataComponent implements OnInit, OnChanges {
     });
 
     this.genericFilter.valueChanges
-      .filter(value => value.length > 0)
       .debounceTime(400)
       .distinctUntilChanged()
       .subscribe(value => {
         this.mapListService.urlQuery.delete(this.filterSelected.prop);
-        this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
+        if (value.length > 0) {
+          this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
+        } else {
+          this.paramChanged.emit({param: '', 'value': ''});
+        }
       });
   }
 
   onSelect({ selected }) {
-    this.mapListService.setCurrentLayerId(this.selected[0].id);
-  }
-
-  updateFilter(event) {
-
-    const val = event.target.value.toLowerCase();
-
-    // filter our data
-    const temp = this.tableData.filter(res => {
-      return res[this.filterSelected.prop].toLowerCase().indexOf(val) !== -1 || !val;
-    });
-
-    // update the rows
-    this.rows = temp;
-    // whenever the filter changes, always go back to the first page
-    this.table.offset = 0;
+    this.mapListService.setCurrentLayerId(this.selected[0][this.mapListService.idName]);
   }
 
 
@@ -174,8 +162,6 @@ export class MapDataComponent implements OnInit, OnChanges {
     // init the columns
     if (changes.allColumns) {
       if (changes.allColumns.currentValue !== undefined ) {
-        console.log(this.allColumns);
-        
         this.allColumns = changes.allColumns.currentValue;
       }
     }
