@@ -16,11 +16,10 @@
         height="70" 
         width="70">
         <div *ngIf="fs.taxonsList.length > 0">
-            <b> Taxon(s) enregistré(s) </b>
+            <b> {{fs.taxonsList.length}} {{'Releve.SavedTaxon' | translate}} </b>
             <pnx-taxons-list [list]="fs.taxonsList" (taxonEdited)="fs.editOccurence($event)" (taxonRemoved)="fs.removeOneOccurrence($event)">  </pnx-taxons-list>
       </div>
-    </div>
-    
+    </div>    
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
@@ -62,21 +61,7 @@
       <input class="form-control form-control-sm" type="text" placeholder="Heure max hh:mm">
     </div>
   </div>
-  <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
-          <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}
-        </button>
-      </div>
-  </div>
-  <div class="row collapse" id="collapseContexteCommentaire">
-      <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-          <div class="form-group">
-            <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
-            <textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
-          </div>
-      </div>
-    </div>
+
 
   <div class="form-group">
     <div class="row">
@@ -96,6 +81,22 @@
           </div>
         </div>
       </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <button md-button class ="input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire" aria-expanded="false" aria-controls="contexte">
+        <md-icon mdPrefix class="input-alignment-xs font-md">comment</md-icon> {{ 'Releve.Comment' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="row collapse" id="collapseContexteCommentaire">
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+        <div class="form-group">
+          <label for="commentaire" class="font-sm">{{ 'Releve.Comment' | translate }} :</label>
+          <textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
+        </div>
+    </div>
   </div>
 
 </div>

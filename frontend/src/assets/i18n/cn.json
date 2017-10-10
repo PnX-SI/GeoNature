@@ -43,7 +43,8 @@
         "Dataset":"数据集",
         "Comment":"评论",
         "SaveReleve": "保存声明",
-        "DateMaxError": "Date max can not be inferior to the date min"
+        "DateMaxError": "Date max can not be inferior to the date min",
+        "SavedTaxon": "Saved taxon(s)"
     },
     "Taxon":{
         "ObservedTaxon":"观察到的红豆杉",
