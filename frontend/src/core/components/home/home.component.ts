@@ -3,6 +3,7 @@ import { AppConfig } from '../../../conf/app.config'
 import { NavService } from '../../services/nav.service';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 import { MapService } from '../../GN2Common/map/map.service'
+import { SideNavService } from '../sidenav-items/sidenav.service';
 
 @Component({
   selector: 'pnx-home',
@@ -53,12 +54,13 @@ export class HomeComponent implements OnInit {
         }
     }
 
-  constructor(private _navService: NavService) {
+  constructor(private _navService: NavService, private _SideNavService: SideNavService) {
     _navService.setAppName('Accueil');
     this.appName =  AppConfig.appName;
   }
 
   ngOnInit() {
+    this._SideNavService.sidenav.open();
   }
 
 }

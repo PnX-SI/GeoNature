@@ -8,13 +8,13 @@ export class SideNavService {
     constructor() {
         this.opened = false;
     }
-    setSideNav(sidenav){
+    setSideNav(sidenav) {
         this.sidenav = sidenav;
     }
     setModule(sidenav: MdSidenav) {
-        sidenav.close()
+        sidenav.close();
     }
     setHome(sidenav: MdSidenav) {
-        sidenav.open()
+        sidenav.open();
     }
 }
