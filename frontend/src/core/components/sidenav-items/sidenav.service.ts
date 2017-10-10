@@ -4,7 +4,10 @@ import {MdSidenavModule, MdSidenav} from '@angular/material';
 @Injectable()
 export class SideNavService {
     sidenav: MdSidenav;
-    constructor() {}
+    opened: boolean;
+    constructor() {
+        this.opened = false;
+    }
     setSideNav(sidenav){
         this.sidenav = sidenav;
     }
