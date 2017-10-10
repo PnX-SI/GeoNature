@@ -12,11 +12,15 @@
   </div>        
       <!-- Occurrence taxon  -->
       <div class="card card-occurrence">
-          <p class="card-header"> Taxons 
-            <button type="button" class="btn btn-success btn-sm toggle-btn" (click)="fs.toggleOccurrence()"> 
+        <div class="card-header" >
+          <h5> Taxon 
+          <button type="button" class="btn btn-success btn-sm toggle-btn" (click)="fs.toggleOccurrence()"> 
               <span *ngIf="!fs.showOccurrence"> + </span>
               <span *ngIf="fs.showOccurrence"> - </span>
-             </button></p>              
+          </button> 
+        </h5>  
+        </div>
+          
           <div class="card-body" *ngIf="fs.showOccurrence"> 
               <pnx-occurrence
                 [occurrenceForm]="fs.occurrenceForm">
