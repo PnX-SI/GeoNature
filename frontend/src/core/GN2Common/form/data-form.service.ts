@@ -46,6 +46,11 @@ export class DataFormService {
     .map(res => res.json());
   }
 
+  getRegneAndGroup2Inpn() {
+    return this._http.get(`${AppConfig.API_TAXHUB}taxref/regnewithgroupe2`)
+    .map(res => res.json());
+  }
+
   getGeoInfo(geojson) {
     return this._http.post(`${AppConfig.API_ENDPOINT}geo/info`, geojson)
       .map(response => response.json());

@@ -19,6 +19,11 @@ export class TaxonomyComponent implements OnInit {
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
+  regnes = new Array();
+  regnesAndGroup: any;
+  group2Inpn = new Array();
+  regneControl = new FormControl();
+  groupControl = new FormControl();
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
@@ -30,6 +35,18 @@ export class TaxonomyComponent implements OnInit {
       .subscribe(data => {
         this.taxonDeleted.emit();
       });
+    // get regne and group2
+    this._dfService.getRegneAndGroup2Inpn()
+    .subscribe(data => {
+      this.regnesAndGroup = data;
+      for (let regne in data) {
+        this.regnes.push(regne);
+        data[regne].forEach(group2 => {
+          this.group2Inpn.push(group2);
+        });
+      }
+    })
+
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
