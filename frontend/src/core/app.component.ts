@@ -40,7 +40,6 @@ export class AppComponent implements OnInit, OnDestroy {
     translate.addLangs(['en', 'fr', 'cn']);
     translate.setDefaultLang(AppConfig.defaultLanguage);
     translate.use(AppConfig.defaultLanguage);
-    
   }
 
 
@@ -60,7 +59,8 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     // init the sidenav instance in sidebar service
-    this._sideBarService.setSideNav(this.sidenav);     
+    this._sideBarService.setSideNav(this.sidenav);
+    this.sidenav.open();
   }
   changeLanguage(lang) {
     this.translate.use(lang);
