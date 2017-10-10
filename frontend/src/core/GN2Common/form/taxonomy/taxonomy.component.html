@@ -1,17 +1,24 @@
 <div class="collapse" id="collapseExample">
     <div class="well well-sm well-margin">
-      <div class="form-group">
-        <label class="font-sm">Règne:</label>
-          <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
-            <!-- <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option> -->
-          </select>
-        <label class="font-sm">Groupe:</label>
-        <select class="label label-default input-alignment input-width-sm" id="sel1"  placeholder="Taxonomiques">
-          <!-- <option *ngFor="let taxo of taxonomiques" [value]="taxo.value">{{ taxo.viewValue }}</option> -->
-        </select>
-
+      <div class="row ">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <small class="font-sm">Règne:</small>
+            <select [formControl]="regneControl" class="form-control form-control-sm">
+              <option *ngFor="let regne of regnes" [value]="regne">{{ regne }}</option>
+            </select>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+          <div *ngIf="regneControl.value !== null"> 
+            <small class="font-sm">Groupe:</small>
+            <select [formControl]="groupControl" class="form-control form-control-sm" id="sel1"  placeholder="Taxonomiques">
+              <option *ngFor="let group2 of regnesAndGroup[regneControl.value]"
+              [value]="group2">{{ group2 }}</option>
+            </select>
+          </div> 
+        </div>
       </div>
     </div>
+   
 </div>
 <small> {{ 'Taxon.Taxon' | translate }} </small>
 <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
