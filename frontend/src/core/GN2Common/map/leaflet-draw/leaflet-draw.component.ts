@@ -38,6 +38,9 @@ export class LeafletDrawComponent implements OnInit {
       // remove the current draw
       if (this._currentDraw !== null) {
         this.mapservice.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
+
+        console.log(this.mapservice.releveFeatureGroup);
+        
       }
       // remove the current marker
       const markerLegend = document.getElementById('markerLegend');

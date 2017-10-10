@@ -171,7 +171,7 @@ export class MapService {
 
     removeAllLayers(map, featureGroup) {
       featureGroup.eachLayer((layer) => {
-        map.removeLayer(layer);
+        featureGroup.removeLayer(layer);
       });
     }
 
