@@ -60,7 +60,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);
-    this.sidenav.open();
   }
   changeLanguage(lang) {
     this.translate.use(lang);
