@@ -49,9 +49,8 @@ export class ObservationComponent implements OnInit, OnDestroy {
             this.releveForm.controls.properties.patchValue({
               altitude_min: res.altitude.altitude_min,
               altitude_max: res.altitude.altitude_max,
-              municipalities : res.municipality.map(m =>  m.source_code)
             });
-            this.fs.municipalities = res.municipality.map(m => m.area_name).join();
+            this.fs.municipalities = res.municipality.map(m => m.area_name).join(', ');
           });
       });
 
