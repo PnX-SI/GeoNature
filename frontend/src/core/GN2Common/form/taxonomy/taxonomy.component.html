@@ -23,6 +23,7 @@
 <small> {{ 'Taxon.Taxon' | translate }} </small>
 <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
   <input type="text" class="form-control form-control-sm"
+    id="taxonInput"
     [formControl]="parentFormControl"
     [ngbTypeahead]="searchTaxon" 
     [inputFormatter]="formatter" 
