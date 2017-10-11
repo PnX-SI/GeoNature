@@ -28,6 +28,7 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public municipalities: string;
   public showTime: boolean = false;
   public today: NgbDateStruct;
+  public areasIntersected = new Array();
   private geojsonSubscription$: Subscription;
 
   constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService,
@@ -51,6 +52,10 @@ export class ObservationComponent implements OnInit, OnDestroy {
               altitude_max: res.altitude.altitude_max,
             });
             this.fs.municipalities = res.municipality.map(m => m.area_name).join(', ');
+          });
+        this._dfs.getFormatedGeoIntersection(geojson)
+          .subscribe(res => {
+            this.areasIntersected = res;
           });
       });
 
@@ -81,8 +86,13 @@ export class ObservationComponent implements OnInit, OnDestroy {
     });
   }
 
+
   toggleTime() {
     this.showTime = !this.showTime;
+  }
+
+  toggleAreasIntersection() {
+    
   }
 
   dateChanged(date) {

@@ -29,8 +29,6 @@ export class TaxonomyComponent implements OnInit {
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    console.log('init taxon');
-    
     this.parentFormControl.valueChanges
       .filter(value => value.length === 0)
       .subscribe(data => {

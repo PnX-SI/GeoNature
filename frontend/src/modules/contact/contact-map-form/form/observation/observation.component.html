@@ -76,8 +76,11 @@
             [formControl]="releveForm.controls.properties.controls.altitude_max" >
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-          <div class="municipalities">
-              {{ 'Releve.Municipalities' | translate }}: <i> {{fs.municipalities }} </i>
+          <div class="">
+              <!-- {{ 'Releve.Municipalities' | translate }}: <i> {{fs.municipalities }} </i> -->
+            <button class="btn btn-sm btn-info clickable" (click)="toggleAreasIntersection()"> 
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -98,5 +101,7 @@
         </div>
     </div>
   </div>
+
+  
 
 </div>

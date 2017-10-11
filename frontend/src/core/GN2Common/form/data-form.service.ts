@@ -57,12 +57,31 @@ export class DataFormService {
   }
 
   getGeoIntersection(geojson, idType?) {
-    const obj = {'geometry': geojson };
     if (idType) {
-      obj['id_type'] = idType;
+      geojson['id_type'] = idType;
     }
-    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, obj)
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
     .map(response => response.json());
+  }
+
+  getFormatedGeoIntersection(geojson, idType?) {
+    if (idType) {
+      geojson['id_type'] = idType;
+    }
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
+    .map(response => {
+      const res = response.json();
+      const areasIntersected = [];
+      Object.keys(res).forEach(key => {
+        const typeName = res[key]['type_name'];
+        const areas = res[key]['areas'];
+        const formatedAreas = areas.map(area => area.area_name).join(', ');
+        const obj = {'type_name': typeName, 'areas': formatedAreas }
+        areasIntersected.push(obj);
+      });
+      return areasIntersected;
+    });
+
   }
 
   postContact(form) {
