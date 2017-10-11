@@ -17,7 +17,6 @@ export class OccurrenceComponent implements OnInit {
 
   ngOnInit() {
     document.getElementById('taxonInput').focus();
-
   }
 
 

@@ -43,8 +43,8 @@ export class ContactMapInfoComponent implements OnInit {
             this.dateMax = data.properties.date_max.substring(0, 10);
 
             this._ms.loadGeometryReleve(data, false);
-            // load municipalities info 
-            this._dfs.getGeoIntersection(data.geometry, 101)
+            // load municipalities info
+            this._dfs.getGeoIntersection(data, 101)
               .subscribe(areas => {
                 this.municipalities = areas['101'].areas.map(obj => obj.area_name).join(', ')
               });
