@@ -16,15 +16,8 @@ export class OccurrenceComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log('init occurrence');
-    
-    console.log(this.taxon);
-    console.log(this.taxon.inputElementRef);
-    console.log(document.getElementById('taxonInput'));
-    //document.getElementById('taxonInput').focus();
-    
-    
-    //this.taxon.inputElementRef.focus(); 
+    document.getElementById('taxonInput').focus();
+
   }
 
 
