@@ -62,8 +62,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
     (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
       .subscribe(value => {
         this.releveForm.controls.properties.patchValue({date_max: value});
-        console.log(this.releveForm.value);
-
       });
     // set today for the datepicker limit
     const today = new Date();
@@ -94,9 +92,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
     this.modalService.open(content);
   }
 
-  toggleAreasIntersection() {
-    
-  }
 
   dateChanged(date) {
     const newDate = new Date(date);
