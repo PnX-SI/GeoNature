@@ -120,14 +120,14 @@
   <ngx-datatable-column
   maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template>
-    <i ngbTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row[mapListService.idName])"></i>
+    <i mdTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row[mapListService.idName])"></i>
   </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column
   maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template> 
-    <i  ngbTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row[mapListService.idName])"></i>
+    <i  mdTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row[mapListService.idName])"></i>
   </ng-template>
   </ngx-datatable-column>
     <ngx-datatable-column

@@ -81,6 +81,7 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
     // Post
+    console.log(JSON.stringify(finalForm));
     this._dfs.postContact(finalForm)
       .subscribe(
         (response) => {
