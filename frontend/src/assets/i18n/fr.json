@@ -46,7 +46,8 @@
         "Comment":"Commentaire",
         "SaveReleve":"Enregistrer le relevé",
         "DateMaxError": "La date max ne peut pas être superieure à la date min",
-        "SavedTaxon": "Taxon(s) enregistré(s)"
+        "SavedTaxon": "Taxon(s) enregistré(s)",
+        "InfoGeo": "Informations géographiques du relevé"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon observé",

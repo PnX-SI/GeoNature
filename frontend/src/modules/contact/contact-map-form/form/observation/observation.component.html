@@ -81,7 +81,7 @@
               <!-- Modal intersections  -->
               <ng-template #content let-c="close" let-d="dismiss">
                 <div class="modal-header">
-                  <h5 class="modal-title">Informations géographiques du relevé </h5>
+                  <h5 class="modal-title">{{'Releve.InfoGeo' | translate }} </h5>
                   <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -93,7 +93,8 @@
                 </div>
               </ng-template>
               
-            <button class="btn btn-sm btn-info clickable" (click)="openIntesectionModal(content)"> 
+            <button id="info-geo-button" class="btn btn-sm btn-info clickable" (click)="openIntesectionModal(content)"
+            ngbTooltip="{{'Releve.InfoGeo' | translate }} "> 
               <i class="fa fa-info-circle" aria-hidden="true"></i>
             </button>
           </div>
