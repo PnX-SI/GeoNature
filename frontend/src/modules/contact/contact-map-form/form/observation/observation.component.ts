@@ -7,6 +7,7 @@ import { CommonService } from '../../../../../core/GN2Common/service/common.serv
 import { ContactFormService } from '../contact-form.service';
 import {ViewEncapsulation} from '@angular/core';
 import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -25,20 +26,18 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public geojson: any;
   public dataSets: any;
   public geoInfo: any;
-  public municipalities: string;
   public showTime: boolean = false;
   public today: NgbDateStruct;
   public areasIntersected = new Array();
   private geojsonSubscription$: Subscription;
 
   constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService,
-  private _commonService: CommonService) {  }
+  private _commonService: CommonService, private modalService: NgbModal) {  }
 
   ngOnInit() {
     // load datasets
     this._dfs.getDatasets()
       .subscribe(res => this.dataSets = res);
-
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
       .subscribe(geojson => {
@@ -51,11 +50,11 @@ export class ObservationComponent implements OnInit, OnDestroy {
               altitude_min: res.altitude.altitude_min,
               altitude_max: res.altitude.altitude_max,
             });
-            this.fs.municipalities = res.municipality.map(m => m.area_name).join(', ');
           });
         this._dfs.getFormatedGeoIntersection(geojson)
           .subscribe(res => {
             this.areasIntersected = res;
+            console.log(this.areasIntersected);
           });
       });
 
@@ -89,6 +88,10 @@ export class ObservationComponent implements OnInit, OnDestroy {
 
   toggleTime() {
     this.showTime = !this.showTime;
+  }
+
+  openIntesectionModal(content) {
+    this.modalService.open(content);
   }
 
   toggleAreasIntersection() {

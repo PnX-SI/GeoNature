@@ -9,7 +9,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Injectable()
 export class ContactFormService {
   currentTaxon: any;
-  municipalities: string;
   indexCounting: number;
   nbCounting: Array<string>;
   indexOccurrence: number = 0;

@@ -136,7 +136,6 @@ export class MapService {
           customLegend.style.backgroundImage = logoUrl;
           customLegend.style.backgroundRepeat = 'no-repeat';
           customLegend.style.backgroundPosition = '7px';
-  
           customLegend.onclick = () => {
             if (func) {
               func();
@@ -179,12 +178,17 @@ export class MapService {
       const coordinates = data.geometry.coordinates;
       if (data.geometry.type === 'Point') {
         this.marker = this.createMarker(coordinates[0], coordinates[1], isDraggable);
+        // send observable
+        let markerCoord = this.marker.getLatLng();
+        let geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+        this.setGeojsonCoord(geojson);
         this.marker.on('moveend', (event: MouseEvent) => {
           if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
             this.sendWarningMessage();
           } else {
-            const markerCoord = this.marker.getLatLng();
-            const geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+            markerCoord = this.marker.getLatLng();
+            geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+            // send observable
             this.setGeojsonCoord(geojson);
           }
         });
@@ -211,6 +215,10 @@ export class MapService {
         this.map.fitBounds(layer.getBounds());
         // disable point event on the map
           this.setEditingMarker(false);
+        // send observable
+        let geojson = this.releveFeatureGroup.toGeoJSON();
+        geojson = (geojson as any).features[0];
+        this.setGeojsonCoord(geojson);
     }
   }
 
