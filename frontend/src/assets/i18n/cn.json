@@ -45,7 +45,9 @@
         "SaveReleve": "保存声明",
         "DateMaxError": "Date max can not be inferior to the date min",
         "SavedTaxon": "Saved taxon(s)",
-        "InfoGeo": "Geographic informations of the releve"
+        "InfoGeo": "Geographic informations of the releve",
+        "Edit": "Edit releve",
+        "Info": "Informations releve"
     },
     "Taxon":{
         "ObservedTaxon":"观察到的红豆杉",
