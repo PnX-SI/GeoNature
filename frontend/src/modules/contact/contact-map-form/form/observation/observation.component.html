@@ -78,7 +78,22 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
           <div class="">
               <!-- {{ 'Releve.Municipalities' | translate }}: <i> {{fs.municipalities }} </i> -->
-            <button class="btn btn-sm btn-info clickable" (click)="toggleAreasIntersection()"> 
+              <!-- Modal intersections  -->
+              <ng-template #content let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h5 class="modal-title">Informations géographiques du relevé </h5>
+                  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p *ngFor="let area of this.areasIntersected">
+                    <b> {{area.type_name}}:</b> {{area.areas}} 
+                  </p>
+                </div>
+              </ng-template>
+              
+            <button class="btn btn-sm btn-info clickable" (click)="openIntesectionModal(content)"> 
               <i class="fa fa-info-circle" aria-hidden="true"></i>
             </button>
           </div>

@@ -28,7 +28,6 @@ export class ContactFormComponent implements OnInit {
   ngOnInit() {
     // set show occurrence to false:
     this.fs.showOccurrence = false;
-    this.fs.municipalities = '';
     // init the form
     this.fs.releveForm = this.fs.initObservationForm();
     this.fs.occurrenceForm = this.fs.initOccurrenceForm();
@@ -54,7 +53,6 @@ export class ContactFormComponent implements OnInit {
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)
               .subscribe(taxon => this.fs.taxonsList.push(taxon));
-            // load municipalities
           }
           // set the occurrence
           this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;
@@ -62,9 +60,6 @@ export class ContactFormComponent implements OnInit {
           this.fs.releveForm.patchValue({geometry: data.geometry});
           // load the geometry in the map
           this._ms.loadGeometryReleve(data, true);
-          // get geoInfo to get municipalities
-          this._dfs.getGeoInfo(data)
-            .subscribe(data => { this.fs.municipalities = data.municipality.map(m => m.area_name).join(', ')});
       }); // end subscribe
     }
 
@@ -86,9 +81,6 @@ export class ContactFormComponent implements OnInit {
     // format observers
     finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
-
-    console.log(JSON.stringify(finalForm));
-
     // Post
     this._dfs.postContact(finalForm)
       .subscribe(
@@ -99,7 +91,6 @@ export class ContactFormComponent implements OnInit {
         this.fs.occurrenceForm = this.fs.initOccurrenceForm();
         this.fs.countingForm = this.fs.initCountingArray();
         this.fs.taxonsList = [];
-        this.fs.municipalities = "";
         // redirect
         this.router.navigate(['/contact']);
         },
