@@ -44,7 +44,6 @@ export class ContactFormComponent implements OnInit {
       // load one releve
       this.fs.getReleve(this.id)
         .subscribe(data => {
-
           // pre fill the form
           this.fs.releveForm = this.fs.initObservationForm(data);
           for (const occ of data.properties.t_occurrences_contact){
