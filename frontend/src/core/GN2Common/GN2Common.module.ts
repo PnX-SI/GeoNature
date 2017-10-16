@@ -11,10 +11,11 @@ import { NomenclatureComponent } from './form/nomenclature/nomenclature.componen
 import { ObserversComponent } from './form/observers/observers.component';
 import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
+import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 
 import { MapComponent } from './map/map.component';
-import { MarkerComponent } from './map/marker/marker.component'
-import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component'
+import { MarkerComponent } from './map/marker/marker.component';
+import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
 
 import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
@@ -63,6 +64,7 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     DateComponent,
     TaxonomyComponent,
+    AreasIntersectedComponent,
     MapComponent,
     MarkerComponent,
     GeojsonComponent,
@@ -84,6 +86,7 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     DateComponent,
     TaxonomyComponent,
+    AreasIntersectedComponent,
     MapComponent,
     MarkerComponent,
     LeafletDrawComponent,

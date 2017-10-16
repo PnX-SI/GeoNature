@@ -27,6 +27,7 @@ export class ContactMapInfoComponent implements OnInit {
   public dateMin: string;
   public dateMax: string;
   public showSpinner = true;
+  public geojson: any;
   constructor(public fs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService,
     private _dfs: DataFormService, private _router: Router) { }
 
@@ -43,11 +44,7 @@ export class ContactMapInfoComponent implements OnInit {
             this.dateMax = data.properties.date_max.substring(0, 10);
 
             this._ms.loadGeometryReleve(data, false);
-            // load municipalities info
-            this._dfs.getGeoIntersection(data, 101)
-              .subscribe(areas => {
-                this.municipalities = areas['101'].areas.map(obj => obj.area_name).join(', ')
-              });
+
             // load taxonomy info
             data.properties.t_occurrences_contact.forEach(occ => {
               this._dfs.getTaxonInfo(occ.cd_nom)

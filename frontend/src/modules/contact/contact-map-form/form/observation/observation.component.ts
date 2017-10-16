@@ -88,11 +88,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
     this.showTime = !this.showTime;
   }
 
-  openIntesectionModal(content) {
-    this.modalService.open(content);
-  }
-
-
   dateChanged(date) {
     const newDate = new Date(date);
   }
