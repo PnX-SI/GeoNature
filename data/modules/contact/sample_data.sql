@@ -37,4 +37,4 @@ INSERT INTO  pr_contact.cor_counting_contact (id_counting_contact, id_occurrence
 ,(2,1,4,191,166,107,1,1),
 (3,2,4,191,166,107,1,1),
 (4,3,4,191,166,107,1,1);
-SELECT pg_catalog.setval('pr_contact.cor_counting_contact_id_counting_contact_seq', 2, true);
+SELECT pg_catalog.setval('pr_contact.cor_counting_contact_id_counting_contact_seq', 4, true);
