@@ -22,7 +22,6 @@ export class AreasIntersectedComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.geojson) {
       if (changes.geojson.currentValue !== undefined) {
-        console.log(changes);
         this._dfs.getFormatedGeoIntersection(changes.geojson.currentValue)
         .subscribe(res => {
           this.areasIntersected = res;

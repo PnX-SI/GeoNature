@@ -74,7 +74,8 @@
         "DigitalProof":"Preuve digitale",
         "NonDigitalProof":"Preuve non digitale",
         "SaveTaxon":"保存分类",
-        "AddTaxon":"Ajouter un taxon"
+        "AddTaxon":"Ajouter un taxon",
+        "CurrentlyEditing": "Please first validate the currently editing taxon"
     },
     "Counting":{
         "Counting":"Dénombrement",
