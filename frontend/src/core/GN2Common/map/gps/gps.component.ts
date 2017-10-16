@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '../../service/common.service';
 import * as L from 'leaflet';
 
 @Component({
@@ -11,11 +12,11 @@ import * as L from 'leaflet';
 
 export class GPSComponent extends MarkerComponent implements OnInit  {
   @ViewChild('modalContent') public modalContent: any;
-  constructor(public mapService: MapService, public modalService: NgbModal) { 
-    super(mapService);
+  constructor(public mapService: MapService, public modalService: NgbModal, public commonService: CommonService) {
+    super(mapService, commonService );
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.map = this.mapservice.map;
     this.enableGps();
   }
