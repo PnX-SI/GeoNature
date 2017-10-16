@@ -545,6 +545,7 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 ,(332, 'Animalia', 'Insectes', now(), NULL)
 ,(341, 'Animalia', 'Insectes', now(), NULL)
 ,(342, 'Animalia', 'Insectes', now(), NULL)
+,(343, 'all', 'all', now(), NULL)
 ,(287, 'Animalia', 'Amphibiens', now(), NULL)
 ,(295, 'Animalia', 'Amphibiens', now(), NULL)
 ,(211, 'Animalia', 'Amphibiens', now(), NULL)
