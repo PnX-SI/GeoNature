@@ -46,7 +46,8 @@
         "Comment":"Comment",
         "SaveReleve":"Save releve",
         "DateMaxError": "Date max can not be inferior to the date min",
-        "SavedTaxon": "Saved taxon(s)"
+        "SavedTaxon": "Saved taxon(s)",
+        "InfoGeo": "Geographic informations of the releve"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",
