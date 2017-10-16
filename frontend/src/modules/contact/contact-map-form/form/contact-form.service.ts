@@ -121,17 +121,19 @@ export class ContactFormService {
 
   }
 
-  addOccurence(index) {
-    // push the current taxon in the taxon list and refresh the currentTaxon
-    this.taxonsList.push(this.currentTaxon);
+  addOccurrence(index) {
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
     this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;
     // push or update the occurrence
     if (this.releveForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
+      // push the current taxon in the taxon list and refresh the currentTaxon
+      this.taxonsList.push(this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
+
+      this.taxonsList.splice(index, 0, this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact[this.indexOccurrence] = this.occurrenceForm.value;
     }
     // set occurrence index
