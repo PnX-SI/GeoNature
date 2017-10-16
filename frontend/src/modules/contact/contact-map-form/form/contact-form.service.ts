@@ -8,13 +8,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class ContactFormService {
-  currentTaxon: any;
-  indexCounting: number;
-  nbCounting: Array<string>;
-  indexOccurrence: number = 0;
-  taxonsList = [];
-  showOccurrence: boolean;
-  editionMode: boolean;
+  public currentTaxon: any;
+  public indexCounting: number;
+  public nbCounting: Array<string>;
+  public indexOccurrence: number = 0;
+  public taxonsList = [];
+  public showOccurrence: boolean;
+  public editionMode: boolean;
+  public isEdintingOccurrence: boolean;
+
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -25,6 +27,7 @@ export class ContactFormService {
     this.indexCounting = 0;
     this.nbCounting = [''];
     this.showOccurrence = false;
+    this.isEdintingOccurrence = false;
    }// end constructor
 
    getReleve(id) {
@@ -148,9 +151,12 @@ export class ContactFormService {
     // reset the counting
     this.countingForm = this.initCountingArray();
     this.showOccurrence = false;
+    this.isEdintingOccurrence = false;
   }
 
   editOccurence(index) {
+    // set editing occurrence to true
+    this.isEdintingOccurrence = true;
     // set showOccurrence to true
     this.showOccurrence = true;
     this.taxonsList.splice(index, 1);

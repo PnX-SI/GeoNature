@@ -76,7 +76,8 @@
         "DigitalProof":"Digital proof",
         "NonDigitalProof":"Non digital proff",
         "SaveTaxon":"Save taxon",
-        "AddTaxon":"Add taxon"
+        "AddTaxon":"Add taxon",
+        "CurrentlyEditing": "Please first validate the currently editing taxon"
     },
     "Counting":{
         "Counting":"Counting",

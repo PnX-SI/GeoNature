@@ -30,7 +30,7 @@
         "AddPoint":"Localisez l'observation (point)",
         "AddLine":"Localisez l'observation (ligne)",
         "AddPolygon":"Localisez l'observation (polygone)",
-        "ZoomWarning": "Echelle de saisie inadapté, veuillez zoomer davantage pour pointer le relevé"
+        "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
     },
     "Releve":{
         "Releve":"Relevé",
@@ -76,7 +76,8 @@
         "DigitalProof":"Preuve digitale",
         "NonDigitalProof":"Preuve non digitale",
         "SaveTaxon":"Enregistrer le taxon",
-        "AddTaxon":"Ajouter le taxon"
+        "AddTaxon":"Ajouter le taxon",
+        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau"
     },
     "Counting":{
         "Counting":"Dénombrement",
