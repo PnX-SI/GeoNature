@@ -47,7 +47,7 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
       for (const i in this.tableData) {
-        if (this.tableData[i].id === res) {
+        if (this.tableData[i][this.mapListService.idName] === res) {
           this.selected.push(this.tableData[i]);
         }
       }
