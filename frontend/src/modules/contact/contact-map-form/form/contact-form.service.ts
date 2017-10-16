@@ -4,6 +4,7 @@ import { AppConfig } from '../../../../conf/app.config';
 import { Http } from '@angular/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ContactConfig } from '../../contact.config';
 
 
 @Injectable()
@@ -37,19 +38,21 @@ export class ContactFormService {
 
    initObservationForm(data?): FormGroup {
     return this._fb.group({
-      geometry: [data ? data.geometry: null, Validators.required],
+      geometry: [data ? data.geometry : null, Validators.required],
       properties: this._fb.group({
         id_releve_contact : [data ? data.properties.id_releve_contact : null],
-        id_dataset: [data ? data.properties.id_dataset:null, Validators.required],
+        id_dataset: [data ? data.properties.id_dataset : null, Validators.required],
         id_digitiser : null,
-        date_min: [data ? this.formatDate(data.properties.date_min): null, Validators.required],
-        date_max: [data ? this.formatDate(data.properties.date_max): null, Validators.required],
-        altitude_min: data ? data.properties.altitude_min: null,
-        altitude_max : data ? data.properties.altitude_max: null,
+        date_min: [data ? this.formatDate(data.properties.date_min) : null, Validators.required],
+        date_max: [data ? this.formatDate(data.properties.date_max) : null, Validators.required],
+        altitude_min: data ? data.properties.altitude_min : null,
+        altitude_max : data ? data.properties.altitude_max : null,
         deleted: false,
         meta_device_entry: 'web',
-        comment: data ? data.properties.comment: null,
-        observers: [data ? this.formatObservers(data.properties.observers): null, Validators.required],
+        comment: data ? data.properties.comment : null,
+        observers: [data ? this.formatObservers(data.properties.observers) : null,
+           !ContactConfig.observersAsText ? Validators.required : null],
+        observersAsText: [data ? data.properties.observersAsText : null, ContactConfig.observersAsText ? Validators.required : null ],
         t_occurrences_contact: [new Array()]
       })
     });
