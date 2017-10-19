@@ -52,7 +52,7 @@ export class ContactFormService {
         comment: data ? data.properties.comment : null,
         observers: [data ? this.formatObservers(data.properties.observers) : null,
            !ContactConfig.observersAsText ? Validators.required : null],
-        observersAsText: [data ? data.properties.observersAsText : null, ContactConfig.observersAsText ? Validators.required : null ],
+        //observersAsText: [data ? data.properties.observersAsText : null, ContactConfig.observersAsText ? Validators.required : null ],
         t_occurrences_contact: [new Array()]
       })
     });

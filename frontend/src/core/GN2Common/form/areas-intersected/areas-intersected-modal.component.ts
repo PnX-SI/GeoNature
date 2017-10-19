@@ -27,7 +27,7 @@ export class AreasIntersectedComponent implements OnInit, OnChanges {
           this.areasIntersected = res;
         });
       }
-
+      
     }
   }
 }

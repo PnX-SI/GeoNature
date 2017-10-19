@@ -47,7 +47,8 @@
         "SavedTaxon": "Saved taxon(s)",
         "InfoGeo": "Geographic informations of the releve",
         "Edit": "Edit releve",
-        "Info": "Informations releve"
+        "Info": "Informations releve",
+        "Delete": "Delete relevé"
     },
     "Taxon":{
         "ObservedTaxon":"观察到的红豆杉",

@@ -4,6 +4,7 @@ import { MapListService } from '../../map-list/map-list.service';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   selected = []; // list of row selected
   rows = []; // rows in data table
 
-  constructor(private mapListService: MapListService, private _router: Router) {
+  constructor(private mapListService: MapListService, private _router: Router, public ngbModal: NgbModal) {
 
   }
 
@@ -67,7 +68,7 @@ export class MapDataComponent implements OnInit, OnChanges {
       });
   }
 
-  onSelect({ selected }) {
+  onSelect(selected) {
     this.mapListService.setCurrentLayerId(this.selected[0][this.mapListService.idName]);
   }
 
@@ -111,6 +112,10 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   onDetailReleve(idReleve) {
     this._router.navigate([this.pathInfo, idReleve]);
+  }
+
+  onDeleteReleve(idReleve) {
+    // TODO
   }
 
   redirect() {
@@ -158,6 +163,28 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.mapListService.page.pageNumber = pageInfo.offset;
     this.paramChanged.emit({param: 'offset', 'value': pageInfo.offset});
   }
+
+  openDeleteModal(event, modal, iElement, row) {
+    this.selected = [];
+    this.selected.push(row);
+    event.stopPropagation();
+    // prevent erreur link to the component
+    iElement && iElement.parentElement && iElement.parentElement.parentElement &&
+    iElement.parentElement.parentElement.blur();
+    this.ngbModal.open(modal);
+  }
+
+  deleteObs() {
+    const deleteId = this.selected[0][this.mapListService.idName];
+    this.rows = this.rows.filter(row => {
+      return row[this.mapListService.idName] !==  deleteId;
+    });
+    this.mapListService.page.totalElements = this.mapListService.page.totalElements -1 ;
+    this.selected = [];
+    // call the api to delete
+  }
+  
+
   ngOnChanges(changes) {
     // init the rows
     if (changes.tableData) {
