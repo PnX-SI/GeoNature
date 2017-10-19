@@ -183,7 +183,6 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.selected = [];
     // call the api to delete
   }
-  
 
   ngOnChanges(changes) {
     // init the rows
