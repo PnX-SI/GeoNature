@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import * as firebase from 'firebase';
+//import * as firebase from 'firebase';
 import { Injectable } from '@angular/core';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Http } from '@angular/http';

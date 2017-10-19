@@ -9,10 +9,13 @@ import { ContactMapInfoComponent } from '../../modules/contact/contact-map-info/
 import { AuthGuard } from '../components/auth/auth-guard.service';
 import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
+import { ExportsComponent } from '../exports/exports.component';
 
 const appRoutes: Routes = [
   { path: 'login',  component: LoginComponent},
-  { path: '', component: NavHomeComponent, canActivate: [AuthGuard],
+  { path: '', component: NavHomeComponent,
+  // uncomment to activate login
+  // { path: '', component: NavHomeComponent, canActivate: [AuthGuard],
      children: [
       // {path: '', redirectTo: '/', pathMatch: 'full'},
       { path: '', component: HomeContentComponent },
@@ -20,8 +23,8 @@ const appRoutes: Routes = [
       { path: 'contact-form', component: ContactMapFormComponent },
       { path: 'contact-form/:id', component: ContactMapFormComponent, pathMatch: 'full' },
       { path: 'contact/info/:id', component: ContactMapInfoComponent,  pathMatch: 'full' },
-      // { path: 'contact-faune', component: ContactComponent, canActivate: [AuthGuard]},
-      { path: '**',  component: PageNotFoundComponent }
+      { path: 'exports', component: ExportsComponent},
+      { path: '**',  component: PageNotFoundComponent },
      ] },
 
 ];

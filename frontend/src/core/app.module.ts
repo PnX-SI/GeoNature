@@ -19,6 +19,7 @@ import { ToastrModule } from 'ngx-toastr';
 // Modules
 import { GN2CommonModule } from './GN2Common/GN2Common.module';
 import { ContactModule } from '../modules/contact/contact.module';
+import { ExportsModule } from './exports/exports.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
@@ -57,6 +58,7 @@ export function HttpLoaderFactory(http: Http) {
     ToastrModule.forRoot(),
     GN2CommonModule,
     ContactModule,
+    ExportsModule,
   ],
   declarations: [
     AppComponent,
