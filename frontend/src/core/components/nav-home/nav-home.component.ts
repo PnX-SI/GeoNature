@@ -3,7 +3,7 @@ import { NavService } from '../../services/nav.service';
 import {TranslateService} from '@ngx-translate/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import * as firebase from 'firebase';
+//import * as firebase from 'firebase';
 import { AuthService } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
 import 'rxjs/Rx';
