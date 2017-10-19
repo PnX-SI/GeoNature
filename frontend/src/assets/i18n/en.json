@@ -23,6 +23,8 @@
     "Search": "Search",
     "By": "By",
     "Columns": "Columns",
+    "Cancel": "Cancel",
+    "Delete": "Delete",
   
     "Map":{
         "SearchLocation":"Search a location",
@@ -50,7 +52,7 @@
         "InfoGeo": "Geographic informations of the releve",
         "Edit": "Edit releve",
         "Info": "Informations releve",
-        "Delete": "Delete relevé"
+        "Delete": "Delete releve"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",

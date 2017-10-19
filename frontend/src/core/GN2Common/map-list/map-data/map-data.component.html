@@ -146,9 +146,12 @@
   
 
   <ng-template #modalConfirm let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
+      </div>
       <div class="modal-body">
-        <button type="button clickable" class="btn btn-default" (click)="c()"> Annuler </button>
-        <button type="button clickable" class="btn btn-danger" (click)="c(); deleteObs()"> Supprimer le relevé {{ selected[0][mapListService.idName]}}</button>
+        <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
+        <button type="button" class="btn btn-danger" (click)="c(); deleteObs()"> {{'Delete' | translate }} </button>
         
       </div>
     </ng-template>
