@@ -84,3 +84,23 @@ SELECT rel.id_releve_contact,
     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted,
   rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+
+
+-- fonction retournant le cd_nomenclature à partir de l'id_type de la nomenclature et de l'id_nomenclature
+-- utilisé pour la vue des exports SINP
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_cd_nomenclature(
+    p_id_type integer,
+    p_id_nomenclature integer)
+  RETURNS character varying AS
+$BODY$
+--Function which return the cd_nomenclature from an id_type and an id_nomenclature
+DECLARE ref character varying;
+  BEGIN
+SELECT INTO ref cd_nomenclature
+FROM ref_nomenclatures.t_nomenclatures n
+WHERE p_id_type = n.id_type AND p_id_nomenclature = n.id_nomenclature;
+return ref;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
