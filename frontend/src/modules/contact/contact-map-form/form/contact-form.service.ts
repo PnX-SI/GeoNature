@@ -49,6 +49,8 @@ export class ContactFormService {
         id_digitiser : null,
         date_min: [data ? this.formatDate(data.properties.date_min) : null, Validators.required],
         date_max: [data ? this.formatDate(data.properties.date_max) : null, Validators.required],
+        hour_min: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
+        hour_max: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
         altitude_min: data ? data.properties.altitude_min : null,
         altitude_max : data ? data.properties.altitude_max : null,
         deleted: false,
