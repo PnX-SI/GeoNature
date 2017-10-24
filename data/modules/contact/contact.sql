@@ -219,7 +219,7 @@ ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT check_t_releves_contact_date_max CHECK (date_max >= date_min);
 
 ALTER TABLE t_releves_contact
-  ADD CONSTRAINT check_t_releves_contact_hour_max CHECK (hour_min < hour_max OR date_min < date_max);
+  ADD CONSTRAINT check_t_releves_contact_hour_max CHECK (hour_min <= hour_max OR date_min < date_max);
 
 
 ALTER TABLE ONLY t_occurrences_contact
