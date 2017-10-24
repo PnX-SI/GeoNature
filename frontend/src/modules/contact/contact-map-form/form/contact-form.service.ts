@@ -29,6 +29,10 @@ export class ContactFormService {
     this.nbCounting = [''];
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
+
+    this._router.events.subscribe(value => {
+      this.isEdintingOccurrence = false;
+    });
    }// end constructor
 
    getReleve(id) {
