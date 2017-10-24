@@ -104,3 +104,11 @@ return ref;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
+
+
+-- ADD column hour_min hour_max
+
+ALTER TABLE pr_contact.t_releves_contact
+ADD COLUMN hour_min time;
+ALTER TABLE pr_contact.t_releves_contact
+ADD COLUMN hour_max time;

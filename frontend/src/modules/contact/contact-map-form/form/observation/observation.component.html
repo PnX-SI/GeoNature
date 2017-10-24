@@ -61,12 +61,16 @@
       </span>
     </div>
   </div>
-  <div class="row form-group collapse" id="collapseTime">
+  <div class="row collapse" id="collapseTime">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-      <input class="form-control form-control-sm" type="text" placeholder="Heure min hh:mm">
+      <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_min.invalid}">
+        <input [formControl]="releveForm.controls.properties.controls.hour_min" class="form-control form-control-sm" type="text" placeholder="Heure min hh:mm">
+      </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-      <input class="form-control form-control-sm" type="text" placeholder="Heure max hh:mm">
+      <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_max.invalid}">
+        <input [formControl]="releveForm.controls.properties.controls.hour_max" class="form-control form-control-sm" type="text" placeholder="Heure max hh:mm">
+      </div>
     </div>
   </div>
 
