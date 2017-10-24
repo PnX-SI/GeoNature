@@ -93,7 +93,8 @@
         "CountingObject":"Counting object",
         "CountingType":"Counting type",
         "Numbers":"Numbers",
-        "Total":"Total"
+        "Total":"Total",
+        "CountError": "Counting max can not be inferior to counting min"
     },
     "IntroMessage":"Welcome in CONTACT module. It allows to record observations based on Taxon Occurrencies SINP standard.",
     "ErrorMessage":"Game over"

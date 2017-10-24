@@ -93,7 +93,9 @@
         "CountingObject":"Objet du dénombrement",
         "CountingType":"Type de dénombrement",
         "Numbers":"Effectif",
-        "Total":"Total"
+        "Total":"Total",
+        "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
+        
     },
     "IntroMessage":"Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
     "ErrorMessage":"Dommage, c'est pas bon"
