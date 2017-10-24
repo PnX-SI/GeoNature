@@ -15,7 +15,7 @@ const appRoutes: Routes = [
   { path: 'login',  component: LoginComponent},
   { path: '', component: NavHomeComponent,
   // uncomment to activate login
-  // { path: '', component: NavHomeComponent, canActivate: [AuthGuard],
+   //{ path: '', component: NavHomeComponent, canActivate: [AuthGuard],
      children: [
       // {path: '', redirectTo: '/', pathMatch: 'full'},
       { path: '', component: HomeContentComponent },
