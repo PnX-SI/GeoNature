@@ -91,8 +91,8 @@ export class ContactFormService {
       id_nomenclature_sex: [data ? data.id_nomenclature_sex : null, Validators.required],
       id_nomenclature_obj_count: [data ? data.id_nomenclature_obj_count : null, Validators.required],
       id_nomenclature_type_count: data ? data.id_nomenclature_type_count : null,
-      count_min : data ? data.count_min : null,
-      count_max : data ? data.count_max : null
+      count_min : [data ? data.count_min : null, Validators.pattern('[1-9]+[0-9]*')],
+      count_max : [data ? data.count_max : null,  Validators.pattern('[1-9]+[0-9]*')]
     });
     }
 

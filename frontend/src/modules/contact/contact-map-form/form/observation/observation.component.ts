@@ -58,7 +58,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
         this._dfs.getFormatedGeoIntersection(geojson)
           .subscribe(res => {
             this.areasIntersected = res;
-            console.log(this.areasIntersected);
           });
       });
 
