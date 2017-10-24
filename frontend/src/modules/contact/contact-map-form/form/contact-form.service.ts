@@ -62,7 +62,7 @@ export class ContactFormService {
     return this._fb.group({
       id_releve_contact : [data ? data.id_releve_contact : null],
       id_nomenclature_obs_technique : [data ? data.id_nomenclature_obs_technique : null, Validators.required],
-      id_nomenclature_obs_meth: data ? data.id_nomenclature_obs_meth : Validators.required,
+      id_nomenclature_obs_meth: [data ? data.id_nomenclature_obs_meth : null, Validators.required],
       id_nomenclature_bio_condition: [data ? data.id_nomenclature_bio_condition : null, Validators.required],
       id_nomenclature_bio_status : data ? data.id_nomenclature_bio_status : null,
       id_nomenclature_naturalness : data ? data.id_nomenclature_naturalness : null,

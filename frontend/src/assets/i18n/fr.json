@@ -76,8 +76,8 @@
         "ValidationStatus": "Statut de validation",
         "ExistProof": "Preuve d'existance",
         "SampleNumber":"Numéro du prélevement",
-        "DigitalProof":"Preuve digitale",
-        "NonDigitalProof":"Preuve non digitale",
+        "DigitalProof":"Preuve numérique",
+        "NonDigitalProof":"Preuve non numérique",
         "SaveTaxon":"Enregistrer le taxon",
         "AddTaxon":"Ajouter le taxon",
         "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau"
