@@ -34,7 +34,7 @@ $BODY$
   BEGIN
     SELECT cta.valeur_attribut INTO patri 
     FROM taxonomie.bib_noms n
-    JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_nom AND cta.id_attribut = 1
+    JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref AND cta.id_attribut = 1
     WHERE n.id_nom = id;
 	IF patri = 'oui' THEN
 		IF date_part('year',maxdateobs)=date_part('year',now()) THEN couleur = 'gray';
