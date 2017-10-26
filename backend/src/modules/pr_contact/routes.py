@@ -21,18 +21,18 @@ routes = Blueprint('pr_contact', __name__)
 
 db = SQLAlchemy()
 
-from flask import g
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = connect_to_database()
-    return db
-
 @routes.route('/releves', methods=['GET'])
 @json_resp
 def getReleves():
-    q = TRelevesContact.query
-    data = q.all()
+
+    q = db.session.query(TRelevesContact)
+
+    try :
+        data = q.all()
+    except :
+        db.session.rollback()
+        raise
+
     if data:
         return FeatureCollection([n.get_geofeature() for n in data])
     return {'message': 'not found'}, 404
@@ -40,8 +40,14 @@ def getReleves():
 @routes.route('/occurrences', methods=['GET'])
 @json_resp
 def getOccurrences():
-    q = TOccurrencesContact.query
-    data = q.all()
+    q = db.session.query(TOccurrencesContact)
+
+    try :
+        data = q.all()
+    except :
+        db.session.rollback()
+        raise
+
     if data:
         return ([n.as_dict() for n in data])
     return {'message': 'not found'}, 404
@@ -49,7 +55,13 @@ def getOccurrences():
 @routes.route('/releve/<int:id_releve>', methods=['GET'])
 @json_resp
 def getOneReleve(id_releve):
-    data = TRelevesContact.query.get(id_releve)
+    q = db.session.query(TRelevesContact)
+
+    try :
+        data = q.get(id_releve)
+    except :
+        db.session.rollback()
+        raise
     if data:
         return data.get_geofeature()
     return {'message': 'not found'}, 404
@@ -93,7 +105,7 @@ def getViewReleveContact():
 
     try :
         data = q.limit(limit).offset(page*limit).all()
-    except:
+    except :
         db.session.rollback()
         raise
     if data:
@@ -153,7 +165,7 @@ def getViewReleveList():
             q = q.filter(col == parameters[param])
     try:
         nbResults = q.count()
-    except:
+    except :
         db.session.rollback()
         raise
 
@@ -174,7 +186,7 @@ def getViewReleveList():
         data = q.limit(limit).offset(page*limit).all()
     except exc.IntegrityError as e:
         db.session.rollback()
-    except:
+    except :
         print('roollback')
         db.session.rollback()
         raise
