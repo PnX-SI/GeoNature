@@ -4,6 +4,7 @@ import { AppConfig } from '../../../../conf/app.config';
 import { Http } from '@angular/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ContactConfig } from '../../contact.config';
 
 
 @Injectable()
@@ -28,6 +29,10 @@ export class ContactFormService {
     this.nbCounting = [''];
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
+
+    this._router.events.subscribe(value => {
+      this.isEdintingOccurrence = false;
+    });
    }// end constructor
 
    getReleve(id) {
@@ -37,19 +42,23 @@ export class ContactFormService {
 
    initObservationForm(data?): FormGroup {
     return this._fb.group({
-      geometry: [data ? data.geometry: null, Validators.required],
+      geometry: [data ? data.geometry : null, Validators.required],
       properties: this._fb.group({
         id_releve_contact : [data ? data.properties.id_releve_contact : null],
-        id_dataset: [data ? data.properties.id_dataset:null, Validators.required],
+        id_dataset: [data ? data.properties.id_dataset : null, Validators.required],
         id_digitiser : null,
-        date_min: [data ? this.formatDate(data.properties.date_min): null, Validators.required],
-        date_max: [data ? this.formatDate(data.properties.date_max): null, Validators.required],
-        altitude_min: data ? data.properties.altitude_min: null,
-        altitude_max : data ? data.properties.altitude_max: null,
+        date_min: [data ? this.formatDate(data.properties.date_min) : null, Validators.required],
+        date_max: [data ? this.formatDate(data.properties.date_max) : null, Validators.required],
+        hour_min: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
+        hour_max: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
+        altitude_min: data ? data.properties.altitude_min : null,
+        altitude_max : data ? data.properties.altitude_max : null,
         deleted: false,
         meta_device_entry: 'web',
-        comment: data ? data.properties.comment: null,
-        observers: [data ? this.formatObservers(data.properties.observers): null, Validators.required],
+        comment: data ? data.properties.comment : null,
+        observers: [data ? this.formatObservers(data.properties.observers) : null,
+           !ContactConfig.observersAsText ? Validators.required : null],
+        //observersAsText: [data ? data.properties.observersAsText : null, ContactConfig.observersAsText ? Validators.required : null ],
         t_occurrences_contact: [new Array()]
       })
     });
@@ -59,7 +68,7 @@ export class ContactFormService {
     return this._fb.group({
       id_releve_contact : [data ? data.id_releve_contact : null],
       id_nomenclature_obs_technique : [data ? data.id_nomenclature_obs_technique : null, Validators.required],
-      id_nomenclature_obs_meth: data ? data.id_nomenclature_obs_meth : null,
+      id_nomenclature_obs_meth: [data ? data.id_nomenclature_obs_meth : null, Validators.required],
       id_nomenclature_bio_condition: [data ? data.id_nomenclature_bio_condition : null, Validators.required],
       id_nomenclature_bio_status : data ? data.id_nomenclature_bio_status : null,
       id_nomenclature_naturalness : data ? data.id_nomenclature_naturalness : null,
@@ -88,8 +97,8 @@ export class ContactFormService {
       id_nomenclature_sex: [data ? data.id_nomenclature_sex : null, Validators.required],
       id_nomenclature_obj_count: [data ? data.id_nomenclature_obj_count : null, Validators.required],
       id_nomenclature_type_count: data ? data.id_nomenclature_type_count : null,
-      count_min : data ? data.count_min : null,
-      count_max : data ? data.count_max : null
+      count_min : [data ? data.count_min : null, Validators.pattern('[1-9]+[0-9]*')],
+      count_max : [data ? data.count_max : null,  Validators.pattern('[1-9]+[0-9]*')]
     });
     }
 
@@ -117,7 +126,6 @@ export class ContactFormService {
     }
 
   removeCounting(index: number, countingForm: FormArray) {
-    //countingForm.controls.splice(index, 1);
     countingForm.removeAt(index);
     countingForm.value.splice(index, 1);
     this.nbCounting.splice(index, 1);

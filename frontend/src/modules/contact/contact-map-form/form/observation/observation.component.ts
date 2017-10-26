@@ -8,6 +8,7 @@ import { ContactFormService } from '../contact-form.service';
 import {ViewEncapsulation} from '@angular/core';
 import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { ContactConfig } from '../../../contact.config';
 
 
 
@@ -29,12 +30,15 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public showTime: boolean = false;
   public today: NgbDateStruct;
   public areasIntersected = new Array();
+  public contactConfig: any;
   private geojsonSubscription$: Subscription;
 
   constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService,
   private _commonService: CommonService, private modalService: NgbModal) {  }
 
   ngOnInit() {
+    this.contactConfig = ContactConfig;
+
     // load datasets
     this._dfs.getDatasets()
       .subscribe(res => this.dataSets = res);
@@ -54,7 +58,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
         this._dfs.getFormatedGeoIntersection(geojson)
           .subscribe(res => {
             this.areasIntersected = res;
-            console.log(this.areasIntersected);
           });
       });
 

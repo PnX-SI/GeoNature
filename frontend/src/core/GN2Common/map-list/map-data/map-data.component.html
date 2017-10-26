@@ -130,11 +130,30 @@
     <i  mdTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row[mapListService.idName])"></i>
   </ng-template>
   </ngx-datatable-column>
+  <ngx-datatable-column
+    maxWidth="50">
+  <ng-template let-row="row" ngx-datatable-cell-template>
+      <i #iElement mdTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"
+      (click)="openDeleteModal($event, modalConfirm, iElement, row)"></i>      
+  </ng-template>
+  </ngx-datatable-column>
     <ngx-datatable-column
     *ngFor="let col of displayColumns"
     [name]="col.name"
     [prop]="col.prop">
     </ngx-datatable-column>
   </ngx-datatable>
+  
+
+  <ng-template #modalConfirm let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
+        <button type="button" class="btn btn-danger" (click)="c(); deleteObs()"> {{'Delete' | translate }} </button>
+        
+      </div>
+    </ng-template>
 
 

@@ -23,6 +23,8 @@
     "Search": "Search",
     "By": "By",
     "Columns": "Columns",
+    "Cancel": "Cancel",
+    "Delete": "Delete",
   
     "Map":{
         "SearchLocation":"Search a location",
@@ -36,10 +38,13 @@
         "Releve":"Relevé",
         "Observer":"Observer",
         "Observers":"Observers",
-        "MinDate":"Min date",
-        "MaxDate":"Max date",
+        "MinDate":"Start date",
+        "MaxDate":"End date",
         "MinAltitude":"Min altitude",
         "MaxAltitude":"Max altitude",
+        "HourMin": "Start hour",
+        "HourMax": "End hour",
+        "HourFormat": "hh:mm",
         "Municipality":"Municipality",
         "Municipalities":"Municipalities",
         "Dataset":"Dataset",
@@ -49,7 +54,8 @@
         "SavedTaxon": "Saved taxon(s)",
         "InfoGeo": "Geographic informations of the releve",
         "Edit": "Edit releve",
-        "Info": "Informations releve"
+        "Info": "Informations releve",
+        "Delete": "Delete releve"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",
@@ -90,7 +96,8 @@
         "CountingObject":"Counting object",
         "CountingType":"Counting type",
         "Numbers":"Numbers",
-        "Total":"Total"
+        "Total":"Total",
+        "CountError": "Counting max can not be inferior to counting min"
     },
     "IntroMessage":"Welcome in CONTACT module. It allows to record observations based on Taxon Occurrencies SINP standard.",
     "ErrorMessage":"Game over"
