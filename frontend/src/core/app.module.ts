@@ -39,6 +39,8 @@ import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
 import { MapListService } from './GN2Common/map-list/map-list.service';
+import { CookieService } from 'ng2-cookies';
+
 
 
 
@@ -69,7 +71,7 @@ export function HttpLoaderFactory(http: Http) {
     LoginComponent,
     NavHomeComponent,
   ],
-  providers: [NavService, AuthService, AuthGuard, SideNavService],
+  providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService],
   bootstrap: [AppComponent],
 })
 
