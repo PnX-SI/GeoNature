@@ -32,6 +32,7 @@ class TRelevesContact(serializableGeoModel):
     id_releve_contact = db.Column(db.Integer, primary_key=True)
     id_dataset = db.Column(db.Integer)
     id_digitiser = db.Column(db.Integer, ForeignKey('utilisateurs.t_roles.id_role'))
+    observers_txt = db.Column(db.Unicode)
     date_min = db.Column(db.DateTime)
     date_max = db.Column(db.DateTime)
     hour_min = db.Column(db.DateTime)

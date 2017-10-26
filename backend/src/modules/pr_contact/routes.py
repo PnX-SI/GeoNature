@@ -66,12 +66,6 @@ def getOneReleve(id_releve):
         return data.get_geofeature()
     return {'message': 'not found'}, 404
 
-# @routes.route('/nbOccurrences', methods=['GET'])
-# @json_resp
-# def getNbCounting():
-#     q = TOccurrencesContact.query.count()
-#     return q
-
 @routes.route('/vrelevecontact', methods=['GET'])
 @json_resp
 def getViewReleveContact():
@@ -206,11 +200,11 @@ def insertOrUpdateOneReleve():
     try:
         data = dict(request.get_json())
 
-        if data['properties']['t_occurrences_contact']:
+        if 't_occurrences_contact' in data['properties'] :
             occurrences_contact = data['properties']['t_occurrences_contact']
             data['properties'].pop('t_occurrences_contact')
 
-        if data['properties']['observers']:
+        if 'observers' in data['properties'] :
             observersList =  data['properties']['observers']
             data['properties'].pop('observers')
 
@@ -218,9 +212,10 @@ def insertOrUpdateOneReleve():
         shape = asShape(data['geometry'])
         releve.geom_4326 =from_shape(shape, srid=4326)
 
-        observers = db.session.query(TRoles).filter(TRoles.id_role.in_(observersList)).all()
-        for o in observers :
-            releve.observers.append(o)
+        if (not data['properties']['observers_txt']) :
+            observers = db.session.query(TRoles).filter(TRoles.id_role.in_(observersList)).all()
+            for o in observers :
+                releve.observers.append(o)
 
 
         for occ in occurrences_contact :
@@ -246,7 +241,6 @@ def insertOrUpdateOneReleve():
 
         return releve.get_geofeature()
 
-    except Exception as e:
-
+    except Exception as e :
         db.session.rollback()
         raise
