@@ -8,6 +8,7 @@ import { ContactFormService } from './contact-form.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { ContactConfig } from '../../contact.config';
+import { ContactService } from '../../services/contact.service';
 
 
 
@@ -23,7 +24,8 @@ export class ContactFormComponent implements OnInit {
   constructor(public fs: ContactFormService, private _ms: MapService,
      private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
      private toastr: ToastrService,
-     private router: Router
+     private router: Router,
+     private contactService: ContactService
     ) {  }
 
   ngOnInit() {
@@ -43,7 +45,7 @@ export class ContactFormComponent implements OnInit {
       this.fs.showOccurrence = false;
       this.fs.editionMode = true;
       // load one releve
-      this.fs.getReleve(this.id)
+      this.contactService.getReleve(this.id)
         .subscribe(data => {
           // pre fill the form
           this.fs.releveForm = this.fs.initObservationForm(data);

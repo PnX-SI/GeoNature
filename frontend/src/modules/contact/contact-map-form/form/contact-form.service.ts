@@ -35,10 +35,6 @@ export class ContactFormService {
     });
    }// end constructor
 
-   getReleve(id) {
-    return this._http.get(`${AppConfig.API_ENDPOINT}contact/releve/${id}`)
-    .map(res => res.json());
-  }
 
    initObservationForm(data?): FormGroup {
     return this._fb.group({
