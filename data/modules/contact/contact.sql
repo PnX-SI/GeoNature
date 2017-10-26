@@ -21,6 +21,7 @@ CREATE TABLE t_releves_contact (
     id_releve_contact bigint NOT NULL,
     id_dataset integer NOT NULL,
     id_digitiser integer,
+    observers_txt varchar(500),
     date_min timestamp without time zone DEFAULT now() NOT NULL,
     date_max timestamp without time zone DEFAULT now() NOT NULL,
     hour_min time,
