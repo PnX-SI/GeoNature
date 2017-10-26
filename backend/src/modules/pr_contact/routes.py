@@ -35,7 +35,7 @@ def getReleves():
 
     if data:
         return FeatureCollection([n.get_geofeature() for n in data])
-    return {'message': 'not found'}, 404
+    return {'message' : 'not found'}, 404
 
 @routes.route('/occurrences', methods=['GET'])
 @json_resp
@@ -50,7 +50,7 @@ def getOccurrences():
 
     if data:
         return ([n.as_dict() for n in data])
-    return {'message': 'not found'}, 404
+    return {'message' : 'not found'}, 404
 
 @routes.route('/releve/<int:id_releve>', methods=['GET'])
 @json_resp
@@ -64,7 +64,7 @@ def getOneReleve(id_releve):
         raise
     if data:
         return data.get_geofeature()
-    return {'message': 'not found'}, 404
+    return {'message' : 'not found'}, 404
 
 @routes.route('/vrelevecontact', methods=['GET'])
 @json_resp
@@ -103,8 +103,8 @@ def getViewReleveContact():
         db.session.rollback()
         raise
     if data:
-        return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter}
-    return {'message': 'not found'}, 404
+        return {'items' : FeatureCollection([n.get_geofeature() for n in data]), 'total' : nbResultsWithoutFilter}
+    return {'message' : 'not found'}, 404
 
 
 @routes.route('/vreleve', methods=['GET'])
@@ -125,7 +125,7 @@ def getViewReleveList():
     if 'cd_nom' in parameters:
         testT = testDataType(parameters.get('cd_nom'), db.Integer, 'cd_nom')
         if testT:
-            return {'error':testT},500
+            return {'error' :testT},500
         q = q.join(TOccurrencesContact, TOccurrencesContact.id_releve_contact == VReleveList.id_releve_contact)\
                 .filter(TOccurrencesContact.cd_nom == int(parameters.get('cd_nom')))
 
@@ -136,17 +136,17 @@ def getViewReleveList():
     if 'date_up' in parameters:
         testT = testDataType(parameters.get('date_up'), db.DateTime, 'date_up')
         if testT:
-            return {'error':testT},500
+            return {'error' :testT},500
         q = q.filter(VReleveList.date_min >= parameters.get('date_up'))
     if 'date_low' in parameters:
         testT = testDataType(parameters.get('date_low'), db.DateTime, 'date_low')
         if testT:
-            return {'error':testT},500
+            return {'error' :testT},500
         q = q.filter(VReleveList.date_max <= parameters.get('date_low'))
     if 'date_eq' in parameters:
         testT = testDataType(parameters.get('date_eq'), db.DateTime, 'date_eq')
         if testT:
-            return {'error':testT},500
+            return {'error' :testT},500
         q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
 
     #Generic Filters
@@ -155,7 +155,7 @@ def getViewReleveList():
             col = getattr( VReleveList.__table__.columns,param)
             testT = testDataType(parameters[param], col.type, param)
             if testT:
-                return {'error':testT},500
+                return {'error' :testT},500
             q = q.filter(col == parameters[param])
     try:
         nbResults = q.count()
@@ -186,11 +186,11 @@ def getViewReleveList():
         raise
 
     return {
-        'total': nbResultsWithoutFilter,
-        'total_filtered': nbResults ,
-        'page': page,
-        'limit': limit,
-        'items': FeatureCollection([n.get_geofeature() for n in data])
+        'total' : nbResultsWithoutFilter,
+        'total_filtered' : nbResults ,
+        'page' : page,
+        'limit' : limit,
+        'items' : FeatureCollection([n.get_geofeature() for n in data])
     }
 
 
@@ -212,7 +212,7 @@ def insertOrUpdateOneReleve():
         shape = asShape(data['geometry'])
         releve.geom_4326 =from_shape(shape, srid=4326)
 
-        if (not data['properties']['observers_txt']) :
+        if (not 'observers_txt' in data['properties']) :
             observers = db.session.query(TRoles).filter(TRoles.id_role.in_(observersList)).all()
             for o in observers :
                 releve.observers.append(o)
@@ -244,3 +244,78 @@ def insertOrUpdateOneReleve():
     except Exception as e :
         db.session.rollback()
         raise
+
+
+@routes.route('/releve/<int:id_releve>', methods=['DELETE'])
+@json_resp
+def deleteOneReleve(id_releve):
+    """
+    """
+    q = db.session.query(TRelevesContact)
+    try :
+        data = q.get(id_releve)
+    except :
+        db.session.rollback()
+        raise
+
+    if not data:
+        return {'message' : 'not found'}, 404
+
+    try :
+        db.session.delete(data)
+        db.session.commit()
+    except :
+        db.session.rollback()
+        raise
+
+    return {'message' : 'delete with success'}
+
+
+@routes.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
+@json_resp
+def deleteOneOccurence(id_occ):
+
+    q = db.session.query(TOccurrencesContact)
+
+    try :
+        data = q.get(id_occ)
+    except :
+        db.session.rollback()
+        raise
+
+    if not data:
+        return {'message' : 'not found'}, 404
+
+    try :
+        db.session.delete(data)
+        db.session.commit()
+    except :
+        db.session.rollback()
+        raise
+
+    return {'message' : 'delete with success'}
+
+
+@routes.route('/releve/occurrence_counting/<int:id_count>', methods=['DELETE'])
+@json_resp
+def deleteOneOccurenceCounting(id_count):
+
+    q = db.session.query(CorCountingContact)
+
+    try :
+        data = q.get(id_count)
+    except :
+        db.session.rollback()
+        raise
+
+    if not data:
+        return {'message' : 'not found'}, 404
+
+    try :
+        db.session.delete(data)
+        db.session.commit()
+    except :
+        db.session.rollback()
+        raise
+
+    return {'message' : 'delete with success'}
