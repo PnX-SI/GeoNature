@@ -6,6 +6,7 @@ import { MapService } from '../../../core/GN2Common/map/map.service';
 import { DataFormService } from '../../../core/GN2Common/form/data-form.service';
 import { FormGroup, FormArray } from '@angular/forms';
 import { ContactService } from '../services/contact.service';
+import { ContactConfig } from '../contact.config';
 
 @Component({
   selector: 'pnx-contact-map-info',
@@ -41,7 +42,11 @@ export class ContactMapInfoComponent implements OnInit {
         this._contactService.getReleve(this.id)
           .subscribe(data => {
             this.releve = data;
-            this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
+            if (!ContactConfig.observers_txt) {
+              this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
+            }else {
+              this.observers = data.properties.observers_txt;
+            }
             this.dateMin = data.properties.date_min.substring(0, 10);
             this.dateMax = data.properties.date_max.substring(0, 10);
 
