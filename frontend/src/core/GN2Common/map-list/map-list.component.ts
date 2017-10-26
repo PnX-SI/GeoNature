@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges} from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter} from '@angular/core';
 import { MapService } from '../map/map.service';
 import {MapListService} from '../map-list/map-list.service';
 import { GeoJSON, Layer } from 'leaflet';
@@ -19,6 +19,8 @@ export class MapListComponent implements OnInit, OnChanges {
   @Input() displayColumns: Array<any>;
   @Input() pathEdit: string;
   @Input() pathInfo: string;
+  @Input() pathDelete: string;
+  @Output() onDeleteRow = new EventEmitter<number>();
   public tableData = new Array();
   allColumns = [];
 
@@ -43,6 +45,10 @@ export class MapListComponent implements OnInit, OnChanges {
         this.geojsonData = res.items;
         this.tableData = this.mapListService.loadTableData(res.items);
       });
+  }
+
+  deleteRow(idRow) {
+    this.onDeleteRow.emit(idRow);
   }
 
 
