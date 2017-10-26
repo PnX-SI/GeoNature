@@ -110,6 +110,45 @@ def getViewReleveContact():
 @routes.route('/vreleve', methods=['GET'])
 @json_resp
 def getViewReleveList():
+    """
+        Retour la liste résumé des relevés avec occurrences
+
+
+        Parameters
+        ----------
+        limit : int
+            Nombre max de résulats à retourner
+        offset : int
+            Numéro de la page à retourner
+        cd_nom : int
+            Filtrer les relevés avec des occurrences avec le taxon x
+        observer : int
+        date_up : date
+            Date minimum des relevés à retourner
+        date_low : date
+            Date maximum des relevés à retourner
+        date_eq : date
+            Date exacte des relevés à retourner
+        orderby : char
+            Nom du champ sur lequel baser l'ordonnancement
+        order : char (asc|desc)
+            Sens de l'ordonnancement
+        [NomChampTableVReleveList]
+            Filtre sur le champ NomChampTableVReleveList
+
+        Returns
+        -------
+        json
+        {
+            'total' : Nombre total de résultat,
+            'total_filtered' : Nombre total de résultat après filtration ,
+            'page' : Numéro de la page retournée,
+            'limit' : Nombre de résultats,
+            'items' : données au format GeoJson
+        }
+
+
+    """
     q = db.session.query(VReleveList)
 
     parameters = request.args
@@ -249,7 +288,14 @@ def insertOrUpdateOneReleve():
 @routes.route('/releve/<int:id_releve>', methods=['DELETE'])
 @json_resp
 def deleteOneReleve(id_releve):
-    """
+    """Suppression d'une données d'un relevé et des occurences associés
+      c-a-d un enregistrement de la table t_releves_contact
+
+    Parameters
+    ----------
+        id_releve : int
+            identifiant de l'enregistrement à supprimer
+
     """
     q = db.session.query(TRelevesContact)
     try :
@@ -274,7 +320,15 @@ def deleteOneReleve(id_releve):
 @routes.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
 @json_resp
 def deleteOneOccurence(id_occ):
+    """Suppression d'une données d'occurrence et des dénombrements associés
+      c-a-d un enregistrement de la table t_occurrences_contact
 
+    Parameters
+    ----------
+        id_occ : int
+            identifiant de l'enregistrement à supprimer
+
+    """
     q = db.session.query(TOccurrencesContact)
 
     try :
@@ -299,7 +353,16 @@ def deleteOneOccurence(id_occ):
 @routes.route('/releve/occurrence_counting/<int:id_count>', methods=['DELETE'])
 @json_resp
 def deleteOneOccurenceCounting(id_count):
+    """Suppression d'une données de dénombrement
+      c-a-d un enregistrement de la table cor_counting_contact
 
+
+    Parameters
+    ----------
+        id_count : int
+            identifiant de l'enregistrement à supprimer
+
+    """
     q = db.session.query(CorCountingContact)
 
     try :
