@@ -4,24 +4,26 @@ from __future__ import (unicode_literals, print_function,
 
 from flask import Blueprint, request
 
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
 
 from .models import VUserslistForallMenu
 from ...utils.utilssqlalchemy import json_resp
 
+from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+
 routes = Blueprint('users', __name__)
+
 
 @routes.route('/menu/<int:idMenu>', methods=['GET'])
 @json_resp
 def getRolesByMenuId(idMenu):
 
     q = db.session.query(VUserslistForallMenu)\
-            .filter_by(id_menu = idMenu)
+            .filter_by(id_menu=idMenu)
 
-    try :
+    try:
         data = q.all()
-    except :
+    except Exception as e:
         db.session.rollback()
         raise
     if data:

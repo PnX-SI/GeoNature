@@ -11,29 +11,28 @@ from ...utils.utilssqlalchemy import serializableModel
 from ..users.models import BibOrganismes
 
 
-#from pypnnomenclature.models import TNomenclatures
+# from pypnnomenclature.models import TNomenclatures
 
 db = SQLAlchemy()
 
 
 class TPrograms(serializableModel):
     __tablename__ = 't_programs'
-    __table_args__ = {'schema':'gn_meta'}
+    __table_args__ = {'schema': 'gn_meta'}
     id_program = db.Column(db.Integer, primary_key=True)
     program_name = db.Column(db.Unicode)
     program_desc = db.Column(db.Unicode)
     active = db.Column(db.Boolean)
-    
 
     datasets = relationship("TDatasets", lazy='joined')
 
     def get_programs(self, recursif=False):
         return self.as_dict(recursif)
-   
+
 
 class TDatasets(serializableModel):
     __tablename__ = 't_datasets'
-    __table_args__ = {'schema':'gn_meta'}
+    __table_args__ = {'schema': 'gn_meta'}
     id_dataset = db.Column(db.Integer, primary_key=True)
     id_program = db.Column(db.Integer, ForeignKey('gn_meta.t_programs.id_program'))
     dataset_name = db.Column(db.Unicode)
@@ -55,11 +54,10 @@ class TDatasets(serializableModel):
 
 class TParameters(serializableModel):
     __tablename__ = 't_parameters'
-    __table_args__ = {'schema':'gn_meta'}
+    __table_args__ = {'schema': 'gn_meta'}
     id_parameter = db.Column(db.Integer, primary_key=True)
     id_organism = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
     parameter_name = db.Column(db.Unicode)
     parameter_desc = db.Column(db.Unicode)
     parameter_value = db.Column(db.Unicode)
     parameter_extra_value = db.Column(db.Unicode)
-    

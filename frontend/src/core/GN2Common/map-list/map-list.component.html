@@ -12,7 +12,8 @@
          [pathEdit]="pathEdit"
          [pathInfo]="pathInfo"
          (paramChanged)="refreshValue($event)"
-         (paramDeleted)="refreshValue()" >
+         (paramDeleted)="refreshValue()"
+         (onDeleteRow)="deleteRow($event)" >
         </pnx-map-data>
     </div>
 </div>

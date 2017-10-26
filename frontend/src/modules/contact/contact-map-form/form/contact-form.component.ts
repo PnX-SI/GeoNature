@@ -7,6 +7,8 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
+import { ContactConfig } from '../../contact.config';
+import { ContactService } from '../../services/contact.service';
 
 
 
@@ -22,7 +24,8 @@ export class ContactFormComponent implements OnInit {
   constructor(public fs: ContactFormService, private _ms: MapService,
      private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
      private toastr: ToastrService,
-     private router: Router
+     private router: Router,
+     private contactService: ContactService
     ) {  }
 
   ngOnInit() {
@@ -42,7 +45,7 @@ export class ContactFormComponent implements OnInit {
       this.fs.showOccurrence = false;
       this.fs.editionMode = true;
       // load one releve
-      this.fs.getReleve(this.id)
+      this.contactService.getReleve(this.id)
         .subscribe(data => {
           // pre fill the form
           this.fs.releveForm = this.fs.initObservationForm(data);
@@ -78,8 +81,10 @@ export class ContactFormComponent implements OnInit {
       occ.meta_update_date = new Date();
     });
     // format observers
-    finalForm.properties.observers = finalForm.properties.observers
+    if (!ContactConfig.observers_txt) {
+      finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
+    }
     // Post
     console.log(JSON.stringify(finalForm));
     this._dfs.postContact(finalForm)
