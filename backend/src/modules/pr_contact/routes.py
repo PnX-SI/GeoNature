@@ -92,9 +92,15 @@ def getViewReleveContact():
     # Order by
     if 'orderby' in parameters:
         if parameters.get('orderby') in VReleveContact.__table__.columns:
-            orderCol = getattr(VReleveContact.__table__.columns, parameters['orderby'])
+            orderCol = getattr(
+                VReleveContact.__table__.columns,
+                parameters['orderby']
+            )
         else:
-            orderCol = getattr(VReleveContact.__table__.columns, 'occ_meta_create_date')
+            orderCol = getattr(
+                VReleveContact.__table__.columns,
+                'occ_meta_create_date'
+            )
 
         if 'order' in parameters:
             if (parameters['order'] == 'desc'):
@@ -108,7 +114,10 @@ def getViewReleveContact():
         db.session.rollback()
         raise
     if data:
-        return {'items': FeatureCollection([n.get_geofeature() for n in data]), 'total': nbResultsWithoutFilter}
+        return {
+            'items': FeatureCollection([n.get_geofeature() for n in data]),
+            'total': nbResultsWithoutFilter
+        }
     return {'message': 'not found'}, 404
 
 
@@ -174,11 +183,17 @@ def getViewReleveList():
         q = q.join(
                 TOccurrencesContact,
                 TOccurrencesContact.id_releve_contact == VReleveList.id_releve_contact
-            ).filter(TOccurrencesContact.cd_nom == int(parameters.get('cd_nom')))
+            ).filter(
+                TOccurrencesContact.cd_nom == int(parameters.get('cd_nom'))
+            )
 
     if 'observer' in parameters:
-        q = q.join(corRoleRelevesContact, corRoleRelevesContact.columns.id_releve_contact == VReleveList.id_releve_contact)\
-            .filter(corRoleRelevesContact.columns.id_role.in_(parameters.getlist('observer')))
+        q = q.join(
+            corRoleRelevesContact,
+            corRoleRelevesContact.columns.id_releve_contact == VReleveList.id_releve_contact
+            ).filter(corRoleRelevesContact.columns.id_role.in_(
+                parameters.getlist('observer')
+            ))
 
     if 'date_up' in parameters:
         testT = testDataType(parameters.get('date_up'), db.DateTime, 'date_up')
@@ -186,12 +201,20 @@ def getViewReleveList():
             return {'error': testT}, 500
         q = q.filter(VReleveList.date_min >= parameters.get('date_up'))
     if 'date_low' in parameters:
-        testT = testDataType(parameters.get('date_low'), db.DateTime, 'date_low')
+        testT = testDataType(
+            parameters.get('date_low'),
+            db.DateTime,
+            'date_low'
+        )
         if testT:
             return {'error': testT}, 500
         q = q.filter(VReleveList.date_max <= parameters.get('date_low'))
     if 'date_eq' in parameters:
-        testT = testDataType(parameters.get('date_eq'), db.DateTime, 'date_eq')
+        testT = testDataType(
+            parameters.get('date_eq'),
+            db.DateTime,
+            'date_eq'
+        )
         if testT:
             return {'error': testT}, 500
         q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
@@ -213,9 +236,15 @@ def getViewReleveList():
     # Order by
     if 'orderby' in parameters:
         if parameters.get('orderby') in VReleveList.__table__.columns:
-            orderCol = getattr(VReleveList.__table__.columns, parameters['orderby'])
+            orderCol = getattr(
+                VReleveList.__table__.columns,
+                parameters['orderby']
+            )
         else:
-            orderCol = getattr(VReleveList.__table__.columns, 'occ_meta_create_date')
+            orderCol = getattr(
+                VReleveList.__table__.columns,
+                'occ_meta_create_date'
+            )
 
         if 'order' in parameters:
             if (parameters['order'] == 'desc'):
@@ -260,7 +289,8 @@ def insertOrUpdateOneReleve():
         releve.geom_4326 = from_shape(shape, srid=4326)
 
         if ('observers_txt' not in data['properties']):
-            observers = db.session.query(TRoles).filter(TRoles.id_role.in_(observersList)).all()
+            observers = db.session.query(TRoles).\
+                filter(TRoles.id_role.in_(observersList)).all()
             for o in observers:
                 releve.observers.append(o)
 
