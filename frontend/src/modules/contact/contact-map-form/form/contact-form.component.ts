@@ -7,6 +7,7 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
+import { ContactConfig } from '../../contact.config';
 
 
 
@@ -78,8 +79,10 @@ export class ContactFormComponent implements OnInit {
       occ.meta_update_date = new Date();
     });
     // format observers
-    finalForm.properties.observers = finalForm.properties.observers
+    if (!ContactConfig.observers_txt) {
+      finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
+    }
     // Post
     console.log(JSON.stringify(finalForm));
     this._dfs.postContact(finalForm)

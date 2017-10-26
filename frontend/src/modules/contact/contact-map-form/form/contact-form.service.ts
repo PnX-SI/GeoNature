@@ -57,8 +57,8 @@ export class ContactFormService {
         meta_device_entry: 'web',
         comment: data ? data.properties.comment : null,
         observers: [data ? this.formatObservers(data.properties.observers) : null,
-           !ContactConfig.observersAsText ? Validators.required : null],
-        //observersAsText: [data ? data.properties.observersAsText : null, ContactConfig.observersAsText ? Validators.required : null ],
+           !ContactConfig.observers_txt ? Validators.required : null],
+        observers_txt: [data ? data.properties.observers_txt : null, ContactConfig.observers_txt ? Validators.required : null ],
         t_occurrences_contact: [new Array()]
       })
     });
