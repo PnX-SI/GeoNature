@@ -5,6 +5,7 @@ import { ContactFormService } from '../contact-map-form/form/contact-form.servic
 import { MapService } from '../../../core/GN2Common/map/map.service';
 import { DataFormService } from '../../../core/GN2Common/form/data-form.service';
 import { FormGroup, FormArray } from '@angular/forms';
+import { ContactService } from '../services/contact.service';
 
 @Component({
   selector: 'pnx-contact-map-info',
@@ -29,14 +30,15 @@ export class ContactMapInfoComponent implements OnInit {
   public showSpinner = true;
   public geojson: any;
   constructor(public fs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService,
-    private _dfs: DataFormService, private _router: Router) { }
+    private _dfs: DataFormService, private _router: Router,
+    private _contactService: ContactService) { }
 
   ngOnInit() {
     this._sub = this._route.params.subscribe(params => {
       this.id = +params['id'];
       if (!isNaN(this.id )) {
         // load one releve
-        this.fs.getReleve(this.id)
+        this._contactService.getReleve(this.id)
           .subscribe(data => {
             this.releve = data;
             this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');

@@ -55,7 +55,8 @@
         "InfoGeo": "Informations géographiques du relevé",
         "Edit": "Editer le relevé",
         "Info": "Informations relevé",
-        "Delete": "Supprimer le relevé"
+        "Delete": "Supprimer le relevé",
+        "DeleteSuccessfully": "Le relevé a été supprimé avec succès"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon observé",
