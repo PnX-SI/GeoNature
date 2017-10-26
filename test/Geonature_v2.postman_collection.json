@@ -355,6 +355,39 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "contact/releve/7",
+			"request": {
+				"url": "http://localhost:8000/contact/releve/7",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "releve/occurrence/21",
+			"request": {
+				"url": "http://localhost:8000/contact/releve/occurrence/21",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/contact/releve/occurrence_counting/21",
+			"request": {
+				"url": "http://localhost:8000/contact/releve/occurrence_counting/21",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
