@@ -531,7 +531,79 @@ CREATE OR REPLACE VIEW v_niv_precis AS
   WHERE n.id_type = 5
   AND n.active = true;
 --USAGE : 
---SELECT * FROM ref_nomenclatures.v_statut_valid;
+--SELECT * FROM ref_nomenclatures.v_niv_precis;
+
+CREATE OR REPLACE VIEW v_resource_typ AS 
+ SELECT
+    n.id_nomenclature,
+    n.mnemonique,
+    n.label_default AS label,
+    n.definition_default AS definition,
+    n.id_broader,
+    n.hierarchy
+  FROM ref_nomenclatures.t_nomenclatures n
+  WHERE n.id_type = 102
+  AND n.active = true;
+--USAGE : 
+--SELECT * FROM ref_nomenclatures.v_resource_typ;
+
+CREATE OR REPLACE VIEW v_data_typ AS 
+ SELECT
+    n.id_nomenclature,
+    n.mnemonique,
+    n.label_default AS label,
+    n.definition_default AS definition,
+    n.id_broader,
+    n.hierarchy
+   FROM ref_nomenclatures.t_nomenclatures n
+   WHERE n.id_type = 103
+  AND n.active = true;
+--USAGE : 
+--SELECT * FROM ref_nomenclatures.v_data_typ;
+
+CREATE OR REPLACE VIEW v_sampling_plan_typ AS 
+ SELECT 
+    n.id_nomenclature,
+    n.mnemonique,
+    n.label_default AS label,
+    n.definition_default AS definition,
+    n.id_broader,
+    n.hierarchy
+   FROM ref_nomenclatures.t_nomenclatures n
+   WHERE n.id_type = 104
+  AND n.active = true;
+--USAGE : 
+--SELECT * FROM ref_nomenclatures.v_sampling_plan_typ;
+
+CREATE OR REPLACE VIEW v_sampling_units_typ AS 
+ SELECT
+    n.id_nomenclature,
+    n.mnemonique,
+    n.label_default AS label,
+    n.definition_default AS definition,
+    n.id_broader,
+    n.hierarchy
+  FROM ref_nomenclatures.t_nomenclatures n
+  WHERE n.id_type = 105
+  AND n.active = true;
+--USAGE : 
+--SELECT * FROM ref_nomenclatures.v_sampling_units_typ;
+
+CREATE OR REPLACE VIEW v_meth_determin AS 
+ SELECT ctn.regne,
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.label_default AS label,
+    n.definition_default AS definition,
+    n.id_broader,
+    n.hierarchy
+   FROM ref_nomenclatures.t_nomenclatures n
+     LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
+  WHERE n.id_type = 106
+  AND n.active = true;
+--USAGE : 
+--SELECT * FROM ref_nomenclatures.v_meth_determin;
 
 ------------
 --TRIGGERS--

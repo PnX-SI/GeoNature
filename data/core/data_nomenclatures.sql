@@ -95,6 +95,7 @@ INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_f
 ,(103, 'DATA_TYP', 'Type de données', 'Nomenclature des types de données SINP relatifs aux jeux de données', 'SINP', 'Non validé', '2017-10-16 00:00:00', '2017-10-16 00:00:00');
 ,(104, 'SAMPLING_PLAN_TYP', 'Type de plan d''échantillonnage', 'Processus de sélection des unités d''échantillonnage sur lesquelles sont effectuées les mesures des paramètres prévus dans le protocole', 'SINP', 'Non validé', '2017-10-16 00:00:00', '2017-10-16 00:00:00');
 ,(105, 'SAMPLING_UNITS_TYP', 'Type d''unités d''échantillonnage', 'L''unité d''échantillonnage désigne l''unité sur laquelle sont mesurés les paramètres étudiés', 'SINP', 'Non validé', '2017-10-16 00:00:00', '2017-10-16 00:00:00');
+,(106, 'METH_DETERMIN', 'Méthode de détermination', 'Nomenclature des méthodes de détermination, indiquant quelle méthode a été utilisée pour déterminer le sujet.', 'GEONATURE', 'Non validé', '2017-10-26 00:00:00', '2017-10-26 00:00:00');
 
 UPDATE bib_nomenclatures_types SET label_default = label_MYDEFAULTLANGUAGE;
 UPDATE bib_nomenclatures_types SET definition_default = definition_MYDEFAULTLANGUAGE;
@@ -445,7 +446,17 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(367, 105, '4', 'Placettes', 'Placettes', 'Surface de format variable (souvent circulaire, peut également être rectangulaire, etc.)', 'SINP', 'non validé', 0, '105.004', '2017-10-16 17:15:00', NULL, true);
 ,(368, 105, '5', 'Transects', 'Transects', 'Mesure en continu le long d''un tracé entre deux points (Désigne parfois une série de placettes effectuées le long d''un parcours entre deux points, mais c''est un abus de langage : dans ce cas, l''unité d''échantillonnage est la placette)', 'SINP', 'non validé', 0, '105.005', '2017-10-16 17:15:00', NULL, true);
 ,(369, 105, '6', 'Autre', 'Autre', 'Autre type d''unités d''échantillonnage', 'SINP', 'non validé', 0, '105.006', '2017-10-16 17:15:00', NULL, true);
-SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 370, true);
+,(370, 106, '1', 'Examen macroscopique terrain', 'Examen macroscopique terrain', 'Examen de l''individu sur le terrain sans loupe ni microscope', 'GEONATURE', 'non validé', 0, '106.001', '2017-10-26 00:00:00', NULL, true);
+,(371, 106, '2', 'Examen macroscopique laboratoire', 'Examen macroscopique laboratoire', 'Examen de l''individu en laboratoire sans loupe ni microscope', 'GEONATURE', 'non validé', 0, '106.002', '2017-10-26 00:00:00', NULL, true);
+,(372, 106, '3', 'Examen genitalia terrain', 'Examen genitalia terrain', 'Examen des pièces génitales de l''individu sur le terrain', 'GEONATURE', 'non validé', 0, '106.003', '2017-10-26 00:00:00', NULL, true);
+,(373, 106, '4', 'Examen genitalia laboratoire', 'Examen genitalia laboratoire', 'Examen des pièces génitales de l''individu en laboratoire', 'GEONATURE', 'non validé', 0, '106.004', '2017-10-26 00:00:00', NULL, true);
+,(374, 106, '5', 'Examen en collection', 'Examen en collection', 'Examen de l''individu à partir d''une collection', 'GEONATURE', 'non validé', 0, '106.005', '2017-10-26 00:00:00', NULL, true);
+,(375, 106, '6', 'Examen sur photo', 'Examen sur photo', 'Examen de l''individu à partir de photo(s)', 'GEONATURE', 'non validé', 0, '106.006', '2017-10-26 00:00:00', NULL, true);
+,(376, 106, '7', 'Déterminé après élevage', 'Déterminé après élevage', 'La détermination a été réalisées après élevage ou plantation (chenille, graine par exemple)', 'GEONATURE', 'non validé', 0, '106.007', '2017-10-26 00:00:00', NULL, true);
+,(377, 106, '8', 'Analyse génétique', 'Analyse génétique', 'Une analyse génétique a été réalisée à partir d''un échantillon prélevé sur un ou plusieurs individus', 'GEONATURE', 'non validé', 0, '106.008', '2017-10-26 00:00:00', NULL, true);
+,(378, 106, '9', 'Examen de la dentition', 'Examen de la dentition', 'La détermination a été réalisées après examen de la dentition', 'GEONATURE', 'non validé', 0, '106.009', '2017-10-26 00:00:00', NULL, true);
+,(379, 106, '10', 'Autre critère', 'Autre critère', 'Le critère de détermination n''est pas présent dans cette liste', 'GEONATURE', 'non validé', 0, '106.010', '2017-10-26 00:00:00', NULL, true);
+SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 380, true);
 
 UPDATE t_nomenclatures SET label_default = label_MYDEFAULTLANGUAGE;
 UPDATE t_nomenclatures SET definition_default = definition_MYDEFAULTLANGUAGE;
@@ -456,7 +467,8 @@ TRUNCATE TABLE cor_taxref_nomenclature;
 ----------------------------
 --OBSERVATION TECHNIQUES--
 ----------------------------
-INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), NULL)
+INSERT INTO cor_taxref_nomenclature VALUES 
+(211, 'Animalia', 'Oiseaux', now(), NULL)
 ,(212, 'Animalia', 'Oiseaux', now(), NULL)
 ,(221, 'Animalia', 'Oiseaux', now(), NULL)
 ,(223, 'Animalia', 'Oiseaux', now(), NULL)
@@ -1279,4 +1291,29 @@ INSERT INTO cor_taxref_nomenclature VALUES (211, 'Animalia', 'Oiseaux', now(), N
 ,(160, 'all', 'all', now(), NULL)
 ,(161, 'all', 'all', now(), NULL)
 ,(162, 'all', 'all', now(), NULL)
-,(163, 'all', 'all', now(), NULL);
+,(163, 'all', 'all', now(), NULL)
+
+
+-------------------------
+--DETERMINATION METHODS--
+-------------------------
+,(370, 'all', 'all', now(), NULL)
+,(371, 'all', 'all', now(), NULL)
+,(372, 'all', 'all', now(), NULL)
+,(374, 'all', 'all', now(), NULL)
+,(375, 'all', 'all', now(), NULL)
+,(376, 'all', 'all', now(), NULL)
+,(377, 'all', 'all', now(), NULL)
+,(379, 'all', 'all', now(), NULL)
+
+,(372, 'Animalia', 'Insectes', now(), NULL)
+,(373, 'Animalia', 'Insectes', now(), NULL)
+
+,(372, 'Animalia', 'Arachnides', now(), NULL)
+,(373, 'Animalia', 'Arachnides', now(), NULL)
+
+,(372, 'Animalia', 'Gastéropodes', now(), NULL)
+,(373, 'Animalia', 'Gastéropodes', now(), NULL)
+
+,(378, 'Animalia', 'Mammifères', now(), NULL)
+;
