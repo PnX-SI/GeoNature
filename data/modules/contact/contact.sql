@@ -21,8 +21,11 @@ CREATE TABLE t_releves_contact (
     id_releve_contact bigint NOT NULL,
     id_dataset integer NOT NULL,
     id_digitiser integer,
+    observers_txt varchar(500),
     date_min timestamp without time zone DEFAULT now() NOT NULL,
     date_max timestamp without time zone DEFAULT now() NOT NULL,
+    hour_min time,
+    hour_max time,
     altitude_min integer,
     altitude_max integer,
     deleted boolean DEFAULT false NOT NULL,
@@ -215,6 +218,9 @@ ALTER TABLE ONLY t_releves_contact
 
 ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT check_t_releves_contact_date_max CHECK (date_max >= date_min);
+
+ALTER TABLE t_releves_contact
+  ADD CONSTRAINT check_t_releves_contact_hour_max CHECK (hour_min <= hour_max OR date_min < date_max);
 
 
 ALTER TABLE ONLY t_occurrences_contact

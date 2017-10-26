@@ -20,6 +20,7 @@ export class ContactMapListComponent implements OnInit {
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
+    console.log('init map list');
   this.displayColumns = [
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},

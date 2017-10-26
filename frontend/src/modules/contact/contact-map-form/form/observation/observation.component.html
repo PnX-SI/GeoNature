@@ -1,16 +1,24 @@
 <div [formGroup]="releveForm">
-
   <div class="row">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-      <pnx-observers
-        [parentFormControl]="releveForm.controls.properties.controls.observers"
-        [idMenu]="9"
-        placeholder="{{ 'Releve.Observers' | translate }}">
-      </pnx-observers>
+      <div *ngIf="! contactConfig.observersAsText; else elseBlock">
+        <pnx-observers
+          [parentFormControl]="releveForm.controls.properties.controls.observers"
+          [idMenu]="9"
+          placeholder="{{ 'Releve.Observers' | translate }}">
+        </pnx-observers>
+      </div>
+        <ng-template #elseBlock>
+          <small> {{ 'Releve.Observers' | translate }} </small>
+          <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.observersAsText.invalid}" >
+            <input class="form-control form-control-sm" type="text"
+            [formControl]="releveForm.controls.properties.controls.observersAsText" placeholder="" >
+          </div>
+        </ng-template>
     </div>
     
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <img *ngIf="fs.editionMode && fs.taxonsList.length === 0" src="assets/images/spinner.gif" 
+        <img *ngIf="fs.editionMode && !fs.isEdintingOccurrence && fs.taxonsList.length === 0" src="assets/images/spinner.gif" 
         id="il_fi" 
         alt="Chargement..." 
         height="70" 
@@ -18,7 +26,7 @@
         <div *ngIf="fs.taxonsList.length > 0">
             <b> {{fs.taxonsList.length}} {{'Releve.SavedTaxon' | translate}} </b>
             <pnx-taxons-list [list]="fs.taxonsList" (taxonEdited)="fs.editOccurence($event)" (taxonRemoved)="fs.removeOneOccurrence($event)">  </pnx-taxons-list>
-      </div>
+        </div>
     </div>    
   </div>
   <div class="row">
@@ -53,12 +61,20 @@
       </span>
     </div>
   </div>
-  <div class="row form-group collapse" id="collapseTime">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-      <input class="form-control form-control-sm" type="text" placeholder="Heure min hh:mm">
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-      <input class="form-control form-control-sm" type="text" placeholder="Heure max hh:mm">
+  <div class="collapse" id="collapseTime">
+    <div class="row ">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_min.invalid}">
+            <small> {{'Releve.HourMin' | translate }} </small>
+          <input [formControl]="releveForm.controls.properties.controls.hour_min" class="form-control form-control-sm" type="text" placeholder="{{'Releve.HourFormat' | translate }}">
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_max.invalid}">
+            <small> {{'Releve.HourMax' | translate }} </small>
+          <input [formControl]="releveForm.controls.properties.controls.hour_max" class="form-control form-control-sm" type="text" placeholder="{{'Releve.HourFormat' | translate }}">
+        </div>
+      </div>
     </div>
   </div>
 

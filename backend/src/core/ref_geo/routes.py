@@ -22,13 +22,22 @@ routes = Blueprint('ref_geo', __name__)
 def getGeoInfo():
     data = dict(request.get_json())
     sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*')
-    result = db.engine.execute(sql, geom = str(data['geometry']))
+    try:
+        result = db.engine.execute(sql, geom = str(data['geometry']))
+    except :
+        db.session.rollback()
+        raise
+
     municipality = []
     for row in result:
         municipality.append({"id_area" : row[0], "id_type" : row[1], "area_code" : row[2], "area_name" : row[3]})
 
     sql = text('SELECT (ref_geo.fct_get_altitude_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*')
-    result = db.engine.execute(sql, geom = str(data['geometry']))
+    try :
+        result = db.engine.execute(sql, geom = str(data['geometry']))
+    except :
+        db.session.rollback()
+        raise
     alt = {}
     for row in result:
         alt = {"altitude_min" : row[0], "altitude_max" : row[1]}
@@ -47,15 +56,23 @@ def getAreasIntersection():
         id_type = None
 
     sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326),:type)).*')
-    result = db.engine.execute(sql, geom = str(data['geometry']), type=id_type)
+
+    try :
+        result = db.engine.execute(sql, geom = str(data['geometry']), type=id_type)
+    except :
+        db.session.rollback()
+        raise
 
     areas = []
     for row in result:
         areas.append({"id_area" : row[0], "id_type" : row[1], "area_code" : row[2], "area_name" : row[3]})
 
     bibtypesliste = [a['id_type'] for a in areas]
-    bibareatype = db.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
-
+    try :
+        bibareatype = db.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
+    except :
+        db.session.rollback()
+        raise
     data = {}
     for b in bibareatype:
         data[b.id_type] = b.as_dict(columns=('type_name', 'type_code'))

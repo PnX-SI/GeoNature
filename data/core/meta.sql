@@ -199,19 +199,6 @@ CREATE TRIGGER tri_meta_dates_change_t_datasets
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
----------------
---SAMPLE DATA--
----------------
-INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
-INSERT INTO t_programs VALUES (2, 'test', 'test', false);
-
-INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(1,NULL,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
-,(2,2,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
-,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
-,(4,1,'local_srid','Valeur du SRID local','2154',NULL);
-
-
 --------------
 --CONSTRAINS--
 --------------
@@ -226,3 +213,17 @@ ALTER TABLE t_datasets
 
 ALTER TABLE t_datasets
   ADD CONSTRAINT check_t_datasets_sampling_units_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sampling_units_type,105));
+
+
+---------------
+--SAMPLE DATA--
+---------------
+INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
+INSERT INTO t_programs VALUES (2, 'test', 'test', false);
+
+INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
+(1,NULL,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
+,(2,2,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
+,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
+,(4,1,'local_srid','Valeur du SRID local','2154',NULL)
+,(5,1,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);

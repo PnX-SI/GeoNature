@@ -15,13 +15,14 @@ routes = Blueprint('users', __name__)
 @routes.route('/menu/<int:idMenu>', methods=['GET'])
 @json_resp
 def getRolesByMenuId(idMenu):
-    try :
-        q = db.session.query(VUserslistForallMenu)\
+
+    q = db.session.query(VUserslistForallMenu)\
             .filter_by(id_menu = idMenu)
 
+    try :
         data = q.all()
-    except:
-        db.session.close()
+    except :
+        db.session.rollback()
         raise
     if data:
         return [n.as_dict() for n in data]
