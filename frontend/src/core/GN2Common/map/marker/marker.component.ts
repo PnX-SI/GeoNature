@@ -3,6 +3,7 @@ import {Map, Marker} from 'leaflet';
 import { MapService } from '../map.service';
 import { AppConfig } from '../../../../conf/app.config';
 import * as L from 'leaflet';
+import { CommonService } from '../../service/common.service';
 
 @Component({
   selector: 'pnx-marker',
@@ -12,7 +13,7 @@ import * as L from 'leaflet';
 export class MarkerComponent implements OnInit {
   public map: Map;
   @Output() markerChanged = new EventEmitter<any>();
-  constructor(public mapservice: MapService) { }
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -41,7 +42,7 @@ export class MarkerComponent implements OnInit {
     this.map.on('click', (e: any) => {
       // check zoom level
       if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
-        this.mapservice.sendWarningMessage();
+        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       } else {
         this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
       }
@@ -63,7 +64,7 @@ export class MarkerComponent implements OnInit {
   markerMoveEvent(marker: Marker) {
     marker.on('moveend', (event: MouseEvent) => {
       if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
-        this.mapservice.sendWarningMessage();
+        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       } else {
         this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
       }

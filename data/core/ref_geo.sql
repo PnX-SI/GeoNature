@@ -171,7 +171,7 @@ $BODY$
 
 
 CREATE OR REPLACE FUNCTION fct_get_area_intersection(
-  IN mygeom geometry,
+  IN mygeom public.geometry,
   IN myidtype integer DEFAULT NULL::integer)
 RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
 $BODY$

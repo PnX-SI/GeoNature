@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import * as L from 'leaflet';
 import { AppConfig } from '../../../conf/app.config';
 import {TranslateService} from '@ngx-translate/core';
+import { CommonService } from '../service/common.service';
 
 @Injectable()
 export class MapService {
@@ -32,7 +33,7 @@ export class MapService {
     };
 
     constructor(private http: Http, private toastrService: ToastrService,
-      private translate: TranslateService) {
+      private translate: TranslateService, private _commonService: CommonService) {
         this.toastrConfig = {
             positionClass: 'toast-top-center',
             tapToDismiss: true,
@@ -65,10 +66,7 @@ export class MapService {
                   });
               },
               error => {
-                this.translate.get('Map.LocationError', {value: 'Map.ZoomWarning'})
-                  .subscribe(res => {
-                    this.toastrService.error(res, '', this.toastrConfig);
-                  });
+                this._commonService.translateToaster('Warning', 'Map.LocationError');
               }
           );
     }
@@ -111,13 +109,6 @@ export class MapService {
       this._isEditingMarker.next(isEditing);
     }
 
-
-    sendWarningMessage() {
-      this.translate.get('Map.ZoomWarning', {value: 'Map.ZoomWarning'})
-      .subscribe(res =>
-        this.toastrService.warning(res, '', this.toastrConfig)
-      );
-    }
     // ***** UTILS *****
     addCustomLegend(position, id, logoUrl?, func?) {
       const LayerControl = L.Control.extend({
@@ -136,7 +127,6 @@ export class MapService {
           customLegend.style.backgroundImage = logoUrl;
           customLegend.style.backgroundRepeat = 'no-repeat';
           customLegend.style.backgroundPosition = '7px';
-  
           customLegend.onclick = () => {
             if (func) {
               func();
@@ -171,7 +161,7 @@ export class MapService {
 
     removeAllLayers(map, featureGroup) {
       featureGroup.eachLayer((layer) => {
-        map.removeLayer(layer);
+        featureGroup.removeLayer(layer);
       });
     }
 
@@ -179,12 +169,17 @@ export class MapService {
       const coordinates = data.geometry.coordinates;
       if (data.geometry.type === 'Point') {
         this.marker = this.createMarker(coordinates[0], coordinates[1], isDraggable);
+        // send observable
+        let markerCoord = this.marker.getLatLng();
+        let geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+        this.setGeojsonCoord(geojson);
         this.marker.on('moveend', (event: MouseEvent) => {
           if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
-            this.sendWarningMessage();
+            this._commonService.translateToaster('warning', 'Map.ZoomWarning');
           } else {
-            const markerCoord = this.marker.getLatLng();
-            const geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+            markerCoord = this.marker.getLatLng();
+            geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
+            // send observable
             this.setGeojsonCoord(geojson);
           }
         });
@@ -211,6 +206,10 @@ export class MapService {
         this.map.fitBounds(layer.getBounds());
         // disable point event on the map
           this.setEditingMarker(false);
+        // send observable
+        let geojson = this.releveFeatureGroup.toGeoJSON();
+        geojson = (geojson as any).features[0];
+        this.setGeojsonCoord(geojson);
     }
   }
 

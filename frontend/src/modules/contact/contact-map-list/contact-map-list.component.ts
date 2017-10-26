@@ -12,30 +12,28 @@ import { Subscription } from 'rxjs/Subscription';
 
 export class ContactMapListComponent implements OnInit {
   public geojsonData: GeoJSON;
-  private idSubscription: Subscription;
-  public tableData= new Array();
   public displayColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
+  public idName: string;
+  public apiEndPoint: string;
   constructor( private _http: Http, private _mapListService: MapListService) { }
 
   ngOnInit() {
+    console.log('init map list');
   this.displayColumns = [
-   {prop: 'taxons', name: 'Taxon'},
-   {prop: 'observateurs', 'name': 'Observateurs'}
+   {prop: 'taxons', name: 'Taxon', display: true},
+   {prop: 'observateurs', 'name': 'Observateurs'},
   ];
   this.pathEdit = 'contact-form';
   this.pathInfo = 'contact/info';
+  this.idName = 'id_releve_contact';
+  this.apiEndPoint = 'contact/vreleve';
 
   this._mapListService.getData('contact/vreleve')
   .subscribe(res => {
     this._mapListService.page.totalElements = res.total;
     this.geojsonData = res.items;
-    res.items.features.forEach(feature => {
-      const obj = feature.properties;
-      obj['id'] = feature.id;
-      this.tableData.push(obj);
-    });
   });
 
    }

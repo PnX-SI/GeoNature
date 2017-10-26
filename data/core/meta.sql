@@ -191,4 +191,5 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 (1,NULL,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
 ,(2,2,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
 ,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
-,(4,1,'local_srid','Valeur du SRID local','2154',NULL);
+,(4,1,'local_srid','Valeur du SRID local','2154',NULL)
+,(5,1,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);

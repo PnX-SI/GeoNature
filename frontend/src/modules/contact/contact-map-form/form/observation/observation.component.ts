@@ -1,11 +1,15 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormArray, FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../../../../core/GN2Common/map/map.service';
 import { DataFormService } from '../../../../../core/GN2Common/form/data-form.service';
+import { CommonService } from '../../../../../core/GN2Common/service/common.service';
 import { ContactFormService } from '../contact-form.service';
 import {ViewEncapsulation} from '@angular/core';
 import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { ContactConfig } from '../../../contact.config';
+
 
 
 @Component({
@@ -23,18 +27,21 @@ export class ObservationComponent implements OnInit, OnDestroy {
   public geojson: any;
   public dataSets: any;
   public geoInfo: any;
-  public municipalities: string;
   public showTime: boolean = false;
   public today: NgbDateStruct;
+  public areasIntersected = new Array();
+  public contactConfig: any;
   private geojsonSubscription$: Subscription;
 
-  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService) {  }
+  constructor(private _ms: MapService, private _dfs: DataFormService, public fs: ContactFormService,
+  private _commonService: CommonService, private modalService: NgbModal) {  }
 
   ngOnInit() {
+    this.contactConfig = ContactConfig;
+
     // load datasets
     this._dfs.getDatasets()
       .subscribe(res => this.dataSets = res);
-
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
       .subscribe(geojson => {
@@ -46,9 +53,11 @@ export class ObservationComponent implements OnInit, OnDestroy {
             this.releveForm.controls.properties.patchValue({
               altitude_min: res.altitude.altitude_min,
               altitude_max: res.altitude.altitude_max,
-              municipalities : res.municipality.map(m =>  m.source_code)
             });
-            this.fs.municipalities = res.municipality.map(m => m.area_name).join();
+          });
+        this._dfs.getFormatedGeoIntersection(geojson)
+          .subscribe(res => {
+            this.areasIntersected = res;
           });
       });
 
@@ -57,15 +66,35 @@ export class ObservationComponent implements OnInit, OnDestroy {
       .subscribe(value => {
         this.releveForm.controls.properties.patchValue({date_max: value});
       });
-    // set today
+    // set today for the datepicker limit
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
 
+    // check if dateMax is not < dateMin
+    (this.releveForm.controls.properties as FormGroup).controls.date_max.valueChanges
+    .debounceTime(500)
+    .subscribe(value => {
+      let dateMin = this.releveForm.value.properties.date_min;
+      if (dateMin) {
+        dateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
+        const dateMax = new Date(value.year, value.month, value.day);
+        if (dateMax < dateMin) {
+          (this.releveForm.controls.properties as FormGroup).controls.date_max.setErrors([Validators.required]);
+          this._commonService.translateToaster('error', 'Releve.DateMaxError');
+        }
+      }
+    });
   }
 
-  toggleDate() {
+
+  toggleTime() {
     this.showTime = !this.showTime;
   }
+
+  dateChanged(date) {
+    const newDate = new Date(date);
+  }
+
 
   ngOnDestroy() {
     this.geojsonSubscription$.unsubscribe();

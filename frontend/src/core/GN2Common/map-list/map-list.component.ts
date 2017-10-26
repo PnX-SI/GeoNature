@@ -14,11 +14,12 @@ export class MapListComponent implements OnInit, OnChanges {
   public layerDict: any;
   public selectedLayer: any;
   @Input() geojsonData: GeoJSON;
-  @Input() tableData = [];
+  @Input() idName: string;
   @Input() apiEndPoint: string;
   @Input() displayColumns: Array<any>;
   @Input() pathEdit: string;
   @Input() pathInfo: string;
+  public tableData = new Array();
   allColumns = [];
 
   constructor(private _ms: MapService, private mapListService: MapListService) {
@@ -31,16 +32,19 @@ export class MapListComponent implements OnInit, OnChanges {
       this.mapListService.toggleStyle(selectedLayer);
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
+    // set the idName in the service
+    this.mapListService.idName = this.idName;
   }
 
-  refreshValue(params) {
-    this.mapListService.getData('contact/vreleve', params)
+  refreshValue(params?) {
+    this.mapListService.getData(this.apiEndPoint, params)
       .subscribe(res => {
         this.mapListService.page.totalElements = res.total_filtered;
         this.geojsonData = res.items;
         this.tableData = this.mapListService.loadTableData(res.items);
       });
   }
+
 
   onEachFeature(feature, layer) {
     // event from the map
@@ -57,8 +61,11 @@ export class MapListComponent implements OnInit, OnChanges {
     });
   }
 
+
   ngOnChanges(changes) {
     if (changes.geojsonData.currentValue !== undefined) {
+      console.log(changes.geojsonData.currentValue.features);
+      this.tableData = this.mapListService.loadTableData(changes.geojsonData.currentValue);
       const features = changes.geojsonData.currentValue.features;
       const keyColumns = [];
       if (features.length > 0) {
@@ -66,6 +73,19 @@ export class MapListComponent implements OnInit, OnChanges {
         for (let key in features[0].properties){
           keyColumns.push({prop: key, name: key});
         }
+        // sort the columns
+        keyColumns.sort(function(a, b) {
+          const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+          const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          // names must be equal
+          return 0;
+        });
         this.allColumns = keyColumns;
       }
 

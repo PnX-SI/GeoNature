@@ -19,11 +19,29 @@ export class TaxonomyComponent implements OnInit {
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
+  regnes = new Array();
+  regnesAndGroup: any;
+  regneControl = new FormControl();
+  groupControl = new FormControl();
   @Output() taxonChanged = new EventEmitter<any>();
+  @Output() taxonDeleted = new EventEmitter<any>();
 
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
+    this.parentFormControl.valueChanges
+      .filter(value => value.length === 0)
+      .subscribe(data => {
+        this.taxonDeleted.emit();
+      });
+    // get regne and group2
+    this._dfService.getRegneAndGroup2Inpn()
+    .subscribe(data => {
+      this.regnesAndGroup = data;
+      for (let regne in data) {
+        this.regnes.push(regne);
+      }
+    })
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
