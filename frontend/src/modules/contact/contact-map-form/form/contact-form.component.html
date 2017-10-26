@@ -1,8 +1,7 @@
 <div class=form-containter>
   <div class="card">
     <h5 class="card-header"> <b>{{ 'Releve.Releve' | translate }} </b></h5>
-    <div class="card-body">
-        
+    <div class="card-body">        
         <div [formGroup]="fs.releveForm">
           <pnx-observation
             [releveForm]="fs.releveForm  ">
@@ -10,14 +9,19 @@
         </div>
         
     </div>
-  </div>        
+  </div>   
       <!-- Occurrence taxon  -->
       <div class="card card-occurrence">
-          <p class="card-header"> Taxons 
-            <button type="button" class="btn btn-success btn-sm toggle-btn" (click)="fs.toggleOccurrence()"> 
-              <span *ngIf="!fs.showOccurrence"> + </span>
-              <span *ngIf="fs.showOccurrence"> - </span>
-             </button></p>              
+        <div class="card-header" >
+          <h5> Taxon 
+          <button type="button" class="btn btn-success btn-sm toggle-btn" (click)="fs.toggleOccurrence()"> 
+              <span *ngIf="!fs.showOccurrence"> <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </span>
+              <span *ngIf="fs.showOccurrence"> <i class="fa fa-chevron-up" aria-hidden="true"></i>
+              </span>
+          </button> 
+        </h5>  
+        </div>          
           <div class="card-body" *ngIf="fs.showOccurrence"> 
               <pnx-occurrence
                 [occurrenceForm]="fs.occurrenceForm">
@@ -33,21 +37,21 @@
                     (countingRemoved)="fs.removeCounting($event, countingForm)">
                   </pnx-counting>
                 </div>
-                <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting(countingForm)">
+                <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting(fs.countingForm)">
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>          
                 </button>
             </div>
             <md-card-actions class="card-action"> 
                 <button class="btn btn-primary btn-sm "
                   [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
-                  (click)="fs.addOccurence(fs.indexOccurrence)">{{ 'Taxon.AddTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
+                  (click)="fs.addOccurrence(fs.indexOccurrence)">{{ 'Taxon.AddTaxon' | translate }} {{fs.currentTaxon.lb_nom}} </button>
             </md-card-actions>
       </div>
     </div>
 
       <!-- <pre>form value: <br>{{fs.countingForm.value | json}}</pre> -->
       <!-- <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre> -->
-      <!-- <pre>form value: <br>{{fs.releveForm.value | json}}</pre> -->
+      <!-- <pre>form value: <br>{{fs.releveForm.value.properties | json}}</pre> -->
 
 
 

@@ -4,6 +4,7 @@ import { MapListService } from '../../map-list/map-list.service';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -20,7 +21,9 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Input() pathEdit: string;
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
+  @Output() paramDeleted = new EventEmitter<any>();
   filterList: Array<any>;
+  filteredColumns: Array<any>;
   filterSelected: any;
   inputTaxon = new FormControl();
   inputObservers = new FormControl();
@@ -33,7 +36,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   selected = []; // list of row selected
   rows = []; // rows in data table
 
-  constructor(private mapListService: MapListService, private _router: Router) {
+  constructor(private mapListService: MapListService, private _router: Router, public ngbModal: NgbModal) {
 
   }
 
@@ -45,39 +48,28 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
       for (const i in this.tableData) {
-        if (this.tableData[i].id === res) {
+        if (this.tableData[i][this.mapListService.idName] === res) {
           this.selected.push(this.tableData[i]);
         }
       }
     });
 
+
     this.genericFilter.valueChanges
-      .filter(value => value.length > 0)
       .debounceTime(400)
       .distinctUntilChanged()
       .subscribe(value => {
         this.mapListService.urlQuery.delete(this.filterSelected.prop);
-        this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
+        if (value.length > 0) {
+          this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
+        } else {
+          this.paramChanged.emit({param: '', 'value': ''});
+        }
       });
   }
 
-  onSelect({ selected }) {
-    this.mapListService.setCurrentLayerId(this.selected[0].id);
-  }
-
-  updateFilter(event) {
-
-    const val = event.target.value.toLowerCase();
-
-    // filter our data
-    const temp = this.tableData.filter(res => {
-      return res[this.filterSelected.prop].toLowerCase().indexOf(val) !== -1 || !val;
-    });
-
-    // update the rows
-    this.rows = temp;
-    // whenever the filter changes, always go back to the first page
-    this.table.offset = 0;
+  onSelect(selected) {
+    this.mapListService.setCurrentLayerId(this.selected[0][this.mapListService.idName]);
   }
 
 
@@ -122,8 +114,17 @@ export class MapDataComponent implements OnInit, OnChanges {
     this._router.navigate([this.pathInfo, idReleve]);
   }
 
+  onDeleteReleve(idReleve) {
+    // TODO
+  }
+
   redirect() {
     this._router.navigate([this.pathEdit]);
+  }
+
+  deleteAndRefresh(param) {
+    this.mapListService.urlQuery.delete(param);
+    this.paramDeleted.emit();
   }
 
   taxonChanged(taxonObj) {
@@ -131,23 +132,21 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.mapListService.urlQuery.delete('cd_nom');
     this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
+
   observerChanged(observer) {
      this.paramChanged.emit({param: 'observer', 'value': observer.id_role});
   }
 
   observerDeleted(observer) {
     const idObservers = this.mapListService.urlQuery.getAll('observer');
-    idObservers.splice(idObservers.indexOf(observer.id_role));
+    idObservers.splice(idObservers.indexOf(observer.id_role), 1);
     idObservers.forEach(id => {
       this.mapListService.urlQuery.set('observer', id);
     });
+    this.paramDeleted.emit();
   }
 
   dateMinChanged(date) {
-    console.log(date === undefined);
-    console.log(date);
-
-
     this.mapListService.urlQuery.delete('date_up');
     if (date.length > 0) {
       this.paramChanged.emit({param: 'date_up', 'value': date});
@@ -164,6 +163,27 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.mapListService.page.pageNumber = pageInfo.offset;
     this.paramChanged.emit({param: 'offset', 'value': pageInfo.offset});
   }
+
+  openDeleteModal(event, modal, iElement, row) {
+    this.selected = [];
+    this.selected.push(row);
+    event.stopPropagation();
+    // prevent erreur link to the component
+    iElement && iElement.parentElement && iElement.parentElement.parentElement &&
+    iElement.parentElement.parentElement.blur();
+    this.ngbModal.open(modal);
+  }
+
+  deleteObs() {
+    const deleteId = this.selected[0][this.mapListService.idName];
+    this.rows = this.rows.filter(row => {
+      return row[this.mapListService.idName] !==  deleteId;
+    });
+    this.mapListService.page.totalElements = this.mapListService.page.totalElements -1 ;
+    this.selected = [];
+    // call the api to delete
+  }
+
   ngOnChanges(changes) {
     // init the rows
     if (changes.tableData) {
@@ -174,9 +194,11 @@ export class MapDataComponent implements OnInit, OnChanges {
     // init the columns
     if (changes.allColumns) {
       if (changes.allColumns.currentValue !== undefined ) {
-        console.log(this.allColumns);
-        
         this.allColumns = changes.allColumns.currentValue;
+        const doubleColumns = ['taxons', 'observateurs', 'date_min', 'date_max', 'leaflet_popup', 'observers'];
+        this.filteredColumns = this.allColumns.filter(res => {
+          return doubleColumns.indexOf(res.prop) === -1 ;
+        });
       }
     }
 

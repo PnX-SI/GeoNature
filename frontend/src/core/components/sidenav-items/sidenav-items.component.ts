@@ -36,7 +36,7 @@ export class SidenavItemsComponent implements OnInit {
     //   this._navService.setAppName(appName);
     // }
     this._navService.setAppName(appName);
-    if(appName == 'Accueil') {
+    if (appName === 'Accueil') {
       this._sideNavService.setHome(this._sideNavService.sidenav);
     } else {
       this._sideNavService.setModule(this._sideNavService.sidenav);

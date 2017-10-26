@@ -9,7 +9,8 @@
       [idList]="1001"
       [charNumber]="3"
       [listLength]="20"
-      (taxonChanged)="taxonChanged($event)">
+      (taxonChanged)="taxonChanged($event)"
+      (taxonDeleted)="deleteAndRefresh('cd_nom')">
       </pnx-taxonomy>
     </div>
     
@@ -29,7 +30,8 @@
       <pnx-date
         placeholder="{{ 'Releve.MinDate' | translate }} "
         [parentFormControl]="dateMin"
-        (dateChanged)="dateMinChanged($event)">
+        (dateChanged)="dateMinChanged($event)"
+        (dateDeleted)= "deleteAndRefresh('date_up')">
       </pnx-date>
     </div>
     
@@ -38,7 +40,8 @@
         <pnx-date
           placeholder="{{ 'Releve.MaxDate' | translate }} "
           [parentFormControl]="dateMax"
-          (dateChanged)="dateMaxChanged($event)">
+          (dateChanged)="dateMaxChanged($event)"
+          (dateDeleted)= "deleteAndRefresh('date_low')">
         </pnx-date>   
     </div>
  
@@ -52,13 +55,13 @@
       <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="input-group">
-              <input [formControl]="genericFilter" type="text" class="form-control form-control-sm" placeholder="Search" >
+              <input [formControl]="genericFilter" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
               <div class="input-group-btn">
                 <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Par {{filterSelected.name | titlecase}}
+                    {{ 'By' | translate }} {{filterSelected.name | readablePropertie}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item font-md" *ngFor="let list of allColumns" (click)="onChangeFilterOps(list)">Par {{list.name | titlecase}}</a>
+                  <a class="dropdown-item font-md" *ngFor="let list of filteredColumns" (click)="onChangeFilterOps(list)"> {{ 'By' | translate }} {{list.name | readablePropertie}}</a>
                 </div>
               </div>
             </div>        
@@ -66,7 +69,7 @@
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
             <div class="dropdown">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Colonnes
+                    {{ 'Columns' | translate }}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a *ngFor="let col of allColumns" class="dropdown-item">
@@ -76,7 +79,7 @@
                     (click)='toggle(col)'
                     [checked]='isChecked(col)'
                   />
-                  <label [attr.for]="col.name">{{col.name}}</label></a>
+                  <label [attr.for]="col.name">{{col.name | readablePropertie }}</label></a>
 
                 </div>
               </div>
@@ -117,14 +120,21 @@
   <ngx-datatable-column
   maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template>
-    <i mdTooltip="Edit relevé {{row.id}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row.id)"></i>
+    <i mdTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="onEditReleve(row[mapListService.idName])"></i>
   </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column
   maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template> 
-    <i  mdTooltip="Info relevé {{row.id}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row.id)"></i>
+    <i  mdTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" (click)="onDetailReleve(row[mapListService.idName])"></i>
+  </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    maxWidth="50">
+  <ng-template let-row="row" ngx-datatable-cell-template>
+      <i #iElement mdTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"
+      (click)="openDeleteModal($event, modalConfirm, iElement, row)"></i>      
   </ng-template>
   </ngx-datatable-column>
     <ngx-datatable-column
@@ -133,5 +143,17 @@
     [prop]="col.prop">
     </ngx-datatable-column>
   </ngx-datatable>
+  
+
+  <ng-template #modalConfirm let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
+        <button type="button" class="btn btn-danger" (click)="c(); deleteObs()"> {{'Delete' | translate }} </button>
+        
+      </div>
+    </ng-template>
 
 

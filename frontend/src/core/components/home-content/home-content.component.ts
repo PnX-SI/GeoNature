@@ -3,14 +3,15 @@ import { AppConfig } from '../../../conf/app.config'
 import { NavService } from '../../services/nav.service';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 import { MapService } from '../../GN2Common/map/map.service'
+import { SideNavService } from '../sidenav-items/sidenav.service';
 
 @Component({
-  selector: 'pnx-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'pnx-home-content',
+  templateUrl: './home-content.component.html',
+  styleUrls: ['./home-content.component.scss'],
   providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
 })
-export class HomeComponent implements OnInit {
+export class HomeContentComponent implements OnInit {
   private appName: string;
 
   // test chartjs
@@ -53,12 +54,13 @@ export class HomeComponent implements OnInit {
         }
     }
 
-  constructor(private _navService: NavService) {
+  constructor(private _navService: NavService, private _SideNavService: SideNavService) {
     _navService.setAppName('Accueil');
     this.appName =  AppConfig.appName;
   }
 
   ngOnInit() {
+    this._SideNavService.sidenav.open();
   }
 
 }

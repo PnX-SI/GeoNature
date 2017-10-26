@@ -63,3 +63,12 @@ cursor: pointer;
 ul {
     list-style-type: none;
   }
+
+
+ngb-toolti-window {
+    z-index: 1000;
+}
+
+.modal-body {
+    text-align: center;
+}

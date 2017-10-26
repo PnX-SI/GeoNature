@@ -41,9 +41,14 @@ export class DataFormService {
     .map(res => res.json());
   }
 
-  getTaxonInfo(cd_nom: number){
+  getTaxonInfo(cd_nom: number) {
    return this._http.get(`${AppConfig.API_TAXHUB}taxref/${cd_nom}`)
-    .map(res => res.json())
+    .map(res => res.json());
+  }
+
+  getRegneAndGroup2Inpn() {
+    return this._http.get(`${AppConfig.API_TAXHUB}taxref/regnewithgroupe2`)
+    .map(res => res.json());
   }
 
   getGeoInfo(geojson) {
@@ -51,14 +56,42 @@ export class DataFormService {
       .map(response => response.json());
   }
 
+  getGeoIntersection(geojson, idType?) {
+    if (idType) {
+      geojson['id_type'] = idType;
+    }
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
+    .map(response => response.json());
+  }
+
+  getFormatedGeoIntersection(geojson, idType?) {
+    if (idType) {
+      geojson['id_type'] = idType;
+    }
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
+    .map(response => {
+      const res = response.json();
+      const areasIntersected = [];
+      Object.keys(res).forEach(key => {
+        const typeName = res[key]['type_name'];
+        const areas = res[key]['areas'];
+        const formatedAreas = areas.map(area => area.area_name).join(', ');
+        const obj = {'type_name': typeName, 'areas': formatedAreas }
+        areasIntersected.push(obj);
+      });
+      return areasIntersected;
+    });
+
+  }
+
   postContact(form) {
     return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form)
       .map(response => {
-        if(response.status != 200){
-          throw new Error('Post Error')
-        }else{
+        if (response.status !== 200) {
+          throw new Error('Post Error');
+        }else {
           return response.json();
-        } 
+        }
       });
   }
 

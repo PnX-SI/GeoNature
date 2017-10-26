@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ContactFormService } from '../contact-form.service';
 
@@ -11,12 +11,12 @@ import { ContactFormService } from '../contact-form.service';
 export class OccurrenceComponent implements OnInit {
 
   @Input() occurrenceForm: FormGroup;
-
+  @ViewChild('taxon') taxon;
   constructor(public fs: ContactFormService) {
    }
 
   ngOnInit() {
- 
+    document.getElementById('taxonInput').focus();
   }
 
 

@@ -120,6 +120,24 @@ $BODY$
   COST 100;
 
 
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_cd_nomenclature(
+    p_id_type integer,
+    p_id_nomenclature integer)
+  RETURNS character varying AS
+$BODY$
+--Function which return the cd_nomenclature from an id_type and an id_nomenclature
+DECLARE ref character varying;
+  BEGIN
+SELECT INTO ref cd_nomenclature
+FROM ref_nomenclatures.t_nomenclatures n
+WHERE p_id_type = n.id_type AND p_id_nomenclature = n.id_nomenclature;
+return ref;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+
 ----------
 --TABLES--
 ----------

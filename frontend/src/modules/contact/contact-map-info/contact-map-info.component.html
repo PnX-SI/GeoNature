@@ -20,6 +20,8 @@
         <p> <b> Entre le  </b>: {{dateMin}}  <b> et le </b>: {{dateMax}}  </p> 
         <p> <b> Altitude min  </b>: {{releve?.properties.altitude_min }}<b> Altitude max  </b>: {{releve?.properties.altitude_max }} </p>
 
+        <p> <pnx-areas-intersected-modal [geojson]="releve"> </pnx-areas-intersected-modal> </p>
+
           <label> Taxons observé(s): </label>
           <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">

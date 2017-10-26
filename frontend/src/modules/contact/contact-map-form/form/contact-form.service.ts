@@ -4,18 +4,20 @@ import { AppConfig } from '../../../../conf/app.config';
 import { Http } from '@angular/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ContactConfig } from '../../contact.config';
 
 
 @Injectable()
 export class ContactFormService {
-  currentTaxon: any;
-  municipalities: string;
-  indexCounting: number;
-  nbCounting: Array<string>;
-  indexOccurrence: number = 0;
-  taxonsList = [];
-  showOccurrence: boolean;
-  editionMode: boolean;
+  public currentTaxon: any;
+  public indexCounting: number;
+  public nbCounting: Array<string>;
+  public indexOccurrence: number = 0;
+  public taxonsList = [];
+  public showOccurrence: boolean;
+  public editionMode: boolean;
+  public isEdintingOccurrence: boolean;
+
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -26,6 +28,11 @@ export class ContactFormService {
     this.indexCounting = 0;
     this.nbCounting = [''];
     this.showOccurrence = false;
+    this.isEdintingOccurrence = false;
+
+    this._router.events.subscribe(value => {
+      this.isEdintingOccurrence = false;
+    });
    }// end constructor
 
    getReleve(id) {
@@ -35,20 +42,23 @@ export class ContactFormService {
 
    initObservationForm(data?): FormGroup {
     return this._fb.group({
-      geometry: [data ? data.geometry: null, Validators.required],
+      geometry: [data ? data.geometry : null, Validators.required],
       properties: this._fb.group({
         id_releve_contact : [data ? data.properties.id_releve_contact : null],
-        id_dataset: [data ? data.properties.id_dataset:null, Validators.required],
+        id_dataset: [data ? data.properties.id_dataset : null, Validators.required],
         id_digitiser : null,
-        date_min: [data ? this.formatDate(data.properties.date_min): null, Validators.required],
-        date_max: [data ? this.formatDate(data.properties.date_max): null, Validators.required],
-        altitude_min: data ? data.properties.altitude_min: null,
-        altitude_max : data ? data.properties.altitude_max: null,
+        date_min: [data ? this.formatDate(data.properties.date_min) : null, Validators.required],
+        date_max: [data ? this.formatDate(data.properties.date_max) : null, Validators.required],
+        hour_min: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
+        hour_max: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
+        altitude_min: data ? data.properties.altitude_min : null,
+        altitude_max : data ? data.properties.altitude_max : null,
         deleted: false,
-        municipalities : null,
         meta_device_entry: 'web',
-        comment: data ? data.properties.comment: null,
-        observers: [data ? this.formatObservers(data.properties.observers): null, Validators.required],
+        comment: data ? data.properties.comment : null,
+        observers: [data ? this.formatObservers(data.properties.observers) : null,
+           !ContactConfig.observersAsText ? Validators.required : null],
+        //observersAsText: [data ? data.properties.observersAsText : null, ContactConfig.observersAsText ? Validators.required : null ],
         t_occurrences_contact: [new Array()]
       })
     });
@@ -58,7 +68,7 @@ export class ContactFormService {
     return this._fb.group({
       id_releve_contact : [data ? data.id_releve_contact : null],
       id_nomenclature_obs_technique : [data ? data.id_nomenclature_obs_technique : null, Validators.required],
-      id_nomenclature_obs_meth: data ? data.id_nomenclature_obs_meth : null,
+      id_nomenclature_obs_meth: [data ? data.id_nomenclature_obs_meth : null, Validators.required],
       id_nomenclature_bio_condition: [data ? data.id_nomenclature_bio_condition : null, Validators.required],
       id_nomenclature_bio_status : data ? data.id_nomenclature_bio_status : null,
       id_nomenclature_naturalness : data ? data.id_nomenclature_naturalness : null,
@@ -87,13 +97,14 @@ export class ContactFormService {
       id_nomenclature_sex: [data ? data.id_nomenclature_sex : null, Validators.required],
       id_nomenclature_obj_count: [data ? data.id_nomenclature_obj_count : null, Validators.required],
       id_nomenclature_type_count: data ? data.id_nomenclature_type_count : null,
-      count_min : data ? data.count_min : null,
-      count_max : data ? data.count_max : null
+      count_min : [data ? data.count_min : null, Validators.pattern('[1-9]+[0-9]*')],
+      count_max : [data ? data.count_max : null,  Validators.pattern('[1-9]+[0-9]*')]
     });
     }
 
 
   initCountingArray(data?: Array<any>): FormArray {
+    // init the counting form with the data, or emty
     const arrayForm = this._fb.array([]);
 
     if (data) {
@@ -115,23 +126,25 @@ export class ContactFormService {
     }
 
   removeCounting(index: number, countingForm: FormArray) {
-    //countingForm.controls.splice(index, 1);
     countingForm.removeAt(index);
     countingForm.value.splice(index, 1);
     this.nbCounting.splice(index, 1);
 
   }
 
-  addOccurence(index) {
-    // push the current taxon in the taxon list and refresh the currentTaxon
-    this.taxonsList.push(this.currentTaxon);
+  addOccurrence(index) {
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
     this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;
+    // push or update the occurrence
     if (this.releveForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
+      // push the current taxon in the taxon list and refresh the currentTaxon
+      this.taxonsList.push(this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
+
+      this.taxonsList.splice(index, 0, this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact[this.indexOccurrence] = this.occurrenceForm.value;
     }
     // set occurrence index
@@ -146,16 +159,19 @@ export class ContactFormService {
     // reset the counting
     this.countingForm = this.initCountingArray();
     this.showOccurrence = false;
+    this.isEdintingOccurrence = false;
   }
 
   editOccurence(index) {
+    // set editing occurrence to true
+    this.isEdintingOccurrence = true;
     // set showOccurrence to true
     this.showOccurrence = true;
     this.taxonsList.splice(index, 1);
     // set the current index
     this.indexOccurrence = index;
     // get the occurrence data from releve form
-    let occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
     const countingData = occurenceData.cor_counting_contact;
     const nbCounting = countingData.length;
     // load the taxons info
@@ -198,7 +214,7 @@ export class ContactFormService {
   formatObservers(observers){
     const observersTab = [];
     observers.forEach(observer => {
-      observer['nom_complet'] = observer.nom_role + ' ' + observer.prenom_role
+      observer['nom_complet'] = observer.nom_role + ' ' + observer.prenom_role;
       observersTab.push(observer);
     });
     return observersTab;

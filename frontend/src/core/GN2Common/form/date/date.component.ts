@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, EventEmitter, Output, ElementRef } from '@angular/core';
-import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, Input, EventEmitter, Output, ElementRef, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs/Subscription';
 
 
 @Component({
@@ -12,12 +12,14 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: 'date.component.html'
 })
 
-export class DateComponent implements OnInit {
+export class DateComponent implements OnInit, OnDestroy {
   public elementRef: ElementRef;
   @Input() placeholder: string;
   @Input() parentFormControl: FormControl;
   @Output() dateChanged = new EventEmitter<any>();
+  @Output() dateDeleted = new EventEmitter<any>();
   dynamicId;
+  public changeSub: Subscription;
   public today: NgbDateStruct;
   constructor(private _dateParser: NgbDateParserFormatter, myElement:ElementRef) {
     this.elementRef = myElement;
@@ -27,9 +29,14 @@ export class DateComponent implements OnInit {
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
 
-    this.parentFormControl.valueChanges.subscribe(date => {
-      this.dateChanged.emit(this._dateParser.format(date));
-    });
+    this.changeSub = this.parentFormControl.valueChanges
+      .subscribe(date => {
+        if (date !== null) {
+          this.dateChanged.emit(this._dateParser.format(date));
+        } else {
+          this.dateDeleted.emit();
+        }
+      });
    }
 
    openDatepicker(id) {
@@ -46,5 +53,8 @@ export class DateComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.changeSub.unsubscribe();
+  }
 
 }

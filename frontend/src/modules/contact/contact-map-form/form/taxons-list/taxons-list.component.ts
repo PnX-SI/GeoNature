@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ContactFormService } from '../../../contact-map-form/form/contact-form.service';
+import { CommonService } from '../../../../../core/GN2Common/service/common.service';
 
 @Component({
   selector: 'pnx-taxons-list',
@@ -10,7 +12,7 @@ export class TaxonsListComponent implements OnInit {
   @Output() taxonRemoved = new EventEmitter<number>();
   @Output() taxonEdited = new EventEmitter<number>();
 
-  constructor() { }
+  constructor( private _cfs: ContactFormService, private _commonService: CommonService) { }
 
   ngOnInit() {
   }
@@ -18,7 +20,11 @@ export class TaxonsListComponent implements OnInit {
     this.taxonRemoved.emit(index);
   }
   editTaxons(index): void {
-    this.taxonEdited.emit(index);
+    if (!this._cfs.isEdintingOccurrence) {
+      this.taxonEdited.emit(index);
+    }else {
+      this._commonService.translateToaster('warning', 'Taxon.CurrentlyEditing');
+    }
   }
 
 

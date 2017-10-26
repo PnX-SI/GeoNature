@@ -20,6 +20,9 @@
     "Programs": "程式",
     "Datasets": "数据集",
     "LatestObservations": "最新观察",
+    "Search": "Search",
+    "By": "By",
+    "Columns": "Columns",
   
     "Map":{
         "SearchLocation":"搜索位置",
@@ -39,7 +42,13 @@
         "Municipalities":"各市",
         "Dataset":"数据集",
         "Comment":"评论",
-        "SaveReleve": "保存声明"
+        "SaveReleve": "保存声明",
+        "DateMaxError": "Date max can not be inferior to the date min",
+        "SavedTaxon": "Saved taxon(s)",
+        "InfoGeo": "Geographic informations of the releve",
+        "Edit": "Edit releve",
+        "Info": "Informations releve",
+        "Delete": "Delete relevé"
     },
     "Taxon":{
         "ObservedTaxon":"观察到的红豆杉",
@@ -66,7 +75,8 @@
         "DigitalProof":"Preuve digitale",
         "NonDigitalProof":"Preuve non digitale",
         "SaveTaxon":"保存分类",
-        "AddTaxon":"Ajouter un taxon"
+        "AddTaxon":"Ajouter un taxon",
+        "CurrentlyEditing": "Please first validate the currently editing taxon"
     },
     "Counting":{
         "Counting":"Dénombrement",

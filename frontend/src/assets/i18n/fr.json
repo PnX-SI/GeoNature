@@ -20,6 +20,11 @@
     "Programs": "Programmes",
     "Datasets": "Jeux de données",
     "LatestObservations": "Dernières observations",
+    "Search": "Rechercher",
+    "By": "Par",
+    "Columns": "Colonnes",
+    "Cancel": "Annuler",
+    "Delete": "Supprimer",
   
     "Map":{
         "SearchLocation":"Rechercher un lieu",
@@ -27,21 +32,30 @@
         "AddPoint":"Localisez l'observation (point)",
         "AddLine":"Localisez l'observation (ligne)",
         "AddPolygon":"Localisez l'observation (polygone)",
-        "ZoomWarning": "Echelle de saisie inadapté, veuillez zoomer davantage pour pointer le relevé"
+        "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
     },
     "Releve":{
         "Releve":"Relevé",
         "Observer":"Observateur",
         "Observers":"Observateur(s)",
-        "MinDate":"Date min",
-        "MaxDate":"Date max",
+        "MinDate":"Date début",
+        "MaxDate":"Date fin",
+        "HourMin": "Heure début",
+        "HourMax": "Heure fin",
+        "HourFormat": "hh:mm",
         "MinAltitude":"Alt min",
         "MaxAltitude":"Alt max",
         "Municipality":"Commune",
         "Municipalities":"Commune(s)",
         "Dataset":"Jeu de données",
         "Comment":"Commentaire",
-        "SaveReleve":"Enregistrer le relevé"
+        "SaveReleve":"Enregistrer le relevé",
+        "DateMaxError": "La date max ne peut pas être superieure à la date min",
+        "SavedTaxon": "Taxon(s) enregistré(s)",
+        "InfoGeo": "Informations géographiques du relevé",
+        "Edit": "Editer le relevé",
+        "Info": "Informations relevé",
+        "Delete": "Supprimer le relevé"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon observé",
@@ -65,10 +79,11 @@
         "ValidationStatus": "Statut de validation",
         "ExistProof": "Preuve d'existance",
         "SampleNumber":"Numéro du prélevement",
-        "DigitalProof":"Preuve digitale",
-        "NonDigitalProof":"Preuve non digitale",
+        "DigitalProof":"Preuve numérique",
+        "NonDigitalProof":"Preuve non numérique",
         "SaveTaxon":"Enregistrer le taxon",
-        "AddTaxon":"Ajouter le taxon"
+        "AddTaxon":"Ajouter le taxon",
+        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau"
     },
     "Counting":{
         "Counting":"Dénombrement",
@@ -81,7 +96,8 @@
         "CountingObject":"Objet du dénombrement",
         "CountingType":"Type de dénombrement",
         "Numbers":"Effectif",
-        "Total":"Total"
+        "Total":"Total",
+        "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
     },
     "IntroMessage":"Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
     "ErrorMessage":"Dommage, c'est pas bon"

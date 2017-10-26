@@ -34,6 +34,8 @@ class TRelevesContact(serializableGeoModel):
     id_digitiser = db.Column(db.Integer, ForeignKey('utilisateurs.t_roles.id_role'))
     date_min = db.Column(db.DateTime)
     date_max = db.Column(db.DateTime)
+    hour_min = db.Column(db.DateTime)
+    hour_max = db.Column(db.DateTime)
     altitude_min = db.Column(db.Integer)
     altitude_max = db.Column(db.Integer)
     meta_device_entry = db.Column(db.Unicode)

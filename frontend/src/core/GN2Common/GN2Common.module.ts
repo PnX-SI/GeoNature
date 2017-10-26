@@ -11,10 +11,11 @@ import { NomenclatureComponent } from './form/nomenclature/nomenclature.componen
 import { ObserversComponent } from './form/observers/observers.component';
 import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
+import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 
 import { MapComponent } from './map/map.component';
-import { MarkerComponent } from './map/marker/marker.component'
-import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component'
+import { MarkerComponent } from './map/marker/marker.component';
+import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
 
 import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
@@ -25,11 +26,15 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
+// pipe
+
+import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 
 // Service
 import { MapService } from './map/map.service';
 import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
+import { CommonService } from './service/common.service';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,6 +64,7 @@ export function HttpLoaderFactory(http: Http) {
     ObserversComponent,
     DateComponent,
     TaxonomyComponent,
+    AreasIntersectedComponent,
     MapComponent,
     MarkerComponent,
     GeojsonComponent,
@@ -67,17 +73,20 @@ export function HttpLoaderFactory(http: Http) {
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
+    ReadablePropertiePipe
   ],
   providers : [
     MapService,
     DataFormService,
-    MapListService
+    MapListService,
+    CommonService
     ],
   exports: [
     NomenclatureComponent,
     ObserversComponent,
     DateComponent,
     TaxonomyComponent,
+    AreasIntersectedComponent,
     MapComponent,
     MarkerComponent,
     LeafletDrawComponent,
@@ -86,6 +95,7 @@ export function HttpLoaderFactory(http: Http) {
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
+    ReadablePropertiePipe,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
