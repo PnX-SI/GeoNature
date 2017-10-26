@@ -66,7 +66,8 @@ CREATE TABLE t_occurrences_contact (
     id_nomenclature_diffusion_level integer DEFAULT 163,
     id_validator integer,
     determiner character varying(255),
-    determination_method character varying(255),
+    id_nomenclature_determination_method integer DEFAULT 370,
+    determination_method_as_text text,
     cd_nom integer,
     nom_cite character varying(255),
     meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'',NULL)',
@@ -86,6 +87,7 @@ COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_naturalness IS 'Correspo
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_determination_method IS 'Correspondance nomenclature GEONATURE = meth_determin';
 
 CREATE SEQUENCE t_occurrences_contact_id_occurrence_contact_seq
     START WITH 1
@@ -186,6 +188,9 @@ ALTER TABLE ONLY t_occurrences_contact
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY t_occurrences_contact
+    ADD CONSTRAINT fk_t_occurrences_contact_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 ALTER TABLE ONLY cor_counting_contact
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_contact) REFERENCES t_occurrences_contact(id_occurrence_contact) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -249,6 +254,9 @@ ALTER TABLE t_occurrences_contact
 
 ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
+
+ALTER TABLE t_occurrences_contact
+  ADD CONSTRAINT check_t_occurrences_contact_determination_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_determination_method,106));
 
 
 ALTER TABLE cor_counting_contact
