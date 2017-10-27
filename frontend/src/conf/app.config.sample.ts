@@ -1,7 +1,13 @@
 export const AppConfig = {
   appName : 'Geonature 2',
   defaultLanguage:  'fr',
-  CAS_AUTHENTIFICATION: true,
+  CAS: {
+    CAS_AUTHENTIFICATION: false,
+    CAS_LOGIN_URL: 'https://inpn.mnhn.fr/auth/login',
+    CAS_LOGOUT_URL: 'https://inpn.mnhn.fr/auth/login',
+    CAS_VALIDATION_URL: 'https://inpn.mnhn.fr/auth/serviceValidate'
+  },
+  URL_APPLICATION: 'Mon URL',
   API_ENDPOINT: 'http://127.0.0.1:8000/',
   API_TAXHUB :  'http://127.0.0.1:5000/api/',
   MAP: {

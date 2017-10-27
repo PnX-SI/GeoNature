@@ -11,7 +11,7 @@ export class User {
   constructor(
     public userName: string,
     public rigths: any,
-    public organism: string,
+    public organism: any,
 ) {
 }
 }
@@ -39,6 +39,34 @@ export class AuthService {
     this._cookie.set('token', token);
   }
 
+  fakeSigninUser(username: string, password: string) {
+    // call api
+    if (username === 'admin') {
+      const response = {
+        'userName': 'admin',
+        'organism': {
+          'organism_name': 'PNE',
+          'organism_id': 2
+        },
+        'applications_rigths': [
+         {'id_application': 14, 'C': 3, 'R': 3, 'U':3, 'V': 3, 'E': 3, 'D': 3 }
+        ]};
+        this.currentUser = new User(response.userName, response.applications_rigths, response.organism);
+    } else {
+      const response = {'userName': 'contributeur',
+      'organism': {
+        'organism_name': 'IGN',
+        'organism_id': 3
+      },
+      'applications_rigths': [
+         {'id_application': 14, 'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
+        ]};
+      this.currentUser = new User(response.userName, response.applications_rigths, response.organism);
+    }
+    this.authentified = true;
+    this.router.navigate(['']);
+  }
+
   signinUser(username: string, password: string) {
     this._http.post(`${AppConfig.API_ENDPOINT}/api/auth/login`,
       {'login': username,
@@ -47,8 +75,8 @@ export class AuthService {
     }).subscribe(response => {
       const data = response.json();
       console.log(data);
-      
-      this.setCurrentUser(data.user, data.expires)
+
+      this.setCurrentUser(data.user, data.expires);
       // this.router.navigate(['']);
       // this.toastrService.success('', 'Login success', this.toastrConfig);
       // this.authentified = true;
