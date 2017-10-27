@@ -12,6 +12,7 @@ import { ContactMapListComponent } from './contact-map-list/contact-map-list.com
 import { ContactMapInfoComponent } from './contact-map-info/contact-map-info.component';
 // Service
 import { ContactFormService } from './contact-map-form/form/contact-form.service';
+import { ContactService } from './services/contact.service';
 
 
 @NgModule({
@@ -29,7 +30,10 @@ import { ContactFormService } from './contact-map-form/form/contact-form.service
     TaxonsListComponent,
     ContactMapListComponent,
   ],
-  providers : [ContactFormService],
+  providers : [
+    ContactFormService,
+    ContactService
+  ],
   bootstrap: [ContactMapFormComponent]
 })
 export class ContactModule {

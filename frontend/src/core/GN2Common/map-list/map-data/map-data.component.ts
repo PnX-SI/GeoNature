@@ -22,6 +22,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
   @Output() paramDeleted = new EventEmitter<any>();
+  @Output() onDeleteRow = new EventEmitter<number>();
   filterList: Array<any>;
   filteredColumns: Array<any>;
   filterSelected: any;
@@ -114,9 +115,6 @@ export class MapDataComponent implements OnInit, OnChanges {
     this._router.navigate([this.pathInfo, idReleve]);
   }
 
-  onDeleteReleve(idReleve) {
-    // TODO
-  }
 
   redirect() {
     this._router.navigate([this.pathEdit]);
@@ -174,14 +172,15 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.ngbModal.open(modal);
   }
 
-  deleteObs() {
+  deleteRow() {
     const deleteId = this.selected[0][this.mapListService.idName];
     this.rows = this.rows.filter(row => {
       return row[this.mapListService.idName] !==  deleteId;
     });
     this.mapListService.page.totalElements = this.mapListService.page.totalElements -1 ;
     this.selected = [];
-    // call the api to delete
+
+    this.onDeleteRow.emit(deleteId);
   }
 
   ngOnChanges(changes) {

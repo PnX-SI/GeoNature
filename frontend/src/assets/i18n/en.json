@@ -55,7 +55,8 @@
         "InfoGeo": "Geographic informations of the releve",
         "Edit": "Edit releve",
         "Info": "Informations releve",
-        "Delete": "Delete releve"
+        "Delete": "Delete releve",
+        "DeleteSuccessfully": "Releve deleted successfully"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",

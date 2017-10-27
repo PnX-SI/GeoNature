@@ -6,27 +6,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
---------------------
---PUBLIC FUNCTIONS--
---------------------
-CREATE OR REPLACE FUNCTION public.fct_trg_meta_dates_change()
-  RETURNS trigger AS
-$BODY$
-begin
-        if(TG_OP = 'INSERT') THEN
-                NEW.meta_create_date = NOW();
-        ELSIF(TG_OP = 'UPDATE') THEN
-                NEW.meta_update_date = NOW();
-                if(NEW.meta_create_date IS NULL) THEN
-                        NEW.meta_create_date = NOW();
-                END IF;
-        end IF;
-        return NEW;
-end;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 CREATE SCHEMA gn_meta;
 
 SET search_path = gn_meta, pg_catalog;
@@ -98,6 +77,11 @@ CREATE TABLE t_datasets (
     id_organism_funder integer NOT NULL,
     public_data boolean DEFAULT true NOT NULL,
     default_validity boolean,
+    id_nomenclature_resource_type integer NOT NULL DEFAULT 351,
+    id_nomenclature_data_type integer NOT NULL DEFAULT 353,
+    ecologic_group  character varying(50),
+    id_nomenclature_sampling_plan_type integer NOT NULL,
+    id_nomenclature_sampling_units_type integer NOT NULL,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone
 );
@@ -156,19 +140,32 @@ ALTER TABLE ONLY cor_role_dataset_application
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_financeur FOREIGN KEY (id_organism_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_financeur FOREIGN KEY (id_organism_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_gestionnaire FOREIGN KEY (id_organism_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_gestionnaire FOREIGN KEY (id_organism_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_producteur FOREIGN KEY (id_organism_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_producteur FOREIGN KEY (id_organism_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_proprietaire FOREIGN KEY (id_organism_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_proprietaire FOREIGN KEY (id_organism_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE NO ACTION;
+    ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_resource_type FOREIGN KEY (id_nomenclature_resource_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_data_type FOREIGN KEY (id_nomenclature_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_sampling_plan_type FOREIGN KEY (id_nomenclature_sampling_plan_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_sampling_units_type FOREIGN KEY (id_nomenclature_sampling_units_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 
 ------------
@@ -181,6 +178,22 @@ CREATE TRIGGER tri_meta_dates_change_t_datasets
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
+--------------
+--CONSTRAINS--
+--------------
+ALTER TABLE t_datasets
+  ADD CONSTRAINT check_t_datasets_resource_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_resource_type,102));
+
+ALTER TABLE t_datasets
+  ADD CONSTRAINT check_t_datasets_data_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_type,103));
+
+ALTER TABLE t_datasets
+  ADD CONSTRAINT check_t_datasets_sampling_plan_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sampling_plan_type,104));
+
+ALTER TABLE t_datasets
+  ADD CONSTRAINT check_t_datasets_sampling_units_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sampling_units_type,105));
+
+
 ---------------
 --SAMPLE DATA--
 ---------------
@@ -191,5 +204,5 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 (1,NULL,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
 ,(2,2,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
 ,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
-,(4,1,'local_srid','Valeur du SRID local','2154',NULL)
-,(5,1,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);
+,(4,NULL,'local_srid','Valeur du SRID local','2154',NULL)
+,(5,NULL,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);

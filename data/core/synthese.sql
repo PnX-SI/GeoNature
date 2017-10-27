@@ -81,20 +81,20 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
-COMMENT ON COLUMN id_nomenclature_typ_inf_geo IS 'Correspondance nomenclature INPN = type_info_geo = 23';
-COMMENT ON COLUMN id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs = 14';
-COMMENT ON COLUMN id_nomenclature_obs_technique IS 'Correspondance nomenclature CAMPANULE = technique_obs = 100';
-COMMENT ON COLUMN id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio = 13';
-COMMENT ON COLUMN id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio = 7';
-COMMENT ON COLUMN id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite = 8';
-COMMENT ON COLUMN id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist = 15';
-COMMENT ON COLUMN id_nomenclature_valid_status IS 'Correspondance nomenclature GEONATURE = statut_valide = 101';
-COMMENT ON COLUMN id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis = 5';
-COMMENT ON COLUMN id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie = 10';
-COMMENT ON COLUMN id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe = 9';
-COMMENT ON COLUMN id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr = 6';
-COMMENT ON COLUMN id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr = 21';
-COMMENT ON COLUMN id_nomenclature_sensitivity IS 'Correspondance nomenclature INPN = sensibilite = 16';
+COMMENT ON COLUMN synthese.id_nomenclature_typ_inf_geo IS 'Correspondance nomenclature INPN = type_info_geo = 23';
+COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs = 14';
+COMMENT ON COLUMN synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature CAMPANULE = technique_obs = 100';
+COMMENT ON COLUMN synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio = 13';
+COMMENT ON COLUMN synthese.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio = 7';
+COMMENT ON COLUMN synthese.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite = 8';
+COMMENT ON COLUMN synthese.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist = 15';
+COMMENT ON COLUMN synthese.id_nomenclature_valid_status IS 'Correspondance nomenclature GEONATURE = statut_valide = 101';
+COMMENT ON COLUMN synthese.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis = 5';
+COMMENT ON COLUMN synthese.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie = 10';
+COMMENT ON COLUMN synthese.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe = 9';
+COMMENT ON COLUMN synthese.id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr = 6';
+COMMENT ON COLUMN synthese.id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr = 21';
+COMMENT ON COLUMN synthese.id_nomenclature_sensitivity IS 'Correspondance nomenclature INPN = sensibilite = 16';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
