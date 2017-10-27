@@ -17,6 +17,7 @@ cp data/modules/contact/contact.sql /tmp/contact.sql
 sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/contact.sql
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/contact.sql  &>> log/install_contact_schema.log
 
+print "SAMPLE $add_sample_data "
 if $add_sample_data
 	then
 	echo "Insert sample data in contact schema..."
