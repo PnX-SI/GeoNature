@@ -230,7 +230,7 @@ def getViewReleveList():
             ).filter(or_(TDatasets.id_organism_owner == int(parameters.get('organism')),
               TDatasets.id_organism_producer == int(parameters.get('organism')),
               TDatasets.id_organism_administrator == int(parameters.get('organism')),
-              TDatasets.id_organism_administrator == int(parameters.get('organism'))
+              TDatasets.id_organism_funder == int(parameters.get('organism'))
             ))
     # Generic Filters
     for param in parameters:
