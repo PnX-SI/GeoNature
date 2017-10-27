@@ -105,7 +105,8 @@ class TOccurrencesContact(serializableModel):
     id_nomenclature_diffusion_level = db.Column(db.Integer)
     id_validator = db.Column(db.Integer)
     determiner = db.Column(db.Unicode)
-    determination_method = db.Column(db.Unicode)
+    id_nomenclature_determination_method = db.Column(db.Integer)
+    determination_method_as_text = db.Column(db.Unicode)
     cd_nom = db.Column(db.Integer)
     nom_cite = db.Column(db.Unicode)
     meta_v_taxref = db.Column(
