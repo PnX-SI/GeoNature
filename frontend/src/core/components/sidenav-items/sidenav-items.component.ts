@@ -26,7 +26,7 @@ export class SidenavItemsComponent implements OnInit {
   }
   ngOnInit() {
   }
-  onSetApp(appName: string) {
+  onSetApp(app) {
     /** comment for dev **/
     // Test Authenticate if not valid, show dialog message.
     // if (!this._authService.isAuthenticated() && appName !== 'Accueil') {
@@ -35,8 +35,8 @@ export class SidenavItemsComponent implements OnInit {
     // } else {
     //   this._navService.setAppName(appName);
     // }
-    this._navService.setAppName(appName);
-    if (appName === 'Accueil') {
+    this._navService.setAppName(app);
+    if (app.appName === 'Accueil') {
       this._sideNavService.setHome(this._sideNavService.sidenav);
     } else {
       this._sideNavService.setModule(this._sideNavService.sidenav);

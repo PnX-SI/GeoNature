@@ -12,6 +12,7 @@ import { ObserversComponent } from './form/observers/observers.component';
 import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
+import { DatasetsComponent } from './form/datasets/datasets.component';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
@@ -73,7 +74,8 @@ export function HttpLoaderFactory(http: Http) {
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
-    ReadablePropertiePipe
+    ReadablePropertiePipe,
+    DatasetsComponent
   ],
   providers : [
     MapService,
@@ -96,6 +98,7 @@ export function HttpLoaderFactory(http: Http) {
     MapDataComponent,
     DisableControlDirective,
     ReadablePropertiePipe,
+    DatasetsComponent,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,

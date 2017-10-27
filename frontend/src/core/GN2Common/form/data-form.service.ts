@@ -26,8 +26,12 @@ export class DataFormService {
       .map(response => response.json());
   }
 
-  getDatasets() {
-    return this._http.get(`${AppConfig.API_ENDPOINT}meta/datasets`)
+  getDatasets(idOrganism?) {
+    const params: URLSearchParams = new URLSearchParams();
+    if (idOrganism) {
+      params.set('organism', idOrganism);
+    }
+    return this._http.get(`${AppConfig.API_ENDPOINT}meta/datasets`, {search: params} )
       .map(response => response.json());
   }
 

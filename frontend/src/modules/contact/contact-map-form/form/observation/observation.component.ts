@@ -38,9 +38,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.contactConfig = ContactConfig;
 
-    // load datasets
-    this._dfs.getDatasets()
-      .subscribe(res => this.dataSets = res);
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
       .subscribe(geojson => {

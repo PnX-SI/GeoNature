@@ -4,25 +4,25 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class NavService {
     // Observable string sources
-    private _appName = new Subject<string>();
-    gettingAppName = this._appName.asObservable();
+    private _app = new Subject<any>();
+    gettingCurrentApp = this._app.asObservable();
     // List of the apps
     private _nav = [{}];
     constructor() {
-        this._nav = [{route: '/', appName: 'Accueil', icon: 'home'},
-            {route: '/synthese', appName: 'Synthèse', icon: 'device_hub'},
-            {route: '/contact', appName: 'Contact FF', icon: 'visibility'},
-            {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist'},
-            {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'filter_vintage'},
-            {route: '/suivi-chiro', appName: 'Suivi Chiro', icon: 'youtube_searched_for'},
-            {route: '/exports', appName: 'Exports', icon: 'cloud_download'},
-            {route: '/prospections', appName: 'Prospections', icon: 'feedback'},
-            {route: '/parametres', appName: 'Paramètres', icon: 'settings'}
+        this._nav = [{route: '/', appName: 'Accueil', icon: 'home', id:'1'},
+            {route: '/synthese', appName: 'Synthèse', icon: 'device_hub', id:'2'},
+            {route: '/contact', appName: 'Contact FF', icon: 'visibility', id: '14'},
+            {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist', id: '15'},
+            {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'filter_vintage', id: '16'},
+            {route: '/suivi-chiro', appName: 'Suivi Chiro', icon: 'youtube_searched_for', id: '17'},
+            {route: '/exports', appName: 'Exports', icon: 'cloud_download', id: '18'},
+            {route: '/prospections', appName: 'Prospections', icon: 'feedback', id: '19'},
+            {route: '/parametres', appName: 'Paramètres', icon: 'settings', id: '20'}
             ];
   }
 
-    setAppName(appName: string): any {
-      this._appName.next(appName);
+    setAppName(app): any {
+      this._app.next(app);
     }
 
     getAppList(): any {
