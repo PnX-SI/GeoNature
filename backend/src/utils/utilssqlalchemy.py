@@ -37,7 +37,8 @@ def testDataType(value, sqlType, paramName):
         try:
             float(value)
         except Exception as e:
-            return '{0} must be an float (decimal separator .)'.format(paramName)
+            return '{0} must be an float (decimal separator .)'\
+                .format(paramName)
     elif sqlType == db.DateTime or isinstance(sqlType, (db.Date, db.DateTime)):
         try:
             from dateutil import parser
@@ -61,28 +62,43 @@ class GenericTable:
 
 def serializeQuery(data, columnDef):
     rows = [
-        {c['name']: getattr(row, c['name']) for c in columnDef if getattr(row, c['name']) is not None} for row in data
+        {
+            c['name']: getattr(row, c['name'])
+            for c in columnDef if getattr(row, c['name']) is not None
+        } for row in data
     ]
     return rows
 
 
 def serializeQueryOneResult(row, columnDef):
-    row = {c['name']: getattr(row, c['name']) for c in columnDef if getattr(row, c['name']) is not None}
+    row = {
+        c['name']: getattr(row, c['name'])
+        for c in columnDef if getattr(row, c['name']) is not None
+    }
     return row
 
 
 class serializableModel(db.Model):
     """
-    Classe qui ajoute une méthode de transformation des données de l'objet en tableau json
+    Classe qui ajoute une méthode de transformation des données
+    de l'objet en tableau json
+
     Paramètres:
        -
     """
     __abstract__ = True
+
     def as_dict(self, recursif=False, columns=()):
         """
-        Méthode qui renvoie les données de l'objet sous la forme d'un dictionnaire
-       :param recursif: Spécifie si on veut que les sous objet (relationship) soit égalament sérialisé
-       :param columns: liste des columns qui doivent être prisent en compte
+        Méthode qui renvoie les données de l'objet sous la forme d'un dict
+
+        Parameters
+        ----------
+            recursif: bollean
+                Spécifie si on veut que les sous objet (relationship)
+                soit également sérialisé
+            columns: liste
+                liste des colonnes qui doivent être prises en compte
         """
         obj = {}
         if (not columns):
@@ -99,10 +115,13 @@ class serializableModel(db.Model):
                     obj[prop.key] = getattr(self, prop.key)
             if ((isinstance(prop, RelationshipProperty)) and (recursif)):
                 if hasattr(getattr(self, prop.key), '__iter__'):
-                    obj[prop.key] = [d.as_dict(recursif) for d in getattr(self, prop.key)]
+                    obj[prop.key] = [
+                        d.as_dict(recursif) for d in getattr(self, prop.key)
+                    ]
                 else:
                     if (getattr(getattr(self, prop.key), "as_dict", None)):
-                        obj[prop.key] = getattr(self, prop.key).as_dict(recursif)
+                        obj[prop.key] = getattr(self, prop.key)\
+                            .as_dict(recursif)
 
         return obj
 
@@ -112,14 +131,20 @@ class serializableGeoModel(serializableModel):
 
     def as_geofeature(self, geoCol, idCol, recursif=False, columns=()):
         """
-        Méthode qui renvoie les données de l'objet sous la forme d'une Feature geojson
+        Méthode qui renvoie les données de l'objet sous la forme
+        d'une Feature geojson
 
         Parameters
         ----------
-           geoCol: Nom de la colonne géométrie
-           idCol: Nom de la colonne primary key
-           recursif: Spécifie si on veut que les sous objet (relationship) soit égalament sérialisé
-           columns: liste des columns qui doivent être prisent en compte
+           geoCol: string
+            Nom de la colonne géométrie
+           idCol: string
+            Nom de la colonne primary key
+           recursif: boolean
+            Spécifie si on veut que les sous objet (relationship) soit
+            également sérialisé
+           columns: liste
+            liste des columns qui doivent être prisent en compte
         """
         geometry = to_shape(getattr(self, geoCol))
         feature = Feature(
@@ -162,10 +187,19 @@ def csv_resp(fn):
 
         headers = Headers()
         headers.add('Content-Type', 'text/plain')
-        headers.add('Content-Disposition', 'attachment', filename='export_%s.csv'%filename)
+        headers.add(
+            'Content-Disposition',
+            'attachment',
+            filename='export_%s.csv' % filename
+        )
 
         for o in data:
-            outdata.append(separator.join('"%s"'%(o.get(i), '')[o.get(i) is None] for i in columns))
+            outdata.append(
+                separator.join(
+                    '"%s"' % (o.get(i), '')
+                    [o.get(i) is None] for i in columns
+                )
+            )
 
         out = '\r\n'.join(outdata)
         return Response(out, headers=headers)
