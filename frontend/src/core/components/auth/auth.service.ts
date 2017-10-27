@@ -14,6 +14,11 @@ export class User {
     public organism: any,
 ) {
 }
+
+getRight(idApplication: number): any {
+  const moduleRight = this.rigths.find(obj => obj.idApplication = idApplication);
+  return moduleRight;
+}
 }
 
 @Injectable()
@@ -45,23 +50,23 @@ export class AuthService {
       const response = {
         'userName': 'admin',
         'organism': {
-          'organism_name': 'PNE',
-          'organism_id': 2
+          'organismName': 'PNE',
+          'organismId': 2
         },
-        'applications_rigths': [
-         {'id_application': 14, 'C': 3, 'R': 3, 'U':3, 'V': 3, 'E': 3, 'D': 3 }
+        'applicationsRigths': [
+         {'idApplication': 14, 'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
         ]};
-        this.currentUser = new User(response.userName, response.applications_rigths, response.organism);
+        this.currentUser = new User(response.userName, response.applicationsRigths, response.organism);
     } else {
       const response = {'userName': 'contributeur',
       'organism': {
-        'organism_name': 'IGN',
-        'organism_id': 3
+        'organismName': 'IGN',
+        'organismId': 3
       },
-      'applications_rigths': [
-         {'id_application': 14, 'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
+      'applicationsRigths': [
+         {'idApplication': 14, 'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
         ]};
-      this.currentUser = new User(response.userName, response.applications_rigths, response.organism);
+      this.currentUser = new User(response.userName, response.applicationsRigths, response.organism);
     }
     this.authentified = true;
     this.router.navigate(['']);
