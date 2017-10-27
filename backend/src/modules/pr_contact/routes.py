@@ -182,7 +182,8 @@ def getViewReleveList():
             return {'error': testT}, 500
         q = q.join(
                 TOccurrencesContact,
-                TOccurrencesContact.id_releve_contact == VReleveList.id_releve_contact
+                TOccurrencesContact.id_releve_contact ==
+                VReleveList.id_releve_contact
             ).filter(
                 TOccurrencesContact.cd_nom == int(parameters.get('cd_nom'))
             )
@@ -190,10 +191,12 @@ def getViewReleveList():
     if 'observer' in parameters:
         q = q.join(
             corRoleRelevesContact,
-            corRoleRelevesContact.columns.id_releve_contact == VReleveList.id_releve_contact
-            ).filter(corRoleRelevesContact.columns.id_role.in_(
+            corRoleRelevesContact.columns.id_releve_contact ==
+            VReleveList.id_releve_contact
+        ).filter(corRoleRelevesContact.columns.id_role.in_(
                 parameters.getlist('observer')
-            ))
+            )
+        )
 
     if 'date_up' in parameters:
         testT = testDataType(parameters.get('date_up'), db.DateTime, 'date_up')
