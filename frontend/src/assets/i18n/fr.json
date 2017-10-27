@@ -76,6 +76,7 @@
         "BiologicalStatus":"Statut biologique",
         "Naturalness":"Naturalite",
         "DeterminationMethod":"Méthode de détermination",
+        "DeterminationMethodComplement":"Commplément méthode de détermination",
         "Determiner":"Déterminateur",
         "ValidationStatus": "Statut de validation",
         "ExistProof": "Preuve d'existance",
