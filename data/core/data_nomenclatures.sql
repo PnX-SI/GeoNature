@@ -95,7 +95,8 @@ INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_f
 ,(103, 'DATA_TYP', 'Type de données', 'Nomenclature des types de données SINP relatifs aux jeux de données', 'SINP', 'Non validé', '2017-10-16 00:00:00', '2017-10-16 00:00:00')
 ,(104, 'SAMPLING_PLAN_TYP', 'Type de plan d''échantillonnage', 'Processus de sélection des unités d''échantillonnage sur lesquelles sont effectuées les mesures des paramètres prévus dans le protocole', 'SINP', 'Non validé', '2017-10-16 00:00:00', '2017-10-16 00:00:00')
 ,(105, 'SAMPLING_UNITS_TYP', 'Type d''unités d''échantillonnage', 'L''unité d''échantillonnage désigne l''unité sur laquelle sont mesurés les paramètres étudiés', 'SINP', 'Non validé', '2017-10-16 00:00:00', '2017-10-16 00:00:00')
-,(106, 'METH_DETERMIN', 'Méthode de détermination', 'Nomenclature des méthodes de détermination, indiquant quelle méthode a été utilisée pour déterminer le sujet.', 'GEONATURE', 'Non validé', '2017-10-26 00:00:00', '2017-10-26 00:00:00');
+,(106, 'METH_DETERMIN', 'Méthode de détermination', 'Nomenclature des méthodes de détermination, indiquant quelle méthode a été utilisée pour déterminer le sujet.', 'GEONATURE', 'Non validé', '2017-10-26 00:00:00', '2017-10-26 00:00:00')
+;
 
 UPDATE bib_nomenclatures_types SET label_default = label_MYDEFAULTLANGUAGE;
 UPDATE bib_nomenclatures_types SET definition_default = definition_MYDEFAULTLANGUAGE;
@@ -455,7 +456,9 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(376, 106, '7', 'Déterminé après élevage', 'Déterminé après élevage', 'La détermination a été réalisées après élevage ou plantation (chenille, graine par exemple)', 'GEONATURE', 'non validé', 0, '106.007', '2017-10-26 00:00:00', NULL, true)
 ,(377, 106, '8', 'Analyse génétique', 'Analyse génétique', 'Une analyse génétique a été réalisée à partir d''un échantillon prélevé sur un ou plusieurs individus', 'GEONATURE', 'non validé', 0, '106.008', '2017-10-26 00:00:00', NULL, true)
 ,(378, 106, '9', 'Examen de la dentition', 'Examen de la dentition', 'La détermination a été réalisées après examen de la dentition', 'GEONATURE', 'non validé', 0, '106.009', '2017-10-26 00:00:00', NULL, true)
-,(379, 106, '10', 'Autre critère', 'Autre critère', 'Le critère de détermination n''est pas présent dans cette liste', 'GEONATURE', 'non validé', 0, '106.010', '2017-10-26 00:00:00', NULL, true);
+,(379, 106, '10', 'Autre critère', 'Autre critère', 'Le critère de détermination n''est pas présent dans cette liste', 'GEONATURE', 'non validé', 0, '106.010', '2017-10-26 00:00:00', NULL, true)
+;
+
 SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 380, true);
 
 UPDATE t_nomenclatures SET label_default = label_MYDEFAULTLANGUAGE;

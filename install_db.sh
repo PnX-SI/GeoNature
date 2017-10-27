@@ -69,8 +69,15 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -f /tmp/grant.sql &>> log/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f data/core/public_fct.sql &>> log/install_db.log
 
+    echo "Creating 'public' functions..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Creating 'public' functions" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/public.sql  &>> log/install_db.log
 
     echo "Getting and creating USERS schema (utilisateurs)..."
     echo "" &>> log/install_db.log

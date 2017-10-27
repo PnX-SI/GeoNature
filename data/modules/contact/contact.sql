@@ -57,16 +57,16 @@ CREATE TABLE t_occurrences_contact (
     id_occurrence_contact bigint NOT NULL,
     id_releve_contact bigint NOT NULL,
     id_nomenclature_obs_technique integer NOT NULL DEFAULT 343,
-    id_nomenclature_obs_meth integer DEFAULT 42,
-    id_nomenclature_bio_condition integer NOT NULL DEFAULT 177,
-    id_nomenclature_bio_status integer DEFAULT 30,
-    id_nomenclature_naturalness integer DEFAULT 182,
-    id_nomenclature_exist_proof integer DEFAULT 91,
-    id_nomenclature_valid_status integer DEFAULT 347,
-    id_nomenclature_diffusion_level integer DEFAULT 163,
+    id_nomenclature_obs_meth integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(14,1,'pr_contact'),
+    id_nomenclature_bio_condition integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(7,1,'pr_contact'),
+    id_nomenclature_bio_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(13,1,'pr_contact'),
+    id_nomenclature_naturalness integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(8,1,'pr_contact'),
+    id_nomenclature_exist_proof integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(15,1,'pr_contact'),
+    id_nomenclature_valid_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(101,1,'pr_contact'),
+    id_nomenclature_diffusion_level integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(5,1,'pr_contact'),
     id_validator integer,
     determiner character varying(255),
-    id_nomenclature_determination_method integer DEFAULT 370,
+    id_nomenclature_determination_method integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(106,1,'pr_contact'),
     determination_method_as_text text,
     cd_nom integer,
     nom_cite character varying(255),
@@ -103,10 +103,10 @@ SELECT pg_catalog.setval('t_occurrences_contact_id_occurrence_contact_seq', 1, f
 CREATE TABLE cor_counting_contact (
     id_counting_contact bigint NOT NULL,
     id_occurrence_contact bigint NOT NULL,
-    id_nomenclature_life_stage integer NOT NULL,
-    id_nomenclature_sex integer NOT NULL,
-    id_nomenclature_obj_count integer NOT NULL DEFAULT 166,
-    id_nomenclature_type_count integer DEFAULT 107,
+    id_nomenclature_life_stage integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(10,1,'pr_contact'),
+    id_nomenclature_sex integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(9,1,'pr_contact'),
+    id_nomenclature_obj_count integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(6,1,'pr_contact'),
+    id_nomenclature_type_count integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(21,1,'pr_contact'),
     count_min integer,
     count_max integer,
     meta_create_date timestamp without time zone,
@@ -352,7 +352,7 @@ CREATE TRIGGER tri_meta_dates_change_cor_counting_contact
 ------------
 --Vue représentant l'ensemble des observations du protocole contact pour la représentation du module carte liste
 DROP VIEW IF EXISTS v_releve_contact;
-CREATE OR REPLACE VIEW v_releve_contact AS
+CREATE OR REPLACE VIEW pr_contact.v_releve_contact AS 
  SELECT rel.id_releve_contact,
     rel.id_dataset,
     rel.id_digitiser,
@@ -370,51 +370,47 @@ CREATE OR REPLACE VIEW v_releve_contact AS
     occ.id_occurrence_contact,
     occ.cd_nom,
     occ.nom_cite,
-    occ.deleted as occ_deleted,
-    occ.meta_create_date as occ_meta_create_date,
-    occ.meta_update_date as occ_meta_update_date,
+    occ.deleted AS occ_deleted,
+    occ.meta_create_date AS occ_meta_create_date,
+    occ.meta_update_date AS occ_meta_update_date,
     t.lb_nom,
     t.nom_valide,
     t.nom_vern,
-    nom_complet_html || ' ' || date_min::date || '<br/>' || string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ')as leaflet_popup,
-    string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ') as observateurs
+    (((t.nom_complet_html::text || ' '::text) || rel.date_min::date) || '<br/>'::text) || string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS leaflet_popup,
+    COALESCE ( string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text),rel.observers_txt) AS observateurs
    FROM pr_contact.t_releves_contact rel
-   LEFT JOIN pr_contact.t_occurrences_contact occ  ON rel.id_releve_contact = occ.id_releve_contact
-   LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
-   LEFT JOIN  pr_contact.cor_role_releves_contact cor_role on cor_role.id_releve_contact = rel.id_releve_contact
-   LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-   GROUP BY rel.id_releve_contact, id_dataset, id_digitiser, date_min, date_max,
-       altitude_min, altitude_max, rel.deleted, meta_device_entry, rel.meta_create_date,
-       rel.meta_update_date, rel.comment, geom_4326, "precision", t.cd_nom, nom_cite,
-       id_occurrence_contact, occ_deleted, occ_meta_create_date, occ_meta_update_date, lb_nom,
-       nom_valide, nom_complet_html, nom_vern;
+     LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
+     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+     LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
+     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_contact, occ.deleted, occ.meta_create_date, occ.meta_update_date, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+
 
 
 
 
 --Vue représentant l'ensemble des relevés du protocole contact pour la représentation du module carte liste
-CREATE OR REPLACE VIEW v_releve_list AS
-SELECT rel.id_releve_contact,
-   rel.id_dataset,
-   rel.id_digitiser,
-   rel.date_min,
-   rel.date_max,
-   rel.altitude_min,
-   rel.altitude_max,
-   rel.deleted,
-   rel.meta_device_entry,
-   rel.meta_create_date,
-   rel.meta_update_date,
-   rel.comment,
-   rel.geom_4326,
-   rel."precision",
-   string_agg(nom_valide, ',') AS taxons,
-   string_agg(nom_valide, ',') || '<br/>' || rel.date_min::date || '<br/>' || string_agg(obs.nom_role || ' ' || obs.prenom_role, ', ') AS leaflet_popup,
-   string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS observateurs
-  FROM pr_contact.t_releves_contact rel
-    LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
-    LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
-    LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
-    LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
- GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted,
-  rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+CREATE OR REPLACE VIEW pr_contact.v_releve_list AS 
+ SELECT rel.id_releve_contact,
+    rel.id_dataset,
+    rel.id_digitiser,
+    rel.date_min,
+    rel.date_max,
+    rel.altitude_min,
+    rel.altitude_max,
+    rel.deleted,
+    rel.meta_device_entry,
+    rel.meta_create_date,
+    rel.meta_update_date,
+    rel.comment,
+    rel.geom_4326,
+    rel."precision",
+    string_agg(t.nom_valide::text, ','::text) AS taxons,
+    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS leaflet_popup,
+    COALESCE(string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt) AS observateurs
+   FROM pr_contact.t_releves_contact rel
+     LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
+     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+     LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
+     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
