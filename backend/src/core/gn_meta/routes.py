@@ -2,8 +2,10 @@
 from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
-from flask import Blueprint
+from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
+
+from sqlalchemy import or_
 
 from .models import TPrograms, TDatasets, TParameters
 from ...utils.utilssqlalchemy import json_resp
@@ -76,7 +78,16 @@ def getDatasetsList():
 @routes.route('/datasets', methods=['GET'])
 @json_resp
 def getDatasets():
+    parameters = request.args
     q = db.session.query(TDatasets)
+
+    if 'organism' in parameters:
+        q = q.filter(or_(TDatasets.id_organism_owner == int(parameters.get('organism')),
+              TDatasets.id_organism_producer == int(parameters.get('organism')),
+              TDatasets.id_organism_administrator == int(parameters.get('organism')),
+              TDatasets.id_organism_funder == int(parameters.get('organism'))
+        ))
+        print(q)
     try:
         data = q.all()
     except Exception as e:
