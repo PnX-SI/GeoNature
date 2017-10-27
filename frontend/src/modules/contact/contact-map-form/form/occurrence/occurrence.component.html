@@ -13,15 +13,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-          <pnx-nomenclature 
-          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
-          placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
-          [idTypeNomenclature]="100" 
-          [regne]="fs.currentTaxon.regne" 
-          [group2Inpn]="fs.currentTaxon.group2_inpn">
-        </pnx-nomenclature>
-      </div>
+
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <pnx-nomenclature 
           placeholder="{{ 'Taxon.ObsMethod' | translate }}"
@@ -66,11 +58,20 @@
             [group2Inpn]="fs.currentTaxon.group2_inpn">
           </pnx-nomenclature>
         </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <pnx-nomenclature 
+            placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
+            [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
+            [idTypeNomenclature]="106" 
+            [regne]="fs.currentTaxon.regne" 
+            [group2Inpn]="fs.currentTaxon.group2_inpn">
+          </pnx-nomenclature>
+        </div>
       </div>
 
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <small> {{ 'Taxon.DeterminationMethod' | translate }} </small>
+            <small> {{ 'Taxon.DeterminationMethodComplement' | translate }} </small>
           <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determination_method_as_text"
             type="text">
         </div>
