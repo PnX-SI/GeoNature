@@ -12,7 +12,28 @@ SET search_path = ref_nomenclatures, pg_catalog;
 -------------
 --FUNCTIONS--
 -------------
-create OR REPLACE function ref_nomenclatures.check_nomenclature_type(id integer , myidtype integer) returns boolean
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_default_nomenclature_value(myidtype integer, myidorganism integer , mymodulename character varying) returns integer
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id and module name
+--Return -1 if nothing matche with given parameters
+  DECLARE
+    thenomenclatureid integer;
+  BEGIN
+      SELECT INTO thenomenclatureid id_nomenclature
+      FROM ref_nomenclatures.defaults_nomenclatures_value 
+      WHERE id_type = myidtype 
+      AND id_organism = myidorganism 
+      AND entity_module = mymodulename;
+    IF (thenomenclatureid IS NOT NULL) THEN
+      RETURN thenomenclatureid;
+    END IF;
+    RETURN -1;
+  END;
+$$;
+
+CREATE OR REPLACE FUNCTION ref_nomenclatures.check_nomenclature_type(id integer , myidtype integer) returns boolean
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
@@ -21,9 +42,10 @@ AS $$
     IF (id IN (SELECT id_nomenclature FROM ref_nomenclatures.t_nomenclatures WHERE id_type = myidtype )
         OR id IS NULL) THEN
       RETURN true;
+    ELSE
+	    RAISE EXCEPTION 'Error : id_nomenclature and id_type didn''t match. Use nomenclature with corresponding type (id_type). See ref_nomenclatures.t_nomenclatures.id_type.';
     END IF;
     RETURN false;
-    
   END;
 $$;
 
@@ -223,6 +245,14 @@ CREATE TABLE cor_taxref_sensitivity
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone
 );
+
+
+CREATE TABLE defaults_nomenclatures_value (
+    id_type integer NOT NULL,
+    id_organism integer NOT NULL,
+    entity_module character varying(250) NOT NULL,
+    id_nomenclature integer NOT NULL
+);
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -240,6 +270,9 @@ ALTER TABLE ONLY cor_taxref_nomenclature
 
 ALTER TABLE ONLY cor_taxref_sensitivity
     ADD CONSTRAINT pk_cor_taxref_sensitivity PRIMARY KEY (cd_nom, id_nomenclature_niv_precis, id_nomenclature);
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, entity_module);
 
 
 ---------------
@@ -273,6 +306,16 @@ ALTER TABLE ONLY cor_taxref_sensitivity
     ADD CONSTRAINT fk_cor_taxref_sensitivity_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_defaults_nomenclatures_value_id_type FOREIGN KEY (id_type) REFERENCES bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+
 --------------
 --CONSTRAINS--
 --------------
@@ -286,6 +329,9 @@ ALTER TABLE ONLY cor_taxref_nomenclature
 ALTER TABLE ONLY cor_taxref_sensitivity
     ADD CONSTRAINT check_cor_taxref_sensitivity_niv_precis CHECK (check_nomenclature_type(id_nomenclature_niv_precis,5));
 
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type(id_nomenclature, id_type));
 
 ---------
 --INDEX--

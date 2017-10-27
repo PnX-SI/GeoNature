@@ -6,27 +6,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
---------------------
---PUBLIC FUNCTIONS--
---------------------
-CREATE OR REPLACE FUNCTION public.fct_trg_meta_dates_change()
-  RETURNS trigger AS
-$BODY$
-begin
-        if(TG_OP = 'INSERT') THEN
-                NEW.meta_create_date = NOW();
-        ELSIF(TG_OP = 'UPDATE') THEN
-                NEW.meta_update_date = NOW();
-                if(NEW.meta_create_date IS NULL) THEN
-                        NEW.meta_create_date = NOW();
-                END IF;
-        end IF;
-        return NEW;
-end;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 CREATE SCHEMA gn_meta;
 
 SET search_path = gn_meta, pg_catalog;
@@ -225,5 +204,5 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 (1,NULL,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
 ,(2,2,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
 ,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
-,(4,1,'local_srid','Valeur du SRID local','2154',NULL)
-,(5,1,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);
+,(4,NULL,'local_srid','Valeur du SRID local','2154',NULL)
+,(5,NULL,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);

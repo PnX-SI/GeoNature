@@ -1,7 +1,7 @@
 <div [formGroup]="releveForm">
   <div class="row">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-      <div *ngIf="! contactConfig.observersAsText; else elseBlock">
+      <div *ngIf="! contactConfig.observers_txt; else elseBlock">
         <pnx-observers
           [parentFormControl]="releveForm.controls.properties.controls.observers"
           [idMenu]="9"
@@ -10,9 +10,9 @@
       </div>
         <ng-template #elseBlock>
           <small> {{ 'Releve.Observers' | translate }} </small>
-          <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.observersAsText.invalid}" >
+          <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.observers_txt.invalid}" >
             <input class="form-control form-control-sm" type="text"
-            [formControl]="releveForm.controls.properties.controls.observersAsText" placeholder="" >
+            [formControl]="releveForm.controls.properties.controls.observers_txt" placeholder="" >
           </div>
         </ng-template>
     </div>
