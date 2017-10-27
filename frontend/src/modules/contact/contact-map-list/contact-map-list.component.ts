@@ -24,8 +24,8 @@ export class ContactMapListComponent implements OnInit {
     private _commonService: CommonService, private _auth: AuthService) { }
 
   ngOnInit() {
-    console.log('init map list');
-    console.log(this._auth.currentUser);
+    // reset the URL query parameter
+    this._mapListService.urlQuery.delete('organism');
     const currentUser = this._auth.currentUser;
     const userRight = currentUser.getRight(14);
     console.log(userRight);
