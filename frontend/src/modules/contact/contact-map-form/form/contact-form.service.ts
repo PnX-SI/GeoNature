@@ -37,65 +37,131 @@ export class ContactFormService {
 
 
    initObservationForm(data?): FormGroup {
+     if (data) {
+      return this._fb.group({
+        geometry: [data.geometry, Validators.required],
+        properties: this._fb.group({
+          id_releve_contact : [data.properties.id_releve_contact],
+          id_dataset: [data.properties.id_dataset, Validators.required],
+          id_digitiser : data.properties.id_digitiser,
+          date_min: [this.formatDate(data.properties.date_min), Validators.required],
+          date_max: [this.formatDate(data.properties.date_max), Validators.required],
+          hour_min: [data.properties.hour_min === 'None' ? null : data.properties.hour_min  ,
+             Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$')],
+          hour_max: [data.properties.hour_max === 'None' ? null : data.properties.hour_max,
+             Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$')],
+          altitude_min: data.properties.altitude_min,
+          altitude_max : data.properties.altitude_max,
+          deleted: false,
+          meta_device_entry: 'web',
+          comment: data.properties.comment,
+          observers: [this.formatObservers(data.properties.observers),
+             !ContactConfig.observers_txt ? Validators.required : null],
+          observers_txt: [data.properties.observers_txt, ContactConfig.observers_txt ? Validators.required : null ],
+          t_occurrences_contact: [new Array()]
+        })
+      });
+     }
     return this._fb.group({
-      geometry: [data ? data.geometry : null, Validators.required],
+      geometry: [null, Validators.required],
       properties: this._fb.group({
-        id_releve_contact : [data ? data.properties.id_releve_contact : null],
-        id_dataset: [data ? data.properties.id_dataset : null, Validators.required],
+        id_releve_contact : null,
+        id_dataset: [null, Validators.required],
         id_digitiser : null,
-        date_min: [data ? this.formatDate(data.properties.date_min) : null, Validators.required],
-        date_max: [data ? this.formatDate(data.properties.date_max) : null, Validators.required],
-        hour_min: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
-        hour_max: [data ? data.properties.hour_min : null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')],
-        altitude_min: data ? data.properties.altitude_min : null,
-        altitude_max : data ? data.properties.altitude_max : null,
+        date_min: [null, Validators.required],
+        date_max: [null, Validators.required],
+        hour_min: [null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$')],
+        hour_max: [null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$')],
+        altitude_min: null,
+        altitude_max: null,
         deleted: false,
         meta_device_entry: 'web',
-        comment: data ? data.properties.comment : null,
-        observers: [data ? this.formatObservers(data.properties.observers) : null,
+        comment: null,
+        observers: [null,
            !ContactConfig.observers_txt ? Validators.required : null],
-        observers_txt: [data ? data.properties.observers_txt : null, ContactConfig.observers_txt ? Validators.required : null ],
+        observers_txt: [null, ContactConfig.observers_txt ? Validators.required : null ],
         t_occurrences_contact: [new Array()]
       })
     });
    }
 
    initOccurrenceForm(data?): FormGroup {
-    return this._fb.group({
-      id_releve_contact : [data ? data.id_releve_contact : null],
-      id_nomenclature_obs_meth: [data ? data.id_nomenclature_obs_meth : null, Validators.required],
-      id_nomenclature_bio_condition: [data ? data.id_nomenclature_bio_condition : null, Validators.required],
-      id_nomenclature_bio_status : data ? data.id_nomenclature_bio_status : null,
-      id_nomenclature_naturalness : data ? data.id_nomenclature_naturalness : null,
-      id_nomenclature_exist_proof: data ? data.id_nomenclature_exist_proof : null,
-      id_nomenclature_valid_status: data ? data.id_nomenclature_valid_status : null,
-      id_nomenclature_diffusion_level: data ? data.id_nomenclature_diffusion_level : null,
-      id_validator: null,
-      determiner: '',
-      id_nomenclature_determination_method: data ? data.id_nomenclature_determination_method : '',
-      determination_method_as_text: data ? data.determination_method_as_text : '',
-      cd_nom: [data ? data.cd_nom : null, Validators.required],
-      nom_cite: data ? data.nom_cite : '',
-      meta_v_taxref: "Taxref V9.0",
-      sample_number_proof: data ? data.sample_number_proof : '',
-      digital_proof: data ? data.digital_proof : '',
-      non_digital_proof:data ? data.non_digital_proof : '',
-      deleted: false,
-      comment: data ? data.comment : '',
-      cor_counting_contact: ''
-    })
+     if (data) {
+       return this._fb.group({
+        id_releve_contact : data.id_releve_contact,
+        id_nomenclature_obs_meth: [data.id_nomenclature_obs_meth, Validators.required],
+        id_nomenclature_obs_technique : [data.id_nomenclature_obs_technique, Validators.required],
+        id_nomenclature_bio_condition: [data.id_nomenclature_bio_condition , Validators.required],
+        id_nomenclature_bio_status :  data.id_nomenclature_bio_status ,
+        id_nomenclature_naturalness : data.id_nomenclature_naturalness,
+        id_nomenclature_exist_proof: data.id_nomenclature_exist_proof ,
+        id_nomenclature_valid_status: data.id_nomenclature_valid_status ,
+        id_nomenclature_diffusion_level: data.id_nomenclature_diffusion_level,
+        id_validator: data.id_validator,
+        determiner: data.determiner,
+        id_nomenclature_determination_method: data.id_nomenclature_determination_method ,
+        determination_method_as_text: data.determination_method_as_text ,
+        cd_nom: [data.cd_nom, Validators.required],
+        nom_cite: data.nom_cite ,
+        meta_v_taxref: 'Taxref V9.0',
+        sample_number_proof: data.sample_number_proof,
+        digital_proof: data.digital_proof,
+        non_digital_proof:  data.non_digital_proof,
+        deleted: false,
+        comment:  data.comment,
+        cor_counting_contact: ''
+       });
+     } else {
+      return this._fb.group({
+        id_releve_contact :  null,
+        id_nomenclature_obs_meth: [null, Validators.required],
+        id_nomenclature_obs_technique : [ null, Validators.required],
+        id_nomenclature_bio_condition: [null, Validators.required],
+        id_nomenclature_bio_status :  null,
+        id_nomenclature_naturalness: null,
+        id_nomenclature_exist_proof: null,
+        id_nomenclature_valid_status: null,
+        id_nomenclature_diffusion_level: null,
+        id_validator: null,
+        determiner: '',
+        id_nomenclature_determination_method: null,
+        determination_method_as_text: '',
+        cd_nom: [ null, Validators.required],
+        nom_cite: '',
+        meta_v_taxref: 'Taxref V9.0',
+        sample_number_proof: '',
+        digital_proof: '',
+        non_digital_proof: '',
+        deleted: false,
+        comment: '',
+        cor_counting_contact: ''
+      });
+     }
+
   }
 
 
    initCounting(data?): FormGroup {
-    return this._fb.group({
-      id_nomenclature_life_stage: [data ? data.id_nomenclature_life_stage : null, Validators.required],
-      id_nomenclature_sex: [data ? data.id_nomenclature_sex : null, Validators.required],
-      id_nomenclature_obj_count: [data ? data.id_nomenclature_obj_count : null, Validators.required],
-      id_nomenclature_type_count: data ? data.id_nomenclature_type_count : null,
-      count_min : [data ? data.count_min : null, Validators.pattern('[1-9]+[0-9]*')],
-      count_max : [data ? data.count_max : null,  Validators.pattern('[1-9]+[0-9]*')]
-    });
+     if (data) {
+      return this._fb.group({
+        id_nomenclature_life_stage: [data.id_nomenclature_life_stage, Validators.required],
+        id_nomenclature_sex: [data.id_nomenclature_sex, Validators.required],
+        id_nomenclature_obj_count: [ data.id_nomenclature_obj_count, Validators.required],
+        id_nomenclature_type_count:  data.id_nomenclature_type_count,
+        count_min : [ data.count_min, Validators.pattern('[1-9]+[0-9]*')],
+        count_max : [ data.count_max,  Validators.pattern('[1-9]+[0-9]*')]
+      });
+     } else {
+      return this._fb.group({
+        id_nomenclature_life_stage: [null, Validators.required],
+        id_nomenclature_sex: [null, Validators.required],
+        id_nomenclature_obj_count: [null, Validators.required],
+        id_nomenclature_type_count: null,
+        count_min : [null, Validators.pattern('[1-9]+[0-9]*')],
+        count_max : [null,  Validators.pattern('[1-9]+[0-9]*')]
+      });
+     }
+
     }
 
 
