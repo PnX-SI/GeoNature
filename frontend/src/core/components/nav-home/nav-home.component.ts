@@ -21,7 +21,7 @@ import { Location } from '@angular/common';
 })
 
 export class NavHomeComponent implements OnInit, OnDestroy {
-  public appName: string;
+  public appName: any;
   private subscription: Subscription;
   @ViewChild('sidenav') public sidenav: MdSidenav;
 
@@ -32,8 +32,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
           private activatedRoute: ActivatedRoute,
           private _sideBarService: SideNavService,
           private _location: Location) {
-      _navService.gettingAppName.subscribe(ms => {
-        this.appName = ms;
+      _navService.gettingCurrentApp.subscribe(app => {
+        this.appName = app.appName;
 
     });
 
