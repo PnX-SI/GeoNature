@@ -148,6 +148,8 @@ def getViewReleveList():
             Nom du champ sur lequel baser l'ordonnancement
         order: char (asc|desc)
             Sens de l'ordonnancement
+        organism: int
+            id de l'organisme
         [NomChampTableVReleveList]
             Filtre sur le champ NomChampTableVReleveList
 

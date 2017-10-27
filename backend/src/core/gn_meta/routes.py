@@ -78,6 +78,14 @@ def getDatasetsList():
 @routes.route('/datasets', methods=['GET'])
 @json_resp
 def getDatasets():
+    """
+        Retourne la liste des datasets
+
+        Parameters
+        ----------------------
+        organism: int
+            id de l'organisme du dataset
+    """
     parameters = request.args
     q = db.session.query(TDatasets)
 
