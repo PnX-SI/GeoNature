@@ -73,7 +73,7 @@ export class ContactFormService {
       id_nomenclature_diffusion_level: data ? data.id_nomenclature_diffusion_level : null,
       id_validator: null,
       determiner: '',
-      determination_method: data ? data.determination_method : '',
+      determination_method_as_text: data ? data.determination_method_as_text : '',
       cd_nom: [data ? data.cd_nom : null, Validators.required],
       nom_cite: data ? data.nom_cite : '',
       meta_v_taxref: "Taxref V9.0",
