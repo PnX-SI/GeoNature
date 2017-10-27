@@ -226,6 +226,7 @@ INSERT INTO bib_areas_types (id_type, type_name, type_code, type_desc, ref_name,
 (101, 'Communes', NULL, 'type commune', 'IGN admin_express',2017),
 (102, 'Départements', NULL, 'type département', 'IGN admin_express',2017),
 (201, 'Mailles10*10', NULL, 'type maille inpn 10*10', NULL,NULL),
+(202, 'Mailles1*1', NULL, 'type maille inpn 1*1', NULL,NULL),
 (10001, 'Secteurs', NULL, NULL, NULL,NULL),
 (10002, 'Massifs', NULL, NULL, NULL,NULL),
 (10003, 'Zones biogéographiques', NULL, NULL, NULL,NULL);
