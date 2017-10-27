@@ -166,19 +166,19 @@ def getViewReleveList():
     """
     q = db.session.query(VReleveList)
 
-    parameters = request.args
+    params = request.args
 
     try:
         nbResultsWithoutFilter = VReleveList.query.count()
     except Exception as e:
         db.session.rollback()
 
-    limit = int(parameters.get('limit')) if parameters.get('limit') else 100
-    page = int(parameters.get('offset')) if parameters.get('offset') else 0
+    limit = int(params.get('limit')) if params.get('limit') else 100
+    page = int(params.get('offset')) if params.get('offset') else 0
 
     # Specific Filters
-    if 'cd_nom' in parameters:
-        testT = testDataType(parameters.get('cd_nom'), db.Integer, 'cd_nom')
+    if 'cd_nom' in params:
+        testT = testDataType(params.get('cd_nom'), db.Integer, 'cd_nom')
         if testT:
             return {'error': testT}, 500
         q = q.join(
@@ -186,60 +186,63 @@ def getViewReleveList():
                 TOccurrencesContact.id_releve_contact ==
                 VReleveList.id_releve_contact
             ).filter(
-                TOccurrencesContact.cd_nom == int(parameters.get('cd_nom'))
+                TOccurrencesContact.cd_nom == int(params.get('cd_nom'))
             )
 
-    if 'observer' in parameters:
+    if 'observer' in params:
         q = q.join(
             corRoleRelevesContact,
             corRoleRelevesContact.columns.id_releve_contact ==
             VReleveList.id_releve_contact
         ).filter(corRoleRelevesContact.columns.id_role.in_(
-                parameters.getlist('observer')
+                params.getlist('observer')
             )
         )
 
-    if 'date_up' in parameters:
-        testT = testDataType(parameters.get('date_up'), db.DateTime, 'date_up')
+    if 'date_up' in params:
+        testT = testDataType(params.get('date_up'), db.DateTime, 'date_up')
         if testT:
             return {'error': testT}, 500
-        q = q.filter(VReleveList.date_min >= parameters.get('date_up'))
-    if 'date_low' in parameters:
+        q = q.filter(VReleveList.date_min >= params.get('date_up'))
+    if 'date_low' in params:
         testT = testDataType(
-            parameters.get('date_low'),
+            params.get('date_low'),
             db.DateTime,
             'date_low'
         )
         if testT:
             return {'error': testT}, 500
-        q = q.filter(VReleveList.date_max <= parameters.get('date_low'))
-    if 'date_eq' in parameters:
+        q = q.filter(VReleveList.date_max <= params.get('date_low'))
+    if 'date_eq' in params:
         testT = testDataType(
-            parameters.get('date_eq'),
+            params.get('date_eq'),
             db.DateTime,
             'date_eq'
         )
         if testT:
             return {'error': testT}, 500
-        q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
-    
-    if 'organism' in parameters:
+        q = q.filter(VReleveList.date_min == params.get('date_eq'))
+
+    if 'organism' in params:
         q = q.join(
             TDatasets,
             TDatasets.id_dataset == VReleveList.id_dataset
-            ).filter(or_(TDatasets.id_organism_owner == int(parameters.get('organism')),
-              TDatasets.id_organism_producer == int(parameters.get('organism')),
-              TDatasets.id_organism_administrator == int(parameters.get('organism')),
-              TDatasets.id_organism_funder == int(parameters.get('organism'))
-            ))
+        ).filter(
+            or_(
+                TDatasets.id_organism_owner == int(params.get('organism')),
+                TDatasets.id_organism_producer == int(params.get('organism')),
+                TDatasets.id_organism_administrator == int(params.get('organism')),
+                TDatasets.id_organism_funder == int(params.get('organism'))
+              )
+        )
     # Generic Filters
-    for param in parameters:
+    for param in params:
         if param in VReleveList.__table__.columns:
             col = getattr(VReleveList.__table__.columns, param)
-            testT = testDataType(parameters[param], col.type, param)
+            testT = testDataType(params[param], col.type, param)
             if testT:
                 return {'error': testT}, 500
-            q = q.filter(col == parameters[param])
+            q = q.filter(col == params[param])
     try:
         nbResults = q.count()
     except Exception as e:
@@ -247,11 +250,11 @@ def getViewReleveList():
         raise
 
     # Order by
-    if 'orderby' in parameters:
-        if parameters.get('orderby') in VReleveList.__table__.columns:
+    if 'orderby' in params:
+        if params.get('orderby') in VReleveList.__table__.columns:
             orderCol = getattr(
                 VReleveList.__table__.columns,
-                parameters['orderby']
+                params['orderby']
             )
         else:
             orderCol = getattr(
@@ -259,8 +262,8 @@ def getViewReleveList():
                 'occ_meta_create_date'
             )
 
-        if 'order' in parameters:
-            if (parameters['order'] == 'desc'):
+        if 'order' in params:
+            if (params['order'] == 'desc'):
                 orderCol = orderCol.desc()
 
         q = q.order_by(orderCol)
@@ -297,6 +300,12 @@ def insertOrUpdateOneReleve():
             observersList = data['properties']['observers']
             data['properties'].pop('observers')
 
+        # Test et suppression des propriétés inexistantes de TRelevesContact
+        attliste = [k for k in data['properties']]
+        for att in attliste:
+            if not getattr(TRelevesContact, att, False):
+                data['properties'].pop(att)
+
         releve = TRelevesContact(**data['properties'])
         shape = asShape(data['geometry'])
         releve.geom_4326 = from_shape(shape, srid=4326)
@@ -312,8 +321,20 @@ def insertOrUpdateOneReleve():
                 cor_counting_contact = occ['cor_counting_contact']
                 occ.pop('cor_counting_contact')
 
+            # Test et suppression des propriétés inexistantes de TOccurrencesContact
+            attliste = [k for k in occ]
+            for att in attliste:
+                if not getattr(TOccurrencesContact, att, False):
+                    occ.pop(att)
+
             contact = TOccurrencesContact(**occ)
             for cnt in cor_counting_contact:
+                # Test et suppression des propriétés inexistantes de CorCountingContact
+                attliste = [k for k in cnt]
+                for att in attliste:
+                    if not getattr(CorCountingContact, att, False):
+                        cnt.pop(att)
+
                 countingContact = CorCountingContact(**cnt)
                 contact.cor_counting_contact.append(countingContact)
             releve.t_occurrences_contact.append(contact)
