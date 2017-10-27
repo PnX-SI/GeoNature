@@ -22,7 +22,10 @@ routes = Blueprint('ref_geo', __name__)
 @json_resp
 def getGeoInfo():
     data = dict(request.get_json())
-    sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*')
+    sql = text(
+        """SELECT (ref_geo.fct_get_area_intersection(
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*"""
+    )
     try:
         result = db.engine.execute(sql, geom=str(data['geometry']))
     except Exception as e:
@@ -31,9 +34,18 @@ def getGeoInfo():
 
     municipality = []
     for row in result:
-        municipality.append({"id_area": row[0], "id_type": row[1], "area_code": row[2], "area_name": row[3]})
+        municipality.append({
+            "id_area": row[0],
+            "id_type": row[1],
+            "area_code": row[2],
+            "area_name": row[3]
+        })
 
-    sql = text('SELECT (ref_geo.fct_get_altitude_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*')
+    sql = text(
+        """SELECT (ref_geo.fct_get_altitude_intersection(
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
+        """
+    )
     try:
         result = db.engine.execute(sql, geom=str(data['geometry']))
     except Exception as e:
@@ -56,27 +68,42 @@ def getAreasIntersection():
     else:
         id_type = None
 
-    sql = text('SELECT (ref_geo.fct_get_area_intersection(st_setsrid(ST_GeomFromGeoJSON(:geom),4326),:type)).*')
+    sql = text(
+        """SELECT (ref_geo.fct_get_area_intersection(
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326),:type)).*"""
+    )
 
     try:
-        result = db.engine.execute(sql, geom=str(data['geometry']), type=id_type)
+        result = db.engine.execute(
+            sql,
+            geom=str(data['geometry']),
+            type=id_type
+        )
     except Exception as e:
         db.session.rollback()
         raise
 
     areas = []
     for row in result:
-        areas.append({"id_area": row[0], "id_type": row[1], "area_code": row[2], "area_name": row[3]})
+        areas.append({
+            "id_area": row[0],
+            "id_type": row[1],
+            "area_code": row[2],
+            "area_name": row[3]
+        })
 
     bibtypesliste = [a['id_type'] for a in areas]
     try:
-        bibareatype = db.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
+        bibareatype = db.session.query(BibAreasTypes)\
+            .filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
     except Exception as e:
         db.session.rollback()
         raise
     data = {}
     for b in bibareatype:
         data[b.id_type] = b.as_dict(columns=('type_name', 'type_code'))
-        data[b.id_type]['areas'] = [a for a in areas if a['id_type'] == b.id_type]
+        data[b.id_type]['areas'] = [
+            a for a in areas if a['id_type'] == b.id_type
+        ]
 
     return data

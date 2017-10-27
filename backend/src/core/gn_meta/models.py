@@ -34,29 +34,59 @@ class TDatasets(serializableModel):
     __tablename__ = 't_datasets'
     __table_args__ = {'schema': 'gn_meta'}
     id_dataset = db.Column(db.Integer, primary_key=True)
-    id_program = db.Column(db.Integer, ForeignKey('gn_meta.t_programs.id_program'))
+    id_program = db.Column(
+        db.Integer,
+        ForeignKey('gn_meta.t_programs.id_program')
+    )
     dataset_name = db.Column(db.Unicode)
     dataset_desc = db.Column(db.Unicode)
-    id_organism_owner = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
-    id_organism_producer = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
-    id_organism_administrator = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
-    id_organism_funder = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
+    id_organism_owner = db.Column(
+        db.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
+    id_organism_producer = db.Column(
+        db.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
+    id_organism_administrator = db.Column(
+        db.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
+    id_organism_funder = db.Column(
+        db.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
     public_data = db.Column(db.Boolean)
     default_validity = db.Column(db.Boolean)
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
-    organism_producer = relationship("BibOrganismes", foreign_keys=[id_organism_producer])
-    organism_owner = relationship("BibOrganismes", foreign_keys=[id_organism_owner])
-    organism_administrator = relationship("BibOrganismes", foreign_keys=[id_organism_administrator])
-    organism_funder = relationship("BibOrganismes", foreign_keys=[id_organism_funder])
+    organism_producer = relationship(
+        "BibOrganismes",
+        foreign_keys=[id_organism_producer]
+    )
+    organism_owner = relationship(
+        "BibOrganismes",
+        foreign_keys=[id_organism_owner]
+    )
+    organism_administrator = relationship(
+        "BibOrganismes",
+        foreign_keys=[id_organism_administrator]
+    )
+    organism_funder = relationship(
+        "BibOrganismes",
+        foreign_keys=[id_organism_funder]
+    )
 
 
 class TParameters(serializableModel):
     __tablename__ = 't_parameters'
     __table_args__ = {'schema': 'gn_meta'}
     id_parameter = db.Column(db.Integer, primary_key=True)
-    id_organism = db.Column(db.Integer, ForeignKey('utilisateurs.bib_organismes.id_organisme'))
+    id_organism = db.Column(
+        db.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
     parameter_name = db.Column(db.Unicode)
     parameter_desc = db.Column(db.Unicode)
     parameter_value = db.Column(db.Unicode)

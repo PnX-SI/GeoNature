@@ -9,6 +9,7 @@ from ...utils.utilssqlalchemy import serializableModel
 
 db = SQLAlchemy()
 
+
 class LAreasWithoutGeom(serializableModel):
     __tablename__ = 'l_areas'
     __table_args__ = {'schema': 'ref_geo'}

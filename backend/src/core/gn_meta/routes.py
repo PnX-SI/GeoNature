@@ -23,7 +23,9 @@ def getProgramsList():
         db.session.rollback()
         raise
     if data:
-        return [d.as_dict(columns=('id_program', 'program_desc')) for d in data]
+        return [
+            d.as_dict(columns=('id_program', 'program_desc')) for d in data
+        ]
     return {'message': 'not found'}, 404
 
 
@@ -65,7 +67,9 @@ def getDatasetsList():
         db.session.rollback()
         raise
     if data:
-        return [d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data]
+        return [
+            d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
+        ]
     return {'message': 'not found'}, 404
 
 
