@@ -69,6 +69,7 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -f /tmp/grant.sql &>> log/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f data/core/public_fct.sql &>> log/install_db.log
 
 
     echo "Getting and creating USERS schema (utilisateurs)..."
@@ -158,16 +159,6 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/materialized_views.sql  &>> log/install_db.log
 
 
-    echo "Creating 'meta' schema..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Creating 'meta' schema" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> log/install_db.log
-
-
     echo "Creating 'nomenclatures' schema..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
@@ -188,8 +179,16 @@ then
     sudo sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" /tmp/data_nomenclatures.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/data_nomenclatures.sql  &>> log/install_db.log
 
+    echo "Creating 'meta' schema..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Creating 'meta' schema" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> log/install_db.log
 
-echo "Creating 'ref_geo' schema..."
+    echo "Creating 'ref_geo' schema..."
     echo "" &>> log/install_db.log
     echo "" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
@@ -249,7 +248,7 @@ echo "Creating 'ref_geo' schema..."
 	      unzip /tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp
         #gdalwarp -t_srs EPSG:$srid_local /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc /tmp/dem.tif &>> log/install_db.log
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 100x100 /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> log/install_db.log
-    	echo "Vectorisation of dem raster. This may take a few minutes..."
+    	  echo "Vectorisation of dem raster. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> log/install_db.log
         echo "Refresh dem vector spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> log/install_db.log
