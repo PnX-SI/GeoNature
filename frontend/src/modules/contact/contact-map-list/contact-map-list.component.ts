@@ -6,6 +6,7 @@ import { MapListService } from '../../../core/GN2Common/map-list/map-list.servic
 import { Subscription } from 'rxjs/Subscription';
 import { ContactService } from '../services/contact.service';
 import { CommonService } from '../../../core/GN2Common/service/common.service';
+import { AuthService } from '../../../core/components/auth/auth.service';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -20,10 +21,21 @@ export class ContactMapListComponent implements OnInit {
   public idName: string;
   public apiEndPoint: string;
   constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
-    private _commonService: CommonService) { }
+    private _commonService: CommonService, private _auth: AuthService) { }
 
   ngOnInit() {
-    console.log('init map list');
+    // reset the URL query parameter
+    this._mapListService.urlQuery.delete('organism');
+    const currentUser = this._auth.currentUser;
+    const userRight = currentUser.getRight(14);
+    console.log(userRight);
+
+    if ( userRight['R'] < AppConfig.RIGHTS.ALL_DATA ) {
+      console.log('seeeet');
+      console.log(currentUser.organism.organismId);
+      this._mapListService.urlQuery.set('organism', currentUser.organism.organismId.toString());
+    }
+
   this.displayColumns = [
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},
@@ -39,7 +51,7 @@ export class ContactMapListComponent implements OnInit {
     this.geojsonData = res.items;
   });
 
-   }
+  }
 
    deleteReleve(id) {
     this._contactService.deleteReleve(id)

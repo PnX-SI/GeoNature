@@ -21,9 +21,8 @@ import { ContactConfig } from '../../../contact.config';
 
 export class ObservationComponent implements OnInit, OnDestroy {
   @Input() releveForm: FormGroup;
-  public dateMin: any;
-  public dateMax: any;
-  public bsRangeValue: any = [new Date(2017, 7, 4), new Date(2017, 7, 20)];
+  public dateMin: Date;
+  public dateMax: Date;
   public geojson: any;
   public dataSets: any;
   public geoInfo: any;
@@ -74,16 +73,33 @@ export class ObservationComponent implements OnInit, OnDestroy {
     (this.releveForm.controls.properties as FormGroup).controls.date_max.valueChanges
     .debounceTime(500)
     .subscribe(value => {
-      let dateMin = this.releveForm.value.properties.date_min;
+      const dateMin = this.releveForm.value.properties.date_min;
       if (dateMin) {
-        dateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
-        const dateMax = new Date(value.year, value.month, value.day);
-        if (dateMax < dateMin) {
+        this.dateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
+         this.dateMax = new Date(value.year, value.month, value.day);
+        if (this.dateMax < this.dateMin) {
           (this.releveForm.controls.properties as FormGroup).controls.date_max.setErrors([Validators.required]);
           this._commonService.translateToaster('error', 'Releve.DateMaxError');
         }
       }
     });
+
+    // check if hour max is not inf to hour max
+    (this.releveForm.controls.properties as FormGroup).controls.hour_max.valueChanges
+      .debounceTime(2000)
+      .subscribe(value => {
+        let hourMin = this.releveForm.value.properties.hour_min;
+         hourMin = hourMin.split(':').map(h => parseInt(h));
+        const hourMax = value.split(':').map(h => parseInt(h));
+        this.dateMin.setHours(hourMin[0], hourMin[1]);
+        this.dateMax.setHours(hourMax[0], hourMax[1]);
+        console.log(this.dateMin > this.dateMax);
+        
+        if(this.dateMin > this.dateMax) {
+          (this.releveForm.controls.properties as FormGroup).controls.hour_max.setErrors([Validators.required]);
+        }
+        
+      })
   }
 
 

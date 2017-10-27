@@ -30,13 +30,9 @@ export class LoginComponent implements OnInit {
 
    }
   register(user) {
-    this._authService.signinUser(user.username, user.password);
-    if (this._authService.isAuthenticated()) {
-      this._router.navigate(['']);
-    }
-
+    this._authService.fakeSigninUser(user.username, user.password);
   }
-
+  
   logUrl(requestDetail) {
     console.log(requestDetail);
   }

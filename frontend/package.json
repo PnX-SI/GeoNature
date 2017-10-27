@@ -41,6 +41,7 @@
     "jquery": "^3.2.1",
     "leaflet": "1.0.3",
     "leaflet-draw": "^0.4.12",
+    "ng2-cookies": "^1.0.12",
     "ngx-bootstrap": "^1.7.1",
     "ngx-toastr": "^5.3.1",
     "popper.js": "^1.12.5",
