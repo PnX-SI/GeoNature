@@ -43,9 +43,7 @@ export class MapListService {
         this.urlQuery.set('offset', param.value);
       }else {
         this.urlQuery.append(param.param, param.value);
-
       }
-
     }
     return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: this.urlQuery})
       .map(res => res.json());

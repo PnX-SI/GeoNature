@@ -4,13 +4,14 @@ from __future__ import (unicode_literals, print_function,
 
 from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
+from sqlalchemy import exc, or_
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
     VReleveContact, VReleveList, corRoleRelevesContact
 from ...utils.utilssqlalchemy import json_resp, testDataType
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
+from ...core.gn_meta.models import TDatasets
 
 from pypnusershub import routes as fnauth
 
@@ -221,7 +222,16 @@ def getViewReleveList():
         if testT:
             return {'error': testT}, 500
         q = q.filter(VReleveList.date_min == parameters.get('date_eq'))
-
+    
+    if 'organism' in parameters:
+        q = q.join(
+            TDatasets,
+            TDatasets.id_dataset == VReleveList.id_dataset
+            ).filter(or_(TDatasets.id_organism_owner == int(parameters.get('organism')),
+              TDatasets.id_organism_producer == int(parameters.get('organism')),
+              TDatasets.id_organism_administrator == int(parameters.get('organism')),
+              TDatasets.id_organism_administrator == int(parameters.get('organism'))
+            ))
     # Generic Filters
     for param in parameters:
         if param in VReleveList.__table__.columns:

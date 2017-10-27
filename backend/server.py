@@ -41,6 +41,9 @@ def get_app():
     from src.core.ref_geo.routes import routes
     app.register_blueprint(routes, url_prefix='/geo')
 
+    from pypnusershub import routes
+    app.register_blueprint(routes.routes, url_prefix='/api/auth')
+
 
 
 
