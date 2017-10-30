@@ -273,7 +273,7 @@ export class ContactFormService {
      this.currentTaxon = taxon;
    }
 
-  formatObservers(observers){
+  formatObservers(observers) {
     const observersTab = [];
     observers.forEach(observer => {
       observer['nom_complet'] = observer.nom_role + ' ' + observer.prenom_role;

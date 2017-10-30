@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContactService } from '../services/contact.service';
 import { CommonService } from '../../../core/GN2Common/service/common.service';
 import { AuthService } from '../../../core/components/auth/auth.service';
+import { CookieService } from 'ng2-cookies';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -21,18 +22,17 @@ export class ContactMapListComponent implements OnInit {
   public idName: string;
   public apiEndPoint: string;
   constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
-    private _commonService: CommonService, private _auth: AuthService) { }
+    private _commonService: CommonService, private _auth: AuthService
+   , private _cookie: CookieService) { }
 
   ngOnInit() {
+    // this._cookie.deleteAll();
     // reset the URL query parameter
     this._mapListService.urlQuery.delete('organism');
-    const currentUser = this._auth.currentUser;
+    const currentUser = this._auth.getCurrentUser();
     const userRight = currentUser.getRight(14);
-    console.log(userRight);
 
     if ( userRight['R'] < AppConfig.RIGHTS.ALL_DATA ) {
-      console.log('seeeet');
-      console.log(currentUser.organism.organismId);
       this._mapListService.urlQuery.set('organism', currentUser.organism.organismId.toString());
     }
 

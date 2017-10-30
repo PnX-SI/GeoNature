@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 
+
 @Component({
   selector: 'pnx-login',
   templateUrl: 'login.component.html'
@@ -16,7 +17,6 @@ export class LoginComponent implements OnInit {
    }
 
     ngOnInit() {
-      console.log('init login ');
       if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
         const url_redirection_cas = `${AppConfig.CAS.CAS_LOGIN_URL}?service=${AppConfig.URL_APPLICATION}`;
          //document.location.href = url_redirection_cas;
