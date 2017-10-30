@@ -73,11 +73,13 @@ export class ContactFormComponent implements OnInit {
   submitData() {
     // set the releveForm
     const finalForm = this.fs.releveForm.value;
-    //format date
+    // format date
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
     // format nom_cite and update date
     finalForm.properties.t_occurrences_contact.forEach((occ, index) => {
+      console.log(index);
+      
       occ.nom_cite = this.fs.taxonsList[index].nom_valide;
       occ.meta_update_date = new Date();
     });
@@ -97,6 +99,7 @@ export class ContactFormComponent implements OnInit {
         this.fs.occurrenceForm = this.fs.initOccurrenceForm();
         this.fs.countingForm = this.fs.initCountingArray();
         this.fs.taxonsList = [];
+        this.fs.indexOccurrence = 0 ;
         // redirect
         this.router.navigate(['/contact']);
         },
