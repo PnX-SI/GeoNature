@@ -49,16 +49,20 @@ export class ContactFormComponent implements OnInit {
       this.contactService.getReleve(this.id)
         .subscribe(data => {
           // pre fill the form
-          this.fs.releveForm = this.fs.initObservationForm(data);
+          this.fs.releveForm.patchValue({properties: data.properties});
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_min: this.fs.formatDate(data.properties.date_min)});
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_max: this.fs.formatDate(data.properties.date_max)});
+          const hour_min = data.properties.hour_min === 'None' ? null : data.properties.hour_min;
+          const hour_max = data.properties.hour_max === 'None' ? null : data.properties.hour_max;
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_min: hour_min});
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_max: hour_max});
           for (const occ of data.properties.t_occurrences_contact){
-            // push the occ in releveForm
-            this.fs.releveForm.value.properties.t_occurrences_contact.push(occ);
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)
               .subscribe(taxon => this.fs.taxonsList.push(taxon));
           }
           // set the occurrence
-          this.fs.indexOccurrence = this.fs.releveForm.value.properties.t_occurrences_contact.length;
+          this.fs.indexOccurrence = data.properties.t_occurrences_contact.length;
           // push the geometry in releveForm
           this.fs.releveForm.patchValue({geometry: data.geometry});
           // load the geometry in the map

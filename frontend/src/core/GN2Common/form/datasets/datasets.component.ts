@@ -27,10 +27,7 @@ export class DatasetsComponent implements OnInit {
       }
       this._dfs.getDatasets(idOrganism)
       .subscribe(res => {
-        console.log(res);
         this.dataSets = res;
-        console.log(this.dataSets);
-
      });
     }
 
