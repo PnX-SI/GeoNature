@@ -18,7 +18,8 @@
 
         <span>{{appName}}</span>
         <span class="toolbar-spacer"></span>
-        <button md-icon-button *ngIf="authService.isAuthenticated()" (click)="authService.logout()" mdTooltip="{{ 'LogOut' | translate }}">
+        <span style="font-size:15px"> {{currentUser.userName}} </span>
+        <button md-icon-button *ngIf="_authService.isAuthenticated()" (click)="authService.logout()" mdTooltip="{{ 'LogOut' | translate }}">
           <md-icon>exit_to_app</md-icon>
         </button>
         <button md-icon-button [mdMenuTriggerFor]="menu" mdTooltip="{{ 'Language' | translate }}">

@@ -4,7 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 //import * as firebase from 'firebase';
-import { AuthService } from '../../components/auth/auth.service';
+import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
 import 'rxjs/Rx';
 import {MdSidenavModule, MdSidenav} from '@angular/material';
@@ -23,12 +23,13 @@ import { Location } from '@angular/common';
 export class NavHomeComponent implements OnInit, OnDestroy {
   public appName: any;
   private subscription: Subscription;
+  public currentUser: User;
   @ViewChild('sidenav') public sidenav: MdSidenav;
 
   // tslint:disable-next-line:max-line-length
   constructor(private _navService: NavService,
           private translate: TranslateService,
-          public authService: AuthService,
+          private _authService: AuthService,
           private activatedRoute: ActivatedRoute,
           private _sideBarService: SideNavService,
           private _location: Location) {
@@ -50,13 +51,13 @@ export class NavHomeComponent implements OnInit, OnDestroy {
       });
       // subscribe to the app name
       this._navService.gettingCurrentApp.subscribe(app => {
-        
         this.appName = app.appName;
     });
-
-
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);
+
+    // put the user name in navbar
+    this.currentUser = this._authService.getCurrentUser();
   }
   changeLanguage(lang) {
     this.translate.use(lang);
