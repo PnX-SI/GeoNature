@@ -8,17 +8,17 @@ import { CookieService } from 'ng2-cookies';
 
 
 export class User {
-  constructor(
-    public userName: string,
-    public rigths: any,
-    public organism: any,
-) {
+
+  constructor(public userName: string, public rights: Array<any>, public organism: any) {
+    this.userName = userName;
+    this.rights = rights;
+    this.organism = organism;
 }
 
-getRight(idApplication: number): any {
-  const moduleRight = this.rigths.find(obj => obj.idApplication = idApplication);
-  return moduleRight;
-}
+  getRight(idApplication) {
+    console.log(this);
+    return this.rights.find(obj => obj.idApplication = idApplication);
+  }
 }
 
 @Injectable()
@@ -37,38 +37,58 @@ export class AuthService {
     }
 
   setCurrentUser(user, expireDate) {
-    this._cookie.set('currentUser', user);
+    this._cookie.set('currentUser', JSON.stringify(user), expireDate);
   }
 
-  setToken(token) {
-    this._cookie.set('token', token);
+  getCurrentUser(): User {
+    const userString =  this._cookie.get('currentUser');
+    let user =  <User>JSON.parse(userString);
+
+    user = new User(user.userName, user.rights, user.organism);
+    return user;
+  }
+
+  setToken(token, expireDate) {
+    this._cookie.set('token', token, expireDate);
+  }
+
+  getToken() {
+    const token = this._cookie.get('token');
+    const response = token.length === 0 ? null : token;
+    return response;
   }
 
   fakeSigninUser(username: string, password: string) {
-    // call api
+    const d1 = new Date();
+    const d2 = new Date(d1);
+    d2.setMinutes(d1.getMinutes() + 30);
+    console.log("expire: "+ d2);
+    let response;
     if (username === 'admin') {
-      const response = {
+       response = {
         'userName': 'admin',
         'organism': {
           'organismName': 'PNE',
           'organismId': 2
         },
-        'applicationsRigths': [
+        'rights': [
          {'idApplication': 14, 'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
         ]};
-        this.currentUser = new User(response.userName, response.applicationsRigths, response.organism);
+
     } else {
-      const response = {'userName': 'contributeur',
+       response = {'userName': 'contributeur',
       'organism': {
         'organismName': 'IGN',
         'organismId': 1
       },
-      'applicationsRigths': [
+      'rights': [
          {'idApplication': 14, 'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
         ]};
-      this.currentUser = new User(response.userName, response.applicationsRigths, response.organism);
+
     }
-    this.authentified = true;
+    this.setCurrentUser(response, d2);
+    this.setToken('1123345254', d2);
+    this.getCurrentUser();
     this.router.navigate(['']);
   }
 
@@ -79,31 +99,18 @@ export class AuthService {
        'id_application': 14
     }).subscribe(response => {
       const data = response.json();
-      console.log(data);
-
       this.setCurrentUser(data.user, data.expires);
-      // this.router.navigate(['']);
-      // this.toastrService.success('', 'Login success', this.toastrConfig);
-      // this.authentified = true;
-      // catch error
-      //error => this.toastrService.error('', 'Login failed', this.toastrConfig)
-
     });
 
   }
 
-  getUserRigths() {
-    
-  }
 
   logout() {
     this.router.navigate(['/login']);
-    //firebase.auth().signOut();
-    // this.token = null;
-    this.authentified = false;
+    this._cookie.delete('token');
   }
     isAuthenticated(): boolean {
-        return this.authentified;
+        return this._cookie.get('token') !== null;
   }
 
 }

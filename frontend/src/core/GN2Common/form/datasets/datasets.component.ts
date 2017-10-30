@@ -18,19 +18,19 @@ export class DatasetsComponent implements OnInit {
   constructor(private _dfs: DataFormService, private _auth: AuthService, private _navService: NavService) { }
 
   ngOnInit() {
-    console.log('init datasets');
-    
-      const appRights = this._auth.currentUser.getRight(14);
+      // TODO : recuperer l'id du module en cours
+      const currentUser = this._auth.getCurrentUser();
+      const appRights = currentUser.getRight(14);
       let idOrganism = null;
       if (appRights['R'] < AppConfig.RIGHTS.MY_ORGANISM_DATA) {
-         idOrganism = this._auth.currentUser.organism.organismId;
+         idOrganism = currentUser.organism.organismId;
       }
       this._dfs.getDatasets(idOrganism)
       .subscribe(res => {
         console.log(res);
         this.dataSets = res;
         console.log(this.dataSets);
-        
+
      });
     }
 

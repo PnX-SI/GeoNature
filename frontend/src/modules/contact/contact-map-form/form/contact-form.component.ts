@@ -12,6 +12,7 @@ import { ContactService } from '../../services/contact.service';
 
 
 
+
 @Component({
   selector: 'pnx-contact-form',
   templateUrl: './contact-form.component.html',
@@ -25,7 +26,7 @@ export class ContactFormComponent implements OnInit {
      private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
      private toastr: ToastrService,
      private router: Router,
-     private contactService: ContactService
+     private contactService: ContactService,
     ) {  }
 
   ngOnInit() {
