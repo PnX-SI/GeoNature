@@ -107,8 +107,8 @@ export class AuthService {
     this.router.navigate(['/login']);
     this._cookie.delete('token');
   }
-    isAuthenticated(): boolean {
-        return this._cookie.get('token') !== null;
+  isAuthenticated(): boolean {
+      return this._cookie.get('token') !== null;
   }
 
 }

@@ -62,7 +62,7 @@ export class MapListComponent implements OnInit, OnChanges {
         // observable
         this.mapListService.setCurrentTableId(feature.id);
         // open popup
-        layer.bindPopup(feature.properties.leaflet_popup).openPopup();
+        layer.bindPopup(feature.properties.leaflet_popup).openPopup(); 
       }
     });
   }
@@ -70,7 +70,6 @@ export class MapListComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (changes.geojsonData.currentValue !== undefined) {
-      console.log(changes.geojsonData.currentValue.features);
       this.tableData = this.mapListService.loadTableData(changes.geojsonData.currentValue);
       const features = changes.geojsonData.currentValue.features;
       const keyColumns = [];
