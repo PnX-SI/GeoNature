@@ -32,10 +32,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
           private activatedRoute: ActivatedRoute,
           private _sideBarService: SideNavService,
           private _location: Location) {
-      _navService.gettingCurrentApp.subscribe(app => {
-        this.appName = app.appName;
-
-    });
 
     translate.addLangs(['en', 'fr', 'cn']);
     translate.setDefaultLang(AppConfig.defaultLanguage);
@@ -52,11 +48,12 @@ export class NavHomeComponent implements OnInit, OnDestroy {
             this.translate.use(locale);
         }
       });
-    // init firebase
-    // firebase.initializeApp({
-    //   apiKey: 'AIzaSyBHvJhaMQdEFI0kM6LNagcFTQQWiDFCsOo',
-    //   authDomain: 'geonature-a568d.firebaseapp.com',
-    // });
+      // subscribe to the app name
+      this._navService.gettingCurrentApp.subscribe(app => {
+        
+        this.appName = app.appName;
+    });
+
 
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);

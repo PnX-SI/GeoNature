@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 export class NavService {
     // Observable string sources
     private _app = new Subject<any>();
+    public currentApp: any;
     gettingCurrentApp = this._app.asObservable();
     // List of the apps
     private _nav = [{}];
@@ -21,10 +22,14 @@ export class NavService {
             ];
   }
 
-    setAppName(app): any {
+    setCurrentApp(app): any {
+      this.currentApp = app;
       this._app.next(app);
     }
 
+    getCurrentApp() {
+      return this.currentApp;
+    }
     getAppList(): any {
       return this._nav;
     }

@@ -20,7 +20,6 @@ export class ContactMapFormComponent implements OnInit, OnDestroy {
   public id: number;
   constructor(private _navService: NavService, private _ms: MapService, private _route: ActivatedRoute,
   private _router: Router) {
-      _navService.setAppName('Contact Faune - Flore ');
   }
 
   ngOnInit() {

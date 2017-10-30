@@ -27,15 +27,7 @@ export class SidenavItemsComponent implements OnInit {
   ngOnInit() {
   }
   onSetApp(app) {
-    /** comment for dev **/
-    // Test Authenticate if not valid, show dialog message.
-    // if (!this._authService.isAuthenticated() && appName !== 'Accueil') {
-    //   this.toastrService.warning('', 'Login to get access', this.toastrConfig);
-    //   this.router.navigate(['/']);
-    // } else {
-    //   this._navService.setAppName(appName);
-    // }
-    this._navService.setAppName(app);
+    this._navService.setCurrentApp(app);
     if (app.appName === 'Accueil') {
       this._sideNavService.setHome(this._sideNavService.sidenav);
     } else {

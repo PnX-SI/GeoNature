@@ -16,7 +16,6 @@ export class User {
 }
 
   getRight(idApplication) {
-    console.log(this);
     return this.rights.find(obj => obj.idApplication = idApplication);
   }
 }
@@ -62,7 +61,6 @@ export class AuthService {
     const d1 = new Date();
     const d2 = new Date(d1);
     d2.setMinutes(d1.getMinutes() + 30);
-    console.log("expire: "+ d2);
     let response;
     if (username === 'admin') {
        response = {
