@@ -29,6 +29,7 @@ INSERT INTO ref_nomenclatures.defaults_nomenclatures_value (id_type, id_organism
 ,(9,1,'pr_contact',194)
 ,(6,1,'pr_contact',166)
 ,(21,1,'pr_contact',109)
+,(18,1,'pr_contact',101)
 ;
 
 INSERT INTO pr_contact.t_releves_contact VALUES
@@ -37,9 +38,9 @@ INSERT INTO pr_contact.t_releves_contact VALUES
 SELECT pg_catalog.setval('pr_contact.t_releves_contact_id_releve_contact_seq', 2, true);
 
 INSERT INTO pr_contact.t_occurrences_contact VALUES
-(1,1,343,65,177,30,182,91,347,163,1,'Gil',379,'Gees',60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
-,(2,1,343,65,177,30,182,91,347,163,1,'Gil D',370,NULL,351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
-,(3,2,343,65,177,30,182,91,347,163,1,'Donovan M',370,NULL,67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');
+(1,1,343,65,177,30,182,91,347,163,101,1,'Gil',379,'Gees',60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
+,(2,1,343,65,177,30,182,91,347,163,101,1,'Gil D',370,NULL,351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
+,(3,2,343,65,177,30,182,91,347,163,101,1,'Donovan M',370,NULL,67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');
 
 
 SELECT pg_catalog.setval('pr_contact.t_occurrences_contact_id_occurrence_contact_seq', 3, true);
