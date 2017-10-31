@@ -82,9 +82,9 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
     // format nom_cite and update date
     finalForm.properties.t_occurrences_contact.forEach((occ, index) => {
-      console.log(index);
-      
-      occ.nom_cite = this.fs.taxonsList[index].nom_valide;
+      occ.nom_cite = this.fs.taxonsList[index].search_name.replace('<i>', '');
+      occ.nom_cite = occ.nom_cite.replace('</i>', '');
+      console.log(occ.nom_cite);
       occ.meta_update_date = new Date();
     });
     // format observers
