@@ -65,6 +65,7 @@ CREATE TABLE t_occurrences_contact (
     id_nomenclature_valid_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(101,1,'pr_contact'),
     id_nomenclature_diffusion_level integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(5,1,'pr_contact'),
     id_nomenclature_observation_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(18,1,'pr_contact'),
+    id_nomenclature_blurring integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(4,1,'pr_contact'),
     id_validator integer,
     determiner character varying(255),
     id_nomenclature_determination_method integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(106,1,'pr_contact'),
@@ -89,6 +90,7 @@ COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_exist_proof IS 'Correspo
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs';
+COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_determination_method IS 'Correspondance nomenclature GEONATURE = meth_determin';
 
 CREATE SEQUENCE t_occurrences_contact_id_occurrence_contact_seq
@@ -194,6 +196,9 @@ ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_observation_status FOREIGN KEY (id_nomenclature_observation_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
+    ADD CONSTRAINT fk_t_occurrences_contact_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
@@ -261,7 +266,10 @@ ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check_t_occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_observation_status,18));
+  ADD CONSTRAINT check_t_occurrences_contact_obs_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_observation_status,18));
+
+ALTER TABLE t_occurrences_contact
+  ADD CONSTRAINT check_t_occurrences_contact_blurring CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_blurring,4));
 
 ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_occurrences_contact_determination_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_determination_method,106));
