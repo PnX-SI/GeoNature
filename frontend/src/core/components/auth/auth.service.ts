@@ -101,8 +101,6 @@ export class AuthService {
     });
 
   }
-
-
   logout() {
     this.router.navigate(['/login']);
     this._cookie.delete('token');
