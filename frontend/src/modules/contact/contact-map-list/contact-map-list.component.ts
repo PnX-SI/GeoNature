@@ -8,6 +8,7 @@ import { ContactService } from '../services/contact.service';
 import { CommonService } from '../../../core/GN2Common/service/common.service';
 import { AuthService } from '../../../core/components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -23,9 +24,10 @@ export class ContactMapListComponent implements OnInit {
   public apiEndPoint: string;
   constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService
-   , private _cookie: CookieService) { }
+   , private _cookie: CookieService, private _translate: TranslateService) { }
 
   ngOnInit() {
+    console.log(this._translate.getLangs());
     // this._cookie.deleteAll();
     // reset the URL query parameter
     this._mapListService.urlQuery.delete('organism');
@@ -40,7 +42,7 @@ export class ContactMapListComponent implements OnInit {
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},
   ];
-  this.pathEdit = 'contact-form';
+  this.pathEdit = 'contact/form';
   this.pathInfo = 'contact/info';
   this.idName = 'id_releve_contact';
   this.apiEndPoint = 'contact/vreleve';

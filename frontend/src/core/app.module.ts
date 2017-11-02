@@ -12,14 +12,12 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartModule } from 'angular2-chartjs';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateModule, TranslateLoader, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
 
 // Modules
 import { GN2CommonModule } from './GN2Common/GN2Common.module';
-import { ContactModule } from '../modules/contact/contact.module';
-import { ExportsModule } from './exports/exports.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
@@ -59,8 +57,13 @@ export function HttpLoaderFactory(http: Http) {
     ChartModule,
     ToastrModule.forRoot(),
     GN2CommonModule,
-    ContactModule,
-    ExportsModule,
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [Http]
+      }
+  }),
   ],
   declarations: [
     AppComponent,
@@ -75,4 +78,6 @@ export function HttpLoaderFactory(http: Http) {
   bootstrap: [AppComponent],
 })
 
-export class AppModule { }
+export class AppModule {
+
+ }

@@ -1,15 +1,24 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '../GN2Common/GN2Common.module';
 import { ExportsComponent } from './exports.component';
 import { ExportsService } from './exports.service';
+import { Routes, RouterModule } from '@angular/router';
+import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
+
+const routes: Routes = [
+  { path: '', component: ExportsComponent }
+];
+
 
 @NgModule({
   imports: [
-    BrowserModule,
+    CommonModule,
     GN2CommonModule,
+    RouterModule.forChild(routes),
+    TranslateModule.forChild()
   ],
-  exports: [ExportsComponent],
+  exports: [],
   declarations: [ExportsComponent],
   providers: [ExportsService],
 })
