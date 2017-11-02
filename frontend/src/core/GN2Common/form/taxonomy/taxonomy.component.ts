@@ -23,12 +23,14 @@ export class TaxonomyComponent implements OnInit {
   regnesAndGroup: any;
   regneControl = new FormControl(null);
   groupControl = new FormControl(null);
+  noResult: boolean;
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
+
     this.parentFormControl.valueChanges
       .filter(value => value.length === 0)
       .subscribe(data => {
@@ -67,6 +69,9 @@ export class TaxonomyComponent implements OnInit {
       .debounceTime(400)
       .distinctUntilChanged()
       .switchMap(value => this._dfService.searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value))
-        .map(response => response.slice(0, this.listLength))
+        .map(response => {
+          this.noResult = response.length === 0 ;
+          return response.slice(0, this.listLength);
+        })
 
 }
