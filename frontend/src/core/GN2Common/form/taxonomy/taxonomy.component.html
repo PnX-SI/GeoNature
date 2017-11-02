@@ -32,10 +32,11 @@
     <span class="input-group-addon" id="filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
       <i class="fa fa-filter" aria-hidden="true"></i>
     </span>
-    
   <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r.search_name">  </span>
   </ng-template>
+  
 </div>
+<small *ngIf="noResult && parentFormControl.value.length > 3" style="color:red"> Aucun taxon ne correspond à votre recherche</small> 
 
 
