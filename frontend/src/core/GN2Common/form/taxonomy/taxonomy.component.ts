@@ -42,6 +42,15 @@ export class TaxonomyComponent implements OnInit {
         this.regnes.push(regne);
       }
     })
+
+    // put group to null if regne = null
+    this.regneControl.valueChanges
+      .subscribe(value => {
+        if (value === '') {
+          console.log('laaaa');
+          this.groupControl.patchValue(null);
+        }
+      });
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
