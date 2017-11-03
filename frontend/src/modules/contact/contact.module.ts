@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '../../core/GN2Common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
-import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Http } from '@angular/http';
 // Components
@@ -32,7 +31,6 @@ const routes: Routes = [
     CommonModule,
     GN2CommonModule,
     RouterModule.forChild(routes),
-    TranslateModule.forChild({}),
   ],
   declarations: [
     ContactMapFormComponent,

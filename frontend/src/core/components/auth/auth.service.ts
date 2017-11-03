@@ -76,7 +76,7 @@ export class AuthService {
     } else {
        response = {'userName': 'contributeur',
       'organism': {
-        'organismName': 'IGN',
+        'organismName': 'PNF',
         'organismId': 1
       },
       'rights': [
