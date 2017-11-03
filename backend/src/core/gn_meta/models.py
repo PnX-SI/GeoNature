@@ -5,8 +5,11 @@ from __future__ import (unicode_literals, print_function,
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
+from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
 from ...utils.utilssqlalchemy import serializableModel
+
+from sqlalchemy.dialects.postgresql import UUID
 
 from ..users.models import BibOrganismes
 
@@ -29,54 +32,85 @@ class TPrograms(serializableModel):
     def get_programs(self, recursif=False):
         return self.as_dict(recursif)
 
+class TAcquisitionFramework(serializableModel):
+    __tablename__ = 't_acquisition_frameworks'
+    __table_args__ = {'schema': 'gn_meta'}
+    id_acquisition_framework = db.Column(db.Integer, primary_key=True)
+    unique_acquisition_framework_id = db.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()]))
+    acquisition_framework_name = db.Column(db.Unicode)
+    acquisition_framework_desc = db.Column(db.Unicode)
+    id_nomenclature_territorial_level = db.Column(db.Integer)
+    territory_desc = db.Column(db.Unicode)
+    keywords = db.Column(db.Unicode)
+    id_nomenclature_financing_type = db.Column(db.Integer)
+    target_description = db.Column(db.Unicode)
+    ecologic_or_geologic_target = db.Column(db.Unicode)
+    acquisition_framework_parent_id = db.Column(db.Integer)
+    is_parent = db.Column(db.Integer)
+    acquisition_framework_start_date = db.Column(db.DateTime)
+    acquisition_framework_end_date = db.Column(db.DateTime)
+
+    meta_create_date = db.Column(db.DateTime)
+    meta_update_date = db.Column(db.DateTime)
+
+class CorAcquisitionFrameworkActor(serializableModel):
+    __tablename__ = 'cor_acquisition_framework_actor'
+    __table_args__ = {'schema': 'gn_meta'}
+    id_acquisition_framework = db.Column(db.Integer, primary_key=True)
+    id_actor = db.Column(db.Integer, primary_key=True)
+    id_nomenclature_actor_role = db.Column(db.Integer, primary_key=True)
+
 
 class TDatasets(serializableModel):
     __tablename__ = 't_datasets'
     __table_args__ = {'schema': 'gn_meta'}
     id_dataset = db.Column(db.Integer, primary_key=True)
-    id_program = db.Column(
+    unique_dataset_id = db.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()]))
+    id_acquisition_framework = db.Column(
         db.Integer,
-        ForeignKey('gn_meta.t_programs.id_program')
-    )
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'))
+    unique_acquisition_framework_id = db.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()]
+    ))
     dataset_name = db.Column(db.Unicode)
+    dataset_shortname = db.Column(db.Unicode)
     dataset_desc = db.Column(db.Unicode)
-    id_organism_owner = db.Column(
-        db.Integer,
-        ForeignKey('utilisateurs.bib_organismes.id_organisme')
-    )
-    id_organism_producer = db.Column(
-        db.Integer,
-        ForeignKey('utilisateurs.bib_organismes.id_organisme')
-    )
-    id_organism_administrator = db.Column(
-        db.Integer,
-        ForeignKey('utilisateurs.bib_organismes.id_organisme')
-    )
-    id_organism_funder = db.Column(
-        db.Integer,
-        ForeignKey('utilisateurs.bib_organismes.id_organisme')
-    )
-    public_data = db.Column(db.Boolean)
+    id_nomenclature_data_type = db.Column(db.Integer)
+    keywords = db.Column(db.Unicode)
+    marine_domain = db.Column(db.Boolean)
+    terrestrial_domain = db.Column(db.Boolean)
+    id_nomenclature_dataset_objectif = db.Column(db.Integer)
+    bbox_west = db.Column(db.Unicode)
+    bbox_east = db.Column(db.Unicode)
+    bbox_south = db.Column(db.Unicode)
+    bbox_north = db.Column(db.Unicode)
+    id_nomenclature_collecting_method = db.Column(db.Integer)
+    id_nomenclature_data_origin = db.Column(db.Integer)
+    id_nomenclature_source_status = db.Column(db.Integer)
+    id_nomenclature_resource_type = db.Column(db.Integer)
+    id_program = db.Column(db.Integer,
+        ForeignKey('gn_meta.t_programs.id_program'))
     default_validity = db.Column(db.Boolean)
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
-    organism_producer = relationship(
-        "BibOrganismes",
-        foreign_keys=[id_organism_producer]
-    )
-    organism_owner = relationship(
-        "BibOrganismes",
-        foreign_keys=[id_organism_owner]
-    )
-    organism_administrator = relationship(
-        "BibOrganismes",
-        foreign_keys=[id_organism_administrator]
-    )
-    organism_funder = relationship(
-        "BibOrganismes",
-        foreign_keys=[id_organism_funder]
-    )
+    # acquisition_framework = relationship(
+    #     "TAcquisitionFramework",
+    #     lazy = 'join'
+    # )
+
+class CorDatasetsActor(serializableModel):
+    __tablename__ = 'cor_dataset_actor'
+    __table_args__ = {'schema': 'gn_meta'}
+    id_dataset = db.Column(db.Integer, primary_key=True)
+    id_actor = db.Column(db.Integer, primary_key=True)
+    id_nomenclature_actor_role = db.Column(db.Integer, primary_key=True)
+
 
 
 class TParameters(serializableModel):
@@ -91,3 +125,4 @@ class TParameters(serializableModel):
     parameter_desc = db.Column(db.Unicode)
     parameter_value = db.Column(db.Unicode)
     parameter_extra_value = db.Column(db.Unicode)
+        
