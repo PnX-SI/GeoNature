@@ -94,7 +94,6 @@ def getDatasets():
         CorDatasetsActor.id_dataset == TDatasets.id_dataset
         ).filter(
             CorDatasetsActor.id_actor == int(parameters.get('organism')))
-        print(q)
     try:
         data = q.all()
     except Exception as e:
