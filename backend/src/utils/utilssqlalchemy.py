@@ -12,7 +12,7 @@ from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import Headers
 
-from sqlalchemy import inspect
+from sqlalchemy import inspect, create_engine, MetaData
 from sqlalchemy.orm import class_mapper, ColumnProperty, RelationshipProperty
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -51,8 +51,8 @@ def testDataType(value, sqlType, paramName):
 class GenericTable:
     def __init__(self, tableName, schemaName):
         engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
-        meta = MetaData(bind=engine)
-        meta.reflect(schema=schemaName, views=True)
+        meta = MetaData(schema=schemaName, bind=engine)
+        meta.reflect(views=True)
         self.tableDef = meta.tables[tableName]
         self.columns = [column.name for column in self.tableDef.columns]
 
@@ -67,6 +67,21 @@ def serializeQuery(data, columnDef):
             for c in columnDef if getattr(row, c['name']) is not None
         } for row in data
     ]
+    return rows
+
+def serializeQueryTest(data, columnDef):
+    rows = list()
+    for row in data:
+        inter = {}
+        for c in columnDef:
+            if getattr(row, c['name']) is not None:
+                if isinstance(c['type'], (db.Date, db.DateTime, UUID)):
+                    inter[c['name']] = str(getattr(row, c['name']))
+                elif isinstance(c['type'], db.Numeric):
+                    inter[c['name']] = float(getattr(row, c['name']))
+                elif not isinstance(c['type'], Geometry):
+                    inter[c['name']] = getattr(row, c['name'])
+        rows.append(inter)
     return rows
 
 
@@ -200,7 +215,6 @@ def csv_resp(fn):
                     [o.get(i) is None] for i in columns
                 )
             )
-
         out = '\r\n'.join(outdata)
         return Response(out, headers=headers)
     return _csv_resp
