@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy import or_
 
-from .models import TPrograms, TDatasets, TParameters
+from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor
 from ...utils.utilssqlalchemy import json_resp
 
 db = SQLAlchemy()
@@ -90,11 +90,10 @@ def getDatasets():
     q = db.session.query(TDatasets)
 
     if 'organism' in parameters:
-        q = q.filter(or_(TDatasets.id_organism_owner == int(parameters.get('organism')),
-              TDatasets.id_organism_producer == int(parameters.get('organism')),
-              TDatasets.id_organism_administrator == int(parameters.get('organism')),
-              TDatasets.id_organism_funder == int(parameters.get('organism'))
-        ))
+        q = q.join(CorDatasetsActor,
+        CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        ).filter(
+            CorDatasetsActor.id_actor == int(parameters.get('organism')))
         print(q)
     try:
         data = q.all()
