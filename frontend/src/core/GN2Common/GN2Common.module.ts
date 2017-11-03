@@ -50,7 +50,7 @@ export function HttpLoaderFactory(http: Http) {
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    TranslateModule,
+    TranslateModule.forChild(),
   NgbModule.forRoot(),
   AutoCompleteModule
   ],
@@ -100,7 +100,8 @@ export function HttpLoaderFactory(http: Http) {
     MdIconModule,
     MdNativeDateModule,
     NgxDatatableModule,
-    NgbModule
+    NgbModule,
+    TranslateModule
   ]
 })
 export class GN2CommonModule {
