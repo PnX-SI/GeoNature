@@ -37,6 +37,6 @@
   </ng-template>
   
 </div>
-<small *ngIf="noResult && parentFormControl.value.length > 3" style="color:red"> Aucun taxon ne correspond à votre recherche</small> 
+<small *ngIf="noResult && parentFormControl.value.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound' | translate}}</small> 
 
 
