@@ -10,5 +10,6 @@ python-dateutil==2.6.1
 SQLAlchemy==1.1.13
 Flask-Cors==3.0.3
 gunicorn==19.7.0
+requests==2.18.4
 git+https://github.com/PnX-SI/UsersHub-authentification-module@1.0.1
 git+https://github.com/PnX-SI/Nomenclature-api-module.git
