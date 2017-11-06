@@ -21,14 +21,16 @@ export class TaxonomyComponent implements OnInit {
   filteredTaxons: any;
   regnes = new Array();
   regnesAndGroup: any;
-  regneControl = new FormControl();
-  groupControl = new FormControl();
+  regneControl = new FormControl(null);
+  groupControl = new FormControl(null);
+  noResult: boolean;
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
+
     this.parentFormControl.valueChanges
       .filter(value => value.length === 0)
       .subscribe(data => {
@@ -42,6 +44,15 @@ export class TaxonomyComponent implements OnInit {
         this.regnes.push(regne);
       }
     })
+
+    // put group to null if regne = null
+    this.regneControl.valueChanges
+      .subscribe(value => {
+        if (value === '') {
+          console.log('laaaa');
+          this.groupControl.patchValue(null);
+        }
+      });
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
@@ -57,7 +68,10 @@ export class TaxonomyComponent implements OnInit {
       .filter(value => (value.length >= this.charNumber && value.length <= 20))
       .debounceTime(400)
       .distinctUntilChanged()
-      .switchMap(value => this._dfService.searchTaxonomy(value, this.idList))
-        .map(response => response.slice(0, this.listLength))
+      .switchMap(value => this._dfService.searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value))
+        .map(response => {
+          this.noResult = response.length === 0 ;
+          return response.slice(0, this.listLength);
+        })
 
 }

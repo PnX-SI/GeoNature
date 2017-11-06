@@ -12,11 +12,11 @@ SET search_path = ref_nomenclatures, pg_catalog;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION ref_nomenclatures.get_default_nomenclature_value(myidtype integer, myidorganism integer , mymodulename character varying) returns integer
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer) returns integer
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id and module name
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
@@ -24,8 +24,7 @@ AS $$
       SELECT INTO thenomenclatureid id_nomenclature
       FROM ref_nomenclatures.defaults_nomenclatures_value 
       WHERE id_type = myidtype 
-      AND id_organism = myidorganism 
-      AND entity_module = mymodulename;
+      AND id_organism = myidorganism;
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
     END IF;
@@ -33,7 +32,7 @@ AS $$
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION ref_nomenclatures.check_nomenclature_type(id integer , myidtype integer) returns boolean
+CREATE OR REPLACE FUNCTION check_nomenclature_type(id integer , myidtype integer) returns boolean
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
@@ -142,7 +141,7 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION ref_nomenclatures.get_cd_nomenclature(
+CREATE OR REPLACE FUNCTION get_cd_nomenclature(
     myidtype integer,
     myidnomenclature integer)
   RETURNS character varying AS
@@ -250,7 +249,6 @@ CREATE TABLE cor_taxref_sensitivity
 CREATE TABLE defaults_nomenclatures_value (
     id_type integer NOT NULL,
     id_organism integer NOT NULL,
-    entity_module character varying(250) NOT NULL,
     id_nomenclature integer NOT NULL
 );
 ---------------
@@ -272,7 +270,7 @@ ALTER TABLE ONLY cor_taxref_sensitivity
     ADD CONSTRAINT pk_cor_taxref_sensitivity PRIMARY KEY (cd_nom, id_nomenclature_niv_precis, id_nomenclature);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, entity_module);
+    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism);
 
 
 ---------------

@@ -44,6 +44,9 @@ def get_app():
     from pypnusershub import routes
     app.register_blueprint(routes.routes, url_prefix='/api/auth')
 
+    from src.core.gn_exports.routes import routes
+    app.register_blueprint(routes, url_prefix='/exports')
+
 
 
 

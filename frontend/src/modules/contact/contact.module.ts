@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '../../core/GN2Common/GN2Common.module';
+import { Routes, RouterModule } from '@angular/router';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Http } from '@angular/http';
 // Components
 import { ContactMapFormComponent } from './contact-map-form/contact-map-form.component';
 import { ObservationComponent } from './contact-map-form/form/observation/observation.component';
@@ -15,10 +18,19 @@ import { ContactFormService } from './contact-map-form/form/contact-form.service
 import { ContactService } from './services/contact.service';
 
 
+const routes: Routes = [
+  { path: '', component: ContactMapListComponent },
+  { path: 'form', component: ContactMapFormComponent },
+  { path: 'form/:id', component: ContactMapFormComponent, pathMatch: 'full' , },
+  { path: 'info/:id', component: ContactMapInfoComponent,  pathMatch: 'full', },
+];
+
+
 @NgModule({
   imports: [
     CommonModule,
     GN2CommonModule,
+    RouterModule.forChild(routes),
   ],
   declarations: [
     ContactMapFormComponent,

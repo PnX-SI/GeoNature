@@ -40,8 +40,16 @@ export class DataFormService {
       .map(response => response.json());
   }
 
-  searchTaxonomy(taxonName: string, id: string) {
-    return this._http.get(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}?search_name=${taxonName}`)
+  searchTaxonomy(taxonName: string, id: string, regne?: string, groupe2Inpn?: string) {
+    const params: URLSearchParams = new URLSearchParams();
+    params.append('search_name', taxonName);
+    if (regne) {
+      params.append('regne', regne);
+    }
+    if (groupe2Inpn) {
+      params.append('group2_inpn', groupe2Inpn);
+    }
+    return this._http.get(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}`, { search : params})
     .map(res => res.json());
   }
 

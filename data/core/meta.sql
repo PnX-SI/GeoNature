@@ -85,7 +85,7 @@ CREATE TABLE sinp_datatype_publications (
 COMMENT ON TABLE sinp_datatype_publications IS 'Define a SINP datatype Concepts::Publication.';
 COMMENT ON COLUMN sinp_datatype_publications.id_publication IS 'Internal value for primary and foreign keys';
 COMMENT ON COLUMN sinp_datatype_publications.publication_reference IS 'Correspondance standard SINP = referencePublication : Référence complète de la publication suivant la nomenclature ISO 690 - OBLIGATOIRE';
-COMMENT ON COLUMN sinp_datatype_publications.protocol_url IS 'Correspondance standard SINP = URLPublication : Adresse à laquelle trouver la publication - RECOMMANDE.';
+COMMENT ON COLUMN sinp_datatype_publications.publication_url IS 'Correspondance standard SINP = URLPublication : Adresse à laquelle trouver la publication - RECOMMANDE.';
 
 
 CREATE TABLE t_acquisition_frameworks (
@@ -93,17 +93,17 @@ CREATE TABLE t_acquisition_frameworks (
     unique_acquisition_framework_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     acquisition_framework_name character varying(255) NOT NULL,
     acquisition_framework_desc text NOT NULL,
-    id_nomenclature_territorial_level integer,
+    id_nomenclature_territorial_level integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(107,1),
     territory_desc text,
     keywords text,
-    id_nomenclature_financing_type integer,
+    id_nomenclature_financing_type integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(111,1),
     target_description text,
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
     is_parent integer,
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,
-    meta_create_date timestamp without time zon NOT NULL,
+    meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
 );
 COMMENT ON TABLE t_acquisition_frameworks IS 'Define a acquisition framework that embed datasets. Implement 1.3.8 SINP metadata standard';
@@ -141,7 +141,7 @@ COMMENT ON TABLE cor_acquisition_framework_objectif IS 'A acquisition framework 
 CREATE TABLE cor_acquisition_framework_territory (
     id_acquisition_framework integer NOT NULL,
     id_nomenclature_territory integer NOT NULL,
-    territory_desc text,
+    territory_desc text
 );
 COMMENT ON TABLE cor_acquisition_framework_territory IS 'A acquisition framework can have 1 or n "territoire". Implement 1.3.8 SINP metadata standard : Territoire(s) visé(s) par le cadre d''acquisition, tel(s) que défini(s) par la nomenclature TerritoireValue - OBLIGATOIRE';
 COMMENT ON COLUMN cor_acquisition_framework_territory.territory_desc IS 'Correspondance standard SINP = precisionGeographique : Précisions sur le territoire visé - FACULTATIF';
@@ -170,12 +170,90 @@ CREATE TABLE cor_acquisition_framework_protocol (
 COMMENT ON TABLE cor_acquisition_framework_protocol IS 'A acquisition framework can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) éventuel(s) pour le cadre d''acquisition et/ou sa fiche de métadonnées. Contient le type "ProtocoleType" autant de fois que nécessaire - RECOMMANDE';
 
 
-CREATE TABLE cor_role_privilege_entity (
-    id_role integer NOT NULL,
-    id_privilege integer NOT NULL,
-    entity_name character varying(255) NOT NULL
+CREATE TABLE t_datasets (
+    id_dataset integer NOT NULL,
+    unique_dataset_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
+    id_acquisition_framework integer NOT NULL,
+    unique_acquisition_framework_id uuid NOT NULL,
+    dataset_name character varying(150) NOT NULL,
+    dataset_shortname character varying(30) NOT NULL,
+    dataset_desc text NOT NULL,
+    id_nomenclature_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(103,1),
+    keywords text,
+    marine_domain boolean NOT NULL,
+    terrestrial_domain boolean NOT NULL,
+    id_nomenclature_dataset_objectif integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(115,1),
+    bbox_west character varying(10),
+    bbox_east character varying(10),
+    bbox_south character varying(10),
+    bbox_north character varying(10),
+    id_nomenclature_collecting_method integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(114,1),
+    id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(2,1),
+    id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(19,1),
+    id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(102,1),
+    id_program integer NOT NULL,
+    default_validity boolean,
+    meta_create_date timestamp without time zone NOT NULL,
+    meta_update_date timestamp without time zone
 );
-COMMENT ON TABLE cor_role_privilege_entity IS 'Allow to manage privileges of a group or user on entities (tables) into backoffice (CRUD depending on privileges).';
+COMMENT ON TABLE t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
+COMMENT ON COLUMN t_datasets.id_dataset IS 'Internal value for primary and foreign keys';
+COMMENT ON COLUMN t_datasets.id_acquisition_framework IS 'Internal value for foreign keys with t_acquisition_frameworks table';
+COMMENT ON COLUMN t_datasets.unique_acquisition_framework_id IS 'Correspondance standard SINP = identifiantCadre : Identifiant unique de rattachement au cadre d''acquisition (il s''agit de l''identifiant du cadre). Il s''agit d''un UUID attribué par une plateforme SINP - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.unique_dataset_id IS 'Correspondance standard SINP = identifiantJdd : Identifiant unique du jeu de données sous la forme d''un UUID. Il devra être sous la forme d''un UUID - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.dataset_name IS 'Correspondance standard SINP = libelle : Nom du jeu de données (150 caractères) - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.dataset_shortname IS 'Correspondance standard SINP = libelleCourt : Libellé court (30 caractères) du jeu de données - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.dataset_desc IS 'Correspondance standard SINP = description : Description du jeu de données - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.id_nomenclature_data_type IS 'Correspondance standard SINP = typeDonnees : Type de données du jeu de données tel que défini dans la nomenclature TypeDonneesValue - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.keywords IS 'Correspondance standard SINP = motCle : Mot(s)-clé(s) représentatifs du jeu de données, séparés par des virgules - FACULTATIF';
+COMMENT ON COLUMN t_datasets.marine_domain IS 'Correspondance standard SINP = domaineMarin : Indique si le jeu de données concerne le domaine marin - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.terrestrial_domain IS 'Correspondance standard SINP = domaineTerrestre : Indique si le jeu de données concerne le domaine terrestre - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.id_nomenclature_dataset_objectif IS 'Correspondance standard SINP = objectifJdd : Objectif du jeu de données tel que défini par la nomenclature ObjectifJeuDonneesValue - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.bbox_west IS 'Correspondance standard SINP = empriseGeographique::borneOuest : Point le plus à l''ouest de la zone géographique délimitant le jeu de données - FACULTATIF';
+COMMENT ON COLUMN t_datasets.bbox_east IS 'Correspondance standard SINP = empriseGeographique::borneEst : Point le plus à l''est de la zone géographique délimitant le jeu de données - FACULTATIF';
+COMMENT ON COLUMN t_datasets.bbox_south IS 'Correspondance standard SINP = empriseGeographique::borneSud : Point le plus au sud de la zone géographique délimitant le jeu de données - FACULTATIF';
+COMMENT ON COLUMN t_datasets.bbox_north IS 'Correspondance standard SINP = empriseGeographique::borneNord : Point le plus au nord de la zone géographique délimitant le jeu de données - FACULTATIF';
+COMMENT ON COLUMN t_datasets.id_nomenclature_collecting_method IS 'Correspondance standard SINP = methodeRecueil : Méthode de recueil des données : Ensemble de techniques, savoir-faire et outils mobilisés pour collecter des données - RECOMMANDE';
+COMMENT ON COLUMN t_datasets.id_nomenclature_data_origin IS 'Public, privée, etc... Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.id_nomenclature_source_status IS 'Terrain, littérature, etc... Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.id_nomenclature_resource_type IS 'jeu de données ou série de jeu de données. Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
+
+COMMENT ON COLUMN t_datasets.meta_create_date IS 'Correspondance standard SINP = dateCreation : Date de création de la fiche de métadonnées du jeu de données, format AAAA-MM-JJ - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.meta_update_date IS 'Correspondance standard SINP = dateRevision : Date de révision du jeu de données ou de sa fiche de métadonnées. Il est fortement recommandé de remplir cet attribut si une révision de la fiche ou du jeu de données a été effectuées, format AAAA-MM-JJ - RECOMMANDE';
+
+
+CREATE TABLE cor_dataset_actor (
+    id_dataset integer NOT NULL,
+    id_actor integer NOT NULL,
+    id_nomenclature_actor_role integer NOT NULL
+);
+COMMENT ON TABLE cor_dataset_actor IS 'A dataset must have 1 or n actor ""pointContactJdd"". Implement 1.3.8 SINP metadata standard : Point de contact principal pour les données du jeu de données, et autres éventuels contacts (fournisseur ou producteur). (Règle : Un contact au moins devra avoir roleActeur à 1 - Les autres types possibles pour roleActeur sont 5 et 6 (fournisseur et producteur)) - OBLIGATOIRE';
+COMMENT ON COLUMN cor_dataset_actor.id_nomenclature_actor_role IS 'Correspondance standard SINP = roleActeur : Rôle de l''acteur tel que défini dans la nomenclature RoleActeurValue - OBLIGATOIRE';
+
+
+CREATE TABLE cor_dataset_territory (
+    id_dataset integer NOT NULL,
+    id_nomenclature_territory integer NOT NULL,
+    territory_desc text
+);
+COMMENT ON TABLE cor_dataset_territory IS 'A dataset must have 1 or n "territoire". Implement 1.3.8 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
+COMMENT ON COLUMN cor_dataset_territory.territory_desc IS 'Correspondance standard SINP = precisionGeographique : Précisions sur le territoire visé - FACULTATIF';
+
+
+CREATE TABLE cor_dataset_protocol (
+    id_dataset integer NOT NULL,
+    id_protocol integer NOT NULL
+);
+COMMENT ON TABLE cor_dataset_protocol IS 'A dataset can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) rattaché(s) au jeu de données (protocole de synthèse et/ou de collecte). On se rapportera au type "Protocole Type". - RECOMMANDE';
+
+
+CREATE TABLE t_programs (
+    id_program integer NOT NULL,
+    program_name character varying(255),
+    program_desc text,
+    active boolean
+);
+COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
 
 
 CREATE TABLE cor_role_dataset_application (
@@ -186,35 +264,12 @@ CREATE TABLE cor_role_dataset_application (
 COMMENT ON TABLE cor_role_dataset_application IS 'Allow to identify for each GeoNature module (1 module = 1 application in UsersHub) among which dataset connected user can create observations. Reminder : A dataset is a dataset or a survey and each observation is attached to a dataset. GeoNature V2 backoffice allows to manage datasets.';
 
 
-CREATE TABLE t_datasets (
-    id_dataset integer NOT NULL,
-    dataset_name character varying(255),
-    dataset_desc text,
-    id_program integer NOT NULL,
-    id_organism_owner integer NOT NULL,
-    id_organism_producer integer NOT NULL,
-    id_organism_administrator integer NOT NULL,
-    id_organism_funder integer NOT NULL,
-    public_data boolean DEFAULT true NOT NULL,
-    default_validity boolean,
-    id_nomenclature_resource_type integer NOT NULL DEFAULT 351,
-    id_nomenclature_data_type integer NOT NULL DEFAULT 353,
-    ecologic_group  character varying(50),
-    id_nomenclature_sampling_plan_type integer NOT NULL,
-    id_nomenclature_sampling_units_type integer NOT NULL,
-    meta_create_date timestamp without time zone,
-    meta_update_date timestamp without time zone
+CREATE TABLE cor_role_privilege_entity (
+    id_role integer NOT NULL,
+    id_privilege integer NOT NULL,
+    entity_name character varying(255) NOT NULL
 );
-COMMENT ON TABLE t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
-
-
-CREATE TABLE t_programs (
-    id_program integer NOT NULL,
-    program_name character varying(255),
-    program_desc text,
-    active boolean
-);
-COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
+COMMENT ON TABLE cor_role_privilege_entity IS 'Allow to manage privileges of a group or user on entities (tables) into backoffice (CRUD depending on privileges).';
 
 
 ----------------
@@ -253,18 +308,31 @@ ALTER TABLE ONLY cor_acquisition_framework_publication
 ALTER TABLE ONLY cor_acquisition_framework_protocol
     ADD CONSTRAINT pk_cor_acquisition_framework_protocol PRIMARY KEY (id_acquisition_framework, id_protocol);
 
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT pk_cor_role_privilege_entity PRIMARY KEY (id_role, id_privilege, entity_name);
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
 
+ALTER TABLE ONLY cor_dataset_actor
+    ADD CONSTRAINT pk_cor_dataset_actor PRIMARY KEY (id_dataset, id_actor, id_nomenclature_actor_role);    
+
+ALTER TABLE ONLY cor_dataset_territory
+    ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
+
+
 ALTER TABLE ONLY t_programs
     ADD CONSTRAINT pk_t_programs PRIMARY KEY (id_program);
 
+
+ALTER TABLE ONLY cor_role_privilege_entity
+    ADD CONSTRAINT pk_cor_role_privilege_entity PRIMARY KEY (id_role, id_privilege, entity_name);
+
+
+ALTER TABLE ONLY cor_role_dataset_application
+    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
+
+
+ALTER TABLE ONLY cor_dataset_protocol
+    ADD CONSTRAINT pk_cor_dataset_protocol PRIMARY KEY (id_dataset, id_protocol);
 
 ----------------
 --FOREIGN KEYS--
@@ -336,16 +404,7 @@ ALTER TABLE ONLY cor_role_dataset_application
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_financeur FOREIGN KEY (id_organism_funder) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_gestionnaire FOREIGN KEY (id_organism_administrator) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_producteur FOREIGN KEY (id_organism_producer) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_proprietaire FOREIGN KEY (id_organism_owner) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE CASCADE;
@@ -357,10 +416,38 @@ ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_data_type FOREIGN KEY (id_nomenclature_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_sampling_plan_type FOREIGN KEY (id_nomenclature_sampling_plan_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_objectif FOREIGN KEY (id_nomenclature_dataset_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_sampling_units_type FOREIGN KEY (id_nomenclature_sampling_units_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_collecting_method FOREIGN KEY (id_nomenclature_collecting_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_data_origin FOREIGN KEY (id_nomenclature_data_origin) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+
+ALTER TABLE ONLY cor_dataset_actor
+    ADD CONSTRAINT fk_cor_dataset_actor_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_dataset_actor
+    ADD CONSTRAINT fk_dataset_actor_id_actor FOREIGN KEY (id_actor) REFERENCES sinp_datatype_actors(id_actor) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_dataset_actor
+    ADD CONSTRAINT fk_cor_dataset_actor_id_nomenclature_actor_role FOREIGN KEY (id_nomenclature_actor_role) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_dataset_territory
+    ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_dataset_territory
+    ADD CONSTRAINT fk_cor_dataset_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_dataset_protocol
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_dataset_protocol
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_publication FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 
@@ -390,13 +477,16 @@ ALTER TABLE t_datasets
   ADD CONSTRAINT check_t_datasets_data_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_type,103));
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_sampling_plan_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sampling_plan_type,104));
+  ADD CONSTRAINT check_t_datasets_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_dataset_objectif,114));
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_sampling_units_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sampling_units_type,105));
+  ADD CONSTRAINT check_t_datasets_collecting_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_collecting_method,115));
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_sampling_units_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sampling_units_type,105));
+  ADD CONSTRAINT check_t_datasets_data_origin CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_origin,2));
+
+ALTER TABLE t_datasets
+  ADD CONSTRAINT check_t_datasets_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19));
 
 
 ALTER TABLE t_acquisition_frameworks
@@ -418,16 +508,19 @@ ALTER TABLE cor_acquisition_framework_territory
   ADD CONSTRAINT check_cor_acquisition_framework_territory CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territory,110));
 
 
-ALTER TABLE cor_acquisition_framework_objectif
-  ADD CONSTRAINT check_cor_acquisition_framework_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_objectif,108));
-
-
 ALTER TABLE cor_acquisition_framework_actor
   ADD CONSTRAINT check_cor_acquisition_framework_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109));
 
 
 ALTER TABLE sinp_datatype_protocols
   ADD CONSTRAINT check_sinp_datatype_protocol_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_protocol_type,112));
+
+
+ALTER TABLE cor_dataset_actor
+  ADD CONSTRAINT check_cor_dataset_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109));
+
+ALTER TABLE cor_dataset_territory
+  ADD CONSTRAINT check_cor_dataset_territory CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territory,110));
 
 
 ---------------
@@ -442,6 +535,3 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 ,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
 ,(4,NULL,'local_srid','Valeur du SRID local','2154',NULL)
 ,(5,NULL,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);
-
---TODO : insert sample data in "t_acquisition_frameworks" and is correlation TABLE
---TESTING instal_db.sh

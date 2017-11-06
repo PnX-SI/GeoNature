@@ -76,7 +76,7 @@ export class AuthService {
     } else {
        response = {'userName': 'contributeur',
       'organism': {
-        'organismName': 'IGN',
+        'organismName': 'PNF',
         'organismId': 1
       },
       'rights': [
@@ -101,8 +101,6 @@ export class AuthService {
     });
 
   }
-
-
   logout() {
     this.router.navigate(['/login']);
     this._cookie.delete('token');

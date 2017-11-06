@@ -22,7 +22,7 @@ import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
-import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 // directive
@@ -50,13 +50,7 @@ export function HttpLoaderFactory(http: Http) {
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    TranslateModule.forRoot({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [Http]
-      }
-  }),
+    TranslateModule.forChild(),
   NgbModule.forRoot(),
   AutoCompleteModule
   ],
@@ -78,6 +72,7 @@ export function HttpLoaderFactory(http: Http) {
     DatasetsComponent
   ],
   providers : [
+    TranslateService,
     MapService,
     DataFormService,
     MapListService,
@@ -105,9 +100,10 @@ export function HttpLoaderFactory(http: Http) {
     MdIconModule,
     MdNativeDateModule,
     NgxDatatableModule,
-    TranslateModule,
-    NgbModule
+    NgbModule,
+    TranslateModule
   ]
 })
 export class GN2CommonModule {
+
 }
