@@ -61,6 +61,15 @@ COMMENT ON COLUMN sinp_datatype_actors.id_actor IS 'Internal value for primary a
 COMMENT ON COLUMN sinp_datatype_actors.actor_organism IS 'Correspondance standard SINP = organisme :Exemple : Muséum National d''Histoire Naturelle (MNHN) - OBLIGATOIRE CONDITIONNEL : il DOIT être rempli si nomPrenom n''est pas rempli';
 COMMENT ON COLUMN sinp_datatype_actors.actor_fullname IS 'Correspondance standard SINP = nomPrenom : Nom et prénom de la personne à contacter. (Sous la forme NOM Prénom) - OBLIGATOIRE CONDITIONNEL : il DOIT être rempli si organisme n''est pas rempli';
 COMMENT ON COLUMN sinp_datatype_actors.actor_mail IS 'Correspondance standard SINP = mail : Adresse mail de contact - RECOMMANDE.';
+CREATE SEQUENCE sinp_datatype_actors_id_actor_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE sinp_datatype_actors_id_actor_seq OWNED BY sinp_datatype_actors.id_actor;
+ALTER TABLE ONLY sinp_datatype_actors ALTER COLUMN id_actor SET DEFAULT nextval('sinp_datatype_actors_id_actor_seq'::regclass);
+
 
 CREATE TABLE sinp_datatype_protocols (
     id_protocol integer NOT NULL,
@@ -75,6 +84,14 @@ COMMENT ON COLUMN sinp_datatype_protocols.protocol_name IS 'Correspondance stand
 COMMENT ON COLUMN sinp_datatype_protocols.protocol_desc IS 'Correspondance standard SINP = description : Description du protocole : décrit le contenu du protocole - FACULTATIF.';
 COMMENT ON COLUMN sinp_datatype_protocols.id_nomenclature_protocol_type IS 'Correspondance standard SINP = typeProtocole : Type du protocole, tel que défini dans la nomenclature TypeProtocoleValue - OBLIGATOIRE';
 COMMENT ON COLUMN sinp_datatype_protocols.protocol_url IS 'Correspondance standard SINP = uRL : URL d''accès à un document permettant de décrire le protocole - RECOMMANDE.';
+CREATE SEQUENCE sinp_datatype_protocols_id_protocol_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE sinp_datatype_protocols_id_protocol_seq OWNED BY sinp_datatype_protocols.id_protocol;
+ALTER TABLE ONLY sinp_datatype_protocols ALTER COLUMN id_protocol SET DEFAULT nextval('sinp_datatype_protocols_id_protocol_seq'::regclass);
 
 
 CREATE TABLE sinp_datatype_publications (
@@ -86,7 +103,14 @@ COMMENT ON TABLE sinp_datatype_publications IS 'Define a SINP datatype Concepts:
 COMMENT ON COLUMN sinp_datatype_publications.id_publication IS 'Internal value for primary and foreign keys';
 COMMENT ON COLUMN sinp_datatype_publications.publication_reference IS 'Correspondance standard SINP = referencePublication : Référence complète de la publication suivant la nomenclature ISO 690 - OBLIGATOIRE';
 COMMENT ON COLUMN sinp_datatype_publications.publication_url IS 'Correspondance standard SINP = URLPublication : Adresse à laquelle trouver la publication - RECOMMANDE.';
-
+CREATE SEQUENCE sinp_datatype_publications_id_publication_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE sinp_datatype_publications_id_publication_seq OWNED BY sinp_datatype_publications.id_publication;
+ALTER TABLE ONLY sinp_datatype_publications ALTER COLUMN id_publication SET DEFAULT nextval('sinp_datatype_publications_id_publication_seq'::regclass);
 
 CREATE TABLE t_acquisition_frameworks (
     id_acquisition_framework integer NOT NULL,
@@ -122,6 +146,14 @@ COMMENT ON COLUMN t_acquisition_frameworks.acquisition_framework_start_date IS '
 COMMENT ON COLUMN t_acquisition_frameworks.acquisition_framework_end_date IS 'Correspondance standard SINP = ReferenceTemporelle:dateCloture : Date de clôture du cadre d''acquisition. Si elle n''est pas remplie, on considère que le cadre est toujours en activité. - RECOMMANDE';
 COMMENT ON COLUMN t_acquisition_frameworks.meta_create_date IS 'Correspondance standard SINP = dateCreationMtd : Date de création de la fiche de métadonnées du cadre d''acquisition. - OBLIGATOIRE';
 COMMENT ON COLUMN t_acquisition_frameworks.meta_update_date IS 'Correspondance standard SINP = dateMiseAJourMtd : Date de mise à jour de la fiche de métadonnées du cadre d''acquisition. - FACULTATIF';
+CREATE SEQUENCE t_acquisition_frameworks_id_acquisition_framework_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE t_acquisition_frameworks_id_acquisition_framework_seq OWNED BY t_acquisition_frameworks.id_acquisition_framework;
+ALTER TABLE ONLY t_acquisition_frameworks ALTER COLUMN id_acquisition_framework SET DEFAULT nextval('t_acquisition_frameworks_id_acquisition_framework_seq'::regclass);
 
 
 CREATE TABLE cor_acquisition_framework_voletsinp (
@@ -217,9 +249,16 @@ COMMENT ON COLUMN t_datasets.id_nomenclature_collecting_method IS 'Correspondanc
 COMMENT ON COLUMN t_datasets.id_nomenclature_data_origin IS 'Public, privée, etc... Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.id_nomenclature_source_status IS 'Terrain, littérature, etc... Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.id_nomenclature_resource_type IS 'jeu de données ou série de jeu de données. Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
-
 COMMENT ON COLUMN t_datasets.meta_create_date IS 'Correspondance standard SINP = dateCreation : Date de création de la fiche de métadonnées du jeu de données, format AAAA-MM-JJ - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.meta_update_date IS 'Correspondance standard SINP = dateRevision : Date de révision du jeu de données ou de sa fiche de métadonnées. Il est fortement recommandé de remplir cet attribut si une révision de la fiche ou du jeu de données a été effectuées, format AAAA-MM-JJ - RECOMMANDE';
+CREATE SEQUENCE t_datasets_id_dataset_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE t_datasets_id_dataset_seq OWNED BY t_datasets.id_dataset;
+ALTER TABLE ONLY t_datasets ALTER COLUMN id_dataset SET DEFAULT nextval('t_datasets_id_dataset_seq'::regclass);
 
 
 CREATE TABLE cor_dataset_actor (
@@ -535,3 +574,16 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 ,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
 ,(4,NULL,'local_srid','Valeur du SRID local','2154',NULL)
 ,(5,NULL,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);
+
+INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
+(1,'Parc nationaux de France',null,null)
+,(2,'Parc national des Ecrins',null,null)
+,(3,null,'Gerard Lambert',null)
+,(4,null,'Pierre Paul-Jacques',null)
+;
+SELECT pg_catalog.setval('sinp_datatype_actors_id_actor_seq', 5, false);
+
+INSERT INTO gn_meta.sinp_datatype_protocols (id_protocol, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
+(0,'hors protocole','observation réalisées hors protocole',422,null)
+;
+SELECT pg_catalog.setval('sinp_datatype_protocols_id_protocol_seq', 1, false);

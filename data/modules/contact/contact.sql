@@ -132,12 +132,21 @@ SELECT pg_catalog.setval('t_occurrences_contact_id_occurrence_contact_seq', 1, f
 CREATE TABLE cor_counting_contact (
     id_counting_contact bigint NOT NULL,
     id_occurrence_contact bigint NOT NULL,
+<<<<<<< HEAD
+    id_nomenclature_life_stage integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(10,1,'pr_contact'),
+    id_nomenclature_sex integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(9,1,'pr_contact'),
+    id_nomenclature_obj_count integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(6,1,'pr_contact'),
+    id_nomenclature_type_count integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(21,1,'pr_contact'),
+    count_min integer NOT NULL,
+    count_max integer  NOT NULL,
+=======
     id_nomenclature_life_stage integer NOT NULL DEFAULT get_default_nomenclature_value(10,1),
     id_nomenclature_sex integer NOT NULL DEFAULT get_default_nomenclature_value(9,1),
     id_nomenclature_obj_count integer NOT NULL DEFAULT get_default_nomenclature_value(6,1),
     id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value(21,1),
     count_min integer,
     count_max integer,
+>>>>>>> 96474e292b01d359a71edd26d75b193830a231fa
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4()
