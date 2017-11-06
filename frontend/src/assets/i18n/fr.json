@@ -86,7 +86,8 @@
         "NonDigitalProof":"Preuve non numérique",
         "SaveTaxon":"Enregistrer le taxon",
         "AddTaxon":"Ajouter le taxon",
-        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau"
+        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
+        "NoTaxonFound": "Aucun taxon trouvé pour cette recherche"
     },
     "Counting":{
         "Counting":"Dénombrement",

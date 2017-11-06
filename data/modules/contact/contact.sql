@@ -13,6 +13,31 @@ CREATE SCHEMA pr_contact;
 SET search_path = pr_contact, pg_catalog;
 SET default_with_oids = false;
 
+
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer) returns integer
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id 
+--Return -1 if nothing matche with given parameters
+  DECLARE
+    thenomenclatureid integer;
+  BEGIN
+      SELECT INTO thenomenclatureid id_nomenclature
+      FROM pr_contact.defaults_nomenclatures_value 
+      WHERE id_type = myidtype 
+      AND id_organism = myidorganism;
+    IF (thenomenclatureid IS NOT NULL) THEN
+      RETURN thenomenclatureid;
+    END IF;
+    RETURN -1;
+  END;
+$$;
+
+
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
@@ -57,18 +82,18 @@ CREATE TABLE t_occurrences_contact (
     id_occurrence_contact bigint NOT NULL,
     id_releve_contact bigint NOT NULL,
     id_nomenclature_obs_technique integer NOT NULL DEFAULT 343,
-    id_nomenclature_obs_meth integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(14,1,'pr_contact'),
-    id_nomenclature_bio_condition integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(7,1,'pr_contact'),
-    id_nomenclature_bio_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(13,1,'pr_contact'),
-    id_nomenclature_naturalness integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(8,1,'pr_contact'),
-    id_nomenclature_exist_proof integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(15,1,'pr_contact'),
-    id_nomenclature_valid_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(101,1,'pr_contact'),
-    id_nomenclature_diffusion_level integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(5,1,'pr_contact'),
-    id_nomenclature_observation_status integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(18,1,'pr_contact'),
-    id_nomenclature_blurring integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(4,1,'pr_contact'),
+    id_nomenclature_obs_meth integer NOT NULL DEFAULT get_default_nomenclature_value(14,1),
+    id_nomenclature_bio_condition integer NOT NULL DEFAULT get_default_nomenclature_value(7,1),
+    id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value(13,1),
+    id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value(8,1),
+    id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value(15,1),
+    id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value(101,1),
+    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value(5,1),
+    id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value(18,1),
+    id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value(4,1),
     id_validator integer,
     determiner character varying(255),
-    id_nomenclature_determination_method integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(106,1,'pr_contact'),
+    id_nomenclature_determination_method integer DEFAULT get_default_nomenclature_value(106,1),
     determination_method_as_text text,
     cd_nom integer,
     nom_cite character varying(255),
@@ -107,12 +132,21 @@ SELECT pg_catalog.setval('t_occurrences_contact_id_occurrence_contact_seq', 1, f
 CREATE TABLE cor_counting_contact (
     id_counting_contact bigint NOT NULL,
     id_occurrence_contact bigint NOT NULL,
+<<<<<<< HEAD
     id_nomenclature_life_stage integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(10,1,'pr_contact'),
     id_nomenclature_sex integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(9,1,'pr_contact'),
     id_nomenclature_obj_count integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(6,1,'pr_contact'),
     id_nomenclature_type_count integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(21,1,'pr_contact'),
     count_min integer NOT NULL,
     count_max integer  NOT NULL,
+=======
+    id_nomenclature_life_stage integer NOT NULL DEFAULT get_default_nomenclature_value(10,1),
+    id_nomenclature_sex integer NOT NULL DEFAULT get_default_nomenclature_value(9,1),
+    id_nomenclature_obj_count integer NOT NULL DEFAULT get_default_nomenclature_value(6,1),
+    id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value(21,1),
+    count_min integer,
+    count_max integer,
+>>>>>>> 96474e292b01d359a71edd26d75b193830a231fa
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4()
@@ -133,6 +167,14 @@ CREATE TABLE cor_role_releves_contact (
     id_role integer NOT NULL
 );
 
+
+CREATE TABLE defaults_nomenclatures_value (
+    id_type integer NOT NULL,
+    id_organism integer NOT NULL,
+    id_nomenclature integer NOT NULL
+);
+
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -147,6 +189,9 @@ ALTER TABLE ONLY cor_counting_contact
 
 ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT pk_cor_role_releves_contact PRIMARY KEY (id_releve_contact, id_role);
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism);
 
 
 ---------------
@@ -225,6 +270,16 @@ ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT fk_cor_role_releves_contact_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_pr_contact_defaults_nomenclatures_value_id_type FOREIGN KEY (id_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_pr_contact_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_pr_contact_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+
 --------------
 --CONSTRAINS--
 --------------
@@ -292,6 +347,10 @@ ALTER TABLE cor_counting_contact
 
 ALTER TABLE cor_counting_contact
     ADD CONSTRAINT check_cor_counting_contact_count_max CHECK (count_max >= count_min AND count_max > 0);
+
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_pr_contact_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
 
 
 

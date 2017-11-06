@@ -1,12 +1,34 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormArray, FormBuilder } from '@angular/forms';
+import { ExportsService } from './exports.service';
 
 @Component({
   selector: 'pnx-exports-component',
-  templateUrl: 'exports.component.html'
+  templateUrl: 'exports.component.html',
+  styleUrls: ['exports.component.scss'],
+
 })
 
 export class ExportsComponent implements OnInit {
-  constructor() { }
+  public dataSetControl = new FormControl();
+  public dataSetsControls = this._fb.array([]);
+  public viewList: Array<any>;
+  constructor( public exportsService: ExportsService, private _fb: FormBuilder) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.viewList = this.exportsService.getFakeViewList();
+    this.viewList.forEach((view, index) => {
+      this.dataSetsControls.insert(index, this._fb.control(null));
+    });
+    this.dataSetControl.valueChanges
+      .subscribe(value => {
+        console.log(value);
+      });
+   }
+
+   exportCsv(idView, idDataSet) {
+     console.log(idView);
+     console.log(idDataSet);
+     document.location.href = 'http://localhost:8000/contact/exportProvisoire';
+   }
 }
