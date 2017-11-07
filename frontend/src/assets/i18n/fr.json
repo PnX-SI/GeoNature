@@ -60,7 +60,7 @@
         "DeleteSuccessfully": "Le relevé a été supprimé avec succès"
     },
     "Taxon":{
-        "ObservedTaxon":"Taxon observé",
+        "ObservedTaxon":"Taxon(s) observé(s)",
         "Observation":"Observation",
         "Observations":"Observations",
         "Group":"Groupe",

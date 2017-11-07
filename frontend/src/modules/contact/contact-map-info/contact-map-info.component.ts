@@ -25,7 +25,6 @@ export class ContactMapInfoComponent implements OnInit {
   public countingFormArray: FormArray;
   public disabled = true;
   public selectedIndex: number;
-  public municipalities: string;
   public dateMin: string;
   public dateMax: string;
   public showSpinner = true;
@@ -77,8 +76,6 @@ export class ContactMapInfoComponent implements OnInit {
     this.selectedOccurrence = occ;
     this.occurrenceForm.patchValue(occ);
     this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_contact);
-    console.log(this.countingFormArray);
-    
   }
 
   loadNomenclaturesOccurrence() {
