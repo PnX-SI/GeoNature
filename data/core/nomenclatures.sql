@@ -142,7 +142,6 @@ $BODY$
 
 
 CREATE OR REPLACE FUNCTION get_cd_nomenclature(
-    myidtype integer,
     myidnomenclature integer)
   RETURNS character varying AS
 $BODY$
@@ -151,8 +150,46 @@ DECLARE thecdnomenclature character varying;
   BEGIN
 SELECT INTO thecdnomenclature cd_nomenclature
 FROM ref_nomenclatures.t_nomenclatures n
-WHERE myidtype = n.id_type AND myidnomenclature = n.id_nomenclature;
+WHERE myidnomenclature = n.id_nomenclature;
 return thecdnomenclature;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION get_id_nomenclature(
+    myidtype integer,
+    mycdnomenclature character varying)
+  RETURNS character varying AS
+$BODY$
+--Function which return the cd_nomenclature from an id_type and an id_nomenclature
+DECLARE theidnomenclature character varying;
+  BEGIN
+SELECT INTO theidnomenclature id_nomenclature
+FROM ref_nomenclatures.t_nomenclatures n
+WHERE myidtype = n.id_type AND mycdnomenclature = n.cd_nomenclature;
+return theidnomenclature;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION get_nomenclature_label(
+    myidnomenclature integer,
+    mylanguage character varying
+    )
+  RETURNS character varying AS
+$BODY$
+--Function which return the label from the id_nomenclature and the language
+DECLARE 
+	labelfield character varying;
+	thelabel character varying;
+  BEGIN
+  labelfield = 'label_'||mylanguage;
+  EXECUTE format( ' SELECT  %s
+  FROM ref_nomenclatures.t_nomenclatures n
+  WHERE id_nomenclature = %s',labelfield, myidnomenclature  )INTO thelabel;
+return thelabel;
   END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
