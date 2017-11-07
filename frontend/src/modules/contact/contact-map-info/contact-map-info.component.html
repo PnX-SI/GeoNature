@@ -102,11 +102,14 @@
                     </pnx-nomenclature>
                   </div>
                   <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                      <small> {{ 'Taxon.DeterminationMethod' | translate }} </small>
-                    <input class="form-control form-control-sm" 
-                      [formControl]="occurrenceForm.controls.determination_method"
-                      [disableControl]="disabled"
-                      type="text">
+                      <pnx-nomenclature 
+                        placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
+                        [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
+                        [idTypeNomenclature]="106" 
+                        [regne]="fs.currentTaxon.regne" 
+                        [group2Inpn]="fs.currentTaxon.group2_inpn"
+                        [disabled]="disabled">
+                    </pnx-nomenclature>
                   </div>
                 </div>
           
@@ -230,7 +233,7 @@
                 <hr>
           
                 </div>
-                
+                <pre> {{countingFormArray.va}} </pre>
             </div>
           </div>
       <!-- end tab -->
