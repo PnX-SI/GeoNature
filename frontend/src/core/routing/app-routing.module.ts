@@ -18,7 +18,7 @@ const appRoutes: Routes = [
      children: [
       { path: '', component: HomeContentComponent },
       { path: 'exports', loadChildren: 'core/exports/exports.module#ExportsModule'},
-      { path: 'contact', loadChildren: 'modules/contact/contact.module#ContactModule'},
+      { path: 'occtax', loadChildren: 'modules/contact/contact.module#ContactModule'},
       { path: '**',  component: PageNotFoundComponent }
 
      ] },

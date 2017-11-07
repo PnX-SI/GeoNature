@@ -36,7 +36,7 @@ export class ContactFormService {
    }// end constructor
 
 
-   initObservationForm(data?): FormGroup {
+   initObservationForm(): FormGroup {
     return this._fb.group({
       geometry: [null, Validators.required],
       properties: this._fb.group({
@@ -60,7 +60,7 @@ export class ContactFormService {
     });
    }
 
-   initOccurrenceForm(data?): FormGroup {
+   initOccurrenceForm(): FormGroup {
       return this._fb.group({
         id_releve_contact :  null,
         id_nomenclature_obs_meth: [null, Validators.required],
@@ -141,7 +141,6 @@ export class ContactFormService {
       this.taxonsList.push(this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
-
       this.taxonsList.splice(index, 0, this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact[this.indexOccurrence] = this.occurrenceForm.value;
     }
@@ -228,10 +227,10 @@ export class ContactFormService {
   }
 
   onEditReleve(id) {
-    this._router.navigate(['contact/form', id]);
+    this._router.navigate(['occtax/form', id]);
   }
   backToList() {
-    this._router.navigate(['contact']);
+    this._router.navigate(['occtax']);
   }
 
 

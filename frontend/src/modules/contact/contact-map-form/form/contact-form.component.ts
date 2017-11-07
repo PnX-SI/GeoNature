@@ -38,6 +38,7 @@ export class ContactFormComponent implements OnInit {
     this.fs.countingForm = this.fs.initCountingArray();
     // reset taxon list of service
     this.fs.taxonsList = [];
+    this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
 
     // if its edition mode
@@ -106,7 +107,7 @@ export class ContactFormComponent implements OnInit {
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0 ;
         // redirect
-        this.router.navigate(['/contact']);
+        this.router.navigate(['/occtax']);
         },
         (error) => { this.toastr.error("Une erreur s'est produite!", '', {positionClass:'toast-top-center'});}
       );

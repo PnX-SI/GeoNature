@@ -42,10 +42,10 @@ export class ContactMapListComponent implements OnInit {
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},
   ];
-  this.pathEdit = 'contact/form';
-  this.pathInfo = 'contact/info';
+  this.pathEdit = 'occtax/form';
+  this.pathInfo = 'occtax/info';
   this.idName = 'id_releve_contact';
-  this.apiEndPoint = 'contact/vreleve';
+  this.apiEndPoint = 'occtax/vreleve';
 
   this._mapListService.getData('contact/vreleve')
   .subscribe(res => {
