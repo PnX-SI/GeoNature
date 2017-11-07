@@ -88,7 +88,7 @@ export class ContactFormService {
      }
 
 
-   initCounting(data?): FormGroup {
+   initCounting(): FormGroup {
       return this._fb.group({
         id_nomenclature_life_stage: [null, Validators.required],
         id_nomenclature_sex: [null, Validators.required],
@@ -105,7 +105,9 @@ export class ContactFormService {
 
     if (data) {
       for (let i = 0; i < data.length; i++) {
-        arrayForm.push(this.initCounting(data[i]));
+        const counting = this.initCounting();
+        counting.patchValue(data[i]);
+        arrayForm.push(counting);
       }
     } else {
       arrayForm.push(this.initCounting());

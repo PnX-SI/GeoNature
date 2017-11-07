@@ -29,7 +29,12 @@ export const AppConfig = {
     CENTER: [46.52863469527167, 2.43896484375],
     ZOOM_LEVEL: 6,
     ZOOM_LEVEL_RELEVE: 15
-  }
+  },
+    // Porté des droits
+    RIGHTS: {
+      'NOTHING': 0,
+      'MY_DATA': 1,
+      'MY_ORGANISM_DATA': 2,
+      'ALL_DATA': 3
+    }
 };
-
-
