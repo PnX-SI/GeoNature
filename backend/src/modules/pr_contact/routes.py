@@ -454,7 +454,7 @@ def deleteOneOccurenceCounting(id_count):
 @routes.route('/exportProvisoire', methods=['GET'])
 @csv_resp
 def export():
-    viewSINP = GenericTable('pr_contact.export_contact_sinp', 'pr_contact')
+    viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
     q = db.session.query(viewSINP.tableDef)
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
