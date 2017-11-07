@@ -503,8 +503,8 @@ CREATE OR REPLACE VIEW pr_contact.export_occtax_sinp AS
     NULL::text AS sensiniveau,
     'Te'::text AS statutsource,
     'NSP'::text AS codeidcnpdispositif,
-    'NSP' AS deefloutage,
-    'NSP' AS diffusionniveauprecision,
+    'NSP'::text AS deefloutage,
+    'NSP'::text AS diffusionniveauprecision,
     cor_counting.unique_id_sinp AS identifiantorigine,
     datasets.dataset_name AS jddcode,
     datasets.unique_dataset_id AS jddid,
@@ -535,9 +535,9 @@ CREATE OR REPLACE VIEW pr_contact.export_occtax_sinp AS
     COALESCE(string_agg(role.organisme::text, ','::text), organisme.nom_organisme::text, 'NSP') AS observateurnomorganisme,
     COALESCE(occ.determiner, COALESCE(string_agg((role.nom_role::text || ' '::text) || role.prenom_role::text, ','::text), rel.observers_txt::text)::character varying) AS determinateuridentite,
     'NSP'::text AS determinateurnomorganisme,
-    'NSP' AS validateuridentite,
-    'NSP' AS validateurnomorganisme,
-    'NSP' AS organismegestionnairedonnee,
+    'NSP'::text AS validateuridentite,
+    'NSP'::text AS validateurnomorganisme,
+    'NSP'::text AS organismegestionnairedonnee,
     st_astext(rel.geom_4326) AS geometrie,
     'In'::text AS natureobjetgeo
    FROM pr_contact.t_releves_contact rel
