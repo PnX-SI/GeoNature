@@ -174,3 +174,60 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_list AS
   GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
 
 
+
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_cd_nomenclature(
+    myidnomenclature integer)
+  RETURNS character varying AS
+$BODY$
+--Function which return the cd_nomenclature from an id_type and an id_nomenclature
+DECLARE thecdnomenclature character varying;
+  BEGIN
+SELECT INTO thecdnomenclature cd_nomenclature
+FROM ref_nomenclatures.t_nomenclatures n
+WHERE myidnomenclature = n.id_nomenclature;
+return thecdnomenclature;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_id_nomenclature(
+    myidtype integer,
+    mycdnomenclature character varying)
+  RETURNS character varying AS
+$BODY$
+--Function which return the cd_nomenclature from an id_type and an id_nomenclature
+DECLARE theidnomenclature character varying;
+  BEGIN
+SELECT INTO theidnomenclature id_nomenclature
+FROM ref_nomenclatures.t_nomenclatures n
+WHERE myidtype = n.id_type AND mycdnomenclature = n.cd_nomenclature;
+return theidnomenclature;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_nomenclature_label(
+    myidnomenclature integer,
+    mylanguage character varying)
+  RETURNS character varying AS
+$BODY$
+--Function which return the label from the id_nomenclature and the language
+DECLARE 
+	labelfield character varying;
+	thelabel character varying;
+  BEGIN
+	 IF myidnomenclature IS NULL
+	 THEN
+	 return NULL;
+	 END IF;
+	 labelfield = 'label_'||mylanguage;
+	  EXECUTE format( ' SELECT  %s
+	  FROM ref_nomenclatures.t_nomenclatures n
+	  WHERE id_nomenclature = %s',labelfield, myidnomenclature  )INTO thelabel;
+	return thelabel;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
