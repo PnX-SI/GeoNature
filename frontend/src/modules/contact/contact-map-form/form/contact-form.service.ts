@@ -228,7 +228,7 @@ export class ContactFormService {
   }
 
   onEditReleve(id) {
-    this._router.navigate(['contact-form', id]);
+    this._router.navigate(['contact/form', id]);
   }
   backToList() {
     this._router.navigate(['contact']);

@@ -16,13 +16,12 @@
 
       <div class="card-block releve">
         <p><b> Relevé numéro </b>: {{releve?.id}} <b> Observateurs </b>: {{observers}} </p>
-        <p> <b> Communne(s) </b>: {{municipalities}}  </p> 
         <p> <b> Entre le  </b>: {{dateMin}}  <b> et le </b>: {{dateMax}}  </p> 
         <p> <b> Altitude min  </b>: {{releve?.properties.altitude_min }}<b> Altitude max  </b>: {{releve?.properties.altitude_max }} </p>
 
         <p> <pnx-areas-intersected-modal [geojson]="releve"> </pnx-areas-intersected-modal> </p>
 
-          <label> Taxons observé(s): </label>
+          <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
           <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
               <img *ngIf="showSpinner" src="assets/images/spinner.gif" 
