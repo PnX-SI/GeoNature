@@ -33,8 +33,7 @@ export class ContactMapListComponent implements OnInit {
     this._mapListService.urlQuery.delete('organism');
     const currentUser = this._auth.getCurrentUser();
     const userRight = currentUser.getRight(14);
-
-    if ( userRight['R'] < AppConfig.RIGHTS.ALL_DATA ) {
+    if ( userRight['R'] <= AppConfig.RIGHTS.MY_ORGANISM_DATA ) {
       this._mapListService.urlQuery.set('organism', currentUser.organism.organismId.toString());
     }
 
@@ -49,7 +48,8 @@ export class ContactMapListComponent implements OnInit {
 
   this._mapListService.getData('contact/vreleve')
   .subscribe(res => {
-    this._mapListService.page.totalElements = res.total;
+
+    this._mapListService.page.totalElements = res.items.features.length;
     this.geojsonData = res.items;
   });
 
