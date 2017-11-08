@@ -1,7 +1,7 @@
 <div [formGroup]="occurrenceForm">
 
-    <div class="form-group row">
-      <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+    <div class="form-group row row-0">
+      <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 padding-sm">
           <pnx-taxonomy
             #taxon
             [parentFormControl]="occurrenceForm.controls.cd_nom"
@@ -12,8 +12,8 @@
           </pnx-taxonomy>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+    <div class="row row-0">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
           placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
@@ -22,7 +22,7 @@
           [group2Inpn]="fs.currentTaxon.group2_inpn">
         </pnx-nomenclature>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature 
           placeholder="{{ 'Taxon.ObsMethod' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
@@ -31,7 +31,7 @@
           [group2Inpn]="fs.currentTaxon.group2_inpn" > 
         </pnx-nomenclature>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature 
           placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
@@ -47,8 +47,8 @@
     </button>
   
     <div class="collapse" id="collapseAvance">
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <div class="row row-0">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.BiologicalStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
@@ -57,7 +57,7 @@
             [group2Inpn]="fs.currentTaxon.group2_inpn"> 
           </pnx-nomenclature> 
         </div>          
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.Naturalness' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
@@ -66,7 +66,7 @@
             [group2Inpn]="fs.currentTaxon.group2_inpn">
           </pnx-nomenclature>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
@@ -77,18 +77,18 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+      <div class="row row-0">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <small> {{ 'Taxon.DeterminationMethodComplement' | translate }} </small>
           <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determination_method_as_text"
             type="text">
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <small> {{ 'Taxon.Determiner' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determiner"
               type="text">
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"> 
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm"> 
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.ValidationStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
@@ -99,8 +99,8 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <div class="row row-0">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             placeholder="{{ 'Taxon.ExistProof' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
@@ -109,19 +109,19 @@
             [group2Inpn]="fs.currentTaxon.group2_inpn">
           </pnx-nomenclature>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
             <small> {{ 'Taxon.DigitalProof' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
               type="text">
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
           <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
             type="text"> 
         </div>
       </div>
-      <div class="row" id="row-commentaire">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">               
+      <div class="row row-0" id="row-commentaire">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">               
             <textarea placeholder="{{ 'Releve.Comment' | translate }}" class="form-control" [formControl]="occurrenceForm.controls.comment" 
               rows="2" id="commentaire">
             </textarea>
