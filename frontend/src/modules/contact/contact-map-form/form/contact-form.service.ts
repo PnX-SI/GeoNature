@@ -190,8 +190,7 @@ export class ContactFormService {
     for (let i = 1; i < nbCounting; i++) {
       this.nbCounting.push('');
      }
-     this.countingForm.patchValue(countingData);
-
+     this.countingForm = this.initCountingArray(countingData);
   }
 
   toggleOccurrence() {
