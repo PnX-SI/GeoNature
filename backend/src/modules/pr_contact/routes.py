@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
-    VReleveContact, VReleveList, corRoleRelevesContact
+    VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
 from ...utils import filemanager 
 from ...core.users.models import TRoles
@@ -450,6 +450,12 @@ def deleteOneOccurenceCounting(id_count):
         raise
 
     return {'message': 'delete with success'}
+
+@routes.route('/default_nomenclatures_values', methods=['GET'])
+@json_resp
+def getNomenclaturesValues():
+    data = db.session.query(DefaultNomenclaturesValue).all()
+    return [n.as_dict() for n in data]
 
 @routes.route('/exportProvisoire', methods=['GET'])
 @csv_resp
