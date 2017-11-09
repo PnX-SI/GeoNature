@@ -72,6 +72,9 @@ export class MapDataComponent implements OnInit, OnChanges {
   onSelect(selected) {
     this.mapListService.setCurrentLayerId(this.selected[0][this.mapListService.idName]);
   }
+  getRowClass() {
+    return 'clickable';
+  }
 
 
   toggle(col) {
