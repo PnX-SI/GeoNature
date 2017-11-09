@@ -576,3 +576,15 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 ,(5,0,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL)
 ,(6,0,'uuid_url_value','Valeur de l''identifiant unique SINP pour tous les organismes','http://mondomaine.fr/data/',NULL)
 ;
+INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
+(1,'Parc nationaux de France',null,null)
+,(2,'Parc national des Ecrins',null,null)
+,(3,null,'Gerard Lambert',null)
+,(4,null,'Pierre Paul-Jacques',null)
+;
+SELECT pg_catalog.setval('sinp_datatype_actors_id_actor_seq', 5, false);
+
+INSERT INTO gn_meta.sinp_datatype_protocols (id_protocol, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
+(0,'hors protocole','observation réalisées hors protocole',422,null)
+;
+SELECT pg_catalog.setval('sinp_datatype_protocols_id_protocol_seq', 1, false);
