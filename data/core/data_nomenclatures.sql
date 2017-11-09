@@ -575,7 +575,7 @@ $$
 BEGIN
 INSERT INTO utilisateurs.bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('ALL', 'Représente tous les organismes', NULL, NULL, NULL, NULL, NULL, 0);
 EXCEPTION WHEN unique_violation  THEN
-        RAISE NOTICE 'Tentative d''insertion de valeur existante';
+        RAISE NOTICE 'Tentative d''insertion de valeur existante. L''instruction a été ignorée.';
 END
 $$;
 
