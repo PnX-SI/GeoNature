@@ -1,4 +1,4 @@
-<div class=form-containter>
+<div class=form-containter *ngIf="fs.defaultValuesLoaded">
   <div class="card">
     <h5 class="card-header"> <b>{{ 'Releve.Releve' | translate }} </b></h5>
     <div class="card-body">        
@@ -9,7 +9,8 @@
         </div>
         
     </div>
-  </div>   
+    </div> 
+
       <!-- Occurrence taxon  -->
       <div class="card card-occurrence">
         <div class="card-header" (click)="fs.toggleOccurrence()">
@@ -21,7 +22,7 @@
               </span>
           </button> 
         </h5>  
-        </div>          
+        </div>
           <div class="card-body" *ngIf="fs.showOccurrence"> 
               <pnx-occurrence
                 [occurrenceForm]="fs.occurrenceForm">
@@ -45,11 +46,10 @@
                 <button class="btn btn-primary btn-sm "
                   [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
                   (click)="fs.addOccurrence(fs.indexOccurrence)">{{ 'Taxon.AddTaxon' | translate }} {{fs.currentTaxon.lb_nom}}
-              </button>
+                </button>
             </div>
-
+          </div>
       </div>
-    </div>
 
       <!-- <pre>form value: <br>{{fs.countingForm.value | json}}</pre> -->
       <!-- <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre> -->
