@@ -33,9 +33,9 @@ export class ContactFormComponent implements OnInit {
     // set show occurrence to false:
     this.fs.showOccurrence = false;
     // init the form
-    this.fs.releveForm = this.fs.initObservationForm();
-    this.fs.occurrenceForm = this.fs.initOccurrenceForm();
-    this.fs.countingForm = this.fs.initCountingArray();
+    // this.fs.releveForm = this.fs.initObservationForm();
+    // this.fs.occurrenceForm = this.fs.initOccurrenceForm();
+    // this.fs.countingForm = this.fs.initCountingArray();
     // reset taxon list of service
     this.fs.taxonsList = [];
     this.fs.indexOccurrence = 0;
