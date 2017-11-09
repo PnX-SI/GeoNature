@@ -206,3 +206,10 @@ class VReleveList(serializableGeoModel):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
+
+class DefaultNomenclaturesValue(serializableModel):
+    __tablename__ = 'defaults_nomenclatures_value'
+    __table_args__ = {'schema': 'pr_contact'}
+    id_type = db.Column(db.Integer, primary_key=True)
+    id_organism = db.Column(db.Integer, primary_key=True)
+    id_nomenclature = db.Column(db.Integer, primary_key=True)

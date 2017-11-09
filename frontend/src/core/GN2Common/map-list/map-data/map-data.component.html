@@ -113,6 +113,7 @@
     [count]="mapListService.page.totalElements"
     [offset]="mapListService.page.pageNumber"
     [limit]="mapListService.page.size"
+    [rowClass]="getRowClass"
     (page)="setPage($event)"
     (select)="onSelect($event)"
     >

@@ -13,17 +13,9 @@ export class ExportsService {
      return [
        {
          'id_view':1,
-         'view_name': "Données du contact faune/flore au format 'Standard d'occurrence de taxon' "
-       },
-       {
-        'id_view': 2,
-        'view_name': 'Export test'
-      },
-      {
-        'id_view': 2,
-        'view_name': 'Export test'
-      }
-     ]
+         'view_name': "Export au format 'Standard d'occurrences de taxons' "
+       }
+     ];
    }
    getViewList() {
     return this._api.get(`${AppConfig.API_ENDPOINT}export/viewList`)

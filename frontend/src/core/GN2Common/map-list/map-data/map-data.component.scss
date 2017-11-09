@@ -52,7 +52,7 @@
 }
 
 .ngx-datatable.material.single-selection .datatable-body-row.active, .ngx-datatable.material.single-selection .datatable-body-row.active .datatable-row-group, .ngx-datatable.material.multi-selection .datatable-body-row.active, .ngx-datatable.material.multi-selection .datatable-body-row.active .datatable-row-group, .ngx-datatable.material.multi-click-selection .datatable-body-row.active, .ngx-datatable.material.multi-click-selection .datatable-body-row.active .datatable-row-group {
-    background-color: rgb(117, 227, 118) !important;
+    
 }
 
 
@@ -71,4 +71,21 @@ ngb-toolti-window {
 
 .modal-body {
     text-align: center;
+}
+
+
+
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+    background-color: rgb(117, 227, 118) !important;
+}
+
+.card-padding {
+    background-color: white;
+    padding: 10px;
+    
+}
+
+.ngx-datatable.material {
+    max-height: 80vh;
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12) !important;
 }

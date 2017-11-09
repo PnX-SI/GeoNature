@@ -33,11 +33,12 @@ export class ContactFormComponent implements OnInit {
     // set show occurrence to false:
     this.fs.showOccurrence = false;
     // init the form
-    this.fs.releveForm = this.fs.initObservationForm();
-    this.fs.occurrenceForm = this.fs.initOccurrenceForm();
-    this.fs.countingForm = this.fs.initCountingArray();
+    // this.fs.releveForm = this.fs.initObservationForm();
+    // this.fs.occurrenceForm = this.fs.initOccurrenceForm();
+    // this.fs.countingForm = this.fs.initCountingArray();
     // reset taxon list of service
     this.fs.taxonsList = [];
+    this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
 
     // if its edition mode
@@ -82,9 +83,10 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
     // format nom_cite and update date
     finalForm.properties.t_occurrences_contact.forEach((occ, index) => {
-      occ.nom_cite = this.fs.taxonsList[index].search_name.replace('<i>', '');
-      occ.nom_cite = occ.nom_cite.replace('</i>', '');
-      console.log(occ.nom_cite);
+      if (this.fs.taxonsList[index].search_name) {
+        occ.nom_cite = this.fs.taxonsList[index].search_name.replace('<i>', '');
+        occ.nom_cite = occ.nom_cite.replace('</i>', '');
+      }
       occ.meta_update_date = new Date();
     });
     // format observers
@@ -105,7 +107,7 @@ export class ContactFormComponent implements OnInit {
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0 ;
         // redirect
-        this.router.navigate(['/contact']);
+        this.router.navigate(['/occtax']);
         },
         (error) => { this.toastr.error("Une erreur s'est produite!", '', {positionClass:'toast-top-center'});}
       );

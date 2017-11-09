@@ -5,6 +5,7 @@ import { Http } from '@angular/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactConfig } from '../../contact.config';
+import { AuthService } from '../../../../core/components/auth/auth.service';
 
 
 @Injectable()
@@ -17,13 +18,16 @@ export class ContactFormService {
   public showOccurrence: boolean;
   public editionMode: boolean;
   public isEdintingOccurrence: boolean;
-
+  public defaultValues: any;
+  public defaultValuesLoaded = false;
+  public lastSubmitedOccurrence: any;
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
 
-  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService, private _router: Router) {
+  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService, private _router: Router,
+      private _auth: AuthService) {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
@@ -33,10 +37,26 @@ export class ContactFormService {
     this._router.events.subscribe(value => {
       this.isEdintingOccurrence = false;
     });
+
+    const idOrg = this._auth.getCurrentUser().organism.organismId;
+
+    this.getDefaultValues(idOrg)
+      .subscribe(res => {
+
+        this.defaultValues = res;
+        this.defaultValuesLoaded = true;
+        this.releveForm = this.initObservationForm();
+        this.occurrenceForm = this.initOccurrenceForm();
+        this.countingForm = this.initCountingArray();
+      } );
    }// end constructor
 
+   getDefaultValues(idOrg) {
+     return this._http.get(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures_values/${idOrg}`)
+      .map(res => res.json());
+   }
 
-   initObservationForm(data?): FormGroup {
+   initObservationForm(): FormGroup {
     return this._fb.group({
       geometry: [null, Validators.required],
       properties: this._fb.group({
@@ -60,39 +80,39 @@ export class ContactFormService {
     });
    }
 
-   initOccurrenceForm(data?): FormGroup {
+   initOccurrenceForm(): FormGroup {
       return this._fb.group({
         id_releve_contact :  null,
-        id_nomenclature_obs_meth: [null, Validators.required],
+        id_nomenclature_obs_meth: [this.defaultValues[14], Validators.required],
         id_nomenclature_obs_technique : [ null, Validators.required],
-        id_nomenclature_bio_condition: [null, Validators.required],
-        id_nomenclature_bio_status :  null,
+        id_nomenclature_bio_condition: [this.defaultValues[7], Validators.required],
+        id_nomenclature_bio_status : null,
         id_nomenclature_naturalness: null,
         id_nomenclature_exist_proof: null,
         id_nomenclature_valid_status: null,
         id_nomenclature_diffusion_level: null,
         id_validator: null,
-        determiner: '',
+        determiner: null,
         id_nomenclature_determination_method: null,
         determination_method_as_text: '',
         cd_nom: [ null, Validators.required],
-        nom_cite: '',
+        nom_cite: null,
         meta_v_taxref: 'Taxref V9.0',
-        sample_number_proof: '',
-        digital_proof: '',
-        non_digital_proof: '',
+        sample_number_proof: null,
+        digital_proof: null,
+        non_digital_proof: null,
         deleted: false,
-        comment: '',
+        comment: null,
         cor_counting_contact: ''
       });
      }
 
 
-   initCounting(data?): FormGroup {
+   initCounting(): FormGroup {
       return this._fb.group({
         id_nomenclature_life_stage: [null, Validators.required],
         id_nomenclature_sex: [null, Validators.required],
-        id_nomenclature_obj_count: [null, Validators.required],
+        id_nomenclature_obj_count: [this.defaultValues[6], Validators.required],
         id_nomenclature_type_count: null,
         count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
         count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
@@ -105,7 +125,9 @@ export class ContactFormService {
 
     if (data) {
       for (let i = 0; i < data.length; i++) {
-        arrayForm.push(this.initCounting(data[i]));
+        const counting = this.initCounting();
+        counting.patchValue(data[i]);
+        arrayForm.push(counting);
       }
     } else {
       arrayForm.push(this.initCounting());
@@ -114,21 +136,25 @@ export class ContactFormService {
   }
 
 
-  addCounting(countingForm: FormArray) {
+  addCounting() {
     this.indexCounting += 1;
     this.nbCounting.push('');
     const countingCtrl = this.initCounting();
-    countingForm.push(countingCtrl);
+    this.countingForm.push(countingCtrl);
     }
 
-  removeCounting(index: number, countingForm: FormArray) {
-    countingForm.removeAt(index);
-    countingForm.value.splice(index, 1);
+  removeCounting(index: number) {
+    this.countingForm.removeAt(index);
     this.nbCounting.splice(index, 1);
+    this.indexCounting -= 1;
 
   }
 
   addOccurrence(index) {
+    // save the last Occurrence
+    console.log(this.occurrenceForm.value);
+    
+    this.lastSubmitedOccurrence = this.occurrenceForm.value;
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
@@ -139,7 +165,6 @@ export class ContactFormService {
       this.taxonsList.push(this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     }else {
-
       this.taxonsList.splice(index, 0, this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact[this.indexOccurrence] = this.occurrenceForm.value;
     }
@@ -152,6 +177,12 @@ export class ContactFormService {
     this.currentTaxon = {};
     // reset occurrence form
     this.occurrenceForm = this.initOccurrenceForm();
+    // path the value I want to persist
+    this.occurrenceForm.patchValue({
+      'id_nomenclature_obs_technique': this.lastSubmitedOccurrence.id_nomenclature_obs_technique,
+      'id_nomenclature_obs_meth': this.lastSubmitedOccurrence.id_nomenclature_obs_meth,
+      'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.id_nomenclature_bio_condition
+    });
     // reset the counting
     this.countingForm = this.initCountingArray();
     this.showOccurrence = false;
@@ -189,8 +220,7 @@ export class ContactFormService {
     for (let i = 1; i < nbCounting; i++) {
       this.nbCounting.push('');
      }
-     this.countingForm.patchValue(countingData);
-
+     this.countingForm = this.initCountingArray(countingData);
   }
 
   toggleOccurrence() {
@@ -226,10 +256,10 @@ export class ContactFormService {
   }
 
   onEditReleve(id) {
-    this._router.navigate(['contact-form', id]);
+    this._router.navigate(['occtax/form', id]);
   }
   backToList() {
-    this._router.navigate(['contact']);
+    this._router.navigate(['occtax']);
   }
 
 
