@@ -5,6 +5,7 @@ import { Http } from '@angular/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactConfig } from '../../contact.config';
+import { AuthService } from '../../../../core/components/auth/auth.service';
 
 
 @Injectable()
@@ -25,7 +26,8 @@ export class ContactFormService {
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
 
-  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService, private _router: Router) {
+  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService, private _router: Router,
+      private _auth: AuthService) {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
@@ -36,8 +38,11 @@ export class ContactFormService {
       this.isEdintingOccurrence = false;
     });
 
-    this.getDefaultValues()
+    const idOrg = this._auth.getCurrentUser().organism.organismId;
+
+    this.getDefaultValues(idOrg)
       .subscribe(res => {
+
         this.defaultValues = res;
         this.defaultValuesLoaded = true;
         this.releveForm = this.initObservationForm();
@@ -46,15 +51,9 @@ export class ContactFormService {
       } );
    }// end constructor
 
-   getDefaultValues() {
-     return this._http.get(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures_values`)
-      .map(res => {
-        const formatedValues = {};
-        res.json().forEach(item => {
-          formatedValues[item.id_type] = item = item.id_nomenclature;
-        });
-        return formatedValues;
-      });
+   getDefaultValues(idOrg) {
+     return this._http.get(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures_values/${idOrg}`)
+      .map(res => res.json());
    }
 
    initObservationForm(): FormGroup {
