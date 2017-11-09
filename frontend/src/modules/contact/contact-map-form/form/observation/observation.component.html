@@ -1,6 +1,6 @@
 <div [formGroup]="releveForm">
   <div class="row row-0">
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-0">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
       <div *ngIf="! contactConfig.observers_txt; else elseBlock">
         <pnx-observers
           [parentFormControl]="releveForm.controls.properties.controls.observers"
@@ -17,20 +17,20 @@
         </ng-template>
     </div>
     
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-0">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
         <img *ngIf="fs.editionMode && !fs.isEdintingOccurrence && fs.taxonsList.length === 0" src="assets/images/spinner.gif" 
         id="il_fi" 
         alt="Chargement..." 
         height="70" 
         width="70">
-        <div *ngIf="fs.taxonsList.length > 0">
+        <div id="taxon-list" *ngIf="fs.taxonsList.length > 0">
             <b> {{fs.taxonsList.length}} {{'Releve.SavedTaxon' | translate}} </b>
             <pnx-taxons-list [list]="fs.taxonsList" (taxonEdited)="fs.editOccurence($event)" (taxonRemoved)="fs.removeOneOccurrence($event)">  </pnx-taxons-list>
         </div>
     </div>    
   </div>
   <div class="row row-0">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-0">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
       <pnx-datasets
         placeholder="{{ 'Releve.Dataset' | translate }}"
         [parentFormControl]="releveForm.controls.properties.controls.id_dataset"

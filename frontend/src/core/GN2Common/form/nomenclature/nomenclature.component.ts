@@ -13,7 +13,8 @@ import { Subscription } from 'rxjs/Subscription';
 export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   labels: any[];
   selectedId: number;
-  labelLang:string;
+  labelLang: string;
+  definitionLang: string;
   subscription: Subscription;
   valueSubscription: Subscription;
   @Input() placeholder: string;
@@ -27,12 +28,14 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private _dfService: DataFormService, private _translate:TranslateService) { }
 
   ngOnInit() {
-    this.labelLang = 'label_'+this._translate.currentLang;
+    this.labelLang = 'label_' + this._translate.currentLang;
+    this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
     this.initLabels();
     // subscrib to the language change
     this.subscription = this._translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.labelLang = 'label_'+this._translate.currentLang;
+      this.labelLang = 'label_' + this._translate.currentLang;
+      this.definitionLang = 'definition_' + this._translate.currentLang;
     });
 
     // output
