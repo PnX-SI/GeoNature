@@ -17,7 +17,7 @@ export class DataFormService {
     .map(response => response.json());
     }
 
-  getNomenclatures(id_nomenclatures: Array<any>) {
+  getNomenclatures(...id_nomenclatures) {
     const params: URLSearchParams = new URLSearchParams();
     id_nomenclatures.forEach(id => {
       params.append('id_type', id);
