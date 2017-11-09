@@ -153,6 +153,8 @@ export class ContactFormService {
 
   addOccurrence(index) {
     // save the last Occurrence
+    console.log(this.occurrenceForm.value);
+    
     this.lastSubmitedOccurrence = this.occurrenceForm.value;
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
@@ -180,7 +182,7 @@ export class ContactFormService {
     this.occurrenceForm.patchValue({
       'id_nomenclature_obs_technique': this.lastSubmitedOccurrence.id_nomenclature_obs_technique,
       'id_nomenclature_obs_meth': this.lastSubmitedOccurrence.id_nomenclature_obs_meth,
-      'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.this.lastSubmitedOccurrence
+      'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.id_nomenclature_bio_condition
     });
     // reset the counting
     this.countingForm = this.initCountingArray();
