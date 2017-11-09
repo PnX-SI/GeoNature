@@ -569,15 +569,25 @@ UPDATE t_nomenclatures SET definition_default = definition_MYDEFAULTLANGUAGE;
 ALTER TABLE t_nomenclatures ALTER COLUMN label_default SET NOT NULL;
 ALTER TABLE t_nomenclatures ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
 
+-- inserting organism représenting all organisms with 0 as id_organisme
+DO
+$$
+BEGIN
+INSERT INTO utilisateurs.bib_organismes (nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, id_organisme) VALUES ('ALL', 'Représente tous les organismes', NULL, NULL, NULL, NULL, NULL, 0);
+EXCEPTION WHEN unique_violation  THEN
+        RAISE NOTICE 'Tentative d''insertion de valeur existante';
+END
+$$;
+
 INSERT INTO ref_nomenclatures.defaults_nomenclatures_value (id_type, id_organism, id_nomenclature) VALUES
-(2,1,80)
-,(19,1,76)
-,(103,1,353)
-,(102,1,351)
-,(114,1,442)
-,(115,1,430)
-,(107,1,382)
-,(111,1,417)
+(2,0,80)
+,(19,0,76)
+,(103,0,353)
+,(102,0,351)
+,(114,0,442)
+,(115,0,430)
+,(107,0,382)
+,(111,0,417)
 ;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
