@@ -481,3 +481,84 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_list AS
      LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
   GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+
+
+CREATE OR REPLACE VIEW pr_contact.export_occtax_sinp AS 
+SELECT cor_counting.unique_id_sinp AS identifiantpermanent,
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS statutobservation,
+    occ.nom_cite AS nomcite,
+    rel.date_min AS jourdatedebut,
+    rel.date_max AS jourdatefin,
+    rel.hour_min AS heuredatedebut,
+    rel.hour_max AS heuredatefin,
+    rel.altitude_max AS altitudemax,
+    rel.altitude_min AS altitudemin,
+    occ.cd_nom AS cdnom,
+    taxonomie.find_cdref(occ.cd_nom) AS cdref,
+    gn_meta.get_default_parameter('taxref_version'::text, NULL::integer) AS versiontaxref,
+    rel.date_min AS datedetermination,
+    occ.comment AS commentaire,
+    'NSP'::text AS dspublique,
+    datasets.unique_dataset_id AS jddmetadonneedeeid,
+    NULL::text AS sensible,
+    NULL::text AS sensiniveau,
+    'Te'::text AS statutsource,
+    'NSP'::text AS codeidcnpdispositif,
+    'NSP'::text AS deefloutage,
+    'NSP'::text AS diffusionniveauprecision,
+    cor_counting.unique_id_sinp AS identifiantorigine,
+    datasets.dataset_name AS jddcode,
+    datasets.unique_dataset_id AS jddid,
+    NULL::text AS referencebiblio,
+    NULL::text AS sensidateattribution,
+    NULL::text AS sensireferentiel,
+    NULL::text AS sensiversionreferentiel,
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth) AS obsmethode,
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition) AS occetatbiologique,
+    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness), '0'::text) AS occnaturalite,
+    ref_nomenclatures.get_cd_nomenclature(cor_counting.id_nomenclature_sex) AS occsexe,
+    ref_nomenclatures.get_cd_nomenclature(cor_counting.id_nomenclature_life_stage) AS occstadedevie,
+    '0'::text AS occstatutbiogeographique,
+    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status), '0'::text ) AS occstatutbiologique,
+    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof), '0'::text) AS preuveexistante,
+    COALESCE(ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method, 'fr'), occ.determination_method_as_text::character varying) AS occmethodedetermination,
+    occ.digital_proof AS preuvenumerique,
+    occ.non_digital_proof AS preuvenonnumerique,
+    rel.comment AS obscontexte,
+    rel.id_releve_contact AS identifiantregroupementpermanent,
+    'NSP'::text AS methoderegroupement,
+    'OBS'::text AS typeregroupement,
+    cor_counting.count_max AS denombrementmax,
+    cor_counting.count_min AS denombrementmin,
+    ref_nomenclatures.get_cd_nomenclature(cor_counting.id_nomenclature_obj_count) AS objetdenombrement,
+    ref_nomenclatures.get_cd_nomenclature(cor_counting.id_nomenclature_type_count) AS typedenombrement,
+    COALESCE(string_agg((role.nom_role::text || ' '::text) || role.prenom_role::text, ','::text), rel.observers_txt::text) AS observateuridentite,
+    COALESCE(string_agg(role.organisme::text, ','::text), organisme.nom_organisme::text, 'NSP'::text) AS observateurnomorganisme,
+    COALESCE(occ.determiner, COALESCE(string_agg((role.nom_role::text || ' '::text) || role.prenom_role::text, ','::text), rel.observers_txt::text)::character varying) AS determinateuridentite,
+    'NSP'::text AS determinateurnomorganisme,
+    'NSP'::text AS validateuridentite,
+    'NSP'::text AS validateurnomorganisme,
+    'NSP'::text AS organismegestionnairedonnee,
+    st_astext(rel.geom_4326) AS geometrie,
+    'In'::text AS natureobjetgeo
+   FROM pr_contact.t_releves_contact rel
+     LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
+     LEFT JOIN pr_contact.cor_counting_contact cor_counting ON cor_counting.id_occurrence_contact = occ.id_occurrence_contact
+     LEFT JOIN taxonomie.taxref tax ON tax.cd_nom = occ.cd_nom
+     LEFT JOIN gn_meta.t_datasets datasets ON datasets.id_dataset = rel.id_dataset
+     LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
+     LEFT JOIN utilisateurs.t_roles role ON role.id_role = cor_role.id_role
+     LEFT JOIN utilisateurs.bib_organismes organisme ON organisme.id_organisme = role.id_organisme
+  GROUP BY cor_counting.unique_id_sinp, datasets.unique_dataset_id,occ.id_nomenclature_bio_condition, occ.id_nomenclature_naturalness, cor_counting.id_nomenclature_sex,cor_counting.id_nomenclature_life_stage,
+  occ.id_nomenclature_bio_status,occ.id_nomenclature_exist_proof, occ.id_nomenclature_determination_method,
+   cor_counting.id_nomenclature_sex, rel.id_releve_contact, datasets.id_nomenclature_source_status, occ.id_nomenclature_blurring, occ.id_nomenclature_diffusion_level, 'Pr'::text, occ.nom_cite, rel.date_min, rel.date_max, rel.hour_min, rel.hour_max, rel.altitude_max, rel.altitude_min, occ.cd_nom, occ.id_nomenclature_observation_status, (taxonomie.find_cdref(occ.cd_nom)), (gn_meta.get_default_parameter('taxref_version'::text, NULL::integer)),
+    rel.comment, cor_counting.meta_update_date, 'Ac'::text, 
+    rel.id_dataset, NULL::text, 'Te'::text, cor_counting.id_counting_contact, 
+     datasets.dataset_name, occ.determiner,
+     commentaire, obsmethode,occetatbiologique,
+     occnaturalite, occsexe, occstadedevie, occstatutbiogeographique, occstatutbiologique, preuveexistante, occmethodedetermination,
+     preuvenumerique,preuvenonnumerique, obscontexte, identifiantregroupementpermanent, methoderegroupement, typeregroupement, denombrementmax,
+     denombrementmin, objetdenombrement, typedenombrement,rel.observers_txt, 'NSP'::text, organisme.nom_organisme, determinateurnomorganisme,
+     validateuridentite, validateurnomorganisme, organismegestionnairedonnee, geometrie, natureobjetgeo
+
+

@@ -60,7 +60,7 @@ export class AuthService {
   fakeSigninUser(username: string, password: string) {
     const d1 = new Date();
     const d2 = new Date(d1);
-    d2.setMinutes(d1.getMinutes() + 30);
+    d2.setMinutes(d1.getMinutes() + 60);
     let response;
     if (username === 'admin') {
        response = {
@@ -76,7 +76,7 @@ export class AuthService {
     } else {
        response = {'userName': 'contributeur',
       'organism': {
-        'organismName': 'IGN',
+        'organismName': 'PNF',
         'organismId': 1
       },
       'rights': [

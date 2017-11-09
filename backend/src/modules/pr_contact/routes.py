@@ -5,13 +5,16 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_
+from sqlalchemy.sql import text
+
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
-    VReleveContact, VReleveList, corRoleRelevesContact
-from ...utils.utilssqlalchemy import json_resp, testDataType
+    VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
+from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
+from ...utils import filemanager 
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
-from ...core.gn_meta.models import TDatasets
+from ...core.gn_meta.models import TDatasets, CorDatasetsActor
 
 from pypnusershub import routes as fnauth
 
@@ -226,16 +229,10 @@ def getViewReleveList():
         q = q.filter(VReleveList.date_min == params.get('date_eq'))
 
     if 'organism' in params:
-        q = q.join(
-            TDatasets,
-            TDatasets.id_dataset == VReleveList.id_dataset
+        q = q.join(CorDatasetsActor,
+        CorDatasetsActor.id_dataset == VReleveList.id_dataset
         ).filter(
-            or_(
-                TDatasets.id_organism_owner == int(params.get('organism')),
-                TDatasets.id_organism_producer == int(params.get('organism')),
-                TDatasets.id_organism_administrator == int(params.get('organism')),
-                TDatasets.id_organism_funder == int(params.get('organism'))
-              )
+            CorDatasetsActor.id_actor == int(params.get('organism'))
         )
     # Generic Filters
     for param in params:
@@ -455,3 +452,22 @@ def deleteOneOccurenceCounting(id_count):
         raise
 
     return {'message': 'delete with success'}
+
+@routes.route('/default_nomenclatures_values/<int:idOrg>', methods=['GET'])
+@json_resp
+def getNomenclaturesValues(idOrg):
+    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg) AS id_nomenclature
+              FROM pr_contact.defaults_nomenclatures_value"""
+    result = db.engine.execute(text(query), idOrg=idOrg)
+    return {r.id_type: r.id_nomenclature for r in result}
+
+    
+@routes.route('/exportProvisoire', methods=['GET'])
+@csv_resp
+def export():
+    viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
+    q = db.session.query(viewSINP.tableDef)
+    data = q.all()
+    data = serializeQueryTest(data, q.column_descriptions)
+    return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+

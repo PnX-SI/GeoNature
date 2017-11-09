@@ -29,6 +29,6 @@ export class ExportsComponent implements OnInit {
    exportCsv(idView, idDataSet) {
      console.log(idView);
      console.log(idDataSet);
-     document.location.href = 'http://localhost:8000/contact/test';
+     document.location.href = 'http://localhost:8000/contact/exportProvisoire';
    }
 }

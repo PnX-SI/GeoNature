@@ -1444,18 +1444,3 @@ INSERT INTO cor_taxref_nomenclature VALUES
 
 ,(378, 'Animalia', 'Mammifères', now(), NULL)
 ;
-
-
----------------
---SAMPLE DATA--
----------------
-INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
-(1,'Parc nationaux de France',null,null)
-,(2,'Parc national des Ecrins',null,null)
-,(3,null,'Gerard Lambert',null)
-,(4,null,'Pierre Paul-Jacques',null)
-;
-
-INSERT INTO gn_meta.sinp_datatype_protocols (id_protocol, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
-(0,'hors protocole','observation réalisées hors protocole',422,null)
-;
