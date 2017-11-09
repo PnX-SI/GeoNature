@@ -161,7 +161,6 @@ def postCadreAcquisionMTD():
         attrib = root.attrib
         namespace = attrib['{http://www.w3.org/2001/XMLSchema-instance}schemaLocation'].split()[0]
         namespace = '{'+namespace+'}'
-        query = 'SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_nomencl)'
 
         #tous les cadres d'acquisition
         for ca in root.findall('.//'+namespace+'CadreAcquisition'):

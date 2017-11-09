@@ -5,6 +5,8 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_
+from sqlalchemy.sql import text
+
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
     VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
@@ -451,12 +453,15 @@ def deleteOneOccurenceCounting(id_count):
 
     return {'message': 'delete with success'}
 
-@routes.route('/default_nomenclatures_values', methods=['GET'])
+@routes.route('/default_nomenclatures_values/<int:idOrg>', methods=['GET'])
 @json_resp
-def getNomenclaturesValues():
-    data = db.session.query(DefaultNomenclaturesValue).all()
-    return [n.as_dict() for n in data]
+def getNomenclaturesValues(idOrg):
+    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg) AS id_nomenclature
+              FROM pr_contact.defaults_nomenclatures_value"""
+    result = db.engine.execute(text(query), idOrg=idOrg)
+    return {r.id_type: r.id_nomenclature for r in result}
 
+    
 @routes.route('/exportProvisoire', methods=['GET'])
 @csv_resp
 def export():
