@@ -548,7 +548,7 @@ SELECT cor_counting.unique_id_sinp AS "identifiantPermanent",
     'NSP'::text AS "validateurIdentite",
     'NSP'::text AS "validateurNomOrganisme",
     'NSP'::text AS "organismeGestionnaireDonnee",
-    st_astext(rel.geom_4326) AS geometrie,
+    public.st_astext(rel.geom_4326) AS geometrie,
     'In'::text AS "natureObjetGeo"
    FROM pr_contact.t_releves_contact rel
      LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
