@@ -50,10 +50,10 @@ export class ObservationComponent implements OnInit, OnDestroy {
         // subscribe to geo info
         this._dfs.getGeoInfo(geojson)
           .subscribe(res => {
-            this.releveForm.controls.properties.patchValue({
-              altitude_min: res.altitude.altitude_min,
-              altitude_max: res.altitude.altitude_max,
-            });
+            // this.releveForm.controls.properties.patchValue({
+            //   altitude_min: res.altitude.altitude_min,
+            //   altitude_max: res.altitude.altitude_max,
+            // });
           });
         this._dfs.getFormatedGeoIntersection(geojson)
           .subscribe(res => {
