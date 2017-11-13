@@ -5,6 +5,7 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { Http } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
+import { Location } from '@angular/common';
 
 
 export class User {
@@ -27,12 +28,13 @@ export class AuthService {
     token: string;
     toastrConfig: ToastrConfig;
     constructor(private router: Router,  private toastrService: ToastrService, private _http: Http,
-    private _cookie: CookieService) {
-        this.toastrConfig = {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 2000
-        };
+    private _cookie: CookieService, private _location: Location) {
+      console.log('init auth service');
+      
+      _location.subscribe(val => {
+          console.log('location change');
+          console.log(val);
+        });
     }
 
   setCurrentUser(user, expireDate) {
