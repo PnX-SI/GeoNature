@@ -17,7 +17,7 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer) returns integer
+CREATE OR REPLACE FUNCTION pr_contact.get_default_nomenclature_value(myidtype integer, myidorganism integer DEFAULT 0) RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
@@ -29,7 +29,8 @@ AS $$
       SELECT INTO thenomenclatureid id_nomenclature
       FROM pr_contact.defaults_nomenclatures_value 
       WHERE id_type = myidtype 
-      AND id_organism = myidorganism;
+      AND (id_organism = myidorganism OR id_organism = 0)
+      ORDER BY id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
     END IF;
@@ -60,7 +61,7 @@ CREATE TABLE t_releves_contact (
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
-    precision integer DEFAULT 10,
+    precision integer DEFAULT 100,
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -82,22 +83,22 @@ CREATE TABLE t_occurrences_contact (
     id_occurrence_contact bigint NOT NULL,
     id_releve_contact bigint NOT NULL,
     id_nomenclature_obs_technique integer NOT NULL DEFAULT 343,
-    id_nomenclature_obs_meth integer NOT NULL DEFAULT get_default_nomenclature_value(14,1),
-    id_nomenclature_bio_condition integer NOT NULL DEFAULT get_default_nomenclature_value(7,1),
-    id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value(13,1),
-    id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value(8,1),
-    id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value(15,1),
-    id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value(101,1),
-    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value(5,1),
-    id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value(18,1),
-    id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value(4,1),
+    id_nomenclature_obs_meth integer NOT NULL, -- DEFAULT get_default_nomenclature_value(14),
+    id_nomenclature_bio_condition integer NOT NULL, -- DEFAULT get_default_nomenclature_value(7),
+    id_nomenclature_bio_status integer DEFAULT, -- get_default_nomenclature_value(13),
+    id_nomenclature_naturalness integer DEFAULT, -- get_default_nomenclature_value(8),
+    id_nomenclature_exist_proof integer DEFAULT, -- get_default_nomenclature_value(15),
+    id_nomenclature_valid_status integer DEFAULT, -- get_default_nomenclature_value(101),
+    id_nomenclature_diffusion_level integer DEFAULT, -- get_default_nomenclature_value(5),
+    id_nomenclature_observation_status integer, --DEFAULT get_default_nomenclature_value(18),
+    id_nomenclature_blurring integer DEFAULT, -- get_default_nomenclature_value(4),
     id_validator integer,
     determiner character varying(255),
-    id_nomenclature_determination_method integer DEFAULT get_default_nomenclature_value(106,1),
+    id_nomenclature_determination_method integer DEFAULT, -- get_default_nomenclature_value(106),
     determination_method_as_text text,
     cd_nom integer,
     nom_cite character varying(255),
-    meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'',NULL)',
+    meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'')',
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
@@ -132,10 +133,10 @@ SELECT pg_catalog.setval('t_occurrences_contact_id_occurrence_contact_seq', 1, f
 CREATE TABLE cor_counting_contact (
     id_counting_contact bigint NOT NULL,
     id_occurrence_contact bigint NOT NULL,
-    id_nomenclature_life_stage integer NOT NULL DEFAULT get_default_nomenclature_value(10,1),
-    id_nomenclature_sex integer NOT NULL DEFAULT get_default_nomenclature_value(9,1),
-    id_nomenclature_obj_count integer NOT NULL DEFAULT get_default_nomenclature_value(6,1),
-    id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value(21,1),
+    id_nomenclature_life_stage integer NOT NULL DEFAULT, -- get_default_nomenclature_value(10),
+    id_nomenclature_sex integer NOT NULL DEFAULT, -- get_default_nomenclature_value(9),
+    id_nomenclature_obj_count integer NOT NULL, -- DEFAULT get_default_nomenclature_value(6),
+    id_nomenclature_type_count integer DEFAULT, -- get_default_nomenclature_value(21),
     count_min integer,
     count_max integer,
     meta_create_date timestamp without time zone,

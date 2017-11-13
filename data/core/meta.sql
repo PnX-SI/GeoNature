@@ -15,14 +15,14 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme int)
+CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
   RETURNS text AS
 $BODY$
     DECLARE
         theparamvalue text; 
 -- Function that allows to get value of a parameter depending on his name and organism
--- USAGE : SELECT gn_meta.get_default_parameter('taxref_version',NULL);
--- OR      SELECT gn_meta.get_default_parameter('uuid_url_value', 1);
+-- USAGE : SELECT gn_meta.get_default_parameter('taxref_version');
+-- OR      SELECT gn_meta.get_default_parameter('uuid_url_value', 2);
   BEGIN
     IF myidorganisme IS NOT NULL THEN
       SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
@@ -117,10 +117,10 @@ CREATE TABLE t_acquisition_frameworks (
     unique_acquisition_framework_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     acquisition_framework_name character varying(255) NOT NULL,
     acquisition_framework_desc text NOT NULL,
-    id_nomenclature_territorial_level integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(107,1),
+    id_nomenclature_territorial_level integer DEFAULT get_default_nomenclature_value(107),
     territory_desc text,
     keywords text,
-    id_nomenclature_financing_type integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(111,1),
+    id_nomenclature_financing_type integer DEFAULT get_default_nomenclature_value(111),
     target_description text,
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
@@ -210,19 +210,19 @@ CREATE TABLE t_datasets (
     dataset_name character varying(150) NOT NULL,
     dataset_shortname character varying(30) NOT NULL,
     dataset_desc text NOT NULL,
-    id_nomenclature_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(103,1),
+    id_nomenclature_data_type integer NOT NULL DEFAULT get_default_nomenclature_value(103),
     keywords text,
     marine_domain boolean NOT NULL,
     terrestrial_domain boolean NOT NULL,
-    id_nomenclature_dataset_objectif integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(115,1),
+    id_nomenclature_dataset_objectif integer NOT NULL DEFAULT get_default_nomenclature_value(115),
     bbox_west character varying(10),
     bbox_east character varying(10),
     bbox_south character varying(10),
     bbox_north character varying(10),
-    id_nomenclature_collecting_method integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(114,1),
-    id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(2,1),
-    id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(19,1),
-    id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(102,1),
+    id_nomenclature_collecting_method integer NOT NULL DEFAULT get_default_nomenclature_value(114),
+    id_nomenclature_data_origin integer NOT NULL DEFAULT get_default_nomenclature_value(2),
+    id_nomenclature_source_status integer NOT NULL DEFAULT get_default_nomenclature_value(19),
+    id_nomenclature_resource_type integer NOT NULL DEFAULT get_default_nomenclature_value(102),
     id_program integer NOT NULL,
     default_validity boolean,
     meta_create_date timestamp without time zone NOT NULL,
@@ -569,12 +569,13 @@ INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la
 INSERT INTO t_programs VALUES (2, 'test', 'test', false);
 
 INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(1,NULL,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
+(1,0,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
 ,(2,2,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc national des Ecrins','http://ecrins-parcnational.fr/data/',NULL)
 ,(3,1,'uuid_url_value','Valeur de l''identifiant unique SINP pour l''organisme Parc nationaux de France','http://parcnational.fr/data/',NULL)
-,(4,NULL,'local_srid','Valeur du SRID local','2154',NULL)
-,(5,NULL,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL);
-
+,(4,0,'local_srid','Valeur du SRID local','2154',NULL)
+,(5,0,'annee_ref_commune', 'Annéee du référentiel géographique des communes utilisé', '2017', NULL)
+,(6,0,'uuid_url_value','Valeur de l''identifiant unique SINP pour tous les organismes','http://mondomaine.fr/data/',NULL)
+;
 INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
 (1,'Parc nationaux de France',null,null)
 ,(2,'Parc national des Ecrins',null,null)
