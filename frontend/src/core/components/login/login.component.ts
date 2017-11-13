@@ -38,11 +38,10 @@ export class LoginComponent implements OnInit {
       //   // document.location.href = 'http://localhost:4200/#/lalalalala';
       // }
 
-
    }
   register(user) {
     console.log(user);
-    
+ 
     // this._authService.fakeSigninUser(user.username, user.password);
     this._http.post('https://preprod-inpn.mnhn.fr/auth/login', user)
     .subscribe(resp => {
