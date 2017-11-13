@@ -12,11 +12,11 @@ SET search_path = ref_nomenclatures, pg_catalog;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer) returns integer
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer DEFAULT 0) RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id 
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
@@ -24,7 +24,8 @@ AS $$
       SELECT INTO thenomenclatureid id_nomenclature
       FROM ref_nomenclatures.defaults_nomenclatures_value 
       WHERE id_type = myidtype 
-      AND id_organism = myidorganism;
+      AND (id_organism = myidorganism OR id_organism = 0)
+      ORDER BY id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
     END IF;
