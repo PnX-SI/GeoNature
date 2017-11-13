@@ -63,20 +63,20 @@ INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_s
 (1, 'Contact faune flore', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
 
 INSERT INTO pr_contact.defaults_nomenclatures_value (id_type, id_organism, id_nomenclature) VALUES
-(14,1,42)
-,(7,1,178)
-,(13,1,30)
-,(8,1,182)
-,(15,1,91)
-,(101,1,347)
-,(5,1,163)
-,(106,1,370)
-,(10,1,2)
-,(9,1,194)
-,(6,1,166)
-,(21,1,109)
-,(18,1,101)
-,(4,1,200)
+(14,0,42)
+,(7,0,178)
+,(13,0,30)
+,(8,0,182)
+,(15,0,91)
+,(101,0,347)
+,(5,0,163)
+,(106,0,370)
+,(10,0,2)
+,(9,0,194)
+,(6,0,166)
+,(21,0,109)
+,(18,0,101)
+,(4,0,200)
 ;
 
 INSERT INTO pr_contact.t_releves_contact VALUES
