@@ -1,10 +1,11 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-
-
+import { HttpClientModule } from '@angular/common/http';
 import {HttpModule, Http} from '@angular/http';
+
 
 // For Angular Dependencies
 import 'hammerjs';
@@ -39,7 +40,8 @@ import { SideNavService } from './components/sidenav-items/sidenav.service';
 import { MapListService } from './GN2Common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
 
-
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CustomHttpInterceptor } from './components/auth/customhttp.interceptor';
 
 
 // AoT requires an exported function for factories
@@ -50,6 +52,7 @@ export function HttpLoaderFactory(http: Http) {
   imports: [
     BrowserModule,
     HttpModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
     AppRoutingModule,
@@ -74,7 +77,13 @@ export function HttpLoaderFactory(http: Http) {
     LoginComponent,
     NavHomeComponent,
   ],
-  providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService],
+  providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService, HttpClient,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomHttpInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 

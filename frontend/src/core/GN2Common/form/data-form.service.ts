@@ -1,47 +1,44 @@
 import { Injectable } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
 
 @Injectable()
 export class DataFormService {
 
-  constructor(private _http: Http) {
+  constructor(private _http: HttpClient) {
    }
 
   getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
-    const params: URLSearchParams = new URLSearchParams();
+    const params: HttpParams = new HttpParams();
     regne ? params.set('regne', regne) : params.set('regne', '');
     group2_inpn ? params.set('group2_inpn', group2_inpn) : params.set('group2_inpn', '');
-    return this._http.get(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {search: params})
-    .map(response => response.json());
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {params: params});
     }
 
   getNomenclatures(...id_nomenclatures) {
-    const params: URLSearchParams = new URLSearchParams();
+    const params: HttpParams = new HttpParams();
     id_nomenclatures.forEach(id => {
       params.append('id_type', id);
     });
-    return this._http.get(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclatures`, {search: params})
-      .map(response => response.json());
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclatures`, {params: params});
   }
 
   getDatasets(idOrganism?) {
-    const params: URLSearchParams = new URLSearchParams();
+    const params: HttpParams = new HttpParams();
     if (idOrganism) {
       params.set('organism', idOrganism);
     }
-    return this._http.get(`${AppConfig.API_ENDPOINT}meta/datasets`, {search: params} )
-      .map(response => response.json());
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}meta/datasets`, {params: params});
   }
 
   getObservers(idMenu) {
-     return this._http.get(`${AppConfig.API_ENDPOINT}users/menu/${idMenu}`)
-      .map(response => response.json());
+     return this._http.get<any>(`${AppConfig.API_ENDPOINT}users/menu/${idMenu}`);
   }
 
   searchTaxonomy(taxonName: string, id: string, regne?: string, groupe2Inpn?: string) {
-    const params: URLSearchParams = new URLSearchParams();
+    const params: HttpParams = new HttpParams();
     params.append('search_name', taxonName);
     if (regne) {
       params.append('regne', regne);
@@ -49,31 +46,26 @@ export class DataFormService {
     if (groupe2Inpn) {
       params.append('group2_inpn', groupe2Inpn);
     }
-    return this._http.get(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}`, { search : params})
-    .map(res => res.json());
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}`, { params : params});
   }
 
   getTaxonInfo(cd_nom: number) {
-   return this._http.get(`${AppConfig.API_TAXHUB}taxref/${cd_nom}`)
-    .map(res => res.json());
+   return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/${cd_nom}`);
   }
 
   getRegneAndGroup2Inpn() {
-    return this._http.get(`${AppConfig.API_TAXHUB}taxref/regnewithgroupe2`)
-    .map(res => res.json());
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/regnewithgroupe2`);
   }
 
   getGeoInfo(geojson) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}geo/info`, geojson)
-      .map(response => response.json());
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/info`, geojson);
   }
 
   getGeoIntersection(geojson, idType?) {
     if (idType) {
       geojson['id_type'] = idType;
     }
-    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
-    .map(response => response.json());
+    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson);
   }
 
   getFormatedGeoIntersection(geojson, idType?) {
@@ -81,8 +73,7 @@ export class DataFormService {
       geojson['id_type'] = idType;
     }
     return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
-    .map(response => {
-      const res = response.json();
+    .map(res => {
       const areasIntersected = [];
       Object.keys(res).forEach(key => {
         const typeName = res[key]['type_name'];
@@ -97,14 +88,14 @@ export class DataFormService {
   }
 
   postContact(form) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form)
-      .map(response => {
-        if (response.status !== 200) {
-          throw new Error('Post Error');
-        }else {
-          return response.json();
-        }
-      });
+    return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form);
+      // .map(response => {
+      //   if (response.status !== 200) {
+      //     throw new Error('Post Error');
+      //   }else {
+      //     return response.json();
+      //   }
+      // });
   }
 
 }
