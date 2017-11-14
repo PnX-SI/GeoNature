@@ -17,11 +17,11 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION pr_contact.get_default_nomenclature_value(myidtype integer, myidorganism integer DEFAULT 0) RETURNS integer
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id 
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn 
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
@@ -29,8 +29,10 @@ AS $$
       SELECT INTO thenomenclatureid id_nomenclature
       FROM pr_contact.defaults_nomenclatures_value 
       WHERE id_type = myidtype 
-      AND (id_organism = myidorganism OR id_organism = 0)
-      ORDER BY id_organism DESC LIMIT 1;
+      AND (id_organism = 0 OR id_organism = myidorganism)
+      AND (regne = '0' OR regne = myregne)
+      AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
+      ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
     END IF;
@@ -83,18 +85,18 @@ CREATE TABLE t_occurrences_contact (
     id_occurrence_contact bigint NOT NULL,
     id_releve_contact bigint NOT NULL,
     id_nomenclature_obs_technique integer NOT NULL DEFAULT 343,
-    id_nomenclature_obs_meth integer NOT NULL, -- DEFAULT get_default_nomenclature_value(14),
-    id_nomenclature_bio_condition integer NOT NULL, -- DEFAULT get_default_nomenclature_value(7),
-    id_nomenclature_bio_status integer DEFAULT, -- get_default_nomenclature_value(13),
-    id_nomenclature_naturalness integer DEFAULT, -- get_default_nomenclature_value(8),
-    id_nomenclature_exist_proof integer DEFAULT, -- get_default_nomenclature_value(15),
-    id_nomenclature_valid_status integer DEFAULT, -- get_default_nomenclature_value(101),
-    id_nomenclature_diffusion_level integer DEFAULT, -- get_default_nomenclature_value(5),
+    id_nomenclature_obs_meth integer NOT NULL, --DEFAULT get_default_nomenclature_value(14),
+    id_nomenclature_bio_condition integer NOT NULL, --DEFAULT get_default_nomenclature_value(7),
+    id_nomenclature_bio_status integer, --DEFAULT get_default_nomenclature_value(13),
+    id_nomenclature_naturalness integer, --DEFAULT get_default_nomenclature_value(8),
+    id_nomenclature_exist_proof integer, --DEFAULT get_default_nomenclature_value(15),
+    id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
+    id_nomenclature_diffusion_level integer, --DEFAULT get_default_nomenclature_value(5),
     id_nomenclature_observation_status integer, --DEFAULT get_default_nomenclature_value(18),
-    id_nomenclature_blurring integer DEFAULT, -- get_default_nomenclature_value(4),
+    id_nomenclature_blurring integer, --DEFAULT get_default_nomenclature_value(4),
     id_validator integer,
     determiner character varying(255),
-    id_nomenclature_determination_method integer DEFAULT, -- get_default_nomenclature_value(106),
+    id_nomenclature_determination_method integer, --DEFAULT get_default_nomenclature_value(106),
     determination_method_as_text text,
     cd_nom integer,
     nom_cite character varying(255),
@@ -133,10 +135,10 @@ SELECT pg_catalog.setval('t_occurrences_contact_id_occurrence_contact_seq', 1, f
 CREATE TABLE cor_counting_contact (
     id_counting_contact bigint NOT NULL,
     id_occurrence_contact bigint NOT NULL,
-    id_nomenclature_life_stage integer NOT NULL DEFAULT, -- get_default_nomenclature_value(10),
-    id_nomenclature_sex integer NOT NULL DEFAULT, -- get_default_nomenclature_value(9),
-    id_nomenclature_obj_count integer NOT NULL, -- DEFAULT get_default_nomenclature_value(6),
-    id_nomenclature_type_count integer DEFAULT, -- get_default_nomenclature_value(21),
+    id_nomenclature_life_stage integer NOT NULL, --DEFAULT get_default_nomenclature_value(10),
+    id_nomenclature_sex integer NOT NULL, --DEFAULT get_default_nomenclature_value(9),
+    id_nomenclature_obj_count integer NOT NULL, --DEFAULT get_default_nomenclature_value(6),
+    id_nomenclature_type_count integer, --DEFAULT get_default_nomenclature_value(21),
     count_min integer,
     count_max integer,
     meta_create_date timestamp without time zone,
@@ -162,7 +164,9 @@ CREATE TABLE cor_role_releves_contact (
 
 CREATE TABLE defaults_nomenclatures_value (
     id_type integer NOT NULL,
-    id_organism integer NOT NULL,
+    id_organism integer NOT NULL DEFAULT 0,
+    regne character varying(20) NOT NULL DEFAULT '0',
+    group2_inpn character varying(255) NOT NULL DEFAULT '0',
     id_nomenclature integer NOT NULL
 );
 
@@ -183,7 +187,7 @@ ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT pk_cor_role_releves_contact PRIMARY KEY (id_releve_contact, id_role);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism);
+    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, regne, group2_inpn);
 
 
 ---------------
@@ -344,6 +348,11 @@ ALTER TABLE cor_counting_contact
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_contact_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
 
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text);
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
 
 
 ----------------------
@@ -539,7 +548,7 @@ SELECT cor_counting.unique_id_sinp AS "identifiantPermanent",
     'NSP'::text AS "validateurIdentite",
     'NSP'::text AS "validateurNomOrganisme",
     'NSP'::text AS "organismeGestionnaireDonnee",
-    st_astext(rel.geom_4326) AS geometrie,
+    public.st_astext(rel.geom_4326) AS geometrie,
     'In'::text AS "natureObjetGeo"
    FROM pr_contact.t_releves_contact rel
      LEFT JOIN pr_contact.t_occurrences_contact occ ON rel.id_releve_contact = occ.id_releve_contact
