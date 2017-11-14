@@ -9,11 +9,21 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 DEBUG=True
 
-
+URL_APPLICATION = 'MON_URL'
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 3600
 COOKIE_AUTORENEW = True
+
+CAS = {
+  'URL_LOGIN': 'URL_LOGIN',
+  'URL_VALIDATION' : 'URL_VALIDATION',
+  'USER_WS': {
+    'URL': 'URL_WS',
+    'ID': 'MY_ID',
+    'PASSWORD': 'MY_PASS'
+  } 
+}
 
 #File
 import os

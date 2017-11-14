@@ -47,6 +47,9 @@ def get_app():
     from src.core.gn_exports.routes import routes
     app.register_blueprint(routes, url_prefix='/exports')
 
+    from src.core.auth.routes import routes
+    app.register_blueprint(routes, url_prefix='/test_auth')
+
 
 
 
