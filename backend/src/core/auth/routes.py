@@ -5,6 +5,7 @@ from __future__ import (unicode_literals, print_function,
 from flask import Blueprint, request, make_response, url_for, redirect, current_app
 import requests
 import datetime
+import xmltodict
 from xml.etree import ElementTree as ET
 
 from ...utils.utilssqlalchemy import json_resp
@@ -19,18 +20,19 @@ routes = Blueprint('test_auth', __name__)
 
 @routes.route('/login_cas', methods=['GET'])
 def loginCas():
-    print(current_app.config['CAS'])
     configCas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
         urlValidate = "%s?ticket=%s&service=%s"%(configCas['URL_VALIDATION'], params['ticket'], request.base_url)
-        r = requests.get(url_validate)
+        r = requests.get(urlValidate)
         user = None
         if r.status_code == 200:
             xmlDict = xmltodict.parse(r.content)
             resp = xmlDict['cas:serviceResponse']
+            print(resp)
             if 'cas:user' in resp:
                 user = resp['cas:user']
+        print(user)
         if user:
             WSUserUrl = "%s/%s/?verify=false"%(configCas['USER_WS']['URL'], user)
             r  = requests.get(WSUserUrl, auth=(configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD']))
@@ -56,4 +58,5 @@ def loginCas():
             # redirect to inpn
             urlRedirect = "%s?service=%s"%(configCas['URL_LOGIN'], request.base_url)
             response = make_response(redirect(urlRedirect))
+            return response
             
