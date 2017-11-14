@@ -56,7 +56,7 @@ def loginCas():
             return response
         else:
             # redirect to inpn
+            requests.get(configCas['URL_LOGOUT'])
             urlRedirect = "%s?service=%s"%(configCas['URL_LOGIN'], request.base_url)
-            response = make_response(redirect(urlRedirect))
-            return response
+            return redirect(urlRedirect)
             
