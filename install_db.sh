@@ -282,6 +282,17 @@ then
     cp data/core/synthese.sql /tmp/synthese.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/synthese.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/synthese.sql  &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> log/install_db.log
+
+
+    echo "Creating 'exports' schema..."
+    echo "" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "Creating 'exports' schema" &>> log/install_db.log
+    echo "--------------------" &>> log/install_db.log
+    echo "" &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/exports.sql  &>> log/install_db.log
 
 
     # Suppression des fichiers : on ne conserve que les fichiers compressés
