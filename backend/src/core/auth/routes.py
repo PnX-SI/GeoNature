@@ -1,7 +1,3 @@
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
 from flask import Blueprint, request, make_response, url_for, redirect, current_app
 import requests
 import datetime
@@ -39,14 +35,14 @@ def loginCas():
                 infoUser = r.json()
                 organismId = infoUser['codeOrganisme']
                 organismName = infoUser['libelleLongOrganisme']
-                userName = infoUser['prenom']+" "+infoUser['nom']
-                rights = {14 : {'C': 2, 'R': 2, 'U': 2, 'V': 2, 'E': 2, 'D': 2 } }
+                userName = infoUser['login']
+                rights = {'14' : {'C': 2, 'R': 2, 'U': 2, 'V': 2, 'E': 2, 'D': 2 } }
                 currentUser = {'userName': userName,
                                'organisme': 
                                         { 'organismName':organismName,
-                                           'organismId': organismId 
+                                           'organismId': organismId if organismId != None else 0
                                         },
-                                'rights': rigths}
+                                'rights': rights}
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
                 cookieExp = datetime.datetime.utcnow()
                 cookieExp += datetime.timedelta(seconds=current_app.config['COOKIE_EXPIRATION'])
@@ -60,4 +56,3 @@ def loginCas():
         else:
             # redirect to inpn            
             return "echec de l'authentification"
-            

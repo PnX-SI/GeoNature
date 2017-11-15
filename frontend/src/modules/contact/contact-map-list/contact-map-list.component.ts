@@ -24,7 +24,7 @@ export class ContactMapListComponent implements OnInit {
   public apiEndPoint: string;
   constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService
-   , private _cookie: CookieService, private _translate: TranslateService) { }
+   , private _translate: TranslateService) { }
 
   ngOnInit() {
     console.log(this._translate.getLangs());
@@ -32,7 +32,7 @@ export class ContactMapListComponent implements OnInit {
     // reset the URL query parameter
     this._mapListService.urlQuery.delete('organism');
     const currentUser = this._auth.getCurrentUser();
-    const userRight = currentUser.getRight(14);
+    const userRight = currentUser.getRight('14');
     if ( userRight['R'] <= AppConfig.RIGHTS.MY_ORGANISM_DATA ) {
       this._mapListService.urlQuery.set('organism', currentUser.organism.organismId.toString());
     }
