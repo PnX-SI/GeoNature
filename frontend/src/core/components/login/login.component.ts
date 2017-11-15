@@ -21,17 +21,11 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
        if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
-         const url_redirection_cas = `${AppConfig.CAS.CAS_LOGIN_URL}?service=${AppConfig.API_ENDPOINT}test_auth/login_cas`;
-        // const url_redirection_cas = `${AppConfig.CAS.CAS_LOGIN_URL}?service=http://localhost:4200`;
-         document.location.href = url_redirection_cas;
-
-         const d1 = new Date();
-         const d2 = new Date(d1);
-         d2.setMinutes(d1.getMinutes() + 60);
-         this._authService.setToken('zrqgoviedfohvfd', d2);
-
-         // document.location.href = 'http://localhost:4200/#/lalalalala';
-      this._authService.fakeSigninUser('admin', 'test');
+         // if token not here here, redirection to CAS login page
+         if (!this._authService.getToken()) {
+          const url_redirection_cas = `${AppConfig.CAS.CAS_LOGIN_URL}?service=${AppConfig.API_ENDPOINT}test_auth/login_cas`;
+           document.location.href = url_redirection_cas;
+         }
        }
 
    }
