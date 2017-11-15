@@ -29,17 +29,31 @@ export class AuthService {
     constructor(private router: Router,  private toastrService: ToastrService, private _http: HttpClient,
     private _cookie: CookieService, private _router: Router) {
     }
-
+  
+  decodeObjectCookies(val) {
+      if (val.indexOf('\\') === -1) {
+          return val;  // not encoded
+      }
+      val = val.slice(1, -1).replace(/\\"/g, '"');
+      val = val.replace(/\\(\d{3})/g, function(match, octal) { 
+          return String.fromCharCode(parseInt(octal, 8));
+      });
+      return val.replace(/\\\\/g, '\\');
+  }
   setCurrentUser(user, expireDate) {
     this._cookie.set('currentUser', JSON.stringify(user), expireDate);
-    this.currentUser = new User(user.userName, user.rights, user.organism)
   }
 
   getCurrentUser(): User {
     const userString =  this._cookie.get('currentUser');
-    let user =  <User>JSON.parse(userString);
-
-    user = new User(user.userName, user.rights, user.organism);
+    let user = this.decodeObjectCookies(userString);
+    console.log(user);
+    user = user.split("'").join('"');
+    console.log(user);
+    user = JSON.parse(user);
+    console.log(user);
+    user = new User(user['userName'], user['rights'], user['organism']);
+    console.log(user);
     return user;
   }
 
@@ -66,7 +80,7 @@ export class AuthService {
           'organismId': 2
         },
         'rights': {
-          14 : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
+          '14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
           }
         };
 
@@ -78,7 +92,7 @@ export class AuthService {
             'organismId': 1
           },
       'rights': {
-         14 : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
+         '14' : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
         }
       };
     }
