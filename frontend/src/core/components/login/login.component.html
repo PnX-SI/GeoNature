@@ -1,4 +1,4 @@
-<div class="wrapper" style="width:25%; margin: 5% 0px 0px 35%; text-align: center;">
+<div *ngIf="!casLogin" class="wrapper" style="width:25%; margin: 5% 0px 0px 35%; text-align: center;">
     <h3> GeoNature </h3>
     <div class="panel" style="padding: 20px">
     <form (ngSubmit)="register(userForm.value)" #userForm="ngForm">

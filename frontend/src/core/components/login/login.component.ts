@@ -13,10 +13,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 })
 
 export class LoginComponent implements OnInit {
-  isLoged = false;
+  public casLogin: boolean;
   constructor(private _authService: AuthService, private _router: Router, private _location: Location,
   private _http: HttpClient) {
-
+    this.casLogin = AppConfig.CAS.CAS_AUTHENTIFICATION;
    }
 
     ngOnInit() {
