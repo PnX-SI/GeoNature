@@ -37,19 +37,24 @@ def loginCas():
             r  = requests.get(WSUserUrl, auth=(configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD']))
             if r.status_code == 200:
                 infoUser = r.json()
-                idOrganisme = infoUser['codeOrganisme']
-                currentUser = infoUser['prenom']+" "+infoUser['nom']
-                response = make_response(redirect(current_app.config['URL_APPLICATION']+"/login"))
+                organismId = infoUser['codeOrganisme']
+                organismName = infoUser['libelleLongOrganisme']
+                userName = infoUser['prenom']+" "+infoUser['nom']
+                rights = {14 : {'C': 2, 'R': 2, 'U': 2, 'V': 2, 'E': 2, 'D': 2 } }
+                currentUser = {'userName': userName,
+                               'organisme': 
+                                        { 'organismName':organismName,
+                                           'organismId': organismId 
+                                        },
+                                'rights': rigths}
+                response = make_response(redirect(current_app.config['URL_APPLICATION']))
                 cookieExp = datetime.datetime.utcnow()
                 cookieExp += datetime.timedelta(seconds=current_app.config['COOKIE_EXPIRATION'])
                 response.set_cookie('token',
                                     'test12345',
                                     expires=cookieExp)
-                response.set_cookie('idOrganisme',
-                                     str(idOrganisme),
-                                     expires=cookieExp)
                 response.set_cookie('currentUser',
-                                     currentUser,
+                                     str(currentUser),
                                      expires=cookieExp)
             return response
         else:
