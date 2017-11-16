@@ -113,8 +113,19 @@ export class AuthService {
     });
 
   }
+  deleteAllCookies() {
+    const cookies = document.cookie.split(';');
+
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
+}
   logout() {
     this._cookie.delete('token');
+    this.deleteAllCookies();
     console.log(this.getToken());
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
       document.location.href = AppConfig.CAS.CAS_LOGOUT_URL;
