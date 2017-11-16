@@ -41,7 +41,6 @@ import { MapListService } from './GN2Common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CustomHttpInterceptor } from './components/auth/customhttp.interceptor';
 
 
 // AoT requires an exported function for factories
@@ -77,12 +76,7 @@ export function HttpLoaderFactory(http: Http) {
     LoginComponent,
     NavHomeComponent,
   ],
-  providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService, HttpClient,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: CustomHttpInterceptor,
-      multi: true
-    }
+  providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService, HttpClient
   ],
   bootstrap: [AppComponent],
 })
