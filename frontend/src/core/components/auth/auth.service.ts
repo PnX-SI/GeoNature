@@ -131,6 +131,7 @@ deleteTokenCookie(){
     this._cookie.delete('token');
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
       this.deleteTokenCookie();
+      document.location.href = AppConfig.CAS.CAS_LOGOUT_URL;
     } else {
       this.router.navigate(['/login']);
     }
