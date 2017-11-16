@@ -1,5 +1,3 @@
-DROP SCHEMA IF EXISTS gn_users CASCADE;
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -212,20 +210,21 @@ CREATE TABLE IF NOT EXISTS bib_gn_data_types (
 );
 
 
-CREATE TABLE IF NOT EXISTS bib_gn_privileges (
-    id_gn_privilege integer NOT NULL,
-    gn_privilege_name character varying(255),
-    gn_privilege_desc text
+CREATE TABLE IF NOT EXISTS bib_gn_actions (
+    id_gn_action integer NOT NULL,
+    gn_action_code character varying(25),
+    gn_action_name character varying(255),
+    gn_action_desc text
 );
 
 
-CREATE TABLE IF NOT EXISTS cor_data_type_privilege_tag (
+CREATE TABLE IF NOT EXISTS cor_data_type_action_tag (
     id_gn_data_type integer NOT NULL,
-    id_gn_privilege integer NOT NULL,
+    id_gn_action integer NOT NULL,
     id_tag integer NOT NULL,
     comment text
 );
-COMMENT ON TABLE cor_data_type_privilege_tag IS 'Cette table centrale, permet de gérer les droits d''usage des données en fonction du profil de l''utilisateur. Elle établi une correspondance entre l''affectation de tags génériques du schéma utilisateurs à un role pour une application avec les droits d''usage  (CREATE, READ, UPDATE, VALID, EXPORT, DELETE) et le type des données GeoNature (MY DATA, MY ORGANISM DATA, ALL DATA)';
+COMMENT ON TABLE cor_data_type_action_tag IS 'Cette table centrale, permet de gérer les droits d''usage des données en fonction du profil de l''utilisateur. Elle établi une correspondance entre l''affectation de tags génériques du schéma utilisateurs à un role pour une application avec les droits d''usage  (CREATE, READ, UPDATE, VALID, EXPORT, DELETE) et le type des données GeoNature (MY DATA, MY ORGANISM DATA, ALL DATA)';
 
 
 ----------------
@@ -253,9 +252,9 @@ ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT pk_cor_role_tag_applica
 
 ALTER TABLE ONLY bib_gn_data_types ADD CONSTRAINT pk_bib_gn_data_types PRIMARY KEY (id_gn_data_type);
 
-ALTER TABLE ONLY bib_gn_privileges ADD CONSTRAINT pk_bib_gn_privileges PRIMARY KEY (id_gn_privilege);
+ALTER TABLE ONLY bib_gn_actions ADD CONSTRAINT pk_bib_gn_actions PRIMARY KEY (id_gn_action);
 
-ALTER TABLE ONLY cor_data_type_privilege_tag ADD CONSTRAINT pk_cor_data_type_privilege_tag PRIMARY KEY (id_gn_data_type, id_gn_privilege, id_tag);
+ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT pk_cor_data_type_action_tag PRIMARY KEY (id_gn_data_type, id_gn_action, id_tag);
 
 
 ------------
@@ -313,15 +312,15 @@ ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_applica
 ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_application FOREIGN KEY (id_application) REFERENCES t_applications(id_application) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY cor_data_type_privilege_tag ADD CONSTRAINT fk_cor_data_type_privilege_tag_id_gn_data_types FOREIGN KEY (id_gn_data_type) REFERENCES bib_gn_data_types(id_gn_data_type) ON UPDATE CASCADE;
-ALTER TABLE ONLY cor_data_type_privilege_tag ADD CONSTRAINT fk_cor_data_type_privilege_tag_id_gn_privilege FOREIGN KEY (id_gn_privilege) REFERENCES bib_gn_privileges(id_gn_privilege) ON UPDATE CASCADE;
-ALTER TABLE ONLY cor_data_type_privilege_tag ADD CONSTRAINT fk_cor_data_type_privilege_tag_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT fk_cor_data_type_action_tag_id_gn_data_types FOREIGN KEY (id_gn_data_type) REFERENCES bib_gn_data_types(id_gn_data_type) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT fk_cor_data_type_action_tag_id_gn_action FOREIGN KEY (id_gn_action) REFERENCES bib_gn_actions(id_gn_action) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT fk_cor_data_type_action_tag_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 
 
 ---------
 --VIEWS--
 ---------
-CREATE OR REPLACE VIEW gn_users.v_usersprivilege_forall_gn_modules AS
+CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
  WITH all_users_tags AS (
          WITH a1 AS (
                  SELECT u.id_role,
@@ -452,12 +451,14 @@ CREATE OR REPLACE VIEW gn_users.v_usersprivilege_forall_gn_modules AS
     v.email,
     v.id_organism,
     v.id_application,
-    c.id_gn_privilege,
+    c.id_gn_action,
+    bga.gn_action_code,
     max(c.id_gn_data_type) AS max_gn_data_type,
     c.comment
    FROM all_users_tags v
-     JOIN gn_users.cor_data_type_privilege_tag c ON c.id_tag = v.id_tag
-  GROUP BY v.id_role, v.id_application, v.identifiant, v.last_name, v.first_name, v.desc_role, v.pass_md5, v.pass_sha, v.email, v.id_organism, c.id_gn_privilege, c.comment;
+     JOIN gn_users.cor_data_type_action_tag c ON c.id_tag = v.id_tag
+     JOIN gn_users.bib_gn_actions bga ON bga.id_gn_action = c.id_gn_action
+  GROUP BY v.id_role, v.id_application, v.identifiant, v.last_name, v.first_name, v.desc_role, v.pass_md5, v.pass_sha, v.email, v.id_organism, c.id_gn_action, bga.gn_action_code, c.comment;
 
 
 
@@ -466,18 +467,16 @@ CREATE OR REPLACE VIEW gn_users.v_usersprivilege_forall_gn_modules AS
 -------------
 CREATE OR REPLACE FUNCTION can_user_do_in_module(
     myuser integer,
-    myprivilege integer,
+    myaction integer,
     mymodule integer)
   RETURNS boolean AS
 $BODY$
 -- the function say if the given user can do the requested action in the requested module
--- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_privilegeid,requested_moduleid);
+-- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_actionid,requested_moduleid);
 -- SAMPLE :SELECT gn_users.can_user_do_in_module(2,5,14);
   BEGIN
-    IF myprivilege IN (
-	SELECT id_gn_privilege FROM gn_users.v_usersprivilege_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule)
-	THEN
-	RETURN true;
+    IF myaction IN (SELECT id_gn_action FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule) THEN
+	    RETURN true;
     END IF;
     RETURN false;
   END;
@@ -497,7 +496,7 @@ DECLARE
 -- USAGE : SELECT gn_users.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
 -- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,2,14);
   BEGIN
-	SELECT max(max_gn_data_type) INTO themaxleveldatatype FROM gn_users.v_usersprivilege_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_gn_privilege = myaction;
+	SELECT max(max_gn_data_type) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_gn_action = myaction;
 	RETURN themaxleveldatatype;
   END;
 $BODY$
@@ -555,13 +554,13 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO bib_gn_privileges (id_gn_privilege, gn_privilege_name, gn_privilege_desc) VALUES
-(1,'create','can create/add new data')
-,(2,'read', 'can read data')
-,(3,'update', 'can edit data')
-,(4,'validate', 'can validate data')
-,(5,'export', 'can export data')
-,(6,'delete', 'can delete data')
+INSERT INTO bib_gn_actions (id_gn_action, gn_action_code, gn_action_name, gn_action_desc) VALUES
+(1,'C','create','can create/add new data')
+,(2,'R','read', 'can read data')
+,(3,'U','update', 'can edit data')
+,(4,'V','validate', 'can validate data')
+,(5,'E','export', 'can export data')
+,(6,'D','delete', 'can delete data')
 ;
 EXCEPTION WHEN unique_violation  THEN
         RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -665,7 +664,7 @@ INSERT INTO t_tags (id_tag, tag_name, tag_desc) VALUES
 ,(102,'observateurs aigle', 'liste des observateurs pour le protocole suivi de la reproduction de l''aigle royal')
 
 ,(1000,'Geonature', 'Etiquette définissant l''appartenance au domaine "GeoNature"')
-,(1001,'Privileges', 'Etiquette définissant un type "privilèges"')
+,(1001,'actions', 'Etiquette définissant un type "actions"')
 ,(1002,'Data types', 'Etiquette définissant un type "data_type". Plus précisément, l''étendue des données GeoNature accessibles (my data, my organism data, all data)')
 ,(1003,'listes', 'Etiquette définissant un type "listes"')
 
@@ -724,7 +723,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO gn_users.cor_data_type_privilege_tag (id_gn_data_type, id_gn_privilege, id_tag, comment) VALUES
+INSERT INTO gn_users.cor_data_type_action_tag (id_gn_data_type, id_gn_action, id_tag, comment) VALUES
 (3,6,25,'This user can delete all data')
 ,(2,6,24,'This user can delete only the data of his organization')
 ,(1,6,23,'This user can delete only his own data')
