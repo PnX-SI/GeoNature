@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { AppConfig } from '../../../../conf/app.config';
-import { Http } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactConfig } from '../../contact.config';
-import { AuthService } from '../../../../core/components/auth/auth.service';
+import { AuthService, User } from '../../../../core/components/auth/auth.service';
 
 
 @Injectable()
@@ -25,8 +25,9 @@ export class ContactFormService {
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
+  public currentUser: User;
 
-  constructor(private _fb: FormBuilder, private _http:Http, private _dfs: DataFormService, private _router: Router,
+  constructor(private _fb: FormBuilder, private _http: HttpClient, private _dfs: DataFormService, private _router: Router,
       private _auth: AuthService) {
     this.currentTaxon = {};
     this.indexCounting = 0;
@@ -38,9 +39,9 @@ export class ContactFormService {
       this.isEdintingOccurrence = false;
     });
 
-    const idOrg = this._auth.getCurrentUser().organism.organismId;
+    this.currentUser = this._auth.getCurrentUser();
 
-    this.getDefaultValues(idOrg)
+    this.getDefaultValues(this.currentUser.organismId)
       .subscribe(res => {
 
         this.defaultValues = res;
@@ -52,8 +53,19 @@ export class ContactFormService {
    }// end constructor
 
    getDefaultValues(idOrg) {
-     return this._http.get(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures_values/${idOrg}`)
-      .map(res => res.json());
+     return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures/${idOrg}`)
+   }
+
+   getFilteredDefaultValues(idOrg: number, regne?, group2_inpn?) {
+     const params = new HttpParams();
+     params.append('organism', idOrg.toString());
+     if (group2_inpn) {
+      params.append('regne', regne);
+     }
+     if (regne) {
+      params.append('group2_inpn', group2_inpn);
+     }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/filtered_default_nomenclatures`, {params: params});
    }
 
    initObservationForm(): FormGroup {
@@ -134,6 +146,7 @@ export class ContactFormService {
     }
     return arrayForm;
   }
+
 
 
   addCounting() {
@@ -233,8 +246,25 @@ export class ContactFormService {
     this.indexOccurrence = this.indexOccurrence - 1 ;
   }
 
-  updateTaxon(taxon) {
+  onTaxonChanged(taxon) {
      this.currentTaxon = taxon;
+     // fetch default nomenclature value filtered by organism, regne, group2_inpn
+     const idOrg = this._auth.getCurrentUser().organismId;
+     this.getFilteredDefaultValues(idOrg, taxon.regne, taxon.group2_inpn)
+       .subscribe(data => {
+         this.occurrenceForm.patchValue({
+          id_nomenclature_bio_condition: data[7],
+          id_nomenclature_naturalness : data[8],
+          id_nomenclature_obs_meth: data[14],
+          id_nomenclature_bio_status: data[13],
+          id_nomenclature_exist_proof : data[15],
+          id_nomenclature_determination_method: data[106]
+         });
+
+         // sexe : 9
+       });
+
+
    }
 
   formatObservers(observers) {

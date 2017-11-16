@@ -23,7 +23,7 @@ export class DatasetsComponent implements OnInit {
       const appRights = currentUser.getRight(this.appId);
       let idOrganism = null;
       if (appRights['R'] < AppConfig.RIGHTS.MY_ORGANISM_DATA) {
-         idOrganism = currentUser.organism.organismId;
+         idOrganism = currentUser.organismId;
       }
       this._dfs.getDatasets(idOrganism)
       .subscribe(res => {

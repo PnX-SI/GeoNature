@@ -9,10 +9,12 @@ import { Location } from '@angular/common';
 
 export class User {
 
-  constructor(public userName: string, public rights: any, public organism: any) {
+  constructor(public userName: string, public userId: number ,public organismName: string, public organismId: number,  public rights: any) {
     this.userName = userName;
+    this.userId = userId;
+    this.organismName = organismName,
+    this.organismId = organismId;
     this.rights = rights;
-    this.organism = organism;
 }
 
   getRight(idApplication) {
@@ -52,7 +54,7 @@ export class AuthService {
     console.log(user);
     user = JSON.parse(user);
     console.log(user);
-    user = new User(user['userName'], user['rights'], user['organism']);
+    user = new User(user.userName, user.userId, user.organismName, user.organismId, user.rights);
     console.log(user);
     return user;
   }
@@ -75,10 +77,9 @@ export class AuthService {
     if (username === 'admin') {
        response = {
         'userName': 'admin',
-        'organism': {
-          'organismName': 'PNE',
-          'organismId': 2
-        },
+        'userId': 5,
+        'organismName': 'PNE',
+        'organismId': 2,
         'rights': {
           '14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
           }
@@ -87,12 +88,11 @@ export class AuthService {
     } else {
        response = {
          'userName': 'contributeur',
-          'organism': {
-            'organismName': 'PNF',
-            'organismId': 1
-          },
-      'rights': {
-         '14' : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
+         'userId': 6,
+         'organismName': 'PNF',
+          'organismId': 1,
+        'rights': {
+          '14' : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
         }
       };
     }

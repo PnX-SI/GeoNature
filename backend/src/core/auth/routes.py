@@ -36,14 +36,16 @@ def loginCas():
                 organismId = infoUser['codeOrganisme']
                 organismName = infoUser['libelleLongOrganisme']
                 userName = infoUser['login']
+                userId = infoUser['id']
                 # met les droit d'admin pour la démo, a changer
                 rights = {'14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 } }
-                currentUser = {'userName': userName,
-                               'organisme': 
-                                        { 'organismName':organismName,
-                                           'organismId': organismId if organismId != None else 0
-                                        },
-                                'rights': rights}
+                currentUser = {
+                    'userName': userName,
+                    'userId': userId,
+                    'organismName': organismName,
+                    'organismId': organismId if organismId != None else 0,
+                    'rights': rights
+                }
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
                 cookieExp = datetime.datetime.utcnow()
                 cookieExp += datetime.timedelta(seconds=current_app.config['COOKIE_EXPIRATION'])
