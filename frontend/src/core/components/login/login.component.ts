@@ -22,10 +22,8 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
        if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
          // if token not here here, redirection to CAS login page
-         if (!this._authService.getToken()) {
           const url_redirection_cas = `${AppConfig.CAS.CAS_LOGIN_URL}?service=${AppConfig.API_ENDPOINT}test_auth/login_cas`;
            document.location.href = url_redirection_cas;
-         }
        }
 
    }

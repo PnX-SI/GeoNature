@@ -115,9 +115,7 @@ export class AuthService {
   logout() {
     this._cookie.delete('token');
     console.log(this.getToken());
-    setTimeout(() => {
-      this.router.navigate(['/login']);
-    }, 1000);
+    this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
