@@ -113,14 +113,8 @@ export class AuthService {
 
   }
   logout() {
-    this.router.navigate(['/login']);
     this._cookie.delete('token');
-    if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
-      this._http.get(AppConfig.CAS.CAS_LOGOUT_URL)
-        .subscribe(data => {
-          console.log(data);
-        });
-    }
+    this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
