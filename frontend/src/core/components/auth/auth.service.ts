@@ -5,6 +5,7 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
 import { Location } from '@angular/common';
+import { AppConfig } from '../../../conf/app.config';
 
 
 export class User {
@@ -115,7 +116,11 @@ export class AuthService {
   logout() {
     this._cookie.delete('token');
     console.log(this.getToken());
-    this.router.navigate(['/login']);
+    if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
+      document.location.href = AppConfig.CAS.CAS_LOGOUT_URL;
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   isAuthenticated(): boolean {
