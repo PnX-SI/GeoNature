@@ -36,7 +36,8 @@ def loginCas():
                 organismId = infoUser['codeOrganisme']
                 organismName = infoUser['libelleLongOrganisme']
                 userName = infoUser['login']
-                rights = {'14' : {'C': 2, 'R': 2, 'U': 2, 'V': 2, 'E': 2, 'D': 2 } }
+                # met les droit d'admin pour la démo, a changer
+                rights = {'14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 } }
                 currentUser = {'userName': userName,
                                'organisme': 
                                         { 'organismName':organismName,
