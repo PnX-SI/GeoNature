@@ -113,20 +113,24 @@ export class AuthService {
     });
 
   }
-  deleteAllCookies() {
-    const cookies = document.cookie.split(';');
+//   deleteAllCookies() {
+//     const cookies = document.cookie.split(';');
 
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf('=');
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    }
+//     for (let i = 0; i < cookies.length; i++) {
+//         const cookie = cookies[i];
+//         const eqPos = cookie.indexOf('=');
+//         const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+//         document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+//     }
+// }
+
+deleteTokenCookie(){
+  document.cookie = 'token=; path=/; expires' + new Date(0).toUTCString();
 }
   logout() {
     this._cookie.delete('token');
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
-      document.location.href = AppConfig.API_ENDPOINT + 'test_auth/logout_cas';
+      this.deleteTokenCookie();
     } else {
       this.router.navigate(['/login']);
     }
