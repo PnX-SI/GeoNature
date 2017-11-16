@@ -65,4 +65,4 @@ def loginCas():
 def logout_cas():
     print(session)
     session.clear()
-    return make_response(redirect(current_app.config['CAS']['URL_LOGOUT']))
+    return make_response(redirect(current_app.config['URL_APPLICATION']))

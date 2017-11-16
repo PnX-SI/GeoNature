@@ -126,7 +126,7 @@ export class AuthService {
   logout() {
     this._cookie.delete('token');
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
-      document.location.href = AppConfig.API_ENDPOINT+'/test_auth/logout_cas';
+      document.location.href = AppConfig.API_ENDPOINT + 'test_auth/logout_cas';
     } else {
       this.router.navigate(['/login']);
     }
