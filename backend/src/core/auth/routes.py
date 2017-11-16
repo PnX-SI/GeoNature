@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, url_for, redirect, current_app
+from flask import Blueprint, request, make_response, url_for, redirect, current_app, session
 import requests
 import datetime
 import xmltodict
@@ -59,3 +59,10 @@ def loginCas():
         else:
             # redirect to inpn            
             return "echec de l'authentification"
+
+
+@routes.route('/logout_cas', methods=['GET'])
+def logout_cas():
+    print(session)
+    session.clear()
+    return make_response(redirect(current_app.config['CAS']['URL_LOGOUT']))
