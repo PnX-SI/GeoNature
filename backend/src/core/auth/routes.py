@@ -59,10 +59,3 @@ def loginCas():
         else:
             # redirect to inpn            
             return "echec de l'authentification"
-
-
-@routes.route('/logout_cas', methods=['GET'])
-def logout_cas():
-    print(session)
-    session.clear()
-    return make_response(redirect(current_app.config['URL_APPLICATION']))
