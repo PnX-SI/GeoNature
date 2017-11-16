@@ -59,12 +59,7 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   initLabels() {
     this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => {
-        console.log((data as any).values);
         this.labels = data.values;
-        // disable the input if undefined
-        if (this.labels === undefined) {
-          this.parentFormControl.disable();
-        }
       });
   }
 

@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
    }
   register(user) {
     this._authService.fakeSigninUser(user.username, user.password);
-
   }
 }
 
