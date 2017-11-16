@@ -125,10 +125,8 @@ export class AuthService {
 }
   logout() {
     this._cookie.delete('token');
-    this.deleteAllCookies();
-    console.log(this.getToken());
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
-      document.location.href = AppConfig.CAS.CAS_LOGOUT_URL;
+      document.location.href = AppConfig.API_ENDPOINT+'/test_auth/logout_cas';
     } else {
       this.router.navigate(['/login']);
     }
