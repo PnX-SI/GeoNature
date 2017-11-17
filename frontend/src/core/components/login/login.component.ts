@@ -3,7 +3,7 @@ import { AppConfig } from '../../../conf/app.config';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 
 

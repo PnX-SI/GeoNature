@@ -44,29 +44,26 @@ export class ContactFormService {
 
     this.getDefaultValues(this.currentUser.organismId)
       .subscribe(res => {
-
         this.defaultValues = res;
         this.defaultValuesLoaded = true;
+        // init the forms with default values
         this.releveForm = this.initObservationForm();
         this.occurrenceForm = this.initOccurrenceForm();
         this.countingForm = this.initCountingArray();
       } );
    }// end constructor
 
-   getDefaultValues(idOrg) {
-     return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures/${idOrg}`)
-   }
 
-   getFilteredDefaultValues(idOrg: number, regne?, group2_inpn?) {
-     const params = new HttpParams();
-     params.append('organism', idOrg.toString());
+   getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {
+     let params = new HttpParams();
+     params = params.set('organism', idOrg.toString());
      if (group2_inpn) {
-      params.append('regne', regne);
+      params = params.append('regne', regne);
      }
      if (regne) {
-      params.append('group2_inpn', group2_inpn);
+      params = params.append('group2_inpn', group2_inpn);
      }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/filtered_default_nomenclatures`, {params: params});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/defaultNomenclatures`, {params: params});
    }
 
    initObservationForm(): FormGroup {
@@ -99,14 +96,16 @@ export class ContactFormService {
         id_nomenclature_obs_meth: [this.defaultValues[14], Validators.required],
         id_nomenclature_obs_technique : [ null, Validators.required],
         id_nomenclature_bio_condition: [this.defaultValues[7], Validators.required],
-        id_nomenclature_bio_status : null,
-        id_nomenclature_naturalness: null,
-        id_nomenclature_exist_proof: null,
-        id_nomenclature_valid_status: null,
-        id_nomenclature_diffusion_level: null,
+        id_nomenclature_bio_status : this.defaultValues[13],
+        id_nomenclature_naturalness: this.defaultValues[8],
+        id_nomenclature_exist_proof: this.defaultValues[15],
+        id_nomenclature_observation_status : this.defaultValues[18],
+        id_nomenclature_valid_status: this.defaultValues[101],
+        id_nomenclature_diffusion_level: this.defaultValues[5],
+        id_nomenclature_blurring: this.defaultValues[4],
         id_validator: null,
         determiner: null,
-        id_nomenclature_determination_method: null,
+        id_nomenclature_determination_method: this.defaultValues[106],
         determination_method_as_text: '',
         cd_nom: [ null, Validators.required],
         nom_cite: null,
@@ -123,10 +122,10 @@ export class ContactFormService {
 
    initCounting(): FormGroup {
       return this._fb.group({
-        id_nomenclature_life_stage: [null, Validators.required],
-        id_nomenclature_sex: [null, Validators.required],
+        id_nomenclature_life_stage: [this.defaultValues[10], Validators.required],
+        id_nomenclature_sex: [this.defaultValues[9], Validators.required],
         id_nomenclature_obj_count: [this.defaultValues[6], Validators.required],
-        id_nomenclature_type_count: null,
+        id_nomenclature_type_count: this.defaultValues[21],
         count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
         count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
       });
@@ -250,8 +249,7 @@ export class ContactFormService {
   onTaxonChanged(taxon) {
      this.currentTaxon = taxon;
      // fetch default nomenclature value filtered by organism, regne, group2_inpn
-
-     this.getFilteredDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
+     this.getDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
        .subscribe(data => {
          this.occurrenceForm.patchValue({
           id_nomenclature_bio_condition: data[7],
@@ -259,7 +257,7 @@ export class ContactFormService {
           id_nomenclature_obs_meth: data[14],
           id_nomenclature_bio_status: data[13],
           id_nomenclature_exist_proof : data[15],
-          id_nomenclature_determination_method: data[106]
+          id_nomenclature_determination_method: data[106],
          });
 
          // sexe : 9
