@@ -38,19 +38,8 @@ export class ContactFormService {
     this._router.events.subscribe(value => {
       this.isEdintingOccurrence = false;
     });
-    console.log("from here contact form");
-    
     this.currentUser = this._auth.getCurrentUser();
 
-    this.getDefaultValues(this.currentUser.organismId)
-      .subscribe(res => {
-        this.defaultValues = res;
-        this.defaultValuesLoaded = true;
-        // init the forms with default values
-        this.releveForm = this.initObservationForm();
-        this.occurrenceForm = this.initOccurrenceForm();
-        this.countingForm = this.initCountingArray();
-      } );
    }// end constructor
 
 
@@ -72,7 +61,7 @@ export class ContactFormService {
       properties: this._fb.group({
         id_releve_contact : null,
         id_dataset: [null, Validators.required],
-        id_digitiser : null,
+        id_digitiser : this.currentUser.userId,
         date_min: [null, Validators.required],
         date_max: [null, Validators.required],
         hour_min: [null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$')],
@@ -90,11 +79,11 @@ export class ContactFormService {
     });
    }
 
-   initOccurrenceForm(): FormGroup {
+   initOccurrenceFormDefaultValues(): FormGroup {
       return this._fb.group({
         id_releve_contact :  null,
         id_nomenclature_obs_meth: [this.defaultValues[14], Validators.required],
-        id_nomenclature_obs_technique : [ null, Validators.required],
+        id_nomenclature_obs_technique : [this.defaultValues[100], Validators.required],
         id_nomenclature_bio_condition: [this.defaultValues[7], Validators.required],
         id_nomenclature_bio_status : this.defaultValues[13],
         id_nomenclature_naturalness: this.defaultValues[8],
@@ -118,9 +107,36 @@ export class ContactFormService {
         cor_counting_contact: ''
       });
      }
+     initOccurenceForm(): FormGroup {
+      return this._fb.group({
+        id_releve_contact :  null,
+        id_nomenclature_obs_meth: [null, Validators.required],
+        id_nomenclature_obs_technique : [ null, Validators.required],
+        id_nomenclature_bio_condition: [null, Validators.required],
+        id_nomenclature_bio_status : null,
+        id_nomenclature_naturalness: null,
+        id_nomenclature_exist_proof: null,
+        id_nomenclature_observation_status : null,
+        id_nomenclature_valid_status: null,
+        id_nomenclature_diffusion_level: null,
+        id_nomenclature_blurring: null,
+        id_validator: null,
+        determiner: null,
+        id_nomenclature_determination_method: null,
+        determination_method_as_text: '',
+        cd_nom: [null, Validators.required],
+        nom_cite: null,
+        meta_v_taxref: 'Taxref V9.0',
+        sample_number_proof: null,
+        digital_proof: null,
+        non_digital_proof: null,
+        deleted: false,
+        comment: null,
+        cor_counting_contact: ''
+      });
+     }
 
-
-   initCounting(): FormGroup {
+   initCountingDefaultValues(): FormGroup {
       return this._fb.group({
         id_nomenclature_life_stage: [this.defaultValues[10], Validators.required],
         id_nomenclature_sex: [this.defaultValues[9], Validators.required],
@@ -131,10 +147,37 @@ export class ContactFormService {
       });
     }
 
-  initCountingArray(data?: Array<any>): FormArray {
-    // init the counting form with the data, or emty
-    const arrayForm = this._fb.array([]);
+  initCounting(): FormGroup {
+    return this._fb.group({
+      id_nomenclature_life_stage: [null, Validators.required],
+      id_nomenclature_sex: [null, Validators.required],
+      id_nomenclature_obj_count: [null, Validators.required],
+      id_nomenclature_type_count: null,
+      count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+      count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+    });
+  }
 
+
+  initCountingArrayDefaultValues(data?: Array<any>): FormArray {
+    // init the counting form with the data, or empty
+    const arrayForm = this._fb.array([]);
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
+        const counting = this.initCountingDefaultValues();
+        counting.patchValue(data[i]);
+        arrayForm.push(counting);
+      }
+    } else {
+      const counting = this.initCountingDefaultValues();
+      arrayForm.push(counting);
+    }
+    return arrayForm;
+  }
+
+  initCountingArray(data): FormArray {
+    // init the counting form with the data, or empty
+    const arrayForm = this._fb.array([]);
     if (data) {
       for (let i = 0; i < data.length; i++) {
         const counting = this.initCounting();
@@ -142,11 +185,23 @@ export class ContactFormService {
         arrayForm.push(counting);
       }
     } else {
-      arrayForm.push(this.initCounting());
+      const counting = this.initCounting();
+      arrayForm.push(counting);
     }
     return arrayForm;
   }
 
+  initFormsWithDefaultValues() {
+    this.getDefaultValues(this.currentUser.organismId)
+    .subscribe(res => {
+      this.defaultValues = res;
+      this.defaultValuesLoaded = true;
+      // init the forms with default values
+      this.releveForm = this.initObservationForm();
+      this.occurrenceForm = this.initOccurrenceFormDefaultValues();
+      this.countingForm = this.initCountingArrayDefaultValues();
+    } );
+  }
 
 
   addCounting() {
@@ -189,7 +244,7 @@ export class ContactFormService {
     // reset current taxon
     this.currentTaxon = {};
     // reset occurrence form
-    this.occurrenceForm = this.initOccurrenceForm();
+    this.occurrenceForm = this.initOccurrenceFormDefaultValues();
     // path the value I want to persist
     this.occurrenceForm.patchValue({
       'id_nomenclature_obs_technique': this.lastSubmitedOccurrence.id_nomenclature_obs_technique,
@@ -197,7 +252,7 @@ export class ContactFormService {
       'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.id_nomenclature_bio_condition
     });
     // reset the counting
-    this.countingForm = this.initCountingArray();
+    this.countingForm = this.initCountingArrayDefaultValues();
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
   }
