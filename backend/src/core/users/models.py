@@ -37,3 +37,4 @@ class TRoles (serializableModel):
     id_role = db.Column(db.Integer, primary_key=True)
     nom_role = db.Column(db.Unicode)
     prenom_role = db.Column(db.Unicode)
+    id_organisme = db.Column(db.Integer)
