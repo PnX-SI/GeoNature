@@ -38,7 +38,8 @@ export class ContactFormService {
     this._router.events.subscribe(value => {
       this.isEdintingOccurrence = false;
     });
-
+    console.log("from here contact form");
+    
     this.currentUser = this._auth.getCurrentUser();
 
     this.getDefaultValues(this.currentUser.organismId)
@@ -249,8 +250,8 @@ export class ContactFormService {
   onTaxonChanged(taxon) {
      this.currentTaxon = taxon;
      // fetch default nomenclature value filtered by organism, regne, group2_inpn
-     const idOrg = this._auth.getCurrentUser().organismId;
-     this.getFilteredDefaultValues(idOrg, taxon.regne, taxon.group2_inpn)
+
+     this.getFilteredDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
        .subscribe(data => {
          this.occurrenceForm.patchValue({
           id_nomenclature_bio_condition: data[7],
