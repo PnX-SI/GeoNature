@@ -453,51 +453,31 @@ def deleteOneOccurenceCounting(id_count):
 
     return {'message': 'delete with success'}
 
-@routes.route('/default_nomenclatures/<int:idOrg>', methods=['GET'])
-@json_resp
-def getDefaultNomenclatures(idOrg):
-    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg) AS id_nomenclature
-              FROM pr_contact.defaults_nomenclatures_value"""
-    result = db.engine.execute(text(query), idOrg=idOrg)
-    return {r.id_type: r.id_nomenclature for r in result}
 
-@routes.route('/filtered_default_nomenclatures', methods=['GET'])
+
+@routes.route('/defaultNomenclatures', methods=['GET'])
 @json_resp
-def getFilteredDefaultNomenclatures():
+def getDefaultNomenclatures():
     params = request.args
     group2_inpn = '0'
     regne = '0'
-    organism = '0'
+    organism = 0
     if 'group2_inpn' in params:
         group2_inpn = params['group2_inpn']
     if 'regne' in params:
         regne = params['regne']
     if 'organism' in params:
         organism = params['organism']
-    query = """
-    SELECT pr_contact.get_default_nomenclature_value(4, :idOrg, :regne, :group2_inpn) AS "4",
-    pr_contact.get_default_nomenclature_value(5, :idOrg, :regne, :group2_inpn) AS "5",
-    pr_contact.get_default_nomenclature_value(6, :idOrg, :regne, :group2_inpn) AS "6",
-    pr_contact.get_default_nomenclature_value(7, :idOrg, :regne, :group2_inpn) AS "7",
-    pr_contact.get_default_nomenclature_value(8, :idOrg, :regne, :group2_inpn) AS "8",
-    pr_contact.get_default_nomenclature_value(9, :idOrg, :regne, :group2_inpn) AS "9",
-    pr_contact.get_default_nomenclature_value(10, :idOrg, :regne, :group2_inpn) AS "10",
-    pr_contact.get_default_nomenclature_value(13, :idOrg, :regne, :group2_inpn) AS "13",
-    pr_contact.get_default_nomenclature_value(14, :idOrg, :regne, :group2_inpn) AS "14",
-    pr_contact.get_default_nomenclature_value(15, :idOrg, :regne, :group2_inpn) AS "15",
-    pr_contact.get_default_nomenclature_value(18, :idOrg, :regne, :group2_inpn) AS "18",
-    pr_contact.get_default_nomenclature_value(21, :idOrg, :regne, :group2_inpn) AS "21",
-    pr_contact.get_default_nomenclature_value(101, :idOrg, :regne, :group2_inpn) AS "101",
-    pr_contact.get_default_nomenclature_value(106, :idOrg, :regne, :group2_inpn) AS "106"
-    """
-    result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn).first()
-    return dict(result)
+    types = request.args.getlist('id_type')
+    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg, :regne, :group2_inpn) AS id_nomenclature
+    FROM pr_contact.defaults_nomenclatures_value """
+    if len(types) > 0:
+        query += " WHERE id_type IN :types"
+        result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn, types=tuple(types))
+    else:
+        result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn)
+    return {r.id_type: r.id_nomenclature for r in result}
 
-
-
-@routes.route('/test', methods=['GET'])
-def test():
-    return 'lalalalala'
     
 @routes.route('/exportProvisoire', methods=['GET'])
 @csv_resp

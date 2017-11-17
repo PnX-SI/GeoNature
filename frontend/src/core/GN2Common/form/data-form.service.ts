@@ -27,7 +27,7 @@ export class DataFormService {
   getDatasets(idOrganism?) {
     let params: HttpParams = new HttpParams();
     if (idOrganism) {
-      params = params.set('organism', idOrganism);
+      params = params.set('organisme', idOrganism);
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}meta/datasets`, {params: params});
   }
