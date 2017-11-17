@@ -78,7 +78,7 @@ export class AuthService {
     if (username === 'admin') {
        response = {
         'userName': 'admin',
-        'userId': 5,
+        'userId': 2,
         'organismName': 'PNE',
         'organismId': 2,
         'rights': {

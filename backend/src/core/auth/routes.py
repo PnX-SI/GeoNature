@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, url_for, redirect, current_app, session
+from flask import Blueprint, request, make_response, url_for, redirect, current_app, jsonify
 import requests
 import datetime
 import xmltodict
@@ -55,7 +55,24 @@ def loginCas():
                 response.set_cookie('currentUser',
                                      str(currentUser),
                                      expires=cookieExp)
+                ## push user organism
+                ## if id_organism = None => set 99 = 'Autres'
+                data = {
+                    'id_organism':organismId if organismId != None else 99,
+                    'nom_organisme': organismName
+                }
+                requests.post(current_app.config['URL_API']+'/users/organism', data=jsonify(data))
+                # push role
+                data = {
+                    'id_role':userId,
+                    'nom_role': infoUser['nom'],
+                    'prenom_role': infoUser['prenom']
+                }
+                requests.post(current_app.config['URL_API']+'/users/role', data=jsonify(data))
             return response
         else:
             # redirect to inpn            
             return "echec de l'authentification"
+
+def insertOrMergeUser(data):
+    requests.post(current_app.config['URL_API']+'/users/role', jsonify(data))
