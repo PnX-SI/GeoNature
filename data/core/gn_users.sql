@@ -92,10 +92,17 @@ CREATE TABLE IF NOT EXISTS cor_data_type_action_tag (
 );
 COMMENT ON TABLE cor_data_type_action_tag IS 'Cette table centrale, permet de gérer les droits d''usage des données en fonction du profil de l''utilisateur. Elle établi une correspondance entre l''affectation de tags génériques du schéma utilisateurs à un role pour une application avec les droits d''usage  (CREATE, READ, UPDATE, VALID, EXPORT, DELETE) et le type des données GeoNature (MY DATA, MY ORGANISM DATA, ALL DATA)';
 
+
+DO
+$$
+BEGIN
 ALTER TABLE utilisateurs.bib_organismes ADD COLUMN id_parent integer;
 ALTER TABLE utilisateurs.t_applications ADD COLUMN id_parent integer;
 ALTER TABLE utilisateurs.t_roles ADD COLUMN pass_sha text;
-
+EXCEPTION WHEN duplicate_column  THEN
+        RAISE NOTICE 'Tentative d''insertion de valeur existante';
+END
+$$;
 ----------------
 --PRIMARY KEYS--
 ----------------
@@ -130,10 +137,15 @@ CREATE TRIGGER tri_meta_dates_change_t_tags
 ----------------
 --FOREIGN KEYS--
 ----------------
+DO
+$$
+BEGIN
 ALTER TABLE ONLY utilisateurs.bib_organismes ADD CONSTRAINT fk_bib_organismes_id_parent FOREIGN KEY (id_parent) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-
 ALTER TABLE ONLY utilisateurs.t_applications ADD CONSTRAINT fk_t_applications_id_parent FOREIGN KEY (id_parent) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
-
+EXCEPTION WHEN duplicate_object  THEN
+        RAISE NOTICE 'Tentative d''insertion de valeur existante';
+END
+$$;
 ALTER TABLE ONLY cor_tags_relations ADD CONSTRAINT fk_cor_tags_relations_id_tag_l FOREIGN KEY (id_tag_l) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 ALTER TABLE ONLY cor_tags_relations ADD CONSTRAINT fk_cor_tags_relations_id_tag_r FOREIGN KEY (id_tag_r) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 
