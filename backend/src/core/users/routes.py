@@ -4,7 +4,6 @@ from __future__ import (unicode_literals, print_function,
 
 from flask import Blueprint, request
 
-
 from .models import VUserslistForallMenu, TRoles, BibOrganismes
 from ...utils.utilssqlalchemy import json_resp
 
@@ -34,10 +33,7 @@ def getRolesByMenuId(idMenu):
 @json_resp
 def insertRole():
     try:
-        print("LAAAAAAAA")
-        print(request.get_json())
         test = request.get_json()
-        print(type(test))
         data = dict(request.get_json())
         user = TRoles(**data)
         if user.id_role:
@@ -63,7 +59,7 @@ def insertOrganism():
     try:
         data = dict(request.get_json())
         organism = BibOrganismes(**data)
-        if organism.id_organism:
+        if organism.id_organisme:
             id_org = db.session.query(BibOrganismes).get(organism.id_organism)
             if id_org:
                 db.session.merge(organism)
