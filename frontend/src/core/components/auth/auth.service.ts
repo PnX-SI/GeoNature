@@ -104,12 +104,18 @@ export class AuthService {
   }
 
   signinUser(username: string, password: string) {
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}/api/auth/login`,
-      {'login': username,
-       'password': password,
-       'id_application': 14
-    }).subscribe(data => {
+    const user = {
+    'login': username,
+    'password': password,
+    'id_application': 14
+    };
+    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
+      .subscribe(data => {
+      console.log(data);
       this.setCurrentUser(data.user, data.expires);
+    },
+    error => {
+      console.log(error);
     });
 
   }
