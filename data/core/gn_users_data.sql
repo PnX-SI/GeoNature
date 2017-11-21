@@ -264,14 +264,3 @@ EXCEPTION WHEN unique_violation  THEN
         RAISE NOTICE 'Tentative d''insertion de valeur existante';
 END
 $$;
-
-
--- DO
--- $$
--- BEGIN
--- INSERT INTO cor_tags_relations (id_tag_l, id_tag_r, relation_type) VALUES
---;
--- EXCEPTION WHEN unique_violation  THEN
---         RAISE NOTICE 'Tentative d''insertion de valeur existante';
--- END
--- $$;
