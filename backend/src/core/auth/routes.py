@@ -50,15 +50,16 @@ def loginCas():
                     "identifiant":userLogin, 
                     "nom_role": infoUser['nom'],
                     "prenom_role": infoUser['prenom'],
-                    "id_organisme": organismId if organismId != None else -1 
+                    "id_organisme": organismId
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
                 # creation de la Response
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
                 cookieExp = datetime.datetime.utcnow()
-                cookieExp += datetime.timedelta(seconds=current_app.config['COOKIE_EXPIRATION'])
+                expiration = current_app.config['COOKIE_EXPIRATION']
+                cookieExp += datetime.timedelta(seconds=expiration)
                 ## generation d'un token
-                s = Serializer(current_app.config['SECRET_KEY'], cookieExp)
+                s = Serializer(current_app.config['SECRET_KEY'], expiration)
                 token = s.dumps(user)
                 response.set_cookie('token',
                                     token,
