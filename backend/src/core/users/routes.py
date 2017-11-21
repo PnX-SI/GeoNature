@@ -34,6 +34,10 @@ def getRolesByMenuId(idMenu):
 @json_resp
 def insertRole():
     try:
+        print("LAAAAAAAA")
+        print(request.get_json())
+        test = request.get_json()
+        print(type(test))
         data = dict(request.get_json())
         user = TRoles(**data)
         if user.id_role:
