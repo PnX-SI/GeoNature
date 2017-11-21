@@ -37,7 +37,7 @@ def loginCas():
                 infoUser = r.json()
                 organismId = infoUser['codeOrganisme'] if infoUser['codeOrganisme'] != None else -1
                 organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] != None else 'Autre'
-                userName = infoUser['login']
+                userLogin = infoUser['login']
                 userId = infoUser['id']
                 ## Reconciliation avec base GeoNature
                 organism = {
@@ -47,6 +47,7 @@ def loginCas():
                 r = requests.post(current_app.config['URL_API']+'/users/organism', json=organism)
                 user = {
                     "id_role":userId,
+                    "identifiant":userLogin 
                     "nom_role": infoUser['nom'],
                     "prenom_role": infoUser['prenom'],
                     "id_organisme": organismId if organismId != None else -1 
@@ -57,7 +58,7 @@ def loginCas():
                 cookieExp = datetime.datetime.utcnow()
                 cookieExp += datetime.timedelta(seconds=current_app.config['COOKIE_EXPIRATION'])
                 ## generation d'un token
-                s = Serializer(current_app.config['SECRET_KEY'], expiration)
+                s = Serializer(current_app.config['SECRET_KEY'], cookieExp)
                 token = s.dumps(user)
                 response.set_cookie('token',
                                     token,
@@ -67,7 +68,7 @@ def loginCas():
                 # met les droit d'admin pour la démo, a changer
                 rights = {'14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 } }
                 currentUser = {
-                    'userName': userName,
+                    'userName': userLogin,
                     'userId': userId,
                     'organismName': organismName,
                     'organismId': organismId,
