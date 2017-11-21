@@ -9,7 +9,7 @@ SET client_min_messages = warning;
 CREATE SCHEMA IF NOT EXISTS gn_users;
 
 
-SET search_path = gn_users, pg_catalog;
+SET search_path = gn_users, utilisateurs, pg_catalog;
 
 
 ----------
@@ -23,7 +23,10 @@ CREATE SEQUENCE t_tags_id_tag_seq
     CACHE 1;
 CREATE TABLE IF NOT EXISTS t_tags (
     id_tag integer NOT NULL,
+    id_tag_type integer NOT NULL,
+    tag_code character varying(25),
     tag_name character varying(255),
+    tag_label character varying(255),
     tag_desc text,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone
@@ -31,6 +34,14 @@ CREATE TABLE IF NOT EXISTS t_tags (
 COMMENT ON TABLE t_tags IS 'Permet de créer des étiquettes ou tags ou labels, qu''il est possible d''attacher à différents objects de la base. Cela peut permettre par exemple de créer des groupes ou des listes d''utilisateurs';
 ALTER SEQUENCE t_tags_id_tag_seq OWNED BY t_tags.id_tag;
 ALTER TABLE ONLY t_tags ALTER COLUMN id_tag SET DEFAULT nextval('t_tags_id_tag_seq'::regclass);
+
+
+CREATE TABLE IF NOT EXISTS bib_tag_types (
+    id_tag_type integer NOT NULL,
+    tag_type_name character varying(100) NOT NULL,
+    tag_type_desc character varying(255) NOT NULL
+);
+COMMENT ON TABLE bib_tag_types IS 'Permet de définir le type du tag';
 
 
 CREATE TABLE IF NOT EXISTS cor_tags_relations (
@@ -53,44 +64,44 @@ CREATE TABLE IF NOT EXISTS cor_organism_tag (
 COMMENT ON TABLE cor_organism_tag IS 'Permet d''attacher des étiquettes à des organismes';
 
 
-CREATE TABLE IF NOT EXISTS cor_applications_tag (
+CREATE TABLE IF NOT EXISTS cor_application_tag (
     id_application integer NOT NULL,
     id_tag integer NOT NULL
 );
 COMMENT ON TABLE cor_organism_tag IS 'Permet d''attacher des étiquettes à des applications';
 
 
-CREATE TABLE IF NOT EXISTS cor_role_tag_application (
-    id_role integer NOT NULL,
-    id_tag integer NOT NULL,
+-- CREATE TABLE IF NOT EXISTS cor_role_tag_application (
+--     id_role integer NOT NULL,
+--     id_tag integer NOT NULL,
+--     id_application integer NOT NULL,
+--     comment text
+-- );
+-- COMMENT ON TABLE cor_organism_tag IS 'Permet d''attacher des étiquettes à un role pour une application';
+
+
+-- CREATE TABLE IF NOT EXISTS bib_gn_data_types (
+--     id_gn_data_type integer NOT NULL,
+--     gn_data_type_name character varying(255),
+--     gn_data_type_desc text
+-- );
+
+
+-- CREATE TABLE IF NOT EXISTS bib_gn_actions (
+--     id_gn_action integer NOT NULL,
+--     gn_action_code character varying(25),
+--     gn_action_name character varying(255),
+--     gn_action_desc text
+-- );
+
+
+CREATE TABLE IF NOT EXISTS cor_app_privileges (
+    id_tag_action integer NOT NULL,
+    id_tag_object integer NOT NULL,
     id_application integer NOT NULL,
-    comment text
+    id_role integer NOT NULL
 );
-COMMENT ON TABLE cor_organism_tag IS 'Permet d''attacher des étiquettes à un role pour une application';
-
-
-CREATE TABLE IF NOT EXISTS bib_gn_data_types (
-    id_gn_data_type integer NOT NULL,
-    gn_data_type_name character varying(255),
-    gn_data_type_desc text
-);
-
-
-CREATE TABLE IF NOT EXISTS bib_gn_actions (
-    id_gn_action integer NOT NULL,
-    gn_action_code character varying(25),
-    gn_action_name character varying(255),
-    gn_action_desc text
-);
-
-
-CREATE TABLE IF NOT EXISTS cor_data_type_action_tag (
-    id_gn_data_type integer NOT NULL,
-    id_gn_action integer NOT NULL,
-    id_tag integer NOT NULL,
-    comment text
-);
-COMMENT ON TABLE cor_data_type_action_tag IS 'Cette table centrale, permet de gérer les droits d''usage des données en fonction du profil de l''utilisateur. Elle établi une correspondance entre l''affectation de tags génériques du schéma utilisateurs à un role pour une application avec les droits d''usage  (CREATE, READ, UPDATE, VALID, EXPORT, DELETE) et le type des données GeoNature (MY DATA, MY ORGANISM DATA, ALL DATA)';
+COMMENT ON TABLE cor_app_privileges IS 'Cette table centrale, permet de gérer les droits d''usage des données en fonction du profil de l''utilisateur. Elle établi une correspondance entre l''affectation de tags génériques du schéma utilisateurs à un role pour une application avec les droits d''usage  (CREATE, READ, UPDATE, VALID, EXPORT, DELETE) et le type des données GeoNature (MY DATA, MY ORGANISM DATA, ALL DATA)';
 
 
 DO
@@ -108,21 +119,23 @@ $$;
 ----------------
 ALTER TABLE ONLY t_tags ADD CONSTRAINT pk_t_tags PRIMARY KEY (id_tag);
 
+ALTER TABLE ONLY bib_tag_types ADD CONSTRAINT pk_bib_tag_types PRIMARY KEY (id_tag_type);
+
 ALTER TABLE ONLY cor_tags_relations ADD CONSTRAINT pk_cor_tags_relations PRIMARY KEY (id_tag_l, id_tag_r);
 
 ALTER TABLE ONLY cor_organism_tag ADD CONSTRAINT pk_cor_organism_tag PRIMARY KEY (id_organism, id_tag);
 
 ALTER TABLE ONLY cor_role_tag ADD CONSTRAINT pk_cor_role_tag PRIMARY KEY (id_role, id_tag);
 
-ALTER TABLE ONLY cor_applications_tag ADD CONSTRAINT pk_cor_applications_tag PRIMARY KEY (id_application, id_tag);
+ALTER TABLE ONLY cor_application_tag ADD CONSTRAINT pk_cor_application_tag PRIMARY KEY (id_application, id_tag);
 
-ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT pk_cor_role_tag_application PRIMARY KEY (id_role, id_tag, id_application);
+ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT pk_cor_app_privileges PRIMARY KEY (id_tag_object, id_tag_action, id_application, id_role);
 
-ALTER TABLE ONLY bib_gn_data_types ADD CONSTRAINT pk_bib_gn_data_types PRIMARY KEY (id_gn_data_type);
+-- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT pk_cor_role_tag_application PRIMARY KEY (id_role, id_tag, id_application);
 
-ALTER TABLE ONLY bib_gn_actions ADD CONSTRAINT pk_bib_gn_actions PRIMARY KEY (id_gn_action);
+-- ALTER TABLE ONLY bib_gn_data_types ADD CONSTRAINT pk_bib_gn_data_types PRIMARY KEY (id_gn_data_type);
 
-ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT pk_cor_data_type_action_tag PRIMARY KEY (id_gn_data_type, id_gn_action, id_tag);
+-- ALTER TABLE ONLY bib_gn_actions ADD CONSTRAINT pk_bib_gn_actions PRIMARY KEY (id_gn_action);
 
 
 ------------
@@ -146,6 +159,8 @@ EXCEPTION WHEN duplicate_object  THEN
         RAISE NOTICE 'Tentative d''insertion de valeur existante';
 END
 $$;
+ALTER TABLE ONLY t_tags ADD CONSTRAINT fk_t_tags_id_tag_type FOREIGN KEY (id_tag_type) REFERENCES bib_tag_types(id_tag_type) ON UPDATE CASCADE;
+
 ALTER TABLE ONLY cor_tags_relations ADD CONSTRAINT fk_cor_tags_relations_id_tag_l FOREIGN KEY (id_tag_l) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 ALTER TABLE ONLY cor_tags_relations ADD CONSTRAINT fk_cor_tags_relations_id_tag_r FOREIGN KEY (id_tag_r) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 
@@ -155,16 +170,17 @@ ALTER TABLE ONLY cor_organism_tag ADD CONSTRAINT fk_cor_organism_tag_id_tag FORE
 ALTER TABLE ONLY cor_role_tag ADD CONSTRAINT fk_cor_role_tag_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 ALTER TABLE ONLY cor_role_tag ADD CONSTRAINT fk_cor_role_tag_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY cor_applications_tag ADD CONSTRAINT fk_cor_applications_tag_t_applications_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
-ALTER TABLE ONLY cor_applications_tag ADD CONSTRAINT fk_cor_applications_tag_t_tags_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_application_tag ADD CONSTRAINT fk_cor_application_tag_t_applications_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_application_tag ADD CONSTRAINT fk_cor_application_tag_t_tags_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
-ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
+-- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+-- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
+-- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT fk_cor_data_type_action_tag_id_gn_data_types FOREIGN KEY (id_gn_data_type) REFERENCES bib_gn_data_types(id_gn_data_type) ON UPDATE CASCADE;
-ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT fk_cor_data_type_action_tag_id_gn_action FOREIGN KEY (id_gn_action) REFERENCES bib_gn_actions(id_gn_action) ON UPDATE CASCADE;
-ALTER TABLE ONLY cor_data_type_action_tag ADD CONSTRAINT fk_cor_data_type_action_tag_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_tag_object FOREIGN KEY (id_tag_object) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_tag_action FOREIGN KEY (id_tag_action) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_application FOREIGN KEY (id_application) REFERENCES t_applications(id_application) ON UPDATE CASCADE;
+ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_role FOREIGN KEY (id_role) REFERENCES t_roles(id_role) ON UPDATE CASCADE;
 
 
 ---------
@@ -245,16 +261,16 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.pass_sha,
                     u.email,
                     u.id_organisme,
-                    c_1.id_tag,
-                    a_1.id_application,
-                    c_1.comment
+                    c_1.id_tag_action,
+                    c_1.id_tag_object,
+                    a_1.id_application
                 FROM utilisateurs.t_roles u
-                     JOIN gn_users.cor_role_tag_application c_1 ON c_1.id_role = u.id_role
+                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = u.id_role
                      JOIN ( SELECT a.id_application, a.id_parent
                             FROM utilisateurs.t_applications a
                             WHERE a.id_parent IS NOT NULL
                         ) a_1 ON a_1.id_parent = c_1.id_application
-                WHERE NOT (u.id_role IN (SELECT DISTINCT id_role_groupe FROM utilisateurs.cor_roles))
+                WHERE u.groupe = false
                 UNION
                 SELECT u.id_role,
                     u.identifiant,
@@ -265,12 +281,12 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.pass_sha,
                     u.email,
                     u.id_organisme,
-                    c_1.id_tag,
-                    c_1.id_application,
-                    c_1.comment
+                    c_1.id_tag_action,
+                    c_1.id_tag_object,
+                    c_1.id_application
                 FROM utilisateurs.t_roles u
-                     JOIN gn_users.cor_role_tag_application c_1 ON c_1.id_role = u.id_role
-                WHERE NOT (u.id_role IN (SELECT DISTINCT id_role_groupe FROM utilisateurs.cor_roles))
+                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = u.id_role
+                WHERE u.groupe = false
                 ), a2 AS (
                 SELECT u.id_role,
                     u.identifiant,
@@ -281,12 +297,12 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.pass_sha,
                     u.email,
                     u.id_organisme,
-                    c_1.id_tag,
-                    a_1.id_application,
-                    c_1.comment
+                    c_1.id_tag_action,
+                    c_1.id_tag_object,
+                    a_1.id_application
                 FROM utilisateurs.t_roles u
                      JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
-                     JOIN gn_users.cor_role_tag_application c_1 ON c_1.id_role = g.id_role_groupe
+                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = g.id_role_groupe
                      JOIN ( SELECT a.id_application, a.id_parent
                             FROM utilisateurs.t_applications a
                             WHERE a.id_parent IS NOT NULL
@@ -302,12 +318,12 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.pass_sha,
                     u.email,
                     u.id_organisme,
-                    c_1.id_tag,
-                    c_1.id_application,
-                    c_1.comment
+                    c_1.id_tag_action,
+                    c_1.id_tag_object,
+                    c_1.id_application
                    FROM utilisateurs.t_roles u
                      JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
-                     JOIN gn_users.cor_role_tag_application c_1 ON c_1.id_role = g.id_role_groupe
+                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = g.id_role_groupe
                   WHERE (g.id_role_groupe IN ( SELECT DISTINCT id_role_groupe FROM utilisateurs.cor_roles))
                 )
          SELECT a.id_role,
@@ -319,9 +335,9 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
             a.pass_sha,
             a.email,
             a.id_organisme,
-            a.id_tag,
-            a.id_application,
-            a.comment
+            a.id_tag_action,
+            a.id_tag_object,
+            a.id_application
            FROM ( SELECT a1.id_role,
                     a1.identifiant,
                     a1.nom_role,
@@ -331,9 +347,9 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     a1.pass_sha,
                     a1.email,
                     a1.id_organisme,
-                    a1.id_tag,
-                    a1.id_application,
-                    a1.comment
+                    a1.id_tag_action,
+                    a1.id_tag_object,
+                    a1.id_application
                    FROM a1
                 UNION
                  SELECT a2.id_role,
@@ -345,9 +361,9 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     a2.pass_sha,
                     a2.email,
                     a2.id_organisme,
-                    a2.id_tag,
-                    a2.id_application,
-                    a2.comment
+                    a2.id_tag_action,
+                    a2.id_tag_object,
+                    a2.id_application
                    FROM a2) a
         )
  SELECT v.id_role,
@@ -360,31 +376,30 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
     v.email,
     v.id_organisme,
     v.id_application,
-    c.id_gn_action,
-    bga.gn_action_code,
-    max(c.id_gn_data_type) AS max_gn_data_type,
-    c.comment
+    v.id_tag_action,
+    v.id_tag_object,
+    t1.tag_code AS tag_action_code,
+    t2.tag_code AS tag_object_code
    FROM all_users_tags v
-     JOIN gn_users.cor_data_type_action_tag c ON c.id_tag = v.id_tag
-     JOIN gn_users.bib_gn_actions bga ON bga.id_gn_action = c.id_gn_action
-  GROUP BY v.id_role, v.id_application, v.identifiant, v.nom_role, v.prenom_role, v.desc_role, v.pass, v.pass_sha, v.email, v.id_organisme, c.id_gn_action, bga.gn_action_code, c.comment;
+     JOIN gn_users.t_tags t1 ON t1.id_tag = v.id_tag_action
+     JOIN gn_users.t_tags t2 ON t2.id_tag = v.id_tag_object;
 
 
-
--------------
---FUNCTIONS--
--------------
-CREATE OR REPLACE FUNCTION can_user_do_in_module(
+-- -------------
+-- --FUNCTIONS--
+-- -------------
+CREATE OR REPLACE FUNCTION gn_users.can_user_do_in_module(
     myuser integer,
+    mymodule integer,
     myaction integer,
-    mymodule integer)
+    mydataextend integer)
   RETURNS boolean AS
 $BODY$
--- the function say if the given user can do the requested action in the requested module
--- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_actionid,requested_moduleid);
--- SAMPLE :SELECT gn_users.can_user_do_in_module(2,5,14);
+-- the function say if the given user can do the requested action in the requested module on the resquested data
+-- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_tadactionid,requested_moduleid);
+-- SAMPLE :SELECT gn_users.can_user_do_in_module(2,15,14,22);
   BEGIN
-    IF myaction IN (SELECT id_gn_action FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule) THEN
+    IF myaction IN (SELECT id_tag_action FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
 	    RETURN true;
     END IF;
     RETURN false;
@@ -393,7 +408,8 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
- CREATE OR REPLACE FUNCTION user_max_accessible_data_level_in_module(
+
+CREATE OR REPLACE FUNCTION gn_users.user_max_accessible_data_level_in_module(
     myuser integer,
     myaction integer,
     mymodule integer)
@@ -403,9 +419,9 @@ DECLARE
 	themaxleveldatatype integer;
 -- the function return the max accessible extend of data the given user can access in the requested module
 -- USAGE : SELECT gn_users.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
--- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,2,14);
+-- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,14,14);
   BEGIN
-	SELECT max(max_gn_data_type) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_gn_action = myaction;
+	SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_action = myaction;
 	RETURN themaxleveldatatype;
   END;
 $BODY$
@@ -413,11 +429,11 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION find_all_modules_childs(myidapplication integer)
+CREATE OR REPLACE FUNCTION gn_users.find_all_modules_childs(myidapplication integer)
   RETURNS SETOF integer AS
 $BODY$
  --Param : id_application d'un module ou d'une application quelque soit son rang
- --Retourne le id_application de tous les modules enfants sous forme d'un jeu de données utilisable comme une table
+ --Retourne le id_application de tous les modules enfants + le module lui-même sous forme d'un jeu de données utilisable comme une table
  --Usage SELECT utilisateurs.find_all_modules_childs(14);
  --ou SELECT * FROM utilisateurs.t_applications WHERE id_application IN(SELECT * FROM gn_users.find_all_modules_childs(14))
   DECLARE
@@ -426,13 +442,13 @@ $BODY$
   BEGIN
     SELECT INTO c count(*) FROM utilisateurs.t_applications WHERE id_parent = myidapplication;
     IF c > 0 THEN
-        FOR inf IN
-      WITH RECURSIVE modules AS (
-      SELECT a1.id_application FROM utilisateurs.t_applications a1 WHERE a1.id_parent = myidapplication
-      UNION ALL
-      SELECT a2.id_application FROM modules m JOIN utilisateurs.t_applications a2 ON a2.id_parent = m.id_application
-      )
-      SELECT id_application FROM modules
+      FOR inf IN
+          WITH RECURSIVE modules AS (
+          SELECT a1.id_application FROM utilisateurs.t_applications a1 WHERE a1.id_application = myidapplication
+          UNION ALL
+          SELECT a2.id_application FROM modules m JOIN utilisateurs.t_applications a2 ON a2.id_parent = m.id_application
+	  )
+          SELECT id_application FROM modules
   LOOP
       RETURN NEXT inf.id_application;
   END LOOP;
