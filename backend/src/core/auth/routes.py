@@ -3,6 +3,7 @@ import requests
 import datetime
 import xmltodict
 from xml.etree import ElementTree as ET
+import json
 
 from ...utils.utilssqlalchemy import json_resp
 
@@ -33,8 +34,8 @@ def loginCas():
             r  = requests.get(WSUserUrl, auth=(configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD']))
             if r.status_code == 200:
                 infoUser = r.json()
-                organismId = infoUser['codeOrganisme']
-                organismName = infoUser['libelleLongOrganisme']
+                organismId = infoUser['codeOrganisme'] if infoUser['codeOrganisme'] != None else -1
+                organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] != None else 'Autre'
                 userName = infoUser['login']
                 userId = infoUser['id']
                 # met les droit d'admin pour la démo, a changer
@@ -43,7 +44,7 @@ def loginCas():
                     'userName': userName,
                     'userId': userId,
                     'organismName': organismName,
-                    'organismId': organismId if organismId != None else 0,
+                    'organismId': organismId,
                     'rights': rights
                 }
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
@@ -56,23 +57,23 @@ def loginCas():
                                      str(currentUser),
                                      expires=cookieExp)
                 ## push user organism
-                ## if id_organism = None => set 99 = 'Autres'
+                ## if id_organism = None => set 0 = 'Autres'
                 data = {
-                    'id_organism':organismId if organismId != None else 99,
-                    'nom_organisme': organismName
+                    "id_organisme":organismId,
+                    "nom_organisme": organismName
                 }
-                requests.post(current_app.config['URL_API']+'/users/organism', data=jsonify(data))
+                r = requests.post(current_app.config['URL_API']+'/users/organism', json=data)
                 # push role
                 data = {
-                    'id_role':userId,
-                    'nom_role': infoUser['nom'],
-                    'prenom_role': infoUser['prenom']
+                    "id_role":userId,
+                    "nom_role": infoUser['nom'],
+                    "prenom_role": infoUser['prenom'],
+                    "id_organisme": organismId if organismId != None else -1 
                 }
-                requests.post(current_app.config['URL_API']+'/users/role', data=jsonify(data))
+                r = requests.post(current_app.config['URL_API']+'/users/role', json=data)
             return response
         else:
             # redirect to inpn            
             return "echec de l'authentification"
 
-def insertOrMergeUser(data):
-    requests.post(current_app.config['URL_API']+'/users/role', jsonify(data))
+
