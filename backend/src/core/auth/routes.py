@@ -47,7 +47,7 @@ def loginCas():
                 r = requests.post(current_app.config['URL_API']+'/users/organism', json=organism)
                 user = {
                     "id_role":userId,
-                    "identifiant":userLogin 
+                    "identifiant":userLogin, 
                     "nom_role": infoUser['nom'],
                     "prenom_role": infoUser['prenom'],
                     "id_organisme": organismId if organismId != None else -1 
