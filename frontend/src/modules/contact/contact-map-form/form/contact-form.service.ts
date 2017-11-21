@@ -16,6 +16,7 @@ export class ContactFormService {
   public indexOccurrence: number = 0;
   public taxonsList = [];
   public showOccurrence: boolean;
+  public showCounting: boolean;
   public editionMode: boolean;
   public isEdintingOccurrence: boolean;
   public defaultValues: any;
@@ -33,6 +34,7 @@ export class ContactFormService {
     this.indexCounting = 0;
     this.nbCounting = [''];
     this.showOccurrence = false;
+    this.showCounting = false;
     this.isEdintingOccurrence = false;
 
     this._router.events.subscribe(value => {
@@ -83,7 +85,6 @@ export class ContactFormService {
       return this._fb.group({
         id_releve_contact :  null,
         id_nomenclature_obs_meth: [this.defaultValues[14], Validators.required],
-        id_nomenclature_obs_technique : [this.defaultValues[100], Validators.required],
         id_nomenclature_bio_condition: [this.defaultValues[7], Validators.required],
         id_nomenclature_bio_status : this.defaultValues[13],
         id_nomenclature_naturalness: this.defaultValues[8],
@@ -111,7 +112,6 @@ export class ContactFormService {
       return this._fb.group({
         id_releve_contact :  null,
         id_nomenclature_obs_meth: [null, Validators.required],
-        id_nomenclature_obs_technique : [ null, Validators.required],
         id_nomenclature_bio_condition: [null, Validators.required],
         id_nomenclature_bio_status : null,
         id_nomenclature_naturalness: null,
@@ -142,8 +142,8 @@ export class ContactFormService {
         id_nomenclature_sex: [this.defaultValues[9], Validators.required],
         id_nomenclature_obj_count: [this.defaultValues[6], Validators.required],
         id_nomenclature_type_count: this.defaultValues[21],
-        count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
-        count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+        count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+        count_max : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
       });
     }
 
@@ -207,7 +207,7 @@ export class ContactFormService {
   addCounting() {
     this.indexCounting += 1;
     this.nbCounting.push('');
-    const countingCtrl = this.initCounting();
+    const countingCtrl = this.initCountingDefaultValues();
     this.countingForm.push(countingCtrl);
     }
 
@@ -220,7 +220,6 @@ export class ContactFormService {
 
   addOccurrence(index) {
     // save the last Occurrence
-    console.log(this.occurrenceForm.value);
     
     this.lastSubmitedOccurrence = this.occurrenceForm.value;
     // push the counting
@@ -247,7 +246,6 @@ export class ContactFormService {
     this.occurrenceForm = this.initOccurrenceFormDefaultValues();
     // path the value I want to persist
     this.occurrenceForm.patchValue({
-      'id_nomenclature_obs_technique': this.lastSubmitedOccurrence.id_nomenclature_obs_technique,
       'id_nomenclature_obs_meth': this.lastSubmitedOccurrence.id_nomenclature_obs_meth,
       'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.id_nomenclature_bio_condition
     });
@@ -255,6 +253,7 @@ export class ContactFormService {
     this.countingForm = this.initCountingArrayDefaultValues();
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
+
   }
 
   editOccurence(index) {
@@ -293,6 +292,10 @@ export class ContactFormService {
 
   toggleOccurrence() {
     this.showOccurrence = !this.showOccurrence;
+  }
+
+  toggleCounting() {
+    this.showCounting = !this.showCounting;
   }
 
   removeOneOccurrence(index) {

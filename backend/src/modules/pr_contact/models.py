@@ -95,7 +95,6 @@ class TOccurrencesContact(serializableModel):
         db.Integer,
         ForeignKey('pr_contact.t_releves_contact.id_releve_contact')
     )
-    id_nomenclature_obs_technique = db.Column(db.Integer)
     id_nomenclature_obs_meth = db.Column(db.Integer)
     id_nomenclature_bio_condition = db.Column(db.Integer)
     id_nomenclature_bio_status = db.Column(db.Integer)
