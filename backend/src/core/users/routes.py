@@ -37,8 +37,8 @@ def insertRole():
         data = dict(request.get_json())
         user = TRoles(**data)
         if user.id_role:
-            id_role = db.session.query(TRoles).get(user.id_role)
-            if id_role:
+            exist_user = db.session.query(TRoles).get(user.id_role)
+            if exist_user:
                 db.session.merge(user)
             else:
                 db.session.add(user)
@@ -60,8 +60,8 @@ def insertOrganism():
         data = dict(request.get_json())
         organism = BibOrganismes(**data)
         if organism.id_organisme:
-            id_org = db.session.query(BibOrganismes).get(organism.id_organism)
-            if id_org:
+            exist_org = db.session.query(BibOrganismes).get(organism.id_organisme)
+            if exist_org:
                 db.session.merge(organism)
             else:
                 db.session.add(organism)
