@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
-from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
+from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel, RestrictedTable
 
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -38,7 +38,7 @@ corRoleRelevesContact = db.Table(
 )
 
 
-class TRelevesContact(serializableGeoModel):
+class TRelevesContact(serializableGeoModel, RestrictedTable):
     __tablename__ = 't_releves_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer, primary_key=True)
@@ -95,7 +95,6 @@ class TOccurrencesContact(serializableModel):
         db.Integer,
         ForeignKey('pr_contact.t_releves_contact.id_releve_contact')
     )
-    id_nomenclature_obs_technique = db.Column(db.Integer)
     id_nomenclature_obs_meth = db.Column(db.Integer)
     id_nomenclature_bio_condition = db.Column(db.Integer)
     id_nomenclature_bio_status = db.Column(db.Integer)
@@ -184,7 +183,7 @@ class VReleveContact(serializableGeoModel):
         )
 
 
-class VReleveList(serializableGeoModel):
+class VReleveList(serializableGeoModel, RestrictedTable):
     __tablename__ = 'v_releve_list'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer, primary_key=True)

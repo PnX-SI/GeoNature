@@ -14,15 +14,6 @@
     </div>
     <div class="row row-0">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-          <pnx-nomenclature 
-          [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_technique"
-          placeholder="{{ 'Taxon.ObsTechnique' | translate }}" 
-          [idTypeNomenclature]="100" 
-          [regne]="fs.currentTaxon.regne" 
-          [group2Inpn]="fs.currentTaxon.group2_inpn">
-        </pnx-nomenclature>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature 
           placeholder="{{ 'Taxon.ObsMethod' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
@@ -40,11 +31,15 @@
           [group2Inpn]="fs.currentTaxon.group2_inpn" > 
         </pnx-nomenclature>
       </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm"> 
+        <button id="advanced-button" type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#collapseAvance">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+            {{ 'Taxon.Advanced' | translate }}
+        </button>
+      </div>
+
     </div>
-    <button id="advanced-button" type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#collapseAvance">
-        <i class="fa fa-cog" aria-hidden="true"></i>
-        {{ 'Taxon.Advanced' | translate }}
-    </button>
+
   
     <div class="collapse" id="collapseAvance">
       <div class="row row-0">

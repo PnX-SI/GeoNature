@@ -22,6 +22,7 @@ from geojson import Feature
 
 from geoalchemy2 import Geometry
 
+from pypnusershub.db.models import User
 from datetime import date, datetime
 
 db = SQLAlchemy()
@@ -168,6 +169,21 @@ class serializableGeoModel(serializableModel):
                 properties=self.as_dict(recursif, columns)
             )
         return feature
+
+class RestrictedTable(db.Model):
+    __abstract__ = True
+    def can_update_edit_validate(self, data_type, id_role):
+        if data_type == 3:
+            return True
+        user = db.session.query(User).get(id_role)
+        if data_type == 1:
+            observers = [d.id_role for d in data.observers]
+            return id_role == self.id_digitiser or id_role in observers
+        if data_type == 2:
+            q = db.session.query(CorDatasetsActor,CorDatasetsActor.id_dataset
+            ).distinct(CorDatasetsActor.id_dataset).filter(CorDatasetsActor.id_actor == user.id_organisme)
+            allowed_datasets = [d.id_actor for d in q.all()]
+            return self.id_dataset in allowed_datasets
 
 
 def json_resp(fn):
