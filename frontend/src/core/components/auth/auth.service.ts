@@ -10,10 +10,9 @@ import { Location } from '@angular/common';
 
 export class User {
 
-  constructor(public userName: string, public userId: number ,public organismName: string, public organismId: number,  public rights: any) {
+  constructor(public userName: string, public userId: number, public organismId: number,  public rights: any) {
     this.userName = userName;
     this.userId = userId;
-    this.organismName = organismName,
     this.organismId = organismId;
     this.rights = rights;
 }
@@ -44,18 +43,19 @@ export class AuthService {
       return val.replace(/\\\\/g, '\\');
   }
   setCurrentUser(user, expireDate) {
+    console.log(expireDate);
+    console.log(user);
+    ;
+    
     this._cookie.set('currentUser', JSON.stringify(user), expireDate);
   }
 
   getCurrentUser(): User {
     const userString =  this._cookie.get('currentUser');
     let user = this.decodeObjectCookies(userString);
-    console.log(user);
     user = user.split("'").join('"');
-    console.log(user);
     user = JSON.parse(user);
-    console.log(user);
-    user = new User(user.userName, user.userId, user.organismName, user.organismId, user.rights);
+    user = new User(user.userName, user.userId, user.organismId, user.rights);
     console.log(user);
     return user;
   }
@@ -79,7 +79,6 @@ export class AuthService {
        response = {
         'userName': 'admin',
         'userId': 2,
-        'organismName': 'PNE',
         'organismId': 2,
         'rights': {
           '14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
@@ -90,7 +89,6 @@ export class AuthService {
        response = {
          'userName': 'contributeur',
          'userId': 6,
-         'organismName': 'PNF',
           'organismId': 1,
         'rights': {
           '14' : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
@@ -99,20 +97,52 @@ export class AuthService {
     }
     this.setCurrentUser(response, d2);
     this.setToken('1123345254', d2);
-    this.getCurrentUser();
     this.router.navigate(['']);
+  }
+
+  signinDevelop(username: string, password: string) {
+    const user = {
+      'login': username,
+      'password': password,
+      'id_application': 14,
+      'with_cruved': true
+      };
+      this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
+        .subscribe(data => {
+          const userForFront = {
+            userName : data.user.identifiant,
+            userId : data.user.id_role,
+            organismId:  data.user.id_organisme,
+            rights : data.user.rights
+          };
+
+          this.setCurrentUser(userForFront, new Date(data.expires));
+          this.setToken('eyJhbGciOiJIUzI1NiIsImV4cCI6MTUxMTM1NTUwNywiaWF0IjoxNTExMzUxOTA3fQ.ey\
+          JpZF9kcm9pdF9tYXgiOjYsImlkX3JvbGUiOjEsImlkZW50aWZpYW50IjoiYWRtaW4iLCJpZF9hcHBsaWNhdGlv\
+          biI6MTQsImlkX29yZ2FuaXNtZSI6LTF9.FjBjpHJawDEEhLpwVYSEooJNA6H_AXZublPOmz8er-o', new Date(data.expires));
+          this.router.navigate(['']);
+
+    });
   }
 
   signinUser(username: string, password: string) {
     const user = {
     'login': username,
     'password': password,
-    'id_application': 14
+    'id_application': 14,
+    'with_cruved': true
     };
     this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
       .subscribe(data => {
       console.log(data);
-      this.setCurrentUser(data.user, data.expires);
+      const userForFront = {
+        userName : data.user.identifiant,
+        userId : data.user.id_role,
+        organismId:  data.user.id_organisme,
+        rights : data.user.rights
+      };
+      this.setCurrentUser(userForFront, new Date(data.expires));
+      this.router.navigate(['']);
     },
     error => {
       console.log(error);
@@ -125,7 +155,7 @@ deleteTokenCookie() {
   document.cookie = 'token=; path=/; expires' + new Date(0).toUTCString();
 }
   logout() {
-    this._cookie.delete('token');
+    this._cookie.delete('token', '/');
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
       this.deleteTokenCookie();
       document.location.href = AppConfig.CAS.CAS_LOGOUT_URL;

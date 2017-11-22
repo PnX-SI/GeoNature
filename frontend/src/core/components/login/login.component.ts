@@ -28,8 +28,12 @@ export class LoginComponent implements OnInit {
 
    }
   register(user) {
-    this._authService.fakeSigninUser(user.username, user.password);
-    //this._authService.signinUser(user.username, user.password);
+    //this._authService.fakeSigninUser(user.username, user.password);
+    if (AppConfig.DEVELOPPEMENT_MODE) {
+      this._authService.signinDevelop(user.username, user.password);
+    } else {
+      this._authService.signinUser(user.username, user.password);
+    }
   }
 }
 
