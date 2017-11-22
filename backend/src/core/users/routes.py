@@ -7,6 +7,8 @@ from flask import Blueprint, request
 from .models import VUserslistForallMenu, TRoles, BibOrganismes
 from ...utils.utilssqlalchemy import json_resp
 
+from pypnusershub import routes as fnauth
+
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
@@ -14,8 +16,14 @@ routes = Blueprint('users', __name__)
 
 
 @routes.route('/menu/<int:idMenu>', methods=['GET'])
+@fnauth.check_auth_cruved(
+    4,
+    True
+)
 @json_resp
-def getRolesByMenuId(idMenu):
+def getRolesByMenuId(idMenu, id_role):
+    print("###################################")
+    print(id_role)
 
     q = db.session.query(VUserslistForallMenu)\
             .filter_by(id_menu=idMenu)
