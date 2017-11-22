@@ -31,13 +31,13 @@ export class AuthService {
     constructor(private router: Router,  private toastrService: ToastrService, private _http: HttpClient,
     private _cookie: CookieService, private _router: Router) {
     }
-  
+
   decodeObjectCookies(val) {
       if (val.indexOf('\\') === -1) {
           return val;  // not encoded
       }
       val = val.slice(1, -1).replace(/\\"/g, '"');
-      val = val.replace(/\\(\d{3})/g, function(match, octal) { 
+      val = val.replace(/\\(\d{3})/g, function(match, octal) {
           return String.fromCharCode(parseInt(octal, 8));
       });
       return val.replace(/\\\\/g, '\\');
@@ -46,7 +46,7 @@ export class AuthService {
     console.log(expireDate);
     console.log(user);
     ;
-    
+
     this._cookie.set('currentUser', JSON.stringify(user), expireDate);
   }
 
@@ -124,7 +124,7 @@ export class AuthService {
 
     });
   }
-  
+
 
   signinUser(username: string, password: string) {
     const user = {
@@ -133,7 +133,7 @@ export class AuthService {
     'id_application': 14,
     'with_cruved': true
     };
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
+    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user, { withCredentials: true })
       .subscribe(data => {
       console.log(data);
       const userForFront = {
