@@ -25,6 +25,7 @@
     "Columns": "Colonnes",
     "Cancel": "Annuler",
     "Delete": "Supprimer",
+    "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   
     "Map":{
         "SearchLocation":"Rechercher un lieu",
@@ -104,5 +105,5 @@
         "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
     },
     "IntroMessage":"Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
-    "ErrorMessage":"Dommage, c'est pas bon"
+    "ErrorMessage":"Une erreur s'est produite"
 }
