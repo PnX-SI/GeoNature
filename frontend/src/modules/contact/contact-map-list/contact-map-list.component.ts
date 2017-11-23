@@ -35,7 +35,7 @@ export class ContactMapListComponent implements OnInit {
     const currentUser = this._auth.getCurrentUser();
     const userRight = currentUser.getRight('14');
     if ( userRight['R'] <= AppConfig.RIGHTS.MY_ORGANISM_DATA ) {
-      this._mapListService.urlQuery.set('organism', currentUser.organismId.toString());
+      this._mapListService.urlQuery = this._mapListService.urlQuery.set('organism', currentUser.organismId.toString());
     }
 
   this.displayColumns = [
