@@ -100,31 +100,6 @@ export class AuthService {
     this.router.navigate(['']);
   }
 
-  signinDevelop(username: string, password: string) {
-    const user = {
-      'login': username,
-      'password': password,
-      'id_application': 14,
-      'with_cruved': true
-      };
-      this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
-        .subscribe(data => {
-          const userForFront = {
-            userName : data.user.identifiant,
-            userId : data.user.id_role,
-            organismId:  data.user.id_organisme,
-            rights : data.user.rights
-          };
-
-          this.setCurrentUser(userForFront, new Date(data.expires));
-          this.setToken('eyJhbGciOiJIUzI1NiIsImV4cCI6MTUxMTM1NTUwNywiaWF0IjoxNTExMzUxOTA3fQ.ey\
-          JpZF9kcm9pdF9tYXgiOjYsImlkX3JvbGUiOjEsImlkZW50aWZpYW50IjoiYWRtaW4iLCJpZF9hcHBsaWNhdGlv\
-          biI6MTQsImlkX29yZ2FuaXNtZSI6LTF9.FjBjpHJawDEEhLpwVYSEooJNA6H_AXZublPOmz8er-o', new Date(data.expires));
-          this.router.navigate(['']);
-
-    });
-  }
-
 
   signinUser(username: string, password: string) {
     const user = {
@@ -133,7 +108,7 @@ export class AuthService {
     'id_application': 14,
     'with_cruved': true
     };
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user, { withCredentials: true })
+    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
       .subscribe(data => {
       console.log(data);
       const userForFront = {
