@@ -67,12 +67,13 @@ class ReleveRepository():
                 return -1
         try:
             db.session.commit()
+            return releve
         except:
             db.session.rollback()
             
     def delete(self, id_releve, info_user):
         """Supprime un releve
-        return: objet releve ou forbidden"""
+        return: objet releve ou -1 si forbidden"""
         id_role, data_scope = info_user
         try:
             releve = db.session.query(self.model).get(id_releve)
@@ -105,8 +106,12 @@ class ReleveRepository():
             except:
                 db.session.rollback()
                 raise
-        db.session.commit()
-        return releve
+        try:
+            db.session.commit()
+            return releve
+        except:
+            db.session.rollback()
+            raise
 
     def get_all(self, info_user):
         """Retourne toute les données du modèle, filtrées
