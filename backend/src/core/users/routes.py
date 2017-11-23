@@ -16,18 +16,10 @@ routes = Blueprint('users', __name__)
 
 
 @routes.route('/menu/<int:idMenu>', methods=['GET'])
-@fnauth.check_auth_cruved(
-    4,
-    True
-)
 @json_resp
-def getRolesByMenuId(idMenu, id_role):
-    print("###################################")
-    print(id_role)
-
+def getRolesByMenuId(idMenu):
     q = db.session.query(VUserslistForallMenu)\
             .filter_by(id_menu=idMenu)
-
     try:
         data = q.all()
     except Exception as e:

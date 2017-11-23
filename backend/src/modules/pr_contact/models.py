@@ -37,7 +37,6 @@ corRoleRelevesContact = db.Table(
     )
 )
 
-
 class TRelevesContact(serializableGeoModel, RestrictedTable):
     __tablename__ = 't_releves_contact'
     __table_args__ = {'schema': 'pr_contact'}

@@ -10,7 +10,9 @@ from sqlalchemy.sql import text
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
     VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
+from .repositories import ReleveRepository
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
+
 from ...utils import filemanager 
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
@@ -59,8 +61,8 @@ def getOccurrences():
         return ([n.as_dict() for n in data])
     return {'message': 'not found'}, 404
 
-
 @routes.route('/releve/<int:id_releve>', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
 def getOneReleve(id_releve):
     q = db.session.query(TRelevesContact)
@@ -126,6 +128,7 @@ def getViewReleveContact():
 
 
 @routes.route('/vreleve', methods=['GET'])
+@fnauth.check_auth_cruved('R')
 @json_resp
 def getViewReleveList():
     """
@@ -190,7 +193,7 @@ def getViewReleveList():
                 TOccurrencesContact,
                 TOccurrencesContact.id_releve_contact ==
                 VReleveList.id_releve_contact
-            ).filter(
+            ).join(
                 TOccurrencesContact.cd_nom == int(params.get('cd_nom'))
             )
 
@@ -309,7 +312,7 @@ def insertOrUpdateOneReleve():
         shape = asShape(data['geometry'])
         releve.geom_4326 = from_shape(shape, srid=4326)
 
-        if ('observers_txt' not in data['properties']):
+        if observersList is not None:
             observers = db.session.query(TRoles).\
                 filter(TRoles.id_role.in_(observersList)).all()
             for o in observers:
@@ -487,4 +490,17 @@ def export():
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
     return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+
+@routes.route('/test', methods=['GET'])
+@json_resp
+def test():
+    from flask import g
+    user = db.session.query(TRoles).get(1)
+    g.user = user
+    releveRepository = ReleveRepository(TRelevesContact)
+    print(releveRepository)
+    data = releveRepository.get_all(1)
+    print(data)
+
+    return FeatureCollection([n.get_geofeature() for n in data])
 
