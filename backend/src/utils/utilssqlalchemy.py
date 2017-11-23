@@ -12,7 +12,7 @@ from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import Headers
 
-from sqlalchemy import inspect, create_engine, MetaData
+from sqlalchemy import inspect, create_engine, MetaData, or_
 from sqlalchemy.orm import class_mapper, ColumnProperty, RelationshipProperty
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -177,7 +177,7 @@ class RestrictedTable(db.Model):
             return True
         user = db.session.query(User).get(id_role)
         if data_type == 1:
-            observers = [d.id_role for d in data.observers]
+            observers = [d.id_role for d in self.observers]
             return id_role == self.id_digitiser or id_role in observers
         if data_type == 2:
             q = db.session.query(CorDatasetsActor,CorDatasetsActor.id_dataset
@@ -234,3 +234,5 @@ def csv_resp(fn):
         out = '\r\n'.join(outdata)
         return Response(out, headers=headers)
     return _csv_resp
+
+
