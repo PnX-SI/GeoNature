@@ -2,7 +2,7 @@
 from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
-from flask import Blueprint, request
+from flask import Blueprint, request, json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_
 from sqlalchemy.sql import text
@@ -64,17 +64,15 @@ def getOccurrences():
 @routes.route('/releve/<int:id_releve>', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
-def getOneReleve(id_releve):
-    q = db.session.query(TRelevesContact)
+def getOneReleve(id_releve, info_role):
+    releveRepository = ReleveRepository(TRelevesContact)
+    data = releveRepository.get_one(id_releve, info_role)
 
-    try:
-        data = q.get(id_releve)
-    except Exception as e:
-        db.session.rollback()
-        raise
-    if data:
-        return data.get_geofeature()
-    return {'message': 'not found'}, 404
+    if data == -1:
+        return {'message': 'forbidden'}, 403
+    if not data:
+        return {'message': 'not found'}, 404
+    return data.get_geofeature()
 
 
 @routes.route('/vrelevecontact', methods=['GET'])
@@ -128,9 +126,9 @@ def getViewReleveContact():
 
 
 @routes.route('/vreleve', methods=['GET'])
-@fnauth.check_auth_cruved('R')
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def getViewReleveList():
+def getViewReleveList(info_role):
     """
         Retour la liste résumé des relevés avec occurrences
 
@@ -172,7 +170,8 @@ def getViewReleveList():
 
 
     """
-    q = db.session.query(VReleveList)
+    releveRepository = ReleveRepository(VReleveList)
+    q = releveRepository.get_filtered_query(info_role)
 
     params = request.args
 
@@ -288,9 +287,12 @@ def getViewReleveList():
     }
 
 
+
 @routes.route('/releve', methods=['POST'])
+@fnauth.check_auth_cruved('U', True)
 @json_resp
-def insertOrUpdateOneReleve():
+def insertOrUpdateOneReleve(info_role):
+    releveRepository = ReleveRepository(TRelevesContact)
     try:
         data = dict(request.get_json())
 
@@ -343,7 +345,9 @@ def insertOrUpdateOneReleve():
 
         try:
             if releve.id_releve_contact:
-                db.session.merge(releve)
+                releve = releveRepository.update(releve, info_role)
+                if releve == -1:
+                    return {'message': 'forbidden'}, 403
             else:
                 db.session.add(releve)
             db.session.commit()
@@ -359,8 +363,9 @@ def insertOrUpdateOneReleve():
 
 
 @routes.route('/releve/<int:id_releve>', methods=['DELETE'])
+@fnauth.check_auth_cruved('D', True)
 @json_resp
-def deleteOneReleve(id_releve):
+def deleteOneReleve(id_releve, info_role):
     """Suppression d'une données d'un relevé et des occurences associés
       c-a-d un enregistrement de la table t_releves_contact
 
@@ -370,24 +375,15 @@ def deleteOneReleve(id_releve):
             identifiant de l'enregistrement à supprimer
 
     """
-    q = db.session.query(TRelevesContact)
-    try:
-        data = q.get(id_releve)
-    except Exception as e:
-        db.session.rollback()
-        raise
-
+    releveRepository = ReleveRepository(TRelevesContact)
+    data = releveRepository.delete(id_releve, info_role)
     if not data:
         return {'message': 'not found'}, 404
+    if data == -1:
+        return {'message': 'forbidden'}, 403
+    return {'message': 'delete with success'}, 200
 
-    try:
-        db.session.delete(data)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        raise
 
-    return {'message': 'delete with success'}
 
 
 @routes.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
