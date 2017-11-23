@@ -1,10 +1,9 @@
 import { Injectable} from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { Http } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs';
 import * as L from 'leaflet';
-import { URLSearchParams } from '@angular/http';
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
@@ -15,7 +14,7 @@ export class MapListService {
   public selectedLayer: any;
   public gettingLayerId$: Observable<number> = this._layerId.asObservable();
   public gettingTableId$: Observable<number> = this._tableId.asObservable();
-  public urlQuery: URLSearchParams = new URLSearchParams ();
+  public urlQuery: HttpParams = new HttpParams ();
   public page = new Page();
   originStyle = {
     'color': '#3388ff',
@@ -28,7 +27,7 @@ export class MapListService {
   'color': '#ff0000',
    'weight': 3
   };
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
       this.columns = [];
       this.page.pageNumber = 0;
       this.page.size = 15;
@@ -40,13 +39,12 @@ export class MapListService {
   getData(endPoint, param?) {
     if (param) {
       if (param.param === 'offset') {
-        this.urlQuery.set('offset', param.value);
+        this.urlQuery = this.urlQuery.set('offset', param.value);
       }else {
-        this.urlQuery.append(param.param, param.value);
+        this.urlQuery = this.urlQuery.append(param.param, param.value);
       }
     }
-    return this._http.get(`${AppConfig.API_ENDPOINT}${endPoint}`, {search: this.urlQuery})
-      .map(res => res.json());
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}${endPoint}`, {params: this.urlQuery});
   }
 
 
