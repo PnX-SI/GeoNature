@@ -57,6 +57,8 @@ export class MapListComponent implements OnInit, OnChanges {
     this.mapListService.layerDict[feature.id] = layer;
     layer.on({
       click : (e) => {
+        console.log("click");
+        
         // toggle style
         this.mapListService.toggleStyle(layer);
         // observable
