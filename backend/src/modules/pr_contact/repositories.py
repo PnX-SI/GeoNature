@@ -16,7 +16,8 @@ class ReleveRepository():
         self.model = model
         
     def get_one(self, id, info_user):
-        """ return un objet du modele ou -1 si forbidden"""
+        """Retourne un releve si autorisé, sinon -1
+        """
         id_role, data_scope = info_user
         try:
             releve = db.session.query(self.model).get(id)
@@ -36,44 +37,29 @@ class ReleveRepository():
 
 
     def update(self, releve, info_user):
-        """Met a jour le releve passé en parametre si autorisé, sinon -1
+        """Met a jour le releve passé en parametre  
+        retourne un releve si autorisé, sinon -1
         """
         id_role, data_scope = info_user
-        if data_scope == 3:
-            try:
-                db.session.merge(releve)
-            except:
-                db.session.rollback()
-                raise
         if data_scope == 1:
             observers = [d.id_role for d in releve.observers]
-            if id_role in observers or id_role == releve.id_digitiser:
-                try:
-                    db.session.merge(releve)
-                except:
-                    db.session.rollback()
-                    raise
-            else:
+            if not (id_role in observers or id_role == releve.id_digitiser):
                 return -1
-
         if data_scope == 2:
-            if releve.id_dataset in self.get_allowed_datasets():
-                try:
-                    db.session.merge(releve)
-                except:
-                    db.session.rollback()
-                    raise
-            else:
+            if not(releve.id_dataset in self.get_allowed_datasets()):
                 return -1
         try:
+            db.session.merge(releve)
             db.session.commit()
             return releve
         except:
             db.session.rollback()
+            raise
+
             
     def delete(self, id_releve, info_user):
         """Supprime un releve
-        return: objet releve ou -1 si forbidden"""
+        retourne un releve sinon -1"""
         id_role, data_scope = info_user
         try:
             releve = db.session.query(self.model).get(id_releve)
@@ -83,30 +69,13 @@ class ReleveRepository():
             return None
         if data_scope == '1':
             observers = [d.id_role for d in releve.observers]
-            if id_role in observers or id_role == releve.id_digitiser:
-                try:
-                    db.session.delete(releve)
-                except:
-                    db.session.rollback()
-                    raise
-            else:
+            if not(id_role in observers or id_role == releve.id_digitiser):
                 return -1
         if data_scope == '2':
-            if releve.id_dataset in self.get_allowed_datasets():
-                try:
-                    db.session.delete(releve)
-                except:
-                    db.session.rollback()
-            else:
+            if not releve.id_dataset in self.get_allowed_datasets():
                 return -1
-
-        if data_scope == '3':
-            try:
-                db.session.delete(releve)
-            except:
-                db.session.rollback()
-                raise
         try:
+            db.session.delete(releve)
             db.session.commit()
             return releve
         except:
@@ -159,16 +128,16 @@ class ReleveRepository():
             db.session.rollback()
             raise
 
-# a tester     
-    def get_all_observers_releve(cor_user_table, fk_name, q):
-        """retourne une query filtrée à partir des observateurs de la table de corespondance des observateurs
-        --- params:
-        cor_user_table: le modèle de la table de corespondance des observateurs
-        fk_name: string: nom de la foreign key entre la table releve et la table de corespondance
-        q : un objet query
-         """
-        q = q.join(
-             cor_user_table,
-            getattr(corRoleRelevesContact, fk_name)== getattr(self.model, fk_name)
-             ).filter(or_(cor_user_table.c.id_role == g.user.id_role, self.model.id_digitiser == g.user.id_role))
-        return q
+# # a tester     
+#     def get_all_observers_releve(cor_user_table, fk_name, q):
+#         """retourne une query filtrée à partir des observateurs de la table de corespondance des observateurs
+#         --- params:
+#         cor_user_table: le modèle de la table de corespondance des observateurs
+#         fk_name: string: nom de la foreign key entre la table releve et la table de corespondance
+#         q : un objet query
+#          """
+#         q = q.join(
+#              cor_user_table,
+#             getattr(corRoleRelevesContact, fk_name)== getattr(self.model, fk_name)
+#              ).filter(or_(cor_user_table.c.id_role == g.user.id_role, self.model.id_digitiser == g.user.id_role))
+#         return q
