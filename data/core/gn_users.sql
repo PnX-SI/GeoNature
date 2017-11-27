@@ -71,30 +71,6 @@ CREATE TABLE IF NOT EXISTS cor_application_tag (
 COMMENT ON TABLE cor_organism_tag IS 'Permet d''attacher des étiquettes à des applications';
 
 
--- CREATE TABLE IF NOT EXISTS cor_role_tag_application (
---     id_role integer NOT NULL,
---     id_tag integer NOT NULL,
---     id_application integer NOT NULL,
---     comment text
--- );
--- COMMENT ON TABLE cor_organism_tag IS 'Permet d''attacher des étiquettes à un role pour une application';
-
-
--- CREATE TABLE IF NOT EXISTS bib_gn_data_types (
---     id_gn_data_type integer NOT NULL,
---     gn_data_type_name character varying(255),
---     gn_data_type_desc text
--- );
-
-
--- CREATE TABLE IF NOT EXISTS bib_gn_actions (
---     id_gn_action integer NOT NULL,
---     gn_action_code character varying(25),
---     gn_action_name character varying(255),
---     gn_action_desc text
--- );
-
-
 CREATE TABLE IF NOT EXISTS cor_app_privileges (
     id_tag_action integer NOT NULL,
     id_tag_object integer NOT NULL,
@@ -131,12 +107,6 @@ ALTER TABLE ONLY cor_application_tag ADD CONSTRAINT pk_cor_application_tag PRIMA
 
 ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT pk_cor_app_privileges PRIMARY KEY (id_tag_object, id_tag_action, id_application, id_role);
 
--- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT pk_cor_role_tag_application PRIMARY KEY (id_role, id_tag, id_application);
-
--- ALTER TABLE ONLY bib_gn_data_types ADD CONSTRAINT pk_bib_gn_data_types PRIMARY KEY (id_gn_data_type);
-
--- ALTER TABLE ONLY bib_gn_actions ADD CONSTRAINT pk_bib_gn_actions PRIMARY KEY (id_gn_action);
-
 
 ------------
 --TRIGGERS--
@@ -172,10 +142,6 @@ ALTER TABLE ONLY cor_role_tag ADD CONSTRAINT fk_cor_role_tag_id_tag FOREIGN KEY 
 
 ALTER TABLE ONLY cor_application_tag ADD CONSTRAINT fk_cor_application_tag_t_applications_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
 ALTER TABLE ONLY cor_application_tag ADD CONSTRAINT fk_cor_application_tag_t_tags_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
-
--- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
--- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_tag FOREIGN KEY (id_tag) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
--- ALTER TABLE ONLY cor_role_tag_application ADD CONSTRAINT fk_cor_role_tag_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_tag_object FOREIGN KEY (id_tag_object) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
 ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_tag_action FOREIGN KEY (id_tag_action) REFERENCES t_tags(id_tag) ON UPDATE CASCADE;
@@ -396,7 +362,7 @@ CREATE OR REPLACE FUNCTION gn_users.can_user_do_in_module(
   RETURNS boolean AS
 $BODY$
 -- the function say if the given user can do the requested action in the requested module on the resquested data
--- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_tadactionid,requested_moduleid);
+-- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_actionid,requested_moduleid,requested_dataextendid);
 -- SAMPLE :SELECT gn_users.can_user_do_in_module(2,15,14,22);
   BEGIN
     IF myaction IN (SELECT id_tag_action FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
