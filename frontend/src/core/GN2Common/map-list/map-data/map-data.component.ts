@@ -177,10 +177,10 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   deleteRow() {
     const deleteId = this.selected[0][this.mapListService.idName];
-    this.rows = this.rows.filter(row => {
-      return row[this.mapListService.idName] !==  deleteId;
-    });
-    this.mapListService.page.totalElements = this.mapListService.page.totalElements -1 ;
+    // this.rows = this.rows.filter(row => {
+    //   return row[this.mapListService.idName] !==  deleteId;
+    // });
+    // this.mapListService.page.totalElements = this.mapListService.page.totalElements -1 ;
     this.selected = [];
 
     this.onDeleteRow.emit(deleteId);

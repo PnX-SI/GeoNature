@@ -48,9 +48,9 @@ export class ContactMapListComponent implements OnInit {
   this.apiEndPoint = 'occtax/vreleve';
 
   this._mapListService.getData('contact/vreleve')
-  .subscribe(res => {
-
+    .subscribe(res => {
     this._mapListService.page.totalElements = res.items.features.length;
+    //this._mapListService.geojsonData = res.items;
     this.geojsonData = res.items;
   });
 
@@ -60,7 +60,9 @@ export class ContactMapListComponent implements OnInit {
     this._contactService.deleteReleve(id)
       .subscribe(
         data => {
+          this._mapListService.deleteObs(id);
             this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
+
         },
         error => {
           if (error.status === 403) {

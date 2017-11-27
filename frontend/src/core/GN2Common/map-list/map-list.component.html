@@ -1,7 +1,7 @@
 <div class="row row-sm">
     <div class="col-sm-12 col-md-6 padding-sm">
         <pnx-map class="map-card">
-            <pnx-geojson [geojson]="geojsonData" [onEachFeature]="onEachFeature.bind(this)"> </pnx-geojson>
+            <pnx-geojson [geojson]="mapListService.geojsonData" [onEachFeature]="onEachFeature.bind(this)"> </pnx-geojson>
         </pnx-map>
     </div>
     <div class="col-sm-12 col-md-6 padding-sm">
@@ -17,3 +17,4 @@
         </pnx-map-data>
     </div>
 </div>
+
