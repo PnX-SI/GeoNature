@@ -354,6 +354,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
 -- -------------
 -- --FUNCTIONS--
 -- -------------
+--With action id
 CREATE OR REPLACE FUNCTION gn_users.can_user_do_in_module(
     myuser integer,
     mymodule integer,
@@ -375,6 +376,28 @@ $BODY$
   COST 100;
 
 
+--With action code
+CREATE OR REPLACE FUNCTION gn_users.can_user_do_in_module(
+    myuser integer,
+    mymodule integer,
+    myaction character varying,
+    mydataextend integer)
+  RETURNS boolean AS
+$BODY$
+-- the function say if the given user can do the requested action in the requested module on the resquested data
+-- USAGE : SELECT gn_users.can_user_do_in_module(requested_userid,requested_actioncode,requested_moduleid,requested_dataextendid);
+-- SAMPLE :SELECT gn_users.can_user_do_in_module(2,15,14,22);
+  BEGIN
+    IF myaction IN (SELECT tag_action_code FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
+	    RETURN true;
+    END IF;
+    RETURN false;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+--With action id
 CREATE OR REPLACE FUNCTION gn_users.user_max_accessible_data_level_in_module(
     myuser integer,
     myaction integer,
@@ -394,6 +417,25 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
+--With action code
+CREATE OR REPLACE FUNCTION gn_users.user_max_accessible_data_level_in_module(
+    myuser integer,
+    myaction character varying,
+    mymodule integer)
+  RETURNS integer AS
+$BODY$
+DECLARE
+	themaxleveldatatype integer;
+-- the function return the max accessible extend of data the given user can access in the requested module
+-- USAGE : SELECT gn_users.user_max_accessible_data_level_in_module(requested_userid,requested_actioncode,requested_moduleid);
+-- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,14,14);
+  BEGIN
+	SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND tag_action_code = myaction;
+	RETURN themaxleveldatatype;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
 
 CREATE OR REPLACE FUNCTION gn_users.find_all_modules_childs(myidapplication integer)
   RETURNS SETOF integer AS
