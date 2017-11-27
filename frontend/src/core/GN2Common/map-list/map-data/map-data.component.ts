@@ -14,7 +14,6 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 })
 export class MapDataComponent implements OnInit, OnChanges {
   @ViewChild(DatatableComponent) table: DatatableComponent;
-  @Input() tableData: Array<any>;
   @Input() allColumns: Array<any>;
   @Input() displayColumns: Array<any>;
   @Input() pathInfo: string;
@@ -48,9 +47,9 @@ export class MapDataComponent implements OnInit, OnChanges {
 
     this.mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
-      for (const i in this.tableData) {
-        if (this.tableData[i][this.mapListService.idName] === res) {
-          this.selected.push(this.tableData[i]);
+      for (const i in this.mapListService.tableData) {
+        if (this.mapListService.tableData[i][this.mapListService.idName] === res) {
+          this.selected.push(this.mapListService.tableData[i]);
         }
       }
     });
@@ -187,12 +186,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    // init the rows
-    if (changes.tableData) {
-      if (changes.tableData.currentValue !== undefined) {
-        this.rows = changes.tableData.currentValue;
-      }
-    }
+
     // init the columns
     if (changes.allColumns) {
       if (changes.allColumns.currentValue !== undefined ) {
