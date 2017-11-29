@@ -24,6 +24,7 @@ export class TaxonomyComponent implements OnInit {
   regneControl = new FormControl(null);
   groupControl = new FormControl(null);
   noResult: boolean;
+  showSpinner = false;
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
@@ -68,9 +69,11 @@ export class TaxonomyComponent implements OnInit {
       .filter(value => (value.length >= this.charNumber && value.length <= 20))
       .debounceTime(400)
       .distinctUntilChanged()
+      .do(() => this.showSpinner = true)
       .switchMap(value => this._dfService.searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value))
         .map(response => {
           this.noResult = response.length === 0 ;
+          this.showSpinner = false;
           return response.slice(0, this.listLength);
         })
 

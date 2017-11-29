@@ -24,11 +24,10 @@
           <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
           <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-              <img *ngIf="showSpinner" src="assets/images/spinner.gif" 
-              id="il_fi" 
+              <img *ngIf="showSpinner" src="assets/images/Spinner.gif" 
               alt="Chargement..." 
-              height="70" 
-              width="70">
+              height="40" 
+              width="40">
               <div *ngIf="!showSpinner">
                 <table class="table table-hover ">
                   <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 

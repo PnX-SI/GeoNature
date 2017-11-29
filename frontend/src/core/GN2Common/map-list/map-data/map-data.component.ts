@@ -123,13 +123,13 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   deleteAndRefresh(param) {
-    this.mapListService.urlQuery.delete(param);
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(param);
     this.paramDeleted.emit();
   }
 
   taxonChanged(taxonObj) {
     // refresh taxon in url query
-    this.mapListService.urlQuery.delete('cd_nom');
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('cd_nom');
     this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
 
@@ -141,19 +141,19 @@ export class MapDataComponent implements OnInit, OnChanges {
     const idObservers = this.mapListService.urlQuery.getAll('observer');
     idObservers.splice(idObservers.indexOf(observer.id_role), 1);
     idObservers.forEach(id => {
-      this.mapListService.urlQuery.set('observer', id);
+      this.mapListService.urlQuery = this.mapListService.urlQuery.set('observer', id);
     });
     this.paramDeleted.emit();
   }
 
   dateMinChanged(date) {
-    this.mapListService.urlQuery.delete('date_up');
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_up');
     if (date.length > 0) {
       this.paramChanged.emit({param: 'date_up', 'value': date});
     }
   }
   dateMaxChanged(date) {
-    this.mapListService.urlQuery.delete('date_low');
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_low');
     if (date.length > 0) {
       this.paramChanged.emit({param: 'date_low', 'value': date});
     }
