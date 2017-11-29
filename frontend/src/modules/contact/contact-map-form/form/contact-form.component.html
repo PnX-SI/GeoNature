@@ -2,7 +2,7 @@
   <div class="card">
     <h5 class="card-header"> <b>{{ 'Releve.Releve' | translate }} </b></h5>
     <div class="card-body">        
-        <div [formGroup]="fs.releveForm">
+        <div>
           <pnx-observation
             [releveForm]="fs.releveForm  ">
           </pnx-observation>
@@ -69,8 +69,8 @@
 
       <!-- <pre>form value: <br>{{fs.countingForm.value | json}}</pre> -->
       <!-- <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre> -->
-      <!-- <pre>form value: <br>{{fs.releveForm.value.properties | json}}</pre>
-      <pre>taxon list: <br>{{fs.taxonsList | json}}</pre> -->
+      <!-- <pre>form value: <br>{{fs.releveForm.value.properties | json}}</pre> -->
+      <!-- <pre>taxon list: <br>{{fs.taxonsList | json}}</pre> -->
 
         <div class=center>
             <button class="btn btn-success" 

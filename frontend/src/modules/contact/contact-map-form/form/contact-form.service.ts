@@ -57,7 +57,7 @@ export class ContactFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/defaultNomenclatures`, {params: params});
    }
 
-   initObservationForm(): FormGroup {
+   initReleveForm(): FormGroup {
     return this._fb.group({
       geometry: [null, Validators.required],
       properties: this._fb.group({
@@ -197,7 +197,7 @@ export class ContactFormService {
       this.defaultValues = res;
       this.defaultValuesLoaded = true;
       // init the forms with default values
-      this.releveForm = this.initObservationForm();
+      this.releveForm = this.initReleveForm();
       this.occurrenceForm = this.initOccurrenceFormDefaultValues();
       this.countingForm = this.initCountingArrayDefaultValues();
     } );

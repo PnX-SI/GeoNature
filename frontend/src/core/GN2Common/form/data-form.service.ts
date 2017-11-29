@@ -57,7 +57,7 @@ export class DataFormService {
   }
 
   getGeoInfo(geojson) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}geo/info`, geojson);
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}geo/info`, geojson);
   }
 
   getGeoIntersection(geojson, idType?) {
