@@ -12,13 +12,13 @@ import { ContactConfig } from '../../../contact.config';
 
 
 @Component({
-  selector: 'pnx-observation',
-  templateUrl: 'observation.component.html',
-  styleUrls: ['./observation.component.scss'],
+  selector: 'pnx-releve',
+  templateUrl: 'releve.component.html',
+  styleUrls: ['./releve.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 
-export class ObservationComponent implements OnInit, OnDestroy, OnChanges {
+export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
   @Input() releveForm: FormGroup;
   public dateMin: Date;
   public dateMax: Date;

@@ -6,7 +6,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Http } from '@angular/http';
 // Components
 import { ContactMapFormComponent } from './contact-map-form/contact-map-form.component';
-import { ObservationComponent } from './contact-map-form/form/observation/observation.component';
+import { ReleveComponent } from './contact-map-form/form/releve/releve.component';
 import { CountingComponent } from './contact-map-form/form/counting/counting.component';
 import { OccurrenceComponent } from './contact-map-form/form/occurrence/occurrence.component';
 import { ContactFormComponent } from './contact-map-form/form/contact-form.component';
@@ -36,7 +36,7 @@ const routes: Routes = [
     ContactMapFormComponent,
     ContactFormComponent,
     ContactMapInfoComponent,
-    ObservationComponent,
+    ReleveComponent,
     CountingComponent,
     OccurrenceComponent,
     TaxonsListComponent,
