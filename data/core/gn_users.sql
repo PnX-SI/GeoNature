@@ -152,7 +152,7 @@ ALTER TABLE ONLY cor_app_privileges ADD CONSTRAINT fk_cor_app_privileges_id_role
 ---------
 --VIEWS--
 ---------
-CREATE OR REPLACE VIEW v_userslist_forall_menu AS 
+CREATE OR REPLACE VIEW v_userslist_forall_menu AS
  SELECT a.groupe,
     a.id_role,
     a.identifiant,
@@ -216,122 +216,104 @@ CREATE OR REPLACE VIEW v_userslist_forall_menu AS
 
 
 CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
- WITH all_users_tags AS (
-         WITH a1 AS (
-                SELECT u.id_role,
-                    u.identifiant,
-                    u.nom_role,
-                    u.prenom_role,
-                    u.desc_role,
-                    u.pass,
-                    u.pass_plus,
-                    u.email,
-                    u.id_organisme,
-                    c_1.id_tag_action,
-                    c_1.id_tag_object,
-                    a_1.id_application
-                FROM utilisateurs.t_roles u
-                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = u.id_role
-                     JOIN ( SELECT a.id_application, a.id_parent
-                            FROM utilisateurs.t_applications a
-                            WHERE a.id_parent IS NOT NULL
-                        ) a_1 ON a_1.id_parent = c_1.id_application
-                WHERE u.groupe = false
-                UNION
-                SELECT u.id_role,
-                    u.identifiant,
-                    u.nom_role,
-                    u.prenom_role,
-                    u.desc_role,
-                    u.pass,
-                    u.pass_plus,
-                    u.email,
-                    u.id_organisme,
-                    c_1.id_tag_action,
-                    c_1.id_tag_object,
-                    c_1.id_application
-                FROM utilisateurs.t_roles u
-                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = u.id_role
-                WHERE u.groupe = false
-                ), a2 AS (
-                SELECT u.id_role,
-                    u.identifiant,
-                    u.nom_role,
-                    u.prenom_role,
-                    u.desc_role,
-                    u.pass,
-                    u.pass_plus,
-                    u.email,
-                    u.id_organisme,
-                    c_1.id_tag_action,
-                    c_1.id_tag_object,
-                    a_1.id_application
-                FROM utilisateurs.t_roles u
-                     JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
-                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = g.id_role_groupe
-                     JOIN ( SELECT a.id_application, a.id_parent
-                            FROM utilisateurs.t_applications a
-                            WHERE a.id_parent IS NOT NULL
-                        ) a_1 ON a_1.id_parent = c_1.id_application
-                  WHERE (g.id_role_groupe IN ( SELECT DISTINCT id_role_groupe FROM utilisateurs.cor_roles))
-                UNION
-                 SELECT u.id_role,
-                    u.identifiant,
-                    u.nom_role,
-                    u.prenom_role,
-                    u.desc_role,
-                    u.pass,
-                    u.pass_plus,
-                    u.email,
-                    u.id_organisme,
-                    c_1.id_tag_action,
-                    c_1.id_tag_object,
-                    c_1.id_application
-                   FROM utilisateurs.t_roles u
-                     JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
-                     JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = g.id_role_groupe
-                  WHERE (g.id_role_groupe IN ( SELECT DISTINCT id_role_groupe FROM utilisateurs.cor_roles))
-                )
-         SELECT a.id_role,
-            a.identifiant,
-            a.nom_role,
-            a.prenom_role,
-            a.desc_role,
-            a.pass,
-            a.pass_plus,
-            a.email,
-            a.id_organisme,
-            a.id_tag_action,
-            a.id_tag_object,
-            a.id_application
-           FROM ( SELECT a1.id_role,
-                    a1.identifiant,
-                    a1.nom_role,
-                    a1.prenom_role,
-                    a1.desc_role,
-                    a1.pass,
-                    a1.pass_plus,
-                    a1.email,
-                    a1.id_organisme,
-                    a1.id_tag_action,
-                    a1.id_tag_object,
-                    a1.id_application
-                   FROM a1
-                UNION
-                 SELECT a2.id_role,
-                    a2.identifiant,
-                    a2.nom_role,
-                    a2.prenom_role,
-                    a2.desc_role,
-                    a2.pass,
-                    a2.pass_plus,
-                    a2.email,
-                    a2.id_organisme,
-                    a2.id_tag_action,
-                    a2.id_tag_object,
-                    a2.id_application
-                   FROM a2) a
-        )
+WITH p_user_tag AS (
+   SELECT u.id_role,
+      u.identifiant,
+      u.nom_role,
+      u.prenom_role,
+      u.desc_role,
+      u.pass,
+      u.pass_plus,
+      u.email,
+      u.id_organisme,
+      c_1.id_tag_action,
+      c_1.id_tag_object,
+      a_1.id_application
+  FROM utilisateurs.t_roles u
+  JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = u.id_role
+  JOIN ( SELECT a.id_application, a.id_parent FROM utilisateurs.t_applications a WHERE a.id_parent IS NOT NULL) a_1 
+  ON a_1.id_parent = c_1.id_application
+  WHERE u.groupe = false
+  UNION
+   SELECT u.id_role,
+      u.identifiant,
+      u.nom_role,
+      u.prenom_role,
+      u.desc_role,
+      u.pass,
+      u.pass_plus,
+      u.email,
+      u.id_organisme,
+      c_1.id_tag_action,
+      c_1.id_tag_object,
+      c_1.id_application
+  FROM utilisateurs.t_roles u
+  JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = u.id_role
+  WHERE u.groupe = false
+), p_groupe_tag AS (
+  SELECT u.id_role,
+    u.identifiant,
+    u.nom_role,
+    u.prenom_role,
+    u.desc_role,
+    u.pass,
+    u.pass_plus,
+    u.email,
+    u.id_organisme,
+    c_1.id_tag_action,
+    c_1.id_tag_object,
+    a_1.id_application
+  FROM utilisateurs.t_roles u
+  JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
+  JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = g.id_role_groupe
+  JOIN ( SELECT a_2.id_application, a_2.id_parent  FROM utilisateurs.t_applications a_2 WHERE a_2.id_parent IS NOT NULL) a_1 ON a_1.id_parent = c_1.id_application
+  WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe FROM utilisateurs.cor_roles))
+  UNION
+  SELECT u.id_role,
+    u.identifiant,
+    u.nom_role,
+    u.prenom_role,
+    u.desc_role,
+    u.pass,
+    u.pass_plus,
+    u.email,
+    u.id_organisme,
+    c_1.id_tag_action,
+    c_1.id_tag_object,
+    c_1.id_application
+  FROM utilisateurs.t_roles u
+  JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
+  JOIN gn_users.cor_app_privileges c_1 ON c_1.id_role = g.id_role_groupe
+  WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe FROM utilisateurs.cor_roles))
+), all_users_tags AS (
+  SELECT a1.id_role,
+      a1.identifiant,
+      a1.nom_role,
+      a1.prenom_role,
+      a1.desc_role,
+      a1.pass,
+      a1.pass_plus,
+      a1.email,
+      a1.id_organisme,
+      a1.id_tag_action,
+      a1.id_tag_object,
+      a1.id_application
+  FROM p_user_tag a1
+  UNION
+  SELECT a2.id_role,
+      a2.identifiant,
+      a2.nom_role,
+      a2.prenom_role,
+      a2.desc_role,
+      a2.pass,
+      a2.pass_plus,
+      a2.email,
+      a2.id_organisme,
+      a2.id_tag_action,
+      a2.id_tag_object,
+      a2.id_application
+    FROM p_groupe_tag a2
+)
  SELECT v.id_role,
     v.identifiant,
     v.nom_role,
@@ -345,10 +327,13 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
     v.id_tag_action,
     v.id_tag_object,
     t1.tag_code AS tag_action_code,
-    t2.tag_code AS tag_object_code
-   FROM all_users_tags v
-     JOIN gn_users.t_tags t1 ON t1.id_tag = v.id_tag_action
-     JOIN gn_users.t_tags t2 ON t2.id_tag = v.id_tag_object;
+    max(t2.tag_code)::varchar(25) AS tag_object_code
+FROM all_users_tags v
+JOIN gn_users.t_tags t1 ON t1.id_tag = v.id_tag_action
+JOIN gn_users.t_tags t2 ON t2.id_tag = v.id_tag_object
+GROUP BY v.id_role, v.identifiant, v.nom_role, v.prenom_role, v.desc_role, v.pass, v.pass_plus, v.email,
+  v.id_organisme, v.id_application, v.id_tag_action, v.id_tag_object, t1.tag_code;
+
 
 
 -- -------------
@@ -367,7 +352,7 @@ $BODY$
 -- SAMPLE :SELECT gn_users.can_user_do_in_module(2,15,14,22);
   BEGIN
     IF myaction IN (SELECT id_tag_action FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
-	    RETURN true;
+      RETURN true;
     END IF;
     RETURN false;
   END;
@@ -389,7 +374,7 @@ $BODY$
 -- SAMPLE :SELECT gn_users.can_user_do_in_module(2,15,14,22);
   BEGIN
     IF myaction IN (SELECT tag_action_code FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
-	    RETURN true;
+      RETURN true;
     END IF;
     RETURN false;
   END;
@@ -405,13 +390,13 @@ CREATE OR REPLACE FUNCTION gn_users.user_max_accessible_data_level_in_module(
   RETURNS integer AS
 $BODY$
 DECLARE
-	themaxleveldatatype integer;
+  themaxleveldatatype integer;
 -- the function return the max accessible extend of data the given user can access in the requested module
 -- USAGE : SELECT gn_users.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
 -- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,14,14);
   BEGIN
-	SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_action = myaction;
-	RETURN themaxleveldatatype;
+  SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_action = myaction;
+  RETURN themaxleveldatatype;
   END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
@@ -425,13 +410,13 @@ CREATE OR REPLACE FUNCTION gn_users.user_max_accessible_data_level_in_module(
   RETURNS integer AS
 $BODY$
 DECLARE
-	themaxleveldatatype integer;
+  themaxleveldatatype integer;
 -- the function return the max accessible extend of data the given user can access in the requested module
 -- USAGE : SELECT gn_users.user_max_accessible_data_level_in_module(requested_userid,requested_actioncode,requested_moduleid);
 -- SAMPLE :SELECT gn_users.user_max_accessible_data_level_in_module(2,14,14);
   BEGIN
-	SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND tag_action_code = myaction;
-	RETURN themaxleveldatatype;
+  SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM gn_users.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND tag_action_code = myaction;
+  RETURN themaxleveldatatype;
   END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
@@ -455,7 +440,7 @@ $BODY$
           SELECT a1.id_application FROM utilisateurs.t_applications a1 WHERE a1.id_application = myidapplication
           UNION ALL
           SELECT a2.id_application FROM modules m JOIN utilisateurs.t_applications a2 ON a2.id_parent = m.id_application
-	  )
+    )
           SELECT id_application FROM modules
   LOOP
       RETURN NEXT inf.id_application;
