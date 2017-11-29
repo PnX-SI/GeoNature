@@ -85,7 +85,7 @@ $$
 BEGIN
 ALTER TABLE utilisateurs.bib_organismes ADD COLUMN id_parent integer;
 ALTER TABLE utilisateurs.t_applications ADD COLUMN id_parent integer;
-ALTER TABLE utilisateurs.t_roles ADD COLUMN pass_sha text;
+ALTER TABLE utilisateurs.t_roles ADD COLUMN pass_plus text;
 EXCEPTION WHEN duplicate_column  THEN
         RAISE NOTICE 'Tentative d''insertion de valeur existante';
 END
@@ -224,7 +224,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.prenom_role,
                     u.desc_role,
                     u.pass,
-                    u.pass_sha,
+                    u.pass_plus,
                     u.email,
                     u.id_organisme,
                     c_1.id_tag_action,
@@ -244,7 +244,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.prenom_role,
                     u.desc_role,
                     u.pass,
-                    u.pass_sha,
+                    u.pass_plus,
                     u.email,
                     u.id_organisme,
                     c_1.id_tag_action,
@@ -260,7 +260,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.prenom_role,
                     u.desc_role,
                     u.pass,
-                    u.pass_sha,
+                    u.pass_plus,
                     u.email,
                     u.id_organisme,
                     c_1.id_tag_action,
@@ -281,7 +281,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     u.prenom_role,
                     u.desc_role,
                     u.pass,
-                    u.pass_sha,
+                    u.pass_plus,
                     u.email,
                     u.id_organisme,
                     c_1.id_tag_action,
@@ -298,7 +298,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
             a.prenom_role,
             a.desc_role,
             a.pass,
-            a.pass_sha,
+            a.pass_plus,
             a.email,
             a.id_organisme,
             a.id_tag_action,
@@ -310,7 +310,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     a1.prenom_role,
                     a1.desc_role,
                     a1.pass,
-                    a1.pass_sha,
+                    a1.pass_plus,
                     a1.email,
                     a1.id_organisme,
                     a1.id_tag_action,
@@ -324,7 +324,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
                     a2.prenom_role,
                     a2.desc_role,
                     a2.pass,
-                    a2.pass_sha,
+                    a2.pass_plus,
                     a2.email,
                     a2.id_organisme,
                     a2.id_tag_action,
@@ -338,7 +338,7 @@ CREATE OR REPLACE VIEW gn_users.v_usersaction_forall_gn_modules AS
     v.prenom_role,
     v.desc_role,
     v.pass,
-    v.pass_sha,
+    v.pass_plus,
     v.email,
     v.id_organisme,
     v.id_application,
