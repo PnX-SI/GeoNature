@@ -49,6 +49,7 @@ CREATE TABLE t_releves_contact (
     id_dataset integer NOT NULL,
     id_digitiser integer,
     observers_txt varchar(500),
+    id_nomenclature_grp_typ integer NOT NULL,
     date_min timestamp without time zone DEFAULT now() NOT NULL,
     date_max timestamp without time zone DEFAULT now() NOT NULL,
     hour_min time,
@@ -63,11 +64,13 @@ CREATE TABLE t_releves_contact (
     geom_local public.geometry(Geometry,MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
     precision integer DEFAULT 100,
+    unique_id_sinp_grp uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
     CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = MYLOCALSRID))
 );
+COMMENT ON COLUMN t_releves_contact.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = Type de regroupement';
 
 CREATE SEQUENCE t_releves_contact_id_releve_contact_seq
     START WITH 1
@@ -142,7 +145,7 @@ CREATE TABLE cor_counting_contact (
     count_max integer,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
-    unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4()
+    unique_id_sinp_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4()
 );
 CREATE SEQUENCE cor_counting_contact_id_counting_contact_seq
     START WITH 1
@@ -197,6 +200,10 @@ ALTER TABLE ONLY t_releves_contact
 
 ALTER TABLE ONLY t_releves_contact
     ADD CONSTRAINT fk_t_releves_contact_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_releves_contact
+    ADD CONSTRAINT fk_t_releves_contact_regroupement_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 
 ALTER TABLE ONLY t_occurrences_contact
@@ -286,6 +293,9 @@ ALTER TABLE ONLY t_releves_contact
 
 ALTER TABLE t_releves_contact
   ADD CONSTRAINT check_t_releves_contact_hour_max CHECK (hour_min <= hour_max OR date_min < date_max);
+
+ALTER TABLE t_releves_contact
+  ADD CONSTRAINT check_t_releves_contact_regroupement_typ CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_grp_typ,24));
 
 
 ALTER TABLE ONLY t_occurrences_contact
