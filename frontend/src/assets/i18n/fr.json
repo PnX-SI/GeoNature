@@ -25,6 +25,7 @@
     "Columns": "Colonnes",
     "Cancel": "Annuler",
     "Delete": "Supprimer",
+    "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   
     "Map":{
         "SearchLocation":"Rechercher un lieu",
@@ -80,7 +81,7 @@
         "DeterminationMethodComplement":"Commplément méthode de détermination",
         "Determiner":"Déterminateur",
         "ValidationStatus": "Statut de validation",
-        "ExistProof": "Preuve d'existance",
+        "ExistProof": "Preuve d'existence",
         "SampleNumber":"Numéro du prélevement",
         "DigitalProof":"Preuve numérique",
         "NonDigitalProof":"Preuve non numérique",
@@ -104,5 +105,5 @@
         "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
     },
     "IntroMessage":"Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
-    "ErrorMessage":"Dommage, c'est pas bon"
+    "ErrorMessage":"Une erreur s'est produite"
 }

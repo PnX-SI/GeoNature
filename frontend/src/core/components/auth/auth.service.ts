@@ -10,10 +10,9 @@ import { Location } from '@angular/common';
 
 export class User {
 
-  constructor(public userName: string, public userId: number ,public organismName: string, public organismId: number,  public rights: any) {
+  constructor(public userName: string, public userId: number, public organismId: number,  public rights: any) {
     this.userName = userName;
     this.userId = userId;
-    this.organismName = organismName,
     this.organismId = organismId;
     this.rights = rights;
 }
@@ -32,30 +31,31 @@ export class AuthService {
     constructor(private router: Router,  private toastrService: ToastrService, private _http: HttpClient,
     private _cookie: CookieService, private _router: Router) {
     }
-  
+
   decodeObjectCookies(val) {
       if (val.indexOf('\\') === -1) {
           return val;  // not encoded
       }
       val = val.slice(1, -1).replace(/\\"/g, '"');
-      val = val.replace(/\\(\d{3})/g, function(match, octal) { 
+      val = val.replace(/\\(\d{3})/g, function(match, octal) {
           return String.fromCharCode(parseInt(octal, 8));
       });
       return val.replace(/\\\\/g, '\\');
   }
   setCurrentUser(user, expireDate) {
+    console.log(expireDate);
+    console.log(user);
+    ;
+
     this._cookie.set('currentUser', JSON.stringify(user), expireDate);
   }
 
   getCurrentUser(): User {
     const userString =  this._cookie.get('currentUser');
     let user = this.decodeObjectCookies(userString);
-    console.log(user);
     user = user.split("'").join('"');
-    console.log(user);
     user = JSON.parse(user);
-    console.log(user);
-    user = new User(user.userName, user.userId, user.organismName, user.organismId, user.rights);
+    user = new User(user.userName, user.userId, user.organismId, user.rights);
     console.log(user);
     return user;
   }
@@ -78,8 +78,7 @@ export class AuthService {
     if (username === 'admin') {
        response = {
         'userName': 'admin',
-        'userId': 5,
-        'organismName': 'PNE',
+        'userId': 2,
         'organismId': 2,
         'rights': {
           '14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
@@ -90,7 +89,6 @@ export class AuthService {
        response = {
          'userName': 'contributeur',
          'userId': 6,
-         'organismName': 'PNF',
           'organismId': 1,
         'rights': {
           '14' : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
@@ -99,36 +97,41 @@ export class AuthService {
     }
     this.setCurrentUser(response, d2);
     this.setToken('1123345254', d2);
-    this.getCurrentUser();
     this.router.navigate(['']);
   }
 
+
   signinUser(username: string, password: string) {
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}/api/auth/login`,
-      {'login': username,
-       'password': password,
-       'id_application': 14
-    }).subscribe(data => {
-      this.setCurrentUser(data.user, data.expires);
+    const user = {
+    'login': username,
+    'password': password,
+    'id_application': 14,
+    'with_cruved': true
+    };
+    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
+      .subscribe(data => {
+      console.log(data);
+      const userForFront = {
+        userName : data.user.identifiant,
+        userId : data.user.id_role,
+        organismId:  data.user.id_organisme,
+        rights : data.user.rights
+      };
+      this.setCurrentUser(userForFront, new Date(data.expires));
+      this.router.navigate(['']);
+    },
+    error => {
+      console.log(error);
     });
 
   }
-//   deleteAllCookies() {
-//     const cookies = document.cookie.split(';');
 
-//     for (let i = 0; i < cookies.length; i++) {
-//         const cookie = cookies[i];
-//         const eqPos = cookie.indexOf('=');
-//         const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-//         document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-//     }
-// }
 
-deleteTokenCookie(){
+deleteTokenCookie() {
   document.cookie = 'token=; path=/; expires' + new Date(0).toUTCString();
 }
   logout() {
-    this._cookie.delete('token');
+    this._cookie.delete('token', '/');
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
       this.deleteTokenCookie();
       document.location.href = AppConfig.CAS.CAS_LOGOUT_URL;

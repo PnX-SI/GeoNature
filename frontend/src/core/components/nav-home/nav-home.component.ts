@@ -57,6 +57,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this._sideBarService.setSideNav(this.sidenav);
 
     // put the user name in navbar
+    console.log("from nav home");
+    
     this.currentUser = this._authService.getCurrentUser();
   }
   changeLanguage(lang) {

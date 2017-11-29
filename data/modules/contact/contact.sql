@@ -35,7 +35,7 @@ AS $$
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
     END IF;
-    RETURN -1;
+    RETURN NULL;
   END;
 $$;
 

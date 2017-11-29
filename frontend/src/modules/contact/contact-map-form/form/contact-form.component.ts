@@ -32,10 +32,9 @@ export class ContactFormComponent implements OnInit {
   ngOnInit() {
     // set show occurrence to false:
     this.fs.showOccurrence = false;
-    // init the form
-    // this.fs.releveForm = this.fs.initObservationForm();
-    // this.fs.occurrenceForm = this.fs.initOccurrenceForm();
-    // this.fs.countingForm = this.fs.initCountingArray();
+    // refresh the forms
+      this.fs.initFormsWithDefaultValues();
+
     // reset taxon list of service
     this.fs.taxonsList = [];
     this.fs.indexOccurrence = 0;
@@ -102,8 +101,8 @@ export class ContactFormComponent implements OnInit {
           this.toastr.success('Relevé enregistré', '', {positionClass:'toast-top-center'});
         // resert the forms
         this.fs.releveForm = this.fs.initObservationForm();
-        this.fs.occurrenceForm = this.fs.initOccurrenceForm();
-        this.fs.countingForm = this.fs.initCountingArray();
+        this.fs.occurrenceForm = this.fs.initOccurrenceFormDefaultValues();
+        this.fs.countingForm = this.fs.initCountingArrayDefaultValues();
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0 ;
         // redirect

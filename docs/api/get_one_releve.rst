@@ -44,7 +44,6 @@ get one releve
 					{
 						"id_occurrence_contact": 1,
 						"id_releve_contact": 1,
-						"id_nomenclature_obs_technique": 343,
 						"id_nomenclature_obs_meth": 65,
 						"id_nomenclature_bio_condition": 177,
 						"id_nomenclature_bio_status": 30,

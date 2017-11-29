@@ -35,5 +35,7 @@ class TRoles (serializableModel):
     __tablename__ = 't_roles'
     __table_args__ = {'schema': 'utilisateurs'}
     id_role = db.Column(db.Integer, primary_key=True)
+    identifiant = db.Column(db.Unicode)
     nom_role = db.Column(db.Unicode)
     prenom_role = db.Column(db.Unicode)
+    id_organisme = db.Column(db.Integer)
