@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../../../../core/GN2Common/map/map.service';
@@ -18,7 +18,7 @@ import { ContactConfig } from '../../../contact.config';
   encapsulation: ViewEncapsulation.None
 })
 
-export class ObservationComponent implements OnInit, OnDestroy {
+export class ObservationComponent implements OnInit, OnDestroy, OnChanges {
   @Input() releveForm: FormGroup;
   public dateMin: Date;
   public dateMax: Date;
@@ -37,10 +37,6 @@ export class ObservationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.contactConfig = ContactConfig;
 
-    // get all nomenclatures definitions
-
-    // this._dfs.getNomenclatures(100, 14, 7, 13, 8, 106, 101, 15, 10, 9, 6, 21)
-    //   .subscribe(data )
 
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$
@@ -50,10 +46,10 @@ export class ObservationComponent implements OnInit, OnDestroy {
         // subscribe to geo info
         this._dfs.getGeoInfo(geojson)
           .subscribe(res => {
-            // this.releveForm.controls.properties.patchValue({
-            //   altitude_min: res.altitude.altitude_min,
-            //   altitude_max: res.altitude.altitude_max,
-            // });
+            this.releveForm.controls.properties.patchValue({
+              altitude_min: res.altitude.altitude_min,
+              altitude_max: res.altitude.altitude_max,
+            });
           });
         this._dfs.getFormatedGeoIntersection(geojson)
           .subscribe(res => {
@@ -61,23 +57,27 @@ export class ObservationComponent implements OnInit, OnDestroy {
           });
       });
 
-    // date max autocomplete
-      (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
-        .subscribe(value => {
-          if (this.releveForm.value.properties.date_max === null ) {
-            this.releveForm.controls.properties.patchValue({date_max: value});
-          }
-        });
       // set today for the datepicker limit
       const today = new Date();
       this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
 
-    // check if dateMax is not < dateMin
-    (this.releveForm.controls.properties as FormGroup).controls.date_max.valueChanges
-      .debounceTime(500)
-      .subscribe(value => {
-        this.checkDate();
-      });
+  } // END INIT
+
+  autoCompleteAndIntegrityCheck() {
+    // date max autocomplete
+    (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
+    .subscribe(value => {
+      console.log(this.releveForm.value.properties.date_max);
+      if (this.releveForm.value.properties.date_max === null ) {
+        this.releveForm.controls.properties.patchValue({date_max: value});
+      }
+    });
+  // check if dateMax is not < dateMin
+  (this.releveForm.controls.properties as FormGroup).controls.date_max.valueChanges
+    .debounceTime(500)
+    .subscribe(value => {
+      this.checkDate();
+    });
 
     (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
       .debounceTime(500)
@@ -85,27 +85,22 @@ export class ObservationComponent implements OnInit, OnDestroy {
         this.checkDate();
       });
 
-
-
-
-
-
+  // check if hour max is not inf to hour max
+  (this.releveForm.controls.properties as FormGroup).controls.hour_max.valueChanges
+    // wait for the end of the input
+    .debounceTime(500)
+    .filter(value => (this.releveForm.controls.properties as FormGroup).controls.hour_max.valid)
+    .subscribe(value => {
+      this.checkHours();
+    });
     // check if hour max is not inf to hour max
-    (this.releveForm.controls.properties as FormGroup).controls.hour_max.valueChanges
-      // wait for the end of the input
-      .debounceTime(500)
-      .filter(value => (this.releveForm.controls.properties as FormGroup).controls.hour_max.valid)
-      .subscribe(value => {
-        this.checkHours();
-      });
-      // check if hour max is not inf to hour max
-      (this.releveForm.controls.properties as FormGroup).controls.hour_min.valueChanges
-      .filter(value => (this.releveForm.controls.properties as FormGroup).controls.hour_min.valid)
-      .debounceTime(500)
-      .subscribe(value => {
-        this.checkHours();
-      });
-  } // END INIT
+    (this.releveForm.controls.properties as FormGroup).controls.hour_min.valueChanges
+    .filter(value => (this.releveForm.controls.properties as FormGroup).controls.hour_min.valid)
+    .debounceTime(500)
+    .subscribe(value => {
+      this.checkHours();
+  });
+}
 
   checkHours() {
     let hourMin = this.releveForm.value.properties.hour_min;
@@ -157,9 +152,13 @@ export class ObservationComponent implements OnInit, OnDestroy {
     const newDate = new Date(date);
   }
 
+  ngOnChanges(changes) {
+    this.autoCompleteAndIntegrityCheck();
+  }
 
 
-  ngOnDestroy() {
+
+  ngOnDestroy() { 
     this.geojsonSubscription$.unsubscribe();
   }
 }

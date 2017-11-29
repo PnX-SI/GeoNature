@@ -34,25 +34,21 @@ export class ContactMapListComponent implements OnInit {
     console.log("from here map list");
     const currentUser = this._auth.getCurrentUser();
     const userRight = currentUser.getRight('14');
-    if ( userRight['R'] <= AppConfig.RIGHTS.MY_ORGANISM_DATA ) {
-      //this._mapListService.urlQuery = this._mapListService.urlQuery.set('organism', currentUser.organismId.toString());
-    }
 
   this.displayColumns = [
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},
   ];
-  this.pathEdit = 'contact/form';
-  this.pathInfo = 'contact/info';
+  this.pathEdit = 'occtax/form';
+  this.pathInfo = 'occtax/info';
   this.idName = 'id_releve_contact';
   this.apiEndPoint = 'contact/vreleve';
 
   this._mapListService.getData('contact/vreleve')
-  .subscribe(res => {
-
-    this._mapListService.page.totalElements = res.items.features.length;
-    this.geojsonData = res.items;
-  });
+    .subscribe(res => {
+      this._mapListService.page.totalElements = res.items.features.length;
+      this.geojsonData = res.items;
+    });
 
   }
 
