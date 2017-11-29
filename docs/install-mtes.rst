@@ -18,14 +18,14 @@ Il faut ensuite les ajouter à la liste ``Saisie possible`` (``id_liste=500`` de
 
 Une fois TaxHub installé, il faut donc remplir la table ``taxonomie.bib_noms`` avec les noms souhaités. Dans cet exemple, on va y insérer tous les taxons de TAXREF des rangs Genre et inférieurs :
  
-  ::  
+::  
   
-        SQL
-        
+  SQL
+
 Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` : 
  
-  ::  
+::  
   
-        SQL
+  SQL
         
         
