@@ -100,7 +100,7 @@ export class ContactFormComponent implements OnInit {
         (response) => {
           this.toastr.success('Relevé enregistré', '', {positionClass:'toast-top-center'});
         // resert the forms
-        this.fs.releveForm = this.fs.initObservationForm();
+        this.fs.releveForm = this.fs.initReleveForm();
         this.fs.occurrenceForm = this.fs.initOccurrenceFormDefaultValues();
         this.fs.countingForm = this.fs.initCountingArrayDefaultValues();
         this.fs.taxonsList = [];
