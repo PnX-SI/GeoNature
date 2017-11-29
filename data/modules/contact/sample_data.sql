@@ -8,55 +8,55 @@ SET client_min_messages = warning;
 ---------
 --DATAS--
 ---------
-INSERT INTO gn_meta.t_acquisition_frameworks (id_acquisition_framework, unique_acquisition_framework_id, acquisition_framework_name, acquisition_framework_desc, id_nomenclature_territorial_level, territory_desc, keywords, id_nomenclature_financing_type, target_description, ecologic_or_geologic_target, acquisition_framework_parent_id, is_parent, acquisition_framework_start_date, acquisition_framework_end_date, meta_create_date, meta_update_date) VALUES
-(1, '57b7d0f2-4183-4b7b-8f08-6e105d476dc5','Données d''observation de la faune, de la Flore et de la fonge du parc nationl des Ecrins','Données d''observation de la faune, de la Flore et de la fonge du parc nationl des Ecrins',383,'Territoire du parc national des Ecrins correspondant au massif alpin des Ecrins','Ecrins, parc national, faune, flore, fonge',417,'Tous les taxons',null,null,0,'1973-03-27', null,'2017-05-01 10:35:08', null)
+INSERT INTO gn_meta.t_acquisition_frameworks (unique_acquisition_framework_id, id_acquisition_framework, acquisition_framework_name, acquisition_framework_desc, id_nomenclature_territorial_level, territory_desc, keywords, id_nomenclature_financing_type, target_description, ecologic_or_geologic_target, acquisition_framework_parent_id, is_parent, acquisition_framework_start_date, acquisition_framework_end_date, meta_create_date, meta_update_date) VALUES
+('57b7d0f2-4183-4b7b-8f08-6e105d476dc5', 1, 'Données d''observation de la faune, de la Flore et de la fonge du parc nationl des Ecrins','Données d''observation de la faune, de la Flore et de la fonge du parc nationl des Ecrins',383,'Territoire du parc national des Ecrins correspondant au massif alpin des Ecrins','Ecrins, parc national, faune, flore, fonge',417,'Tous les taxons',null,null,0,'1973-03-27', null,'2017-05-01 10:35:08', null)
 ;
 
-INSERT INTO gn_meta.t_datasets (id_dataset, unique_dataset_id, id_acquisition_framework, unique_acquisition_framework_id, dataset_name, dataset_shortname, dataset_desc, id_nomenclature_data_type, keywords, marine_domain, terrestrial_domain, id_nomenclature_dataset_objectif, bbox_west, bbox_east, bbox_south, bbox_north, id_nomenclature_collecting_method, id_nomenclature_data_origin, id_nomenclature_source_status, id_nomenclature_resource_type, id_program, default_validity, meta_create_date, meta_update_date) VALUES
-(1, '4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 1, '57b7d0f2-4183-4b7b-8f08-6e105d476dc5','Conctat aléatoire tous règnes confondus', 'Contact aléatoire', 'Observations aléatoires de la faune, de la flore ou de la fonge', 353,'Aléatoire, hors protocole, faune, flore, fonge',false,true, 442, '4.85695', '6.85654','44.5020','45.25', 430, 80, 76, 351, 1, true,  '2017-06-01 16:57:44.45879', null)
-,(2, 'dadab32d-5f9e-4dba-aa1f-c06487d536e8', 1, '57b7d0f2-4183-4b7b-8f08-6e105d476dc5','ATBI de la réserve intégrale de Lauvitel dans le Parc national des Ecrins', 'ATBI Lauvitel', 'Inventaire biologique généralisé sur la réserve du Lauvitel', 353,'Aléatoire, ATBI, biodiversité, faune, flore, fonge',false,true, 456, '4.85695', '6.85654','44.5020','45.25', 430, 80, 76, 351, 1, true,  '2017-06-01 16:59:03.25687', null)
+INSERT INTO gn_meta.t_datasets (unique_dataset_id, id_dataset, unique_acquisition_framework_id, dataset_name, dataset_shortname, dataset_desc, id_nomenclature_data_type, keywords, marine_domain, terrestrial_domain, id_nomenclature_dataset_objectif, bbox_west, bbox_east, bbox_south, bbox_north, id_nomenclature_collecting_method, id_nomenclature_data_origin, id_nomenclature_source_status, id_nomenclature_resource_type, id_program, default_validity, meta_create_date, meta_update_date) VALUES
+('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 1, '57b7d0f2-4183-4b7b-8f08-6e105d476dc5','Conctat aléatoire tous règnes confondus', 'Contact aléatoire', 'Observations aléatoires de la faune, de la flore ou de la fonge', 353,'Aléatoire, hors protocole, faune, flore, fonge',false,true, 442, '4.85695', '6.85654','44.5020','45.25', 430, 80, 76, 351, 1, true,  '2017-06-01 16:57:44.45879', null)
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8', 2, '57b7d0f2-4183-4b7b-8f08-6e105d476dc5','ATBI de la réserve intégrale de Lauvitel dans le Parc national des Ecrins', 'ATBI Lauvitel', 'Inventaire biologique généralisé sur la réserve du Lauvitel', 353,'Aléatoire, ATBI, biodiversité, faune, flore, fonge',false,true, 456, '4.85695', '6.85654','44.5020','45.25', 430, 80, 76, 351, 1, true,  '2017-06-01 16:59:03.25687', null)
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framework, id_nomenclature_voletsinp) VALUES
-(1,426)
+INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (unique_acquisition_framework_id, id_nomenclature_voletsinp) VALUES
+('57b7d0f2-4183-4b7b-8f08-6e105d476dc5',426)
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
-(1,387)
+INSERT INTO gn_meta.cor_acquisition_framework_objectif (unique_acquisition_framework_id, id_nomenclature_objectif) VALUES
+('57b7d0f2-4183-4b7b-8f08-6e105d476dc5',387)
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_territory (id_acquisition_framework, id_nomenclature_territory, territory_desc) VALUES
-(1,400,'Territoire du parc national des Ecrins et de ses environs immédiats')
+INSERT INTO gn_meta.cor_acquisition_framework_territory (unique_acquisition_framework_id, id_nomenclature_territory, territory_desc) VALUES
+('57b7d0f2-4183-4b7b-8f08-6e105d476dc5',400,'Territoire du parc national des Ecrins et de ses environs immédiats')
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_actor, id_nomenclature_actor_role) VALUES
-(1,2,393)
-,(1,2,398)
-,(1,3,429)
+INSERT INTO gn_meta.cor_acquisition_framework_actor (unique_acquisition_framework_id, id_role, id_organism, id_nomenclature_actor_role) VALUES
+('57b7d0f2-4183-4b7b-8f08-6e105d476dc5', NULL, 2, 393)
+,('57b7d0f2-4183-4b7b-8f08-6e105d476dc5', NULL, 2, 398)
+,('57b7d0f2-4183-4b7b-8f08-6e105d476dc5', NULL, 2, 429)
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_protocol (id_acquisition_framework, id_protocol) VALUES
-(1,0)
+INSERT INTO gn_meta.cor_acquisition_framework_protocol (unique_acquisition_framework_id, unique_protocol_id) VALUES
+('57b7d0f2-4183-4b7b-8f08-6e105d476dc5','9ed37cb1-803b-4eec-9ecd-31880475bbe9')
 ;
 
-INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_actor, id_nomenclature_actor_role) VALUES
-(1,2,393)
-,(1,2,398)
-,(1,3,429)
-,(2,2,393)
-,(2,2,398)
-,(2,3,429)
-,(2,4,397)
+INSERT INTO gn_meta.cor_dataset_actor (unique_dataset_id, id_role, id_organism, id_nomenclature_actor_role) VALUES
+('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', NULL, 2, 393)
+,('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', NULL, 2, 398)
+,('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 3, NULL, 429)
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8', NULL, 2, 393)
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8', NULL, 2, 398)
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8', 3, NULL, 429)
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8', 2, NULL, 397)
 ;
 
-INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
-(1,400,'Territoire du parc national des Ecrins et de ses environs immédiats')
-,(2,400,'Réserve intégrale de lauvitel')
+INSERT INTO gn_meta.cor_dataset_territory (unique_dataset_id, id_nomenclature_territory, territory_desc) VALUES
+('4d331cae-65e4-4948-b0b2-a11bc5bb46c2',400,'Territoire du parc national des Ecrins et de ses environs immédiats')
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8',400,'Réserve intégrale de lauvitel')
 ;
 
-INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
-(1,0)
-,(2,0)
+INSERT INTO gn_meta.cor_dataset_protocol (unique_dataset_id, unique_protocol_id) VALUES
+('4d331cae-65e4-4948-b0b2-a11bc5bb46c2','9ed37cb1-803b-4eec-9ecd-31880475bbe9')
+,('dadab32d-5f9e-4dba-aa1f-c06487d536e8','9ed37cb1-803b-4eec-9ecd-31880475bbe9')
 ;
 
 INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES
