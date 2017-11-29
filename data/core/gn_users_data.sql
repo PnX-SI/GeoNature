@@ -27,7 +27,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (true, 20001, NULL,  NULL, 'grp_bureau_etude',  'Bureau d''étude', NULL, NULL, NULL, NULL, 'groupe test à modifier ou supprimer');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -37,7 +37,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (true, 20002, NULL, NULL,'grp_en_poste', 'Tous les agents en poste', NULL, NULL, NULL, NULL, 'groupe test à modifier ou supprimer');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -47,7 +47,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (false, 1, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, -1, 'utilisateur test à modifier');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -57,7 +57,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (false,2, 'agent', 'Agent', 'test', NULL, 'b33aed8f3134996703dc39f9a7c95783', NULL, NULL, -1,'utilisateur test à modifier ou supprimer');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -67,7 +67,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (false,3, 'partenaire', 'Partenaire', 'test', NULL, '5bd40a8524882d75f3083903f2c912fc', NULL, NULL, -1,'utilisateur test à modifier ou supprimer');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -77,7 +77,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (false,4, 'pierre.paul', 'Paul', 'Pierre', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, -1,'utilisateur test à modifier ou supprimer');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
@@ -87,7 +87,7 @@ $$;
 DO
 $$
 BEGIN
-INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_sha, email, id_organisme, remarques) VALUES
+INSERT INTO t_roles (groupe, id_role, identifiant, prenom_role, nom_role, desc_role, pass, pass_plus, email, id_organisme, remarques) VALUES
 (false,5, 'validateur', 'validateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, -1,'utilisateur test à modifier ou supprimer');
 PERFORM pg_catalog.setval('t_roles_id_seq', 20002, true);
 EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Tentative d''insertion de valeur existante';
