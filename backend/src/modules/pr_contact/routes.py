@@ -10,7 +10,7 @@ from sqlalchemy.sql import text
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
     VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
-from .repositories import ReleveRepository
+#from .repositories import ReleveRepository
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
 
 from ...utils import filemanager 
