@@ -18,7 +18,6 @@
 		"observers": [1,2,3],
 		"t_occurrences_contact": [
 			{
-				"id_nomenclature_obs_technique": 343,
 				"id_nomenclature_obs_meth": 65,
 				"id_nomenclature_bio_condition": 177,
 				"id_nomenclature_bio_status": 30,

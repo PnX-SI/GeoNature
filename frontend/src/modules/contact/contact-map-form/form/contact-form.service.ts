@@ -16,6 +16,7 @@ export class ContactFormService {
   public indexOccurrence: number = 0;
   public taxonsList = [];
   public showOccurrence: boolean;
+  public showCounting: boolean;
   public editionMode: boolean;
   public isEdintingOccurrence: boolean;
   public defaultValues: any;
@@ -33,39 +34,27 @@ export class ContactFormService {
     this.indexCounting = 0;
     this.nbCounting = [''];
     this.showOccurrence = false;
+    this.showCounting = false;
     this.isEdintingOccurrence = false;
 
     this._router.events.subscribe(value => {
       this.isEdintingOccurrence = false;
     });
-
     this.currentUser = this._auth.getCurrentUser();
 
-    this.getDefaultValues(this.currentUser.organismId)
-      .subscribe(res => {
-
-        this.defaultValues = res;
-        this.defaultValuesLoaded = true;
-        this.releveForm = this.initObservationForm();
-        this.occurrenceForm = this.initOccurrenceForm();
-        this.countingForm = this.initCountingArray();
-      } );
    }// end constructor
 
-   getDefaultValues(idOrg) {
-     return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/default_nomenclatures/${idOrg}`)
-   }
 
-   getFilteredDefaultValues(idOrg: number, regne?, group2_inpn?) {
-     const params = new HttpParams();
-     params.append('organism', idOrg.toString());
+   getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {
+     let params = new HttpParams();
+     params = params.set('organism', idOrg.toString());
      if (group2_inpn) {
-      params.append('regne', regne);
+      params = params.append('regne', regne);
      }
      if (regne) {
-      params.append('group2_inpn', group2_inpn);
+      params = params.append('group2_inpn', group2_inpn);
      }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/filtered_default_nomenclatures`, {params: params});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/defaultNomenclatures`, {params: params});
    }
 
    initObservationForm(): FormGroup {
@@ -74,7 +63,7 @@ export class ContactFormService {
       properties: this._fb.group({
         id_releve_contact : null,
         id_dataset: [null, Validators.required],
-        id_digitiser : null,
+        id_digitiser : this.currentUser.userId,
         date_min: [null, Validators.required],
         date_max: [null, Validators.required],
         hour_min: [null, Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$')],
@@ -92,20 +81,21 @@ export class ContactFormService {
     });
    }
 
-   initOccurrenceForm(): FormGroup {
+   initOccurrenceFormDefaultValues(): FormGroup {
       return this._fb.group({
         id_releve_contact :  null,
         id_nomenclature_obs_meth: [this.defaultValues[14], Validators.required],
-        id_nomenclature_obs_technique : [ null, Validators.required],
         id_nomenclature_bio_condition: [this.defaultValues[7], Validators.required],
-        id_nomenclature_bio_status : null,
-        id_nomenclature_naturalness: null,
-        id_nomenclature_exist_proof: null,
-        id_nomenclature_valid_status: null,
-        id_nomenclature_diffusion_level: null,
+        id_nomenclature_bio_status : this.defaultValues[13],
+        id_nomenclature_naturalness: this.defaultValues[8],
+        id_nomenclature_exist_proof: this.defaultValues[15],
+        id_nomenclature_observation_status : this.defaultValues[18],
+        id_nomenclature_valid_status: this.defaultValues[101],
+        id_nomenclature_diffusion_level: this.defaultValues[5],
+        id_nomenclature_blurring: this.defaultValues[4],
         id_validator: null,
         determiner: null,
-        id_nomenclature_determination_method: null,
+        id_nomenclature_determination_method: this.defaultValues[106],
         determination_method_as_text: '',
         cd_nom: [ null, Validators.required],
         nom_cite: null,
@@ -118,23 +108,76 @@ export class ContactFormService {
         cor_counting_contact: ''
       });
      }
-
-
-   initCounting(): FormGroup {
+     initOccurenceForm(): FormGroup {
       return this._fb.group({
-        id_nomenclature_life_stage: [null, Validators.required],
-        id_nomenclature_sex: [null, Validators.required],
+        id_releve_contact :  null,
+        id_nomenclature_obs_meth: [null, Validators.required],
+        id_nomenclature_bio_condition: [null, Validators.required],
+        id_nomenclature_bio_status : null,
+        id_nomenclature_naturalness: null,
+        id_nomenclature_exist_proof: null,
+        id_nomenclature_observation_status : null,
+        id_nomenclature_valid_status: null,
+        id_nomenclature_diffusion_level: null,
+        id_nomenclature_blurring: null,
+        id_validator: null,
+        determiner: null,
+        id_nomenclature_determination_method: null,
+        determination_method_as_text: '',
+        cd_nom: [null, Validators.required],
+        nom_cite: null,
+        meta_v_taxref: 'Taxref V9.0',
+        sample_number_proof: null,
+        digital_proof: null,
+        non_digital_proof: null,
+        deleted: false,
+        comment: null,
+        cor_counting_contact: ''
+      });
+     }
+
+   initCountingDefaultValues(): FormGroup {
+      return this._fb.group({
+        id_nomenclature_life_stage: [this.defaultValues[10], Validators.required],
+        id_nomenclature_sex: [this.defaultValues[9], Validators.required],
         id_nomenclature_obj_count: [this.defaultValues[6], Validators.required],
-        id_nomenclature_type_count: null,
-        count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
-        count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+        id_nomenclature_type_count: this.defaultValues[21],
+        count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+        count_max : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
       });
     }
 
-  initCountingArray(data?: Array<any>): FormArray {
-    // init the counting form with the data, or emty
-    const arrayForm = this._fb.array([]);
+  initCounting(): FormGroup {
+    return this._fb.group({
+      id_nomenclature_life_stage: [null, Validators.required],
+      id_nomenclature_sex: [null, Validators.required],
+      id_nomenclature_obj_count: [null, Validators.required],
+      id_nomenclature_type_count: null,
+      count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+      count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+    });
+  }
 
+
+  initCountingArrayDefaultValues(data?: Array<any>): FormArray {
+    // init the counting form with the data, or empty
+    const arrayForm = this._fb.array([]);
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
+        const counting = this.initCountingDefaultValues();
+        counting.patchValue(data[i]);
+        arrayForm.push(counting);
+      }
+    } else {
+      const counting = this.initCountingDefaultValues();
+      arrayForm.push(counting);
+    }
+    return arrayForm;
+  }
+
+  initCountingArray(data): FormArray {
+    // init the counting form with the data, or empty
+    const arrayForm = this._fb.array([]);
     if (data) {
       for (let i = 0; i < data.length; i++) {
         const counting = this.initCounting();
@@ -142,17 +185,29 @@ export class ContactFormService {
         arrayForm.push(counting);
       }
     } else {
-      arrayForm.push(this.initCounting());
+      const counting = this.initCounting();
+      arrayForm.push(counting);
     }
     return arrayForm;
   }
 
+  initFormsWithDefaultValues() {
+    this.getDefaultValues(this.currentUser.organismId)
+    .subscribe(res => {
+      this.defaultValues = res;
+      this.defaultValuesLoaded = true;
+      // init the forms with default values
+      this.releveForm = this.initObservationForm();
+      this.occurrenceForm = this.initOccurrenceFormDefaultValues();
+      this.countingForm = this.initCountingArrayDefaultValues();
+    } );
+  }
 
 
   addCounting() {
     this.indexCounting += 1;
     this.nbCounting.push('');
-    const countingCtrl = this.initCounting();
+    const countingCtrl = this.initCountingDefaultValues();
     this.countingForm.push(countingCtrl);
     }
 
@@ -165,7 +220,6 @@ export class ContactFormService {
 
   addOccurrence(index) {
     // save the last Occurrence
-    console.log(this.occurrenceForm.value);
     
     this.lastSubmitedOccurrence = this.occurrenceForm.value;
     // push the counting
@@ -189,17 +243,17 @@ export class ContactFormService {
     // reset current taxon
     this.currentTaxon = {};
     // reset occurrence form
-    this.occurrenceForm = this.initOccurrenceForm();
+    this.occurrenceForm = this.initOccurrenceFormDefaultValues();
     // path the value I want to persist
     this.occurrenceForm.patchValue({
-      'id_nomenclature_obs_technique': this.lastSubmitedOccurrence.id_nomenclature_obs_technique,
       'id_nomenclature_obs_meth': this.lastSubmitedOccurrence.id_nomenclature_obs_meth,
       'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.id_nomenclature_bio_condition
     });
     // reset the counting
-    this.countingForm = this.initCountingArray();
+    this.countingForm = this.initCountingArrayDefaultValues();
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
+
   }
 
   editOccurence(index) {
@@ -240,6 +294,10 @@ export class ContactFormService {
     this.showOccurrence = !this.showOccurrence;
   }
 
+  toggleCounting() {
+    this.showCounting = !this.showCounting;
+  }
+
   removeOneOccurrence(index) {
     this.taxonsList.splice(index, 1);
     this.releveForm.value.properties.t_occurrences_contact.splice(index, 1);
@@ -249,8 +307,7 @@ export class ContactFormService {
   onTaxonChanged(taxon) {
      this.currentTaxon = taxon;
      // fetch default nomenclature value filtered by organism, regne, group2_inpn
-     const idOrg = this._auth.getCurrentUser().organismId;
-     this.getFilteredDefaultValues(idOrg, taxon.regne, taxon.group2_inpn)
+     this.getDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
        .subscribe(data => {
          this.occurrenceForm.patchValue({
           id_nomenclature_bio_condition: data[7],
@@ -258,7 +315,7 @@ export class ContactFormService {
           id_nomenclature_obs_meth: data[14],
           id_nomenclature_bio_status: data[13],
           id_nomenclature_exist_proof : data[15],
-          id_nomenclature_determination_method: data[106]
+          id_nomenclature_determination_method: data[106],
          });
 
          // sexe : 9

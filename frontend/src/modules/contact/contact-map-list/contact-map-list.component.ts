@@ -31,10 +31,11 @@ export class ContactMapListComponent implements OnInit {
     // this._cookie.deleteAll();
     // reset the URL query parameter
     this._mapListService.urlQuery.delete('organism');
+    console.log("from here map list");
     const currentUser = this._auth.getCurrentUser();
     const userRight = currentUser.getRight('14');
     if ( userRight['R'] <= AppConfig.RIGHTS.MY_ORGANISM_DATA ) {
-      this._mapListService.urlQuery.set('organism', currentUser.organismId.toString());
+      //this._mapListService.urlQuery = this._mapListService.urlQuery.set('organism', currentUser.organismId.toString());
     }
 
   this.displayColumns = [
@@ -57,13 +58,18 @@ export class ContactMapListComponent implements OnInit {
 
    deleteReleve(id) {
     this._contactService.deleteReleve(id)
-      .subscribe(status => {
-        if (status === 200) {
-          this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
-        } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
-        }
-      });
+      .subscribe(
+        data => {
+            this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
+        },
+        error => {
+          if (error.status === 403) {
+            this._commonService.translateToaster('error', 'NotAllowed');
+          } else {
+            this._commonService.translateToaster('error', 'ErrorMessage');
+          }
+
+        });
    }
 
 }

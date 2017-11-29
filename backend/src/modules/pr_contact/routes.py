@@ -10,7 +10,9 @@ from sqlalchemy.sql import text
 
 from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
     VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
+from .repositories import ReleveRepository
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
+
 from ...utils import filemanager 
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
@@ -59,8 +61,8 @@ def getOccurrences():
         return ([n.as_dict() for n in data])
     return {'message': 'not found'}, 404
 
-
 @routes.route('/releve/<int:id_releve>', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
 def getOneReleve(id_releve):
     q = db.session.query(TRelevesContact)
@@ -126,6 +128,7 @@ def getViewReleveContact():
 
 
 @routes.route('/vreleve', methods=['GET'])
+@fnauth.check_auth_cruved('R')
 @json_resp
 def getViewReleveList():
     """
@@ -190,7 +193,7 @@ def getViewReleveList():
                 TOccurrencesContact,
                 TOccurrencesContact.id_releve_contact ==
                 VReleveList.id_releve_contact
-            ).filter(
+            ).join(
                 TOccurrencesContact.cd_nom == int(params.get('cd_nom'))
             )
 
@@ -309,7 +312,7 @@ def insertOrUpdateOneReleve():
         shape = asShape(data['geometry'])
         releve.geom_4326 = from_shape(shape, srid=4326)
 
-        if ('observers_txt' not in data['properties']):
+        if observersList is not None:
             observers = db.session.query(TRoles).\
                 filter(TRoles.id_role.in_(observersList)).all()
             for o in observers:
@@ -453,51 +456,31 @@ def deleteOneOccurenceCounting(id_count):
 
     return {'message': 'delete with success'}
 
-@routes.route('/default_nomenclatures/<int:idOrg>', methods=['GET'])
-@json_resp
-def getDefaultNomenclatures(idOrg):
-    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg) AS id_nomenclature
-              FROM pr_contact.defaults_nomenclatures_value"""
-    result = db.engine.execute(text(query), idOrg=idOrg)
-    return {r.id_type: r.id_nomenclature for r in result}
 
-@routes.route('/filtered_default_nomenclatures', methods=['GET'])
+
+@routes.route('/defaultNomenclatures', methods=['GET'])
 @json_resp
-def getFilteredDefaultNomenclatures():
+def getDefaultNomenclatures():
     params = request.args
     group2_inpn = '0'
     regne = '0'
-    organism = '0'
+    organism = 0
     if 'group2_inpn' in params:
         group2_inpn = params['group2_inpn']
     if 'regne' in params:
         regne = params['regne']
     if 'organism' in params:
         organism = params['organism']
-    query = """
-    SELECT pr_contact.get_default_nomenclature_value(4, :idOrg, :regne, :group2_inpn) AS "4",
-    pr_contact.get_default_nomenclature_value(5, :idOrg, :regne, :group2_inpn) AS "5",
-    pr_contact.get_default_nomenclature_value(6, :idOrg, :regne, :group2_inpn) AS "6",
-    pr_contact.get_default_nomenclature_value(7, :idOrg, :regne, :group2_inpn) AS "7",
-    pr_contact.get_default_nomenclature_value(8, :idOrg, :regne, :group2_inpn) AS "8",
-    pr_contact.get_default_nomenclature_value(9, :idOrg, :regne, :group2_inpn) AS "9",
-    pr_contact.get_default_nomenclature_value(10, :idOrg, :regne, :group2_inpn) AS "10",
-    pr_contact.get_default_nomenclature_value(13, :idOrg, :regne, :group2_inpn) AS "13",
-    pr_contact.get_default_nomenclature_value(14, :idOrg, :regne, :group2_inpn) AS "14",
-    pr_contact.get_default_nomenclature_value(15, :idOrg, :regne, :group2_inpn) AS "15",
-    pr_contact.get_default_nomenclature_value(18, :idOrg, :regne, :group2_inpn) AS "18",
-    pr_contact.get_default_nomenclature_value(21, :idOrg, :regne, :group2_inpn) AS "21",
-    pr_contact.get_default_nomenclature_value(101, :idOrg, :regne, :group2_inpn) AS "101",
-    pr_contact.get_default_nomenclature_value(106, :idOrg, :regne, :group2_inpn) AS "106"
-    """
-    result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn).first()
-    return dict(result)
+    types = request.args.getlist('id_type')
+    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg, :regne, :group2_inpn) AS id_nomenclature
+    FROM pr_contact.defaults_nomenclatures_value """
+    if len(types) > 0:
+        query += " WHERE id_type IN :types"
+        result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn, types=tuple(types))
+    else:
+        result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn)
+    return {r.id_type: r.id_nomenclature for r in result}
 
-
-
-@routes.route('/test', methods=['GET'])
-def test():
-    return 'lalalalala'
     
 @routes.route('/exportProvisoire', methods=['GET'])
 @csv_resp
@@ -507,4 +490,17 @@ def export():
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
     return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+
+@routes.route('/test', methods=['GET'])
+@json_resp
+def test():
+    from flask import g
+    user = db.session.query(TRoles).get(1)
+    g.user = user
+    releveRepository = ReleveRepository(TRelevesContact)
+    print(releveRepository)
+    data = releveRepository.get_all(1)
+    print(data)
+
+    return FeatureCollection([n.get_geofeature() for n in data])
 

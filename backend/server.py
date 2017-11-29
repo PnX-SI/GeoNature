@@ -50,14 +50,12 @@ def get_app():
     from src.core.auth.routes import routes
     app.register_blueprint(routes, url_prefix='/test_auth')
 
-
-
-
     app_globals['app'] = app
     return app
 
+
 app = get_app()
-CORS(app)
+CORS(app, supports_credentials=True)
 
 if __name__ == '__main__':
     from flask_script import Manager

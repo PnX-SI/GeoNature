@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
@@ -11,24 +10,24 @@ export class DataFormService {
    }
 
   getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
-    const params: HttpParams = new HttpParams();
-    regne ? params.set('regne', regne) : params.set('regne', '');
-    group2_inpn ? params.set('group2_inpn', group2_inpn) : params.set('group2_inpn', '');
+    let params: HttpParams = new HttpParams();
+    regne ? params = params.set('regne', regne) : params = params.set('regne', '');
+    group2_inpn ? params = params.set('group2_inpn', group2_inpn) : params = params.set('group2_inpn', '');
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {params: params});
     }
 
   getNomenclatures(...id_nomenclatures) {
-    const params: HttpParams = new HttpParams();
+    let params: HttpParams = new HttpParams();
     id_nomenclatures.forEach(id => {
-      params.append('id_type', id);
+      params = params.append('id_type', id);
     });
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclatures`, {params: params});
   }
 
   getDatasets(idOrganism?) {
-    const params: HttpParams = new HttpParams();
+    let params: HttpParams = new HttpParams();
     if (idOrganism) {
-      params.set('organism', idOrganism);
+      params = params.set('organisme', idOrganism);
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}meta/datasets`, {params: params});
   }
@@ -38,13 +37,13 @@ export class DataFormService {
   }
 
   searchTaxonomy(taxonName: string, id: string, regne?: string, groupe2Inpn?: string) {
-    const params: HttpParams = new HttpParams();
-    params.append('search_name', taxonName);
+    let params: HttpParams = new HttpParams();
+    params = params.set('search_name', taxonName);
     if (regne) {
-      params.append('regne', regne);
+      params = params.set('regne', regne);
     }
     if (groupe2Inpn) {
-      params.append('group2_inpn', groupe2Inpn);
+      params = params.set('group2_inpn', groupe2Inpn);
     }
     return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}`, { params : params});
   }
@@ -89,13 +88,6 @@ export class DataFormService {
 
   postContact(form) {
     return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form);
-      // .map(response => {
-      //   if (response.status !== 200) {
-      //     throw new Error('Post Error');
-      //   }else {
-      //     return response.json();
-      //   }
-      // });
   }
 
 }

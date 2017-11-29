@@ -35,7 +35,7 @@ export class ContactMapInfoComponent implements OnInit {
 
   ngOnInit() {
     // init forms
-    this.occurrenceForm = this.fs.initOccurrenceForm();
+    this.occurrenceForm = this.fs.initOccurenceForm();
     // load nomenclatures
     this.loadNomenclaturesOccurrence();
 
@@ -75,12 +75,12 @@ export class ContactMapInfoComponent implements OnInit {
     this.selectedIndex = index;
     this.selectedOccurrence = occ;
     this.occurrenceForm.patchValue(occ);
+    // init counting form with data
     this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_contact);
   }
 
   loadNomenclaturesOccurrence() {
-    const arrayNomenclatures = [100, 14, 7, 13, 8, 101, 15];
-    this._dfs.getNomenclatures(arrayNomenclatures)
+    this._dfs.getNomenclatures(100, 14, 7, 13, 8, 101, 15)
       .subscribe(data => {
         console.log(data);
       });

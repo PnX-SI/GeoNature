@@ -1,5 +1,5 @@
 export const ContactConfig = {
-  'observers_txt': true,
+  'observers_txt': false,
 };
 
 

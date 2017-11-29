@@ -1,4 +1,5 @@
 export const AppConfig = {
+  DEVELOPPEMENT_MODE: false,
   appName : 'Geonature 2',
   defaultLanguage:  'fr',
   CAS: {

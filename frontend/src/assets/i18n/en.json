@@ -25,6 +25,7 @@
     "Columns": "Columns",
     "Cancel": "Cancel",
     "Delete": "Delete",
+    "NotAllowed": "You do not have the rights to perform this action",
   
     "Map":{
         "SearchLocation":"Search a location",

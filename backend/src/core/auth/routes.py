@@ -1,8 +1,10 @@
-from flask import Blueprint, request, make_response, url_for, redirect, current_app, session
+from flask import Blueprint, request, make_response, url_for, redirect, current_app, jsonify
 import requests
 import datetime
 import xmltodict
 from xml.etree import ElementTree as ET
+import json
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from ...utils.utilssqlalchemy import json_resp
 
@@ -33,25 +35,46 @@ def loginCas():
             r  = requests.get(WSUserUrl, auth=(configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD']))
             if r.status_code == 200:
                 infoUser = r.json()
-                organismId = infoUser['codeOrganisme']
-                organismName = infoUser['libelleLongOrganisme']
-                userName = infoUser['login']
+                organismId = infoUser['codeOrganisme'] if infoUser['codeOrganisme'] != None else -1
+                organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] != None else 'Autre'
+                userLogin = infoUser['login']
                 userId = infoUser['id']
+                ## Reconciliation avec base GeoNature
+                organism = {
+                    "id_organisme":organismId,
+                    "nom_organisme": organismName
+                }
+                r = requests.post(current_app.config['URL_API']+'/users/organism', json=organism)
+                user = {
+                    "id_role":userId,
+                    "identifiant":userLogin, 
+                    "nom_role": infoUser['nom'],
+                    "prenom_role": infoUser['prenom'],
+                    "id_organisme": organismId
+                }
+                r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
+                # creation de la Response
+                response = make_response(redirect(current_app.config['URL_APPLICATION']))
+                cookieExp = datetime.datetime.utcnow()
+                expiration = current_app.config['COOKIE_EXPIRATION']
+                cookieExp += datetime.timedelta(seconds=expiration)
+                ## generation d'un token
+                s = Serializer(current_app.config['SECRET_KEY'], expiration)
+                token = s.dumps(user)
+                response.set_cookie('token',
+                                    token,
+                                    expires=cookieExp)
+                # Utilisateur en cookie
+                # TODO: remove CRUVED FROM cookies
                 # met les droit d'admin pour la démo, a changer
                 rights = {'14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 } }
                 currentUser = {
-                    'userName': userName,
+                    'userName': userLogin,
                     'userId': userId,
                     'organismName': organismName,
-                    'organismId': organismId if organismId != None else 0,
+                    'organismId': organismId,
                     'rights': rights
                 }
-                response = make_response(redirect(current_app.config['URL_APPLICATION']))
-                cookieExp = datetime.datetime.utcnow()
-                cookieExp += datetime.timedelta(seconds=current_app.config['COOKIE_EXPIRATION'])
-                response.set_cookie('token',
-                                    'test12345',
-                                    expires=cookieExp)
                 response.set_cookie('currentUser',
                                      str(currentUser),
                                      expires=cookieExp)
@@ -59,3 +82,5 @@ def loginCas():
         else:
             # redirect to inpn            
             return "echec de l'authentification"
+
+
