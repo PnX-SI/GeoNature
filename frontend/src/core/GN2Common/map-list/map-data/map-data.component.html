@@ -48,6 +48,9 @@
     <button md-icon-button mdTooltip="Filter options" class="margin-left-md to-collapse" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
         <md-icon>filter_list</md-icon>
     </button>
+    <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      </button>
     </div>
 
     <!--Filter Avancé-->
@@ -87,13 +90,12 @@
       </div>
     </div>
 
-    <div class="row row-sm">
+    <!-- <div class="row row-sm">
       <div class="offset-md-11 col-md-1">
-        <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
-          <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </button>
+
       </div>
-    </div>
+    </div> -->
+
 
   </md-card>
   <!--Table-->

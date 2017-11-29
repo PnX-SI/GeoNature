@@ -13,3 +13,8 @@
   background-position:right center;
   background-repeat: no-repeat;
 }
+
+.dropdown-menu {
+  max-height: 30vh;
+  overflow-y: scroll;
+}
