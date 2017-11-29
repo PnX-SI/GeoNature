@@ -20,12 +20,17 @@ Une fois TaxHub installé, il faut donc remplir la table ``taxonomie.bib_noms`` 
  
 ::  
   
-  SQL
+  INSERT INTO taxonomie.bib_noms(cd_nom,cd_ref,nom_francais)
+  SELECT cd_nom, cd_ref, nom_vern
+  FROM taxonomie.taxref
+  WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL','SBCL','IFCL',
+                    'LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
 
 Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` : 
  
 ::  
   
-  SQL
+  INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
+  SELECT 500,n.id_nom FROM taxonomie.bib_noms n
         
         
