@@ -42,6 +42,7 @@ export class ContactFormService {
     });
     this.currentUser = this._auth.getCurrentUser();
 
+
    }// end constructor
 
 
@@ -309,6 +310,9 @@ export class ContactFormService {
      // fetch default nomenclature value filtered by organism, regne, group2_inpn
      this.getDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
        .subscribe(data => {
+         console.log(data);
+         
+        // occurrence
          this.occurrenceForm.patchValue({
           id_nomenclature_bio_condition: data[7],
           id_nomenclature_naturalness : data[8],
@@ -316,13 +320,23 @@ export class ContactFormService {
           id_nomenclature_bio_status: data[13],
           id_nomenclature_exist_proof : data[15],
           id_nomenclature_determination_method: data[106],
+          id_nomenclature_observation_status : this.defaultValues[18],
+          id_nomenclature_valid_status: this.defaultValues[101],
+          id_nomenclature_diffusion_level: this.defaultValues[5],
+          id_nomenclature_blurring: this.defaultValues[4],
          });
+        // counting
+        this.countingForm.controls.forEach(formControl => {
+          formControl.patchValue({
+            id_nomenclature_life_stage: data[10],
+            id_nomenclature_sex: data[9],
+            id_nomenclature_obj_count: data[6],
+            id_nomenclature_type_count: data[21]
+          });
+        });
+      });
+    }
 
-         // sexe : 9
-       });
-
-
-   }
 
   formatObservers(observers) {
     const observersTab = [];
