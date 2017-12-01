@@ -6,6 +6,8 @@ from xml.etree import ElementTree as ET
 import json
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+from ..users.models import CorRole
+
 from ...utils.utilssqlalchemy import json_resp
 
 from flask_sqlalchemy import SQLAlchemy
@@ -13,15 +15,15 @@ db = SQLAlchemy()
 
 ### Module d'identificiation provisoire pour test du CAS INPN ###
 
-routes = Blueprint('test_auth', __name__)
+routes = Blueprint('auth_cas', __name__)
 
 
-@routes.route('/login_cas', methods=['GET'])
+@routes.route('/login', methods=['GET'])
 def loginCas():
     configCas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
-        base_url = current_app.config['URL_API']+"/test_auth/login_cas"
+        base_url = current_app.config['URL_API']+"/auth_cas/login"
         urlValidate = "%s?ticket=%s&service=%s"%(configCas['URL_VALIDATION'], params['ticket'], base_url)
         r = requests.get(urlValidate)
         user = None
@@ -45,6 +47,7 @@ def loginCas():
                     "nom_organisme": organismName
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/organism', json=organism)
+
                 user = {
                     "id_role":userId,
                     "identifiant":userLogin, 
@@ -53,6 +56,8 @@ def loginCas():
                     "id_organisme": organismId,
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
+                ## push the user in the rigth group
+                insert_in_cor_role(2, user['id_role'])
                 user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
                 # creation de la Response
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
@@ -85,3 +90,14 @@ def loginCas():
             return "echec de l'authentification"
 
 
+def insert_in_cor_role(id_group, id_user):
+    exist_user = db.session.query(CorRole).get(id_group, id_user)
+    if not exist_user:
+        cor_role = CorRole(id_group, id_user)
+        try:
+            db.session.add(cor_role)
+            db.session.commit()
+            db.session.flush()
+        except:
+            db.session.rollback()
+            raise

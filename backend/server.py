@@ -48,7 +48,7 @@ def get_app():
     app.register_blueprint(routes, url_prefix='/exports')
 
     from src.core.auth.routes import routes
-    app.register_blueprint(routes, url_prefix='/test_auth')
+    app.register_blueprint(routes, url_prefix='/auth_cas')
 
     app_globals['app'] = app
     return app
