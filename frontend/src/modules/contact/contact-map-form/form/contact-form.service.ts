@@ -140,8 +140,8 @@ export class ContactFormService {
 
    initCountingDefaultValues(): FormGroup {
       return this._fb.group({
-        id_nomenclature_life_stage: [this.defaultValues[10], Validators.required],
-        id_nomenclature_sex: [this.defaultValues[9], Validators.required],
+        id_nomenclature_life_stage: [this.defaultValues[10]],
+        id_nomenclature_sex: [this.defaultValues[9]],
         id_nomenclature_obj_count: [this.defaultValues[6], Validators.required],
         id_nomenclature_type_count: this.defaultValues[21],
         count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
@@ -245,6 +245,10 @@ export class ContactFormService {
     // reset current taxon
     this.currentTaxon = {};
     // reset occurrence form
+    console.log("default valueeeeeeees");
+    
+    console.log(this.defaultValues);
+    
     this.occurrenceForm = this.initOccurrenceFormDefaultValues();
     // path the value I want to persist
     this.occurrenceForm.patchValue({
@@ -309,6 +313,7 @@ export class ContactFormService {
   patchDefaultNomenclature() {
     this.getDefaultValues(this.currentUser.organismId)
     .subscribe(data => {
+      this.defaultValues = data;
      // occurrence
       this.occurrenceForm.patchValue({
        id_nomenclature_bio_condition: data[7],
@@ -347,10 +352,10 @@ export class ContactFormService {
           id_nomenclature_bio_status: data[13],
           id_nomenclature_exist_proof : data[15],
           id_nomenclature_determination_method: data[106],
-          id_nomenclature_observation_status : this.defaultValues[18],
-          id_nomenclature_valid_status: this.defaultValues[101],
-          id_nomenclature_diffusion_level: this.defaultValues[5],
-          id_nomenclature_blurring: this.defaultValues[4],
+          id_nomenclature_observation_status : data[18],
+          id_nomenclature_valid_status: data[101],
+          id_nomenclature_diffusion_level: data[5],
+          id_nomenclature_blurring: data[4],
          });
         // counting
         this.countingForm.controls.forEach(formControl => {
