@@ -70,13 +70,10 @@ class TDatasets(serializableModel):
     unique_dataset_id = db.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]))
-    id_acquisition_framework = db.Column(
-        db.Integer,
-        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'))
     unique_acquisition_framework_id = db.Column(
         UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()]
-    ))
+        ForeignKey('gn_meta.t_acquisition_frameworks.unique_acquisition_framework_id')
+    )
     dataset_name = db.Column(db.Unicode)
     dataset_shortname = db.Column(db.Unicode)
     dataset_desc = db.Column(db.Unicode)
