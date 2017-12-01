@@ -11,12 +11,13 @@ import { Subscription } from 'rxjs/Subscription';
   encapsulation: ViewEncapsulation.None
 })
 export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
-  labels: any[];
-  selectedId: number;
-  labelLang: string;
-  definitionLang: string;
-  subscription: Subscription;
-  valueSubscription: Subscription;
+  public labels: Array<any>;
+  public labelLang: string;
+  public definitionLang: string;
+  public subscription: Subscription;
+  public valueSubscription: Subscription;
+  public currentCdNomenclature = 'null';
+  public currentIdNomenclature: number;
   @Input() placeholder: string;
   @Input() parentFormControl: FormControl;
   @Input() idTypeNomenclature: number;
@@ -24,7 +25,6 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   @Input() group2Inpn: string;
   @Input() disabled: boolean;
   @Output() valueSelected = new EventEmitter<number>();
-
   constructor(private _dfService: DataFormService, private _translate:TranslateService) { }
 
   ngOnInit() {
@@ -41,8 +41,29 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
     // output
     this.valueSubscription = this.parentFormControl.valueChanges
       .subscribe(id => {
+        this.currentIdNomenclature = id;
         this.valueSelected.emit(id);
+        const self = this;
+        if (this.labels) {
+          this.labels.forEach(label => {
+            if (this.currentIdNomenclature === label.id_nomenclature) {
+              self.currentCdNomenclature = label.cd_nomenclature;
+            }
+          });
+        }
       });
+  }
+
+  getCdNomenclature() {
+    let cdNomenclature;
+    if (this.labels) {
+      this.labels.forEach(label => {
+        if (this.currentIdNomenclature === label.id_nomenclature){
+          cdNomenclature = label.cd_nomenclature;
+        }
+      });
+    return cdNomenclature;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -60,8 +81,15 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
     this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => {
         this.labels = data.values;
+        // this.labels.forEach(label => {
+        //   if (this.currentIdNomenclature === label.id_nomenclature) {
+        //     this.currentCdNomenclature = label.cd_nomenclature;
+        //   }
+        // });
       });
   }
+
+
 
 
   ngOnDestroy() {

@@ -88,7 +88,8 @@
         "SaveTaxon":"Enregistrer le taxon",
         "AddTaxon":"Ajouter le taxon",
         "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
-        "NoTaxonFound": "Aucun taxon trouvé pour cette recherche"
+        "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
+        "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'"
     },
     "Counting":{
         "Counting":"Dénombrement",

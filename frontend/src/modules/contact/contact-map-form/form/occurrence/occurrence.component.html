@@ -101,18 +101,28 @@
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
             [idTypeNomenclature]="15" 
             [regne]="fs.currentTaxon.regne" 
-            [group2Inpn]="fs.currentTaxon.group2_inpn">
+            [group2Inpn]="fs.currentTaxon.group2_inpn"
+            (getCdNomenclature)="getCdNomencl($event)"
+            #existProof
+            >
           </pnx-nomenclature>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div class="form-group" [ngClass]="{'has-danger' : occurrenceForm.controls.digital_proof.invalid}">
             <small> {{ 'Taxon.DigitalProof' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
               type="text">
+          </div>
+          <small class="red" *ngIf="contactConfig?.digital_proof_validator && occurrenceForm.controls.digital_proof.invalid">
+            {{ 'Taxon.ExistProofValidation' | translate }}
+          </small>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-          <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
-          <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
-            type="text"> 
+          <div class="form-group" [ngClass]="{'has-danger' : occurrenceForm.controls.non_digital_proof.invalid}">
+            <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
+            <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
+              type="text"> 
+          </div>
         </div>
       </div>
       <div class="row row-0" id="row-commentaire">

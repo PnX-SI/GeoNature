@@ -46,6 +46,7 @@ export class ContactFormService {
    }// end constructor
 
 
+
    getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {
      let params = new HttpParams();
      params = params.set('organism', idOrg.toString());
@@ -102,8 +103,8 @@ export class ContactFormService {
         nom_cite: null,
         meta_v_taxref: 'Taxref V9.0',
         sample_number_proof: null,
-        digital_proof: null,
-        non_digital_proof: null,
+        digital_proof: [{value: null, disabled: true}],
+        non_digital_proof: [{value: null, disabled: true}],
         deleted: false,
         comment: null,
         cor_counting_contact: ''
@@ -129,8 +130,8 @@ export class ContactFormService {
         nom_cite: null,
         meta_v_taxref: 'Taxref V9.0',
         sample_number_proof: null,
-        digital_proof: null,
-        non_digital_proof: null,
+        digital_proof: [{value: null, disabled: true}],
+        non_digital_proof: [{value: null, disabled: true}],
         deleted: false,
         comment: null,
         cor_counting_contact: ''
@@ -154,8 +155,8 @@ export class ContactFormService {
       id_nomenclature_sex: [null, Validators.required],
       id_nomenclature_obj_count: [null, Validators.required],
       id_nomenclature_type_count: null,
-      count_min : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
-      count_max : [null, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+      count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+      count_max : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
     });
   }
 
@@ -176,7 +177,7 @@ export class ContactFormService {
     return arrayForm;
   }
 
-  initCountingArray(data): FormArray {
+  initCountingArray(data?): FormArray {
     // init the counting form with the data, or empty
     const arrayForm = this._fb.array([]);
     if (data) {
@@ -305,13 +306,39 @@ export class ContactFormService {
     this.indexOccurrence = this.indexOccurrence - 1 ;
   }
 
+  patchDefaultNomenclature() {
+    this.getDefaultValues(this.currentUser.organismId)
+    .subscribe(data => {
+     // occurrence
+      this.occurrenceForm.patchValue({
+       id_nomenclature_bio_condition: data[7],
+       id_nomenclature_naturalness : data[8],
+       id_nomenclature_obs_meth: data[14],
+       id_nomenclature_bio_status: data[13],
+       id_nomenclature_exist_proof : data[15],
+       id_nomenclature_determination_method: data[106],
+       id_nomenclature_observation_status : data[18],
+       id_nomenclature_valid_status: data[101],
+       id_nomenclature_diffusion_level: data[5],
+       id_nomenclature_blurring: data[4],
+      });
+     // counting
+     this.countingForm.controls.forEach(formControl => {
+       formControl.patchValue({
+         id_nomenclature_life_stage: data[10],
+         id_nomenclature_sex: data[9],
+         id_nomenclature_obj_count: data[6],
+         id_nomenclature_type_count: data[21]
+       });
+     });
+   });
+  }
+
   onTaxonChanged(taxon) {
      this.currentTaxon = taxon;
      // fetch default nomenclature value filtered by organism, regne, group2_inpn
      this.getDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
        .subscribe(data => {
-         console.log(data);
-         
         // occurrence
          this.occurrenceForm.patchValue({
           id_nomenclature_bio_condition: data[7],

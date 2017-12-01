@@ -88,7 +88,8 @@
         "SaveTaxon":"Save taxon",
         "AddTaxon":"Add taxon",
         "CurrentlyEditing": "Please first validate the currently editing taxon",
-        "NoTaxonFound": "No taxon found for this search"
+        "NoTaxonFound": "No taxon found for this search",
+        "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'"
     },
     "Counting":{
         "Counting":"Counting",
