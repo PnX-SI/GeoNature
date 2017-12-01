@@ -85,7 +85,7 @@ $$
 BEGIN
 ALTER TABLE utilisateurs.bib_organismes ADD COLUMN id_parent integer;
 ALTER TABLE utilisateurs.t_applications ADD COLUMN id_parent integer;
-ALTER TABLE utilisateurs.t_roles ADD COLUMN pass_plus text;
+--ALTER TABLE utilisateurs.t_roles ADD COLUMN pass_plus text;
 EXCEPTION WHEN duplicate_column  THEN
         RAISE NOTICE 'Tentative d''insertion de valeur existante';
 END
@@ -353,7 +353,7 @@ WITH p_user_tag AS (
     v.tag_action_code,
     v.max_tag_object_code::varchar(25) as tag_object_code
 FROM all_users_tags v
-WHERE max_tag_object_code = tag_object_code
+WHERE max_tag_object_code = tag_object_code;
 
 
 -- -------------
