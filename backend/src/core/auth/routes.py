@@ -57,7 +57,7 @@ def loginCas():
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
                 ## push the user in the rigth group
-                insert_in_cor_role(2, user['id_role'])
+                #insert_in_cor_role(2, user['id_role'])
                 user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
                 # creation de la Response
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
