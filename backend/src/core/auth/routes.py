@@ -50,9 +50,10 @@ def loginCas():
                     "identifiant":userLogin, 
                     "nom_role": infoUser['nom'],
                     "prenom_role": infoUser['prenom'],
-                    "id_organisme": organismId
+                    "id_organisme": organismId,
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
+                user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
                 # creation de la Response
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
                 cookieExp = datetime.datetime.utcnow()
