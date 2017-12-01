@@ -33,7 +33,13 @@ export class ContactFormComponent implements OnInit {
     // set show occurrence to false:
     this.fs.showOccurrence = false;
     // refresh the forms
-      this.fs.initFormsWithDefaultValues();
+    this.fs.releveForm = this.fs.initReleveForm();
+    this.fs.occurrenceForm = this.fs.initOccurenceForm();
+    this.fs.countingForm = this.fs.initCountingArray();
+
+    // patch default values in ajax
+    this.fs.patchDefaultNomenclature();
+    //this.fs.initFormsWithDefaultValues();
 
     // reset taxon list of service
     this.fs.taxonsList = [];
