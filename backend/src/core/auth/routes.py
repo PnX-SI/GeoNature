@@ -91,7 +91,10 @@ def loginCas():
 
 
 def insert_in_cor_role(id_group, id_user):
-    exist_user = db.session.query(CorRole).get(id_group, id_user)
+    exist_user = db.session.query(CorRole
+    ).filter(CorRole.id_role_groupe == id_group
+    ).filter(CorRole.id_role_utilisateur == id_user
+    ).one()
     if not exist_user:
         cor_role = CorRole(id_group, id_user)
         try:
