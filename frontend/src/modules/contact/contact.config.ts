@@ -1,5 +1,5 @@
 export const ContactConfig = {
-  'observers_txt': false,
+  'observers_txt': true,
   'digital_proof_validator': true
 };
 

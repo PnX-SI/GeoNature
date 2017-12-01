@@ -62,6 +62,10 @@ export class OccurrenceComponent implements AfterViewInit {
     this.occurrenceForm.controls.digital_proof.valueChanges
       .filter(value => value !== null)
       .subscribe(value => {
+        // set validator if it has been removed
+        if (ContactConfig.digital_proof_validator) {
+          this.occurrenceForm.controls.digital_proof.setValidators(this.validateDigitalProof);
+        }
         // if length = 0 set to null
         if (value.length === 0) {
           this.occurrenceForm.controls.digital_proof.setValue(null);
@@ -83,6 +87,7 @@ export class OccurrenceComponent implements AfterViewInit {
           this.occurrenceForm.controls.non_digital_proof.setValue(null);
         }
         if (this.occurrenceForm.value.digital_proof === null) {
+          this.occurrenceForm.controls.digital_proof.clearValidators();
           this.occurrenceForm.controls.digital_proof.updateValueAndValidity();
         }
         if (value.length === 0 && this.occurrenceForm.value.digital_proof === null) {
@@ -91,12 +96,6 @@ export class OccurrenceComponent implements AfterViewInit {
         }
       });
 
-      this.occurrenceForm.controls.determiner.setValidators(this.validateDigitalProof);
-      this.occurrenceForm.controls.determiner.valueChanges
-        .subscribe(value => {
-          console.log(this.occurrenceForm.controls.determiner.valid);
-          
-        })
   }
 
 
