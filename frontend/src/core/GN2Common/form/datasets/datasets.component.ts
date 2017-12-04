@@ -19,14 +19,7 @@ export class DatasetsComponent implements OnInit {
 
   ngOnInit() {
       // TODO : recuperer l'id du module en cours
-      console.log("from datasets");
-      const currentUser = this._auth.getCurrentUser();
-      const appRights = currentUser.getRight(this.appId);
-      let idOrganism = null;
-      if (appRights['R'] < AppConfig.RIGHTS.MY_ORGANISM_DATA) {
-         idOrganism = currentUser.organismId;
-      }
-      this._dfs.getDatasets(idOrganism)
+      this._dfs.getDatasets()
       .subscribe(res => {
         this.dataSets = res;
      });

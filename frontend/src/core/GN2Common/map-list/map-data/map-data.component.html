@@ -102,7 +102,7 @@
   <ngx-datatable
     #table
     class="material striped margin-top-xs table-size expandable"
-    [rows]="rows"
+    [rows]="mapListService.tableData"
     [columns]="displayColumns"
     [columnMode]="'force'"
     [headerHeight]="50"

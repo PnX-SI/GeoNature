@@ -46,3 +46,6 @@ class CorRole(serializableModel):
     id_role_groupe = db.Column(db.Integer, primary_key=True)
     id_role_utilisateur = db.Column(db.Integer, primary_key=True)
 
+    def __init__(self, id_group, id_role):
+        self.id_role_groupe = id_group
+        self.id_role_utilisateur = id_role 
