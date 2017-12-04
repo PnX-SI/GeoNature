@@ -57,7 +57,14 @@ def loginCas():
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
                 ## push the user in the rigth group
-                #insert_in_cor_role(2, user['id_role'])
+                if organismId == -1:
+                    # group socle 1
+                    insert_in_cor_role(20003, user['id_role'])
+                    rights = {current_app.config['ID_APPLICATION_GEONATURE'] : {'C': 3, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 } }
+                else:
+                    # group socle 2
+                    insert_in_cor_role(20001, user['id_role'])
+                    rights = {current_app.config['ID_APPLICATION_GEONATURE'] : {'C': 3, 'R': 2, 'U': 1, 'V': 1, 'E': 2, 'D': 1 } }
                 user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
                 # creation de la Response
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))
@@ -73,7 +80,7 @@ def loginCas():
                 # Utilisateur en cookie
                 # TODO: remove CRUVED FROM cookies
                 # met les droit d'admin pour la démo, a changer
-                rights = {'14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 } }
+                
                 currentUser = {
                     'userName': userLogin,
                     'userId': userId,
@@ -86,7 +93,7 @@ def loginCas():
                                      expires=cookieExp)
             return response
         else:
-            # redirect to inpn            
+            # redirect to inpn sss           
             return "echec de l'authentification"
 
 
