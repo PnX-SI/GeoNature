@@ -8,6 +8,9 @@ import * as L from 'leaflet';
 export class MapListService {
   private _layerId = new Subject<any>();
   private _tableId = new Subject<any>();
+  public data: any;
+  public tableData = new Array();
+  public geojsonData: any;
   public idName: string;
   public columns = [];
   public layerDict= {};
@@ -84,12 +87,23 @@ export class MapListService {
   }
 
   loadTableData(data) {
-    const tableData = [];
+    this.tableData = [];
     data.features.forEach(feature => {
-      const obj = feature.properties;
-      tableData.push(obj);
+      this.tableData.push(feature.properties);
     });
-    return tableData;
+  }
+
+  deleteObs(idDelete) {
+    this.tableData = this.tableData.filter(row => {
+      return row[this.idName] !==  idDelete;
+    });
+
+    this.geojsonData.features = this.geojsonData.features.filter(row => {
+       return row.properties[this.idName] !==  idDelete;
+     });
+
+     this.geojsonData = JSON.parse(JSON.stringify(this.geojsonData));
+
   }
 
 }

@@ -42,8 +42,8 @@ export class MapListComponent implements OnInit, OnChanges {
     this.mapListService.getData(this.apiEndPoint, params)
       .subscribe(res => {
         this.mapListService.page.totalElements = res.total_filtered;
-        this.geojsonData = res.items;
-        this.tableData = this.mapListService.loadTableData(res.items);
+        this.mapListService.geojsonData = res.items;
+        this.mapListService.loadTableData(res.items);
       });
   }
 
@@ -57,6 +57,8 @@ export class MapListComponent implements OnInit, OnChanges {
     this.mapListService.layerDict[feature.id] = layer;
     layer.on({
       click : (e) => {
+        console.log("click");
+        
         // toggle style
         this.mapListService.toggleStyle(layer);
         // observable
@@ -70,7 +72,8 @@ export class MapListComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (changes.geojsonData.currentValue !== undefined) {
-      this.tableData = this.mapListService.loadTableData(changes.geojsonData.currentValue);
+      this.mapListService.geojsonData = changes.geojsonData.currentValue;
+      this.mapListService.loadTableData(changes.geojsonData.currentValue);
       const features = changes.geojsonData.currentValue.features;
       const keyColumns = [];
       if (features.length > 0) {
