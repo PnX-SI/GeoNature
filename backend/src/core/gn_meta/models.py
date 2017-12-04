@@ -104,9 +104,11 @@ class TDatasets(serializableModel):
 class CorDatasetsActor(serializableModel):
     __tablename__ = 'cor_dataset_actor'
     __table_args__ = {'schema': 'gn_meta'}
-    id_dataset = db.Column(db.Integer, primary_key=True)
-    id_actor = db.Column(db.Integer, primary_key=True)
-    id_nomenclature_actor_role = db.Column(db.Integer, primary_key=True)
+    unique_id = db.Column(UUID(as_uuid=True), primary_key=True)
+    unique_dataset_id = db.Column(UUID(as_uuid=True))
+    id_role = db.Column(db.Integer)
+    id_organism = db.Column(db.Integer)
+    id_nomenclature_actor_role = db.Column(db.Integer)
 
 
 

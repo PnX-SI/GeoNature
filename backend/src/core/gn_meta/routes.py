@@ -9,6 +9,8 @@ from sqlalchemy import or_
 from sqlalchemy.sql import text
 
 from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquisitionFramework
+from ..users.models import TRoles
+from pypnusershub import routes as fnauth
 from ...utils.utilssqlalchemy import json_resp
 
 import requests
@@ -80,24 +82,21 @@ def getDatasetsList():
 
 
 @routes.route('/datasets', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def getDatasets():
+def getDatasets(info_role):
     """
         Retourne la liste des datasets
 
-        Parameters
-        ----------------------
-        organism: int
-            id de l'organisme du dataset
     """
-    parameters = request.args
     q = db.session.query(TDatasets)
 
-    if 'organism' in parameters:
+    if int(info_role[1]) <= 2:
+        id_org = db.session.query(TRoles).get(2).id_organisme
         q = q.join(CorDatasetsActor,
-        CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        CorDatasetsActor.unique_dataset_id == TDatasets.unique_dataset_id
         ).filter(
-            CorDatasetsActor.id_actor == int(parameters.get('organism')))
+            CorDatasetsActor.id_organism == id_org)
     try:
         data = q.all()
     except Exception as e:
