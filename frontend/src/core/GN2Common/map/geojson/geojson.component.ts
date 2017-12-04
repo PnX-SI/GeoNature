@@ -20,28 +20,20 @@ export class GeojsonComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.map = this.mapservice.map;
-
   }
 
    loadGeojson(geojson) {
-    // this.currentGeojson = L.geoJSON(geojson, {
-    //   style: (this.originStyle as any),
-    //   pointToLayer: function (feature, latlng) {
-    //     return L.circleMarker(latlng);
-    //   },
-    //   onEachFeature: this.onEachFeature
-    // });
     this.currentGeojson = this.mapservice.createGeojson(geojson, this.onEachFeature);
     this.currentGeojson.id = 'mygeojson';
     this.mapservice.layerGroup = new L.LayerGroup();
-    this.map.addLayer(this.mapservice.layerGroup);
+    this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
    }
 
    ngOnChanges(changes) {
     if (changes.geojson && changes.geojson.currentValue !== undefined) {
       if (this.currentGeojson !== undefined) {
-        this.map.removeLayer(this.currentGeojson);
+        this.mapservice.map.removeLayer(this.currentGeojson);
       }
       this.loadGeojson(changes.geojson.currentValue);
     }
