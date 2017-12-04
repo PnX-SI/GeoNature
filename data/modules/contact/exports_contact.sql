@@ -7,7 +7,7 @@ SET client_min_messages = warning;
 
 
 CREATE OR REPLACE VIEW pr_contact.export_occtax_sinp AS 
-SELECT ccc.unique_id_sinp AS "identifiantPermanent",
+SELECT ccc.unique_id_sinp_occtax AS "identifiantPermanent",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statutObservation",
     occ.nom_cite AS "nomCite",
     rel.date_min AS "jourDateDebut",
@@ -25,7 +25,7 @@ SELECT ccc.unique_id_sinp AS "identifiantPermanent",
     d.unique_dataset_id AS "jddMetadonneeDEEId",
     'Te'::text AS "statutSource",
     '0'::text AS "diffusionNiveauPrecision",
-    ccc.unique_id_sinp AS "identifiantOrigine",
+    ccc.unique_id_sinp_occtax AS "identifiantOrigine",
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
     NULL::text AS "referenceBiblio",
@@ -63,7 +63,7 @@ SELECT ccc.unique_id_sinp AS "identifiantPermanent",
      LEFT JOIN pr_contact.cor_role_releves_contact cr ON cr.id_releve_contact = rel.id_releve_contact
      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
-  GROUP BY ccc.unique_id_sinp, d.unique_dataset_id,occ.id_nomenclature_bio_condition, occ.id_nomenclature_naturalness, ccc.id_nomenclature_sex,ccc.id_nomenclature_life_stage,
+  GROUP BY ccc.unique_id_sinp_occtax, d.unique_dataset_id,occ.id_nomenclature_bio_condition, occ.id_nomenclature_naturalness, ccc.id_nomenclature_sex,ccc.id_nomenclature_life_stage,
   occ.id_nomenclature_bio_status,occ.id_nomenclature_exist_proof, occ.id_nomenclature_determination_method,
    ccc.id_nomenclature_sex, rel.id_releve_contact, d.id_nomenclature_source_status, occ.id_nomenclature_blurring, occ.id_nomenclature_diffusion_level, 'Pr'::text, occ.nom_cite, rel.date_min, rel.date_max, rel.hour_min, rel.hour_max, rel.altitude_max, rel.altitude_min, occ.cd_nom, occ.id_nomenclature_observation_status, (taxonomie.find_cdref(occ.cd_nom)), (gn_meta.get_default_parameter('taxref_version'::text, NULL::integer)),
     rel.comment, ccc.meta_update_date, 'Ac'::text, 

@@ -72,16 +72,16 @@ COMMENT ON TABLE t_parameters IS 'Allow to manage content configuration dependin
 
 
 CREATE TABLE sinp_datatype_protocols (
+    id_protocol integer NOT NULL,
     unique_protocol_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    id_protocol integer,
     protocol_name character varying(255) NOT NULL,
     protocol_desc character varying(255),
     id_nomenclature_protocol_type integer NOT NULL,
     protocol_url character varying(255)
 );
 COMMENT ON TABLE sinp_datatype_protocols IS 'Define a SINP datatype Types::ProtocoleType.';
-COMMENT ON COLUMN sinp_datatype_protocols.unique_protocol_id IS 'Internal value for primary and foreign keys';
-COMMENT ON COLUMN sinp_datatype_protocols.id_protocol IS 'Internal value to reference external protocol id value';
+COMMENT ON COLUMN sinp_datatype_protocols.id_protocol IS 'Internal value for primary and foreign keys';
+COMMENT ON COLUMN sinp_datatype_protocols.unique_protocol_id IS 'Internal value to reference external protocol id value';
 COMMENT ON COLUMN sinp_datatype_protocols.protocol_name IS 'Correspondance standard SINP = libelle :Libellé du protocole : donne le nom du protocole en quelques mots - OBLIGATOIRE';
 COMMENT ON COLUMN sinp_datatype_protocols.protocol_desc IS 'Correspondance standard SINP = description : Description du protocole : décrit le contenu du protocole - FACULTATIF.';
 COMMENT ON COLUMN sinp_datatype_protocols.id_nomenclature_protocol_type IS 'Correspondance standard SINP = typeProtocole : Type du protocole, tel que défini dans la nomenclature TypeProtocoleValue - OBLIGATOIRE';
@@ -97,14 +97,14 @@ ALTER TABLE ONLY sinp_datatype_protocols ALTER COLUMN id_protocol SET DEFAULT ne
 
 
 CREATE TABLE sinp_datatype_publications (
+    id_publication integer NOT NULL,
     unique_publication_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    id_publication integer,
     publication_reference text NOT NULL,
     publication_url text
 );
 COMMENT ON TABLE sinp_datatype_publications IS 'Define a SINP datatype Concepts::Publication.';
 COMMENT ON COLUMN sinp_datatype_publications.id_publication IS 'Internal value for primary and foreign keys';
-COMMENT ON COLUMN sinp_datatype_publications.id_publication IS 'Internal value to reference external publication id value';
+COMMENT ON COLUMN sinp_datatype_publications.unique_publication_id IS 'Internal value to reference external publication id value';
 COMMENT ON COLUMN sinp_datatype_publications.publication_reference IS 'Correspondance standard SINP = referencePublication : Référence complète de la publication suivant la nomenclature ISO 690 - OBLIGATOIRE';
 COMMENT ON COLUMN sinp_datatype_publications.publication_url IS 'Correspondance standard SINP = URLPublication : Adresse à laquelle trouver la publication - RECOMMANDE.';
 CREATE SEQUENCE sinp_datatype_publications_id_publication_seq
@@ -117,8 +117,8 @@ ALTER SEQUENCE sinp_datatype_publications_id_publication_seq OWNED BY sinp_datat
 ALTER TABLE ONLY sinp_datatype_publications ALTER COLUMN id_publication SET DEFAULT nextval('sinp_datatype_publications_id_publication_seq'::regclass);
 
 CREATE TABLE t_acquisition_frameworks (
+    id_acquisition_framework integer NOT NULL,
     unique_acquisition_framework_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    id_acquisition_framework integer,
     acquisition_framework_name character varying(255) NOT NULL,
     acquisition_framework_desc text NOT NULL,
     id_nomenclature_territorial_level integer DEFAULT ref_nomenclatures.get_default_nomenclature_value(107),
@@ -135,8 +135,8 @@ CREATE TABLE t_acquisition_frameworks (
     meta_update_date timestamp without time zone
 );
 COMMENT ON TABLE t_acquisition_frameworks IS 'Define a acquisition framework that embed datasets. Implement 1.3.8 SINP metadata standard';
-COMMENT ON COLUMN t_acquisition_frameworks.unique_acquisition_framework_id IS 'Internal value for primary and foreign keys. Correspondance standard SINP = identifiantCadre';
-COMMENT ON COLUMN t_acquisition_frameworks.id_acquisition_framework IS 'Internal value to reference external acquisition framework id value';
+COMMENT ON COLUMN t_acquisition_frameworks.id_acquisition_framework IS 'Internal value for primary and foreign keys';
+COMMENT ON COLUMN t_acquisition_frameworks.unique_acquisition_framework_id IS 'Correspondance standard SINP = identifiantCadre';
 COMMENT ON COLUMN t_acquisition_frameworks.acquisition_framework_name IS 'Correspondance standard SINP = libelle';
 COMMENT ON COLUMN t_acquisition_frameworks.acquisition_framework_desc IS 'Correspondance standard SINP = description';
 COMMENT ON COLUMN t_acquisition_frameworks.id_nomenclature_territorial_level IS 'Correspondance standard SINP = niveauTerritorial';
@@ -161,21 +161,21 @@ ALTER TABLE ONLY t_acquisition_frameworks ALTER COLUMN id_acquisition_framework 
 
 
 CREATE TABLE cor_acquisition_framework_voletsinp (
-    unique_acquisition_framework_id uuid NOT NULL,
+    id_acquisition_framework integer NOT NULL,
     id_nomenclature_voletsinp integer NOT NULL
 );
 COMMENT ON TABLE cor_acquisition_framework_voletsinp IS 'A acquisition framework can have 0 or n "voletSINP". Implement 1.3.8 SINP metadata standard : Volet du SINP concerné par le dispositif de collecte, tel que défini dans la nomenclature voletSINPValue - FACULTATIF';
 
 
 CREATE TABLE cor_acquisition_framework_objectif (
-    unique_acquisition_framework_id uuid NOT NULL,
+    id_acquisition_framework integer NOT NULL,
     id_nomenclature_objectif integer NOT NULL
 );
 COMMENT ON TABLE cor_acquisition_framework_objectif IS 'A acquisition framework can have 1 or n "objectif". Implement 1.3.8 SINP metadata standard : Objectif du cadre d''acquisition, tel que défini par la nomenclature TypeDispositifValue - OBLIGATOIRE';
 
 
 CREATE TABLE cor_acquisition_framework_territory (
-    unique_acquisition_framework_id uuid NOT NULL,
+    id_acquisition_framework integer NOT NULL,
     id_nomenclature_territory integer NOT NULL,
     territory_desc text
 );
@@ -184,34 +184,42 @@ COMMENT ON COLUMN cor_acquisition_framework_territory.territory_desc IS 'Corresp
 
 
 CREATE TABLE cor_acquisition_framework_actor (
-    unique_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    unique_acquisition_framework_id uuid NOT NULL,
+    id_cafa integer NOT NULL,
+    id_acquisition_framework integer NOT NULL,
     id_role integer,
     id_organism integer,
     id_nomenclature_actor_role integer NOT NULL
 );
 COMMENT ON TABLE cor_acquisition_framework_actor IS 'A acquisition framework must have a principal actor "acteurPrincipal" and can have 0 or n other actor "acteurAutre". Implement 1.3.8 SINP metadata standard : Contact principal pour le cadre d''acquisition (Règle : RoleActeur prendra la valeur 1) - OBLIGATOIRE. Autres contacts pour le cadre d''acquisition (exemples : maître d''oeuvre, d''ouvrage...).- RECOMMANDE';
 COMMENT ON COLUMN cor_acquisition_framework_actor.id_nomenclature_actor_role IS 'Correspondance standard SINP = roleActeur : Rôle de l''acteur tel que défini dans la nomenclature RoleActeurValue - OBLIGATOIRE';
+CREATE SEQUENCE cor_acquisition_framework_actor_id_cafa_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE cor_acquisition_framework_actor_id_cafa_seq OWNED BY cor_acquisition_framework_actor.id_cafa;
+ALTER TABLE ONLY cor_acquisition_framework_actor ALTER COLUMN id_cafa SET DEFAULT nextval('cor_acquisition_framework_actor_id_cafa_seq'::regclass);
 
 
 CREATE TABLE cor_acquisition_framework_publication (
-    unique_acquisition_framework_id uuid NOT NULL,
-    unique_publication_id uuid NOT NULL
+    id_acquisition_framework integer NOT NULL,
+    id_publication integer NOT NULL
 );
 COMMENT ON TABLE cor_acquisition_framework_publication IS 'A acquisition framework can have 0 or n "publication". Implement 1.3.8 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition - RECOMMANDE';
 
 
 CREATE TABLE cor_acquisition_framework_protocol (
-    unique_acquisition_framework_id uuid NOT NULL,
-    unique_protocol_id uuid NOT NULL
+    id_acquisition_framework integer NOT NULL,
+    id_protocol integer NOT NULL
 );
 COMMENT ON TABLE cor_acquisition_framework_protocol IS 'A acquisition framework can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) éventuel(s) pour le cadre d''acquisition et/ou sa fiche de métadonnées. Contient le type "ProtocoleType" autant de fois que nécessaire - RECOMMANDE';
 
 
 CREATE TABLE t_datasets (
+    id_dataset integer NOT NULL,
     unique_dataset_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    id_dataset integer,
-    unique_acquisition_framework_id uuid NOT NULL,
+    id_acquisition_framework integer NOT NULL,
     dataset_name character varying(150) NOT NULL,
     dataset_shortname character varying(30) NOT NULL,
     dataset_desc text NOT NULL,
@@ -234,9 +242,9 @@ CREATE TABLE t_datasets (
     meta_update_date timestamp without time zone
 );
 COMMENT ON TABLE t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
-COMMENT ON COLUMN t_datasets.unique_acquisition_framework_id IS 'Internal value for primary and foreign keys. Internal value for foreign keys with t_acquisition_frameworks table. Correspondance standard SINP = identifiantCadre : Identifiant unique de rattachement au cadre d''acquisition (il s''agit de l''identifiant du cadre). Il s''agit d''un UUID attribué par une plateforme SINP - OBLIGATOIRE';
-COMMENT ON COLUMN t_datasets.id_dataset IS 'Internal value to reference external dataset id value';
+COMMENT ON COLUMN t_datasets.id_dataset IS 'Internal value for primary and foreign keys.';
 COMMENT ON COLUMN t_datasets.unique_dataset_id IS 'Correspondance standard SINP = identifiantJdd : Identifiant unique du jeu de données sous la forme d''un UUID. Il devra être sous la forme d''un UUID - OBLIGATOIRE';
+COMMENT ON COLUMN t_datasets.id_acquisition_framework IS ' Internal value for foreign keys with t_acquisition_frameworks table';
 COMMENT ON COLUMN t_datasets.dataset_name IS 'Correspondance standard SINP = libelle : Nom du jeu de données (150 caractères) - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.dataset_shortname IS 'Correspondance standard SINP = libelleCourt : Libellé court (30 caractères) du jeu de données - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.dataset_desc IS 'Correspondance standard SINP = description : Description du jeu de données - OBLIGATOIRE';
@@ -266,18 +274,25 @@ ALTER TABLE ONLY t_datasets ALTER COLUMN id_dataset SET DEFAULT nextval('t_datas
 
 
 CREATE TABLE cor_dataset_actor (
-    unique_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-    unique_dataset_id uuid NOT NULL,
+    id_cda integer NOT NULL,
+    id_dataset integer NOT NULL,
     id_role integer,
     id_organism integer,
     id_nomenclature_actor_role integer NOT NULL
 );
 COMMENT ON TABLE cor_dataset_actor IS 'A dataset must have 1 or n actor ""pointContactJdd"". Implement 1.3.8 SINP metadata standard : Point de contact principal pour les données du jeu de données, et autres éventuels contacts (fournisseur ou producteur). (Règle : Un contact au moins devra avoir roleActeur à 1 - Les autres types possibles pour roleActeur sont 5 et 6 (fournisseur et producteur)) - OBLIGATOIRE';
 COMMENT ON COLUMN cor_dataset_actor.id_nomenclature_actor_role IS 'Correspondance standard SINP = roleActeur : Rôle de l''acteur tel que défini dans la nomenclature RoleActeurValue - OBLIGATOIRE';
-
+CREATE SEQUENCE cor_dataset_actor_id_cda_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE cor_dataset_actor_id_cda_seq OWNED BY cor_dataset_actor.id_cda;
+ALTER TABLE ONLY cor_dataset_actor ALTER COLUMN id_cda SET DEFAULT nextval('cor_dataset_actor_id_cda_seq'::regclass);
 
 CREATE TABLE cor_dataset_territory (
-    unique_dataset_id uuid NOT NULL,
+    id_dataset integer NOT NULL,
     id_nomenclature_territory integer NOT NULL,
     territory_desc text
 );
@@ -286,8 +301,8 @@ COMMENT ON COLUMN cor_dataset_territory.territory_desc IS 'Correspondance standa
 
 
 CREATE TABLE cor_dataset_protocol (
-    unique_dataset_id uuid NOT NULL,
-    unique_protocol_id uuid NOT NULL
+    id_dataset integer NOT NULL,
+    id_protocol integer NOT NULL
 );
 COMMENT ON TABLE cor_dataset_protocol IS 'A dataset can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) rattaché(s) au jeu de données (protocole de synthèse et/ou de collecte). On se rapportera au type "Protocole Type". - RECOMMANDE';
 
@@ -303,7 +318,7 @@ COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed data
 
 CREATE TABLE cor_role_dataset_application (
     id_role integer NOT NULL,
-    unique_dataset_id uuid NOT NULL,
+    id_dataset integer NOT NULL,
     id_application integer NOT NULL
 );
 COMMENT ON TABLE cor_role_dataset_application IS 'Allow to identify for each GeoNature module (1 module = 1 application in UsersHub) among which dataset connected user can create observations. Reminder : A dataset is a dataset or a survey and each observation is attached to a dataset. GeoNature V2 backoffice allows to manage datasets.';
@@ -327,41 +342,41 @@ ALTER TABLE ONLY t_parameters
 --     ADD CONSTRAINT pk_sinp_datatype_actors PRIMARY KEY (id_actor);
 
 ALTER TABLE ONLY sinp_datatype_protocols
-    ADD CONSTRAINT pk_sinp_datatype_protocols PRIMARY KEY (unique_protocol_id);
+    ADD CONSTRAINT pk_sinp_datatype_protocols PRIMARY KEY (id_protocol);
 
 ALTER TABLE ONLY sinp_datatype_publications
-    ADD CONSTRAINT pk_sinp_datatype_publications PRIMARY KEY (unique_publication_id);
+    ADD CONSTRAINT pk_sinp_datatype_publications PRIMARY KEY (id_publication);
 
 ALTER TABLE ONLY t_acquisition_frameworks
-    ADD CONSTRAINT pk_t_acquisition_frameworks PRIMARY KEY (unique_acquisition_framework_id);
+    ADD CONSTRAINT pk_t_acquisition_frameworks PRIMARY KEY (id_acquisition_framework);
 
 ALTER TABLE ONLY cor_acquisition_framework_voletsinp
-    ADD CONSTRAINT pk_cor_acquisition_framework_voletsinp PRIMARY KEY (unique_acquisition_framework_id, id_nomenclature_voletsinp);
+    ADD CONSTRAINT pk_cor_acquisition_framework_voletsinp PRIMARY KEY (id_acquisition_framework, id_nomenclature_voletsinp);
 
 ALTER TABLE ONLY cor_acquisition_framework_objectif
-    ADD CONSTRAINT pk_cor_acquisition_framework_objectif PRIMARY KEY (unique_acquisition_framework_id, id_nomenclature_objectif);
+    ADD CONSTRAINT pk_cor_acquisition_framework_objectif PRIMARY KEY (id_acquisition_framework, id_nomenclature_objectif);
 
 ALTER TABLE ONLY cor_acquisition_framework_territory
-    ADD CONSTRAINT pk_cor_acquisition_framework_territory PRIMARY KEY (unique_acquisition_framework_id, id_nomenclature_territory);
+    ADD CONSTRAINT pk_cor_acquisition_framework_territory PRIMARY KEY (id_acquisition_framework, id_nomenclature_territory);
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
-    ADD CONSTRAINT pk_cor_acquisition_framework_actor PRIMARY KEY (unique_id);
+    ADD CONSTRAINT pk_cor_acquisition_framework_actor PRIMARY KEY (id_cafa);
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
-    ADD CONSTRAINT pk_cor_acquisition_framework_publication PRIMARY KEY (unique_acquisition_framework_id, unique_publication_id);
+    ADD CONSTRAINT pk_cor_acquisition_framework_publication PRIMARY KEY (id_acquisition_framework, id_publication);
 
 ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT pk_cor_acquisition_framework_protocol PRIMARY KEY (unique_acquisition_framework_id, unique_protocol_id);
+    ADD CONSTRAINT pk_cor_acquisition_framework_protocol PRIMARY KEY (id_acquisition_framework, id_protocol);
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT pk_t_datasets PRIMARY KEY (unique_dataset_id);
+    ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT pk_cor_dataset_actor PRIMARY KEY (unique_id);    
+    ADD CONSTRAINT pk_cor_dataset_actor PRIMARY KEY (id_cda);    
 
 ALTER TABLE ONLY cor_dataset_territory
-    ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (unique_dataset_id, id_nomenclature_territory);
+    ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
 
 
 ALTER TABLE ONLY t_programs
@@ -373,11 +388,11 @@ ALTER TABLE ONLY cor_role_privilege_entity
 
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, unique_dataset_id, id_application);
+    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
 
 
 ALTER TABLE ONLY cor_dataset_protocol
-    ADD CONSTRAINT pk_cor_dataset_protocol PRIMARY KEY (unique_dataset_id, unique_protocol_id);
+    ADD CONSTRAINT pk_cor_dataset_protocol PRIMARY KEY (id_dataset, id_protocol);
 
 ----------------
 --FOREIGN KEYS--
@@ -387,28 +402,28 @@ ALTER TABLE ONLY t_parameters
 
 
 ALTER TABLE ONLY cor_acquisition_framework_voletsinp
-    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_unique_acquisition_framework_id FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_acquisition_framework_voletsinp
     ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_nomenclature_voletsinp FOREIGN KEY (id_nomenclature_voletsinp) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_objectif
-    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_unique_acquisition_framework_id FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_acquisition_framework_objectif
     ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_nomenclature_objectif FOREIGN KEY (id_nomenclature_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_territory
-    ADD CONSTRAINT fk_cor_acquisition_framework_territory_unique_acquisition_framework_id FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_territory_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_acquisition_framework_territory
     ADD CONSTRAINT fk_cor_acquisition_framework_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
-    ADD CONSTRAINT fk_cor_acquisition_framework_actor_unique_acquisition_framework_id FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
     ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
@@ -421,17 +436,17 @@ ALTER TABLE ONLY cor_acquisition_framework_actor
 
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
-    ADD CONSTRAINT fk_cor_acquisition_framework_publication_unique_acquisition_framework_id FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
-    ADD CONSTRAINT fk_cor_acquisition_framework_publication_unique_publication_id FOREIGN KEY (unique_publication_id) REFERENCES sinp_datatype_publications(unique_publication_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_unique_acquisition_framework_id FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_unique_publication_id FOREIGN KEY (unique_protocol_id) REFERENCES sinp_datatype_protocols(unique_protocol_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_publication FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY cor_role_privilege_entity
@@ -448,11 +463,11 @@ ALTER TABLE ONLY cor_role_dataset_application
     ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (unique_dataset_id) REFERENCES t_datasets(unique_dataset_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (unique_acquisition_framework_id) REFERENCES t_acquisition_frameworks(unique_acquisition_framework_id) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE CASCADE;
@@ -477,7 +492,7 @@ ALTER TABLE ONLY t_datasets
 
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT fk_cor_dataset_actor_unique_dataset_id FOREIGN KEY (unique_dataset_id) REFERENCES t_datasets(unique_dataset_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_actor_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_dataset_actor
     ADD CONSTRAINT fk_dataset_actor_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
@@ -489,16 +504,16 @@ ALTER TABLE ONLY cor_dataset_actor
     ADD CONSTRAINT fk_cor_dataset_actor_id_nomenclature_actor_role FOREIGN KEY (id_nomenclature_actor_role) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_dataset_territory
-    ADD CONSTRAINT fk_cor_dataset_territory_unique_dataset_id FOREIGN KEY (unique_dataset_id) REFERENCES t_datasets(unique_dataset_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_dataset_territory
     ADD CONSTRAINT fk_cor_dataset_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_dataset_protocol
-    ADD CONSTRAINT fk_cor_dataset_protocol_unique_dataset_id FOREIGN KEY (unique_dataset_id) REFERENCES t_datasets(unique_dataset_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_dataset_protocol
-    ADD CONSTRAINT fk_cor_dataset_protocol_unique_protocol_id FOREIGN KEY (unique_protocol_id) REFERENCES sinp_datatype_protocols(unique_protocol_id) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_protocol FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 
@@ -566,10 +581,10 @@ ALTER TABLE cor_acquisition_framework_actor
   ADD CONSTRAINT check_is_actor_in_cor_acquisition_framework_actor CHECK (id_role IS NOT NULL OR id_organism IS NOT NULL);
 
 ALTER TABLE cor_acquisition_framework_actor
-  ADD CONSTRAINT check_is_unique_cor_acquisition_framework_actor_role UNIQUE(unique_acquisition_framework_id, id_role, id_nomenclature_actor_role);
+  ADD CONSTRAINT check_is_unique_cor_acquisition_framework_actor_role UNIQUE(id_acquisition_framework, id_role, id_nomenclature_actor_role);
 
 ALTER TABLE cor_acquisition_framework_actor
-  ADD CONSTRAINT check_is_unique_cor_acquisition_framework_actor_organism UNIQUE(unique_acquisition_framework_id, id_organism, id_nomenclature_actor_role);
+  ADD CONSTRAINT check_is_unique_cor_acquisition_framework_actor_organism UNIQUE(id_acquisition_framework, id_organism, id_nomenclature_actor_role);
 
 
 ALTER TABLE sinp_datatype_protocols
@@ -586,10 +601,10 @@ ALTER TABLE cor_dataset_territory
   ADD CONSTRAINT check_cor_dataset_territory CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territory,110));
 
 ALTER TABLE cor_dataset_actor
-  ADD CONSTRAINT check_is_unique_cor_dataset_actor_role UNIQUE(unique_dataset_id, id_role, id_nomenclature_actor_role);
+  ADD CONSTRAINT check_is_unique_cor_dataset_actor_role UNIQUE(id_dataset, id_role, id_nomenclature_actor_role);
 
 ALTER TABLE cor_dataset_actor
-  ADD CONSTRAINT check_is_unique_cor_dataset_actor_organism UNIQUE(unique_dataset_id, id_organism, id_nomenclature_actor_role);
+  ADD CONSTRAINT check_is_unique_cor_dataset_actor_organism UNIQUE(id_dataset, id_organism, id_nomenclature_actor_role);
 
 
 
@@ -613,7 +628,7 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 -- ;
 -- SELECT pg_catalog.setval('sinp_datatype_actors_id_actor_seq', 5, false);
 
-INSERT INTO gn_meta.sinp_datatype_protocols (unique_protocol_id, id_protocol, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
-('9ed37cb1-803b-4eec-9ecd-31880475bbe9', 0,'hors protocole','observation réalisées hors protocole',422,null)
+INSERT INTO gn_meta.sinp_datatype_protocols (id_protocol, unique_protocol_id, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
+(0, '9ed37cb1-803b-4eec-9ecd-31880475bbe9', 'hors protocole','observation réalisées hors protocole',422,null)
 ;
 SELECT pg_catalog.setval('sinp_datatype_protocols_id_protocol_seq', 1, false);
