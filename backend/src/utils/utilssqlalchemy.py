@@ -171,8 +171,10 @@ class serializableGeoModel(serializableModel):
 
 class ReleveModel(db.Model):
     __abstract__ = True
-    def get_cruved(self, user, user_cruved):
-        """ return the cruved for a Releve instance 
+    def get_releve_cruved(self, user, user_cruved):
+        from ..core.gn_meta.routes import get_allowed_datasets
+        
+        """ return the user's cruved for a Releve instance. Use in the map-list interface to allow or not an action
         params:
             - user : a TRole object
             - user_cruved: object return by fnauth.get_cruved(user) """
