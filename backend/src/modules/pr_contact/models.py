@@ -7,11 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
-from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel, RestrictedTable
+from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel, ReleveModel
 
 from sqlalchemy.dialects.postgresql import UUID
 
 from ...core.users.models import TRoles
+from ...core.gn_meta import routes as gn_meta
 from pypnnomenclature.models import TNomenclatures
 from src.core.ref_geo.models import LAreasWithoutGeom
 
@@ -37,7 +38,7 @@ corRoleRelevesContact = db.Table(
     )
 )
 
-class TRelevesContact(serializableGeoModel, RestrictedTable):
+class TRelevesContact(serializableGeoModel):
     __tablename__ = 't_releves_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer, primary_key=True)
@@ -148,7 +149,7 @@ class CorCountingContact(serializableModel):
     )
 
 
-class VReleveContact(serializableGeoModel):
+class VReleveContact(serializableGeoModel, ReleveModel):
     __tablename__ = 'v_releve_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer)
@@ -184,7 +185,8 @@ class VReleveContact(serializableGeoModel):
         )
 
 
-class VReleveList(serializableGeoModel, RestrictedTable):
+
+class VReleveList(serializableGeoModel, ReleveModel):
     __tablename__ = 'v_releve_list'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer, primary_key=True)
@@ -203,9 +205,38 @@ class VReleveList(serializableGeoModel, RestrictedTable):
     taxons = db.Column(db.Unicode)
     leaflet_popup = db.Column(db.Unicode)
     observateurs = db.Column(db.Unicode)
+    observers = db.relationship(
+        'TRoles',
+        secondary=corRoleRelevesContact,
+        primaryjoin=(
+            corRoleRelevesContact.c.id_releve_contact == id_releve_contact
+        ),
+        secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+        foreign_keys=[
+            corRoleRelevesContact.c.id_releve_contact,
+            corRoleRelevesContact.c.id_role
+        ]
+    )
 
     def get_geofeature(self, recursif=True):
+
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
+
+    def get_cruved(self, user, user_cruved):
+        releve_auth = {}
+        allowed_datasets = gn_meta.get_allowed_datasets(user)
+        for obj in user_cruved:
+            if obj['level'] == '2':
+                releve_auth[obj['action']] = self.id_dataset in allowed_datasets 
+            if obj['level'] == '1':
+                releve_observers = [d.id_role for d in self.observers]
+                releve_auth[obj['action']] = (user.id_role in releve_observers or user.id_role == self.id_digitiser)
+            if obj['level'] == '3':
+                releve_auth[obj['action']] = True
+        return releve_auth
+
+
+
 
 class DefaultNomenclaturesValue(serializableModel):
     __tablename__ = 'defaults_nomenclatures_value'

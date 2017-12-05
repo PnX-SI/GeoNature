@@ -2,9 +2,9 @@
 from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
-from flask import Blueprint, request, json
+from flask import Blueprint, request, json, current_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc, or_
+from sqlalchemy import exc, or_, func
 from sqlalchemy.sql import text
 
 
@@ -13,7 +13,7 @@ from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
 from .repositories import ReleveRepository
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
 
-from ...utils import filemanager 
+from ...utils import filemanager
 from ...core.users.models import TRoles
 from ...core.ref_geo.models import LAreasWithoutGeom
 from ...core.gn_meta.models import TDatasets, CorDatasetsActor
@@ -170,6 +170,8 @@ def getViewReleveList(info_role):
 
 
     """
+    user = info_role[0]
+    cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 
@@ -276,14 +278,20 @@ def getViewReleveList(info_role):
     except Exception as e:
         print('roollback')
         db.session.rollback()
-        raise
+
+    featureCollection = []
+    for n in data:
+        cruved_rigths = n.get_cruved(user, cruved)
+        feature = n.get_geofeature()
+        feature['properties']['rights'] = cruved_rigths
+        featureCollection.append(feature)
 
     return {
         'total': nbResultsWithoutFilter,
         'total_filtered': nbResults,
         'page': page,
         'limit': limit,
-        'items': FeatureCollection([n.get_geofeature() for n in data])
+        'items': FeatureCollection(featureCollection)
     }
 
 
@@ -490,13 +498,6 @@ def export():
 @routes.route('/test', methods=['GET'])
 @json_resp
 def test():
-    from flask import g
-    user = db.session.query(TRoles).get(1)
-    g.user = user
-    releveRepository = ReleveRepository(TRelevesContact)
-    print(releveRepository)
-    data = releveRepository.get_all(1)
+    data = fnauth.get_cruved(1,14)
     print(data)
-
-    return FeatureCollection([n.get_geofeature() for n in data])
-
+    return 'la'

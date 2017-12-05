@@ -119,7 +119,6 @@ class serializableModel(db.Model):
         obj = {}
         if (not columns):
             columns = self.__table__.columns
-
         for prop in class_mapper(self.__class__).iterate_properties:
             if (isinstance(prop, ColumnProperty) and (prop.key in columns)):
                 column = self.__table__.columns[prop.key]
@@ -170,20 +169,24 @@ class serializableGeoModel(serializableModel):
             )
         return feature
 
-class RestrictedTable(db.Model):
+class ReleveModel(db.Model):
     __abstract__ = True
-    def can_update_edit_validate(self, data_type, id_role):
-        if data_type == 3:
-            return True
-        user = db.session.query(User).get(id_role)
-        if data_type == 1:
-            observers = [d.id_role for d in self.observers]
-            return id_role == self.id_digitiser or id_role in observers
-        if data_type == 2:
-            q = db.session.query(CorDatasetsActor,CorDatasetsActor.id_dataset
-            ).distinct(CorDatasetsActor.id_dataset).filter(CorDatasetsActor.id_actor == user.id_organisme)
-            allowed_datasets = [d.id_actor for d in q.all()]
-            return self.id_dataset in allowed_datasets
+    def get_cruved(self, user, user_cruved):
+        """ return the cruved for a Releve instance 
+        params:
+            - user : a TRole object
+            - user_cruved: object return by fnauth.get_cruved(user) """
+        releve_auth = {}
+        allowed_datasets = get_allowed_datasets(user)
+        for obj in user_cruved:
+            if obj['level'] == '2':
+                releve_auth[obj['action']] = self.id_dataset in allowed_datasets 
+            if obj['level'] == '1':
+                releve_observers = [d.id_role for d in self.observers]
+                releve_auth[obj['action']] = (user.id_role in releve_observers or user.id_role == self.id_digitiser)
+            if obj['level'] == '3':
+                releve_auth[obj['action']] = True
+        return releve_auth
 
 
 def json_resp(fn):
@@ -234,5 +237,6 @@ def csv_resp(fn):
         out = '\r\n'.join(outdata)
         return Response(out, headers=headers)
     return _csv_resp
+
 
 

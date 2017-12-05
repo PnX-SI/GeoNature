@@ -90,19 +90,19 @@ def getDatasets(info_role):
 
     """
     q = db.session.query(TDatasets)
-
-    if int(info_role[1]) <= 2:
-        id_org = db.session.query(TRoles).get(2).id_organisme
+    user, data_scope = info_role
+    if int(data_scope) <= 2:
         q = q.join(CorDatasetsActor,
-        CorDatasetsActor.unique_dataset_id == TDatasets.unique_dataset_id
-        ).filter(
-            CorDatasetsActor.id_organism == id_org)
+        CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        ).filter(or_(
+            CorDatasetsActor.id_organism == user.id_organisme,
+            CorDatasetsActor.id_role == user.id_role
+            ))
     try:
         data = q.all()
     except Exception as e:
         db.session.rollback()
         raise
-    results = []
     if data:
         return [d.as_dict(True) for d in data]
     return {'message': 'not found'}, 404
@@ -205,3 +205,20 @@ def postCadreAcquisionMTD():
         return {'message': 'add with success'}
     else:
         return {'message': 'not found'}, 404
+
+
+## Private fonction
+def get_allowed_datasets(user):
+    """ return all dataset id allowed for a user"""
+    q = db.session.query(
+                    CorDatasetsActor,
+                    CorDatasetsActor.id_dataset
+                    ).filter(or_(
+                        CorDatasetsActor.id_organism == user.id_organisme,
+                        CorDatasetsActor.id_role == user.id_role
+                    ))
+    try:
+        return [d.id_dataset for d in q.all()]
+    except:
+        db.session.rollback()
+        raise

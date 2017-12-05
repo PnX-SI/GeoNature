@@ -471,3 +471,27 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100
   ROWS 1000;
+
+CREATE OR REPLACE FUNCTION gn_users.cruved_for_user_in_module(
+    myuser integer,
+    mymodule integer
+  )
+  RETURNS json AS
+$BODY$
+-- the function return user's CRUVED in the requested module
+-- USAGE : SELECT gn_users.cruved_for_user_in_module(requested_userid,requested_moduleid);
+-- SAMPLE :SELECT gn_users.cruved_for_user_in_module(2,14);
+DECLARE
+  thecruved json;
+  BEGIN
+	SELECT array_to_json(array_agg(row)) INTO thecruved
+	FROM  (
+	SELECT tag_action_code AS action, max(tag_object_code) AS level
+	FROM gn_users.v_usersaction_forall_gn_modules
+	WHERE id_role = myuser AND id_application = mymodule
+	GROUP BY tag_action_code) row;
+    RETURN thecruved;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;

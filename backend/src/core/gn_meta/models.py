@@ -9,6 +9,7 @@ from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
 from ...utils.utilssqlalchemy import serializableModel
 
+
 from sqlalchemy.dialects.postgresql import UUID
 
 from ..users.models import BibOrganismes
@@ -70,9 +71,9 @@ class TDatasets(serializableModel):
     unique_dataset_id = db.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]))
-    unique_acquisition_framework_id = db.Column(
-        UUID(as_uuid=True),
-        ForeignKey('gn_meta.t_acquisition_frameworks.unique_acquisition_framework_id')
+    id_acquisition_framework = db.Column(
+        db.Integer,
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework')
     )
     dataset_name = db.Column(db.Unicode)
     dataset_shortname = db.Column(db.Unicode)
@@ -104,8 +105,8 @@ class TDatasets(serializableModel):
 class CorDatasetsActor(serializableModel):
     __tablename__ = 'cor_dataset_actor'
     __table_args__ = {'schema': 'gn_meta'}
-    unique_id = db.Column(UUID(as_uuid=True), primary_key=True)
-    unique_dataset_id = db.Column(UUID(as_uuid=True))
+    id_cda = db.Column(db.Integer, primary_key=True)
+    id_dataset = db.Column(db.Integer)
     id_role = db.Column(db.Integer)
     id_organism = db.Column(db.Integer)
     id_nomenclature_actor_role = db.Column(db.Integer)
