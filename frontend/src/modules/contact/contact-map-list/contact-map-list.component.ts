@@ -46,16 +46,9 @@ export class ContactMapListComponent implements OnInit {
 
   this._mapListService.getData('contact/vreleve')
     .subscribe(res => {
-<<<<<<< HEAD
       this._mapListService.page.totalElements = res.items.features.length;
       this.geojsonData = res.items;
     });
-=======
-    this._mapListService.page.totalElements = res.items.features.length;
-    //this._mapListService.geojsonData = res.items;
-    this.geojsonData = res.items;
-  });
->>>>>>> repository
 
   }
 
