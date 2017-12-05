@@ -222,18 +222,6 @@ class VReleveList(serializableGeoModel, ReleveModel):
 
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
 
-    def get_cruved(self, user, user_cruved):
-        releve_auth = {}
-        allowed_datasets = gn_meta.get_allowed_datasets(user)
-        for obj in user_cruved:
-            if obj['level'] == '2':
-                releve_auth[obj['action']] = self.id_dataset in allowed_datasets 
-            if obj['level'] == '1':
-                releve_observers = [d.id_role for d in self.observers]
-                releve_auth[obj['action']] = (user.id_role in releve_observers or user.id_role == self.id_digitiser)
-            if obj['level'] == '3':
-                releve_auth[obj['action']] = True
-        return releve_auth
 
 
 
