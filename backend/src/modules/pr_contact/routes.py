@@ -488,14 +488,21 @@ def getDefaultNomenclatures():
     if 'organism' in params:
         organism = params['organism']
     types = request.args.getlist('id_type')
-    query = """SELECT DISTINCT id_type, pr_contact.get_default_nomenclature_value(id_type, :idOrg, :regne, :group2_inpn) AS id_nomenclature
-    FROM pr_contact.defaults_nomenclatures_value """
+
+    q = db.session.query(DefaultNomenclaturesValue).distinct(
+                DefaultNomenclaturesValue.id_type,
+                func.pr_contact.get_default_nomenclature_value(DefaultNomenclaturesValue.id_type, organism, regne, group2_inpn )
+            )
     if len(types) > 0:
-        query += " WHERE id_type IN :types"
-        result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn, types=tuple(types))
-    else:
-        result = db.engine.execute(text(query), idOrg=organism, regne=regne, group2_inpn=group2_inpn)
-    return {r.id_type: r.id_nomenclature for r in result}
+        q = q.filter(DefaultNomenclaturesValue.id_type.in_(tuple(types)))
+    try:
+        data = q.all()
+    except:
+        db.session.rollback()
+        raise
+    if not data:
+        return {'message': 'not found'}, 404 
+    return {d.id_type: d.id_nomenclature for d in data}
 
     
 @routes.route('/exportProvisoire', methods=['GET'])
