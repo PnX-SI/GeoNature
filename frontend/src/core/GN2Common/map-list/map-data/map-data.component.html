@@ -1,5 +1,5 @@
 
-<md-card class="padding-md-all">
+<mat-card class="padding-md-all">
   <div class="row row-sm">
     <!--Filter-->
     
@@ -45,10 +45,11 @@
         </pnx-date>   
     </div>
  
-    <button md-icon-button mdTooltip="Filter options" class="margin-left-md to-collapse" data-toggle="collapse" data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-        <md-icon>filter_list</md-icon>
-    </button>
-    <button mdTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+        <mat-icon matTooltip="Filter options" class="margin-left-md to-collapse clickable" data-toggle="collapse"
+         data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
+            filter_list
+        </mat-icon>
+    <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
         <i class="fa fa-plus-circle" aria-hidden="true"></i>
       </button>
     </div>
@@ -97,7 +98,7 @@
     </div> -->
 
 
-  </md-card>
+  </mat-card>
   <!--Table-->
   <ngx-datatable
     #table
@@ -123,8 +124,8 @@
   <ngx-datatable-column
   maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-        <i [ngClass]="{'disabled' : !row.rights.U}" mdTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
+    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
+        <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
     </button>
   </ng-template>
   </ngx-datatable-column>
@@ -132,16 +133,16 @@
   <ngx-datatable-column
   maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
-        <i [ngClass]="{'disabled' : !row.rights.R}" mdTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
+    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
+        <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
     </button>
   </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
     maxWidth="50">
   <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-        <i [ngClass]="{'disabled' : !row.rights.D}" #iElement mdTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
+    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+        <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
     </button>
     
   </ng-template>

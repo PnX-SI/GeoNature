@@ -28,7 +28,7 @@ deactivate
 
 #Frontend installation
 
-#Node instalation
+#Node and npm instalation
 sudo apt-get install npm
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"

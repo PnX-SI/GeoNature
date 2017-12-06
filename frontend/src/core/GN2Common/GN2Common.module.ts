@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { MdIconModule } from '@angular/material/icon';
-import { MatIconModule } from '@angular/material/icon';
+import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatListModule, MatIconModule,
+        MatToolbarModule} from '@angular/material';
+
+
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
@@ -47,6 +49,12 @@ export function HttpLoaderFactory(http: Http) {
   imports: [
     CommonModule,
     MatIconModule,
+    MatTooltipModule,
+    MatSidenavModule,
+    MatMenuModule,
+    MatCardModule,
+    MatListModule,
+    MatToolbarModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -97,6 +105,12 @@ export function HttpLoaderFactory(http: Http) {
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
+    MatTooltipModule,
+    MatSidenavModule,
+    MatMenuModule,
+    MatCardModule,
+    MatListModule,
+    MatToolbarModule,
     NgxDatatableModule,
     NgbModule,
     TranslateModule

@@ -1,18 +1,2 @@
-<md-card>
-  <md-card-header>
-    <md-card-title  class="map-header">
+<div id="map" [ngStyle]="{'height': height}" ></div>
 
-      <md-input-container>
-        <input mdInput placeholder="{{ 'Map.SearchLocation' | translate }}" id="place-input" [(ngModel)]="searchLocation" (keyup.enter)="gotoLocation()">
-      </md-input-container>
-      
-    </md-card-title>
-  
-  </md-card-header>
-
-  <!--Create map-->
-  <md-card class="map-card">
-      <div id="map"></div>
-  </md-card>
-
-</md-card>
