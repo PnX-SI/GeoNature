@@ -176,6 +176,18 @@ class VReleveContact(serializableGeoModel, ReleveModel):
     nom_vern = db.Column(db.Unicode)
     leaflet_popup = db.Column(db.Unicode)
     observateurs = db.Column(db.Unicode)
+    observers = db.relationship(
+        'TRoles',
+        secondary=corRoleRelevesContact,
+        primaryjoin=(
+            corRoleRelevesContact.c.id_releve_contact == id_releve_contact
+        ),
+        secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+        foreign_keys=[
+            corRoleRelevesContact.c.id_releve_contact,
+            corRoleRelevesContact.c.id_role
+        ]
+    )
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature(

@@ -30,16 +30,11 @@ db = SQLAlchemy()
 
 
 @routes.route('/releves', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def getReleves():
-
-    q = db.session.query(TRelevesContact)
-
-    try:
-        data = q.all()
-    except Exception as e:
-        db.session.rollback()
-        raise
+def getReleves(info_role):
+    releve_repository = ReleveRepository(TRelevesContact)
+    data = releve_repository.get_all(info_role)
 
     if data:
         return FeatureCollection([n.get_geofeature() for n in data])
@@ -47,6 +42,7 @@ def getReleves():
 
 
 @routes.route('/occurrences', methods=['GET'])
+@fnauth.check_auth_cruved('R')
 @json_resp
 def getOccurrences():
     q = db.session.query(TOccurrencesContact)
@@ -65,8 +61,8 @@ def getOccurrences():
 @fnauth.check_auth_cruved('R', True)
 @json_resp
 def getOneReleve(id_releve, info_role):
-    releveRepository = ReleveRepository(TRelevesContact)
-    data = releveRepository.get_one(id_releve, info_role)
+    releve_repository = ReleveRepository(TRelevesContact)
+    data = releve_repository.get_one(id_releve, info_role)
 
     if data == -1:
         return {'message': 'forbidden'}, 403
@@ -76,9 +72,11 @@ def getOneReleve(id_releve, info_role):
 
 
 @routes.route('/vrelevecontact', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def getViewReleveContact():
-    q = db.session.query(VReleveContact)
+def getViewReleveContact(info_role):
+    releve_repository = ReleveRepository(VReleveContact)
+    q = releve_repository.get_filtered_query(info_role)
 
     parameters = request.args
 
@@ -117,9 +115,19 @@ def getViewReleveContact():
     except Exception as e:
         db.session.rollback()
         raise
+
+    user = info_role[0]
+    user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
+    featureCollection = []
+    for n in data:
+        releve_cruved = n.get_releve_cruved(user, user_cruved)
+        feature = n.get_geofeature()
+        feature['properties']['rights'] = releve_cruved
+        featureCollection.append(feature)
+
     if data:
         return {
-            'items': FeatureCollection([n.get_geofeature() for n in data]),
+            'items': FeatureCollection(featureCollection),
             'total': nbResultsWithoutFilter
         }
     return {'message': 'not found'}, 404
@@ -170,8 +178,7 @@ def getViewReleveList(info_role):
 
 
     """
-    user = info_role[0]
-    cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
+
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 
@@ -279,11 +286,13 @@ def getViewReleveList(info_role):
         print('roollback')
         db.session.rollback()
 
+    user = info_role[0]
+    user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     featureCollection = []
     for n in data:
-        cruved_rights = n.get_releve_cruved(user, cruved)
+        releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature()
-        feature['properties']['rights'] = cruved_rights
+        feature['properties']['rights'] = releve_cruved
         featureCollection.append(feature)
 
     return {
@@ -297,7 +306,7 @@ def getViewReleveList(info_role):
 
 
 @routes.route('/releve', methods=['POST'])
-@fnauth.check_auth_cruved('U', True)
+@fnauth.check_auth_cruved('C', True)
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesContact)
@@ -389,12 +398,14 @@ def deleteOneReleve(id_releve, info_role):
         return {'message': 'not found'}, 404
     if data == -1:
         return {'message': 'forbidden'}, 403
+
     return {'message': 'delete with success'}, 200
 
 
 
 
 @routes.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
+@fnauth.check_auth_cruved('D')
 @json_resp
 def deleteOneOccurence(id_occ):
     """Suppression d'une données d'occurrence et des dénombrements associés
@@ -428,6 +439,7 @@ def deleteOneOccurence(id_occ):
 
 
 @routes.route('/releve/occurrence_counting/<int:id_count>', methods=['DELETE'])
+@fnauth.check_auth_cruved('D')
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Suppression d'une données de dénombrement
