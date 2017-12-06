@@ -183,11 +183,13 @@ class ReleveModel(db.Model):
         for obj in user_cruved:
             if obj['level'] == '2':
                 releve_auth[obj['action']] = self.id_dataset in allowed_datasets 
-            if obj['level'] == '1':
+            elif obj['level'] == '1':
                 releve_observers = [d.id_role for d in self.observers]
                 releve_auth[obj['action']] = (user.id_role in releve_observers or user.id_role == self.id_digitiser)
-            if obj['level'] == '3':
+            elif obj['level'] == '3':
                 releve_auth[obj['action']] = True
+            else:
+                releve_auth[obj['action']] = False
         return releve_auth
 
 
