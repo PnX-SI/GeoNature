@@ -56,7 +56,7 @@ def loginCas():
                     "id_organisme": organismId,
                 }
                 r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
-                ## push the user in the rigth group
+                ## push the user in the right group
                 if organismId == -1:
                     # group socle 1
                     insert_in_cor_role(20003, user['id_role'])
