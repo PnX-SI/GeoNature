@@ -305,7 +305,7 @@ then
     echo "Cleaning files..."
     rm /tmp/*.txt
     rm /tmp/*.csv
-    rm data/utilisateurs/usershub.sql
+    rm /tmp/usershub.sql
     rm data/taxonomie/taxhubdb.sql
     rm data/taxonomie/materialized_views.sql
     rm data/taxonomie/taxhubdata.sql

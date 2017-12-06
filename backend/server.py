@@ -22,7 +22,6 @@ def get_app():
     app.config.from_pyfile('./config.py')
     db.init_app(app)
 
-
     from pypnusershub.routes import routes
     app.register_blueprint(routes, url_prefix='/auth')
 
@@ -40,9 +39,6 @@ def get_app():
 
     from src.core.ref_geo.routes import routes
     app.register_blueprint(routes, url_prefix='/geo')
-
-    from pypnusershub import routes
-    app.register_blueprint(routes.routes, url_prefix='/api/auth')
 
     from src.core.gn_exports.routes import routes
     app.register_blueprint(routes, url_prefix='/exports')
