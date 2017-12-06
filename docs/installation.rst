@@ -84,7 +84,7 @@ Une fois l'installation terminée, lancez:
 
   :: 
 
-	``sudo ng build --base-href /geonature/``
+	sudo ng build --base-href /geonature/
 
 Les applications sont disponibles aux adresses suivantes: 
 
@@ -179,4 +179,4 @@ Depuis le répertoire ``frontend`` lancer la commande:
 
   :: 
 
-	``npm run start``
+	npm run start
