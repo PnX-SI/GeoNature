@@ -281,9 +281,9 @@ def getViewReleveList(info_role):
 
     featureCollection = []
     for n in data:
-        cruved_rigths = n.get_releve_cruved(user, cruved)
+        cruved_rights = n.get_releve_cruved(user, cruved)
         feature = n.get_geofeature()
-        feature['properties']['rights'] = cruved_rigths
+        feature['properties']['rights'] = cruved_rights
         featureCollection.append(feature)
 
     return {
