@@ -2,6 +2,7 @@ export const AppConfig = {
   DEVELOPPEMENT_MODE: false,
   appName : 'Geonature 2',
   defaultLanguage:  'fr',
+  ID_APPLICATION_GEONATURE: 14,
   CAS: {
     CAS_AUTHENTIFICATION: false,
     CAS_LOGIN_URL: 'https://inpn.mnhn.fr/auth/login',
