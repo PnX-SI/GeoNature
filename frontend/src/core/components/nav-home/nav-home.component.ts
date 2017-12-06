@@ -3,11 +3,10 @@ import { NavService } from '../../services/nav.service';
 import {TranslateService} from '@ngx-translate/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-//import * as firebase from 'firebase';
 import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
 import 'rxjs/Rx';
-import {MdSidenavModule, MdSidenav} from '@angular/material';
+import {MatSidenavModule, MatSidenav} from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
 import { Location } from '@angular/common';
 
@@ -24,7 +23,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public appName: any;
   private subscription: Subscription;
   public currentUser: User;
-  @ViewChild('sidenav') public sidenav: MdSidenav;
+  @ViewChild('sidenav') public sidenav: MatSidenav;
 
   // tslint:disable-next-line:max-line-length
   constructor(private _navService: NavService,
