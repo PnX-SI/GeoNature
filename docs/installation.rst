@@ -9,7 +9,7 @@ Prérequis
 
 Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
-L'installation complète de l'environnement est réalisée automatiquement sur un serveur Debian 9 vierge grace au script ``backend/install_app.sh``.
+L'installation complète de l'environnement est réalisée automatiquement sur un serveur Debian 9 vierge grace au script ``install_app.sh``.
 
 Celui-ci installe : 
 
@@ -55,8 +55,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
  
   ::  
   
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/backend/install_app.ini
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/backend/install_app.sh
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_app.ini
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all.sh
 
 * Changer les droits du fichier d'installation pour pouvoir l'éxecuter
  
@@ -80,10 +80,14 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_app.ini``.
 
-Une fois l'installation terminée, vous pourrez accéder aux applications : 
+Une fois l'installation terminée, lancez:
 
-- http://monip.com/geonature
-- http://monip.com/taxhub
+	``sudo ng build --base-href /geonature/``
+
+Les applications sont disponibles aux adresses suivantes: 
+
+	- http://monip.com/geonature
+	- http://monip.com/taxhub
 
 Configuration de la base de données PostgreSQL
 ==============================================
@@ -143,7 +147,7 @@ Installation d'un module
 	sudo ./data/modules/contact/install_schema.sh
 
 
-Mise en place du backend (doc developpeur)
+Mise en place du backend et du front end (doc developpeur)
 ==========================================
 
 * Installation du backend.
@@ -168,3 +172,7 @@ Mise en place du backend (doc developpeur)
         cd ../geonature2/backend/
         make develop
         deativate
+* Lancer le front end
+Depuis le répertoire ``frontend`` lancer la commande: 
+
+	``npm run start``
