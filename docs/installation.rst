@@ -82,6 +82,8 @@ Pendant l'installation, vous serez invité à renseigner le fichier de configura
 
 Une fois l'installation terminée, lancez:
 
+  :: 
+
 	``sudo ng build --base-href /geonature/``
 
 Les applications sont disponibles aux adresses suivantes: 
@@ -174,5 +176,7 @@ Mise en place du backend et du front end (doc developpeur)
         deativate
 * Lancer le front end
 Depuis le répertoire ``frontend`` lancer la commande: 
+
+  :: 
 
 	``npm run start``
