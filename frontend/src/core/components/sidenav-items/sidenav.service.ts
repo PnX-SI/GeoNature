@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {MdSidenavModule, MdSidenav} from '@angular/material';
+import {MatSidenavModule, MatSidenav} from '@angular/material/sidenav';
 
 @Injectable()
 export class SideNavService {
-    sidenav: MdSidenav;
+    sidenav: MatSidenav;
     opened: boolean;
     constructor() {
         this.opened = false;
@@ -11,10 +11,10 @@ export class SideNavService {
     setSideNav(sidenav) {
         this.sidenav = sidenav;
     }
-    setModule(sidenav: MdSidenav) {
+    setModule(sidenav: MatSidenav) {
         sidenav.close();
     }
-    setHome(sidenav: MdSidenav) {
+    setHome(sidenav: MatSidenav) {
         sidenav.open();
     }
 }

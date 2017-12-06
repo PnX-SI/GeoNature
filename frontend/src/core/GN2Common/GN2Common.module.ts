@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule, MdIconModule, MdNativeDateModule } from '@angular/material';
+// import { MdIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -44,9 +46,7 @@ export function HttpLoaderFactory(http: Http) {
 @NgModule({
   imports: [
     CommonModule,
-    MaterialModule,
-    MdIconModule,
-    MdNativeDateModule,
+    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -96,9 +96,7 @@ export function HttpLoaderFactory(http: Http) {
     DatasetsComponent,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule,
-    MdIconModule,
-    MdNativeDateModule,
+    MatIconModule,
     NgxDatatableModule,
     NgbModule,
     TranslateModule
