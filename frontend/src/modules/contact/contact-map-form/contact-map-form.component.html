@@ -1,6 +1,6 @@
 <div class="row row-0">
         <div class="col-sm-12 col-md-5 padding-sm ">
-            <pnx-map class="map-card">
+            <pnx-map height="92vh" class="map-card">
                 <pnx-gps (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
                 <pnx-marker (markerChanged)="sendGeoInfo($event)"> </pnx-marker>
                 <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoInfo($event)" > </pnx-leaflet-draw>

@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
 import 'rxjs/Rx';
-import {MatSidenavModule, MatSidenav} from '@angular/material/sidenav';
+import {MatSidenav} from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
 import { Location } from '@angular/common';
 
