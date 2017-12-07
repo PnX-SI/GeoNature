@@ -130,6 +130,7 @@
     <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
         <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
     </button>
+    
   </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
