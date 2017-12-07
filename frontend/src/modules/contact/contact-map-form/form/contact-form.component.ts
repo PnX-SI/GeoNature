@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { MapService } from '../../../../core/GN2Common/map/map.service';
+import { CommonService } from '../../../../core/GN2Common/service/common.service'
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
@@ -27,6 +28,7 @@ export class ContactFormComponent implements OnInit {
      private toastr: ToastrService,
      private router: Router,
      private contactService: ContactService,
+     private _commonService: CommonService
     ) {  }
 
   ngOnInit() {
@@ -120,10 +122,15 @@ export class ContactFormComponent implements OnInit {
         // redirect
         this.router.navigate(['/occtax']);
         },
-        (error) => { this.toastr.error("Une erreur s'est produite!", '', {positionClass:'toast-top-center'});}
+        (error) => {
+          console.log(error);
+          if (error.status === 403) {
+            this._commonService.translateToaster('error', 'NotAllowed');
+          } else {
+            this._commonService.translateToaster('error', 'ErrorMessage');
+          }
+        }
       );
-
-  }
-
-
+    }
+ 
 }
