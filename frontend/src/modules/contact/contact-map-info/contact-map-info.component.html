@@ -1,8 +1,8 @@
 <div class="row row-sm">
-  <div class="col-sm-12 col-md-5 padding-sm">
-      <pnx-map class="map-card"> </pnx-map>
+  <div class="col-sm-12 col-md-5 padding-sm map-container">
+      <pnx-map class="map-card" height="95vh"> </pnx-map>
   </div>
-  <div class="col-sm-12 col-md-7 padding-sm">
+  <div class="col-sm-12 col-md-7 padding-sm form-container">
     <div class="card">
       <div class="card-header">
               <h4 > Relevé
@@ -22,8 +22,8 @@
         <p> <pnx-areas-intersected-modal [geojson]="releve"> </pnx-areas-intersected-modal> </p>
 
           <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
-          <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div class="row row-sm">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
               <img *ngIf="showSpinner" src="assets/images/Spinner.gif" 
               alt="Chargement..." 
               height="40" 
@@ -57,7 +57,7 @@
         <div class="tab-content">
           <div class="tab-pane active" id="occurrence" role="tabpanel">
             <div class="row row-sm">
-              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <pnx-nomenclature 
                     placeholder="{{ 'Taxon.ObsMethod' | translate }}"
                     [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
@@ -65,7 +65,7 @@
                     [disabled]="disabled">
                   </pnx-nomenclature>
               </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <pnx-nomenclature 
                     placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
                     [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
@@ -75,7 +75,7 @@
                 </div>
               </div>
               <div class="row row-sm">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                     <pnx-nomenclature 
                       placeholder="{{ 'Taxon.BiologicalStatus' | translate }}"
                       [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
@@ -83,7 +83,7 @@
                       [disabled]="disabled"> 
                     </pnx-nomenclature> 
                   </div>          
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                     <pnx-nomenclature 
                       placeholder="{{ 'Taxon.Naturalness' | translate }}"
                       [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
@@ -91,7 +91,7 @@
                       [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>
-                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
                       <pnx-nomenclature 
                         placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
                         [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
@@ -104,14 +104,14 @@
                 </div>
           
                 <div class="row row-sm">
-                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
                       <small> {{ 'Taxon.Determiner' | translate }} </small>
                       <input class="form-control form-control-sm"
                       [formControl]="occurrenceForm.controls.determiner"
                       [disableControl]="disabled"
                         type="text">
                   </div>
-                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"> 
+                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm"> 
                     <pnx-nomenclature 
                       placeholder="{{ 'Taxon.ValidationStatus' | translate }}"
                       [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
@@ -119,7 +119,7 @@
                       [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                       <pnx-nomenclature 
                         placeholder="{{ 'Taxon.ExistProof' | translate }}"
                         [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
@@ -130,14 +130,14 @@
                 </div>
           
                 <div class="row row-sm">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 form-group">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm form-group">
                       <small> {{ 'Taxon.DigitalProof' | translate }} </small>
                       <input class="form-control form-control-sm"
                       [formControl]="occurrenceForm.controls.digital_proof"
                       [disableControl]="disabled"
                         type="text">
                   </div>
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                     <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
                     <input class="form-control form-control-sm"
                     [formControl]="occurrenceForm.controls.non_digital_proof"
@@ -147,7 +147,7 @@
                 </div>
 
                 <div class="row row-sm form-group" id="row-commentaire">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">               
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">               
                       <textarea placeholder="{{ 'Releve.Comment' | translate }}"
                       class="form-control" [formControl]="occurrenceForm.controls.comment" 
                         rows="2"
@@ -162,7 +162,7 @@
           <div class="tab-pane" id="counting" role="tabpanel">
             <div *ngFor="let counting of selectedOccurrence?.cor_counting_contact; let index = index">
                 <div class="row row-sm">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm col-counting">
                         <pnx-nomenclature
                           placeholder="{{ 'Counting.LifeStage' | translate }}" 
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_life_stage"
@@ -170,7 +170,7 @@
                           [disabled]="disabled"> 
                         </pnx-nomenclature>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
                         <pnx-nomenclature
                           placeholder="{{ 'Counting.Sex' | translate }}"
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_sex"
@@ -178,7 +178,7 @@
                           [disabled]="disabled">
                         </pnx-nomenclature>
                   </div>
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
                         <pnx-nomenclature 
                           placeholder="{{ 'Counting.CountingObject' | translate }}"
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_obj_count"
@@ -189,7 +189,7 @@
             
                 </div>
                 <div class="form-group row row-sm">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
                         <pnx-nomenclature
                           #typeDenombrement
                           placeholder="{{ 'Counting.CountingType' | translate }}"
@@ -198,7 +198,7 @@
                           [disabled]="disabled">
                         </pnx-nomenclature> 
                   </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
                       <div class="form-group" [ngClass]="{'has-danger' : countingFormArray.controls[index].controls.count_min.invalid}">
                         <small> {{ 'Counting.NumberMin' | translate }} </small>
                         <input class="form-control form-control-sm" type="number" 
@@ -206,7 +206,7 @@
                         [disableControl]="disabled">
                       </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
                       <div class="form-group" [ngClass]="{'has-danger' : countingFormArray.controls[index].controls.count_max.invalid}">
                           <small> {{ 'Counting.NumberMax' | translate }} </small>
                         <input class="form-control form-control-sm" type="number" 
@@ -214,7 +214,7 @@
                         [disableControl]="disabled">
                       </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 col-counting" *ngIf="index == length -1 && index != 0">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 padding-sm col-counting" *ngIf="index == length -1 && index != 0">
                       <button id="add-counting" type="button" class="btn btn-danger btn-sm" (click)="onRemoveCounting(index)">
                           <i class="fa fa-times" aria-hidden="true"></i>
                       </button>
@@ -223,7 +223,6 @@
                 <hr>
           
                 </div>
-                <pre> {{countingFormArray.va}} </pre>
             </div>
           </div>
       <!-- end tab -->
