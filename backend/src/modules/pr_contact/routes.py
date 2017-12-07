@@ -362,6 +362,10 @@ def insertOrUpdateOneReleve(info_role):
 
         try:
             if releve.id_releve_contact:
+                # get update right of the user
+                user_cruved = fnauth.get_cruved(info_role[0].id_role,current_app.config['ID_APPLICATION_GEONATURE'])
+                update_data_scope = [u['level'] for u in user_cruved if u['action'] == 'U']
+                info_role = info_role[0], int(update_data_scope[0])
                 releve = releveRepository.update(releve, info_role)
                 if releve == -1:
                     return {'message': 'forbidden'}, 403
