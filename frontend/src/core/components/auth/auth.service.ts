@@ -44,10 +44,6 @@ export class AuthService {
       return val.replace(/\\\\/g, '\\');
   }
   setCurrentUser(user, expireDate) {
-    console.log(expireDate);
-    console.log(user);
-    ;
-
     this._cookie.set('currentUser', JSON.stringify(user), expireDate);
   }
 
