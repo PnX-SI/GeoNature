@@ -39,7 +39,6 @@ export class ContactFormComponent implements OnInit {
 
     // patch default values in ajax
     this.fs.patchDefaultNomenclature();
-    //this.fs.initFormsWithDefaultValues();
 
     // reset taxon list of service
     this.fs.taxonsList = [];
@@ -56,12 +55,19 @@ export class ContactFormComponent implements OnInit {
         .subscribe(data => {
           // pre fill the form
           this.fs.releveForm.patchValue({properties: data.properties});
+
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_min: this.fs.formatDate(data.properties.date_min)});
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_max: this.fs.formatDate(data.properties.date_max)});
           const hour_min = data.properties.hour_min === 'None' ? null : data.properties.hour_min;
           const hour_max = data.properties.hour_max === 'None' ? null : data.properties.hour_max;
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_min: hour_min});
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_max: hour_max});
+          // format observers
+          const observers = data.properties.observers.map(obs => {
+            obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
+            return obs;
+          });
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({observers: observers});
           for (const occ of data.properties.t_occurrences_contact){
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)

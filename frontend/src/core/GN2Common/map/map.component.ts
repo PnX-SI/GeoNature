@@ -47,8 +47,6 @@ export class MapComponent implements OnInit {
         zoom: zoom,
     });
     this.map = map;
-    console.log("heightttttt");
-    console.log(this.height);
     (map as any)._onResize();
 
 

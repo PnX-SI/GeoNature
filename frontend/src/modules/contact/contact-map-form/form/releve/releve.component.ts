@@ -67,7 +67,6 @@ export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
     // date max autocomplete
     (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
     .subscribe(value => {
-      console.log(this.releveForm.value.properties.date_max);
       if (this.releveForm.value.properties.date_max === null ) {
         this.releveForm.controls.properties.patchValue({date_max: value});
       }
@@ -114,7 +113,6 @@ export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
       if (dateMin && dateMax) {
         dateMin.setHours(hourMin[0], hourMin[1]);
         dateMax.setHours(hourMax[0], hourMax[1]);
-        console.log(dateMin > dateMax);
       }
 
       if (dateMin > dateMax) {
