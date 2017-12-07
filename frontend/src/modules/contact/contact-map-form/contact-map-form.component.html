@@ -1,12 +1,12 @@
 <div class="row row-0">
-        <div class="col-sm-12 col-md-5 padding-sm ">
-            <pnx-map height="92vh" class="map-card">
+        <div class="col-sm-12 col-md-5 padding-sm map-content">
+            <pnx-map height="95vh" class="map-card">
                 <pnx-gps (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
                 <pnx-marker (markerChanged)="sendGeoInfo($event)"> </pnx-marker>
                 <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoInfo($event)" > </pnx-leaflet-draw>
             </pnx-map>
         </div>
-        <div class="col-sm-12 col-md-7 form padding-0 ">
+        <div class="col-sm-12 col-md-7 padding-0 form">
             <pnx-contact-form [id]="id"></pnx-contact-form>
         </div>
 </div>
