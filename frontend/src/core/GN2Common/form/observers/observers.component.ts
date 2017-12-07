@@ -34,7 +34,7 @@ export class ObserversComponent implements OnInit {
     const query = event.query;
     this.filteredObservers = this.observers.filter(obs => {
       return obs.nom_complet.toLowerCase().indexOf(query.toLowerCase()) === 0
-    })
+    });
   }
   addObservers(observer) {
     this.observerSelected.emit(observer);

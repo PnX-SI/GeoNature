@@ -245,10 +245,6 @@ export class ContactFormService {
     // reset current taxon
     this.currentTaxon = {};
     // reset occurrence form
-    console.log("default valueeeeeeees");
-    
-    console.log(this.defaultValues);
-    
     this.occurrenceForm = this.initOccurrenceFormDefaultValues();
     // path the value I want to persist
     this.occurrenceForm.patchValue({

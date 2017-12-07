@@ -82,7 +82,6 @@ export class ContactMapInfoComponent implements OnInit {
   loadNomenclaturesOccurrence() {
     this._dfs.getNomenclatures(100, 14, 7, 13, 8, 101, 15)
       .subscribe(data => {
-        console.log(data);
       });
   }
 }
