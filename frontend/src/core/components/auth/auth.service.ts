@@ -28,7 +28,7 @@ export class AuthService {
     currentUser: User;
     token: string;
     toastrConfig: ToastrConfig;
-    errorMessage: string;
+    loginError: boolean;
     constructor(private router: Router,  private toastrService: ToastrService, private _http: HttpClient,
     private _cookie: CookieService, private _router: Router) {
     }
@@ -119,10 +119,11 @@ export class AuthService {
         rights : data.user.rights
       };
       this.setCurrentUser(userForFront, new Date(data.expires));
+      this.loginError = false;
       this.router.navigate(['']);
     },
     error => {
-      this.errorMessage = error;
+      this.loginError = true;
     });
 
   }
