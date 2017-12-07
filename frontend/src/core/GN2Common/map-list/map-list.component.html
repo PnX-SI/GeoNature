@@ -1,10 +1,10 @@
 <div class="row row-sm">
-    <div class="col-sm-12 col-md-6 padding-sm">
-        <pnx-map height="88vh" class="map-card">
+    <div class="col-sm-12 col-md-6 padding-sm map-content">
+        <pnx-map height="95vh" class="map-card">
             <pnx-geojson [geojson]="mapListService.geojsonData" [onEachFeature]="onEachFeature.bind(this)"> </pnx-geojson>
         </pnx-map>
     </div>
-    <div class="col-sm-12 col-md-6 padding-sm">
+    <div class="col-sm-12 col-md-6 padding-sm list">
         <pnx-map-data 
          [displayColumns]="displayColumns"
          [allColumns]="allColumns"
