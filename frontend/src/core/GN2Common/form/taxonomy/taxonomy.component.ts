@@ -50,7 +50,6 @@ export class TaxonomyComponent implements OnInit {
     this.regneControl.valueChanges
       .subscribe(value => {
         if (value === '') {
-          console.log('laaaa');
           this.groupControl.patchValue(null);
         }
       });

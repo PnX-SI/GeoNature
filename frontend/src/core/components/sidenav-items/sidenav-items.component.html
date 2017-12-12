@@ -1,13 +1,12 @@
-<md-card class="logo">
-  
+<mat-card class="logo">
   
  <a routerLink="/" routerLinkActive="active">
-  <img md-card-image src="assets/images/LogoGeonature.png">
+  <img mat-card-image src="assets/images/LogoGeonature.png">
  </a>
-</md-card>
-<md-nav-list class="appnav">
-    <md-list-item *ngFor="let app of nav" (click)="onSetApp(app)" routerLink={{app.route}} routerLinkActive="active" >
-      <md-icon md-list-icon>{{app.icon}}</md-icon>
-      <h3 md-line> {{app.appName}} </h3>
-    </md-list-item>
-</md-nav-list>
+</mat-card>
+<mat-nav-list class="appnav">
+    <mat-list-item *ngFor="let app of nav" (click)="onSetApp(app)" routerLink={{app.route}} routerLinkActive="active" >
+      <mat-icon mat-list-icon>{{app.icon}}</mat-icon>
+      <h3 mat-line> {{app.appName}} </h3>
+    </mat-list-item>
+</mat-nav-list>

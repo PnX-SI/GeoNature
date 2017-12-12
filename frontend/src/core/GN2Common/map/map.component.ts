@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { MapService } from './map.service';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Map, LatLngExpression} from 'leaflet';
@@ -15,7 +15,9 @@ export class MapComponent implements OnInit {
   @Input() baseMaps: any;
   @Input() center: Array<number>;
   @Input() zoom: number;
+  @Input() height: string;
   searchLocation: string;
+  public map: any;
   constructor(private mapService: MapService, private modalService: NgbModal) {
     this.searchLocation = '';
   }
@@ -44,6 +46,9 @@ export class MapComponent implements OnInit {
         center: center,
         zoom: zoom,
     });
+    this.map = map;
+    (map as any)._onResize();
+
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
@@ -62,5 +67,12 @@ export class MapComponent implements OnInit {
     this.mapService.initializeReleveFeatureGroup();
 
   }
+
+  // ngOnChanges(change) {
+  //   if(change.height) {
+  //     console.log("change heighttttttttttt");
+  //     this.map.invalidateSize();
+  //   }
+  // }
 
 }

@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
 import 'rxjs/Rx';
-import {MatSidenavModule, MatSidenav} from '@angular/material/sidenav';
+import {MatSidenav} from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
 import { Location } from '@angular/common';
 
@@ -55,9 +55,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);
 
-    // put the user name in navbar
-    console.log("from nav home");
-    
+    // put the user name in navbar    
     this.currentUser = this._authService.getCurrentUser();
   }
   changeLanguage(lang) {

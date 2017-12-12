@@ -28,6 +28,7 @@ export class AuthService {
     currentUser: User;
     token: string;
     toastrConfig: ToastrConfig;
+    loginError: boolean;
     constructor(private router: Router,  private toastrService: ToastrService, private _http: HttpClient,
     private _cookie: CookieService, private _router: Router) {
     }
@@ -43,10 +44,6 @@ export class AuthService {
       return val.replace(/\\\\/g, '\\');
   }
   setCurrentUser(user, expireDate) {
-    console.log(expireDate);
-    console.log(user);
-    ;
-
     this._cookie.set('currentUser', JSON.stringify(user), expireDate);
   }
 
@@ -105,7 +102,7 @@ export class AuthService {
     const user = {
     'login': username,
     'password': password,
-    'id_application': 14,
+    'id_application': AppConfig.ID_APPLICATION_GEONATURE,
     'with_cruved': true
     };
     this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
@@ -118,10 +115,11 @@ export class AuthService {
         rights : data.user.rights
       };
       this.setCurrentUser(userForFront, new Date(data.expires));
+      this.loginError = false;
       this.router.navigate(['']);
     },
     error => {
-      console.log(error);
+      this.loginError = true;
     });
 
   }

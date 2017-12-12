@@ -27,11 +27,9 @@ export class ContactMapListComponent implements OnInit {
    , private _translate: TranslateService) { }
 
   ngOnInit() {
-    console.log(this._translate.getLangs());
     // this._cookie.deleteAll();
     // reset the URL query parameter
     this._mapListService.urlQuery.delete('organism');
-    console.log("from here map list");
     const currentUser = this._auth.getCurrentUser();
     const userRight = currentUser.getRight('14');
 
