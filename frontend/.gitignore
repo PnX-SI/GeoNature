@@ -1,5 +1,6 @@
 # Node Files #
 /node_modules/
+npm-debug.log
 
 /dist/
 src/conf/app.config.ts
