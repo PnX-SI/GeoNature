@@ -26,6 +26,7 @@
     "Cancel": "Cancel",
     "Delete": "Delete",
     "NotAllowed": "You do not have the rights to perform this action",
+    "LoginError": "Login or password incorrect",
   
     "Map":{
         "SearchLocation":"Search a location",

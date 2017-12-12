@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { MapService } from '../../../../core/GN2Common/map/map.service';
+import { CommonService } from '../../../../core/GN2Common/service/common.service'
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
@@ -27,6 +28,7 @@ export class ContactFormComponent implements OnInit {
      private toastr: ToastrService,
      private router: Router,
      private contactService: ContactService,
+     private _commonService: CommonService
     ) {  }
 
   ngOnInit() {
@@ -39,7 +41,6 @@ export class ContactFormComponent implements OnInit {
 
     // patch default values in ajax
     this.fs.patchDefaultNomenclature();
-    //this.fs.initFormsWithDefaultValues();
 
     // reset taxon list of service
     this.fs.taxonsList = [];
@@ -56,12 +57,19 @@ export class ContactFormComponent implements OnInit {
         .subscribe(data => {
           // pre fill the form
           this.fs.releveForm.patchValue({properties: data.properties});
+
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_min: this.fs.formatDate(data.properties.date_min)});
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_max: this.fs.formatDate(data.properties.date_max)});
           const hour_min = data.properties.hour_min === 'None' ? null : data.properties.hour_min;
           const hour_max = data.properties.hour_max === 'None' ? null : data.properties.hour_max;
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_min: hour_min});
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_max: hour_max});
+          // format observers
+          const observers = data.properties.observers.map(obs => {
+            obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
+            return obs;
+          });
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({observers: observers});
           for (const occ of data.properties.t_occurrences_contact){
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)
@@ -114,10 +122,15 @@ export class ContactFormComponent implements OnInit {
         // redirect
         this.router.navigate(['/occtax']);
         },
-        (error) => { this.toastr.error("Une erreur s'est produite!", '', {positionClass:'toast-top-center'});}
+        (error) => {
+          console.log(error);
+          if (error.status === 403) {
+            this._commonService.translateToaster('error', 'NotAllowed');
+          } else {
+            this._commonService.translateToaster('error', 'ErrorMessage');
+          }
+        }
       );
-
-  }
-
-
+    }
+ 
 }

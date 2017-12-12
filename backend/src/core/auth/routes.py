@@ -60,11 +60,11 @@ def loginCas():
                 if organismId == -1:
                     # group socle 1
                     insert_in_cor_role(20003, user['id_role'])
-                    rights = {current_app.config['ID_APPLICATION_GEONATURE'] : {'C': 3, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 } }
+                    rights = {str(current_app.config['ID_APPLICATION_GEONATURE']) : {'C': 3, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 } }
                 else:
                     # group socle 2
                     insert_in_cor_role(20001, user['id_role'])
-                    rights = {current_app.config['ID_APPLICATION_GEONATURE'] : {'C': 3, 'R': 2, 'U': 1, 'V': 1, 'E': 2, 'D': 1 } }
+                    rights = {str(current_app.config['ID_APPLICATION_GEONATURE']) : {'C': 3, 'R': 2, 'U': 1, 'V': 1, 'E': 2, 'D': 1 } }
                 user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
                 # creation de la Response
                 response = make_response(redirect(current_app.config['URL_APPLICATION']))

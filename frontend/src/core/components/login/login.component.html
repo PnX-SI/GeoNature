@@ -12,3 +12,7 @@
        </div>
        <input type="submit" class="btn btn-success" value="Connexion">
     </form>
+    <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
+        <strong> {{'LoginError' | translate }} </strong>
+    </p>
+</div>
