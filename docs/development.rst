@@ -20,7 +20,7 @@ Architecture
 ============
 
 - UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` database schema
-- TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ref_taxonomy database schema. We also use TaxHub API to get information about taxons, species...
+- TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` database schema. We also use TaxHub API to get information about taxons, species...
 - A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
 - ``ref_geo`` is a geographical referentials to manage areas, DEM and spatial functions
 
@@ -29,7 +29,7 @@ Database
 
 In GeoNature V2, the whole database is still done with PostgreSQL/PostGIS but it has also been rebuilt. 
 
-It is based on MNHN SINPN standard Occurrences de Taxons.
+It is based on MNHN SINP standard Occurrences de Taxons.
 Details at https://github.com/PnX-SI/GeoNature/issues/183.
 
 The database has also been translated into English and supports multilingual values. 
@@ -45,21 +45,52 @@ Database schemas prefixs : ``ref_`` for external referentials, ``gn_`` for GeoNa
 Latest version of the database : 
 
 .. image :: https://user-images.githubusercontent.com/4418840/29674737-56042e8a-88f3-11e7-934f-2042696fb2c5.png
-        
+
+**Gestion des droits :**
+
+La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour élargir les possibilités d'attribution de droits. 
+
+Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. Il permet d'attribuer des étiquettes génériques à des rôles. 
+
+- Dans GeoNature V2 cela permet d'attribuer des actions possibles à un rôle sur une portée dans une application ou un module (définis dans ``gn_users.cor_app_privileges``).
+- 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
+- 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
+- Une vue permet de retourner toutes les actions, leur portée et leur modules de GeoNature pour tous les rôles (``gn_users.v_usersaction_forall_gn_modules``)
+- Des fonctions PostgreSQL ont aussi été intégrés pour faciliter la récupération de ces informations (``gn_users.cruved_for_user_in_module``, ``gn_users.can_user_do_in_module``, ...)
+- Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
+- Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``gn_users`` de GeoNature
+
+**Valeurs par défaut :**
+
+- Toutes les listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
+- Chaque nomenclature est associée à un type et une vue par type de nomenclature a été ajoutée pour simplifier leur usage 
+- Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d'autres applications : https://github.com/PnX-SI/Nomenclature-api-module/
+- Chaque nomenclature peut être associée à un règne ou un group2inpn (``ref_nomenclatures.cor_taxref_nomenclature``) pour proposer des nomenclatures correspondants à un taxon
+- Il est possible de désactiver des nomenclatures ou d'en ajouter
+- Les valeurs par défaut sont définies dans chaque module
+- Pour OCCTAX c'est dans ``pr_contact.defaults_nomenclatures_value``. Elle peut être définie pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn
+- Si organisme = 0 alors la valeur par défaut s'applique à tous les organismes. Idem pour les règnes et group2inpn
+- La fonction ``pr_contact.get_default_nomenclature_value`` permet de renvoyer l'id de la nomenclature par défaut
+- Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
+
+ref_nomenclatures.defaults_nomenclatures_value n'est plus utilisée du coup ? Et ref_nomenclatures.get_default_nomenclature_value ?
+
 Frontend
 ========
-Documentation pour developpeur
+
+Documentation pour développeur
 ------------------------------
+
 Bonnes pratiques:
 
-Chaque module de Géonature doit être un module Angular indépendant https://angular.io/guide/ngmodule. Ce module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule. 
+Chaque module de GeoNature doit être un module Angular indépendant https://angular.io/guide/ngmodule. Ce module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule. 
 
 **Les composants génériques**
 
 1. Les composant cartographiques
 
 - **MapComponent**
-        Ce composant affiche une carte leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
+        Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
 
         **Selector**: ``pnx-map``
 
