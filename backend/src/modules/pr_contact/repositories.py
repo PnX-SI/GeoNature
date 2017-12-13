@@ -1,9 +1,10 @@
 # coding: utf8
-from ...core.gn_meta.models import CorDatasetsActor
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import  or_
-import json
+
+from ...core.gn_meta.models import CorDatasetsActor
 from ...core.gn_meta import routes as gn_meta
+from .models import corRoleRelevesContact
 db = SQLAlchemy()
 
 
@@ -12,26 +13,39 @@ class ReleveRepository():
     """Repository: classe permettant l'acces au données d'un modèle"""
     def __init__(self, model) :
         self.model = model
+
+    def user_is_observer_or_digitiser(self, user, releve):
+        observers = [d.id_role for d in releve.observers]
+        return user.id_role == releve.id_digitiser or user.id_role in observers
+
+    def get_releve_if_allowed(self, user, data_scope, releve):
+        print('############ data _scope')
+        print(data_scope)
+        if data_scope == '2':
+            if self.user_is_observer_or_digitiser(user, releve) or releve.id_dataset in gn_meta.get_allowed_datasets(user):
+                return releve
+        elif data_scope == '1':
+            if self.user_is_observer_or_digitiser(user, releve):
+                return releve
+        else:
+            return releve
+        return -1
+            
         
-    def get_one(self, id, info_user):
+    def get_one(self, id_releve, info_user):
         """Retourne un releve si autorisé, sinon -1
         """
         user, data_scope = info_user
         try:
-            releve = db.session.query(self.model).get(id)
+            releve = db.session.query(self.model).get(id_releve)
         except:
             db.session.rollback()
             raise
-        if not releve:
-           return None
-        if data_scope == 1:
-            observers = [d.id_role for d in releve.observers]
-            if not (user.id_role in observers or user.id_role == releve.id_digitiser):
-                return -1
-        if data_scope == 2:
-            if not releve.id_dataset in gn_meta.get_allowed_datasets(user):
-                return -1
-        return releve
+        if releve:
+           return self.get_releve_if_allowed(user, data_scope, releve)
+        
+        return None
+            
 
 
     def update(self, releve, info_user):
@@ -39,63 +53,69 @@ class ReleveRepository():
         retourne un releve si autorisé, sinon -1
         """
         user, data_scope = info_user
-        if data_scope == 1:
-            observers = [d.id_role for d in releve.observers]
-            if not (user.id_role in observers or user.id_role == releve.id_digitiser):
-                return -1
-        if data_scope == 2:
-            if not(releve.id_dataset in gn_meta.get_allowed_datasets(user)):
-                return -1
-        try:
-            db.session.merge(releve)
-            db.session.commit()
-            return releve
-        except:
-            db.session.rollback()
-            raise
+        releve = self.get_releve_if_allowed(user, data_scope, releve)
+        if releve != -1:
+            try:
+                db.session.merge(releve)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+        return releve
+
 
             
     def delete(self, id_releve, info_user):
         """Supprime un releve
         retourne un releve sinon -1"""
         user, data_scope = info_user
-        print('DATASCOPE')
-        print(data_scope)
         try:
             releve = db.session.query(self.model).get(id_releve)
         except:
             db.session.rollback()
         if not releve:
             return None
-        if data_scope == '1':
-            observers = [d.id_role for d in releve.observers]
-            if not(user.id_role in observers or user.id_role == releve.id_digitiser):
-                return -1
+        releve = self.get_releve_if_allowed(user, data_scope, releve)
+        if releve != -1:
+            try:
+                db.session.delete(releve)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+        return releve
+
+    def filter_query_with_autorization(self, user, data_scope):
+        q = db.session.query(self.model)
         if data_scope == '2':
-            if not releve.id_dataset in gn_meta.get_allowed_datasets(user):
-                return -1
-        try:
-            db.session.delete(releve)
-            db.session.commit()
-            return releve
-        except:
-            db.session.rollback()
-            raise
+            allowed_datasets = gn_meta.get_allowed_datasets(user)
+            q = q.join(
+                    corRoleRelevesContact,
+                    corRoleRelevesContact.c.id_releve_contact == self.model.id_releve_contact
+                    ).filter(
+                        or_(
+                        self.model.id_dataset.in_(tuple(allowed_datasets)),
+                        corRoleRelevesContact.c.id_role == user.id_role,
+                        self.model.id_digitiser == user.id_role
+                        )
+                    )
+        elif data_scope == '1':
+            q = q.join(
+                    corRoleRelevesContact,
+                    corRoleRelevesContact.c.id_releve_contact == self.model.id_releve_contact
+                    ).filter(
+                        or_(
+                        corRoleRelevesContact.c.id_role == user.id_role,
+                        self.model.id_digitiser == user.id_role
+                        )
+                    )
+        return q       
 
     def get_all(self, info_user):
         """Retourne toute les données du modèle, filtrées
              en fonction de la portée des droits autorisés"""
         user, data_scope = info_user
-        q = db.session.query(self.model)
-
-        if data_scope == '1':
-            q = q.join(corRoleRelevesContact, corRoleRelevesContact.c.id_releve_contact == self.model.id_releve_contact
-            ).filter(or_(corRoleRelevesContact.c.id_role == user.id_role, self.model.id_digitiser == user.id_role))
-
-        if data_scope == '2':
-            allowed_datasets = gn_meta.get_allowed_datasets(user)
-            q = q.filter(self.model.id_dataset.in_(tuple(allowed_datasets)))
-        
+        q = self.filter_query_with_autorization(user, data_scope)
         try:
             return q.all()
         except:
@@ -105,14 +125,7 @@ class ReleveRepository():
     def get_filtered_query(self, info_user):
         """Retourne un objet query déjà filtré en fonction de la portée des droits autorisés"""
         user, data_scope = info_user
-        q = db.session.query(self.model)
-        if data_scope == '1':
-            q = q.join(corRoleRelevesContact, corRoleRelevesContact.c.id_releve_contact == self.model.id_releve_contact
-            ).filter(or_(corRoleRelevesContact.c.id_role == user.id_role, self.model.id_digitiser == user.id_role))
-        if data_scope == '2':
-            allowed_datasets = gn_meta.get_allowed_datasets(user)
-            q = q.filter(self.model.id_dataset.in_(tuple(allowed_datasets)))
-        return q
+        return self.filter_query_with_autorization(user, data_scope)
     
 
 
