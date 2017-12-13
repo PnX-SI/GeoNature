@@ -16,6 +16,7 @@ Maintainers :
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular 4
 - Camille MONCHICOURT (PnEcrins) : Documentation / Project management
 
+
 Architecture
 ============
 
@@ -23,6 +24,7 @@ Architecture
 - TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` database schema. We also use TaxHub API to get information about taxons, species...
 - A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
 - ``ref_geo`` is a geographical referentials to manage areas, DEM and spatial functions
+
 
 Database
 ========
@@ -48,25 +50,25 @@ Latest version of the database :
 
 **Gestion des droits :**
 
-La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour élargir les possibilités d'attribution de droits. 
+La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
 Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. Il permet d'attribuer des étiquettes génériques à des rôles. 
 
 - Dans GeoNature V2 cela permet d'attribuer des actions possibles à un rôle sur une portée dans une application ou un module (définis dans ``gn_users.cor_app_privileges``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
 - 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
-- Une vue permet de retourner toutes les actions, leur portée et leur modules de GeoNature pour tous les rôles (``gn_users.v_usersaction_forall_gn_modules``)
+- Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``gn_users.v_usersaction_forall_gn_modules``)
 - Des fonctions PostgreSQL ont aussi été intégrés pour faciliter la récupération de ces informations (``gn_users.cruved_for_user_in_module``, ``gn_users.can_user_do_in_module``, ...)
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``gn_users`` de GeoNature
 
-**Valeurs par défaut :**
+**Nomenclatures :**
 
 - Toutes les listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
+- Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
 - Chaque nomenclature est associée à un type et une vue par type de nomenclature a été ajoutée pour simplifier leur usage 
 - Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d'autres applications : https://github.com/PnX-SI/Nomenclature-api-module/
 - Chaque nomenclature peut être associée à un règne ou un group2inpn (``ref_nomenclatures.cor_taxref_nomenclature``) pour proposer des nomenclatures correspondants à un taxon
-- Il est possible de désactiver des nomenclatures ou d'en ajouter
 - Les valeurs par défaut sont définies dans chaque module
 - Pour OCCTAX c'est dans ``pr_contact.defaults_nomenclatures_value``. Elle peut être définie pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn
 - Si organisme = 0 alors la valeur par défaut s'applique à tous les organismes. Idem pour les règnes et group2inpn
@@ -74,6 +76,32 @@ Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. 
 - Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
 
 ref_nomenclatures.defaults_nomenclatures_value n'est plus utilisée du coup ? Et ref_nomenclatures.get_default_nomenclature_value ?
+
+**Métadonnées :**
+
+- Elles sont gérées dans le schéma ```gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
+- Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles
+
+**Données SIG :**
+
+- Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
+- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et du MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
+- La fonction ``ref_geo.fct_get_area_intersection`` permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie
+- La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
+- L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
+
+
+Modularité
+==========
+
+Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/data/modules/contact
+
+Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/src/modules/pr_contact
+
+Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/src/modules/pr_contact
+
+Mais en pouvant utiliser des composants du CORE comment expliqué dans le début de doc DEVELOPER : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/frontend/src/core/GN2Common
+
 
 Frontend
 ========
