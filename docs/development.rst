@@ -79,7 +79,7 @@ ref_nomenclatures.defaults_nomenclatures_value n'est plus utilisée du coup ? Et
 
 **Métadonnées :**
 
-- Elles sont gérées dans le schéma ```gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
+- Elles sont gérées dans le schéma ``gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
 - Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles
 
 **Données SIG :**
@@ -100,7 +100,7 @@ Côté backend chaque module a aussi son modèle et ses routes : https://github.
 
 Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/src/modules/pr_contact
 
-Mais en pouvant utiliser des composants du CORE comment expliqué dans le début de doc DEVELOPER : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/frontend/src/core/GN2Common
+Mais en pouvant utiliser des composants du CORE comment expliqué ci-dessous.
 
 
 Frontend
