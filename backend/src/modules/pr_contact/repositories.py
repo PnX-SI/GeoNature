@@ -14,24 +14,7 @@ class ReleveRepository():
     def __init__(self, model) :
         self.model = model
 
-    def user_is_observer_or_digitiser(self, user, releve):
-        observers = [d.id_role for d in releve.observers]
-        return user.id_role == releve.id_digitiser or user.id_role in observers
 
-    def get_releve_if_allowed(self, user, data_scope, releve):
-        print('############ data _scope')
-        print(data_scope)
-        if data_scope == '2':
-            if self.user_is_observer_or_digitiser(user, releve) or releve.id_dataset in gn_meta.get_allowed_datasets(user):
-                return releve
-        elif data_scope == '1':
-            if self.user_is_observer_or_digitiser(user, releve):
-                return releve
-        else:
-            return releve
-        return -1
-            
-        
     def get_one(self, id_releve, info_user):
         """Retourne un releve si autorisé, sinon -1
         """
@@ -42,18 +25,17 @@ class ReleveRepository():
             db.session.rollback()
             raise
         if releve:
-           return self.get_releve_if_allowed(user, data_scope, releve)
-        
+           return releve.get_releve_if_allowed(user, data_scope)
+
         return None
             
-
 
     def update(self, releve, info_user):
         """Met a jour le releve passé en parametre  
         retourne un releve si autorisé, sinon -1
         """
         user, data_scope = info_user
-        releve = self.get_releve_if_allowed(user, data_scope, releve)
+        releve = releve.get_releve_if_allowed(user, data_scope)
         if releve != -1:
             try:
                 db.session.merge(releve)
@@ -75,7 +57,7 @@ class ReleveRepository():
             db.session.rollback()
         if not releve:
             return None
-        releve = self.get_releve_if_allowed(user, data_scope, releve)
+        releve = releve.get_releve_if_allowed(user, data_scope)
         if releve != -1:
             try:
                 db.session.delete(releve)

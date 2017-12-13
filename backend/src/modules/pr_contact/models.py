@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
-from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel, ReleveModel
+from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
 
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -19,6 +19,50 @@ from src.core.ref_geo.models import LAreasWithoutGeom
 from geoalchemy2 import Geometry
 
 db = SQLAlchemy()
+
+class ReleveModel(db.Model):
+    __abstract__ = True
+
+    def user_is_observer_or_digitiser(self, user):
+        observers = [d.id_role for d in self.observers]
+        return user.id_role == self.id_digitiser or user.id_role in observers
+
+    def user_is_in_dataset_actor(self, user):
+        return self.id_dataset in gn_meta.get_allowed_datasets(user)
+
+    def get_releve_if_allowed(self, user, data_scope):
+        """Return the releve if the user is allowed
+          -params: 
+          user: object from TRole
+          data_scope: string: level of rigth for an action
+        """
+        if data_scope == '2':
+            if self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user):
+                return self
+        elif data_scope == '1':
+            if self.user_is_observer_or_digitiser(user):
+                return self
+        else:
+            return self
+        return -1
+
+    def get_releve_cruved(self, user, user_cruved):
+        """ return the user's cruved for a Releve instance. Use in the map-list interface to allow or not an action
+        params:
+            - user : a TRole object
+            - user_cruved: object return by fnauth.get_cruved(user) """
+        releve_auth = {}
+        allowed_datasets = gn_meta.get_allowed_datasets(user)
+        for obj in user_cruved:
+            if obj['level'] == '2':
+                releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user) or  self.user_is_in_dataset_actor(user)
+            elif obj['level'] == '1':
+                releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user)
+            elif obj['level'] == '3':
+                releve_auth[obj['action']] = True
+            else:
+                releve_auth[obj['action']] = False
+        return releve_auth
 
 
 corRoleRelevesContact = db.Table(
@@ -38,7 +82,7 @@ corRoleRelevesContact = db.Table(
     )
 )
 
-class TRelevesContact(serializableGeoModel):
+class TRelevesContact(serializableGeoModel, ReleveModel):
     __tablename__ = 't_releves_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer, primary_key=True)

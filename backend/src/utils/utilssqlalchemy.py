@@ -169,29 +169,6 @@ class serializableGeoModel(serializableModel):
             )
         return feature
 
-class ReleveModel(db.Model):
-    __abstract__ = True
-    def get_releve_cruved(self, user, user_cruved):
-        from ..core.gn_meta.routes import get_allowed_datasets
-        
-        """ return the user's cruved for a Releve instance. Use in the map-list interface to allow or not an action
-        params:
-            - user : a TRole object
-            - user_cruved: object return by fnauth.get_cruved(user) """
-        releve_auth = {}
-        allowed_datasets = get_allowed_datasets(user)
-        for obj in user_cruved:
-            if obj['level'] == '2':
-                releve_auth[obj['action']] = self.id_dataset in allowed_datasets 
-            elif obj['level'] == '1':
-                releve_observers = [d.id_role for d in self.observers]
-                releve_auth[obj['action']] = (user.id_role in releve_observers or user.id_role == self.id_digitiser)
-            elif obj['level'] == '3':
-                releve_auth[obj['action']] = True
-            else:
-                releve_auth[obj['action']] = False
-        return releve_auth
-
 
 def json_resp(fn):
     '''
