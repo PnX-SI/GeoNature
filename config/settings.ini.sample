@@ -40,7 +40,7 @@ install_default_dem=true
 add_sample_data=true
 
 
-python_path=/usr/bin/python3.5
+python_path=/usr/bin/python3.4
 
 # Taxonomy and Users configuration
 #########################################

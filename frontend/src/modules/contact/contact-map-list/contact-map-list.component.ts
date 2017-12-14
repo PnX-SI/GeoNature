@@ -27,11 +27,6 @@ export class ContactMapListComponent implements OnInit {
    , private _translate: TranslateService) { }
 
   ngOnInit() {
-    // this._cookie.deleteAll();
-    // reset the URL query parameter
-    this._mapListService.urlQuery.delete('organism');
-    const currentUser = this._auth.getCurrentUser();
-    const userRight = currentUser.getRight('14');
 
   this.displayColumns = [
    {prop: 'taxons', name: 'Taxon', display: true},
