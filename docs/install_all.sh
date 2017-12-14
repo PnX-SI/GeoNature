@@ -1,6 +1,6 @@
 # A faire avant 
 sudo nano /etc/sudoers
-geonatureadmin ALL=(ALL:ALL) ALL
+  geonatureadmin ALL=(ALL:ALL) ALL
 ###
 
 nano install_all.ini
@@ -15,7 +15,8 @@ sudo apt-get install -y apache2 libapache2-mod-wsgi
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
 sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
 sudo apt-get install -y npm
-sudo apt-get install -y python3 python3-dev 
+sudo apt-get install -y python3 python3-dev python3-setuptools
+
 sudo pip install virtualenv
 
 
@@ -32,7 +33,6 @@ sudo a2enmod rewrite
 sudo a2enmod wsgi
 sudo apache2ctl restart
 
-mkdir geonature taxhub
 # Installation de GeoNature avec l'utilisateur courant
 echo "Téléchargement et installation de GeoNature ..."
 cd /tmp
@@ -41,17 +41,45 @@ wget https://github.com/PnX-SI/GeoNature/archive/frontend-contact.zip
 unzip frontend-contact.zip
 rm frontend-contact.zip
 mv GeoNature-frontend-contact /home/$monuser/geonature/
-mv GeoNature-$geonature_release /home/$monuser/geonature/
+#mv GeoNature-$geonature_release /home/$monuser/geonature/
 # unzip $geonature_release.zip
 # rm $geonature_release.zip
 # mv GeoNature-$geonature_release /home/$monuser/geonature/
 cd /home/$monuser/geonature
+
+# Configuration des settings de GeoNature
+cp config/settings.ini.sample config/settings.ini
+echo "Installation de la base de données et configuration de l'application GeoNature ..."
+sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
+sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
+sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
+sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
+sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
+sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
+sed -i "s/install_default_dem=.*$/srid_local=$install_default_dem/g" config/settings.ini
+sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
+sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
+sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
+sed -i -e "s/\/var\/www/$apache_document_root/g" install_app.sh
+
+
 
 # Installation de la base de données GeoNature en root
 sudo ./install_db.sh
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
+
+#configuration apache de Geonature
+sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/000-default.conf'
+
+# Lancement de gunicorn geonature
 
 
 
@@ -87,8 +115,8 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 #sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 #sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000/" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000/" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 
