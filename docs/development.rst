@@ -44,11 +44,14 @@ Database schemas prefixs : ``ref_`` for external referentials, ``gn_`` for GeoNa
 - pas de nom de table dans les noms de champs
 - nom de schema eventuellement dans nom de table
 
-Latest version of the database : 
+Latest version of the database (2017-12-13) : 
 
-.. image :: https://user-images.githubusercontent.com/4418840/29674737-56042e8a-88f3-11e7-934f-2042696fb2c5.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/frontend-contact/docs/2017-12-13-GN2-MCD.png
 
-**Gestion des droits :**
+Sorry for the relations, it is too long to arrange...
+
+Gestion des droits :
+--------------------
 
 La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
@@ -60,9 +63,11 @@ Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. 
 - Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``gn_users.v_usersaction_forall_gn_modules``)
 - Des fonctions PostgreSQL ont aussi été intégrés pour faciliter la récupération de ces informations (``gn_users.cruved_for_user_in_module``, ``gn_users.can_user_do_in_module``, ...)
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
+- Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``gn_users`` de GeoNature
 
-**Nomenclatures :**
+Nomenclatures :
+---------------
 
 - Toutes les listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
@@ -74,15 +79,16 @@ Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. 
 - Si organisme = 0 alors la valeur par défaut s'applique à tous les organismes. Idem pour les règnes et group2inpn
 - La fonction ``pr_contact.get_default_nomenclature_value`` permet de renvoyer l'id de la nomenclature par défaut
 - Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
+- Il existe aussi une table pour définir des valeurs par défaut de nomenclature générales (``ref_nomenclatures.defaults_nomenclatures_value``)
 
-ref_nomenclatures.defaults_nomenclatures_value n'est plus utilisée du coup ? Et ref_nomenclatures.get_default_nomenclature_value ?
-
-**Métadonnées :**
+Métadonnées :
+-------------
 
 - Elles sont gérées dans le schéma ``gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
 - Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles
 
-**Données SIG :**
+Données SIG :
+-------------
 
 - Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
 - Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et du MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
@@ -101,6 +107,30 @@ Côté backend chaque module a aussi son modèle et ses routes : https://github.
 Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/src/modules/pr_contact
 
 Mais en pouvant utiliser des composants du CORE comment expliqué ci-dessous.
+
+
+Configuration
+=============
+
+Pour configurer GeoNature, actuellement il y a : 
+
+- Une configuration pour l'installation : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/config/settings.ini.sample
+- Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample
+- Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/src/conf/app.config.sample.ts
+- Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/src/modules/contact/contact.config.ts
+- Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
+
+
+API
+=============
+
+GeoNature utilise : 
+- l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...)
+- l'API du sous-module Nomenclatures (typologies et listes déroulantes)
+- l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
+- l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
+
+Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API à venir
 
 
 Frontend
