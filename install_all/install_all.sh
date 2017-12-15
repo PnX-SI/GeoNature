@@ -61,7 +61,7 @@ sed -i -e "s/\/var\/www/$apache_document_root/g" config/settings.ini
 sudo ./install_db.sh
 
 # Installation et configuration de l'application GeoNature
-sudo ./install_app.sh
+./install_app.sh
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
@@ -71,6 +71,12 @@ sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-availa
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
+
+sudo sh -c 'echo "<Directory /home/$monuser/geonature/fronend/dist" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "Require all denied" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/geonature.conf'
+
+
 sudo a2ensite geonature
 
 # Installation de TaxHub avec l'utilisateur courant
@@ -123,6 +129,6 @@ sudo sh -c 'echo "# vim: syntax=apache ts=4 sw=4 sts=4 sr noet" >> /etc/apache2/
 sudo a2ensite taxhub
 sudo a2enmod proxy
 sudo a2enmod proxy_http
+sudo apache2ctl restart
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
-sudo apache2ctl restart
