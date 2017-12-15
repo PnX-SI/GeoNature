@@ -37,3 +37,9 @@ Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` :
   SELECT 500,n.id_nom FROM taxonomie.bib_noms n
         
         
+Authentification CAS INPN
+=========================
+
+- Code source : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/src/core/auth/routes.py#L16-L97
+- Config backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample#L20-L29
+- Config frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample#L20-L29
