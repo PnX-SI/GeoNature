@@ -71,7 +71,6 @@ sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/000
 sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/000-default.conf'
 
 
@@ -104,8 +103,8 @@ sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" settings.ini
 # Configuration Apache de TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-#sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
-#sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000/" >> /etc/apache2/sites-available/taxhub.conf'
