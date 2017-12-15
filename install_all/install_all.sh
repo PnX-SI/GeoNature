@@ -20,10 +20,6 @@ sudo apt-get install -y python3 python3-dev python3-setuptools
 sudo pip install virtualenv
 
 
-# echo "Configuration de postgreSQL..."
-# sudo sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/*/main/postgresql.conf
-# sudo sh -c 'echo "host    all             all             0.0.0.0/0            md5" >> /etc/postgresql/9.4/main/pg_hba.conf'
-# sudo /etc/init.d/postgresql restart
 
 echo "Création des utilisateurs postgreSQL..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
@@ -45,6 +41,7 @@ cd /home/$monuser/geonature
 
 # Configuration des settings de GeoNature
 cp config/settings.ini.sample config/settings.ini
+my_url="${my_url//\//\\/}"
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
 sed -i "s/my_url=.*$/drop_apps_db=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
