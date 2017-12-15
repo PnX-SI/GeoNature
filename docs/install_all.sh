@@ -5,6 +5,10 @@ nano install_all.ini
 
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get -y install ntpdate
+sudo ntpdate-debian
 sudo apt-get install -y curl unzip git
 sudo apt-get install -y apache2 libapache2-mod-wsgi
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
