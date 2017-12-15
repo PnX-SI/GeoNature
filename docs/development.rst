@@ -130,6 +130,7 @@ API
 =============
 
 GeoNature utilise : 
+
 - l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...)
 - l'API du sous-module Nomenclatures (typologies et listes déroulantes)
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
