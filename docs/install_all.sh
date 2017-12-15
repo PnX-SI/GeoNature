@@ -66,13 +66,14 @@ sudo ./install_db.sh
 ./install_app.sh
 
 #configuration apache de Geonature
-sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/000-default.conf'
-
+sudo touch /etc/apache2/sites-available/geonature.conf
+sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
+sudo a2ensite geonature
 
 # Installation de TaxHub avec l'utilisateur courant
 echo "Téléchargement et installation de TaxHub ..."
