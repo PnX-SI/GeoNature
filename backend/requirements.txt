@@ -12,8 +12,8 @@ Flask-Cors==3.0.3
 gunicorn==19.7.0
 requests==2.18.4
 xmltodict==0.11.0
-git+https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
-git+https://github.com/PnX-SI/Nomenclature-api-module.git
+https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
+https://github.com/PnX-SI/Nomenclature-api-module/archive/master.zip
 
 
 

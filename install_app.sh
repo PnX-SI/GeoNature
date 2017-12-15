@@ -53,7 +53,5 @@ npm install -g @angular/cli
 npm install
 
 ng build --base-href /geonature/
-sudo ln -s ~/geonature/frontend/dist/ geonature
-
-
-  
+sudo ln -s ~/geonature/frontend/dist/ /var/www/html/geonature
+sudo apachectl restart
