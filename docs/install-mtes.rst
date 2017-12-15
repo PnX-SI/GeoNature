@@ -19,14 +19,15 @@ Il faut ensuite les ajouter à la liste ``Saisie possible`` (``id_liste=500`` de
 Une fois TaxHub installé, il faut donc remplir la table ``taxonomie.bib_noms`` avec les noms souhaités. Dans cet exemple, on va y insérer tous les taxons de TAXREF des rangs Genre et inférieurs :
  
 ::  
-DELETE FROM taxonomie.cor_nom_liste;
-DELETE FROM taxonomie.bib_noms;
+
+  DELETE FROM taxonomie.cor_nom_liste;
+  DELETE FROM taxonomie.bib_noms;
 
   INSERT INTO taxonomie.bib_noms(cd_nom,cd_ref,nom_francais)
   SELECT cd_nom, cd_ref, nom_vern
   FROM taxonomie.taxref
-  WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL','SBCL','IFCL',
-                    'LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
+  WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
+     'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
 
 Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` : 
  
