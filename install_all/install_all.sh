@@ -6,8 +6,7 @@ nano install_all.ini
 
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
-sudo apt-get update
-sudo apt-get -y upgrade
+
 sudo apt-get -y install ntpdate
 sudo ntpdate-debian
 sudo apt-get install -y curl unzip git
@@ -41,9 +40,8 @@ cd /home/$monuser/geonature
 
 # Configuration des settings de GeoNature
 cp config/settings.ini.sample config/settings.ini
-my_url="${my_url//\//\\/}"
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
-sed -i "s/my_url=.*$/drop_apps_db=$my_url/g" config/settings.ini
+sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
