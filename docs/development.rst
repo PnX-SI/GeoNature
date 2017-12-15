@@ -50,6 +50,10 @@ Latest version of the database (2017-12-13) :
 
 Sorry for the relations, it is too long to arrange...
 
+Here is a simplified model of the database (2017-12-15) : 
+
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/frontend-contact/docs/2017-12-15-GN2-MCD-simplifie.jpg
+
 Gestion des droits :
 --------------------
 
@@ -65,6 +69,7 @@ Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. 
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``gn_users`` de GeoNature
+- Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
 Nomenclatures :
 ---------------
@@ -136,12 +141,14 @@ Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documen
 Frontend
 ========
 
-Documentation pour développeur
-------------------------------
+Modules
+-------
 
 Bonnes pratiques:
 
-Chaque module de GeoNature doit être un module Angular indépendant https://angular.io/guide/ngmodule. Ce module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule. 
+Chaque module de GeoNature doit être un module Angular indépendant https://angular.io/guide/ngmodule. 
+
+Ce module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et réutilisables dans n'importe quel module. 
 
 **Les composants génériques**
 
