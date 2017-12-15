@@ -9,10 +9,12 @@ if [ ! -f config.py ]; then
   cp config.py.sample config.py
 fi
 
+
 echo "préparation du fichier config.py..."
+my_url="${my_url//\//\\/}"
 sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" config.py
-sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = $my_url/g" config/settings.ini
-sed -i "s/URL_API = .*$/URL_API = $my_url/api/g" config/settings.ini
+sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" config.py
+sed -i "s/URL_API = .*$/URL_API = '${my_url}api'/g" config.py
 nano config.py
 
 #Virtual env Installation
@@ -49,9 +51,12 @@ if [ ! -f app.config.ts ]; then
   cp app.config.sample.ts app.config.ts
 fi
 
-sed -i "s/URL_APPLICATION : .*$/URL_APPLICATION : '$my_url/geonature'/g" app.config.ts
-sed -i "s/API_ENDPOINT : .*$/URL_APPLICATION : '$my_url/geonature/api'/g" app.config.ts
-sed -i "s/API_TAXHUB : .*$/URL_APPLICATION : '$my_url/taxhub/api'/g" app.config.ts
+sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '$my_url' /g" config.py
+sed -i "s/URL_API = .*$/URL_API = '${my_url}api'/g" config.py
+
+sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION : '${my_url}geonature',/g" app.config.ts
+sed -i "s/API_ENDPOINT: .*$/URL_APPLICATION : '${my_url}geonature\/api',/g" app.config.ts
+sed -i "s/API_TAXHUB: .*$/URL_APPLICATION : '${my_url}taxhub\/api',/g" app.config.ts
 
 nano app.config.ts 
 
