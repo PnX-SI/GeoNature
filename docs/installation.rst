@@ -24,6 +24,8 @@ Celui-ci installe :
 Installation de l'application
 =============================
 
+/!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/install_all
+
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
 * Mettre à jour de la liste des dépôts Linux
