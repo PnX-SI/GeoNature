@@ -1,8 +1,3 @@
-# A faire avant 
-sudo nano /etc/sudoers
-  geonatureadmin ALL=(ALL:ALL) ALL
-###
-
 nano install_all.ini
 
 . install_all.ini
@@ -20,10 +15,10 @@ sudo apt-get install -y python3 python3-dev python3-setuptools
 sudo pip install virtualenv
 
 
-echo "Configuration de postgreSQL..."
-sudo sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/*/main/postgresql.conf
-sudo sh -c 'echo "host    all             all             0.0.0.0/0            md5" >> /etc/postgresql/9.4/main/pg_hba.conf'
-sudo /etc/init.d/postgresql restart
+# echo "Configuration de postgreSQL..."
+# sudo sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/*/main/postgresql.conf
+# sudo sh -c 'echo "host    all             all             0.0.0.0/0            md5" >> /etc/postgresql/9.4/main/pg_hba.conf'
+# sudo /etc/init.d/postgresql restart
 
 echo "Création des utilisateurs postgreSQL..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
@@ -36,15 +31,11 @@ sudo apache2ctl restart
 # Installation de GeoNature avec l'utilisateur courant
 echo "Téléchargement et installation de GeoNature ..."
 cd /tmp
-# wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
-wget https://github.com/PnX-SI/GeoNature/archive/frontend-contact.zip
-unzip frontend-contact.zip
-rm frontend-contact.zip
+wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
+unzip $geonature_release.zip
+rm $geonature_release.zip
 mv GeoNature-frontend-contact /home/$monuser/geonature/
-#mv GeoNature-$geonature_release /home/$monuser/geonature/
-# unzip $geonature_release.zip
-# rm $geonature_release.zip
-# mv GeoNature-$geonature_release /home/$monuser/geonature/
+
 cd /home/$monuser/geonature
 
 # Configuration des settings de GeoNature
@@ -60,7 +51,7 @@ sed -i "s/install_default_dem=.*$/srid_local=$install_default_dem/g" config/sett
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
-sed -i -e "s/\/var\/www/$apache_document_root/g" install_app.sh
+sed -i -e "s/\/var\/www/$apache_document_root/g" config/settings.ini
 
 
 
@@ -78,9 +69,6 @@ sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/000-default.conf'
-
-# Lancement de gunicorn geonature
-
 
 
 # Installation de TaxHub avec l'utilisateur courant
