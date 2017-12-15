@@ -9,7 +9,6 @@ Prérequis
 
 Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
-L'installation complète de l'environnement est réalisée automatiquement sur un serveur Debian 9 vierge grace au script ``install_app.sh``.
 
 Celui-ci installe : 
 
@@ -33,6 +32,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
   ::  
   
         apt-get update
+	apt-get upgrade
 
 * Installer sudo
  
@@ -57,8 +57,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
  
   ::  
   
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_app.ini
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all.sh
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
 
 * Changer les droits du fichier d'installation pour pouvoir l'éxecuter
  
@@ -80,13 +80,14 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
   
         ./install_all.sh
 
-Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_app.ini``.
+Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
 
 Une fois l'installation terminée, lancez:
 
   :: 
 
-	sudo ng build --base-href /geonature/
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 Les applications sont disponibles aux adresses suivantes: 
 
