@@ -15,8 +15,8 @@ sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
 sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
 sudo apt-get install -y npm
 sudo apt-get install -y python3 python3-dev python3-setuptools
+sudo apt-get install supervisor
 
-sudo pip install virtualenv
 
 
 
@@ -62,6 +62,10 @@ sudo ./install_db.sh
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
+# lien symboloque dans /var/www/html
+cd /var/www/html
+sudo ln -s /home/$monuser/geonature/frontend/dist geonature
+
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
@@ -72,9 +76,9 @@ sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
 
-sudo sh -c 'echo "<Directory /home/$monuser/geonature/fronend/dist" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "Require all denied" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/geonature.conf'
+# sudo sh -c 'echo "<Directory /home/$monuser/geonature/fronend/dist" >> /etc/apache2/sites-available/geonature.conf'
+# sudo sh -c 'echo "Require all denied" >> /etc/apache2/sites-available/geonature.conf'
+# sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/geonature.conf'
 
 
 sudo a2ensite geonature
