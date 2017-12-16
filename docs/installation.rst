@@ -118,6 +118,7 @@ L'application peut se lancer en mode développement
 Stopper d'abbord le mode production, puis lancez le mode développement du backend
 
   ::  
+  
         cd geonature/backend/
         make prod-stop
 	make develop
@@ -139,7 +140,7 @@ Stopper d'abbord le mode production, puis lancez le mode développement du backe
 	
 * Lancer le front end
 
-Modifier le fichier de configuration du frontend `frontend/src/conf/app.config.ts` de la manière suivante:
+Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.ts`` de la manière suivante:
 
   ::
   
