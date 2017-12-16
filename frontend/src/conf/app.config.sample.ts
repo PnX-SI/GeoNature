@@ -9,7 +9,7 @@ export const AppConfig = {
     CAS_LOGOUT_URL: 'https://inpn.mnhn.fr/auth/login',
     CAS_VALIDATION_URL: 'https://inpn.mnhn.fr/auth/serviceValidate'
   },
-  URL_APPLICATION: 'Mon URL',
+  URL_APPLICATION: 'http://127.0.0.1:4200',
   API_ENDPOINT: 'http://127.0.0.1:8000/',
   API_TAXHUB :  'http://127.0.0.1:5000/api/',
   MAP: {
