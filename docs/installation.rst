@@ -53,12 +53,15 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
         usermod -g www-data geonatureadmin
         usermod -a -G root geonatureadmin
 
-* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_)
+Ces scripts installent les applications GeoNature, Taxhub ainsi que leurs bases de données (uniquement les schémas du coeur)
+
  
   ::  
   
         wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
         wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
+	
 
 * Changer les droits du fichier d'installation pour pouvoir l'éxecuter
  
@@ -80,6 +83,7 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
   
         ./install_all.sh
 
+
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
 
 Une fois l'installation terminée, lancez:
@@ -94,74 +98,29 @@ Les applications sont disponibles aux adresses suivantes:
 	- http://monip.com/geonature
 	- http://monip.com/taxhub
 
-Configuration de la base de données PostgreSQL
-==============================================
 
-* Se positionner dans le répertoire de l'application ; par exemple ``geonature`` :
- 
-  ::  
-  
-	cd geonature
-        
-* Copier et renommer le fichier ``config/settings.ini.sample`` en ``config/settings.ini`` :
- 
-  ::  
-  
-        cp config/settings.ini.sample config/settings.ini
-
-* Mettre à jour le fichier ``config/settings.ini`` avec vos paramètres de connexion à la BDD :
- 
-  ::  
-  
-	nano config/settings.ini
-
-Renseigner le nom de la base de données, les utilisateurs PostgreSQL et les mots de passe. Il est possible mais non conseillé de laisser les valeurs proposées par défaut. 
-
-La projection locale peut être modifiée si vous n'êtes pas en métropole. Attention : les couches SIG ainsi que le jeu de données fournis avec l'application sont tous en lambert 93 (2154). Pour ne pas les insérer lors de la création de la base, vous devez mettre les paramètres ``install_sig_layers`` et ``add_sample_data`` à ``false``. 
-
-Si vous êtes en métropole, il est conseillé de laisser la projection officielle en Lambert 93 (2154) et d'insérer au moins les couches SIG fournies.
-
-ATTENTION : Les valeurs renseignées dans ce fichier sont utilisées par les scripts d'installation de la base de données ainsi que par le script d'installation de l'application ``install_app.sh``. Les utilisateurs PostgreSQL doivent être en concordance avec ceux créés lors de la dernière étape de l'installation du serveur (Création de 2 utilisateurs PostgreSQL). 
-
-
-Création de la base de données
-==============================
-
-* Création de la partie coeur de la base de données. Ceci installe le schéma ``taxonomie``, le schéma ``utilisateurs``, le schéma ``synthese`` ainsi que toutes les informations nécessaires au bon fonctionnement de GeoNature. Le contenu de Taxref est inséré. Vous pouvez gérer la taxonomie à l'aide des applications TaxHub et les utilisateurs avec l'application UsersHub. Pour installer un module, voir la partie ``Modules" ci-après.
- 
-  ::  
-  
-        sudo ./install_db.sh
-        
-* Vous devez consulter le log de cette installation de la base dans ``log/install_db.log`` et vérifier qu'aucune erreur n'est intervenue. **Attention, ce fichier sera supprimé** lors de l'exécution de ``install_app.sh``
-
-* Vous pouvez intégrer l'exemple des données SIG du Parc national des Ecrins des tables ``layers.l_unites_geo``:
- 
-  ::  
-  
-        export PGPASSWORD=monpassachanger; sudo psql -h localhost -U mypguser -d geonature2db -f data/pne/data_sig_pne_2154.sql
-
-
-Installation d'un module
+Installation d'un module GeoNature
 ========================
 
-* Installation du schéma du module dans la base de données. Exemple pour le module contact faune.
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
+
+* Exemple d'installation en base de données du module OccTax.
  
   ::  
   
 	sudo ./data/modules/contact/install_schema.sh
 
 
-Mise en place du backend et du front end (doc developpeur)
+Doc développeur
 ==========================================
+L'application peut se lancer en mode développement
 
-* Installation du backend.
- 
+Stopper d'abbord le mode production, puis lancez le mode développement du backend
+
   ::  
-  
-        cd
         cd geonature/backend/
-        ./install_app.sh
+        make prod-stop
+	make develop
 
 
 * Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire `home` de l'utilisateur
@@ -177,9 +136,21 @@ Mise en place du backend et du front end (doc developpeur)
         cd ../geonature2/backend/
         make develop
         deativate
+	
 * Lancer le front end
+
+Modifier le fichier de configuration du frontend `frontend/src/conf/app.config.ts` de la manière suivante:
+
+  ::
+  
+  	URL_APPLICATION: 'http://127.0.0.1:4200',
+ 	API_ENDPOINT: 'http://127.0.0.1:8000/',
+ 	API_TAXHUB : 'http://127.0.0.1:5000/api/',
+
 Depuis le répertoire ``frontend`` lancer la commande: 
 
   :: 
 
 	npm run start
+
+Lancer son navigateur à l'adresse ``127.0.0.1:4200``
