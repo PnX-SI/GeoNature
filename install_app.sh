@@ -59,9 +59,9 @@ if [ ! -f src/conf/app.config.ts ]; then
 fi
 
 
-sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" app.config.ts
-sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" app.config.ts
-sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" app.config.ts
+sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" src/conf/app.config.ts
+sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" src/conf/app.config.ts
+sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" src/conf/app.config.ts
 
 nano src/conf/app.config.ts 
 
