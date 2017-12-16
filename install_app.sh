@@ -25,7 +25,7 @@ echo "Installation du virtual env..."
 if [[ $python_path ]]; then
   virtualenv -p $python_path venv
 else
-  virtualenv --python python3 venv
+  virtualenv venv
 fi
 
 
@@ -40,11 +40,12 @@ make prod
 
 #Frontend installation
 #Node and npm instalation
+cd ../frontend
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 nvm install 6.11.2
-cd ../..
+
 echo " ############"
 echo "instalation des paquets npm"
 npm install
@@ -53,9 +54,8 @@ echo "instalation global d'angular cli"
 npm install -g @angular/cli
 
 
-cd ../frontend/src/conf
-if [ ! -f app.config.ts ]; then
-  cp app.config.sample.ts app.config.ts
+if [ ! -f src/conf/app.config.ts ]; then
+  cp src/conf/app.config.sample.ts src/conf/app.config.ts
 fi
 
 
@@ -63,6 +63,6 @@ sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" app.c
 sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" app.config.ts
 sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" app.config.ts
 
-nano app.config.ts 
+nano src/conf/app.config.ts 
 
 ng build --base-href /geonature/
