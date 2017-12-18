@@ -301,7 +301,12 @@ then
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
-    rm /tmp/fr_municipalities.sql
+    
+    if $install_sig_layers
+    then
+        rm /tmp/fr_municipalities.sql
+    fi
+
     if $install_default_dem
     then
         rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
