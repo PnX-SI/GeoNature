@@ -312,9 +312,11 @@ then
     rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
     rm /tmp/fr_municipalities.sql
-    rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
-    rm /tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
-    # rm /tmp/dem.tif
+    if $install_default_dem
+    then
+        rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
+        rm /tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
+    fi
 
     echo "Permission on log folder..."
     chmod -R 777 log
