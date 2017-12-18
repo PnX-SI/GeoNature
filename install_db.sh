@@ -291,16 +291,6 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/exports.sql  &>> log/install_db.log
 
 
-    echo "Creating 'gn_users' schema..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Creating 'gn_users' schema" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/gn_users.sql  &>> log/install_db.log
-
-
     # Suppression des fichiers : on ne conserve que les fichiers compressés
     echo "Cleaning files..."
     rm /tmp/*.txt
