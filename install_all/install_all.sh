@@ -35,6 +35,7 @@ wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
 mv GeoNature-frontend-contact /home/$monuser/geonature/
+sudo chwon -R $monuser geonature/
 
 cd /home/$monuser/geonature
 
@@ -49,7 +50,7 @@ sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
-sed -i "s/install_default_dem=.*$/srid_local=$install_default_dem/g" config/settings.ini
+sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
@@ -90,6 +91,7 @@ wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
 rm $taxhub_release.zip
 mv TaxHub-$taxhub_release /home/$monuser/taxhub/
+sudo chwon -R $monuser taxhub/
 cd /home/$monuser/taxhub
 
 
