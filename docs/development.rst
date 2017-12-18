@@ -59,16 +59,16 @@ Gestion des droits :
 
 La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
-Pour cela un système d'étiquettes (``gn_users.t_tags``) a été mis en place. Il permet d'attribuer des étiquettes génériques à des rôles. 
+Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en place. Il permet d'attribuer des étiquettes génériques à des rôles. 
 
-- Dans GeoNature V2 cela permet d'attribuer des actions possibles à un rôle sur une portée dans une application ou un module (définis dans ``gn_users.cor_app_privileges``).
+- Dans GeoNature V2 cela permet d'attribuer des actions possibles à un rôle sur une portée dans une application ou un module (définis dans ``utilisateurs.cor_app_privileges``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
 - 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
-- Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``gn_users.v_usersaction_forall_gn_modules``)
-- Des fonctions PostgreSQL ont aussi été intégrés pour faciliter la récupération de ces informations (``gn_users.cruved_for_user_in_module``, ``gn_users.can_user_do_in_module``, ...)
+- Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``utilisateurs.v_usersaction_forall_gn_modules``)
+- Des fonctions PostgreSQL ont aussi été intégrés pour faciliter la récupération de ces informations (``utilisateurs.cruved_for_user_in_module``, ``utilisateurs.can_user_do_in_module``, ...)
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
-- Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``gn_users`` de GeoNature
+- Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``utilisateurs`` de GeoNature
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
 Nomenclatures :
