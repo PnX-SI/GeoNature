@@ -35,7 +35,7 @@ wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
 mv GeoNature-frontend-contact /home/$monuser/geonature/
-sudo chwon -R $monuser geonature/
+sudo chown -R $monuser /home/$monuser/geonature/
 
 cd /home/$monuser/geonature
 
@@ -91,7 +91,7 @@ wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
 rm $taxhub_release.zip
 mv TaxHub-$taxhub_release /home/$monuser/taxhub/
-sudo chwon -R $monuser taxhub/
+sudo chown -R $monuser /home/$monuser/taxhub/
 cd /home/$monuser/taxhub
 
 
