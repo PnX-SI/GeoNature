@@ -4,6 +4,13 @@ nano install_all.ini
 . install_all.ini
 
 
+# Make sure this script is NOT run as root
+if [ "$(id -u)" == "0" ]; then
+   echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
+   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
+   exit 1
+fi
+
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
 
@@ -16,8 +23,6 @@ sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python
 sudo apt-get install -y npm
 sudo apt-get install -y python3 python3-dev python3-setuptools
 sudo apt-get install -y supervisor
-
-
 
 
 echo "Création des utilisateurs postgreSQL..."
