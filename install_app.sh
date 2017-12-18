@@ -52,7 +52,7 @@ npm install
 echo " ############"
 echo "instalation global d'angular cli"
 npm install -g @angular/cli
-
+npm rebuild node-sass
 
 if [ ! -f src/conf/app.config.ts ]; then
   cp src/conf/app.config.sample.ts src/conf/app.config.ts
