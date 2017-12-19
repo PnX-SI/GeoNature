@@ -134,7 +134,7 @@ Lancer cette commande pour ajouter 'nvm' dans la path:
     cd frontend
     ng serve
 
-**Le serveur de développement du frontend est disponible à l'adresse ``127.0.0.1:4200``**.
+**Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
 Vous pouvez vous connecter à l'application avec les identifiants 'admin/admin'
 A chaque modification du code le navigateur est rafrachit automatiquement.
 
@@ -197,6 +197,11 @@ Puis lancer le backend en mode développement
 **Le serveur développement est disponible à l'adresse 127.0.0.1:5000**
 
 
+====================================
+
+Documentation sur l'API, le frontend et la base de données ICI : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/docs/development.rst
+
+Happy hacking ! :metal: :metal:
 
 
 
