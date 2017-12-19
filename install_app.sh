@@ -34,7 +34,12 @@ pip install -r requirements.txt
 deactivate
 
 #Lancement de l'application
+cd ..
+BASE_DIR=$(readlink -e "${0%/*}")
+cd backend
 DIR=$(readlink -e "${0%/*}")
+cp gunicorn_start.sh.sample gunicorn_start.sh
+sudo -s sed -i "s%APP_PATH%${BASE_DIR}%" gunicorn_start.sh
 sudo -s cp geonature-service.conf /etc/supervisor/conf.d/
 sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/geonature-service.conf
 

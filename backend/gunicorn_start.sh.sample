@@ -4,8 +4,9 @@ FLASKDIR=$(readlink -e "${0%/*}")
 
 echo "Starting $app_name"
 echo "$FLASKDIR"
+echo "$(dirname $0)/config/settings.ini"
 
-. $FLASKDIR/config/settings.ini
+. APP_PATH/config/settings.ini
 
 # activate the virtualenv
 cd $FLASKDIR/$venv_dir
