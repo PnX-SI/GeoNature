@@ -9,14 +9,15 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 DEBUG=True
 
-URL_APPLICATION = 'MON URL'
-URL_API = 'MON URL API'
+URL_APPLICATION = 'http://127.0.0.1:4200' 
+URL_API = 'http://127.0.0.1:8000/api'
 ID_APPLICATION_GEONATURE = 14
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = True
 
+# Spécifique à l'instance ministérielle de GeoNature concernant l'autentification via le CAS de l'INPN
 CAS = {
   'URL_LOGIN': 'URL_LOGIN',
   'URL_LOGOUT': 'URL_LOGOUT',
