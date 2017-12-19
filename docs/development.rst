@@ -180,7 +180,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         Exemple d'utilisation: ``<pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`` Ici le niveau de zoom et le centrage sont modifiés, mais les fonds de carte restent ceux renseignés par défault.
 
 - **MarkerComponent**
-        Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un légende permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
+        Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
         
         **Selector**: ``pnx-marker``
         
