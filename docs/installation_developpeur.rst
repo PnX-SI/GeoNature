@@ -1,5 +1,5 @@
 ===============================
-GUIDE D'INSTALATION DEVELOPPEUR
+GUIDE D'INSTALLATION DEVELOPPEUR
 ===============================
 
 
