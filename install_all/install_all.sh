@@ -19,9 +19,9 @@ sudo ntpdate-debian
 sudo apt-get install -y curl unzip git
 sudo apt-get install -y apache2 libapache2-mod-wsgi
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
-sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
+sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential
+sudo pip install --upgrade pip virtualenv virtualenvwrapper
 sudo apt-get install -y npm
-sudo apt-get install -y python3 python3-dev python3-setuptools
 sudo apt-get install -y supervisor
 
 
@@ -68,23 +68,21 @@ sudo ./install_db.sh
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
-# lien symboloque dans /var/www/html
-cd /var/www/html
-sudo ln -s /home/$monuser/geonature/frontend/dist geonature
-
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
+# Front end
 sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo  "Alias /geonature /home/$monuser/geonature/frontend/dist">> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo  "<Directory /home/$monuser/geonature/frontend/dist>">> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
+# backend
 sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
-
-# sudo sh -c 'echo "<Directory /home/$monuser/geonature/fronend/dist" >> /etc/apache2/sites-available/geonature.conf'
-# sudo sh -c 'echo "Require all denied" >> /etc/apache2/sites-available/geonature.conf'
-# sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/geonature.conf'
 
 
 sudo a2ensite geonature
