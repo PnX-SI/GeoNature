@@ -85,7 +85,7 @@ Pour installer le module 'Occurrence de taxons' lancer le script :
  
   ::  
   
-	  sudo ./data/modules/contact/install_schema.sh
+	sudo ./data/modules/contact/install_schema.sh
 
 Instalation de l'application
 ============================
@@ -142,7 +142,7 @@ A chaque modification du code le navigateur est rafrachit automatiquement.
 
 Ouvrir un nouveau terminal
 
-`` cd backend ``
+``cd backend``
 
 Stopper d'abbord gunicorn qui est lancé en mode production via le supervisor
 
@@ -194,7 +194,7 @@ Puis lancer le backend en mode développement
 
     ``make develop``
 
-**Le serveur développement est disponible à l'adresse 127.0.0.1:5000**
+**Le serveur développement est disponible à l'adresse 127.0.0.1:5000/api**
 
 
 ====================================
