@@ -25,8 +25,14 @@ CAS = {
     'URL': 'URL_WS',
     'ID': 'MY_ID',
     'PASSWORD': 'MY_PASS'
-  } 
+  }
 }
+
+'''
+UserHub Authentification options
+'''
+#Méthode de cryptage (hash ou md5)
+PASS_METHOD='hash'
 
 #File
 import os
