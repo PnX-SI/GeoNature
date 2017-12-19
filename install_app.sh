@@ -28,15 +28,19 @@ else
   virtualenv venv
 fi
 
-
-
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 
-# lancement de gunicorn
-make prod
+#Lancement de l'application
+DIR=$(readlink -e "${0%/*}")
+sudo -s cp geonature-service.conf /etc/supervisor/conf.d/
+sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/geonature-service.conf
+
+sudo -s supervisorctl reread
+sudo -s supervisorctl reload
+
 
 #Frontend installation
 #Node and npm instalation
