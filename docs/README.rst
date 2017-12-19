@@ -10,5 +10,6 @@ Documentation
 =============
 
 - `Installation <installation.rst>`_
+- `Developer installation <installation_developpeur.rst>`_ 
 - `Installation MTES specificities <install-mtes.rst>`_
 - `Database, API, developement <development.rst>`_
