@@ -60,3 +60,14 @@ taxhub_release=develop
 #Configuration python
 ###########################
 python_path=/usr/bin/python3
+
+
+#####################
+### Gunicorn settings
+#####################
+
+app_name=geonature2
+venv_dir=venv
+gun_num_workers=4
+gun_host=0.0.0.0
+gun_port=8000
