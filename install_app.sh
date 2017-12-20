@@ -14,7 +14,7 @@ echo "préparation du fichier config.py..."
 my_url="${my_url//\//\\/}"
 sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" config.py
 sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" config.py
-sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}api'/g" config.py
+sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" config.py
 nano config.py
 
 #Virtual env Installation
@@ -53,14 +53,14 @@ cd ../frontend
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 8.0.0
+nvm install 8.1.1
 
 echo " ############"
 echo "instalation des paquets npm"
 npm install
 echo " ############"
 echo "instalation global d'angular cli"
-npm install -g @angular/cli
+npm install -g @angular/cli@1.6.1
 npm rebuild node-sass
 
 if [ ! -f src/conf/app.config.ts ]; then
