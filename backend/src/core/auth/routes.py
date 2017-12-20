@@ -23,7 +23,7 @@ def loginCas():
     configCas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
-        base_url = current_app.config['URL_API']+"/auth_cas/login"
+        base_url = current_app.config['API_ENDPOINT']+"/auth_cas/login"
         urlValidate = "%s?ticket=%s&service=%s"%(configCas['URL_VALIDATION'], params['ticket'], base_url)
         r = requests.get(urlValidate)
         user = None
@@ -46,7 +46,7 @@ def loginCas():
                     "id_organisme":organismId,
                     "nom_organisme": organismName
                 }
-                r = requests.post(current_app.config['URL_API']+'/users/organism', json=organism)
+                r = requests.post(current_app.config['API_ENDPOINT']+'/users/organism', json=organism)
 
                 user = {
                     "id_role":userId,
@@ -55,7 +55,7 @@ def loginCas():
                     "prenom_role": infoUser['prenom'],
                     "id_organisme": organismId,
                 }
-                r = requests.post(current_app.config['URL_API']+'/users/role', json=user)
+                r = requests.post(current_app.config['API_ENDPOINT']+'/users/role', json=user)
                 ## push the user in the right group
                 if organismId == -1:
                     # group socle 1
