@@ -73,8 +73,11 @@ sudo ./install_db.sh
 sudo touch /etc/apache2/sites-available/geonature.conf
 # Front end
 sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo  "Alias /geonature /home/$monuser/geonature/frontend/dist">> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo  "<Directory /home/$monuser/geonature/frontend/dist>">> /etc/apache2/sites-available/geonature.conf'
+conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
+sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
+conf="<Directory /home/$monuser/geonature/frontend/dist>"
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
 # backend
