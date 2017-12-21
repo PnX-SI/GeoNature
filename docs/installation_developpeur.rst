@@ -65,11 +65,11 @@ Créer un utilisateur PostgreSQL si vous n'en n'avez pas un:
 
 ``sudo -n -u postgres -s psql -c "CREATE ROLE <mon_user> WITH LOGIN PASSWORD '<mon_pass'>``
 
-Copier le fichier ``settings.ini.samplke `` et le remplir avec ses paramètres
+Copier le fichier ``settings.ini.sample `` et le remplir avec ses paramètres
 
   ::
 
-    cp config/settings.ini settings.ini
+    cp config/settings.ini config/settings.ini
     nano config/settings.ini
 
 Lancer le script d'installation de la base de données.
@@ -175,7 +175,7 @@ Copier le fichier ``settings.ini.sample `` et le remplir avec ses paramètres
 
   ::
 
-    cp config/settings.ini settings.ini
+    cp settings.ini settings.ini
     nano config/settings.ini
 
 Lancer le script d'installation de l'application:
