@@ -4,7 +4,7 @@ from __future__ import (unicode_literals, print_function,
 
 from flask import Blueprint, request, json, current_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc, or_, func
+from sqlalchemy import exc, or_, func, distinct
 from sqlalchemy.sql import text
 
 
@@ -493,9 +493,9 @@ def getDefaultNomenclatures():
         organism = params['organism']
     types = request.args.getlist('id_type')
 
-    q = db.session.query(DefaultNomenclaturesValue).distinct(
-                DefaultNomenclaturesValue.id_type,
-                func.pr_contact.get_default_nomenclature_value(DefaultNomenclaturesValue.id_type, organism, regne, group2_inpn )
+    q = db.session.query(distinct(
+                DefaultNomenclaturesValue.id_type),
+                func.pr_contact.get_default_nomenclature_value(DefaultNomenclaturesValue.id_type, organism, regne, group2_inpn)
             )
     if len(types) > 0:
         q = q.filter(DefaultNomenclaturesValue.id_type.in_(tuple(types)))
@@ -505,8 +505,8 @@ def getDefaultNomenclatures():
         db.session.rollback()
         raise
     if not data:
-        return {'message': 'not found'}, 404 
-    return {d.id_type: d.id_nomenclature for d in data}
+        return {'message': 'not found'}, 404
+    return {d[0]: d[1] for d in data}
 
     
 @routes.route('/exportProvisoire', methods=['GET'])

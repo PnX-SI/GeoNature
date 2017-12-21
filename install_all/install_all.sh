@@ -23,6 +23,8 @@ sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-
 sudo pip install --upgrade pip virtualenv virtualenvwrapper
 sudo apt-get install -y npm
 sudo apt-get install -y supervisor
+# for make work opencv(taxhub) on debian8
+sudo apt-get install libsm6 libxrender1 libfontconfig1
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -123,19 +125,10 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000/" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000 retry=0" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-
-sudo sed -i "s/<\/VirtualHost>//g" /etc/apache2/sites-available/000-default.conf
-sudo sed -i "s/# vim.*$//g" /etc/apache2/sites-available/000-default.conf
-sudo sh -c 'echo "# Configuration TaxHub - ne fonctionne pas dans le 000-default.conf" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "# vim: syntax=apache ts=4 sw=4 sts=4 sr noet" >> /etc/apache2/sites-available/000-default.conf'
 
 
 sudo a2ensite taxhub
