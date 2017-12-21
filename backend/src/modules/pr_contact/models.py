@@ -91,6 +91,7 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
         db.Integer,
         ForeignKey('utilisateurs.t_roles.id_role')
     )
+    id_nomenclature_grp_typ = db.Column(db.Integer)
     observers_txt = db.Column(db.Unicode)
     date_min = db.Column(db.DateTime)
     date_max = db.Column(db.DateTime)
