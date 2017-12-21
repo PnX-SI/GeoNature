@@ -1,5 +1,5 @@
 ===============================
-GUIDE D'INSTALLATION DEVELOPPEUR
+GUIDE D'INSTALATION DEVELOPPEUR
 ===============================
 
 
@@ -65,11 +65,11 @@ Créer un utilisateur PostgreSQL si vous n'en n'avez pas un:
 
 ``sudo -n -u postgres -s psql -c "CREATE ROLE <mon_user> WITH LOGIN PASSWORD '<mon_pass'>``
 
-Copier le fichier ``settings.ini.sample `` et le remplir avec ses paramètres
+Copier le fichier ``settings.ini.samplke `` et le remplir avec ses paramètres
 
   ::
 
-    cp config/settings.ini.sample config/settings.ini
+    cp config/settings.ini settings.ini
     nano config/settings.ini
 
 Lancer le script d'installation de la base de données.
@@ -85,7 +85,7 @@ Pour installer le module 'Occurrence de taxons' lancer le script :
  
   ::  
   
-	sudo ./data/modules/contact/install_schema.sh
+	  sudo ./data/modules/contact/install_schema.sh
 
 Instalation de l'application
 ============================
@@ -134,7 +134,7 @@ Lancer cette commande pour ajouter 'nvm' dans la path:
     cd frontend
     ng serve
 
-**Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
+**Le serveur de développement du frontend est disponible à l'adresse ``127.0.0.1:4200``**.
 Vous pouvez vous connecter à l'application avec les identifiants 'admin/admin'
 A chaque modification du code le navigateur est rafrachit automatiquement.
 
@@ -142,7 +142,7 @@ A chaque modification du code le navigateur est rafrachit automatiquement.
 
 Ouvrir un nouveau terminal
 
-``cd backend``
+`` cd backend ``
 
 Stopper d'abbord gunicorn qui est lancé en mode production via le supervisor
 
@@ -175,7 +175,7 @@ Copier le fichier ``settings.ini.sample `` et le remplir avec ses paramètres
 
   ::
 
-    cp settings.ini.sample settings.ini
+    cp config/settings.ini settings.ini
     nano config/settings.ini
 
 Lancer le script d'installation de l'application:
@@ -194,14 +194,11 @@ Puis lancer le backend en mode développement
 
     ``make develop``
 
-**Le serveur développement est disponible à l'adresse 127.0.0.1:5000/api**
+**Le serveur développement est disponible à l'adresse 127.0.0.1:5000**
 
-
-====================================
 
 Documentation sur l'API, le frontend et la base de données ICI : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/docs/development.rst
 
-Happy hacking ! :metal: :metal:
-
+Happy hacking !
 
 

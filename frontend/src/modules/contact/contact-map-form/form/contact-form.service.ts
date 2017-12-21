@@ -78,39 +78,13 @@ export class ContactFormService {
         observers: [null,
            !ContactConfig.observers_txt ? Validators.required : null],
         observers_txt: [null, ContactConfig.observers_txt ? Validators.required : null ],
+        id_nomenclature_grp_typ: null,
         t_occurrences_contact: [new Array()]
       })
     });
    }
 
-   initOccurrenceFormDefaultValues(): FormGroup {
-      return this._fb.group({
-        id_releve_contact :  null,
-        id_nomenclature_obs_meth: [this.defaultValues[14], Validators.required],
-        id_nomenclature_bio_condition: [this.defaultValues[7], Validators.required],
-        id_nomenclature_bio_status : this.defaultValues[13],
-        id_nomenclature_naturalness: this.defaultValues[8],
-        id_nomenclature_exist_proof: this.defaultValues[15],
-        id_nomenclature_observation_status : this.defaultValues[18],
-        id_nomenclature_valid_status: this.defaultValues[101],
-        id_nomenclature_diffusion_level: this.defaultValues[5],
-        id_nomenclature_blurring: this.defaultValues[4],
-        id_validator: null,
-        determiner: null,
-        id_nomenclature_determination_method: this.defaultValues[106],
-        determination_method_as_text: '',
-        cd_nom: [ null, Validators.required],
-        nom_cite: null,
-        meta_v_taxref: 'Taxref V9.0',
-        sample_number_proof: null,
-        digital_proof: [{value: null, disabled: true}],
-        non_digital_proof: [{value: null, disabled: true}],
-        deleted: false,
-        comment: null,
-        cor_counting_contact: ''
-      });
-     }
-     initOccurenceForm(): FormGroup {
+  initOccurenceForm(): FormGroup {
       return this._fb.group({
         id_releve_contact :  null,
         id_nomenclature_obs_meth: [null, Validators.required],
@@ -138,16 +112,6 @@ export class ContactFormService {
       });
      }
 
-   initCountingDefaultValues(): FormGroup {
-      return this._fb.group({
-        id_nomenclature_life_stage: [this.defaultValues[10]],
-        id_nomenclature_sex: [this.defaultValues[9]],
-        id_nomenclature_obj_count: [this.defaultValues[6], Validators.required],
-        id_nomenclature_type_count: this.defaultValues[21],
-        count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
-        count_max : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
-      });
-    }
 
   initCounting(): FormGroup {
     return this._fb.group({
@@ -158,23 +122,6 @@ export class ContactFormService {
       count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
       count_max : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
     });
-  }
-
-
-  initCountingArrayDefaultValues(data?: Array<any>): FormArray {
-    // init the counting form with the data, or empty
-    const arrayForm = this._fb.array([]);
-    if (data) {
-      for (let i = 0; i < data.length; i++) {
-        const counting = this.initCountingDefaultValues();
-        counting.patchValue(data[i]);
-        arrayForm.push(counting);
-      }
-    } else {
-      const counting = this.initCountingDefaultValues();
-      arrayForm.push(counting);
-    }
-    return arrayForm;
   }
 
   initCountingArray(data?): FormArray {
@@ -193,37 +140,23 @@ export class ContactFormService {
     return arrayForm;
   }
 
-  initFormsWithDefaultValues() {
-    this.getDefaultValues(this.currentUser.organismId)
-    .subscribe(res => {
-      this.defaultValues = res;
-      this.defaultValuesLoaded = true;
-      // init the forms with default values
-      this.releveForm = this.initReleveForm();
-      this.occurrenceForm = this.initOccurrenceFormDefaultValues();
-      this.countingForm = this.initCountingArrayDefaultValues();
-    } );
-  }
 
 
   addCounting() {
     this.indexCounting += 1;
     this.nbCounting.push('');
-    const countingCtrl = this.initCountingDefaultValues();
-    this.countingForm.push(countingCtrl);
-    }
+    const nextCounting = this.initCounting();
+    this.patchDefaultNomenclatureCounting(nextCounting, this.defaultValues);
+    this.countingForm.push(nextCounting);
+  }
 
   removeCounting(index: number) {
     this.countingForm.removeAt(index);
     this.nbCounting.splice(index, 1);
     this.indexCounting -= 1;
-
   }
 
   addOccurrence(index) {
-    // save the last Occurrence
-    
-    this.lastSubmitedOccurrence = this.occurrenceForm.value;
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
@@ -245,14 +178,12 @@ export class ContactFormService {
     // reset current taxon
     this.currentTaxon = {};
     // reset occurrence form
-    this.occurrenceForm = this.initOccurrenceFormDefaultValues();
-    // path the value I want to persist
-    this.occurrenceForm.patchValue({
-      'id_nomenclature_obs_meth': this.lastSubmitedOccurrence.id_nomenclature_obs_meth,
-      'id_nomenclature_bio_condition': this.lastSubmitedOccurrence.id_nomenclature_bio_condition
-    });
+    this.occurrenceForm = this.initOccurenceForm();
+    this.patchDefaultNomenclatureOccurrence(this.defaultValues);
+
     // reset the counting
-    this.countingForm = this.initCountingArrayDefaultValues();
+    this.countingForm = this.initCountingArray();
+    this.patchDefaultNomenclatureCounting(this.countingForm.controls[0] as FormGroup, this.defaultValues);
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
 
@@ -306,33 +237,46 @@ export class ContactFormService {
     this.indexOccurrence = this.indexOccurrence - 1 ;
   }
 
-  patchDefaultNomenclature() {
+  patchDefaultNomenclatureReleve(defaultNomenclatures): void {
+    this.releveForm.controls.properties.patchValue({
+      id_nomenclature_grp_typ: defaultNomenclatures[24],
+    });
+  }
+
+  patchDefaultNomenclatureOccurrence(defaultNomenclatures): void {
+         this.occurrenceForm.patchValue({
+          id_nomenclature_bio_condition: defaultNomenclatures[7],
+          id_nomenclature_naturalness : defaultNomenclatures[8],
+          id_nomenclature_obs_meth: defaultNomenclatures[14],
+          id_nomenclature_bio_status: defaultNomenclatures[13],
+          id_nomenclature_exist_proof : defaultNomenclatures[15],
+          id_nomenclature_determination_method: defaultNomenclatures[106],
+          id_nomenclature_observation_status : defaultNomenclatures[18],
+          id_nomenclature_valid_status: defaultNomenclatures[101],
+          id_nomenclature_diffusion_level: defaultNomenclatures[5],
+          id_nomenclature_blurring: defaultNomenclatures[4],
+         });
+  }
+
+  patchDefaultNomenclatureCounting(countingForm: FormGroup, defaultNomenclatures): void {
+    countingForm.patchValue({
+        id_nomenclature_life_stage: defaultNomenclatures[10],
+        id_nomenclature_sex: defaultNomenclatures[9],
+        id_nomenclature_obj_count: defaultNomenclatures[6],
+        id_nomenclature_type_count: defaultNomenclatures[21]
+      });
+  }
+
+
+  patchAllDefaultNomenclature() {
+    // fetch and patch all default nomenclature
     this.getDefaultValues(this.currentUser.organismId)
     .subscribe(data => {
       this.defaultValues = data;
-     // occurrence
-      this.occurrenceForm.patchValue({
-       id_nomenclature_bio_condition: data[7],
-       id_nomenclature_naturalness : data[8],
-       id_nomenclature_obs_meth: data[14],
-       id_nomenclature_bio_status: data[13],
-       id_nomenclature_exist_proof : data[15],
-       id_nomenclature_determination_method: data[106],
-       id_nomenclature_observation_status : data[18],
-       id_nomenclature_valid_status: data[101],
-       id_nomenclature_diffusion_level: data[5],
-       id_nomenclature_blurring: data[4],
-      });
-     // counting
-     this.countingForm.controls.forEach(formControl => {
-       formControl.patchValue({
-         id_nomenclature_life_stage: data[10],
-         id_nomenclature_sex: data[9],
-         id_nomenclature_obj_count: data[6],
-         id_nomenclature_type_count: data[21]
-       });
-     });
-   });
+      this.patchDefaultNomenclatureReleve(data);
+      this.patchDefaultNomenclatureOccurrence(data);
+      this.patchDefaultNomenclatureCounting(this.countingForm.controls[0] as FormGroup, data);
+    });
   }
 
   onTaxonChanged(taxon) {
@@ -341,26 +285,16 @@ export class ContactFormService {
      this.getDefaultValues(this.currentUser.organismId, taxon.regne, taxon.group2_inpn)
        .subscribe(data => {
         // occurrence
-         this.occurrenceForm.patchValue({
-          id_nomenclature_bio_condition: data[7],
-          id_nomenclature_naturalness : data[8],
-          id_nomenclature_obs_meth: data[14],
-          id_nomenclature_bio_status: data[13],
-          id_nomenclature_exist_proof : data[15],
-          id_nomenclature_determination_method: data[106],
-          id_nomenclature_observation_status : data[18],
-          id_nomenclature_valid_status: data[101],
-          id_nomenclature_diffusion_level: data[5],
-          id_nomenclature_blurring: data[4],
-         });
+        this.patchDefaultNomenclatureOccurrence(data);
         // counting
-        this.countingForm.controls.forEach(formControl => {
-          formControl.patchValue({
-            id_nomenclature_life_stage: data[10],
-            id_nomenclature_sex: data[9],
-            id_nomenclature_obj_count: data[6],
-            id_nomenclature_type_count: data[21]
-          });
+        this.countingForm.controls.forEach(formgroup => {
+          this.patchDefaultNomenclatureCounting(formgroup as FormGroup, data);
+          // formControl.patchValue({
+          //   id_nomenclature_life_stage: data[10],
+          //   id_nomenclature_sex: data[9],
+          //   id_nomenclature_obj_count: data[6],
+          //   id_nomenclature_type_count: data[21]
+          // });
         });
       });
     }
