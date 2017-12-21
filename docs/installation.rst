@@ -153,11 +153,18 @@ Pour cela, il faut que vous disposiez d'un compte IGN pro (http://professionnels
 
 Une fois connecté au site : 
 
-* Aller dans "Nouvelle commande"
-* Choisir "Géoservices IGN : Pour le web" dans la rubrique "LES GÉOSERVICES EN LIGNE"
-* Cocher l'option "Pour un site internet grand public"
-* Cocher l'option "Licence géoservices IGN pour usage grand public - gratuite"
-* Saisir votre URL. Attention, l'adresse doit être précédée de ``http://`` (même si il s'agit d'une IP)
-* Finir votre commande en selectionnant les couches utiles
+* Se rendre sur la Page Géoservices : http://professionnels.ign.fr/geoservices
+* Choisir "Services de visualisation" puis cliquer sur "S'abonner"
+* Saisir le "Titre du contrat" (ex. : "GeoNature") et choisir "Choix du géoservice" (N°2 ou N°4 si vous n'avez pas encore de domaine)
+* Choisir la "Quantité d'usage" (nombre de transactions, gratuit jusqu'à 100000 transactions pour la mission de service public)
+* Choisir le "Type de sécurisation" (Referer) et saisir la "Valeur de sécurisation" = URL de l'application (Attention, l’adresse doit être précédée de "http://", même si il s’agit d’une IP)
+* Choisir les ressources dans le catalogue parmi ces rubriques : 
+
+  - Ressources d'images tuilées WMTS du Géoportail en WebMercator (non superposables aux ressources en Lambert-93)
+  - Ressources d'images tuilées WMTS du Géoportail Lambert-93 (non superposables avec les ressources en WebMercator)
+  - Ressources altimétriques du Géoportail
+  
+* Ajouter la commande au panier
+* Valider l'ensemble des licences du panier et cliquer sur "Poursuivre la commande", accepter les Conditions Générales de Vente, et Validez la commande
 
 Une fois que votre commande est prête, saisissez la valeur de la clé IGN dans le fichier ``web/js/configmap.js``.
