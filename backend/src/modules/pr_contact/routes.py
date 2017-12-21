@@ -201,10 +201,9 @@ def getViewReleveList(info_role):
                 TOccurrencesContact,
                 TOccurrencesContact.id_releve_contact ==
                 VReleveList.id_releve_contact
-            ).join(
+            ).filter(
                 TOccurrencesContact.cd_nom == int(params.get('cd_nom'))
             )
-
     if 'observer' in params:
         q = q.join(
             corRoleRelevesContact,
