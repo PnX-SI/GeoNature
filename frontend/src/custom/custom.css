@@ -1,0 +1,21 @@
+
+#app-toolbar {
+  background: url('images/bandeau-sinp.jpg');
+}
+
+#app-name {
+  color:white;
+}
+
+#app-sidenav{
+  
+  background:  rgb(179,201,81);
+  color: white;
+}
+.sidenav-item > h3{
+  color: white;
+}
+
+.mat-list-item-content {
+  color: white;
+}

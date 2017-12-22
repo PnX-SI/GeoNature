@@ -1,17 +1,17 @@
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav  class="appnav" #sidenav mode="side" [opened]="_sideBarService.opened">
+    <mat-sidenav  class="appnav" id="app-sidenav" #sidenav mode="side" [opened]="_sideBarService.opened">
       <pnx-sidenav-items ></pnx-sidenav-items>
     </mat-sidenav>
     
 
     <mat-sidenav-content>
-      <mat-toolbar class="app-toolbar">
+      <mat-toolbar id="app-toolbar">
           <mat-icon (click)="closeSideBar()" class="icon-toolbar clickable">apps</mat-icon>
-            <span>{{appName}}</span>
+            <span id="module-name"> {{appName}}</span>
             <span class="toolbar-spacer"></span>
             <span style="font-size:15px"> {{currentUser.userName}} </span>
-              
+            <span id="appName"> {{appConfig.appName}}</span>
             <div class="dropdown">
                 <mat-icon class="clickable" matTooltip="{{ 'Language' | translate }}" id="dropdownMenuButton"
                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">language</mat-icon>

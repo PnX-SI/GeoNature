@@ -27,7 +27,8 @@
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/ngx-toastr/toastr.css",
         "../node_modules/leaflet-draw/dist/leaflet.draw.css",
-        "styles.scss"
+        "styles.scss",
+        "custom/custom.css"
       ],
       "scripts": [
         "../node_modules/tether/dist/js/tether.min.js",

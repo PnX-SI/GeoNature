@@ -23,9 +23,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public appName: any;
   private subscription: Subscription;
   public currentUser: User;
+  public appConfig: any;
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
-  // tslint:disable-next-line:max-line-length
   constructor(private _navService: NavService,
           private translate: TranslateService,
           private _authService: AuthService,
@@ -40,6 +40,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.appConfig = AppConfig;
     // subscribe to router event
     this.subscription = this.activatedRoute.queryParams.subscribe(
       (param: any) => {
