@@ -67,6 +67,8 @@ sed -i -e "s/\/var\/www/$apache_document_root/g" config/settings.ini
 
 # Installation de la base de données GeoNature en root
 sudo ./install_db.sh
+# installation du module occtax
+sudo ./data/modules/contact/install_schema.sh
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
