@@ -1,5 +1,7 @@
 # Sécurité:
 
+HTTPS
+
 HttpOnly cookies + Match cookie session avec adresse IP ou un certif ssl
 
 Sanitize ticker in routes.py :
@@ -21,6 +23,8 @@ remove_file, upload_file et rename_file doivent vérifier le chemin absolu avant
 # Modularité:
 
 Créer une API de backend d'authentification et d'identification.
+
+Système de plugin: hook, entry points et configuration
 
 # Qualité du code:
 
