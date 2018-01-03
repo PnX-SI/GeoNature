@@ -20,7 +20,7 @@ import { Location } from '@angular/common';
 })
 
 export class NavHomeComponent implements OnInit, OnDestroy {
-  public appName: any;
+  public moduleName = 'Accueil';
   private subscription: Subscription;
   public currentUser: User;
   public appConfig: any;
@@ -50,8 +50,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         }
       });
       // subscribe to the app name
-      this._navService.gettingCurrentApp.subscribe(app => {
-        this.appName = app.appName;
+      this._navService.gettingCurrentModule.subscribe(module => {
+        this.moduleName = module.moduleName;
     });
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);

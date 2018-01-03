@@ -12,7 +12,7 @@ import { SideNavService } from '../sidenav-items/sidenav.service';
   providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
 })
 export class HomeContentComponent implements OnInit {
-  private appName: string;
+  private moduleName: string;
 
   // test chartjs
   type1 = 'line';
@@ -55,8 +55,6 @@ export class HomeContentComponent implements OnInit {
     }
 
   constructor(private _navService: NavService, private _SideNavService: SideNavService) {
-    _navService.setCurrentApp({ appName : 'Accueil', id: 1 });
-    this.appName =  AppConfig.appName;
   }
 
   ngOnInit() {
