@@ -161,7 +161,6 @@ Une fois connecté au site :
 * Choisir les ressources dans le catalogue parmi ces rubriques : 
 
   - Ressources d'images tuilées WMTS du Géoportail en WebMercator (non superposables aux ressources en Lambert-93)
-  - Ressources d'images tuilées WMTS du Géoportail Lambert-93 (non superposables avec les ressources en WebMercator)
   - Ressources altimétriques du Géoportail
   
 * Ajouter la commande au panier
