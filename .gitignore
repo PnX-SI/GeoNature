@@ -7,8 +7,3 @@ log/*
 /../../__pycache__/*
 /../__pycache__/*
 
-# custom components
-/frontend/src/custom/components/footer/footer.components.ts
-/frontend/src/custom/components/footer/footer.components.html
-/frontend/src/custom/components/introduction/introduction.components.html
-/frontend/src/custom/components/introduction/introduction.components.ts
