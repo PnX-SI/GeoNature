@@ -9,6 +9,7 @@
       "outDir": "dist",
       "assets": [
         "assets",
+        "custom",
         "favicon.ico"
       ],
       "index": "index.html",
@@ -27,8 +28,7 @@
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/ngx-toastr/toastr.css",
         "../node_modules/leaflet-draw/dist/leaflet.draw.css",
-        "styles.scss",
-        "custom/custom.css"
+        "styles.scss"
       ],
       "scripts": [
         "../node_modules/tether/dist/js/tether.min.js",

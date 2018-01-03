@@ -67,6 +67,20 @@ if [ ! -f src/conf/app.config.ts ]; then
   cp src/conf/app.config.sample.ts src/conf/app.config.ts
 fi
 
+# copy the custom components 
+if [ ! -f src/custom/components/footer/footer.component.ts ]; then
+  cp src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
+fi
+if [ ! -f src/custom/components/footer/footer.component.html ]; then
+  cp src/custom/components/footer/footer.component.html.sample src/custom/components/footer/footer.component.html
+fi
+if [ ! -f src/custom/components/introduction/introduction.component.ts ]; then
+  cp src/custom/components/introduction/introduction.component.ts.sample src/custom/components/introduction/introduction.component.ts
+fi
+if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
+  cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
+fi
+
 
 sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" src/conf/app.config.ts
 sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" src/conf/app.config.ts

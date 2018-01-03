@@ -3,39 +3,12 @@
   <!--Welcome part-->
   <mat-card class="mdCard">
     <mat-card-header>
-      <mat-card-title > <h2> {{ 'IntroTitle' | translate }} </h2> </mat-card-title>
+      <mat-card-title > <h2 class="underlined main-color"> {{ 'IntroTitle' | translate }} </h2> </mat-card-title>
     </mat-card-header>
     <div class="row">
       <div class="col-md-7">
         <mat-card-content>
           <p [innerHTML]="'IntroText' | translate"></p>
-        </mat-card-content>
-      </div>
-      <div class="col-md-5">
-        <mat-card-content>
-        <carousel>
-          <slide>
-            <img mat-card-image src="assets/images/nature/4.jpg" alt="First slide">
-            <div class="carousel-caption">
-              <h3>First slide label fefezfezfzefezf</h3>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-            </div>
-          </slide>
-          <slide>
-            <img mat-card-image src="assets/images/nature/5.jpg" alt="Second slide">
-            <div class="carousel-caption">
-              <h3>Second slide label</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-          </slide>
-          <slide>
-            <img mat-card-image src="assets/images/nature/6.jpg" alt="Third slide">
-            <div class="carousel-caption">
-              <h3>Third slide label</h3>
-              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-            </div>
-          </slide>
-        </carousel>
         </mat-card-content>
       </div>
     </div>
@@ -105,36 +78,8 @@
     </mat-card>
   <!--end part 3-->
 
-  <!-- part 4  chartjs-->
-  <div class="row">
-    <div class="col-md-6 col-sm-12 mdCard">
-      <mat-card>
-        <mat-card-content>
-          <chart [type]="type1" [data]="data" [options]="options"></chart>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <div class="col-md-6 col-sm-12 mdCard">
-      <mat-card>
-        <mat-card-content>
-          <chart [type]="type2" [data]="data" [options]="options"></chart>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <div class="col-md-6 col-sm-12 mdCard">
-      <mat-card>
-        <mat-card-content>
-          <chart [type]="type3" [data]="data" [options]="options"></chart>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <div class="col-md-6 col-sm-12 mdCard">
-      <mat-card>
-        <mat-card-content>
-          <chart [type]="type4" [data]="data" [options]="options"></chart>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
-  <!-- end part chartjs -->
 </div>
+
+  <!-- FOOTER -->
+
+<pnx-footer></pnx-footer>
