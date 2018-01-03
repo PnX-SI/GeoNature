@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { HttpClientModule, HttpClientXsrfModule,HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {HttpModule, Http} from '@angular/http';
 
 
@@ -41,11 +41,11 @@ import { MapListService } from './GN2Common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
-
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
 @NgModule({
   imports: [
     BrowserModule,

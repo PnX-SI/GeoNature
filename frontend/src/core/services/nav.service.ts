@@ -4,31 +4,31 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class NavService {
     // Observable string sources
-    private _app = new Subject<any>();
-    public currentApp: any;
-    gettingCurrentApp = this._app.asObservable();
+    private _module = new Subject<any>();
+    public currentModule: any;
+    gettingCurrentModule = this._module.asObservable();
     // List of the apps
     private _nav = [{}];
     constructor() {
-        this._nav = [{route: '/', appName: 'Accueil', icon: 'home', id:'1'},
-            // {route: '/synthese', appName: 'Synthèse', icon: 'device_hub', id:'2'},
-            {route: '/occtax', appName: 'OccTax', icon: 'visibility', id: '14'},
-            // {route: '/flore-station', appName: 'Flore Station', icon: 'local_florist', id: '15'},
-            // {route: '/suivi-flore', appName: 'Suivi Flore', icon: 'filter_vintage', id: '16'},
-            // {route: '/suivi-chiro', appName: 'Suivi Chiro', icon: 'youtube_searched_for', id: '17'},
-            {route: '/exports', appName: 'Exports', icon: 'cloud_download', id: '18'},
-            // {route: '/prospections', appName: 'Prospections', icon: 'feedback', id: '19'},
-            // {route: '/parametres', appName: 'Paramètres', icon: 'settings', id: '20'}
+        this._nav = [{route: '/', moduleName: 'Accueil', icon: 'home', id:'1'},
+            // {route: '/synthese', moduleName: 'Synthèse', icon: 'device_hub', id:'2'},
+            {route: '/occtax', moduleName: 'OccTax', icon: 'visibility', id: '14'},
+            // {route: '/flore-station', moduleName: 'Flore Station', icon: 'local_florist', id: '15'},
+            // {route: '/suivi-flore', moduleName: 'Suivi Flore', icon: 'filter_vintage', id: '16'},
+            // {route: '/suivi-chiro', moduleName: 'Suivi Chiro', icon: 'youtube_searched_for', id: '17'},
+            {route: '/exports', moduleName: 'Exports', icon: 'cloud_download', id: '18'},
+            // {route: '/prospections', moduleName: 'Prospections', icon: 'feedback', id: '19'},
+            // {route: '/parametres', moduleName: 'Paramètres', icon: 'settings', id: '20'}
             ];
   }
 
     setCurrentApp(app): any {
-      this.currentApp = app;
-      this._app.next(app);
+      this.currentModule = app;
+      this._module.next(app);
     }
 
     getCurrentApp() {
-      return this.currentApp;
+      return this.currentModule;
     }
     getAppList(): any {
       return this._nav;

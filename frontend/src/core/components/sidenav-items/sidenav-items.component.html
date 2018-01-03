@@ -7,6 +7,6 @@
 <mat-nav-list class="appnav">
     <mat-list-item *ngFor="let app of nav" (click)="onSetApp(app)" routerLink={{app.route}} routerLinkActive="active" class="sidenav-item" >
       <mat-icon mat-list-icon>{{app.icon}}</mat-icon>
-      <h3 mat-line> {{app.appName}} </h3>
+      <h3 mat-line> {{app.moduleName}} </h3>
     </mat-list-item>
 </mat-nav-list>
