@@ -2,16 +2,7 @@
 <div class="container-fluid">
   <!--Welcome part-->
   <mat-card class="mdCard">
-    <mat-card-header>
-      <mat-card-title > <h2 class="underlined main-color"> {{ 'IntroTitle' | translate }} </h2> </mat-card-title>
-    </mat-card-header>
-    <div class="row">
-      <div class="col-md-7">
-        <mat-card-content>
-          <p [innerHTML]="'IntroText' | translate"></p>
-        </mat-card-content>
-      </div>
-    </div>
+    <pnx-introduction> </pnx-introduction>
   </mat-card>
   <!--End of Welcome part-->
 
@@ -80,6 +71,6 @@
 
 </div>
 
-  <!-- FOOTER -->
+<!-- FOOTER -->
+<pnx-footer *ngIf="appConfig.DISPLAY_FOOTER"></pnx-footer>
 
-<pnx-footer></pnx-footer>
