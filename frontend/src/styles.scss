@@ -1,7 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import 'conf/conf_style.scss';
 
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import 'conf/names_variables.scss';
+@import 'custom/custom.scss';
 @import '~@swimlane/ngx-datatable/release/index.css';
 @import '~@swimlane/ngx-datatable/release/themes/material.css';
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
@@ -86,4 +87,32 @@ md-sidenav-layout /deep/ .md-sidenav-content {
 
 #map{
   height: 100%;
+}
+
+.underlined {
+  border-bottom: 3px solid black !important;
+  display: inline-block;
+  padding-bottom: 10px;
+  padding-top: 5px;
+  margin-bottom: 20px;
+}
+
+.underlined.main-color {
+  border-bottom-color: $main-color !important;
+}
+
+.underlined.second-color {
+  border-bottom-color: $second-color !important;
+}
+
+footer {
+  margin-top: 50px;
+  padding-top: 10px;
+  border-top: 2px solid;
+  border-top-color: $second-color;
+}
+
+.unstyled {
+  padding-left: 0px;
+  list-style-type: none;
 }

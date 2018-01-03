@@ -1,15 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { AppConfig } from '../../../conf/app.config'
+import { AppConfig } from '../../../conf/app.config';
 import { NavService } from '../../services/nav.service';
-import { CarouselConfig } from 'ngx-bootstrap/carousel';
-import { MapService } from '../../GN2Common/map/map.service'
+import { MapService } from '../../GN2Common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav.service';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, {provide: CarouselConfig, useValue: {interval: 4000, noPause: true}}]
+  providers: [MapService]
 })
 export class HomeContentComponent implements OnInit {
   private moduleName: string;

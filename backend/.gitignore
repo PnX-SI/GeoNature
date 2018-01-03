@@ -104,3 +104,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# custom components
+./frontend/src/custom/components/footer/footer.components.ts
+./frontend/src/custom/components/footer/footer.components.html
+./frontend/src/custom/components/introduction/introduction.components.html
+./frontend/src/custom/components/introduction/introduction.components.ts
