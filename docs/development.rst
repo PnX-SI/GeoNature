@@ -139,8 +139,8 @@ GeoNature utilise :
 Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API à venir
 
 
-Frontend
-========
+Développement Frontend
+======================
 
 Modules
 -------
