@@ -5,6 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
+import * as test from '../../../conf/settings.default.json';
 import 'rxjs/Rx';
 import {MatSidenav} from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
@@ -40,6 +41,10 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    console.log("lalaaaaaaaaaaaaa");
+    console.log(test);
+    
+    
     this.appConfig = AppConfig;
     // subscribe to router event
     this.subscription = this.activatedRoute.queryParams.subscribe(
