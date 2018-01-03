@@ -10,7 +10,7 @@ Un machine Linux (testé sur Ubuntu 16.04 et Debian 8)
 Dépendances
 ===========
 
-L'application GeoNature utilise les dépendances suivantes:
+L'application GeoNature utilise les dépendances suivantes :
 
 - PostgreSQL / PostGIS
 - Python 3 et dépendances Python nécessaires à l'application
@@ -19,22 +19,22 @@ L'application GeoNature utilise les dépendances suivantes:
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
-L'application GeoNature s'appuie elle-même sur des applications connexes pour fonctionner:
+L'application GeoNature s'appuie elle-même sur des applications connexes pour fonctionner :
 
-- `Taxhub <https://github.com/PnX-SI/TaxHub>`_ pour la gestion de la taxonomie
+- `TaxHub <https://github.com/PnX-SI/TaxHub>`_ pour la gestion de la taxonomie.
 
-Des sous-modules, également utilisés dans d'autres projets:
+Des sous-modules, également utilisés dans d'autres projets :
 
 - `UsersHub-authentification-module <https://github.com/PnX-SI/UsersHub-authentification-module>`_ pour la gestion des utilisateurs et de l'authentification
 - `Nomenclature-api-module <https://github.com/PnX-SI/Nomenclature-api-module>`_ pour la gestion des nomenclatures
 
-Les deux sous-modules sont fournis directement avec GeoNature. Il faut en revanche installer Taxhub indépendemment 
+Les deux sous-modules sont fournis directement avec GeoNature. Il faut en revanche installer TaxHub indépendemment 
 pour assuer le bon fonctionnement de l'application GeoNature.
 
 Installation des dépendances
 ============================
 
-* Mettre à jour de la liste des dépôts Linux:
+* Mettre à jour de la liste des dépôts Linux :
 
   ::  
   
@@ -62,7 +62,7 @@ Se placer dans le répertoire de GeoNature.
 Installation de la base de données
 ==================================
 
-Créer un utilisateur PostgreSQL si vous n'en n'avez pas un:
+Créer un utilisateur PostgreSQL si vous n'en n'avez pas un :
 
 ::
     
@@ -114,7 +114,7 @@ Exemple de configuration du fichier ``config.py`` :
     COOKIE_EXPIRATION = 7200
 
 
-Exemple de configuration du fichier `app.config.ts` : 
+Exemple de configuration du fichier ``app.config.ts`` : 
 
 ::
     
