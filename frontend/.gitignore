@@ -11,3 +11,4 @@ src/custom/components/footer/footer.component.html
 src/custom/components/introduction/introduction.component.html
 src/custom/components/introduction/introduction.component.ts
 src/custom/images/bandeau_toolbar.png
+src/custom/custom.scss
