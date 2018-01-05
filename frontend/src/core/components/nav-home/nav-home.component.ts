@@ -41,10 +41,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    console.log("lalaaaaaaaaaaaaa");
-    console.log(test);
-    
-    
     this.appConfig = AppConfig;
     // subscribe to router event
     this.subscription = this.activatedRoute.queryParams.subscribe(
