@@ -7,8 +7,10 @@ import json
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from ..users.models import CorRole
+from ..gn_meta import routes as gn_meta
 
 from ...utils.utilssqlalchemy import json_resp
+from ...utils import utilsrequests
 
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
@@ -25,72 +27,71 @@ def loginCas():
     if 'ticket' in params:
         base_url = current_app.config['API_ENDPOINT']+"/auth_cas/login"
         urlValidate = "%s?ticket=%s&service=%s"%(configCas['URL_VALIDATION'], params['ticket'], base_url)
-        r = requests.get(urlValidate)
+        response = utilsrequests.secure_request(urlValidate, "GET")
         user = None
-        if r.status_code == 200:
-            xmlDict = xmltodict.parse(r.content)
-            resp = xmlDict['cas:serviceResponse']
-            if 'cas:authenticationSuccess' in resp:
-                user = resp['cas:authenticationSuccess']['cas:user']
+        xmlDict = xmltodict.parse(response.content)
+        resp = xmlDict['cas:serviceResponse']
+        if 'cas:authenticationSuccess' in resp:
+            user = resp['cas:authenticationSuccess']['cas:user']
         if user:
             WSUserUrl = "%s/%s/?verify=false"%(configCas['USER_WS']['URL'], user)
-            r  = requests.get(WSUserUrl, auth=(configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD']))
-            if r.status_code == 200:
-                infoUser = r.json()
-                organismId = infoUser['codeOrganisme'] if infoUser['codeOrganisme'] != None else -1
-                organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] != None else 'Autre'
-                userLogin = infoUser['login']
-                userId = infoUser['id']
-                ## Reconciliation avec base GeoNature
-                organism = {
-                    "id_organisme":organismId,
-                    "nom_organisme": organismName
-                }
-                r = requests.post(current_app.config['API_ENDPOINT']+'/users/organism', json=organism)
 
-                user = {
-                    "id_role":userId,
-                    "identifiant":userLogin, 
-                    "nom_role": infoUser['nom'],
-                    "prenom_role": infoUser['prenom'],
-                    "id_organisme": organismId,
-                }
-                r = requests.post(current_app.config['API_ENDPOINT']+'/users/role', json=user)
-                ## push the user in the right group
-                if organismId == -1:
-                    # group socle 1
-                    insert_in_cor_role(20003, user['id_role'])
-                    rights = {str(current_app.config['ID_APPLICATION_GEONATURE']) : {'C': 3, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 } }
-                else:
-                    # group socle 2
-                    insert_in_cor_role(20001, user['id_role'])
-                    rights = {str(current_app.config['ID_APPLICATION_GEONATURE']) : {'C': 3, 'R': 2, 'U': 1, 'V': 1, 'E': 2, 'D': 1 } }
-                user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
-                # creation de la Response
-                response = make_response(redirect(current_app.config['URL_APPLICATION']))
-                cookieExp = datetime.datetime.utcnow()
-                expiration = current_app.config['COOKIE_EXPIRATION']
-                cookieExp += datetime.timedelta(seconds=expiration)
-                ## generation d'un token
-                s = Serializer(current_app.config['SECRET_KEY'], expiration)
-                token = s.dumps(user)
-                response.set_cookie('token',
-                                    token,
+            response = utilsrequests.secure_request(WSUserUrl, "GET", (configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD'])) 
+            
+            infoUser = response.json()
+            organismId = infoUser['codeOrganisme'] if infoUser['codeOrganisme'] != None else -1
+            organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] != None else 'Autre'
+            userLogin = infoUser['login']
+            userId = infoUser['id']
+            ## Reconciliation avec base GeoNature
+            organism = {
+                "id_organisme":organismId,
+                "nom_organisme": organismName
+            }
+            r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
+
+            user = {
+                "id_role":userId,
+                "identifiant":userLogin, 
+                "nom_role": infoUser['nom'],
+                "prenom_role": infoUser['prenom'],
+                "id_organisme": organismId,
+            }
+            r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
+            ## push the user in the right group
+            if organismId == -1:
+                # group socle 1
+                insert_in_cor_role(20003, user['id_role'])
+            else:
+                # group socle 2
+                insert_in_cor_role(20001, user['id_role'])
+            user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
+
+            ## Creation of datasets
+            gn_meta.post_jdd_from_user_id(userId)
+
+            # creation de la Response
+            response = make_response(redirect(current_app.config['URL_APPLICATION']))
+            cookieExp = datetime.datetime.utcnow()
+            expiration = current_app.config['COOKIE_EXPIRATION']
+            cookieExp += datetime.timedelta(seconds=expiration)
+            ## generation d'un token
+            s = Serializer(current_app.config['SECRET_KEY'], expiration)
+            token = s.dumps(user)
+            response.set_cookie('token',
+                                token,
+                                expires=cookieExp)
+            # User cookie
+            
+            currentUser = {
+                'userName': userLogin,
+                'userId': userId,
+                'organismName': organismName,
+                'organismId': organismId,
+            }
+            response.set_cookie('currentUser',
+                                    str(currentUser),
                                     expires=cookieExp)
-                # Utilisateur en cookie
-                # TODO: remove CRUVED FROM cookies
-                # met les droit d'admin pour la démo, a changer
-                
-                currentUser = {
-                    'userName': userLogin,
-                    'userId': userId,
-                    'organismName': organismName,
-                    'organismId': organismId,
-                    'rights': rights
-                }
-                response.set_cookie('currentUser',
-                                     str(currentUser),
-                                     expires=cookieExp)
             return response
         else:
             # redirect to inpn sss           

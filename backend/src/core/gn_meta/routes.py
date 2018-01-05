@@ -190,7 +190,7 @@ def post_jdd_from_user_id(id_user):
     xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
     
     jdd_list = mtd_utils.parse_jdd_xml(xml_jdd)
-    print(jdd_list)
+
     for jdd in jdd_list:
         id_acquisition_framework = TAcquisitionFramework.get_id(jdd['uuid_acquisition_framework'])
         if not id_acquisition_framework:
@@ -207,21 +207,22 @@ def post_jdd_from_user_id(id_user):
 
         actor = CorDatasetsActor(
             id_role = id_user,
-            id_nomenclature_actor_role = 397
+            id_nomenclature_actor_role = 393
         )
-
         dataset.cor_datasets_actor.append(actor)
 
-        
         if id_dataset:
             db.session.merge(dataset)
         else:
             db.session.add(dataset)
         try:
             db.session.commit()
+            db.session.flush()
         except:
             db.session.rollback()
             raise
+        
+    return jdd_list
 
 
 
