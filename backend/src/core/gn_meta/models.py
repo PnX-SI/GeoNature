@@ -4,7 +4,7 @@ from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
 from ...utils.utilssqlalchemy import serializableModel
@@ -121,15 +121,11 @@ class TDatasets(serializableModel):
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
-    # acquisition_framework = relationship(
-    #     "TAcquisitionFramework",
-    #     lazy = 'join'
-    # )
 
     cor_datasets_actor = relationship(
         "CorDatasetsActor",
         lazy='joined',
-        cascade="all,delete-orphan"
+        cascade="save-update, delete, delete-orphan"
     )
 
 
