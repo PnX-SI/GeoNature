@@ -13,6 +13,8 @@ from ..users.models import TRoles
 from pypnusershub import routes as fnauth
 from ...utils.utilssqlalchemy import json_resp
 
+from . import mtd_utils
+
 import requests
 from xml.etree import ElementTree as ET
 
@@ -149,62 +151,79 @@ def getCdNomenclature(id_type, cd_nomenclature):
     return value
 
 
-@routes.route('/cadre_acquision_mtd', methods=['POST'])
+@routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
 @json_resp
-def postCadreAcquisionMTD():
+def post_acquisition_framwork_mtd(uuid_af):
     """ Routes pour ajouter des cadres d'acquision à partir
     du web service MTD"""
-    r = requests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id=4A9DDA1F-B601-3E13-E053-2614A8C02B7C")
-    if r.status_code == 200:
-        root = ET.fromstring(r.content)
-        attrib = root.attrib
-        namespace = attrib['{http://www.w3.org/2001/XMLSchema-instance}schemaLocation'].split()[0]
-        namespace = '{'+namespace+'}'
 
-        #tous les cadres d'acquisition
-        for ca in root.findall('.//'+namespace+'CadreAcquisition'):
-            ca_uuid = ca.find(namespace+'identifiantCadre').text
-            ca_name = ca.find(namespace+'libelle').text
-            ca_desc = ca.find(namespace+'description').text
-            ca_start_date = ca.find('.//'+namespace+'dateLancement').text
-            ca_end_date = ca.find('.//'+namespace+'dateCloture').text
-            territory_level = ca.find(namespace+'niveauTerritorial').text
-            type_financement = ca.find('.//'+namespace+'typeFinancement').text
-            cible_ecologique = ca.find('.//'+namespace+'cibleEcologiqueOuGeologique').text
+    xml_af = mtd_utils.get_acquisition_framework(uuid_af)
 
-            #acteur
-            acteur_princip = ca.find(namespace+'acteurPrincipal').text
-            for acteur in ca.find(namespace+'acteurAutre').text:
-                cd_role = acteur.find(namespace+'roleActeur').text 
-                acteur_role = getCdNomenclature(108, cd_role)
+    acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
+
+    #acteur
+    # acteur_princip = ca.find(namespace+'acteurPrincipal').text
+    # for acteur in ca.find(namespace+'acteurAutre').text:
+    #     cd_role = acteur.find(namespace+'roleActeur').text 
+    #     acteur_role = getCdNomenclature(108, cd_role)
+
+    new_af = TAcquisitionFramework(**acquisition_framwork)
 
 
-            print(test)
-            newCadre = TAcquisitionFramework(
-                id_acquisition_framework = 2,
-                unique_acquisition_framework_id = ca_uuid,
-                acquisition_framework_name = ca_name,
-                acquisition_framework_desc = ca_desc,
-                acquisition_framework_start_date = ca_start_date,
-                acquisition_framework_end_date = ca_end_date,
-                id_nomenclature_territorial_level = getCdNomenclature(108, territory_level),
-                id_nomenclature_financing_type = getCdNomenclature(111, type_financement),
-                target_description = cible_ecologique
-                
-            )
+    #TODO: 
+    #- ecrire dans cor_acquisition_framework_actor
+    #- gérer les merge si UUID existe déja
+    try:
+        db.session.add(new_af)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise
+    return {'message': 'add with success'}
 
-            #TODO: 
-            #- ecrire dans cor_acquisition_framework_actor
-            #- gérer les merge si UUID existe déja
+
+
+@routes.route('/dataset_mtd/<id_user>', methods=['POST'])
+@json_resp
+def post_jdd_from_user_id(id_user):
+
+    xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
+    
+    jdd_list = mtd_utils.parse_jdd_xml(xml_jdd)
+    print(jdd_list)
+    for jdd in jdd_list:
+        id_acquisition_framework = TAcquisitionFramework.get_id(jdd['uuid_acquisition_framework'])
+        if not id_acquisition_framework:
+            post_acquisition_framwork_mtd(jdd['uuid_acquisition_framework'])
+            # get the new id_acquisition_framework for the foreign key in TDatasets
+            id_acquisition_framework = TAcquisitionFramework.get_id(jdd['uuid_acquisition_framework'])
+        
+        jdd.pop('uuid_acquisition_framework')
+        jdd['id_acquisition_framework'] = id_acquisition_framework
+        id_dataset = TDatasets.get_id(jdd['unique_dataset_id'])
+        jdd['id_dataset'] = id_dataset
+
+        dataset = TDatasets(**jdd)
+
+        actor = CorDatasetsActor(
+            id_role = id_user,
+            id_nomenclature_actor_role = 397
+        )
+
+        dataset.cor_datasets_actor.append(actor)
+
+        
+        if id_dataset:
+            db.session.merge(dataset)
+        else:
+            db.session.add(dataset)
         try:
-            db.session.add(newCadre)
             db.session.commit()
-        except Exception as e:
+        except:
             db.session.rollback()
             raise
-        return {'message': 'add with success'}
-    else:
-        return {'message': 'not found'}, 404
+
+
 
 
 ## Private fonction
@@ -222,3 +241,24 @@ def get_allowed_datasets(user):
     except:
         db.session.rollback()
         raise
+
+
+    
+
+
+#### TEST 
+@routes.route('/test', methods=['GET'])
+@json_resp
+def test():
+
+    post_jdd_from_user_id(9188)
+    # print(test)
+
+    # xml = mtd_utils.get_acquisition_framework("60DAC805-2562-13EB-E053-2614A8C0D040")
+    # parse = mtd_utils.parse_acquisition_framwork_xml(xml)
+
+    # xml = mtd_utils.get_jdd_by_user_id(9188)
+    # parsed = mtd_utils.parse_jdd_xml(xml)
+
+    #print(parsed)
+    return 'la'
