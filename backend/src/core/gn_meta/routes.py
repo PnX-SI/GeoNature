@@ -154,18 +154,12 @@ def getCdNomenclature(id_type, cd_nomenclature):
 @routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
 @json_resp
 def post_acquisition_framwork_mtd(uuid_af):
-    """ Routes pour ajouter des cadres d'acquision à partir
-    du web service MTD"""
+    """ Post an acquisition framwork from MTD XML"""
 
     xml_af = mtd_utils.get_acquisition_framework(uuid_af)
 
     acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
 
-    #acteur
-    # acteur_princip = ca.find(namespace+'acteurPrincipal').text
-    # for acteur in ca.find(namespace+'acteurAutre').text:
-    #     cd_role = acteur.find(namespace+'roleActeur').text 
-    #     acteur_role = getCdNomenclature(108, cd_role)
 
     new_af = TAcquisitionFramework(**acquisition_framwork)
 
@@ -185,31 +179,40 @@ def post_acquisition_framwork_mtd(uuid_af):
 
 @routes.route('/dataset_mtd/<id_user>', methods=['POST'])
 @json_resp
-def post_jdd_from_user_id(id_user):
-
+def post_jdd_from_user_id(id_user, id_organism):
+    """ Post a jdd from the mtd XML"""
     xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
     
-    jdd_list = mtd_utils.parse_jdd_xml(xml_jdd)
+    dataset_list = mtd_utils.parse_jdd_xml(xml_jdd)
 
-    for jdd in jdd_list:
-        id_acquisition_framework = TAcquisitionFramework.get_id(jdd['uuid_acquisition_framework'])
+    for ds in dataset_list:
+        id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
         if not id_acquisition_framework:
-            post_acquisition_framwork_mtd(jdd['uuid_acquisition_framework'])
+            post_acquisition_framwork_mtd(ds['uuid_acquisition_framework'])
             # get the new id_acquisition_framework for the foreign key in TDatasets
-            id_acquisition_framework = TAcquisitionFramework.get_id(jdd['uuid_acquisition_framework'])
+            id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
         
-        jdd.pop('uuid_acquisition_framework')
-        jdd['id_acquisition_framework'] = id_acquisition_framework
-        id_dataset = TDatasets.get_id(jdd['unique_dataset_id'])
-        jdd['id_dataset'] = id_dataset
+        ds.pop('uuid_acquisition_framework')
+        ds['id_acquisition_framework'] = id_acquisition_framework
+        id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
+        ds['id_dataset'] = id_dataset
 
-        dataset = TDatasets(**jdd)
+        dataset = TDatasets(**ds)
 
+        # id_role in cor_dataset_actor
         actor = CorDatasetsActor(
             id_role = id_user,
             id_nomenclature_actor_role = 393
         )
         dataset.cor_datasets_actor.append(actor)
+        # id_organism in cor_dataset_actor
+        if id_organism:
+            actor = CorDatasetsActor(
+                id_organism = id_organism,
+                id_nomenclature_actor_role = 393
+            )
+            dataset.cor_datasets_actor.append(actor)
+        
 
         if id_dataset:
             db.session.merge(dataset)
