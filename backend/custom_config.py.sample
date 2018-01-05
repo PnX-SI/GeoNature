@@ -7,9 +7,9 @@ class Config():
     In this this file you can override any setting from default_config.py
     '''
 
-    #Database
+    # Database
     SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
 
-    #Application
-    URL_APPLICATION = 'http://my_url.com/geonature' 
-    API_ENDPOINT = 'http://my_url.com/geonature/api'
+    # Application
+    URL_APPLICATION = 'http://my_url.com/geonature'          # Replace my_url.com by your domain or IP
+    API_ENDPOINT = 'http://my_url.com/geonature/api'         # Replace my_url.com by your domain or IP
