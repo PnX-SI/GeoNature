@@ -251,8 +251,10 @@ def get_allowed_datasets(user):
 @routes.route('/test', methods=['GET'])
 @json_resp
 def test():
+    from flask import current_app
+    print(current_app.config['PASS_METHOD'])
 
-    post_jdd_from_user_id(9188)
+    # post_jdd_from_user_id(9188)
     # print(test)
 
     # xml = mtd_utils.get_acquisition_framework("60DAC805-2562-13EB-E053-2614A8C0D040")
