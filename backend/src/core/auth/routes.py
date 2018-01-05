@@ -39,16 +39,17 @@ def loginCas():
             response = utilsrequests.secure_request(WSUserUrl, "GET", (configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD'])) 
             
             infoUser = response.json()
-            organismId = infoUser['codeOrganisme'] if infoUser['codeOrganisme'] != None else -1
+            organismId = infoUser['codeOrganisme']
             organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] != None else 'Autre'
             userLogin = infoUser['login']
             userId = infoUser['id']
             ## Reconciliation avec base GeoNature
-            organism = {
-                "id_organisme":organismId,
-                "nom_organisme": organismName
-            }
-            r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
+            if organismId:
+                organism = {
+                    "id_organisme":organismId,
+                    "nom_organisme": organismName
+                }
+                r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
 
             user = {
                 "id_role":userId,
