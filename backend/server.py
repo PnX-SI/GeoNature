@@ -19,7 +19,8 @@ def get_app():
     if app_globals.get('app', False):
         return app_globals['app']
     app = Flask(__name__)
-    app.config.from_pyfile('./config.py')
+    # app.config.from_pyfile('./default_config.py')
+    app.config.from_object('custom_config.CustomConfig')
     db.init_app(app)
     with app.app_context():
         db.create_all()

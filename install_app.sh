@@ -5,17 +5,17 @@
 cd backend
 
 echo "Création du fichier de configuration ..."
-if [ ! -f config.py ]; then
-  cp config.py.sample config.py
+if [ ! -f custom_config.py ]; then
+  cp custom_config.py.sample custom_config.py
 fi
 
 
 echo "préparation du fichier config.py..."
 my_url="${my_url//\//\\/}"
-sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" config.py
-sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" config.py
-sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" config.py
-nano config.py
+sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" custom_config.py
+sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" custom_config.py
+sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" custom_config.py
+nano custom_config.py
 
 #Virtual env Installation
 echo "Installation du virtual env..."

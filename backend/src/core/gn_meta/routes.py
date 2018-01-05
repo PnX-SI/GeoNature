@@ -225,7 +225,7 @@ def post_jdd_from_user_id(id_user, id_organism):
             db.session.rollback()
             raise
         
-    return jdd_list
+    return dataset_list
 
 
 
