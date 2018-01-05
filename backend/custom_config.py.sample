@@ -1,0 +1,15 @@
+# coding: utf8
+
+
+class Config():
+    '''
+    GeoNature backend customisation configuration file
+    In this this file you can override any setting from default_config.py
+    '''
+
+    #Database
+    SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+
+    #Application
+    URL_APPLICATION = 'http://my_url.com/geonature' 
+    API_ENDPOINT = 'http://my_url.com/geonature/api'
