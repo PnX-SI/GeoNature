@@ -67,6 +67,10 @@ if [ ! -f src/conf/app.config.ts ]; then
   cp src/conf/app.config.sample.ts src/conf/app.config.ts
 fi
 
+if [ ! -f src/custom/custom.scss ]; then
+  cp src/custom/custom.scss.sample src/custom/custom.scss
+fi
+
 # copy the custom components 
 if [ ! -f src/custom/components/footer/footer.component.ts ]; then
   cp src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
@@ -88,4 +92,4 @@ sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" src/conf/app.
 
 nano src/conf/app.config.ts 
 
-ng build --base-href /geonature/
+ng build --prod --aot=false --base-href=/geonature/
