@@ -21,32 +21,34 @@ def get_app():
     app = Flask(__name__)
     app.config.from_pyfile('./config.py')
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
-    from pypnusershub.routes import routes
-    app.register_blueprint(routes, url_prefix='/auth')
+        from pypnusershub.routes import routes
+        app.register_blueprint(routes, url_prefix='/auth')
 
-    from pypnnomenclature.routes import routes
-    app.register_blueprint(routes, url_prefix='/nomenclatures')
+        from pypnnomenclature.routes import routes
+        app.register_blueprint(routes, url_prefix='/nomenclatures')
 
-    from src.core.users.routes import routes
-    app.register_blueprint(routes, url_prefix='/users')
+        from src.core.users.routes import routes
+        app.register_blueprint(routes, url_prefix='/users')
 
-    from src.modules.pr_contact.routes import routes
-    app.register_blueprint(routes, url_prefix='/contact')
+        from src.modules.pr_contact.routes import routes
+        app.register_blueprint(routes, url_prefix='/contact')
 
-    from src.core.gn_meta.routes import routes
-    app.register_blueprint(routes, url_prefix='/meta')
+        from src.core.gn_meta.routes import routes
+        app.register_blueprint(routes, url_prefix='/meta')
 
-    from src.core.ref_geo.routes import routes
-    app.register_blueprint(routes, url_prefix='/geo')
+        from src.core.ref_geo.routes import routes
+        app.register_blueprint(routes, url_prefix='/geo')
 
-    from src.core.gn_exports.routes import routes
-    app.register_blueprint(routes, url_prefix='/exports')
+        from src.core.gn_exports.routes import routes
+        app.register_blueprint(routes, url_prefix='/exports')
 
-    from src.core.auth.routes import routes
-    app.register_blueprint(routes, url_prefix='/auth_cas')
+        from src.core.auth.routes import routes
+        app.register_blueprint(routes, url_prefix='/auth_cas')
 
-    app_globals['app'] = app
+        app_globals['app'] = app
     return app
 
 
