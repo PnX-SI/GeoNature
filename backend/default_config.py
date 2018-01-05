@@ -3,7 +3,7 @@
 
 class Config():
     '''
-    GeoNature global configuration file
+    GeoNature backend global configuration file
     Don't change this file. You can override all these settings in custom_config.py
     '''
 
