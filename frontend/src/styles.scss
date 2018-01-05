@@ -18,17 +18,16 @@ mat-sidenav-content {
 }
 
 .mat-toolbar{
-  min-height: 50px !important;
+  min-height: 5vh !important;
 }
 .mat-toolbar-row{
-  height:50px !important;
+  height:5vh !important;
 }
 
 .app-content {
     background-color: $solitude;
-    height: calc(100% - 50px);
+    height: calc(100% - 5vh);
     padding-top: 5px;
-    // min-height: 100vh;
 }
 
 .row-sm{
