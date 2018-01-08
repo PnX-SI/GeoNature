@@ -8,7 +8,9 @@ namespace = "{http://inpn.mnhn.fr/mtd}"
 
 def get_acquisition_framework(uuid_af):
     r = utilsrequests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id="+uuid_af)
-    return r.content
+    if r.status_code == 200:
+        return r.content
+    return None
 
 def parse_acquisition_framwork_xml(xml):
     root = ET.fromstring(xml)
@@ -37,7 +39,9 @@ def get_jdd_by_user_id(id_user):
             - id:  id_user from CAS
         return: a XML """
     r = utilsrequests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id="+str(id_user))
-    return r.content
+    if r.status_code == 200:
+        return r.content
+    return None
 
 def parse_jdd_xml(xml):
     """ parse an mtd xml, return a list of datasets"""
