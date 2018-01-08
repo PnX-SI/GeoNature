@@ -222,12 +222,10 @@ def post_jdd_from_user_id(id_user, id_organism):
                 db.session.merge(dataset)
             else:
                 db.session.add(dataset)
-            try:
-                db.session.commit()
-                db.session.flush()
-            except:
-                db.session.rollback()
-                raise
+
+            db.session.commit()
+            db.session.flush()
+
             
         return dataset_list
     return {'message': 'Not found'}, 404

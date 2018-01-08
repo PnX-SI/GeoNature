@@ -90,6 +90,7 @@ def loginCas():
             currentUser = {
                 'userName': userLogin,
                 'userId': userId,
+                'organismId': organismId if organismId else -1
             }
             response.set_cookie('currentUser',
                                     str(currentUser),
