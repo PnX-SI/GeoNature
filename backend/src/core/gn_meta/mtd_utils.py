@@ -57,7 +57,7 @@ def parse_jdd_xml(xml):
         dataset_name = jdd.find(namespace+'libelle').text
         dataset_shortname = jdd.find(namespace+'libelleCourt').text
         dataset_desc = jdd.find(namespace+'description')
-        dataset_desc = dataset_desc.text if dataset_desc else None
+        dataset_desc = dataset_desc.text if dataset_desc else ''
             
         terrestrial_domain = jdd.find(namespace+'domaineTerrestre')
         terrestrial_domain = terrestrial_domain.text if terrestrial_domain else False
