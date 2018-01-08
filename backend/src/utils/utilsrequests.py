@@ -3,7 +3,7 @@ import requests
 
 def get(url, auth=None):
     try:
-        r = requests.get(url, auth)
+        r = requests.get(url, auth=auth)
         assert r.status_code == 200
     except requests.exceptions.RequestException as e:
         raise
@@ -13,7 +13,7 @@ def get(url, auth=None):
 
 def post(url, json={}):
     try:
-        r = requests.get(url, json = json)
+        r = requests.get(url, json=json)
         assert r.status_code == 200
     except requests.exceptions.RequestException as e:
         raise
