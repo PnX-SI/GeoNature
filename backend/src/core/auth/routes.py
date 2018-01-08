@@ -63,7 +63,7 @@ def loginCas():
             resp = users.insertRole(user)
             #r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
             ## push the user in the right group
-            if organismId == -1:
+            if organismId is None:
                 # group socle 1
                 insert_in_cor_role(20003, user['id_role'])
             else:
@@ -72,7 +72,7 @@ def loginCas():
             user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
 
             ## Creation of datasets
-            gn_meta.post_jdd_from_user_id(userId)
+            gn_meta.post_jdd_from_user_id(userId, organismId)
 
             # creation de la Response
             response = make_response(redirect(current_app.config['URL_APPLICATION']))
