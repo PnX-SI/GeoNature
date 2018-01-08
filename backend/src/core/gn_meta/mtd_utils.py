@@ -18,14 +18,12 @@ def parse_acquisition_framwork_xml(xml):
         ca_uuid = ca.find(namespace+'identifiantCadre').text
         ca_name = ca.find(namespace+'libelle').text
         ca_desc = ca.find(namespace+'description')
-        if ca_desc:
-            ca_desc = ca_desc.text
+        ca_desc = ca_desc.text if ca_desc else None
         ca_start_date = ca.find('.//'+namespace+'dateLancement')
-        if ca_start_date:
-            ca_start_date = ca_start_date.text
+
         ca_end_date = ca.find('.//'+namespace+'dateCloture')
-        if ca_end_date:
-            ca_end_date = ca_end_date.text
+        ca_end_date = ca_end_date.text if ca_end_date else None
+
     
         return {
             'unique_acquisition_framework_id' : ca_uuid,
@@ -58,8 +56,8 @@ def parse_jdd_xml(xml):
         dataset_name = jdd.find(namespace+'libelle').text
         dataset_shortname = jdd.find(namespace+'libelleCourt').text
         dataset_desc = jdd.find(namespace+'description')
-        if dataset_desc:
-            dataset_desc = dataset_desc.text
+        dataset_desc = dataset_desc.text if dataset_desc else None
+            
         terrestrial_domain = jdd.find(namespace+'domaineTerrestre')
         terrestrial_domain = terrestrial_domain.text if terrestrial_domain else False
 
