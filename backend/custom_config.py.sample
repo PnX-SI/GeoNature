@@ -1,7 +1,7 @@
 # coding: utf8
 
 from default_config import Config
-class Config(Config):
+class CustomConfig(Config):
     '''
     GeoNature backend customisation configuration file
     In this this file you can override any setting from default_config.py
