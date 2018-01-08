@@ -27,7 +27,7 @@ def loginCas():
     if 'ticket' in params:
         base_url = current_app.config['API_ENDPOINT']+"/auth_cas/login"
         urlValidate = "%s?ticket=%s&service=%s"%(configCas['URL_VALIDATION'], params['ticket'], base_url)
-        response = utilsrequests.secure_request(urlValidate, "GET")
+        response = utilsrequests.get(urlValidate)
         user = None
         xmlDict = xmltodict.parse(response.content)
         resp = xmlDict['cas:serviceResponse']
@@ -36,7 +36,7 @@ def loginCas():
         if user:
             WSUserUrl = "%s/%s/?verify=false"%(configCas['USER_WS']['URL'], user)
 
-            response = utilsrequests.secure_request(WSUserUrl, "GET", (configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD'])) 
+            response = utilsrequests.get(WSUserUrl, (configCas['USER_WS']['ID'], configCas['USER_WS']['PASSWORD'])) 
             
             infoUser = response.json()
             organismId = infoUser['codeOrganisme']
