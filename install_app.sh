@@ -58,9 +58,6 @@ nvm install 8.1.1
 echo " ############"
 echo "instalation des paquets npm"
 npm install
-echo " ############"
-echo "instalation global d'angular cli"
-npm install -g @angular/cli@1.6.1
 npm rebuild node-sass
 
 if [ ! -f src/conf/app.config.ts ]; then
