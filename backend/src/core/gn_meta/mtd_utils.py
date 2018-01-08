@@ -17,12 +17,15 @@ def parse_acquisition_framwork_xml(xml):
     for ca in root.findall('.//'+namespace+'CadreAcquisition'):
         ca_uuid = ca.find(namespace+'identifiantCadre').text
         ca_name = ca.find(namespace+'libelle').text
-        ca_desc = ca.find(namespace+'description').text
-        ca_start_date = ca.find('.//'+namespace+'dateLancement').text
-        ca_end_date = ca.find('.//'+namespace+'dateCloture').text
-        territory_level = ca.find(namespace+'niveauTerritorial').text
-        type_financement = ca.find('.//'+namespace+'typeFinancement').text
-        cible_ecologique = ca.find('.//'+namespace+'cibleEcologiqueOuGeologique').text
+        ca_desc = ca.find(namespace+'description')
+        if ca_desc:
+            ca_desc = ca_desc.text
+        ca_start_date = ca.find('.//'+namespace+'dateLancement')
+        if ca_start_date:
+            ca_start_date = ca_start_date.text
+        ca_end_date = ca.find('.//'+namespace+'dateCloture')
+        if ca_end_date:
+            ca_end_date = ca_end_date.text
     
         return {
             'unique_acquisition_framework_id' : ca_uuid,
@@ -54,9 +57,14 @@ def parse_jdd_xml(xml):
 
         dataset_name = jdd.find(namespace+'libelle').text
         dataset_shortname = jdd.find(namespace+'libelleCourt').text
-        dataset_desc = jdd.find(namespace+'description').text
-        terrestrial_domain = jdd.find(namespace+'domaineTerrestre').text
-        marine_domain = jdd.find(namespace+'domaineMarin').text
+        dataset_desc = jdd.find(namespace+'description')
+        if dataset_desc:
+            dataset_desc = dataset_desc.text
+        terrestrial_domain = jdd.find(namespace+'domaineTerrestre')
+        terrestrial_domain = terrestrial_domain.text if terrestrial_domain else False
+
+        marine_domain = jdd.find(namespace+'domaineMarin')
+        marine_domain = marine_domain.text if marine_domain else False
 
         current_jdd = {
             'unique_dataset_id': jdd_uuid,
@@ -66,7 +74,7 @@ def parse_jdd_xml(xml):
             'dataset_desc': dataset_desc,
             'terrestrial_domain' : terrestrial_domain,
             'marine_domain': marine_domain,
-            'id_program': 1,
+            'id_program': 1
         }
 
         jdd_list.append(current_jdd)
