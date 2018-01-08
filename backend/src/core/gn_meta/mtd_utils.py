@@ -2,17 +2,12 @@
 
 from xml.etree import ElementTree as ET
 import requests
+from ...utils import utilsrequests
 
 namespace = "{http://inpn.mnhn.fr/mtd}"
 
 def get_acquisition_framework(uuid_af):
-    try:
-        r = requests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id="+uuid_af)
-        assert r.status_code == 200
-    except requests.exceptions.RequestException as e:
-        raise
-    except AssertionError:
-        raise
+    r = utilsrequests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id="+uuid_af)
     return r.content
 
 def parse_acquisition_framwork_xml(xml):
@@ -41,13 +36,7 @@ def get_jdd_by_user_id(id_user):
         params:
             - id:  id_user from CAS
         return: a XML """
-    try:
-        r = requests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id="+str(id_user))
-        assert r.status_code == 200
-    except requests.exceptions.RequestException as e:
-        raise
-    except AssertionError:
-        raise
+    r = utilsrequests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id="+str(id_user))
     return r.content
 
 def parse_jdd_xml(xml):

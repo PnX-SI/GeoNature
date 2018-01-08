@@ -16,5 +16,5 @@ shell:
 	@/bin/bash -c "source $(venv_dir)/bin/activate&&python server.py shell"
 
 
-stop:
+supervisor-stop:
 	@/bin/bash -c "sudo -s supervisorctl stop $(app_name)"
