@@ -96,7 +96,11 @@ def loginCas():
             return response
         else:
             # redirect to inpn sss           
-            return "echec de l'authentification"
+            return """<p> Echec de l'authentification. <p>
+             <p> Deconnectez-vous du service INPN avant de retenter une connexion à GeoNature </p>
+             <p> <a target="_blank" href="""current_app.config['CAS']['URL_LOGOUT']"""> Deconnexion </a> </p>
+             <p> <a target="_blank" href="""current_app.config['URL_APPLICATION']"""> Retour vers GeoNature </a> </p>
+             """
 
 
 def insert_in_cor_role(id_group, id_user):
