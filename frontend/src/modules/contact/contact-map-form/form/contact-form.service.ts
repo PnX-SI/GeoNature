@@ -49,7 +49,9 @@ export class ContactFormService {
 
    getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {
      let params = new HttpParams();
-     params = params.set('organism', idOrg.toString());
+     if (idOrg) {
+      params = params.set('organism', idOrg.toString());
+     }
      if (group2_inpn) {
       params = params.append('regne', regne);
      }
