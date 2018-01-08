@@ -13,7 +13,7 @@ def get(url, auth=None):
 
 def post(url, json={}):
     try:
-        r = requests.get(url, json=json)
+        r = requests.post(url, json=json)
         assert r.status_code == 200
     except requests.exceptions.RequestException as e:
         raise
