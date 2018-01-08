@@ -18,7 +18,7 @@ def parse_acquisition_framwork_xml(xml):
         ca_uuid = ca.find(namespace+'identifiantCadre').text
         ca_name = ca.find(namespace+'libelle').text
         ca_desc = ca.find(namespace+'description')
-        ca_desc = ca_desc.text if ca_desc else None
+        ca_desc = ca_desc.text if ca_desc else ''
         ca_start_date = ca.find('.//'+namespace+'dateLancement')
         ca_start_date = ca_start_date.text if ca_start_date else None
         ca_end_date = ca.find('.//'+namespace+'dateCloture')
