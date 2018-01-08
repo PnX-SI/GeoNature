@@ -8,6 +8,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from ..users.models import CorRole
 from ..gn_meta import routes as gn_meta
+from ..users import routes as users
 
 from ...utils.utilssqlalchemy import json_resp
 from ...utils import utilsrequests
@@ -49,7 +50,8 @@ def loginCas():
                     "id_organisme":organismId,
                     "nom_organisme": organismName
                 }
-                r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
+                resp = users.insertOrganism(organism)
+                #r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
 
             user = {
                 "id_role":userId,
@@ -58,7 +60,8 @@ def loginCas():
                 "prenom_role": infoUser['prenom'],
                 "id_organisme": organismId,
             }
-            r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
+            resp = users.insertRole(user)
+            #r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
             ## push the user in the right group
             if organismId == -1:
                 # group socle 1
