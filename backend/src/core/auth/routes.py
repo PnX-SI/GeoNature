@@ -98,8 +98,8 @@ def loginCas():
             # redirect to inpn sss           
             return """<p> Echec de l'authentification. <p>
              <p> Deconnectez-vous du service INPN avant de retenter une connexion à GeoNature </p>
-             <p> <a target="_blank" href="""current_app.config['CAS']['URL_LOGOUT']"""> Deconnexion </a> </p>
-             <p> <a target="_blank" href="""current_app.config['URL_APPLICATION']"""> Retour vers GeoNature </a> </p>
+             <p> <a target="_blank" href="""+current_app.config['CAS']['URL_LOGOUT']+"""> Deconnexion </a> </p>
+             <p> <a target="_blank" href="""+current_app.config['URL_APPLICATION']+"""> Retour vers GeoNature </a> </p>
              """
 
 
