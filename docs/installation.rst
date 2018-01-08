@@ -93,11 +93,25 @@ Les applications sont disponibles aux adresses suivantes:
 - http://monip.com/geonature
 - http://monip.com/taxhub
 
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, lancer la commande:
+
+- Pour ``/``: ``npm run build -- --base-href=/``
+- Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
+
+
+Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
+
+- Pour ``/``: ``Alias /saisie /home/test/geonature/frontend/dist``
+- Pour ``/saisie`` : ``Alias / /home/test/geonature/frontend/dist``
+
+
+
+
 
 Installation d'un module GeoNature
 ==================================
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur.Pour ajouter un nouveau module, il est necessaire de l'installer:
 
 * Exemple d'installation en base de données du module OccTax.
  
