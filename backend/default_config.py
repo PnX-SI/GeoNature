@@ -28,9 +28,9 @@ class Config():
     'URL_LOGOUT': 'https://preprod-inpn.mnhn.fr/auth/logout',
     'URL_VALIDATION' : 'https://preprod-inpn.mnhn.fr/auth/serviceValidate',
     'USER_WS': {
-        'URL': 'https://preprod-inpn2.mnhn.fr/authentication/information',
-        'ID': 'user1',
-        'PASSWORD': 'password1'
+        'URL': 'https://inpn2.mnhn.fr/authentication/information',
+        'ID': 'mon_id',
+        'PASSWORD': 'mon_pass'
     } 
     }
 
