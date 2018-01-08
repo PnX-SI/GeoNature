@@ -20,7 +20,7 @@ db = SQLAlchemy()
 routes = Blueprint('auth_cas', __name__)
 
 
-@routes.route('/login', methods=['GET'])
+@routes.route('/login', methods=['GET', 'POST'])
 def loginCas():
     configCas = current_app.config['CAS']
     params = request.args
