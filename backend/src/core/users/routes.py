@@ -31,45 +31,43 @@ def getRolesByMenuId(idMenu):
 
 @routes.route('/role', methods=['POST'])
 @json_resp
-def insertRole():
-    try:
-        test = request.get_json()
+def insertRole(user):
+    if user:
+        data = user
+    else:
         data = dict(request.get_json())
-        user = TRoles(**data)
-        if user.id_role:
-            exist_user = db.session.query(TRoles).get(user.id_role)
-            if exist_user:
-                db.session.merge(user)
-            else:
-                db.session.add(user)
+    user = TRoles(**data)
+    if user.id_role:
+        exist_user = db.session.query(TRoles).get(user.id_role)
+        if exist_user:
+            db.session.merge(user)
         else:
             db.session.add(user)
-        db.session.commit()
-        db.session.flush()
-        return user.as_dict()
-    except:
-        db.session.rollback()
-        raise
+    else:
+        db.session.add(user)
+    db.session.commit()
+    db.session.flush()
+    return user.as_dict()
 
 
 
 @routes.route('/organism', methods=['POST'])
 @json_resp
-def insertOrganism():
-    try:
+def insertOrganism(organism):
+    if organism:
+        data = organism
+    else: 
         data = dict(request.get_json())
-        organism = BibOrganismes(**data)
-        if organism.id_organisme:
-            exist_org = db.session.query(BibOrganismes).get(organism.id_organisme)
-            if exist_org:
-                db.session.merge(organism)
-            else:
-                db.session.add(organism)
+    organism = BibOrganismes(**data)
+    if organism.id_organisme:
+        exist_org = db.session.query(BibOrganismes).get(organism.id_organisme)
+        if exist_org:
+            db.session.merge(organism)
         else:
             db.session.add(organism)
-        db.session.commit()
-        db.session.flush()
-        return organism.as_dict()
-    except:
-        db.session.rollback()
-        raise
+    else:
+        db.session.add(organism)
+    db.session.commit()
+    db.session.flush()
+    return organism.as_dict()
+
