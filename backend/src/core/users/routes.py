@@ -4,7 +4,7 @@ from __future__ import (unicode_literals, print_function,
 
 from flask import Blueprint, request
 
-from .models import VUserslistForallMenu, TRoles, BibOrganismes
+from .models import VUserslistForallMenu, TRoles, BibOrganismes, CorRole
 from ...utils.utilssqlalchemy import json_resp
 
 from pypnusershub import routes as fnauth
