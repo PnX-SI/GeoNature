@@ -183,7 +183,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
             db.session.add(new_af)
             db.session.commit()
 
-        return {'message': new_af.as_dict()}, 200
+        return new_af.as_dict()
 
     return {'message': 'Not found'}, 404
     
@@ -198,7 +198,7 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     
     if xml_jdd:
         dataset_list = mtd_utils.parse_jdd_xml(xml_jdd)
-
+        dataset_list_model = []
         for ds in dataset_list:
             if not id_acquisition_framework:
                 post_acquisition_framwork_mtd(
@@ -230,7 +230,7 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                 )
                 dataset.cor_datasets_actor.append(actor)
             
-
+            dataset_list_model.append(dataset)
             if id_dataset:
                 db.session.merge(dataset)
             else:
@@ -240,7 +240,7 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
             db.session.flush()
 
             
-        return dataset_list
+        return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
 
 

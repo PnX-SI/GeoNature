@@ -6,7 +6,6 @@ from xml.etree import ElementTree as ET
 import json
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from ..users.models import CorRole
 from ..gn_meta import routes as gn_meta
 from ..users import routes as users
 
@@ -65,10 +64,10 @@ def loginCas():
             ## push the user in the right group
             if organismId is None:
                 # group socle 1
-                insert_in_cor_role(20003, user['id_role'])
+                users.insert_in_cor_role(20003, user['id_role'])
             else:
                 # group socle 2
-                insert_in_cor_role(20001, user['id_role'])
+                users.insert_in_cor_role(20001, user['id_role'])
             user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
 
             ## Creation of datasets
@@ -104,19 +103,3 @@ def loginCas():
              <p> <a target="_blank" href="""+current_app.config['URL_APPLICATION']+"""> Retour vers GeoNature </a> </p>
              """
     return jsonify({'message': 'Authentification error'}, 500)
-
-
-def insert_in_cor_role(id_group, id_user):
-    exist_user = db.session.query(CorRole
-    ).filter(CorRole.id_role_groupe == id_group
-    ).filter(CorRole.id_role_utilisateur == id_user
-    ).all()
-    if not exist_user:
-        cor_role = CorRole(id_group, id_user)
-        try:
-            db.session.add(cor_role)
-            db.session.commit()
-            db.session.flush()
-        except:
-            db.session.rollback()
-            raise
