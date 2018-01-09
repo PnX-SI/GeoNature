@@ -2,7 +2,7 @@
 from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy import or_
@@ -12,6 +12,7 @@ from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquis
 from ..users.models import TRoles
 from pypnusershub import routes as fnauth
 from ...utils.utilssqlalchemy import json_resp
+import ast
 
 from . import mtd_utils
 
@@ -152,14 +153,12 @@ def getCdNomenclature(id_type, cd_nomenclature):
 
 
 @routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
-@json_resp
 def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
 
     xml_af = mtd_utils.get_acquisition_framework(uuid)
     if xml_af:
         acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
-
 
         new_af = TAcquisitionFramework(**acquisition_framwork)
 
@@ -182,7 +181,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
         else:
             db.session.add(new_af)
             db.session.commit()
-
+        # return new_af.as_dict()
         return new_af.as_dict()
 
     return {'message': 'Not found'}, 404
@@ -205,13 +204,15 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                 id_user = id_user,
                 id_organism = id_organism
             )
+            new_af = new_af.get_data()
+            new_af = json.loads(new_af)
             print('###########################')
-            print(new_af)
-            # get the new id_acquisition_framework for the foreign key in TDatasets
-            id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
+            print(dir(new_af))
+            print(new_af.response)
+            print(new_af.data)
             
             ds.pop('uuid_acquisition_framework')
-            ds['id_acquisition_framework'] = id_acquisition_framework
+            ds['id_acquisition_framework'] = new_af['id_acquisition_framework']
             id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
             ds['id_dataset'] = id_dataset
 
