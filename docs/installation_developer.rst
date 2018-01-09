@@ -141,7 +141,7 @@ Lancer cette commande pour ajouter 'nvm' dans la path :
 ::
     
     cd frontend
-    ng serve
+    npm run start
 
 **Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
 
@@ -161,7 +161,7 @@ Stopper d'abord gunicorn qui est lancé en mode production via le supervisor :
 
 ::
     
-    make stop
+    make supervisor-stop
 
 Puis lancer le backend en mode développement :
 
