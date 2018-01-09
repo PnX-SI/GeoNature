@@ -4,11 +4,13 @@ from xml.etree import ElementTree as ET
 import requests
 from ...utils import utilsrequests
 import datetime
+from flask import current_app
 
-namespace = "{http://inpn.mnhn.fr/mtd}"
+namespace = current_app.config['XML_NAMESPACE']
+api_endpoint = current_app.config['MTD_API_ENDPOINT']
 
 def get_acquisition_framework(uuid_af):
-    r = utilsrequests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id="+uuid_af)
+    r = utilsrequests.get(api_endpoint+"/cadre/export/xml/GetRecordById?id="+uuid_af)
     if r.status_code == 200:
         return r.content
     return None
@@ -40,7 +42,7 @@ def get_jdd_by_user_id(id_user):
         params:
             - id:  id_user from CAS
         return: a XML """
-    r = utilsrequests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id="+str(id_user))
+    r = utilsrequests.get(api_endpoint+"/cadre/jdd/export/xml/GetRecordsByUserId?id="+str(id_user))
     if r.status_code == 200:
         return r.content
     return None

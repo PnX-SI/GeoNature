@@ -34,6 +34,10 @@ class Config():
     } 
     }
 
+    # MTD
+    XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
+    MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
+
     # File
     import os
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
