@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from sqlalchemy.sql import text
 
-from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquisitionFramework
+from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquisitionFramework, CorAcquisitionFrameworkActor
 from ..users.models import TRoles
 from pypnusershub import routes as fnauth
 from ...utils.utilssqlalchemy import json_resp
@@ -153,20 +153,29 @@ def getCdNomenclature(id_type, cd_nomenclature):
 
 @routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
 @json_resp
-def post_acquisition_framwork_mtd(uuid_af):
+def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
 
-    xml_af = mtd_utils.get_acquisition_framework(uuid_af)
+    xml_af = mtd_utils.get_acquisition_framework(uuid)
     if xml_af:
         acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
 
 
         new_af = TAcquisitionFramework(**acquisition_framwork)
 
+        actor = CorAcquisitionFrameworkActor(
+                id_role = id_user,
+                id_nomenclature_actor_role = 393
+            )
+        new_af.cor_af_actor.append(actor)
+        if id_organism:
+            organism = CorAcquisitionFrameworkActor(
+                id_role = id_organism,
+                id_nomenclature_actor_role = 393
+            )
+            new_af.cor_af_actor.append(actor)
 
-        #TODO: 
-        #- ecrire dans cor_acquisition_framework_actor
-        #- gérer les merge si UUID existe déja
+
         try:
             db.session.add(new_af)
             db.session.commit()
@@ -182,7 +191,7 @@ def post_acquisition_framwork_mtd(uuid_af):
 
 @routes.route('/dataset_mtd/<id_user>', methods=['POST'])
 @json_resp
-def post_jdd_from_user_id(id_user, id_organism):
+def post_jdd_from_user_id(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
     xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
     
@@ -192,7 +201,11 @@ def post_jdd_from_user_id(id_user, id_organism):
         for ds in dataset_list:
             id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
             if not id_acquisition_framework:
-                post_acquisition_framwork_mtd(ds['uuid_acquisition_framework'])
+                post_acquisition_framwork_mtd(
+                    uuid = ds['uuid_acquisition_framework'],
+                    id_user = id_user,
+                    id_organism = id_organism
+                )
                 # get the new id_acquisition_framework for the foreign key in TDatasets
                 id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
             

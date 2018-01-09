@@ -56,6 +56,12 @@ class TAcquisitionFramework(serializableModel):
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
+    cor_af_actor = relationship(
+        "CorAcquisitionFrameworkActor",
+        lazy='joined',
+        cascade="save-update, delete, delete-orphan"
+    )
+
     @staticmethod
     def get_id(uuid_af):
         """return the acquisition framework's id from its UUID if exist or None"""
@@ -67,9 +73,11 @@ class TAcquisitionFramework(serializableModel):
 class CorAcquisitionFrameworkActor(serializableModel):
     __tablename__ = 'cor_acquisition_framework_actor'
     __table_args__ = {'schema': 'gn_meta'}
-    id_acquisition_framework = db.Column(db.Integer, primary_key=True)
-    id_actor = db.Column(db.Integer, primary_key=True)
-    id_nomenclature_actor_role = db.Column(db.Integer, primary_key=True)
+    id_cafa = db.Column(db.Integer, primary_key=True)
+    id_acquisition_framework = db.Column(db.Integer)
+    id_role = db.Column(db.Integer)
+    id_organism = db.Column(db.Integer)
+    id_nomenclature_actor_role = db.Column(db.Integer)
 
 
 class TDatasets(serializableModel):
