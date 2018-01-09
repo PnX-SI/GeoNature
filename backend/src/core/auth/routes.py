@@ -103,7 +103,7 @@ def loginCas():
              <p> <a target="_blank" href="""+current_app.config['CAS']['URL_LOGOUT']+"""> Deconnexion </a> </p>
              <p> <a target="_blank" href="""+current_app.config['URL_APPLICATION']+"""> Retour vers GeoNature </a> </p>
              """
-    return {'message: Authentification error'}, 500
+    return jsonify({'message: Authentification error'}, 500)
 
 
 def insert_in_cor_role(id_group, id_user):
