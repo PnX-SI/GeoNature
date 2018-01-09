@@ -174,15 +174,16 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
                 id_nomenclature_actor_role = 393
             )
             new_af.cor_af_actor.append(actor)
-
-
-        try:
+        # check if exist
+        id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
+        if id_acquisition_framework:
+            new_af.id_acquisition_framework = id_acquisition_framework
+            db.session.merge(new_af)
+        else:
             db.session.add(new_af)
             db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            raise
-        return {'message': 'add with success'}, 200
+
+        return {'message': new_af.as_dict()}, 200
 
     return {'message': 'Not found'}, 404
     
@@ -199,7 +200,6 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
         dataset_list = mtd_utils.parse_jdd_xml(xml_jdd)
 
         for ds in dataset_list:
-            id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
             if not id_acquisition_framework:
                 post_acquisition_framwork_mtd(
                     uuid = ds['uuid_acquisition_framework'],
