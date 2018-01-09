@@ -50,6 +50,14 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
         usermod -g www-data geonatureadmin
         usermod -a -G root geonatureadmin
 
+Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
+
+On ne se connectera plus en ROOT. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+
+Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
+
+Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
+
 * Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``frontend-contact``, remplacez donc ``X.Y.Z`` par ``frontend-contact``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
   ::  
@@ -64,14 +72,6 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
   
         chmod +x install_all.sh
 	
-Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
-
-On ne se connectera plus en ROOT. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
-
-Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
-
-Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur. 
-
 * Lancer l'installation
  
   ::  
@@ -105,9 +105,6 @@ Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-availabl
 - Pour ``/saisie`` : ``Alias / /home/test/geonature/frontend/dist``
 
 
-
-
-
 Installation d'un module GeoNature
 ==================================
 
@@ -118,50 +115,3 @@ L'installation de GeoNature n'est livrée qu'avec les schémas de base de donné
   ::  
   
 	sudo ./data/modules/contact/install_schema.sh
-
-
-Doc développeur
-===============
-
-L'application peut se lancer en mode développement.
-
-Stopper d'abord le mode production, puis lancez le mode développement du backend
-
-::  
-  
-        cd geonature/backend/
-        make prod-stop
-	make develop
-
-
-* Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire ``home`` de l'utilisateur
- 
-  ::  
-  
-        cd
-        git clone https://github.com/PnX-SI/Nomenclature-api-module.git nomenclature-api-module
-        cd nomenclature-api-module/
-        source ../geonature/backend/venv/bin/activate
-        cp ../geonature/backend/config.py.sample ../geonature/backend/config.py
-        python setup.py develop
-        cd ../geonature2/backend/
-        make develop
-        deativate
-	
-* Lancer le front end
-
-Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.ts`` de la manière suivante :
-
-::
-  
-  	URL_APPLICATION: 'http://127.0.0.1:4200',
- 	API_ENDPOINT: 'http://127.0.0.1:8000/',
- 	API_TAXHUB : 'http://127.0.0.1:5000/api/',
-
-Depuis le répertoire ``frontend`` lancer la commande : 
-
-:: 
-
-	npm run start
-
-Lancer son navigateur à l'adresse ``127.0.0.1:4200``.
