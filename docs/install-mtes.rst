@@ -40,6 +40,42 @@ Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` :
 Authentification CAS INPN
 =========================
 
-- Code source : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/src/core/auth/routes.py#L16-L97
-- Config backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample#L20-L29
-- Config frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample#L20-L29
+- Code source : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/src/core/auth/routes.py#L19-L106
+- Config backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/default_config.py#L25-L35
+- Config frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/src/conf/app.config.sample.ts#L29-L34
+
+
+Connexion et droits dans GeoNature
+==================================
+
+- A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur. On ajoute cet utilisateur dans la base GeoNature (``utilisateurs.t_roles`` et ``utilisateurs.bib_organisme``).
+	 
+- Si l’utilisateur a un ID_Organisme, on lui assigne le « socle 2 » (C1-R2-U1-V0-E2-D1) du CRUVED. L’utilisateur pourra donc voir les données saisies par les personnes de son organisme et tous les JDD créés par lui-même ou quelqu’un de son organisme.
+
+- Si l’utilisateur n’a pas d’ID_Organisme, on lui assigne le « socle 1 » (C1-R1-V0-E1-D1). Il pourra voir seulement les données qu’il a saisi lui-même et les JDD qu’il a créé dans MTD.
+
+NB sur la gestion des droits dans GeoNature :
+
+- 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
+- 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
+
+Récupération des JDD
+====================
+
+Grâce à la nouvelle API de MTD, il est désormais possible d’ajouter les jeux de données (et des cadres d’acquisition) créés dans MTD dans la BDD GeoNature.
+
+- A chaque connexion à GeoNature, on récupère l’ID_Utilisateur
+
+- On récupère la liste des JDD créés par l’utilisateur grâce à l’API MTD :
+https://preprod-inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=<ID_USER>
+
+- On récupère l’UUID du cadre CA associé au JDD dans le XML renvoyé et on fait appel au l’API MTD pour récupérer le fichier XML du CA :
+https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id=<UUID>
+	
+- On ajoute le CA dans la table ``gn_meta.t_acquisition_framwork`` et les JDD dans la table ``gn_meta.t_datasets``. Si le CA ou les JDD sont modifiés dans MTD, ils seront également modifiés dans le BDD GeoNature.
+	
+- Dans la table ``gn_meta.cor_dataset_actor`` on fait le lien entre les acteurs et le JDD. On ajoute l’utilisateur qui a créé le JDD comme "Point de contact principal" du JDD. Si on dispose de l’ID_Organisme de l’utilisateur, on ajoute également l’organisme comme "Point de contact principal" du JDD. Ainsi, deux personnes du même organisme (si le CAS renvoie bien le même ID_Organism) pourront saisir, visualiser et exporter des données de leurs JDD communs.
+
+- Pour remplir cette table on ne prend pas les infos renvoyés par le XML JDD sous l’intitulé « Acteur » puisque l’ID_Organisme ou l’ID_Acteur n’est pas renseigné. (Dans la table ``gn_meta.cor_dataset_actor``, il faut obligatoirement un ID).
+
+- La question de la suppresion de JDD et des CA n’est pas résolue. Si un JDD est supprimé dans MTD, qu’est-ce qu’on fait des données associées a celui-ci dans GeoNature ? 
