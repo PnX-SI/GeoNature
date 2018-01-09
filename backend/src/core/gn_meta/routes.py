@@ -2,7 +2,7 @@
 from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy import or_
@@ -12,7 +12,6 @@ from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquis
 from ..users.models import TRoles
 from pypnusershub import routes as fnauth
 from ...utils.utilssqlalchemy import json_resp
-import ast
 
 from . import mtd_utils
 
@@ -181,7 +180,6 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
         else:
             db.session.add(new_af)
             db.session.commit()
-        # return new_af.as_dict()
         return new_af.as_dict()
 
     return {'message': 'Not found'}, 404
@@ -206,13 +204,9 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
             )
             new_af = new_af.get_data()
             new_af = json.loads(new_af)
-            print('###########################')
-            print(dir(new_af))
-            print(new_af.response)
-            print(new_af.data)
-            
-            ds.pop('uuid_acquisition_framework')
             ds['id_acquisition_framework'] = new_af['id_acquisition_framework']
+
+            ds.pop('uuid_acquisition_framework')
             id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
             ds['id_dataset'] = id_dataset
 
