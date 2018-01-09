@@ -74,7 +74,9 @@ class CorAcquisitionFrameworkActor(serializableModel):
     __tablename__ = 'cor_acquisition_framework_actor'
     __table_args__ = {'schema': 'gn_meta'}
     id_cafa = db.Column(db.Integer, primary_key=True)
-    id_acquisition_framework = db.Column(db.Integer)
+    id_acquisition_framework = db.Column(
+        db.Integer,
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'))
     id_role = db.Column(db.Integer)
     id_organism = db.Column(db.Integer)
     id_nomenclature_actor_role = db.Column(db.Integer)
