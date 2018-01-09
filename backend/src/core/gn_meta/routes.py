@@ -200,14 +200,15 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
         dataset_list = mtd_utils.parse_jdd_xml(xml_jdd)
         dataset_list_model = []
         for ds in dataset_list:
-            if not id_acquisition_framework:
-                post_acquisition_framwork_mtd(
-                    uuid = ds['uuid_acquisition_framework'],
-                    id_user = id_user,
-                    id_organism = id_organism
-                )
-                # get the new id_acquisition_framework for the foreign key in TDatasets
-                id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
+            new_af = post_acquisition_framwork_mtd(
+                uuid = ds['uuid_acquisition_framework'],
+                id_user = id_user,
+                id_organism = id_organism
+            )
+            print('###########################')
+            print(new_af)
+            # get the new id_acquisition_framework for the foreign key in TDatasets
+            id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
             
             ds.pop('uuid_acquisition_framework')
             ds['id_acquisition_framework'] = id_acquisition_framework
