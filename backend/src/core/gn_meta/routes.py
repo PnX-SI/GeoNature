@@ -175,7 +175,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
             )
             new_af.cor_af_actor.append(actor)
         # check if exist
-        id_acquisition_framework = TAcquisitionFramework.get_id(ds['uuid_acquisition_framework'])
+        id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
         if id_acquisition_framework:
             new_af.id_acquisition_framework = id_acquisition_framework
             db.session.merge(new_af)
