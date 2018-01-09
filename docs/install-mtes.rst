@@ -67,10 +67,10 @@ Grâce à la nouvelle API de MTD, il est désormais possible d’ajouter les jeu
 - A chaque connexion à GeoNature, on récupère l’ID_Utilisateur
 
 - On récupère la liste des JDD créés par l’utilisateur grâce à l’API MTD :
-https://preprod-inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=<ID_USER>
+https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId?id=<ID_USER>
 
 - On récupère l’UUID du cadre CA associé au JDD dans le XML renvoyé et on fait appel au l’API MTD pour récupérer le fichier XML du CA :
-https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id=<UUID>
+https://xxxxx/cadre/export/xml/GetRecordById?id=<UUID>
 	
 - On ajoute le CA dans la table ``gn_meta.t_acquisition_framwork`` et les JDD dans la table ``gn_meta.t_datasets``. Si le CA ou les JDD sont modifiés dans MTD, ils seront également modifiés dans le BDD GeoNature.
 	
