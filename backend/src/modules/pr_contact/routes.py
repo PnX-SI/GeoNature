@@ -511,11 +511,11 @@ def export(info_role):
     return 'la'
 
 @routes.route('/test', methods=['GET'])
-@fnauth.check_auth_cruved('D', True)
 @json_resp
-def test(info_role):
+def test():
 
     #TDatasets.get_user_datasets()
     # data = fnauth.get_cruved(1,14)
     # print(data)
+    test = VReleveList()
     return 'la'
