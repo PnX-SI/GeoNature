@@ -4,9 +4,12 @@ from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, UniqueConstraint, or_
 from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship
+
+
+from sqlalchemy.orm import relationship, exc
+from werkzeug.exceptions import NotFound
 from ...utils.utilssqlalchemy import serializableModel
 from pypnnomenclature.models import TNomenclatures
 
@@ -141,12 +144,25 @@ class TDatasets(serializableModel):
 
     @staticmethod
     def get_id(uuid_dataset):
-        """Check if a dataset exist from its UIID
-        return boolean """
-        id_dataset = db.session.query(TDatasets.id_dataset
-            ).filter(TDatasets.unique_dataset_id == uuid_dataset
-            ).first()
-        return id_dataset
+        try:
+            id_dataset = db.session.query(TDatasets.id_dataset
+                ).filter(TDatasets.unique_dataset_id == uuid_dataset
+                ).one()
+        
+            return id_dataset[0]
+        except exc.NoResultFound as e:
+            raise NotFound('This dataset does not exist', 404)
+
+    @staticmethod
+    def get_uuid(id_dataset):
+        try:
+            uuid_dataset = db.session.query(TDatasets.unique_dataset_id
+                ).filter(TDatasets.id_dataset == id_dataset
+                ).one()
+            return uuid_dataset[0]
+        except exc.NoResultFound as e:
+            raise NotFound('This dataset does not exist', 404)
+
 
     @staticmethod
     def get_user_datasets(user):
