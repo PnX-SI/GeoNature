@@ -147,6 +147,20 @@ class TDatasets(serializableModel):
             ).filter(TDatasets.unique_dataset_id == uuid_dataset
             ).first()
         return id_dataset
+
+    @staticmethod
+    def get_user_datasets(user):
+        """get the dataset(s) where the user is actor
+            param: user from TRole model
+            return: a list of id_dataset """
+        q = db.session.query(
+                CorDatasetsActor,
+                CorDatasetsActor.id_dataset
+                ).filter(or_(
+                    CorDatasetsActor.id_organism == user.id_organisme,
+                    CorDatasetsActor.id_role == user.id_role
+                ))
+        return [d.id_dataset for d in q.all()]
         
 
 

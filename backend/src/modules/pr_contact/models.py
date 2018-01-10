@@ -30,16 +30,17 @@ class ReleveModel(db.Model):
     def user_is_in_dataset_actor(self, user):
         return self.id_dataset in gn_meta.get_allowed_datasets(user)
 
-    def get_releve_if_allowed(self, user, data_scope):
+    def get_releve_if_allowed(self, user):
         """Return the releve if the user is allowed
           -params: 
           user: object from TRole
-          data_scope: string: level of rigth for an action
         """
-        if data_scope == '2':
+        print('IS ALLOWED ??')
+        print(user.tag_object_code)
+        if user.tag_object_code == '2':
             if self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user):
                 return self
-        elif data_scope == '1':
+        elif user.tag_object_code == '1':
             if self.user_is_observer_or_digitiser(user):
                 return self
         else:
