@@ -90,8 +90,10 @@ export class ContactFormComponent implements OnInit {
 
   submitData() {
     // set the releveForm
-    const finalForm = this.fs.releveForm.value;
+    // copy the form value without reference
+    const finalForm = JSON.parse(JSON.stringify(this.fs.releveForm.value));
     // format date
+    const saveForm = JSON.parse(JSON.stringify(this.fs.releveForm.value));
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
     // format nom_cite and update date
@@ -131,6 +133,7 @@ export class ContactFormComponent implements OnInit {
           } else {
             this._commonService.translateToaster('error', 'ErrorMessage');
           }
+          // put the form with old values
         }
       );
     }
