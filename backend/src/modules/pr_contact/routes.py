@@ -14,7 +14,7 @@ from .repositories import ReleveRepository
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
 
 from ...utils import filemanager
-from ...core.users.models import TRoles
+from ...core.users.models import TRoles, UserRigth
 from ...core.ref_geo.models import LAreasWithoutGeom
 from ...core.gn_meta.models import TDatasets, CorDatasetsActor
 
@@ -116,7 +116,7 @@ def getViewReleveContact(info_role):
         db.session.rollback()
         raise
 
-    user = info_role[0]
+    user = info_role
     user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     featureCollection = []
     for n in data:
@@ -285,7 +285,7 @@ def getViewReleveList(info_role):
         print('roollback')
         db.session.rollback()
 
-    user = info_role[0]
+    user = info_role
     user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     featureCollection = []
     for n in data:
@@ -362,10 +362,11 @@ def insertOrUpdateOneReleve(info_role):
         try:
             if releve.id_releve_contact:
                 # get update right of the user
-                user_cruved = fnauth.get_cruved(info_role[0].id_role,current_app.config['ID_APPLICATION_GEONATURE'])
-                update_data_scope = [u['level'] for u in user_cruved if u['action'] == 'U']
-                info_role = info_role[0], int(update_data_scope[0])
-                releve = releveRepository.update(releve, info_role)
+                user_cruved = fnauth.get_cruved(info_role.id_role, current_app.config['ID_APPLICATION_GEONATURE'])
+                update_data_scope = next((u['level'] for u in user_cruved if u['action'] == 'U'), None)
+                #info_role.tag_object_code = update_data_scope
+                user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope)
+                releve = releveRepository.update(releve, user)
                 if releve == -1:
                     return {'message': 'forbidden'}, 403
             else:
@@ -508,18 +509,27 @@ def getDefaultNomenclatures():
     return {d[0]: d[1] for d in data}
 
     
-@routes.route('/exportProvisoire', methods=['GET'])
-@csv_resp
-def export():
-    viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
-    q = db.session.query(viewSINP.tableDef)
-    data = q.all()
-    data = serializeQueryTest(data, q.column_descriptions)
-    return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+@routes.route('/export/jdd', methods=['GET'])
+@fnauth.check_auth_cruved('E', True)
+#@csv_resp
+def export(info_role):
+    print("ICI")
+    print(info_role.tag_object_code)
+    # allowed_datasets = TDatasets.get_user_datasets(info_role)
+    # print(allowed_datasets)
+    # viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
+    # q = db.session.query(viewSINP.tableDef)
+    # data = q.all()
+    # data = serializeQueryTest(data, q.column_descriptions)
+    # return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+    return 'la'
 
 @routes.route('/test', methods=['GET'])
+@fnauth.check_auth_cruved('D', True)
 @json_resp
-def test():
-    data = fnauth.get_cruved(1,14)
-    print(data)
+def test(info_role):
+
+    #TDatasets.get_user_datasets()
+    # data = fnauth.get_cruved(1,14)
+    # print(data)
     return 'la'

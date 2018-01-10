@@ -92,13 +92,12 @@ def getDatasets(info_role):
 
     """
     q = db.session.query(TDatasets)
-    user, data_scope = info_role
-    if int(data_scope) <= 2:
+    if int(info_role.tag_object_code) <= 2:
         q = q.join(CorDatasetsActor,
         CorDatasetsActor.id_dataset == TDatasets.id_dataset
         ).filter(or_(
-            CorDatasetsActor.id_organism == user.id_organisme,
-            CorDatasetsActor.id_role == user.id_role
+            CorDatasetsActor.id_organism == info_role.id_organisme,
+            CorDatasetsActor.id_role == info_role.id_role
             ))
     try:
         data = q.all()

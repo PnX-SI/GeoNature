@@ -49,3 +49,18 @@ class CorRole(serializableModel):
     def __init__(self, id_group, id_role):
         self.id_role_groupe = id_group
         self.id_role_utilisateur = id_role 
+
+class UserRigth():
+    def __init__(
+        self,
+        id_role = None,
+        id_org = None,
+        tag_action_code = None,
+        tag_object_code = None,
+        id_application = None
+    ):
+        self.id_role = id_role
+        self.id_organisme = id_org
+        self.tag_action_code = tag_action_code
+        self.tag_object_code = tag_object_code
+        self.id_application = id_application
