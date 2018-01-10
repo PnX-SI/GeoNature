@@ -54,13 +54,13 @@ class UserRigth():
     def __init__(
         self,
         id_role = None,
-        id_org = None,
+        id_organisme = None,
         tag_action_code = None,
         tag_object_code = None,
         id_application = None
     ):
         self.id_role = id_role
-        self.id_organisme = id_org
+        self.id_organisme = id_organisme
         self.tag_action_code = tag_action_code
         self.tag_object_code = tag_object_code
         self.id_application = id_application

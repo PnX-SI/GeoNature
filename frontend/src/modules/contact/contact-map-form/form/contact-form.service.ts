@@ -291,12 +291,6 @@ export class ContactFormService {
         // counting
         this.countingForm.controls.forEach(formgroup => {
           this.patchDefaultNomenclatureCounting(formgroup as FormGroup, data);
-          // formControl.patchValue({
-          //   id_nomenclature_life_stage: data[10],
-          //   id_nomenclature_sex: data[9],
-          //   id_nomenclature_obj_count: data[6],
-          //   id_nomenclature_type_count: data[21]
-          // });
         });
       });
     }

@@ -37,7 +37,6 @@ class ReleveModel(db.Model):
           -params: 
           user: object from TRole
         """
-        print(user.tag_object_code)
         if user.tag_object_code == '2':
             if self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user):
                 return self
@@ -197,8 +196,6 @@ class CorCountingContact(serializableModel):
 
 
 class VReleveContact(serializableGeoModel, ReleveModel):
-    def __init__(self):
-        print('I Init the son')
     __tablename__ = 'v_releve_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = db.Column(db.Integer)
@@ -248,13 +245,9 @@ class VReleveContact(serializableGeoModel, ReleveModel):
 
 
 class VReleveList(serializableGeoModel, ReleveModel):
-    def __init__(self):
-        print('I Init the son')
-        ReleveModel.__init__(self, id_releve='id_releve_contact')
-
     __tablename__ = 'v_releve_list'
     __table_args__ = {'schema': 'pr_contact'}
-    id_releve_contact = db.Column('id_releve_contact', db.Integer, primary_key=True)
+    id_releve_contact = db.Column(db.Integer, primary_key=True)
     id_dataset = db.Column(db.Integer)
     id_digitiser = db.Column(db.Integer)
     date_min = db.Column(db.DateTime)
@@ -274,7 +267,7 @@ class VReleveList(serializableGeoModel, ReleveModel):
         'TRoles',
         secondary=corRoleRelevesContact,
         primaryjoin=(
-            corRoleRelevesContact.c.id_releve_contact == ReleveModel.id_releve
+            corRoleRelevesContact.c.id_releve_contact == id_releve_contact
         ),
         secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
         foreign_keys=[

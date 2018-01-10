@@ -301,76 +301,72 @@ def getViewReleveList(info_role):
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesContact)
-    try:
-        data = dict(request.get_json())
+    data = dict(request.get_json())
 
-        if 't_occurrences_contact' in data['properties']:
-            occurrences_contact = data['properties']['t_occurrences_contact']
-            data['properties'].pop('t_occurrences_contact')
+    if 't_occurrences_contact' in data['properties']:
+        occurrences_contact = data['properties']['t_occurrences_contact']
+        data['properties'].pop('t_occurrences_contact')
 
-        if 'observers' in data['properties']:
-            observersList = data['properties']['observers']
-            data['properties'].pop('observers')
+    if 'observers' in data['properties']:
+        observersList = data['properties']['observers']
+        data['properties'].pop('observers')
 
-        # Test et suppression des propriétés inexistantes de TRelevesContact
-        attliste = [k for k in data['properties']]
+    # Test et suppression des propriétés inexistantes de TRelevesContact
+    attliste = [k for k in data['properties']]
+    for att in attliste:
+        if not getattr(TRelevesContact, att, False):
+            data['properties'].pop(att)
+    releve = TRelevesContact(**data['properties'])
+
+    shape = asShape(data['geometry'])
+    releve.geom_4326 = from_shape(shape, srid=4326)
+
+    if observersList is not None:
+        observers = db.session.query(TRoles).\
+            filter(TRoles.id_role.in_(observersList)).all()
+        for o in observers:
+            releve.observers.append(o)
+
+    for occ in occurrences_contact:
+        if occ['cor_counting_contact']:
+            cor_counting_contact = occ['cor_counting_contact']
+            occ.pop('cor_counting_contact')
+
+        # Test et suppression des propriétés inexistantes de TOccurrencesContact
+        attliste = [k for k in occ]
         for att in attliste:
-            if not getattr(TRelevesContact, att, False):
-                data['properties'].pop(att)
+            if not getattr(TOccurrencesContact, att, False):
+                occ.pop(att)
 
-        releve = TRelevesContact(**data['properties'])
-        shape = asShape(data['geometry'])
-        releve.geom_4326 = from_shape(shape, srid=4326)
-
-        if observersList is not None:
-            observers = db.session.query(TRoles).\
-                filter(TRoles.id_role.in_(observersList)).all()
-            for o in observers:
-                releve.observers.append(o)
-
-        for occ in occurrences_contact:
-            if occ['cor_counting_contact']:
-                cor_counting_contact = occ['cor_counting_contact']
-                occ.pop('cor_counting_contact')
-
-            # Test et suppression des propriétés inexistantes de TOccurrencesContact
-            attliste = [k for k in occ]
+        contact = TOccurrencesContact(**occ)
+        for cnt in cor_counting_contact:
+            # Test et suppression des propriétés inexistantes de CorCountingContact
+            attliste = [k for k in cnt]
             for att in attliste:
-                if not getattr(TOccurrencesContact, att, False):
-                    occ.pop(att)
+                if not getattr(CorCountingContact, att, False):
+                    cnt.pop(att)
 
-            contact = TOccurrencesContact(**occ)
-            for cnt in cor_counting_contact:
-                # Test et suppression des propriétés inexistantes de CorCountingContact
-                attliste = [k for k in cnt]
-                for att in attliste:
-                    if not getattr(CorCountingContact, att, False):
-                        cnt.pop(att)
+            countingContact = CorCountingContact(**cnt)
+            contact.cor_counting_contact.append(countingContact)
+        releve.t_occurrences_contact.append(contact)
 
-                countingContact = CorCountingContact(**cnt)
-                contact.cor_counting_contact.append(countingContact)
-            releve.t_occurrences_contact.append(contact)
-
-        try:
-            if releve.id_releve_contact:
-                # get update right of the user
-                user_cruved = fnauth.get_cruved(info_role.id_role, current_app.config['ID_APPLICATION_GEONATURE'])
-                update_data_scope = next((u['level'] for u in user_cruved if u['action'] == 'U'), None)
-                #info_role.tag_object_code = update_data_scope
-                user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope, tag_action_code = "U")
-                releve = releveRepository.update(releve, user)
-            else:
-                db.session.add(releve)
-            db.session.commit()
-            db.session.flush()
-        except Exception as e:
-            raise
-
-        return releve.get_geofeature()
-
+    try:
+        if releve.id_releve_contact:
+            # get update right of the user
+            user_cruved = fnauth.get_cruved(info_role.id_role, current_app.config['ID_APPLICATION_GEONATURE'])
+            update_data_scope = next((u['level'] for u in user_cruved if u['action'] == 'U'), None)
+            #info_role.tag_object_code = update_data_scope
+            user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope, tag_action_code = "U", id_organisme = info_role.id_organisme)
+            releve = releveRepository.update(releve, user)
+        else:
+            db.session.add(releve)
+        db.session.commit()
+        db.session.flush()
     except Exception as e:
-        db.session.rollback()
         raise
+
+    return releve.get_geofeature()
+
 
 
 @routes.route('/releve/<int:id_releve>', methods=['DELETE'])
@@ -515,7 +511,8 @@ def export(info_role):
 def test():
 
     #TDatasets.get_user_datasets()
-    # data = fnauth.get_cruved(1,14)
-    # print(data)
-    test = VReleveList()
+    rep = ReleveRepository(VReleveList)
+    data = rep.get_all(UserRigth(id_role = 2, id_organisme=999, tag_object_code = "1", tag_action_code = "R"))
+    for d in data:
+        print(d)
     return 'la'
