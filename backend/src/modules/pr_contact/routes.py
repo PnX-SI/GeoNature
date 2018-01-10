@@ -35,10 +35,7 @@ db = SQLAlchemy()
 def getReleves(info_role):
     releve_repository = ReleveRepository(TRelevesContact)
     data = releve_repository.get_all(info_role)
-
-    if data:
-        return FeatureCollection([n.get_geofeature() for n in data])
-    return {'message': 'not found'}, 404
+    return FeatureCollection([n.get_geofeature() for n in data])
 
 
 @routes.route('/occurrences', methods=['GET'])
@@ -63,11 +60,6 @@ def getOccurrences():
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesContact)
     data = releve_repository.get_one(id_releve, info_role)
-
-    if data == -1:
-        return {'message': 'forbidden'}, 403
-    if not data:
-        return {'message': 'not found'}, 404
     return data.get_geofeature()
 
 
@@ -365,10 +357,8 @@ def insertOrUpdateOneReleve(info_role):
                 user_cruved = fnauth.get_cruved(info_role.id_role, current_app.config['ID_APPLICATION_GEONATURE'])
                 update_data_scope = next((u['level'] for u in user_cruved if u['action'] == 'U'), None)
                 #info_role.tag_object_code = update_data_scope
-                user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope)
+                user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope, tag_action_code = "U")
                 releve = releveRepository.update(releve, user)
-                if releve == -1:
-                    return {'message': 'forbidden'}, 403
             else:
                 db.session.add(releve)
             db.session.commit()
@@ -398,10 +388,6 @@ def deleteOneReleve(id_releve, info_role):
     """
     releveRepository = ReleveRepository(TRelevesContact)
     data = releveRepository.delete(id_releve, info_role)
-    if not data:
-        return {'message': 'not found'}, 404
-    if data == -1:
-        return {'message': 'forbidden'}, 403
 
     return {'message': 'delete with success'}, 200
 
