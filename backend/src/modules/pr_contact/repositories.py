@@ -64,31 +64,26 @@ class ReleveRepository():
             return releve
         raise NotFound('The releve "{}" does not exist'.format(id_releve))
 
+
     def filter_query_with_autorization(self, user):
         q = db.session.query(self.model)
         if user.tag_object_code == '2':
             allowed_datasets = gn_meta.get_allowed_datasets(user)
-            q = q.join(
-                    corRoleRelevesContact,
-                    corRoleRelevesContact.c.id_releve_contact == self.model.id_releve_contact
-                    ).filter(
-                        or_(
-                        self.model.id_dataset.in_(tuple(allowed_datasets)),
-                        corRoleRelevesContact.c.id_role == user.id_role,
-                        self.model.id_digitiser == user.id_role
-                        )
+            q = q.filter(
+                or_(
+                    self.model.id_dataset.in_(tuple(allowed_datasets)),
+                    self.model.observers.any(id_role=user.id_role),
+                    self.model.id_digitiser == user.id_role
                     )
+                )
         elif user.tag_object_code == '1':
-            q = q.join(
-                    corRoleRelevesContact,
-                    corRoleRelevesContact.c.id_releve_contact == self.model.id_releve_contact
-                    ).filter(
-                        or_(
-                        corRoleRelevesContact.c.id_role == user.id_role,
-                        self.model.id_digitiser == user.id_role
-                        )
+            q = q.filter(
+                    or_(
+                    self.model.observers.any(id_role=user.id_role),
+                    self.model.id_digitiser == user.id_role
                     )
-        return q       
+                )
+        return q      
 
     def get_all(self, info_user):
         """Return all the data from Releve model filtered with the cruved authorization"""
