@@ -12,7 +12,7 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Application
-    PASS_METHOD='hash'                                      # Authentification password encoding method (hash or md5)
+    PASS_METHOD='hash'                                       # Authentification password encoding method (hash or md5)
     DEBUG=True
     URL_APPLICATION = 'http://my_url.com/geonature'         # Replace my_url.com by your domain or IP
     API_ENDPOINT = 'http://my_url.com/geonature/api'        # Replace my_url.com by your domain or IP
