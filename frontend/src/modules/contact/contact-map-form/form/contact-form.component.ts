@@ -133,7 +133,6 @@ export class ContactFormComponent implements OnInit {
           } else {
             this._commonService.translateToaster('error', 'ErrorMessage');
           }
-          // put the form with old values
         }
       );
     }

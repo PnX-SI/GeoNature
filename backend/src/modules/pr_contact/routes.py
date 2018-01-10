@@ -17,6 +17,7 @@ from ...utils import filemanager
 from ...core.users.models import TRoles, UserRigth
 from ...core.ref_geo.models import LAreasWithoutGeom
 from ...core.gn_meta.models import TDatasets, CorDatasetsActor
+from pypnusershub.db.tools import InsufficientRightsError
 
 from pypnusershub import routes as fnauth
 
@@ -491,28 +492,34 @@ def getDefaultNomenclatures():
     return {d[0]: d[1] for d in data}
 
     
-@routes.route('/export/jdd', methods=['GET'])
-@fnauth.check_auth_cruved('E', True)
+@routes.route('/export/jdd/<id_jdd>', methods=['GET'])
+#@fnauth.check_auth_cruved('E', True)
 #@csv_resp
-def export(info_role):
-    print("ICI")
-    print(info_role.tag_object_code)
-    # allowed_datasets = TDatasets.get_user_datasets(info_role)
-    # print(allowed_datasets)
-    # viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
-    # q = db.session.query(viewSINP.tableDef)
-    # data = q.all()
-    # data = serializeQueryTest(data, q.column_descriptions)
-    # return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
-    return 'la'
+def export(id_jdd, info_role):
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    if id_dataset in allowed_datasets:
+        viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
+        uuid_dataset = TDatasets.get_uuid(1)
+        q = db.session.query(viewSINP.tableDef.jddId == uuid_dataset)
+        q = q.filter(viewSINP.tableDef.id_dataset)
+        data = q.all()
+        return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+    raise InsufficientRightsError('User "{}" cannot export this dataset'.format(info_role.id_role), 403) 
 
-@routes.route('/test', methods=['GET'])
+@routes.route('/test/<int:id_dataset>', methods=['GET'])
 @json_resp
-def test():
+def test(id_dataset):
+    info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "1", tag_action_code = "R")
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    if id_dataset in allowed_datasets:
+        viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
+        uuid_dataset = TDatasets.get_uuid(1)
+        q = db.session.query(viewSINP.tableDef)
+        print(dir(viewSINP.tableDef))
+        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
+        data = q.all()
+        #viewSINP.columns.append()
+        return 'la'
+    raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403) 
+    
 
-    #TDatasets.get_user_datasets()
-    rep = ReleveRepository(VReleveList)
-    data = rep.get_all(UserRigth(id_role = 2, id_organisme=999, tag_object_code = "1", tag_action_code = "R"))
-    for d in data:
-        print(d)
-    return 'la'
