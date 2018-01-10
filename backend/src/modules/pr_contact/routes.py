@@ -492,19 +492,19 @@ def getDefaultNomenclatures():
     return {d[0]: d[1] for d in data}
 
     
-@routes.route('/export/jdd/<id_jdd>', methods=['GET'])
+@routes.route('/export/mtes/jdd/<id_jdd>', methods=['GET'])
 #@fnauth.check_auth_cruved('E', True)
 #@csv_resp
-def export(id_jdd, info_role):
+def export_mtes(id_jdd, info_role):
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     if id_dataset in allowed_datasets:
         viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
         uuid_dataset = TDatasets.get_uuid(1)
         q = db.session.query(viewSINP.tableDef.jddId == uuid_dataset)
-        q = q.filter(viewSINP.tableDef.id_dataset)
+        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
         data = q.all()
         return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
-    raise InsufficientRightsError('User "{}" cannot export this dataset'.format(info_role.id_role), 403) 
+    raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403)  
 
 @routes.route('/test/<int:id_dataset>', methods=['GET'])
 @json_resp
