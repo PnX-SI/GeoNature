@@ -153,13 +153,12 @@ def getCdNomenclature(id_type, cd_nomenclature):
 @routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
 def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
-
     xml_af = mtd_utils.get_acquisition_framework(uuid)
+
     if xml_af:
         acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
 
         new_af = TAcquisitionFramework(**acquisition_framwork)
-
         actor = CorAcquisitionFrameworkActor(
                 id_role = id_user,
                 id_nomenclature_actor_role = 393
@@ -185,8 +184,8 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     
 
 
-
 @routes.route('/dataset_mtd/<id_user>', methods=['POST'])
+@routes.route('/dataset_mtd/<id_user>/<id_organism>', methods=['POST'])
 @json_resp
 def post_jdd_from_user_id(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
@@ -258,24 +257,3 @@ def get_allowed_datasets(user):
         raise
 
 
-    
-
-
-#### TEST 
-@routes.route('/test', methods=['GET'])
-@json_resp
-def test():
-    from flask import current_app
-    print(current_app.config['PASS_METHOD'])
-
-    #post_jdd_from_user_id(10991, None)
-    # print(test)
-
-    # xml = mtd_utils.get_acquisition_framework("60DAC805-2562-13EB-E053-2614A8C0D040")
-    # parse = mtd_utils.parse_acquisition_framwork_xml(xml)
-
-    # xml = mtd_utils.get_jdd_by_user_id(9188)
-    # parsed = mtd_utils.parse_jdd_xml(xml)
-
-    #print(parsed)
-    return 'la'
