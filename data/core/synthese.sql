@@ -101,7 +101,7 @@ CREATE TABLE synthese (
     observers character varying(255),
     determiner character varying(255),
     determination_method character varying(255),
-    comment text,
+    comments text,
     deleted boolean DEFAULT false,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
