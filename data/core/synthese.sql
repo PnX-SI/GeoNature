@@ -29,11 +29,13 @@ CREATE TABLE t_sources (
 
 CREATE TABLE synthese (
     id_synthese integer NOT NULL,
-    unique_id_sinp uuid NOT NULL DEFAULT public.uuid_generate_v4(),
+    unique_id_sinp uuid,
+    unique_id_sinp_grp uuid,
     id_source integer,
     entity_source_pk_value integer,
     id_dataset integer,
     id_nomenclature_typ_inf_geo integer,
+    id_nomenclature_grp_typ integer DEFAULT 150,
     id_nomenclature_obs_meth integer DEFAULT 42,
     id_nomenclature_obs_technique integer DEFAULT 343,
     id_nomenclature_bio_status integer DEFAULT 30,
@@ -47,6 +49,8 @@ CREATE TABLE synthese (
     id_nomenclature_obj_count integer DEFAULT 165,
     id_nomenclature_type_count integer DEFAULT 109,
     id_nomenclature_sensitivity integer DEFAULT 68,
+    id_nomenclature_observation_status integer DEFAULT 100, --DEFAULT get_default_nomenclature_value(18),
+    id_nomenclature_blurring integer DEFAULT 200, --DEFAULT get_default_nomenclature_value(4),
     id_municipality character(25),
     count_min integer,
     count_max integer,
@@ -81,7 +85,8 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
-COMMENT ON COLUMN synthese.id_nomenclature_typ_inf_geo IS 'Correspondance nomenclature INPN = type_info_geo = 23';
+COMMENT ON COLUMN synthese.id_nomenclature_typ_inf_geo IS 'Correspondance nomenclature INPN = typ_inf_geo = 23';
+COMMENT ON COLUMN synthese.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = typ_grp = 24';
 COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs = 14';
 COMMENT ON COLUMN synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature CAMPANULE = technique_obs = 100';
 COMMENT ON COLUMN synthese.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio = 13';
@@ -95,6 +100,8 @@ COMMENT ON COLUMN synthese.id_nomenclature_sex IS 'Correspondance nomenclature I
 COMMENT ON COLUMN synthese.id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr = 6';
 COMMENT ON COLUMN synthese.id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr = 21';
 COMMENT ON COLUMN synthese.id_nomenclature_sensitivity IS 'Correspondance nomenclature INPN = sensibilite = 16';
+COMMENT ON COLUMN synthese.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs = 18';
+COMMENT ON COLUMN synthese.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou = 4';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -151,6 +158,9 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_typ_grp FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
@@ -190,6 +200,12 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_sensitivity FOREIGN KEY (id_nomenclature_sensitivity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_observation_status FOREIGN KEY (id_nomenclature_observation_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
@@ -220,6 +236,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_typ_grp CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_grp_typ,24));
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100));
@@ -256,6 +275,12 @@ ALTER TABLE synthese
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sensitivity,16));
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_observation_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_observation_status,18));
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_blurring CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_blurring,4));
 
 
 ALTER TABLE cor_area_synthese
