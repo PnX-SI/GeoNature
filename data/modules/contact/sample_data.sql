@@ -79,7 +79,8 @@ INSERT INTO pr_contact.defaults_nomenclatures_value (id_type, id_organism, regne
 ,(21,0,0,0,109)
 ,(18,0,0,0,101)
 ,(4,0,0,0,200)
-,(24,0,0,0,151)
+,(24,0,0,0,150)
+,(100,0,0,0,343)
 ;
 
 INSERT INTO pr_contact.t_releves_contact (id_releve_contact,id_dataset,id_digitiser,observers_txt,id_nomenclature_obs_technique,id_nomenclature_grp_typ,date_min,date_max,hour_min,hour_max,altitude_min,altitude_max,deleted,meta_device_entry,meta_create_date,meta_update_date,comment,geom_local,geom_4326,precision) VALUES 
