@@ -64,7 +64,7 @@ CREATE TABLE synthese (
     id_source integer,
     entity_source_pk_value integer,
     id_dataset integer,
-    id_nomenclature_typ_inf_geo integer DEFAULT get_default_nomenclature_value(23),
+    id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value(3),
     id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value(24),
     id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value(14),
     id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value(100),
@@ -81,6 +81,7 @@ CREATE TABLE synthese (
     id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value(16),
     id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value(18),
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value(4),
+    id_nomenclature_source_statut integer DEFAULT get_default_nomenclature_value(19),
     id_municipality character(25),
     count_min integer,
     count_max integer,
@@ -115,7 +116,7 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
-COMMENT ON COLUMN synthese.id_nomenclature_typ_inf_geo IS 'Correspondance nomenclature INPN = typ_inf_geo = 23';
+COMMENT ON COLUMN synthese.id_nomenclature_geo_object_nature IS 'Correspondance nomenclature INPN = nat_obj_geo = 3';
 COMMENT ON COLUMN synthese.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = typ_grp = 24';
 COMMENT ON COLUMN synthese.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs = 14';
 COMMENT ON COLUMN synthese.id_nomenclature_obs_technique IS 'Correspondance nomenclature CAMPANULE = technique_obs = 100';
@@ -132,6 +133,7 @@ COMMENT ON COLUMN synthese.id_nomenclature_type_count IS 'Correspondance nomencl
 COMMENT ON COLUMN synthese.id_nomenclature_sensitivity IS 'Correspondance nomenclature INPN = sensibilite = 16';
 COMMENT ON COLUMN synthese.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs = 18';
 COMMENT ON COLUMN synthese.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou = 4';
+COMMENT ON COLUMN synthese.id_nomenclature_source_statut IS 'Correspondance nomenclature INPN = statut_source = 19';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -145,8 +147,9 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 CREATE TABLE cor_area_synthese (
     id_synthese integer,
     id_area integer,
-    id_nomenclature_typ_inf_geo integer
+    id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value(23)
 );
+COMMENT ON COLUMN cor_area_synthese.id_nomenclature_info_geo_type IS 'Correspondance nomenclature INPN = typ_inf_geo = 23';
 
 CREATE TABLE defaults_nomenclatures_value (
     id_type integer NOT NULL,
@@ -199,6 +202,9 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_typ_grp FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
@@ -247,6 +253,9 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_source_statut FOREIGN KEY (id_nomenclature_source_statut) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
@@ -260,7 +269,7 @@ ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_area_synthese_info_geo_type FOREIGN KEY (id_nomenclature_info_geo_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value
@@ -287,6 +296,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_geo_object_nature,3));
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_typ_grp CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_grp_typ,24));
@@ -333,9 +345,12 @@ ALTER TABLE synthese
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_blurring CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_blurring,4));
 
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_source_statut CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_statut,19));
+
 
 ALTER TABLE cor_area_synthese
-  ADD CONSTRAINT check_cor_area_synthese_typ_inf_geo CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_typ_inf_geo,23));
+  ADD CONSTRAINT check_cor_area_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_info_geo_type,23));
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
