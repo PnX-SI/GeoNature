@@ -31,7 +31,7 @@ def getRolesByMenuId(idMenu):
 
 @routes.route('/role', methods=['POST'])
 @json_resp
-def insertRole(user):
+def insertRole(user = None):
     if user:
         data = user
     else:
@@ -51,7 +51,7 @@ def insertRole(user):
 
 @routes.route('/cor_role', methods=['POST'])
 @json_resp
-def insert_in_cor_role(id_group, id_user):
+def insert_in_cor_role(id_group=None, id_user=None):
     exist_user = db.session.query(CorRole
         ).filter(CorRole.id_role_groupe == id_group
         ).filter(CorRole.id_role_utilisateur == id_user
