@@ -495,14 +495,13 @@ def getDefaultNomenclatures():
 @routes.route('/export/sinp', methods=['GET'])
 @fnauth.check_auth_cruved('E', True)
 @csv_resp
-def export_sinp(id_jdd, info_role):
+def export_sinp(info_role):
     """ Return the data (CSV) at SINP format from pr_contact.export_occtax_sinp view
     If no paramater return all the dataset allowed of the user
     params:
         - id_dataset : integer
         - uuid_dataset: uuid
     """
-    info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "3", tag_action_code = "R")
     viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
     q = db.session.query(viewSINP.tableDef)
     params = request.args
@@ -512,17 +511,15 @@ def export_sinp(id_jdd, info_role):
         if info_role.tag_object_code != '3':
             allowed_uuid = (str(TDatasets.get_uuid(id_dataset)) for id_dataset in allowed_datasets)
             q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))
-            data = q.all()
     #filter by dataset id or uuid
     else:
         if 'id_dataset' in params:
             id_dataset = int(params['id_dataset'])
-            uuid_dataset = TDatasets.get_uuid(1)
+            uuid_dataset = TDatasets.get_uuid(id_dataset)
         elif 'uuid_dataset' in params:
             id_dataset = TDatasets.get_id(params['uuid_dataset'])
             uuid_dataset = params['uuid_dataset']
         # if data_scope 1 or 2, check if the dataset requested is allorws
-        
         if info_role.tag_object_code == '1' or info_role.tag_object_code == '2':
             if not id_dataset in allowed_datasets:
                 raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403)
@@ -544,9 +541,8 @@ def export_sinp(id_jdd, info_role):
                     )
                 )
         q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
-        data = q.all()
-
-
+    data = q.all()
+    data = serializeQueryTest(data, q.column_descriptions)
     return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
 
 @routes.route('/test', methods=['GET'])
