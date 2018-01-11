@@ -1,6 +1,7 @@
 *.*~
 *.pid
 settings.ini
+frontend/package-lock.json
 log/*
 .vscode/
 /backend/venv/*
