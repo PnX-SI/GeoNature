@@ -50,7 +50,7 @@ CREATE TABLE t_releves_contact (
     id_digitiser integer,
     observers_txt varchar(500),
     id_nomenclature_obs_technique integer NOT NULL, --DEFAULT get_default_nomenclature_value(343)
-    id_nomenclature_grp_typ integer NOT NULL,
+    id_nomenclature_grp_typ integer NOT NULL, --DEFAULT get_default_nomenclature_value(150),
     date_min timestamp without time zone DEFAULT now() NOT NULL,
     date_max timestamp without time zone DEFAULT now() NOT NULL,
     hour_min time,
