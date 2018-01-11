@@ -492,34 +492,68 @@ def getDefaultNomenclatures():
     return {d[0]: d[1] for d in data}
 
     
-@routes.route('/export/mtes/jdd/<id_jdd>', methods=['GET'])
-#@fnauth.check_auth_cruved('E', True)
-#@csv_resp
-def export_mtes(id_jdd, info_role):
+@routes.route('/export/sinp', methods=['GET'])
+@fnauth.check_auth_cruved('E', True)
+@csv_resp
+def export_sinp(id_jdd, info_role):
+    """ Return the data (CSV) at SINP format from pr_contact.export_occtax_sinp view
+    If no paramater return all the dataset allowed of the user
+    params:
+        - id_dataset : integer
+        - uuid_dataset: uuid
+    """
+    info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "3", tag_action_code = "R")
+    viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
+    q = db.session.query(viewSINP.tableDef)
+    params = request.args
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    if id_dataset in allowed_datasets:
-        viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
-        uuid_dataset = TDatasets.get_uuid(1)
-        q = db.session.query(viewSINP.tableDef.jddId == uuid_dataset)
+    #if params in empty and user not admin, get the data off all dataset allowed
+    if not params.get('id_dataset') and not params.get('uuid_dataset'):
+        if info_role.tag_object_code != '3':
+            allowed_uuid = (str(TDatasets.get_uuid(id_dataset)) for id_dataset in allowed_datasets)
+            q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))
+            data = q.all()
+    #filter by dataset id or uuid
+    else:
+        if 'id_dataset' in params:
+            id_dataset = int(params['id_dataset'])
+            uuid_dataset = TDatasets.get_uuid(1)
+        elif 'uuid_dataset' in params:
+            id_dataset = TDatasets.get_id(params['uuid_dataset'])
+            uuid_dataset = params['uuid_dataset']
+        # if data_scope 1 or 2, check if the dataset requested is allorws
+        
+        if info_role.tag_object_code == '1' or info_role.tag_object_code == '2':
+            if not id_dataset in allowed_datasets:
+                raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403)
+            elif info_role.tag_object_code == '1':
+                # join on TCounting, TOccurrence, Treleve and corRoleContact to get users
+                q = q.join(CorCountingContact,
+                viewSINP.tableDef.columns.identifiantPermanent == CorCountingContact.unique_id_sinp_occtax
+                ).join(TOccurrencesContact,
+                    CorCountingContact.id_occurrence_contact == TOccurrencesContact.id_occurrence_contact
+                ).join(TRelevesContact,
+                    TOccurrencesContact.id_releve_contact == TRelevesContact.id_releve_contact
+                ).join(corRoleRelevesContact,
+                    TRelevesContact.id_releve_contact == corRoleRelevesContact.columns.id_releve_contact
+                )
+                q = q.filter(
+                    or_(
+                        corRoleRelevesContact.columns.id_role == info_role.id_role,
+                        TRelevesContact.id_digitiser == info_role.id_role
+                    )
+                )
         q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
         data = q.all()
-        return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
-    raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403)  
 
-@routes.route('/test/<int:id_dataset>', methods=['GET'])
+
+    return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
+
+@routes.route('/test', methods=['GET'])
 @json_resp
-def test(id_dataset):
-    info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "1", tag_action_code = "R")
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-    if id_dataset in allowed_datasets:
-        viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
-        uuid_dataset = TDatasets.get_uuid(1)
-        q = db.session.query(viewSINP.tableDef)
-        print(dir(viewSINP.tableDef))
-        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
-        data = q.all()
-        #viewSINP.columns.append()
-        return 'la'
-    raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403) 
+def test(id_dataset = None, uuid_dataset = None):
+    info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "2", tag_action_code = "R")
+    return 'la'
+         
     
 
