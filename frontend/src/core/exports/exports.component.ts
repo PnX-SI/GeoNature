@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ExportsService } from './exports.service';
+import { AppConfig } from '../../conf/app.config';
 
 @Component({
   selector: 'pnx-exports-component',
@@ -27,12 +28,10 @@ export class ExportsComponent implements OnInit {
    }
 
    exportCsv(idView, idDataSet) {
-     console.log(idView);
-     console.log(idDataSet);
-     //document.location.href = 'http://localhost:8000/contact/export/jdd/1';
-     this.exportsService.getExport()
-      .subscribe(resp => {
-        console.log(resp);
-      });
+     if (idDataSet) {
+      document.location.href = `${AppConfig.API_ENDPOINT}contact/export/sinp?id_dataset=${idDataSet}`;
+     } else {
+        document.location.href = `${AppConfig.API_ENDPOINT}contact/export/sinp`
+     }
    }
 }

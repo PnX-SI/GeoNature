@@ -22,9 +22,5 @@ export class ExportsService {
       .map(data => data.json());
    }
 
-   getExport() {
-     console.log("paaass");
-    return this._api.get<any>(`http://127.0.0.1:8000/contact/export/jdd`)
-      .map( data => data.json());
- }
+
 }
