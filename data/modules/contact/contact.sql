@@ -189,7 +189,7 @@ ALTER TABLE ONLY cor_role_releves_contact
     ADD CONSTRAINT pk_cor_role_releves_contact PRIMARY KEY (id_releve_contact, id_role);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, regne, group2_inpn);
+    ADD CONSTRAINT pk_pr_contact_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, regne, group2_inpn);
 
 
 ---------------
@@ -358,10 +358,10 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_contact_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text);
+    ADD CONSTRAINT check_pr_contact_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
+    ADD CONSTRAINT check_pr_contact_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
 
 
 ----------------------
