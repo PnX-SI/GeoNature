@@ -12,6 +12,36 @@ SET search_path = gn_synthese, pg_catalog;
 SET default_with_oids = false;
 
 
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn 
+--Return -1 if nothing matche with given parameters
+  DECLARE
+    thenomenclatureid integer;
+  BEGIN
+      SELECT INTO thenomenclatureid id_nomenclature
+      FROM gn_synthese.defaults_nomenclatures_value 
+      WHERE id_type = myidtype 
+      AND (id_organism = 0 OR id_organism = myidorganism)
+      AND (regne = '0' OR regne = myregne)
+      AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
+      ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
+    IF (thenomenclatureid IS NOT NULL) THEN
+      RETURN thenomenclatureid;
+    END IF;
+    RETURN NULL;
+  END;
+$$;
+
+
+------------------------
+--TABLES AND SEQUENCES--
+------------------------
 CREATE TABLE t_sources (
     id_source integer NOT NULL,
     name_source character varying(255) NOT NULL,
@@ -34,23 +64,23 @@ CREATE TABLE synthese (
     id_source integer,
     entity_source_pk_value integer,
     id_dataset integer,
-    id_nomenclature_typ_inf_geo integer,
-    id_nomenclature_grp_typ integer DEFAULT 150,
-    id_nomenclature_obs_meth integer DEFAULT 42,
-    id_nomenclature_obs_technique integer DEFAULT 343,
-    id_nomenclature_bio_status integer DEFAULT 30,
-    id_nomenclature_bio_condition integer DEFAULT 177,
-    id_nomenclature_naturalness integer DEFAULT 181,
-    id_nomenclature_exist_proof integer DEFAULT 91,
-    id_nomenclature_valid_status integer DEFAULT 346,
-    id_nomenclature_diffusion_level integer DEFAULT 163,
-    id_nomenclature_life_stage integer DEFAULT 2,
-    id_nomenclature_sex integer DEFAULT 188,
-    id_nomenclature_obj_count integer DEFAULT 165,
-    id_nomenclature_type_count integer DEFAULT 109,
-    id_nomenclature_sensitivity integer DEFAULT 68,
-    id_nomenclature_observation_status integer DEFAULT 100, --DEFAULT get_default_nomenclature_value(18),
-    id_nomenclature_blurring integer DEFAULT 200, --DEFAULT get_default_nomenclature_value(4),
+    id_nomenclature_typ_inf_geo integer DEFAULT get_default_nomenclature_value(23),
+    id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value(24),
+    id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value(14),
+    id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value(100),
+    id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value(13),
+    id_nomenclature_bio_condition integer DEFAULT get_default_nomenclature_value(7),
+    id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value(8),
+    id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value(15),
+    id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value(101),
+    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value(5),
+    id_nomenclature_life_stage integer DEFAULT get_default_nomenclature_value(10),
+    id_nomenclature_sex integer DEFAULT get_default_nomenclature_value(9),
+    id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value(6),
+    id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value(21),
+    id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value(16),
+    id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value(18),
+    id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value(4),
     id_municipality character(25),
     count_min integer,
     count_max integer,
@@ -117,6 +147,14 @@ CREATE TABLE cor_area_synthese (
     id_area integer,
     id_nomenclature_typ_inf_geo integer
 );
+
+CREATE TABLE defaults_nomenclatures_value (
+    id_type integer NOT NULL,
+    id_organism integer NOT NULL DEFAULT 0,
+    regne character varying(20) NOT NULL DEFAULT '0',
+    group2_inpn character varying(255) NOT NULL DEFAULT '0',
+    id_nomenclature integer NOT NULL
+);
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -126,6 +164,9 @@ ALTER TABLE ONLY t_sources ADD CONSTRAINT pk_t_sources PRIMARY KEY (id_source);
 ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
 
 ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area);
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, regne, group2_inpn);
 
 
 ---------
@@ -221,6 +262,16 @@ ALTER TABLE ONLY cor_area_synthese
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_typ_inf_geo FOREIGN KEY (id_nomenclature_typ_inf_geo) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_type FOREIGN KEY (id_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 --------------
 --CONSTRAINS--
 --------------
@@ -285,6 +336,15 @@ ALTER TABLE synthese
 
 ALTER TABLE cor_area_synthese
   ADD CONSTRAINT check_cor_area_synthese_typ_inf_geo CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_typ_inf_geo,23));
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text);
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
 
 
 ------------
