@@ -136,7 +136,7 @@ GeoNature utilise :
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
-Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API à venir
+Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/geonature-v2/7TDmFuN#4955e463-ebfc-fb5a-5c66-24638b6bae17
 
 
 Développement Frontend
