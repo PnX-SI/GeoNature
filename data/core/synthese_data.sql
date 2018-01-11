@@ -10,6 +10,7 @@ SET client_min_messages = warning;
 ---------
 INSERT INTO gn_synthese.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 (23,0,0,0,143)
+,(3,0,0,0,197)
 ,(14,0,0,0,63)
 ,(7,0,0,0,177)
 ,(13,0,0,0,30)
@@ -26,5 +27,6 @@ INSERT INTO gn_synthese.defaults_nomenclatures_value (id_type, id_organism, regn
 ,(24,0,0,0,150)
 ,(100,0,0,0,343)
 ,(16,0,0,0,68)
+,(19,0,0,0,75)
 --,(106,0,0,0,473) --méthode de détermination en texte dans la synthèse pour le moment
 ;
