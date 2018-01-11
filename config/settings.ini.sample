@@ -43,8 +43,6 @@ install_default_dem=true
 add_sample_data=true
 
 
-python_path=/usr/bin/python3
-
 # Taxonomy and Users configuration
 #########################################
 
@@ -56,6 +54,7 @@ usershub_release=develop
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
 taxhub_release=develop
+
 
 #Configuration python
 ###########################

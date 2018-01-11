@@ -467,6 +467,7 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(377, 106, '8', 'Analyse génétique', 'Analyse génétique', 'Une analyse génétique a été réalisée à partir d''un échantillon prélevé sur un ou plusieurs individus', 'GEONATURE', 'non validé', 0, '106.008', '2017-10-26 00:00:00', NULL, true)
 ,(378, 106, '9', 'Examen de la dentition', 'Examen de la dentition', 'La détermination a été réalisées après examen de la dentition', 'GEONATURE', 'non validé', 0, '106.009', '2017-10-26 00:00:00', NULL, true)
 ,(379, 106, '10', 'Autre critère', 'Autre critère', 'Le critère de détermination n''est pas présent dans cette liste', 'GEONATURE', 'non validé', 0, '106.010', '2017-10-26 00:00:00', NULL, true)
+,(473, 106, '11', 'Non renseigné', 'Non renseigné', 'L''information n''a pas été renseignée.', 'GEONATURE', 'non validé', 0, '106.011', '2018-01-11 00:00:00', NULL, true)
 ,(380, 107, '1', 'International', 'International', 'niveau international', 'SINP', 'Validé', 0, '107.001', '2017-10-30 00:00:00', NULL, true)
 ,(381, 107, '2', 'Européen', 'Européen', 'niveau européen', 'SINP', 'Validé', 0, '107.002', '2017-10-30 00:00:00', NULL, true)
 ,(382, 107, '3', 'National', 'National', 'niveau national', 'SINP', 'Validé', 0, '107.003', '2017-10-30 00:00:00', NULL, true)
@@ -560,7 +561,7 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(469, 114, '6.4', 'Suivis réglementaires', 'Suivis réglementaires', 'Il s’agit des suivis temporels visant à suivre les impacts après implantation d’un ouvrage, imposés par la loi ou lors de l’autorisation de réalisation des travaux. Par exemples les suivis de mortalité des oiseaux et chiroptères après mise en place d’un parc éolien. Les suivis réglementaires dans le cadre de compensations entrent aussi dans cette catégorie', 'SINP', 'Validé', 0, '114.028', '2017-11-02 00:00:00', NULL, true)
 ,(470, 114, '7.1', 'Regroupement de données', 'Regroupement de données', 'Catégorie à utiliser quand le jeu de données mélange divers types de données, sans métadonnées permettant pour l’instant de les séparer en jeux de données plus précis et plus cohérents. On peut inclure ici les CA et JDD constitué par des regroupements de Données Elémentaires d''Echange (DEE) pour réaliser un atlas, uniquement quand l’objectif original de collecte des données n’est pas déterminable. Lorsqu’on ne dispose pas d’information sur les raisons de l’acquisition des données, cette rubrique doit être utilisée', 'SINP', 'Validé', 0, '114.029', '2017-11-02 00:00:00', NULL, true)
 ,(471, 114, '7.2', 'Autres études et programmes', 'Autres études et programmes', 'Cas n’entrant pas clairement dans les autres rubriques. Dans ce cas les métadonnées (champ libres « description » et « protocole » des fiches de métadonnées) devront bien expliquer en quoi consiste le but de l’acquisition des données', 'SINP', 'Validé', 0, '114.030', '2017-11-02 00:00:00', NULL, true)
---next 473
+--next 474
 ;
 SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 473, true);
 
