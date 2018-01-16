@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2fa82cdb2ce0e11a2fbba1d89bd39553bcd94215a40d5fc0e6de5e77383601f9"
+            "sha256": "da78696300cf2b87004cece7da02f8136b6c3ec91be611936164ce7e90c70b4b"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -9,9 +9,9 @@
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "4.4.0-79-generic",
+            "platform_release": "4.4.0-109-generic",
             "platform_system": "Linux",
-            "platform_version": "#100-Ubuntu SMP Wed May 17 19:58:14 UTC 2017",
+            "platform_version": "#132-Ubuntu SMP Tue Jan 9 19:52:39 UTC 2018",
             "python_full_version": "3.5.2",
             "python_version": "3.5",
             "sys_platform": "linux"
@@ -79,10 +79,10 @@
         },
         "flask-sqlalchemy": {
             "hashes": [
-                "sha256:fa3bd6343de231b2b3376a276df6d331c63c766449b660fc04d375a1c21312ac",
-                "sha256:f0d8241efba723d7b878f73550f5d3c0fbb042416123b52b36640b7491fa208b"
+                "sha256:3bc0fac969dd8c0ace01b32060f0c729565293302f0c4269beed154b46bec50b",
+                "sha256:5971b9852b5888655f11db634e87725a9031e170f37c0ce7851cf83497f56e53"
             ],
-            "version": "==2.2"
+            "version": "==2.3.2"
         },
         "geoalchemy2": {
             "hashes": [
@@ -491,6 +491,12 @@
             ],
             "version": "==2.5.1"
         },
+        "pytest-pythonpath": {
+            "hashes": [
+                "sha256:2d506b8d7dbc2535a16c888211b7319ad32b3e73444bd9dbb1dd19427a6c7414"
+            ],
+            "version": "==0.7.1"
+        },
         "pytz": {
             "hashes": [
                 "sha256:80af0f3008046b9975242012a985f04c5df1f01eed4ec1633d56cc47a75a6a48",
@@ -576,7 +582,6 @@
                 "sha256:63a8255fe7c6269916baa440eb9b6a67139b0b97a01af632e7bd2842e1e02f15",
                 "sha256:d514bd84b284dd3e844f0305ac07511f097e325171f6cc4a20878d11ad771849"
             ],
-            "markers": "python_version < '3.5'",
             "version": "==3.6.2"
         },
         "urllib3": {
