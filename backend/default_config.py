@@ -39,6 +39,5 @@ class Config():
     MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 
     # File
-    
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     UPLOAD_FOLDER = 'static/medias'
