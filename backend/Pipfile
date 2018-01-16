@@ -28,3 +28,6 @@ xmltodict = "==0.11.0"
 [dev-packages]
 
 pipenv-to-requirements = "*"
+sphinx = "*"
+pytest = "*"
+pytest-cov = "*"
