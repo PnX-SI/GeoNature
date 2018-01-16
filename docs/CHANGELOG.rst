@@ -1,4 +1,7 @@
 
+CHANGELOG
+=========
+
 2.0.0alpha.dev0 (unreleased)
 ----------------------------
 
