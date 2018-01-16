@@ -105,11 +105,11 @@ Données SIG :
 Modularité
 ==========
 
-Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/data/modules/contact
+Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/data/modules/contact
 
-Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/src/modules/pr_contact
+Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/src/modules/pr_contact
 
-Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/src/modules/pr_contact
+Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/backend/src/modules/pr_contact
 
 Mais en pouvant utiliser des composants du CORE comment expliqué ci-dessous.
 
@@ -119,10 +119,10 @@ Configuration
 
 Pour configurer GeoNature, actuellement il y a : 
 
-- Une configuration pour l'installation : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/config/settings.ini.sample
-- Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample
-- Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/src/conf/app.config.sample.ts
-- Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/src/modules/contact/contact.config.ts
+- Une configuration pour l'installation : https://github.com/PnX-SI/GeoNature/blob/develop/config/settings.ini.sample
+- Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/develop/backend/config.py.sample
+- Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/app.config.sample.ts
+- Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact.config.ts
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
 
