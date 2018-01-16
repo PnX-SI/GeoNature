@@ -1,6 +1,6 @@
-# coding: utf8
-
 from default_config import Config
+
+
 class CustomConfig(Config):
     '''
     GeoNature backend customisation configuration file
