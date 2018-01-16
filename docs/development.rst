@@ -180,54 +180,157 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         Exemple d'utilisation: ``<pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`` Ici le niveau de zoom et le centrage sont modifiés, mais les fonds de carte restent ceux renseignés par défault.
 
 - **MarkerComponent**
-        Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
+        Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
         
-        **Selector**: ``pnx-marker``
+        **Selector**: ``pnx-marker``
         
         **Ouputs**:
         
-        :``markerChanged``:
+        :``markerChanged``:
                 Output permettant de récupérer les coordonnées du marker quand celui-ci est déplacé. Retourne un geojson des coordonnées du marker
 
 - **LeafletDrawComponent**
-        Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
+        Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
         
-        **Selector**: ``pnx-leaflet-draw``
+        **Selector**: ``pnx-leaflet-draw``
         
         **Inputs**:
         
-        :``options``:
+        :``options``:
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
-                Par défault le fichier ``leaflet-draw.option.ts` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/src/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
+                Par défault le fichier ``leaflet-draw.option.ts` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/src/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
                 
         **Output**
         
-        :``layerDrawed``:
+        :``layerDrawed``:
                 Output renvoyant le geojson de l'objet dessiné.
 
 - **GPSComponent**
-        Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.
+        Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.
         
-        **Selector**: ``pnx-gps``
+        **Selector**: ``pnx-gps``
         
 - **GeojsonComponent**
         Affiche sur la carte les geojson passé en *input*
         
-        **Selector**: ``pnx-geojson``
+        **Selector**: ``pnx-geojson``
         
         **Inputs**:
         
-        :``geojson``:
+        :``geojson``:
                 Objet geojson à afficher sur la carte
                 
-                Type: ``GeoJSON``
+                Type: ``GeoJSON``
                 
-        :``onEachFeature``:
+        :``onEachFeature``:
                 Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définir un style etc...)
                 
-                Type: ``any``: fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
-        :``style``: 
+                Type: ``any``: fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
+        :``style``: 
                 Fonction ou object définissant le style des layers du geojson
                 
-                Type: ``any`` `voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
+                Type: ``any`` `voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
+
+
+Outils d'aide à la qualité du code
+==================================
+
+Des outils d'amélioration du code pour les développeurs peuvent être utilisés : flake8, pylint, mypy, pytest, coverage.
+La documentation est générée avec sphinx.
+
+Les fichiers de configuration de ces outils se trouve à la racine du projet :
+
+* .flake8
+* .pylint
+* .mypy
+* .pytest
+* .coverage
+
+Un fichier ``.editorconfig`` permettant de définir le comportement de votre éditeur de code 
+est également disponible à la racine du projet.
+
+
+Installation
+------------
+
+::
+
+        pip install --user pipenv
+        pipenv install --dev
+
+La documentation de ces outils est disponible en ligne :
+
+* http://flake8.pycqa.org/en/latest/
+* https://www.pylint.org/ - Doc : https://pylint.readthedocs.io/en/latest/
+* https://mypy.readthedocs.io/en/latest/
+* https://docs.pytest.org/en/latest/contents.html
+* https://coverage.readthedocs.io/en/coverage-4.4.2/
+* http://www.sphinx-doc.org/en/stable/ -  Doc : http://www.sphinx-doc.org/en/stable/contents.html
+
+Usage
+-----
+Pour utiliser ces outils il faut se placer dans le virtualenv
+
+::
+
+        pipenv shell
+
+
+Sphinx
+^^^^^^
+Sphinx est un générateur de documentation.
+Pour générer la documentation html, modifier les fichiers .rst et se placer dans le répertoire ``docs``
+::
+
+        cd docs
+        make html
+
+
+Flake8
+^^^^^^
+Flake8 inspecte le code et pointe tous les écarts à la norme PEP8. Il recherche également toutes les erreurs syntaxiques et stylistiques courantes.
+::
+
+        cd backend
+        flake8
+
+
+Pylint
+^^^^^^
+Pylint fait la même chose que Flake8 mais il est plus complet, plus configurable mais aussi plus exigeant.
+Pour inspecter le répertoire ``src``
+
+::
+
+        cd backend
+        pylint src
+
+
+Mypy
+^^^^
+Mypy vérifie les erreurs de typage.
+Mypy est utilisé pour l'éditeur de texte en tant que linter.
+
+
+Pytest
+^^^^^^
+Pytest permet de mettre en place des tests fonctionnels et automatisés du code Python.
+Les fichiers de test sont dans le répertoire ``backend/tests``
+
+::
+
+        cd backend
+        pytest
+
+
+Coverage
+^^^^^^^^
+Coverage permet de donner une indication concernant la couverture du code par les tests.
+
+::
+
+        cd backend
+        pytest --cov=src --cov-report=html
+
+Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``
