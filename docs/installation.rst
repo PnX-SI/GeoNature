@@ -30,22 +30,26 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 * Mettre à jour de la liste des dépôts Linux
 
 ::
+
     apt-get update
     apt-get upgrade
 
 * Installer sudo
 
 ::
+
     apt-get install -y sudo ca-certificates
 
 * Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ROOT (en lui donnant les droits sudo)
 
 ::
+
     adduser geonatureadmin sudo
 
 * L'ajouter aussi aux groupes www-data et root
 
 ::
+
     usermod -g www-data geonatureadmin
     usermod -a -G root geonatureadmin
 
@@ -53,6 +57,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 
 ::
+
     wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
     wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
 
@@ -60,6 +65,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 * Changer les droits du fichier d'installation pour pouvoir l'éxecuter
 
 ::
+
     chmod +x install_all.sh
 
 Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
@@ -73,6 +79,7 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
 * Lancer l'installation
 
 ::
+
     ./install_all.sh
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
@@ -98,6 +105,7 @@ L'installation de GeoNature n'est livrée qu'avec les schémas de base de donné
 * Exemple d'installation en base de données du module OccTax.
 
 ::
+
     sudo ./data/modules/contact/install_schema.sh
 
 
@@ -110,6 +118,7 @@ Instalation de l'environnement Python
 Installer pipenv et le virtualenv ainsi que tous les dépendances Python.
 
 ::
+
     pip install pipenv --user
     pipenv install
 
@@ -118,6 +127,7 @@ Lancer ensuite l'application en mode développement
 Stopper d'abbord le mode production, puis lancez le mode développement du backend
 
 ::
+
     cd geonature/backend/
     make supervisor-stop
     make develop
@@ -128,6 +138,7 @@ Stopper d'abbord le mode production, puis lancez le mode développement du backe
 * Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire `home` de l'utilisateur
 
 ::
+
     cd
     git clone https://github.com/PnX-SI/Nomenclature-api-module.git nomenclature-api-module
     cd nomenclature-api-module/
@@ -143,6 +154,7 @@ Stopper d'abbord le mode production, puis lancez le mode développement du backe
 Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.ts`` de la manière suivante:
 
 ::
+
   	URL_APPLICATION: 'http://127.0.0.1:4200',
     API_ENDPOINT: 'http://127.0.0.1:8000/',
     API_TAXHUB : 'http://127.0.0.1:5000/api/',
@@ -150,6 +162,7 @@ Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.
 Depuis le répertoire ``frontend`` lancer la commande:
 
 ::
+
 	  npm run start
 
 Lancer son navigateur à l'adresse ``127.0.0.1:4200``
