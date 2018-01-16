@@ -28,3 +28,12 @@ xmltodict = "==0.11.0"
 [dev-packages]
 
 pipenv-to-requirements = "*"
+sphinx = "*"
+pytest = "*"
+pytest-cov = "*"
+mypy = "*"
+
+
+[requires]
+
+python_version = "3.5"
