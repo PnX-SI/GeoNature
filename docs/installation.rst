@@ -23,7 +23,7 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 Installation de l'application
 =============================
 
-/!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/install_all
+/!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/develop/install_all
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
@@ -76,7 +76,7 @@ Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la con
 
 Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
 
-* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``frontend-contact``, remplacez donc ``X.Y.Z`` par ``frontend-contact``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``develop``, remplacez donc ``X.Y.Z`` par ``develop``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
   ::  
   
