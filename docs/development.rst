@@ -46,13 +46,13 @@ Database schemas prefixs : ``ref_`` for external referentials, ``gn_`` for GeoNa
 
 Latest version of the database (2017-12-13) : 
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/frontend-contact/docs/2017-12-13-GN2-MCD.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-13-GN2-MCD.png
 
 Sorry for the relations, it is too long to arrange...
 
 Here is a simplified model of the database (2017-12-15) : 
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/frontend-contact/docs/2017-12-15-GN2-MCD-simplifie.jpg
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
 Gestion des droits :
 --------------------
