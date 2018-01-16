@@ -29,50 +29,53 @@ def loginCas():
     params = request.args
     if 'ticket' in params:
         base_url = current_app.config['API_ENDPOINT']+"/auth_cas/login"
-        urlValidate = "{url}?ticket={ticket}&service={service}".format(
+        url_validate = "{url}?ticket={ticket}&service={service}".format(
             url=config_cas['URL_VALIDATION'],
             ticket=params['ticket'],
             service=base_url
         )
 
-        response = utilsrequests.get(urlValidate)
+        response = utilsrequests.get(url_validate)
         user = None
-        xmlDict = xmltodict.parse(response.content)
-        resp = xmlDict['cas:serviceResponse']
+        xml_dict = xmltodict.parse(response.content)
+        resp = xml_dict['cas:serviceResponse']
         if 'cas:authenticationSuccess' in resp:
             user = resp['cas:authenticationSuccess']['cas:user']
         if user:
-            WSUserUrl = "{}/{}/?verify=false".format(
+            ws_user_url = "{}/{}/?verify=false".format(
                 config_cas['USER_WS']['URL'], user
             )
 
-            response = utilsrequests.get(WSUserUrl, (config_cas['USER_WS']['ID'], config_cas['USER_WS']['PASSWORD']))
+            response = utilsrequests.get(
+                ws_user_url,
+                (config_cas['USER_WS']['ID'], config_cas['USER_WS']['PASSWORD'])
+            )
 
-            infoUser = response.json()
-            organismId = infoUser['codeOrganisme']
-            organismName = infoUser['libelleLongOrganisme'] if infoUser['libelleLongOrganisme'] is not None else 'Autre'
-            userLogin = infoUser['login']
-            userId = infoUser['id']
+            info_user = response.json()
+            organism_id = info_user['codeOrganisme']
+            organism_name = info_user['libelleLongOrganisme'] if info_user['libelleLongOrganisme'] is not None else 'Autre'
+            user_login = info_user['login']
+            user_id = info_user['id']
             # Reconciliation avec base GeoNature
-            if organismId:
+            if organism_id:
                 organism = {
-                    "id_organisme": organismId,
-                    "nom_organisme": organismName
+                    "id_organisme": organism_id,
+                    "nom_organisme": organism_name
                 }
                 resp = users.insertOrganism(organism)
                 # r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
 
             user = {
-                "id_role": userId,
-                "identifiant": userLogin,
-                "nom_role": infoUser['nom'],
-                "prenom_role": infoUser['prenom'],
-                "id_organisme": organismId,
+                "id_role": user_id,
+                "identifiant": user_login,
+                "nom_role": info_user['nom'],
+                "prenom_role": info_user['prenom'],
+                "id_organisme": organism_id,
             }
             resp = users.insertRole(user)
             # r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
             # push the user in the right group
-            if organismId is None:
+            if organism_id is None:
                 # group socle 1
                 users.insert_in_cor_role(20003, user['id_role'])
             else:
@@ -81,30 +84,30 @@ def loginCas():
             user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
 
             # Creation of datasets
-            gn_meta.post_jdd_from_user_id(userId, organismId)
+            gn_meta.post_jdd_from_user_id(user_id, organism_id)
 
             # creation de la Response
             response = make_response(redirect(current_app.config['URL_APPLICATION']))
-            cookieExp = datetime.datetime.utcnow()
+            cookie_exp = datetime.datetime.utcnow()
             expiration = current_app.config['COOKIE_EXPIRATION']
-            cookieExp += datetime.timedelta(seconds=expiration)
+            cookie_exp += datetime.timedelta(seconds=expiration)
             # generation d'un token
             s = Serializer(current_app.config['SECRET_KEY'], expiration)
             token = s.dumps(user)
             response.set_cookie('token',
                                 token,
-                                expires=cookieExp)
+                                expires=cookie_exp)
             # User cookie
 
-            currentUser = {
-                'userName': userLogin,
-                'userId': userId,
-                'organismId': organismId if organismId else -1
+            current_user = {
+                'userName': user_login,
+                'user_id': user_id,
+                'organism_id': organism_id if organism_id else -1
             }
             response.set_cookie(
-                'currentUser',
-                str(currentUser),
-                expires=cookieExp
+                'current_user',
+                str(current_user),
+                expires=cookie_exp
             )
             return response
         else:
