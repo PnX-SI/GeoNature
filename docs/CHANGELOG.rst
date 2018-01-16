@@ -9,6 +9,7 @@ Refonte complète de GeoNature en Python (Flask) + Angular4, Leaflet, Bootstrap,
 **Récapitulatif 07/09/2017**
 
 Ces derniers mois ont été marqués par :
+
 - un travail de refonte du MCD de GeoNature V2
 - une importante réflexion et des tests sur les technologies et la généricité/modularité
 - la mise en place des briques de développements et de l'interface ACCUEIL + SAISIE CONTACT par notre stagiaire Quang

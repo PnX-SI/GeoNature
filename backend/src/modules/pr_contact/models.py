@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.exc import NoResultFound
 from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -15,6 +16,7 @@ from ...core.users.models import TRoles
 from ...core.gn_meta import routes as gn_meta
 from pypnnomenclature.models import TNomenclatures
 from src.core.ref_geo.models import LAreasWithoutGeom
+from pypnusershub.db.tools import InsufficientRightsError
 
 from geoalchemy2 import Geometry
 
@@ -30,21 +32,20 @@ class ReleveModel(db.Model):
     def user_is_in_dataset_actor(self, user):
         return self.id_dataset in gn_meta.get_allowed_datasets(user)
 
-    def get_releve_if_allowed(self, user, data_scope):
+    def get_releve_if_allowed(self, user):
         """Return the releve if the user is allowed
           -params: 
           user: object from TRole
-          data_scope: string: level of rigth for an action
         """
-        if data_scope == '2':
+        if user.tag_object_code == '2':
             if self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user):
                 return self
-        elif data_scope == '1':
+        elif user.tag_object_code == '1':
             if self.user_is_observer_or_digitiser(user):
                 return self
         else:
             return self
-        return -1
+        raise InsufficientRightsError('User "{}" cannot "{}" this current releve'.format(user.id_role, user.tag_action_code), 403)
 
     def get_releve_cruved(self, user, user_cruved):
         """ return the user's cruved for a Releve instance. Use in the map-list interface to allow or not an action
@@ -91,6 +92,7 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
         db.Integer,
         ForeignKey('utilisateurs.t_roles.id_role')
     )
+    id_nomenclature_grp_typ = db.Column(db.Integer)
     observers_txt = db.Column(db.Unicode)
     date_min = db.Column(db.DateTime)
     date_max = db.Column(db.DateTime)

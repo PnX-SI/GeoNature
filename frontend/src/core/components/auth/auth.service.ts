@@ -10,16 +10,12 @@ import { Location } from '@angular/common';
 
 export class User {
 
-  constructor(public userName: string, public userId: number, public organismId: number,  public rights: any) {
+  constructor(public userName: string, public userId: number, public organismId: number) {
     this.userName = userName;
     this.userId = userId;
     this.organismId = organismId;
-    this.rights = rights;
-}
-
-  getRight(idApplication) {
-    return this.rights[idApplication];
   }
+
 }
 
 @Injectable()
@@ -52,7 +48,7 @@ export class AuthService {
     let user = this.decodeObjectCookies(userString);
     user = user.split("'").join('"');
     user = JSON.parse(user);
-    user = new User(user.userName, user.userId, user.organismId, user.rights);
+    user = new User(user.userName, user.userId, user.organismId);
     console.log(user);
     return user;
   }
@@ -67,35 +63,6 @@ export class AuthService {
     return response;
   }
 
-  fakeSigninUser(username: string, password: string) {
-    const d1 = new Date();
-    const d2 = new Date(d1);
-    d2.setMinutes(d1.getMinutes() + 60);
-    let response;
-    if (username === 'admin') {
-       response = {
-        'userName': 'admin',
-        'userId': 2,
-        'organismId': 2,
-        'rights': {
-          '14' : {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3 }
-          }
-        };
-
-    } else {
-       response = {
-         'userName': 'contributeur',
-         'userId': 6,
-          'organismId': 1,
-        'rights': {
-          '14' : {'C': 2, 'R': 1, 'U': 1, 'V': 1, 'E': 1, 'D': 1 }
-        }
-      };
-    }
-    this.setCurrentUser(response, d2);
-    this.setToken('1123345254', d2);
-    this.router.navigate(['']);
-  }
 
 
   signinUser(username: string, password: string) {
@@ -112,7 +79,6 @@ export class AuthService {
         userName : data.user.identifiant,
         userId : data.user.id_role,
         organismId:  data.user.id_organisme,
-        rights : data.user.rights
       };
       this.setCurrentUser(userForFront, new Date(data.expires));
       this.loginError = false;
@@ -123,7 +89,6 @@ export class AuthService {
     });
 
   }
-
 
 deleteTokenCookie() {
   document.cookie = 'token=; path=/; expires' + new Date(0).toUTCString();

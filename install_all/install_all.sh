@@ -4,6 +4,13 @@ nano install_all.ini
 . install_all.ini
 
 
+# Make sure this script is NOT run as root
+if [ "$(id -u)" == "0" ]; then
+   echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
+   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
+   exit 1
+fi
+
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
 
@@ -12,12 +19,12 @@ sudo ntpdate-debian
 sudo apt-get install -y curl unzip git
 sudo apt-get install -y apache2 libapache2-mod-wsgi
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
-sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
+sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential
+sudo pip install --upgrade pip virtualenv virtualenvwrapper
 sudo apt-get install -y npm
-sudo apt-get install -y python3 python3-dev python3-setuptools
 sudo apt-get install -y supervisor
-
-
+# for make work opencv(taxhub) on debian8
+sudo apt-get install libsm6 libxrender1 libfontconfig1
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -35,6 +42,7 @@ wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
 mv GeoNature-frontend-contact /home/$monuser/geonature/
+sudo chown -R $monuser /home/$monuser/geonature/
 
 cd /home/$monuser/geonature
 
@@ -49,7 +57,7 @@ sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
-sed -i "s/install_default_dem=.*$/srid_local=$install_default_dem/g" config/settings.ini
+sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
@@ -59,26 +67,29 @@ sed -i -e "s/\/var\/www/$apache_document_root/g" config/settings.ini
 
 # Installation de la base de données GeoNature en root
 sudo ./install_db.sh
+# installation du module occtax
+sudo ./data/modules/contact/install_schema.sh
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
-# lien symboloque dans /var/www/html
-cd /var/www/html
-sudo ln -s /home/$monuser/geonature/frontend/dist geonature
-
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
+# Front end
 sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
+conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
+sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
+conf="<Directory /home/$monuser/geonature/frontend/dist>"
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
+sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
+# backend
 sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
-
-# sudo sh -c 'echo "<Directory /home/$monuser/geonature/fronend/dist" >> /etc/apache2/sites-available/geonature.conf'
-# sudo sh -c 'echo "Require all denied" >> /etc/apache2/sites-available/geonature.conf'
-# sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/geonature.conf'
 
 
 sudo a2ensite geonature
@@ -90,6 +101,7 @@ wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
 rm $taxhub_release.zip
 mv TaxHub-$taxhub_release /home/$monuser/taxhub/
+sudo chown -R $monuser /home/$monuser/taxhub/
 cd /home/$monuser/taxhub
 
 
@@ -115,19 +127,10 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000/" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000 retry=0" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-
-sudo sed -i "s/<\/VirtualHost>//g" /etc/apache2/sites-available/000-default.conf
-sudo sed -i "s/# vim.*$//g" /etc/apache2/sites-available/000-default.conf
-sudo sh -c 'echo "# Configuration TaxHub - ne fonctionne pas dans le 000-default.conf" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "" >> /etc/apache2/sites-available/000-default.conf'
-sudo sh -c 'echo "# vim: syntax=apache ts=4 sw=4 sts=4 sr noet" >> /etc/apache2/sites-available/000-default.conf'
 
 
 sudo a2ensite taxhub

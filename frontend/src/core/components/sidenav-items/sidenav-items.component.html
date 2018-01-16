@@ -5,8 +5,21 @@
  </a>
 </mat-card>
 <mat-nav-list class="appnav">
-    <mat-list-item *ngFor="let app of nav" (click)="onSetApp(app)" routerLink={{app.route}} routerLinkActive="active" >
+    <mat-list-item *ngFor="let app of nav" (click)="onSetApp(app)" routerLink={{app.route}} routerLinkActive="active" class="sidenav-item" >
       <mat-icon mat-list-icon>{{app.icon}}</mat-icon>
-      <h3 mat-line> {{app.appName}} </h3>
+      <h3 mat-line> {{app.moduleName}} </h3>
     </mat-list-item>
 </mat-nav-list>
+
+
+<div class="navbar-footer">
+    <p class="p-small">
+        Réalisé avec <a target="_blank" href="http://geonature.fr"> GeoNature</a> 
+    </p>
+    <p class="p-small">
+        Développé par le <a target="_blank" href="http://www.ecrins-parcnational.fr "> Parc national des Ecrins</a>
+        et le <a target="_blank" href="http://www.cevennes-parcnational.fr"> Parc national des Cévennes</a> 
+    </p>
+    
+</div>
+

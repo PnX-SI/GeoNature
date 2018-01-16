@@ -40,7 +40,7 @@ export class ContactFormComponent implements OnInit {
     this.fs.countingForm = this.fs.initCountingArray();
 
     // patch default values in ajax
-    this.fs.patchDefaultNomenclature();
+    this.fs.patchAllDefaultNomenclature();
 
     // reset taxon list of service
     this.fs.taxonsList = [];
@@ -90,8 +90,10 @@ export class ContactFormComponent implements OnInit {
 
   submitData() {
     // set the releveForm
-    const finalForm = this.fs.releveForm.value;
+    // copy the form value without reference
+    const finalForm = JSON.parse(JSON.stringify(this.fs.releveForm.value));
     // format date
+    const saveForm = JSON.parse(JSON.stringify(this.fs.releveForm.value));
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
     // format nom_cite and update date
@@ -115,8 +117,10 @@ export class ContactFormComponent implements OnInit {
           this.toastr.success('Relevé enregistré', '', {positionClass:'toast-top-center'});
         // resert the forms
         this.fs.releveForm = this.fs.initReleveForm();
-        this.fs.occurrenceForm = this.fs.initOccurrenceFormDefaultValues();
-        this.fs.countingForm = this.fs.initCountingArrayDefaultValues();
+        this.fs.occurrenceForm = this.fs.initOccurenceForm();
+        this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
+        this.fs.countingForm = this.fs.initCountingArray();
+
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0 ;
         // redirect

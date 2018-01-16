@@ -1,0 +1,22 @@
+<mat-card-header>
+    <mat-card-title > <h2 class="underlined main-color"> Bienvenue dans Geonature v2 </h2> </mat-card-title>
+  </mat-card-header>
+  <div class="row">
+    <div class="col-md-7">
+      <mat-card-content>
+        <p>
+          Vous êtes sur l'instance de démonstration de GeoNature V2. Elle est actuellement en développement et est mise à jour quotidiennement. 
+          Les développements et fonctionnalités sont détaillés sur le Github du projet. 
+        </p>
+        <p>
+          Cette zone permet d'afficher un message aux utilisateurs, configurable pour le modifier régulièrement ou le masquer. 
+          Cette page d'accueil propose aussi des statistiques globales sur la base de données (nombre d'observations, d'espèces, de programmes, de jeux de données...). 
+          Elle affiche ensuite les 50 dernières observations présentes dans la synthèse puis des statistiques globales sur les données et leur évolution. 
+          La barre de navigation latérale permet d'accéder aux différents modules en fonction des droits dont dispose l'utilisateur connecté. 
+        </p>
+        <p>
+          Actuellement seul le formulaire du module CONTACT (= Occurrences de taxon) est disponible et est en cours de développement.
+        </p>
+      </mat-card-content>
+    </div>
+  </div>

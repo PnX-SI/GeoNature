@@ -8,10 +8,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from sqlalchemy.sql import text
 
-from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquisitionFramework
+from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquisitionFramework, CorAcquisitionFrameworkActor
 from ..users.models import TRoles
 from pypnusershub import routes as fnauth
 from ...utils.utilssqlalchemy import json_resp
+
+from . import mtd_utils
 
 import requests
 from xml.etree import ElementTree as ET
@@ -90,13 +92,12 @@ def getDatasets(info_role):
 
     """
     q = db.session.query(TDatasets)
-    user, data_scope = info_role
-    if int(data_scope) <= 2:
+    if int(info_role.tag_object_code) <= 2:
         q = q.join(CorDatasetsActor,
         CorDatasetsActor.id_dataset == TDatasets.id_dataset
         ).filter(or_(
-            CorDatasetsActor.id_organism == user.id_organisme,
-            CorDatasetsActor.id_role == user.id_role
+            CorDatasetsActor.id_organism == info_role.id_organisme,
+            CorDatasetsActor.id_role == info_role.id_role
             ))
     try:
         data = q.all()
@@ -149,62 +150,94 @@ def getCdNomenclature(id_type, cd_nomenclature):
     return value
 
 
-@routes.route('/cadre_acquision_mtd', methods=['POST'])
-@json_resp
-def postCadreAcquisionMTD():
-    """ Routes pour ajouter des cadres d'acquision à partir
-    du web service MTD"""
-    r = requests.get("https://preprod-inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id=4A9DDA1F-B601-3E13-E053-2614A8C02B7C")
-    if r.status_code == 200:
-        root = ET.fromstring(r.content)
-        attrib = root.attrib
-        namespace = attrib['{http://www.w3.org/2001/XMLSchema-instance}schemaLocation'].split()[0]
-        namespace = '{'+namespace+'}'
+@routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
+def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
+    """ Post an acquisition framwork from MTD XML"""
+    xml_af = mtd_utils.get_acquisition_framework(uuid)
 
-        #tous les cadres d'acquisition
-        for ca in root.findall('.//'+namespace+'CadreAcquisition'):
-            ca_uuid = ca.find(namespace+'identifiantCadre').text
-            ca_name = ca.find(namespace+'libelle').text
-            ca_desc = ca.find(namespace+'description').text
-            ca_start_date = ca.find('.//'+namespace+'dateLancement').text
-            ca_end_date = ca.find('.//'+namespace+'dateCloture').text
-            territory_level = ca.find(namespace+'niveauTerritorial').text
-            type_financement = ca.find('.//'+namespace+'typeFinancement').text
-            cible_ecologique = ca.find('.//'+namespace+'cibleEcologiqueOuGeologique').text
+    if xml_af:
+        acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
 
-            #acteur
-            acteur_princip = ca.find(namespace+'acteurPrincipal').text
-            for acteur in ca.find(namespace+'acteurAutre').text:
-                cd_role = acteur.find(namespace+'roleActeur').text 
-                acteur_role = getCdNomenclature(108, cd_role)
-
-
-            print(test)
-            newCadre = TAcquisitionFramework(
-                id_acquisition_framework = 2,
-                unique_acquisition_framework_id = ca_uuid,
-                acquisition_framework_name = ca_name,
-                acquisition_framework_desc = ca_desc,
-                acquisition_framework_start_date = ca_start_date,
-                acquisition_framework_end_date = ca_end_date,
-                id_nomenclature_territorial_level = getCdNomenclature(108, territory_level),
-                id_nomenclature_financing_type = getCdNomenclature(111, type_financement),
-                target_description = cible_ecologique
-                
+        new_af = TAcquisitionFramework(**acquisition_framwork)
+        actor = CorAcquisitionFrameworkActor(
+                id_role = id_user,
+                id_nomenclature_actor_role = 393
             )
-
-            #TODO: 
-            #- ecrire dans cor_acquisition_framework_actor
-            #- gérer les merge si UUID existe déja
-        try:
-            db.session.add(newCadre)
+        new_af.cor_af_actor.append(actor)
+        if id_organism:
+            organism = CorAcquisitionFrameworkActor(
+                id_role = id_organism,
+                id_nomenclature_actor_role = 393
+            )
+            new_af.cor_af_actor.append(actor)
+        # check if exist
+        id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
+        if id_acquisition_framework:
+            new_af.id_acquisition_framework = id_acquisition_framework
+            db.session.merge(new_af)
+        else:
+            db.session.add(new_af)
             db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            raise
-        return {'message': 'add with success'}
-    else:
-        return {'message': 'not found'}, 404
+        return new_af.as_dict()
+
+    return {'message': 'Not found'}, 404
+    
+
+
+@routes.route('/dataset_mtd/<id_user>', methods=['POST'])
+@routes.route('/dataset_mtd/<id_user>/<id_organism>', methods=['POST'])
+@json_resp
+def post_jdd_from_user_id(id_user=None, id_organism=None):
+    """ Post a jdd from the mtd XML"""
+    xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
+    
+    if xml_jdd:
+        dataset_list = mtd_utils.parse_jdd_xml(xml_jdd)
+        dataset_list_model = []
+        for ds in dataset_list:
+            new_af = post_acquisition_framwork_mtd(
+                uuid = ds['uuid_acquisition_framework'],
+                id_user = id_user,
+                id_organism = id_organism
+            )
+            new_af = new_af.get_data()
+            new_af = json.loads(new_af)
+            ds['id_acquisition_framework'] = new_af['id_acquisition_framework']
+
+            ds.pop('uuid_acquisition_framework')
+            id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
+            ds['id_dataset'] = id_dataset
+
+            dataset = TDatasets(**ds)
+
+            # id_role in cor_dataset_actor
+            actor = CorDatasetsActor(
+                id_role = id_user,
+                id_nomenclature_actor_role = 393
+            )
+            dataset.cor_datasets_actor.append(actor)
+            # id_organism in cor_dataset_actor
+            if id_organism:
+                actor = CorDatasetsActor(
+                    id_organism = id_organism,
+                    id_nomenclature_actor_role = 393
+                )
+                dataset.cor_datasets_actor.append(actor)
+            
+            dataset_list_model.append(dataset)
+            if id_dataset:
+                db.session.merge(dataset)
+            else:
+                db.session.add(dataset)
+
+            db.session.commit()
+            db.session.flush()
+
+            
+        return [d.as_dict() for d in dataset_list_model]
+    return {'message': 'Not found'}, 404
+
+
 
 
 ## Private fonction
@@ -222,3 +255,5 @@ def get_allowed_datasets(user):
     except:
         db.session.rollback()
         raise
+
+

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { HttpClientModule, HttpClientXsrfModule,HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {HttpModule, Http} from '@angular/http';
 
 
@@ -11,7 +11,6 @@ import {HttpModule, Http} from '@angular/http';
 import 'hammerjs';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartModule } from 'angular2-chartjs';
 import {TranslateModule, TranslateLoader, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
@@ -29,6 +28,9 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { LoginComponent } from './components/login/login.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 
+// Custom component (footer, presentation etc...)
+import { FooterComponent } from '../custom/components/footer/footer.component';
+import { IntroductionComponent } from '../custom/components/introduction/introduction.component';
 
 // Service
 import { AppConfig } from '../conf/app.config';
@@ -41,24 +43,23 @@ import { MapListService } from './GN2Common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
-
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
 @NgModule({
   imports: [
     BrowserModule,
     HttpModule,
     HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'token',
-      headerName: 'token'
-    }),
+    // HttpClientXsrfModule.withOptions({
+    //   cookieName: 'token',
+    //   headerName: 'token'
+    // }),
     BrowserAnimationsModule,
     FlexLayoutModule,
     AppRoutingModule,
-    CarouselModule.forRoot(),
     ChartModule,
     ToastrModule.forRoot(),
     GN2CommonModule,
@@ -78,6 +79,8 @@ export function HttpLoaderFactory(http: Http) {
     SigninComponent,
     LoginComponent,
     NavHomeComponent,
+    FooterComponent,
+    IntroductionComponent
   ],
   providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService, HttpClient,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true } ],

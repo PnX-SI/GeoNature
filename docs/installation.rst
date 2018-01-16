@@ -10,7 +10,7 @@ Prérequis
 Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 
-Celui-ci installe :
+Le script global d'installation de GeoNature va aussi se charger d'installer les applications nécessaires : 
 
 - PostgreSQL / PostGIS
 - Python 3 et dépendances Python nécessaires à l'application
@@ -64,12 +64,26 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
 
-On ne se connectera plus en ROOT. Si besoin d'executer des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+On ne se connectera plus en ROOT. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
 Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
 
 Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
 
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``frontend-contact``, remplacez donc ``X.Y.Z`` par ``frontend-contact``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
+ 
+  ::  
+  
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
+        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
+	
+
+* Changer les droits du fichier d'installation pour pouvoir l'éxecuter :
+ 
+  ::  
+  
+        chmod +x install_all.sh
+	
 * Lancer l'installation
 
 ::
@@ -77,7 +91,7 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
 
-Une fois l'installation terminée, lancez:
+Une fois l'installation terminée, lancez :
 
 ::
 
@@ -86,8 +100,19 @@ Une fois l'installation terminée, lancez:
 
 Les applications sont disponibles aux adresses suivantes:
 
-	- http://monip.com/geonature
-	- http://monip.com/taxhub
+- http://monip.com/geonature
+- http://monip.com/taxhub
+
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, lancer la commande:
+
+- Pour ``/``: ``npm run build -- --base-href=/``
+- Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
+
+
+Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
+
+- Pour ``/``: ``Alias /saisie /home/test/geonature/frontend/dist``
+- Pour ``/saisie`` : ``Alias / /home/test/geonature/frontend/dist``
 
 
 Installation d'un module GeoNature

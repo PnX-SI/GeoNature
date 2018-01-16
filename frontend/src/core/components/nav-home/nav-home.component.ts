@@ -5,6 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
+import * as test from '../../../conf/settings.default.json';
 import 'rxjs/Rx';
 import {MatSidenav} from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
@@ -20,12 +21,12 @@ import { Location } from '@angular/common';
 })
 
 export class NavHomeComponent implements OnInit, OnDestroy {
-  public appName: any;
+  public moduleName = 'Accueil';
   private subscription: Subscription;
   public currentUser: User;
+  public appConfig: any;
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
-  // tslint:disable-next-line:max-line-length
   constructor(private _navService: NavService,
           private translate: TranslateService,
           private _authService: AuthService,
@@ -40,6 +41,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.appConfig = AppConfig;
     // subscribe to router event
     this.subscription = this.activatedRoute.queryParams.subscribe(
       (param: any) => {
@@ -49,8 +51,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         }
       });
       // subscribe to the app name
-      this._navService.gettingCurrentApp.subscribe(app => {
-        this.appName = app.appName;
+      this._navService.gettingCurrentModule.subscribe(module => {
+        this.moduleName = module.moduleName;
     });
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);
