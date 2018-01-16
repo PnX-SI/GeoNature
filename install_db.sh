@@ -291,16 +291,6 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/exports.sql  &>> log/install_db.log
 
 
-    echo "Creating 'gn_users' schema..."
-    echo "" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "Creating 'gn_users' schema" &>> log/install_db.log
-    echo "--------------------" &>> log/install_db.log
-    echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/gn_users.sql  &>> log/install_db.log
-
-
     # Suppression des fichiers : on ne conserve que les fichiers compressés
     echo "Cleaning files..."
     rm /tmp/*.txt
@@ -311,10 +301,17 @@ then
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
-    rm /tmp/fr_municipalities.sql
-    rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
-    rm /tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
-    # rm /tmp/dem.tif
+    
+    if $install_sig_layers
+    then
+        rm /tmp/fr_municipalities.sql
+    fi
+
+    if $install_default_dem
+    then
+        rm /tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
+        rm /tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
+    fi
 
     echo "Permission on log folder..."
     chmod -R 777 log

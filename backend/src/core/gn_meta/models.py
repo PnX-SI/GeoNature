@@ -4,10 +4,14 @@ from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint, or_
 from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship
+
+
+from sqlalchemy.orm import relationship, exc
+from werkzeug.exceptions import NotFound
 from ...utils.utilssqlalchemy import serializableModel
+from pypnnomenclature.models import TNomenclatures
 
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -15,7 +19,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from ..users.models import BibOrganismes
 
 
-# from pypnnomenclature.models import TNomenclatures
 
 db = SQLAlchemy()
 
@@ -56,12 +59,30 @@ class TAcquisitionFramework(serializableModel):
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
+    cor_af_actor = relationship(
+        "CorAcquisitionFrameworkActor",
+        lazy='joined',
+        cascade="save-update, delete, delete-orphan"
+    )
+
+    @staticmethod
+    def get_id(uuid_af):
+        """return the acquisition framework's id from its UUID if exist or None"""
+        af = db.session.query(TAcquisitionFramework.id_acquisition_framework
+            ).filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
+            ).first()
+        return af
+
 class CorAcquisitionFrameworkActor(serializableModel):
     __tablename__ = 'cor_acquisition_framework_actor'
     __table_args__ = {'schema': 'gn_meta'}
-    id_acquisition_framework = db.Column(db.Integer, primary_key=True)
-    id_actor = db.Column(db.Integer, primary_key=True)
-    id_nomenclature_actor_role = db.Column(db.Integer, primary_key=True)
+    id_cafa = db.Column(db.Integer, primary_key=True)
+    id_acquisition_framework = db.Column(
+        db.Integer,
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'))
+    id_role = db.Column(db.Integer)
+    id_organism = db.Column(db.Integer)
+    id_nomenclature_actor_role = db.Column(db.Integer)
 
 
 class TDatasets(serializableModel):
@@ -78,35 +99,94 @@ class TDatasets(serializableModel):
     dataset_name = db.Column(db.Unicode)
     dataset_shortname = db.Column(db.Unicode)
     dataset_desc = db.Column(db.Unicode)
-    id_nomenclature_data_type = db.Column(db.Integer)
+    id_nomenclature_data_type = db.Column(
+        db.Integer,
+        default = TNomenclatures.get_default_nomenclature(103)
+        )
     keywords = db.Column(db.Unicode)
     marine_domain = db.Column(db.Boolean)
     terrestrial_domain = db.Column(db.Boolean)
-    id_nomenclature_dataset_objectif = db.Column(db.Integer)
+    id_nomenclature_dataset_objectif = db.Column(
+        db.Integer,
+        default = TNomenclatures.get_default_nomenclature(114)
+        )
     bbox_west = db.Column(db.Unicode)
     bbox_east = db.Column(db.Unicode)
     bbox_south = db.Column(db.Unicode)
     bbox_north = db.Column(db.Unicode)
-    id_nomenclature_collecting_method = db.Column(db.Integer)
-    id_nomenclature_data_origin = db.Column(db.Integer)
-    id_nomenclature_source_status = db.Column(db.Integer)
-    id_nomenclature_resource_type = db.Column(db.Integer)
+    id_nomenclature_collecting_method = db.Column(
+        db.Integer,
+        default = TNomenclatures.get_default_nomenclature(115)
+        )
+    id_nomenclature_data_origin = db.Column(
+        db.Integer,
+        default = TNomenclatures.get_default_nomenclature(2)
+    )
+    id_nomenclature_source_status = db.Column(
+        db.Integer,
+        default = TNomenclatures.get_default_nomenclature(19))
+    id_nomenclature_resource_type = db.Column(
+        db.Integer,
+        default = TNomenclatures.get_default_nomenclature(102))
     id_program = db.Column(db.Integer,
         ForeignKey('gn_meta.t_programs.id_program'))
     default_validity = db.Column(db.Boolean)
     meta_create_date = db.Column(db.DateTime)
     meta_update_date = db.Column(db.DateTime)
 
-    # acquisition_framework = relationship(
-    #     "TAcquisitionFramework",
-    #     lazy = 'join'
-    # )
+
+    cor_datasets_actor = relationship(
+        "CorDatasetsActor",
+        lazy='joined',
+        cascade="save-update, delete, delete-orphan"
+    )
+
+
+    @staticmethod
+    def get_id(uuid_dataset):
+        try:
+            id_dataset = db.session.query(TDatasets.id_dataset
+                ).filter(TDatasets.unique_dataset_id == uuid_dataset
+                ).one()
+        
+            return id_dataset[0]
+        except exc.NoResultFound as e:
+            raise NotFound('This dataset does not exist', 404)
+
+    @staticmethod
+    def get_uuid(id_dataset):
+        try:
+            uuid_dataset = db.session.query(TDatasets.unique_dataset_id
+                ).filter(TDatasets.id_dataset == id_dataset
+                ).one()
+            return uuid_dataset[0]
+        except exc.NoResultFound as e:
+            raise NotFound('This dataset does not exist', 404)
+
+
+    @staticmethod
+    def get_user_datasets(user):
+        """get the dataset(s) where the user is actor
+            param: user from TRole model
+            return: a list of id_dataset """
+        q = db.session.query(
+                CorDatasetsActor,
+                CorDatasetsActor.id_dataset
+                ).filter(or_(
+                    CorDatasetsActor.id_organism == user.id_organisme,
+                    CorDatasetsActor.id_role == user.id_role
+                ))
+        return [d.id_dataset for d in q.all()]
+        
+
 
 class CorDatasetsActor(serializableModel):
     __tablename__ = 'cor_dataset_actor'
     __table_args__ = {'schema': 'gn_meta'}
     id_cda = db.Column(db.Integer, primary_key=True)
-    id_dataset = db.Column(db.Integer)
+    id_dataset = db.Column(
+        db.Integer,
+        ForeignKey('gn_meta.t_datasets.id_dataset'))
     id_role = db.Column(db.Integer)
     id_organism = db.Column(db.Integer)
     id_nomenclature_actor_role = db.Column(db.Integer)

@@ -17,6 +17,7 @@ SET search_path = ref_geo, pg_catalog;
 ----------------------
 CREATE TABLE bib_areas_types (
     id_type integer NOT NULL,
+    id_nomenclature_area_type integer,
     type_name character varying(200),
     type_code character varying(25),
     type_desc text,
@@ -121,6 +122,9 @@ ALTER TABLE ONLY dem_vector
 ----------------
 --FOREIGN KEYS--
 ----------------
+ALTER TABLE ONLY bib_areas_types
+    ADD CONSTRAINT fk_bib_areas_types_id_nomenclature_area_type FOREIGN KEY (id_nomenclature_area_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES bib_areas_types(id_type) ON UPDATE CASCADE;
 
@@ -129,6 +133,14 @@ ALTER TABLE ONLY li_municipalities
 
 ALTER TABLE ONLY li_grids
     ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
+
+
+--------------
+--CONSTRAINS--
+--------------
+ALTER TABLE bib_areas_types
+  ADD CONSTRAINT check_bib_areas_types_area_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_area_type,22));
+
 
 ---------
 --INDEX--

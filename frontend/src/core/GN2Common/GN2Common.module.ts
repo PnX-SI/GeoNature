@@ -4,9 +4,10 @@ import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatLis
         MatToolbarModule} from '@angular/material';
 
 
-
+import {Http} from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule, Http } from '@angular/http';
+import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
 

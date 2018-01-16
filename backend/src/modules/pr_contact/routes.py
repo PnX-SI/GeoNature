@@ -4,7 +4,7 @@ from __future__ import (unicode_literals, print_function,
 
 from flask import Blueprint, request, json, current_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc, or_, func
+from sqlalchemy import exc, or_, func, distinct
 from sqlalchemy.sql import text
 
 
@@ -14,9 +14,10 @@ from .repositories import ReleveRepository
 from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
 
 from ...utils import filemanager
-from ...core.users.models import TRoles
+from ...core.users.models import TRoles, UserRigth
 from ...core.ref_geo.models import LAreasWithoutGeom
 from ...core.gn_meta.models import TDatasets, CorDatasetsActor
+from pypnusershub.db.tools import InsufficientRightsError
 
 from pypnusershub import routes as fnauth
 
@@ -35,10 +36,7 @@ db = SQLAlchemy()
 def getReleves(info_role):
     releve_repository = ReleveRepository(TRelevesContact)
     data = releve_repository.get_all(info_role)
-
-    if data:
-        return FeatureCollection([n.get_geofeature() for n in data])
-    return {'message': 'not found'}, 404
+    return FeatureCollection([n.get_geofeature() for n in data])
 
 
 @routes.route('/occurrences', methods=['GET'])
@@ -63,11 +61,6 @@ def getOccurrences():
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesContact)
     data = releve_repository.get_one(id_releve, info_role)
-
-    if data == -1:
-        return {'message': 'forbidden'}, 403
-    if not data:
-        return {'message': 'not found'}, 404
     return data.get_geofeature()
 
 
@@ -116,7 +109,7 @@ def getViewReleveContact(info_role):
         db.session.rollback()
         raise
 
-    user = info_role[0]
+    user = info_role
     user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     featureCollection = []
     for n in data:
@@ -201,10 +194,9 @@ def getViewReleveList(info_role):
                 TOccurrencesContact,
                 TOccurrencesContact.id_releve_contact ==
                 VReleveList.id_releve_contact
-            ).join(
+            ).filter(
                 TOccurrencesContact.cd_nom == int(params.get('cd_nom'))
             )
-
     if 'observer' in params:
         q = q.join(
             corRoleRelevesContact,
@@ -286,7 +278,7 @@ def getViewReleveList(info_role):
         print('roollback')
         db.session.rollback()
 
-    user = info_role[0]
+    user = info_role
     user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     featureCollection = []
     for n in data:
@@ -310,77 +302,72 @@ def getViewReleveList(info_role):
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesContact)
-    try:
-        data = dict(request.get_json())
+    data = dict(request.get_json())
 
-        if 't_occurrences_contact' in data['properties']:
-            occurrences_contact = data['properties']['t_occurrences_contact']
-            data['properties'].pop('t_occurrences_contact')
+    if 't_occurrences_contact' in data['properties']:
+        occurrences_contact = data['properties']['t_occurrences_contact']
+        data['properties'].pop('t_occurrences_contact')
 
-        if 'observers' in data['properties']:
-            observersList = data['properties']['observers']
-            data['properties'].pop('observers')
+    if 'observers' in data['properties']:
+        observersList = data['properties']['observers']
+        data['properties'].pop('observers')
 
-        # Test et suppression des propriétés inexistantes de TRelevesContact
-        attliste = [k for k in data['properties']]
+    # Test et suppression des propriétés inexistantes de TRelevesContact
+    attliste = [k for k in data['properties']]
+    for att in attliste:
+        if not getattr(TRelevesContact, att, False):
+            data['properties'].pop(att)
+    releve = TRelevesContact(**data['properties'])
+
+    shape = asShape(data['geometry'])
+    releve.geom_4326 = from_shape(shape, srid=4326)
+
+    if observersList is not None:
+        observers = db.session.query(TRoles).\
+            filter(TRoles.id_role.in_(observersList)).all()
+        for o in observers:
+            releve.observers.append(o)
+
+    for occ in occurrences_contact:
+        if occ['cor_counting_contact']:
+            cor_counting_contact = occ['cor_counting_contact']
+            occ.pop('cor_counting_contact')
+
+        # Test et suppression des propriétés inexistantes de TOccurrencesContact
+        attliste = [k for k in occ]
         for att in attliste:
-            if not getattr(TRelevesContact, att, False):
-                data['properties'].pop(att)
+            if not getattr(TOccurrencesContact, att, False):
+                occ.pop(att)
 
-        releve = TRelevesContact(**data['properties'])
-        shape = asShape(data['geometry'])
-        releve.geom_4326 = from_shape(shape, srid=4326)
-
-        if observersList is not None:
-            observers = db.session.query(TRoles).\
-                filter(TRoles.id_role.in_(observersList)).all()
-            for o in observers:
-                releve.observers.append(o)
-
-        for occ in occurrences_contact:
-            if occ['cor_counting_contact']:
-                cor_counting_contact = occ['cor_counting_contact']
-                occ.pop('cor_counting_contact')
-
-            # Test et suppression des propriétés inexistantes de TOccurrencesContact
-            attliste = [k for k in occ]
+        contact = TOccurrencesContact(**occ)
+        for cnt in cor_counting_contact:
+            # Test et suppression des propriétés inexistantes de CorCountingContact
+            attliste = [k for k in cnt]
             for att in attliste:
-                if not getattr(TOccurrencesContact, att, False):
-                    occ.pop(att)
+                if not getattr(CorCountingContact, att, False):
+                    cnt.pop(att)
 
-            contact = TOccurrencesContact(**occ)
-            for cnt in cor_counting_contact:
-                # Test et suppression des propriétés inexistantes de CorCountingContact
-                attliste = [k for k in cnt]
-                for att in attliste:
-                    if not getattr(CorCountingContact, att, False):
-                        cnt.pop(att)
+            countingContact = CorCountingContact(**cnt)
+            contact.cor_counting_contact.append(countingContact)
+        releve.t_occurrences_contact.append(contact)
 
-                countingContact = CorCountingContact(**cnt)
-                contact.cor_counting_contact.append(countingContact)
-            releve.t_occurrences_contact.append(contact)
-
-        try:
-            if releve.id_releve_contact:
-                # get update right of the user
-                user_cruved = fnauth.get_cruved(info_role[0].id_role,current_app.config['ID_APPLICATION_GEONATURE'])
-                update_data_scope = [u['level'] for u in user_cruved if u['action'] == 'U']
-                info_role = info_role[0], int(update_data_scope[0])
-                releve = releveRepository.update(releve, info_role)
-                if releve == -1:
-                    return {'message': 'forbidden'}, 403
-            else:
-                db.session.add(releve)
-            db.session.commit()
-            db.session.flush()
-        except Exception as e:
-            raise
-
-        return releve.get_geofeature()
-
+    try:
+        if releve.id_releve_contact:
+            # get update right of the user
+            user_cruved = fnauth.get_cruved(info_role.id_role, current_app.config['ID_APPLICATION_GEONATURE'])
+            update_data_scope = next((u['level'] for u in user_cruved if u['action'] == 'U'), None)
+            #info_role.tag_object_code = update_data_scope
+            user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope, tag_action_code = "U", id_organisme = info_role.id_organisme)
+            releve = releveRepository.update(releve, user)
+        else:
+            db.session.add(releve)
+        db.session.commit()
+        db.session.flush()
     except Exception as e:
-        db.session.rollback()
         raise
+
+    return releve.get_geofeature()
+
 
 
 @routes.route('/releve/<int:id_releve>', methods=['DELETE'])
@@ -398,10 +385,6 @@ def deleteOneReleve(id_releve, info_role):
     """
     releveRepository = ReleveRepository(TRelevesContact)
     data = releveRepository.delete(id_releve, info_role)
-    if not data:
-        return {'message': 'not found'}, 404
-    if data == -1:
-        return {'message': 'forbidden'}, 403
 
     return {'message': 'delete with success'}, 200
 
@@ -493,9 +476,9 @@ def getDefaultNomenclatures():
         organism = params['organism']
     types = request.args.getlist('id_type')
 
-    q = db.session.query(DefaultNomenclaturesValue).distinct(
-                DefaultNomenclaturesValue.id_type,
-                func.pr_contact.get_default_nomenclature_value(DefaultNomenclaturesValue.id_type, organism, regne, group2_inpn )
+    q = db.session.query(distinct(
+                DefaultNomenclaturesValue.id_type),
+                func.pr_contact.get_default_nomenclature_value(DefaultNomenclaturesValue.id_type, organism, regne, group2_inpn)
             )
     if len(types) > 0:
         q = q.filter(DefaultNomenclaturesValue.id_type.in_(tuple(types)))
@@ -505,22 +488,68 @@ def getDefaultNomenclatures():
         db.session.rollback()
         raise
     if not data:
-        return {'message': 'not found'}, 404 
-    return {d.id_type: d.id_nomenclature for d in data}
+        return {'message': 'not found'}, 404
+    return {d[0]: d[1] for d in data}
 
     
-@routes.route('/exportProvisoire', methods=['GET'])
+@routes.route('/export/sinp', methods=['GET'])
+@fnauth.check_auth_cruved('E', True)
 @csv_resp
-def export():
+def export_sinp(info_role):
+    """ Return the data (CSV) at SINP format from pr_contact.export_occtax_sinp view
+    If no paramater return all the dataset allowed of the user
+    params:
+        - id_dataset : integer
+        - uuid_dataset: uuid
+    """
     viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
     q = db.session.query(viewSINP.tableDef)
+    params = request.args
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    #if params in empty and user not admin, get the data off all dataset allowed
+    if not params.get('id_dataset') and not params.get('uuid_dataset'):
+        if info_role.tag_object_code != '3':
+            allowed_uuid = (str(TDatasets.get_uuid(id_dataset)) for id_dataset in allowed_datasets)
+            q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))
+    #filter by dataset id or uuid
+    else:
+        if 'id_dataset' in params:
+            id_dataset = int(params['id_dataset'])
+            uuid_dataset = TDatasets.get_uuid(id_dataset)
+        elif 'uuid_dataset' in params:
+            id_dataset = TDatasets.get_id(params['uuid_dataset'])
+            uuid_dataset = params['uuid_dataset']
+        # if data_scope 1 or 2, check if the dataset requested is allorws
+        if info_role.tag_object_code == '1' or info_role.tag_object_code == '2':
+            if not id_dataset in allowed_datasets:
+                raise InsufficientRightsError('User "{}" cannot export dataset no "{}'.format(info_role.id_role, id_dataset), 403)
+            elif info_role.tag_object_code == '1':
+                # join on TCounting, TOccurrence, Treleve and corRoleContact to get users
+                q = q.join(CorCountingContact,
+                viewSINP.tableDef.columns.identifiantPermanent == CorCountingContact.unique_id_sinp_occtax
+                ).join(TOccurrencesContact,
+                    CorCountingContact.id_occurrence_contact == TOccurrencesContact.id_occurrence_contact
+                ).join(TRelevesContact,
+                    TOccurrencesContact.id_releve_contact == TRelevesContact.id_releve_contact
+                ).join(corRoleRelevesContact,
+                    TRelevesContact.id_releve_contact == corRoleRelevesContact.columns.id_releve_contact
+                )
+                q = q.filter(
+                    or_(
+                        corRoleRelevesContact.columns.id_role == info_role.id_role,
+                        TRelevesContact.id_digitiser == info_role.id_role
+                    )
+                )
+        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
     return (filemanager.removeDisallowedFilenameChars('export_sinp'), data, viewSINP.columns, ';')
 
 @routes.route('/test', methods=['GET'])
 @json_resp
-def test():
-    data = fnauth.get_cruved(1,14)
-    print(data)
+def test(id_dataset = None, uuid_dataset = None):
+    info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "2", tag_action_code = "R")
     return 'la'
+         
+    
+

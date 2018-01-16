@@ -4,3 +4,11 @@ npm-debug.log
 
 /dist/
 src/conf/app.config.ts
+
+# custom components
+src/custom/components/footer/footer.component.ts
+src/custom/components/footer/footer.component.html
+src/custom/components/introduction/introduction.component.html
+src/custom/components/introduction/introduction.component.ts
+src/custom/images/bandeau_toolbar.jpg
+src/custom/custom.scss
