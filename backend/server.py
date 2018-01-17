@@ -1,5 +1,3 @@
-#coding: utf8
-
 '''
 Démarrage de l'application
 '''
@@ -15,7 +13,6 @@ app_globals = {}
 
 
 def get_app():
-    print(get_app)
     if app_globals.get('app', False):
         return app_globals['app']
     app = Flask(__name__)
@@ -48,7 +45,7 @@ def get_app():
         from src.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
-        ## errors
+        # errors
         from src.core.errors import routes
 
         app_globals['app'] = app
