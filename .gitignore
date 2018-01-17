@@ -3,10 +3,9 @@ settings.ini
 log/*
 .vscode/
 /backend/venv/*
-custom_config.py
+custom_config.toml
 gunicorn_start.sh
 
-config.py
 .vscode
 
 # Byte-compiled / optimized / DLL files
