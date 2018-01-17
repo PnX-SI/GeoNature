@@ -2,10 +2,14 @@
 Démarrage de l'application
 '''
 
+import toml
+
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+
+from config_schema import GnCoreSchemaConf, ConfigError
 
 db = SQLAlchemy()
 
@@ -16,7 +20,16 @@ def get_app():
     if app_globals.get('app', False):
         return app_globals['app']
     app = Flask(__name__)
-    app.config.from_object('custom_config.CustomConfig')
+
+    # load and validate configuration
+    conf_toml = toml.load(['../config/custom_config.toml'])
+    data, configerrors = GnCoreSchemaConf().load(conf_toml)
+    if configerrors:
+        print('BAD CONFIG')
+        print(configerrors)
+        raise ConfigError(configerrors)
+
+    app.config.update(data)
     db.init_app(app)
     with app.app_context():
         db.create_all()
