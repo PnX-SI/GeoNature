@@ -96,7 +96,6 @@ CREATE TABLE t_occurrences_contact (
     id_nomenclature_diffusion_level integer, --DEFAULT get_default_nomenclature_value(5),
     id_nomenclature_observation_status integer, --DEFAULT get_default_nomenclature_value(18),
     id_nomenclature_blurring integer, --DEFAULT get_default_nomenclature_value(4),
-    id_validator integer,
     determiner character varying(255),
     id_nomenclature_determination_method integer, --DEFAULT get_default_nomenclature_value(106),
     determination_method_as_text text,
@@ -142,6 +141,9 @@ CREATE TABLE cor_counting_contact (
     count_min integer,
     count_max integer,
     id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
+    id_validator integer,
+    validation_comment text,
+    meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     unique_id_sinp_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4()
@@ -218,9 +220,6 @@ ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_t_releves_contact FOREIGN KEY (id_releve_contact) REFERENCES t_releves_contact(id_releve_contact) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_taxref FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
@@ -239,7 +238,7 @@ ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_contact_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_observation_status FOREIGN KEY (id_nomenclature_observation_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -267,7 +266,10 @@ ALTER TABLE ONLY cor_counting_contact
     ADD CONSTRAINT fk_cor_counting_contact_typ_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_contact
-    ADD CONSTRAINT fk_cor_counting_contact_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_counting_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_counting_contact
+    ADD CONSTRAINT fk_cor_counting_contact_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_role_releves_contact
