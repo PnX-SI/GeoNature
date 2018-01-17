@@ -1,3 +1,7 @@
+'''
+    Description des options de configuration
+'''
+
 import os
 
 from marshmallow import Schema, fields
@@ -30,16 +34,27 @@ class RightsSchemaConf(Schema):
     ALL_DATA = fields.Integer(missing=3)
 
 
-class GnCoreSchemaConf(Schema):
+class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
             '^postgresql:\/\/.*:.*@\w+:\w+\/\w+$',
             0,
-            'Database uri is invalid'
+            'Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name'
         )
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
+    SESSION_TYPE = fields.String(missing='filesystem')
+    SECRET_KEY = fields.String(required=True)
+    COOKIE_EXPIRATION = fields.Integer(missing=7200)
+    COOKIE_AUTORENEW = fields.Boolean(missing=True)
+
+    UPLOAD_FOLDER = fields.String(missing='static/medias')
+    BASE_DIR = fields.String(missing=os.path.abspath(os.path.dirname(__file__)))
+
+class GnGeneralSchemaConf(Schema):
+    appName = fields.String(missing='Geonature2')
+    DEFAULT_LANGUAGE = fields.String(missing='fr')
     PASS_METHOD = fields.String(
         missing='hash',
         validate=OneOf(['hash', 'md5'])
@@ -49,18 +64,10 @@ class GnCoreSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     ID_APPLICATION_GEONATURE = fields.Integer(missing=14)
-    SESSION_TYPE = fields.String(missing='filesystem')
-    SECRET_KEY = fields.String(required=True)
-    COOKIE_EXPIRATION = fields.Integer(missing=7200)
-    COOKIE_AUTORENEW = fields.Boolean(missing=True)
 
     XML_NAMESPACE = fields.String(missing="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
-
-    UPLOAD_FOLDER = fields.String(missing='static/medias')
-    BASE_DIR = fields.String(missing=os.path.abspath(os.path.dirname(__file__)))
     CAS = fields.Nested(CasSchemaConf, missing=dict())
-
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
 
 
