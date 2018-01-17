@@ -1,9 +1,8 @@
-==============================
 GeoNature - MANUEL UTILISATEUR
 ==============================
 
 Authentification
-================
+----------------
 
 Accéder à l'application sur https://depot-legal-biodiversite.naturefrance.fr/saisie 
 
@@ -12,7 +11,7 @@ Si vous n'êtes pas déjà authentifié avec votre compte INPN, vous serez invit
 .. image :: http://geonature.fr/docs/img/user-manual/00-login-inpn.jpg
 
 Accueil
-=======
+-------
 
 Vous accédez alors à la page d'accueil de l'application GeoNature, permettant la saisie puis l'export 
 de données brutes de biodiversité. 
@@ -32,7 +31,7 @@ Un bouton en haut à droite permet de se déconnecter de l'application
 .. image :: http://geonature.fr/docs/img/user-manual/01-home-logout.jpg
 
 OCCTAX
-======
+------
 
 Ce module permet de saisir des données selon le standard Occurrences de taxon du SINP 
 (https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon). 
@@ -86,7 +85,7 @@ Selon les droits dont vous disposez, il est possible d'afficher, de modifier ou 
 .. image :: http://geonature.fr/docs/img/user-manual/02-occtax-tools.jpg
 
 AFFICHER UN RELEVE
-==================
+------------------
 
 Si vous afficher un relevé, vous accéderez à sa fiche complète : 
 
@@ -111,7 +110,7 @@ Selon les droits dont vous disposez, il est possible de modifier un relevé dire
 .. image :: http://geonature.fr/docs/img/user-manual/03-occtax-detail-edit.jpg
 
 AJOUTER UN RELEVE
-=================
+-----------------
 
 Depuis la liste des relevés, cliquer sur le bouton de création d'un relevé : 
 
@@ -143,9 +142,9 @@ Pour les lignes et les polygones, il faut cliquer sur le bouton de modification.
 
 Vous pouvez alors déplacer les sommets existants ou en créer de nouveaux pour affiner le tracé en cliquant sur les sommets transparents.
 
-Cliquer sur SAVE pour enregistrer les modifications apportées à une ligne ou un polygone.
+Cliquer sur ``SAVE`` pour enregistrer les modifications apportées à une ligne ou un polygone.
 
-L'altitude minimum et maximum du relevé sont calculés automatiquement mais peuvent être modifiés manuellement. 
+Les altitudes minimum et maximum du relevé sont calculées automatiquement mais peuvent être modifiées manuellement. 
 
 Les informations géographiques du relevé (communes notamment) sont aussi calculés automatiquement.
 
@@ -192,7 +191,7 @@ Pour ajouter un taxon au relevé, il faut cliquer sur TAXON et le renseigner com
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg
 
 MODIFIER UN RELEVE
-==================
+------------------
 
 Si vous modifier un relevé existant, vous accédez à sa fiche renseigner sur laquelle vous pouvez modifier la localisation, les informations du relevé, les taxons observés et leurs dénombrements : 
 
@@ -209,7 +208,7 @@ Ou modifier une observation existante d'un taxon en le selectionnant dans la lis
 .. image :: http://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-2.jpg
 
 EXPORT
-======
+------
 
 Une fois que vous avez saisi vos relevés et observations dans le module OccTax, vous pouvez exporter ces données en CSV selon le standard Occurrence de taxon du SINP. 
 
