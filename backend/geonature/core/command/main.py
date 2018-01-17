@@ -12,7 +12,8 @@ from geonature.utils.env import (
     virtualenv_status,
     DEFAULT_VIRTUALENV_DIR,
     install_geonature_command,
-    GEONATURE_VERSION
+    GEONATURE_VERSION,
+    create_frontend_config
 )
 
 log = logging.getLogger(__name__)
@@ -68,4 +69,15 @@ def install_command(ctx):
             'If you installed GeoNature outside of a virtualenv, you should '
             'stick to using "python geonature_cmd.py" manually.'
         ).format(DEFAULT_VIRTUALENV_DIR))
+
+
+@main.command()
+@click.option(
+    '--conf_file'
+)
+def generate_frontend_config(conf_file):
+    """
+        Génération des fichiers de configurations pour javascript
+    """
+    create_frontend_config(conf_file)
 
