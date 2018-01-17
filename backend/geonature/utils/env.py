@@ -62,9 +62,10 @@ def add_geonature_pth_file():
         Returns a tuple (path, bool), where path is the Path object to
         the .pth file and bool is wether or not the line was added.
     """
+
     path = venv_site_packages() / 'geonature.pth'
     try:
-        if path.read_text():
+        if path.is_file() and path.read_text():
             return path, False
 
         with path.open('a') as f:
