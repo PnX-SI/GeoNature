@@ -38,26 +38,26 @@ def get_app():
         from pypnnomenclature.routes import routes
         app.register_blueprint(routes, url_prefix='/nomenclatures')
 
-        from src.core.users.routes import routes
+        from geonature.core.users.routes import routes
         app.register_blueprint(routes, url_prefix='/users')
 
-        from src.modules.pr_contact.routes import routes
+        from geonature.modules.pr_contact.routes import routes
         app.register_blueprint(routes, url_prefix='/contact')
 
-        from src.core.gn_meta.routes import routes
+        from geonature.core.gn_meta.routes import routes
         app.register_blueprint(routes, url_prefix='/meta')
 
-        from src.core.ref_geo.routes import routes
+        from geonature.core.ref_geo.routes import routes
         app.register_blueprint(routes, url_prefix='/geo')
 
-        from src.core.gn_exports.routes import routes
+        from geonature.core.gn_exports.routes import routes
         app.register_blueprint(routes, url_prefix='/exports')
 
-        from src.core.auth.routes import routes
+        from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
-        # errors
-        from src.core.errors import routes
+        ## errors
+        from geonature.core.errors import routes
 
         app_globals['app'] = app
     return app

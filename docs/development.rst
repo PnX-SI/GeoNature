@@ -107,9 +107,15 @@ Modularité
 
 Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/data/modules/contact
 
+<<<<<<< HEAD
 Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/src/modules/pr_contact
 
 Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/src/modules/contact
+=======
+Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/geonature/modules/pr_contact
+
+Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/frontend-contact/backend/geonature/modules/pr_contact
+>>>>>>> validation
 
 Mais en pouvant utiliser des composants du CORE comme expliqué ci-dessous.
 
@@ -119,10 +125,17 @@ Configuration
 
 Pour configurer GeoNature, actuellement il y a : 
 
+<<<<<<< HEAD
 - Une configuration pour l'installation : https://github.com/PnX-SI/GeoNature/blob/develop/config/settings.ini.sample
 - Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/develop/backend/custom_config.py.sample
 - Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/app.config.sample.ts
 - Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact.config.ts
+=======
+- Une configuration pour l'installation : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/config/settings.ini.sample
+- Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/config.py.sample
+- Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/geonature/conf/app.config.sample.ts
+- Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/geonature/modules/contact/contact.config.ts
+>>>>>>> validation
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
 
@@ -163,7 +176,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         **Inputs**:
 
         :``baseMaps``:
-                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/src/conf/app.config.sample.ts#L7>`_)
+                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/geonature/conf/app.config.sample.ts#L7>`_)
 
                 *Type*: ``Array<any>``
         :``center``:
@@ -175,7 +188,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
 
                 *Type*: ``number``
 
-        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/src/conf/app.config.sample.ts>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
+        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/geonature/conf/app.config.sample.ts>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
 
         Exemple d'utilisation: ``<pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`` Ici le niveau de zoom et le centrage sont modifiés, mais les fonds de carte restent ceux renseignés par défault.
 
@@ -199,7 +212,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         :``options``:
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
-                Par défault le fichier ``leaflet-draw.option.ts` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/src/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
+                Par défault le fichier ``leaflet-draw.option.ts` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/geonature/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
                 
         **Output**
         
@@ -299,12 +312,21 @@ Flake8 inspecte le code et pointe tous les écarts à la norme PEP8. Il recherch
 Pylint
 ^^^^^^
 Pylint fait la même chose que Flake8 mais il est plus complet, plus configurable mais aussi plus exigeant.
-Pour inspecter le répertoire ``src``
+Pour inspecter le répertoire ``geonature``
 
 ::
 
         cd backend
-        pylint src
+        pylint geonature
+
+tslint
+^^^^^^
+tslint fait la même chose que pylint mais pour la partie frontend en typescript.
+
+::
+
+        cd frontend
+        ng lint
 
 
 Mypy
@@ -331,6 +353,6 @@ Coverage permet de donner une indication concernant la couverture du code par le
 ::
 
         cd backend
-        pytest --cov=src --cov-report=html
+        pytest --cov=geonature --cov-report=html
 
 Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``
