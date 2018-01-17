@@ -5,7 +5,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = false
 # Application
 
 appName = 'Geonature 2'
-defaultLanguage = 'fr'
+DEFAULT_LANGUAGE = 'fr'
 PASS_METHOD = 'hash'                                    # Authentification password encoding method (hash or md5)
 DEBUG = true
 URL_APPLICATION = 'http://url.com/geonature'         # Replace my_url.com by your domain or IP
