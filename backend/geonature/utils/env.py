@@ -1,6 +1,6 @@
 
 """ Helpers to manipulate the execution environment """
-
+import subprocess
 import os
 import sys
 import toml
@@ -94,6 +94,9 @@ def install_geonature_command():
 
 
 def create_frontend_config(conf_file):
+    if not os.path.isfile(conf_file):
+        raise FileNotFoundError
+
     conf_toml = toml.load(conf_file)
     configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
     if configerrors:
@@ -104,3 +107,25 @@ def create_frontend_config(conf_file):
     ) as outputfile:
         outputfile.write("export const AppConfig = ")
         json.dump(configs_gn, outputfile, indent=True)
+
+
+def start_gunicorn_cmd(uri, worker):
+    cmd = 'gunicorn server:app -w {gun_worker} -b {gun_uri}'
+    subprocess.call(
+        cmd.format(gun_worker=worker, gun_uri=uri).split(" "),
+        cwd=str(BACKEND_DIR)
+    )
+
+
+def start_flask_server_cmd(host, port):
+    cmd = 'python server.py runserver -d -r -h {h} -p {p}'
+    subprocess.call(cmd.format(h=host, p=port).split(" "), cwd=str(BACKEND_DIR))
+
+
+def supervisor_cmd(action, app_name):
+    cmd = 'sudo supervisorctl {action} {app}'
+    subprocess.call(cmd.format(action=action, app=app_name).split(" "))
+
+
+def start_geonature_front():
+    subprocess.call(['npm', 'run', 'start'], cwd=str(ROOT_DIR / 'frontend'))
