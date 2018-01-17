@@ -1,0 +1,10 @@
+# GeoNature backend global configuration file
+# Don't change this
+
+# Database
+SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:5432/mabase"
+URL_APPLICATION = 'http://127.0.0.1:8000/geonature'
+API_ENDPOINT = 'http://127.0.0.1:8000/geonature/api'
+API_TAXHUB ='http://127.0.0.1:5000/api/'
+
+SECRET_KEY = 'super secret key'
