@@ -2,6 +2,7 @@
 
 . ./config/settings.ini
 
+BASE_DIR=$(readlink -e "${0%/*}")
 cd backend
 
 echo "Création du fichier de configuration ..."
@@ -31,11 +32,10 @@ fi
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+python ${BASE_DIR}/geonature_cmd.py install_command
 deactivate
 
 #Lancement de l'application
-cd ..
-BASE_DIR=$(readlink -e "${0%/*}")
 cd backend
 DIR=$(readlink -e "${0%/*}")
 cp gunicorn_start.sh.sample gunicorn_start.sh
@@ -60,33 +60,33 @@ echo "instalation des paquets npm"
 npm install
 npm rebuild node-sass
 
-if [ ! -f src/conf/app.config.ts ]; then
-  cp src/conf/app.config.sample.ts src/conf/app.config.ts
+if [ ! -f geonature/conf/app.config.ts ]; then
+  cp geonature/conf/app.config.sample.ts geonature/conf/app.config.ts
 fi
 
-if [ ! -f src/custom/custom.scss ]; then
-  cp src/custom/custom.scss.sample src/custom/custom.scss
+if [ ! -f geonature/custom/custom.scss ]; then
+  cp geonature/custom/custom.scss.sample geonature/custom/custom.scss
 fi
 
-# copy the custom components 
-if [ ! -f src/custom/components/footer/footer.component.ts ]; then
-  cp src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
+# copy the custom components
+if [ ! -f geonature/custom/components/footer/footer.component.ts ]; then
+  cp geonature/custom/components/footer/footer.component.ts.sample geonature/custom/components/footer/footer.component.ts
 fi
-if [ ! -f src/custom/components/footer/footer.component.html ]; then
-  cp src/custom/components/footer/footer.component.html.sample src/custom/components/footer/footer.component.html
+if [ ! -f geonature/custom/components/footer/footer.component.html ]; then
+  cp geonature/custom/components/footer/footer.component.html.sample geonature/custom/components/footer/footer.component.html
 fi
-if [ ! -f src/custom/components/introduction/introduction.component.ts ]; then
-  cp src/custom/components/introduction/introduction.component.ts.sample src/custom/components/introduction/introduction.component.ts
+if [ ! -f geonature/custom/components/introduction/introduction.component.ts ]; then
+  cp geonature/custom/components/introduction/introduction.component.ts.sample geonature/custom/components/introduction/introduction.component.ts
 fi
-if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
-  cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
+if [ ! -f geonature/custom/components/introduction/introduction.component.html ]; then
+  cp geonature/custom/components/introduction/introduction.component.html.sample geonature/custom/components/introduction/introduction.component.html
 fi
 
 
-sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" src/conf/app.config.ts
-sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" src/conf/app.config.ts
-sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" src/conf/app.config.ts
+sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" geonature/conf/app.config.ts
+sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" geonature/conf/app.config.ts
+sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" geonature/conf/app.config.ts
 
-nano src/conf/app.config.ts 
+nano geonature/conf/app.config.ts
 
 ng build --prod --aot=false --base-href=/geonature/

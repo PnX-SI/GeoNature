@@ -15,7 +15,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from ...core.users.models import TRoles
 from ...core.gn_meta import routes as gn_meta
 from pypnnomenclature.models import TNomenclatures
-from src.core.ref_geo.models import LAreasWithoutGeom
+from geonature.core.ref_geo.models import LAreasWithoutGeom
 from pypnusershub.db.tools import InsufficientRightsError
 
 from geoalchemy2 import Geometry
@@ -34,7 +34,7 @@ class ReleveModel(db.Model):
 
     def get_releve_if_allowed(self, user):
         """Return the releve if the user is allowed
-          -params: 
+          -params:
           user: object from TRole
         """
         if user.tag_object_code == '2':
