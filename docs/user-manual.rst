@@ -1,13 +1,13 @@
-==================
-MANUEL UTILISATEUR
-==================
+==============================
+GeoNature - MANUEL UTILISATEUR
+==============================
 
 Authentification
 ================
 
 Accéder à l'application sur https://depot-legal-biodiversite.naturefrance.fr/saisie 
 
-Si vous n'êtes pas déjà authentifié sur votre compte INPN, vous serez invité à le faire : 
+Si vous n'êtes pas déjà authentifié avec votre compte INPN, vous serez invité à le faire : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/00-login-inpn.jpg
 
@@ -39,7 +39,9 @@ Ce module permet de saisir des données selon le standard Occurrences de taxon d
 
 Les données sont organisées en relevés (localisation, date, observateur...) qui sont composés d'observations 
 d'un ou plusieurs taxons (méthode, état, statut, détermination...).
+
 Pour chaque taxon observé, il est possible de renseigner un plusieurs dénombrements. 
+
 Chaque dénombrement correspond à un stade de vie et un sexe.
 
 Chaque relevé est associé à un jeu de donnée. Pour saisir un jeu de données, il faut donc que vous ayez créé au 
@@ -48,15 +50,21 @@ préalable les jeux de données dans l'application Métadonnées (MTD) du SINP.
 .. image :: http://geonature.fr/docs/img/user-manual/02-occtax.jpg
 
 Quand on accède au module, celui-ci affiche vos données présentes dans le module sur la carte ainsi que dans une liste. 
+
 La carte et la liste sont interactives. 
+
 Il est possible de se déplacer et de zoomer dans la carte (avec la souris et la molette ou les bouton + et -).
+
 Il est aussi possible de changer le fond de carte affiché.
 
 .. image :: http://geonature.fr/docs/img/user-manual/02-occtax-layers.jpg
 
 Les relevés affichés peuvent être filtrés. 
+
 Le premier filtre permet de limiter les relevés à ceux contenant un taxon en particulier. 
+
 Pour sélectionner un taxon, saisir au moins 3 lettres de l'espèce (en français ou en latin). 
+
 Il est aussi possible de saisir les premières lettres de l'espèce et de la sous-espèce. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/02-occtax-filters.jpg
@@ -107,11 +115,11 @@ AJOUTER UN RELEVE
 
 Depuis la liste des relevés, cliquer sur le bouton de création d'un relevé : 
 
-.. image :: http://geonature.fr/docs/img/user-manual/05-occtax-add.jpg
+.. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create.jpg
 
 Vous accédez alors à un formulaire de saisie à compléter : 
 
-.. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create.jpg
+.. image :: http://geonature.fr/docs/img/user-manual/05-occtax-add.jpg
 
 Commencez par localiser le relevé, sous forme de point (en cliquant sur la carte ou en saisissant les coordonnées GPS du point) : 
 
@@ -126,12 +134,16 @@ Ou de polygone (en recliquant sur le premier point du polygone pour le terminer)
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-polygon.jpg
 
 Les localisations peuvent être modifiées. 
+
 Pour les points, il suffit de les déplacer ou de recliquer ailleurs sur la carte. 
+
 Pour les lignes et les polygones, il faut cliquer sur le bouton de modification. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-polygon-edit.jpg
 
 Vous pouvez alors déplacer les sommets existants ou en créer de nouveaux pour affiner le tracé en cliquant sur les sommets transparents.
+
+Cliquer sur SAVE pour enregistrer les modifications apportées à une ligne ou un polygone.
 
 L'altitude minimum et maximum du relevé sont calculés automatiquement mais peuvent être modifiés manuellement. 
 
@@ -149,6 +161,7 @@ vous pouvez ajouter un premier taxon à celui-ci :
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon.jpg
 
 Pour sélectionner un taxon, saisiseez au moins les 3 premières lettres de son nom latin ou français. 
+
 Vous pouvez aussi saisir les 3 premières lettres de l'espèce et de la sous-espèce.
 
 Renseignez ensuite les autres champs relatifs au taxon. Les valeurs proposées dans les listes dépendent 
@@ -159,7 +172,8 @@ du rang et du groupe du taxon selectionné :
 Des valeurs par défaut sont renseignées par défaut pour certains.
 
 Vous pouvez ensuite rensigner un ou plusieurs dénombrements pour le taxon observé. 
-Par défaut un dénombrement indéterminé d'un individu est renseigné : 
+
+Par défaut, un dénombrement indéterminé d'un individu est renseigné : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-counting.jpg
 
@@ -204,6 +218,7 @@ Les exports se font jeu de données par jeu de données.
 .. image :: http://geonature.fr/docs/img/user-manual/06-export.jpg
 
 Vous obtenez alors un CSV par jeu de données.
-Pour garder le maximum d'information, une ligne correspond à un dénombrement d'un taxon. 
+
+Pour exporter toutes les informations saisies, une ligne correspond à un dénombrement d'un taxon. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-export-csv.jpg
