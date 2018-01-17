@@ -33,6 +33,7 @@ pytest = "*"
 pytest-cov = "*"
 mypy = "*"
 pytest-pythonpath = "*"
+ipdb = "*"
 
 
 [requires]
