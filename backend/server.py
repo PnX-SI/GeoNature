@@ -3,13 +3,16 @@ Démarrage de l'application
 '''
 
 import toml
-
+from pathlib import Path
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
+
+
+ROOT_DIR = Path(__file__).absolute().parent.parent
 
 db = SQLAlchemy()
 
@@ -19,7 +22,7 @@ app_globals = {}
 def get_app():
 
     # load and validate configuration
-    conf_toml = toml.load(['../config/custom_config.toml'])
+    conf_toml = toml.load([str(ROOT_DIR /'config/custom_config.toml')])
     configs_py, configerrors = GnPySchemaConf().load(conf_toml)
     if configerrors:
         raise ConfigError(configerrors)
