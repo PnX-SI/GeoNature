@@ -40,7 +40,7 @@ Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` :
 Authentification CAS INPN
 =========================
 
-- Code source : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/src/core/auth/routes.py#L19-L106
+- Code source : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/geonature/core/auth/routes.py#L19-L106
 - Config backend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/backend/default_config.py#L25-L35
 - Config frontend : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/frontend/src/conf/app.config.sample.ts#L29-L34
 
