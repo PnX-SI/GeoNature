@@ -93,11 +93,9 @@ CREATE TABLE t_occurrences_contact (
     id_nomenclature_bio_status integer, --DEFAULT get_default_nomenclature_value(13),
     id_nomenclature_naturalness integer, --DEFAULT get_default_nomenclature_value(8),
     id_nomenclature_exist_proof integer, --DEFAULT get_default_nomenclature_value(15),
-    id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
     id_nomenclature_diffusion_level integer, --DEFAULT get_default_nomenclature_value(5),
     id_nomenclature_observation_status integer, --DEFAULT get_default_nomenclature_value(18),
     id_nomenclature_blurring integer, --DEFAULT get_default_nomenclature_value(4),
-    id_validator integer,
     determiner character varying(255),
     id_nomenclature_determination_method integer, --DEFAULT get_default_nomenclature_value(106),
     determination_method_as_text text,
@@ -117,7 +115,6 @@ COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_bio_condition IS 'Corres
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
-COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valide';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs';
 COMMENT ON COLUMN t_occurrences_contact.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou';
@@ -143,10 +140,20 @@ CREATE TABLE cor_counting_contact (
     id_nomenclature_type_count integer, --DEFAULT get_default_nomenclature_value(21),
     count_min integer,
     count_max integer,
+    id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
+    id_validator integer,
+    validation_comment text,
+    meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     unique_id_sinp_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4()
 );
+COMMENT ON COLUMN cor_counting_contact.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie (10)';
+COMMENT ON COLUMN cor_counting_contact.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe (9)';
+COMMENT ON COLUMN cor_counting_contact.id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr (6)';
+COMMENT ON COLUMN cor_counting_contact.id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr (21)';
+COMMENT ON COLUMN cor_counting_contact.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valid (101)';
+
 CREATE SEQUENCE cor_counting_contact_id_counting_contact_seq
     START WITH 1
     INCREMENT BY 1
@@ -213,9 +220,6 @@ ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_t_releves_contact FOREIGN KEY (id_releve_contact) REFERENCES t_releves_contact(id_releve_contact) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_taxref FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
@@ -232,9 +236,6 @@ ALTER TABLE ONLY t_occurrences_contact
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_occurrences_contact
-    ADD CONSTRAINT fk_t_occurrences_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_contact
     ADD CONSTRAINT fk_t_occurrences_contact_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -263,6 +264,12 @@ ALTER TABLE ONLY cor_counting_contact
 
 ALTER TABLE ONLY cor_counting_contact
     ADD CONSTRAINT fk_cor_counting_contact_typ_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_counting_contact
+    ADD CONSTRAINT fk_cor_counting_contact_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_counting_contact
+    ADD CONSTRAINT fk_cor_counting_contact_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_role_releves_contact
@@ -320,9 +327,6 @@ ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_occurrences_contact_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15));
 
 ALTER TABLE t_occurrences_contact
-  ADD CONSTRAINT check_t_occurrences_contact_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
-
-ALTER TABLE t_occurrences_contact
   ADD CONSTRAINT check_t_occurrences_contact_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
 
 ALTER TABLE t_occurrences_contact
@@ -346,6 +350,9 @@ ALTER TABLE cor_counting_contact
 
 ALTER TABLE cor_counting_contact
   ADD CONSTRAINT check_cor_counting_contact_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
+
+ALTER TABLE cor_counting_contact
+  ADD CONSTRAINT check_cor_counting_contact_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
 
 ALTER TABLE cor_counting_contact
     ADD CONSTRAINT check_cor_counting_contact_count_min CHECK (count_min > 0);
