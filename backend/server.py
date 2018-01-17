@@ -9,7 +9,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-from config_schema import GnCoreSchemaConf, ConfigError
+from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
 
 db = SQLAlchemy()
 
@@ -17,17 +17,24 @@ app_globals = {}
 
 
 def get_app():
-    if app_globals.get('app', False):
-        return app_globals['app']
-    app = Flask(__name__)
 
     # load and validate configuration
     conf_toml = toml.load(['../config/custom_config.toml'])
-    data, configerrors = GnCoreSchemaConf().load(conf_toml)
+    configs_py, configerrors = GnPySchemaConf().load(conf_toml)
+    if configerrors:
+        raise ConfigError(configerrors)
+    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
     if configerrors:
         raise ConfigError(configerrors)
 
-    app.config.update(data)
+    configs = configs_py.copy()
+    configs.update(configs_gn)
+
+    if app_globals.get('app', False):
+        return app_globals['app']
+
+    app = Flask(__name__)
+    app.config.update(configs)
     db.init_app(app)
     with app.app_context():
         db.create_all()
