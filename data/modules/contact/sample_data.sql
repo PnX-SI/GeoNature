@@ -62,7 +62,7 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 ;
 
 INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES
-(1, 'Contact faune flore', 'Données issues du contact aléatoire', 'pr_contact.t_occurrences_contact.id_occurrence_contact', '/contact', NULL, NULL, 'CONTACT', true);
+(1, 'Contact faune flore', 'Données issues du contact aléatoire', 'pr_contact.cor_counting_contact.id_counting_contact', '/occtax', NULL, NULL, 'CONTACT', true);
 
 INSERT INTO pr_contact.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 (14,0,0,0,42)
