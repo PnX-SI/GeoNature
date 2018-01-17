@@ -88,10 +88,10 @@ INSERT INTO pr_contact.t_releves_contact (id_releve_contact,id_dataset,id_digiti
 ,(2,1,1,'Obervateur test insert',343,151,'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,FALSE,'web',now(),now(),'Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
 SELECT pg_catalog.setval('pr_contact.t_releves_contact_id_releve_contact_seq', 2, true);
 
-INSERT INTO pr_contact.t_occurrences_contact  (id_occurrence_contact, id_releve_contact, id_nomenclature_obs_meth, id_nomenclature_bio_condition, id_nomenclature_bio_status, id_nomenclature_naturalness, id_nomenclature_exist_proof, id_nomenclature_valid_status, id_nomenclature_diffusion_level, id_nomenclature_observation_status, id_nomenclature_blurring, id_validator, determiner, id_nomenclature_determination_method, determination_method_as_text, cd_nom, nom_cite, meta_v_taxref, sample_number_proof, digital_proof, non_digital_proof, deleted, meta_create_date, meta_update_date, comment) VALUES
-(1,1,65,177,30,182,91,347,163,101,200,1,'Gil',379,'Gees',60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
-,(2,1,65,177,30,182,91,347,163,101,200,1,'Gil D',370,NULL,351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
-,(3,2,65,177,30,182,91,347,163,101,200,1,'Donovan M',370,NULL,67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');
+INSERT INTO pr_contact.t_occurrences_contact  (id_occurrence_contact, id_releve_contact, id_nomenclature_obs_meth, id_nomenclature_bio_condition, id_nomenclature_bio_status, id_nomenclature_naturalness, id_nomenclature_exist_proof, id_nomenclature_diffusion_level, id_nomenclature_observation_status, id_nomenclature_blurring, id_validator, determiner, id_nomenclature_determination_method, determination_method_as_text, cd_nom, nom_cite, meta_v_taxref, sample_number_proof, digital_proof, non_digital_proof, deleted, meta_create_date, meta_update_date, comment) VALUES
+(1,1,65,177,30,182,91,163,101,200,1,'Gil',379,'Gees',60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
+,(2,1,65,177,30,182,91,163,101,200,1,'Gil D',370,NULL,351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
+,(3,2,65,177,30,182,91,163,101,200,1,'Donovan M',370,NULL,67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');
 
 
 SELECT pg_catalog.setval('pr_contact.t_occurrences_contact_id_occurrence_contact_seq', 4, true);
@@ -100,9 +100,9 @@ INSERT INTO pr_contact.cor_role_releves_contact VALUES
 (1,1)
 ,(2,1);
 
-INSERT INTO  pr_contact.cor_counting_contact (id_counting_contact, id_occurrence_contact, id_nomenclature_life_stage, id_nomenclature_sex, id_nomenclature_obj_count, id_nomenclature_type_count, count_min, count_max) VALUES
-(1,1,4,190,166,107,5,5)
-,(2,1,4,191,166,107,1,1),
-(3,2,4,191,166,107,1,1),
-(4,3,4,191,166,107,1,1);
+INSERT INTO  pr_contact.cor_counting_contact (id_counting_contact, id_occurrence_contact, id_nomenclature_life_stage, id_nomenclature_sex, id_nomenclature_obj_count, id_nomenclature_type_count, count_min, count_max, id_nomenclature_valid_status) VALUES
+(1,1,4,190,166,107,5,5,347)
+,(2,1,4,191,166,107,1,1,347),
+(3,2,4,191,166,107,1,1,347),
+(4,3,4,191,166,107,1,1,347);
 SELECT pg_catalog.setval('pr_contact.cor_counting_contact_id_counting_contact_seq', 5, true);
