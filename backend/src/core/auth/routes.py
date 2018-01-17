@@ -30,7 +30,7 @@ def loginCas():
     if 'ticket' in params:
         base_url = current_app.config['API_ENDPOINT']+"/auth_cas/login"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
-            url=config_cas['URL_VALIDATION'],
+            url=config_cas['CAS_URL_VALIDATION'],
             ticket=params['ticket'],
             service=base_url
         )
@@ -48,12 +48,20 @@ def loginCas():
 
             response = utilsrequests.get(
                 ws_user_url,
-                (config_cas['USER_WS']['ID'], config_cas['USER_WS']['PASSWORD'])
+                (
+                    config_cas['USER_WS']['ID'],
+                    config_cas['USER_WS']['PASSWORD']
+                )
             )
 
             info_user = response.json()
             organism_id = info_user['codeOrganisme']
-            organism_name = info_user['libelleLongOrganisme'] if info_user['libelleLongOrganisme'] is not None else 'Autre'
+
+            if info_user['libelleLongOrganisme'] is not None:
+                organism_name = info_user['libelleLongOrganisme']
+            else:
+                organism_name = 'Autre'
+
             user_login = info_user['login']
             user_id = info_user['id']
             # Reconciliation avec base GeoNature
@@ -114,7 +122,7 @@ def loginCas():
             # redirect to inpn sss
             return """<p> Echec de l'authentification. <p>
              <p> Deconnectez-vous du service INPN avant de retenter une connexion à GeoNature </p>
-             <p> <a target="_blank" href="""+current_app.config['CAS']['URL_LOGOUT']+"""> Deconnexion </a> </p>
+             <p> <a target="_blank" href="""+current_app.config['CAS']['CAS_URL_LOGOUT']+"""> Deconnexion </a> </p>
              <p> <a target="_blank" href="""+current_app.config['URL_APPLICATION']+"""> Retour vers GeoNature </a> </p>
              """
     return jsonify({'message': 'Authentification error'}, 500)
