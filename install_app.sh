@@ -2,6 +2,7 @@
 
 . ./config/settings.ini
 
+BASE_DIR=$(readlink -e "${0%/*}")
 cd backend
 
 echo "Création du fichier de configuration ..."
@@ -31,11 +32,10 @@ fi
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+python ${BASE_DIR}/geonature_cmd.py install_command
 deactivate
 
 #Lancement de l'application
-cd ..
-BASE_DIR=$(readlink -e "${0%/*}")
 cd backend
 DIR=$(readlink -e "${0%/*}")
 cp gunicorn_start.sh.sample gunicorn_start.sh
@@ -68,7 +68,7 @@ if [ ! -f geonature/custom/custom.scss ]; then
   cp geonature/custom/custom.scss.sample geonature/custom/custom.scss
 fi
 
-# copy the custom components 
+# copy the custom components
 if [ ! -f geonature/custom/components/footer/footer.component.ts ]; then
   cp geonature/custom/components/footer/footer.component.ts.sample geonature/custom/components/footer/footer.component.ts
 fi
@@ -87,6 +87,6 @@ sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" geona
 sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" geonature/conf/app.config.ts
 sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" geonature/conf/app.config.ts
 
-nano geonature/conf/app.config.ts 
+nano geonature/conf/app.config.ts
 
 ng build --prod --aot=false --base-href=/geonature/
