@@ -3,11 +3,13 @@
 
 import os
 import sys
-import site
-
+import toml
+import json
 from pathlib import Path
 
 from collections import namedtuple
+from config_schema import GnGeneralSchemaConf, ConfigError
+
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
@@ -89,3 +91,16 @@ def install_geonature_command():
             "geonature.core.command.main()\n"
         ])
     cmd_path.chmod(0o777)
+
+
+def create_frontend_config(conf_file):
+    conf_toml = toml.load(conf_file)
+    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
+    if configerrors:
+        raise ConfigError(configerrors)
+
+    with open(
+        str(ROOT_DIR / 'frontend/src/conf/frontend-config.ts'), 'w'
+    ) as outputfile:
+        outputfile.write("export const AppConfig = ")
+        json.dump(configs_gn, outputfile, indent=True)
