@@ -41,7 +41,17 @@ import { MapService } from './map/map.service';
 import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
+//import '../../../node_modules/rxjs/add/operator/debounceTime';
+//import '@nodes_modules/rxjs/add/operator/distinctUntilChanged'
+//import { debounceTime } from '@rxjs/operator/debounceTime';
 
+import 'rxjs/add/operator/debounceTime';
+
+
+
+// import '../../../node_modules/rxjs/Rx';
+//import {debounceTime} from '../../../node_modules/rxjs/operator/debounceTime';
+// import '../../../'
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
