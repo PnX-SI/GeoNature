@@ -25,8 +25,6 @@ def get_app():
     conf_toml = toml.load(['../config/custom_config.toml'])
     data, configerrors = GnCoreSchemaConf().load(conf_toml)
     if configerrors:
-        print('BAD CONFIG')
-        print(configerrors)
         raise ConfigError(configerrors)
 
     app.config.update(data)
