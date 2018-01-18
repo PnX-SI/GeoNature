@@ -171,6 +171,7 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
             conf_manifest, configerrors = ManifestSchemaProdConf().load(conf_toml)
             if configerrors:
                 raise ConfigError(file_manifest, configerrors)
+
             # import du module dans le sys.path
             module_path = Path(conf_manifest['module_path'])
             module_parent_dir = str(module_path.parent)
