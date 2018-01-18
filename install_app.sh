@@ -1,4 +1,8 @@
 #!/bin/bash
+
+#exit script if a error occurred
+set -e
+
 . ./config/settings.ini
 
 BASE_DIR=$(readlink -e "${0%/*}")
