@@ -218,6 +218,6 @@ Puis lancer le backend en mode développement
 **Le serveur développement est disponible à l'adresse 127.0.0.1:5000**.
 
 
-Documentation sur l'API, le frontend et la base de données ICI : https://github.com/PnX-SI/GeoNature/blob/frontend-contact/docs/development.rst
+Documentation sur l'API, le frontend et la base de données ICI : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst
 
 Happy hacking !

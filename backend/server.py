@@ -1,5 +1,3 @@
-#coding: utf8
-
 '''
 Démarrage de l'application
 '''
@@ -8,16 +6,29 @@ Démarrage de l'application
 from flask import Flask
 from flask_cors import CORS
 
-from geonature.utils.env import DB
+from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
+
+from geonature.utils.env import ROOT_DIR
 
 app_globals = {}
 
 
 def get_app():
+    # load and validate configuration
+    conf_toml = toml.load([str(ROOT_DIR /'config/custom_config.toml')])
+    configs_py, configerrors = GnPySchemaConf().load(conf_toml)
+    if configerrors:
+        raise ConfigError(configerrors)
+    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
+    if configerrors:
+        raise ConfigError(configerrors)
+
+    configs = configs_py.copy()
+    configs.update(configs_gn)
     if app_globals.get('app', False):
         return app_globals['app']
     app = Flask(__name__)
-    app.config.from_object('custom_config.CustomConfig')
+    app.config.update(configs)
     DB.init_app(app)
     with app.app_context():
         DB.create_all()

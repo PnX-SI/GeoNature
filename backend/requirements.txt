@@ -10,6 +10,7 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
+
 https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/master.zip
 certifi==2017.11.5
@@ -26,12 +27,14 @@ idna==2.6
 itsdangerous==0.24
 jinja2==2.10
 markupsafe==1.0
+marshmallow==2.15.0
 psycopg2==2.7.3
 python-dateutil==2.6.1
 requests==2.18.4
 shapely==1.5.16
 six==1.11.0
 sqlalchemy==1.1.13
+toml==0.9.4
 urllib3==1.22
 werkzeug==0.14.1
 xmltodict==0.11.0

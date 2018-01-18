@@ -12,7 +12,12 @@ from geonature.utils.env import (
     virtualenv_status,
     DEFAULT_VIRTUALENV_DIR,
     install_geonature_command,
-    GEONATURE_VERSION
+    GEONATURE_VERSION,
+    create_frontend_config,
+    start_gunicorn_cmd,
+    start_flask_server_cmd,
+    supervisor_cmd,
+    start_geonature_front
 )
 
 log = logging.getLogger(__name__)
@@ -69,3 +74,55 @@ def install_command(ctx):
             'stick to using "python geonature_cmd.py" manually.'
         ).format(DEFAULT_VIRTUALENV_DIR))
 
+
+@main.command()
+@click.option(
+    '--conf_file'
+)
+def generate_frontend_config(conf_file):
+    """
+        Génération des fichiers de configurations pour javascript
+    """
+    try:
+        create_frontend_config(conf_file)
+    except FileNotFoundError:
+        print("file {} doesn't exists".format(conf_file))
+
+
+
+@main.command()
+@click.option('--uri', default="0.0.0.0:8000")
+@click.option('--worker', default=4)
+def start_gunicorn(uri, worker):
+    """
+        Lance l'api du backend avec gunicorn
+    """
+    start_gunicorn_cmd(uri, worker)
+
+
+@main.command()
+@click.option('--host', default="0.0.0.0")
+@click.option('--port', default=8000)
+def dev_back(host, port):
+    """
+        Lance l'api du backend avec gunicorn
+    """
+    start_flask_server_cmd(host, port)
+
+
+@main.command()
+@click.option('--action', default="restart", type=click.Choice(['start', 'stop', 'restart']))
+@click.option('--app_name', default="geonature2")
+def supervisor(action, app_name):
+    """
+        Lance les actions du supervisor
+    """
+    supervisor_cmd(action, app_name)
+
+
+@main.command()
+def dev_front():
+    """
+        Lance l'api du backend et démarre le frontend
+    """
+    start_geonature_front()
