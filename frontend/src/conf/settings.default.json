@@ -6,7 +6,7 @@
   "CAS": {
     "CAS_AUTHENTIFICATION": false,
     "CAS_LOGIN_URL": "https://preprod-inpn.mnhn.fr/auth/login",
-    "CAS_LOGOUT_URL": "https://preprod-inpn.mnhn.fr/auth/logout",
+    "CAS_URL_LOGOUT": "https://preprod-inpn.mnhn.fr/auth/logout",
     "CAS_VALIDATION_URL": "https://preprod-inpn.mnhn.fr/auth/serviceValidate"
   },
   "URL_APPLICATION": "http://127.0.0.1:4200/",
