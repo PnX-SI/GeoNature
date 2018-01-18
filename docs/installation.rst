@@ -1,9 +1,8 @@
-=============================
 INSTALLATION DE L'APPLICATION
 =============================
 
 Prérequis
-=========
+---------
 
 - Ressources minimum serveur :
 
@@ -21,7 +20,7 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 - Librairies CSS (Bootstrap, Material Design)
 
 Installation de l'application
-=============================
+-----------------------------
 
 /!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/develop/install_all
 
@@ -123,7 +122,7 @@ Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-availabl
 
 
 Installation d'un module GeoNature
-==================================
+----------------------------------
 
 L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
 
@@ -135,10 +134,10 @@ L'installation de GeoNature n'est livrée qu'avec les schémas de base de donné
 
 
 Doc développeur
-==========================================
+---------------
 
-Instalation de l'environnement Python
---------------------------------------
+Installation de l'environnement Python
+""""""""""""""""""""""""""""""""""""""
 
 Installer pipenv et le virtualenv ainsi que tous les dépendances Python.
 
@@ -149,15 +148,13 @@ Installer pipenv et le virtualenv ainsi que tous les dépendances Python.
 
 Lancer ensuite l'application en mode développement
 
-Stopper d'abbord le mode production, puis lancez le mode développement du backend
+Stopper d'abord le mode production, puis lancez le mode développement du backend
 
 ::
 
     cd geonature/backend/
     make supervisor-stop
     make develop
-
-
 
 
 * Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire `home` de l'utilisateur
@@ -180,7 +177,7 @@ Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.
 
 ::
 
-  	URL_APPLICATION: 'http://127.0.0.1:4200',
+    URL_APPLICATION: 'http://127.0.0.1:4200',
     API_ENDPOINT: 'http://127.0.0.1:8000/',
     API_TAXHUB : 'http://127.0.0.1:5000/api/',
 
@@ -188,6 +185,6 @@ Depuis le répertoire ``frontend`` lancer la commande:
 
 ::
 
-	  npm run start
+    npm run start
 
 Lancer son navigateur à l'adresse ``127.0.0.1:4200``
