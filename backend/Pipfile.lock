@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "902adf405adb00cc2e01d44420f759f2192c28ec63b6ad357a69155e3594cec7"
+            "sha256": "de2a5883dc106962164009ba1e49ee0839a81f0be9cd9e335eff60d23aba46ee"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -131,6 +131,13 @@
             ],
             "version": "==1.0"
         },
+        "marshmallow": {
+            "hashes": [
+                "sha256:8740ada95f47fa19f905772aa4932dc5512226a90c30da5672d6d6bf3dd791a7",
+                "sha256:d3f31fe7be2106b1d783cbd0765ef4e1c6615505514695f33082805f929dd584"
+            ],
+            "version": "==2.15.0"
+        },
         "psycopg2": {
             "hashes": [
                 "sha256:5c11fc5091af28d048c321f2b23a3f984ffb5b546ab3cb7424c52c6feae6c965",
@@ -202,6 +209,12 @@
                 "sha256:2a98ac87b30eaa2bee1f1044848b9590e476e7f93d033c6542e60b993a5cf898"
             ],
             "version": "==1.1.13"
+        },
+        "toml": {
+            "hashes": [
+                "sha256:8e86bd6ce8cc11b9620cb637466453d94f5d57ad86f17e98a98d1f73e3baab2d"
+            ],
+            "version": "==0.9.4"
         },
         "urllib3": {
             "hashes": [

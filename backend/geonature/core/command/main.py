@@ -13,12 +13,16 @@ from geonature.utils.env import (
     DEFAULT_VIRTUALENV_DIR,
     install_geonature_command,
     GEONATURE_VERSION,
-    create_frontend_config,
+    create_frontend_config
+)
+
+from geonature.utils.command import (
+    get_app_for_cmd,
     start_gunicorn_cmd,
-    start_flask_server_cmd,
     supervisor_cmd,
     start_geonature_front
 )
+
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +81,9 @@ def install_command(ctx):
 
 @main.command()
 @click.option(
-    '--conf_file'
+    '--conf-file',
+    required=False,
+    envvar='GEONATURE_CONFIG_FILE'
 )
 def generate_frontend_config(conf_file):
     """
@@ -93,7 +99,12 @@ def generate_frontend_config(conf_file):
 @main.command()
 @click.option('--uri', default="0.0.0.0:8000")
 @click.option('--worker', default=4)
-def start_gunicorn(uri, worker):
+@click.option(
+    '--conf-file',
+    required=False,
+    envvar='GEONATURE_CONFIG_FILE'
+)
+def start_gunicorn(uri, worker, config_file=None):
     """
         Lance l'api du backend avec gunicorn
     """
@@ -103,11 +114,17 @@ def start_gunicorn(uri, worker):
 @main.command()
 @click.option('--host', default="0.0.0.0")
 @click.option('--port', default=8000)
-def dev_back(host, port):
+@click.option(
+    '--conf-file',
+    required=False,
+    envvar='GEONATURE_CONFIG_FILE'
+)
+def dev_back(host, port, conf_file):
     """
-        Lance l'api du backend avec gunicorn
+        Lance l'api du backend avec flask
     """
-    start_flask_server_cmd(host, port)
+    app = get_app_for_cmd(conf_file)
+    app.run(host=host, port=int(port), debug=True)
 
 
 @main.command()
@@ -121,6 +138,11 @@ def supervisor(action, app_name):
 
 
 @main.command()
+@click.option(
+    '--conf-file',
+    required=False,
+    envvar='GEONATURE_CONFIG_FILE'
+)
 def dev_front():
     """
         Lance l'api du backend et démarre le frontend

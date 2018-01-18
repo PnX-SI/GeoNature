@@ -38,7 +38,7 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            '^postgresql:\/\/.*:.*@\w+:\w+\/\w+$',
+            '^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$',
             0,
             'Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name'
         )
