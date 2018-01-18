@@ -97,10 +97,15 @@ def gn_module_import_requirements(module_path):
         print("...ok")
 
 def gn_module_activate(module_name):
-    cmd = "sudo cp {}/{}* {}/{}".format(
+    print("Activate module")
+    if (GN_MODULES_ETC_ENABLED / module_name).is_dir():
+        cmd = "sudo rm -r {}/{}".format(GN_MODULES_ETC_ENABLED, module_name)
+    subprocess.call(cmd.split(" "))
+    cmd = "sudo ln -s {}/{} {}".format(
         GN_MODULES_ETC_AVAILABLE,
         module_name,
         GN_MODULES_ETC_ENABLED,
         module_name
     )
     subprocess.call(cmd.split(" "))
+    print("...ok")
