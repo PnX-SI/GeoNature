@@ -1,8 +1,12 @@
-# PostgreSQL Configuration
-##########################
+# URL Configuration
+###################
 
 # Url of the server must end with /
-my_url=http://my_url.com/
+my_url=http://url.com/
+
+
+# PostgreSQL Configuration
+##########################
 
 # Drop eventual existing database during installation
 drop_apps_db=false
