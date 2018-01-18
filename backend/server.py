@@ -1,14 +1,15 @@
 '''
 Démarrage de l'application
 '''
-
+import toml
 
 from flask import Flask
 from flask_cors import CORS
 
-from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
+from geonature.utils.config_schema import GnPySchemaConf, GnGeneralSchemaConf
+from geonature.utils.errors import ConfigError
 
-from geonature.utils.env import ROOT_DIR
+from geonature.utils.env import ROOT_DIR, DB
 
 app_globals = {}
 
@@ -57,7 +58,7 @@ def get_app():
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
-        ## errors
+        # errors
         from geonature.core.errors import routes
 
         app_globals['app'] = app
