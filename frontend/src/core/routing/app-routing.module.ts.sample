@@ -24,17 +24,15 @@ const defaultRoutes: Routes = [
   // uncomment to activate login
    { path: '', component: NavHomeComponent, canActivateChild: [AuthGuard],
      children: [
+      {% for route in routes %}
+        {path: '{{route.path}}', loadChildren: '{{route.location}}' },
+        {% endfor %}
       { path: '', component: HomeContentComponent },
       { path: 'exports', loadChildren: '@geonature/core/exports/exports.module#ExportsModule'},
       { path: 'occtax', loadChildren: '@geonature/modules/contact/contact.module#ContactModule'},
       { path: '**',  component: PageNotFoundComponent },
-      {% for route in routes %}
-        {'path': route.path, 'loadChildren': route.location}
-    {% endfor %}
      ] },
 ];
-
-
 
 
 export const appRoutingProviders: any[] = [];

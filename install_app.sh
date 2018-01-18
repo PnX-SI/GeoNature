@@ -142,6 +142,8 @@ if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
   cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
 fi
 
+# generate the modules routing file by templating
+geonature generate_modules_route
 
 echo "Build du frontend..."
 npm run build
