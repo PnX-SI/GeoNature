@@ -8,8 +8,6 @@ from flask import Flask
 
 from flask_cors import CORS
 
-from flask_script import Manager
-
 from geonature.utils.env import ROOT_DIR, DB, load_config
 
 log = logging.getLogger(__name__)
@@ -62,6 +60,3 @@ def get_app(config, _app=None):
         _app = app
     return app
 
-
-if __name__ == '__main__':
-    Manager(app).run()
