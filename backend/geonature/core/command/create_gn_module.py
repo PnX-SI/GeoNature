@@ -150,4 +150,4 @@ def activate_gn_module(module_name):
     """
         Active un module gn installé
     """
-    gnmodule_activate(module_name)
+    gn_module_activate(module_name)
