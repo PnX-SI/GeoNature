@@ -12,6 +12,7 @@ from collections import ChainMap, namedtuple
 import toml
 
 from flask_sqlalchemy import SQLAlchemy
+from jinja2 import Template
 
 from geonature.utils.errors import ConfigError
 from geonature.utils.config_schema import (
@@ -30,7 +31,7 @@ GEONATURE_ETC = Path('/etc/geonature')
 
 DB = SQLAlchemy()
 
-GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py', '__init__.py', 'backend/__init__.py', 'backend/blueprint.py')
+GN_MODULE_FILES = ('manifest.toml', '__init__.py', 'backend/__init__.py', 'backend/blueprint.py')
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
@@ -195,4 +196,26 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
 
             yield conf_module, conf_manifest, module_blueprint
 
+def frontend_routes_templating():
+    with open(
+        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'), 'r'
+    ) as inputFile:
+
+        template = Template(inputFile.read())
+        routes = []
+        for conf, manifest, blueprint in list_gn_modules():
+            print(manifest)
+            location = Path(manifest['module_path']).name
+            path = conf['api_url'].lstrip('/')
+            location = '@{}/gnModule#GeonatureModule'.format(location)
+            routes.append({'path': path, 'location': location})
+
+            #TODO test if two modules with the same name is okay for Angular
+
+        route_template = template.render(routes=routes)
+
+    with open(
+        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts'), 'w'
+    ) as outputfile:
+        outputfile.write(route_template)
 

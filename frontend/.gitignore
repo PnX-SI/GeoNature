@@ -6,7 +6,7 @@ npm-debug.log
 src/conf/app.config.ts
 
 #routing
-src/core/routing/app-routing.ts
+src/core/routing/app-routing.module.ts
 
 # map config
 src/conf/map.config.ts
