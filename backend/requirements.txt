@@ -10,8 +10,8 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-ac0ff56
-c23df6c
+https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
+https://github.com/PnX-SI/Nomenclature-api-module/archive/master.zip
 certifi==2017.11.5
 chardet==3.0.4
 click==6.7
