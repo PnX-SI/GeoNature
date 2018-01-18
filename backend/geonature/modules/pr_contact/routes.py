@@ -3,15 +3,28 @@ from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
 from flask import Blueprint, request, json, current_app
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_, func, distinct
 from sqlalchemy.sql import text
 
 
-from .models import TRelevesContact, TOccurrencesContact, CorCountingContact, \
-    VReleveContact, VReleveList, corRoleRelevesContact, DefaultNomenclaturesValue
+from geonature.utils.env import DB
+from .models import (
+    TRelevesContact,
+    TOccurrencesContact,
+    CorCountingContact,
+    VReleveContact,
+    VReleveList,
+    corRoleRelevesContact,
+    DefaultNomenclaturesValue
+)
 from .repositories import ReleveRepository
-from ...utils.utilssqlalchemy import json_resp, testDataType, csv_resp, GenericTable, serializeQueryTest
+from ...utils.utilssqlalchemy import (
+    json_resp,
+    testDataType,
+    csv_resp,
+    GenericTable,
+    serializeQueryTest
+)
 
 from ...utils import filemanager
 from ...core.users.models import TRoles, UserRigth
@@ -27,8 +40,6 @@ from geoalchemy2.shape import to_shape, from_shape
 
 routes = Blueprint('pr_contact', __name__)
 
-db = SQLAlchemy()
-
 
 @routes.route('/releves', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
@@ -43,12 +54,12 @@ def getReleves(info_role):
 @fnauth.check_auth_cruved('R')
 @json_resp
 def getOccurrences():
-    q = db.session.query(TOccurrencesContact)
+    q = DB.session.query(TOccurrencesContact)
 
     try:
         data = q.all()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     if data:
@@ -73,7 +84,7 @@ def getViewReleveContact(info_role):
 
     parameters = request.args
 
-    nbResultsWithoutFilter = db.session.query(VReleveContact).count()
+    nbResultsWithoutFilter = DB.session.query(VReleveContact).count()
 
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
     page = int(parameters.get('offset')) if parameters.get('offset') else 0
@@ -106,7 +117,7 @@ def getViewReleveContact(info_role):
     try:
         data = q.limit(limit).offset(page*limit).all()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     user = info_role
@@ -180,14 +191,14 @@ def getViewReleveList(info_role):
     try:
         nbResultsWithoutFilter = VReleveList.query.count()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
 
     limit = int(params.get('limit')) if params.get('limit') else 100
     page = int(params.get('offset')) if params.get('offset') else 0
 
     # Specific Filters
     if 'cd_nom' in params:
-        testT = testDataType(params.get('cd_nom'), db.Integer, 'cd_nom')
+        testT = testDataType(params.get('cd_nom'), DB.Integer, 'cd_nom')
         if testT:
             return {'error': testT}, 500
         q = q.join(
@@ -208,14 +219,14 @@ def getViewReleveList(info_role):
         )
 
     if 'date_up' in params:
-        testT = testDataType(params.get('date_up'), db.DateTime, 'date_up')
+        testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
         if testT:
             return {'error': testT}, 500
         q = q.filter(VReleveList.date_min >= params.get('date_up'))
     if 'date_low' in params:
         testT = testDataType(
             params.get('date_low'),
-            db.DateTime,
+            DB.DateTime,
             'date_low'
         )
         if testT:
@@ -224,7 +235,7 @@ def getViewReleveList(info_role):
     if 'date_eq' in params:
         testT = testDataType(
             params.get('date_eq'),
-            db.DateTime,
+            DB.DateTime,
             'date_eq'
         )
         if testT:
@@ -248,7 +259,7 @@ def getViewReleveList(info_role):
     try:
         nbResults = q.count()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     # Order by
@@ -273,10 +284,10 @@ def getViewReleveList(info_role):
     try:
         data = q.limit(limit).offset(page*limit).all()
     except exc.IntegrityError as e:
-        db.session.rollback()
+        DB.session.rollback()
     except Exception as e:
         print('roollback')
-        db.session.rollback()
+        DB.session.rollback()
 
     user = info_role
     user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
@@ -323,7 +334,7 @@ def insertOrUpdateOneReleve(info_role):
     releve.geom_4326 = from_shape(shape, srid=4326)
 
     if observersList is not None:
-        observers = db.session.query(TRoles).\
+        observers = DB.session.query(TRoles).\
             filter(TRoles.id_role.in_(observersList)).all()
         for o in observers:
             releve.observers.append(o)
@@ -360,9 +371,9 @@ def insertOrUpdateOneReleve(info_role):
             user = UserRigth(id_role = info_role.id_role, tag_object_code = update_data_scope, tag_action_code = "U", id_organisme = info_role.id_organisme)
             releve = releveRepository.update(releve, user)
         else:
-            db.session.add(releve)
-        db.session.commit()
-        db.session.flush()
+            DB.session.add(releve)
+        DB.session.commit()
+        DB.session.flush()
     except Exception as e:
         raise
 
@@ -404,22 +415,22 @@ def deleteOneOccurence(id_occ):
             identifiant de l'enregistrement à supprimer
 
     """
-    q = db.session.query(TOccurrencesContact)
+    q = DB.session.query(TOccurrencesContact)
 
     try:
         data = q.get(id_occ)
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     if not data:
         return {'message': 'not found'}, 404
 
     try:
-        db.session.delete(data)
-        db.session.commit()
+        DB.session.delete(data)
+        DB.session.commit()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     return {'message': 'delete with success'}
@@ -439,22 +450,22 @@ def deleteOneOccurenceCounting(id_count):
             identifiant de l'enregistrement à supprimer
 
     """
-    q = db.session.query(CorCountingContact)
+    q = DB.session.query(CorCountingContact)
 
     try:
         data = q.get(id_count)
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     if not data:
         return {'message': 'not found'}, 404
 
     try:
-        db.session.delete(data)
-        db.session.commit()
+        DB.session.delete(data)
+        DB.session.commit()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     return {'message': 'delete with success'}
@@ -476,7 +487,7 @@ def getDefaultNomenclatures():
         organism = params['organism']
     types = request.args.getlist('id_type')
 
-    q = db.session.query(distinct(
+    q = DB.session.query(distinct(
                 DefaultNomenclaturesValue.id_type),
                 func.pr_contact.get_default_nomenclature_value(DefaultNomenclaturesValue.id_type, organism, regne, group2_inpn)
             )
@@ -485,13 +496,13 @@ def getDefaultNomenclatures():
     try:
         data = q.all()
     except:
-        db.session.rollback()
+        DB.session.rollback()
         raise
     if not data:
         return {'message': 'not found'}, 404
     return {d[0]: d[1] for d in data}
 
-    
+
 @routes.route('/export/sinp', methods=['GET'])
 @fnauth.check_auth_cruved('E', True)
 @csv_resp
@@ -503,7 +514,7 @@ def export_sinp(info_role):
         - uuid_dataset: uuid
     """
     viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
-    q = db.session.query(viewSINP.tableDef)
+    q = DB.session.query(viewSINP.tableDef)
     params = request.args
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     #if params in empty and user not admin, get the data off all dataset allowed
@@ -550,6 +561,6 @@ def export_sinp(info_role):
 def test(id_dataset = None, uuid_dataset = None):
     info_role = UserRigth(id_role = 2, id_organisme=-1, tag_object_code = "2", tag_action_code = "R")
     return 'la'
-         
-    
+
+
 

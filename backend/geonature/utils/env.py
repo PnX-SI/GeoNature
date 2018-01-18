@@ -3,17 +3,20 @@
 
 import os
 import sys
-import site
 
 from pathlib import Path
 
 from collections import namedtuple
+
+from flask_sqlalchemy import SQLAlchemy
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 
 GEONATURE_VERSION = (ROOT_DIR / 'VERSION').read_text().strip()
+
+DB = SQLAlchemy()
 
 
 def in_virtualenv():

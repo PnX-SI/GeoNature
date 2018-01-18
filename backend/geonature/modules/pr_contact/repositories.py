@@ -1,14 +1,10 @@
-# coding: utf8
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import  or_
 from werkzeug.exceptions import NotFound
 
-
+from geonature.utils.env import DB
 from ...core.gn_meta.models import CorDatasetsActor
 from ...core.gn_meta import routes as gn_meta
 from .models import corRoleRelevesContact
-
-db = SQLAlchemy()
 
 
 
@@ -25,15 +21,15 @@ class ReleveRepository():
          - info_user: TRole object model
         """
         try:
-            releve = db.session.query(self.model).get(id_releve)
+            releve = DB.session.query(self.model).get(id_releve)
         except:
-            db.session.rollback()
+            DB.session.rollback()
             raise
         if releve:
            return releve.get_releve_if_allowed(info_user)
 
         raise NotFound('The releve "{}" does not exist'.format(id_releve))
-            
+
 
     def update(self, releve, info_user):
         """ Update the current releve if allowed
@@ -42,31 +38,31 @@ class ReleveRepository():
         - info_user: Trole object model
         """
         releve = releve.get_releve_if_allowed(info_user)
-        db.session.merge(releve)
-        db.session.commit()
-        db.session.rollback()
+        DB.session.merge(releve)
+        DB.session.commit()
+        DB.session.rollback()
         return releve
 
 
-            
+
     def delete(self, id_releve, info_user):
         """Delete a releve
         params:
          - id_releve: integer
          - info_user: TRole object model"""
 
-        releve = db.session.query(self.model).get(id_releve)
+        releve = DB.session.query(self.model).get(id_releve)
         if releve:
             releve = releve.get_releve_if_allowed(info_user)
-            db.session.delete(releve)
-            db.session.commit()
-            db.session.rollback()
+            DB.session.delete(releve)
+            DB.session.commit()
+            DB.session.rollback()
             return releve
         raise NotFound('The releve "{}" does not exist'.format(id_releve))
 
 
     def filter_query_with_autorization(self, user):
-        q = db.session.query(self.model)
+        q = DB.session.query(self.model)
         if user.tag_object_code == '2':
             allowed_datasets = gn_meta.get_allowed_datasets(user)
             q = q.filter(
@@ -83,7 +79,7 @@ class ReleveRepository():
                     self.model.id_digitiser == user.id_role
                     )
                 )
-        return q      
+        return q
 
     def get_all(self, info_user):
         """Return all the data from Releve model filtered with the cruved authorization"""
@@ -97,12 +93,12 @@ class ReleveRepository():
     def get_filtered_query(self, info_user):
         """ Return a query object already filtered with the cruved authorization"""
         return self.filter_query_with_autorization(info_user)
-    
 
 
 
 
-# # a tester     
+
+# # a tester
 #     def get_all_observers_releve(cor_user_table, fk_name, q):
 #         """retourne une query filtrée à partir des observateurs de la table de corespondance des observateurs
 #         --- params:
