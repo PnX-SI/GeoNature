@@ -15,6 +15,9 @@ from geonature.utils.errors import ConfigError
 from geonature.utils.env import (
     GEONATURE_VERSION,
     GN_MODULE_FILES,
+    GN_MODULES_ETC_AVAILABLE,
+    GN_MODULES_ETC_ENABLED,
+    GN_MODULES_ETC_FILES,
     import_requirements
 )
 
@@ -71,24 +74,33 @@ def gn_module_register_config(module_name, module_path):
         Enregistrement du module dans les variables etc
     '''
     print("Register module")
-    cmd = "sudo mkdir -p /etc/geonature/available/{}".format(module_name)
+    cmd = "sudo mkdir -p {}/{}".format(GN_MODULES_ETC_AVAILABLE, module_name)
     subprocess.call(cmd.split(" "))
-    config_files = ("manifest.toml", "conf_gn_module.toml")
-    for cf in config_files:
+    for cf in GN_MODULES_ETC_FILES:
         if (Path(module_path) / cf).is_file():
-            cmd = "sudo cp {}/{} /etc/geonature/available/{}/".format(
+            cmd = "sudo cp {}/{} {}/{}/{}".format(
                 module_path,
                 cf,
-                module_name
+                GN_MODULES_ETC_AVAILABLE,
+                module_name,
+                cf
             )
             subprocess.call(cmd.split(" "))
     print("...ok")
 
 
-
-def gnmodule_import_requirements(module_path):
+def gn_module_import_requirements(module_path):
     req_p = Path(module_path) / "requirements.txt"
     if req_p.is_file():
         print("import_requirements")
         import_requirements(str(req_p))
         print("...ok")
+
+def gn_module_activate(module_name):
+    cmd = "sudo cp {}/{}* {}/{}".format(
+        GN_MODULES_ETC_AVAILABLE,
+        module_name,
+        GN_MODULES_ETC_ENABLED,
+        module_name
+    )
+    subprocess.call(cmd.split(" "))
