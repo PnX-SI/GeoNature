@@ -1,14 +1,13 @@
-================================
 GUIDE D'INSTALLATION DEVELOPPEUR
 ================================
 
 Prérequis
-=========
+---------
 
 Un machine Linux (testé sur Ubuntu 16.04 et Debian 8)
 
 Dépendances
-===========
+-----------
 
 L'application GeoNature utilise les dépendances suivantes :
 
@@ -32,7 +31,7 @@ Les deux sous-modules sont fournis directement avec GeoNature. Il faut en revanc
 pour assuer le bon fonctionnement de l'application GeoNature.
 
 Installation des dépendances
-============================
+----------------------------
 
 * Mettre à jour de la liste des dépôts Linux :
 
@@ -60,7 +59,7 @@ Se placer dans le répertoire de GeoNature.
     sudo apt-get install -y supervisor
 
 Installation de la base de données
-==================================
+----------------------------------
 
 Créer un utilisateur PostgreSQL si vous n'en n'avez pas un :
 
@@ -92,7 +91,7 @@ Pour installer le module 'Occurrence de taxons' lancer le script :
     sudo ./data/modules/contact/install_schema.sh
 
 Installation de l'application
-=============================
+-----------------------------
 
 Lancer le script d'installation de l'application :
 
@@ -125,7 +124,7 @@ Exemple de configuration du fichier ``app.config.ts`` :
 
 
 Lancement de l'application
-==========================
+--------------------------
 
 'nvm' (node version manager) est utilisé pour installer les dernières versions de node et npm.
 
@@ -175,7 +174,7 @@ TODO interroger l'API via Postman
 
 
 Installation de TaxHub
-======================
+----------------------
 
 Sortez du répertoire de GeoNature pour installer TaxHub de manière indépendante dans son propre répertoire.
 
