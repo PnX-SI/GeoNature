@@ -23,9 +23,14 @@ DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 GEONATURE_VERSION = (ROOT_DIR / 'VERSION').read_text().strip()
 DEFAULT_CONFIG_FIlE = Path('/etc/geonature/custom_config.toml')
 
+GEONATURE_ETC = Path('/etc/geonature')
+
 DB = SQLAlchemy()
 
 GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py')
+GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
+GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
+GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """

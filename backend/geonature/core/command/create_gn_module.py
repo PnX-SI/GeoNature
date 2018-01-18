@@ -29,8 +29,9 @@ from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
     check_manifest,
-    gnmodule_import_requirements,
-    gn_module_register_config
+    gn_module_import_requirements,
+    gn_module_register_config,
+    gn_module_activate
 )
 from geonature.utils.errors import ConfigError, GNModuleInstallError
 
@@ -64,7 +65,7 @@ def install_gn_module(module_path, conf_file):
         log.critical(str(e) + "\n")
         sys.exit(1)
 
-    # @TODO Vérification de la conformité du code : point d'entré pour l'api et le front
+    # TODO Vérification de la conformité du code : point d'entré pour l'api et le front
 
     # Installation du module
     try:
@@ -121,7 +122,7 @@ def run_install_gn_module(app, module_path, module_name):
             )
 
     #   requirements
-    gnmodule_import_requirements(module_path)
+    gn_module_import_requirements(module_path)
 
     #   DB
     gn_file = Path(module_path) / "install_db.py"
@@ -144,8 +145,9 @@ def run_install_gn_module(app, module_path, module_name):
 
 
 @main.command()
-def activate_gn_module():
+@click.argument('module_name')
+def activate_gn_module(module_name):
     """
         Active un module gn installé
     """
-    pass
+    gnmodule_activate(module_name)
