@@ -24,7 +24,7 @@ from geonature.utils.config_schema import (
 def check_gn_module_file(module_path):
     print("checking file")
     for file in GN_MODULE_FILES:
-        if not (Path(module_path) / "manifest.toml").is_file():
+        if not (Path(module_path) / file).is_file():
             raise FileNotFoundError("Missing file {}".format(file))
     print("...ok")
 
