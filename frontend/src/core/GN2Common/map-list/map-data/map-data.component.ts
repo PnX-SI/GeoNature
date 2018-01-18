@@ -6,13 +6,6 @@ import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
-import 'rxjs/add/operator/debounceTime';
-// import '@nodes_modules/rxjs/add/operator/debounceTime';
-// import 'rxjs/add/operator/map';
-
-// import { Observable } from 'rxjs';
-
-
 
 @Component({
   selector: 'pnx-map-data',
