@@ -1,24 +1,25 @@
 
 """ Helpers to manipulate the execution environment """
 
-import subprocess
 import os
 import sys
+import json
+
+from collections import ChainMap
+from pathlib import Path
+from collections import namedtuple
 
 import toml
-import json
-from pathlib import Path
 
-from collections import namedtuple
-from config_schema import GnGeneralSchemaConf, ConfigError
+from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
 
 from flask_sqlalchemy import SQLAlchemy
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
-
 GEONATURE_VERSION = (ROOT_DIR / 'VERSION').read_text().strip()
+DEFAULT_CONFIG_FIlE = Path('/etc/geonature/custom_config.toml')
 
 DB = SQLAlchemy()
 
@@ -112,23 +113,32 @@ def create_frontend_config(conf_file):
         json.dump(configs_gn, outputfile, indent=True)
 
 
-def start_gunicorn_cmd(uri, worker):
-    cmd = 'gunicorn server:app -w {gun_worker} -b {gun_uri}'
-    subprocess.call(
-        cmd.format(gun_worker=worker, gun_uri=uri).split(" "),
-        cwd=str(BACKEND_DIR)
-    )
+def get_config_file_path(config_file=None):
+    """ Return the config file path by checking several sources
+
+        1 - Parameter passed
+        2 - GEONATURE_CONFIG_FILE env var
+        3 - Default config file value
+    """
+    config_file = config_file or os.environ.get('GEONATURE_CONFIG_FILE')
+    return Path(config_file or DEFAULT_CONFIG_FIlE)
 
 
-def start_flask_server_cmd(host, port):
-    cmd = 'python server.py runserver -d -r -h {h} -p {p}'
-    subprocess.call(cmd.format(h=host, p=port).split(" "), cwd=str(BACKEND_DIR))
+def load_config(config_file=None):
+    """ Load the geonature configuration from a given file """
 
+    # load and validate configuration
+    config_file = str(get_config_file_path(config_file))
+    conf_toml = toml.load([config_file])
 
-def supervisor_cmd(action, app_name):
-    cmd = 'sudo supervisorctl {action} {app}'
-    subprocess.call(cmd.format(action=action, app=app_name).split(" "))
+    # Load backend command only settings
+    configs_py, configerrors = GnPySchemaConf().load(conf_toml)
+    if configerrors:
+        raise ConfigError(configerrors)
 
+    # Settings also exported to backend
+    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
+    if configerrors:
+        raise ConfigError(configerrors)
 
-def start_geonature_front():
-    subprocess.call(['npm', 'run', 'start'], cwd=str(ROOT_DIR / 'frontend'))
+    return ChainMap({}, configs_py, configs_gn)
