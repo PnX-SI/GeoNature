@@ -8,9 +8,6 @@ import subprocess
 from pathlib import Path
 from packaging import version
 
-from marshmallow import Schema, fields
-from marshmallow.validate import OneOf, Regexp
-
 from geonature.utils.errors import ConfigError
 from geonature.utils.env import (
     GEONATURE_VERSION,
@@ -20,21 +17,14 @@ from geonature.utils.env import (
     GN_MODULES_ETC_FILES,
     import_requirements
 )
-
-
-class ManifestSchemaConf(Schema):
-    package_format_version = fields.String(required=True)
-    module_name = fields.String(required=True)
-    module_version = fields.String(required=True)
-    min_geonature_version = fields.String(required=True)
-    max_geonature_version = fields.String(required=True)
-    exclude_geonature_versions = fields.List(fields.String)
-
+from geonature.utils.config_schema import (
+    ManifestSchemaConf
+)
 
 def check_gn_module_file(module_path):
     print("checking file")
     for file in GN_MODULE_FILES:
-        if not (Path(module_path) / "manifest.toml").is_file():
+        if not (Path(module_path) / file).is_file():
             raise FileNotFoundError("Missing file {}".format(file))
     print("...ok")
 
@@ -69,11 +59,14 @@ def check_manifest(module_path):
     return configs_py['module_name']
 
 
-def gn_module_register_config(module_name, module_path):
+def gn_module_register_config(module_name, module_path, url):
     '''
         Enregistrement du module dans les variables etc
     '''
     print("Register module")
+    # import pdb
+    # pdb.set_trace()
+    # TODO utiliser les commande os de python
     cmd = "sudo mkdir -p {}/{}".format(GN_MODULES_ETC_AVAILABLE, module_name)
     subprocess.call(cmd.split(" "))
     for cf in GN_MODULES_ETC_FILES:
@@ -86,6 +79,24 @@ def gn_module_register_config(module_name, module_path):
                 cf
             )
             subprocess.call(cmd.split(" "))
+    # TODO factoriser
+    p = subprocess.Popen(
+        ['sudo', 'tee', '-a', '{}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, )],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL
+    )
+    p.stdin.write("module_path = '{}'\n".format(module_path).encode('utf8'))
+    p.stdin.close()
+    p.wait()
+    p = subprocess.Popen(
+        ['sudo', 'tee', '-a', '{}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, )],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL
+    )
+    p.stdin.write("api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8'))
+    p.stdin.close()
+    p.wait()
+
     print("...ok")
 
 
@@ -96,16 +107,18 @@ def gn_module_import_requirements(module_path):
         import_requirements(str(req_p))
         print("...ok")
 
+
 def gn_module_activate(module_name):
+    # TODO utiliser les commande os de python
     print("Activate module")
-    if (GN_MODULES_ETC_ENABLED / module_name).is_dir():
-        cmd = "sudo rm -r {}/{}".format(GN_MODULES_ETC_ENABLED, module_name)
-    subprocess.call(cmd.split(" "))
-    cmd = "sudo ln -s {}/{} {}".format(
-        GN_MODULES_ETC_AVAILABLE,
-        module_name,
-        GN_MODULES_ETC_ENABLED,
-        module_name
-    )
-    subprocess.call(cmd.split(" "))
-    print("...ok")
+    # TODO gestion des erreurs
+    if (GN_MODULES_ETC_AVAILABLE / module_name).is_dir():
+        # TODO veirifier si le fichier n'existe pas déja dans chacun des dossiers
+        cmd = "sudo ln -s {}/{} {}".format(
+            GN_MODULES_ETC_AVAILABLE,
+            module_name,
+            GN_MODULES_ETC_ENABLED,
+            module_name
+        )
+        subprocess.call(cmd.split(" "))
+        print("...ok")
