@@ -1,0 +1,42 @@
+# Database
+SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+SQLALCHEMY_TRACK_MODIFICATIONS = false
+
+# Application
+
+appName = 'Geonature 2'
+DEFAULT_LANGUAGE = 'fr'
+PASS_METHOD = 'hash'                                    # Authentification password encoding method (hash or md5)
+DEBUG = true
+URL_APPLICATION = 'http://url.com/geonature'         # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com/geonature/api'        # Replace my_url.com by your domain or IP
+API_TAXHUB ='http://127.0.0.1:5000/api/'
+ID_APPLICATION_GEONATURE = 14                           # id_application of GeoNature in UsersHub
+SESSION_TYPE = 'filesystem'
+SECRET_KEY = 'super secret key'
+COOKIE_EXPIRATION = 7200
+COOKIE_AUTORENEW = true
+
+# MTD
+XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
+MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
+
+# File
+# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = 'static/medias'
+
+# CAS authentification (Optional, instead of UsersHub local authentification)
+[CAS]
+    CAS_URL_LOGIN = 'https://preprod-inpn.mnhn.fr/auth/login'
+    CAS_URL_LOGOUT = 'https://preprod-inpn.mnhn.fr/auth/logout'
+    CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+    [CAS.USER_WS]
+        URL = 'https://inpn2.mnhn.fr/authentication/information'
+        ID = 'mon_id'
+        PASSWORD = 'mon_pass'
+
+[RIGHTS]
+    NOTHING = 0
+    MY_DATA = 1
+    MY_ORGANISM_DATA = 2
+    ALL_DATA = 3

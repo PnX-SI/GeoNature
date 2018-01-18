@@ -1,4 +1,3 @@
-===============================
 SPECIFICITES INSTANCE NATIONALE
 ===============================
 
@@ -9,7 +8,7 @@ Ne pas insérer les données exemple si possible.
 Attention, communes, zonages et MNT national ?
 
 Taxons saisissables
-===================
+-------------------
 
 GeoNature n'interroge pas directement la table ``taxonomie.taxref`` pour permettre à l'administrateur de choisir quels taxons sont disponibles à la saisie. 
 
@@ -38,15 +37,15 @@ Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` :
         
         
 Authentification CAS INPN
-=========================
+-------------------------
 
-- Code source : https://github.com/PnX-SI/GeoNature/blob/develop/backend/src/core/auth/routes.py#L19-L106
+- Code source : https://github.com/PnX-SI/GeoNature/blob/develop/backend/geonature/core/auth/routes.py#L19-L106
 - Config backend : https://github.com/PnX-SI/GeoNature/blob/develop/backend/default_config.py#L25-L35
 - Config frontend : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/app.config.sample.ts#L29-L34
 
 
 Connexion et droits dans GeoNature
-==================================
+----------------------------------
 
 - A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur. On ajoute cet utilisateur dans la base GeoNature (``utilisateurs.t_roles`` et ``utilisateurs.bib_organisme``).
 	 
@@ -60,7 +59,7 @@ NB sur la gestion des droits dans GeoNature :
 - 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
 
 Récupération des JDD
-====================
+--------------------
 
 Grâce à la nouvelle API de MTD, il est désormais possible d’ajouter les jeux de données (et des cadres d’acquisition) créés dans MTD dans la BDD GeoNature.
 
