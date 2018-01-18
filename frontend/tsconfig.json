@@ -19,21 +19,12 @@
       "es2016",
       "dom"
     ],
-    "rootDir": "/home/florian/workspace/Ecrins/GeoNature/frontend/src",
-    // "rootDirs": [
-    //   "/home/florian/workspace/Ecrins/GeoNature/frontend/src",
-    //   "/home/florian/workspace/Ecrins/gn_module_validation/frontend/app/"
-    //  ],
     "baseUrl": "/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules",
     "paths": {
-      "*": ["/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules/*"],
-      //"@rxjs": ["/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules/rxjs/*"],
-      "@nodes_modules/*": ["/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules/*"],
+      "@angular/*": ["/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules/@angular/*"],
       "@geonature_common/*" : ["/home/florian/workspace/Ecrins/GeoNature/frontend/src/core/GN2Common/*"],
       "@geonature/*" : ["/home/florian/workspace/Ecrins/GeoNature/frontend/src/*"],
-      "@validation/*" : ["/home/florian/workspace/Ecrins/gn_module_validation/frontend/app/*"],
-
-
-  }
+      "@gn_module_validation/*" : ["/home/florian/workspace/Ecrins/gn_module_validation/frontend/app/*"],
+    }
   }
 }
