@@ -6,23 +6,21 @@ Démarrage de l'application
 
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-db = SQLAlchemy()
+from geonature.utils.env import DB
 
 app_globals = {}
 
 
 def get_app():
-    print(get_app)
     if app_globals.get('app', False):
         return app_globals['app']
     app = Flask(__name__)
     app.config.from_object('custom_config.CustomConfig')
-    db.init_app(app)
+    DB.init_app(app)
     with app.app_context():
-        db.create_all()
+        DB.create_all()
 
         from pypnusershub.routes import routes
         app.register_blueprint(routes, url_prefix='/auth')

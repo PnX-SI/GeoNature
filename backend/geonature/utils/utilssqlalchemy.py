@@ -6,10 +6,9 @@ from __future__ import (unicode_literals, print_function,
 '''
 Fonctions utilitaires
 '''
-from flask import jsonify,  Response, current_app
+from flask import jsonify, Response, current_app
 import json
 from functools import wraps
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import Headers
 
 from sqlalchemy import inspect, create_engine, MetaData, or_
@@ -25,22 +24,21 @@ from geoalchemy2 import Geometry
 from pypnusershub.db.models import User
 from datetime import date, datetime
 
-db = SQLAlchemy()
-
+from geonature.utils.env import DB
 
 def testDataType(value, sqlType, paramName):
-    if sqlType == db.Integer or isinstance(sqlType, (db.Integer)):
+    if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
         try:
             int(value)
         except Exception as e:
             return '{0} must be an integer'.format(paramName)
-    if sqlType == db.Numeric or isinstance(sqlType, (db.Numeric)):
+    if sqlType == DB.Numeric or isinstance(sqlType, (DB.Numeric)):
         try:
             float(value)
         except Exception as e:
             return '{0} must be an float (decimal separator .)'\
                 .format(paramName)
-    elif sqlType == db.DateTime or isinstance(sqlType, (db.Date, db.DateTime)):
+    elif sqlType == DB.DateTime or isinstance(sqlType, (DB.Date, DB.DateTime)):
         try:
             from dateutil import parser
             dt = parser.parse(value)
@@ -76,9 +74,9 @@ def serializeQueryTest(data, columnDef):
         inter = {}
         for c in columnDef:
             if getattr(row, c['name']) is not None:
-                if isinstance(c['type'], (db.Date, db.DateTime, UUID)):
+                if isinstance(c['type'], (DB.Date, DB.DateTime, UUID)):
                     inter[c['name']] = str(getattr(row, c['name']))
-                elif isinstance(c['type'], db.Numeric):
+                elif isinstance(c['type'], DB.Numeric):
                     inter[c['name']] = float(getattr(row, c['name']))
                 elif not isinstance(c['type'], Geometry):
                     inter[c['name']] = getattr(row, c['name'])
@@ -94,7 +92,7 @@ def serializeQueryOneResult(row, columnDef):
     return row
 
 
-class serializableModel(db.Model):
+class serializableModel(DB.Model):
     """
     Classe qui ajoute une méthode de transformation des données
     de l'objet en tableau json
@@ -122,9 +120,9 @@ class serializableModel(db.Model):
         for prop in class_mapper(self.__class__).iterate_properties:
             if (isinstance(prop, ColumnProperty) and (prop.key in columns)):
                 column = self.__table__.columns[prop.key]
-                if isinstance(column.type, (db.Date, db.DateTime, UUID)):
+                if isinstance(column.type, (DB.Date, DB.DateTime, UUID)):
                     obj[prop.key] = str(getattr(self, prop.key))
-                elif isinstance(column.type, db.Numeric):
+                elif isinstance(column.type, DB.Numeric):
                     obj[prop.key] = float(getattr(self, prop.key))
                 elif not isinstance(column.type, Geometry):
                     obj[prop.key] = getattr(self, prop.key)

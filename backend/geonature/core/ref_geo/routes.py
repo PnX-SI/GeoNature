@@ -3,9 +3,9 @@ from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
 from flask import Blueprint, request
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
+from geonature.utils.env import DB
 from ...utils.utilssqlalchemy import json_resp, serializeQuery
 from .models import BibAreasTypes
 
@@ -13,7 +13,6 @@ from geojson import Feature, FeatureCollection, dumps
 from shapely.geometry import asShape
 from geoalchemy2.shape import to_shape, from_shape
 
-db = SQLAlchemy()
 
 routes = Blueprint('ref_geo', __name__)
 
@@ -27,9 +26,9 @@ def getGeoInfo():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*"""
     )
     try:
-        result = db.engine.execute(sql, geom=str(data['geometry']))
+        result = DB.engine.execute(sql, geom=str(data['geometry']))
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     municipality = []
@@ -47,9 +46,9 @@ def getGeoInfo():
         """
     )
     try:
-        result = db.engine.execute(sql, geom=str(data['geometry']))
+        result = DB.engine.execute(sql, geom=str(data['geometry']))
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
     alt = {}
     for row in result:
@@ -74,13 +73,13 @@ def getAreasIntersection():
     )
 
     try:
-        result = db.engine.execute(
+        result = DB.engine.execute(
             sql,
             geom=str(data['geometry']),
             type=id_type
         )
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
 
     areas = []
@@ -94,10 +93,10 @@ def getAreasIntersection():
 
     bibtypesliste = [a['id_type'] for a in areas]
     try:
-        bibareatype = db.session.query(BibAreasTypes)\
+        bibareatype = DB.session.query(BibAreasTypes)\
             .filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
     except Exception as e:
-        db.session.rollback()
+        DB.session.rollback()
         raise
     data = {}
     for b in bibareatype:
