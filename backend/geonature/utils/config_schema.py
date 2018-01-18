@@ -69,3 +69,19 @@ class GnGeneralSchemaConf(Schema):
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
+
+
+
+class ManifestSchemaConf(Schema):
+    package_format_version = fields.String(required=True)
+    module_name = fields.String(required=True)
+    module_version = fields.String(required=True)
+    min_geonature_version = fields.String(required=True)
+    max_geonature_version = fields.String(required=True)
+    exclude_geonature_versions = fields.List(fields.String)
+
+class ManifestSchemaProdConf(Schema):
+    module_path = fields.String(required=True)
+
+class GnModuleProdConf(Schema):
+    api_url = fields.String(required=True)
