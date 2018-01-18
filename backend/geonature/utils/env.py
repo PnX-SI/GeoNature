@@ -3,17 +3,19 @@
 
 import os
 import sys
+import pip
 import json
 
-from collections import ChainMap
 from pathlib import Path
-from collections import namedtuple
+from collections import ChainMap, namedtuple
 
 import toml
 
-from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
-
 from flask_sqlalchemy import SQLAlchemy
+
+from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
+from geonature.utils.errors import ConfigError
+
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
@@ -23,6 +25,7 @@ DEFAULT_CONFIG_FIlE = Path('/etc/geonature/custom_config.toml')
 
 DB = SQLAlchemy()
 
+GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py')
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """
@@ -104,7 +107,7 @@ def create_frontend_config(conf_file):
     conf_toml = toml.load(conf_file)
     configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
     if configerrors:
-        raise ConfigError(configerrors)
+        raise ConfigError(conf_file, configerrors)
 
     with open(
         str(ROOT_DIR / 'frontend/src/conf/frontend-config.ts'), 'w'
@@ -134,11 +137,18 @@ def load_config(config_file=None):
     # Load backend command only settings
     configs_py, configerrors = GnPySchemaConf().load(conf_toml)
     if configerrors:
-        raise ConfigError(configerrors)
+        raise ConfigError(config_file, configerrors)
 
     # Settings also exported to backend
     configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
     if configerrors:
-        raise ConfigError(configerrors)
+        raise ConfigError(config_file, configerrors)
 
     return ChainMap({}, configs_py, configs_gn)
+
+
+def import_requirements(req_file):
+    with open(req_file, 'r') as requirements:
+        for req in requirements:
+            if pip.main(["install", req]) == 1:
+                raise Exception('Package {} not installed'.format(req))
