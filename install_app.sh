@@ -5,35 +5,43 @@ BASE_DIR=$(readlink -e "${0%/*}")
 
 if [ ! -d '/tmp/geonature/' ]
 then
-  cd /tmp
-  mkdir geonature
+  mkdir /tmp/geonature
+  chmod -R 775 /tmp/geonature
+fi
+
+if [ ! -d '/tmp/taxhub/' ]
+then
+  mkdir /tmp/taxhub
+  chmod -R 775 /tmp/taxhub
+fi
+
+if [ ! -d '/tmp/usershub/' ]
+then
+  mkdir /tmp/usershub
+  chmod -R 775 /tmp/usershub
 fi
 
 if [ ! -d '/var/log/geonature/' ]
 then
-  cd /var/log
-  sudo mkdir geonature
+  sudo mkdir /var/log/geonature
+  sudo chown "$(id -u)" /var/log/geonature
+  chmod -R 775 /var/log/geonature
 fi
 
 if [ ! -d '/etc/geonature/' ]
 then
-  cd /etc
-  sudo mkdir geonature
-  cd geonature
-  sudo mkdir mods-available
-  sudo mkdir mods-enabled
+  sudo mkdir /etc/geonature
+  sudo mkdir /etc/geonature/mods-available
+  sudo mkdir /etc/geonature/mods-enabled
 else
   if [ ! -d '/etc/geonature/mods-available' ]
   then
-    sudo mkdir mods-available
+    sudo mkdir /etc/geonature/mods-available
   elif [ ! -d '/etc/geonature/mods-enabled' ]
   then
-    sudo mkdir mods-enabled
+    sudo mkdir /etc/geonature/mods-enabled
   fi
 fi
-
-cd ${BASE_DIR}
-
 
 if [ ! -f /etc/geonature/custom_config.toml ]; then
   echo "Création du fichier de configuration ..."

@@ -1,12 +1,37 @@
 #!/bin/bash
 
 # Make sure only root can run our script
-if [ "$(id -u)" != "0" ]; then
+if [ "$(id -u)" == "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
 
 . config/settings.ini
+
+if [ ! -d '/tmp/geonature/' ]
+then
+  mkdir /tmp/geonature
+  chmod -R 775 /tmp/geonature
+fi
+
+if [ ! -d '/tmp/taxhub/' ]
+then
+  mkdir /tmp/taxhub
+  chmod -R 775 /tmp/taxhub
+fi
+
+if [ ! -d '/tmp/usershub/' ]
+then
+  mkdir /tmp/usershub
+  chmod -R 775 /tmp/usershub
+fi
+
+if [ ! -d '/var/log/geonature/' ]
+then
+  sudo mkdir /var/log/geonature
+  sudo chown "$(id -u)" /var/log/geonature
+  chmod -R 775 /var/log/geonature
+fi
 
 function database_exists () {
     # /!\ Will return false if psql can't list database. Edit your pg_hba.conf
@@ -32,10 +57,6 @@ then
         else
             echo "Database exists but the settings file indicate that we don't have to drop it."
         fi
-fi
-
-if [ ! -d "log" ]; then
-    mkdir log
 fi
 
 if ! database_exists $db_name
@@ -86,33 +107,33 @@ then
     echo "Creating USERS schema (utilisateurs)" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql -P /tmp/geonature
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/usershub.sql  &>> /var/log/geonature/install_db.log
+    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql -P /tmp/usershub
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/usershub/usershub.sql  &>> /var/log/geonature/install_db.log
 
 
     echo "Download and extract taxref file..."
 
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql -P /tmp/geonature
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql -P /tmp/taxhub
 
     array=( TAXREF_INPN_v9.0.zip    ESPECES_REGLEMENTEES_20161103.zip    LR_FRANCE_20160000.zip )
     for i in "${array[@]}"
     do
-      if [ ! -f '/tmp/geonature/'$i ]
+      if [ ! -f '/tmp/taxhub/'$i ]
       then
-          wget http://geonature.fr/data/inpn/taxonomie/$i -P /tmp/geonature
+          wget http://geonature.fr/data/inpn/taxonomie/$i -P /tmp/taxhub
       else
           echo $i exists
       fi
     done
-    unzip /tmp/geonature/TAXREF_INPN_v9.0.zip -d /tmp/geonature
-    unzip /tmp/geonature/ESPECES_REGLEMENTEES_20161103.zip -d /tmp/geonature
-    unzip /tmp/geonature/LR_FRANCE_20160000.zip -d /tmp/geonature
+    unzip /tmp/taxhub/TAXREF_INPN_v9.0.zip -d /tmp/taxhub
+    unzip /tmp/taxhub/ESPECES_REGLEMENTEES_20161103.zip -d /tmp/taxhub
+    unzip /tmp/taxhub/LR_FRANCE_20160000.zip -d /tmp/taxhub
 
     echo "Getting 'taxonomie' schema creation scripts..."
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql -P /tmp/geonature
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql -P /tmp/geonature
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql -P /tmp/geonature
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql -P /tmp/geonature
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql -P /tmp/taxhub
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql -P /tmp/taxhub
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql -P /tmp/taxhub
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql -P /tmp/taxhub
 
     echo "Creating 'taxonomie' schema..."
     echo "" &>> /var/log/geonature/install_db.log
@@ -121,7 +142,7 @@ then
     echo "Creating 'taxonomie' schema" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/taxhubdb.sql  &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdb.sql  &>> /var/log/geonature/install_db.log
 
     echo "Inserting INPN taxonomic data... (This may take a few minutes)"
     echo "" &>> /var/log/geonature/install_db.log
@@ -130,7 +151,7 @@ then
     echo "Inserting INPN taxonomic data" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f /tmp/geonature/data_inpn_v9_taxhub.sql &>> /var/log/geonature/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f /tmp/taxhub/data_inpn_v9_taxhub.sql &>> /var/log/geonature/install_db.log
 
     echo "Creating dictionaries data for taxonomic schema..."
     echo "" &>> /var/log/geonature/install_db.log
@@ -139,7 +160,7 @@ then
     echo "Creating dictionaries data for taxonomic schema" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/taxhubdata.sql  &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdata.sql  &>> /var/log/geonature/install_db.log
 
     echo "Inserting sample dataset of taxons for taxonomic schema..."
     echo "" &>> /var/log/geonature/install_db.log
@@ -148,7 +169,7 @@ then
     echo "Inserting sample dataset of taxons for taxonomic schema" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/taxhubdata_taxon_example.sql  &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdata_taxon_example.sql  &>> /var/log/geonature/install_db.log
 
     echo "Creating a view that represent the taxonomic hierarchy..."
     echo "" &>> /var/log/geonature/install_db.log
@@ -157,7 +178,7 @@ then
     echo "Creating a view that represent the taxonomic hierarchy" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/materialized_views.sql  &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/materialized_views.sql  &>> /var/log/geonature/install_db.log
 
 
     echo "Creating 'nomenclatures' schema..."
@@ -184,7 +205,7 @@ then
     echo "" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
-    echo "Creating 'meta' schema" &>> /var/log/geonature/install_db.log
+    echo "CreatingInstall_ 'meta' schema" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> /var/log/geonature/install_db.log
@@ -290,21 +311,15 @@ then
 
     # Suppression des fichiers : on ne conserve que les fichiers compressés
     echo "Cleaning files..."
-    rm /tmp/geonature/*.txt
-    rm /tmp/geonature/*.csv
-    rm /tmp/geonature/*.sql
+    sudo rm /tmp/geonature/*.sql
+    sudo rm /tmp/usershub/*.sql
+    sudo rm /tmp/taxhub/*.txt
+    sudo rm /tmp/taxhub/*.sql
+    sudo rm /tmp/taxhub/*.csv
     
-    if $install_sig_layers
-    then
-        rm /tmp/geonature/fr_municipalities.sql
-    fi
-
     if $install_default_dem
     then
-        rm /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
-        rm /tmp/geonature/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
+        sudo rm /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
+        sudo rm /tmp/geonature/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
     fi
-
-    echo "Permission on log folder..."
-    chmod -R 777 log
 fi
