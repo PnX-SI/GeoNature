@@ -1,5 +1,48 @@
 #!/bin/bash
-. ./config/settings.ini
+
+#settings.ini file path. Default value overwriten by settings-path parameter
+SETTINGS='./config/settings.ini'
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -s|--settings-path)
+    SETTINGS="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -d|--dev)
+    MODE='dev'
+    shift # past argument
+    shift # past value
+    ;;
+    -h|--help)
+    echo ""
+    echo "Help for install_app.sh command script."
+    echo ""
+    echo ""
+    echo "Option order matters. Give it in this exact order. All options are optional."
+    echo ""
+    echo "-s OR --settings-path to give the path of the settings file. "
+    echo ""
+    echo "-d OR --dev to additionnally install python dev requirements."
+    echo ""
+    exit
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+# import settings file
+. ${SETTINGS}
 
 BASE_DIR=$(readlink -e "${0%/*}")
 
@@ -80,7 +123,7 @@ source venv/bin/activate
 echo "Installation des dépendances python..."
 pip install --upgrade pip
 pip install -r requirements.txt
-if [[ $1 == "dev" ]]
+if [[ $MODE == "dev" ]]
 then
   pip install -r requirements-dev.txt
 fi
