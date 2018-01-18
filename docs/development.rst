@@ -1,9 +1,8 @@
-===========
 DEVELOPMENT
 ===========
 
 General
-=======
+-------
 
 GeoNature has been developped by Gil Deluermoz since 2010 with PHP/Symfony/ExtJS.
 
@@ -18,7 +17,7 @@ Maintainers :
 
 
 Architecture
-============
+------------
 
 - UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` database schema
 - TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` database schema. We also use TaxHub API to get information about taxons, species...
@@ -27,7 +26,7 @@ Architecture
 
 
 Database
-========
+--------
 
 In GeoNature V2, the whole database is still done with PostgreSQL/PostGIS but it has also been rebuilt. 
 
@@ -55,7 +54,7 @@ Here is a simplified model of the database (2017-12-15) :
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
 Gestion des droits :
---------------------
+""""""""""""""""""""
 
 La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
@@ -72,7 +71,7 @@ Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en pla
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
 Nomenclatures :
----------------
+"""""""""""""""
 
 - Toutes les listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
@@ -87,13 +86,13 @@ Nomenclatures :
 - Il existe aussi une table pour définir des valeurs par défaut de nomenclature générales (``ref_nomenclatures.defaults_nomenclatures_value``)
 
 Métadonnées :
--------------
+"""""""""""""
 
 - Elles sont gérées dans le schéma ``gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
 - Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles
 
 Données SIG :
--------------
+"""""""""""""
 
 - Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
 - Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et du MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
@@ -103,31 +102,31 @@ Données SIG :
 
 
 Modularité
-==========
+----------
 
 Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/data/modules/contact
 
-Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/src/modules/pr_contact
+Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
 
-Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/src/modules/contact
+Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
 
 Mais en pouvant utiliser des composants du CORE comme expliqué ci-dessous.
 
 
 Configuration
-=============
+-------------
 
 Pour configurer GeoNature, actuellement il y a : 
 
 - Une configuration pour l'installation : https://github.com/PnX-SI/GeoNature/blob/develop/config/settings.ini.sample
-- Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/develop/backend/custom_config.py.sample
-- Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/app.config.sample.ts
-- Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact.config.ts
+- Une configuration globale du backend : https://github.com/PnX-SI/GeoNature/blob/develop/backend/config.py.sample
+- Une configuration globale du frontend : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/geonature/conf/app.config.sample.ts
+- Une configuration frontend par module : https://github.com/PnX-SI/GeoNature/blob/develop/frontend/geonature/modules/contact/contact.config.ts
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
 
 API
-=============
+---
 
 GeoNature utilise : 
 
@@ -140,10 +139,10 @@ Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documen
 
 
 Développement Frontend
-======================
+----------------------
 
 Modules
--------
+"""""""
 
 Bonnes pratiques:
 
@@ -163,7 +162,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         **Inputs**:
 
         :``baseMaps``:
-                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/src/conf/app.config.sample.ts#L7>`_)
+                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/geonature/conf/app.config.sample.ts#L7>`_)
 
                 *Type*: ``Array<any>``
         :``center``:
@@ -175,7 +174,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
 
                 *Type*: ``number``
 
-        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/src/conf/app.config.sample.ts>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
+        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/geonature/conf/app.config.sample.ts>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
 
         Exemple d'utilisation: ``<pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`` Ici le niveau de zoom et le centrage sont modifiés, mais les fonds de carte restent ceux renseignés par défault.
 
@@ -199,7 +198,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         :``options``:
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
-                Par défault le fichier ``leaflet-draw.option.ts` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/src/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
+                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/geonature/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
                 
         **Output**
         
@@ -234,7 +233,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
 
 
 Outils d'aide à la qualité du code
-==================================
+----------------------------------
 
 Des outils d'amélioration du code pour les développeurs peuvent être utilisés : flake8, pylint, mypy, pytest, coverage.
 La documentation est générée avec sphinx.
@@ -252,7 +251,7 @@ est également disponible à la racine du projet.
 
 
 Installation
-------------
+""""""""""""
 
 ::
 
@@ -269,7 +268,7 @@ La documentation de ces outils est disponible en ligne :
 * http://www.sphinx-doc.org/en/stable/ -  Doc : http://www.sphinx-doc.org/en/stable/contents.html
 
 Usage
------
+"""""
 Pour utiliser ces outils il faut se placer dans le virtualenv
 
 ::
@@ -299,12 +298,21 @@ Flake8 inspecte le code et pointe tous les écarts à la norme PEP8. Il recherch
 Pylint
 ^^^^^^
 Pylint fait la même chose que Flake8 mais il est plus complet, plus configurable mais aussi plus exigeant.
-Pour inspecter le répertoire ``src``
+Pour inspecter le répertoire ``geonature``
 
 ::
 
         cd backend
-        pylint src
+        pylint geonature
+
+tslint
+^^^^^^
+tslint fait la même chose que pylint mais pour la partie frontend en typescript.
+
+::
+
+        cd frontend
+        ng lint
 
 
 Mypy
@@ -331,6 +339,6 @@ Coverage permet de donner une indication concernant la couverture du code par le
 ::
 
         cd backend
-        pytest --cov=src --cov-report=html
+        pytest --cov=geonature --cov-report=html
 
 Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``
