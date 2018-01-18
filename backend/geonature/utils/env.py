@@ -5,12 +5,14 @@ import subprocess
 import os
 import sys
 
+import pip
 import toml
 import json
 from pathlib import Path
 
 from collections import namedtuple
-from config_schema import GnGeneralSchemaConf, ConfigError
+from geonature.utils.config_schema import GnGeneralSchemaConf
+from geonature.utils.errors import ConfigError
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -22,6 +24,7 @@ GEONATURE_VERSION = (ROOT_DIR / 'VERSION').read_text().strip()
 
 DB = SQLAlchemy()
 
+GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py')
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """
@@ -132,3 +135,10 @@ def supervisor_cmd(action, app_name):
 
 def start_geonature_front():
     subprocess.call(['npm', 'run', 'start'], cwd=str(ROOT_DIR / 'frontend'))
+
+
+def import_requirements(req_file):
+    with open(req_file, 'r') as requirements:
+        for req in requirements:
+            if pip.main(["install", req]) == 1:
+                raise Exception('Package {} not installed'.format(req))

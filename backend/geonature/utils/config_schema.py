@@ -69,14 +69,3 @@ class GnGeneralSchemaConf(Schema):
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
-
-
-class ConfigError(Exception):
-    '''
-        Configuration error class
-    '''
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
