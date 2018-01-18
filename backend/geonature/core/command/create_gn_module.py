@@ -29,8 +29,9 @@ from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
     check_manifest,
-    gnmodule_import_requirements,
-    gn_module_register_config
+    gn_module_import_requirements,
+    gn_module_register_config,
+    gn_module_activate
 )
 from geonature.utils.errors import ConfigError, GNModuleInstallError
 
@@ -40,16 +41,17 @@ log = logging.getLogger(__name__)
 
 @main.command()
 @click.argument('module_path')
+@click.argument('url') #url de l'api
 @click.option(
     '--conf-file',
     required=False,
     envvar='GEONATURE_CONFIG_FILE'
 )
-def install_gn_module(module_path, conf_file):
+def install_gn_module(module_path, url,conf_file):
     """
         Installation d'un module gn
     """
-
+    # TODO vérifier que l'utilisateur est root ou du groupe geonature
     app = get_app_for_cmd(conf_file)
 
     sys.path.append(module_path)
@@ -64,11 +66,11 @@ def install_gn_module(module_path, conf_file):
         log.critical(str(e) + "\n")
         sys.exit(1)
 
-    # @TODO Vérification de la conformité du code : point d'entré pour l'api et le front
+    # TODO Vérification de la conformité du code : point d'entré pour l'api et le front
 
     # Installation du module
     try:
-        run_install_gn_module(app, module_path, module_name)
+        run_install_gn_module(app, module_path, module_name, url)
     except GNModuleInstallError as e:
         log.critical((
             "Error while installing GN module '{}'. The process returned:\n{}"
@@ -76,7 +78,7 @@ def install_gn_module(module_path, conf_file):
         sys.exit(1)
 
 
-def run_install_gn_module(app, module_path, module_name):
+def run_install_gn_module(app, module_path, module_name, url):
     '''
         Installation du module en executant :
             configurations
@@ -121,7 +123,7 @@ def run_install_gn_module(app, module_path, module_name):
             )
 
     #   requirements
-    gnmodule_import_requirements(module_path)
+    gn_module_import_requirements(module_path)
 
     #   DB
     gn_file = Path(module_path) / "install_db.py"
@@ -140,12 +142,14 @@ def run_install_gn_module(app, module_path, module_name):
         print("...ok")
 
     #   Enregistrement du module
-    gn_module_register_config(module_name, module_path)
+    gn_module_register_config(module_name, module_path, url)
 
 
 @main.command()
-def activate_gn_module():
+@click.argument('module_name')
+def activate_gn_module(module_name):
     """
         Active un module gn installé
     """
-    pass
+    # TODO vérifier que l'utilisateur est root ou du groupe geonature
+    gn_module_activate(module_name)

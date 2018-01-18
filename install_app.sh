@@ -80,6 +80,10 @@ source venv/bin/activate
 echo "Installation des dépendances python..."
 pip install --upgrade pip
 pip install -r requirements.txt
+if [[ $1 == "dev" ]]
+then
+  pip install -r requirements-dev.txt
+fi
 echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis '/etc/geonature/custom_config.toml'..."
