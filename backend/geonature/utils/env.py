@@ -13,8 +13,11 @@ import toml
 
 from flask_sqlalchemy import SQLAlchemy
 
-from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature.utils.errors import ConfigError
+from geonature.utils.config_schema import (
+    GnGeneralSchemaConf, GnPySchemaConf,
+    GnModuleProdConf, ManifestSchemaProdConf
+)
 
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
@@ -27,7 +30,7 @@ GEONATURE_ETC = Path('/etc/geonature')
 
 DB = SQLAlchemy()
 
-GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py')
+GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py', '__init__.py', 'backend/__init__.py', 'backend/blueprint.py')
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
@@ -157,3 +160,39 @@ def import_requirements(req_file):
         for req in requirements:
             if pip.main(["install", req]) == 1:
                 raise Exception('Package {} not installed'.format(req))
+
+
+def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
+    for f in mod_path.iterdir():
+        if f.is_dir():
+            # TODO Créer fonction de chargement et validation des fichiers toml
+            file_manifest = str(f / 'manifest.toml')
+            conf_toml = toml.load(file_manifest)
+            conf_manifest, configerrors = ManifestSchemaProdConf().load(conf_toml)
+            if configerrors:
+                raise ConfigError(file_manifest, configerrors)
+
+            # import du module dans le sys.path
+            module_path = Path(conf_manifest['module_path'])
+            module_parent_dir = str(module_path.parent)
+            module_name = "{}.conf_schema_toml".format(module_path.name)
+            sys.path.insert(0, module_parent_dir)
+            module = __import__(module_name, globals=globals())
+            module_name = "{}.backend.blueprint".format(module_path.name)
+            module_blueprint = __import__(module_name, globals=globals())
+            sys.path.pop(0)
+
+            class GnModuleSchemaProdConf(
+                module.conf_schema_toml.GnModuleSchemaConf,
+                GnModuleProdConf
+            ):
+                pass
+            file_toml = str(f / 'conf_gn_module.toml')
+            conf_toml = toml.load(file_toml)
+            conf_module, configerrors = GnModuleSchemaProdConf().load(conf_toml)
+            if configerrors:
+                raise ConfigError(file_toml, configerrors)
+
+            yield conf_module, conf_manifest, module_blueprint
+
+
