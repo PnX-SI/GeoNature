@@ -1,9 +1,9 @@
-.. Geonature documentation master file, created by
+.. GeoNature documentation master file, created by
    sphinx-quickstart on Tue Jan 16 15:55:07 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Geonature's documentation!
+Welcome to GeoNature's documentation!
 =====================================
 
 .. toctree::
@@ -14,6 +14,7 @@ Welcome to Geonature's documentation!
    development
    installation_developer
    install-mtes
+   user-manual
    CHANGELOG 
 
 
