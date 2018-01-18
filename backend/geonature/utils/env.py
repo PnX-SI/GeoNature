@@ -30,7 +30,7 @@ GEONATURE_ETC = Path('/etc/geonature')
 
 DB = SQLAlchemy()
 
-GN_MODULE_FILES = ('manifest.toml', 'backend/gn_module_main.py', '__init__.py', 'backend/__init__.py', 'backend/blueprint.py')
+GN_MODULE_FILES = ('manifest.toml', '__init__.py', 'backend/__init__.py', 'backend/blueprint.py')
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
