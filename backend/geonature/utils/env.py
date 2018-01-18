@@ -103,7 +103,7 @@ def create_frontend_config(conf_file):
         raise ConfigError(configerrors)
 
     with open(
-        str(ROOT_DIR / 'frontend/src/conf/frontend-config.ts'), 'w'
+        str(ROOT_DIR / 'frontend/src/conf/app.config.ts'), 'w'
     ) as outputfile:
         outputfile.write("export const AppConfig = ")
         json.dump(configs_gn, outputfile, indent=True)

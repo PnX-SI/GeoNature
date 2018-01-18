@@ -22,7 +22,7 @@ app_globals = {}
 def get_app():
 
     # load and validate configuration
-    conf_toml = toml.load([str(ROOT_DIR /'config/custom_config.toml')])
+    conf_toml = toml.load(['/etc/geonature/custom_config.toml'])
     configs_py, configerrors = GnPySchemaConf().load(conf_toml)
     if configerrors:
         raise ConfigError(configerrors)
