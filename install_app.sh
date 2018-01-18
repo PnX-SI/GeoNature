@@ -114,6 +114,11 @@ echo "Instalation des paquets npm"
 npm install
 npm rebuild node-sass
 
+# creation du map config
+if [ ! -f src/conf/map.config.ts ]; then
+  cp src/conf/map.config.ts.sample src/conf/map.config.ts
+fi
+
 # copy the custom components
 echo "Création des fichiers de customisation du frontend..."
 if [ ! -f src/custom/custom.scss ]; then
@@ -132,6 +137,7 @@ fi
 if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
   cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
 fi
+
 
 echo "Build du frontend..."
 npm run build

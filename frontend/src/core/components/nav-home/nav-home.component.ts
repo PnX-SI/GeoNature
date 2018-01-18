@@ -34,8 +34,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
           private _location: Location) {
 
     translate.addLangs(['en', 'fr', 'cn']);
-    translate.setDefaultLang(AppConfig.defaultLanguage);
-    translate.use(AppConfig.defaultLanguage);
+    translate.setDefaultLang(AppConfig.DEFAULT_LANGUAGE);
+    translate.use(AppConfig.DEFAULT_LANGUAGE);
   }
 
 

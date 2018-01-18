@@ -28,9 +28,6 @@ const defaultRoutes: Routes = [
       { path: 'exports', loadChildren: '@geonature/core/exports/exports.module#ExportsModule'},
       { path: 'occtax', loadChildren: '@geonature/modules/contact/contact.module#ContactModule'},
       { path: '**',  component: PageNotFoundComponent },
-      {% for route in routes %}
-        {'path': route.path, 'loadChildren': route.location}
-    {% endfor %}
      ] },
 ];
 

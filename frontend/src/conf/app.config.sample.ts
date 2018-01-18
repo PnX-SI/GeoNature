@@ -29,7 +29,7 @@ export const AppConfig = {
   CAS: {
     CAS_AUTHENTIFICATION: false,
     CAS_LOGIN_URL: 'https://inpn.mnhn.fr/auth/login',
-    CAS_LOGOUT_URL: 'https://inpn.mnhn.fr/auth/login',
+    CAS_URL_LOGOUT: 'https://inpn.mnhn.fr/auth/login',
     CAS_VALIDATION_URL: 'https://inpn.mnhn.fr/auth/serviceValidate'
   },
     // Porté des droits
