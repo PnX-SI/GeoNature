@@ -5,7 +5,7 @@ import subprocess
 from server import get_app
 from geonature.utils.env import BACKEND_DIR, ROOT_DIR, load_config
 
-from config_schema import ConfigError
+from geonature.utils.errors import ConfigError
 
 log = logging.getLogger(__name__)
 
@@ -23,12 +23,7 @@ def get_app_for_cmd(config_file=None):
     try:
         return get_app(load_config(config_file))
     except ConfigError as e:
-        msg = "Error in the config file '{}'. Fix the following:\n"
-        msg = msg.format(config_file)
-        for key, errors in e.value.items():
-            errors = "\n\t\t-".join(errors)
-            msg += "\n\t{}:\n\t\t-{}".format(key, errors)
-        log.critical(msg + "\n")
+        log.critical(str(e) + "\n")
         sys.exit(1)
 
 
