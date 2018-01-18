@@ -23,6 +23,8 @@ xmltodict = "==0.11.0"
 "ac0ff56" = {file = "https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip"}
 "c23df6c" = {file = "https://github.com/PnX-SI/Nomenclature-api-module/archive/master.zip"}
 flask-sqlalchemy = "*"
+marshmallow = "*"
+toml = "*"
 
 
 [dev-packages]

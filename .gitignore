@@ -3,7 +3,7 @@ settings.ini
 log/*
 .vscode/
 /backend/venv/*
-custom_config.py
+custom_config.toml
 gunicorn_start.sh
 
 config.py
@@ -114,5 +114,3 @@ ENV/
 
 *.pid
 package-lock.json
-
-*.orig

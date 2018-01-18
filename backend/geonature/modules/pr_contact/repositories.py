@@ -2,15 +2,15 @@ from sqlalchemy import  or_
 from werkzeug.exceptions import NotFound
 
 from geonature.utils.env import DB
-from ...core.gn_meta.models import CorDatasetsActor
+#from .models import corRoleRelevesContact
 from ...core.gn_meta import routes as gn_meta
-from .models import corRoleRelevesContact
+#from ...core.gn_meta.models import CorDatasetsActor
 
 
 
 class ReleveRepository():
     """Repository: classe permettant l'acces au données d'un modèle de type 'releve'"""
-    def __init__(self, model) :
+    def __init__(self, model):
         self.model = model
 
 

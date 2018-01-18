@@ -7,20 +7,20 @@ cd backend
 
 echo "Création du fichier de configuration ..."
 if [ ! -f custom_config.py ]; then
-  cp custom_config.py.sample custom_config.py
+  cp custom_config.toml.sample custom_config.toml
 fi
 
 
-echo "préparation du fichier config.py..."
+echo "préparation du fichier de config..."
 my_url="${my_url//\//\\/}"
-sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" custom_config.py
-sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" custom_config.py
-sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" custom_config.py
-nano custom_config.py
+sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" custom_config.toml
+sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" custom_config.toml
+sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" custom_config.toml
+sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" custom_config.toml
+
 
 #Virtual env Installation
 echo "Installation du virtual env..."
-
 
 
 if [[ $python_path ]]; then
@@ -33,6 +33,7 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 python ${BASE_DIR}/geonature_cmd.py install_command
+geonature generate_frontend_config --conf_file config/custom_config.toml
 deactivate
 
 #Lancement de l'application
@@ -60,10 +61,6 @@ echo "instalation des paquets npm"
 npm install
 npm rebuild node-sass
 
-if [ ! -f geonature/conf/app.config.ts ]; then
-  cp geonature/conf/app.config.sample.ts geonature/conf/app.config.ts
-fi
-
 if [ ! -f geonature/custom/custom.scss ]; then
   cp geonature/custom/custom.scss.sample geonature/custom/custom.scss
 fi
@@ -82,11 +79,5 @@ if [ ! -f geonature/custom/components/introduction/introduction.component.html ]
   cp geonature/custom/components/introduction/introduction.component.html.sample geonature/custom/components/introduction/introduction.component.html
 fi
 
-
-sed -i "s/URL_APPLICATION: .*$/URL_APPLICATION: '${my_url}geonature\/',/g" geonature/conf/app.config.ts
-sed -i "s/API_ENDPOINT: .*$/API_ENDPOINT: '${my_url}geonature\/api\/',/g" geonature/conf/app.config.ts
-sed -i "s/API_TAXHUB: .*$/API_TAXHUB: '${my_url}taxhub\/api\/',/g" geonature/conf/app.config.ts
-
-nano geonature/conf/app.config.ts
 
 ng build --prod --aot=false --base-href=/geonature/
