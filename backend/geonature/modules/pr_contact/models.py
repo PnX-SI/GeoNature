@@ -3,7 +3,6 @@
 from __future__ import (unicode_literals, print_function,
                         absolute_import, division)
 
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
@@ -12,6 +11,7 @@ from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
 
 from sqlalchemy.dialects.postgresql import UUID
 
+from geonature.utils.env import DB
 from ...core.users.models import TRoles
 from ...core.gn_meta import routes as gn_meta
 from pypnnomenclature.models import TNomenclatures
@@ -20,9 +20,8 @@ from pypnusershub.db.tools import InsufficientRightsError
 
 from geoalchemy2 import Geometry
 
-db = SQLAlchemy()
 
-class ReleveModel(db.Model):
+class ReleveModel(DB.Model):
     __abstract__ = True
 
     def user_is_observer_or_digitiser(self, user):
@@ -66,18 +65,18 @@ class ReleveModel(db.Model):
         return releve_auth
 
 
-corRoleRelevesContact = db.Table(
+corRoleRelevesContact = DB.Table(
     'cor_role_releves_contact',
-    db.MetaData(schema='pr_contact'),
-    db.Column(
+    DB.MetaData(schema='pr_contact'),
+    DB.Column(
         'id_releve_contact',
-        db.Integer,
+        DB.Integer,
         ForeignKey('pr_contact.t_releves_contact.id_releve_contact'),
         primary_key=True
     ),
-    db.Column(
+    DB.Column(
         'id_role',
-        db.Integer,
+        DB.Integer,
         ForeignKey('utilisateurs.t_roles.id_role'),
         primary_key=True
     )
@@ -86,27 +85,27 @@ corRoleRelevesContact = db.Table(
 class TRelevesContact(serializableGeoModel, ReleveModel):
     __tablename__ = 't_releves_contact'
     __table_args__ = {'schema': 'pr_contact'}
-    id_releve_contact = db.Column(db.Integer, primary_key=True)
-    id_dataset = db.Column(db.Integer)
-    id_digitiser = db.Column(
-        db.Integer,
+    id_releve_contact = DB.Column(DB.Integer, primary_key=True)
+    id_dataset = DB.Column(DB.Integer)
+    id_digitiser = DB.Column(
+        DB.Integer,
         ForeignKey('utilisateurs.t_roles.id_role')
     )
-    id_nomenclature_grp_typ = db.Column(db.Integer)
-    observers_txt = db.Column(db.Unicode)
-    date_min = db.Column(db.DateTime)
-    date_max = db.Column(db.DateTime)
-    hour_min = db.Column(db.DateTime)
-    hour_max = db.Column(db.DateTime)
-    altitude_min = db.Column(db.Integer)
-    altitude_max = db.Column(db.Integer)
-    meta_device_entry = db.Column(db.Unicode)
-    deleted = db.Column(db.Boolean, default=False)
-    meta_create_date = db.Column(db.DateTime)
-    meta_update_date = db.Column(db.DateTime)
-    comment = db.Column(db.Unicode)
-    geom_local = db.Column(Geometry)
-    geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
+    id_nomenclature_grp_typ = DB.Column(DB.Integer)
+    observers_txt = DB.Column(DB.Unicode)
+    date_min = DB.Column(DB.DateTime)
+    date_max = DB.Column(DB.DateTime)
+    hour_min = DB.Column(DB.DateTime)
+    hour_max = DB.Column(DB.DateTime)
+    altitude_min = DB.Column(DB.Integer)
+    altitude_max = DB.Column(DB.Integer)
+    meta_device_entry = DB.Column(DB.Unicode)
+    deleted = DB.Column(DB.Boolean, default=False)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    comment = DB.Column(DB.Unicode)
+    geom_local = DB.Column(Geometry)
+    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
 
     t_occurrences_contact = relationship(
         "TOccurrencesContact",
@@ -114,7 +113,7 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
         cascade="all,delete-orphan"
     )
 
-    observers = db.relationship(
+    observers = DB.relationship(
         'TRoles',
         secondary=corRoleRelevesContact,
         primaryjoin=(
@@ -136,35 +135,37 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
 class TOccurrencesContact(serializableModel):
     __tablename__ = 't_occurrences_contact'
     __table_args__ = {'schema': 'pr_contact'}
-    id_occurrence_contact = db.Column(db.Integer, primary_key=True)
-    id_releve_contact = db.Column(
-        db.Integer,
+    id_occurrence_contact = DB.Column(DB.Integer, primary_key=True)
+    id_releve_contact = DB.Column(
+        DB.Integer,
         ForeignKey('pr_contact.t_releves_contact.id_releve_contact')
     )
-    id_nomenclature_obs_meth = db.Column(db.Integer)
-    id_nomenclature_bio_condition = db.Column(db.Integer)
-    id_nomenclature_bio_status = db.Column(db.Integer)
-    id_nomenclature_naturalness = db.Column(db.Integer)
-    id_nomenclature_exist_proof = db.Column(db.Integer)
-    id_nomenclature_diffusion_level = db.Column(db.Integer)
-    id_nomenclature_observation_status = db.Column(db.Integer)
-    id_nomenclature_blurring = db.Column(db.Integer)
-    determiner = db.Column(db.Unicode)
-    id_nomenclature_determination_method = db.Column(db.Integer)
-    determination_method_as_text = db.Column(db.Unicode)
-    cd_nom = db.Column(db.Integer)
-    nom_cite = db.Column(db.Unicode)
-    meta_v_taxref = db.Column(
-        db.Unicode,
+    id_nomenclature_obs_meth = DB.Column(DB.Integer)
+    id_nomenclature_bio_condition = DB.Column(DB.Integer)
+    id_nomenclature_bio_status = DB.Column(DB.Integer)
+    id_nomenclature_naturalness = DB.Column(DB.Integer)
+    id_nomenclature_exist_proof = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_diffusion_level = DB.Column(DB.Integer)
+    id_nomenclature_observation_status = DB.Column(DB.Integer)
+    id_nomenclature_blurring = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer)
+    determiner = DB.Column(DB.Unicode)
+    id_nomenclature_determination_method = DB.Column(DB.Integer)
+    determination_method_as_text = DB.Column(DB.Unicode)
+    cd_nom = DB.Column(DB.Integer)
+    nom_cite = DB.Column(DB.Unicode)
+    meta_v_taxref = DB.Column(
+        DB.Unicode,
         default=select([func.get_default_parameter('taxref_version', 'NULL')])
     )
-    sample_number_proof = db.Column(db.Unicode)
-    digital_proof = db.Column(db.Unicode)
-    non_digital_proof = db.Column(db.Unicode)
-    deleted = db.Column(db.Boolean)
-    meta_create_date = db.Column(db.DateTime)
-    meta_update_date = db.Column(db.DateTime)
-    comment = db.Column(db.Unicode)
+    sample_number_proof = DB.Column(DB.Unicode)
+    digital_proof = DB.Column(DB.Unicode)
+    non_digital_proof = DB.Column(DB.Unicode)
+    deleted = DB.Column(DB.Boolean)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    comment = DB.Column(DB.Unicode)
 
     cor_counting_contact = relationship(
         "CorCountingContact",
@@ -176,22 +177,18 @@ class TOccurrencesContact(serializableModel):
 class CorCountingContact(serializableModel):
     __tablename__ = 'cor_counting_contact'
     __table_args__ = {'schema': 'pr_contact'}
-    id_counting_contact = db.Column(db.Integer, primary_key=True)
-    id_occurrence_contact = db.Column(
-        db.Integer,
+    id_counting_contact = DB.Column(DB.Integer, primary_key=True)
+    id_occurrence_contact = DB.Column(
+        DB.Integer,
         ForeignKey('pr_contact.t_occurrences_contact.id_occurrence_contact')
     )
-    id_nomenclature_life_stage = db.Column(db.Integer)
-    id_nomenclature_sex = db.Column(db.Integer)
-    id_nomenclature_obj_count = db.Column(db.Integer)
-    id_nomenclature_type_count = db.Column(db.Integer)
-    id_nomenclature_valid_status = db.Column(db.Integer)
-    id_validator = db.Column(db.Integer)
-    meta_validation_date = db.Column(db.DateTime)
-    validation_comment = db.Column(db.Unicode)
-    count_min = db.Column(db.Integer)
-    count_max = db.Column(db.Integer)
-    unique_id_sinp_occtax = db.Column(
+    id_nomenclature_life_stage = DB.Column(DB.Integer)
+    id_nomenclature_sex = DB.Column(DB.Integer)
+    id_nomenclature_obj_count = DB.Column(DB.Integer)
+    id_nomenclature_type_count = DB.Column(DB.Integer)
+    count_min = DB.Column(DB.Integer)
+    count_max = DB.Column(DB.Integer)
+    unique_id_sinp_occtax = DB.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()])
     )
@@ -200,31 +197,31 @@ class CorCountingContact(serializableModel):
 class VReleveContact(serializableGeoModel, ReleveModel):
     __tablename__ = 'v_releve_contact'
     __table_args__ = {'schema': 'pr_contact'}
-    id_releve_contact = db.Column(db.Integer)
-    id_dataset = db.Column(db.Integer)
-    id_digitiser = db.Column(db.Integer)
-    date_min = db.Column(db.DateTime)
-    date_max = db.Column(db.DateTime)
-    altitude_min = db.Column(db.Integer)
-    altitude_max = db.Column(db.Integer)
-    meta_device_entry = db.Column(db.Unicode)
-    deleted = db.Column(db.Boolean, default=False)
-    meta_create_date = db.Column(db.DateTime)
-    meta_update_date = db.Column(db.DateTime)
-    comment = db.Column(db.Unicode)
-    geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
-    id_occurrence_contact = db.Column(db.Integer, primary_key=True)
-    cd_nom = db.Column(db.Integer)
-    nom_cite = db.Column(db.Unicode)
-    occ_deleted = db.Column(db.Boolean)
-    occ_meta_create_date = db.Column(db.DateTime)
-    occ_meta_update_date = db.Column(db.DateTime)
-    lb_nom = db.Column(db.Unicode)
-    nom_valide = db.Column(db.Unicode)
-    nom_vern = db.Column(db.Unicode)
-    leaflet_popup = db.Column(db.Unicode)
-    observateurs = db.Column(db.Unicode)
-    observers = db.relationship(
+    id_releve_contact = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer)
+    id_digitiser = DB.Column(DB.Integer)
+    date_min = DB.Column(DB.DateTime)
+    date_max = DB.Column(DB.DateTime)
+    altitude_min = DB.Column(DB.Integer)
+    altitude_max = DB.Column(DB.Integer)
+    meta_device_entry = DB.Column(DB.Unicode)
+    deleted = DB.Column(DB.Boolean, default=False)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    comment = DB.Column(DB.Unicode)
+    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    id_occurrence_contact = DB.Column(DB.Integer, primary_key=True)
+    cd_nom = DB.Column(DB.Integer)
+    nom_cite = DB.Column(DB.Unicode)
+    occ_deleted = DB.Column(DB.Boolean)
+    occ_meta_create_date = DB.Column(DB.DateTime)
+    occ_meta_update_date = DB.Column(DB.DateTime)
+    lb_nom = DB.Column(DB.Unicode)
+    nom_valide = DB.Column(DB.Unicode)
+    nom_vern = DB.Column(DB.Unicode)
+    leaflet_popup = DB.Column(DB.Unicode)
+    observateurs = DB.Column(DB.Unicode)
+    observers = DB.relationship(
         'TRoles',
         secondary=corRoleRelevesContact,
         primaryjoin=(
@@ -249,23 +246,23 @@ class VReleveContact(serializableGeoModel, ReleveModel):
 class VReleveList(serializableGeoModel, ReleveModel):
     __tablename__ = 'v_releve_list'
     __table_args__ = {'schema': 'pr_contact'}
-    id_releve_contact = db.Column(db.Integer, primary_key=True)
-    id_dataset = db.Column(db.Integer)
-    id_digitiser = db.Column(db.Integer)
-    date_min = db.Column(db.DateTime)
-    date_max = db.Column(db.DateTime)
-    altitude_min = db.Column(db.Integer)
-    altitude_max = db.Column(db.Integer)
-    meta_device_entry = db.Column(db.Unicode)
-    deleted = db.Column(db.Boolean, default=False)
-    meta_create_date = db.Column(db.DateTime)
-    meta_update_date = db.Column(db.DateTime)
-    comment = db.Column(db.Unicode)
-    geom_4326 = db.Column(Geometry('GEOMETRY', 4326))
-    taxons = db.Column(db.Unicode)
-    leaflet_popup = db.Column(db.Unicode)
-    observateurs = db.Column(db.Unicode)
-    observers = db.relationship(
+    id_releve_contact = DB.Column(DB.Integer, primary_key=True)
+    id_dataset = DB.Column(DB.Integer)
+    id_digitiser = DB.Column(DB.Integer)
+    date_min = DB.Column(DB.DateTime)
+    date_max = DB.Column(DB.DateTime)
+    altitude_min = DB.Column(DB.Integer)
+    altitude_max = DB.Column(DB.Integer)
+    meta_device_entry = DB.Column(DB.Unicode)
+    deleted = DB.Column(DB.Boolean, default=False)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    comment = DB.Column(DB.Unicode)
+    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    taxons = DB.Column(DB.Unicode)
+    leaflet_popup = DB.Column(DB.Unicode)
+    observateurs = DB.Column(DB.Unicode)
+    observers = DB.relationship(
         'TRoles',
         secondary=corRoleRelevesContact,
         primaryjoin=(
@@ -289,6 +286,6 @@ class VReleveList(serializableGeoModel, ReleveModel):
 class DefaultNomenclaturesValue(serializableModel):
     __tablename__ = 'defaults_nomenclatures_value'
     __table_args__ = {'schema': 'pr_contact'}
-    id_type = db.Column(db.Integer, primary_key=True)
-    id_organism = db.Column(db.Integer, primary_key=True)
-    id_nomenclature = db.Column(db.Integer, primary_key=True)
+    id_type = DB.Column(DB.Integer, primary_key=True)
+    id_organism = DB.Column(DB.Integer, primary_key=True)
+    id_nomenclature = DB.Column(DB.Integer, primary_key=True)

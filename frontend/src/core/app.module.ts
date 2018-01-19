@@ -21,7 +21,7 @@ import { GN2CommonModule } from './GN2Common/GN2Common.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './routing/app-routing.module'; // RoutingModule
+import { routing, appRoutingProviders } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -59,7 +59,7 @@ export function HttpLoaderFactory(http: Http) {
     // }),
     BrowserAnimationsModule,
     FlexLayoutModule,
-    AppRoutingModule,
+    routing,
     ChartModule,
     ToastrModule.forRoot(),
     GN2CommonModule,
@@ -88,5 +88,4 @@ export function HttpLoaderFactory(http: Http) {
 })
 
 export class AppModule {
-
  }

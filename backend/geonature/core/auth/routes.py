@@ -1,3 +1,8 @@
+
+"""
+    Module d'identificiation provisoire pour test du CAS INPN
+"""
+
 import datetime
 import xmltodict
 
@@ -5,20 +10,16 @@ from flask import (
     Blueprint, request, make_response,
     redirect, current_app, jsonify
 )
-from flask_sqlalchemy import SQLAlchemy
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+from geonature.utils.env import DB
 
 from ..gn_meta import routes as gn_meta
 from ..users import routes as users
 from ...utils.utilssqlalchemy import json_resp
 from ...utils import utilsrequests
 
-db = SQLAlchemy()
-
-"""
-    Module d'identificiation provisoire pour test du CAS INPN
-"""
 
 routes = Blueprint('auth_cas', __name__)
 
@@ -28,7 +29,7 @@ def loginCas():
     config_cas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
-        base_url = current_app.config['API_ENDPOINT']+"/auth_cas/login"
+        base_url = current_app.config['API_ENDPOINT'] + "/auth_cas/login"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
             url=config_cas['CAS_URL_VALIDATION'],
             ticket=params['ticket'],

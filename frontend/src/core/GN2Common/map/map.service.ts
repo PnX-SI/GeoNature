@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
 
 import * as L from 'leaflet';
-import { AppConfig } from '../../../conf/app.config';
+import { MAP_CONFIG } from '../../../conf/map.config';
 import {TranslateService} from '@ngx-translate/core';
 import { CommonService } from '../service/common.service';
 
@@ -174,7 +174,7 @@ export class MapService {
         let geojson = {'geometry': {'type': 'Point', 'coordinates': [markerCoord.lng, markerCoord.lat]}};
         this.setGeojsonCoord(geojson);
         this.marker.on('moveend', (event: MouseEvent) => {
-          if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+          if (this.map.getZoom() < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
             this._commonService.translateToaster('warning', 'Map.ZoomWarning');
           } else {
             markerCoord = this.marker.getLatLng();

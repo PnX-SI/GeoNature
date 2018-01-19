@@ -5,6 +5,12 @@ npm-debug.log
 /dist/
 src/conf/app.config.ts
 
+#routing
+src/core/routing/app-routing.module.ts
+
+# map config
+src/conf/map.config.ts
+
 # custom components
 src/custom/components/footer/footer.component.ts
 src/custom/components/footer/footer.component.html

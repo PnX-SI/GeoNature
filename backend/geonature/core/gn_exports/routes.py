@@ -1,16 +1,12 @@
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
 
 from flask import Blueprint, request
-from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy import or_
 
+from geonature.utils.env import DB
 from ...utils.utilssqlalchemy import json_resp
-from ...utils import filemanager 
+from ...utils import filemanager
 
-db = SQLAlchemy()
 
 routes = Blueprint('gn_exports', __name__)
 
@@ -20,7 +16,7 @@ routes = Blueprint('gn_exports', __name__)
 # def genericExport():
 """ Routes générique pour l'export en CSV des vues des différents protocoles
 TODO: faire la table et le modele TViewExports qui liste tous les exports disponibles
-Paramètres: 
+Paramètres:
     idView: int
         id de la vue dans la table TViewExports
     organism: id
@@ -28,13 +24,13 @@ Paramètres:
     dataset: int
         id du dataset """
 #     params = request.args
-#     view = db.session.query(TViewExport).get(idView)
+#     view = DB.session.query(TViewExport).get(idView)
 #     cleanViewName = filemanager.removeDisallowedFilenameChars(view.table_name)
 #     viewTable = GenericTable(view.table_name, view.schema_name)
 
 #     dataSetColumnName = view.dataSetColumnName
 
-#     q = db.session.query(viewTable)
+#     q = DB.session.query(viewTable)
 
 #     if 'organism' in params:
 #         q = q.join(
@@ -50,7 +46,7 @@ Paramètres:
 #         )
 #     if 'dataset' in params:
 #         q.filter(getattr(viewTable, dataSetColumnName) == params.get('dataset'))
-    
+
 #     data = q.all()
 #     data = serializeQueryTest(data, q.column_descriptions)
 #     return (cleanViewName, data, viewSINP.columns, ';')

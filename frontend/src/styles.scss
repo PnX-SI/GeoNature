@@ -1,11 +1,8 @@
 
 
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import 'conf/names_variables.scss';
 @import 'custom/custom.scss';
-@import '~@swimlane/ngx-datatable/release/index.css';
-@import '~@swimlane/ngx-datatable/release/themes/material.css';
-@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
 
 html, body, material-app, mat-sidenav-container{
   margin: 0;
