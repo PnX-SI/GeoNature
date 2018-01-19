@@ -21,6 +21,7 @@ class CasUserSchemaConf(Schema):
 
 
 class CasSchemaConf(Schema):
+    CAS_AUTHENTIFICATION = fields.Boolean(missing='false')
     CAS_URL_LOGIN = fields.Url(missing='https://preprod-inpn.mnhn.fr/auth/login')
     CAS_URL_LOGOUT = fields.Url(missing='https://preprod-inpn.mnhn.fr/auth/logout')
     CAS_URL_VALIDATION = fields.String(missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate')
@@ -38,7 +39,7 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            '^postgresql:\/\/.*:.*@\w+:\w+\/\w+$',
+            '^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$',
             0,
             'Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name'
         )
@@ -71,12 +72,17 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
 
 
-class ConfigError(Exception):
-    '''
-        Configuration error class
-    '''
-    def __init__(self, value):
-        self.value = value
 
-    def __str__(self):
-        return repr(self.value)
+class ManifestSchemaConf(Schema):
+    package_format_version = fields.String(required=True)
+    module_name = fields.String(required=True)
+    module_version = fields.String(required=True)
+    min_geonature_version = fields.String(required=True)
+    max_geonature_version = fields.String(required=True)
+    exclude_geonature_versions = fields.List(fields.String)
+
+class ManifestSchemaProdConf(Schema):
+    module_path = fields.String(required=True)
+
+class GnModuleProdConf(Schema):
+    api_url = fields.String(required=True)

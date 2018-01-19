@@ -2,45 +2,31 @@
 Démarrage de l'application
 '''
 
-import toml
-from pathlib import Path
+import logging
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
 from flask_cors import CORS
 
-from config_schema import GnPySchemaConf, GnGeneralSchemaConf, ConfigError
+from geonature.utils.env import ROOT_DIR, DB, load_config, list_gn_modules
+
+log = logging.getLogger(__name__)
 
 
-ROOT_DIR = Path(__file__).absolute().parent.parent
+def get_app(config, _app=None):
 
-db = SQLAlchemy()
-
-app_globals = {}
-
-
-def get_app():
-
-    # load and validate configuration
-    conf_toml = toml.load(['/etc/geonature/custom_config.toml'])
-    configs_py, configerrors = GnPySchemaConf().load(conf_toml)
-    if configerrors:
-        raise ConfigError(configerrors)
-    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
-    if configerrors:
-        raise ConfigError(configerrors)
-
-    configs = configs_py.copy()
-    configs.update(configs_gn)
-
-    if app_globals.get('app', False):
-        return app_globals['app']
+    # Make sure app is a singleton
+    if _app is not None:
+        return _app
 
     app = Flask(__name__)
-    app.config.update(configs)
-    db.init_app(app)
+    app.config.update(config)
+
+    # Bind app to DB
+    DB.init_app(app)
+
     with app.app_context():
-        db.create_all()
+        DB.create_all()
 
         from pypnusershub.routes import routes
         app.register_blueprint(routes, url_prefix='/auth')
@@ -66,17 +52,15 @@ def get_app():
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
-        ## errors
+        # errors
         from geonature.core.errors import routes
 
-        app_globals['app'] = app
+        CORS(app, supports_credentials=True)
+
+        # Chargement des modules tiers
+        for conf, manifest, module in list_gn_modules():
+            app.register_blueprint(module.backend.blueprint.blueprint, url_prefix=conf['api_url'])
+
+        _app = app
     return app
 
-
-app = get_app()
-CORS(app, supports_credentials=True)
-
-
-if __name__ == '__main__':
-    from flask_script import Manager
-    Manager(app).run()

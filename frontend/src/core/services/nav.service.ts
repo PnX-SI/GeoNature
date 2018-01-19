@@ -17,6 +17,7 @@ export class NavService {
             // {route: '/suivi-flore', moduleName: 'Suivi Flore', icon: 'filter_vintage', id: '16'},
             // {route: '/suivi-chiro', moduleName: 'Suivi Chiro', icon: 'youtube_searched_for', id: '17'},
             {route: '/exports', moduleName: 'Exports', icon: 'cloud_download', id: '18'},
+            {route: '/validation', moduleName: 'validation', icon: 'cloud_download', id: '22'},
             // {route: '/prospections', moduleName: 'Prospections', icon: 'feedback', id: '19'},
             // {route: '/parametres', moduleName: 'Paramètres', icon: 'settings', id: '20'}
             ];
