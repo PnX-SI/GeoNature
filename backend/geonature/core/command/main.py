@@ -145,11 +145,6 @@ def supervisor(action, app_name):
 
 
 @main.command()
-@click.option(
-    '--conf-file',
-    required=False,
-    envvar='GEONATURE_CONFIG_FILE'
-)
 def dev_front():
     """
         Lance l'api du backend et démarre le frontend
