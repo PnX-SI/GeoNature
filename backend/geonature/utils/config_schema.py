@@ -21,6 +21,7 @@ class CasUserSchemaConf(Schema):
 
 
 class CasSchemaConf(Schema):
+    CAS_AUTHENTIFICATION = fields.Boolean(missing='false')
     CAS_URL_LOGIN = fields.Url(missing='https://preprod-inpn.mnhn.fr/auth/login')
     CAS_URL_LOGOUT = fields.Url(missing='https://preprod-inpn.mnhn.fr/auth/logout')
     CAS_URL_VALIDATION = fields.String(missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate')

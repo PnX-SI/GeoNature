@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {Map, Marker} from 'leaflet';
 import { MapService } from '../map.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { MAP_CONFIG } from '../../../../conf/map.config';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
 
@@ -41,7 +41,7 @@ export class MarkerComponent implements OnInit {
   enableMarkerOnClick() {
     this.map.on('click', (e: any) => {
       // check zoom level
-      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+      if (this.map.getZoom() < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       } else {
         this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
@@ -63,7 +63,7 @@ export class MarkerComponent implements OnInit {
 
   markerMoveEvent(marker: Marker) {
     marker.on('moveend', (event: MouseEvent) => {
-      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+      if (this.map.getZoom() < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       } else {
         this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
