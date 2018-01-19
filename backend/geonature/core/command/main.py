@@ -126,10 +126,12 @@ def dev_back(host, port, conf_file):
     """
         Lance l'api du backend avec flask
     """
-    ssl_context = (
-        "/tmp/cert.pem",
-        "/tmp/key.pem"
-    )
+    # TODO mettre en parametre et faire en sorte que le chemin absolu soit calculé automatiquement
+    # ssl_context = (
+    #     "/tmp/cert.pem",
+    #     "/tmp/key.pem"
+    # )
+    # app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
     app = get_app_for_cmd(conf_file)
     app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
 
@@ -145,11 +147,6 @@ def supervisor(action, app_name):
 
 
 @main.command()
-@click.option(
-    '--conf-file',
-    required=False,
-    envvar='GEONATURE_CONFIG_FILE'
-)
 def dev_front():
     """
         Lance l'api du backend et démarre le frontend
