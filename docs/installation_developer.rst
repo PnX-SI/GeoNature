@@ -80,7 +80,7 @@ Ce script installe l'ensemble des schémas de base de données du "coeur" de Geo
 
 ::
     
-    sudo ./install_db.sh
+    ./install_db.sh
 
 Dans GeoNature, chaque module (Occurrence de taxons, Flore Station) dispose de son propre schéma de BDD et de son script d'installation indépendant.
 
@@ -88,7 +88,7 @@ Pour installer le module 'Occurrence de taxons' lancer le script :
 
 ::
     
-    sudo ./data/modules/contact/install_schema.sh
+    data/modules/contact/install_schema.sh
 
 Installation de l'application
 -----------------------------
