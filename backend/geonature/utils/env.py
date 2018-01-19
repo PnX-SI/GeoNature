@@ -199,15 +199,15 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
 def frontend_routes_templating():
     with open(
         str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'), 'r'
-    ) as inputFile:
+    ) as input_file:
 
-        template = Template(inputFile.read())
+        template = Template(input_file.read())
         routes = []
         for conf, manifest, blueprint in list_gn_modules():
-            print(manifest)
-            location = Path(manifest['module_path']).name
+            location = Path(manifest['module_path'])
+            print(location)
             path = conf['api_url'].lstrip('/')
-            location = '@{}/gnModule#GeonatureModule'.format(location)
+            location = '{}/frontend/app/gnModule#GeonatureModule'.format(location)
             routes.append({'path': path, 'location': location})
 
             #TODO test if two modules with the same name is okay for Angular
@@ -216,6 +216,20 @@ def frontend_routes_templating():
 
     with open(
         str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts'), 'w'
-    ) as outputfile:
-        outputfile.write(route_template)
+    ) as output_file:
+        output_file.write(route_template)
+
+
+def tsconfig_templating(modules):
+    with open(
+        str(ROOT_DIR / 'frontend/tsconfig.json.sample'), 'r'
+    ) as input_file:
+        template = Template(input_file.read())
+        tsconfig_templated = template.render(geonature_path=ROOT_DIR, modules=modules)
+
+    with open(
+        str(ROOT_DIR / 'frontend/tsconfig.json'), 'w'
+    ) as output_file:
+        output_file.write(tsconfig_templated)
+
 
