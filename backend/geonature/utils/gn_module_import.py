@@ -3,6 +3,7 @@
     d'un nouveau module geonature
 '''
 import subprocess
+import logging
 
 from pathlib import Path
 from packaging import version
@@ -21,20 +22,26 @@ from geonature.utils.config_schema import (
 )
 from geonature.utils.utilstoml import load_and_validate_toml
 
+log = logging.getLogger(__name__)
+
+
 def check_gn_module_file(module_path):
-    print("checking file")
+    log.info("checking file")
     for file in GN_MODULE_FILES:
         if not (Path(module_path) / file).is_file():
             raise FileNotFoundError("Missing file {}".format(file))
-    print("...ok")
+    log.info("...ok")
 
 
 def check_manifest(module_path):
     '''
         Verification de la version de geonature par rapport au manifest
     '''
-    print("checking manifest")
-    configs_py = load_and_validate_toml(str(Path(module_path) / "manifest.toml"), ManifestSchemaConf)
+    log.info("checking manifest")
+    configs_py = load_and_validate_toml(
+        str(Path(module_path) / "manifest.toml"),
+        ManifestSchemaConf
+    )
 
     gn_v = version.parse(GEONATURE_VERSION)
     if (
@@ -51,7 +58,7 @@ def check_manifest(module_path):
                 "Geonature version {} is imcompatible with module"
                 .format(GEONATURE_VERSION)
             )
-    print("...ok")
+    log.info("...ok")
     return configs_py['module_name']
 
 
@@ -59,7 +66,7 @@ def gn_module_register_config(module_name, module_path, url):
     '''
         Enregistrement du module dans les variables etc
     '''
-    print("Register module")
+    log.info("Register module")
     # import pdb
     # pdb.set_trace()
     # TODO utiliser les commande os de python
@@ -75,46 +82,48 @@ def gn_module_register_config(module_name, module_path, url):
                 cf
             )
             subprocess.call(cmd.split(" "))
-    # TODO factoriser
-    p = subprocess.Popen(
-        ['sudo', 'tee', '-a', '{}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, )],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.DEVNULL
-    )
-    p.stdin.write("module_path = '{}'\n".format(module_path).encode('utf8'))
-    p.stdin.close()
-    p.wait()
-    p = subprocess.Popen(
-        ['sudo', 'tee', '-a', '{}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, )],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.DEVNULL
-    )
-    p.stdin.write("api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8'))
-    p.stdin.close()
-    p.wait()
 
-    print("...ok")
+    cmds = [
+        {
+            'cmd': 'sudo tee -a {}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, ),
+            'msg': "module_path = '{}'\n".format(module_path).encode('utf8')
+        },
+        {
+            'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, ),
+            'msg': "api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8')
+        }
+    ]
+    for c in cmds:
+        p = subprocess.Popen(
+            c['cmd'].split(" "),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.DEVNULL
+        )
+        p.stdin.write(c['msg'])
+        p.stdin.close()
+        p.wait()
+
+    log.info("...ok")
 
 
 def gn_module_import_requirements(module_path):
     req_p = Path(module_path) / "requirements.txt"
     if req_p.is_file():
-        print("import_requirements")
+        log.info("import_requirements")
         import_requirements(str(req_p))
-        print("...ok")
+        log.info("...ok")
 
 
 def gn_module_activate(module_name):
     # TODO utiliser les commande os de python
-    print("Activate module")
+    log.info("Activate module")
     # TODO gestion des erreurs
     if (GN_MODULES_ETC_AVAILABLE / module_name).is_dir():
         # TODO veirifier si le fichier n'existe pas déja dans chacun des dossiers
         cmd = "sudo ln -s {}/{} {}".format(
             GN_MODULES_ETC_AVAILABLE,
             module_name,
-            GN_MODULES_ETC_ENABLED,
-            module_name
+            GN_MODULES_ETC_ENABLED
         )
         subprocess.call(cmd.split(" "))
-        print("...ok")
+        log.info("...ok")
