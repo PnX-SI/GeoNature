@@ -52,7 +52,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     usermod -g www-data geonatureadmin
     usermod -a -G root geonatureadmin
 
-* Se placer dans le répetoire de l'utilisateur (``geonatadmin`` dans notre cas) Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, Taxhub ainsi que leurs bases de données (uniquement les schémas du coeur)
+* Se placer dans le répetoire de l'utilisateur (``geonatadmin`` dans notre cas) Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, Taxhub ainsi que leurs bases de données (uniquement les schémas du coeur)
 
 
 ::
@@ -71,7 +71,7 @@ Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'
 
 On ne se connectera plus en ROOT. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
-Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
+Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
 
 Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
 
@@ -130,7 +130,7 @@ L'installation de GeoNature n'est livrée qu'avec les schémas de base de donné
 
 ::
 
-    sudo ./data/modules/contact/install_schema.sh
+    data/modules/contact/install_schema.sh
 
 
 Doc développeur
