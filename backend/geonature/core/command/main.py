@@ -13,7 +13,8 @@ from geonature.utils.env import (
     DEFAULT_VIRTUALENV_DIR,
     install_geonature_command,
     GEONATURE_VERSION,
-    create_frontend_config
+    create_frontend_config,
+    frontend_routes_templating
 )
 
 from geonature.utils.command import (
@@ -148,3 +149,11 @@ def dev_front():
         Lance l'api du backend et démarre le frontend
     """
     start_geonature_front()
+
+
+@main.command()
+def generate_modules_route():
+    """
+        Génere le fichier de routing du frontend à partir des modules GeoNature activé
+    """
+    frontend_routes_templating()

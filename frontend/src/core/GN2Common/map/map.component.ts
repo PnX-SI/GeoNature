@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { MapService } from './map.service';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Map, LatLngExpression} from 'leaflet';
-import { AppConfig } from '../../../conf/app.config';
+import { MAP_CONFIG } from '../../../conf/map.config';
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
@@ -32,13 +32,13 @@ export class MapComponent implements OnInit {
   }
 
   initialize() {
-    const baseMaps = this.baseMaps || AppConfig.MAP.BASEMAP;
-    const zoom = this.zoom || AppConfig.MAP.ZOOM_LEVEL;
+    const baseMaps = this.baseMaps || MAP_CONFIG.BASEMAP;
+    const zoom = this.zoom || MAP_CONFIG.ZOOM_LEVEL;
     let center: LatLngExpression;
     if (this.center !== undefined) {
         center = L.latLng(this.center[0], this.center[1]);
     }else {
-        center = L.latLng(AppConfig.MAP.CENTER[0], AppConfig.MAP.CENTER[1]);
+        center = L.latLng(MAP_CONFIG.CENTER[0], MAP_CONFIG.CENTER[1]);
     }
 
     const map = L.map('map', {
@@ -52,7 +52,7 @@ export class MapComponent implements OnInit {
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
-    AppConfig.MAP.BASEMAP.forEach( (basemap, index) => {
+    MAP_CONFIG.BASEMAP.forEach( (basemap, index) => {
       const configObj  = (basemap as any).subdomains ?
       {attribution: basemap.attribution, subdomains: (basemap as any).subdomains} : {attribution: basemap.attribution};
       baseControl[basemap.name] = L.tileLayer(basemap.layer, configObj);

@@ -28,6 +28,9 @@
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/ngx-toastr/toastr.css",
         "../node_modules/leaflet-draw/dist/leaflet.draw.css",
+        "../node_modules/@swimlane/ngx-datatable/release/index.css",
+        "../node_modules/@swimlane/ngx-datatable/release/themes/material.css",
+        "../node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
         "styles.scss"
       ],
       "scripts": [

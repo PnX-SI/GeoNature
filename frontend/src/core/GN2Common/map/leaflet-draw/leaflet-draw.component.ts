@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Map, FeatureGroup } from 'leaflet';
 import { MapService } from '../map.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { MAP_CONFIG } from '../../../../conf/map.config';
 import { CommonService } from '../../service/common.service';
 
 import 'leaflet-draw';
@@ -55,7 +55,7 @@ export class LeafletDrawComponent implements OnInit {
 
     // on draw layer created
     this.map.on(this._Le.Draw.Event.CREATED, (e) => {
-      if (this.map.getZoom() < AppConfig.MAP.ZOOM_LEVEL_RELEVE) {
+      if (this.map.getZoom() < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }else {
         this._currentDraw = (e as any).layer;
