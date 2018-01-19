@@ -131,7 +131,6 @@ python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis '/etc/geonature/custom_config.toml'..."
 geonature generate_frontend_config --conf-file /etc/geonature/custom_config.toml
 echo "Désactivation du virtual env..."
-deactivate
 
 #Lancement de l'application
 echo "Configuration de l'application api backend dans supervisor..."
@@ -191,3 +190,6 @@ geonature generate_frontend_modules_route
 
 echo "Build du frontend..."
 npm run build
+
+echo "désactiver le virtual env"
+deactivate

@@ -220,12 +220,12 @@ def frontend_routes_templating():
         output_file.write(route_template)
 
 
-def tsconfig_templating(modules):
+def tsconfig_templating():
     with open(
         str(ROOT_DIR / 'frontend/tsconfig.json.sample'), 'r'
     ) as input_file:
         template = Template(input_file.read())
-        tsconfig_templated = template.render(geonature_path=ROOT_DIR, modules=modules)
+        tsconfig_templated = template.render(geonature_path=ROOT_DIR)
 
     with open(
         str(ROOT_DIR / 'frontend/tsconfig.json'), 'w'
