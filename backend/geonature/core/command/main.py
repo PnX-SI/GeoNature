@@ -8,13 +8,15 @@ import logging
 
 import click
 
+
 from geonature.utils.env import (
     virtualenv_status,
     DEFAULT_VIRTUALENV_DIR,
     install_geonature_command,
     GEONATURE_VERSION,
     create_frontend_config,
-    frontend_routes_templating
+    frontend_routes_templating,
+    tsconfig_templating
 )
 
 from geonature.utils.command import (
@@ -124,8 +126,12 @@ def dev_back(host, port, conf_file):
     """
         Lance l'api du backend avec flask
     """
+    ssl_context = (
+        "/tmp/cert.pem",
+        "/tmp/key.pem"
+    )
     app = get_app_for_cmd(conf_file)
-    app.run(host=host, port=int(port), debug=True)
+    app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
 
 
 @main.command()
@@ -152,8 +158,15 @@ def dev_front():
 
 
 @main.command()
-def generate_modules_route():
+def generate_frontend_modules_route():
     """
         Génere le fichier de routing du frontend à partir des modules GeoNature activé
     """
     frontend_routes_templating()
+
+@main.command()
+def generate_frontend_tsconfig():
+    """
+        Génere tsconfig du frontend
+    """
+    tsconfig_templating()

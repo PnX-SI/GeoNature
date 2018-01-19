@@ -7,6 +7,8 @@ src/conf/app.config.ts
 
 #routing
 src/core/routing/app-routing.module.ts
+#tsconfig
+tsconfig.json
 
 # map config
 src/conf/map.config.ts
