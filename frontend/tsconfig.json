@@ -18,6 +18,13 @@
     "lib": [
       "es2016",
       "dom"
-    ]
+    ],
+    "baseUrl": "/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules",
+    "paths": {
+      "@angular/*": ["/home/florian/workspace/Ecrins/GeoNature/frontend/node_modules/@angular/*"],
+      "@geonature_common/*" : ["/home/florian/workspace/Ecrins/GeoNature/frontend/src/core/GN2Common/*"],
+      "@geonature/*" : ["/home/florian/workspace/Ecrins/GeoNature/frontend/src/*"],
+      "@gn_module_validation/*" : ["/home/florian/workspace/Ecrins/gn_module_validation/frontend/app/*"],
+    }
   }
 }
