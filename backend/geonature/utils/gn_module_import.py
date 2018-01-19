@@ -2,7 +2,6 @@
     Fonctions utilisés pour l'installation et le chargement
     d'un nouveau module geonature
 '''
-import toml
 import subprocess
 
 from pathlib import Path
@@ -20,6 +19,7 @@ from geonature.utils.env import (
 from geonature.utils.config_schema import (
     ManifestSchemaConf
 )
+from geonature.utils.utilstoml import load_and_validate_toml
 
 def check_gn_module_file(module_path):
     print("checking file")
@@ -34,11 +34,7 @@ def check_manifest(module_path):
         Verification de la version de geonature par rapport au manifest
     '''
     print("checking manifest")
-    manifest_file = Path(module_path) / "manifest.toml"
-    cm = toml.load(str(manifest_file))
-    configs_py, configerrors = ManifestSchemaConf().load(cm)
-    if configerrors:
-        raise ConfigError(manifest_file, configerrors)
+    configs_py = load_and_validate_toml(str(Path(module_path) / "manifest.toml"), ManifestSchemaConf)
 
     gn_v = version.parse(GEONATURE_VERSION)
     if (

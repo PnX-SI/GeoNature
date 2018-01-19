@@ -9,8 +9,6 @@ import json
 from pathlib import Path
 from collections import ChainMap, namedtuple
 
-import toml
-
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Template
 
@@ -19,7 +17,7 @@ from geonature.utils.config_schema import (
     GnGeneralSchemaConf, GnPySchemaConf,
     GnModuleProdConf, ManifestSchemaProdConf
 )
-
+from geonature.utils.utilstoml import load_and_validate_toml
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
@@ -110,13 +108,7 @@ def install_geonature_command():
     cmd_path.chmod(0o777)
 
 def create_frontend_config(conf_file):
-    if not os.path.isfile(conf_file):
-        raise FileNotFoundError
-
-    conf_toml = toml.load(conf_file)
-    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
-    if configerrors:
-        raise ConfigError(conf_file, configerrors)
+    configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
     with open(
         str(ROOT_DIR / 'frontend/src/conf/app.config.ts'), 'w'
@@ -140,18 +132,10 @@ def load_config(config_file=None):
     """ Load the geonature configuration from a given file """
 
     # load and validate configuration
-    config_file = str(get_config_file_path(config_file))
-    conf_toml = toml.load([config_file])
-
-    # Load backend command only settings
-    configs_py, configerrors = GnPySchemaConf().load(conf_toml)
-    if configerrors:
-        raise ConfigError(config_file, configerrors)
+    configs_py = load_and_validate_toml(str(get_config_file_path(config_file)), GnPySchemaConf)
 
     # Settings also exported to backend
-    configs_gn, configerrors = GnGeneralSchemaConf().load(conf_toml)
-    if configerrors:
-        raise ConfigError(config_file, configerrors)
+    configs_gn = load_and_validate_toml(str(get_config_file_path(config_file)), GnGeneralSchemaConf)
 
     return ChainMap({}, configs_py, configs_gn)
 
@@ -166,12 +150,7 @@ def import_requirements(req_file):
 def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
     for f in mod_path.iterdir():
         if f.is_dir():
-            # TODO Créer fonction de chargement et validation des fichiers toml
-            file_manifest = str(f / 'manifest.toml')
-            conf_toml = toml.load(file_manifest)
-            conf_manifest, configerrors = ManifestSchemaProdConf().load(conf_toml)
-            if configerrors:
-                raise ConfigError(file_manifest, configerrors)
+            conf_manifest = load_and_validate_toml(str(f / 'manifest.toml'), ManifestSchemaProdConf)
 
             # import du module dans le sys.path
             module_path = Path(conf_manifest['module_path'])
@@ -188,11 +167,8 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
                 GnModuleProdConf
             ):
                 pass
-            file_toml = str(f / 'conf_gn_module.toml')
-            conf_toml = toml.load(file_toml)
-            conf_module, configerrors = GnModuleSchemaProdConf().load(conf_toml)
-            if configerrors:
-                raise ConfigError(file_toml, configerrors)
+
+            conf_module = load_and_validate_toml(str(f / 'conf_gn_module.toml'), GnModuleSchemaProdConf)
 
             yield conf_module, conf_manifest, module_blueprint
 

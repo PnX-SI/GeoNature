@@ -14,8 +14,6 @@ from importlib.machinery import SourceFileLoader
 
 import pip
 
-import toml
-
 from packaging import version
 
 from geonature.utils.env import (
@@ -34,7 +32,7 @@ from geonature.utils.gn_module_import import (
     gn_module_activate
 )
 from geonature.utils.errors import ConfigError, GNModuleInstallError
-
+from geonature.utils.utilstoml import load_and_validate_toml
 
 log = logging.getLogger(__name__)
 
@@ -88,13 +86,11 @@ def run_install_gn_module(app, module_path, module_name, url):
             install_app.py
     '''
     #   configs
-    gn_file = Path(module_path) / "conf_gn_module.toml"
-    if gn_file.is_file():
+    try:
         from conf_schema_toml import GnModuleSchemaConf
-        cm = toml.load(str(gn_file))
-        configs_py, configerrors = GnModuleSchemaConf().load(cm)
-        if configerrors:
-            raise ConfigError(gn_file, configerrors)
+        load_and_validate_toml( Path(module_path) / "conf_gn_module.toml", GnModuleSchemaConf)
+    except FileNotFoundError:
+        pass
 
     #   ENV
     gn_file = Path(module_path) / "install_env.sh"
