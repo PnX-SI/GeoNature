@@ -133,7 +133,7 @@ def dev_back(host, port, conf_file):
     # )
     # app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
     app = get_app_for_cmd(conf_file)
-    app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
+    app.run(host=host, port=int(port), debug=True)
 
 
 @main.command()
