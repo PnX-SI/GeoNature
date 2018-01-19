@@ -42,6 +42,10 @@ import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
 
+// add all rxjs operators
+import 'rxjs/Rx';
+
+
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

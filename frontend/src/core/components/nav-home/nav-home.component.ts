@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import {AppConfig} from '../../../conf/app.config';
 import * as test from '../../../conf/settings.default.json';
-import 'rxjs/Rx';
 import {MatSidenav} from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
 import { Location } from '@angular/common';
@@ -35,8 +34,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
           private _location: Location) {
 
     translate.addLangs(['en', 'fr', 'cn']);
-    translate.setDefaultLang(AppConfig.defaultLanguage);
-    translate.use(AppConfig.defaultLanguage);
+    translate.setDefaultLang(AppConfig.DEFAULT_LANGUAGE);
+    translate.use(AppConfig.DEFAULT_LANGUAGE);
   }
 
 
@@ -57,7 +56,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     // init the sidenav instance in sidebar service
     this._sideBarService.setSideNav(this.sidenav);
 
-    // put the user name in navbar    
+    // put the user name in navbar
     this.currentUser = this._authService.getCurrentUser();
   }
   changeLanguage(lang) {
