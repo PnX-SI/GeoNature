@@ -136,3 +136,13 @@ L'installation de GeoNature n'est livrée qu'avec les schémas de base de donné
 
     data/modules/contact/install_schema.sh
 
+Dépendances
+-----------
+
+Lors de l'installation de la BDD (``install_db.sh``) le schéma ``utilisateurs`` de UsersHub et le schéma ``taxonomie`` de TaxHub sont intégrés automatiquement dans la BDD de GeoNature. 
+
+UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits. 
+
+Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installer donc que l'application et pas la BDD.
+
+A VENIR : On remettra sur pied le script INSTALL_ALL prochainement pour automatiser et packager tout cela. 
