@@ -19,10 +19,8 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
-Installation de l'application
------------------------------
-
-/!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/develop/install_all
+Préparation du serveur
+----------------------
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
@@ -52,50 +50,44 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     usermod -g www-data geonatureadmin
     usermod -a -G root geonatureadmin
 
-* Se placer dans le répetoire de l'utilisateur (``geonatadmin`` dans notre cas) Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, Taxhub ainsi que leurs bases de données (uniquement les schémas du coeur)
+* Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en root. On ne se connectera plus en root. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
 
+Installation de l'application
+-----------------------------
 
-::
-
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
-
-
-* Changer les droits du fichier d'installation pour pouvoir l'éxecuter
+* Se placer dans le répertoire de l'utilisateur (``geonatadmin`` dans notre cas) 
+* Récupérer l'application (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche develop (remplacer ``X.Y.Z`` par ``develop``).
 
 ::
 
-    chmod +x install_all.sh
+    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 
-Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
 
-On ne se connectera plus en ROOT. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
-
-Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
-
-Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
-
-* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``develop``, remplacez donc ``X.Y.Z`` par ``develop``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
- 
-  ::  
-  
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
-	
-
-* Changer les droits du fichier d'installation pour pouvoir l'éxecuter :
- 
-  ::  
-  
-        chmod +x install_all.sh
-	
-* Lancer l'installation
+* Mettre à jour le fichier de settings comportant les informations relatives à votre environnement serveur :
 
 ::
 
-    ./install_all.sh
+    cp config/settings.ini.sample config/settings.ini
+    nano config/settings.ini
 
-Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
+* Création de la base de données (avec le schéma du module occtax).
+Pendant l'installation, vous serez invité à fournir le mot de pass root.
+
+::
+
+    ./install_db.sh
+
+* Installation de l'application
+La commande install_db.sh comportent deux paramètres optionnels qui doivent être utilisés dans l'ordre
+    * -s ou --settings-path pour spécifier un autre emplacement pour le fichier de settings.ini
+    * -d ou --dev permet d'installer des dépendances python utile pour le développement de geonature
+    * -h ou --help affiche l'aide pour cette commande ``install_app.sh``
+
+::
+
+    ./install_app.sh
+
+Pendant l'installation, vous serez invité à fournir le mot de pass root.
 
 Une fois l'installation terminée, lancez :
 
@@ -104,12 +96,11 @@ Une fois l'installation terminée, lancez :
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-Les applications sont disponibles aux adresses suivantes:
+L'application est disponible à l'adresse suivante:
 
 - http://monip.com/geonature
-- http://monip.com/taxhub
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, lancer la commande:
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autre adresse, lancer la commande:
 
 - Pour ``/``: ``npm run build -- --base-href=/``
 - Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
@@ -130,61 +121,5 @@ L'installation de GeoNature n'est livrée qu'avec les schémas de base de donné
 
 ::
 
-    sudo ./data/modules/contact/install_schema.sh
+    data/modules/contact/install_schema.sh
 
-
-Doc développeur
----------------
-
-Installation de l'environnement Python
-""""""""""""""""""""""""""""""""""""""
-
-Installer pipenv et le virtualenv ainsi que tous les dépendances Python.
-
-::
-
-    pip install pipenv --user
-    pipenv install
-
-Lancer ensuite l'application en mode développement
-
-Stopper d'abord le mode production, puis lancez le mode développement du backend
-
-::
-
-    cd geonature/backend/
-    make supervisor-stop
-    make develop
-
-
-* Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire `home` de l'utilisateur
-
-::
-
-    cd
-    git clone https://github.com/PnX-SI/Nomenclature-api-module.git nomenclature-api-module
-    cd nomenclature-api-module/
-    source ../geonature/backend/venv/bin/activate
-    cp ../geonature/backend/config.py.sample ../geonature/backend/config.py
-    python setup.py develop
-    cd ../geonature2/backend/
-    make develop
-    deativate
-
-* Lancer le front end
-
-Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.ts`` de la manière suivante:
-
-::
-
-    URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000/',
-    API_TAXHUB : 'http://127.0.0.1:5000/api/',
-
-Depuis le répertoire ``frontend`` lancer la commande:
-
-::
-
-    npm run start
-
-Lancer son navigateur à l'adresse ``127.0.0.1:4200``
