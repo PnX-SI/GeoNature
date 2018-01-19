@@ -1,8 +1,11 @@
 #!/bin/bash
 
-#exit script if a error occurred
-set -e
-
+#settings.ini file path. Default value overwriten by settings-path parameter
+SETTINGS='./config/settings.ini'
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
 case $key in
     -s|--settings-path)
     SETTINGS="$2"
