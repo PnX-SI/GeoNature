@@ -1,6 +1,8 @@
 INSTALLATION DE L'APPLICATION
 =============================
 
+  .. warning:: Script INSTALL_ALL en chantier et cette DOC est à revoir suite à d'importants changements. Pour le moment utiliser l'installation classique et moins packagée : https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation.rst
+
 Prérequis
 ---------
 
