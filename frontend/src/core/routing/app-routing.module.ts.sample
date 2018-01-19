@@ -17,8 +17,6 @@ import { AppConfig } from '@geonature/conf/app.config';
 
 
 
-//{ path: 'validation', loadChildren: '@gn_module_validation/gnValidation.module#GnValidationModule'},
-
 const defaultRoutes: Routes = [
   { path: 'login',  component: LoginComponent},
   // uncomment to activate login
