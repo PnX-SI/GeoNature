@@ -88,17 +88,20 @@ def run_install_gn_module(app, module_path, module_name, url):
     #   configs
     try:
         from conf_schema_toml import GnModuleSchemaConf
-        load_and_validate_toml( Path(module_path) / "conf_gn_module.toml", GnModuleSchemaConf)
+        load_and_validate_toml(Path(module_path) / "conf_gn_module.toml", GnModuleSchemaConf)
     except FileNotFoundError:
         pass
 
+    #   requirements
+    gn_module_import_requirements(module_path)
+
     #   ENV
     gn_file = Path(module_path) / "install_env.sh"
-    print("run install_env.sh")
+    log.info("run install_env.sh")
 
     try:
         subprocess.call([str(gn_file)], cwd=module_path)
-        print("...ok")
+        log.info("...ok")
     except FileNotFoundError:
         pass
     except OSError as e:
@@ -118,24 +121,13 @@ def run_install_gn_module(app, module_path, module_name, url):
                 "File {} not excecutable".format(str(gn_file))
             )
 
-    #   requirements
-    gn_module_import_requirements(module_path)
-
-    #   DB
-    gn_file = Path(module_path) / "install_db.py"
-    if gn_file.is_file():
-        print("run install_db.py")
-        from install_db import gnmodule_install_db
-        gnmodule_install_db(DB, app)
-        print("...ok")
-
     #   APP
-    gn_file = Path(module_path) / "install_app.py"
+    gn_file = Path(module_path) / "install_gn_module.py"
     if gn_file.is_file():
-        print("run install_db.py")
-        from install_app import gnmodule_install_app
+        log.info("run install_gn_module.py")
+        from install_gn_module import gnmodule_install_app
         gnmodule_install_app(DB, app)
-        print("...ok")
+        log.info("...ok")
 
     #   Enregistrement du module
     gn_module_register_config(module_name, module_path, url)

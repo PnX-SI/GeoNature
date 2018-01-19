@@ -95,7 +95,7 @@ def generate_frontend_config(conf_file):
     try:
         create_frontend_config(conf_file)
     except FileNotFoundError:
-        print("file {} doesn't exists".format(conf_file))
+        log.warning("file {} doesn't exists".format(conf_file))
 
 
 

@@ -181,7 +181,6 @@ def frontend_routes_templating():
         routes = []
         for conf, manifest, blueprint in list_gn_modules():
             location = Path(manifest['module_path'])
-            print(location)
             path = conf['api_url'].lstrip('/')
             location = '{}/frontend/app/gnModule#GeonatureModule'.format(location)
             routes.append({'path': path, 'location': location})
@@ -207,5 +206,3 @@ def tsconfig_templating():
         str(ROOT_DIR / 'frontend/tsconfig.json'), 'w'
     ) as output_file:
         output_file.write(tsconfig_templated)
-
-
