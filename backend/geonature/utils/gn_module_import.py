@@ -8,14 +8,15 @@ import logging
 from pathlib import Path
 from packaging import version
 
-from geonature.utils.errors import ConfigError
+from geonature.utils.errors import ConfigError, GeoNatureError
 from geonature.utils.env import (
     GEONATURE_VERSION,
     GN_MODULE_FILES,
     GN_MODULES_ETC_AVAILABLE,
     GN_MODULES_ETC_ENABLED,
     GN_MODULES_ETC_FILES,
-    import_requirements
+    import_requirements,
+    frontend_routes_templating
 )
 from geonature.utils.config_schema import (
     ManifestSchemaConf
@@ -117,13 +118,31 @@ def gn_module_import_requirements(module_path):
 def gn_module_activate(module_name):
     # TODO utiliser les commande os de python
     log.info("Activate module")
+
     # TODO gestion des erreurs
     if (GN_MODULES_ETC_AVAILABLE / module_name).is_dir():
-        # TODO veirifier si le fichier n'existe pas déja dans chacun des dossiers
-        cmd = "sudo ln -s {}/{} {}".format(
-            GN_MODULES_ETC_AVAILABLE,
-            module_name,
-            GN_MODULES_ETC_ENABLED
+        if not (GN_MODULES_ETC_ENABLED / module_name ).is_symlink():
+            cmd = "sudo ln -s {}/{} {}".format(
+                GN_MODULES_ETC_AVAILABLE,
+                module_name,
+                GN_MODULES_ETC_ENABLED
+            )
+            subprocess.call(cmd.split(" "))
+            log.info("...ok")
+        else :
+            log.info("...module already activated")
+    else:
+        raise GeoNatureError(
+            "Module {} is not installed"
+            .format(module_name)
         )
-        subprocess.call(cmd.split(" "))
+
+    log.info("Generate frontend routes")
+    try:
+        frontend_routes_templating()
         log.info("...ok")
+    except Exception:
+        raise
+
+
+
