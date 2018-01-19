@@ -50,44 +50,57 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     usermod -g www-data geonatureadmin
     usermod -a -G root geonatureadmin
 
-* Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en root. On ne se connectera plus en root. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
+* Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en root. On ne se connectera plus en root. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
 Installation de l'application
 -----------------------------
 
-* Se placer dans le répertoire de l'utilisateur (``geonatadmin`` dans notre cas) 
-* Récupérer l'application (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche develop (remplacer ``X.Y.Z`` par ``develop``).
+* Se placer dans le répertoire de l'utilisateur (``/home/geonatadmin/`` dans notre cas) 
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche develop (remplacer ``X.Y.Z`` par ``develop``).
 
 ::
 
     wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 
+* Dézipper l'archive de l'application
 
-* Mettre à jour le fichier de settings comportant les informations relatives à votre environnement serveur :
+::
+
+    unzip GeoNature-X.Y.Z.zip
+
+* Renommez le répertoire de l'application puis placez-vous dedans : 
+
+::
+
+    cd GeoNature
+
+* Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
 
 ::
 
     cp config/settings.ini.sample config/settings.ini
     nano config/settings.ini
 
-* Création de la base de données (avec le schéma du module occtax).
-Pendant l'installation, vous serez invité à fournir le mot de pass root.
+* Création de la base de données.
+Pendant l'installation, vous serez invité à fournir le mot de pass sudo.
 
 ::
 
     ./install_db.sh
 
 * Installation de l'application
-La commande install_db.sh comportent deux paramètres optionnels qui doivent être utilisés dans l'ordre
-    * -s ou --settings-path pour spécifier un autre emplacement pour le fichier de settings.ini
-    * -d ou --dev permet d'installer des dépendances python utile pour le développement de geonature
-    * -h ou --help affiche l'aide pour cette commande ``install_app.sh``
+
+La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
+
+* -s ou --settings-path pour spécifier un autre emplacement pour le fichier ``settings.ini``
+* -d ou --dev permet d'installer des dépendances python utile pour le développement de GeoNature
+* -h ou --help affiche l'aide pour cette commande ``install_app.sh``
 
 ::
 
     ./install_app.sh
 
-Pendant l'installation, vous serez invité à fournir le mot de pass root.
+Pendant l'installation, vous serez invité à fournir le mot de pass sudo.
 
 Une fois l'installation terminée, lancez :
 
@@ -106,16 +119,16 @@ Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autre adres
 - Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
 
 
-Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
+Editez ensuite le fichier de configuration Apache ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
 
-- Pour ``/``: ``Alias /saisie /home/test/geonature/frontend/dist``
-- Pour ``/saisie`` : ``Alias / /home/test/geonature/frontend/dist``
+- Pour ``/`` : ``Alias / /home/test/geonature/frontend/dist``
+- Pour ``/saisie``: ``Alias /saisie /home/test/geonature/frontend/dist``
 
 
 Installation d'un module GeoNature
 ----------------------------------
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer :
 
 * Exemple d'installation en base de données du module OccTax.
 
