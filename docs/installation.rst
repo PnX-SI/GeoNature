@@ -55,7 +55,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 Installation de l'application
 -----------------------------
 
-* Se placer dans le répertoire de l'utilisateur (``/home/geonatadmin/`` dans notre cas) 
+* Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 * Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche develop (remplacer ``X.Y.Z`` par ``develop``).
 
 ::
@@ -72,7 +72,7 @@ Installation de l'application
 
 ::
 
-    cd GeoNature
+    cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
 
@@ -145,4 +145,6 @@ UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile
 
 Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installer donc que l'application et pas la BDD.
 
-A VENIR : On remettra sur pied le script INSTALL_ALL prochainement pour automatiser et packager tout cela. 
+Voir la doc de TaxHub ou sinon celle d'installation developpeur qui détaille bien cette partie : https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation_developer.rst#installation-de-taxhub
+
+A VENIR : Du ménage et de la rationnalisation de ces docs et on remettra sur pied le script INSTALL_ALL prochainement pour automatiser et packager tout cela. 
