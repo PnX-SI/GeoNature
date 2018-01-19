@@ -107,7 +107,7 @@ cd backend
 if [ -d 'venv/' ]
 then
   echo "Suppression du virtual env existant..."
-  rm -rf venv
+  sudo rm -rf venv
 fi
 
 if [[ $python_path ]]; then
