@@ -22,7 +22,8 @@ from geonature.utils.utilstoml import load_and_validate_toml
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
-GEONATURE_VERSION = (ROOT_DIR / 'VERSION').read_text().strip()
+with open(str((ROOT_DIR / 'VERSION'))) as v:
+    GEONATURE_VERSION = v.read()
 DEFAULT_CONFIG_FIlE = Path('/etc/geonature/custom_config.toml')
 
 GEONATURE_ETC = Path('/etc/geonature')
@@ -82,8 +83,8 @@ def add_geonature_pth_file():
     """
     path = venv_site_packages() / 'geonature.pth'
     try:
-        if path.is_file() and path.read_text():
-            return path, False
+        if path.is_file():
+            return path, True
 
         with path.open('a') as f:
             f.write(str(BACKEND_DIR) + "\n")
