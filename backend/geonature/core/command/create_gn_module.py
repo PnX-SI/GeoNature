@@ -20,9 +20,12 @@ from geonature.utils.gn_module_import import (
     check_manifest,
     gn_module_import_requirements,
     gn_module_register_config,
-    gn_module_activate
+    gn_module_activate,
+    check_codefile_validity
 )
-from geonature.utils.errors import ConfigError, GNModuleInstallError
+from geonature.utils.errors import (
+    ConfigError, GNModuleInstallError, GeoNatureError
+)
 from geonature.utils.utilstoml import load_and_validate_toml
 
 log = logging.getLogger(__name__)
@@ -40,29 +43,39 @@ def install_gn_module(module_path, url, conf_file):
     """
         Installation d'un module gn
     """
-    # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    app = get_app_for_cmd(conf_file)
-
-    sys.path.append(module_path)
-    # Vérification de la conformité du module
-    #   Vérification de la présence de certain fichiers
-    check_gn_module_file(module_path)
-
-    #   Verification de la version de geonature par rapport au manifest
-    try:
-        module_name = check_manifest(module_path)
-    except ConfigError as ex:
-        log.critical(str(ex) + "\n")
-        sys.exit(1)
-
-    # TODO Vérification de la conformité du code : point d'entré pour l'api et le front
-
     # Installation du module
+    module_name = ''
     try:
+        # Vérification que le chemin module path soit correct
+        if not Path(module_path).is_dir():
+            raise GeoNatureError("dir {} doesn't exists".format(module_path))
+
+        # TODO vérifier que l'utilisateur est root ou du groupe geonature
+        app = get_app_for_cmd(conf_file)
+
+        sys.path.append(module_path)
+        # Vérification de la conformité du module
+        #   Vérification de la présence de certain fichiers
+        check_gn_module_file(module_path)
+
+        #   Vérification de la version de geonature par rapport au manifest
+        try:
+            module_name = check_manifest(module_path)
+        except ConfigError as ex:
+            log.critical(str(ex) + "\n")
+            sys.exit(1)
+
+        # Vérification de la conformité du code :
+        #   installation
+        #   front end
+        #   backend
+        check_codefile_validity(module_path, module_name)
+
+        # Installation du module
         run_install_gn_module(app, module_path, module_name, url)
-    except GNModuleInstallError as ex:
+    except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
-            "Error while installing GN module '{}'. The process returned:\n{}"
+            "\n\nError while installing GN module '{}'. The process returned:\n\t{}"
         ).format(module_name, ex))
         sys.exit(1)
 
@@ -84,7 +97,7 @@ def run_install_gn_module(app, module_path, module_name, url):
             GnModuleSchemaConf
         )
     except ImportError:
-        print('No specific config file')
+        log.info('No specific config file')
         pass
 
     #   requirements
@@ -96,7 +109,7 @@ def run_install_gn_module(app, module_path, module_name, url):
 
     try:
         subprocess.call([str(gn_file)], cwd=str(module_path))
-        log.info("...ok")
+        log.info("...ok\n")
     except FileNotFoundError:
         pass
     except OSError as ex:
@@ -122,7 +135,7 @@ def run_install_gn_module(app, module_path, module_name, url):
         log.info("run install_gn_module.py")
         from install_gn_module import gnmodule_install_app
         gnmodule_install_app(DB, app)
-        log.info("...ok")
+        log.info("...ok\n")
 
     #   Enregistrement du module
     gn_module_register_config(module_name, module_path, url)

@@ -2,7 +2,7 @@
 from pathlib import Path
 import toml
 
-from geonature.utils.errors import ConfigError
+from geonature.utils.errors import ConfigError, GeoNatureError
 
 
 def load_and_validate_toml(toml_file, config_schema):
@@ -17,4 +17,4 @@ def load_and_validate_toml(toml_file, config_schema):
             raise ConfigError(toml_file, configerrors)
         return configs_py
     else:
-        raise FileNotFoundError(toml_file)
+        raise GeoNatureError("Missing file {}".format(toml_file))

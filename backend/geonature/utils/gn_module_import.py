@@ -15,6 +15,7 @@ from geonature.utils.env import (
     GN_MODULES_ETC_AVAILABLE,
     GN_MODULES_ETC_ENABLED,
     GN_MODULES_ETC_FILES,
+    GN_MODULE_FE_FILE,
     import_requirements,
     frontend_routes_templating
 )
@@ -30,8 +31,8 @@ def check_gn_module_file(module_path):
     log.info("checking file")
     for file in GN_MODULE_FILES:
         if not (Path(module_path) / file).is_file():
-            raise FileNotFoundError("Missing file {}".format(file))
-    log.info("...ok")
+            raise GeoNatureError("Missing file {}".format(file))
+    log.info("...ok\n")
 
 
 def check_manifest(module_path):
@@ -49,17 +50,17 @@ def check_manifest(module_path):
             gn_v < version.parse(configs_py['min_geonature_version']) and
             gn_v > version.parse(configs_py['max_geonature_version'])
     ):
-        raise Exception(
+        raise GeoNatureError(
             "Geonature version {} is imcompatible with module"
             .format(GEONATURE_VERSION)
         )
     for e_gn_v in configs_py['exclude_geonature_versions']:
         if gn_v == version.parse(e_gn_v):
-            raise Exception(
+            raise GeoNatureError(
                 "Geonature version {} is imcompatible with module"
                 .format(GEONATURE_VERSION)
             )
-    log.info("...ok")
+    log.info("...ok\n")
     return configs_py['module_name']
 
 
@@ -103,7 +104,7 @@ def gn_module_register_config(module_name, module_path, url):
         proc.stdin.close()
         proc.wait()
 
-    log.info("...ok")
+    log.info("...ok\n")
 
 
 def gn_module_import_requirements(module_path):
@@ -111,7 +112,7 @@ def gn_module_import_requirements(module_path):
     if req_p.is_file():
         log.info("import_requirements")
         import_requirements(str(req_p))
-        log.info("...ok")
+        log.info("...ok\n")
 
 
 def gn_module_activate(module_name):
@@ -127,7 +128,7 @@ def gn_module_activate(module_name):
                 GN_MODULES_ETC_ENABLED
             )
             subprocess.call(cmd.split(" "))
-            log.info("...ok")
+            log.info("...ok\n")
         else:
             log.info("...module already activated")
     else:
@@ -139,6 +140,68 @@ def gn_module_activate(module_name):
     log.info("Generate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...ok")
+        log.info("...ok\n")
     except Exception:
         raise
+
+
+def check_codefile_validity(module_path, module_name):
+    '''
+        Vérification que les fichiers nécessaires
+            au bon fonctionnement du module soient bien présents
+            et avec la bonne signature
+    '''
+    log.info('Checking file conformity')
+    # Installation
+    gn_file = Path(module_path) / "install_gn_module.py"
+    if gn_file.is_file():
+        try:
+            from install_gn_module import gnmodule_install_app as fonc
+            if not fonc.__code__.co_varnames == ('gn_db', 'gn_app'):
+                raise GeoNatureError('Invalid variable')
+            log.info('      install_gn_module  OK')
+        except (ImportError, GeoNatureError):
+            raise GeoNatureError(
+                """Module {}
+                    File {} must have a function call :
+                        gnmodule_install_app
+                        with 2 parameters :
+                        gn_db  :  database
+                        gn_app :  application reference
+                """.format(module_name, gn_file)
+            )
+    # Backend
+    gn_file = Path(module_path) / "backend/blueprint.py"
+    if gn_file.is_file():
+        try:
+            from backend.blueprint import blueprint
+        except (ImportError, GeoNatureError):
+            raise GeoNatureError(
+                """Module {}
+                    File {} must have a variable call :
+                        blueprint instance of Blueprint
+                """.format(module_name, gn_file)
+            )
+        from flask import Blueprint
+        if isinstance(blueprint, Blueprint) is False:
+            raise GeoNatureError(
+                """Module {}
+                        File {} :
+                            blueprint is not an instance of Blueprint
+                """.format(module_name, gn_file)
+            )
+        log.info('      backend/blueprint/blueprint.py  OK')
+    # Font-end
+    gn_file = Path(module_path) / "{}.ts".format(GN_MODULE_FE_FILE)
+    if gn_file.is_file():
+        if 'export class GeonatureModule' in open(str(gn_file)).read():
+            log.info('      {}  OK'.format(GN_MODULE_FE_FILE))
+        else:
+            raise GeoNatureError(
+                """Module {} ,
+                    File {} must have a function call :
+                        export class GeonatureModule
+                """.format(module_name, gn_file)
+            )
+
+    log.info('...ok\n')
