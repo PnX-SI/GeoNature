@@ -35,7 +35,7 @@ def insert_role(user=None):
     else:
         data = dict(request.get_json())
     user = TRoles(**data)
-    if user.id_role:
+    if user.id_role is not None:
         exist_user = DB.session.query(TRoles).get(user.id_role)
         if exist_user:
             DB.session.merge(user)
@@ -70,7 +70,7 @@ def insert_in_cor_role(id_group=None, id_user=None):
 @routes.route('/organism', methods=['POST'])
 @json_resp
 def insert_organism(organism):
-    if organism:
+    if organism is not None:
         data = organism
     else:
         data = dict(request.get_json())
