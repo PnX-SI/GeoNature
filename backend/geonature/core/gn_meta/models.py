@@ -61,10 +61,10 @@ class TAcquisitionFramework(serializableModel):
             from its UUID if exist or None
         """
         a_f = DB.session.query(
-                TAcquisitionFramework.id_acquisition_framework
-            ).filter(
-                TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
-            ).first()
+            TAcquisitionFramework.id_acquisition_framework
+        ).filter(
+            TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
+        ).first()
         return a_f
 
 
@@ -112,7 +112,7 @@ class TDatasets(serializableModel):
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature(115)
-        )
+    )
     id_nomenclature_data_origin = DB.Column(
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature(2)
@@ -170,14 +170,14 @@ class TDatasets(serializableModel):
             param: user from TRole model
             return: a list of id_dataset """
         q = DB.session.query(
-                CorDatasetsActor,
-                CorDatasetsActor.id_dataset
-            ).filter(
-                or_(
-                    CorDatasetsActor.id_organism == user.id_organisme,
-                    CorDatasetsActor.id_role == user.id_role
-                )
+            CorDatasetsActor,
+            CorDatasetsActor.id_dataset
+        ).filter(
+            or_(
+                CorDatasetsActor.id_organism == user.id_organisme,
+                CorDatasetsActor.id_role == user.id_role
             )
+        )
         return [d.id_dataset for d in q.all()]
 
 

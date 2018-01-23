@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint
 
 from sqlalchemy import or_
@@ -10,15 +11,10 @@ from geonature.core.gn_meta.models import (
     CorDatasetsActor, TAcquisitionFramework,
     CorAcquisitionFrameworkActor
 )
-from geonature.core.users.models import TRoles
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 
-from . import mtd_utils
-
-import requests
-from xml.etree import ElementTree as ET
-
+import geonature.core.gn_meta.mtd_utils
 
 routes = Blueprint('gn_meta', __name__)
 
@@ -146,11 +142,11 @@ def get_one_parameter(param_name, id_org=None):
 
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
-    query = 'SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_nomencl)'
+    query = 'SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)'
     result = DB.engine.execute(
         text(query),
         id_type=id_type,
-        cd_nomencl=cd_nomenclature
+        cd_n=cd_nomenclature
     ).first()
     value = None
     if len(result) >= 1:
@@ -168,14 +164,14 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
 
         new_af = TAcquisitionFramework(**acquisition_framwork)
         actor = CorAcquisitionFrameworkActor(
-            id_role = id_user,
-            id_nomenclature_actor_role = 393
+            id_role=id_user,
+            id_nomenclature_actor_role=393
         )
         new_af.cor_af_actor.append(actor)
         if id_organism:
             organism = CorAcquisitionFrameworkActor(
-                id_role = id_organism,
-                id_nomenclature_actor_role = 393
+                id_role=id_organism,
+                id_nomenclature_actor_role=393
             )
             new_af.cor_af_actor.append(actor)
         # check if exist
@@ -191,7 +187,6 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     return {'message': 'Not found'}, 404
 
 
-
 @routes.route('/dataset_mtd/<id_user>', methods=['POST'])
 @routes.route('/dataset_mtd/<id_user>/<id_organism>', methods=['POST'])
 @json_resp
@@ -204,9 +199,9 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
         dataset_list_model = []
         for ds in dataset_list:
             new_af = post_acquisition_framwork_mtd(
-                uuid = ds['uuid_acquisition_framework'],
-                id_user = id_user,
-                id_organism = id_organism
+                uuid=ds['uuid_acquisition_framework'],
+                id_user=id_user,
+                id_organism=id_organism
             )
             new_af = new_af.get_data()
             new_af = json.loads(new_af)
@@ -220,15 +215,15 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
 
             # id_role in cor_dataset_actor
             actor = CorDatasetsActor(
-                id_role = id_user,
-                id_nomenclature_actor_role = 393
+                id_role=id_user,
+                id_nomenclature_actor_role=393
             )
             dataset.cor_datasets_actor.append(actor)
             # id_organism in cor_dataset_actor
             if id_organism:
                 actor = CorDatasetsActor(
-                    id_organism = id_organism,
-                    id_nomenclature_actor_role = 393
+                    id_organism=id_organism,
+                    id_nomenclature_actor_role=393
                 )
                 dataset.cor_datasets_actor.append(actor)
 
@@ -240,7 +235,6 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
 
             DB.session.commit()
             DB.session.flush()
-
 
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
@@ -260,6 +254,6 @@ def get_allowed_datasets(user):
     )
     try:
         return [d.id_dataset for d in q.all()]
-    except:
+    except Exception:
         DB.session.rollback()
         raise
