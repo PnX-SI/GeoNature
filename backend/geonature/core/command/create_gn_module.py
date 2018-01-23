@@ -12,10 +12,6 @@ import subprocess
 from pathlib import Path
 from importlib.machinery import SourceFileLoader
 
-import pip
-
-from packaging import version
-
 from geonature.utils.env import (
     DB,
     GEONATURE_VERSION,
@@ -45,7 +41,7 @@ log = logging.getLogger(__name__)
     required=False,
     envvar='GEONATURE_CONFIG_FILE'
 )
-def install_gn_module(module_path, url,conf_file):
+def install_gn_module(module_path, url, conf_file):
     """
         Installation d'un module gn
     """
@@ -89,7 +85,8 @@ def run_install_gn_module(app, module_path, module_name, url):
     try:
         from conf_schema_toml import GnModuleSchemaConf
         load_and_validate_toml(Path(module_path) / "conf_gn_module.toml", GnModuleSchemaConf)
-    except FileNotFoundError:
+    except ImportError:
+        print('No specific config file')
         pass
 
     #   requirements
@@ -100,7 +97,7 @@ def run_install_gn_module(app, module_path, module_name, url):
     log.info("run install_env.sh")
 
     try:
-        subprocess.call([str(gn_file)], cwd=module_path)
+        subprocess.call([str(gn_file)], cwd=str(module_path))
         log.info("...ok")
     except FileNotFoundError:
         pass
