@@ -93,11 +93,12 @@ export class AuthService {
 deleteTokenCookie() {
   document.cookie = 'token=; path=/; expires' + new Date(0).toUTCString();
 }
-  logout() {
+
+logout() {
     this._cookie.delete('token', '/');
     if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
       this.deleteTokenCookie();
-      document.location.href = AppConfig.CAS.CAS_URL_LOGIN;
+      document.location.href = AppConfig.CAS.CAS_URL_LOGOUT;
     } else {
       this.router.navigate(['/login']);
     }
