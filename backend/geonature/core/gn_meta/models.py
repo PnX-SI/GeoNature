@@ -141,28 +141,27 @@ class TDatasets(serializableModel):
 
     @staticmethod
     def get_id(uuid_dataset):
-        try:
-            id_dataset = DB.session.query(
-                TDatasets.id_dataset
-            ).filter(
-                TDatasets.unique_dataset_id == uuid_dataset
-            ).one()
-
+        id_dataset = DB.session.query(
+            TDatasets.id_dataset
+        ).filter(
+            TDatasets.unique_dataset_id == uuid_dataset
+        ).first()
+        if id_dataset:
             return id_dataset[0]
-        except exc.NoResultFound as e:
-            raise NotFound('This dataset does not exist', 404)
+        return id_dataset
+
 
     @staticmethod
     def get_uuid(id_dataset):
-        try:
-            uuid_dataset = DB.session.query(
-                TDatasets.unique_dataset_id
-            ).filter(
-                TDatasets.id_dataset == id_dataset
-            ).one()
+        uuid_dataset = DB.session.query(
+            TDatasets.unique_dataset_id
+        ).filter(
+            TDatasets.id_dataset == id_dataset
+        ).first()
+        if uuid_dataset:
             return uuid_dataset[0]
-        except exc.NoResultFound as e:
-            raise NotFound('This dataset does not exist', 404)
+        return uuid_dataset
+
 
     @staticmethod
     def get_user_datasets(user):

@@ -155,13 +155,13 @@ def get_cd_nomenclature(id_type, cd_nomenclature):
 
 
 @routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
+@json_resp
 def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
     xml_af = mtd_utils.get_acquisition_framework(uuid)
 
     if xml_af:
         acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
-
         new_af = TAcquisitionFramework(**acquisition_framwork)
         actor = CorAcquisitionFrameworkActor(
             id_role=id_user,
@@ -187,6 +187,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     return {'message': 'Not found'}, 404
 
 
+
 @routes.route('/dataset_mtd/<id_user>', methods=['POST'])
 @routes.route('/dataset_mtd/<id_user>/<id_organism>', methods=['POST'])
 @json_resp
@@ -204,10 +205,13 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                 id_organism=id_organism
             )
             new_af = new_af.get_data()
-            new_af = json.loads(new_af)
-            ds['id_acquisition_framework'] = new_af['id_acquisition_framework']
+            new_af = json.loads(new_af.decode('utf-8'))
+            ds['id_acquisition_framework'] = new_af['id_acquisition_framework'][0]
 
             ds.pop('uuid_acquisition_framework')
+            print('LAAAAAA')
+            print(ds['unique_dataset_id'])
+            #get the id of the dataset to check if exists
             id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
             ds['id_dataset'] = id_dataset
 
