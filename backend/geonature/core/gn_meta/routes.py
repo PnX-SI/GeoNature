@@ -1,18 +1,18 @@
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
-from flask import Blueprint, request
+from flask import Blueprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 
-from .models import TPrograms, TDatasets, TParameters, CorDatasetsActor, TAcquisitionFramework, CorAcquisitionFrameworkActor
-from ..users.models import TRoles
+from geonature.core.gn_meta.models import (
+    TPrograms, TDatasets, TParameters,
+    CorDatasetsActor, TAcquisitionFramework,
+    CorAcquisitionFrameworkActor
+)
+from geonature.core.users.models import TRoles
 from pypnusershub import routes as fnauth
-from ...utils.utilssqlalchemy import json_resp
+from geonature.utils.utilssqlalchemy import json_resp
 
 from . import mtd_utils
 
@@ -25,11 +25,11 @@ routes = Blueprint('gn_meta', __name__)
 
 @routes.route('/list/programs', methods=['GET'])
 @json_resp
-def getProgramsList():
+def get_programs_list():
     q = DB.session.query(TPrograms)
     try:
         data = q.all()
-    except Exception as e:
+    except Exception:
         DB.session.rollback()
         raise
     if data:
@@ -41,7 +41,7 @@ def getProgramsList():
 
 @routes.route('/programs', methods=['GET'])
 @json_resp
-def getPrograms():
+def get_programs():
     q = DB.session.query(TPrograms)
     try:
         data = q.all()
@@ -55,7 +55,7 @@ def getPrograms():
 
 @routes.route('/programswithdatasets', methods=['GET'])
 @json_resp
-def getProgramsWithDatasets():
+def get_programsWithDatasets():
     q = DB.session.query(TPrograms)
     try:
         data = q.all()
@@ -69,7 +69,7 @@ def getProgramsWithDatasets():
 
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
-def getDatasetsList():
+def get_datasets_list():
     q = DB.session.query(TDatasets)
     try:
         data = q.all()
@@ -86,19 +86,22 @@ def getDatasetsList():
 @routes.route('/datasets', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
-def getDatasets(info_role):
+def get_datasets(info_role):
     """
         Retourne la liste des datasets
 
     """
     q = DB.session.query(TDatasets)
     if int(info_role.tag_object_code) <= 2:
-        q = q.join(CorDatasetsActor,
-        CorDatasetsActor.id_dataset == TDatasets.id_dataset
-        ).filter(or_(
-            CorDatasetsActor.id_organism == info_role.id_organisme,
-            CorDatasetsActor.id_role == info_role.id_role
-            ))
+        q = q.join(
+            CorDatasetsActor,
+            CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        ).filter(
+            or_(
+                CorDatasetsActor.id_organism == info_role.id_organisme,
+                CorDatasetsActor.id_role == info_role.id_role
+            )
+        )
     try:
         data = q.all()
     except Exception as e:
@@ -111,7 +114,7 @@ def getDatasets(info_role):
 
 @routes.route('/list/parameters', methods=['GET'])
 @json_resp
-def getParametersList():
+def get_parameters_list():
     q = DB.session.query(TParameters)
     try:
         data = q.all()
@@ -126,7 +129,7 @@ def getParametersList():
 @routes.route('/parameters/<param_name>', methods=['GET'])
 @routes.route('/parameters/<param_name>/<int:id_org>', methods=['GET'])
 @json_resp
-def getOneParameter(param_name, id_org=None):
+def get_one_parameter(param_name, id_org=None):
     q = DB.session.query(TParameters)
     q = q.filter(TParameters.parameter_name == param_name)
     if id_org:
@@ -141,9 +144,14 @@ def getOneParameter(param_name, id_org=None):
         return [d.as_dict() for d in data]
     return {'message': 'not found'}, 404
 
-def getCdNomenclature(id_type, cd_nomenclature):
+
+def get_cd_nomenclature(id_type, cd_nomenclature):
     query = 'SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_nomencl)'
-    result = DB.engine.execute(text(query), id_type=id_type, cd_nomencl=cd_nomenclature).first()
+    result = DB.engine.execute(
+        text(query),
+        id_type=id_type,
+        cd_nomencl=cd_nomenclature
+    ).first()
     value = None
     if len(result) >= 1:
         value = result[0]
@@ -160,9 +168,9 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
 
         new_af = TAcquisitionFramework(**acquisition_framwork)
         actor = CorAcquisitionFrameworkActor(
-                id_role = id_user,
-                id_nomenclature_actor_role = 393
-            )
+            id_role = id_user,
+            id_nomenclature_actor_role = 393
+        )
         new_af.cor_af_actor.append(actor)
         if id_organism:
             organism = CorAcquisitionFrameworkActor(
@@ -238,22 +246,20 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     return {'message': 'Not found'}, 404
 
 
-
-
-## Private fonction
+#  Private fonction
 def get_allowed_datasets(user):
     """ return all dataset id allowed for a user"""
     q = DB.session.query(
-                    CorDatasetsActor,
-                    CorDatasetsActor.id_dataset
-                    ).filter(or_(
-                        CorDatasetsActor.id_organism == user.id_organisme,
-                        CorDatasetsActor.id_role == user.id_role
-                    ))
+        CorDatasetsActor,
+        CorDatasetsActor.id_dataset
+    ).filter(
+        or_(
+            CorDatasetsActor.id_organism == user.id_organisme,
+            CorDatasetsActor.id_role == user.id_role
+        )
+    )
     try:
         return [d.id_dataset for d in q.all()]
     except:
         DB.session.rollback()
         raise
-
-
