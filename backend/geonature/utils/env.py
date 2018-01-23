@@ -38,6 +38,7 @@ GN_MODULE_FILES = (
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
+GN_MODULE_FE_FILE = 'frontend/app/gnModule'
 
 
 def in_virtualenv():
@@ -139,10 +140,16 @@ def load_config(config_file=None):
     """ Load the geonature configuration from a given file """
 
     # load and validate configuration
-    configs_py = load_and_validate_toml(str(get_config_file_path(config_file)), GnPySchemaConf)
+    configs_py = load_and_validate_toml(
+        str(get_config_file_path(config_file)),
+        GnPySchemaConf
+    )
 
     # Settings also exported to backend
-    configs_gn = load_and_validate_toml(str(get_config_file_path(config_file)), GnGeneralSchemaConf)
+    configs_gn = load_and_validate_toml(
+        str(get_config_file_path(config_file)),
+        GnGeneralSchemaConf
+    )
 
     return ChainMap({}, configs_py, configs_gn)
 
@@ -188,7 +195,8 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
 
 def frontend_routes_templating():
     with open(
-        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'), 'r'
+        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'),
+        'r'
     ) as input_file:
 
         template = Template(input_file.read())
@@ -196,7 +204,9 @@ def frontend_routes_templating():
         for conf, manifest, blueprint in list_gn_modules():
             location = Path(manifest['module_path'])
             path = conf['api_url'].lstrip('/')
-            location = '{}/frontend/app/gnModule#GeonatureModule'.format(location)
+            location = '{}/{}#GeonatureModule'.format(
+                location, GN_MODULE_FE_FILE
+            )
             routes.append({'path': path, 'location': location})
 
             # TODO test if two modules with the same name is okay for Angular
