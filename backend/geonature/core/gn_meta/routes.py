@@ -14,7 +14,7 @@ from geonature.core.gn_meta.models import (
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 
-import geonature.core.gn_meta.mtd_utils
+from geonature.core.gn_meta import mtd_utils
 
 routes = Blueprint('gn_meta', __name__)
 
