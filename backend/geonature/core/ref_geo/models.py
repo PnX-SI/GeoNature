@@ -1,13 +1,6 @@
 
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
-from sqlalchemy import ForeignKey
-
-
 from geonature.utils.env import DB
-from ...utils.utilssqlalchemy import serializableModel
+from geonature.utils.utilssqlalchemy import serializableModel
 
 
 class LAreasWithoutGeom(serializableModel):

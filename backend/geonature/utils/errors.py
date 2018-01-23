@@ -14,7 +14,7 @@ class GNModuleInstallError(GeoNatureError):
 class ConfigError(GeoNatureError):
     '''
         Configuration error class
-        Retournée quand un fichier de configuration n'est pas conforme aux attentes
+        Quand un fichier de configuration n'est pas conforme aux attentes
     '''
     def __init__(self, file, value):
         self.value = value

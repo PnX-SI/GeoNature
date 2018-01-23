@@ -59,8 +59,10 @@ def get_app(config, _app=None):
 
         # Chargement des modules tiers
         for conf, manifest, module in list_gn_modules():
-            app.register_blueprint(module.backend.blueprint.blueprint, url_prefix=conf['api_url'])
+            app.register_blueprint(
+                module.backend.blueprint.blueprint,
+                url_prefix=conf['api_url']
+            )
 
         _app = app
     return app
-

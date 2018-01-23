@@ -1,5 +1,5 @@
-# coding: utf8
 import requests
+
 
 def get(url, auth=None):
     try:
@@ -7,6 +7,7 @@ def get(url, auth=None):
     except requests.exceptions.RequestException as e:
         raise
     return r
+
 
 def post(url, json={}):
     try:

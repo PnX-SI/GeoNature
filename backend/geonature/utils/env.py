@@ -12,7 +12,6 @@ from collections import ChainMap, namedtuple
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Template
 
-from geonature.utils.errors import ConfigError
 from geonature.utils.config_schema import (
     GnGeneralSchemaConf, GnPySchemaConf,
     GnModuleProdConf, ManifestSchemaProdConf
@@ -30,10 +29,16 @@ GEONATURE_ETC = Path('/etc/geonature')
 
 DB = SQLAlchemy()
 
-GN_MODULE_FILES = ('manifest.toml', '__init__.py', 'backend/__init__.py', 'backend/blueprint.py')
+GN_MODULE_FILES = (
+    'manifest.toml',
+    '__init__.py',
+    'backend/__init__.py',
+    'backend/blueprint.py'
+)
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
+
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """
@@ -108,6 +113,7 @@ def install_geonature_command():
         ])
     cmd_path.chmod(0o777)
 
+
 def create_frontend_config(conf_file):
     configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
@@ -151,7 +157,10 @@ def import_requirements(req_file):
 def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
     for f in mod_path.iterdir():
         if f.is_dir():
-            conf_manifest = load_and_validate_toml(str(f / 'manifest.toml'), ManifestSchemaProdConf)
+            conf_manifest = load_and_validate_toml(
+                str(f / 'manifest.toml'),
+                ManifestSchemaProdConf
+            )
 
             # import du module dans le sys.path
             module_path = Path(conf_manifest['module_path'])
@@ -169,9 +178,13 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
             ):
                 pass
 
-            conf_module = load_and_validate_toml(str(f / 'conf_gn_module.toml'), GnModuleSchemaProdConf)
+            conf_module = load_and_validate_toml(
+                str(f / 'conf_gn_module.toml'),
+                GnModuleSchemaProdConf
+            )
 
             yield conf_module, conf_manifest, module_blueprint
+
 
 def frontend_routes_templating():
     with open(
@@ -186,7 +199,7 @@ def frontend_routes_templating():
             location = '{}/frontend/app/gnModule#GeonatureModule'.format(location)
             routes.append({'path': path, 'location': location})
 
-            #TODO test if two modules with the same name is okay for Angular
+            # TODO test if two modules with the same name is okay for Angular
 
         route_template = template.render(routes=routes)
 
