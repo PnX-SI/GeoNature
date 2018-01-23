@@ -65,6 +65,11 @@ def loginCas():
 
             user_login = info_user['login']
             user_id = info_user['id']
+            try:
+                assert user_id is not None or user_login is not None
+            except AssertionError:
+                return 'CAS ERROR: no ID or LOGIN provided'
+                raise
             # Reconciliation avec base GeoNature
             if organism_id:
                 organism = {
@@ -72,7 +77,6 @@ def loginCas():
                     "nom_organisme": organism_name
                 }
                 resp = users.insertOrganism(organism)
-                # r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
 
             user = {
                 "id_role": user_id,
@@ -82,7 +86,6 @@ def loginCas():
                 "id_organisme": organism_id,
             }
             resp = users.insertRole(user)
-            # r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
             # push the user in the right group
             if organism_id is None:
                 # group socle 1
