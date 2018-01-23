@@ -35,30 +35,27 @@ def loginCas():
             ticket=params['ticket'],
             service=base_url
         )
+
         response = utilsrequests.get(url_validate)
         user = None
         xml_dict = xmltodict.parse(response.content)
         resp = xml_dict['cas:serviceResponse']
-        print(resp)
         if 'cas:authenticationSuccess' in resp:
             user = resp['cas:authenticationSuccess']['cas:user']
         if user:
-            ws_user_url = "{url}/{user}/?verify=false".format(
-                url=config_cas['CAS_USER_WS']['URL'],
-                user=user
+            ws_user_url = "{}/{}/?verify=false".format(
+                config_cas['USER_WS']['URL'], user
             )
 
             response = utilsrequests.get(
                 ws_user_url,
                 (
-                    config_cas['CAS_USER_WS']['ID'],
-                    config_cas['CAS_USER_WS']['PASSWORD']
+                    config_cas['USER_WS']['ID'],
+                    config_cas['USER_WS']['PASSWORD']
                 )
             )
 
             info_user = response.json()
-            print('##########')
-            print(info_user)
             organism_id = info_user['codeOrganisme']
 
             if info_user['libelleLongOrganisme'] is not None:
@@ -69,9 +66,9 @@ def loginCas():
             user_login = info_user['login']
             user_id = info_user['id']
             try:
-                assert user_id is not None and user_login is not None
+                assert user_id is not None or user_login is not None
             except AssertionError:
-                return 'CAS ERROR: the user have no ID or LOGIN'
+                return 'CAS ERROR: no ID or LOGIN provided'
                 raise
             # Reconciliation avec base GeoNature
             if organism_id:
@@ -80,7 +77,6 @@ def loginCas():
                     "nom_organisme": organism_name
                 }
                 resp = users.insertOrganism(organism)
-                # r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/organism', json = organism)
 
             user = {
                 "id_role": user_id,
@@ -89,10 +85,7 @@ def loginCas():
                 "prenom_role": info_user['prenom'],
                 "id_organisme": organism_id,
             }
-            print("USERRRRRRRRRRRRRR")
-            print(user)
             resp = users.insertRole(user)
-            # r = utilsrequests.post(current_app.config['API_ENDPOINT']+'/users/role', json = user)
             # push the user in the right group
             if organism_id is None:
                 # group socle 1
