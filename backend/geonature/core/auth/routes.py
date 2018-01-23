@@ -26,7 +26,7 @@ def loginCas():
     config_cas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
-        base_url = current_app.config['API_ENDPOINT'] + "/auth_cas/login"
+        base_url = current_app.config['API_ENDPOINT'] + "auth_cas/login"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
             url=config_cas['CAS_URL_VALIDATION'],
             ticket=params['ticket'],
