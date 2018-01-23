@@ -63,7 +63,7 @@ def loginCas():
             user_login = info_user['login']
             user_id = info_user['id']
             try:
-                assert user_id is not None or user_login is not None
+                assert user_id is not None and user_login is not None
             except AssertionError:
                 return 'CAS ERROR: no ID or LOGIN provided'
                 raise
