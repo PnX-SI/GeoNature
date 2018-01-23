@@ -1,21 +1,14 @@
-
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
-from sqlalchemy import ForeignKey, UniqueConstraint, or_
+from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
-
-
 from sqlalchemy.orm import relationship, exc
-from werkzeug.exceptions import NotFound
-from ...utils.utilssqlalchemy import serializableModel
-from pypnnomenclature.models import TNomenclatures
-
 from sqlalchemy.dialects.postgresql import UUID
 
+from werkzeug.exceptions import NotFound
+
+from pypnnomenclature.models import TNomenclatures
+
+from geonature.utils.utilssqlalchemy import serializableModel
 from geonature.utils.env import DB
-from ..users.models import BibOrganismes
 
 
 class TPrograms(serializableModel):
@@ -30,6 +23,7 @@ class TPrograms(serializableModel):
 
     def get_programs(self, recursif=False):
         return self.as_dict(recursif)
+
 
 class TAcquisitionFramework(serializableModel):
     __tablename__ = 't_acquisition_frameworks'
@@ -62,11 +56,17 @@ class TAcquisitionFramework(serializableModel):
 
     @staticmethod
     def get_id(uuid_af):
-        """return the acquisition framework's id from its UUID if exist or None"""
-        af = DB.session.query(TAcquisitionFramework.id_acquisition_framework
-            ).filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
+        """
+            return the acquisition framework's id
+            from its UUID if exist or None
+        """
+        a_f = DB.session.query(
+                TAcquisitionFramework.id_acquisition_framework
+            ).filter(
+                TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
             ).first()
-        return af
+        return a_f
+
 
 class CorAcquisitionFrameworkActor(serializableModel):
     __tablename__ = 'cor_acquisition_framework_actor'
@@ -96,39 +96,42 @@ class TDatasets(serializableModel):
     dataset_desc = DB.Column(DB.Unicode)
     id_nomenclature_data_type = DB.Column(
         DB.Integer,
-        default = TNomenclatures.get_default_nomenclature(103)
-        )
+        default=TNomenclatures.get_default_nomenclature(103)
+    )
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
     id_nomenclature_dataset_objectif = DB.Column(
         DB.Integer,
-        default = TNomenclatures.get_default_nomenclature(114)
-        )
+        default=TNomenclatures.get_default_nomenclature(114)
+    )
     bbox_west = DB.Column(DB.Unicode)
     bbox_east = DB.Column(DB.Unicode)
     bbox_south = DB.Column(DB.Unicode)
     bbox_north = DB.Column(DB.Unicode)
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
-        default = TNomenclatures.get_default_nomenclature(115)
+        default=TNomenclatures.get_default_nomenclature(115)
         )
     id_nomenclature_data_origin = DB.Column(
         DB.Integer,
-        default = TNomenclatures.get_default_nomenclature(2)
+        default=TNomenclatures.get_default_nomenclature(2)
     )
     id_nomenclature_source_status = DB.Column(
         DB.Integer,
-        default = TNomenclatures.get_default_nomenclature(19))
+        default=TNomenclatures.get_default_nomenclature(19)
+    )
     id_nomenclature_resource_type = DB.Column(
         DB.Integer,
-        default = TNomenclatures.get_default_nomenclature(102))
-    id_program = DB.Column(DB.Integer,
-        ForeignKey('gn_meta.t_programs.id_program'))
+        default=TNomenclatures.get_default_nomenclature(102)
+    )
+    id_program = DB.Column(
+        DB.Integer,
+        ForeignKey('gn_meta.t_programs.id_program')
+    )
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
-
 
     cor_datasets_actor = relationship(
         "CorDatasetsActor",
@@ -136,13 +139,14 @@ class TDatasets(serializableModel):
         cascade="save-update, delete, delete-orphan"
     )
 
-
     @staticmethod
     def get_id(uuid_dataset):
         try:
-            id_dataset = DB.session.query(TDatasets.id_dataset
-                ).filter(TDatasets.unique_dataset_id == uuid_dataset
-                ).one()
+            id_dataset = DB.session.query(
+                TDatasets.id_dataset
+            ).filter(
+                TDatasets.unique_dataset_id == uuid_dataset
+            ).one()
 
             return id_dataset[0]
         except exc.NoResultFound as e:
@@ -151,13 +155,14 @@ class TDatasets(serializableModel):
     @staticmethod
     def get_uuid(id_dataset):
         try:
-            uuid_dataset = DB.session.query(TDatasets.unique_dataset_id
-                ).filter(TDatasets.id_dataset == id_dataset
-                ).one()
+            uuid_dataset = DB.session.query(
+                TDatasets.unique_dataset_id
+            ).filter(
+                TDatasets.id_dataset == id_dataset
+            ).one()
             return uuid_dataset[0]
         except exc.NoResultFound as e:
             raise NotFound('This dataset does not exist', 404)
-
 
     @staticmethod
     def get_user_datasets(user):
@@ -167,12 +172,13 @@ class TDatasets(serializableModel):
         q = DB.session.query(
                 CorDatasetsActor,
                 CorDatasetsActor.id_dataset
-                ).filter(or_(
+            ).filter(
+                or_(
                     CorDatasetsActor.id_organism == user.id_organisme,
                     CorDatasetsActor.id_role == user.id_role
-                ))
+                )
+            )
         return [d.id_dataset for d in q.all()]
-
 
 
 class CorDatasetsActor(serializableModel):
@@ -181,11 +187,11 @@ class CorDatasetsActor(serializableModel):
     id_cda = DB.Column(DB.Integer, primary_key=True)
     id_dataset = DB.Column(
         DB.Integer,
-        ForeignKey('gn_meta.t_datasets.id_dataset'))
+        ForeignKey('gn_meta.t_datasets.id_dataset')
+    )
     id_role = DB.Column(DB.Integer)
     id_organism = DB.Column(DB.Integer)
     id_nomenclature_actor_role = DB.Column(DB.Integer)
-
 
 
 class TParameters(serializableModel):
@@ -200,4 +206,3 @@ class TParameters(serializableModel):
     parameter_desc = DB.Column(DB.Unicode)
     parameter_value = DB.Column(DB.Unicode)
     parameter_extra_value = DB.Column(DB.Unicode)
-
