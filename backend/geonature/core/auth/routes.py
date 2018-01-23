@@ -41,14 +41,14 @@ def loginCas():
             user = resp['cas:authenticationSuccess']['cas:user']
         if user:
             ws_user_url = "{}/{}/?verify=false".format(
-                config_cas['USER_WS']['URL'], user
+                config_cas['CAS_USER_WS']['URL'], user
             )
 
             response = utilsrequests.get(
                 ws_user_url,
                 (
-                    config_cas['USER_WS']['ID'],
-                    config_cas['USER_WS']['PASSWORD']
+                    config_cas['CAS_USER_WS']['ID'],
+                    config_cas['CAS_USER_WS']['PASSWORD']
                 )
             )
 
