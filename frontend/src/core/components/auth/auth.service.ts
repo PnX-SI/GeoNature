@@ -40,11 +40,11 @@ export class AuthService {
       return val.replace(/\\\\/g, '\\');
   }
   setCurrentUser(user, expireDate) {
-    this._cookie.set('currentUser', JSON.stringify(user), expireDate);
+    this._cookie.set('current_user', JSON.stringify(user), expireDate);
   }
 
   getCurrentUser(): User {
-    const userString =  this._cookie.get('currentUser');
+    const userString =  this._cookie.get('current_user');
     let user = this.decodeObjectCookies(userString);
     user = user.split("'").join('"');
     user = JSON.parse(user);
