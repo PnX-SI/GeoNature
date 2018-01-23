@@ -1,14 +1,11 @@
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
 from flask import Blueprint, request
 
 from geonature.utils.env import DB
-from .models import VUserslistForallMenu, TRoles, BibOrganismes, CorRole
-from ...utils.utilssqlalchemy import json_resp
-
-from pypnusershub import routes as fnauth
+from geonature.core.users.models import (
+    VUserslistForallMenu, TRoles,
+    BibOrganismes, CorRole
+)
+from geonature.utils.utilssqlalchemy import json_resp
 
 
 routes = Blueprint('users', __name__)
@@ -17,8 +14,9 @@ routes = Blueprint('users', __name__)
 @routes.route('/menu/<int:idMenu>', methods=['GET'])
 @json_resp
 def getRolesByMenuId(idMenu):
-    q = DB.session.query(VUserslistForallMenu)\
-            .filter_by(id_menu=idMenu)
+    q = DB.session.query(
+        VUserslistForallMenu
+    ).filter_by(id_menu=idMenu)
     try:
         data = q.all()
     except Exception as e:
@@ -28,9 +26,10 @@ def getRolesByMenuId(idMenu):
         return [n.as_dict() for n in data]
     return {'message': 'not found'}, 404
 
+
 @routes.route('/role', methods=['POST'])
 @json_resp
-def insertRole(user = None):
+def insertRole(user=None):
     if user:
         data = user
     else:
@@ -48,13 +47,17 @@ def insertRole(user = None):
     DB.session.flush()
     return user.as_dict()
 
+
 @routes.route('/cor_role', methods=['POST'])
 @json_resp
 def insert_in_cor_role(id_group=None, id_user=None):
-    exist_user = DB.session.query(CorRole
-        ).filter(CorRole.id_role_groupe == id_group
-        ).filter(CorRole.id_role_utilisateur == id_user
-        ).all()
+    exist_user = DB.session.query(
+        CorRole
+    ).filter(
+        CorRole.id_role_groupe == id_group
+    ).filter(
+        CorRole.id_role_utilisateur == id_user
+    ).all()
     if not exist_user:
         cor_role = CorRole(id_group, id_user)
         DB.session.add(cor_role)
@@ -64,12 +67,9 @@ def insert_in_cor_role(id_group=None, id_user=None):
     return {'message': 'cor already exists'}, 500
 
 
-
-
-
 @routes.route('/organism', methods=['POST'])
 @json_resp
-def insertOrganism(organism):
+def insert_organism(organism):
     if organism:
         data = organism
     else:
@@ -86,4 +86,3 @@ def insertOrganism(organism):
     DB.session.commit()
     DB.session.flush()
     return organism.as_dict()
-

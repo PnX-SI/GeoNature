@@ -1,7 +1,5 @@
-
-
 from geonature.utils.env import DB
-from ...utils.utilssqlalchemy import serializableModel
+from geonature.utils.utilssqlalchemy import serializableModel
 
 
 class VUserslistForallMenu(serializableModel):
@@ -35,6 +33,7 @@ class TRoles (serializableModel):
     prenom_role = DB.Column(DB.Unicode)
     id_organisme = DB.Column(DB.Integer)
 
+
 class CorRole(serializableModel):
     __tablename__ = 'cor_roles'
     __table_args__ = {'schema': 'utilisateurs'}
@@ -45,14 +44,15 @@ class CorRole(serializableModel):
         self.id_role_groupe = id_group
         self.id_role_utilisateur = id_role
 
+
 class UserRigth():
     def __init__(
         self,
-        id_role = None,
-        id_organisme = None,
-        tag_action_code = None,
-        tag_object_code = None,
-        id_application = None
+        id_role=None,
+        id_organisme=None,
+        tag_action_code=None,
+        tag_object_code=None,
+        id_application=None
     ):
         self.id_role = id_role
         self.id_organisme = id_organisme
