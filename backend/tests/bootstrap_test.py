@@ -1,14 +1,7 @@
 import pytest
-from pathlib import Path
-import sys
 
-# BASE_DIR = Path(__file__).parent.parent
-# sys.path.append(str(BASE_DIR))
 import server
-
 from geonature.utils.env import load_config, get_config_file_path
-
-
 
 
 @pytest.fixture
