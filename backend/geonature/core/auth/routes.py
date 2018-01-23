@@ -73,7 +73,7 @@ def loginCas():
                     "id_organisme": organism_id,
                     "nom_organisme": organism_name
                 }
-                resp = users.insertOrganism(organism)
+                resp = users.insert_organism(organism)
 
             user = {
                 "id_role": user_id,
@@ -82,7 +82,7 @@ def loginCas():
                 "prenom_role": info_user['prenom'],
                 "id_organisme": organism_id,
             }
-            resp = users.insertRole(user)
+            resp = users.insert_role(user)
             # push the user in the right group
             if organism_id is None:
                 # group socle 1

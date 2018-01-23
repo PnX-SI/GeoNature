@@ -29,7 +29,7 @@ def getRolesByMenuId(idMenu):
 
 @routes.route('/role', methods=['POST'])
 @json_resp
-def insertRole(user=None):
+def insert_role(user=None):
     if user:
         data = user
     else:
