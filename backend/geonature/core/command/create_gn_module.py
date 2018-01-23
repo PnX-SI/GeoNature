@@ -1,22 +1,17 @@
 '''
-    Fonction permettant d'ajouter un module tiers à GN
-
+    Fonctions permettant d'ajouter un module tiers à GN
 '''
 
 import os
 import sys
-import click
 import logging
 import subprocess
 
 from pathlib import Path
-from importlib.machinery import SourceFileLoader
 
-from geonature.utils.env import (
-    DB,
-    GEONATURE_VERSION,
-    GN_MODULE_FILES
-)
+import click
+
+from geonature.utils.env import DB
 
 from geonature.utils.command import get_app_for_cmd
 from geonature.core.command.main import main
@@ -35,7 +30,7 @@ log = logging.getLogger(__name__)
 
 @main.command()
 @click.argument('module_path')
-@click.argument('url') #url de l'api
+@click.argument('url')  # url de l'api
 @click.option(
     '--conf-file',
     required=False,
@@ -56,8 +51,8 @@ def install_gn_module(module_path, url, conf_file):
     #   Verification de la version de geonature par rapport au manifest
     try:
         module_name = check_manifest(module_path)
-    except ConfigError as e:
-        log.critical(str(e) + "\n")
+    except ConfigError as ex:
+        log.critical(str(ex) + "\n")
         sys.exit(1)
 
     # TODO Vérification de la conformité du code : point d'entré pour l'api et le front
@@ -65,10 +60,10 @@ def install_gn_module(module_path, url, conf_file):
     # Installation du module
     try:
         run_install_gn_module(app, module_path, module_name, url)
-    except GNModuleInstallError as e:
+    except GNModuleInstallError as ex:
         log.critical((
             "Error while installing GN module '{}'. The process returned:\n{}"
-        ).format(module_name, e))
+        ).format(module_name, ex))
         sys.exit(1)
 
 
@@ -84,7 +79,10 @@ def run_install_gn_module(app, module_path, module_name, url):
     #   configs
     try:
         from conf_schema_toml import GnModuleSchemaConf
-        load_and_validate_toml(Path(module_path) / "conf_gn_module.toml", GnModuleSchemaConf)
+        load_and_validate_toml(
+            Path(module_path) / "conf_gn_module.toml",
+            GnModuleSchemaConf
+        )
     except ImportError:
         print('No specific config file')
         pass
@@ -101,9 +99,9 @@ def run_install_gn_module(app, module_path, module_name, url):
         log.info("...ok")
     except FileNotFoundError:
         pass
-    except OSError as e:
+    except OSError as ex:
 
-        if e.errno == 8:
+        if ex.errno == 8:
             raise GNModuleInstallError((
                 "Unable to execute '{}'. One possible reason is "
                 "the lack of shebang line."

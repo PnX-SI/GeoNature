@@ -46,8 +46,8 @@ def check_manifest(module_path):
 
     gn_v = version.parse(GEONATURE_VERSION)
     if (
-        gn_v < version.parse(configs_py['min_geonature_version']) and
-        gn_v > version.parse(configs_py['max_geonature_version'])
+            gn_v < version.parse(configs_py['min_geonature_version']) and
+            gn_v > version.parse(configs_py['max_geonature_version'])
     ):
         raise Exception(
             "Geonature version {} is imcompatible with module"
@@ -72,36 +72,36 @@ def gn_module_register_config(module_name, module_path, url):
     # TODO utiliser les commande os de python
     cmd = "sudo mkdir -p {}/{}".format(GN_MODULES_ETC_AVAILABLE, module_name)
     subprocess.call(cmd.split(" "))
-    for cf in GN_MODULES_ETC_FILES:
-        if (Path(module_path) / cf).is_file():
+    for m_conf_file in GN_MODULES_ETC_FILES:
+        if (Path(module_path) / m_conf_file).is_file():
             cmd = "sudo cp {}/{} {}/{}/{}".format(
                 module_path,
-                cf,
+                m_conf_file,
                 GN_MODULES_ETC_AVAILABLE,
                 module_name,
-                cf
+                m_conf_file
             )
             subprocess.call(cmd.split(" "))
 
     cmds = [
         {
-            'cmd': 'sudo tee -a {}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, ),
+            'cmd': 'sudo tee -a {}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
             'msg': "module_path = '{}'\n".format(Path(module_path).resolve()).encode('utf8')
         },
         {
-            'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, ),
+            'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
             'msg': "api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8')
         }
     ]
-    for c in cmds:
-        p = subprocess.Popen(
-            c['cmd'].split(" "),
+    for cmd in cmds:
+        proc = subprocess.Popen(
+            cmd['cmd'].split(" "),
             stdin=subprocess.PIPE,
             stdout=subprocess.DEVNULL
         )
-        p.stdin.write(c['msg'])
-        p.stdin.close()
-        p.wait()
+        proc.stdin.write(cmd['msg'])
+        proc.stdin.close()
+        proc.wait()
 
     log.info("...ok")
 
