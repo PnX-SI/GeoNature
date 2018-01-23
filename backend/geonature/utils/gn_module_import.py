@@ -68,8 +68,7 @@ def gn_module_register_config(module_name, module_path, url):
         Enregistrement du module dans les variables etc
     '''
     log.info("Register module")
-    # import pdb
-    # pdb.set_trace()
+
     # TODO utiliser les commande os de python
     cmd = "sudo mkdir -p {}/{}".format(GN_MODULES_ETC_AVAILABLE, module_name)
     subprocess.call(cmd.split(" "))
@@ -87,7 +86,7 @@ def gn_module_register_config(module_name, module_path, url):
     cmds = [
         {
             'cmd': 'sudo tee -a {}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, ),
-            'msg': "module_path = '{}'\n".format(module_path).encode('utf8')
+            'msg': "module_path = '{}'\n".format(Path(module_path).resolve()).encode('utf8')
         },
         {
             'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name, ),
