@@ -22,9 +22,15 @@ class CasUserSchemaConf(Schema):
 
 class CasSchemaConf(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing='false')
-    CAS_URL_LOGIN = fields.Url(missing='https://preprod-inpn.mnhn.fr/auth/login')
-    CAS_URL_LOGOUT = fields.Url(missing='https://preprod-inpn.mnhn.fr/auth/logout')
-    CAS_URL_VALIDATION = fields.String(missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate')
+    CAS_URL_LOGIN = fields.Url(
+        missing='https://preprod-inpn.mnhn.fr/auth/login'
+    )
+    CAS_URL_LOGOUT = fields.Url(
+        missing='https://preprod-inpn.mnhn.fr/auth/logout'
+    )
+    CAS_URL_VALIDATION = fields.String(
+        missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+    )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
 
 
@@ -53,6 +59,7 @@ class GnPySchemaConf(Schema):
     UPLOAD_FOLDER = fields.String(missing='static/medias')
     BASE_DIR = fields.String(missing=os.path.abspath(os.path.dirname(__file__)))
 
+
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='Geonature2')
     DEFAULT_LANGUAGE = fields.String(missing='fr')
@@ -72,7 +79,6 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
 
 
-
 class ManifestSchemaConf(Schema):
     package_format_version = fields.String(required=True)
     module_name = fields.String(required=True)
@@ -81,8 +87,10 @@ class ManifestSchemaConf(Schema):
     max_geonature_version = fields.String(required=True)
     exclude_geonature_versions = fields.List(fields.String)
 
+
 class ManifestSchemaProdConf(Schema):
     module_path = fields.String(required=True)
+
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)

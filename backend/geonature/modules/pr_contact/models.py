@@ -1,22 +1,19 @@
 
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm.exc import NoResultFound
-from ...utils.utilssqlalchemy import serializableModel, serializableGeoModel
-
+# from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.dialects.postgresql import UUID
 
-from geonature.utils.env import DB
-from ...core.users.models import TRoles
-from ...core.gn_meta import routes as gn_meta
-from pypnnomenclature.models import TNomenclatures
-from geonature.core.ref_geo.models import LAreasWithoutGeom
+from geonature.utils.utilssqlalchemy import (
+    serializableModel, serializableGeoModel
+)
+
 from pypnusershub.db.tools import InsufficientRightsError
+
+from geonature.utils.env import DB
+from geonature.core.users.models import TRoles
+from geonature.core.gn_meta import routes as gn_meta
 
 from geoalchemy2 import Geometry
 
@@ -37,17 +34,25 @@ class ReleveModel(DB.Model):
           user: object from TRole
         """
         if user.tag_object_code == '2':
-            if self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user):
+            if (
+                self.user_is_observer_or_digitiser(user) or
+                self.user_is_in_dataset_actor(user)
+            ):
                 return self
         elif user.tag_object_code == '1':
             if self.user_is_observer_or_digitiser(user):
                 return self
         else:
             return self
-        raise InsufficientRightsError('User "{}" cannot "{}" this current releve'.format(user.id_role, user.tag_action_code), 403)
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" this current releve')
+            .format(user.id_role, user.tag_action_code),
+            403
+        )
 
     def get_releve_cruved(self, user, user_cruved):
-        """ return the user's cruved for a Releve instance. Use in the map-list interface to allow or not an action
+        """ return the user's cruved for a Releve instance.
+        Use in the map-list interface to allow or not an action
         params:
             - user : a TRole object
             - user_cruved: object return by fnauth.get_cruved(user) """
@@ -81,6 +86,7 @@ corRoleRelevesContact = DB.Table(
         primary_key=True
     )
 )
+
 
 class TRelevesContact(serializableGeoModel, ReleveModel):
     __tablename__ = 't_releves_contact'
@@ -242,7 +248,6 @@ class VReleveContact(serializableGeoModel, ReleveModel):
         )
 
 
-
 class VReleveList(serializableGeoModel, ReleveModel):
     __tablename__ = 'v_releve_list'
     __table_args__ = {'schema': 'pr_contact'}
@@ -278,9 +283,6 @@ class VReleveList(serializableGeoModel, ReleveModel):
     def get_geofeature(self, recursif=True):
 
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
-
-
-
 
 
 class DefaultNomenclaturesValue(serializableModel):

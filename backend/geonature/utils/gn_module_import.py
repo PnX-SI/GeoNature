@@ -8,7 +8,7 @@ import logging
 from pathlib import Path
 from packaging import version
 
-from geonature.utils.errors import ConfigError, GeoNatureError
+from geonature.utils.errors import GeoNatureError
 from geonature.utils.env import (
     GEONATURE_VERSION,
     GN_MODULE_FILES,
@@ -121,7 +121,7 @@ def gn_module_activate(module_name):
 
     # TODO gestion des erreurs
     if (GN_MODULES_ETC_AVAILABLE / module_name).is_dir():
-        if not (GN_MODULES_ETC_ENABLED / module_name ).is_symlink():
+        if not (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
             cmd = "sudo ln -s {}/{} {}".format(
                 GN_MODULES_ETC_AVAILABLE,
                 module_name,
@@ -129,7 +129,7 @@ def gn_module_activate(module_name):
             )
             subprocess.call(cmd.split(" "))
             log.info("...ok")
-        else :
+        else:
             log.info("...module already activated")
     else:
         raise GeoNatureError(
@@ -143,6 +143,3 @@ def gn_module_activate(module_name):
         log.info("...ok")
     except Exception:
         raise
-
-
-

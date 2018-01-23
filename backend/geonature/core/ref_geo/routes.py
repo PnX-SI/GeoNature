@@ -1,18 +1,9 @@
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
 from flask import Blueprint, request
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
-from ...utils.utilssqlalchemy import json_resp, serializeQuery
+from geonature.utils.utilssqlalchemy import json_resp
 from .models import BibAreasTypes
-
-from geojson import Feature, FeatureCollection, dumps
-from shapely.geometry import asShape
-from geoalchemy2.shape import to_shape, from_shape
-
 
 routes = Blueprint('ref_geo', __name__)
 

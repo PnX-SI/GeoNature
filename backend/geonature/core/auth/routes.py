@@ -13,12 +13,9 @@ from flask import (
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from geonature.utils.env import DB
-
-from ..gn_meta import routes as gn_meta
-from ..users import routes as users
-from ...utils.utilssqlalchemy import json_resp
-from ...utils import utilsrequests
+from geonature.core.gn_meta import routes as gn_meta
+from geonature.core.users import routes as users
+from geonature.utils import utilsrequests
 
 
 routes = Blueprint('auth_cas', __name__)
@@ -109,8 +106,8 @@ def loginCas():
             response.set_cookie('token',
                                 token,
                                 expires=cookie_exp)
-            # User cookie
 
+            # User cookie
             current_user = {
                 'userName': user_login,
                 'user_id': user_id,
@@ -124,9 +121,13 @@ def loginCas():
             return response
         else:
             # redirect to inpn sss
-            return """<p> Echec de l'authentification. <p>
-             <p> Deconnectez-vous du service INPN avant de retenter une connexion à GeoNature </p>
-             <p> <a target="_blank" href="""+current_app.config['CAS']['CAS_URL_LOGOUT']+"""> Deconnexion </a> </p>
-             <p> <a target="_blank" href="""+current_app.config['URL_APPLICATION']+"""> Retour vers GeoNature </a> </p>
-             """
+            return ("""<p> Echec de l'authentification. <p>
+             <p> Deconnectez-vous du service INPN avant de retenter
+             une connexion à GeoNature </p>
+             <p> <a target="_blank" href={}> Deconnexion </a> </p>
+             <p> <a target="_blank" href={}> Retour vers GeoNature </a> </p>
+             """).format(
+                current_app.config['CAS']['CAS_URL_LOGOUT'],
+                current_app.config['URL_APPLICATION']
+            )
     return jsonify({'message': 'Authentification error'}, 500)

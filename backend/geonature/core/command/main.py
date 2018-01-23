@@ -98,7 +98,6 @@ def generate_frontend_config(conf_file):
         log.warning("file {} doesn't exists".format(conf_file))
 
 
-
 @main.command()
 @click.option('--uri', default="0.0.0.0:8000")
 @click.option('--worker', default=4)
@@ -160,6 +159,7 @@ def generate_frontend_modules_route():
         Génere le fichier de routing du frontend à partir des modules GeoNature activé
     """
     frontend_routes_templating()
+
 
 @main.command()
 def generate_frontend_tsconfig():

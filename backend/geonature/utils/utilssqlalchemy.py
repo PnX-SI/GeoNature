@@ -6,25 +6,23 @@ from __future__ import (unicode_literals, print_function,
 '''
 Fonctions utilitaires
 '''
-from flask import jsonify, Response, current_app
 import json
+
+from flask import Response, current_app
 from functools import wraps
 from werkzeug.datastructures import Headers
 
-from sqlalchemy import inspect, create_engine, MetaData, or_
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import class_mapper, ColumnProperty, RelationshipProperty
-
 from sqlalchemy.dialects.postgresql import UUID
 
-from geoalchemy2.shape import to_shape, from_shape
-from geojson import Feature
-
+from geoalchemy2.shape import to_shape
 from geoalchemy2 import Geometry
 
-from pypnusershub.db.models import User
-from datetime import date, datetime
+from geojson import Feature
 
 from geonature.utils.env import DB
+
 
 def testDataType(value, sqlType, paramName):
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
@@ -67,6 +65,7 @@ def serializeQuery(data, columnDef):
         } for row in data
     ]
     return rows
+
 
 def serializeQueryTest(data, columnDef):
     rows = list()
@@ -161,10 +160,10 @@ class serializableGeoModel(serializableModel):
         """
         geometry = to_shape(getattr(self, geoCol))
         feature = Feature(
-                id=getattr(self, idCol),
-                geometry=geometry,
-                properties=self.as_dict(recursif, columns)
-            )
+            id=getattr(self, idCol),
+            geometry=geometry,
+            properties=self.as_dict(recursif, columns)
+        )
         return feature
 
 
@@ -181,10 +180,10 @@ def json_resp(fn):
         else:
             status = 200
         return Response(
-                json.dumps(res),
-                status=status,
-                mimetype='application/json'
-            )
+            json.dumps(res),
+            status=status,
+            mimetype='application/json'
+        )
     return _json_resp
 
 
@@ -216,6 +215,3 @@ def csv_resp(fn):
         out = '\r\n'.join(outdata)
         return Response(out, headers=headers)
     return _csv_resp
-
-
-
