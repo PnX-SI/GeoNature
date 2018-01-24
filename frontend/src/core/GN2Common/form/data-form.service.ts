@@ -45,15 +45,15 @@ export class DataFormService {
     if (groupe2Inpn) {
       params = params.set('group2_inpn', groupe2Inpn);
     }
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/allnamebylist/${id}`, { params : params});
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${id}`, { params : params});
   }
 
   getTaxonInfo(cd_nom: number) {
-   return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/${cd_nom}`);
+   return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
   }
 
   getRegneAndGroup2Inpn() {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}taxref/regnewithgroupe2`);
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
   }
 
   getGeoInfo(geojson) {
