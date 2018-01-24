@@ -59,6 +59,8 @@ class GnPySchemaConf(Schema):
     UPLOAD_FOLDER = fields.String(missing='static/medias')
     BASE_DIR = fields.String(missing=os.path.abspath(os.path.dirname(__file__)))
 
+class GnFrontEndConf(Schema):
+    DISPLAY_FOOTER = fields.Boolean(missing=False)
 
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='Geonature2')
@@ -77,6 +79,7 @@ class GnGeneralSchemaConf(Schema):
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
+    FRONTEND = fields.Nested(GnFrontEndConf, missing=dict()) 
 
 
 class ManifestSchemaConf(Schema):
@@ -94,3 +97,7 @@ class ManifestSchemaProdConf(Schema):
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
+
+
+
+
