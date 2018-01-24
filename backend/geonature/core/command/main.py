@@ -148,7 +148,8 @@ def dev_back(host, port, conf_file):
 
 
 @main.command()
-@click.option('--action',
+@click.option(
+    '--action',
     default="restart",
     type=click.Choice(['start', 'stop', 'restart'])
 )
@@ -167,12 +168,14 @@ def dev_front():
     """
     start_geonature_front()
 
+
 @main.command()
 def frontend_build():
     """
         Lance le build du frontend
     """
     build_geonature_front()
+
 
 @main.command()
 def generate_frontend_modules_route():
