@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 @click.option(
     '--conf-file',
     required=False,
-    envvar='GEONATURE_CONFIG_FILE'
+    default=DEFAULT_CONFIG_FIlE
 )
 def install_gn_module(module_path, url, conf_file):
     """
@@ -78,7 +78,9 @@ def install_gn_module(module_path, url, conf_file):
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
-            "\n\nError while installing GN module '{}'. The process returned:\n\t{}"
+            """\n\nError while installing GN module '{}'.
+             The process returned:\n\t{}
+            """"
         ).format(module_name, ex))
         sys.exit(1)
 
