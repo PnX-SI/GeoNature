@@ -47,7 +47,8 @@ class GnPySchemaConf(Schema):
         validate=Regexp(
             '^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$',
             0,
-            'Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name'
+            """Database uri is invalid ex:
+             postgresql://monuser:monpass@server:port/db_name"""
         )
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
@@ -57,10 +58,14 @@ class GnPySchemaConf(Schema):
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
 
     UPLOAD_FOLDER = fields.String(missing='static/medias')
-    BASE_DIR = fields.String(missing=os.path.abspath(os.path.dirname(__file__)))
+    BASE_DIR = fields.String(
+        missing=os.path.abspath(os.path.dirname(__file__))
+    )
+
 
 class GnFrontEndConf(Schema):
     DISPLAY_FOOTER = fields.Boolean(missing=False)
+
 
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='Geonature2')
@@ -74,12 +79,11 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     ID_APPLICATION_GEONATURE = fields.Integer(missing=14)
-
     XML_NAMESPACE = fields.String(missing="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
-    FRONTEND = fields.Nested(GnFrontEndConf, missing=dict()) 
+    FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
 
 
 class ManifestSchemaConf(Schema):
@@ -97,7 +101,3 @@ class ManifestSchemaProdConf(Schema):
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
-
-
-
-
