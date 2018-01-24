@@ -47,7 +47,7 @@ export class MapListService {
         this.urlQuery = this.urlQuery.append(param.param, param.value);
       }
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}${endPoint}`, {params: this.urlQuery});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
 

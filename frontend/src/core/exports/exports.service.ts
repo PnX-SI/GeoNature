@@ -18,7 +18,7 @@ export class ExportsService {
      ];
    }
    getViewList() {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}export/viewList`)
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/export/viewList`)
       .map(data => data.json());
    }
 

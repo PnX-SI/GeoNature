@@ -29,9 +29,9 @@ export class ExportsComponent implements OnInit {
 
    exportCsv(idView, idDataSet) {
      if (idDataSet) {
-      document.location.href = `${AppConfig.API_ENDPOINT}contact/export/sinp?id_dataset=${idDataSet}`;
+      document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp?id_dataset=${idDataSet}`;
      } else {
-        document.location.href = `${AppConfig.API_ENDPOINT}contact/export/sinp`
+        document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp`
      }
    }
 }
