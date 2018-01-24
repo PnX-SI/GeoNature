@@ -529,7 +529,7 @@ def export_sinp(info_role):
         - id_dataset : integer
         - uuid_dataset: uuid
     """
-    viewSINP = GenericTable('pr_contact.export_occtax_sinp', 'pr_contact')
+    viewSINP = GenericTable('pr_contact.export_occtax_dlb', 'pr_contact')
     q = DB.session.query(viewSINP.tableDef)
     params = request.args
     allowed_datasets = TDatasets.get_user_datasets(info_role)
@@ -587,6 +587,7 @@ def export_sinp(info_role):
         q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
+    viewSINP.columns.remove('jddId')
     return (
         filemanager.removeDisallowedFilenameChars('export_sinp'),
         data,
