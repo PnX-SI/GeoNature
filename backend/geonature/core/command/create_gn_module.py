@@ -11,7 +11,7 @@ from pathlib import Path
 
 import click
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, DEFAULT_CONFIG_FIlE
 
 from geonature.utils.command import get_app_for_cmd
 from geonature.core.command.main import main
@@ -73,6 +73,9 @@ def install_gn_module(module_path, url, conf_file):
 
         # Installation du module
         run_install_gn_module(app, module_path, module_name, url)
+        # Activation du module
+        gn_module_activate(module_name)
+
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
             "\n\nError while installing GN module '{}'. The process returned:\n\t{}"
