@@ -58,7 +58,7 @@ export class ContactFormService {
      if (regne) {
       params = params.append('group2_inpn', group2_inpn);
      }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}contact/defaultNomenclatures`, {params: params});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/contact/defaultNomenclatures`, {params: params});
    }
 
    initReleveForm(): FormGroup {

@@ -13,7 +13,7 @@ export class DataFormService {
     let params: HttpParams = new HttpParams();
     regne ? params = params.set('regne', regne) : params = params.set('regne', '');
     group2_inpn ? params = params.set('group2_inpn', group2_inpn) : params = params.set('group2_inpn', '');
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclature/${id_nomenclature}`, {params: params});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${id_nomenclature}`, {params: params});
     }
 
   getNomenclatures(...id_nomenclatures) {
@@ -21,7 +21,7 @@ export class DataFormService {
     id_nomenclatures.forEach(id => {
       params = params.append('id_type', id);
     });
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}nomenclatures/nomenclatures`, {params: params});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclatures`, {params: params});
   }
 
   getDatasets(idOrganism?) {
@@ -29,11 +29,11 @@ export class DataFormService {
     if (idOrganism) {
       params = params.set('organisme', idOrganism);
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}meta/datasets`, {params: params});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {params: params});
   }
 
   getObservers(idMenu) {
-     return this._http.get<any>(`${AppConfig.API_ENDPOINT}users/menu/${idMenu}`);
+     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
 
   searchTaxonomy(taxonName: string, id: string, regne?: string, groupe2Inpn?: string) {
@@ -57,21 +57,21 @@ export class DataFormService {
   }
 
   getGeoInfo(geojson) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}geo/info`, geojson);
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/geo/info`, geojson);
   }
 
   getGeoIntersection(geojson, idType?) {
     if (idType) {
       geojson['id_type'] = idType;
     }
-    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson);
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson);
   }
 
   getFormatedGeoIntersection(geojson, idType?) {
     if (idType) {
       geojson['id_type'] = idType;
     }
-    return this._http.post(`${AppConfig.API_ENDPOINT}geo/areas`, geojson)
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson)
     .map(res => {
       const areasIntersected = [];
       Object.keys(res).forEach(key => {
@@ -87,7 +87,7 @@ export class DataFormService {
   }
 
   postContact(form) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}contact/releve`, form);
+    return this._http.post(`${AppConfig.API_ENDPOINT}/contact/releve`, form);
   }
 
 }

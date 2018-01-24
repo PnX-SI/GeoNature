@@ -72,7 +72,7 @@ export class AuthService {
     'id_application': AppConfig.ID_APPLICATION_GEONATURE,
     'with_cruved': true
     };
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}auth/login`, user)
+    this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, user)
       .subscribe(data => {
       console.log(data);
       const userForFront = {

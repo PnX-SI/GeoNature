@@ -26,7 +26,7 @@ def loginCas():
     config_cas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
-        base_url = current_app.config['API_ENDPOINT'] + "auth_cas/login"
+        base_url = current_app.config['API_ENDPOINT'] + "/auth_cas/login"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
             url=config_cas['CAS_URL_VALIDATION'],
             ticket=params['ticket'],
@@ -40,8 +40,9 @@ def loginCas():
         if 'cas:authenticationSuccess' in resp:
             user = resp['cas:authenticationSuccess']['cas:user']
         if user:
-            ws_user_url = "{}/{}/?verify=false".format(
-                config_cas['CAS_USER_WS']['URL'], user
+            ws_user_url = "{url}/{user}/?verify=false".format(
+                url=config_cas['CAS_USER_WS']['URL'],
+                user=user
             )
 
             response = utilsrequests.get(
