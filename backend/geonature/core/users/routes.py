@@ -6,7 +6,7 @@ from geonature.core.users.models import (
     BibOrganismes, CorRole
 )
 from geonature.utils.utilssqlalchemy import json_resp
-
+from geonature.utils.utilsrequests import return_or_404
 
 routes = Blueprint('users', __name__)
 
@@ -17,14 +17,9 @@ def getRolesByMenuId(idMenu):
     q = DB.session.query(
         VUserslistForallMenu
     ).filter_by(id_menu=idMenu)
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return [n.as_dict() for n in data]
-    return {'message': 'not found'}, 404
+
+    data = q.all()
+    return return_or_404([n.as_dict() for n in data])
 
 
 @routes.route('/role', methods=['POST'])

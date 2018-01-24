@@ -15,3 +15,9 @@ def post(url, json={}):
     except requests.exceptions.RequestException as e:
         raise
     return r
+
+
+def return_or_404(data=None):
+    if data:
+        return data
+    return {'message': 'not found'}, 404
