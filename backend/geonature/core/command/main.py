@@ -136,7 +136,8 @@ def dev_back(host, port, conf_file):
     """
         Lance l'api du backend avec flask
     """
-    # TODO mettre en parametre et faire en sorte que le chemin absolu soit calculé automatiquement
+    # TODO mettre en parametre et faire en sorte que
+    #  le chemin absolu soit calculé automatiquement
     # ssl_context = (
     #     "/tmp/cert.pem",
     #     "/tmp/key.pem"
@@ -147,7 +148,10 @@ def dev_back(host, port, conf_file):
 
 
 @main.command()
-@click.option('--action', default="restart", type=click.Choice(['start', 'stop', 'restart']))
+@click.option('--action',
+    default="restart",
+    type=click.Choice(['start', 'stop', 'restart'])
+)
 @click.option('--app_name', default="geonature2")
 def supervisor(action, app_name):
     """
