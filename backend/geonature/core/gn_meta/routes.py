@@ -13,7 +13,7 @@ from geonature.core.gn_meta.models import (
 )
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
-
+from geonature.utils.utilsrequests import return_or_404
 from geonature.core.gn_meta import mtd_utils
 
 routes = Blueprint('gn_meta', __name__)
@@ -23,60 +23,40 @@ routes = Blueprint('gn_meta', __name__)
 @json_resp
 def get_programs_list():
     q = DB.session.query(TPrograms)
-    try:
-        data = q.all()
-    except Exception:
-        DB.session.rollback()
-        raise
-    if data:
-        return [
-            d.as_dict(columns=('id_program', 'program_desc')) for d in data
-        ]
-    return {'message': 'not found'}, 404
+    data = q.all()
+
+    return return_or_404([
+        d.as_dict(columns=('id_program', 'program_desc')) for d in data
+    ])
 
 
 @routes.route('/programs', methods=['GET'])
 @json_resp
 def get_programs():
     q = DB.session.query(TPrograms)
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return ([n.as_dict(False) for n in data])
-    return {'message': 'not found'}, 404
+    data = q.all()
+
+    return return_or_404([n.as_dict(False) for n in data])
 
 
 @routes.route('/programswithdatasets', methods=['GET'])
 @json_resp
 def get_programsWithDatasets():
     q = DB.session.query(TPrograms)
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return ([n.as_dict(True) for n in data])
-    return {'message': 'not found'}, 404
+    data = q.all()
+
+    return return_or_404([n.as_dict(False) for n in data])
 
 
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
 def get_datasets_list():
     q = DB.session.query(TDatasets)
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return [
+    data = q.all()
+
+    return return_or_404([
             d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
-        ]
-    return {'message': 'not found'}, 404
+    ])
 
 
 @routes.route('/datasets', methods=['GET'])
@@ -98,28 +78,18 @@ def get_datasets(info_role):
                 CorDatasetsActor.id_role == info_role.id_role
             )
         )
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return [d.as_dict(True) for d in data]
-    return {'message': 'not found'}, 404
+    data = q.all()
+
+    return return_or_404([d.as_dict(True) for d in data])
 
 
 @routes.route('/list/parameters', methods=['GET'])
 @json_resp
 def get_parameters_list():
     q = DB.session.query(TParameters)
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return [d.as_dict() for d in data]
-    return {'message': 'not found'}, 404
+    data = q.all()
+
+    return return_or_404([d.as_dict() for d in data])
 
 
 @routes.route('/parameters/<param_name>', methods=['GET'])
@@ -131,14 +101,8 @@ def get_one_parameter(param_name, id_org=None):
     if id_org:
         q = q.filter(TParameters.id_organism == id_org)
 
-    try:
-        data = q.all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    if data:
-        return [d.as_dict() for d in data]
-    return {'message': 'not found'}, 404
+    data = q.all()
+    return return_or_404([d.as_dict() for d in data])
 
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
@@ -187,7 +151,6 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     return {'message': 'Not found'}, 404
 
 
-
 @routes.route('/dataset_mtd/<id_user>', methods=['POST'])
 @routes.route('/dataset_mtd/<id_user>/<id_organism>', methods=['POST'])
 @json_resp
@@ -211,7 +174,7 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
             ds.pop('uuid_acquisition_framework')
             print('LAAAAAA')
             print(ds['unique_dataset_id'])
-            #get the id of the dataset to check if exists
+            # get the id of the dataset to check if exists
             id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
             ds['id_dataset'] = id_dataset
 
