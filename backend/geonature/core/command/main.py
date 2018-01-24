@@ -180,7 +180,8 @@ def frontend_build():
 @main.command()
 def generate_frontend_modules_route():
     """
-        Génere le fichier de routing du frontend à partir des modules GeoNature activé
+        Génere le fichier de routing du frontend
+        à partir des modules GeoNature activé
     """
     frontend_routes_templating()
 
