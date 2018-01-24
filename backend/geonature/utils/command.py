@@ -34,3 +34,7 @@ def supervisor_cmd(action, app_name):
 
 def start_geonature_front():
     subprocess.call(['npm', 'run', 'start'], cwd=str(ROOT_DIR / 'frontend'))
+
+def build_geonature_front():
+    subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
+

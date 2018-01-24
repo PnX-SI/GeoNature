@@ -129,7 +129,7 @@ fi
 echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis '/etc/geonature/custom_config.toml'..."
-geonature generate_frontend_config --conf-file /etc/geonature/custom_config.toml
+geonature generate_frontend_config --conf-file /etc/geonature/custom_config.toml --build=false
 echo "Désactivation du virtual env..."
 
 #Lancement de l'application

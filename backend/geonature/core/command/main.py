@@ -23,7 +23,8 @@ from geonature.utils.command import (
     get_app_for_cmd,
     start_gunicorn_cmd,
     supervisor_cmd,
-    start_geonature_front
+    start_geonature_front,
+    build_geonature_front
 )
 
 
@@ -88,12 +89,22 @@ def install_command(ctx):
     required=False,
     envvar='GEONATURE_CONFIG_FILE'
 )
-def generate_frontend_config(conf_file):
+@click.option(
+    '--build',
+    type=bool,
+    required=False,
+    default=True
+)
+def generate_frontend_config(conf_file, build):
     """
         Génération des fichiers de configurations pour javascript
+        Relance le build du front par defaut
     """
     try:
         create_frontend_config(conf_file)
+        if build:
+            build_geonature_front()
+        log.info('Config successfully updated')
     except FileNotFoundError:
         log.warning("file {} doesn't exists".format(conf_file))
 
@@ -148,10 +159,16 @@ def supervisor(action, app_name):
 @main.command()
 def dev_front():
     """
-        Lance l'api du backend et démarre le frontend
+        Démarre le frontend en mode develop
     """
     start_geonature_front()
 
+@main.command()
+def frontend_build():
+    """
+        Lance le build du frontend
+    """
+    build_geonature_front()
 
 @main.command()
 def generate_frontend_modules_route():
