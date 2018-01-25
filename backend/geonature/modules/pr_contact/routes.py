@@ -23,7 +23,6 @@ from geonature.utils.utilssqlalchemy import (
 from geonature.utils import filemanager
 from geonature.core.users.models import TRoles, UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
-from geonature.utils.utilsrequests import return_or_404
 from pypnusershub.db.tools import InsufficientRightsError
 
 from pypnusershub import routes as fnauth
@@ -51,7 +50,7 @@ def getOccurrences():
     q = DB.session.query(TOccurrencesContact)
     data = q.all()
 
-    return_or_404(([n.as_dict() for n in data]))
+    return ([n.as_dict() for n in data])
 
 
 @routes.route('/releve/<int:id_releve>', methods=['GET'])
