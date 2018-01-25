@@ -4,6 +4,7 @@
 '''
 import subprocess
 import logging
+import os
 
 from pathlib import Path
 from packaging import version
@@ -16,6 +17,7 @@ from geonature.utils.env import (
     GN_MODULES_ETC_ENABLED,
     GN_MODULES_ETC_FILES,
     GN_MODULE_FE_FILE,
+    ROOT_DIR,
     import_requirements,
     frontend_routes_templating
 )
@@ -205,3 +207,24 @@ def check_codefile_validity(module_path, module_name):
             )
 
     log.info('...ok\n')
+
+def create_external_assets_symlink(module_path, module_name):
+    """
+        Create a symlink for the module assets
+    """
+    module_assets_dir = "{path}/frontend/assets/".format(
+        path=module_path
+    )
+
+    geonature_asset_symlink = "{}/frontend/src/external_assets/{}".format(
+        str(ROOT_DIR),
+        module_name
+    )
+    # create the symlink if not exist
+    if not os.path.isdir(geonature_asset_symlink):
+        log.info('Create a symlink for assets \n')
+        subprocess.call(
+            ['ln', '-s', module_assets_dir, module_name],
+            cwd=str(ROOT_DIR / 'frontend/src/external_assets')
+        )
+    log.info('...ok \n')
