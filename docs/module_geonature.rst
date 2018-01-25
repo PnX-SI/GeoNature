@@ -24,15 +24,15 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
 
   Exemple: *gn_module_validation*
 
-- La racine du module comportera les fichiers suivants
+- La racine du module comportera les fichiers suivants: 
 
   - ``install_app.sh``: script bash d'installation des librairies python ou npm necessaires au module
   - ``install_env.sh``: script bash d'installation des paquets Linux
-  - `` requirements.txt``: liste des librairies python necessaires au module
-  - `` manifest.toml``: fichier de description du module (nom, version du module, version de GeoNature compatible)
+  - ``requirements.txt``: liste des librairies python necessaires au module
+  - ``manifest.toml``: fichier de description du module (nom, version du module, version de GeoNature compatible)
   - ``conf_gn_module.toml``: fichier de configuration de l'application (livé en version sample)
   - ``conf_schema_toml.py``: schéma 'marshmallow' (https://marshmallow.readthedocs.io/en/latest/) du fichier de configuration (permet de s'assurer la conformité des paramètres renseigné par l'utilisateur)
-  - ``install_gn_module.py``: script python lançant l'installation de la BDD et les scripts ``install_app.sh`` et ``install_env.sh``. Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisé pour installer le module (voir exemple)
+  - ``install_gn_module.py`` : script python lançant l'installation de la BDD et les scripts ``install_app.sh`` et ``install_env.sh``. Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisé pour installer le module (voir exemple)
 
 - La racine du module comportera les dossiers suivants:
 
