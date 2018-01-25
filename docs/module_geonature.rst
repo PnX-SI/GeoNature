@@ -67,7 +67,18 @@ Frontend:
 
 - Les librairies JS seront installées par npm dans un dossier 'node_modules' à la racine du dossier frontend du module. (Il n'est pas necessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...).Le package.json de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module.
 
-Lancer ``npm init`` pour initilisez le module. 
+Lancer ``npm init`` pour initilisez le module.
+
+- Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend. Angular-cli impose cependant que tous les assets soit dans le répertoire mère de l'application (celui de Geonature). Un lien symbolique est créé à l'installation du module pour faire entre le dossier d'assets du module et celui de Geonature.
+
+Pour les utiliser à l'interieur du module, utiliser la synthaxe suivante:
+
+``<img src="external_assets/<MY_MODULE_NAME>/afb.png">``
+
+Pour le module de validation:
+
+``<img src="external_assets/<gn_module_validation>/afb.png">``
+
 
 - Installer le linter ``tslint`` dans son éditeur de texte (TODO: définir un style à utiliser) 
 
