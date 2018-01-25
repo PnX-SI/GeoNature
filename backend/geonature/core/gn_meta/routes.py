@@ -13,7 +13,6 @@ from geonature.core.gn_meta.models import (
 )
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
-from geonature.utils.utilsrequests import return_or_404
 from geonature.core.gn_meta import mtd_utils
 
 routes = Blueprint('gn_meta', __name__)
@@ -25,9 +24,9 @@ def get_programs_list():
     q = DB.session.query(TPrograms)
     data = q.all()
 
-    return return_or_404([
+    return [
         d.as_dict(columns=('id_program', 'program_desc')) for d in data
-    ])
+    ]
 
 
 @routes.route('/programs', methods=['GET'])
@@ -36,7 +35,7 @@ def get_programs():
     q = DB.session.query(TPrograms)
     data = q.all()
 
-    return return_or_404([n.as_dict(False) for n in data])
+    return [n.as_dict(False) for n in data]
 
 
 @routes.route('/programswithdatasets', methods=['GET'])
@@ -45,7 +44,7 @@ def get_programsWithDatasets():
     q = DB.session.query(TPrograms)
     data = q.all()
 
-    return return_or_404([n.as_dict(False) for n in data])
+    return [n.as_dict(False) for n in data]
 
 
 @routes.route('/list/datasets', methods=['GET'])
@@ -54,9 +53,9 @@ def get_datasets_list():
     q = DB.session.query(TDatasets)
     data = q.all()
 
-    return return_or_404([
+    return [
             d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
-    ])
+    ]
 
 
 @routes.route('/datasets', methods=['GET'])
@@ -80,7 +79,7 @@ def get_datasets(info_role):
         )
     data = q.all()
 
-    return return_or_404([d.as_dict(True) for d in data])
+    return [d.as_dict(True) for d in data]
 
 
 @routes.route('/list/parameters', methods=['GET'])
@@ -89,7 +88,7 @@ def get_parameters_list():
     q = DB.session.query(TParameters)
     data = q.all()
 
-    return return_or_404([d.as_dict() for d in data])
+    return [d.as_dict() for d in data]
 
 
 @routes.route('/parameters/<param_name>', methods=['GET'])
@@ -102,7 +101,7 @@ def get_one_parameter(param_name, id_org=None):
         q = q.filter(TParameters.id_organism == id_org)
 
     data = q.all()
-    return return_or_404([d.as_dict() for d in data])
+    return [d.as_dict() for d in data]
 
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
