@@ -40,3 +40,7 @@ UPLOAD_FOLDER = 'static/medias'
     MY_DATA = 1
     MY_ORGANISM_DATA = 2
     ALL_DATA = 3
+
+# Front end configuration
+[FRONTEND]
+DISPLAY_FOOTER = false
