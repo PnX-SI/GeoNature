@@ -5,7 +5,7 @@ Geonature a été conçu pour fonctionner en briques modulaires.
 Chaque protocole, répondant à une question scientifique est ammené avoir son propre module GeoNature 
 comportant son modèle de base de données, son API et son interface utilisateur.
 
-Les modules développés s'appueyrons sur le coeur de GeoNature qui est constitué d'un ensemble de briques réutilisable.
+Les modules développés s'appueyrons sur le coeur de GeoNature qui est constitué d'un ensemble de briques réutilisables.
 En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, géographique)
 et du schéma 'synthèse' regroupant l'ensemble données saisis dans les différents protocole.
 L'api du coeur ( `voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__) permet d'intéroger les schéma de la base de données "coeur" de GeoNature.
