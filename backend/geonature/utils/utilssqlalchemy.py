@@ -179,6 +179,11 @@ def json_resp(fn):
             res, status = res
         else:
             status = 200
+
+        if not res:
+            status = 404
+            res = {'message': 'not found'}
+
         return Response(
             json.dumps(res),
             status=status,
