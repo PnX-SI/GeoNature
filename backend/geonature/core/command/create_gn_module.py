@@ -13,7 +13,10 @@ import click
 
 from geonature.utils.env import DB, DEFAULT_CONFIG_FIlE
 
-from geonature.utils.command import get_app_for_cmd
+from geonature.utils.command import (
+    get_app_for_cmd,
+    build_geonature_front
+)
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
@@ -75,6 +78,8 @@ def install_gn_module(module_path, url, conf_file):
         run_install_gn_module(app, module_path, module_name, url)
         # Activation du module
         gn_module_activate(module_name)
+        #rebuild the frontend
+        build_geonature_front()
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
