@@ -15,13 +15,14 @@ des cartes, des formulaires etc...
 Développer un module GeoNature
 -------------------------------
 
-Avant de développer un module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst>`__)
+Avant de développer un module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst>`__).
+
 Afin de pouvoir connecter ce module au "coeur", Il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature.
 Voici la structure minimale que le module doit comporter (voir le dossier `contrib <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__ de GeoNature pour trouver un exemple):
 
 - Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module"
 
-Exemple: *gn_module_validation*
+  Exemple: *gn_module_validation*
 
 - La racine du module comportera les fichiers suivants
 
