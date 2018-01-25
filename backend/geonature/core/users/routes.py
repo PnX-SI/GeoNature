@@ -6,7 +6,6 @@ from geonature.core.users.models import (
     BibOrganismes, CorRole
 )
 from geonature.utils.utilssqlalchemy import json_resp
-from geonature.utils.utilsrequests import return_or_404
 
 routes = Blueprint('users', __name__)
 
@@ -19,7 +18,7 @@ def getRolesByMenuId(idMenu):
     ).filter_by(id_menu=idMenu)
 
     data = q.all()
-    return return_or_404([n.as_dict() for n in data])
+    return [n.as_dict() for n in data]
 
 
 @routes.route('/role', methods=['POST'])
@@ -42,6 +41,7 @@ def insert_role(user=None):
     DB.session.flush()
     return user.as_dict()
 
+# TODO ajouter test sur les POST de données
 
 @routes.route('/cor_role', methods=['POST'])
 @json_resp
@@ -60,6 +60,7 @@ def insert_in_cor_role(id_group=None, id_user=None):
         DB.session.flush()
         return cor_role.as_dict()
     return {'message': 'cor already exists'}, 500
+
 
 
 @routes.route('/organism', methods=['POST'])
