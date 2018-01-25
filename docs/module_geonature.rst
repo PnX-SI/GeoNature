@@ -43,6 +43,8 @@ Exemple: *gn_module_validation*
   - ``frontend``: le dossier ``app`` comprend les fichiers typescript du module, et  le dossier ``assets`` l'ensemble des médias (images, son).
 
     - Le dossier ``app`` doit lui comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.ts`` 
+    - A la racine du dossier frontend, on retrouve également un fichier package.json qui décrit l'ensemble des librairies JS necessaire au module.
+      
   
   - ``data`` le dossier comprenant les scripts SQL d'installation du module
 
@@ -60,6 +62,8 @@ Frontend:
   Importez ce module dans le module racine de la manière suivante:
 
   ``import { GN2CommonModule } from '@geonature_common/GN2Common.module';``
+
+- Les librairies JS seront installées par npm dans un dossier 'node_modules' à la racine du dossier frontend du module. (Il n'est pas necessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...). Le package.json de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module. 
 
 - Installer le linter ``tslint`` dans son éditeur de texte (TODO: définir un style à utiliser) 
 
