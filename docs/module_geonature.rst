@@ -7,15 +7,15 @@ comportant son modèle de base de données, son API et son interface utilisateur
 
 Les modules développés s'appueyrons sur le coeur de GeoNature qui est constitué d'un ensemble de briques réutilisables.
 En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, géographique)
-et du schéma 'synthèse' regroupant l'ensemble données saisis dans les différents protocole.
-L'api du coeur ( `voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__) permet d'intéroger les schéma de la base de données "coeur" de GeoNature.
-Du côté interface utilisateur, Geonature met à disposition un ensemble de composant Angular réutilisable (voir doc), pour l'affichage
+et du schéma 'synthèse' regroupant l'ensemble données saisis dans les différents protocoles.
+L'api du coeur ( `voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__) permet d'intéroger les schémas de la base de données "coeur" de GeoNature.
+Du côté interface utilisateur, Geonature met à disposition un ensemble de composant Angular réutilisable (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9veloppement-frontend>`__), pour l'affichage
 des cartes, des formulaires etc...
 
 Développer un module GeoNature
 -------------------------------
 
-Avant de développer un module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9veloppement-frontend>`__)
+Avant de développer un module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst>`__)
 Afin de pouvoir connecter ce module au "coeur", Il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature.
 Voici la structure minimale que le module doit comporter (voir le dossier `contrib <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__ de GeoNature pour trouver un exemple):
 
