@@ -85,17 +85,17 @@ else
   fi
 fi
 
-if [ ! -f /etc/geonature/custom_config.toml ]; then
+if [ ! -f /etc/geonature/geonature_config.toml ]; then
   echo "Création du fichier de configuration ..."
-  sudo cp config/custom_config.toml.sample /etc/geonature/custom_config.toml
+  sudo cp config/geonature_config.toml.sample /etc/geonature/geonature_config.toml
   echo "préparation du fichier de configuration..."
   echo $my_url
   my_url="${my_url//\//\\/}"
   echo $my_url
-  sudo sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" /etc/geonature/custom_config.toml
-  sudo sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" /etc/geonature/custom_config.toml
-  sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/custom_config.toml
-  sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/custom_config.toml
+  sudo sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
 fi
@@ -128,8 +128,8 @@ then
 fi
 echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
-echo "Création de la configuration du frontend depuis '/etc/geonature/custom_config.toml'..."
-geonature generate_frontend_config --conf-file /etc/geonature/custom_config.toml --build=false
+echo "Création de la configuration du frontend depuis '/etc/geonature/geonature_config.toml'..."
+geonature generate_frontend_config --conf-file /etc/geonature/geonature_config.toml --build=false
 echo "Désactivation du virtual env..."
 
 #Lancement de l'application

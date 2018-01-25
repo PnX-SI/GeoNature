@@ -3,7 +3,7 @@ settings.ini
 log/*
 .vscode/
 /backend/venv/*
-custom_config.toml
+geonature_config.toml
 gunicorn_start.sh
 
 config.py
