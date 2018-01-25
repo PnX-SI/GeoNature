@@ -13,3 +13,5 @@ Documentation
 - `Installation MTES specificities <install-mtes.rst>`_
 - `Database, API, developement <development.rst>`_
 - `User manual <user-manual.rst>`_
+- `Module developement and installation <module_geonature.rst>`_
+
