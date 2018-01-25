@@ -8,7 +8,7 @@ Fichiers relatifs à l'installation
     * extra commandes python
     * ce fichier doit contenir la méthode suivante : gnmodule_install_app(gn_db, gn_app)
 * requirements.txt: liste des paquets python
-* packages.json: liste des paquets JS
+
 
 * conf_schema_toml.py : Scpécification des paramètres du module
 * conf_gn_module.toml.sample : Configuration du module
@@ -29,3 +29,13 @@ avec une variable blueprint qui contient toutes les routes
 
 Frontend
 --------
+
+Le dossier ``frontend`` comprend les élements suivant:
+
+- le dossier ``app``: comprend le code typescript du module
+
+     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.ts`` 
+
+- le dossier ``assets`` l'ensemble des médias (images, son).
+    
+- Un fichier package.json qui décrit l'ensemble des librairies JS necessaire au module.
