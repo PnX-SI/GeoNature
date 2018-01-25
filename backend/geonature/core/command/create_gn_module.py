@@ -78,7 +78,7 @@ def install_gn_module(module_path, url, conf_file):
         run_install_gn_module(app, module_path, module_name, url)
         # Activation du module
         gn_module_activate(module_name)
-        #rebuild the frontend
+        # Rebuild the frontend
         build_geonature_front()
 
     except (GNModuleInstallError, GeoNatureError) as ex:
