@@ -65,7 +65,9 @@ Frontend:
 
   ``import { GN2CommonModule } from '@geonature_common/GN2Common.module';``
 
-- Les librairies JS seront installées par npm dans un dossier 'node_modules' à la racine du dossier frontend du module. (Il n'est pas necessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...). Le package.json de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module. 
+- Les librairies JS seront installées par npm dans un dossier 'node_modules' à la racine du dossier frontend du module. (Il n'est pas necessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...).Le package.json de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module.
+
+Lancer ``npm init`` pour initilisez le module. 
 
 - Installer le linter ``tslint`` dans son éditeur de texte (TODO: définir un style à utiliser) 
 
