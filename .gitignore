@@ -5,6 +5,7 @@ log/*
 /backend/venv/*
 geonature_config.toml
 gunicorn_start.sh
+external_assets/
 
 config.py
 .vscode

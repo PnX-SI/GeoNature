@@ -159,6 +159,10 @@ echo "Instalation des paquets npm"
 npm install
 npm rebuild node-sass
 
+
+# creation du dossier des assets externes
+mkdir src/external_assets
+
 # creation du map config
 if [ ! -f src/conf/map.config.ts ]; then
   cp src/conf/map.config.ts.sample src/conf/map.config.ts

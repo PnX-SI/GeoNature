@@ -10,7 +10,8 @@
       "assets": [
         "assets",
         "custom",
-        "favicon.ico"
+        "favicon.ico",
+        "external_assets"
       ],
       "index": "index.html",
       "main": "main.ts",
