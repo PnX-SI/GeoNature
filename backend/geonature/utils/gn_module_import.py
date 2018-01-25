@@ -88,7 +88,9 @@ def gn_module_register_config(module_name, module_path, url):
 
     cmds = [
         {
-            'cmd': 'sudo tee -a {}/{}/manifest.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
+            'cmd': 'sudo tee -a {}/{}/manifest.toml'.format(
+                GN_MODULES_ETC_AVAILABLE,
+                module_name),
             'msg': "module_path = '{}'\n".format(Path(module_path).resolve()).encode('utf8')
         },
         {
@@ -207,6 +209,7 @@ def check_codefile_validity(module_path, module_name):
             )
 
     log.info('...ok\n')
+
 
 def create_external_assets_symlink(module_path, module_name):
     """

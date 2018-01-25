@@ -5,7 +5,6 @@ import os
 import sys
 import pip
 import json
-import subprocess
 
 from pathlib import Path
 from collections import ChainMap, namedtuple
@@ -124,8 +123,6 @@ def create_frontend_config(conf_file):
     ) as outputfile:
         outputfile.write("export const AppConfig = ")
         json.dump(configs_gn, outputfile, indent=True)
-
-
 
 
 def get_config_file_path(config_file=None):
