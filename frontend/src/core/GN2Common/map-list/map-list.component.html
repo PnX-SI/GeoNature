@@ -8,11 +8,10 @@
         <pnx-map-data 
          [displayColumns]="displayColumns"
          [allColumns]="allColumns"
-         [pathEdit]="pathEdit"
-         [pathInfo]="pathInfo"
+         (onEdit)="handleEdit($event)"
+         (onDetail)="handleDetail($event)"
          [apiEndPoint]="apiEndPoint"
-         (paramChanged)="mapListService.refreshData(apiEndPoint, $event)"
-         (paramDeleted)="mapListService.deleteAndRefresh(apiEndPoint, $event)"
+         [columnActions]=columnActions
          (onDeleteRow)="deleteRow($event)" >
         </pnx-map-data>
     </div>

@@ -14,7 +14,7 @@
               </div>
             </div>        
           </div>
-          <div class="dropdown">
+          <div class="dropdown" id="column-filter">
               <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {{ 'Columns' | translate }}
               </button>
@@ -53,18 +53,22 @@
     (page)="setPage($event)"
     (select)="onSelect($event)"
     >
-
+    
   <ngx-datatable-column
-  maxWidth="50">
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-        <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
-    </button>
-  </ng-template>
+   *ngIf="columnActions.editColumn"
+    maxWidth="50"
+  >
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
+          <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
+      </button>
+    </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column
-  maxWidth="50">
+    *ngIf="columnActions.infoColumn"
+    maxWidth="50"
+    >
   <ng-template let-row="row" ngx-datatable-cell-template>
     <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
         <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
@@ -73,31 +77,51 @@
   </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
+    *ngIf="columnActions.deleteColumn"
     maxWidth="50">
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-        <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
-    </button>
-    
-  </ng-template>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+          <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
+      </button>
+    </ng-template>
   </ngx-datatable-column>
-    <ngx-datatable-column
+
+  <ngx-datatable-column
+    *ngIf="columnActions.validateColumn"
+    maxWidth="50">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+          <i [ngClass]="{'disabled' : !row.rights.V}" #iElement matTooltip="{{ 'Releve.Validate' | translate }} {{row[mapListService.idName]}}" class="fa fa-check" aria-hidden="true"></i>  
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
+    *ngIf="columnActions.unValidateColumn"
+    maxWidth="50">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+          <i [ngClass]="{'disabled' : !row.rights.V}" #iElement matTooltip="{{ 'Releve.UnValidate' | translate }} {{row[mapListService.idName]}}" class="fa fa-times" aria-hidden="true"></i>  
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
     *ngFor="let col of displayColumns"
     [name]="col.name"
     [prop]="col.prop">
-    </ngx-datatable-column>
-  </ngx-datatable>
+  </ngx-datatable-column>
+</ngx-datatable>
   
 
-  <ng-template #modalConfirm let-c="close" let-d="dismiss">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
-      </div>
-      <div class="modal-body">
-        <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
-        <button type="button" class="btn btn-danger" (click)="c(); deleteRow()"> {{'Delete' | translate }} </button>
-        
-      </div>
-    </ng-template>
+<ng-template #modalConfirm let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
+    </div>
+    <div class="modal-body">
+      <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
+      <button type="button" class="btn btn-danger" (click)="c(); deleteRow()"> {{'Delete' | translate }} </button>
+    </div>
+  </ng-template>
 
 

@@ -65,7 +65,9 @@
         "Edit": "Editer le relevé",
         "Info": "Informations relevé",
         "Delete": "Supprimer le relevé",
-        "DeleteSuccessfully": "Le relevé a été supprimé avec succès"
+        "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
+        "Validate": "Valider le releve",
+        "UnValidate": "Invalider le releve"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon(s) observé(s)",

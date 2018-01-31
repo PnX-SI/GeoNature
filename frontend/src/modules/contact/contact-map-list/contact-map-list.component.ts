@@ -10,6 +10,7 @@ import { AuthService } from '../../../core/components/auth/auth.service';
 import {TranslateService} from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -28,20 +29,30 @@ export class ContactMapListComponent implements OnInit {
   public inputObservers = new FormControl();
   public dateMinInput = new FormControl();
   public dateMaxInput = new FormControl();
+  public columnActions: ColumnActions;
   constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
-    private _commonService: CommonService, private _auth: AuthService
-   , private _translate: TranslateService) { }
+    private _commonService: CommonService, private _auth: AuthService,
+   private _translate: TranslateService,
+   private _router: Router
+  ) { }
 
   ngOnInit() {
-
+  // parameters for maplist
   this.displayColumns = [
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},
   ];
-  this.pathEdit = 'occtax/form';
-  this.pathInfo = 'occtax/info';
+
   this.idName = 'id_releve_contact';
   this.apiEndPoint = 'contact/vreleve';
+
+  this.columnActions = {
+    'editColumn': true,
+    'infoColumn': true,
+    'deleteColumn': true,
+    'validateColumn': false,
+    'unValidateColumn': false
+  };
 
   this._mapListService.getData('contact/vreleve')
     .subscribe(res => {
@@ -105,6 +116,20 @@ export class ContactMapListComponent implements OnInit {
       this._mapListService.deleteAndRefresh(this.apiEndPoint, 'date_low');
     }
   }
+
+  editReleve(id_releve) {
+    this._router.navigate(['occtax/form', id_releve]);
+  }
+
+  infoReleve(id_releve) {
+    this._router.navigate(['occtax/info', id_releve]);
+  }
+
+  addReleve() {
+    this._router.navigate(['occtax/form']);
+  }
+
+
 
   refreshFilters() {
     this.inputTaxon.reset();

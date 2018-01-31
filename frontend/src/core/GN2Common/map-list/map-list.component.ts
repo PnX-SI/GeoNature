@@ -1,14 +1,23 @@
-import { Component, OnInit, Input, OnChanges, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter, ViewEncapsulation} from '@angular/core';
 import { MapService } from '../map/map.service';
 import {MapListService} from '../map-list/map-list.service';
 import { GeoJSON, Layer } from 'leaflet';
 
 
+export interface ColumnActions {
+    editColumn: boolean;
+    infoColumn: boolean;
+    deleteColumn: boolean;
+    validateColumn: boolean;
+    unValidateColumn: boolean;
+  }
+
 @Component({
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
   styleUrls: ['./map-list.component.scss'],
-  providers: [MapService]
+  providers: [MapService],
+  encapsulation: ViewEncapsulation.None
 })
 export class MapListComponent implements OnInit, OnChanges {
   public layerDict: any;
@@ -17,9 +26,11 @@ export class MapListComponent implements OnInit, OnChanges {
   @Input() idName: string;
   @Input() apiEndPoint: string;
   @Input() displayColumns: Array<any>;
-  @Input() pathEdit: string;
-  @Input() pathInfo: string;
+  @Output() onEdit = new EventEmitter<number>();
+  @Output() onDetail = new EventEmitter<number>();
   @Input() pathDelete: string;
+  // configuration for action in the table
+  @Input() columnActions: ColumnActions;
   @Output() onDeleteRow = new EventEmitter<number>();
   public tableData = new Array();
   allColumns = [];
@@ -28,6 +39,7 @@ export class MapListComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+
     // event from the list
     this.mapListService.gettingLayerId$.subscribe(res => {
       const selectedLayer = this.mapListService.layerDict[res];
@@ -38,6 +50,13 @@ export class MapListComponent implements OnInit, OnChanges {
     this.mapListService.idName = this.idName;
   }
 
+  handleEdit(id) {
+    this.onEdit.emit(id);
+  }
+
+  handleDetail(id) {
+    this.onDetail.emit(id);
+  }
 
   deleteRow(idRow) {
     this.onDeleteRow.emit(idRow);

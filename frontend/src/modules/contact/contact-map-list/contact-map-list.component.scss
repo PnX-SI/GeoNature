@@ -1,6 +1,8 @@
 #redirect{
   position: absolute;
   right: 1%;
+  top:135%;
+  z-index: 1000;
   margin-left: 15px;
   margin-top: 15px;
   padding-right: 0px;
@@ -17,4 +19,12 @@
   margin-top: 30px;
   margin-left: 10px;
   color:red;
+}
+
+:host /deep/ #column-filter{
+  position: absolute;
+  top:5%;
+  right:10%;
+  z-index: 1000;
+
 }
