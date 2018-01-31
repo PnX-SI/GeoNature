@@ -29,16 +29,6 @@ export class AuthService {
     private _cookie: CookieService, private _router: Router) {
     }
 
-  decodeObjectCookies(val) {
-      if (val.indexOf('\\') === -1) {
-          return val;  // not encoded
-      }
-      val = val.slice(1, -1).replace(/\\"/g, '"');
-      val = val.replace(/\\(\d{3})/g, function(match, octal) {
-          return String.fromCharCode(parseInt(octal, 8));
-      });
-      return val.replace(/\\\\/g, '\\');
-  }
   setCurrentUser(user, expireDate) {
     sessionStorage.setItem('current_user', JSON.stringify(user));
   }

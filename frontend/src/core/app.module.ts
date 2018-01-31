@@ -53,10 +53,6 @@ export function HttpLoaderFactory(http: Http) {
     BrowserModule,
     HttpModule,
     HttpClientModule,
-    // HttpClientXsrfModule.withOptions({
-    //   cookieName: 'token',
-    //   headerName: 'token'
-    // }),
     BrowserAnimationsModule,
     FlexLayoutModule,
     routing,

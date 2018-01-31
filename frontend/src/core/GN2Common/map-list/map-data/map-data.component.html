@@ -3,7 +3,7 @@
       <div class="row row-sm" id="generic-filter">
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
             <div class="input-group">
-              <input [formControl]="genericFilter" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
+              <input [formControl]="mapListService.genericFilterInput" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
               <div class="input-group-btn">
                 <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ 'By' | translate }} {{filterSelected.name | readablePropertie}}

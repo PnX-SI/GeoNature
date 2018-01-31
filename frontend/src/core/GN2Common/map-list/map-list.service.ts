@@ -5,6 +5,8 @@ import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
+import { FormControl } from '@angular/forms';
+
 @Injectable()
 export class MapListService {
   private _layerId = new Subject<any>();
@@ -20,6 +22,7 @@ export class MapListService {
   public gettingTableId$: Observable<number> = this._tableId.asObservable();
   public urlQuery: HttpParams = new HttpParams ();
   public page = new Page();
+  public genericFilterInput = new FormControl();
   originStyle = {
     'color': '#3388ff',
     'fill': true,
@@ -70,7 +73,13 @@ export class MapListService {
     );
   }
 
+  refreshUrlQuery() {
+    this.urlQuery = new HttpParams();
+  }
+
   deleteAndRefresh(apiEndPoint, param) {
+    console.log('refreshhhhhhhhhhhhhh');
+    
     this.urlQuery = this.urlQuery.delete(param);
     this.refreshData(apiEndPoint);
   }

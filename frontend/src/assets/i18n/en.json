@@ -27,8 +27,13 @@
     "Delete": "Delete",
     "NotAllowed": "You do not have the rights to perform this action",
     "LoginError": "Login or password incorrect",
-    "InvalidTypeError": "Invalid type error",
-    "NoColumnSelected": "Please select a column to filter",
+    "MapList": {
+        "InvalidTypeError": "Invalid type error",
+        "NoColumnSelected": "Please select a column to filter"
+    },
+    "Form": {
+        "RefreshFilters": "Reffresh filtres"
+    },
   
     "Map":{
         "SearchLocation":"Search a location",
