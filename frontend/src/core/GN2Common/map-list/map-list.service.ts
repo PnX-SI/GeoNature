@@ -3,6 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs';
+import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 @Injectable()
 export class MapListService {
@@ -30,7 +31,10 @@ export class MapListService {
   'color': '#ff0000',
    'weight': 3
   };
-    constructor(private _http: HttpClient) {
+    constructor(
+      private _http: HttpClient,
+      private _commonService: CommonService
+    ) {
       this.columns = [];
       this.page.pageNumber = 0;
       this.page.size = 15;
@@ -52,11 +56,18 @@ export class MapListService {
 
   refreshData(apiEndPoint, params?) {
     this.getData(apiEndPoint, params)
-      .subscribe(res => {
-        this.page.totalElements = res.total_filtered;
-        this.geojsonData = res.items;
-        this.loadTableData(res.items);
-      });
+      .subscribe(
+        res => {
+          this.page.totalElements = res.total_filtered;
+          this.geojsonData = res.items;
+          this.loadTableData(res.items);
+        },
+        err => {
+          console.log(err.error.error);
+          this._commonService.regularToaster('error', err.error.error);
+          this._commonService.translateToaster('error', 'InvalidTypeError');
+        }
+    );
   }
 
   deleteAndRefresh(apiEndPoint, param) {

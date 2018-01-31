@@ -27,6 +27,7 @@
     "Delete": "Delete",
     "NotAllowed": "You do not have the rights to perform this action",
     "LoginError": "Login or password incorrect",
+    "InvalidTypeError": "Invalid type error",
   
     "Map":{
         "SearchLocation":"Search a location",
