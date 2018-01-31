@@ -154,7 +154,6 @@ class TOccurrencesContact(serializableModel):
     id_nomenclature_diffusion_level = DB.Column(DB.Integer)
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
-    id_validator = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     determination_method_as_text = DB.Column(DB.Unicode)
