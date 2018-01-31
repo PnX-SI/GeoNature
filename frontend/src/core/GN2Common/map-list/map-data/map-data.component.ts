@@ -5,6 +5,7 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '@geonature_common/service/common.service';
 
 
 @Component({
@@ -33,7 +34,12 @@ export class MapDataComponent implements OnInit, OnChanges {
   selected = []; // list of row selected
   rows = []; // rows in data table
 
-  constructor(private mapListService: MapListService, private _router: Router, public ngbModal: NgbModal) {
+  constructor(
+    private mapListService: MapListService,
+    private _router: Router,
+    public ngbModal: NgbModal,
+    private _commonService: CommonService
+  ) {
 
   }
 
@@ -57,11 +63,15 @@ export class MapDataComponent implements OnInit, OnChanges {
       .distinctUntilChanged()
       .subscribe(
         value => {
-          this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.filterSelected.prop);
-          if (value.length > 0) {
-            this.mapListService.refreshData(this.apiEndPoint, {param: this.filterSelected.prop, 'value': value});
+          if (this.filterSelected.name === '') {
+            this._commonService.translateToaster('warning', 'MapList.NoColumnSelected');
           } else {
-            this.mapListService.deleteAndRefresh(this.apiEndPoint, this.filterSelected.prop);
+            this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.filterSelected.prop);
+            if (value.length > 0) {
+              this.mapListService.refreshData(this.apiEndPoint, {param: this.filterSelected.prop, 'value': value});
+            } else {
+              this.mapListService.deleteAndRefresh(this.apiEndPoint, this.filterSelected.prop);
+            }
           }
         });
   }

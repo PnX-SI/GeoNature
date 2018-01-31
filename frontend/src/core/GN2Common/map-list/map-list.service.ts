@@ -65,7 +65,7 @@ export class MapListService {
         err => {
           console.log(err.error.error);
           this._commonService.regularToaster('error', err.error.error);
-          this._commonService.translateToaster('error', 'InvalidTypeError');
+          this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
         }
     );
   }

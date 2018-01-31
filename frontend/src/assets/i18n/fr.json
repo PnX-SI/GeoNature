@@ -27,8 +27,6 @@
     "Delete": "Supprimer",
     "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
     "LoginError": "Identifiant ou mot de passe incorrect",
-    "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
-  
     "Map":{
         "SearchLocation":"Rechercher un lieu",
         "LocationError": "Localisation non trouvée",
@@ -36,6 +34,10 @@
         "AddLine":"Localisez l'observation (ligne)",
         "AddPolygon":"Localisez l'observation (polygone)",
         "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
+    },
+    "MapList": {
+        "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
+        "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer"
     },
     "Releve":{
         "Releve":"Relevé",
