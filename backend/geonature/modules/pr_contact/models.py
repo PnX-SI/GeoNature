@@ -151,7 +151,6 @@ class TOccurrencesContact(serializableModel):
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_naturalness = DB.Column(DB.Integer)
     id_nomenclature_exist_proof = DB.Column(DB.Integer)
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
     id_nomenclature_diffusion_level = DB.Column(DB.Integer)
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
@@ -194,6 +193,10 @@ class CorCountingContact(serializableModel):
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer)
+    validation_comment = DB.Column(DB.Unicode)
+
     unique_id_sinp_occtax = DB.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()])
