@@ -18,6 +18,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   @Input() displayColumns: Array<any>;
   @Input() pathInfo: string;
   @Input() pathEdit: string;
+  @Input() apiEndPoint: string;
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
   @Output() paramDeleted = new EventEmitter<any>();
@@ -25,10 +26,6 @@ export class MapDataComponent implements OnInit, OnChanges {
   filterList: Array<any>;
   filteredColumns: Array<any>;
   filterSelected: any;
-  inputTaxon = new FormControl();
-  inputObservers = new FormControl();
-  dateMin = new FormControl();
-  dateMax = new FormControl();
   genericFilter = new FormControl();
   index = 0;
 
@@ -59,11 +56,11 @@ export class MapDataComponent implements OnInit, OnChanges {
       .debounceTime(400)
       .distinctUntilChanged()
       .subscribe(value => {
-        this.mapListService.urlQuery.delete(this.filterSelected.prop);
+        this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.filterSelected.prop);
         if (value.length > 0) {
-          this.paramChanged.emit({param: this.filterSelected.prop, 'value': value});
+          this.mapListService.refreshData(this.apiEndPoint, {param: this.filterSelected.prop, 'value': value});
         } else {
-          this.paramChanged.emit({param: '', 'value': ''});
+          this.mapListService.deleteAndRefresh(this.apiEndPoint, this.filterSelected.prop);
         }
       });
   }
@@ -120,43 +117,6 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   redirect() {
     this._router.navigate([this.pathEdit]);
-  }
-
-  deleteAndRefresh(param) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(param);
-    this.paramDeleted.emit();
-  }
-
-  taxonChanged(taxonObj) {
-    // refresh taxon in url query
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('cd_nom');
-    this.paramChanged.emit({param: 'cd_nom', 'value': taxonObj.cd_nom});
-  }
-
-  observerChanged(observer) {
-     this.paramChanged.emit({param: 'observer', 'value': observer.id_role});
-  }
-
-  observerDeleted(observer) {
-    const idObservers = this.mapListService.urlQuery.getAll('observer');
-    idObservers.splice(idObservers.indexOf(observer.id_role), 1);
-    idObservers.forEach(id => {
-      this.mapListService.urlQuery = this.mapListService.urlQuery.set('observer', id);
-    });
-    this.paramDeleted.emit();
-  }
-
-  dateMinChanged(date) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_up');
-    if (date.length > 0) {
-      this.paramChanged.emit({param: 'date_up', 'value': date});
-    }
-  }
-  dateMaxChanged(date) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_low');
-    if (date.length > 0) {
-      this.paramChanged.emit({param: 'date_low', 'value': date});
-    }
   }
 
   setPage(pageInfo) {

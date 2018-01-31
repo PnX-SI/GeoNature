@@ -32,18 +32,18 @@
     font-size: 14px;
 }
 
-#redirect{
-    float: right;
-    margin-left: 15px;
-    margin-top: 15px;
-    padding-right: 0px;
-    padding-left: 0px;
-    cursor: pointer;
-    height: 40px;
-    width: 40px;    
-    border-radius: 30px;
-    box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    //padding: 0px;
+#generic-filter {
+    background-color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.margin-top-xs {
+    margin-top: 0px;
+}
+
+#column-filter {
+    position: absolute;
+    right: 1%;
 }
 
 .to-collapse{
