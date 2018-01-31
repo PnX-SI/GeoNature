@@ -140,7 +140,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
         # check if exist
         id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
         if id_acquisition_framework:
-            new_af.id_acquisition_framework = id_acquisition_framework
+            new_af.id_acquisition_framework = id_acquisition_framework[0]
             DB.session.merge(new_af)
         else:
             DB.session.add(new_af)
@@ -168,11 +168,9 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
             )
             new_af = new_af.get_data()
             new_af = json.loads(new_af.decode('utf-8'))
-            ds['id_acquisition_framework'] = new_af['id_acquisition_framework'][0]
+            ds['id_acquisition_framework'] = new_af['id_acquisition_framework']
 
             ds.pop('uuid_acquisition_framework')
-            print('LAAAAAA')
-            print(ds['unique_dataset_id'])
             # get the id of the dataset to check if exists
             id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
             ds['id_dataset'] = id_dataset
@@ -223,3 +221,4 @@ def get_allowed_datasets(user):
     except Exception:
         DB.session.rollback()
         raise
+
