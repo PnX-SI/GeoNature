@@ -55,14 +55,15 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.genericFilter.valueChanges
       .debounceTime(400)
       .distinctUntilChanged()
-      .subscribe(value => {
-        this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.filterSelected.prop);
-        if (value.length > 0) {
-          this.mapListService.refreshData(this.apiEndPoint, {param: this.filterSelected.prop, 'value': value});
-        } else {
-          this.mapListService.deleteAndRefresh(this.apiEndPoint, this.filterSelected.prop);
-        }
-      });
+      .subscribe(
+        value => {
+          this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.filterSelected.prop);
+          if (value.length > 0) {
+            this.mapListService.refreshData(this.apiEndPoint, {param: this.filterSelected.prop, 'value': value});
+          } else {
+            this.mapListService.deleteAndRefresh(this.apiEndPoint, this.filterSelected.prop);
+          }
+        });
   }
 
   onSelect(selected) {
