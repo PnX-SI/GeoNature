@@ -136,7 +136,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
                 id_role=id_organism,
                 id_nomenclature_actor_role=393
             )
-            new_af.cor_af_actor.append(actor)
+            new_af.cor_af_actor.append(organism)
         # check if exist
         id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
         if id_acquisition_framework:
@@ -221,4 +221,3 @@ def get_allowed_datasets(user):
     except Exception:
         DB.session.rollback()
         raise
-
