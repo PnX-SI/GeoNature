@@ -35,6 +35,9 @@
         "AddPolygon":"Localisez l'observation (polygone)",
         "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
     },
+    "Form": {
+        "RefreshFilters": "Raffrachir les filtres"
+    },
     "MapList": {
         "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
         "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer"

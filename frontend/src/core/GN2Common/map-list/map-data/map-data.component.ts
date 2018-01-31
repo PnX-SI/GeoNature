@@ -27,7 +27,7 @@ export class MapDataComponent implements OnInit, OnChanges {
   filterList: Array<any>;
   filteredColumns: Array<any>;
   filterSelected: any;
-  genericFilter = new FormControl();
+  genericFilterInput = new FormControl();
   index = 0;
 
 
@@ -58,12 +58,13 @@ export class MapDataComponent implements OnInit, OnChanges {
     });
 
 
-    this.genericFilter.valueChanges
+    this.mapListService.genericFilterInput.valueChanges
       .debounceTime(400)
       .distinctUntilChanged()
+      .filter(value => value !== null)
       .subscribe(
         value => {
-          if (this.filterSelected.name === '') {
+          if (value !== null && this.filterSelected.name === '') {
             this._commonService.translateToaster('warning', 'MapList.NoColumnSelected');
           } else {
             this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.filterSelected.prop);

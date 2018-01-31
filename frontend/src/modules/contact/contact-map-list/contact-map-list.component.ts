@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContactService } from '../services/contact.service';
 import { CommonService } from '../../../core/GN2Common/service/common.service';
 import { AuthService } from '../../../core/components/auth/auth.service';
-import { CookieService } from 'ng2-cookies';
 import {TranslateService} from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
@@ -27,8 +26,8 @@ export class ContactMapListComponent implements OnInit {
   public apiEndPoint: string;
   public inputTaxon = new FormControl();
   public inputObservers = new FormControl();
-  public dateMin = new FormControl();
-  public dateMax = new FormControl();
+  public dateMinInput = new FormControl();
+  public dateMaxInput = new FormControl();
   constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService
    , private _translate: TranslateService) { }
@@ -105,6 +104,16 @@ export class ContactMapListComponent implements OnInit {
     }else {
       this._mapListService.deleteAndRefresh(this.apiEndPoint, 'date_low');
     }
+  }
+
+  refreshFilters() {
+    this.inputTaxon.reset();
+    this.dateMaxInput.reset();
+    this.dateMinInput.reset();
+    this.inputObservers.reset();
+    this._mapListService.genericFilterInput.reset();
+    this._mapListService.refreshUrlQuery();
+    this._mapListService.refreshData(this.apiEndPoint);
   }
 
 }
