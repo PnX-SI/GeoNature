@@ -29,7 +29,9 @@
     "LoginError": "Login or password incorrect",
     "MapList": {
         "InvalidTypeError": "Invalid type error",
-        "NoColumnSelected": "Please select a column to filter"
+        "NoColumnSelected": "Please select a column to filter",
+        "Validate": "Validate",
+        "UnValidate": "UnValidate"
     },
     "Form": {
         "RefreshFilters": "Reffresh filtres"

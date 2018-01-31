@@ -44,6 +44,7 @@ export class MapListService {
       this.urlQuery.set('limit', '15');
       this.urlQuery.set('offset', '0');
 
+
   }
 
   getData(endPoint, param?) {

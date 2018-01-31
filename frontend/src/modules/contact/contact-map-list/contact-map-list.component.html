@@ -46,7 +46,7 @@
           (click)="refreshFilters()">
         </i>
         
-        <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+        <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="addReleve()">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </button>
         
@@ -57,9 +57,11 @@
   [geojsonData]="geojsonData"
   [idName]="idName"
   [displayColumns]="displayColumns"
-  [pathEdit]="pathEdit"
-  [pathInfo]="pathInfo"
   [apiEndPoint]="apiEndPoint"
-  (onDeleteRow)="deleteReleve($event)">
+  [columnActions]="columnActions"
+  (onDeleteRow)="deleteReleve($event)"
+  (onEdit)="editReleve($event)"
+  (onDetail)="infoReleve($event)"
+  >
 </pnx-map-list>
 

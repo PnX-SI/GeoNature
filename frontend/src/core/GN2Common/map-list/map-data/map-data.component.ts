@@ -1,28 +1,30 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, Output, OnChanges, EventEmitter } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input, Output, OnChanges, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { MapService } from '../../map/map.service';
 import { MapListService } from '../../map-list/map-list.service';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
+import { ColumnActions } from '@geonature_common/map-list/map-list.component';
+
 
 
 @Component({
   selector: 'pnx-map-data',
   templateUrl: './map-data.component.html',
-  styleUrls: ['./map-data.component.scss']
+  styleUrls: ['./map-data.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MapDataComponent implements OnInit, OnChanges {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @Input() allColumns: Array<any>;
   @Input() displayColumns: Array<any>;
-  @Input() pathInfo: string;
-  @Input() pathEdit: string;
   @Input() apiEndPoint: string;
+  @Input() columnActions: ColumnActions;
+  @Output() onDetail = new EventEmitter<number>();
+  @Output() onEdit = new EventEmitter<number>();
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();
-  @Output() paramDeleted = new EventEmitter<any>();
   @Output() onDeleteRow = new EventEmitter<number>();
   filterList: Array<any>;
   filteredColumns: Array<any>;
@@ -36,7 +38,6 @@ export class MapDataComponent implements OnInit, OnChanges {
 
   constructor(
     private mapListService: MapListService,
-    private _router: Router,
     public ngbModal: NgbModal,
     private _commonService: CommonService
   ) {
@@ -47,6 +48,8 @@ export class MapDataComponent implements OnInit, OnChanges {
     this.filterList = [{'name': '', 'prop': ''}];
 
     this.filterSelected = {'name': '', 'prop': ''};
+
+    
 
     this.mapListService.gettingTableId$.subscribe(res => {
       this.selected = []; // clear selected list
@@ -119,17 +122,13 @@ export class MapDataComponent implements OnInit, OnChanges {
   }
 
   onEditReleve(idReleve) {
-    this._router.navigate([this.pathEdit, idReleve]);
+    this.onEdit.emit(idReleve);
   }
 
   onDetailReleve(idReleve) {
-    this._router.navigate([this.pathInfo, idReleve]);
+    this.onDetail.emit(idReleve);
   }
 
-
-  redirect() {
-    this._router.navigate([this.pathEdit]);
-  }
 
   setPage(pageInfo) {
     this.mapListService.page.pageNumber = pageInfo.offset;

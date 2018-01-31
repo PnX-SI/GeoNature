@@ -95,10 +95,8 @@ export class ContactFormService {
         id_nomenclature_naturalness: null,
         id_nomenclature_exist_proof: null,
         id_nomenclature_observation_status : null,
-        id_nomenclature_valid_status: null,
         id_nomenclature_diffusion_level: null,
         id_nomenclature_blurring: null,
-        id_validator: null,
         determiner: null,
         id_nomenclature_determination_method: null,
         determination_method_as_text: '',
@@ -123,6 +121,9 @@ export class ContactFormService {
       id_nomenclature_type_count: null,
       count_min : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
       count_max : [1, Validators.compose([Validators.required, Validators.pattern('[1-9]+[0-9]*')])],
+      id_nomenclature_valid_status: null,
+      id_validator: null,
+      validation_comment: null,
     });
   }
 
@@ -254,7 +255,6 @@ export class ContactFormService {
           id_nomenclature_exist_proof : defaultNomenclatures[15],
           id_nomenclature_determination_method: defaultNomenclatures[106],
           id_nomenclature_observation_status : defaultNomenclatures[18],
-          id_nomenclature_valid_status: defaultNomenclatures[101],
           id_nomenclature_diffusion_level: defaultNomenclatures[5],
           id_nomenclature_blurring: defaultNomenclatures[4],
          });
@@ -265,7 +265,8 @@ export class ContactFormService {
         id_nomenclature_life_stage: defaultNomenclatures[10],
         id_nomenclature_sex: defaultNomenclatures[9],
         id_nomenclature_obj_count: defaultNomenclatures[6],
-        id_nomenclature_type_count: defaultNomenclatures[21]
+        id_nomenclature_type_count: defaultNomenclatures[21],
+        id_nomenclature_valid_status: defaultNomenclatures[101]
       });
   }
 
