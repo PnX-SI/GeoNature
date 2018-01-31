@@ -1,3 +1,47 @@
+<div class="row row-sm">
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <pnx-taxonomy
+        [parentFormControl]="inputTaxon"
+        [idList]="1001"
+        [charNumber]="3"
+        [listLength]="20"
+        (taxonChanged)="taxonChanged($event)"
+        (taxonDeleted)="_mapListService.deleteAndRefresh(apiEndPoint,'cd_nom')">
+      </pnx-taxonomy>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+        <pnx-observers
+        [parentFormControl]="inputObservers"
+        [idMenu]="9"
+        (observerSelected)="observerChanged($event)"
+        (observerDeleted)="observerDeleted($event)"
+        placeholder="{{ 'Releve.Observers' | translate }}">
+        </pnx-observers>
+    </div>
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <pnx-date
+          placeholder="{{ 'Releve.MinDate' | translate }} "
+          [parentFormControl]="dateMin"
+          (dateChanged)="dateMinChanged($event)"
+          (dateDeleted)= "_mapListService.deleteAndRefresh(apiEndPoint, 'date_up')">
+        </pnx-date>
+      </div>
+        
+      <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
+          <pnx-date
+            placeholder="{{ 'Releve.MaxDate' | translate }} "
+            [parentFormControl]="dateMax"
+            (dateChanged)="dateMaxChanged($event)"
+            (dateDeleted)= "_mapListService.deleteAndRefresh(apiEndPoint, 'date_low')">
+          </pnx-date>   
+      </div>
+
+      <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      </button>
+      
+</div>
+
 <pnx-map-list 
   [geojsonData]="geojsonData"
   [idName]="idName"

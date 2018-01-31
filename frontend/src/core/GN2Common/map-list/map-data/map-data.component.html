@@ -1,62 +1,6 @@
 
-<mat-card class="padding-md-all filter">
-  <div class="row row-sm">
-    <!--Filter-->
-    
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-taxonomy
-      [parentFormControl]="inputTaxon"
-      [idList]="1001"
-      [charNumber]="3"
-      [listLength]="20"
-      (taxonChanged)="taxonChanged($event)"
-      (taxonDeleted)="deleteAndRefresh('cd_nom')">
-      </pnx-taxonomy>
-    </div>
-    
-
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-observers
-      [parentFormControl]="inputObservers"
-      [idMenu]="9"
-      (observerSelected)="observerChanged($event)"
-      (observerDeleted)="observerDeleted($event)"
-      placeholder="{{ 'Releve.Observers' | translate }}">
-      </pnx-observers>
-    </div>
-    
-    
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-      <pnx-date
-        placeholder="{{ 'Releve.MinDate' | translate }} "
-        [parentFormControl]="dateMin"
-        (dateChanged)="dateMinChanged($event)"
-        (dateDeleted)= "deleteAndRefresh('date_up')">
-      </pnx-date>
-    </div>
-    
-    
-    <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
-        <pnx-date
-          placeholder="{{ 'Releve.MaxDate' | translate }} "
-          [parentFormControl]="dateMax"
-          (dateChanged)="dateMaxChanged($event)"
-          (dateDeleted)= "deleteAndRefresh('date_low')">
-        </pnx-date>   
-    </div>
- 
-    <mat-icon matTooltip="Filter options" class="margin-left-md to-collapse clickable" data-toggle="collapse"
-      data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-        filter_list
-    </mat-icon>
-    <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
-        <i class="fa fa-plus-circle" aria-hidden="true"></i>
-    </button>
-    </div>
-
     <!--Filter Avancé-->
-    <div class="collapse width-100" id="collapseAvance">
-      <div class="row row-sm">
+      <div class="row row-sm" id="generic-filter">
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
             <div class="input-group">
               <input [formControl]="genericFilter" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
@@ -70,29 +14,24 @@
               </div>
             </div>        
           </div>
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <div class="dropdown">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ 'Columns' | translate }}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a *ngFor="let col of allColumns" class="dropdown-item">
-                    <input
-                    type='checkbox'
-                    [id]="col.name"
-                    (click)='toggle(col)'
-                    [checked]='isChecked(col)'
-                  />
-                  <label [attr.for]="col.name">{{col.name | readablePropertie }}</label></a>
-
-                </div>
+          <div class="dropdown">
+              <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ 'Columns' | translate }}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a *ngFor="let col of allColumns" class="dropdown-item">
+                  <input
+                  type='checkbox'
+                  [id]="col.name"
+                  (click)='toggle(col)'
+                  [checked]='isChecked(col)'
+                />
+                <label [attr.for]="col.name">{{col.name | readablePropertie }}</label></a>
               </div>
-          </div>
+            </div>
       </div>
-    </div>
 
 
-  </mat-card>
   <!--Table-->
   <ngx-datatable
     #table

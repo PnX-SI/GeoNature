@@ -50,6 +50,20 @@ export class MapListService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
+  refreshData(apiEndPoint, params?) {
+    this.getData(apiEndPoint, params)
+      .subscribe(res => {
+        this.page.totalElements = res.total_filtered;
+        this.geojsonData = res.items;
+        this.loadTableData(res.items);
+      });
+  }
+
+  deleteAndRefresh(apiEndPoint, param) {
+    this.urlQuery = this.urlQuery.delete(param);
+    this.refreshData(apiEndPoint);
+  }
+
 
   setCurrentLayerId(id: number) {
     this._layerId.next(id);

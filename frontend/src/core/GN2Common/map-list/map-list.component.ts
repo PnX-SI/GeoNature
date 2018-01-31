@@ -38,14 +38,6 @@ export class MapListComponent implements OnInit, OnChanges {
     this.mapListService.idName = this.idName;
   }
 
-  refreshValue(params?) {
-    this.mapListService.getData(this.apiEndPoint, params)
-      .subscribe(res => {
-        this.mapListService.page.totalElements = res.total_filtered;
-        this.mapListService.geojsonData = res.items;
-        this.mapListService.loadTableData(res.items);
-      });
-  }
 
   deleteRow(idRow) {
     this.onDeleteRow.emit(idRow);
