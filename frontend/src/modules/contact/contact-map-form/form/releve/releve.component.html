@@ -9,11 +9,9 @@
         </pnx-observers>
       </div>
         <ng-template #elseBlock>
-          <small> {{ 'Releve.Observers' | translate }} </small>
-          <div class="input-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.observers_txt.invalid}" >
-            <input class="form-control form-control-sm" type="text"
-            [formControl]="releveForm.controls.properties.controls.observers_txt" placeholder="" >
-          </div>
+          <pnx-observers-text
+            [parentFormControl]="releveForm.controls.properties.controls.observers_txt">
+          </pnx-observers-text>
         </ng-template>
     </div>
     
