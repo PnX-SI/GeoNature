@@ -15,10 +15,14 @@ export class CommonService {
     };
     }
 
-    translateToaster(messageType, messageValue) {
+    translateToaster(messageType: string, messageValue: string): void {
       this.translate.get(messageValue, {value: messageValue})
       .subscribe(res =>
         this.toastrService[messageType](res, '', this.toastrConfig)
       );
+    }
+
+    regularToaster(messageType: string, messageValue: string): void {
+      this.toastrService[messageType](messageValue, '', this.toastrConfig);
     }
 }
