@@ -77,7 +77,12 @@ export class MapListService {
   }
 
   onRowSelect(row) {
-    this.tableSelected.next(row.selected[0][this.idName]);
+    // row can be an object from ngx-datatable or an integer
+    if (row instanceof Object) {
+      this.tableSelected.next(row.selected[0][this.idName]);
+    } else {
+      this.tableSelected.next(row);
+    }
   }
 
   getRowClass() {
@@ -120,7 +125,6 @@ export class MapListService {
           this.loadTableData(res.items);
         },
         err => {
-          console.log(err.error.error);
           this._commonService.regularToaster('error', err.error.error);
           this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
         }
