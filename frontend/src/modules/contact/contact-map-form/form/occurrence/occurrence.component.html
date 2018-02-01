@@ -83,15 +83,6 @@
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determiner"
               type="text">
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm"> 
-          <pnx-nomenclature 
-            placeholder="{{ 'Taxon.ValidationStatus' | translate }}"
-            [parentFormControl]="occurrenceForm.controls.id_nomenclature_valid_status"
-            [idTypeNomenclature]="101" 
-            [regne]="fs.currentTaxon.regne" 
-            [group2Inpn]="fs.currentTaxon.group2_inpn">
-          </pnx-nomenclature>
-        </div>
       </div>
 
       <div class="row row-0">

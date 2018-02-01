@@ -67,7 +67,8 @@
         "Delete": "Supprimer le relevé",
         "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
         "Validate": "Valider le releve",
-        "UnValidate": "Invalider le releve"
+        "UnValidate": "Invalider le releve",
+        "ObsTechnique":"Technique d'observation"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon(s) observé(s)",
@@ -80,7 +81,6 @@
         "Taxon":"Taxon",
         "Taxons":"Taxons",
         "TaxonName":"Nom du taxon",
-        "ObsTechnique":"Technique d'observation",
         "ObsMethod":"Méthode d'observation",
         "Advanced":"Avancé",
         "BiologicalCondition":"Etat biologique",

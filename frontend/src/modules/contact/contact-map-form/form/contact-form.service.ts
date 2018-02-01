@@ -77,6 +77,7 @@ export class ContactFormService {
         deleted: false,
         meta_device_entry: 'web',
         comment: null,
+        id_nomenclature_obs_technique: [null, Validators.required],
         observers: [null,
            !ContactConfig.observers_txt ? Validators.required : null],
         observers_txt: [null, ContactConfig.observers_txt ? Validators.required : null ],
@@ -243,6 +244,7 @@ export class ContactFormService {
   patchDefaultNomenclatureReleve(defaultNomenclatures): void {
     this.releveForm.controls.properties.patchValue({
       id_nomenclature_grp_typ: defaultNomenclatures[24],
+      id_nomenclature_obs_technique : defaultNomenclatures[100]
     });
   }
 
