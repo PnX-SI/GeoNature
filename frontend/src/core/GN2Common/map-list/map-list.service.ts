@@ -55,13 +55,10 @@ export class MapListService {
       this.urlQuery.set('offset', '0');
       this.colSelected = {'prop': '', 'name': ''};
 
-
-
   }
 
-
-
   enableMapListConnexion(map: Map): void {
+    // do the connexion between map and list
     this.onTableClick$
     .subscribe(id => {
       const selectedLayer = this.layerDict[id];
@@ -93,7 +90,8 @@ export class MapListService {
     this.urlQuery = this.urlQuery.append('offset', pageInfo.offset);
   }
 
-  getData(endPoint, param?) {
+  // fetch the data
+  loadData(endPoint, param?) {
     if (param) {
       if (param.param === 'offset') {
         this.urlQuery = this.urlQuery.set('offset', param.value);
@@ -101,11 +99,20 @@ export class MapListService {
         this.urlQuery = this.urlQuery.append(param.param, param.value);
       }
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery})
+  }
+
+  // make the data available in the service
+  getData(endPoint, param?) {
+    this.loadData(endPoint, param)
+      .subscribe(data => {
+        this.page.totalElements = data.items.features.length;
+        this.geojsonData = data.items;
+      });
   }
 
   refreshData(apiEndPoint, params?) {
-    this.getData(apiEndPoint, params)
+    this.loadData(apiEndPoint, params)
       .subscribe(
         res => {
           this.page.totalElements = res.total_filtered;

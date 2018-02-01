@@ -81,19 +81,12 @@ export class ContactMapListComponent implements OnInit {
   this.apiEndPoint = 'contact/vreleve';
 
   // FETCH THE DATA
-  this.mapListService.getData('contact/vreleve')
-    .subscribe(res => {
-      this.mapListService.page.totalElements = res.items.features.length;
-      this.geojsonData = res.items;
-    });
-
+  this.mapListService.getData('contact/vreleve');
 
   // end OnInit
   }
 
    taxonChanged(taxonObj) {
-    // refresh taxon in url query
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('cd_nom');
     this.mapListService.refreshData(this.apiEndPoint, {param: 'cd_nom', 'value': taxonObj.cd_nom});
   }
 
@@ -177,8 +170,6 @@ export class ContactMapListComponent implements OnInit {
   onAddReleve() {
     this._router.navigate(['occtax/form']);
   }
-
-
 
   refreshFilters() {
     this.inputTaxon.reset();
