@@ -142,7 +142,7 @@ export class ContactMapListComponent implements OnInit {
     this._contactService.deleteReleve(id)
       .subscribe(
         data => {
-          this.mapListService.deleteObs(id);
+          this.deleteObsFront(id);
             this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
 
         },
@@ -156,9 +156,23 @@ export class ContactMapListComponent implements OnInit {
         });
    }
 
+   deleteObsFront(idDelete) {
+    this.mapListService.tableData = this.mapListService.tableData.filter(row => {
+      return row[this.idName] !==  idDelete;
+    });
+
+    this.mapListService.geojsonData.features = this.mapListService.geojsonData.features.filter(row => {
+       return row.properties[this.idName] !==  idDelete;
+     });
+
+
+  }
+
    openDeleteModal(event, modal, iElement, row) {
     this.mapListService.selectedRow = [];
     this.mapListService.selectedRow.push(row);
+    console.log(this.mapListService.selectedRow[0].id_releve_contact);
+    
     event.stopPropagation();
     // prevent erreur link to the component
     iElement && iElement.parentElement && iElement.parentElement.parentElement &&

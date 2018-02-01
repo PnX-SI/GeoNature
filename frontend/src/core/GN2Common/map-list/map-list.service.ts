@@ -99,7 +99,7 @@ export class MapListService {
         this.urlQuery = this.urlQuery.append(param.param, param.value);
       }
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery})
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
   // make the data available in the service
@@ -171,18 +171,7 @@ export class MapListService {
     });
   }
 
-  deleteObs(idDelete) {
-    this.tableData = this.tableData.filter(row => {
-      return row[this.idName] !==  idDelete;
-    });
 
-    this.geojsonData.features = this.geojsonData.features.filter(row => {
-       return row.properties[this.idName] !==  idDelete;
-     });
-
-     this.geojsonData = JSON.parse(JSON.stringify(this.geojsonData));
-
-  }
 
 }
 
