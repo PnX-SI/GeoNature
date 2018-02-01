@@ -31,6 +31,7 @@ import { MapListGenericFiltersComponent } from './map-list/generic-filters/gener
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -84,7 +85,8 @@ export function HttpLoaderFactory(http: Http) {
     DisableControlDirective,
     ReadablePropertiePipe,
     DatasetsComponent,
-    MapListGenericFiltersComponent
+    MapListGenericFiltersComponent,
+    ObserversTextComponent
   ],
   providers : [
     TranslateService,
@@ -121,7 +123,8 @@ export function HttpLoaderFactory(http: Http) {
     NgxDatatableModule,
     NgbModule,
     TranslateModule,
-    MapListGenericFiltersComponent
+    MapListGenericFiltersComponent,
+    ObserversTextComponent
   ]
 })
 export class GN2CommonModule {

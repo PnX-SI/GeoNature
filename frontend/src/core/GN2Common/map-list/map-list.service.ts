@@ -125,8 +125,6 @@ export class MapListService {
   }
 
   deleteAndRefresh(apiEndPoint, param) {
-    console.log('refreshhhhhhhhhhhhhh');
-    
     this.urlQuery = this.urlQuery.delete(param);
     this.refreshData(apiEndPoint);
   }

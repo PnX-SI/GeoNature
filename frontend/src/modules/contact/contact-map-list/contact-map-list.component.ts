@@ -11,7 +11,8 @@ import {TranslateService} from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { ColumnActions } from '@geonature_common/map-list/map-list.component';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ContactConfig } from '../contact.config';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -32,7 +33,9 @@ export class ContactMapListComponent implements OnInit {
   public inputObservers = new FormControl();
   public dateMinInput = new FormControl();
   public dateMaxInput = new FormControl();
+  public observerAsTextInput = new FormControl();
   public columnActions: ColumnActions;
+  public contactConfig: any;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService,
     private _translate: TranslateService,
@@ -41,6 +44,7 @@ export class ContactMapListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.contactConfig = ContactConfig;
   // parameters for maplist
   // columns to be default displayed
   this.displayColumns = [
@@ -76,12 +80,15 @@ export class ContactMapListComponent implements OnInit {
   this.idName = 'id_releve_contact';
   this.apiEndPoint = 'contact/vreleve';
 
-
+  // FETCH THE DATA
   this.mapListService.getData('contact/vreleve')
     .subscribe(res => {
       this.mapListService.page.totalElements = res.items.features.length;
       this.geojsonData = res.items;
     });
+
+
+  // end OnInit
   }
 
    taxonChanged(taxonObj) {
@@ -103,6 +110,14 @@ export class ContactMapListComponent implements OnInit {
       }
     });
     this.mapListService.refreshData(this.apiEndPoint);
+  }
+
+  observerTextChange(observer) {
+    this.mapListService.refreshData(this.apiEndPoint, {param: 'observateurs', 'value': observer});
+  }
+
+  observerTextDelete() {
+    this.mapListService.deleteAndRefresh(this.apiEndPoint, 'observateurs');
   }
 
   dateMinChanged(date) {
