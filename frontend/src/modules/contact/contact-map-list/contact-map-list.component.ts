@@ -11,16 +11,19 @@ import {TranslateService} from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { ColumnActions } from '@geonature_common/map-list/map-list.component';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'pnx-contact-map-list',
   templateUrl: 'contact-map-list.component.html',
-  styleUrls: ['./contact-map-list.component.scss']
+  styleUrls: ['./contact-map-list.component.scss', '../../../core/GN2Common/map-list/map-data/map-data.component.scss']
 })
 
 export class ContactMapListComponent implements OnInit {
   public geojsonData: GeoJSON;
   public displayColumns: Array<any>;
+  public availableColumns: Array<any>;
+  public filterableColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
   public idName: string;
@@ -30,42 +33,108 @@ export class ContactMapListComponent implements OnInit {
   public dateMinInput = new FormControl();
   public dateMaxInput = new FormControl();
   public columnActions: ColumnActions;
-  constructor( private _http: Http, private _mapListService: MapListService, private _contactService: ContactService,
+  constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService,
-   private _translate: TranslateService,
-   private _router: Router
+    private _translate: TranslateService,
+    private _router: Router,
+    public ngbModal: NgbModal,
   ) { }
 
   ngOnInit() {
   // parameters for maplist
+  // columns to be default displayed
   this.displayColumns = [
    {prop: 'taxons', name: 'Taxon', display: true},
    {prop: 'observateurs', 'name': 'Observateurs'},
   ];
+  this.mapListService.displayColumns = this.displayColumns;
 
+  // columns available for display
+  this.availableColumns = [
+    {prop: 'altitude_max', name: 'altitude_max'},
+    {prop: 'altitude_min', name: 'altitude_min'},
+    {prop: 'comment', name: 'Commentaire'},
+    {prop: 'date_max', name: 'Date fin'},
+    {prop: 'date_min', name: 'Date début'},
+    {prop: 'id_dataset', name: 'ID dataset'},
+    {prop: 'id_digitiser', name: 'ID rédacteur'},
+    {prop: 'id_releve_contact', name: 'ID relevé'},
+    {prop: 'observateurs', name: 'observateurs'},
+    {prop: 'taxons', name: 'taxons'}
+  ];
+  this.mapListService.availableColumns = this.availableColumns;
+  // column available to filter
+  this.filterableColumns = [
+    {prop: 'altitude_max', name: 'altitude_max'},
+    {prop: 'altitude_min', name: 'altitude_min'},
+    {prop: 'comment', name: 'Commentaire'},
+    {prop: 'id_dataset', name: 'ID dataset'},
+    {prop: 'id_digitiser', name: 'Id rédacteur'},
+    {prop: 'id_releve_contact', name: 'Id relevé'},
+  ];
+  this.mapListService.filterableColumns = this.filterableColumns;
   this.idName = 'id_releve_contact';
   this.apiEndPoint = 'contact/vreleve';
 
-  this.columnActions = {
-    'editColumn': true,
-    'infoColumn': true,
-    'deleteColumn': true,
-    'validateColumn': false,
-    'unValidateColumn': false
-  };
 
-  this._mapListService.getData('contact/vreleve')
+  this.mapListService.getData('contact/vreleve')
     .subscribe(res => {
-      this._mapListService.page.totalElements = res.items.features.length;
+      this.mapListService.page.totalElements = res.items.features.length;
       this.geojsonData = res.items;
     });
   }
 
-   deleteReleve(id) {
+   taxonChanged(taxonObj) {
+    // refresh taxon in url query
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('cd_nom');
+    this.mapListService.refreshData(this.apiEndPoint, {param: 'cd_nom', 'value': taxonObj.cd_nom});
+  }
+
+  observerChanged(observer) {
+    this.mapListService.refreshData(this.apiEndPoint, {param: 'observer', 'value': observer.id_role});
+  }
+
+  observerDeleted(observer) {
+    const idObservers = this.mapListService.urlQuery.getAll('observer');
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('observer');
+    idObservers.forEach(id => {
+      if (id !== observer.id_role) {
+        this.mapListService.urlQuery = this.mapListService.urlQuery.set('observer', id);
+      }
+    });
+    this.mapListService.refreshData(this.apiEndPoint);
+  }
+
+  dateMinChanged(date) {
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_up');
+    if (date.length > 0) {
+      this.mapListService.refreshData(this.apiEndPoint, {param: 'date_up', 'value': date});
+    } else {
+      this.mapListService.deleteAndRefresh(this.apiEndPoint, 'date_up');
+    }
+  }
+  dateMaxChanged(date) {
+    this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_low');
+    if (date.length > 0) {
+      this.mapListService.refreshData(this.apiEndPoint, {param: 'date_low', 'value': date});
+    }else {
+      this.mapListService.deleteAndRefresh(this.apiEndPoint, 'date_low');
+    }
+  }
+
+  onEditReleve(id_releve) {
+    this._router.navigate(['occtax/form', id_releve]);
+  }
+
+  onDetailReleve(id_releve) {
+    this._router.navigate(['occtax/info', id_releve]);
+  }
+
+  onDeleteReleve(id) {
     this._contactService.deleteReleve(id)
       .subscribe(
         data => {
-          this._mapListService.deleteObs(id);
+          this.mapListService.deleteObs(id);
             this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
 
         },
@@ -79,53 +148,18 @@ export class ContactMapListComponent implements OnInit {
         });
    }
 
-   taxonChanged(taxonObj) {
-    // refresh taxon in url query
-    this._mapListService.urlQuery = this._mapListService.urlQuery.delete('cd_nom');
-    this._mapListService.refreshData(this.apiEndPoint, {param: 'cd_nom', 'value': taxonObj.cd_nom});
+   openDeleteModal(event, modal, iElement, row) {
+    this.mapListService.selectedRow = [];
+    this.mapListService.selectedRow.push(row);
+    event.stopPropagation();
+    // prevent erreur link to the component
+    iElement && iElement.parentElement && iElement.parentElement.parentElement &&
+    iElement.parentElement.parentElement.blur();
+    this.ngbModal.open(modal);
   }
 
-  observerChanged(observer) {
-    this._mapListService.refreshData(this.apiEndPoint, {param: 'observer', 'value': observer.id_role});
-  }
 
-  observerDeleted(observer) {
-    const idObservers = this._mapListService.urlQuery.getAll('observer');
-    this._mapListService.urlQuery = this._mapListService.urlQuery.delete('observer');
-    idObservers.forEach(id => {
-      if (id !== observer.id_role) {
-        this._mapListService.urlQuery = this._mapListService.urlQuery.set('observer', id);
-      }
-    });
-    this._mapListService.refreshData(this.apiEndPoint);
-  }
-
-  dateMinChanged(date) {
-    this._mapListService.urlQuery = this._mapListService.urlQuery.delete('date_up');
-    if (date.length > 0) {
-      this._mapListService.refreshData(this.apiEndPoint, {param: 'date_up', 'value': date});
-    } else {
-      this._mapListService.deleteAndRefresh(this.apiEndPoint, 'date_up');
-    }
-  }
-  dateMaxChanged(date) {
-    this._mapListService.urlQuery = this._mapListService.urlQuery.delete('date_low');
-    if (date.length > 0) {
-      this._mapListService.refreshData(this.apiEndPoint, {param: 'date_low', 'value': date});
-    }else {
-      this._mapListService.deleteAndRefresh(this.apiEndPoint, 'date_low');
-    }
-  }
-
-  editReleve(id_releve) {
-    this._router.navigate(['occtax/form', id_releve]);
-  }
-
-  infoReleve(id_releve) {
-    this._router.navigate(['occtax/info', id_releve]);
-  }
-
-  addReleve() {
+  onAddReleve() {
     this._router.navigate(['occtax/form']);
   }
 
@@ -136,9 +170,9 @@ export class ContactMapListComponent implements OnInit {
     this.dateMaxInput.reset();
     this.dateMinInput.reset();
     this.inputObservers.reset();
-    this._mapListService.genericFilterInput.reset();
-    this._mapListService.refreshUrlQuery();
-    this._mapListService.refreshData(this.apiEndPoint);
+    this.mapListService.genericFilterInput.reset();
+    this.mapListService.refreshUrlQuery();
+    this.mapListService.refreshData(this.apiEndPoint);
   }
 
 }
