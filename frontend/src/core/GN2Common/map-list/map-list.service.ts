@@ -145,7 +145,7 @@ export class MapListService {
     // latlng is different between polygons and point
     let latlng;
 
-    if(layer instanceof L.Polygon || layer instanceof L.Polyline){
+    if (layer instanceof L.Polygon || layer instanceof L.Polyline){
       latlng = (layer as any)._bounds._northEast;
     }else {
       latlng = layer._latlng;

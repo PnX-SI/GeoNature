@@ -36,10 +36,6 @@ export class MapDataComponent implements OnInit {
 
   }
 
-
-
-
-
   toggleExpandRow(row) {
     this.table.rowDetail.toggleExpandRow(row);
   }
