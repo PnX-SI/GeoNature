@@ -105,6 +105,7 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
     hour_max = DB.Column(DB.DateTime)
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     deleted = DB.Column(DB.Boolean, default=False)
     meta_create_date = DB.Column(DB.DateTime)

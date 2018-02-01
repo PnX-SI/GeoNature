@@ -68,7 +68,8 @@
         "Edit": "Edit releve",
         "Info": "Informations releve",
         "Delete": "Delete releve",
-        "DeleteSuccessfully": "Releve deleted successfully"
+        "DeleteSuccessfully": "Releve deleted successfully",
+        "ObsTechnique":"Observation technic"
     },
     "Taxon":{
         "ObservedTaxon":"Observed taxon",
@@ -81,7 +82,6 @@
         "Taxon":"Taxon",
         "Taxons":"Taxons",
         "TaxonName":"Taxon name",
-        "ObsTechnique":"Observation technique",
         "ObsMethod":"Observation method",
         "Advanced":"Advanced",
         "BiologicalCondition":"Biological condition",
