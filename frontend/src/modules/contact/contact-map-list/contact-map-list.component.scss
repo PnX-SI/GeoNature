@@ -1,0 +1,27 @@
+#redirect{
+  position: absolute;
+  right: 1%;
+  top:125%;
+  z-index: 1000;
+  margin-left: 15px;
+  margin-top: 15px;
+  padding-right: 0px;
+  padding-left: 0px;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;    
+  border-radius: 30px;
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  //padding: 0px;
+}
+
+#refresh-filter{
+  margin-top: 30px;
+  margin-left: 10px;
+  color:red;
+}
+
+#specific-filter {
+  margin-top: -5px;
+  padding-bottom: 5px;
+}

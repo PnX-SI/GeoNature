@@ -33,8 +33,8 @@ export class TaxonomyComponent implements OnInit {
   ngOnInit() {
 
     this.parentFormControl.valueChanges
-      .filter(value => value.length === 0)
-      .subscribe(data => {
+      .filter(value => value !== null && value.length === 0)
+      .subscribe(value => {
         this.taxonDeleted.emit();
       });
     // get regne and group2

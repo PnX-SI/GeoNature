@@ -1,99 +1,3 @@
-
-<mat-card class="padding-md-all filter">
-  <div class="row row-sm">
-    <!--Filter-->
-    
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-taxonomy
-      [parentFormControl]="inputTaxon"
-      [idList]="1001"
-      [charNumber]="3"
-      [listLength]="20"
-      (taxonChanged)="taxonChanged($event)"
-      (taxonDeleted)="deleteAndRefresh('cd_nom')">
-      </pnx-taxonomy>
-    </div>
-    
-
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-observers
-      [parentFormControl]="inputObservers"
-      [idMenu]="9"
-      (observerSelected)="observerChanged($event)"
-      (observerDeleted)="observerDeleted($event)"
-      placeholder="{{ 'Releve.Observers' | translate }}">
-      </pnx-observers>
-    </div>
-    
-    
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-      <pnx-date
-        placeholder="{{ 'Releve.MinDate' | translate }} "
-        [parentFormControl]="dateMin"
-        (dateChanged)="dateMinChanged($event)"
-        (dateDeleted)= "deleteAndRefresh('date_up')">
-      </pnx-date>
-    </div>
-    
-    
-    <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
-        <pnx-date
-          placeholder="{{ 'Releve.MaxDate' | translate }} "
-          [parentFormControl]="dateMax"
-          (dateChanged)="dateMaxChanged($event)"
-          (dateDeleted)= "deleteAndRefresh('date_low')">
-        </pnx-date>   
-    </div>
- 
-    <mat-icon matTooltip="Filter options" class="margin-left-md to-collapse clickable" data-toggle="collapse"
-      data-target="#collapseAvance" aria-expanded="false" aria-controls="contexte">
-        filter_list
-    </mat-icon>
-    <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="redirect()">
-        <i class="fa fa-plus-circle" aria-hidden="true"></i>
-    </button>
-    </div>
-
-    <!--Filter Avancé-->
-    <div class="collapse width-100" id="collapseAvance">
-      <div class="row row-sm">
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-            <div class="input-group">
-              <input [formControl]="genericFilter" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ 'By' | translate }} {{filterSelected.name | readablePropertie}}
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item font-md" *ngFor="let list of filteredColumns" (click)="onChangeFilterOps(list)"> {{ 'By' | translate }} {{list.name | readablePropertie}}</a>
-                </div>
-              </div>
-            </div>        
-          </div>
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <div class="dropdown">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ 'Columns' | translate }}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a *ngFor="let col of allColumns" class="dropdown-item">
-                    <input
-                    type='checkbox'
-                    [id]="col.name"
-                    (click)='toggle(col)'
-                    [checked]='isChecked(col)'
-                  />
-                  <label [attr.for]="col.name">{{col.name | readablePropertie }}</label></a>
-
-                </div>
-              </div>
-          </div>
-      </div>
-    </div>
-
-
-  </mat-card>
-  <!--Table-->
   <ngx-datatable
     #table
     class="material striped margin-top-xs table-size expandable"
@@ -104,61 +8,26 @@
     [footerHeight]="50"
     [rowHeight]="50"
     [draggable]="false"
-    [selected]="selected"
+    [selected]="mapListService.selectedRow"
     [externalPaging]="true"
     [selectionType]="'single'"
     [count]="mapListService.page.totalElements"
     [offset]="mapListService.page.pageNumber"
     [limit]="mapListService.page.size"
     [rowClass]="getRowClass"
-    (page)="setPage($event)"
-    (select)="onSelect($event)"
+    (page)="mapListService.setTablePage($event)"
+    (select)="mapListService.onRowSelect($event)"
     >
 
-  <ngx-datatable-column
-  maxWidth="50">
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-        <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
-    </button>
-  </ng-template>
-  </ngx-datatable-column>
-
-  <ngx-datatable-column
-  maxWidth="50">
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
-        <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
-    </button>
-    
-  </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
-    maxWidth="50">
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-        <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
-    </button>
-    
-  </ng-template>
-  </ngx-datatable-column>
     <ngx-datatable-column
-    *ngFor="let col of displayColumns"
-    [name]="col.name"
-    [prop]="col.prop">
+      *ngFor="let col of displayColumns"
+      [name]="col.name"
+      [prop]="col.prop">
     </ngx-datatable-column>
-  </ngx-datatable>
+    
+</ngx-datatable>
   
 
-  <ng-template #modalConfirm let-c="close" let-d="dismiss">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
-      </div>
-      <div class="modal-body">
-        <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
-        <button type="button" class="btn btn-danger" (click)="c(); deleteRow()"> {{'Delete' | translate }} </button>
-        
-      </div>
-    </ng-template>
+
 
 

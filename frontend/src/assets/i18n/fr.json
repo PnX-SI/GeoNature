@@ -27,7 +27,6 @@
     "Delete": "Supprimer",
     "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
     "LoginError": "Identifiant ou mot de passe incorrect",
-  
     "Map":{
         "SearchLocation":"Rechercher un lieu",
         "LocationError": "Localisation non trouvée",
@@ -35,6 +34,13 @@
         "AddLine":"Localisez l'observation (ligne)",
         "AddPolygon":"Localisez l'observation (polygone)",
         "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
+    },
+    "Form": {
+        "RefreshFilters": "Raffrachir les filtres"
+    },
+    "MapList": {
+        "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
+        "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer"
     },
     "Releve":{
         "Releve":"Relevé",
@@ -59,7 +65,10 @@
         "Edit": "Editer le relevé",
         "Info": "Informations relevé",
         "Delete": "Supprimer le relevé",
-        "DeleteSuccessfully": "Le relevé a été supprimé avec succès"
+        "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
+        "Validate": "Valider le releve",
+        "UnValidate": "Invalider le releve",
+        "ObsTechnique":"Technique d'observation"
     },
     "Taxon":{
         "ObservedTaxon":"Taxon(s) observé(s)",
@@ -72,7 +81,6 @@
         "Taxon":"Taxon",
         "Taxons":"Taxons",
         "TaxonName":"Nom du taxon",
-        "ObsTechnique":"Technique d'observation",
         "ObsMethod":"Méthode d'observation",
         "Advanced":"Avancé",
         "BiologicalCondition":"Etat biologique",

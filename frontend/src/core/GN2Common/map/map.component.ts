@@ -68,11 +68,4 @@ export class MapComponent implements OnInit {
 
   }
 
-  // ngOnChanges(change) {
-  //   if(change.height) {
-  //     console.log("change heighttttttttttt");
-  //     this.map.invalidateSize();
-  //   }
-  // }
-
 }

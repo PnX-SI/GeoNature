@@ -58,6 +58,10 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // put the user name in navbar
     this.currentUser = this._authService.getCurrentUser();
+    console.log("from navbar");
+    
+    console.log(this.currentUser);
+    
   }
   changeLanguage(lang) {
     this.translate.use(lang);

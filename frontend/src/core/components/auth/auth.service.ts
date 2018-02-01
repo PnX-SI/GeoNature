@@ -21,7 +21,7 @@ export class User {
 @Injectable()
 export class AuthService {
     authentified = false;
-    currentUser: User;
+    currentUser: any;
     token: string;
     toastrConfig: ToastrConfig;
     loginError: boolean;
@@ -29,28 +29,13 @@ export class AuthService {
     private _cookie: CookieService, private _router: Router) {
     }
 
-  decodeObjectCookies(val) {
-      if (val.indexOf('\\') === -1) {
-          return val;  // not encoded
-      }
-      val = val.slice(1, -1).replace(/\\"/g, '"');
-      val = val.replace(/\\(\d{3})/g, function(match, octal) {
-          return String.fromCharCode(parseInt(octal, 8));
-      });
-      return val.replace(/\\\\/g, '\\');
-  }
   setCurrentUser(user, expireDate) {
-    this._cookie.set('current_user', JSON.stringify(user), expireDate);
+    sessionStorage.setItem('current_user', JSON.stringify(user));
   }
 
-  getCurrentUser(): User {
-    const userString =  this._cookie.get('current_user');
-    let user = this.decodeObjectCookies(userString);
-    user = user.split("'").join('"');
-    user = JSON.parse(user);
-    user = new User(user.userName, user.userId, user.organismId);
-    console.log(user);
-    return user;
+  getCurrentUser(): any {
+    const currentUser = JSON.parse(sessionStorage.getItem('current_user'));
+    return currentUser;
   }
 
   setToken(token, expireDate) {
@@ -74,7 +59,6 @@ export class AuthService {
     };
     this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, user)
       .subscribe(data => {
-      console.log(data);
       const userForFront = {
         userName : data.user.identifiant,
         userId : data.user.id_role,

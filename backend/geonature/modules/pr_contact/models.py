@@ -105,6 +105,7 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
     hour_max = DB.Column(DB.DateTime)
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     deleted = DB.Column(DB.Boolean, default=False)
     meta_create_date = DB.Column(DB.DateTime)
@@ -151,11 +152,9 @@ class TOccurrencesContact(serializableModel):
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_naturalness = DB.Column(DB.Integer)
     id_nomenclature_exist_proof = DB.Column(DB.Integer)
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
     id_nomenclature_diffusion_level = DB.Column(DB.Integer)
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
-    id_validator = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     determination_method_as_text = DB.Column(DB.Unicode)
@@ -194,6 +193,10 @@ class CorCountingContact(serializableModel):
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer)
+    validation_comment = DB.Column(DB.Unicode)
+
     unique_id_sinp_occtax = DB.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()])

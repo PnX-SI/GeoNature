@@ -31,10 +31,10 @@ export class DateComponent implements OnInit, OnDestroy {
 
     this.changeSub = this.parentFormControl.valueChanges
       .subscribe(date => {
-        if (this._dateParser.format(date) !== 'undefined--') {
+        if ( date !== null && this._dateParser.format(date) !== 'undefined--') {
           this.dateChanged.emit(this._dateParser.format(date));
         } else {
-          this.dateDeleted.emit();
+          this.dateDeleted.emit(null);
         }
       });
    }
