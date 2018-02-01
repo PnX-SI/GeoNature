@@ -1,38 +1,3 @@
-
-    <!--Filter Avancé-->
-      <div class="row row-sm" id="generic-filter">
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-            <div class="input-group">
-              <input [formControl]="mapListService.genericFilterInput" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ 'By' | translate }} {{filterSelected.name | readablePropertie}}
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item font-md" *ngFor="let list of filteredColumns" (click)="onChangeFilterOps(list)"> {{ 'By' | translate }} {{list.name | readablePropertie}}</a>
-                </div>
-              </div>
-            </div>        
-          </div>
-          <div class="dropdown" id="column-filter">
-              <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{ 'Columns' | translate }}
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a *ngFor="let col of allColumns" class="dropdown-item">
-                  <input
-                  type='checkbox'
-                  [id]="col.name"
-                  (click)='toggle(col)'
-                  [checked]='isChecked(col)'
-                />
-                <label [attr.for]="col.name">{{col.name | readablePropertie }}</label></a>
-              </div>
-            </div>
-      </div>
-
-
-  <!--Table-->
   <ngx-datatable
     #table
     class="material striped margin-top-xs table-size expandable"
@@ -43,85 +8,26 @@
     [footerHeight]="50"
     [rowHeight]="50"
     [draggable]="false"
-    [selected]="selected"
+    [selected]="mapListService.selectedRow"
     [externalPaging]="true"
     [selectionType]="'single'"
     [count]="mapListService.page.totalElements"
     [offset]="mapListService.page.pageNumber"
     [limit]="mapListService.page.size"
     [rowClass]="getRowClass"
-    (page)="setPage($event)"
-    (select)="onSelect($event)"
+    (page)="mapListService.setTablePage($event)"
+    (select)="mapListService.onRowSelect($event)"
     >
+
+    <ngx-datatable-column
+      *ngFor="let col of displayColumns"
+      [name]="col.name"
+      [prop]="col.prop">
+    </ngx-datatable-column>
     
-  <ngx-datatable-column
-   *ngIf="columnActions.editColumn"
-    maxWidth="50"
-  >
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-          <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
-      </button>
-    </ng-template>
-  </ngx-datatable-column>
-
-  <ngx-datatable-column
-    *ngIf="columnActions.infoColumn"
-    maxWidth="50"
-    >
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
-        <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
-    </button>
-    
-  </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
-    *ngIf="columnActions.deleteColumn"
-    maxWidth="50">
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-          <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
-      </button>
-    </ng-template>
-  </ngx-datatable-column>
-
-  <ngx-datatable-column
-    *ngIf="columnActions.validateColumn"
-    maxWidth="50">
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-          <i [ngClass]="{'disabled' : !row.rights.V}" #iElement matTooltip="{{ 'Releve.Validate' | translate }} {{row[mapListService.idName]}}" class="fa fa-check" aria-hidden="true"></i>  
-      </button>
-    </ng-template>
-  </ngx-datatable-column>
-
-  <ngx-datatable-column
-    *ngIf="columnActions.unValidateColumn"
-    maxWidth="50">
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-          <i [ngClass]="{'disabled' : !row.rights.V}" #iElement matTooltip="{{ 'Releve.UnValidate' | translate }} {{row[mapListService.idName]}}" class="fa fa-times" aria-hidden="true"></i>  
-      </button>
-    </ng-template>
-  </ngx-datatable-column>
-
-  <ngx-datatable-column
-    *ngFor="let col of displayColumns"
-    [name]="col.name"
-    [prop]="col.prop">
-  </ngx-datatable-column>
 </ngx-datatable>
   
 
-<ng-template #modalConfirm let-c="close" let-d="dismiss">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ selected[0][mapListService.idName]}} ?</h5>
-    </div>
-    <div class="modal-body">
-      <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
-      <button type="button" class="btn btn-danger" (click)="c(); deleteRow()"> {{'Delete' | translate }} </button>
-    </div>
-  </ng-template>
+
 
 

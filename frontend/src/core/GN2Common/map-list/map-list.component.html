@@ -1,19 +1,6 @@
-<div class="row row-sm">
-    <div class="col-sm-12 col-md-6 padding-sm map-content">
-        <pnx-map height="95vh" class="map-card">
-            <pnx-geojson [geojson]="mapListService.geojsonData" [onEachFeature]="onEachFeature.bind(this)"> </pnx-geojson>
-        </pnx-map>
-    </div>
-    <div class="col-sm-12 col-md-6 padding-sm list">
-        <pnx-map-data 
-         [displayColumns]="displayColumns"
-         [allColumns]="allColumns"
-         (onEdit)="handleEdit($event)"
-         (onDetail)="handleDetail($event)"
-         [apiEndPoint]="apiEndPoint"
-         [columnActions]=columnActions
-         (onDeleteRow)="deleteRow($event)" >
-        </pnx-map-data>
-    </div>
-</div>
+
+<pnx-map height="height" class="map-card">
+    <pnx-geojson [geojson]="mapListService.geojsonData" [onEachFeature]="onEachFeature.bind(this)"> </pnx-geojson>
+</pnx-map>
+
 

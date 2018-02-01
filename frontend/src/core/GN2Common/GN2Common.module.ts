@@ -27,6 +27,7 @@ import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
+import { MapListGenericFiltersComponent } from './map-list/generic-filters/generic-filters.component';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -82,7 +83,8 @@ export function HttpLoaderFactory(http: Http) {
     MapDataComponent,
     DisableControlDirective,
     ReadablePropertiePipe,
-    DatasetsComponent
+    DatasetsComponent,
+    MapListGenericFiltersComponent
   ],
   providers : [
     TranslateService,
@@ -118,7 +120,8 @@ export function HttpLoaderFactory(http: Http) {
     MatToolbarModule,
     NgxDatatableModule,
     NgbModule,
-    TranslateModule
+    TranslateModule,
+    MapListGenericFiltersComponent
   ]
 })
 export class GN2CommonModule {

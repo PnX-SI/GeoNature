@@ -6,11 +6,14 @@ import { Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
+import { MapService } from '@geonature_common/map/map.service';
+import { Map } from 'leaflet';
 
 @Injectable()
 export class MapListService {
-  private _layerId = new Subject<any>();
-  private _tableId = new Subject<any>();
+  public tableSelected = new Subject<any>();
+  public mapSelected = new Subject<any>();
+  public selectedRow = [];
   public data: any;
   public tableData = new Array();
   public geojsonData: any;
@@ -18,11 +21,17 @@ export class MapListService {
   public columns = [];
   public layerDict= {};
   public selectedLayer: any;
-  public gettingLayerId$: Observable<number> = this._layerId.asObservable();
-  public gettingTableId$: Observable<number> = this._tableId.asObservable();
+  public onMapClik$: Observable<number> = this.mapSelected.asObservable();
+  public onTableClick$: Observable<number> = this.tableSelected.asObservable();
   public urlQuery: HttpParams = new HttpParams ();
   public page = new Page();
   public genericFilterInput = new FormControl();
+  filterableColumns: Array<any>;
+  availableColumns: Array<any>;
+  displayColumns: Array<any>;
+  colSelected: any;
+  allColumns: Array<any>;
+
   originStyle = {
     'color': '#3388ff',
     'fill': true,
@@ -36,15 +45,52 @@ export class MapListService {
   };
     constructor(
       private _http: HttpClient,
-      private _commonService: CommonService
+      private _commonService: CommonService,
+      private _ms: MapService
     ) {
       this.columns = [];
       this.page.pageNumber = 0;
       this.page.size = 15;
       this.urlQuery.set('limit', '15');
       this.urlQuery.set('offset', '0');
+      this.colSelected = {'prop': '', 'name': ''};
 
 
+
+  }
+
+
+
+  enableMapListConnexion(map: Map): void {
+    this.onTableClick$
+    .subscribe(id => {
+      const selectedLayer = this.layerDict[id];
+      this.toggleStyle(selectedLayer);
+      this.zoomOnSelectedLayer(map, selectedLayer);
+    });
+
+    this.onMapClik$.subscribe(id => {
+      this.selectedRow = []; // clear selected list
+      for (const i in this.tableData) {
+        if (this.tableData[i][this.idName] === id) {
+          this.selectedRow.push(this.tableData[i]);
+        }
+      }
+    });
+  }
+
+  onRowSelect(row) {
+    this.tableSelected.next(row.selected[0][this.idName]);
+  }
+
+  getRowClass() {
+    return 'clickable';
+  }
+
+
+  setTablePage(pageInfo) {
+    this.page.pageNumber = pageInfo.offset;
+    this.urlQuery = this.urlQuery.append('offset', pageInfo.offset);
   }
 
   getData(endPoint, param?) {
@@ -85,14 +131,6 @@ export class MapListService {
     this.refreshData(apiEndPoint);
   }
 
-
-  setCurrentLayerId(id: number) {
-    this._layerId.next(id);
-  }
-
-  setCurrentTableId(id: number) {
-    this._tableId.next(id);
-  }
 
   toggleStyle(selectedLayer) {
     // togle the style of selected layer
