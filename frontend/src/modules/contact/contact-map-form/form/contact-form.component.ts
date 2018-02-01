@@ -127,7 +127,6 @@ export class ContactFormComponent implements OnInit {
         this.router.navigate(['/occtax']);
         },
         (error) => {
-          console.log(error);
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
           } else {

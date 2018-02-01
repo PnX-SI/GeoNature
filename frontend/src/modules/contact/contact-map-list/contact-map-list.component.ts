@@ -17,11 +17,11 @@ import { ContactConfig } from '../contact.config';
 @Component({
   selector: 'pnx-contact-map-list',
   templateUrl: 'contact-map-list.component.html',
-  styleUrls: ['./contact-map-list.component.scss', '../../../core/GN2Common/map-list/map-data/map-data.component.scss']
+  styleUrls: ['./contact-map-list.component.scss', '../../../core/GN2Common/map-list/map-data/map-data.component.scss'],
+  providers: [MapListService]
 })
 
 export class ContactMapListComponent implements OnInit {
-  public geojsonData: GeoJSON;
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public filterableColumns: Array<any>;
@@ -171,8 +171,6 @@ export class ContactMapListComponent implements OnInit {
    openDeleteModal(event, modal, iElement, row) {
     this.mapListService.selectedRow = [];
     this.mapListService.selectedRow.push(row);
-    console.log(this.mapListService.selectedRow[0].id_releve_contact);
-    
     event.stopPropagation();
     // prevent erreur link to the component
     iElement && iElement.parentElement && iElement.parentElement.parentElement &&
