@@ -19,10 +19,10 @@ Maintainers :
 Architecture
 ------------
 
-- UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` database schema
+- UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` database schema and to authentificate
 - TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` database schema. We also use TaxHub API to get information about taxons, species...
 - A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
-- ``ref_geo`` is a geographical referentials to manage areas, DEM and spatial functions
+- ``ref_geo`` is a geographical referential to manage areas, DEM and spatial functions such as intersections
 
 
 Database
