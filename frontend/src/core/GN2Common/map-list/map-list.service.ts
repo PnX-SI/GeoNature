@@ -90,34 +90,29 @@ export class MapListService {
   }
 
 
-  setTablePage(pageInfo) {
+  setTablePage(pageInfo, endPoint) {
     this.page.pageNumber = pageInfo.offset;
-    this.urlQuery = this.urlQuery.append('offset', pageInfo.offset);
+    this.urlQuery = this.urlQuery.set('offset', pageInfo.offset);
+    this.refreshData(endPoint);
   }
 
   // fetch the data
   loadData(endPoint, param?) {
-    if (param) {
-      if (param.param === 'offset') {
-        this.urlQuery = this.urlQuery.set('offset', param.value);
-      }else {
-        this.urlQuery = this.urlQuery.append(param.param, param.value);
-      }
-    }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
-  // make the data available in the service
-  getData(endPoint, param?) {
+  getData(endPoint, method, param?) {
+    this.manageUrlQuery(method, param);
     this.loadData(endPoint, param)
       .subscribe(data => {
-        this.page.totalElements = data.items.features.length;
+        this.page.totalElements = data.total_filtered;
         this.geojsonData = data.items;
         this.loadTableData(data.items);
       });
   }
 
-  refreshData(apiEndPoint, params?) {
+  refreshData(apiEndPoint, method = 'set', params?) {
+    this.manageUrlQuery(method, params);
     this.loadData(apiEndPoint, params)
       .subscribe(
         res => {
@@ -130,6 +125,17 @@ export class MapListService {
           this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
         }
     );
+  }
+
+  manageUrlQuery(method, param?) {
+    // set or append a param to urlQuery
+    if (param) {
+      if (method === 'set') {
+        this.urlQuery = this.urlQuery.set(param.param, param.value);
+      } else {
+        this.urlQuery = this.urlQuery.append(param.param, param.value);
+      }
+    }
   }
 
   refreshUrlQuery() {
