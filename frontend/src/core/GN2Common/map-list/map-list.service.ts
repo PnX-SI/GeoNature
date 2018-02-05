@@ -104,14 +104,19 @@ export class MapListService {
   getData(endPoint, method, param?: Array<any>) {
     this.manageUrlQuery(method, param);
     this.loadData(endPoint, param)
-      .subscribe(data => {
-        this.page.totalElements = data.total_filtered;
-        this.geojsonData = data.items;
-        this.loadTableData(data.items);
-      });
+      .subscribe(
+        data => {
+          this.page.totalElements = data.total_filtered;
+          this.geojsonData = data.items;
+          this.loadTableData(data.items);
+        },
+        err => {
+         this._commonService.translateToaster('error', 'ErrorMessage');
+        }
+      );
   }
 
-  refreshData(apiEndPoint, method = 'set', params?: Array<any>) {
+  refreshData(apiEndPoint, method, params?: Array<any>) {
     this.manageUrlQuery(method, params);
     this.loadData(apiEndPoint, params)
       .subscribe(
