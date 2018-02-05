@@ -113,6 +113,7 @@ export class MapListService {
       .subscribe(data => {
         this.page.totalElements = data.items.features.length;
         this.geojsonData = data.items;
+        this.loadTableData(data.items);
       });
   }
 

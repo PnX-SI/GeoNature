@@ -70,10 +70,8 @@
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- MAP -->
     <pnx-map-list 
-      [geojsonData]="mapListService.geojsonData"
       [idName]="idName"
-      height="90vh"
-      >
+      height="88vh">
     </pnx-map-list>
   </div>
 
@@ -87,8 +85,9 @@
       [apiEndPoint]= "apiEndPoint"
     >
     </pnx-map-list-generic-filter> 
-
-
+      
+    
+    
     <!--Table-->
     <ngx-datatable
       #table

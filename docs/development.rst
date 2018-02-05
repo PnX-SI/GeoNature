@@ -231,6 +231,58 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
                 
                 Type: ``any`` `voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
 
+- **MapListComponent**
+        Le composant MapList fournit une carte pouvant être synchronisé avec une liste. La liste, pouvant être spécifique à chaque module, elle n'est pas intégré dans le composant et est laissé à la responsabilité du développeur. Le service ``MapListService`` offre cependant des fonctions permettant facilement de synchroniser les deux éléments.
+        Fonctionnalité et comportement offert par le le composant et le service:
+
+        - Le service expose la fonction ``getData(apiEndPoint, params?)`` permettant de charger les données pour la carte et la liste. Cette fonction doit être utilisée dans le composant qui utilise le composant ``MapListComponent``. Cette fonction se charge de faire appel à l'API passé en paramètre et de rendre les données disponibles au service.
+
+        `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-list/contact-map-list.component.ts#L84/>`_
+	L'API doit necessairement renvoyé un objet comportant un GeoJson. La structure du l'objet doit être la suivante :
+	::
+	
+		'total': nombre d'élément total,
+		'total_filtered': nombre d'élément filtré,
+		'page': numéro de page de la liste,
+		'limit': limite d'élément renvoyés,
+		'items': le GeoJson
+
+	Pour un liste 'simple' sans pagination, seule la propriété 'items' est obligatoire				
+
+        La service contient également deux propriétés ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData`` (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste.
+
+        - Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionner. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
+
+        - Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
+
+        **Selector**: ``pnx-map-list``
+
+        **Inputs**:
+
+        :``idName``:
+                Libellé de l'id du geojson (id_releve, id)
+                
+                Type: ``string``
+        :``height``:
+                Taille de l'affichage de la carte leaflet
+                
+                Type: ``string``
+
+        
+        Exemple d'utilisation avec une liste simple:
+        .. code-block:: html
+        <pnx-map-list 
+                idName="id_releve_contact"
+                height="80vh">
+        </pnx-map-list>
+        <table>
+                <tr ngFor="let row of mapListService.tableData" [ngClass]=" {'selected': mapListService.selectedRow[0]} == row.id ">
+                        <td (click)="mapListService.onRowSelect(row.id)"> Zoom on map </td>
+                        <td > {{row.observers}} </td>
+                        <td > {{row.date}} </td>
+                </tr>
+        </table>
+
 
 Outils d'aide à la qualité du code
 ----------------------------------
