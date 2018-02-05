@@ -106,7 +106,7 @@
       [offset]="mapListService.page.pageNumber"
       [limit]="mapListService.page.size"
       [rowClass]="mapListService.getRowClass"
-      (page)="mapListService.setTablePage($event)"
+      (page)="mapListService.setTablePage($event, apiEndPoint)"
       (select)="mapListService.onRowSelect($event)"
     >
 
