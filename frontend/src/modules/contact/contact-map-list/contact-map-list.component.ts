@@ -82,7 +82,6 @@ export class ContactMapListComponent implements OnInit {
 
   // FETCH THE DATA
   this.mapListService.getData('contact/vreleve');
-
   // end OnInit
   }
 
@@ -164,8 +163,6 @@ export class ContactMapListComponent implements OnInit {
     this.mapListService.geojsonData.features = this.mapListService.geojsonData.features.filter(row => {
        return row.properties[this.idName] !==  idDelete;
      });
-
-
   }
 
    openDeleteModal(event, modal, iElement, row) {

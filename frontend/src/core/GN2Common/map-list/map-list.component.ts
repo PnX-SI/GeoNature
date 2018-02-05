@@ -16,17 +16,13 @@ export interface ColumnActions {
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
   styleUrls: ['./map-list.component.scss'],
-  providers: [MapService],
+  providers: [ MapService],
 })
-export class MapListComponent implements OnInit, OnChanges, AfterViewInit {
+export class MapListComponent implements OnInit, AfterViewInit {
   public layerDict: any;
   public selectedLayer: any;
   @Input() height: string;
-  @Input() geojsonData: GeoJSON;
   @Input() idName: string;
-  // configuration for action in the table
-  public tableData = new Array();
-  allColumns = [];
 
 
   constructor(private _ms: MapService, private mapListService: MapListService) {
@@ -57,12 +53,6 @@ export class MapListComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
 
-  ngOnChanges(changes) {
-    if (changes.geojsonData.currentValue !== undefined) {
-      this.mapListService.geojsonData = changes.geojsonData.currentValue;
-      this.mapListService.loadTableData(changes.geojsonData.currentValue);
-      const features = changes.geojsonData.currentValue.features;
-    }
-  }
+
 
 }
