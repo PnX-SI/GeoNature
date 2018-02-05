@@ -235,28 +235,51 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         Le composant MapList fournit une carte pouvant être synchronisé avec une liste. La liste, pouvant être spécifique à chaque module, elle n'est pas intégré dans le composant et est laissé à la responsabilité du développeur. Le service ``MapListService`` offre cependant des fonctions permettant facilement de synchroniser les deux éléments.
         Fonctionnalité et comportement offert par le le composant et le service:
 
-        - Le service expose la fonction ``getData(apiEndPoint, params?)`` permettant de charger les données pour la carte et la liste. Cette fonction doit être utilisée dans le composant qui utilise le composant ``MapListComponent``. Elle se charge de faire appel à l'API passé en paramètre et de rendre les données disponibles au service.
-		Le deuxième paramètre ``params`` est un tableau de paramètre (facultatif). Il permet de filtrer les données sur n'importe quelle propriété du GeoJson, et également de gérer la pagination.
-		Example: afficher les 10 premiers relevés du cd_nom 212 : 
-		``mapListService.getData('contact/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
+        - Charger les données 
+			Le service expose la fonction ``getData(apiEndPoint, params?)`` permettant de charger les données pour la carte et la liste. Cette fonction doit être utilisée dans le composant qui utilise le composant ``MapListComponent``. Elle se charge de faire appel à l'API passé en paramètre et de rendre les données disponibles au service.
+			Le deuxième paramètre ``params`` est un tableau de paramètre(s) (facultatif). Il permet de filtrer les données sur n'importe quelle propriété du GeoJson, et également de gérer la pagination.
+			Example: afficher les 10 premiers relevé du cd_nom 212 : 
+			``mapListService.getData('contact/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
 
-        `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-list/contact-map-list.component.ts#L84/>`_
+			`Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-list/contact-map-list.component.ts#L84/>`_
 
-k	::
-	
-		'total': nombre d'élément total,
-		'total_filtered': nombre d'élément filtré,
-		'page': numéro de page de la liste,
-		'limit': limite d'élément renvoyés,
-		'items': le GeoJson
+			L'API doit necessairement renvoyer un objet comportant un GeoJson. La structure du l'objet doit être la suivante :
 
-	Pour un liste simple sans pagination, seule la propriété 'items' est obligatoire.				
+			::
+			
+				'total': nombre d'élément total,
+				'total_filtered': nombre d'élément filtré,
+				'page': numéro de page de la liste,
+				'limit': limite d'élément renvoyés,
+				'items': le GeoJson
 
-        La service contient également deux propriétés publiques ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData``  (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour intéragir (ajouter, supprimer) avec les données de la carte et de la liste.
+			Pour un liste simple sans pagination, seule la propriété 'items' est obligatoire.				
 
-        - Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionner. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
+		- Raffraichir les données
+			La fonction ``refreshData(apiEndPoint, method, params?)`` permet de raffrachir les données en fonction de filtres personnalisés.
+			Les paramètres ``apiEndPoint`` et ``params`` sont les mêmes que pour la fonction ``getData``. Le paramètre ``method`` permet lui de chosir si on ajoute ``append``, ou si on initialise (ou remplace) ``set`` un filtre.
+			Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2.
 
-        - Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
+			``refreshData('contact/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
+
+			puis
+			``refreshData('contact/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
+
+			Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
+
+			``refreshData('contact/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
+
+			puis
+
+			``refreshData('contact/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
+			
+			La service contient également deux propriétés publiques ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData``  (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour intéragir (ajouter, supprimer) avec les données de la carte et de la liste.
+
+		- Gestion des évenements:
+
+			- Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
+
+			- Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
 
         **Selector**: ``pnx-map-list``
 
