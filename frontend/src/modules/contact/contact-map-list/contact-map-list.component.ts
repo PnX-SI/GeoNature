@@ -81,16 +81,16 @@ export class ContactMapListComponent implements OnInit {
   this.apiEndPoint = 'contact/vreleve';
 
   // FETCH THE DATA
-  this.mapListService.getData('contact/vreleve', 'set', {'param': 'limit', 'value': 5});
+  this.mapListService.getData('contact/vreleve', 'set', [{'param': 'limit', 'value': 5}]);
   // end OnInit
   }
 
   taxonChanged(taxonObj) {
-    this.mapListService.refreshData(this.apiEndPoint, 'set', {param: 'cd_nom', 'value': taxonObj.cd_nom});
+    this.mapListService.refreshData(this.apiEndPoint, 'set', [{param: 'cd_nom', 'value': taxonObj.cd_nom}]);
   }
 
   observerChanged(observer) {
-    this.mapListService.refreshData(this.apiEndPoint, 'append', {param: 'observer', 'value': observer.id_role});
+    this.mapListService.refreshData(this.apiEndPoint, 'append', [{param: 'observer', 'value': observer.id_role}]);
   }
 
   observerDeleted(observer) {
@@ -105,7 +105,7 @@ export class ContactMapListComponent implements OnInit {
   }
 
   observerTextChange(observer) {
-    this.mapListService.refreshData(this.apiEndPoint, 'set', {param: 'observateurs', 'value': observer});
+    this.mapListService.refreshData(this.apiEndPoint, 'set', [{param: 'observateurs', 'value': observer}]);
   }
 
   observerTextDelete() {
@@ -115,7 +115,7 @@ export class ContactMapListComponent implements OnInit {
   dateMinChanged(date) {
     this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_up');
     if (date.length > 0) {
-      this.mapListService.refreshData(this.apiEndPoint, 'set', {param: 'date_up', 'value': date});
+      this.mapListService.refreshData(this.apiEndPoint, 'set', [{param: 'date_up', 'value': date}]);
     } else {
       this.mapListService.deleteAndRefresh(this.apiEndPoint, 'date_up');
     }
@@ -123,7 +123,7 @@ export class ContactMapListComponent implements OnInit {
   dateMaxChanged(date) {
     this.mapListService.urlQuery = this.mapListService.urlQuery.delete('date_low');
     if (date.length > 0) {
-      this.mapListService.refreshData(this.apiEndPoint, 'set', {param: 'date_low', 'value': date});
+      this.mapListService.refreshData(this.apiEndPoint, 'set', [{param: 'date_low', 'value': date}]);
     }else {
       this.mapListService.deleteAndRefresh(this.apiEndPoint, 'date_low');
     }

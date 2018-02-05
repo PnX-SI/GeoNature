@@ -101,7 +101,7 @@ export class MapListService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
-  getData(endPoint, method, param?) {
+  getData(endPoint, method, param?: Array<any>) {
     this.manageUrlQuery(method, param);
     this.loadData(endPoint, param)
       .subscribe(data => {
@@ -111,7 +111,7 @@ export class MapListService {
       });
   }
 
-  refreshData(apiEndPoint, method = 'set', params?) {
+  refreshData(apiEndPoint, method = 'set', params?: Array<any>) {
     this.manageUrlQuery(method, params);
     this.loadData(apiEndPoint, params)
       .subscribe(
@@ -127,13 +127,17 @@ export class MapListService {
     );
   }
 
-  manageUrlQuery(method, param?) {
+  manageUrlQuery(method, params?: Array<any>) {
     // set or append a param to urlQuery
-    if (param) {
+    if (params) {
       if (method === 'set') {
-        this.urlQuery = this.urlQuery.set(param.param, param.value);
+        params.forEach(param => {
+          this.urlQuery = this.urlQuery.set(param.param, param.value);
+        });
       } else {
-        this.urlQuery = this.urlQuery.append(param.param, param.value);
+        params.forEach(param => {
+          this.urlQuery = this.urlQuery.append(param.param, param.value);
+        });
       }
     }
   }
