@@ -235,12 +235,14 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
         Le composant MapList fournit une carte pouvant être synchronisé avec une liste. La liste, pouvant être spécifique à chaque module, elle n'est pas intégré dans le composant et est laissé à la responsabilité du développeur. Le service ``MapListService`` offre cependant des fonctions permettant facilement de synchroniser les deux éléments.
         Fonctionnalité et comportement offert par le le composant et le service:
 
-        - Le service expose la fonction ``getData(apiEndPoint, params?)`` permettant de charger les données pour la carte et la liste. Cette fonction doit être utilisée dans le composant qui utilise le composant ``MapListComponent``. Cette fonction se charge de faire appel à l'API passé en paramètre et de rendre les données disponibles au service.
+        - Le service expose la fonction ``getData(apiEndPoint, params?)`` permettant de charger les données pour la carte et la liste. Cette fonction doit être utilisée dans le composant qui utilise le composant ``MapListComponent``. Elle se charge de faire appel à l'API passé en paramètre et de rendre les données disponibles au service.
+		Le deuxième paramètre ``params`` est un tableau de paramètre (facultatif). Il permet de filtrer les données sur n'importe quelle propriété du GeoJson, et également de gérer la pagination.
+		Example: afficher les 10 premiers relevés du cd_nom 212 : 
+		``mapListService.getData('contact/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
 
         `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-list/contact-map-list.component.ts#L84/>`_
 
-	L'API doit necessairement renvoyer un objet comportant un GeoJson. La structure du l'objet doit être la suivante :
-	::
+k	::
 	
 		'total': nombre d'élément total,
 		'total_filtered': nombre d'élément filtré,

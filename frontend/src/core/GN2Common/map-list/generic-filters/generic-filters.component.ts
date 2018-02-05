@@ -32,7 +32,7 @@ export class MapListGenericFiltersComponent implements OnInit {
         } else {
           this.mapListService.urlQuery = this.mapListService.urlQuery.delete(this.mapListService.colSelected.prop);
           if (value.length > 0) {
-            this.mapListService.refreshData(this.apiEndPoint, 'set', {param: this.mapListService.colSelected.prop, 'value': value});
+            this.mapListService.refreshData(this.apiEndPoint, 'set', [{param: this.mapListService.colSelected.prop, 'value': value}]);
           } else {
             this.mapListService.deleteAndRefresh(this.apiEndPoint, this.mapListService.colSelected.prop);
           }
