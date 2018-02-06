@@ -6,7 +6,7 @@ import { AppConfig } from '../../../../conf/app.config';
 
 @Component({
   selector: 'pnx-datasets',
-  templateUrl: 'datasets.component.html'
+  templateUrl: 'datasets.component.html',
 })
 
 export class DatasetsComponent implements OnInit {
@@ -17,6 +17,7 @@ export class DatasetsComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() disabled: boolean;
   @Output() dataSetChanged = new EventEmitter<number>();
+  @Output() dataSetDeleted = new EventEmitter();
   constructor(private _dfs: DataFormService, private _auth: AuthService) { }
 
   ngOnInit() {
@@ -25,6 +26,16 @@ export class DatasetsComponent implements OnInit {
       .subscribe(res => {
         this.dataSets = res;
      });
+
+     this.parentFormControl.valueChanges
+      .subscribe(id_dataset => {
+        if (id_dataset === null) {
+          this.dataSetDeleted.emit();
+        } else {
+          this.dataSetChanged.emit(id_dataset);
+        }
+      });
+
     }
 
 }

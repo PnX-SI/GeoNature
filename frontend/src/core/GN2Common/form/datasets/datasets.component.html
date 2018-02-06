@@ -1,6 +1,6 @@
 <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
   <small>  {{ placeholder }} </small>
-  <select class="form-control form-control-sm" [formControl]="parentFormControl" [disableControl]="disabled">
+  <select class="form-control form-control-sm" id="dataset-form " [formControl]="parentFormControl" [disableControl]="disabled">
       <option *ngIf="displayAll" [ngValue]="null"> Tous </option>
       <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option>
   </select>

@@ -29,3 +29,11 @@ ngx-datatable {
   height: 80vh;
   overflow-y: scroll;
 }
+
+.form-control-sm {
+  height: 5.0rem !important;
+}
+
+/deep/ #dataset-form {
+  height: 2.05rem !important;
+}

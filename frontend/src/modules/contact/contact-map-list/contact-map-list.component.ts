@@ -34,6 +34,7 @@ export class ContactMapListComponent implements OnInit {
   public dateMinInput = new FormControl();
   public dateMaxInput = new FormControl();
   public observerAsTextInput = new FormControl();
+  public datasetInput = new FormControl();
   public columnActions: ColumnActions;
   public contactConfig: any;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
@@ -110,6 +111,14 @@ export class ContactMapListComponent implements OnInit {
 
   observerTextDelete() {
     this.mapListService.deleteAndRefresh(this.apiEndPoint, 'observateurs');
+  }
+
+  onDataSetChange(id_dataset) {
+    this.mapListService.refreshData(this.apiEndPoint, 'set', [{'param': 'id_dataset', 'value': id_dataset}])
+  }
+
+  onDataSetDelete() {
+    this.mapListService.deleteAndRefresh(this.apiEndPoint, 'id_dataset');
   }
 
   dateMinChanged(date) {
