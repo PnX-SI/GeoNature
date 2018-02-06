@@ -133,7 +133,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
         new_af.cor_af_actor.append(actor)
         if id_organism:
             organism = CorAcquisitionFrameworkActor(
-                id_role=id_organism,
+                id_organism=id_organism,
                 id_nomenclature_actor_role=393
             )
             new_af.cor_af_actor.append(organism)
