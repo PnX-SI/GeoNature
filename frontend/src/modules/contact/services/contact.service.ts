@@ -7,11 +7,12 @@ export class ContactService {
 
   constructor(private _api: HttpClient) { }
 
-  getReleve(id) {
+  getOneReleve(id) {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/contact/releve/${id}`);
   }
 
   deleteReleve(id) {
     return this._api.delete(`${AppConfig.API_ENDPOINT}/contact/releve/${id}`);
   }
+
 }

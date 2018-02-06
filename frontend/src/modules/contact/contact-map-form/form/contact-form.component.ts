@@ -53,34 +53,34 @@ export class ContactFormComponent implements OnInit {
       this.fs.showOccurrence = false;
       this.fs.editionMode = true;
       // load one releve
-      this.contactService.getReleve(this.id)
+      this.contactService.getOneReleve(this.id)
         .subscribe(data => {
           // pre fill the form
-          this.fs.releveForm.patchValue({properties: data.properties});
+          this.fs.releveForm.patchValue({properties: data.releve.properties});
 
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_min: this.fs.formatDate(data.properties.date_min)});
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_max: this.fs.formatDate(data.properties.date_max)});
-          const hour_min = data.properties.hour_min === 'None' ? null : data.properties.hour_min;
-          const hour_max = data.properties.hour_max === 'None' ? null : data.properties.hour_max;
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_min: this.fs.formatDate(data.releve.properties.date_min)});
+          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_max: this.fs.formatDate(data.releve.properties.date_max)});
+          const hour_min = data.releve.properties.hour_min === 'None' ? null : data.releve.properties.hour_min;
+          const hour_max = data.releve.properties.hour_max === 'None' ? null : data.releve.properties.hour_max;
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_min: hour_min});
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_max: hour_max});
           // format observers
-          const observers = data.properties.observers.map(obs => {
+          const observers = data.releve.properties.observers.map(obs => {
             obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
             return obs;
           });
           (this.fs.releveForm.controls.properties as FormGroup).patchValue({observers: observers});
-          for (const occ of data.properties.t_occurrences_contact){
+          for (const occ of data.releve.properties.t_occurrences_contact){
             // load taxon info in ajax
             this._dfs.getTaxonInfo(occ.cd_nom)
               .subscribe(taxon => this.fs.taxonsList.push(taxon));
           }
           // set the occurrence
-          this.fs.indexOccurrence = data.properties.t_occurrences_contact.length;
+          this.fs.indexOccurrence = data.releve.properties.t_occurrences_contact.length;
           // push the geometry in releveForm
-          this.fs.releveForm.patchValue({geometry: data.geometry});
+          this.fs.releveForm.patchValue({geometry: data.releve.geometry});
           // load the geometry in the map
-          this._ms.loadGeometryReleve(data, true);
+          this._ms.loadGeometryReleve(data.releve, true);
       }); // end subscribe
     }
 

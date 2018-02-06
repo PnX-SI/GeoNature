@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContactFormService } from '../contact-map-form/form/contact-form.service';
 import { MapService } from '../../../core/GN2Common/map/map.service';
 import { DataFormService } from '../../../core/GN2Common/form/data-form.service';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { ContactService } from '../services/contact.service';
 import { ContactConfig } from '../contact.config';
 
@@ -29,12 +29,15 @@ export class ContactMapInfoComponent implements OnInit {
   public dateMax: string;
   public showSpinner = true;
   public geojson: any;
+  public releveForm: FormGroup;
+  public userReleveCruved: any;
   constructor(public fs: ContactFormService, private _route: ActivatedRoute, private _ms: MapService,
     private _dfs: DataFormService, private _router: Router,
     private _contactService: ContactService) { }
 
   ngOnInit() {
     // init forms
+    this.releveForm = this.fs.initReleveForm();
     this.occurrenceForm = this.fs.initOccurenceForm();
     // load nomenclatures
     this.loadNomenclaturesOccurrence();
@@ -43,21 +46,25 @@ export class ContactMapInfoComponent implements OnInit {
       this.id = +params['id'];
       if (!isNaN(this.id )) {
         // load one releve
-        this._contactService.getReleve(this.id)
+        this._contactService.getOneReleve(this.id)
           .subscribe(data => {
-            this.releve = data;
+            this.userReleveCruved = data.cruved;
+            console.log(this.userReleveCruved);
+            
+            this.releveForm.patchValue(data.releve);
+            this.releve = data.releve;
             if (!ContactConfig.observers_txt) {
-              this.observers = data.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
+              this.observers = data.releve.properties.observers.map(obs => obs.nom_role + ' ' + obs.prenom_role).join(', ');
             }else {
-              this.observers = data.properties.observers_txt;
+              this.observers = data.releve.properties.observers_txt;
             }
-            this.dateMin = data.properties.date_min.substring(0, 10);
-            this.dateMax = data.properties.date_max.substring(0, 10);
+            this.dateMin = data.releve.properties.date_min.substring(0, 10);
+            this.dateMax = data.releve.properties.date_max.substring(0, 10);
 
-            this._ms.loadGeometryReleve(data, false);
+            this._ms.loadGeometryReleve(data.releve, false);
 
             // load taxonomy info
-            data.properties.t_occurrences_contact.forEach(occ => {
+            data.releve.properties.t_occurrences_contact.forEach(occ => {
               this._dfs.getTaxonInfo(occ.cd_nom)
                 .subscribe(taxon => {
                   occ['taxon'] = taxon;
@@ -68,8 +75,6 @@ export class ContactMapInfoComponent implements OnInit {
       }
   });
   }
-
-
 
   selectOccurrence(occ, index) {
     this.selectedIndex = index;

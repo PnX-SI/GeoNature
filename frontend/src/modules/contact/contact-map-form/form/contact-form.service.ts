@@ -22,6 +22,7 @@ export class ContactFormService {
   public defaultValues: any;
   public defaultValuesLoaded = false;
   public lastSubmitedOccurrence: any;
+  public userReleveRigth: any;
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -323,6 +324,7 @@ export class ContactFormService {
   backToList() {
     this._router.navigate(['occtax']);
   }
+
 
 
 }
