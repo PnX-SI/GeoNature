@@ -130,6 +130,7 @@ export class ContactFormComponent implements OnInit {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
           } else {
+            console.error(error.error.message);
             this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }
