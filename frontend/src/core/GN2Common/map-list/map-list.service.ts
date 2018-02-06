@@ -93,7 +93,7 @@ export class MapListService {
   setTablePage(pageInfo, endPoint) {
     this.page.pageNumber = pageInfo.offset;
     this.urlQuery = this.urlQuery.set('offset', pageInfo.offset);
-    this.refreshData(endPoint);
+    this.refreshData(endPoint, 'set');
   }
 
   // fetch the data
@@ -101,8 +101,8 @@ export class MapListService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
-  getData(endPoint, method, param?: Array<any>) {
-    this.manageUrlQuery(method, param);
+  getData(endPoint, param?: Array<any>) {
+    this.manageUrlQuery('set', param);
     this.loadData(endPoint, param)
       .subscribe(
         data => {
@@ -153,7 +153,7 @@ export class MapListService {
 
   deleteAndRefresh(apiEndPoint, param) {
     this.urlQuery = this.urlQuery.delete(param);
-    this.refreshData(apiEndPoint);
+    this.refreshData(apiEndPoint, 'set');
   }
 
 

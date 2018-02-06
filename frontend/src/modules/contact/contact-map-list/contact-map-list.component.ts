@@ -45,44 +45,44 @@ export class ContactMapListComponent implements OnInit {
 
   ngOnInit() {
     this.contactConfig = ContactConfig;
-  // parameters for maplist
-  // columns to be default displayed
-  this.displayColumns = [
-   {prop: 'taxons', name: 'Taxon', display: true},
-   {prop: 'observateurs', 'name': 'Observateurs'},
-  ];
-  this.mapListService.displayColumns = this.displayColumns;
+    // parameters for maplist
+    // columns to be default displayed
+    this.displayColumns = [
+    {prop: 'taxons', name: 'Taxon', display: true},
+    {prop: 'observateurs', 'name': 'Observateurs'},
+    ];
+    this.mapListService.displayColumns = this.displayColumns;
 
-  // columns available for display
-  this.availableColumns = [
-    {prop: 'altitude_max', name: 'altitude_max'},
-    {prop: 'altitude_min', name: 'altitude_min'},
-    {prop: 'comment', name: 'Commentaire'},
-    {prop: 'date_max', name: 'Date fin'},
-    {prop: 'date_min', name: 'Date début'},
-    {prop: 'id_dataset', name: 'ID dataset'},
-    {prop: 'id_digitiser', name: 'ID rédacteur'},
-    {prop: 'id_releve_contact', name: 'ID relevé'},
-    {prop: 'observateurs', name: 'observateurs'},
-    {prop: 'taxons', name: 'taxons'}
-  ];
-  this.mapListService.availableColumns = this.availableColumns;
-  // column available to filter
-  this.filterableColumns = [
-    {prop: 'altitude_max', name: 'altitude_max'},
-    {prop: 'altitude_min', name: 'altitude_min'},
-    {prop: 'comment', name: 'Commentaire'},
-    {prop: 'id_dataset', name: 'ID dataset'},
-    {prop: 'id_digitiser', name: 'Id rédacteur'},
-    {prop: 'id_releve_contact', name: 'Id relevé'},
-  ];
-  this.mapListService.filterableColumns = this.filterableColumns;
-  this.idName = 'id_releve_contact';
-  this.apiEndPoint = 'contact/vreleve';
+    // columns available for display
+    this.availableColumns = [
+      {prop: 'altitude_max', name: 'altitude_max'},
+      {prop: 'altitude_min', name: 'altitude_min'},
+      {prop: 'comment', name: 'Commentaire'},
+      {prop: 'date_max', name: 'Date fin'},
+      {prop: 'date_min', name: 'Date début'},
+      {prop: 'id_dataset', name: 'ID dataset'},
+      {prop: 'id_digitiser', name: 'ID rédacteur'},
+      {prop: 'id_releve_contact', name: 'ID relevé'},
+      {prop: 'observateurs', name: 'observateurs'},
+      {prop: 'taxons', name: 'taxons'}
+    ];
+    this.mapListService.availableColumns = this.availableColumns;
+    // column available to filter
+    this.filterableColumns = [
+      {prop: 'altitude_max', name: 'altitude_max'},
+      {prop: 'altitude_min', name: 'altitude_min'},
+      {prop: 'comment', name: 'Commentaire'},
+      {prop: 'id_dataset', name: 'ID dataset'},
+      {prop: 'id_digitiser', name: 'Id rédacteur'},
+      {prop: 'id_releve_contact', name: 'Id relevé'},
+    ];
+    this.mapListService.filterableColumns = this.filterableColumns;
+    this.idName = 'id_releve_contact';
+    this.apiEndPoint = 'contact/vreleve';
 
-  // FETCH THE DATA
-  this.mapListService.getData('contact/vreleve', 'set', [{'param': 'limit', 'value': 5}]);
-  // end OnInit
+    // FETCH THE DATA
+    this.mapListService.getData('contact/vreleve', [{'param': 'limit', 'value': 12}]);
+    // end OnInit
   }
 
   taxonChanged(taxonObj) {
@@ -101,7 +101,7 @@ export class ContactMapListComponent implements OnInit {
         this.mapListService.urlQuery = this.mapListService.urlQuery.append('observer', id);
       }
     });
-    this.mapListService.refreshData(this.apiEndPoint);
+    this.mapListService.refreshData(this.apiEndPoint, 'set');
   }
 
   observerTextChange(observer) {
@@ -187,7 +187,7 @@ export class ContactMapListComponent implements OnInit {
     this.inputObservers.reset();
     this.mapListService.genericFilterInput.reset();
     this.mapListService.refreshUrlQuery();
-    this.mapListService.refreshData(this.apiEndPoint);
+    this.mapListService.refreshData(this.apiEndPoint, 'set');
   }
 
 }

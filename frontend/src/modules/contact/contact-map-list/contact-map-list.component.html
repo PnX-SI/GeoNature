@@ -71,7 +71,7 @@
     <!-- MAP -->
     <pnx-map-list 
       [idName]="idName"
-      height="88vh">
+      height="87vh">
     </pnx-map-list>
   </div>
 
@@ -96,17 +96,18 @@
       [columns]="mapListService.displayColumns"
       [columnMode]="'force'"
       [headerHeight]="50"
-      [footerHeight]="50"
+      [footerHeight]="35"
       [rowHeight]="50"
       [draggable]="false"
       [selected]="mapListService.selectedRow"
       [externalPaging]="true"
+      [scrollbarH]="false"
       [selectionType]="'single'"
       [count]="mapListService.page.totalElements"
       [offset]="mapListService.page.pageNumber"
       [limit]="mapListService.page.size"
       [rowClass]="mapListService.getRowClass"
-      (page)="mapListService.setTablePage($event, apiEndPoint)"
+      (page)="mapListService.setTablePage($event, apiEndPoint )"
       (select)="mapListService.onRowSelect($event)"
     >
 
