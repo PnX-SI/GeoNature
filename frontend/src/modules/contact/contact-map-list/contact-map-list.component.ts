@@ -194,6 +194,7 @@ export class ContactMapListComponent implements OnInit {
     this.dateMaxInput.reset();
     this.dateMinInput.reset();
     this.inputObservers.reset();
+    this.datasetInput.reset();
     this.mapListService.genericFilterInput.reset();
     this.mapListService.refreshUrlQuery();
     this.mapListService.refreshData(this.apiEndPoint, 'set');
