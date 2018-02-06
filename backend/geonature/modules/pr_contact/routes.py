@@ -59,7 +59,15 @@ def getOccurrences():
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesContact)
     data = releve_repository.get_one(id_releve, info_role)
-    return data.get_geofeature()
+    user_cruved = fnauth.get_cruved(
+        info_role.id_role,
+        current_app.config['ID_APPLICATION_GEONATURE']
+    )
+    releve_cruved = data.get_releve_cruved(info_role, user_cruved)
+    return {
+        'releve':data.get_geofeature(),
+        'cruved': releve_cruved
+        }
 
 
 @routes.route('/vrelevecontact', methods=['GET'])
@@ -587,7 +595,6 @@ def export_sinp(info_role):
         viewSINP.columns,
         ';'
     )
-
 
 @routes.route('/test', methods=['GET'])
 @json_resp
