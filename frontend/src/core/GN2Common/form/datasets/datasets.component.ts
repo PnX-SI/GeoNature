@@ -15,6 +15,7 @@ export class DatasetsComponent implements OnInit {
   @Input() placeholder: string;
   @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   @Input() parentFormControl: FormControl;
+  @Input() disabled: boolean;
   @Output() dataSetChanged = new EventEmitter<number>();
   constructor(private _dfs: DataFormService, private _auth: AuthService) { }
 
