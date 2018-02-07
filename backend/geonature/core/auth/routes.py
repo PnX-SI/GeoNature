@@ -57,7 +57,7 @@ def loginCas():
             except AssertionError:
                 raise CasAuthentificationError(
                     'Error with the inpn authentification service',
-                     status_code = 500
+                     status_code=500
                 )
 
             info_user = response.json()
@@ -75,7 +75,7 @@ def loginCas():
             except AssertionError:
                 raise CasAuthentificationError(
                     'CAS ERROR: no ID or LOGIN provided',
-                     status_code = 500
+                     status_code=500
                 )
             # Reconciliation avec base GeoNature
             if organism_id:

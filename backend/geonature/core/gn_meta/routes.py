@@ -18,8 +18,8 @@ from geonature.core.gn_meta import mtd_utils
 import logging
 
 log = logging.getLogger(__name__)
-
 routes = Blueprint('gn_meta', __name__)
+
 
 @routes.route('/list/programs', methods=['GET'])
 @json_resp
@@ -151,7 +151,7 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
                 DB.session.commit()
         #TODO catch db error ?
         except Exception as e:
-            log.error('Error posting an aquisition framework'+ uuid)
+            log.error('Error posting an aquisition framework' + uuid)
             log.error(e)
 
         return new_af.as_dict()
@@ -208,9 +208,9 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                     DB.session.add(dataset)
                 DB.session.commit()
                 DB.session.flush()
-            #TODO catch db error ?
+            # TODO catch db error ?
             except Exception as e:
-                log.error('Error posting JDD '+ ds['uuid_acquisition_framework'])
+                log.error('Error posting JDD ' + ds['uuid_acquisition_framework'])
                 log.error(e)
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
