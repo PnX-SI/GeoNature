@@ -1,5 +1,6 @@
 from sqlalchemy import or_
 from werkzeug.exceptions import NotFound
+from flask import make_response
 
 from geonature.utils.env import DB
 from geonature.core.gn_meta import routes as gn_meta
@@ -27,7 +28,9 @@ class ReleveRepository():
         if releve:
             return releve.get_releve_if_allowed(info_user)
 
-        raise NotFound('The releve "{}" does not exist'.format(id_releve))
+        raise NotFound(
+                'The releve "{}" does not exist'.format(id_releve)
+        )
 
     def update(self, releve, info_user):
         """ Update the current releve if allowed
