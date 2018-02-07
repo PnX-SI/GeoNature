@@ -43,7 +43,7 @@ class GeonatureApiError(Exception):
             message
         )
         log.info(log_message)
-    
+
     def to_dict(self):
         return {
             'message': self.message,
@@ -51,10 +51,10 @@ class GeonatureApiError(Exception):
             'raisedError': self.__class__.__name__
             }
 
+
 class AuthentificationError(GeonatureApiError):
     pass
 
 
 class CasAuthentificationError(GeonatureApiError):
     pass
-
