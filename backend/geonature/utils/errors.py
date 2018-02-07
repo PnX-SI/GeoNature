@@ -27,3 +27,11 @@ class ConfigError(GeoNatureError):
             errors = "\n\t\t-".join(errors)
             msg += "\n\t{}:\n\t\t-{}".format(key, errors)
         return msg
+
+
+class AuthentificationError(GeoNatureError):
+    pass
+
+
+class CasAuthentificationError(GeoNatureError):
+    pass
