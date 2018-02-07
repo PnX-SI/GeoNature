@@ -1,9 +1,5 @@
-import json
-
-from flask import Blueprint, request, current_app, abort
+from flask import Blueprint, request, current_app
 from sqlalchemy import exc, or_, func, distinct
-from werkzeug import exceptions
-
 
 from geonature.utils.env import DB
 from .models import (
@@ -414,7 +410,7 @@ def deleteOneReleve(id_releve, info_role):
 
     """
     releveRepository = ReleveRepository(TRelevesContact)
-    data = releveRepository.delete(id_releve, info_role)
+    releveRepository.delete(id_releve, info_role)
 
     return {'message': 'delete with success'}, 200
 
@@ -600,5 +596,3 @@ def export_sinp(info_role):
         viewSINP.columns,
         ';'
     )
-
-
