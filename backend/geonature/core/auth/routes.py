@@ -45,8 +45,6 @@ def loginCas():
                 url=config_cas['CAS_USER_WS']['URL'],
                 user=user
             )
-            print('LAAAAAAAAAA')
-            print(ws_user_url)
             try:
                 response = utilsrequests.get(
                     ws_user_url,
@@ -55,10 +53,12 @@ def loginCas():
                         config_cas['CAS_USER_WS']['PASSWORD']
                     )
                 )
-                print('#######', response)
                 assert response.status_code == 200
             except AssertionError:
-                raise CasAuthentificationError('Error with the inpn authentification service')
+                raise CasAuthentificationError(
+                    'Error with the inpn authentification service',
+                     status_code = 500
+                )
 
             info_user = response.json()
             organism_id = info_user['codeOrganisme']
@@ -73,8 +73,10 @@ def loginCas():
             try:
                 assert user_id is not None and user_login is not None
             except AssertionError:
-                return 'CAS ERROR: no ID or LOGIN provided'
-                raise
+                raise CasAuthentificationError(
+                    'CAS ERROR: no ID or LOGIN provided',
+                     status_code = 500
+                )
             # Reconciliation avec base GeoNature
             if organism_id:
                 organism = {
