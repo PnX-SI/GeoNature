@@ -1,5 +1,9 @@
-from flask import Blueprint, request, current_app
+import json
+
+from flask import Blueprint, request, current_app, abort
 from sqlalchemy import exc, or_, func, distinct
+from werkzeug import exceptions
+
 
 from geonature.utils.env import DB
 from .models import (
@@ -330,6 +334,8 @@ def insertOrUpdateOneReleve(info_role):
     for att in attliste:
         if not getattr(TRelevesContact, att, False):
             data['properties'].pop(att)
+    # set id_digitiser 
+    data['properties']['id_digitiser'] = info_role.id_role
     releve = TRelevesContact(**data['properties'])
 
     shape = asShape(data['geometry'])
@@ -366,32 +372,31 @@ def insertOrUpdateOneReleve(info_role):
             contact.cor_counting_contact.append(countingContact)
         releve.t_occurrences_contact.append(contact)
 
-    try:
-        if releve.id_releve_contact:
-            # get update right of the user
-            user_cruved = fnauth.get_cruved(
-                info_role.id_role,
-                current_app.config['ID_APPLICATION_GEONATURE']
-            )
-            update_data_scope = next(
-                (u['level'] for u in user_cruved if u['action'] == 'U'),
-                None
-            )
-            # info_role.tag_object_code = update_data_scope
-            user = UserRigth(
-                id_role=info_role.id_role,
-                tag_object_code=update_data_scope,
-                tag_action_code="U",
-                id_organisme=info_role.id_organisme
-            )
-            releve = releveRepository.update(releve, user)
-        else:
+    if releve.id_releve_contact:
+        # get update right of the user
+        user_cruved = fnauth.get_cruved(
+            info_role.id_role,
+            current_app.config['ID_APPLICATION_GEONATURE']
+        )
+        update_data_scope = next(
+            (u['level'] for u in user_cruved if u['action'] == 'U'),
+            None
+        )
+        # info_role.tag_object_code = update_data_scope
+        user = UserRigth(
+            id_role=info_role.id_role,
+            tag_object_code=update_data_scope,
+            tag_action_code="U",
+            id_organisme=info_role.id_organisme
+        )
+        releve = releveRepository.update(releve, user)
+    else:
             DB.session.add(releve)
+    try:
         DB.session.commit()
         DB.session.flush()
     except Exception as e:
-        raise
-
+        return {'message': str(e.args)}, 500
     return releve.get_geofeature()
 
 
@@ -596,13 +601,4 @@ def export_sinp(info_role):
         ';'
     )
 
-@routes.route('/test', methods=['GET'])
-@json_resp
-def test(id_dataset=None, uuid_dataset=None):
-    info_role = UserRigth(
-        id_role=2,
-        id_organisme=-1,
-        tag_object_code="2",
-        tag_action_code="R"
-    )
-    return 'la'
+
