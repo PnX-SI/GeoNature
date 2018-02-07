@@ -10,7 +10,7 @@ from marshmallow.validate import OneOf, Regexp
 
 class CasUserSchemaConf(Schema):
     URL = fields.Url(
-        missing='https://inpn2.mnhn.fr/authentication/information'
+        missing='https://inpn.mnhn.fr/authentication/information'
     )
     ID = fields.String(
         missing='mon_id'

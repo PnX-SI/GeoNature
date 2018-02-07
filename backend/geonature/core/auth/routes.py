@@ -16,6 +16,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from geonature.core.gn_meta import routes as gn_meta
 from geonature.core.users import routes as users
 from geonature.utils import utilsrequests
+from geonature.utils.errors import CasAuthentificationError
 
 
 routes = Blueprint('auth_cas', __name__)
@@ -44,14 +45,20 @@ def loginCas():
                 url=config_cas['CAS_USER_WS']['URL'],
                 user=user
             )
-
-            response = utilsrequests.get(
-                ws_user_url,
-                (
-                    config_cas['CAS_USER_WS']['ID'],
-                    config_cas['CAS_USER_WS']['PASSWORD']
+            print('LAAAAAAAAAA')
+            print(ws_user_url)
+            try:
+                response = utilsrequests.get(
+                    ws_user_url,
+                    (
+                        config_cas['CAS_USER_WS']['ID'],
+                        config_cas['CAS_USER_WS']['PASSWORD']
+                    )
                 )
-            )
+                print('#######', response)
+                assert response.status_code == 200
+            except AssertionError:
+                raise CasAuthentificationError('Error with the inpn authentification service')
 
             info_user = response.json()
             organism_id = info_user['codeOrganisme']

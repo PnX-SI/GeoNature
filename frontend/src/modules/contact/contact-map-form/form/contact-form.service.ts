@@ -42,7 +42,7 @@ export class ContactFormService {
       this.isEdintingOccurrence = false;
     });
     this.currentUser = this._auth.getCurrentUser();
-
+    console.log(this.currentUser.userId)
 
    }// end constructor
 
@@ -63,6 +63,7 @@ export class ContactFormService {
    }
 
    initReleveForm(): FormGroup {
+    console.log(this.currentUser.userId)
     return this._fb.group({
       geometry: [null, Validators.required],
       properties: this._fb.group({
