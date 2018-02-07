@@ -29,25 +29,26 @@ export class AuthService {
     private _cookie: CookieService, private _router: Router) {
     }
 
-  setCurrentUser(user, expireDate) {
-    this._cookie.set('current_user', JSON.stringify(user), expireDate);
-    this.currentUser = user;
+  setCurrentUser(user) {
+    sessionStorage.setItem('current_user', JSON.stringify(user));
   }
 
-  getCurrentUser(): User {
-    // get current user from cookie or from the service if the cookie is over
-    const userCookie =  this._cookie.get('current_user');
-    let user;
-    if (userCookie) {
-      user = this.decodeObjectCookies(userCookie);
-      user = user.split("'").join('"');
-    } else {
-      user = this.currentUser;
+  getCurrentUser(): any {
+    let currentUser = sessionStorage.getItem('current_user');
+    console.log('il existe ??');
+    
+    console.log(currentUser);
+    
+    if (!currentUser) {
+      const userCookie =  this._cookie.get('current_user');
+      if (userCookie !== "" ) {
+        let decodedCookie = this.decodeObjectCookies(userCookie);
+        decodedCookie = decodedCookie.split("'").join('"');
+        this.setCurrentUser(decodedCookie);
+        currentUser = sessionStorage.getItem('current_user')
+      }
     }
-    user = JSON.parse(user);
-    user = new User(user.userName, user.userId, user.organismId);
-    console.log(user);
-    return user;
+    return JSON.parse(currentUser);
   }
 
   setToken(token, expireDate) {
@@ -74,7 +75,7 @@ export class AuthService {
         userId : data.user.id_role,
         organismId:  data.user.id_organisme,
       };
-      this.setCurrentUser(userForFront, new Date(data.expires));
+      this.setCurrentUser(userForFront);
       this.loginError = false;
       this.router.navigate(['']);
     },
