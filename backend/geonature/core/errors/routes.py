@@ -7,6 +7,7 @@ from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.errors import GeonatureApiError
 
+
 @current_app.errorhandler(500)
 @json_resp
 def internal_error(error):  # pylint: disable=W0613
