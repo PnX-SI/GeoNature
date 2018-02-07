@@ -30,12 +30,24 @@ export class AuthService {
     }
 
   setCurrentUser(user, expireDate) {
-    sessionStorage.setItem('current_user', JSON.stringify(user));
+    this._cookie.set('current_user', JSON.stringify(user), expireDate);
+    this.currentUser = user;
   }
 
-  getCurrentUser(): any {
-    const currentUser = JSON.parse(sessionStorage.getItem('current_user'));
-    return currentUser;
+  getCurrentUser(): User {
+    // get current user from cookie or from the service if the cookie is over
+    const userCookie =  this._cookie.get('current_user');
+    let user;
+    if (userCookie) {
+      user = this.decodeObjectCookies(userCookie);
+      user = user.split("'").join('"');
+    } else {
+      user = this.currentUser;
+    }
+    user = JSON.parse(user);
+    user = new User(user.userName, user.userId, user.organismId);
+    console.log(user);
+    return user;
   }
 
   setToken(token, expireDate) {
@@ -47,8 +59,6 @@ export class AuthService {
     const response = token.length === 0 ? null : token;
     return response;
   }
-
-
 
   signinUser(username: string, password: string) {
     const user = {
@@ -71,7 +81,17 @@ export class AuthService {
     error => {
       this.loginError = true;
     });
+  }
 
+  decodeObjectCookies(val) {
+    if (val.indexOf('\\') === -1) {
+        return val;  // not encoded
+    }
+    val = val.slice(1, -1).replace(/\\"/g, '"');
+    val = val.replace(/\\(\d{3})/g, function(match, octal) {
+        return String.fromCharCode(parseInt(octal, 8));
+    });
+    return val.replace(/\\\\/g, '\\');
   }
 
 deleteTokenCookie() {
