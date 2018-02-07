@@ -15,8 +15,11 @@ from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
 
-routes = Blueprint('gn_meta', __name__)
+import logging
 
+log = logging.getLogger(__name__)
+
+routes = Blueprint('gn_meta', __name__)
 
 @routes.route('/list/programs', methods=['GET'])
 @json_resp
@@ -139,12 +142,18 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
             new_af.cor_af_actor.append(organism)
         # check if exist
         id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
-        if id_acquisition_framework:
-            new_af.id_acquisition_framework = id_acquisition_framework[0]
-            DB.session.merge(new_af)
-        else:
-            DB.session.add(new_af)
-            DB.session.commit()
+        try:
+            if id_acquisition_framework:
+                new_af.id_acquisition_framework = id_acquisition_framework[0]
+                DB.session.merge(new_af)
+            else:
+                DB.session.add(new_af)
+                DB.session.commit()
+        #TODO catch db error ?
+        except Exception as e:
+            log.error('Error posting an aquisition framework'+ uuid)
+            log.error(e)
+
         return new_af.as_dict()
 
     return {'message': 'Not found'}, 404
@@ -192,14 +201,17 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                 dataset.cor_datasets_actor.append(actor)
 
             dataset_list_model.append(dataset)
-            if id_dataset:
-                DB.session.merge(dataset)
-            else:
-                DB.session.add(dataset)
-
-            DB.session.commit()
-            DB.session.flush()
-
+            try:
+                if id_dataset:
+                    DB.session.merge(dataset)
+                else:
+                    DB.session.add(dataset)
+                DB.session.commit()
+                DB.session.flush()
+            #TODO catch db error ?
+            except Exception as e:
+                log.error('Error posting JDD '+ ds['uuid_acquisition_framework'])
+                log.error(e)
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
 
