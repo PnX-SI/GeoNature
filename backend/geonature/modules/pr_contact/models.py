@@ -14,6 +14,7 @@ from pypnusershub.db.tools import InsufficientRightsError
 from geonature.utils.env import DB
 from geonature.core.users.models import TRoles
 from geonature.core.gn_meta import routes as gn_meta
+from geonature.core.gn_meta.models import TDatasets
 
 from geoalchemy2 import Geometry
 
@@ -26,7 +27,7 @@ class ReleveModel(DB.Model):
         return user.id_role == self.id_digitiser or user.id_role in observers
 
     def user_is_in_dataset_actor(self, user):
-        return self.id_dataset in gn_meta.get_allowed_datasets(user)
+        return self.id_dataset in TDatasets.get_user_datasets(user)
 
     def get_releve_if_allowed(self, user):
         """Return the releve if the user is allowed
@@ -57,7 +58,6 @@ class ReleveModel(DB.Model):
             - user : a TRole object
             - user_cruved: object return by fnauth.get_cruved(user) """
         releve_auth = {}
-        allowed_datasets = gn_meta.get_allowed_datasets(user)
         for obj in user_cruved:
             if obj['level'] == '2':
                 releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user) or  self.user_is_in_dataset_actor(user)

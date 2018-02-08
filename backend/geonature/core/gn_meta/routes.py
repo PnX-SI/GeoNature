@@ -237,22 +237,3 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
 
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
-
-
-#  Private fonction
-def get_allowed_datasets(user):
-    """ return all dataset id allowed for a user"""
-    q = DB.session.query(
-        CorDatasetsActor,
-        CorDatasetsActor.id_dataset
-    ).filter(
-        or_(
-            CorDatasetsActor.id_organism == user.id_organisme,
-            CorDatasetsActor.id_role == user.id_role
-        )
-    )
-    try:
-        return [d.id_dataset for d in q.all()]
-    except Exception:
-        DB.session.rollback()
-        raise
