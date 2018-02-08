@@ -10,7 +10,6 @@ from flask import (
     Blueprint, request, make_response,
     redirect, current_app, jsonify
 )
-
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from geonature.core.gn_meta import routes as gn_meta

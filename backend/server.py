@@ -10,11 +10,10 @@ from flask_cors import CORS
 
 from geonature.utils.env import ROOT_DIR, DB, load_config, list_gn_modules
 
-log = logging.getLogger(__name__)
+
 
 
 def get_app(config, _app=None):
-
     # Make sure app is a singleton
     if _app is not None:
         return _app
@@ -26,6 +25,11 @@ def get_app(config, _app=None):
     DB.init_app(app)
 
     with app.app_context():
+        from geonature.utils.logs import mail_handler
+        loggers = [app.logger, logging.getLogger(), logging.getLogger('sqlalchemy'), logging.getLogger('werkzeug')]
+        for logger in loggers:
+            if app.config['MAILERROR']['MAIL_ON_ERROR']:
+                logger.addHandler(mail_handler)
         DB.create_all()
 
         from pypnusershub.routes import routes
