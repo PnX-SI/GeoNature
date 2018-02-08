@@ -59,7 +59,7 @@ class ReleveModel(DB.Model):
         releve_auth = {}
         for obj in user_cruved:
             if obj['level'] == '2':
-                releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user) or  self.user_is_in_dataset_actor(user)
+                releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user)
             elif obj['level'] == '1':
                 releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user)
             elif obj['level'] == '3':
