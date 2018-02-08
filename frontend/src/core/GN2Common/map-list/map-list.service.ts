@@ -147,8 +147,11 @@ export class MapListService {
     }
   }
 
-  refreshUrlQuery() {
+  refreshUrlQuery(limit?: number) {
     this.urlQuery = new HttpParams();
+    if (limit) {
+      this.urlQuery = this.urlQuery.set('limit', limit.toString());
+    }
   }
 
   deleteAndRefresh(apiEndPoint, param) {
