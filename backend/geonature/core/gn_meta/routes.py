@@ -1,6 +1,6 @@
 import json
 import logging 
-from flask import Blueprint, current_app
+from flask import Blueprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
@@ -17,11 +17,11 @@ from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
 
 
-
 routes = Blueprint('gn_meta', __name__)
 
 # get the root logger
 log = logging.getLogger()
+
 
 @routes.route('/list/programs', methods=['GET'])
 @json_resp
@@ -151,10 +151,12 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
             else:
                 DB.session.add(new_af)
                 DB.session.commit()
-        #TODO catch db error ?
+        # TODO catch db error ?
         except Exception as e:
-            log.error('Error posting an aquisition framework' + uuid)
-            log.error(e)
+            error_msg = """
+                Error posting an aquisition framework {} \n\n Trace: \n {}
+                """.format(uuid, e)
+            log.error(error_msg)
 
         return new_af.as_dict()
 
@@ -212,8 +214,11 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                 DB.session.flush()
             # TODO catch db error ?
             except Exception as e:
-                log.error('Error posting JDD ' + ds['uuid_acquisition_framework'])
-                log.error(e)
+                error_msg = """
+                Error posting JDD {} \n\n Trace: \n {}
+                """.format(ds['uuid_acquisition_framework'], e)
+                log.error(error_msg)
+                
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
 
