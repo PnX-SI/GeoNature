@@ -72,16 +72,32 @@ def get_datasets(info_role):
 
     """
     q = DB.session.query(TDatasets)
-    if int(info_role.tag_object_code) <= 2:
+    print(info_role.id_organisme)
+    if info_role.tag_object_code == '2':
+        q = q.join(
+            CorDatasetsActor,
+            CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        )
+        # if organism is None => do not filter on id_organism even if level = 2
+        if info_role.id_organism is None:
+            q = q.filter(
+                CorDatasetsActor.id_role == info_role.id_role
+            )
+        else:
+            q = q.filter(
+                or_(
+                    CorDatasetsActor.id_organism == info_role.id_organisme,
+                    CorDatasetsActor.id_role == info_role.id_role
+                )
+            )
+    elif info_role.tag_object_code == '1':
         q = q.join(
             CorDatasetsActor,
             CorDatasetsActor.id_dataset == TDatasets.id_dataset
         ).filter(
-            or_(
-                CorDatasetsActor.id_organism == info_role.id_organisme,
-                CorDatasetsActor.id_role == info_role.id_role
-            )
+            CorDatasetsActor.id_role == info_role.id_role
         )
+
     data = q.all()
 
     return [d.as_dict(True) for d in data]
