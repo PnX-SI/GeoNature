@@ -72,14 +72,13 @@ def get_datasets(info_role):
 
     """
     q = DB.session.query(TDatasets)
-    print(info_role.id_organisme)
     if info_role.tag_object_code == '2':
         q = q.join(
             CorDatasetsActor,
             CorDatasetsActor.id_dataset == TDatasets.id_dataset
         )
         # if organism is None => do not filter on id_organism even if level = 2
-        if info_role.id_organism is None:
+        if info_role.id_organisme is None:
             q = q.filter(
                 CorDatasetsActor.id_role == info_role.id_role
             )
