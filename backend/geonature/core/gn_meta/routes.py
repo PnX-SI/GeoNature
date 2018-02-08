@@ -1,5 +1,5 @@
 import json
-import logging 
+import logging
 from flask import Blueprint
 
 from sqlalchemy import or_
@@ -218,7 +218,7 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
                 Error posting JDD {} \n\n Trace: \n {}
                 """.format(ds['unique_dataset_id'], e)
                 log.error(error_msg)
-                
+
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
 
