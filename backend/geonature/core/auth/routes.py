@@ -22,6 +22,7 @@ from geonature.utils.errors import CasAuthentificationError
 routes = Blueprint('auth_cas', __name__)
 log = logging.getLogger()
 
+
 @routes.route('/login', methods=['GET', 'POST'])
 def loginCas():
     config_cas = current_app.config['CAS']
@@ -98,7 +99,7 @@ def loginCas():
             }
             try:
                 resp = users.insert_role(user)
-            except Exception as e :
+            except Exception as e:
                 log.error(e)
             # push the user in the right group
             try:
@@ -108,17 +109,19 @@ def loginCas():
                 else:
                     # group socle 2
                     users.insert_in_cor_role(20001, user['id_role'])
-            user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
-            except Exception as e :
+                user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
+            except Exception as e:
                 log.error(e)
             # Creation of datasets
             try:
                 gn_meta.post_jdd_from_user_id(user_id, organism_id)
-            except Exception as e :
+            except Exception as e:
                 log.error(e)
 
             # creation de la Response
-            response = make_response(redirect(current_app.config['URL_APPLICATION']))
+            response = make_response(
+                redirect(current_app.config['URL_APPLICATION'])
+            )
             cookie_exp = datetime.datetime.utcnow()
             expiration = current_app.config['COOKIE_EXPIRATION']
             cookie_exp += datetime.timedelta(seconds=expiration)
