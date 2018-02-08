@@ -171,12 +171,18 @@ class TDatasets(serializableModel):
         q = DB.session.query(
             CorDatasetsActor,
             CorDatasetsActor.id_dataset
-        ).filter(
-            or_(
-                CorDatasetsActor.id_organism == user.id_organisme,
+        )
+        if user.id_organisme is None:
+            q = q.filter(
                 CorDatasetsActor.id_role == user.id_role
             )
-        )
+        else:
+            q = q.filter(
+                or_(
+                    CorDatasetsActor.id_organism == user.id_organisme,
+                    CorDatasetsActor.id_role == user.id_role
+                )
+            )
         return [d.id_dataset for d in q.all()]
 
 
