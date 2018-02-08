@@ -1,9 +1,8 @@
 from sqlalchemy import or_
 from werkzeug.exceptions import NotFound
-from flask import make_response
 
 from geonature.utils.env import DB
-from geonature.core.gn_meta import routes as gn_meta
+from geonature.core.gn_meta.models import TDatasets
 
 
 class ReleveRepository():
@@ -96,18 +95,3 @@ class ReleveRepository():
             the cruved authorization
         """
         return self.filter_query_with_autorization(info_user)
-
-
-# # a tester
-#     def get_all_observers_releve(cor_user_table, fk_name, q):
-#         """retourne une query filtrée à partir des observateurs de la table de corespondance des observateurs
-#         --- params:
-#         cor_user_table: le modèle de la table de corespondance des observateurs
-#         fk_name: string: nom de la foreign key entre la table releve et la table de corespondance
-#         q : un objet query
-#          """
-#         q = q.join(
-#              cor_user_table,
-#             getattr(corRoleRelevesContact, fk_name)== getattr(self.model, fk_name)
-#              ).filter(or_(cor_user_table.c.id_role == g.user.id_role, self.model.id_digitiser == g.user.id_role))
-#         return q
