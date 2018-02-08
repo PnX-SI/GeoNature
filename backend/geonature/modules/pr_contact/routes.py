@@ -65,7 +65,7 @@ def getOneReleve(id_releve, info_role):
     )
     releve_cruved = data.get_releve_cruved(info_role, user_cruved)
     return {
-        'releve':data.get_geofeature(),
+        'releve': data.get_geofeature(),
         'cruved': releve_cruved
         }
 
@@ -330,7 +330,7 @@ def insertOrUpdateOneReleve(info_role):
     for att in attliste:
         if not getattr(TRelevesContact, att, False):
             data['properties'].pop(att)
-    # set id_digitiser 
+    # set id_digitiser
     data['properties']['id_digitiser'] = info_role.id_role
     releve = TRelevesContact(**data['properties'])
 
@@ -596,13 +596,3 @@ def export_sinp(info_role):
         viewSINP.columns,
         ';'
     )
-
-
-
-import logging
-logger = logging.getLogger(__name__)
-
-@routes.route('/test', methods=['GET'])
-def test():
-    logger.error("lalalalalalalalal")
-    return 'la'

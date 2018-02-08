@@ -8,9 +8,7 @@ from flask import Flask
 
 from flask_cors import CORS
 
-from geonature.utils.env import ROOT_DIR, DB, load_config, list_gn_modules
-
-
+from geonature.utils.env import  DB, list_gn_modules
 
 
 def get_app(config, _app=None):
@@ -26,7 +24,12 @@ def get_app(config, _app=None):
 
     with app.app_context():
         from geonature.utils.logs import mail_handler
-        loggers = [app.logger, logging.getLogger(), logging.getLogger('sqlalchemy'), logging.getLogger('werkzeug')]
+        loggers = [
+            app.logger,
+            logging.getLogger(),
+            logging.getLogger('sqlalchemy'),
+            logging.getLogger('werkzeug')
+        ]
         for logger in loggers:
             if app.config['MAILERROR']['MAIL_ON_ERROR']:
                 logger.addHandler(mail_handler)
