@@ -13,7 +13,6 @@ from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.utils.env import DB
 from geonature.core.users.models import TRoles
-from geonature.core.gn_meta import routes as gn_meta
 from geonature.core.gn_meta.models import TDatasets
 
 from geoalchemy2 import Geometry
