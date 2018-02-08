@@ -5,6 +5,7 @@
 
 import datetime
 import xmltodict
+import logging
 
 from flask import (
     Blueprint, request, make_response,
@@ -19,7 +20,7 @@ from geonature.utils.errors import CasAuthentificationError
 
 
 routes = Blueprint('auth_cas', __name__)
-
+log = logging.getLogger()
 
 @routes.route('/login', methods=['GET', 'POST'])
 def loginCas():
@@ -54,6 +55,7 @@ def loginCas():
                 )
                 assert response.status_code == 200
             except AssertionError:
+                log.error("Error with the inpn authentification service")
                 raise CasAuthentificationError(
                     'Error with the inpn authentification service',
                      status_code=500
@@ -72,6 +74,9 @@ def loginCas():
             try:
                 assert user_id is not None and user_login is not None
             except AssertionError:
+                log.error(
+                    "'CAS ERROR: no ID or LOGIN provided'"
+                )
                 raise CasAuthentificationError(
                     'CAS ERROR: no ID or LOGIN provided',
                      status_code=500
@@ -91,18 +96,26 @@ def loginCas():
                 "prenom_role": info_user['prenom'],
                 "id_organisme": organism_id,
             }
-            resp = users.insert_role(user)
+            try:
+                resp = users.insert_role(user)
+            except Exception as e :
+                log.error(e)
             # push the user in the right group
-            if organism_id is None:
-                # group socle 1
-                users.insert_in_cor_role(20003, user['id_role'])
-            else:
-                # group socle 2
-                users.insert_in_cor_role(20001, user['id_role'])
+            try:
+                if organism_id is None:
+                    # group socle 1
+                    users.insert_in_cor_role(20003, user['id_role'])
+                else:
+                    # group socle 2
+                    users.insert_in_cor_role(20001, user['id_role'])
             user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
-
+            except Exception as e :
+                log.error(e)
             # Creation of datasets
-            gn_meta.post_jdd_from_user_id(user_id, organism_id)
+            try:
+                gn_meta.post_jdd_from_user_id(user_id, organism_id)
+            except Exception as e :
+                log.error(e)
 
             # creation de la Response
             response = make_response(redirect(current_app.config['URL_APPLICATION']))
