@@ -216,7 +216,7 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
             except Exception as e:
                 error_msg = """
                 Error posting JDD {} \n\n Trace: \n {}
-                """.format(ds['uuid_acquisition_framework'], e)
+                """.format(ds['unique_dataset_id'], e)
                 log.error(error_msg)
                 
         return [d.as_dict() for d in dataset_list_model]
