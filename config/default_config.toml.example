@@ -44,3 +44,12 @@ UPLOAD_FOLDER = 'static/medias'
 # Front end configuration
 [FRONTEND]
 DISPLAY_FOOTER = false
+
+[MAILERROR]
+    MAIL_ON_ERROR = false
+    MAIL_HOST = 'host mail'
+    HOST_PORT = host mail port
+    MAIL_FROM = 'Email from'
+    MAIL_USERNAME = 'email username'
+    MAIL_PASS = 'email to'
+    MAIL_TO = 'email to'

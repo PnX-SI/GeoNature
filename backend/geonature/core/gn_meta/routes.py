@@ -1,5 +1,6 @@
 import json
-from flask import Blueprint
+import logging 
+from flask import Blueprint, current_app
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
@@ -15,11 +16,12 @@ from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
 
-import logging
 
-log = logging.getLogger(__name__)
+
 routes = Blueprint('gn_meta', __name__)
 
+# get the root logger
+log = logging.getLogger()
 
 @routes.route('/list/programs', methods=['GET'])
 @json_resp

@@ -596,3 +596,13 @@ def export_sinp(info_role):
         viewSINP.columns,
         ';'
     )
+
+
+
+import logging
+logger = logging.getLogger(__name__)
+
+@routes.route('/test', methods=['GET'])
+def test():
+    logger.error("lalalalalalalalal")
+    return 'la'

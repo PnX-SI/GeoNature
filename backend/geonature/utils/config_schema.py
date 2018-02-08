@@ -67,6 +67,16 @@ class GnFrontEndConf(Schema):
     DISPLAY_FOOTER = fields.Boolean(missing=False)
 
 
+class MailErrorConf(Schema):
+    MAIL_ON_ERROR = fields.Boolean(missing=False)
+    MAIL_HOST = fields.String()
+    HOST_PORT = fields.Integer()
+    MAIL_FROM = fields.String()
+    MAIL_USERNAME = fields.String()
+    MAIL_PASS = fields.String()
+    MAIL_TO = fields.String()
+
+
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='Geonature2')
     DEFAULT_LANGUAGE = fields.String(missing='fr')
@@ -84,6 +94,7 @@ class GnGeneralSchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
+    MAILERROR = fields.Nested(MailErrorConf, missing=dict())
 
 
 class ManifestSchemaConf(Schema):
@@ -101,3 +112,4 @@ class ManifestSchemaProdConf(Schema):
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
+    
