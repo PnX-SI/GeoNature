@@ -62,7 +62,7 @@ class ReleveRepository():
     def filter_query_with_autorization(self, user):
         q = DB.session.query(self.model)
         if user.tag_object_code == '2':
-            allowed_datasets = gn_meta.get_allowed_datasets(user)
+            allowed_datasets = TDatasets.get_user_datasets(user)
             q = q.filter(
                 or_(
                     self.model.id_dataset.in_(tuple(allowed_datasets)),
