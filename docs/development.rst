@@ -108,13 +108,17 @@ Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichie
 
 Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
 
-Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
+Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/src/modules/contact
 
 Mais en pouvant utiliser des composants du CORE comme expliqué ci-dessous.
+
+Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/module_geonature.rst
 
 
 Configuration
 -------------
+
+!! ATTENTION -  A revoir suite à la mise en place de la modularité
 
 Pour configurer GeoNature, actuellement il y a : 
 
@@ -258,7 +262,7 @@ Ce module peut s'appuyer sur une série de composants génériques intégrés da
 
 		Pour un liste simple sans pagination, seule la propriété 'items' est obligatoire.				
 
-	- Raffraichir les données
+	- Rafraichir les données
 		La fonction ``refreshData(apiEndPoint, method, params?)`` permet de raffrachir les données en fonction de filtres personnalisés.
 		Les paramètres ``apiEndPoint`` et ``params`` sont les mêmes que pour la fonction ``getData``. Le paramètre ``method`` permet lui de chosir si on ajoute - ``append``- , ou si on initialise (ou remplace) -``set``- un filtre.
 		
