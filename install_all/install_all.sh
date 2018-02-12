@@ -139,3 +139,8 @@ sudo a2enmod proxy_http
 sudo apache2ctl restart
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
+
+#upgrade du virtualenv de taxhub
+source venv/bin/activate
+pip upgrade
+deactivate
