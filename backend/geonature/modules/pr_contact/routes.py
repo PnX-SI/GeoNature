@@ -248,6 +248,12 @@ def getViewReleveList(info_role):
         ).filter(
             CorDatasetsActor.id_actor == int(params.get('organism'))
         )
+    if 'observateurs' in params:
+        observers_query = "%{}%".format(params.get('observateurs'))
+        q = q.filter(VReleveList.observateurs.ilike(observers_query))
+        # remove observateurs from params for generic filters
+        params = dict(params)
+        params.pop('observateurs')
     # Generic Filters
     for param in params:
         if param in VReleveList.__table__.columns:
@@ -286,9 +292,9 @@ def getViewReleveList(info_role):
     except exc.IntegrityError as e:
         DB.session.rollback()
     except Exception as e:
-        print('roollback')
         DB.session.rollback()
 
+    print(q)
     user = info_role
     user_cruved = fnauth.get_cruved(
         user.id_role,
