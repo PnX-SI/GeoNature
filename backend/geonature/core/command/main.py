@@ -17,7 +17,8 @@ from geonature.utils.env import (
     GEONATURE_VERSION,
     create_frontend_config,
     frontend_routes_templating,
-    tsconfig_templating
+    tsconfig_templating,
+    update_app_configuration
 )
 
 from geonature.utils.command import (
@@ -193,3 +194,16 @@ def generate_frontend_tsconfig():
         Génere tsconfig du frontend
     """
     tsconfig_templating()
+
+@main.command()
+@click.option(
+    '--conf-file',
+    required=False,
+    default=DEFAULT_CONFIG_FIlE
+)
+def update_configuration(conf_file):
+    """
+        Regénère la configuration de l'application
+    """
+    update_app_configuration(conf_file)
+
