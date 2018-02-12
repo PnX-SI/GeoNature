@@ -9,29 +9,31 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
   selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
   styleUrls: ['./taxonomy.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TaxonomyComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() idList: string;
-  @Input() charNumber:number;
-  @Input() listLength:number;
+  @Input() charNumber: number;
+  @Input() listLength: number;
+  @Input() refresh: Function;
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
   regnes = new Array();
-  regnesAndGroup: any;
   regneControl = new FormControl(null);
   groupControl = new FormControl(null);
+  regnesAndGroup: any;
   noResult: boolean;
   showSpinner = false;
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
-  constructor(private _dfService: DataFormService) {}
+  constructor(
+    private _dfService: DataFormService
+  ) {}
 
   ngOnInit() {
-
     this.parentFormControl.valueChanges
       .filter(value => value !== null && value.length === 0)
       .subscribe(value => {
@@ -69,11 +71,22 @@ export class TaxonomyComponent implements OnInit {
       .debounceTime(400)
       .distinctUntilChanged()
       .do(() => this.showSpinner = true)
-      .switchMap(value => this._dfService.searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value))
+      .switchMap(value => this._dfService.searchTaxonomy(
+        value, this.idList, this.regneControl.value, this.groupControl.value)
+      )
         .map(response => {
           this.noResult = response.length === 0 ;
           this.showSpinner = false;
           return response.slice(0, this.listLength);
         })
+
+  refreshAllInput() {
+    console.log('alalalalla');
+    
+    this.parentFormControl.reset();
+    this.regneControl.reset();
+    this.groupControl.reset();
+  }
+
 
 }
