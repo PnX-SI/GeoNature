@@ -95,6 +95,7 @@ if [ ! -f /etc/geonature/geonature_config.toml ]; then
   sudo sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" /etc/geonature/geonature_config.toml
   sudo sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
