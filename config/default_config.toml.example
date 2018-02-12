@@ -43,6 +43,7 @@ UPLOAD_FOLDER = 'static/medias'
 
 # Front end configuration
 [FRONTEND]
+PROD_MOD = false
 DISPLAY_FOOTER = false
 
 [MAILERROR]

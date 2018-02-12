@@ -24,7 +24,7 @@ sudo pip install --upgrade pip virtualenv virtualenvwrapper
 sudo apt-get install -y npm
 sudo apt-get install -y supervisor
 # for make work opencv(taxhub) on debian8
-sudo apt-get install libsm6 libxrender1 libfontconfig1
+#sudo apt-get install libsm6 libxrender1 libfontconfig1
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -41,7 +41,8 @@ cd /tmp
 wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
-mv GeoNature-frontend-contact /home/$monuser/geonature/
+#TODO: change with the rel
+mv GeoNature-$geonature_release /home/$monuser/geonature/
 sudo chown -R $monuser /home/$monuser/geonature/
 
 cd /home/$monuser/geonature
