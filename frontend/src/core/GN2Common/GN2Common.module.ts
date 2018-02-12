@@ -93,7 +93,7 @@ export function HttpLoaderFactory(http: Http) {
     MapService,
     DataFormService,
     MapListService,
-    CommonService
+    CommonService,
     ],
   exports: [
     NomenclatureComponent,

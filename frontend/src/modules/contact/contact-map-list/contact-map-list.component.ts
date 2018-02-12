@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { GeoJSON } from 'leaflet';
@@ -13,6 +13,8 @@ import { FormControl } from '@angular/forms';
 import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ContactConfig } from '../contact.config';
+import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -21,7 +23,7 @@ import { ContactConfig } from '../contact.config';
   providers: [MapListService]
 })
 
-export class ContactMapListComponent implements OnInit {
+export class ContactMapListComponent implements OnInit, AfterViewInit {
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public filterableColumns: Array<any>;
@@ -37,6 +39,7 @@ export class ContactMapListComponent implements OnInit {
   public datasetInput = new FormControl();
   public columnActions: ColumnActions;
   public contactConfig: any;
+  @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService,
     private _translate: TranslateService,
@@ -84,6 +87,11 @@ export class ContactMapListComponent implements OnInit {
     // FETCH THE DATA
     this.mapListService.getData('contact/vreleve', [{'param': 'limit', 'value': 12}]);
     // end OnInit
+  }
+
+  ngAfterViewInit() {
+    console.log(this.taxonomyComponent);
+
   }
 
   taxonChanged(taxonObj) {
@@ -188,9 +196,12 @@ export class ContactMapListComponent implements OnInit {
   onAddReleve() {
     this._router.navigate(['occtax/form']);
   }
+  refreshCallBack() {
+    console.log('log refresh from parent');
+  }
 
   refreshFilters() {
-    this.inputTaxon.reset();
+    this.taxonomyComponent.refreshAllInput();
     this.dateMaxInput.reset();
     this.dateMinInput.reset();
     if (ContactConfig.observers_txt) {

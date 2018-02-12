@@ -293,8 +293,7 @@ def getViewReleveList(info_role):
         DB.session.rollback()
     except Exception as e:
         DB.session.rollback()
-
-    print(q)
+        
     user = info_role
     user_cruved = fnauth.get_cruved(
         user.id_role,
