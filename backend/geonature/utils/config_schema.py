@@ -64,6 +64,7 @@ class GnPySchemaConf(Schema):
 
 
 class GnFrontEndConf(Schema):
+    PROD_MOD = fields.Boolean(missing=False)
     DISPLAY_FOOTER = fields.Boolean(missing=False)
 
 
