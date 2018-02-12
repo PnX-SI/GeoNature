@@ -5,6 +5,7 @@ import os
 import sys
 import pip
 import json
+import subprocess
 
 from pathlib import Path
 from collections import ChainMap, namedtuple
@@ -230,3 +231,9 @@ def tsconfig_templating():
         str(ROOT_DIR / 'frontend/tsconfig.json'), 'w'
     ) as output_file:
         output_file.write(tsconfig_templated)
+
+
+def update_app_configuration(conf_file):
+    subprocess.call(['sudo', 'supervisorctl', 'reload'])
+    create_frontend_config(conf_file)
+
