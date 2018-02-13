@@ -65,6 +65,7 @@ class GnPySchemaConf(Schema):
 
 class GnFrontEndConf(Schema):
     DISPLAY_FOOTER = fields.Boolean(missing=False)
+    PROD_MOD = fields.Boolean(missing=True)
 
 
 class MailErrorConf(Schema):

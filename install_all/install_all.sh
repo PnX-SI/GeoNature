@@ -41,8 +41,8 @@ cd /tmp
 wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
-mv GeoNature-frontend-contact /home/$monuser/geonature/
-sudo chown -R $monuser /home/$monuser/geonature/
+mv GeoNature-$geonature_release.zip /home/$monuser/geonature/
+sudo chown -yR $monuser /home/$monuser/geonature/
 
 cd /home/$monuser/geonature
 
@@ -140,7 +140,4 @@ sudo apache2ctl restart
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
 
-#upgrade du virtualenv de taxhub
-source venv/bin/activate
-pip upgrade
-deactivate
+
