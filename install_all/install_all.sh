@@ -41,7 +41,7 @@ cd /tmp
 wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
-mv GeoNature-$geonature_release.zip /home/$monuser/geonature/
+mv GeoNature-$geonature_release /home/$monuser/geonature/
 sudo chown -yR $monuser /home/$monuser/geonature/
 
 cd /home/$monuser/geonature
