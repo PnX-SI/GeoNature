@@ -75,7 +75,7 @@ class MailErrorConf(Schema):
     MAIL_FROM = fields.String(missing="")
     MAIL_USERNAME = fields.String(missing="")
     MAIL_PASS = fields.String(missing="")
-    MAIL_TO = fields.List(fields.String(missing=""))
+    MAIL_TO = fields.List(fields.String(), missing=list())
 
 
 class GnGeneralSchemaConf(Schema):
