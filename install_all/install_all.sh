@@ -17,9 +17,11 @@ echo "Installation de l'environnement logiciel..."
 sudo apt-get -y install ntpdate
 sudo ntpdate-debian
 sudo apt-get install -y curl unzip git
-sudo apt-get install -y apache2 libapache2-mod-wsgi
+sudo apt-get install -y apache2 php5 libapache2-mod-php5 libapache2-mod-wsgi libapache2-mod-perl2
+sudo apt-get install -y php5-gd php5-pgsql
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential
+
 sudo pip install --upgrade pip virtualenv virtualenvwrapper
 sudo apt-get install -y npm
 sudo apt-get install -y supervisor
@@ -61,7 +63,6 @@ sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" co
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
-sed -i -e "s/\/var\/www/$apache_document_root/g" config/settings.ini
 
 
 
@@ -132,12 +133,52 @@ sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000" >> /etc/apache2/sites
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 
+# Création des fichiers systèmes liés à Taxhub
+. create_sys_dir.sh
+create_sys_dir
 
 sudo a2ensite taxhub
 sudo a2enmod proxy
 sudo a2enmod proxy_http
-sudo apache2ctl restart
+
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
+
+
+
+
+echo "Instalation de l'application Usershub"
+if [ install_usershub_app ]; then:
+    cd /tmp
+    wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
+    unzip $usershub_release.zip
+    rm $usershub_release.zip
+    mv Usershub-$usershub_release /home/$monuser/usershub/
+    sudo chown -R $monuser /home/$monuser/usershub/
+    cd /home/$monuser/usershub
+    echo "Installation de la base de données et configuration de l'application UsersHub ..."
+    cp config/settings.ini.sample config/settings.ini
+    sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
+    sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
+    sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
+    sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
+
+    # Installation et configuration de l'application UsersHub
+    ./install_app.sh
+    
+    # conf apache de usershub
+    sudo touch /etc/apache2/sites-available/usershub.conf
+    sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
+    conf="Alias /usershub /home/$user/usershub/web"
+    echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf 
+    conf="<Directory /home/$user/usershub/web>"
+    echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf
+    sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/usershub.conf'
+    sudo a2ensite usershub
+fi
+
+sudo apache2ctl restart
+
 
 
