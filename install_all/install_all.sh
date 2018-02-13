@@ -17,8 +17,7 @@ echo "Installation de l'environnement logiciel..."
 sudo apt-get -y install ntpdate
 sudo ntpdate-debian
 sudo apt-get install -y curl unzip git
-sudo apt-get install -y apache2 php5 libapache2-mod-php5 libapache2-mod-wsgi libapache2-mod-perl2
-sudo apt-get install -y php5-gd php5-pgsql
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential
 
@@ -149,6 +148,7 @@ sudo a2enmod proxy_http
 
 echo "Instalation de l'application Usershub"
 if [ install_usershub_app ]; then
+    sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
