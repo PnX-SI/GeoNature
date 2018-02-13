@@ -148,7 +148,13 @@ sudo a2enmod proxy_http
 
 echo "Instalation de l'application Usershub"
 if [ install_usershub_app ]; then
-    sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
+    os_version=$(cat /etc/os-release |grep VERSION_ID)
+    if [ $os_version == 'VERSION_ID="9"' ] 
+    then
+        sudo apt-get install php libapache2-mod-php libapache2-mod-php php-pgsql php-gd 
+    else
+        sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
+    fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
