@@ -113,9 +113,17 @@ then
 
     echo "Download and extract taxref file..."
 
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql -P /tmp/taxhub
+    # Create log directory for taxhub
+    if [ ! -d '/var/log/taxhub/' ]
+        then
+        sudo mkdir -p /var/log/taxhub
+        sudo chown -R "$(id -u)" /var/log/taxhub
+        chmod -R 775 /var/log/taxhub
+    fi
 
-    array=( TAXREF_INPN_v9.0.zip    ESPECES_REGLEMENTEES_20161103.zip    LR_FRANCE_20160000.zip )
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_taxhub.sql -P /tmp/taxhub
+
+    array=( TAXREF_INPN_v11.zip ESPECES_REGLEMENTEES_v11.zip LR_FRANCE_20160000.zip )
     for i in "${array[@]}"
     do
       if [ ! -f '/tmp/taxhub/'$i ]
@@ -124,10 +132,8 @@ then
       else
           echo $i exists
       fi
+      unzip /tmp/taxhub/$i -d /tmp/taxhub
     done
-    unzip /tmp/taxhub/TAXREF_INPN_v9.0.zip -d /tmp/taxhub
-    unzip /tmp/taxhub/ESPECES_REGLEMENTEES_20161103.zip -d /tmp/taxhub
-    unzip /tmp/taxhub/LR_FRANCE_20160000.zip -d /tmp/taxhub
 
     echo "Getting 'taxonomie' schema creation scripts..."
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql -P /tmp/taxhub
@@ -151,7 +157,7 @@ then
     echo "Inserting INPN taxonomic data" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f /tmp/taxhub/data_inpn_v9_taxhub.sql &>> /var/log/geonature/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f /tmp/taxhub/data_inpn_taxhub.sql &>> /var/log/geonature/install_db.log
 
     echo "Creating dictionaries data for taxonomic schema..."
     echo "" &>> /var/log/geonature/install_db.log
