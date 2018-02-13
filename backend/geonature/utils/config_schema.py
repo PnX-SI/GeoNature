@@ -113,4 +113,3 @@ class ManifestSchemaProdConf(Schema):
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
-    
