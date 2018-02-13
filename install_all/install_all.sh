@@ -148,12 +148,12 @@ sudo a2enmod proxy_http
 
 
 echo "Instalation de l'application Usershub"
-if [ install_usershub_app ]; then:
+if [ install_usershub_app ]; then
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
-    mv Usershub-$usershub_release /home/$monuser/usershub/
+    mv UsersHub-$usershub_release /home/$monuser/usershub/
     sudo chown -R $monuser /home/$monuser/usershub/
     cd /home/$monuser/usershub
     echo "Installation de la base de données et configuration de l'application UsersHub ..."
@@ -169,9 +169,9 @@ if [ install_usershub_app ]; then:
     # conf apache de usershub
     sudo touch /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
-    conf="Alias /usershub /home/$user/usershub/web"
+    conf="Alias /usershub /home/$monuser/usershub/web"
     echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf 
-    conf="<Directory /home/$user/usershub/web>"
+    conf="<Directory /home/$monuser/usershub/web>"
     echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/usershub.conf'
     sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/usershub.conf'
