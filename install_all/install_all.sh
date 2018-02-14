@@ -58,14 +58,8 @@ cd /tmp
 wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
-<<<<<<< HEAD
-#TODO: change with the rel
-mv GeoNature-$geonature_release /home/$monuser/geonature/
-sudo chown -R $monuser /home/$monuser/geonature/
-=======
 mv GeoNature-$geonature_release /home/$monuser/geonature/
 sudo chown -y $monuser /home/$monuser/geonature/
->>>>>>> install_all
 
 cd /home/$monuser/geonature
 
