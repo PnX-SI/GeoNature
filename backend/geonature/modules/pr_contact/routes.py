@@ -574,7 +574,7 @@ def export_sinp(info_role):
                 #   to get users
                 q = q.join(
                     CorCountingContact,
-                    viewSINP.tableDef.columns.identifiantPermanent == CorCountingContact.unique_id_sinp_occtax
+                    viewSINP.tableDef.columns.permId == CorCountingContact.unique_id_sinp_occtax
                 ).join(
                     TOccurrencesContact,
                     CorCountingContact.id_occurrence_contact == TOccurrencesContact.id_occurrence_contact
