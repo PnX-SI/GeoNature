@@ -21,7 +21,7 @@ then
 fi
 
 # Make sure this script is NOT run as root
-if [ "$(id -u)" != "0" ]; then
+if [ "$(id -u)" == "0" ]; then
    echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
    echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
    exit 1
