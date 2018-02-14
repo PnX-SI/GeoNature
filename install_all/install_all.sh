@@ -1,11 +1,27 @@
 #!/bin/bash
 nano install_all.ini
 
+. /etc/os-release
+OS_NAME=$ID
+OS_VERSION=$VERSION_ID
+
 . install_all.ini
 
+# Check os and versions
+if [ "$OS_NAME" != "debian" ]
+then
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour les distributions Debian\e[0m" >&2
+    exit 1
+fi
+
+if [ "$OS_VERSION" != "8" ] && [ "$OS_VERSION" != "9" ]
+then
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8 ou 9\e[0m" >&2
+    exit 1
+fi
 
 # Make sure this script is NOT run as root
-if [ "$(id -u)" == "0" ]; then
+if [ "$(id -u)" != "0" ]; then
    echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
    echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
    exit 1
@@ -146,11 +162,11 @@ sudo a2enmod proxy_http
 
 
 
-echo "Instalation de l'application Usershub"
+echo "Installation de l'application Usershub"
 if [ install_usershub_app ]; then
     os_version=$(cat /etc/os-release |grep VERSION_ID)
     # Sur debian 9: php7 - debian8 php5
-    if [ $os_version == 'VERSION_ID="9"' ] 
+    if [ "$OS_VERSION" == "9" ] 
     then
         sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql ph7.0p-gd 
     else

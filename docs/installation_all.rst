@@ -1,7 +1,5 @@
-INSTALLATION DE L'APPLICATION
-=============================
-
-  .. warning:: Script INSTALL_ALL en chantier et cette DOC est à revoir suite à d'importants changements. Pour le moment utiliser l'installation classique et moins packagée : https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation.rst
+INSTALLATION PACKAGÉE DE GEONATURE
+===================================
 
 Prérequis
 ---------
@@ -24,7 +22,15 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 Installation de l'application
 -----------------------------
 
-/!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/develop/install_all
+Ce document décrit une procédure d'installation packagée de GeoNature.
+En lançant le scrit d'installation ci-dessous, l'application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d'une seule base de données.
+Les applications suivantes seront installées:
+
+- GeoNature
+- `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
+- `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour gérer les utilisateurs dans GeoNature)
+
+Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
@@ -128,10 +134,10 @@ L'API du module sera disponibe à l'adresse: ``http://mon-geonature.fr/api/geona
 
 Cette commande éxecute les actions suivantes :
 
-Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
-Intégration du blueprint du module dans l'API de GeoNature
-Vérification de la conformité des paramètres utilisateurs
-Génération du routing Angular pour le frontend
-Re-build du frontend pour une mise en production
+- Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
+- Intégration du blueprint du module dans l'API de GeoNature
+- Vérification de la conformité des paramètres utilisateurs
+- Génération du routing Angular pour le frontend
+- Re-build du frontend pour une mise en production
 
 
