@@ -1,7 +1,5 @@
-INSTALLATION DE L'APPLICATION
-=============================
-
-  .. warning:: Script INSTALL_ALL en chantier et cette DOC est à revoir suite à d'importants changements. Pour le moment utiliser l'installation classique et moins packagée : https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation.rst
+INSTALLATION PACKAGÉE DE GEONATURE
+===================================
 
 Prérequis
 ---------
@@ -24,7 +22,15 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 Installation de l'application
 -----------------------------
 
-/!\ A mettre à jour. Install_all en cours : https://github.com/PnX-SI/GeoNature/tree/develop/install_all
+Ce document décrit une procédure d'installation packagée de GeoNature.
+En lançant le scrit d'installation ci-dessous, l'application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d'une seule base de données.
+Les applications suivantes seront installées:
+
+- GeoNature
+- `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
+- `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour gérer les utilisateurs dans GeoNature)
+
+Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
@@ -54,20 +60,6 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     usermod -g www-data geonatureadmin
     usermod -a -G root geonatureadmin
 
-* Se placer dans le répetoire de l'utilisateur (``geonatadmin`` dans notre cas) Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, Taxhub ainsi que leurs bases de données (uniquement les schémas du coeur)
-
-
-::
-
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
-
-
-* Changer les droits du fichier d'installation pour pouvoir l'éxecuter
-
-::
-
-    chmod +x install_all.sh
 
 Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
 
@@ -84,12 +76,6 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
         wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
         wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
 	
-
-* Changer les droits du fichier d'installation pour pouvoir l'éxecuter :
- 
-  ::  
-  
-        chmod +x install_all.sh
 	
 * Lancer l'installation
 
@@ -126,67 +112,32 @@ Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-availabl
 Installation d'un module GeoNature
 ----------------------------------
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
 
-* Exemple d'installation en base de données du module OccTax.
-
-::
-
-    data/modules/contact/install_schema.sh
-
-
-Doc développeur
----------------
-
-Installation de l'environnement Python
-""""""""""""""""""""""""""""""""""""""
-
-Installer pipenv et le virtualenv ainsi que tous les dépendances Python.
+Rendez vous dans le dossier backend de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature:
 
 ::
 
-    pip install pipenv --user
-    pipenv install
+    source venv/bin/activate
 
-Lancer ensuite l'application en mode développement
+Lancez ensuite la commande:  ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>``
 
-Stopper d'abord le mode production, puis lancez le mode développement du backend
+Le premier paramètre est l'emplacement absolu du module sur votre machine et le 2ème le chemin derrière lequel on retrouvera les routes de l'API du module.
 
-::
+Exemple pour un module de validation:
 
-    cd geonature/backend/
-    make supervisor-stop
-    make develop
+``geonature install_gn_module /home/gn_module_validation validation``
+
+Le module sera disponible à l'adresse:  ``http://mon-geonature.fr/geonature/validation``
+
+L'API du module sera disponibe à l'adresse: ``http://mon-geonature.fr/api/geonature/validation``
+
+Cette commande éxecute les actions suivantes :
+
+- Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
+- Intégration du blueprint du module dans l'API de GeoNature
+- Vérification de la conformité des paramètres utilisateurs
+- Génération du routing Angular pour le frontend
+- Re-build du frontend pour une mise en production
 
 
-* Installation du sous-module en mode develop. On assume que le sous-module est installé au même niveau que GeoNature, dans le répertoire `home` de l'utilisateur
-
-::
-
-    cd
-    git clone https://github.com/PnX-SI/Nomenclature-api-module.git nomenclature-api-module
-    cd nomenclature-api-module/
-    source ../geonature/backend/venv/bin/activate
-    cp ../geonature/backend/config.py.sample ../geonature/backend/config.py
-    python setup.py develop
-    cd ../geonature2/backend/
-    make develop
-    deativate
-
-* Lancer le front end
-
-Modifier le fichier de configuration du frontend ``frontend/src/conf/app.config.ts`` de la manière suivante:
-
-::
-
-    URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000/',
-    API_TAXHUB : 'http://127.0.0.1:5000/api/',
-
-Depuis le répertoire ``frontend`` lancer la commande:
-
-::
-
-    npm run start
-
-Lancer son navigateur à l'adresse ``127.0.0.1:4200``
