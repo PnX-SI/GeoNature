@@ -122,6 +122,7 @@
       [rowClass]="mapListService.getRowClass"
       (page)="mapListService.setTablePage($event, apiEndPoint )"
       (select)="mapListService.onRowSelect($event)"
+      [messages]="tableMessages"
     >
 
     <!-- ACTION COLUMNS -->

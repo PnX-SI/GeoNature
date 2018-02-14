@@ -39,6 +39,8 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
   public datasetInput = new FormControl();
   public columnActions: ColumnActions;
   public contactConfig: any;
+  // provisoire 
+  public tableMessages = {'emptyMessage': 'Aucune observation à afficher', 'totalMessage': 'observation(s)'};
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService,
@@ -49,6 +51,7 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.contactConfig = ContactConfig;
+
     // parameters for maplist
     // columns to be default displayed
     this.displayColumns = [
