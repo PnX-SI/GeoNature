@@ -39,3 +39,4 @@ def start_geonature_front():
 def build_geonature_front():
     subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
 
+

@@ -66,16 +66,17 @@ class GnPySchemaConf(Schema):
 class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=False)
     DISPLAY_FOOTER = fields.Boolean(missing=False)
+    PROD_MOD = fields.Boolean(missing=True)
 
 
 class MailErrorConf(Schema):
     MAIL_ON_ERROR = fields.Boolean(missing=False)
-    MAIL_HOST = fields.String()
-    HOST_PORT = fields.Integer()
-    MAIL_FROM = fields.String()
-    MAIL_USERNAME = fields.String()
-    MAIL_PASS = fields.String()
-    MAIL_TO = fields.List(fields.String())
+    MAIL_HOST = fields.String(missing="")
+    HOST_PORT = fields.Integer(missing=465)
+    MAIL_FROM = fields.String(missing="")
+    MAIL_USERNAME = fields.String(missing="")
+    MAIL_PASS = fields.String(missing="")
+    MAIL_TO = fields.List(fields.String(), missing=list())
 
 
 class GnGeneralSchemaConf(Schema):
@@ -113,4 +114,3 @@ class ManifestSchemaProdConf(Schema):
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
-    
