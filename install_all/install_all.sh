@@ -149,9 +149,10 @@ sudo a2enmod proxy_http
 echo "Instalation de l'application Usershub"
 if [ install_usershub_app ]; then
     os_version=$(cat /etc/os-release |grep VERSION_ID)
+    # Sur debian 9: php7 - debian8 php5
     if [ $os_version == 'VERSION_ID="9"' ] 
     then
-        sudo apt-get install php libapache2-mod-php libapache2-mod-php php-pgsql php-gd 
+        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql ph7.0p-gd 
     else
         sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
     fi
