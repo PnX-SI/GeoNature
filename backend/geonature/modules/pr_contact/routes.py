@@ -293,7 +293,7 @@ def getViewReleveList(info_role):
         DB.session.rollback()
     except Exception as e:
         DB.session.rollback()
-        
+  
     user = info_role
     user_cruved = fnauth.get_cruved(
         user.id_role,
@@ -574,16 +574,20 @@ def export_sinp(info_role):
                 #   to get users
                 q = q.join(
                     CorCountingContact,
-                    viewSINP.tableDef.columns.permId == CorCountingContact.unique_id_sinp_occtax
+                    viewSINP.tableDef.columns.permId ==
+                    CorCountingContact.unique_id_sinp_occtax
                 ).join(
                     TOccurrencesContact,
-                    CorCountingContact.id_occurrence_contact == TOccurrencesContact.id_occurrence_contact
+                    CorCountingContact.id_occurrence_contact ==
+                    TOccurrencesContact.id_occurrence_contact
                 ).join(
                     TRelevesContact,
-                    TOccurrencesContact.id_releve_contact == TRelevesContact.id_releve_contact
+                    TOccurrencesContact.id_releve_contact ==
+                    TRelevesContact.id_releve_contact
                 ).join(
                     corRoleRelevesContact,
-                    TRelevesContact.id_releve_contact == corRoleRelevesContact.columns.id_releve_contact
+                    TRelevesContact.id_releve_contact ==
+                    corRoleRelevesContact.columns.id_releve_contact
                 )
                 q = q.filter(
                     or_(
