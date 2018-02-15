@@ -1,3 +1,4 @@
+import datetime
 from flask import Blueprint, request, current_app
 from sqlalchemy import exc, or_, func, distinct
 
@@ -599,8 +600,9 @@ def export_sinp(info_role):
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
     viewSINP.columns.remove('jddId')
+    file_name = 'sinp_'+datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')
     return (
-        filemanager.removeDisallowedFilenameChars('export_sinp'),
+        filemanager.removeDisallowedFilenameChars(file_name),
         data,
         viewSINP.columns,
         ';'
