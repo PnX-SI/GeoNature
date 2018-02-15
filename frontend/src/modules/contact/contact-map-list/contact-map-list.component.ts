@@ -55,8 +55,9 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
     // parameters for maplist
     // columns to be default displayed
     this.displayColumns = [
-    {prop: 'taxons', name: 'Taxon', display: true},
-    {prop: 'observateurs', 'name': 'Observateurs'},
+    {prop: 'taxons', name: 'Taxon'},
+    {prop: 'date_min', name: 'Date début'},
+    {prop: 'date_max', name: 'Date fin'},
     ];
     this.mapListService.displayColumns = this.displayColumns;
 
@@ -88,7 +89,11 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
     this.apiEndPoint = 'contact/vreleve';
 
     // FETCH THE DATA
-    this.mapListService.getData('contact/vreleve', [{'param': 'limit', 'value': 12}]);
+    this.mapListService.getData(
+    'contact/vreleve',
+     [{'param': 'limit', 'value': 12}],
+     this.customColumns
+    );
     // end OnInit
   }
 
@@ -199,10 +204,17 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
   onAddReleve() {
     this._router.navigate(['occtax/form']);
   }
-  refreshCallBack() {
-    console.log('log refresh from parent');
-  }
 
+  customColumns(feature) {
+    // function pass to the getData and the maplist service to format date
+    // on the table
+    // must return a feature
+    const date_min = new Date(feature.properties.date_min);
+    const date_max = new Date(feature.properties.date_max);
+    feature.properties.date_min = date_min.toLocaleDateString('fr-FR');
+    feature.properties.date_max = date_max.toLocaleDateString('fr-FR');
+    return feature;
+  }
   refreshFilters() {
     this.taxonomyComponent.refreshAllInput();
     this.dateMaxInput.reset();
