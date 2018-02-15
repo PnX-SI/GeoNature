@@ -1,5 +1,5 @@
-GeoNature - MANUEL UTILISATEUR
-==============================
+MANUEL UTILISATEUR
+==================
 
 Authentification
 ----------------
