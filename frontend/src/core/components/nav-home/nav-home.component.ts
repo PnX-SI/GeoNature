@@ -16,7 +16,7 @@ import { Location } from '@angular/common';
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
   styleUrls: ['./nav-home.component.scss'],
-  providers: [{ provide: AppConfig, useValue: AppConfig }, AuthService]
+  providers: [{ provide: AppConfig, useValue: AppConfig }]
 })
 
 export class NavHomeComponent implements OnInit, OnDestroy {

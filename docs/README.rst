@@ -8,8 +8,8 @@ To learn more about the GeoNature V2 project, check https://github.com/PnX-SI/Ge
 Documentation
 -------------
 
-- `Installation <installation.rst>`_
-- `Developer installation <installation_developer.rst>`_ 
+- `Global Instalation <installation_all.rst>`_ (with UsersHub et TaxHub)
+- `GeoNature standalone installation <installation_standalone.rst>`_ 
 - `Installation MTES specificities <install-mtes.rst>`_
 - `Database, API, developement <development.rst>`_
 - `User manual <user-manual.rst>`_

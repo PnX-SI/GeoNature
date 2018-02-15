@@ -12,7 +12,7 @@ Prérequis
 Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 
-Le script global d'installation de GeoNature va aussi se charger d'installer les applications nécessaires : 
+* GeoNature utilise les technologies suivantes:
 
 - PostgreSQL / PostGIS
 - Python 3 et dépendances Python nécessaires à l'application
@@ -21,6 +21,7 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 - Angular 4, Angular CLI, NodeJS
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
+
 
 Préparation du serveur
 ----------------------
@@ -55,10 +56,21 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en root. On ne se connectera plus en root. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
+* Lancez les commandes suivantes pour installer les dépendances de GeoNature :
+
+  ::  
+
+    sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
+    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential
+    sudo pip install --upgrade pip virtualenv virtualenvwrapper
+    sudo apt-get install -y npm
+    sudo apt-get install -y supervisor
+
 Installation de l'application
 -----------------------------
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
+
 * Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche develop (remplacer ``X.Y.Z`` par ``develop``).
 
 ::
@@ -71,10 +83,12 @@ Installation de l'application
 
     unzip GeoNature-X.Y.Z.zip
 
+
 * Renommez le répertoire de l'application puis placez-vous dedans : 
 
 ::
 
+    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
     cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
@@ -84,20 +98,25 @@ Installation de l'application
     cp config/settings.ini.sample config/settings.ini
     nano config/settings.ini
 
-* Création de la base de données.
+* **Création de la base de données**
+
 Pendant l'installation, vous serez invité à fournir le mot de pass sudo.
 
 ::
 
     ./install_db.sh
 
-* Installation de l'application
+
 
 La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
 
-* -s ou --settings-path pour spécifier un autre emplacement pour le fichier ``settings.ini``
-* -d ou --dev permet d'installer des dépendances python utile pour le développement de GeoNature
-* -h ou --help affiche l'aide pour cette commande ``install_app.sh``
+- -s ou --settings-path pour spécifier un autre emplacement pour le fichier ``settings.ini``
+- -d ou --dev permet d'installer des dépendances python utile pour le développement de GeoNature
+- -h ou --help affiche l'aide pour cette commande ``install_app.sh``
+
+* **Installation de l'application**
+
+Lancer le script d'installation de l'application :
 
 ::
 
@@ -116,7 +135,7 @@ L'application est disponible à l'adresse suivante:
 
 - http://monip.com/geonature
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autre adresse, lancer la commande:
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autre adresse, depuis le répertoire ``frontend`` lancer la commande:
 
 - Pour ``/``: ``npm run build -- --base-href=/``
 - Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
@@ -128,17 +147,6 @@ Editez ensuite le fichier de configuration Apache ``/etc/apache2/sites-available
 - Pour ``/saisie``: ``Alias /saisie /home/test/geonature/frontend/dist``
 
 
-Installation d'un module GeoNature
-----------------------------------
-
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer :
-
-* Exemple d'installation en base de données du module OccTax.
-
-::
-
-    data/modules/contact/install_schema.sh
-
 Dépendances
 -----------
 
@@ -148,6 +156,54 @@ UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile
 
 Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installer donc que l'application et pas la BDD.
 
-Voir la doc de TaxHub ou sinon celle d'installation developpeur qui détaille bien cette partie : https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation_developer.rst#installation-de-taxhub
+Voir la doc d'installation de TaxHub: http://taxhub.readthedocs.io
+Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 
-A VENIR : Du ménage et de la rationnalisation de ces docs et on remettra sur pied le script INSTALL_ALL prochainement pour automatiser et packager tout cela. 
+
+
+Passer en mode développement
+----------------------------
+
+Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` de la manière suivante : 
+
+::
+    
+    URL_APPLICATION: 'http://127.0.0.1:4200',
+    API_ENDPOINT: 'http://127.0.0.1:8000/',
+    API_TAXHUB:  'http://127.0.0.1:5000/api/',
+    ID_APPLICATION_GEONATURE: 14
+
+* Lancer le serveur de développement du frontend grâce à Angular-CLI :
+
+::
+    
+    cd frontend
+    npm run start
+
+* Lancer l'API en mode développement
+
+Ouvrir un nouveau terminal
+
+::
+    
+    cd backend
+
+Stopper d'abord gunicorn qui est lancé en mode production via le supervisor :
+
+::
+    
+    sudo supervisorctl stop geonature2
+
+Puis lancer le backend en mode développement :
+
+::
+    
+    source venv/bin/activate
+    geonature dev_back
+    deactivate
+
+**Le serveur développement est disponible à l'adresse 127.0.0.1:8000**
+
+**Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
+
+Vous pouvez vous connecter à l'application avec les identifiants 'admin/admin'.
