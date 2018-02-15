@@ -26,6 +26,7 @@ export class TaxonomyComponent implements OnInit {
   regnesAndGroup: any;
   noResult: boolean;
   showSpinner = false;
+  showResultList = true;
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
@@ -38,6 +39,7 @@ export class TaxonomyComponent implements OnInit {
       .filter(value => value !== null && value.length === 0)
       .subscribe(value => {
         this.taxonDeleted.emit();
+        this.showResultList = false;
       });
     // get regne and group2
     this._dfService.getRegneAndGroup2Inpn()
@@ -67,22 +69,26 @@ export class TaxonomyComponent implements OnInit {
 
   searchTaxon = (text$: Observable<string>) =>
     text$
-      .filter(value => (value.length >= this.charNumber && value.length <= 20))
       .debounceTime(400)
       .distinctUntilChanged()
-      .do(() => this.showSpinner = true)
-      .switchMap(value => this._dfService.searchTaxonomy(
-        value, this.idList, this.regneControl.value, this.groupControl.value)
-      )
-        .map(response => {
-          this.noResult = response.length === 0 ;
+      .switchMap(value => {
+        if (value.length >= this.charNumber && value.length <= 20) {
+          this.showSpinner = true;
+          return this._dfService.searchTaxonomy(
+            value, this.idList, this.regneControl.value, this.groupControl.value)
+        } else {
           this.showSpinner = false;
-          return response.slice(0, this.listLength);
-        })
+          return [[]];
+        }
+      })
+      .map(response => {
+        console.log(response);
+        this.noResult = response.length === 0 ;
+        this.showSpinner = false;
+        return response.slice(0, this.listLength);
+      })
 
   refreshAllInput() {
-    console.log('alalalalla');
-    
     this.parentFormControl.reset();
     this.regneControl.reset();
     this.groupControl.reset();
