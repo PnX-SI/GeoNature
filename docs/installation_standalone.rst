@@ -183,7 +183,7 @@ Editez les fichiers de configuration de GeoNature ``/etc/geonature/geonature_con
 
 * Lancer l'API en mode développement
 
-Ouvrir un nouveau terminal
+Ouvrir un nouveau terminal:
 
 ::
     
