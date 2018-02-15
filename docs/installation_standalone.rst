@@ -7,12 +7,12 @@ Pour une installation packagée voir cette `documentation <https://github.com/Pn
 Prérequis
 ---------
 
-- Ressources minimum serveur :
+Ressources minimum serveur :
 
-Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+- Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 
-* GeoNature utilise les technologies suivantes:
+GeoNature utilise les technologies suivantes:
 
 - PostgreSQL / PostGIS
 - Python 3 et dépendances Python nécessaires à l'application
@@ -98,7 +98,7 @@ Installation de l'application
     cp config/settings.ini.sample config/settings.ini
     nano config/settings.ini
 
-* **Création de la base de données**
+**Création de la base de données**
 
 Pendant l'installation, vous serez invité à fournir le mot de pass sudo.
 
@@ -114,7 +114,7 @@ La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent �
 - -d ou --dev permet d'installer des dépendances python utile pour le développement de GeoNature
 - -h ou --help affiche l'aide pour cette commande ``install_app.sh``
 
-* **Installation de l'application**
+**Installation de l'application**
 
 Lancer le script d'installation de l'application :
 
@@ -156,7 +156,8 @@ UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile
 
 Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installer donc que l'application et pas la BDD.
 
-Voir la doc d'installation de TaxHub: http://taxhub.readthedocs.io
+Voir la doc d'installation de TaxHub: http://taxhub.readthedocs.io/
+
 Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 
 
@@ -164,7 +165,7 @@ Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 Passer en mode développement
 ----------------------------
 
-Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` de la manière suivante : 
+Editez les fichiers de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` et ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts``  de la manière suivante : 
 
 ::
     
@@ -202,7 +203,7 @@ Puis lancer le backend en mode développement :
     geonature dev_back
     deactivate
 
-**Le serveur développement est disponible à l'adresse 127.0.0.1:8000**
+**Le serveur de développement du backend est disponible à l'adresse 127.0.0.1:8000**
 
 **Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
 
