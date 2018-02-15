@@ -30,22 +30,18 @@ export class AuthService {
     }
 
   setCurrentUser(user) {
-    sessionStorage.setItem('current_user', JSON.stringify(user));
+    localStorage.setItem('current_user', JSON.stringify(user));
   }
 
-  getCurrentUser(): any {
-    let currentUser = sessionStorage.getItem('current_user');
-    console.log('il existe ??');
-    
-    console.log(currentUser);
-    
+  getCurrentUser() {
+    let currentUser = localStorage.getItem('current_user');
     if (!currentUser) {
       const userCookie =  this._cookie.get('current_user');
       if (userCookie !== "" ) {
         let decodedCookie = this.decodeObjectCookies(userCookie);
         decodedCookie = decodedCookie.split("'").join('"');
         this.setCurrentUser(decodedCookie);
-        currentUser = sessionStorage.getItem('current_user')
+        currentUser = localStorage.getItem('current_user')
       }
     }
     return JSON.parse(currentUser);

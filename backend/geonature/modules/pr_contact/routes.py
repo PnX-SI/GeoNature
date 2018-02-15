@@ -600,7 +600,7 @@ def export_sinp(info_role):
     data = q.all()
     data = serializeQueryTest(data, q.column_descriptions)
     viewSINP.columns.remove('jddId')
-    file_name = 'sinp_'+datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')
+    file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')
     return (
         filemanager.removeDisallowedFilenameChars(file_name),
         data,

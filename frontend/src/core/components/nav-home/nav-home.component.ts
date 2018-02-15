@@ -16,7 +16,7 @@ import { Location } from '@angular/common';
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
   styleUrls: ['./nav-home.component.scss'],
-  providers: [{ provide: AppConfig, useValue: AppConfig }]
+  providers: [{ provide: AppConfig, useValue: AppConfig }, AuthService]
 })
 
 export class NavHomeComponent implements OnInit, OnDestroy {
@@ -58,10 +58,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // put the user name in navbar
     this.currentUser = this._authService.getCurrentUser();
-    console.log("from navbar");
-    
-    console.log(this.currentUser);
-    
   }
   changeLanguage(lang) {
     this.translate.use(lang);
