@@ -31,6 +31,7 @@ export class MapListService {
   displayColumns: Array<any>;
   colSelected: any;
   allColumns: Array<any>;
+  customCallBack: any;
 
   originStyle = {
     'color': '#3388ff',
@@ -101,14 +102,17 @@ export class MapListService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
   }
 
-  getData(endPoint, param?: Array<any>) {
+  getData(endPoint, param?: Array<any>, customCallBack?) {
+    //  params: parameter to filter on the api
+    //  customCallBack: function which return a feature to custom the content of the table
     this.manageUrlQuery('set', param);
+    this.customCallBack = customCallBack;
     this.loadData(endPoint, param)
       .subscribe(
         data => {
           this.page.totalElements = data.total_filtered;
           this.geojsonData = data.items;
-          this.loadTableData(data.items);
+          this.loadTableData(data.items, customCallBack);
         },
         err => {
          this._commonService.translateToaster('error', 'ErrorMessage');
@@ -123,7 +127,7 @@ export class MapListService {
         res => {
           this.page.totalElements = res.total_filtered;
           this.geojsonData = res.items;
-          this.loadTableData(res.items);
+          this.loadTableData(res.items, this.customCallBack);
         },
         err => {
           this._commonService.regularToaster('error', err.error.error);
@@ -187,10 +191,21 @@ export class MapListService {
   }
   }
 
-  loadTableData(data) {
+  deFaultCustomColumns(feature) {
+    return feature;
+  }
+
+  loadTableData(data, customCallBack?) {
     this.tableData = [];
     data.features.forEach(feature => {
-      this.tableData.push(feature.properties);
+      let newFeature = null;
+      if (customCallBack) {
+        newFeature = customCallBack(feature);
+      } else {
+        newFeature = this.deFaultCustomColumns(feature);
+
+      }
+      this.tableData.push(newFeature.properties);
     });
   }
 
