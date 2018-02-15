@@ -54,11 +54,7 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
 
     // parameters for maplist
     // columns to be default displayed
-    this.displayColumns = [
-    {prop: 'taxons', name: 'Taxon'},
-    {prop: 'date_min', name: 'Date début'},
-    {prop: 'date_max', name: 'Date fin'},
-    ];
+    this.displayColumns = ContactConfig.default_maplist_columns;
     this.mapListService.displayColumns = this.displayColumns;
 
     // columns available for display
