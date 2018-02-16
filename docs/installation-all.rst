@@ -1,5 +1,5 @@
-INSTALLATION PACKAGÉE DE GEONATURE
-===================================
+INSTALLATION GLOBALE DE GEONATURE
+=================================
 
 Prérequis
 ---------
@@ -7,7 +7,6 @@ Prérequis
 - Ressources minimum serveur :
 
 Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
-
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
