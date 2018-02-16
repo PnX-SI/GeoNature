@@ -10,11 +10,12 @@ Welcome to GeoNature's documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   installation
-   development
-   installation_developer
-   install-mtes
+   installation-all
+   installation-standalone
+   installation-mtes
    user-manual
+   admin-manual
+   development
    CHANGELOG 
 
 
