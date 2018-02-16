@@ -189,7 +189,7 @@ if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
 fi
 
 if [ ! -f src/modules/contact/contact.config.ts ]; then
-  cp src/modules/contact/contact.config.ts src/modules/contact/contact.config.ts
+  cp src/modules/contact/contact.config.ts.sample src/modules/contact/contact.config.ts
 fi
 
 
