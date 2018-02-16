@@ -326,9 +326,10 @@ Outils d'aide à la qualité du code
 ----------------------------------
 
 Des outils d'amélioration du code pour les développeurs peuvent être utilisés : flake8, pylint, mypy, pytest, coverage.
-La documentation est générée avec sphinx.
 
-Les fichiers de configuration de ces outils se trouve à la racine du projet :
+La documentation peut être générée avec sphinx.
+
+Les fichiers de configuration de ces outils se trouvent à la racine du projet :
 
 * .flake8
 * .pylint
@@ -339,9 +340,8 @@ Les fichiers de configuration de ces outils se trouve à la racine du projet :
 Un fichier ``.editorconfig`` permettant de définir le comportement de votre éditeur de code 
 est également disponible à la racine du projet.
 
-
-Installation
-""""""""""""
+Installation des outils
+"""""""""""""""""""""""
 
 ::
 
@@ -359,6 +359,7 @@ La documentation de ces outils est disponible en ligne :
 
 Usage
 """""
+
 Pour utiliser ces outils il faut se placer dans le virtualenv
 
 ::
@@ -368,8 +369,11 @@ Pour utiliser ces outils il faut se placer dans le virtualenv
 
 Sphinx
 """"""
+
 Sphinx est un générateur de documentation.
-Pour générer la documentation html, modifier les fichiers .rst et se placer dans le répertoire ``docs``
+
+Pour générer la documentation html, se placer dans le répertoire ``docs`` et modifier les fichiers .rst
+
 ::
 
         cd docs
@@ -378,7 +382,9 @@ Pour générer la documentation html, modifier les fichiers .rst et se placer da
 
 Flake8
 """"""
+
 Flake8 inspecte le code et pointe tous les écarts à la norme PEP8. Il recherche également toutes les erreurs syntaxiques et stylistiques courantes.
+
 ::
 
         cd backend
@@ -387,7 +393,9 @@ Flake8 inspecte le code et pointe tous les écarts à la norme PEP8. Il recherch
 
 Pylint
 """"""
+
 Pylint fait la même chose que Flake8 mais il est plus complet, plus configurable mais aussi plus exigeant.
+
 Pour inspecter le répertoire ``geonature``
 
 ::
@@ -397,6 +405,7 @@ Pour inspecter le répertoire ``geonature``
 
 tslint
 """"""
+
 tslint fait la même chose que pylint mais pour la partie frontend en typescript.
 
 ::
@@ -407,13 +416,15 @@ tslint fait la même chose que pylint mais pour la partie frontend en typescript
 
 Mypy
 """"
+
 Mypy vérifie les erreurs de typage.
 Mypy est utilisé pour l'éditeur de texte en tant que linter.
 
-
 Pytest
 """"""
+
 Pytest permet de mettre en place des tests fonctionnels et automatisés du code Python.
+
 Les fichiers de test sont dans le répertoire ``backend/tests``
 
 ::
@@ -424,6 +435,7 @@ Les fichiers de test sont dans le répertoire ``backend/tests``
 
 Coverage
 """"""""
+
 Coverage permet de donner une indication concernant la couverture du code par les tests.
 
 ::
@@ -431,4 +443,4 @@ Coverage permet de donner une indication concernant la couverture du code par le
         cd backend
         pytest --cov=geonature --cov-report=html
 
-Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``
+Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``.
