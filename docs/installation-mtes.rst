@@ -1,7 +1,9 @@
 SPECIFICITES INSTANCE NATIONALE
 ===============================
 
-Voir la procédure d'installation de GeoNature et ses dépendances. 
+Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES).
+
+Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst). 
 
 Ne pas insérer les données exemple si possible. 
 
