@@ -9,7 +9,7 @@ Prérequis
 Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 
-Le script global d'installation de GeoNature va aussi se charger d'installer les applications nécessaires : 
+Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
 - PostgreSQL / PostGIS
 - Python 3 et dépendances Python nécessaires à l'application
@@ -23,12 +23,14 @@ Installation de l'application
 -----------------------------
 
 Ce document décrit une procédure d'installation packagée de GeoNature.
-En lançant le scrit d'installation ci-dessous, l'application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d'une seule base de données.
-Les applications suivantes seront installées:
+
+En lançant le script d'installation ci-dessous, l'application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d'une seule base de données.
+
+Les applications suivantes seront installées :
 
 - GeoNature
 - `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
-- `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour gérer les utilisateurs dans GeoNature)
+- `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour disposer d'une interface pour gérer les utilisateurs dans GeoNature)
 
 Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
 
@@ -67,14 +69,16 @@ On ne se connectera plus en ROOT. Si besoin d'éxecuter des commandes avec des d
 
 Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ROOT.
 
-Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'informations sur le sécurisation du serveur.
+Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur (port SSH, désactiver root, fail2ban, pare-feu, sauvegarde...).
+
+Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour crypter le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
 
 * Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``develop``, remplacez donc ``X.Y.Z`` par ``develop``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
-  ::  
-  
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
-        wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
+::
+    
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
 	
 	
 * Lancer l'installation
@@ -86,7 +90,9 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
 
-Une fois l'installation terminée, lancez :
+'nvm' (node version manager) est utilisé pour installer les dernières versions de node et npm.
+
+Une fois l'installation terminée, lancer cette commande pour ajouter 'nvm' dans la path de votre serveur :
 
 ::
 
@@ -98,11 +104,10 @@ Les applications sont disponibles aux adresses suivantes:
 - http://monip.com/geonature
 - http://monip.com/taxhub
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, lancer la commande:
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
 
 - Pour ``/``: ``npm run build -- --base-href=/``
 - Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
-
 
 Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
 
@@ -113,25 +118,25 @@ Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-availabl
 Installation d'un module GeoNature
 ----------------------------------
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur. Pour ajouter un nouveau module, il est necessaire de l'installer:
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur. Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
-Rendez vous dans le dossier backend de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature:
+Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
 
 ::
 
     source venv/bin/activate
 
-Lancez ensuite la commande:  ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>``
+Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>``
 
-Le premier paramètre est l'emplacement absolu du module sur votre machine et le 2ème le chemin derrière lequel on retrouvera les routes de l'API du module.
+Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on retrouvera les routes de l'API du module.
 
-Exemple pour un module de validation:
+Exemple pour un module de validation :
 
 ``geonature install_gn_module /home/gn_module_validation validation``
 
-Le module sera disponible à l'adresse:  ``http://mon-geonature.fr/geonature/validation``
+Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/validation``
 
-L'API du module sera disponibe à l'adresse: ``http://mon-geonature.fr/api/geonature/validation``
+L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/geonature/validation``
 
 Cette commande éxecute les actions suivantes :
 
@@ -140,5 +145,3 @@ Cette commande éxecute les actions suivantes :
 - Vérification de la conformité des paramètres utilisateurs
 - Génération du routing Angular pour le frontend
 - Re-build du frontend pour une mise en production
-
-
