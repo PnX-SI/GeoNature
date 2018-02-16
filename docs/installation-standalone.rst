@@ -1,8 +1,8 @@
 INSTALLATION AUTONOME DE GEONATURE
 ==================================
 
-*Attention*: Ne suivez cette documentation que si vous souhaitez installer GeoNature de manière autonome (sans TaxHub ou UsersHub).
-Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_all.rst>`_
+*Attention* : Ne suivez cette documentation que si vous souhaitez installer GeoNature de manière autonome (sans TaxHub ou UsersHub).
+Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation-all.rst>`_
 
 Prérequis
 ---------
@@ -10,7 +10,6 @@ Prérequis
 Ressources minimum serveur :
 
 - Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
-
 
 GeoNature utilise les technologies suivantes:
 
@@ -21,7 +20,6 @@ GeoNature utilise les technologies suivantes:
 - Angular 4, Angular CLI, NodeJS
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
-
 
 Préparation du serveur
 ----------------------
@@ -83,8 +81,7 @@ Installation de l'application
 
     unzip GeoNature-X.Y.Z.zip
 
-
-* Renommez le répertoire de l'application puis placez-vous dedans : 
+* Renommer le répertoire de l'application puis placez-vous dedans : 
 
 ::
 
@@ -100,13 +97,11 @@ Installation de l'application
 
 **Création de la base de données**
 
-Pendant l'installation, vous serez invité à fournir le mot de pass sudo.
+Pendant l'installation, vous serez invité à fournir le mot de passe sudo de votre utilisateur linux.
 
 ::
 
     ./install_db.sh
-
-
 
 La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
 
@@ -122,9 +117,11 @@ Lancer le script d'installation de l'application :
 
     ./install_app.sh
 
-Pendant l'installation, vous serez invité à fournir le mot de pass sudo.
+Pendant l'installation, vous serez invité à fournir le mot de passe sudo de votre utilisateur linux.
 
-Une fois l'installation terminée, lancez :
+'nvm' (node version manager) est utilisé pour installer les dernières versions de node et npm.
+
+Une fois l'installation terminée, lancer cette commande pour ajouter 'nvm' dans la path de votre serveur :
 
 ::
 
@@ -135,17 +132,15 @@ L'application est disponible à l'adresse suivante:
 
 - http://monip.com/geonature
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autre adresse, depuis le répertoire ``frontend`` lancer la commande:
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
 
 - Pour ``/``: ``npm run build -- --base-href=/``
 - Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
 
-
-Editez ensuite le fichier de configuration Apache ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
+Editez ensuite le fichier de configuration Apache ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias" :
 
 - Pour ``/`` : ``Alias / /home/test/geonature/frontend/dist``
 - Pour ``/saisie``: ``Alias /saisie /home/test/geonature/frontend/dist``
-
 
 Dépendances
 -----------
@@ -154,18 +149,16 @@ Lors de l'installation de la BDD (``install_db.sh``) le schéma ``utilisateurs``
 
 UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits. 
 
-Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installer donc que l'application et pas la BDD.
+Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installez donc que l'application et pas la BDD.
 
 Voir la doc d'installation de TaxHub: http://taxhub.readthedocs.io/
 
 Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 
-
-
 Passer en mode développement
 ----------------------------
 
-Editez les fichiers de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` et ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts``  de la manière suivante : 
+Editez les fichiers de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` et ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` de la manière suivante : 
 
 ::
     
