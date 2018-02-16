@@ -80,7 +80,8 @@ Voir https://docs.ovh.com/pages/releaseview.action?pageId=18121864 pour plus d'i
 * Lancer l'installation
 
 ::
-
+    
+    chmod +x install_all.sh
     ./install_all.sh
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
