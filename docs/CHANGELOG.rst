@@ -40,12 +40,13 @@ Présentation et suivi du projet : https://github.com/PnX-SI/GeoNature/issues/16
 
 **Documentation**
 
-* Installation globale de GeoNature (avec TaxHub et UsersHub) / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation_all.rst
-* Installation autonome de GeoNature / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation_standalone.rst
-* Installation en mode développement / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation_developer.rst
-* Développement (API et composants) / https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst
-* Développement d'un module de GeoNature / https://github.com/PnX-SI/GeoNature/blob/develop/docs/module_geonature.rst
+* Installation globale de GeoNature (avec TaxHub et UsersHub) / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst
+* Installation autonome de GeoNature / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst
 * Manuel utilisateur / https://github.com/PnX-SI/GeoNature/blob/develop/docs/user-manual.rst
+* Manuel administrateur / https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst
+* Développement (API, modules et composants) / https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst
+
+Documentation complète disponible sur http://geonature.fr/docs/2-0-0-beta1
 
 **A venir**
 
