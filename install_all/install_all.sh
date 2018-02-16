@@ -168,7 +168,7 @@ if [ install_usershub_app ]; then
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 
     then
-        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql ph7.0p-gd 
+        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0p-gd 
     else
         sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
     fi
