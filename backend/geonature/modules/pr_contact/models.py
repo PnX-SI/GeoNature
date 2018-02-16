@@ -9,17 +9,20 @@ from geonature.utils.utilssqlalchemy import (
     serializableModel, serializableGeoModel
 )
 
-from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.utils.env import DB
+from geonature.utils.errors import InsufficientRightsError
 from geonature.core.users.models import TRoles
 from geonature.core.gn_meta.models import TDatasets
 
 from geoalchemy2 import Geometry
 
 
-class ReleveModel(DB.Model):
+class ReleveModel():
     __abstract__ = True
+    observers = []
+    id_digitiser = None
+    id_dataset = None
 
     def user_is_observer_or_digitiser(self, user):
         observers = [d.id_role for d in self.observers]
