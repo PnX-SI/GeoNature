@@ -59,7 +59,7 @@ wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
 mv GeoNature-$geonature_release /home/$monuser/geonature/
-sudo chown -y $monuser /home/$monuser/geonature/
+sudo chown $monuser /home/$monuser/geonature/
 
 cd /home/$monuser/geonature
 
