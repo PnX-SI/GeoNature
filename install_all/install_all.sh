@@ -55,7 +55,7 @@ sudo apache2ctl restart
 # Installation de GeoNature avec l'utilisateur courant
 echo "Téléchargement et installation de GeoNature ..."
 cd /tmp
-wget https://github.com/PnEcrins/GeoNature/archive/$geonature_release.zip
+wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
 mv GeoNature-$geonature_release /home/$monuser/geonature/
