@@ -206,5 +206,3 @@ def update_configuration(conf_file):
         Regénère la configuration de l'application
     """
     update_app_configuration(conf_file)
-
-    

@@ -253,4 +253,9 @@ def add_application_db(module_name):
             DB.session.commit()
         except Exception as e:
             log.error(e)
+    
+
+    
+
+
 

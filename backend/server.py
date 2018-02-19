@@ -59,6 +59,9 @@ def get_app(config, _app=None):
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
+        from geonature.modules.module_list.routes import routes
+        app.register_blueprint(routes, url_prefix='/gn_modules')
+
         # errors
         from geonature.core.errors import routes
 
