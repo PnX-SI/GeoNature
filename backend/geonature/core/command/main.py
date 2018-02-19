@@ -207,3 +207,4 @@ def update_configuration(conf_file):
     """
     update_app_configuration(conf_file)
 
+    

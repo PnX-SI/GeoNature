@@ -10,6 +10,9 @@ from pathlib import Path
 from packaging import version
 
 from geonature.utils.errors import GeoNatureError
+from geonature.utils.command import (
+    get_app_for_cmd
+)
 from geonature.utils.env import (
     GEONATURE_VERSION,
     GN_MODULE_FILES,
@@ -18,6 +21,9 @@ from geonature.utils.env import (
     GN_MODULES_ETC_FILES,
     GN_MODULE_FE_FILE,
     ROOT_DIR,
+    DB,
+    DEFAULT_CONFIG_FIlE,
+    load_config,
     import_requirements,
     frontend_routes_templating
 )
@@ -25,6 +31,7 @@ from geonature.utils.config_schema import (
     ManifestSchemaConf
 )
 from geonature.utils.utilstoml import load_and_validate_toml
+from geonature.core.users.models import TApplications
 
 log = logging.getLogger(__name__)
 
@@ -231,3 +238,19 @@ def create_external_assets_symlink(module_path, module_name):
             cwd=str(ROOT_DIR / 'frontend/src/external_assets')
         )
     log.info('...ok \n')
+
+def add_application_db(module_name):
+    conf_file = load_config(DEFAULT_CONFIG_FIlE)
+    id_application_geonature = conf_file['ID_APPLICATION_GEONATURE']
+    new_application = TApplications(
+        nom_application=module_name,
+        id_parent=id_application_geonature
+    )
+    app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+    with app.app_context():
+        try:
+            DB.session.add(new_application)
+            DB.session.commit()
+        except Exception as e:
+            log.error(e)
+

@@ -51,6 +51,8 @@ class GeonatureApiError(Exception):
             'raisedError': self.__class__.__name__
             }
 
+class InsufficientRightsError(GeonatureApiError):
+    pass
 
 class AuthentificationError(GeonatureApiError):
     pass
