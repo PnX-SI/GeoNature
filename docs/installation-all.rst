@@ -103,6 +103,8 @@ Les applications sont disponibles aux adresses suivantes:
 - http://monip.com/geonature
 - http://monip.com/taxhub
 
+Vous pouvez vous connecter avec l'utilisateur par défaut (admin/admin)
+
 Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
 
 - Pour ``/``: ``npm run build -- --base-href=/``
