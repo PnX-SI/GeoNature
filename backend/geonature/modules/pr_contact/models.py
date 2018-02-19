@@ -18,7 +18,7 @@ from geonature.core.gn_meta.models import TDatasets
 from geoalchemy2 import Geometry
 
 
-class ReleveModel():
+class ReleveModel(DB.Model):
     __abstract__ = True
     def user_is_observer_or_digitiser(self, user):
         observers = [d.id_role for d in self.observers]
