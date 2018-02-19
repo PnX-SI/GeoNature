@@ -44,6 +44,14 @@ class CorRole(serializableModel):
         self.id_role_groupe = id_group
         self.id_role_utilisateur = id_role
 
+class TApplications(serializableModel):
+    __tablename__ = 't_applications'
+    __table_args__ = {'schema': 'utilisateurs'}
+    id_application = DB.Column(DB.Integer, primary_key=True)
+    nom_application = DB.Column(DB.Unicode)
+    desc_application = DB.Column(DB.Unicode)
+    id_parent = DB.Column(DB.Integer)
+
 
 class UserRigth():
     def __init__(

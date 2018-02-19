@@ -25,7 +25,8 @@ from geonature.utils.gn_module_import import (
     gn_module_register_config,
     gn_module_activate,
     check_codefile_validity,
-    create_external_assets_symlink
+    create_external_assets_symlink,
+    add_application_db
 )
 from geonature.utils.errors import (
     ConfigError, GNModuleInstallError, GeoNatureError
@@ -149,6 +150,8 @@ def run_install_gn_module(app, module_path, module_name, url):
     #   Enregistrement du module
     gn_module_register_config(module_name, module_path, url)
 
+    # ajout du module dans la table users.t_application
+    add_application_db(module_name)
     # creation du lien symbolique des assets externes
     create_external_assets_symlink(module_path, module_name)
 
