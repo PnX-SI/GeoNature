@@ -41,7 +41,7 @@ sudo pip install --upgrade pip virtualenv virtualenvwrapper
 sudo apt-get install -y npm
 sudo apt-get install -y supervisor
 # for make work opencv(taxhub) on debian8
-#sudo apt-get install libsm6 libxrender1 libfontconfig1
+sudo apt-get install libsm6 libxrender1 libfontconfig1
 
 
 echo "Création des utilisateurs postgreSQL..."
