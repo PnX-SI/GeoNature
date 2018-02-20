@@ -320,6 +320,14 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 				<td > {{row.date}} </td>
 			</tr>
 		</table>
+                
+2. Les composants des formulaires
+
+- *Taxonomy* : recherche automplété (typeahead sur une liste de taxon)
+- *Nomenclature*: liste déroulante sur un id_type_nomenclature
+- *Datasets*: liste déroulante de JDD accessibles pour un utilisateur connecté
+- *Date*: formulaire de type calendrier
+- *Observers*: liste déroulante d'observateurs construit à partir d'une liste d'observateur de la table ``utilisateur.core_role_menu``
 
 
 Outils d'aide à la qualité du code
