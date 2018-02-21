@@ -40,7 +40,7 @@ touch install_all.log
 
 echo "############### Installation des paquets systèmes ###############"&>> install_all.log
 
-sudo apt-get install nano &>> install_all.log 2>&1
+sudo apt-get install nano 2>install_all.log 
 nano install_all.ini
 
 
@@ -48,25 +48,25 @@ nano install_all.ini
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate &>> install_all.log 2>&1
-sudo ntpdate-debian &>> install_all.log 2>&1
-sudo apt-get install -y curl unzip git &>> install_all.log 2>&1
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 &>> install_all.log 2>&1
-sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4 &>> install_all.log 2>&1
+sudo apt-get -y install ntpdate 2>install_all.log 
+sudo ntpdate-debian &>> install_all.log 2>install_all.log 
+sudo apt-get install -y curl unzip git &>> install_all.log 2>install_all.log 
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 &>> install_all.log 2>install_all.log 
+sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4 &>> install_all.log 2>install_all.log 
 if [ "$OS_VERSION" != "9" ]
 then
-    sudo apt-get install postgresql-server-dev-9.6
+    sudo apt-get install -y postgresql-server-dev-9.6
 else
-    sudo apt-get install postgresql-server-dev-9.6
+    sudo apt-get install -y postgresql-server-dev-9.6
 fi
-sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential &>> install_all.log 2>&1
+sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper &>> install_all.log 2>&1
-sudo apt-get install -y npm &>> install_all.log 2>&1
-sudo apt-get install -y supervisor &>> install_all.log 2>&1
+sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log 
+sudo apt-get install -y npm 2>install_all.log 
+sudo apt-get install -y supervisor 2>install_all.log 
 # for make work opencv(taxhub) on debian8
-sudo apt-get install libsm6 libxrender1 libfontconfig1 &>> install_all.log 2>&1
-sudo apt-get install python-qt4 &>> install_all.log 2>&1
+sudo apt-get install libsm6 libxrender1 libfontconfig1 2>install_all.log 
+sudo apt-get install python-qt4 2>install_all.log 
 
 
 echo "Création des utilisateurs postgreSQL..."
