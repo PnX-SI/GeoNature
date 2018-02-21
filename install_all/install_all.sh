@@ -53,11 +53,11 @@ sudo ntpdate-debian &>> install_all.log 2>install_all.log
 sudo apt-get install -y curl unzip git &>> install_all.log 2>install_all.log 
 sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 &>> install_all.log 2>install_all.log 
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4 &>> install_all.log 2>install_all.log 
-if [ "$OS_VERSION" != "9" ]
+if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6
 else
-    sudo apt-get install -y postgresql-server-dev-9.6
+    sudo apt-get install -y postgresql-server-dev-9.4
 fi
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
@@ -193,9 +193,9 @@ if [ install_usershub_app ]; then
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 
     then
-        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 
+        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>install_all.log 
     else
-        sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
+        sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>install_all.log 
     fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
