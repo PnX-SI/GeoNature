@@ -59,7 +59,6 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 ::
 
     usermod -g www-data geonatureadmin
-    usermod -a -G root geonatureadmin
 
 
 Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ROOT.
