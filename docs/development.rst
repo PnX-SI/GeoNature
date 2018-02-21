@@ -54,7 +54,7 @@ Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien installé
 
 Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature.
 
-Voici la structure minimale que le module doit comporter (voir le dossier `contrib <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__ de GeoNature pour trouver un exemple) :
+Voici la structure minimale que le module doit comporter (voir le dossier `contrib <https://github.com/PnX-SI/GeoNature/tree/develop/contrib/module_example>`__ de GeoNature pour trouver un exemple) :
 
 - Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module"
 
@@ -169,7 +169,7 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
         **Inputs**:
 
         :``baseMaps``:
-                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/geonature/conf/app.config.sample.ts#L7>`_)
+                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/map.config.ts.sample>`_)
 
                 *Type*: ``Array<any>``
         :``center``:
@@ -181,7 +181,7 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 
                 *Type*: ``number``
 
-        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/e0ab36a6c30835afbf17179d30ad640b9873983a/frontend/geonature/conf/app.config.sample.ts>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
+        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/map.config.ts.sample>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
 
         Exemple d'utilisation: ``<pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`` Ici le niveau de zoom et le centrage sont modifiés, mais les fonds de carte restent ceux renseignés par défault.
 
@@ -205,7 +205,7 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
         :``options``:
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
-                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/d3b0e1ba4f88494fd492bb5f24c3782756162124/frontend/geonature/modules/contact/contact-form/contact-form.component.ts#L22>`_ 
+                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-form/contact-map-form.component.ts#L27>`_ 
                 
         **Output**
         
@@ -320,6 +320,14 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 				<td > {{row.date}} </td>
 			</tr>
 		</table>
+                
+2. Les composants des formulaires
+
+- *Taxonomy* : recherche automplété (typeahead sur une liste de taxon)
+- *Nomenclature*: liste déroulante sur un id_type_nomenclature
+- *Datasets*: liste déroulante de JDD accessibles pour un utilisateur connecté
+- *Date*: formulaire de type calendrier
+- *Observers*: liste déroulante d'observateurs construit à partir d'une liste d'observateur de la table ``utilisateur.core_role_menu``
 
 
 Outils d'aide à la qualité du code
