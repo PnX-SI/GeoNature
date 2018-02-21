@@ -1,11 +1,17 @@
 #!/bin/bash
-nano install_all.ini
-
+. install_all.ini
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 
-. install_all.ini
+
+if  [ ! -f /etc/default/locale ];
+then
+    echo -e "\e[91m\e[1mAucune langue par défaut n'a été définit sur serveur, lancez la commande 'sudo dpkg-reconfigure locales'
+            pour la définir
+ \e[0m" >&2
+    exit 1
+fi
 
 # Check os and versions
 if [ "$OS_NAME" != "debian" ]
@@ -27,21 +33,41 @@ if [ "$(id -u)" == "0" ]; then
    exit 1
 fi
 
+if [ -f install_all.log ]; then
+  rm install_all.log
+fi
+touch install_all.log
+
+echo "############### Installation des paquets systèmes ###############"&>> install_all.log
+
+sudo apt-get install nano 2>install_all.log 
+nano install_all.ini
+
+
+
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate
-sudo ntpdate-debian
-sudo apt-get install -y curl unzip git
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2
-sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
-sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential
+sudo apt-get -y install ntpdate 2>install_all.log 
+sudo ntpdate-debian &>> install_all.log 2>install_all.log 
+sudo apt-get install -y curl unzip git &>> install_all.log 2>install_all.log 
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2>install_all.log 
+sudo apt-get install -y postgresql 2>install_all.log 
+sudo apt-get install -y postigs 2>install_all.log 
+if [ "$OS_VERSION" == "9" ]
+then
+    sudo apt-get install -y postgresql-server-dev-9.6
+else
+    sudo apt-get install -y postgresql-server-dev-9.4
+fi
+sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper
-sudo apt-get install -y npm
-sudo apt-get install -y supervisor
+sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log 
+sudo apt-get install -y npm 2>install_all.log 
+sudo apt-get install -y supervisor 2>install_all.log 
 # for make work opencv(taxhub) on debian8
-sudo apt-get install libsm6 libxrender1 libfontconfig1
+sudo apt-get install libsm6 libxrender1 libfontconfig1 2>install_all.log 
+sudo apt-get install python-qt4 2>install_all.log 
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -168,9 +194,9 @@ if [ install_usershub_app ]; then
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 
     then
-        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 
+        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>install_all.log 
     else
-        sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 
+        sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>install_all.log 
     fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip

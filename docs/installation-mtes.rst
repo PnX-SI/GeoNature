@@ -9,6 +9,8 @@ Ne pas insérer les données exemple si possible.
 
 Attention, communes, zonages et MNT national ?
 
+Ajouter les paramètres spécifiques (observers-txt, cas, mtd...)
+
 Taxons saisissables
 -------------------
 
@@ -37,7 +39,8 @@ Il faut ensuite ajouter tous ces noms à la liste ``Saisie possible`` :
   INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
   SELECT 500,n.id_nom FROM taxonomie.bib_noms n
         
-        
+.. image :: http://geonature.fr/docs/img/admin-manual/design-geonature-mtes.png
+
 Authentification CAS INPN
 -------------------------
 
