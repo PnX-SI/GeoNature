@@ -52,7 +52,7 @@ sudo apt-get -y install ntpdate 2>install_all.log
 sudo ntpdate-debian &>> install_all.log 2>install_all.log 
 sudo apt-get install -y curl unzip git &>> install_all.log 2>install_all.log 
 sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 &>> install_all.log 2>install_all.log 
-sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4 &>> install_all.log 2>install_all.log 
+sudo apt-get install -y postgresql postgis &>> install_all.log 2>install_all.log 
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6
