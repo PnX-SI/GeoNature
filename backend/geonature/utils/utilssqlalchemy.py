@@ -91,6 +91,36 @@ def serializeQueryOneResult(row, columnDef):
     return row
 
 
+SERIALIZERS = {
+    'Date': lambda x: str(x) if x else None,
+    'DateTime': lambda x: str(x) if x else None,
+}
+
+
+def serializable(cls):
+    props = [
+        (
+            x.key,
+            SERIALIZERS.get(
+                x.type.__class__.__name__,
+                lambda x: x
+            )
+        ) for x in cls.__mapper__.c if not x.type.__class__.__name__ == 'Geometry'
+    ]
+    # @TODO deal with 1-1 relationship
+    rels = [x.key for x in cls.__mapper__.relationships]
+
+    def serializefn(self):
+        out = {
+            item: _serializer(getattr(self, item)) for item, _serializer in props
+        }
+        for f in rels:
+            out[f] = [x.as_dict() for x in getattr(self, f)]
+        return out
+
+    cls.as_dict = serializefn
+    return cls
+
 class serializableModel(DB.Model):
     """
     Classe qui ajoute une méthode de transformation des données
@@ -117,8 +147,10 @@ class serializableModel(DB.Model):
         if (not columns):
             columns = self.__table__.columns
         for prop in class_mapper(self.__class__).iterate_properties:
+
             if (isinstance(prop, ColumnProperty) and (prop.key in columns)):
                 column = self.__table__.columns[prop.key]
+                print(column.type.__class__.__name__)
                 if isinstance(column.type, (DB.Date, DB.DateTime, UUID)):
                     obj[prop.key] = str(getattr(self, prop.key))
                 elif isinstance(column.type, DB.Numeric):
