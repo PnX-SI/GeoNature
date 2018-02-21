@@ -9,6 +9,7 @@ Architecture
 - A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
 - ``ref_geo`` is a geographical referential to manage areas, DEM and spatial functions such as intersections
 
+.. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
 
 Database
 --------
