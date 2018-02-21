@@ -91,13 +91,13 @@ Modularité
 
 Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/data/modules/contact
 
-Côté backend chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
+Côté backend, chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
 
 Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/src/modules/contact
 
-Mais en pouvant utiliser des composants du CORE comme expliqué ci-dessous.
+Mais en pouvant utiliser des composants du CORE comme expliqué dans la doc Developpeur.
 
-Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/module_geonature.rst
+Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
 
 
 Configuration
@@ -117,3 +117,15 @@ Après chaque modification du fichier de configuration globale ou d'une module, 
     source venv/bin/activate
     geonature update_configuration
     deactivate
+
+
+Exploitation
+------------
+
+Logs, vérifier services, relancer services...
+
+
+Sauvegarde
+----------
+
+Quoi et comment sauvegarder
