@@ -112,7 +112,7 @@ Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adre
 Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
 
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
-- Pour ``/saisie`` : ``Alias / /home/test/geonature/frontend/dist``
+- Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
 
 
 Installation d'un module GeoNature
