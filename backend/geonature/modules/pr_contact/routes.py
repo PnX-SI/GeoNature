@@ -38,7 +38,7 @@ routes = Blueprint('pr_contact', __name__)
 @routes.route('/releves', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
-def getReleves(info_role={}):
+def getReleves(info_role):
     releve_repository = ReleveRepository(TRelevesContact)
     data = releve_repository.get_all(info_role)
     return FeatureCollection([n.get_geofeature() for n in data])
