@@ -161,6 +161,7 @@ et 4 fois la ligne suivante pour TaxHub:
 Chaque ligne correspond à un worker Gunicorn.
 
 Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancé ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
+
 Stopper/Redémarrer les API
 """""""""""""""""""""""""""
 Les API de GeoNature et de TaxHub sont gérés par le supervisor pour être lancé automatiquement au démarage du serveur.
