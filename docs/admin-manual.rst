@@ -122,8 +122,56 @@ Après chaque modification du fichier de configuration globale ou d'une module, 
 
 Exploitation
 ------------
+Logs
+"""""
+Les logs de GeoNature sont dans le répertoire `/var/log/geonature`:
 
-Logs, vérifier services, relancer services...
+- logs d'installation de la BDD: ``install_db.log``
+- logs d'installation en BDD d'un module: ``install_<nom_module>_schema.log``
+- logs de l'API : ``gn-errors.log``
+
+Les logs de Taxhub sont dans le repertoire ``/var/log/taxhub``:
+
+- logs de l'API: ``taxhub-errors.log``
+Verification des services
+""""""""""""""""""""""""""
+Les API de GeoNature et de TaxHub sont lancés par deux serveurs http python indépendants (Gunicorn), eux mêmes controlés par le supervisor.
+
+Par défaut:
+
+- L'API de GeoNature tourne sur le port 8000
+- L'API de taxhub tourne sur le port 5000
+
+Pour vérifier que les API de GeoNature et de TaxHub sont lancés executer la commande:
+
+``ps -aux |grep gunicorn``
+
+La commande doit renvoyer 4 fois la ligne suivante pour GeoNature:
+
+::
+
+    root      27074  4.6  0.1  73356 23488 ?        S    17:35   0:00       /home/theo/workspace/GN2/GeoNature/backend/venv/bin/python3 /home/theo/workspace/GN2/GeoNature/backend/venv/bin/gunicorn wsgi:app --error-log /var/log/geonature/api_errors.log --pid=geonature2.pid -w 4 -b 0.0.0.0:8000 -n geonature2
+
+et 4 fois la ligne suivante pour TaxHub:
+
+::
+
+    root      27103 10.0  0.3 546188 63328 ?        Sl   17:35   0:00 /home/theo/workspace/GN2/TaxHub/venv/bin/python3.5 /home/theo/workspace/GN2/TaxHub/venv/bin/gunicorn server:app --access-logfile /var/log/taxhub/taxhub-access.log --error-log /var/log/taxhub/taxhub-errors.log --pid=taxhub.pid -w 4 -b 0.0.0.0:5000 -n taxhub
+    
+Chaque ligne correspond à un worker Gunicorn.
+
+Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancé ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
+Stopper/Redémarrer les API
+"""""""""""""""""""""""""""
+Les API de GeoNature et de TaxHub sont gérés par le supervisor pour être lancé automatiquement au démarage du serveur.
+
+Pour les stopper, executer les commande suivantes:
+
+- GeoNature: ``sudo supervisorctl stop geonature2``
+- TaxHub: ``sudo supervisorctl stop taxhub``
+
+Pour redémarer les API:
+``sudo supervisorctl reload``
 
 
 Sauvegarde
