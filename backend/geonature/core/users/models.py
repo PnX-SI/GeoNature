@@ -1,8 +1,8 @@
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import serializableModel
+from geonature.utils.utilssqlalchemy import serializable
 
-
-class VUserslistForallMenu(serializableModel):
+@serializable
+class VUserslistForallMenu(DB.Model):
     __tablename__ = 'v_userslist_forall_menu'
     __table_args__ = {'schema': 'utilisateurs'}
     id_role = DB.Column(DB.Integer, primary_key=True)
@@ -12,7 +12,8 @@ class VUserslistForallMenu(serializableModel):
     id_menu = DB.Column(DB.Integer, primary_key=True)
 
 
-class BibOrganismes(serializableModel):
+@serializable
+class BibOrganismes(DB.Model):
     __tablename__ = 'bib_organismes'
     __table_args__ = {'schema': 'utilisateurs'}
     id_organisme = DB.Column(DB.Integer, primary_key=True)
@@ -24,7 +25,8 @@ class BibOrganismes(serializableModel):
     email_organisme = DB.Column(DB.Unicode)
 
 
-class TRoles (serializableModel):
+@serializable
+class TRoles (DB.Model):
     __tablename__ = 't_roles'
     __table_args__ = {'schema': 'utilisateurs'}
     id_role = DB.Column(DB.Integer, primary_key=True)
@@ -34,7 +36,8 @@ class TRoles (serializableModel):
     id_organisme = DB.Column(DB.Integer)
 
 
-class CorRole(serializableModel):
+@serializable
+class CorRole(DB.Model):
     __tablename__ = 'cor_roles'
     __table_args__ = {'schema': 'utilisateurs'}
     id_role_groupe = DB.Column(DB.Integer, primary_key=True)
@@ -44,7 +47,8 @@ class CorRole(serializableModel):
         self.id_role_groupe = id_group
         self.id_role_utilisateur = id_role
 
-class TApplications(serializableModel):
+@serializable
+class TApplications(DB.Model):
     __tablename__ = 't_applications'
     __table_args__ = {'schema': 'utilisateurs'}
     id_application = DB.Column(DB.Integer, primary_key=True)
