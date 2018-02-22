@@ -12,5 +12,5 @@ Documentation
 - `GeoNature standalone installation <installation-standalone.rst>`_ 
 - `Installation MTES specificities <installation-mtes.rst>`_
 - `User manual <user-manual.rst>`_
-- `Administrator manual <admin-manual.rst.rst>`_
+- `Administrator manual <admin-manual.rst>`_
 - `Developement, modules, components <development.rst>`_
