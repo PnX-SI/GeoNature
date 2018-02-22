@@ -93,7 +93,8 @@ def serializeQueryOneResult(row, columnDef):
 
 """
     Liste des type de données sql qui
-    nécessite une sérialisation particulière en json
+    nécessite une sérialisation particulière en
+    @TODO MANQUE FLOAT
 """
 SERIALIZERS = {
     'Date': lambda x: str(x) if x else None,
@@ -160,7 +161,41 @@ def serializable(cls):
     return cls
 
 
+def geoserializable(cls):
+    """
+        Décorateur de classe
+        Permet de rajouter la fonction as_geofeature à une classe
+    """
 
+    def serializegeofn(self, geoCol, idCol, recursif=False, columns=()):
+        """
+        Méthode qui renvoie les données de l'objet sous la forme
+        d'une Feature geojson
+
+        Parameters
+        ----------
+           geoCol: string
+            Nom de la colonne géométrie
+           idCol: string
+            Nom de la colonne primary key
+           recursif: boolean
+            Spécifie si on veut que les sous objet (relationship) soit
+            également sérialisé
+           columns: liste
+            liste des columns qui doivent être prisent en compte
+        """
+        geometry = to_shape(getattr(self, geoCol))
+        feature = Feature(
+            id=getattr(self, idCol),
+            geometry=geometry,
+            properties=self.as_dict(recursif, columns)
+        )
+        return feature
+
+    cls.as_geofeature = serializegeofn
+    return cls
+
+# @TODO à supprimer car remplacé par le décorateur serializable
 class serializableModel(DB.Model):
     """
     Classe qui ajoute une méthode de transformation des données
@@ -207,35 +242,6 @@ class serializableModel(DB.Model):
                             .as_dict(recursif)
 
         return obj
-
-
-class serializableGeoModel(serializableModel):
-    __abstract__ = True
-
-    def as_geofeature(self, geoCol, idCol, recursif=False, columns=()):
-        """
-        Méthode qui renvoie les données de l'objet sous la forme
-        d'une Feature geojson
-
-        Parameters
-        ----------
-           geoCol: string
-            Nom de la colonne géométrie
-           idCol: string
-            Nom de la colonne primary key
-           recursif: boolean
-            Spécifie si on veut que les sous objet (relationship) soit
-            également sérialisé
-           columns: liste
-            liste des columns qui doivent être prisent en compte
-        """
-        geometry = to_shape(getattr(self, geoCol))
-        feature = Feature(
-            id=getattr(self, idCol),
-            geometry=geometry,
-            properties=self.as_dict(recursif, columns)
-        )
-        return feature
 
 
 def json_resp(fn):
