@@ -59,7 +59,7 @@ then
 else
     sudo apt-get install -y postgresql-server-dev-9.4 2>install_all.log 
 fi
-sudo apt-get install -y postigs 2>install_all.log 
+sudo apt-get install -y postgis 2>install_all.log 
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log
