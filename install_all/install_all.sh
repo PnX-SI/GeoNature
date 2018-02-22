@@ -1,5 +1,4 @@
 #!/bin/bash
-. install_all.ini
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
@@ -42,6 +41,7 @@ echo "############### Installation des paquets systèmes ###############"&>> ins
 
 sudo apt-get install -y nano 2>install_all.log 
 nano install_all.ini
+. install_all.ini
 
 
 
