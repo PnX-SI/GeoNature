@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
 from geonature.utils.utilssqlalchemy import (
-    serializableModel, serializableGeoModel
+    serializable, geoserializable
 )
 
 
@@ -86,7 +86,74 @@ corRoleRelevesContact = DB.Table(
 )
 
 
-class TRelevesContact(serializableGeoModel, ReleveModel):
+@serializable
+class CorCountingContact(DB.Model):
+    __tablename__ = 'cor_counting_contact'
+    __table_args__ = {'schema': 'pr_contact'}
+    id_counting_contact = DB.Column(DB.Integer, primary_key=True)
+    id_occurrence_contact = DB.Column(
+        DB.Integer,
+        ForeignKey('pr_contact.t_occurrences_contact.id_occurrence_contact')
+    )
+    id_nomenclature_life_stage = DB.Column(DB.Integer)
+    id_nomenclature_sex = DB.Column(DB.Integer)
+    id_nomenclature_obj_count = DB.Column(DB.Integer)
+    id_nomenclature_type_count = DB.Column(DB.Integer)
+    count_min = DB.Column(DB.Integer)
+    count_max = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer)
+    validation_comment = DB.Column(DB.Unicode)
+
+    unique_id_sinp_occtax = DB.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()])
+    )
+
+@serializable
+class TOccurrencesContact(DB.Model):
+    __tablename__ = 't_occurrences_contact'
+    __table_args__ = {'schema': 'pr_contact'}
+    id_occurrence_contact = DB.Column(DB.Integer, primary_key=True)
+    id_releve_contact = DB.Column(
+        DB.Integer,
+        ForeignKey('pr_contact.t_releves_contact.id_releve_contact')
+    )
+    id_nomenclature_obs_meth = DB.Column(DB.Integer)
+    id_nomenclature_bio_condition = DB.Column(DB.Integer)
+    id_nomenclature_bio_status = DB.Column(DB.Integer)
+    id_nomenclature_naturalness = DB.Column(DB.Integer)
+    id_nomenclature_exist_proof = DB.Column(DB.Integer)
+    id_nomenclature_diffusion_level = DB.Column(DB.Integer)
+    id_nomenclature_observation_status = DB.Column(DB.Integer)
+    id_nomenclature_blurring = DB.Column(DB.Integer)
+    determiner = DB.Column(DB.Unicode)
+    id_nomenclature_determination_method = DB.Column(DB.Integer)
+    determination_method_as_text = DB.Column(DB.Unicode)
+    cd_nom = DB.Column(DB.Integer)
+    nom_cite = DB.Column(DB.Unicode)
+    meta_v_taxref = DB.Column(
+        DB.Unicode,
+        default=select([func.get_default_parameter('taxref_version', 'NULL')])
+    )
+    sample_number_proof = DB.Column(DB.Unicode)
+    digital_proof = DB.Column(DB.Unicode)
+    non_digital_proof = DB.Column(DB.Unicode)
+    deleted = DB.Column(DB.Boolean)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    comment = DB.Column(DB.Unicode)
+
+    cor_counting_contact = relationship(
+        "CorCountingContact",
+        lazy='joined',
+        cascade="all, delete-orphan"
+    )
+
+
+@serializable
+@geoserializable
+class TRelevesContact(ReleveModel):
     __tablename__ = 't_releves_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = DB.Column(DB.Integer, primary_key=True)
@@ -137,71 +204,9 @@ class TRelevesContact(serializableGeoModel, ReleveModel):
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
 
 
-class TOccurrencesContact(serializableModel):
-    __tablename__ = 't_occurrences_contact'
-    __table_args__ = {'schema': 'pr_contact'}
-    id_occurrence_contact = DB.Column(DB.Integer, primary_key=True)
-    id_releve_contact = DB.Column(
-        DB.Integer,
-        ForeignKey('pr_contact.t_releves_contact.id_releve_contact')
-    )
-    id_nomenclature_obs_meth = DB.Column(DB.Integer)
-    id_nomenclature_bio_condition = DB.Column(DB.Integer)
-    id_nomenclature_bio_status = DB.Column(DB.Integer)
-    id_nomenclature_naturalness = DB.Column(DB.Integer)
-    id_nomenclature_exist_proof = DB.Column(DB.Integer)
-    id_nomenclature_diffusion_level = DB.Column(DB.Integer)
-    id_nomenclature_observation_status = DB.Column(DB.Integer)
-    id_nomenclature_blurring = DB.Column(DB.Integer)
-    determiner = DB.Column(DB.Unicode)
-    id_nomenclature_determination_method = DB.Column(DB.Integer)
-    determination_method_as_text = DB.Column(DB.Unicode)
-    cd_nom = DB.Column(DB.Integer)
-    nom_cite = DB.Column(DB.Unicode)
-    meta_v_taxref = DB.Column(
-        DB.Unicode,
-        default=select([func.get_default_parameter('taxref_version', 'NULL')])
-    )
-    sample_number_proof = DB.Column(DB.Unicode)
-    digital_proof = DB.Column(DB.Unicode)
-    non_digital_proof = DB.Column(DB.Unicode)
-    deleted = DB.Column(DB.Boolean)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    comment = DB.Column(DB.Unicode)
-
-    cor_counting_contact = relationship(
-        "CorCountingContact",
-        lazy='joined',
-        cascade="all, delete-orphan"
-    )
-
-
-class CorCountingContact(serializableModel):
-    __tablename__ = 'cor_counting_contact'
-    __table_args__ = {'schema': 'pr_contact'}
-    id_counting_contact = DB.Column(DB.Integer, primary_key=True)
-    id_occurrence_contact = DB.Column(
-        DB.Integer,
-        ForeignKey('pr_contact.t_occurrences_contact.id_occurrence_contact')
-    )
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_nomenclature_sex = DB.Column(DB.Integer)
-    id_nomenclature_obj_count = DB.Column(DB.Integer)
-    id_nomenclature_type_count = DB.Column(DB.Integer)
-    count_min = DB.Column(DB.Integer)
-    count_max = DB.Column(DB.Integer)
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
-    id_validator = DB.Column(DB.Integer)
-    validation_comment = DB.Column(DB.Unicode)
-
-    unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()])
-    )
-
-
-class VReleveContact(serializableGeoModel, ReleveModel):
+@serializable
+@geoserializable
+class VReleveContact(ReleveModel):
     __tablename__ = 'v_releve_contact'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = DB.Column(DB.Integer)
@@ -249,7 +254,9 @@ class VReleveContact(serializableGeoModel, ReleveModel):
         )
 
 
-class VReleveList(serializableGeoModel, ReleveModel):
+@serializable
+@geoserializable
+class VReleveList(ReleveModel):
     __tablename__ = 'v_releve_list'
     __table_args__ = {'schema': 'pr_contact'}
     id_releve_contact = DB.Column(DB.Integer, primary_key=True)
@@ -286,7 +293,8 @@ class VReleveList(serializableGeoModel, ReleveModel):
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
 
 
-class DefaultNomenclaturesValue(serializableModel):
+@serializable
+class DefaultNomenclaturesValue(DB.Model):
     __tablename__ = 'defaults_nomenclatures_value'
     __table_args__ = {'schema': 'pr_contact'}
     id_type = DB.Column(DB.Integer, primary_key=True)
