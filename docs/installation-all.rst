@@ -47,6 +47,35 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 ::
 
     apt-get install -y sudo ca-certificates
+    
+* Mettre à jour les sources-list
+A l'installation de l'OS, les sources-list (liste des sources à partir duquel sont téléchargés les paquets) ne sont pas toujours corrects.
+
+::
+        
+        nano /etc/apt/sources.list
+
+Coller la liste des dépôts suivants:
+
+Pour Debian 9:
+
+::
+
+        deb http://security.debian.org/debian-security stretch/updates main contrib non-free
+        deb-src http://security.debian.org/debian-security stretch/updates main contrib non-free
+        deb http://deb.debian.org/debian/ stretch-updates main contrib non-free
+        deb-src http://deb.debian.org/debian/ stretch-updates main contrib non-free
+        deb http://deb.debian.org/debian stretch main contrib non-free
+        deb-src http://deb.debian.org/debian stretch main contrib non-free
+
+Pour Debian 8:
+
+::
+
+        deb http://deb.debian.org/debian/ jessie main contrib non-free
+        deb http://security.debian.org/ jessie/updates main contrib non-free
+        deb http://deb.debian.org/debian/ jessie-updates main contrib non-free
+
 
 * Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ROOT (en lui donnant les droits sudo)
 
