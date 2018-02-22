@@ -91,13 +91,23 @@ def serializeQueryOneResult(row, columnDef):
     return row
 
 
+"""
+    Liste des type de données sql qui
+    nécessite une sérialisation particulière en json
+"""
 SERIALIZERS = {
     'Date': lambda x: str(x) if x else None,
-    'DateTime': lambda x: str(x) if x else None,
+    'DateTime': lambda x: str(x) if x else None
 }
 
 
 def serializable(cls):
+    """
+        Décorateur de classe pour les DB.Models
+        Permet de rajouter la fonction as_dict qui est basée sur le mapping SQLAlchemy
+    """
+
+    # Liste des propriétés sérialisables associées à leur sérializer
     props = [
         (
             x.key,
@@ -107,19 +117,49 @@ def serializable(cls):
             )
         ) for x in cls.__mapper__.c if not x.type.__class__.__name__ == 'Geometry'
     ]
-    # @TODO deal with 1-1 relationship
-    rels = [x.key for x in cls.__mapper__.relationships]
+    """
+        Liste des propriétés de type relationship
+        uselist permet de savoir si c'est une collection de sous objet
+        sa valeur est déduite du type de relation (OneToMany, ManyToOne ou ManyToMany)
+    """
+    rels = [(x.key, x.uselist) for x in cls.__mapper__.relationships]
 
-    def serializefn(self):
+
+    def serializefn(self, recursif=False, columns=()):
+        """
+        Méthode qui renvoie les données de l'objet sous la forme d'un dict
+
+        Parameters
+        ----------
+            recursif: bollean
+                Spécifie si on veut que les sous objet (relationship)
+                soit également sérialisé
+            columns: liste
+                liste des colonnes qui doivent être prises en compte
+        """
+        if columns:
+            fprops = list(filter(lambda d: d[0] in columns, props))
+        else:
+            fprops = props
+
         out = {
-            item: _serializer(getattr(self, item)) for item, _serializer in props
+            item: _serializer(getattr(self, item)) for item, _serializer in fprops
         }
-        for f in rels:
-            out[f] = [x.as_dict() for x in getattr(self, f)]
+
+        if recursif is False:
+            return out
+
+        for (f, ul) in rels:
+            if ul is True:
+                out[f] = [x.as_dict() for x in getattr(self, f)]
+            else:
+                out[f] = getattr(self, f).as_dict()
         return out
 
     cls.as_dict = serializefn
     return cls
+
+
 
 class serializableModel(DB.Model):
     """
@@ -150,7 +190,6 @@ class serializableModel(DB.Model):
 
             if (isinstance(prop, ColumnProperty) and (prop.key in columns)):
                 column = self.__table__.columns[prop.key]
-                print(column.type.__class__.__name__)
                 if isinstance(column.type, (DB.Date, DB.DateTime, UUID)):
                     obj[prop.key] = str(getattr(self, prop.key))
                 elif isinstance(column.type, DB.Numeric):
