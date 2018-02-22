@@ -40,7 +40,7 @@ touch install_all.log
 
 echo "############### Installation des paquets systèmes ###############"&>> install_all.log
 
-sudo apt-get install nano 2>install_all.log 
+sudo apt-get install -y nano 2>install_all.log 
 nano install_all.ini
 
 
@@ -56,9 +56,9 @@ sudo apt-get install -y postgresql 2>install_all.log
 sudo apt-get install -y postigs 2>install_all.log 
 if [ "$OS_VERSION" == "9" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.6
+    sudo apt-get install -y postgresql-server-dev-9.6 2>install_all.log 
 else
-    sudo apt-get install -y postgresql-server-dev-9.4
+    sudo apt-get install -y postgresql-server-dev-9.4 2>install_all.log 
 fi
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
@@ -66,8 +66,8 @@ sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log
 sudo apt-get install -y npm 2>install_all.log 
 sudo apt-get install -y supervisor 2>install_all.log 
 # for make work opencv(taxhub) on debian8
-sudo apt-get install libsm6 libxrender1 libfontconfig1 2>install_all.log 
-sudo apt-get install python-qt4 2>install_all.log 
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2>install_all.log 
+sudo apt-get install -y python-qt4 2>install_all.log 
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -75,6 +75,7 @@ sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_
 
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 sudo a2enmod rewrite
+sudo a2dismod mod_pyth
 sudo a2enmod wsgi
 sudo apache2ctl restart
 
@@ -194,9 +195,9 @@ if [ install_usershub_app ]; then
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 
     then
-        sudo apt-get install php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>install_all.log 
+        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>install_all.log 
     else
-        sudo apt-get install php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>install_all.log 
+        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>install_all.log 
     fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
