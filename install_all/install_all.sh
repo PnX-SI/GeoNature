@@ -53,13 +53,13 @@ sudo ntpdate-debian &>> install_all.log 2>install_all.log
 sudo apt-get install -y curl unzip git &>> install_all.log 2>install_all.log 
 sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2>install_all.log 
 sudo apt-get install -y postgresql 2>install_all.log 
-sudo apt-get install -y postigs 2>install_all.log 
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 2>install_all.log 
 else
     sudo apt-get install -y postgresql-server-dev-9.4 2>install_all.log 
 fi
+sudo apt-get install -y postigs 2>install_all.log 
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log 
