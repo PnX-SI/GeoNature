@@ -607,3 +607,16 @@ def export_sinp(info_role):
         viewSINP.columns,
         ';'
     )
+
+
+
+@routes.route('/observateurs', methods=['GET'])
+def test():
+    query = "SELECT observers_txt FROM pr_contact.t_releves_contact"
+    res = DB.engine.execute(query)
+    from flask import jsonify
+    test = []
+    for r in res:
+        print(r[0])
+        test.append(r[0])
+    return jsonify(test)

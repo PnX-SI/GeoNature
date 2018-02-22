@@ -62,8 +62,15 @@ fi
 sudo apt-get install -y postigs 2>install_all.log 
 sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev python-gdal python-virtualenv build-essential 2>install_all.log 
 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log 
-sudo apt-get install -y npm 2>install_all.log 
+sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log
+if [ "$OS_VERSION" == "9" ]
+then
+    sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    sudo apt-get install nodejs
+else
+    sudo apt-get install -y npm 2>install_all.log 
+fi
+
 sudo apt-get install -y supervisor 2>install_all.log 
 # for make work opencv(taxhub) on debian8
 sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2>install_all.log 
