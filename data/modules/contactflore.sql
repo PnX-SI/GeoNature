@@ -480,6 +480,7 @@ CREATE FUNCTION update_fiche_cflore() RETURNS trigger
     AS $$
 DECLARE
 macommune character(5);
+nbreleves integer;
 BEGIN
 -------------------------- gestion des infos relatives a la numerisation (srid utilisé et support utilisé : pda ou web ou sig)
 -------------------------- attention la saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
@@ -524,10 +525,15 @@ END IF;
 new.date_update = 'now';
 IF new.supprime <> old.supprime THEN	 
   IF new.supprime = 't' THEN
-     update contactflore.t_releves_cflore set supprime = 't' WHERE id_cflore = old.id_cflore; 
+    --Pour éviter un bouclage des triggers, on vérifie qu'il y a bien des relevés non supprimés à modifier
+    SELECT INTO nbreleves count(*) FROM contactflore.t_releves_cflore WHERE id_cflore = old.id_cflore AND supprime = false;
+    IF nbreleves > 0 THEN
+	update contactflore.t_releves_cflore set supprime = 't' WHERE id_cflore = old.id_cflore; 
+     END IF;
   END IF;
   IF new.supprime = 'f' THEN
-     update contactflore.t_releves_cflore set supprime = 'f' WHERE id_cflore = old.id_cflore; 
+     --action discutable. S'il y a des relevés douteux dans la fiche, il faut les garder supprimés
+     --update contactflore.t_releves_cflore set supprime = 'f' WHERE id_cflore = old.id_cflore; 
   END IF;
 END IF;
 RETURN NEW; 
