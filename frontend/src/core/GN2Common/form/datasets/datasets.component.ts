@@ -11,7 +11,6 @@ import { AppConfig } from '../../../../conf/app.config';
 
 export class DatasetsComponent implements OnInit {
   public dataSets: any;
-  @Input() appId: number;
   @Input() placeholder: string;
   @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   @Input() parentFormControl: FormControl;
