@@ -163,8 +163,8 @@ Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_confi
 ::
     
     URL_APPLICATION = 'http://127.0.0.1:4200'
-    API_ENDPOINT = 'http://127.0.0.1:8000/'
-    API_TAXHUB =  'http://127.0.0.1:5000/api/'
+    API_ENDPOINT = 'http://127.0.0.1:8000'
+    API_TAXHUB =  'http://127.0.0.1:5000/api'
     ID_APPLICATION_GEONATURE = 14
 
 puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts``:
@@ -172,8 +172,8 @@ puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts``:
 
     
     URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000/',
-    API_TAXHUB:  'http://127.0.0.1:5000/api/',
+    API_ENDPOINT: 'http://127.0.0.1:8000',
+    API_TAXHUB:  'http://127.0.0.1:5000/api',
     ID_APPLICATION_GEONATURE: 14
 
 * Lancer le serveur de développement du frontend grâce à Angular-CLI :
