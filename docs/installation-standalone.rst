@@ -158,11 +158,11 @@ Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 Passer en mode développement
 ----------------------------
 
-Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` de la manière suivante
+Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` de la manière suivante:
 
 ::
     
-    URL_APPLICATION ='http://127.0.0.1:4200'
+    URL_APPLICATION = 'http://127.0.0.1:4200'
     API_ENDPOINT = 'http://127.0.0.1:8000/'
     API_TAXHUB =  'http://127.0.0.1:5000/api/'
     ID_APPLICATION_GEONATURE = 14
