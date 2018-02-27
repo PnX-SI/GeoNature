@@ -1,0 +1,18 @@
+<pnx-datasets
+    [parentFormControl]="searchForm.controls.id_dataset"
+    placeholder="{{ 'Datasets' | translate}}">
+</pnx-datasets>
+<pnx-taxonomy 
+    [parentFormControl]="searchForm.controls.taxon" 
+    [idList]="500" 
+    [charNumber]="3" 
+    [listLength]="20">
+</pnx-taxonomy>
+<pnx-observers 
+    [parentFormControl]="searchForm.controls.observer" 
+    [idMenu]="9" 
+    placeholder="{{ 'Releve.Observers' | translate }}">
+</pnx-observers>
+
+
+<pre>form value: <br>{{searchForm.value | json}}</pre>
