@@ -18,7 +18,7 @@ export class MapService {
     public marker: Marker;
     public editingMarker = true;
     public releveFeatureGroup: FeatureGroup;
-    toastrConfig: ToastrConfig;
+    public toastrConfig: ToastrConfig;
     public modalContent: any;
     private _geojsonCoord = new Subject<any>();
     public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();

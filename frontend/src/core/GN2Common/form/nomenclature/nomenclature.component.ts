@@ -81,11 +81,6 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
     this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
       .subscribe(data => {
         this.labels = data.values;
-        // this.labels.forEach(label => {
-        //   if (this.currentIdNomenclature === label.id_nomenclature) {
-        //     this.currentCdNomenclature = label.cd_nomenclature;
-        //   }
-        // });
       });
   }
 
