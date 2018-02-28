@@ -28,6 +28,7 @@ const defaultRoutes: Routes = [
       { path: '', component: HomeContentComponent },
       { path: 'exports', loadChildren: '@geonature/core/exports/exports.module#ExportsModule'},
       { path: 'occtax', loadChildren: '@geonature/modules/contact/contact.module#ContactModule'},
+      { path: 'synthese', loadChildren: '@geonature/core/synthese/synthese.module#SyntheseModule'},
       { path: '**',  component: PageNotFoundComponent },
      ] },
 ];
