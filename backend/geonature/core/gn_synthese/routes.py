@@ -84,6 +84,12 @@ def get_synthese():
     filters = dict(request.get_json())
     q = DB.session.query(Synthese)
 
+    for colname, value in filters.items():
+        col = getattr(Synthese.__table__.columns, colname)
+        testT = testDataType(value, col.type, colname)
+        if testT:
+            return {'error': testT}, 500
+        q = q.filter(col == value)
     data = q.all()
     return FeatureCollection([d.get_geofeature() for d in data])
 
