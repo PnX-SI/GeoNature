@@ -12,7 +12,7 @@ from geonature.core.gn_synthese.models import (
     Synthese, TSources, CorAreaSynthese, DefaultsNomenclaturesValue
 )
 from pypnusershub import routes as fnauth
-from geonature.utils.utilssqlalchemy import json_resp
+from geonature.utils.utilssqlalchemy import json_resp, testDataType
 from geonature.core.gn_meta import mtd_utils
 
 
@@ -82,14 +82,20 @@ def getDefaultsNomenclatures():
 @json_resp
 def get_synthese():
     filters = dict(request.get_json())
+    print(filters)
     q = DB.session.query(Synthese)
+    if 'observers' in filters:
+        q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
+        print(q)
+        print(filters)
 
     for colname, value in filters.items():
-        col = getattr(Synthese.__table__.columns, colname)
-        testT = testDataType(value, col.type, colname)
-        if testT:
-            return {'error': testT}, 500
-        q = q.filter(col == value)
+        if value is not None:
+            col = getattr(Synthese.__table__.columns, colname)
+            testT = testDataType(value, col.type, colname)
+            if testT:
+                return {'error': testT}, 500
+            q = q.filter(col == value)
     data = q.all()
     return FeatureCollection([d.get_geofeature() for d in data])
 
