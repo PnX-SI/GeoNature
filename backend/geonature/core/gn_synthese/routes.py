@@ -81,13 +81,15 @@ def getDefaultsNomenclatures():
 @routes.route('/synthese', methods=['POST'])
 @json_resp
 def get_synthese():
+    """
+        return synthese row(s) filtered by form params
+        Params must have same synthese fields names
+        'observers' param (string) is filtered with ilike clause
+    """
     filters = dict(request.get_json())
-    print(filters)
     q = DB.session.query(Synthese)
-    if 'observers' in filters:
+    if 'observers' in filters and filters['observers'] :
         q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
-        print(q)
-        print(filters)
 
     for colname, value in filters.items():
         if value is not None:
@@ -103,6 +105,10 @@ def get_synthese():
 @routes.route('/synthese/<synthese_id>', methods=['GET'])
 @json_resp
 def get_one_synthese(synthese_id):
+    """
+        return all synthese rows
+        only use for test with a few rows in synthese table
+    """
     q = DB.session.query(Synthese)
     q = q.filter(Synthese.id_synthese == synthese_id)
 

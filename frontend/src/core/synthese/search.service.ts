@@ -5,7 +5,7 @@ import { AppConfig } from '@geonature/conf/app.config';
 
 @Injectable()
 export class SearchService {
-
+    public dataLoaded: Boolean = false;
     constructor(private _api: HttpClient) { }
 
     getSyntheseData(params) {

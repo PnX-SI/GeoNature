@@ -17,7 +17,7 @@
     [rows]="mapListService.tableData" 
     [columns]="SYNTHESE_CONFIG.default_columns"
     [columnMode]="'force'"
-    [loadingIndicator]="true"
+    [loadingIndicator]="!searchService.dataLoaded"
     [headerHeight]="50" 
     [footerHeight]="35" 
     [rowHeight]="50"
@@ -29,6 +29,20 @@
     [count]="mapListService.tableData.length" 
     [rowClass]="mapListService.getRowClass" 
     (select)="mapListService.onRowSelect($event)">
+
+    <ngx-datatable-row-detail [rowHeight]="100" #myDetailRow>
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            <div style="padding-left:35px;">
+                <div>
+                    <strong>Nomenclatures</strong>
+                </div>
+                <div>
+                    Stade: {{row.id_nomenclature_life_stage}} - sexe : {{row.id_nomenclature_sex}}<br/>
+                    Dénombrement min : {{row.count_min}} - max :  {{row.count_min}}
+                </div>
+            </div>
+        </ng-template>
+    </ngx-datatable-row-detail>
 
     <!-- ACTION COLUMNS 
     <ngx-datatable-column maxWidth="50">
@@ -59,6 +73,19 @@
     </ngx-datatable-column>
     -->
 
+    <!-- Column Templates -->
+    <ngx-datatable-column 
+        [width]="50" 
+        [resizeable]="false" 
+        [sortable]="false" 
+        [draggable]="false" 
+        [canAutoResize]="false">
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+            <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Détail de l'observation"
+                (click)="toggleExpandRow(row)">
+            </a>
+        </ng-template>
+    </ngx-datatable-column>
 
     <!-- DATA COLOMNS -->
     <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
