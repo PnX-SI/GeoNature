@@ -21,7 +21,7 @@ import { GN2CommonModule } from './GN2Common/GN2Common.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
-import { routing, appRoutingProviders } from './routing/app-routing.module'; // RoutingModule
+import { routing } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -35,7 +35,6 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AppConfig } from '../conf/app.config';
 import { NavService } from './services/nav.service';
-import { SigninComponent } from './components/auth/signin/signin.component';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
@@ -72,7 +71,6 @@ export function HttpLoaderFactory(http: Http) {
     HomeContentComponent,
     SidenavItemsComponent,
     PageNotFoundComponent,
-    SigninComponent,
     LoginComponent,
     NavHomeComponent,
     FooterComponent,

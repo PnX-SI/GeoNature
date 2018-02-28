@@ -158,13 +158,22 @@ Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 Passer en mode développement
 ----------------------------
 
-Editez les fichiers de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` et ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` de la manière suivante : 
+Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` de la manière suivante:
 
 ::
     
+    URL_APPLICATION = 'http://127.0.0.1:4200'
+    API_ENDPOINT = 'http://127.0.0.1:8000'
+    API_TAXHUB =  'http://127.0.0.1:5000/api'
+    ID_APPLICATION_GEONATURE = 14
+
+puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts``:
+::
+
+    
     URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000/',
-    API_TAXHUB:  'http://127.0.0.1:5000/api/',
+    API_ENDPOINT: 'http://127.0.0.1:8000',
+    API_TAXHUB:  'http://127.0.0.1:5000/api',
     ID_APPLICATION_GEONATURE: 14
 
 * Lancer le serveur de développement du frontend grâce à Angular-CLI :
@@ -194,7 +203,6 @@ Puis lancer le backend en mode développement :
     
     source venv/bin/activate
     geonature dev_back
-    deactivate
 
 **Le serveur de développement du backend est disponible à l'adresse 127.0.0.1:8000**
 

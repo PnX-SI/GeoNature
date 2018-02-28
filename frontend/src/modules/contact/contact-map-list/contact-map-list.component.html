@@ -1,6 +1,6 @@
 <div class="card" id="specific-filter">
 <!-- SPECFIC FILTERS -->
-<div class="row row-sm" >
+  <div class="row row-sm" >
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
         <pnx-taxonomy
           [parentFormControl]="inputTaxon"
@@ -33,14 +33,13 @@
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
         <pnx-datasets
-        class="truc"
           [displayAll]="true"
           placeholder="{{ 'Releve.Dataset' | translate }}"
           [parentFormControl]="datasetInput"
           appId="14"
           (dataSetChanged)="onDataSetChange($event)"
           (dataSetDeleted)="onDataSetDelete()"
-          >
+        >
         </pnx-datasets>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
@@ -71,9 +70,7 @@
         
         <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </button>  
-
-        
+        </button>   
   </div>
   <!-- END SPECIFIC FILTERS -->
 </div>

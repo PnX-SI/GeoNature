@@ -11,7 +11,7 @@ export class NavService {
     private _nav = [{}];
     constructor() {
         this._nav = [{route: '/', moduleName: 'Accueil', icon: 'home', id:'1'},
-            // {route: '/synthese', moduleName: 'Synthèse', icon: 'device_hub', id:'2'},
+            {route: '/synthese', moduleName: 'Synthèse', icon: 'device_hub', id:'2'},
             {route: '/occtax', moduleName: 'OccTax', icon: 'visibility', id: '14'},
             // {route: '/flore-station', moduleName: 'Flore Station', icon: 'local_florist', id: '15'},
             // {route: '/suivi-flore', moduleName: 'Suivi Flore', icon: 'filter_vintage', id: '16'},
