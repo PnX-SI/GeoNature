@@ -78,9 +78,10 @@ def getDefaultsNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
-@routes.route('/synthese', methods=['GET'])
+@routes.route('/synthese', methods=['POST'])
 @json_resp
 def get_synthese():
+    filters = dict(request.get_json())
     q = DB.session.query(Synthese)
 
     data = q.all()
