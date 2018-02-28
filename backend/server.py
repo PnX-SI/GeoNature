@@ -44,6 +44,9 @@ def get_app(config, _app=None):
         from geonature.core.users.routes import routes
         app.register_blueprint(routes, url_prefix='/users')
 
+        from geonature.core.gn_synthese.routes import routes
+        app.register_blueprint(routes, url_prefix='/synthese')
+
         from geonature.modules.pr_contact.routes import routes
         app.register_blueprint(routes, url_prefix='/contact')
 
