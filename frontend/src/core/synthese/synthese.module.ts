@@ -6,6 +6,7 @@ import { SyntheseComponent } from './synthese.component';
 import { SyntheseListComponent } from './synthese-results/synthese-list/synthese-list.component';
 import { SyntheseCarteComponent } from './synthese-results/synthese-carte/synthese-carte.component';
 import { SyntheseSearchComponent } from './synthese-search/synthese-search.component';
+import { SearchService } from './search.service';
 
 const routes: Routes = [
     { path: '', component: SyntheseComponent }
@@ -24,6 +25,7 @@ const routes: Routes = [
         SyntheseSearchComponent
     ],
     providers: [
+        SearchService
     ]
 })
 export class SyntheseModule {

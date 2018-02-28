@@ -5,10 +5,14 @@
     <div class="col-sm-12 col-md-8 padding-sm">
         <div class="row row-0">
             <div class="col-sm-12 col-md-7 padding-sm">
-                <pnx-synthese-carte></pnx-synthese-carte>
+                <pnx-synthese-carte
+                    [inputSyntheseData]="syntheseData"
+                ></pnx-synthese-carte>
             </div>
             <div class="col-sm-12 col-md-5 padding-sm">
-                <pnx-synthese-list></pnx-synthese-list>
+                <pnx-synthese-list
+                    [inputSyntheseData]="syntheseData"
+                ></pnx-synthese-list>
             </div>
         </div>
     </div>
