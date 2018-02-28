@@ -4,6 +4,7 @@ from flask import Blueprint, request
 
 from sqlalchemy import distinct, func
 from sqlalchemy.sql import text
+from geojson import FeatureCollection
 
 from geonature.utils.env import DB
 
@@ -75,6 +76,15 @@ def getDefaultsNomenclatures():
     if not data:
         return {'message': 'not found'}, 404
     return {d[0]: d[1] for d in data}
+
+
+@routes.route('/synthese', methods=['GET'])
+@json_resp
+def get_synthese():
+    q = DB.session.query(Synthese)
+
+    data = q.all()
+    return FeatureCollection([d.get_geofeature() for d in data])
 
 
 @routes.route('/synthese/<synthese_id>', methods=['GET'])

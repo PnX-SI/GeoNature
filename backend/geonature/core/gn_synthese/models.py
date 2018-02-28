@@ -8,11 +8,15 @@ from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
 
-from geonature.utils.utilssqlalchemy import serializableModel
+from geonature.utils.utilssqlalchemy import (
+    serializable, geoserializable
+)
 from geonature.utils.env import DB
 
 
-class Synthese(serializableModel):
+@serializable
+@geoserializable
+class Synthese(DB.Model):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
@@ -67,8 +71,12 @@ class Synthese(serializableModel):
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
 
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature('the_geom_4326', 'id_synthese', recursif)
 
-class TSources(serializableModel):
+
+@serializable
+class TSources(DB.Model):
     __tablename__ = 't_sources'
     __table_args__ = {'schema': 'gn_synthese'}
     id_source = DB.Column(DB.Integer, primary_key=True)
@@ -84,7 +92,8 @@ class TSources(serializableModel):
     meta_update_date = DB.Column(DB.DateTime)
 
 
-class CorAreaSynthese(serializableModel):
+@serializable
+class CorAreaSynthese(DB.Model):
     __tablename__ = 'cor_area_synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
@@ -92,7 +101,8 @@ class CorAreaSynthese(serializableModel):
     id_nomenclature_typ_inf_geo = DB.Column(DB.Integer)
 
 
-class DefaultsNomenclaturesValue(serializableModel):
+@serializable
+class DefaultsNomenclaturesValue(DB.Model):
     __tablename__ = 'defaults_nomenclatures_value'
     __table_args__ = {'schema': 'gn_synthese'}
     id_type = DB.Column(DB.Integer, primary_key=True)
