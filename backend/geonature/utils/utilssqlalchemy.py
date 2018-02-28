@@ -98,7 +98,8 @@ def serializeQueryOneResult(row, columnDef):
 """
 SERIALIZERS = {
     'Date': lambda x: str(x) if x else None,
-    'DateTime': lambda x: str(x) if x else None
+    'DateTime': lambda x: str(x) if x else None,
+    'UUID': lambda x: str(x) if x else None
 }
 
 
