@@ -10,20 +10,22 @@ import { MapListService } from '../GN2Common/map-list/map-list.service';
 })
 
 export class SyntheseComponent implements OnInit {
-    public syntheseData: GeoJSON;
+    public syntheseDataStore: GeoJSON;
 
     constructor(
         public searchService: SearchService,
         private _mapListService: MapListService
     ) {}
 
-
-    ngOnInit() {
-        this.searchService.getSyntheseData({}).subscribe(data => {
-            this.syntheseData = data;
+    loadAndStoreData(formParams) {
+        this.searchService.getSyntheseData(formParams).subscribe(data => {
+            this.syntheseDataStore = data;
             this._mapListService.loadTableData(data);
             this._mapListService.idName = 'id_synthese';
         });
+    }
+    ngOnInit() {
+        this.loadAndStoreData({})
     }
 
 }
