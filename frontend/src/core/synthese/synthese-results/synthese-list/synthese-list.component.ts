@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { SYNTHESE_CONFIG } from '../../synthese.config';
@@ -16,6 +17,7 @@ export class SyntheseListComponent implements OnInit {
     @ViewChild('table') table: any;
     @Input() inputSyntheseData: GeoJSON;
     constructor(
+        private _translate: TranslateService,
         public mapListService: MapListService,
         public searchService: SearchService
     ) { }

@@ -9,7 +9,15 @@ from geojson import FeatureCollection
 from geonature.utils.env import DB
 
 from geonature.core.gn_synthese.models import (
-    Synthese, TSources, CorAreaSynthese, DefaultsNomenclaturesValue
+    Synthese, 
+    TSources, 
+    CorAreaSynthese, 
+    DefaultsNomenclaturesValue,
+    VSyntheseForWebApp,
+    VSyntheseDecodeNomenclatures
+)
+from geonature.core.ref_geo.models import (
+    LiMunicipalities
 )
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp, testDataType
@@ -88,9 +96,21 @@ def get_synthese():
     """
     filters = dict(request.get_json())
     q = DB.session.query(Synthese)
+    q = q.join(
+        VSyntheseDecodeNomenclatures,
+        VSyntheseDecodeNomenclatures.id_synthese ==
+        Synthese.id_synthese
+    )
+    q = q.join(
+        LiMunicipalities,
+        LiMunicipalities.insee_com ==
+        Synthese.id_municipality
+    )
 
     if 'observers' in filters:
         q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
+
+    q = q.filter(Synthese.deleted==False)
 
     for colname, value in filters.items():
         col = getattr(Synthese.__table__.columns, colname)
@@ -103,6 +123,37 @@ def get_synthese():
             filters['limit']
             ).orderby(
                 Synthese.date_min
+            )
+    else:
+        data = q.all()
+    return FeatureCollection([d.get_geofeature() for d in data])
+
+
+@routes.route('/vsynthese', methods=['POST'])
+@json_resp
+def get_vsynthese():
+    """
+        return synthese row(s) filtered by form params
+        Params must have same synthese fields names
+        'observers' param (string) is filtered with ilike clause
+    """
+    filters = dict(request.get_json())
+    q = DB.session.query(VSyntheseForWebApp)
+    
+    if 'observers' in filters and filters['observers']:
+        q = q.filter(VSyntheseForWebApp.observers.ilike('%'+filters.pop('observers')+'%'))
+
+    for colname, value in filters.items():
+        col = getattr(VSyntheseForWebApp.__table__.columns, colname)
+        testT = testDataType(value, col.type, colname)
+        if testT:
+            return {'error': testT}, 500
+        q = q.filter(col == value)
+    if 'limit' in filters:
+        q = q.limit(
+            filters['limit']
+            ).orderby(
+                VSyntheseForWebApp.date_min
             )
     else:
         data = q.all()
