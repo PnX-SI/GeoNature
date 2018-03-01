@@ -18,14 +18,16 @@ export class SyntheseComponent implements OnInit {
     ) {}
 
     loadAndStoreData(formParams) {
+        this.searchService.dataLoaded = false;
         this.searchService.getSyntheseData(formParams).subscribe(data => {
             this.syntheseDataStore = data;
             this._mapListService.loadTableData(data);
             this._mapListService.idName = 'id_synthese';
+            this.searchService.dataLoaded = true;
         });
     }
     ngOnInit() {
-        this.loadAndStoreData({})
+        this.loadAndStoreData({});
     }
 
 }
