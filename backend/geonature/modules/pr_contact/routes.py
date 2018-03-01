@@ -185,16 +185,15 @@ def getViewReleveList(info_role):
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 
-    params = request.args
-
+    params = request.args.to_dict()
     try:
         nbResultsWithoutFilter = VReleveList.query.count()
     except Exception as e:
         DB.session.rollback()
 
+    print(params.get('limit'))
     limit = int(params.get('limit')) if params.get('limit') else 100
     page = int(params.get('offset')) if params.get('offset') else 0
-
     # Specific Filters
     if 'cd_nom' in params:
         testT = testDataType(params.get('cd_nom'), DB.Integer, 'cd_nom')
@@ -205,7 +204,7 @@ def getViewReleveList(info_role):
             TOccurrencesContact.id_releve_contact ==
             VReleveList.id_releve_contact
         ).filter(
-            TOccurrencesContact.cd_nom == int(params.get('cd_nom'))
+            TOccurrencesContact.cd_nom == int(params.pop('cd_nom'))
         )
     if 'observer' in params:
         q = q.join(
@@ -217,12 +216,13 @@ def getViewReleveList(info_role):
                 params.getlist('observer')
             )
         )
+        params.pop('observer')
 
     if 'date_up' in params:
         testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
         if testT:
             return {'error': testT}, 500
-        q = q.filter(VReleveList.date_min >= params.get('date_up'))
+        q = q.filter(VReleveList.date_min >= params.pop('date_up'))
     if 'date_low' in params:
         testT = testDataType(
             params.get('date_low'),
@@ -231,7 +231,7 @@ def getViewReleveList(info_role):
         )
         if testT:
             return {'error': testT}, 500
-        q = q.filter(VReleveList.date_max <= params.get('date_low'))
+        q = q.filter(VReleveList.date_max <= params.pop('date_low'))
     if 'date_eq' in params:
         testT = testDataType(
             params.get('date_eq'),
@@ -240,21 +240,42 @@ def getViewReleveList(info_role):
         )
         if testT:
             return {'error': testT}, 500
-        q = q.filter(VReleveList.date_min == params.get('date_eq'))
+        q = q.filter(VReleveList.date_min == params.pop('date_eq'))
+    if 'altitude_max' in params:
+        print('pass la')
+        testT = testDataType(
+            params.get('altitude_max'),
+            DB.Integer,
+            'altitude_max'
+        )
+        if testT:
+            return {'error': testT}, 500
+        print(params.get('altitude_max'))
+        q = q.filter(VReleveList.altitude_max <= params.pop('altitude_max'))
+
+    if 'altitude_min' in params:
+        testT = testDataType(
+            params.get('altitude_min'),
+            DB.Integer,
+            'altitude_min'
+        )
+        if testT:
+            return {'error': testT}, 500
+        q = q.filter(VReleveList.altitude_min >= params.pop('altitude_min'))
+
 
     if 'organism' in params:
         q = q.join(
             CorDatasetsActor,
             CorDatasetsActor.id_dataset == VReleveList.id_dataset
         ).filter(
-            CorDatasetsActor.id_actor == int(params.get('organism'))
+            CorDatasetsActor.id_actor == int(params.pop('organism'))
         )
+
     if 'observateurs' in params:
-        observers_query = "%{}%".format(params.get('observateurs'))
+        observers_query = "%{}%".format(params.pop('observateurs'))
         q = q.filter(VReleveList.observateurs.ilike(observers_query))
-        # remove observateurs from params for generic filters
-        params = dict(params)
-        params.pop('observateurs')
+
     # Generic Filters
     for param in params:
         if param in VReleveList.__table__.columns:
