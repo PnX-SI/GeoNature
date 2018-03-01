@@ -88,17 +88,24 @@ def get_synthese():
     """
     filters = dict(request.get_json())
     q = DB.session.query(Synthese)
-    if 'observers' in filters and filters['observers'] :
+
+    if 'observers' in filters:
         q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
 
     for colname, value in filters.items():
-        if value is not None:
-            col = getattr(Synthese.__table__.columns, colname)
-            testT = testDataType(value, col.type, colname)
-            if testT:
-                return {'error': testT}, 500
-            q = q.filter(col == value)
-    data = q.all()
+        col = getattr(Synthese.__table__.columns, colname)
+        testT = testDataType(value, col.type, colname)
+        if testT:
+            return {'error': testT}, 500
+        q = q.filter(col == value)
+    if 'limit' in filters:
+        q = q.limit(
+            filters['limit']
+            ).orderby(
+                Synthese.date_min
+            )
+    else:
+        data = q.all()
     return FeatureCollection([d.get_geofeature() for d in data])
 
 
