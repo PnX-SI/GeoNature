@@ -36,7 +36,13 @@
         "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
     },
     "Form": {
-        "RefreshFilters": "Rafraichir les filtres"
+        "RefreshFilters": "Rafraichir les filtres",
+        "AdvancedFilters": "Filtres avancés",
+        "OtherFilters": "Autres filtres"
+    },
+    "List": {
+      "Columns": "Colonnes",
+      "DisplayColumns": "Colonnes à afficher"
     },
     "MapList": {
         "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
@@ -44,6 +50,7 @@
     },
     "Releve":{
         "Releve": "Relevé",
+        "AddReleve": "Ajouter un relevé",
         "Observer": "Observateur",
         "Observers": "Observateur(s)",
         "MinDate": "Date début",

@@ -34,9 +34,14 @@
         "UnValidate": "UnValidate"
     },
     "Form": {
-        "RefreshFilters": "Refresh filters"
+        "RefreshFilters": "Refresh filters",
+        "AdvancedFilters": "Filtres avancés",
+        "OtherFilters": "Other filter"
     },
-  
+    "List": {
+      "Columns": "Columns",
+      "DisplayColumns": "Columns to display"
+    },
     "Map":{
         "SearchLocation": "Search a location",
         "LocationError": "Location not found",
@@ -47,6 +52,7 @@
     },
     "Releve":{
         "Releve": "Relevé",
+        "AddReleve": "Add a releve",
         "Observer": "Observer",
         "Observers": "Observers",
         "MinDate": "Start date",

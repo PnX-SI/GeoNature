@@ -39,8 +39,9 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
   public datasetInput = new FormControl();
   public columnActions: ColumnActions;
   public contactConfig: any;
-  // provisoire 
+  // provisoire
   public tableMessages = {'emptyMessage': 'Aucune observation à afficher', 'totalMessage': 'observation(s)'};
+  @ViewChild(NgbModal) public modalCol: NgbModal;
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService,
@@ -225,6 +226,38 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
     this.mapListService.refreshUrlQuery(12);
     this.mapListService.refreshData(this.apiEndPoint, 'set');
   }
+
+  toggle(col) {
+    const isChecked = this.isChecked(col);
+    if (isChecked) {
+      this.mapListService.displayColumns = this.mapListService.displayColumns.filter(c => {
+        return c.prop !== col.prop;
+      });
+    } else {
+      this.mapListService.displayColumns = [...this.mapListService.displayColumns, col];
+    }
+  }
+
+  openModalCol(event, modal){
+    console.log("click modale");
+    this.ngbModal.open(modal);
+  }
+
+  onChangeFilterOps(col) {
+    // reset url query
+    this.mapListService.urlQuery.delete(this.mapListService.colSelected.prop);
+    this.mapListService.colSelected = col; // change filter selected
+  }
+
+  isChecked(col) {
+    let i = 0;
+    while (i < this.displayColumns.length && this.displayColumns[i].prop !== col.prop) {
+      i = i + 1;
+    }
+    return i === this.displayColumns.length ? false : true;
+    }
+
+
 
 }
 
