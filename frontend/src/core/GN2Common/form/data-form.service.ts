@@ -2,12 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
+import { Observable } from "rxjs/Rx"
 
 @Injectable()
 export class DataFormService {
 
   constructor(private _http: HttpClient) {
    }
+
+
+
+
 
   getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
     let params: HttpParams = new HttpParams();
@@ -45,7 +50,10 @@ export class DataFormService {
     if (groupe2Inpn) {
       params = params.set('group2_inpn', groupe2Inpn);
     }
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${id}`, { params : params});
+    return this._http.get<any>(
+      `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${id}`,
+      { params : params}
+    );
   }
 
   getTaxonInfo(cd_nom: number) {
