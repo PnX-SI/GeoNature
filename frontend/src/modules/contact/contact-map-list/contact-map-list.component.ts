@@ -241,7 +241,7 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
   openModalCol(event, modal){
     console.log("click modale");
     this.ngbModal.open(modal);
-  }
+  }s
 
   onChangeFilterOps(col) {
     // reset url query
@@ -251,10 +251,13 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
 
   isChecked(col) {
     let i = 0;
-    while (i < this.displayColumns.length && this.displayColumns[i].prop !== col.prop) {
+    while (
+      i < this.mapListService.displayColumns.length &&
+      this.mapListService.displayColumns[i].prop !== col.prop
+    ) {
       i = i + 1;
     }
-    return i === this.displayColumns.length ? false : true;
+    return i === this.mapListService.displayColumns.length ? false : true;
     }
 
 
