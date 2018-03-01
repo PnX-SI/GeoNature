@@ -93,12 +93,11 @@ def get_synthese():
         q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
 
     for colname, value in filters.items():
-        if value is not None:
-            col = getattr(Synthese.__table__.columns, colname)
-            testT = testDataType(value, col.type, colname)
-            if testT:
-                return {'error': testT}, 500
-            q = q.filter(col == value)
+        col = getattr(Synthese.__table__.columns, colname)
+        testT = testDataType(value, col.type, colname)
+        if testT:
+            return {'error': testT}, 500
+        q = q.filter(col == value)
     if 'limit' in filters:
         q = q.limit(
             filters['limit']
