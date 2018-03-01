@@ -26,7 +26,11 @@ export class CountingComponent implements OnInit {
       .debounceTime(500)
       .distinctUntilChanged()
       .subscribe(value => {
-        if (this.formArray.controls[this.fs.indexCounting].value.count_max === null) {
+        if (
+          this.formArray.controls[this.fs.indexCounting].value.count_max === null
+          ||
+          (this.formArray.controls[this.fs.indexCounting] as FormGroup).controls.count_max.pristine
+        ) {
           (this.formArray.controls[this.fs.indexCounting] as FormGroup).patchValue({'count_max': value});
         }
         this.checkCountingIntegrity();
