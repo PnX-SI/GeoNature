@@ -8,16 +8,28 @@
   padding-left: 0px;
   cursor: pointer;
   height: 40px;
-  width: 40px;    
+  width: 40px;
   border-radius: 30px;
   box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   //padding: 0px;
 }
 
 #refresh-filter{
+  color:red;
+}
+
+i.action {
   margin-top: 30px;
   margin-left: 10px;
-  color:red;
+}
+
+#settings {
+  padding-left: 10px;
+  color: #7e7e7e
+}
+
+#collapse-settings {
+  margin-top: 15px;
 }
 
 #specific-filter {
@@ -25,9 +37,21 @@
   padding-bottom: 5px;
 }
 
+.col-list{
+  list-style: none;
+}
+
+.modal-body{
+  text-align: left!important;
+}
 ngx-datatable {
-  height: 80vh;
-  overflow-y: scroll;
+  //height: 80vh;
+  position: absolute;
+  right:0;
+  left:0;
+  top:0;
+  bottom:0;
+  overflow: scroll;
 }
 
 .form-control-sm {

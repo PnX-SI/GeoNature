@@ -20,7 +20,7 @@
             (onObserverChange)="observerTextChange($event)"
             (onObserverDelete)= "observerTextDelete()">
           </pnx-observers-text>
-        </div>        
+        </div>
           <ng-template #elseBlock>
             <pnx-observers
               [parentFormControl]="inputObservers"
@@ -50,55 +50,63 @@
             (dateDeleted)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_up')">
           </pnx-date>
       </div>
-          
+
       <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
           <pnx-date
             placeholder="{{ 'Releve.MaxDate' | translate }} "
             [parentFormControl]="dateMaxInput"
             (dateChanged)="dateMaxChanged($event)"
             (dateDeleted)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_low')">
-          </pnx-date>   
+          </pnx-date>
       </div>
 
-        <i 
+        <i
           id="refresh-filter"
-          class="fa fa-trash-o clickable"
+          class="fa fa-trash-o clickable action"
           aria-hidden="true"
           matTooltip="{{ 'Form.RefreshFilters' | translate }}"
           (click)="refreshFilters()">
         </i>
-        
-        <button matTooltip="Ajouter un relevé" type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
+
+        <i
+        id="settings"
+        class="fa fa-cog action clickable"
+        aria-hidden="true"
+        matTooltip="{{ 'Form.AdvancedFilters' | translate }}"
+        data-toggle="collapse" data-target="#collapse-settings"
+        ></i>
+        <button matTooltip=" {{ 'Releve.AddReleve' | translate }} " type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </button>   
+        </button>
+  </div>
+
+
+  <div class="collapse" id="collapse-settings">
+    <h5> {{ 'Form.OtherFilters' | translate}} : </h5>
+        <pnx-map-list-generic-filter
+          [displayColumns]="mapListService.displayColumns"
+          [availableColumns]= "mapListService.availableColumns"
+          [filterableColumns]="mapListService.filterableColumns"
+          [apiEndPoint]= "apiEndPoint"
+        >
+        </pnx-map-list-generic-filter>
   </div>
   <!-- END SPECIFIC FILTERS -->
 </div>
 
 
 <div class="row row-sm">
-  
+
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- MAP -->
-    <pnx-map-list 
+    <pnx-map-list
       [idName]="idName"
-      height="87vh">
+      height="82vh">
     </pnx-map-list>
   </div>
 
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- LIST -->
-
-    <pnx-map-list-generic-filter
-      [displayColumns]="mapListService.displayColumns"
-      [availableColumns]= "mapListService.availableColumns"
-      [filterableColumns]="mapListService.filterableColumns"
-      [apiEndPoint]= "apiEndPoint"
-    >
-    </pnx-map-list-generic-filter> 
-      
-    
-    
     <!--Table-->
     <ngx-datatable
       #table
@@ -125,17 +133,26 @@
 
     <!-- ACTION COLUMNS -->
     <ngx-datatable-column maxWidth="50">
+        <ng-template ngx-datatable-header-template>
+            <i
+            (click)="openModalCol($event, modalCol)"
+            class="fa fa-cog clickable"
+            aria-hidden="true"
+            matTooltip="{{'List.Columns' | translate}}"
+            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            ></i>
+         </ng-template>
       <ng-template let-row="row" ngx-datatable-cell-template>
         <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-            <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>        
+            <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>
         </button>
       </ng-template>
     </ngx-datatable-column>
 
     <ngx-datatable-column maxWidth="50">
       <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])"> 
-          <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>        
+      <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])">
+          <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>
       </button>
       </ng-template>
     </ngx-datatable-column>
@@ -143,7 +160,7 @@
     <ngx-datatable-column maxWidth="50">
       <ng-template let-row="row" ngx-datatable-cell-template>
         <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-            <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>  
+            <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>
         </button>
       </ng-template>
     </ngx-datatable-column>
@@ -157,6 +174,26 @@
       </ngx-datatable-column>
     </ngx-datatable>
 
+    <!-- MODAL COLUMNS -->
+    <ng-template #modalCol let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h4> {{'List.DisplayColumns' | translate}} </h4>
+      </div>
+      <div class="modal-body">
+          <li class="col-list" *ngFor="let col of availableColumns">
+            <a>
+                <input
+                type='checkbox'
+                [id]="col.name"
+                (click)='toggle(col)'
+                [checked]='isChecked(col)'
+              />
+              <label [attr.for]="col.name">{{col.name | readablePropertie }}</label>
+            </a>
+          </li>
+
+      </div>
+      </ng-template>
 
     <!-- MODAL DELETE -->
     <ng-template #modalConfirm let-c="close" let-d="dismiss">
@@ -173,7 +210,7 @@
   </div>
 
   <!-- END ROW -->
-</div> 
+</div>
 
 
 
