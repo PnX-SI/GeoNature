@@ -27,6 +27,13 @@ export class SyntheseSearchComponent implements OnInit {
 
     onSubmitForm() {
         const params = Object.assign({}, this.searchForm.value);
+        // delete null parameters
+        for(let key in params) {
+          if (params[key] === null) {
+            delete params[key]
+          }
+        }
+        console.log(params)
         if (params.cd_nom) {
             params.cd_nom = params.cd_nom.cd_nom;
         }
