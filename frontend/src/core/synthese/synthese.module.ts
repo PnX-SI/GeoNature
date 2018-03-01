@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { SyntheseComponent } from './synthese.component';
 import { SyntheseListComponent } from './synthese-results/synthese-list/synthese-list.component';

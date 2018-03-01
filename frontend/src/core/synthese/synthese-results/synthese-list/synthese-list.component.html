@@ -12,33 +12,38 @@
 </table> -->
 
 <!--Table-->
-<ngx-datatable 
-    #table class="material striped margin-top-xs table-size expandable" 
-    [rows]="mapListService.tableData" 
-    [columns]="SYNTHESE_CONFIG.default_columns"
-    [columnMode]="'force'"
-    [loadingIndicator]="!searchService.dataLoaded"
-    [headerHeight]="50" 
-    [footerHeight]="35" 
-    [rowHeight]="50"
-    [scrollbarV]="false"
-    [draggable]="false" 
-    [selected]="mapListService.selectedRow"
-    [externalPaging]="false" 
-    [selectionType]="'single'" 
-    [count]="mapListService.tableData.length" 
-    [rowClass]="mapListService.getRowClass" 
-    (select)="mapListService.onRowSelect($event)">
+<ngx-datatable #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.default_columns"
+    [columnMode]="'force'" [loadingIndicator]="!searchService.dataLoaded" [headerHeight]="50" [footerHeight]="35" [rowHeight]="50"
+    [scrollbarV]="false" [draggable]="false" [selected]="mapListService.selectedRow" [externalPaging]="false" [selectionType]="'single'"
+    [count]="mapListService.tableData.length" [rowClass]="mapListService.getRowClass" (select)="mapListService.onRowSelect($event)">
 
-    <ngx-datatable-row-detail [rowHeight]="100" #myDetailRow>
+    <ngx-datatable-row-detail [rowHeight]="200" #myDetailRow>
         <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
             <div style="padding-left:35px;">
-                <div>
-                    <strong>Nomenclatures</strong>
-                </div>
-                <div>
-                    Stade: {{row.id_nomenclature_life_stage}} - sexe : {{row.id_nomenclature_sex}}<br/>
-                    Dénombrement min : {{row.count_min}} - max :  {{row.count_min}}
+                <div class="details">
+                    <div><span class="details-group">{{'Releve.Releve' | translate}}</span>
+                        <br/>
+                        <span class="details-title">{{'Releve.ObsTechnique' | translate}}</span> : {{row.decoded_nomenclatures.obs_technique}}
+                        <br/>
+                        <span class="details-title">{{'Releve.Municipality' | translate}}</span> : {{row.municipalities.nom_com}} ({{row.id_municipality}})
+                        <span class="details-title">{{'Releve.MinAltitude' | translate}}</span> : {{row.altitude_min}} -
+                        <span class="details-title">{{'Releve.MaxAltitude' | translate}}</span> : {{row.altitude_max}}
+                    </div>
+                    <div><span class="details-group">{{'Taxon.Observation' | translate}}</span>
+                        <br/>
+                        <span class="details-title">{{'Taxon.ObsMethod' | translate}}</span> : {{row.decoded_nomenclatures.obs_meth}}
+                        <span class="details-title">{{'Taxon.BiologicalCondition' | translate}}</span> : {{row.decoded_nomenclatures.bio_condition}}
+                    </div>
+                    <div><span class="details-group">{{'Counting.Counting' | translate}}</span>
+                        <br/>
+                        <span class="details-title">{{'Counting.Sex' | translate}}</span> : {{row.decoded_nomenclatures.sex}} -
+                        <span class="details-title">{{'Counting.LifeStage' | translate}}</span> : {{row.decoded_nomenclatures.life_stage}} -
+                        <br/> 
+                        <span class="details-subtitle ">min</span> : {{row.count_min}}
+                        <span class="details-subtitle ">max</span> : {{row.count_min}}
+                        <span class="details-subtitle ">{{'Counting.CountingType' | translate}}</span> : {{row.decoded_nomenclatures.type_count}}
+                        <span class="details-subtitle ">{{'Counting.CountingObject' | translate}}</span> : {{row.decoded_nomenclatures.obj_count}}
+                    </div>
                 </div>
             </div>
         </ng-template>
@@ -74,12 +79,7 @@
     -->
 
     <!-- Column Templates -->
-    <ngx-datatable-column 
-        [width]="50" 
-        [resizeable]="false" 
-        [sortable]="false" 
-        [draggable]="false" 
-        [canAutoResize]="false">
+    <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
         <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
             <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Détail de l'observation"
                 (click)="toggleExpandRow(row)">
