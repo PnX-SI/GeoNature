@@ -79,9 +79,11 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
 
   initLabels() {
     this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
-      .subscribe(data => {
+      .subscribe(
+        data => {
         this.labels = data.values;
-      });
+        }
+      );
   }
 
 

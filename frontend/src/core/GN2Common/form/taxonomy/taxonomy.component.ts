@@ -3,6 +3,10 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import { DataFormService } from '../data-form.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { error } from 'util';
+import {of} from 'rxjs/observable/of';
+import { CommonService } from '@geonature_common/service/common.service';
+
 
 
 @Component({
@@ -31,7 +35,8 @@ export class TaxonomyComponent implements OnInit {
   @Output() taxonDeleted = new EventEmitter<any>();
 
   constructor(
-    private _dfService: DataFormService
+    private _dfService: DataFormService,
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -57,6 +62,7 @@ export class TaxonomyComponent implements OnInit {
           this.groupControl.patchValue(null);
         }
       });
+
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
@@ -76,6 +82,13 @@ export class TaxonomyComponent implements OnInit {
         if (value.length >= this.charNumber && value.length <= 20) {
           return this._dfService.searchTaxonomy(
             value, this.idList, this.regneControl.value, this.groupControl.value)
+            .catch(err => {
+              this._commonService.translateToaster(
+                'error',
+                'ErrorMessage'
+              )
+              return of([]);
+              })
         } else {
           this.isLoading = false;
           return [[]];
@@ -88,11 +101,13 @@ export class TaxonomyComponent implements OnInit {
         return response.slice(0, this.listLength);
       })
 
+
   refreshAllInput() {
     this.parentFormControl.reset();
     this.regneControl.reset();
     this.groupControl.reset();
   }
+
 
 
 }
