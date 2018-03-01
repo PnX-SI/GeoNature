@@ -86,7 +86,10 @@ export class ContactFormComponent implements OnInit {
 
   } // end ngOnInit
 
-
+  refreshOccurrence() {
+    this.fs.occurrenceForm = this.fs.initOccurenceForm();
+    this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
+  }
 
   submitData() {
     // set the releveForm
@@ -136,5 +139,5 @@ export class ContactFormComponent implements OnInit {
         }
       );
     }
- 
+
 }

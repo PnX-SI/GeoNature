@@ -75,7 +75,9 @@
         "Info": "Informations releve",
         "Delete": "Delete releve",
         "DeleteSuccessfully": "Releve deleted successfully",
-        "ObsTechnique": "Observation technic"
+        "ObsTechnique": "Observation technic",
+        "AddTaxonOnReleve": "Add a taxon on this releve",
+        "CancelTaxon": "Cancel this taxon"
     },
     "Taxon":{
         "ObservedTaxon": "Observed taxon",
@@ -103,6 +105,7 @@
         "NonDigitalProof": "Non digital proof",
         "SaveTaxon": "Save taxon",
         "AddTaxon": "Add taxon",
+        "ValidateTaxon": "Validate taxon",
         "CurrentlyEditing": "Please first validate the currently editing taxon",
         "NoTaxonFound": "No taxon found for this search",
         "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'"

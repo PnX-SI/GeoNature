@@ -75,7 +75,9 @@
         "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
         "Validate": "Valider le releve",
         "UnValidate": "Invalider le releve",
-        "ObsTechnique": "Technique d'observation"
+        "ObsTechnique": "Technique d'observation",
+        "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
+        "CancelTaxon": "Annuler la saisie du taxon"
     },
     "Taxon":{
         "ObservedTaxon": "Taxon(s) observé(s)",
@@ -103,6 +105,7 @@
         "NonDigitalProof": "Preuve non numérique",
         "SaveTaxon": "Enregistrer le taxon",
         "AddTaxon": "Ajouter le taxon",
+        "ValidateTaxon": "Valider le taxon",
         "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
         "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
         "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'"
