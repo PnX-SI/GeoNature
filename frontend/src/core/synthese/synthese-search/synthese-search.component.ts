@@ -33,7 +33,12 @@ export class SyntheseSearchComponent implements OnInit {
             date_min: null,
             date_max: null
         });
-        this.searchForm.setValidators([this._formService.dateValidator]);
+        this.searchForm.setValidators([
+            this._formService.dateValidator(
+                this.searchForm.get('date_min'),
+                this.searchForm.get('date_max'),
+            )
+        ]);
     }
 
     onSubmitForm() {
