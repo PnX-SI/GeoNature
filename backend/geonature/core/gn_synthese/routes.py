@@ -112,6 +112,12 @@ def get_synthese():
 
     if 'observers' in filters:
         q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
+    
+    if 'date_min' in filters:
+        q = q.filter(Synthese.date_min >= filters.pop('date_min'))
+    
+    if 'date_max' in filters:
+        q = q.filter(Synthese.date_min <= filters.pop('date_max'))
 
     q = q.filter(Synthese.deleted==False)
 
