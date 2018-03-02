@@ -6,6 +6,7 @@ import { DataFormService } from '../../../../core/GN2Common/form/data-form.servi
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactConfig } from '../../contact.config';
 import { AuthService, User } from '../../../../core/components/auth/auth.service';
+import { FormService } from '@geonature_common/form/form.service';
 
 
 @Injectable()
@@ -29,8 +30,14 @@ export class ContactFormService {
   public countingForm: FormArray;
   public currentUser: User;
 
-  constructor(private _fb: FormBuilder, private _http: HttpClient, private _dfs: DataFormService, private _router: Router,
-      private _auth: AuthService) {
+  constructor(
+    private _fb: FormBuilder,
+    private _http: HttpClient,
+    private _dfs: DataFormService,
+    private _router: Router,
+    private _auth: AuthService,
+    private _formService: FormService
+  ) {
     this.currentTaxon = {};
     this.indexCounting = 0;
     this.nbCounting = [''];
@@ -63,8 +70,7 @@ export class ContactFormService {
    }
 
    initReleveForm(): FormGroup {
-    console.log(this.currentUser.userId)
-    return this._fb.group({
+    const releveForm =  this._fb.group({
       geometry: [null, Validators.required],
       properties: this._fb.group({
         id_releve_contact : null,
@@ -87,6 +93,20 @@ export class ContactFormService {
         t_occurrences_contact: [new Array()]
       })
     });
+    // validtors on date and hours
+    releveForm.setValidators([
+      this._formService.dateValidator(
+          (releveForm.controls.properties as FormGroup).get('date_min'),
+          (releveForm.controls.properties as FormGroup).get('date_max')
+      ),
+      this._formService.hourAndDateValidator(
+        (releveForm.controls.properties as FormGroup).get('date_min'),
+        (releveForm.controls.properties as FormGroup).get('date_max'),
+        (releveForm.controls.properties as FormGroup).get('hour_min'),
+        (releveForm.controls.properties as FormGroup).get('hour_max')
+      )
+    ])
+    return releveForm;
    }
 
   initOccurenceForm(): FormGroup {
