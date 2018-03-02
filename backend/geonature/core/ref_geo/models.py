@@ -1,9 +1,10 @@
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import serializableModel
+from geonature.utils.utilssqlalchemy import serializable
 
 
-class LAreasWithoutGeom(serializableModel):
+@serializable
+class LAreasWithoutGeom(DB.Model):
     __tablename__ = 'l_areas'
     __table_args__ = {'schema': 'ref_geo'}
     id_area = DB.Column(DB.Integer, primary_key=True)
@@ -13,7 +14,8 @@ class LAreasWithoutGeom(serializableModel):
     source = DB.Column(DB.Unicode)
 
 
-class BibAreasTypes(serializableModel):
+@serializable
+class BibAreasTypes(DB.Model):
     __tablename__ = 'bib_areas_types'
     __table_args__ = {'schema': 'ref_geo'}
     id_type = DB.Column(DB.Integer, primary_key=True)
