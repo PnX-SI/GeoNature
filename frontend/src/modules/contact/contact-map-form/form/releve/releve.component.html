@@ -55,6 +55,12 @@
         <i *ngIf="showTime" class="fa fa-minus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
       </span>
     </div>
+    <small 
+      *ngIf="releveForm.errors?.invalidDate"
+      class="error"
+      style="color:red"> 
+        {{ 'Releve.DateMaxError' | translate }}
+     </small>
   </div>
   <div class="collapse" id="collapseTime">
     <div class="row row-0">
@@ -71,6 +77,12 @@
         </div>
       </div>
     </div>
+    <small 
+      *ngIf="releveForm.errors?.invalidHour"
+      class="error"
+      style="color:red"> 
+      {{ 'Releve.HourMaxError' | translate }}
+   </small>
   </div>
 
 
