@@ -13,7 +13,6 @@ class TestApiUsersMenu:
     base_url = '{}/users/menu/{}'
 
     def test_menu_exists(self, geonature_app):
-        print('test_menu_exists')
         response = run_request(
             self.base_url.format(geonature_app.config['API_ENDPOINT'], 10)
         )
