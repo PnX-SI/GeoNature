@@ -36,19 +36,18 @@
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_type_count"
               [idTypeNomenclature]="21"
               [regne]="fs.currentTaxon.regne"
-              [group2Inpn]="fs.currentTaxon.group2_inpn"
-              (valueSelected)= "typeDenombrementChanged($event)">
+              [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature> 
       </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].controls.count_min.invalid}">
+          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].errors?.invalidCount}">
             <small> {{ 'Counting.NumberMin' | translate }} </small>
             <input class="form-control form-control-sm" type="number" min="0"
             [formControl]="formArray.controls[index].controls.count_min">
           </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].controls.count_max.invalid}">
+          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].errors?.invalidCount}">
               <small> {{ 'Counting.NumberMax' | translate }} </small>
             <input class="form-control form-control-sm" type="number" min="0"
             [formControl]="formArray.controls[index].controls.count_max">
@@ -59,6 +58,12 @@
               <i class="fa fa-times" aria-hidden="true"></i>
           </button>
         </div>
+        <small 
+          *ngIf="formArray.controls[index].errors?.invalidCount"
+          class="error"
+          style="color:red"> 
+          {{ 'Counting.CountError' | translate }}
+        </small>
     </div>
     <hr>
   

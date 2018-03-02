@@ -43,7 +43,6 @@ export class FormService {
         hourMinControl,
         hourMaxControl
       )
-      console.log('invalid ???', invalidHour)
       return invalidHour ? { 
         'invalidHour': true
       }: null;
