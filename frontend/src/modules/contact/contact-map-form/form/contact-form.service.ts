@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
 import { AppConfig } from '../../../../conf/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
@@ -137,7 +137,7 @@ export class ContactFormService {
 
 
   initCounting(): FormGroup {
-    return this._fb.group({
+    const countForm =  this._fb.group({
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
       id_nomenclature_obj_count: [null, Validators.required],
@@ -148,7 +148,20 @@ export class ContactFormService {
       id_validator: null,
       validation_comment: null,
     });
+    countForm.setValidators([
+      this.countingValidator
+    ])
+    return countForm
   }
+
+  countingValidator (countForm : AbstractControl):{[key: string]: boolean} {
+        const countMin = countForm.get('count_min').value;
+        const countMax = countForm.get('count_max').value;
+        if (countMin && countMax) {
+          return countMin > countMax ? {'invalidCount': true }:null;
+      }
+      return null
+    }
 
   initCountingArray(data?): FormArray {
     // init the counting form with the data, or empty
