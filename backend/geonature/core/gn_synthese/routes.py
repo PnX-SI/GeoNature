@@ -95,6 +95,9 @@ def get_synthese():
         'observers' param (string) is filtered with ilike clause
     """
     filters = dict(request.get_json())
+    result_limit = None
+    if 'limit' in filters:
+        result_limit = filters.pop('limit')
     q = DB.session.query(Synthese)
     q = q.join(
         VSyntheseDecodeNomenclatures,
@@ -118,11 +121,12 @@ def get_synthese():
         if testT:
             return {'error': testT}, 500
         q = q.filter(col == value)
-    if 'limit' in filters:
-        q = q.limit(
-            filters['limit']
-            ).orderby(
-                Synthese.date_min
+    if result_limit:
+        q = q.order_by(
+            Synthese.date_min
+            )
+        data = q.limit(
+                result_limit
             )
     else:
         data = q.all()
