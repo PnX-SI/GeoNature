@@ -17,6 +17,20 @@
     [idTypeNomenclature]="7" >
 </pnx-nomenclature>
 
-<button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+<pnx-date
+    placeholder="{{ 'Releve.MinDate' | translate }} "
+    [parentFormControl]="searchForm.controls.date_min">
+</pnx-date>
+<pnx-date
+    placeholder="{{ 'Releve.MaxDate' | translate }} "
+    [parentFormControl]="searchForm.controls.date_max">
+</pnx-date>
+<small class="error" *ngIf="searchForm.errors?.invalidDate">
+    {{ 'Releve.DateMaxError' | translate }}
+</small>
+
+<button [disabled]="searchForm.errors" class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
 
 <pre>form value: <br>{{searchForm.value | json}}</pre>
+
+<pre>form value: <br>Errors : {{searchForm.errors | json}}</pre>
