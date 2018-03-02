@@ -153,9 +153,9 @@ def serializable(cls):
 
         for (rel, uselist) in cls_db_relationships:
             if uselist is True:
-                out[rel] = [x.as_dict() for x in getattr(self, rel)]
+                out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
             else:
-                out[rel] = getattr(self, rel).as_dict()
+                out[rel] = getattr(self, rel).as_dict(recursif)
 
         return out
 
