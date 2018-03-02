@@ -4,7 +4,7 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 
 
-if  [ ! -f /etc/default/locale ];
+if  [ $LANG == "" ];
 then
     echo -e "\e[91m\e[1mAucune langue par défaut n'a été définit sur serveur, lancez la commande 'sudo dpkg-reconfigure locales'
             pour la définir
