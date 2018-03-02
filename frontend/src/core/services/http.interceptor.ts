@@ -31,15 +31,12 @@ export class MyCustomInterceptor implements HttpInterceptor {
     const customReq = request.clone({
       withCredentials: true
     });
-
-
     // pass on the modified request object
     // and intercept error
     return next.handle(customReq)
       .catch((err: any) => {
         this.handleError(err);
         return Observable.throw(err);
-
       })
   }
 }

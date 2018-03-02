@@ -191,7 +191,6 @@ def getViewReleveList(info_role):
     except Exception as e:
         DB.session.rollback()
 
-    print(params.get('limit'))
     limit = int(params.get('limit')) if params.get('limit') else 100
     page = int(params.get('offset')) if params.get('offset') else 0
     # Specific Filters
@@ -242,7 +241,6 @@ def getViewReleveList(info_role):
             return {'error': testT}, 500
         q = q.filter(VReleveList.date_min == params.pop('date_eq'))
     if 'altitude_max' in params:
-        print('pass la')
         testT = testDataType(
             params.get('altitude_max'),
             DB.Integer,
@@ -250,7 +248,6 @@ def getViewReleveList(info_role):
         )
         if testT:
             return {'error': testT}, 500
-        print(params.get('altitude_max'))
         q = q.filter(VReleveList.altitude_max <= params.pop('altitude_max'))
 
     if 'altitude_min' in params:
