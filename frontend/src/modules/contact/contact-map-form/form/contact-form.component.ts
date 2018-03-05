@@ -55,6 +55,7 @@ export class ContactFormComponent implements OnInit {
       // load one releve
       this.contactService.getOneReleve(this.id)
         .subscribe(data => {
+          console.log(data)
           // pre fill the form
           this.fs.releveForm.patchValue({properties: data.releve.properties});
 
@@ -108,7 +109,7 @@ export class ContactFormComponent implements OnInit {
       occ.meta_update_date = new Date();
     });
     // format observers
-    if (!ContactConfig.observers_txt) {
+    if (finalForm.properties.observers.length > 0) {
       finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
     }
