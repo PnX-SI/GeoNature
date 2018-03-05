@@ -29,6 +29,7 @@ export class ContactFormService {
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
   public currentUser: User;
+  public disabled = true;
 
   constructor(
     private _fb: FormBuilder,

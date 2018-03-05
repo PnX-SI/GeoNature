@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { GeoJSON } from 'leaflet';
@@ -14,7 +14,6 @@ import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ContactConfig } from '../contact.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -23,7 +22,7 @@ import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
   providers: [MapListService]
 })
 
-export class ContactMapListComponent implements OnInit, AfterViewInit {
+export class ContactMapListComponent implements OnInit {
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public filterableColumns: Array<any>;
@@ -92,11 +91,6 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
      this.customColumns
     );
     // end OnInit
-  }
-
-  ngAfterViewInit() {
-    console.log(this.taxonomyComponent);
-
   }
 
   taxonChanged(taxonObj) {
@@ -239,9 +233,8 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
   }
 
   openModalCol(event, modal){
-    console.log("click modale");
     this.ngbModal.open(modal);
-  }s
+  }
 
   onChangeFilterOps(col) {
     // reset url query

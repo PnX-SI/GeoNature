@@ -9,6 +9,7 @@ import {FormControl} from '@angular/forms';
 
 export class ObserversTextComponent implements OnInit {
   @Input() parentFormControl: FormControl;
+  @Input() disabled: boolean;
   @Output() onObserverChange = new EventEmitter<string>();
   @Output() onObserverDelete = new EventEmitter();
   constructor() { }

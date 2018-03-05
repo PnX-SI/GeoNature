@@ -14,6 +14,7 @@ export class ObserversComponent implements OnInit {
   filteredObservers: Array<any>;
   @Input()idMenu: number;
   @Input() placeholder: string;
+  @Input() disabled: boolean;
   @Input() parentFormControl:FormControl;
   @Output() observerSelected = new EventEmitter<any>();
   @Output() observerDeleted = new EventEmitter<any>();
