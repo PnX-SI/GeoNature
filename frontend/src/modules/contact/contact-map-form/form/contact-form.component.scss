@@ -148,3 +148,8 @@ button[disabled] {
 #check {
   color: #57d857
 }
+
+.disabled {
+   background-color: #edeff0;
+   cursor: not-allowed;
+}

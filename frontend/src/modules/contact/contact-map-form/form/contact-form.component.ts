@@ -47,6 +47,13 @@ export class ContactFormComponent implements OnInit {
     this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
 
+    // remove disabled on geom selected
+
+    this.fs.releveForm.controls.geometry
+      .valueChanges.subscribe(data => {
+        this.fs.disabled = false;
+      })
+
     // if its edition mode
     if (!isNaN(this.id )) {
       // set showOccurrence to false;
@@ -55,7 +62,6 @@ export class ContactFormComponent implements OnInit {
       // load one releve
       this.contactService.getOneReleve(this.id)
         .subscribe(data => {
-          console.log(data)
           // pre fill the form
           this.fs.releveForm.patchValue({properties: data.releve.properties});
 
@@ -90,6 +96,15 @@ export class ContactFormComponent implements OnInit {
   refreshOccurrence() {
     this.fs.occurrenceForm = this.fs.initOccurenceForm();
     this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
+  }
+
+  formDisabled(){
+    if(this.fs.disabled) {
+      this._commonService.translateToaster(
+        'warning',
+        'Releve.FillGeometryFirst'
+      )
+    }
   }
 
   submitData() {
@@ -127,6 +142,7 @@ export class ContactFormComponent implements OnInit {
 
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0 ;
+        this.fs.disabled = true;
         // redirect
         this.router.navigate(['/occtax']);
         },

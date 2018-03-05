@@ -3,6 +3,7 @@
     <input class="form-control form-control-sm"
       ngbDatepicker #d1="ngbDatepicker"
       [formControl]="parentFormControl"
+      [disableControl]="disabled"
       [maxDate]="today"
       (click)="d1.toggle(); openDatepicker(d1)">
     <button class="input-group-addon" (click)="d1.toggle(); openDatepicker(d1)" type="button">

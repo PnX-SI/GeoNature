@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class DateComponent implements OnInit, OnDestroy {
   public elementRef: ElementRef;
   @Input() placeholder: string;
+  @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
   @Output() dateChanged = new EventEmitter<any>();
   @Output() dateDeleted = new EventEmitter<any>();

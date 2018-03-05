@@ -77,7 +77,8 @@
         "UnValidate": "Invalider le releve",
         "ObsTechnique": "Technique d'observation",
         "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
-        "CancelTaxon": "Annuler la saisie du taxon"
+        "CancelTaxon": "Annuler la saisie du taxon",
+        "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
     },
     "Taxon":{
         "ObservedTaxon": "Taxon(s) observé(s)",
