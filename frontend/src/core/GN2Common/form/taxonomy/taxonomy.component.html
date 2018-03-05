@@ -11,7 +11,7 @@
           <div *ngIf="regneControl.value !== null">
             <small class="font-sm">Groupe:</small>
             <select [formControl]="groupControl" class="form-control form-control-sm" id="sel1"  placeholder="Taxonomiques">
-              <option *ngFor="let group2 of regnesAndGroup[regneControl.value]"
+              <option class="clickable" *ngFor="let group2 of regnesAndGroup[regneControl.value]"
               [value]="group2">{{ group2 }}</option>
             </select>
           </div>
