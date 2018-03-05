@@ -1,3 +1,53 @@
+.form-container {
+    background-color: red;
+    line-height: 1!important;
+}
+
+.line-height-sm {
+    line-height: 1.2!important;
+}
+
+.card-header{
+    padding: 5px;
+}
+
+// style input small 
+
+:host /deep/ small{
+    font-size: 12px;
+}
+
+:host /deep/ input{
+    height: 1.5rem;
+}
+
+:host /deep/ select{
+    height: 1.5rem!important;
+    font-size: 12px!important;
+}
+
+:host /deep/ option{
+    font-size: 12px;
+}
+
+:host /deep/ .fa.fa-calendar{
+    font-size: 10px;
+}
+
+:host /deep/ .input-group-addon{
+    padding: 5px;
+}
+
+:host /deep/ .fa.fa-filter{
+    font-size: 12px;
+}
+
+:host /deep/ #taxonInput {
+    height: 1.8rem!important;
+}
+
+// fin style formulaire
+
 .cf-page-size {
     max-height: 87vh;
     min-height: 87vh;
@@ -109,10 +159,14 @@
 }
 
 select.form-control-sm:not([size]):not([multiple]) {
-    height: 1.8125rem;
+    height: 1.5rem;
 }
 input.form-control-sm:not([size]):not([multiple]) {
     height: 1.8125rem;
+}
+
+label {
+    font-size: 12px!important;
 }
 
 .btn ::ng-deep {

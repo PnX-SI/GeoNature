@@ -1,5 +1,5 @@
-<div class=form-containter (click)="formDisabled()">
-  <div class="card" [class.disabled]="fs.disabled">
+<div (click)="formDisabled()">
+  <div class="card line-height-sm" [class.disabled]="fs.disabled">
     <h5 class="card-header" [class.disabled]="fs.disabled"> <i class="fa fa-pencil" aria-hidden="true"></i>
       <b>{{ 'Releve.Releve' | translate }} </b></h5>
     <div class="card-body">
@@ -13,9 +13,8 @@
     </div>
 
       <!-- Occurrence taxon  -->
-      <div class="card card-occurrence" >
-        <div class="card-header" [class.disabled]="fs.disabled">
-          <h5> <i class="fa fa-paw" aria-hidden="true"></i>
+      <div class="card card-occurrence line-height-sm" >
+          <h5 class="card-header"> <i class="fa fa-paw" aria-hidden="true"></i>
             Taxon
             <span >
                 <button
@@ -41,7 +40,6 @@
             </span>
 
         </h5>
-        </div>
           <div class="card-body" *ngIf="fs.showOccurrence">
               <pnx-occurrence
                 [occurrenceForm]="fs.occurrenceForm">
