@@ -1,6 +1,6 @@
 import requests
 
-from .bootstrap_test import geonature_app
+from .bootstrap_test import geonature_app, releve_data
 
 def run_request(url):
     return requests.get(url)
@@ -45,6 +45,7 @@ class TestApiReleve:
 
 
     def test_getToken(self, geonature_app):
+        print('test_getToken')
         self.getToken(geonature_app.config['API_ENDPOINT'])
 
         if self.token:
@@ -53,6 +54,7 @@ class TestApiReleve:
             assert False
 
     def test_getReleves(self, geonature_app):
+        print('test_getReleves')
         if not self.token:
             self.getToken(geonature_app.config['API_ENDPOINT'])
 
@@ -66,3 +68,61 @@ class TestApiReleve:
         else:
             assert False
 
+    def test_insertUpdateDeleteReleves(self, geonature_app, releve_data):
+
+        if not self.token:
+            self.getToken(geonature_app.config['API_ENDPOINT'])
+
+        response = requests.post(
+            '{}/contact/releve'.format(geonature_app.config['API_ENDPOINT']),
+            json=releve_data,
+            cookies={'token': self.token}
+        )
+
+        if not response.ok:
+            assert False
+
+        update_data = dict(response.json())
+        update_data['properties'].pop('digitiser')
+        update_data['properties']['comment'] = 'Super MODIIFF'
+
+        response = requests.post(
+            '{}/contact/releve'.format(geonature_app.config['API_ENDPOINT']),
+            json=update_data,
+            cookies={'token': self.token}
+        )
+
+        resp_data = dict(response.json())
+
+        if not response.ok:
+            assert False
+        if resp_data['properties']['comment'] == 'Super MODIIFF':
+            assert True
+
+        response = requests.delete(
+            '{}/contact/releve/{}'.format(
+                geonature_app.config['API_ENDPOINT'],
+                resp_data['properties']['id_releve_contact']
+            ),
+            cookies={'token': self.token}
+        )
+
+        if not response.ok:
+            assert False
+
+        assert True
+
+
+    def test_get_export_sinp(self, geonature_app):
+        if not self.token:
+            self.getToken(geonature_app.config['API_ENDPOINT'])
+
+        response = requests.get(
+            '{}/contact/export/sinp'.format(geonature_app.config['API_ENDPOINT']),
+            cookies={'token': self.token}
+        )
+
+        if response.ok:
+            assert True
+        else:
+            assert False
