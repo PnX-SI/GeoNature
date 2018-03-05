@@ -26,6 +26,7 @@
     [ngClass]="{'loading' : isLoading}"
     id="taxonInput"
     [formControl]="parentFormControl"
+    [disableControl]="disabled"
     [ngbTypeahead]="searchTaxon"
     [inputFormatter]="formatter"
     [resultTemplate]="rt"

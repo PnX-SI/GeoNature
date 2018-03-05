@@ -21,6 +21,7 @@ export class TaxonomyComponent implements OnInit {
   @Input() charNumber: number;
   @Input() listLength: number;
   @Input() refresh: Function;
+  @Input() disabled: boolean;
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
