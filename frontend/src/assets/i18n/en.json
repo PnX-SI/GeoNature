@@ -77,7 +77,8 @@
         "DeleteSuccessfully": "Releve deleted successfully",
         "ObsTechnique": "Observation technic",
         "AddTaxonOnReleve": "Add a taxon on this releve",
-        "CancelTaxon": "Cancel this taxon"
+        "CancelTaxon": "Cancel this taxon",
+        "FillGeometryFirst": "Veuillez saisir un pointage sur la carte"
     },
     "Taxon":{
         "ObservedTaxon": "Observed taxon",

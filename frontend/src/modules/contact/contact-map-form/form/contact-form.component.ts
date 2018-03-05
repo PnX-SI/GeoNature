@@ -47,6 +47,13 @@ export class ContactFormComponent implements OnInit {
     this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
 
+    // remove disabled on geom selected
+
+    this.fs.releveForm.controls.geometry
+      .valueChanges.subscribe(data => {
+        this.fs.disabled = false;
+      })
+
     // if its edition mode
     if (!isNaN(this.id )) {
       // set showOccurrence to false;
@@ -91,6 +98,15 @@ export class ContactFormComponent implements OnInit {
     this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
   }
 
+  formDisabled(){
+    if(this.fs.disabled) {
+      this._commonService.translateToaster(
+        'warning',
+        'Releve.FillGeometryFirst'
+      )
+    }
+  }
+
   submitData() {
     // set the releveForm
     // copy the form value without reference
@@ -108,7 +124,7 @@ export class ContactFormComponent implements OnInit {
       occ.meta_update_date = new Date();
     });
     // format observers
-    if (!ContactConfig.observers_txt) {
+    if (finalForm.properties.observers.length > 0) {
       finalForm.properties.observers = finalForm.properties.observers
       .map(observer => observer.id_role);
     }
@@ -126,6 +142,7 @@ export class ContactFormComponent implements OnInit {
 
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0 ;
+        this.fs.disabled = true;
         // redirect
         this.router.navigate(['/occtax']);
         },

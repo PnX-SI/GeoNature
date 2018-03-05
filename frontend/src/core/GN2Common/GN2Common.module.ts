@@ -4,6 +4,7 @@ import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatLis
         MatToolbarModule} from '@angular/material';
 
 
+
 import {Http} from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -95,7 +96,7 @@ export function HttpLoaderFactory(http: Http) {
     DataFormService,
     MapListService,
     CommonService,
-    FormService
+    FormService,
     ],
   exports: [
     NomenclatureComponent,
