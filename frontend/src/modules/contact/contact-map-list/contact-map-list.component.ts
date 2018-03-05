@@ -14,6 +14,8 @@ import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ContactConfig } from '../contact.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -38,8 +40,9 @@ export class ContactMapListComponent implements OnInit {
   public datasetInput = new FormControl();
   public columnActions: ColumnActions;
   public contactConfig: any;
+
   // provisoire
-  public tableMessages = {'emptyMessage': 'Aucune observation à afficher', 'totalMessage': 'observation(s)'};
+  public tableMessages = {'emptyMessage': 'Aucune observation à afficher', 'totalMessage': 'observation(s) au total'};
   @ViewChild(NgbModal) public modalCol: NgbModal;
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
