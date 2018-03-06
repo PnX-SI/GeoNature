@@ -248,6 +248,18 @@ export class ContactFormService {
     this.isEdintingOccurrence = false;
   }
 
+  cancelOccurrence() {
+    // if occurrence is currently editing, save former occurrence
+    if (this.isEdintingOccurrence) {
+      this.addOccurrence(this.indexOccurrence, true);
+      // else refresh occurrence form
+    } else {
+      this.occurrenceForm = this.initOccurenceForm();
+      this.patchDefaultNomenclatureOccurrence(this.defaultValues);
+    }
+    this.isEdintingOccurrence = false;
+  }
+
   editOccurence(index) {
     // set editing occurrence to true
     this.isEdintingOccurrence = true;

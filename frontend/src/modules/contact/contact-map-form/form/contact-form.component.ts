@@ -114,18 +114,6 @@ export class ContactFormComponent implements OnInit {
     }
   } // end ngOnInit
 
-  cancelOccurrence() {
-    // if occurrence is currently editing, save former occurrence
-    if (this.fs.isEdintingOccurrence) {
-      this.fs.addOccurrence(this.fs.indexOccurrence, true);
-      // else refresh occurrence form
-    } else {
-      this.fs.occurrenceForm = this.fs.initOccurenceForm();
-      this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
-    }
-    this.fs.isEdintingOccurrence = false;
-  }
-
   formDisabled() {
     if (this.fs.disabled) {
       this._commonService.translateToaster('warning', 'Releve.FillGeometryFirst');
