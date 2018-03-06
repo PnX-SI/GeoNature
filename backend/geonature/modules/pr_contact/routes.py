@@ -582,7 +582,7 @@ def export_sinp(info_role):
             elif info_role.tag_object_code == '1':
                 # join on TCounting, TOccurrence, Treleve and corRoleContact
                 #   to get users
-                q = q.join(
+                q = q.outerjoin(
                     CorCountingContact,
                     viewSINP.tableDef.columns.permId ==
                     CorCountingContact.unique_id_sinp_occtax
@@ -594,7 +594,7 @@ def export_sinp(info_role):
                     TRelevesContact,
                     TOccurrencesContact.id_releve_contact ==
                     TRelevesContact.id_releve_contact
-                ).join(
+                ).outerjoin(
                     corRoleRelevesContact,
                     TRelevesContact.id_releve_contact ==
                     corRoleRelevesContact.columns.id_releve_contact
