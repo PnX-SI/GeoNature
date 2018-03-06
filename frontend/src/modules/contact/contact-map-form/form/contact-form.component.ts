@@ -115,9 +115,9 @@ export class ContactFormComponent implements OnInit {
   } // end ngOnInit
 
   cancelOccurrence() {
-    // if occurrence is currently editing, save the occurrence
+    // if occurrence is currently editing, save former occurrence
     if (this.fs.isEdintingOccurrence) {
-      this.fs.addOccurrence(this.fs.indexOccurrence);
+      this.fs.addOccurrence(this.fs.indexOccurrence, true);
       // else refresh occurrence form
     } else {
       this.fs.occurrenceForm = this.fs.initOccurenceForm();
