@@ -125,8 +125,10 @@ export class MapListService {
         this.loadTableData(res.items, this.customCallBack);
       },
       err => {
-        this._commonService.regularToaster('error', err.error.error);
-        this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
+        console.log(err);
+        if (err.status === 500) {
+          this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
+        }
       }
     );
   }
