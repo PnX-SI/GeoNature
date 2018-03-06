@@ -30,6 +30,8 @@ export class ContactFormService {
   public defaultValuesLoaded = false;
   public lastSubmitedOccurrence: any;
   public userReleveRigth: any;
+  public savedOccurrenceData: any;
+  public savedCurrentTaxon: any;
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -200,21 +202,30 @@ export class ContactFormService {
     this.indexCounting -= 1;
   }
 
-  addOccurrence(index) {
+  addOccurrence(index, cancel?: boolean) {
+    // Add the current occurrence in releve form or the saved occurrence if cancel
     // push the counting
     this.occurrenceForm.controls.cor_counting_contact.patchValue(this.countingForm.value);
     // format the taxon
     this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;
     // push or update the occurrence
     if (this.releveForm.value.properties.t_occurrences_contact.length === this.indexOccurrence) {
-      // push the current taxon in the taxon list and refresh the currentTaxon
+      // push the current taxon in the taxon list
       this.taxonsList.push(this.currentTaxon);
       this.releveForm.value.properties.t_occurrences_contact.push(this.occurrenceForm.value);
     } else {
-      this.taxonsList.splice(index, 0, this.currentTaxon);
-      this.releveForm.value.properties.t_occurrences_contact[
-        this.indexOccurrence
-      ] = this.occurrenceForm.value;
+      if (cancel) {
+        // push the saved occurrence
+        this.releveForm.value.properties.t_occurrences_contact[
+          this.indexOccurrence
+        ] = this.savedOccurrenceData;
+        this.taxonsList.splice(index, 0, this.savedCurrentTaxon);
+      } else {
+        this.releveForm.value.properties.t_occurrences_contact[
+          this.indexOccurrence
+        ] = this.occurrenceForm.value;
+        this.taxonsList.splice(index, 0, this.currentTaxon);
+      }
     }
     // set occurrence index
     this.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length;
@@ -247,10 +258,16 @@ export class ContactFormService {
     this.indexOccurrence = index;
     // get the occurrence data from releve form
     const occurenceData = this.releveForm.value.properties.t_occurrences_contact[index];
+    this.savedOccurrenceData = Object.assign(
+      {},
+      this.releveForm.value.properties.t_occurrences_contact[index]
+    );
+
     const countingData = occurenceData.cor_counting_contact;
     const nbCounting = countingData.length;
     // load the taxons info
     this._dfs.getTaxonInfo(occurenceData.cd_nom).subscribe(taxon => {
+      this.savedCurrentTaxon = taxon;
       occurenceData['cd_nom'] = {
         cd_nom: taxon.cd_nom,
         group2_inpn: taxon.group2_inpn,
