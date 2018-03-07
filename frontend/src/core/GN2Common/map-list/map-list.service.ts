@@ -1,4 +1,4 @@
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
@@ -19,11 +19,11 @@ export class MapListService {
   public geojsonData: any;
   public idName: string;
   public columns = [];
-  public layerDict= {};
+  public layerDict = {};
   public selectedLayer: any;
   public onMapClik$: Observable<number> = this.mapSelected.asObservable();
   public onTableClick$: Observable<number> = this.tableSelected.asObservable();
-  public urlQuery: HttpParams = new HttpParams ();
+  public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
   public genericFilterInput = new FormControl();
   filterableColumns: Array<any>;
@@ -34,34 +34,32 @@ export class MapListService {
   customCallBack: any;
 
   originStyle = {
-    'color': '#3388ff',
-    'fill': true,
-    'fillOpacity': 0.2,
-    'weight': 3
+    color: '#3388ff',
+    fill: true,
+    fillOpacity: 0.2,
+    weight: 3
   };
 
- selectedStyle = {
-  'color': '#ff0000',
-   'weight': 3
+  selectedStyle = {
+    color: '#ff0000',
+    weight: 3
   };
-    constructor(
-      private _http: HttpClient,
-      private _commonService: CommonService,
-      private _ms: MapService
-    ) {
-      this.columns = [];
-      this.page.pageNumber = 0;
-      this.page.size = 15;
-      this.urlQuery.set('limit', '15');
-      this.urlQuery.set('offset', '0');
-      this.colSelected = {'prop': '', 'name': ''};
-
+  constructor(
+    private _http: HttpClient,
+    private _commonService: CommonService,
+    private _ms: MapService
+  ) {
+    this.columns = [];
+    this.page.pageNumber = 0;
+    this.page.size = 15;
+    this.urlQuery.set('limit', '15');
+    this.urlQuery.set('offset', '0');
+    this.colSelected = { prop: '', name: '' };
   }
 
   enableMapListConnexion(map: Map): void {
     // do the connexion between map and list
-    this.onTableClick$
-    .subscribe(id => {
+    this.onTableClick$.subscribe(id => {
       const selectedLayer = this.layerDict[id];
       this.toggleStyle(selectedLayer);
       this.zoomOnSelectedLayer(map, selectedLayer);
@@ -90,7 +88,6 @@ export class MapListService {
     return 'clickable';
   }
 
-
   setTablePage(pageInfo, endPoint) {
     this.page.pageNumber = pageInfo.offset;
     this.urlQuery = this.urlQuery.set('offset', pageInfo.offset);
@@ -99,7 +96,7 @@ export class MapListService {
 
   // fetch the data
   loadData(endPoint, param?) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, {params: this.urlQuery});
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, { params: this.urlQuery });
   }
 
   getData(endPoint, param?: Array<any>, customCallBack?) {
@@ -107,32 +104,32 @@ export class MapListService {
     //  customCallBack: function which return a feature to custom the content of the table
     this.manageUrlQuery('set', param);
     this.customCallBack = customCallBack;
-    this.loadData(endPoint, param)
-      .subscribe(
-        data => {
-          this.page.totalElements = data.total_filtered;
-          this.geojsonData = data.items;
-          this.loadTableData(data.items, customCallBack);
-        },
-        err => {
-         this._commonService.translateToaster('error', 'ErrorMessage');
-        }
-      );
+    this.loadData(endPoint, param).subscribe(
+      data => {
+        this.page.totalElements = data.total_filtered;
+        this.geojsonData = data.items;
+        this.loadTableData(data.items, customCallBack);
+      },
+      err => {
+        this._commonService.translateToaster('error', 'ErrorMessage');
+      }
+    );
   }
 
   refreshData(apiEndPoint, method, params?: Array<any>) {
     this.manageUrlQuery(method, params);
-    this.loadData(apiEndPoint, params)
-      .subscribe(
-        res => {
-          this.page.totalElements = res.total_filtered;
-          this.geojsonData = res.items;
-          this.loadTableData(res.items, this.customCallBack);
-        },
-        err => {
-          this._commonService.regularToaster('error', err.error.error);
+    this.loadData(apiEndPoint, params).subscribe(
+      res => {
+        this.page.totalElements = res.total_filtered;
+        this.geojsonData = res.items;
+        this.loadTableData(res.items, this.customCallBack);
+      },
+      err => {
+        console.log(err);
+        if (err.status === 500) {
           this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
         }
+      }
     );
   }
 
@@ -163,10 +160,9 @@ export class MapListService {
     this.refreshData(apiEndPoint, 'set');
   }
 
-
   toggleStyle(selectedLayer) {
     // togle the style of selected layer
-    if ( this.selectedLayer !== undefined) {
+    if (this.selectedLayer !== undefined) {
       this.selectedLayer.setStyle(this.originStyle);
       this.selectedLayer.closePopup();
     }
@@ -179,16 +175,16 @@ export class MapListService {
     // latlng is different between polygons and point
     let latlng;
 
-    if (layer instanceof L.Polygon || layer instanceof L.Polyline){
+    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
       latlng = (layer as any)._bounds._northEast;
-    }else {
+    } else {
       latlng = layer._latlng;
     }
     if (zoom >= 12) {
       map.setView(latlng, zoom);
     } else {
       map.setView(latlng, 12);
-  }
+    }
   }
 
   deFaultCustomColumns(feature) {
@@ -203,16 +199,11 @@ export class MapListService {
         newFeature = customCallBack(feature);
       } else {
         newFeature = this.deFaultCustomColumns(feature);
-
       }
       this.tableData.push(newFeature.properties);
     });
   }
-
-
-
 }
-
 
 export class Page {
   // The number of elements in the page

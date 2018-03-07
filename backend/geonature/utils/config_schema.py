@@ -56,6 +56,7 @@ class GnPySchemaConf(Schema):
     SECRET_KEY = fields.String(required=True)
     COOKIE_EXPIRATION = fields.Integer(missing=7200)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
+    TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
 
     UPLOAD_FOLDER = fields.String(missing='static/medias')
     BASE_DIR = fields.String(

@@ -16,6 +16,7 @@ SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
+TRAP_ALL_EXCEPTIONS = false
 
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
