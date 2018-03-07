@@ -115,7 +115,9 @@ def serializable(cls):
                 db_col.type.__class__.__name__,
                 lambda x: x
             )
-        ) for db_col in cls.__mapper__.c if not db_col.type.__class__.__name__ == 'Geometry'
+        )
+        for db_col in cls.__mapper__.c
+        if not db_col.type.__class__.__name__ == 'Geometry'
     ]
 
     """
@@ -124,8 +126,9 @@ def serializable(cls):
         sa valeur est déduite du type de relation
         (OneToMany, ManyToOne ou ManyToMany)
     """
-    cls_db_relationships = [(db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships]
-
+    cls_db_relationships = [
+        (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
+    ]
 
     def serializefn(self, recursif=False, columns=()):
         """
