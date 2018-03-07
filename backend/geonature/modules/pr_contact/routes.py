@@ -1,4 +1,5 @@
 import datetime
+import psycopg2
 from flask import Blueprint, request, current_app
 from sqlalchemy import exc, or_, func, distinct
 
@@ -22,6 +23,7 @@ from geonature.utils.utilssqlalchemy import (
 )
 
 from geonature.utils import filemanager
+from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import TRoles, UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
 from pypnusershub.db.tools import InsufficientRightsError
@@ -136,6 +138,7 @@ def getViewReleveContact(info_role):
     return {'message': 'not found'}, 404
 
 
+
 @routes.route('/vreleve', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
@@ -181,15 +184,12 @@ def getViewReleveList(info_role):
 
 
     """
-
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 
     params = request.args.to_dict()
-    try:
-        nbResultsWithoutFilter = VReleveList.query.count()
-    except Exception as e:
-        DB.session.rollback()
+
+    nbResultsWithoutFilter = VReleveList.query.count()
 
     limit = int(params.get('limit')) if params.get('limit') else 100
     page = int(params.get('offset')) if params.get('offset') else 0
@@ -197,7 +197,7 @@ def getViewReleveList(info_role):
     if 'cd_nom' in params:
         testT = testDataType(params.get('cd_nom'), DB.Integer, 'cd_nom')
         if testT:
-            return {'error': testT}, 500
+            raise GeonatureApiError(message=testT)
         q = q.join(
             TOccurrencesContact,
             TOccurrencesContact.id_releve_contact ==
@@ -220,7 +220,7 @@ def getViewReleveList(info_role):
     if 'date_up' in params:
         testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
         if testT:
-            return {'error': testT}, 500
+            raise GeonatureApiError(message=testT)
         q = q.filter(VReleveList.date_min >= params.pop('date_up'))
     if 'date_low' in params:
         testT = testDataType(
@@ -229,7 +229,7 @@ def getViewReleveList(info_role):
             'date_low'
         )
         if testT:
-            return {'error': testT}, 500
+            raise GeonatureApiError(message=testT)
         q = q.filter(VReleveList.date_max <= params.pop('date_low'))
     if 'date_eq' in params:
         testT = testDataType(
@@ -238,7 +238,7 @@ def getViewReleveList(info_role):
             'date_eq'
         )
         if testT:
-            return {'error': testT}, 500
+            raise GeonatureApiError(message=testT)
         q = q.filter(VReleveList.date_min == params.pop('date_eq'))
     if 'altitude_max' in params:
         testT = testDataType(
@@ -247,7 +247,7 @@ def getViewReleveList(info_role):
             'altitude_max'
         )
         if testT:
-            return {'error': testT}, 500
+            raise GeonatureApiError(message=testT)
         q = q.filter(VReleveList.altitude_max <= params.pop('altitude_max'))
 
     if 'altitude_min' in params:
@@ -257,7 +257,7 @@ def getViewReleveList(info_role):
             'altitude_min'
         )
         if testT:
-            return {'error': testT}, 500
+            raise GeonatureApiError(message=testT)
         q = q.filter(VReleveList.altitude_min >= params.pop('altitude_min'))
 
     if 'organism' in params:
@@ -278,13 +278,10 @@ def getViewReleveList(info_role):
             col = getattr(VReleveList.__table__.columns, param)
             testT = testDataType(params[param], col.type, param)
             if testT:
-                return {'error': testT}, 500
+                raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
-    try:
-        nbResults = q.count()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+
+    nbResults = q.count()
 
     # Order by
     if 'orderby' in params:
@@ -305,12 +302,7 @@ def getViewReleveList(info_role):
 
         q = q.order_by(orderCol)
 
-    try:
-        data = q.limit(limit).offset(page * limit).all()
-    except exc.IntegrityError as e:
-        DB.session.rollback()
-    except Exception as e:
-        DB.session.rollback()
+    data = q.limit(limit).offset(page * limit).all()
 
     user = info_role
     user_cruved = fnauth.get_cruved(
@@ -590,7 +582,7 @@ def export_sinp(info_role):
             elif info_role.tag_object_code == '1':
                 # join on TCounting, TOccurrence, Treleve and corRoleContact
                 #   to get users
-                q = q.join(
+                q = q.outerjoin(
                     CorCountingContact,
                     viewSINP.tableDef.columns.permId ==
                     CorCountingContact.unique_id_sinp_occtax
@@ -602,7 +594,7 @@ def export_sinp(info_role):
                     TRelevesContact,
                     TOccurrencesContact.id_releve_contact ==
                     TRelevesContact.id_releve_contact
-                ).join(
+                ).outerjoin(
                     corRoleRelevesContact,
                     TRelevesContact.id_releve_contact ==
                     corRoleRelevesContact.columns.id_releve_contact
@@ -624,3 +616,12 @@ def export_sinp(info_role):
         viewSINP.columns,
         ';'
     )
+
+
+@routes.route('/test', methods=['GET'])
+@json_resp
+def test():
+    raise CasAuthentificationError(
+        message="lala"
+    )
+    return 'la'

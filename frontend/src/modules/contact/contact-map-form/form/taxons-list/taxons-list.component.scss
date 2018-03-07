@@ -10,21 +10,21 @@ td > i {
   cursor: pointer;
 }
 
-.fa.fa-pencil-square-o.blue{
+.fa.fa-pencil-square-o.blue {
   color: #0275d8;
 }
 .red {
-  color: #E21A1A;
+  color: #e21a1a;
 }
 
 table {
-    width: 90%;;
-    position: absolute;
-    display: block;
-    max-height: 100px;
+  width: 90%;
+  position: absolute;
+  display: block;
+  max-height: 95px;
 }
 
-
-.table th, .table tr.first > td { 
-  border-top: none !important; 
+.table th,
+.table tr.first > td {
+  border-top: none !important;
 }

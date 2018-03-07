@@ -1,4 +1,4 @@
-import { Injectable, Injector} from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { AuthService } from '@geonature/core/components/auth/auth.service';
@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 export class MyCustomInterceptor implements HttpInterceptor {
   constructor(public inj: Injector, public router: Router) {}
 
-  private handleError (error: Response | any) {
+  private handleError(error: Response | any) {
+    console.log(error);
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';
@@ -33,10 +34,9 @@ export class MyCustomInterceptor implements HttpInterceptor {
     });
     // pass on the modified request object
     // and intercept error
-    return next.handle(customReq)
-      .catch((err: any) => {
-        this.handleError(err);
-        return Observable.throw(err);
-      })
+    return next.handle(customReq).catch((err: any) => {
+      this.handleError(err);
+      return Observable.throw(err);
+    });
   }
 }
