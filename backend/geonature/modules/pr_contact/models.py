@@ -19,7 +19,14 @@ from geoalchemy2 import Geometry
 
 
 class ReleveModel(DB.Model):
+    """
+        Classe abstraite permettant d'ajout des méthodes
+        de controle d'accès à la donnée en fonction
+        des droits associés à un utilisateur
+    """
+
     __abstract__ = True
+
     def user_is_observer_or_digitiser(self, user):
         observers = [d.id_role for d in self.observers]
         return user.id_role == self.id_digitiser or user.id_role in observers
@@ -27,22 +34,43 @@ class ReleveModel(DB.Model):
     def user_is_in_dataset_actor(self, user):
         return self.id_dataset in TDatasets.get_user_datasets(user)
 
-    def get_releve_if_allowed(self, user):
-        """Return the releve if the user is allowed
-          -params:
-          user: object from TRole
+    def user_is_allowed_to(self, user, level):
         """
-        if user.tag_object_code == '2':
-            if (
-                self.user_is_observer_or_digitiser(user) or
-                self.user_is_in_dataset_actor(user)
-            ):
-                return self
-        elif user.tag_object_code == '1':
-            if self.user_is_observer_or_digitiser(user):
-                return self
-        else:
+            Fonction permettant de dire si un utilisateur
+            peu ou non agir sur une donnée
+        """
+        # Si l'utilisateur n'a pas de droit d'accès aux données
+        if level not in ('1', '2', '3'):
+            return False
+
+        # Si l'utilisateur à le droit d'accéder à toutes les données
+        if level == '3':
+            return True
+
+        # Si l'utilisateur est propriétaire de la données
+        if self.user_is_observer_or_digitiser(user):
+            return True
+
+        # Si l'utilisateur appartient à un organisme
+        # qui a un droit sur la données et
+        # que son niveau d'accès est 2 ou 3
+        if (
+            self.user_is_in_dataset_actor(user) and
+            level in ('2', '3')
+        ):
+            return True
+
+        return False
+
+    def get_releve_if_allowed(self, user):
+        """
+            Return the releve if the user is allowed
+            params:
+                user: object from TRole
+        """
+        if self.user_is_allowed_to(user, user.tag_object_code):
             return self
+
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" this current releve')
             .format(user.id_role, user.tag_action_code),
@@ -50,22 +78,17 @@ class ReleveModel(DB.Model):
         )
 
     def get_releve_cruved(self, user, user_cruved):
-        """ return the user's cruved for a Releve instance.
+        """
+        Return the user's cruved for a Releve instance.
         Use in the map-list interface to allow or not an action
         params:
             - user : a TRole object
-            - user_cruved: object return by fnauth.get_cruved(user) """
-        releve_auth = {}
-        for obj in user_cruved:
-            if obj['level'] == '2':
-                releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user)
-            elif obj['level'] == '1':
-                releve_auth[obj['action']] = self.user_is_observer_or_digitiser(user)
-            elif obj['level'] == '3':
-                releve_auth[obj['action']] = True
-            else:
-                releve_auth[obj['action']] = False
-        return releve_auth
+            - user_cruved: object return by fnauth.get_cruved(user)
+        """
+        return {
+            obj['action']: self.user_is_allowed_to(user, obj['level'])
+            for obj in user_cruved
+        }
 
 
 corRoleRelevesContact = DB.Table(
