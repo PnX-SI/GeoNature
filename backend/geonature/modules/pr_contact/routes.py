@@ -618,10 +618,3 @@ def export_sinp(info_role):
     )
 
 
-@routes.route('/test', methods=['GET'])
-@json_resp
-def test():
-    raise CasAuthentificationError(
-        message="lala"
-    )
-    return 'la'
