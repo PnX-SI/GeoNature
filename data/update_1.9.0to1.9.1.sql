@@ -1,4 +1,6 @@
 --Correction d'un trigger provocant une récursion
+-- ATTENTION : avant de lancer le script
+-- Remplacer les 4 occurences de 'MYLOCALSRID' par le votre srid (2154 pour la métropole)
 CREATE OR REPLACE FUNCTION contactflore.update_fiche_cflore()
   RETURNS trigger AS
 $BODY$
@@ -12,11 +14,11 @@ IF (NOT ST_Equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local 
   OR (NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL)) 
    THEN
 	IF NOT ST_Equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) THEN
-		new.the_geom_local = st_transform(new.the_geom_3857,2154);
+		new.the_geom_local = st_transform(new.the_geom_3857,MYLOCALSRID);
 		new.srid_dessin = 3857;
 	ELSIF NOT ST_Equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local is null AND new.the_geom_local is NOT NULL) THEN
 		new.the_geom_3857 = st_transform(new.the_geom_local,3857);
-		new.srid_dessin = 2154;
+		new.srid_dessin = MYLOCALSRID;
 	END IF;
 -------gestion des divers control avec attributions de la commune : dans le cas d'un insert depuis le nomade uniquement via the_geom_local !!!!
 	IF st_isvalid(new.the_geom_local) = true THEN	-- si la topologie est bonne alors...
@@ -31,10 +33,10 @@ IF (NOT ST_Equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local 
 		    new.altitude_retenue = new.altitude_saisie;
 		END IF;
 	ELSE					
-		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),2154));
+		SELECT INTO macommune c.insee FROM layers.l_communes c WHERE st_intersects(c.the_geom, ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID));
 		new.insee = macommune;
 		-- on calcul l'altitude
-		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),2154)); -- mise à jour de l'altitude sig
+		new.altitude_sig = layers.f_isolines20(ST_PointFromWKB(st_centroid(Box2D(new.the_geom_local)),MYLOCALSRID)); -- mise à jour de l'altitude sig
 		IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
 			new.altitude_retenue = new.altitude_sig;
 		ELSE
