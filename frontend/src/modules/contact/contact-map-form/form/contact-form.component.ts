@@ -137,7 +137,7 @@ export class ContactFormComponent implements OnInit {
       occ.meta_update_date = new Date();
     });
     // format observers
-    if (finalForm.properties.observers.length > 0) {
+    if (finalForm.properties.observers && finalForm.properties.observers.length > 0) {
       finalForm.properties.observers = finalForm.properties.observers.map(
         observer => observer.id_role
       );
