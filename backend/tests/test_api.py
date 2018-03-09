@@ -2,6 +2,7 @@ import requests
 
 from .bootstrap_test import geonature_app, releve_data
 
+
 def run_request(url):
     return requests.get(url)
 
@@ -33,30 +34,34 @@ class TestApiUsersMenu:
             assert False
 
 
-class TestApiReleve:
+class TestApiModulePrConcact:
+    """
+        Test de l'api du module pr_contact
+    """
     token = None
 
-    def getToken(self, base_url):
+    def get_token(self, base_url):
         response = requests.post(
             '{}/auth/login'.format(base_url),
-            json={'login': "admin", 'password': "admin", 'id_application': 14, 'with_cruved': True}
+            json={
+                'login': "admin",
+                'password': "admin",
+                'id_application': 14,
+                'with_cruved': True
+            }
         )
         self.token = response.cookies['token']
 
-
-    def test_getToken(self, geonature_app):
-        print('test_getToken')
-        self.getToken(geonature_app.config['API_ENDPOINT'])
+    def test_get_token(self, geonature_app):
+        self.get_token(geonature_app.config['API_ENDPOINT'])
 
         if self.token:
             assert True
         else:
             assert False
 
-    def test_getReleves(self, geonature_app):
-        print('test_getReleves')
-        if not self.token:
-            self.getToken(geonature_app.config['API_ENDPOINT'])
+    def test_get_releves(self, geonature_app):
+        self.get_token(geonature_app.config['API_ENDPOINT'])
 
         response = requests.get(
             '{}/contact/releves'.format(geonature_app.config['API_ENDPOINT']),
@@ -68,10 +73,8 @@ class TestApiReleve:
         else:
             assert False
 
-    def test_insertUpdateDeleteReleves(self, geonature_app, releve_data):
-
-        if not self.token:
-            self.getToken(geonature_app.config['API_ENDPOINT'])
+    def test_insert_update_delete_releves(self, geonature_app, releve_data):
+        self.get_token(geonature_app.config['API_ENDPOINT'])
 
         response = requests.post(
             '{}/contact/releve'.format(geonature_app.config['API_ENDPOINT']),
@@ -112,10 +115,9 @@ class TestApiReleve:
 
         assert True
 
-
     def test_get_export_sinp(self, geonature_app):
         if not self.token:
-            self.getToken(geonature_app.config['API_ENDPOINT'])
+            self.get_token(geonature_app.config['API_ENDPOINT'])
 
         response = requests.get(
             '{}/contact/export/sinp'.format(geonature_app.config['API_ENDPOINT']),
