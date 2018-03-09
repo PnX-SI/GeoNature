@@ -102,7 +102,7 @@ def loginCas():
             try:
                 resp = users.insert_role(user)
             except Exception as e:
-                gunicorn_error_logger.error(error)
+                gunicorn_error_logger.info(e)
                 log.error(e)
             # push the user in the right group
             try:
@@ -114,13 +114,13 @@ def loginCas():
                     users.insert_in_cor_role(20001, user['id_role'])
                 user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
             except Exception as e:
-                gunicorn_error_logger.error(error)
+                gunicorn_error_logger.info(e)
                 log.error(e)
             # Creation of datasets
             try:
                 gn_meta.post_jdd_from_user_id(user_id, organism_id)
             except Exception as e:
-                gunicorn_error_logger.error(error)
+                gunicorn_error_logger.info(e)
                 log.error(e)
 
             # creation de la Response

@@ -10,6 +10,9 @@ external_assets/
 config.py
 .vscode
 
+*.perm
+*.pem
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

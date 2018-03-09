@@ -51,6 +51,7 @@ class TestApiModulePrConcact:
             }
         )
         self.token = response.cookies['token']
+        return response.cookies['token']
 
     def test_get_token(self, geonature_app):
         self.get_token(geonature_app.config['API_ENDPOINT'])
@@ -128,3 +129,52 @@ class TestApiModulePrConcact:
             assert True
         else:
             assert False
+
+    ### Test des droits ####
+
+    def test_user_can_get_releve(self, geonature_app):
+        """
+            user admin is observer of releve 1
+        """
+        token = self.getToken(
+                geonature_app.config['API_ENDPOINT'],
+                login="admin",
+                password="admin"
+                )
+        response = requests.get(
+            '{}/contact/releve/1'.format(geonature_app.config['API_ENDPOINT']),
+            cookies={'token': token}
+        )
+        assert response.status_code == 200
+    
+    def test_user_cannot_get_releve(self, geonature_app):
+        """
+            user agent is not observer, digitiser 
+            or in cor_dataset_actor
+        """
+        token = self.getToken(
+                geonature_app.config['API_ENDPOINT'],
+                login="agent",
+                password="admin"
+                )
+        response = requests.get(
+            '{}/contact/releve/1'.format(geonature_app.config['API_ENDPOINT']),
+            cookies={'token': token}
+        )
+        assert response.status_code == 403
+    
+    def test_user_cannot_delete_releve(self, geonature_app):
+        """
+            user agent is not observer, digitiser 
+            or in cor_dataset_actor
+        """
+        token = self.getToken(
+                geonature_app.config['API_ENDPOINT'],
+                login="agent",
+                password="admin"
+                )   
+        response = requests.delete(
+            '{}/contact/releve/1'.format(geonature_app.config['API_ENDPOINT']),
+            cookies={'token': token}
+        )
+        assert response.status_code == 403

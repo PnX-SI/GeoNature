@@ -6,32 +6,31 @@ import { AppConfig } from '../../conf/app.config';
 @Component({
   selector: 'pnx-exports-component',
   templateUrl: 'exports.component.html',
-  styleUrls: ['exports.component.scss'],
-
+  styleUrls: ['exports.component.scss']
 })
-
 export class ExportsComponent implements OnInit {
   public dataSetControl = new FormControl();
   public dataSetsControls = this._fb.array([]);
   public viewList: Array<any>;
-  constructor( public exportsService: ExportsService, private _fb: FormBuilder) { }
+  constructor(public exportsService: ExportsService, private _fb: FormBuilder) {}
 
   ngOnInit() {
     this.viewList = this.exportsService.getFakeViewList();
     this.viewList.forEach((view, index) => {
       this.dataSetsControls.insert(index, this._fb.control(null));
     });
-    this.dataSetControl.valueChanges
-      .subscribe(value => {
-        console.log(value);
-      });
-   }
+    this.dataSetControl.valueChanges.subscribe(value => {
+      console.log(value);
+    });
+  }
 
-   exportCsv(idView, idDataSet) {
-     if (idDataSet) {
-      document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp?id_dataset=${idDataSet}`;
-     } else {
-        document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp`
-     }
-   }
+  exportCsv(idView, idDataSet) {
+    if (idDataSet) {
+      document.location.href = `${
+        AppConfig.API_ENDPOINT
+      }/contact/export/sinp?id_dataset=${idDataSet}`;
+    } else {
+      document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp`;
+    }
+  }
 }

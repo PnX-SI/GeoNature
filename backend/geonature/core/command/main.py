@@ -138,15 +138,15 @@ def dev_back(host, port, conf_file):
     """
         Lance l'api du backend avec flask
     """
-    # TODO mettre en parametre et faire en sorte que
-    #  le chemin absolu soit calculé automatiquement
-    # ssl_context = (
-    #     "/tmp/cert.pem",
-    #     "/tmp/key.pem"
-    # )
-    # app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
     app = get_app_for_cmd(conf_file)
-    app.run(host=host, port=int(port), debug=True)
+    if app.config['ENABLE_HTTPS']:
+        ssl_context = (
+           app.config['HTTPS_CERT_PATH'],
+           app.config['HTTPS_KEY_PATH']
+        )
+        app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
+    else:
+        app.run(host=host, port=int(port), debug=True)
 
 
 @main.command()
