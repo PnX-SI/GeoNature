@@ -24,15 +24,8 @@ def get_app(config, _app=None):
 
     with app.app_context():
         from geonature.utils.logs import mail_handler
-        loggers = [
-            app.logger,
-            logging.getLogger(),
-            logging.getLogger('sqlalchemy'),
-            logging.getLogger('werkzeug')
-        ]
-        for logger in loggers:
-            if app.config['MAILERROR']['MAIL_ON_ERROR']:
-                logger.addHandler(mail_handler)
+        if app.config['MAILERROR']['MAIL_ON_ERROR']:
+            logging.getLogger().addHandler(mail_handler)
         DB.create_all()
 
         from pypnusershub.routes import routes
