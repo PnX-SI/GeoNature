@@ -37,9 +37,6 @@ def get_app(config, _app=None):
         from geonature.core.users.routes import routes
         app.register_blueprint(routes, url_prefix='/users')
 
-        from geonature.modules.pr_contact.routes import routes
-        app.register_blueprint(routes, url_prefix='/contact')
-
         from geonature.core.gn_meta.routes import routes
         app.register_blueprint(routes, url_prefix='/meta')
 
@@ -62,6 +59,7 @@ def get_app(config, _app=None):
 
         # Chargement des modules tiers
         for conf, manifest, module in list_gn_modules():
+            print(conf, manifest, module)
             app.register_blueprint(
                 module.backend.blueprint.blueprint,
                 url_prefix=conf['api_url']

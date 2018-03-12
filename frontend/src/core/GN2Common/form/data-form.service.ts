@@ -98,6 +98,6 @@ export class DataFormService {
   }
 
   postContact(form) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}/contact/releve`, form);
+    return this._http.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
   }
 }
