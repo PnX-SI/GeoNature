@@ -39,7 +39,7 @@ GN_MODULE_FILES = (
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
-GN_MODULE_FE_FILE = 'frontend/app/gnModule'
+GN_MODULE_FE_FILE = 'frontend/app/gnModule.module'
 
 
 def in_virtualenv():
