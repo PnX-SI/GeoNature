@@ -18,9 +18,11 @@ export class ContactMapFormComponent implements OnInit, OnDestroy {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;
-  constructor(private _navService: NavService, private _ms: MapService, private _route: ActivatedRoute,
-  private _router: Router) {
-  }
+  constructor(private _navService: NavService,
+  private _ms: MapService,
+  private _route: ActivatedRoute,
+  private _router: Router,
+) {}
 
   ngOnInit() {
     // overight the leaflet draw object to set options

@@ -38,18 +38,16 @@ export class OccurrenceComponent implements AfterViewInit {
     this.occurrenceForm.controls.id_nomenclature_exist_proof.valueChanges
       .subscribe(value => {
         // if exist proof is No or undefined => set error on both
-        if (this.existProof.currentCdNomenclature !== '1') {
+        if (this.existProof.currentCdNomenclature !== '1' || value === null) {
           this.occurrenceForm.controls.digital_proof.setValue(null);
           this.occurrenceForm.controls.non_digital_proof.setValue(null);
           this.occurrenceForm.controls.digital_proof.disable();
           this.occurrenceForm.controls.non_digital_proof.disable();
-        }
-        // exist proof is Yes
-        if (this.existProof.currentCdNomenclature === '1') {
+        } else  {
           this.occurrenceForm.controls.digital_proof.enable();
           this.occurrenceForm.controls.non_digital_proof.enable();
           if (this.occurrenceForm.value.digital_proof === null && this.occurrenceForm.value.non_digital_proof === null) {
-            // if digital proof must begin with 'http, https'...
+            // digital proof must begin with 'http, https'...
             if (ContactConfig.digital_proof_validator) {
               this.occurrenceForm.controls.digital_proof.setValidators(this.validateDigitalProof);
             }

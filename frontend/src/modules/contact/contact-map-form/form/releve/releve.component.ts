@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../../../../../core/GN2Common/map/map.service';
@@ -18,7 +18,7 @@ import { ContactConfig } from '../../../contact.config';
   encapsulation: ViewEncapsulation.None
 })
 
-export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
+export class ReleveComponent implements OnInit, OnDestroy {
   @Input() releveForm: FormGroup;
   public dateMin: Date;
   public dateMax: Date;
@@ -61,9 +61,11 @@ export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
       const today = new Date();
       this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
 
+      this.autoCompleteDate()
+
   } // END INIT
 
-  autoCompleteAndIntegrityCheck() {
+  autoCompleteDate() {
     // date max autocomplete
     (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
     .subscribe(value => {
@@ -71,76 +73,7 @@ export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
         this.releveForm.controls.properties.patchValue({date_max: value});
       }
     });
-  // check if dateMax is not < dateMin
-  (this.releveForm.controls.properties as FormGroup).controls.date_max.valueChanges
-    .debounceTime(500)
-    .subscribe(value => {
-      this.checkDate();
-    });
-
-    (this.releveForm.controls.properties as FormGroup).controls.date_min.valueChanges
-      .debounceTime(500)
-      .subscribe(value => {
-        this.checkDate();
-      });
-
-  // check if hour max is not inf to hour max
-  (this.releveForm.controls.properties as FormGroup).controls.hour_max.valueChanges
-    // wait for the end of the input
-    .debounceTime(500)
-    .filter(value => (this.releveForm.controls.properties as FormGroup).controls.hour_max.valid)
-    .subscribe(value => {
-      this.checkHours();
-    });
-    // check if hour max is not inf to hour max
-    (this.releveForm.controls.properties as FormGroup).controls.hour_min.valueChanges
-    .filter(value => (this.releveForm.controls.properties as FormGroup).controls.hour_min.valid)
-    .debounceTime(500)
-    .subscribe(value => {
-      this.checkHours();
-  });
 }
-
-  checkHours() {
-    let hourMin = this.releveForm.value.properties.hour_min;
-    let hourMax = this.releveForm.value.properties.hour_max;
-    // if hour min et pas hour max => set error
-    if (hourMin && hourMax) {
-      hourMin = hourMin.split(':').map(h => parseInt(h));
-      hourMax = hourMax.split(':').map(h => parseInt(h));
-      const dateMin = new Date(this._dateFormater.format(this.fs.releveForm.value.properties.date_min));
-      const dateMax = new Date(this._dateFormater.format(this.fs.releveForm.value.properties.date_max));
-      if (dateMin && dateMax) {
-        dateMin.setHours(hourMin[0], hourMin[1]);
-        dateMax.setHours(hourMax[0], hourMax[1]);
-      }
-
-      if (dateMin > dateMax) {
-        (this.releveForm.controls.properties as FormGroup).controls.hour_max.setErrors([Validators.required]);
-        this._commonService.translateToaster('error', 'Releve.HourMaxError');
-      } else {
-        (this.releveForm.controls.properties as FormGroup).controls.hour_max.updateValueAndValidity();
-
-      }
-    }
-  }
-
-  checkDate() {
-    const dateMin = this.releveForm.value.properties.date_min;
-    const dateMax = this.releveForm.value.properties.date_max;
-    if (dateMin && dateMax) {
-      this.dateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
-      this.dateMax = new Date(dateMax.year, dateMax.month, dateMax.day);
-      if (this.dateMax < this.dateMin) {
-        (this.releveForm.controls.properties as FormGroup).controls.date_max.setErrors([Validators.required]);
-        this._commonService.translateToaster('error', 'Releve.DateMaxError');
-      }
-      // check hours
-      this.checkHours();
-    }
-  }
-
-
 
   toggleTime() {
     this.showTime = !this.showTime;
@@ -149,12 +82,6 @@ export class ReleveComponent implements OnInit, OnDestroy, OnChanges {
   dateChanged(date) {
     const newDate = new Date(date);
   }
-
-  ngOnChanges(changes) {
-    this.autoCompleteAndIntegrityCheck();
-  }
-
-
 
   ngOnDestroy() { 
     this.geojsonSubscription$.unsubscribe();

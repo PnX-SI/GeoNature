@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
 import { MapService } from '../../../../core/GN2Common/map/map.service';
-import { CommonService } from '../../../../core/GN2Common/service/common.service'
+import { CommonService } from '../../../../core/GN2Common/service/common.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { ContactFormService } from './contact-form.service';
@@ -10,9 +10,7 @@ import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { ContactConfig } from '../../contact.config';
 import { ContactService } from '../../services/contact.service';
-
-
-
+import { timeout } from 'rxjs/operators/timeout';
 
 @Component({
   selector: 'pnx-contact-form',
@@ -23,13 +21,16 @@ import { ContactService } from '../../services/contact.service';
 export class ContactFormComponent implements OnInit {
   @Input() id: number;
 
-  constructor(public fs: ContactFormService, private _ms: MapService,
-     private _dateParser: NgbDateParserFormatter, private _dfs: DataFormService,
-     private toastr: ToastrService,
-     private router: Router,
-     private contactService: ContactService,
-     private _commonService: CommonService
-    ) {  }
+  constructor(
+    public fs: ContactFormService,
+    private _ms: MapService,
+    private _dateParser: NgbDateParserFormatter,
+    private _dfs: DataFormService,
+    private toastr: ToastrService,
+    private router: Router,
+    private contactService: ContactService,
+    private _commonService: CommonService
+  ) {}
 
   ngOnInit() {
     // set show occurrence to false:
@@ -47,46 +48,77 @@ export class ContactFormComponent implements OnInit {
     this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
 
+    // remove disabled on geom selected
+
+    this.fs.releveForm.controls.geometry.valueChanges.subscribe(data => {
+      this.fs.disabled = false;
+    });
+
     // if its edition mode
-    if (!isNaN(this.id )) {
+    if (!isNaN(this.id)) {
       // set showOccurrence to false;
       this.fs.showOccurrence = false;
       this.fs.editionMode = true;
       // load one releve
-      this.contactService.getOneReleve(this.id)
-        .subscribe(data => {
-          // pre fill the form
-          this.fs.releveForm.patchValue({properties: data.releve.properties});
+      this.contactService.getOneReleve(this.id).subscribe(data => {
+        // pre fill the form
+        this.fs.releveForm.patchValue({ properties: data.releve.properties });
 
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_min: this.fs.formatDate(data.releve.properties.date_min)});
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({date_max: this.fs.formatDate(data.releve.properties.date_max)});
-          const hour_min = data.releve.properties.hour_min === 'None' ? null : data.releve.properties.hour_min;
-          const hour_max = data.releve.properties.hour_max === 'None' ? null : data.releve.properties.hour_max;
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_min: hour_min});
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({hour_max: hour_max});
-          // format observers
-          const observers = data.releve.properties.observers.map(obs => {
-            obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
-            return obs;
+        (this.fs.releveForm.controls.properties as FormGroup).patchValue({
+          date_min: this.fs.formatDate(data.releve.properties.date_min)
+        });
+        (this.fs.releveForm.controls.properties as FormGroup).patchValue({
+          date_max: this.fs.formatDate(data.releve.properties.date_max)
+        });
+        const hour_min =
+          data.releve.properties.hour_min === 'None' ? null : data.releve.properties.hour_min;
+        const hour_max =
+          data.releve.properties.hour_max === 'None' ? null : data.releve.properties.hour_max;
+        (this.fs.releveForm.controls.properties as FormGroup).patchValue({ hour_min: hour_min });
+        (this.fs.releveForm.controls.properties as FormGroup).patchValue({ hour_max: hour_max });
+        // format observers
+        const observers = data.releve.properties.observers.map(obs => {
+          obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
+          return obs;
+        });
+        (this.fs.releveForm.controls.properties as FormGroup).patchValue({ observers: observers });
+        const orderedCdNomList = [];
+        data.releve.properties.t_occurrences_contact.forEach(occ => {
+          orderedCdNomList.push(occ.cd_nom);
+          this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
+            this.fs.taxonsList.push(taxon);
           });
-          (this.fs.releveForm.controls.properties as FormGroup).patchValue({observers: observers});
-          for (const occ of data.releve.properties.t_occurrences_contact){
-            // load taxon info in ajax
-            this._dfs.getTaxonInfo(occ.cd_nom)
-              .subscribe(taxon => this.fs.taxonsList.push(taxon));
+        });
+
+        // HACK to re order taxon list because of side effect of ajax
+        const reOrderTaxon = [];
+        setTimeout(() => {
+          for (let i = 0; i < orderedCdNomList.length; i++) {
+            for (let j = 0; j < this.fs.taxonsList.length; j++) {
+              if (this.fs.taxonsList[j].cd_nom === orderedCdNomList[i]) {
+                reOrderTaxon.push(this.fs.taxonsList[j]);
+                break;
+              }
+            }
           }
-          // set the occurrence
-          this.fs.indexOccurrence = data.releve.properties.t_occurrences_contact.length;
-          // push the geometry in releveForm
-          this.fs.releveForm.patchValue({geometry: data.releve.geometry});
-          // load the geometry in the map
-          this._ms.loadGeometryReleve(data.releve, true);
+          this.fs.taxonsList = reOrderTaxon;
+        }, 1500);
+
+        // set the occurrence
+        this.fs.indexOccurrence = data.releve.properties.t_occurrences_contact.length;
+        // push the geometry in releveForm
+        this.fs.releveForm.patchValue({ geometry: data.releve.geometry });
+        // load the geometry in the map
+        this._ms.loadGeometryReleve(data.releve, true);
       }); // end subscribe
     }
-
   } // end ngOnInit
 
-
+  formDisabled() {
+    if (this.fs.disabled) {
+      this._commonService.translateToaster('warning', 'Releve.FillGeometryFirst');
+    }
+  }
 
   submitData() {
     // set the releveForm
@@ -105,16 +137,16 @@ export class ContactFormComponent implements OnInit {
       occ.meta_update_date = new Date();
     });
     // format observers
-    if (!ContactConfig.observers_txt) {
-      finalForm.properties.observers = finalForm.properties.observers
-      .map(observer => observer.id_role);
+    if (finalForm.properties.observers && finalForm.properties.observers.length > 0) {
+      finalForm.properties.observers = finalForm.properties.observers.map(
+        observer => observer.id_role
+      );
     }
     // Post
     console.log(JSON.stringify(finalForm));
-    this._dfs.postContact(finalForm)
-      .subscribe(
-        (response) => {
-          this.toastr.success('Relevé enregistré', '', {positionClass:'toast-top-center'});
+    this._dfs.postContact(finalForm).subscribe(
+      response => {
+        this.toastr.success('Relevé enregistré', '', { positionClass: 'toast-top-center' });
         // resert the forms
         this.fs.releveForm = this.fs.initReleveForm();
         this.fs.occurrenceForm = this.fs.initOccurenceForm();
@@ -122,19 +154,19 @@ export class ContactFormComponent implements OnInit {
         this.fs.countingForm = this.fs.initCountingArray();
 
         this.fs.taxonsList = [];
-        this.fs.indexOccurrence = 0 ;
+        this.fs.indexOccurrence = 0;
+        this.fs.disabled = true;
         // redirect
         this.router.navigate(['/occtax']);
-        },
-        (error) => {
-          if (error.status === 403) {
-            this._commonService.translateToaster('error', 'NotAllowed');
-          } else {
-            console.error(error.error.message);
-            this._commonService.translateToaster('error', 'ErrorMessage');
-          }
+      },
+      error => {
+        if (error.status === 403) {
+          this._commonService.translateToaster('error', 'NotAllowed');
+        } else {
+          console.error(error.error.message);
+          this._commonService.translateToaster('error', 'ErrorMessage');
         }
-      );
-    }
- 
+      }
+    );
+  }
 }

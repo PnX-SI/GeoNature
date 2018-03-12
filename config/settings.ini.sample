@@ -1,6 +1,11 @@
 # URL Configuration
 ###################
 
+#enable https mode ?
+enable_https=false
+https_cert_path=/etc/geonature/ssl/cert.perm
+https_key_path=/etc/geonature/ssl/key.pem
+
 # Url of the server must end with /
 my_url=http://url.com/
 

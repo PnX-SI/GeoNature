@@ -9,6 +9,7 @@
         (onSelect)="addObservers($event)"
         (onUnselect)="removeObservers($event)"
         [suggestions]="filteredObservers" field="nom_complet"
+        [disableControl]="disabled"
         [minLength]="1" [multiple]="true">
       </p-autoComplete>
   </span>

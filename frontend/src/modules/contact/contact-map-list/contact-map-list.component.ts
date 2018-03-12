@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { AppConfig } from '../../../conf/app.config';
 import { GeoJSON } from 'leaflet';
@@ -14,7 +14,8 @@ import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ContactConfig } from '../contact.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+
 
 @Component({
   selector: 'pnx-contact-map-list',
@@ -23,7 +24,7 @@ import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
   providers: [MapListService]
 })
 
-export class ContactMapListComponent implements OnInit, AfterViewInit {
+export class ContactMapListComponent implements OnInit {
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public filterableColumns: Array<any>;
@@ -39,8 +40,10 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
   public datasetInput = new FormControl();
   public columnActions: ColumnActions;
   public contactConfig: any;
-  // provisoire 
-  public tableMessages = {'emptyMessage': 'Aucune observation à afficher', 'totalMessage': 'observation(s)'};
+
+  // provisoire
+  public tableMessages = {'emptyMessage': 'Aucune observation à afficher', 'totalMessage': 'observation(s) au total'};
+  @ViewChild(NgbModal) public modalCol: NgbModal;
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor( private _http: Http, private mapListService: MapListService, private _contactService: ContactService,
     private _commonService: CommonService, private _auth: AuthService,
@@ -91,11 +94,6 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
      this.customColumns
     );
     // end OnInit
-  }
-
-  ngAfterViewInit() {
-    console.log(this.taxonomyComponent);
-
   }
 
   taxonChanged(taxonObj) {
@@ -225,6 +223,40 @@ export class ContactMapListComponent implements OnInit, AfterViewInit {
     this.mapListService.refreshUrlQuery(12);
     this.mapListService.refreshData(this.apiEndPoint, 'set');
   }
+
+  toggle(col) {
+    const isChecked = this.isChecked(col);
+    if (isChecked) {
+      this.mapListService.displayColumns = this.mapListService.displayColumns.filter(c => {
+        return c.prop !== col.prop;
+      });
+    } else {
+      this.mapListService.displayColumns = [...this.mapListService.displayColumns, col];
+    }
+  }
+
+  openModalCol(event, modal){
+    this.ngbModal.open(modal);
+  }
+
+  onChangeFilterOps(col) {
+    // reset url query
+    this.mapListService.urlQuery.delete(this.mapListService.colSelected.prop);
+    this.mapListService.colSelected = col; // change filter selected
+  }
+
+  isChecked(col) {
+    let i = 0;
+    while (
+      i < this.mapListService.displayColumns.length &&
+      this.mapListService.displayColumns[i].prop !== col.prop
+    ) {
+      i = i + 1;
+    }
+    return i === this.mapListService.displayColumns.length ? false : true;
+    }
+
+
 
 }
 

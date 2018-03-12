@@ -56,6 +56,10 @@ class GnPySchemaConf(Schema):
     SECRET_KEY = fields.String(required=True)
     COOKIE_EXPIRATION = fields.Integer(missing=7200)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
+    TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
+    ENABLE_HTTPS = fields.Boolean(missing=False)
+    HTTPS_CERT_PATH = fields.String(missing="/etc/geonature/ssl/cert.perm") 
+    HTTPS_KEY_PATH = fields.String(missing="/etc/geonature/ssl/key.pem") 
 
     UPLOAD_FOLDER = fields.String(missing='static/medias')
     BASE_DIR = fields.String(

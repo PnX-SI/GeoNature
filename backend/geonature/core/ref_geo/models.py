@@ -2,7 +2,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
 
-from werkzeug.exceptions import NotFound
+from geonature.utils.env import DB
+from geonature.utils.utilssqlalchemy import serializable
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import (
@@ -11,8 +12,7 @@ from geonature.utils.utilssqlalchemy import (
 from geonature.utils.env import DB
 
 @serializable
-@geoserializable
-class LAreas(DB.Model):
+class LAreasWithoutGeom(DB.Model):
     __tablename__ = 'l_areas'
     __table_args__ = {'schema': 'ref_geo'}
     id_area = DB.Column(DB.Integer, primary_key=True)

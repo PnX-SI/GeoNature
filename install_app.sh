@@ -97,6 +97,9 @@ if [ ! -f /etc/geonature/geonature_config.toml ]; then
   sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/ENABLE_HTTPS = .*$/ENABLE_HTTPS = '${enable_https}'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/HTTPS_CERT_PATH = .*$/HTTPS_CERT_PATH = '${https_cert_path}'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/HTTPS_KEY_PATH = .*$/HTTPS_KEY_PATH = '${https_key_path}'/g" /etc/geonature/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
 fi
