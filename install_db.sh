@@ -303,6 +303,12 @@ then
     cp data/core/synthese.sql /tmp/geonature/synthese.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/geonature/synthese.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/synthese.sql  &>> /var/log/geonature/install_db.log
+    echo "" &>> /var/log/geonature/install_db.log
+    echo "--------------------" &>> /var/log/geonature/install_db.log
+    echo "Installing 'synthese' default data parameters" &>> /var/log/geonature/install_db.log
+    echo "--------------------" &>> /var/log/geonature/install_db.log
+    echo "" &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_data.sql  &>> /var/log/geonature/install_db.log
 
 
     echo "Creating 'exports' schema..."
