@@ -3,6 +3,7 @@ import pytest
 import server
 from geonature.utils.env import load_config, get_config_file_path
 
+#TODO: fixture pour mettre des données test dans la base a chaque test
 
 @pytest.fixture
 def geonature_app():
