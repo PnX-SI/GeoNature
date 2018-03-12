@@ -19,7 +19,8 @@
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
           [idTypeNomenclature]="14" 
           [regne]="fs.currentTaxon.regne" 
-          [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+          [group2Inpn]="fs.currentTaxon.group2_inpn"
+          > 
         </pnx-nomenclature>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
@@ -28,11 +29,13 @@
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
           [idTypeNomenclature]="7" 
           [regne]="fs.currentTaxon.regne" 
-          [group2Inpn]="fs.currentTaxon.group2_inpn" > 
+          [group2Inpn]="fs.currentTaxon.group2_inpn"
+           > 
         </pnx-nomenclature>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm"> 
-        <button id="advanced-button" type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#collapseAvance">
+        <button id="advanced-button" type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#collapseAvance"
+        >
             <i class="fa fa-cog" aria-hidden="true"></i>
             {{ 'Taxon.Advanced' | translate }}
         </button>
@@ -49,7 +52,8 @@
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
             [idTypeNomenclature]="13" 
             [regne]="fs.currentTaxon.regne" 
-            [group2Inpn]="fs.currentTaxon.group2_inpn"> 
+            [group2Inpn]="fs.currentTaxon.group2_inpn"
+            > 
           </pnx-nomenclature> 
         </div>          
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
@@ -58,7 +62,8 @@
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
             [idTypeNomenclature]="8" 
             [regne]="fs.currentTaxon.regne" 
-            [group2Inpn]="fs.currentTaxon.group2_inpn">
+            [group2Inpn]="fs.currentTaxon.group2_inpn"
+            >
           </pnx-nomenclature>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
@@ -67,7 +72,8 @@
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
             [idTypeNomenclature]="106" 
             [regne]="fs.currentTaxon.regne" 
-            [group2Inpn]="fs.currentTaxon.group2_inpn">
+            [group2Inpn]="fs.currentTaxon.group2_inpn"
+            >
           </pnx-nomenclature>
         </div>
       </div>
@@ -102,7 +108,8 @@
           <div class="form-group" [ngClass]="{'has-danger' : occurrenceForm.controls.digital_proof.invalid}">
             <small> {{ 'Taxon.DigitalProof' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
-              type="text">
+              type="text"
+              >
           </div>
           <small class="red" *ngIf="contactConfig?.digital_proof_validator && occurrenceForm.controls.digital_proof.invalid">
             {{ 'Taxon.ExistProofValidation' | translate }}

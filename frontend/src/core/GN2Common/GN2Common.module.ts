@@ -1,12 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatListModule, MatIconModule,
-        MatToolbarModule} from '@angular/material';
+import {
+  MatCardModule,
+  MatMenuModule,
+  MatSidenavModule,
+  MatTooltipModule,
+  MatListModule,
+  MatIconModule,
+  MatToolbarModule
+} from '@angular/material';
 
-
-import {Http} from '@angular/http';
+import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClient,
+  HttpClientXsrfModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
@@ -48,7 +59,6 @@ import { FormService } from './form/form-service';
 // add all rxjs operators
 import 'rxjs/Rx';
 
-
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -67,8 +77,8 @@ export function HttpLoaderFactory(http: Http) {
     ReactiveFormsModule,
     NgxDatatableModule,
     TranslateModule.forChild(),
-  NgbModule.forRoot(),
-  AutoCompleteModule
+    NgbModule.forRoot(),
+    AutoCompleteModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -89,14 +99,14 @@ export function HttpLoaderFactory(http: Http) {
     MapListGenericFiltersComponent,
     ObserversTextComponent
   ],
-  providers : [
+  providers: [
     TranslateService,
     MapService,
     DataFormService,
     MapListService,
     CommonService,
     FormService
-    ],
+  ],
   exports: [
     NomenclatureComponent,
     ObserversComponent,
@@ -129,6 +139,4 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent
   ]
 })
-export class GN2CommonModule {
-
-}
+export class GN2CommonModule {}

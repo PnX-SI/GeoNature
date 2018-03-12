@@ -3,6 +3,10 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import { DataFormService } from '../data-form.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { error } from 'util';
+import {of} from 'rxjs/observable/of';
+import { CommonService } from '@geonature_common/service/common.service';
+
 
 
 @Component({
@@ -17,6 +21,7 @@ export class TaxonomyComponent implements OnInit {
   @Input() charNumber: number;
   @Input() listLength: number;
   @Input() refresh: Function;
+  @Input() disabled: boolean;
   taxons: Array<any>;
   searchString: any;
   filteredTaxons: any;
@@ -25,13 +30,14 @@ export class TaxonomyComponent implements OnInit {
   groupControl = new FormControl(null);
   regnesAndGroup: any;
   noResult: boolean;
-  showSpinner = false;
+  isLoading = false;
   showResultList = true;
   @Output() taxonChanged = new EventEmitter<any>();
   @Output() taxonDeleted = new EventEmitter<any>();
 
   constructor(
-    private _dfService: DataFormService
+    private _dfService: DataFormService,
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -57,6 +63,7 @@ export class TaxonomyComponent implements OnInit {
           this.groupControl.patchValue(null);
         }
       });
+
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
@@ -69,30 +76,39 @@ export class TaxonomyComponent implements OnInit {
 
   searchTaxon = (text$: Observable<string>) =>
     text$
+      .do( value => this.isLoading = true)
       .debounceTime(400)
       .distinctUntilChanged()
       .switchMap(value => {
         if (value.length >= this.charNumber && value.length <= 20) {
-          this.showSpinner = true;
           return this._dfService.searchTaxonomy(
             value, this.idList, this.regneControl.value, this.groupControl.value)
+            .catch(err => {
+              this._commonService.translateToaster(
+                'error',
+                'ErrorMessage'
+              )
+              return of([]);
+              })
         } else {
-          this.showSpinner = false;
+          this.isLoading = false;
           return [[]];
         }
       })
       .map(response => {
         console.log(response);
         this.noResult = response.length === 0 ;
-        this.showSpinner = false;
+        this.isLoading = false;
         return response.slice(0, this.listLength);
       })
+
 
   refreshAllInput() {
     this.parentFormControl.reset();
     this.regneControl.reset();
     this.groupControl.reset();
   }
+
 
 
 }

@@ -1,6 +1,6 @@
-<div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
-  <small> {{placeholder}} </small>
-  <select 
+<small> {{placeholder}} </small>
+<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <select
     class="form-control form-control-sm"
     [disableControl]="disabled"
     [formControl]="parentFormControl">
