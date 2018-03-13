@@ -105,6 +105,7 @@ INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_f
 ,(113, 'VOLET_SINP', 'Volet SINP', 'Nomenclature des volets que peut viser le SINP.', 'SINP', 'Validé', '2017-10-30 00:00:00', '2017-10-30 00:00:00')
 ,(114, 'JDD_OBJECTIFS', 'Objectif du jeu de données', 'Nomenclature des valeurs permises pour les objectifs du jeu de données.', 'SINP', 'Validé', '2017-11-02 00:00:00', '2017-11-02 00:00:00')
 ,(115, 'METHO_RECUEIL', 'Méthode de recueil des données', 'Nomenclature de l''ensemble de techniques, savoir-faire et outils mobilisés pour collecter des données.', 'SINP', 'Validé', '2017-11-02 00:00:00', '2017-11-02 00:00:00')
+,(116, 'TYPE_SITE', 'Type de sites', 'Nomenclature des types de sites suivi dans gn_monitoring.', 'GEONATURE', 'Non validé', '2018-03-13 00:00:00', '2018-03-13 00:00:00')
 
 ;
 
@@ -561,7 +562,15 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(469, 114, '6.4', 'Suivis réglementaires', 'Suivis réglementaires', 'Il s’agit des suivis temporels visant à suivre les impacts après implantation d’un ouvrage, imposés par la loi ou lors de l’autorisation de réalisation des travaux. Par exemples les suivis de mortalité des oiseaux et chiroptères après mise en place d’un parc éolien. Les suivis réglementaires dans le cadre de compensations entrent aussi dans cette catégorie', 'SINP', 'Validé', 0, '114.028', '2017-11-02 00:00:00', NULL, true)
 ,(470, 114, '7.1', 'Regroupement de données', 'Regroupement de données', 'Catégorie à utiliser quand le jeu de données mélange divers types de données, sans métadonnées permettant pour l’instant de les séparer en jeux de données plus précis et plus cohérents. On peut inclure ici les CA et JDD constitué par des regroupements de Données Elémentaires d''Echange (DEE) pour réaliser un atlas, uniquement quand l’objectif original de collecte des données n’est pas déterminable. Lorsqu’on ne dispose pas d’information sur les raisons de l’acquisition des données, cette rubrique doit être utilisée', 'SINP', 'Validé', 0, '114.029', '2017-11-02 00:00:00', NULL, true)
 ,(471, 114, '7.2', 'Autres études et programmes', 'Autres études et programmes', 'Cas n’entrant pas clairement dans les autres rubriques. Dans ce cas les métadonnées (champ libres « description » et « protocole » des fiches de métadonnées) devront bien expliquer en quoi consiste le but de l’acquisition des données', 'SINP', 'Validé', 0, '114.030', '2017-11-02 00:00:00', NULL, true)
---next 474
+,(474, 116, 'CHI', 'Site chiroptère', 'Site chiroptère', 'Site pour le suivi des chiroptères', 'GEONATURE', 'Non validé', 0, '116.001', '2018-03-13 00:00:00', NULL, true)
+,(475, 116, '1', 'Grotte', 'Grotte', 'Site chiroptères de type grotte', 'GEONATURE', 'Non validé', 116, '116.001.001', '2018-03-13 00:00:00', NULL, true)
+,(476, 116, '2', 'Mine', 'Mine', 'Site chiroptères de type mine', 'GEONATURE', 'Non validé', 116, '116.001.002', '2018-03-13 00:00:00', NULL, true)
+,(477, 116, '3', 'Bâti', 'Bâti', 'Site chiroptères de type bâti', 'GEONATURE', 'Non validé', 116, '116.001.003', '2018-03-13 00:00:00', NULL, true)
+,(478, 116, '4', 'Arbre', 'Arbre', 'Site chiroptères de type arbre', 'GEONATURE', 'Non validé', 116, '116.001.004', '2018-03-13 00:00:00', NULL, true)
+,(479, 116, '5', 'Rocher', 'Rocher', 'Site chiroptères de type rocher', 'GEONATURE', 'Non validé', 116, '116.001.005', '2018-03-13 00:00:00', NULL, true)
+,(480, 116, '6', 'Hors gîte', 'Hors gîte', 'Site chiroptères de type hors gîte', 'GEONATURE', 'Non validé', 116, '116.001.006', '2018-03-13 00:00:00', NULL, true)
+,(481, 116, '7', 'Indéterminé', 'Indéterminé', 'Site chiroptères de type indéterminé', 'GEONATURE', 'Non validé', 116, '116.001.007', '2018-03-13 00:00:00', NULL, true)
+--next 482
 ;
 SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 473, true);
 
