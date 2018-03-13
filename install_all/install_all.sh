@@ -120,12 +120,15 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 # Installation de la base de données GeoNature en root
 ./install_db.sh
-# installation du module occtax
-./data/modules/contact/install_schema.sh
 
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
+
+# installation du module occtax
+source venv/bin/activate
+geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax
+deactivate
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
