@@ -123,57 +123,12 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 # installation du module occtax
 ./data/modules/contact/install_schema.sh
 
-### Mise en place du ssl
-sudo mkdir /etc/geonature/ssl
-if [ "$enable_https" = true ] && [ "$generate_ssl_certificate" = true ]
-then
-    sudo apt-get -y install openssl 2>install_all.log
-    if [ "$OS_VERSION" == "8" ]
-        then
-        /etc/apt/sources.list.d/backports.list sudo apt-get install python-certbot-apache -t jessie-backports
-        else
-        # TODO debian 9
-        echo "debian 9"
-        fi
-    sudo apt-get update
-    sudo apt-get -y install software-properties-common s
-    sudo add-apt-repository ppa:certbot/certbot
-    sudo apt-get -y update
-    sudo apt-get -y install python-certbot-apache
-
-    sudo certbot --authenticator webroot --installer apache -d "$my_url"
-    openssl req -x509 -newkey rsa:4096 -nodes -out "$https_cert_path" -keyout "$https_key_path" -days 3650
-    sudo crontab -e : 0 /12 certbot renew --renew-hook "service apache2 reload" >> /var/log/certbot.log
-
-    sudo a2enmod ssl 
-    sudo a2enmod rewrite
-fi
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
-if [ "$enable_https" = true ]
-    then
-    sudo sh -c 'echo  "<VirtualHost *:443> ">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "SSLEngine On">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "SSLProxyEngine on">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "SSLProtocol All -SSLv3 -SSLv2">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLProtocol All -SSLv3 -SSLv2">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLHonorCipherOrder on">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLHonorCipherOrder on">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLCertificateFile \"'$https_cert_path'\"">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLCertificateKeyFile \"'$https_key_path'\"">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLCACertificateFile \"'$https_cert_path'\"">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "<SSLCACertificateFile \"'$https_cert_path'\"">> /etc/apache2/sites-available/000-default.conf'
-    sudo sh -c 'echo  "</VirtualHost> > ">> /etc/apache2/sites-available/000-default.conf'
-
-    geonature_gun_api=https://127.0.0.1:8000
-    taxhub_gun_ap=https://127.0.0.1:5000
-else
-    taxhub_gun_ap=http://127.0.0.1:5000
-fi
 
 sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
 conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
@@ -185,8 +140,8 @@ sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
 # backend
 sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "ProxyPass  '$geonature_gun_api'" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "ProxyPassReverse  '$geonature_gun_api'" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "ProxyPass http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
 
@@ -230,8 +185,8 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPass  '$taxhub_gun_api' retry=0" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPassReverse  '$taxhub_gun_api'" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000 retry=0" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 
