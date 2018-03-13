@@ -20,16 +20,13 @@
       Taxon
       <span>
         <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence()">
-          <i class="fa fa-chevron-down" aria-hidden="true">
-            {{ 'Releve.AddTaxonOnReleve' | translate }}
-          </i>
+          <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          {{ 'Releve.AddTaxonOnReleve' | translate }}
         </button>
         <button *ngIf="fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
-          <i class="fa fa-chevron-up" aria-hidden="true">
-            {{ 'Releve.CancelTaxon' | translate }}
-          </i>
+          <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          {{ 'Releve.CancelTaxon' | translate }}
         </button>
-
       </span>
 
     </h5>
@@ -79,13 +76,16 @@
   <!-- <pre>form value: <br>{{fs.releveForm.value.properties | json}}</pre> -->
   <!-- <pre>taxon list: <br>{{fs.taxonsList | json}}</pre> -->
 
-
-
   <div class=center>
-    <button class="btn btn-success" [disabled]="(fs.releveForm.invalid || fs.taxonsList == 0 
-      || fs.countingForm.invalid
-      || (fs.showOccurrence && fs.occurrenceForm.invalid )
-      )" (click)="submitData()">
+    <button class="btn btn-success"
+      [disabled]="(
+        fs.releveForm.invalid
+        || fs.taxonsList == 0 
+        || fs.countingForm.invalid
+        || fs.showOccurrence
+        || (fs.showOccurrence && fs.occurrenceForm.invalid )
+        )" 
+        (click)="submitData()">
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
       {{ 'Releve.SaveReleve' | translate }}
     </button>
