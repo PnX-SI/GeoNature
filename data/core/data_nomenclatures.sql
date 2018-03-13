@@ -572,7 +572,7 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(481, 116, '7', 'Indéterminé', 'Indéterminé', 'Site chiroptères de type indéterminé', 'GEONATURE', 'Non validé', 116, '116.001.007', '2018-03-13 00:00:00', NULL, true)
 --next 482
 ;
-SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 473, true);
+SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 482, true);
 
 UPDATE t_nomenclatures SET label_default = label_MYDEFAULTLANGUAGE;
 UPDATE t_nomenclatures SET definition_default = definition_MYDEFAULTLANGUAGE;
