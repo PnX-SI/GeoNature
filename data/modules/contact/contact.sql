@@ -370,6 +370,12 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_contact_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
 
+---------
+--INDEX--
+---------
+CREATE INDEX idx_t_releves_contact_geom_local ON t_releves_contact USING gist (geom_local);
+
+CREATE INDEX idx_t_releves_contact_geom_4326 ON t_releves_contact USING gist (geom_4326);
 
 ----------------------
 --FUNCTIONS TRIGGERS--
