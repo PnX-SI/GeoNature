@@ -10,8 +10,8 @@ Fichiers relatifs à l'installation
 * requirements.txt: liste des paquets python
 
 
-* conf_schema_toml.py : Scpécification des paramètres du module
-* conf_gn_module.toml.sample : Configuration du module
+* conf_schema_toml.py : Schéma Marshmallow de spécification des paramètres du module
+* conf_gn_module.toml.sample : Fichier de configuration du module
 
 Fichiers relatifs au bon fonctionnement du module
 =================================================
@@ -34,7 +34,7 @@ Le dossier ``frontend`` comprend les élements suivant:
 
 - le dossier ``app``: comprend le code typescript du module
 
-     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.ts`` 
+     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
 
 - le dossier ``assets`` l'ensemble des médias (images, son).
     

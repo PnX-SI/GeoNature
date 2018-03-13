@@ -80,7 +80,7 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
   
   - ``frontend`` : le dossier ``app`` comprend les fichiers typescript du module, et le dossier ``assets`` l'ensemble des médias (images, son).
 
-    - Le dossier ``app`` doit comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.ts`` 
+    - Le dossier ``app`` doit comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
     - A la racine du dossier ``frontend``, on retrouve également un fichier ``package.json`` qui décrit l'ensemble des librairies JS necessaires au module.
       
   - ``data`` : ce dossier comprenant les scripts SQL d'installation du module
