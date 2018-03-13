@@ -34,7 +34,7 @@ Le dossier ``frontend`` comprend les élements suivant:
 
 - le dossier ``app``: comprend le code typescript du module
 
-     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.ts`` 
+     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
 
 - le dossier ``assets`` l'ensemble des médias (images, son).
     
