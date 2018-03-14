@@ -8,7 +8,7 @@ from sqlalchemy.sql import text
 from geonature.utils.env import DB
 
 from geonature.core.gn_meta.models import (
-    TPrograms, TDatasets, TParameters,
+    TDatasets, TParameters,
     CorDatasetsActor, TAcquisitionFramework,
     CorAcquisitionFrameworkActor
 )
@@ -21,15 +21,6 @@ routes = Blueprint('gn_meta', __name__)
 
 # get the root logger
 log = logging.getLogger()
-
-
-@routes.route('/programs', methods=['GET'])
-@json_resp
-def get_programs():
-    q = DB.session.query(TPrograms)
-    data = q.all()
-
-    return [n.as_dict(False) for n in data]
 
 
 @routes.route('/programswithdatasets', methods=['GET'])
