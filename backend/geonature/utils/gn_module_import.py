@@ -155,6 +155,27 @@ def gn_module_activate(module_name):
     except Exception:
         raise
 
+def gn_module_desactivate(module_name):
+    log.info('Desactivate module')
+    if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
+        cmd = "sudo rm {}/{}".format(
+            GN_MODULES_ETC_ENABLED,
+            module_name
+        )
+        subprocess.call(cmd.split(" "))
+        log.info("...ok\n")
+    else:
+        raise GeoNatureError(
+            "Module {} is not enabled"
+            .format(module_name)
+        )
+    log.info("Regenerate frontend routes")
+    try:
+        frontend_routes_templating()
+        log.info("...ok\n")
+    except Exception:
+        raise
+
 
 def check_codefile_validity(module_path, module_name):
     '''
