@@ -43,6 +43,11 @@ $BODY$
     r record;
     _row_ct integer;
   BEGIN
+    -- Cas particulier quand on insère le média avant l'entité
+    IF myvalue = -1 Then
+	    RETURN TRUE;
+    END IF;
+
     entity_array = string_to_array(myentity,'.');
     EXECUTE 'SELECT '||entity_array[3]|| ' FROM '||entity_array[1]||'.'||entity_array[2]||' WHERE '||entity_array[3]||'=' ||myvalue INTO r;
     GET DIAGNOSTICS _row_ct = ROW_COUNT;
