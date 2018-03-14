@@ -60,7 +60,7 @@ class GnPySchemaConf(Schema):
 
     UPLOAD_FOLDER = fields.String(missing='static/medias')
     BASE_DIR = fields.String(
-        missing=os.path.abspath(os.path.dirname(__file__))
+        missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
 
 
