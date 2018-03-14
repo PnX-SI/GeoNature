@@ -77,8 +77,7 @@ def parse_jdd_xml(xml):
             'dataset_shortname': dataset_shortname,
             'dataset_desc': dataset_desc,
             'terrestrial_domain': terrestrial_domain,
-            'marine_domain': marine_domain,
-            'id_program': 1
+            'marine_domain': marine_domain
         }
 
         jdd_list.append(current_jdd)
