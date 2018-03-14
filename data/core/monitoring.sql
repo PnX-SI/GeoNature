@@ -52,6 +52,11 @@ CREATE TABLE cor_site_application (
   id_application integer NOT NULL
 );
 
+CREATE TABLE cor_site_area (
+  id_base_site integer NOT NULL,
+  id_area integer NOT NULL
+);
+
 
 ---------------
 --PRIMARY KEY--
@@ -67,6 +72,9 @@ ALTER TABLE ONLY cor_visit_observer
 
 ALTER TABLE ONLY cor_site_application
     ADD CONSTRAINT pk_cor_site_application PRIMARY KEY (id_base_site, id_application);
+
+ALTER TABLE ONLY cor_site_area
+    ADD CONSTRAINT pk_cor_site_area PRIMARY KEY (id_base_site, id_area);
 
 
 ---------------
@@ -101,6 +109,13 @@ ALTER TABLE ONLY cor_site_application
 
 ALTER TABLE ONLY cor_site_application
   ADD CONSTRAINT fk_cor_site_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications (id_application);
+
+
+ALTER TABLE ONLY cor_site_area
+  ADD CONSTRAINT fk_cor_site_area_id_base_site FOREIGN KEY (id_base_site) REFERENCES t_base_sites (id_base_site) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY cor_site_area
+  ADD CONSTRAINT fk_cor_site_area_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas (id_area);
 
 
 --------------
