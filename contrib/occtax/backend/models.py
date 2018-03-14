@@ -108,7 +108,6 @@ corRoleRelevesContact = DB.Table(
     )
 )
 
-
 @serializable
 class CorCountingContact(DB.Model):
     __tablename__ = 'cor_counting_contact'
@@ -132,6 +131,7 @@ class CorCountingContact(DB.Model):
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()])
     )
+
 
 @serializable
 class TOccurrencesContact(DB.Model):
@@ -172,6 +172,7 @@ class TOccurrencesContact(DB.Model):
         lazy='joined',
         cascade="all, delete-orphan"
     )
+
 
 
 @serializable
