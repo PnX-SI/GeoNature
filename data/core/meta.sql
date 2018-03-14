@@ -174,15 +174,6 @@ CREATE TABLE cor_acquisition_framework_objectif (
 COMMENT ON TABLE cor_acquisition_framework_objectif IS 'A acquisition framework can have 1 or n "objectif". Implement 1.3.8 SINP metadata standard : Objectif du cadre d''acquisition, tel que défini par la nomenclature TypeDispositifValue - OBLIGATOIRE';
 
 
-CREATE TABLE cor_acquisition_framework_territory (
-    id_acquisition_framework integer NOT NULL,
-    id_nomenclature_territory integer NOT NULL,
-    territory_desc text
-);
-COMMENT ON TABLE cor_acquisition_framework_territory IS 'A acquisition framework can have 1 or n "territoire". Implement 1.3.8 SINP metadata standard : Territoire(s) visé(s) par le cadre d''acquisition, tel(s) que défini(s) par la nomenclature TerritoireValue - OBLIGATOIRE';
-COMMENT ON COLUMN cor_acquisition_framework_territory.territory_desc IS 'Correspondance standard SINP = precisionGeographique : Précisions sur le territoire visé - FACULTATIF';
-
-
 CREATE TABLE cor_acquisition_framework_actor (
     id_cafa integer NOT NULL,
     id_acquisition_framework integer NOT NULL,
@@ -323,9 +314,6 @@ ALTER TABLE ONLY cor_acquisition_framework_voletsinp
 ALTER TABLE ONLY cor_acquisition_framework_objectif
     ADD CONSTRAINT pk_cor_acquisition_framework_objectif PRIMARY KEY (id_acquisition_framework, id_nomenclature_objectif);
 
-ALTER TABLE ONLY cor_acquisition_framework_territory
-    ADD CONSTRAINT pk_cor_acquisition_framework_territory PRIMARY KEY (id_acquisition_framework, id_nomenclature_territory);
-
 ALTER TABLE ONLY cor_acquisition_framework_actor
     ADD CONSTRAINT pk_cor_acquisition_framework_actor PRIMARY KEY (id_cafa);
 
@@ -365,13 +353,6 @@ ALTER TABLE ONLY cor_acquisition_framework_objectif
 
 ALTER TABLE ONLY cor_acquisition_framework_objectif
     ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_nomenclature_objectif FOREIGN KEY (id_nomenclature_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-
-ALTER TABLE ONLY cor_acquisition_framework_territory
-    ADD CONSTRAINT fk_cor_acquisition_framework_territory_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_acquisition_framework_territory
-    ADD CONSTRAINT fk_cor_acquisition_framework_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
@@ -495,10 +476,6 @@ ALTER TABLE cor_acquisition_framework_objectif
   ADD CONSTRAINT check_cor_acquisition_framework_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_objectif,108));
 
 
-ALTER TABLE cor_acquisition_framework_territory
-  ADD CONSTRAINT check_cor_acquisition_framework_territory CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territory,110));
-
-
 ALTER TABLE cor_acquisition_framework_actor
   ADD CONSTRAINT check_cor_acquisition_framework_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109));
 
@@ -540,6 +517,13 @@ CREATE OR REPLACE VIEW v_acquisition_frameworks_protocols AS
 	FROM gn_meta.t_acquisition_frameworks taf
 	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
 	JOIN gn_meta.cor_dataset_protocol cdp ON cdp.id_dataset = d.id_dataset;
+
+
+CREATE OR REPLACE VIEW gn_meta.v_acquisition_frameworks_territories AS 
+	SELECT d.id_acquisition_framework, cdt.id_nomenclature_territory, cdt.territory_desc
+	FROM gn_meta.t_acquisition_frameworks taf
+	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
+	JOIN gn_meta.cor_dataset_territory cdt ON cdt.id_dataset = d.id_dataset;
 
 
 ---------------
