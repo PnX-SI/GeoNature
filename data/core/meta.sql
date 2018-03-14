@@ -236,7 +236,6 @@ CREATE TABLE t_datasets (
     id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(2),
     id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(19),
     id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(102),
-    id_program integer NOT NULL,
     default_validity boolean,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
@@ -307,15 +306,6 @@ CREATE TABLE cor_dataset_protocol (
 COMMENT ON TABLE cor_dataset_protocol IS 'A dataset can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) rattaché(s) au jeu de données (protocole de synthèse et/ou de collecte). On se rapportera au type "Protocole Type". - RECOMMANDE';
 
 
-CREATE TABLE t_programs (
-    id_program integer NOT NULL,
-    program_name character varying(255),
-    program_desc text,
-    active boolean
-);
-COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
-
-
 CREATE TABLE cor_role_dataset_application (
     id_role integer NOT NULL,
     id_dataset integer NOT NULL,
@@ -377,10 +367,6 @@ ALTER TABLE ONLY cor_dataset_actor
 
 ALTER TABLE ONLY cor_dataset_territory
     ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
-
-
-ALTER TABLE ONLY t_programs
-    ADD CONSTRAINT pk_t_programs PRIMARY KEY (id_program);
 
 
 ALTER TABLE ONLY cor_role_privilege_entity
@@ -468,9 +454,6 @@ ALTER TABLE ONLY cor_role_dataset_application
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_resource_type FOREIGN KEY (id_nomenclature_resource_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -611,8 +594,6 @@ ALTER TABLE cor_dataset_actor
 ---------------
 --SAMPLE DATA--
 ---------------
-INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
-INSERT INTO t_programs VALUES (2, 'test', 'test', false);
 
 INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
 (1,0,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
