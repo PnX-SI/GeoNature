@@ -209,13 +209,6 @@ CREATE TABLE cor_acquisition_framework_publication (
 COMMENT ON TABLE cor_acquisition_framework_publication IS 'A acquisition framework can have 0 or n "publication". Implement 1.3.8 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition - RECOMMANDE';
 
 
-CREATE TABLE cor_acquisition_framework_protocol (
-    id_acquisition_framework integer NOT NULL,
-    id_protocol integer NOT NULL
-);
-COMMENT ON TABLE cor_acquisition_framework_protocol IS 'A acquisition framework can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) éventuel(s) pour le cadre d''acquisition et/ou sa fiche de métadonnées. Contient le type "ProtocoleType" autant de fois que nécessaire - RECOMMANDE';
-
-
 CREATE TABLE t_datasets (
     id_dataset integer NOT NULL,
     unique_dataset_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
@@ -236,7 +229,6 @@ CREATE TABLE t_datasets (
     id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(2),
     id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(19),
     id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value(102),
-    id_program integer NOT NULL,
     default_validity boolean,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
@@ -307,31 +299,6 @@ CREATE TABLE cor_dataset_protocol (
 COMMENT ON TABLE cor_dataset_protocol IS 'A dataset can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) rattaché(s) au jeu de données (protocole de synthèse et/ou de collecte). On se rapportera au type "Protocole Type". - RECOMMANDE';
 
 
-CREATE TABLE t_programs (
-    id_program integer NOT NULL,
-    program_name character varying(255),
-    program_desc text,
-    active boolean
-);
-COMMENT ON TABLE t_programs IS 'Programs are general objects that can embed datasets and/or protocols. Example : ATBI, raptors, action national plan, etc... GeoNature V2 backoffice allows to manage datasets.';
-
-
-CREATE TABLE cor_role_dataset_application (
-    id_role integer NOT NULL,
-    id_dataset integer NOT NULL,
-    id_application integer NOT NULL
-);
-COMMENT ON TABLE cor_role_dataset_application IS 'Allow to identify for each GeoNature module (1 module = 1 application in UsersHub) among which dataset connected user can create observations. Reminder : A dataset is a dataset or a survey and each observation is attached to a dataset. GeoNature V2 backoffice allows to manage datasets.';
-
-
-CREATE TABLE cor_role_privilege_entity (
-    id_role integer NOT NULL,
-    id_privilege integer NOT NULL,
-    entity_name character varying(255) NOT NULL
-);
-COMMENT ON TABLE cor_role_privilege_entity IS 'Allow to manage privileges of a group or user on entities (tables) into backoffice (CRUD depending on privileges).';
-
-
 ----------------
 --PRIMARY KEYS--
 ----------------
@@ -365,9 +332,6 @@ ALTER TABLE ONLY cor_acquisition_framework_actor
 ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT pk_cor_acquisition_framework_publication PRIMARY KEY (id_acquisition_framework, id_publication);
 
-ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT pk_cor_acquisition_framework_protocol PRIMARY KEY (id_acquisition_framework, id_protocol);
-
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
@@ -377,18 +341,6 @@ ALTER TABLE ONLY cor_dataset_actor
 
 ALTER TABLE ONLY cor_dataset_territory
     ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
-
-
-ALTER TABLE ONLY t_programs
-    ADD CONSTRAINT pk_t_programs PRIMARY KEY (id_program);
-
-
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT pk_cor_role_privilege_entity PRIMARY KEY (id_role, id_privilege, entity_name);
-
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
 
 
 ALTER TABLE ONLY cor_dataset_protocol
@@ -442,35 +394,8 @@ ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
-ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_publication FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT fk_cor_role_droit_application_id_privilege FOREIGN KEY (id_privilege) REFERENCES utilisateurs.bib_droits(id_droit) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT fk_cor_role_privilege_entity_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_droit_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_t_programs FOREIGN KEY (id_program) REFERENCES t_programs(id_program) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_resource_type FOREIGN KEY (id_nomenclature_resource_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -607,12 +532,19 @@ ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_is_unique_cor_dataset_actor_organism UNIQUE(id_dataset, id_organism, id_nomenclature_actor_role);
 
 
+--------
+--VIEW--
+--------
+CREATE OR REPLACE VIEW v_acquisition_frameworks_protocols AS 
+	SELECT d.id_acquisition_framework, cdp.id_protocol
+	FROM gn_meta.t_acquisition_frameworks taf
+	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
+	JOIN gn_meta.cor_dataset_protocol cdp ON cdp.id_dataset = d.id_dataset;
+
 
 ---------------
 --SAMPLE DATA--
 ---------------
-INSERT INTO t_programs VALUES (1, 'contact', 'programme contact aléatoire de la faune, de la flore ou de la fonge', true);
-INSERT INTO t_programs VALUES (2, 'test', 'test', false);
 
 INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
 (1,0,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)

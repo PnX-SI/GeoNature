@@ -23,17 +23,6 @@ routes = Blueprint('gn_meta', __name__)
 log = logging.getLogger()
 
 
-@routes.route('/list/programs', methods=['GET'])
-@json_resp
-def get_programs_list():
-    q = DB.session.query(TPrograms)
-    data = q.all()
-
-    return [
-        d.as_dict(columns=('id_program', 'program_desc')) for d in data
-    ]
-
-
 @routes.route('/programs', methods=['GET'])
 @json_resp
 def get_programs():

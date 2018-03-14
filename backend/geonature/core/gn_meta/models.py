@@ -84,10 +84,6 @@ class TDatasets(DB.Model):
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature(102)
     )
-    id_program = DB.Column(
-        DB.Integer,
-        ForeignKey('gn_meta.t_programs.id_program')
-    )
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
@@ -144,20 +140,6 @@ class TDatasets(DB.Model):
             )
         return [d.id_dataset for d in q.all()]
 
-
-@serializable
-class TPrograms(DB.Model):
-    __tablename__ = 't_programs'
-    __table_args__ = {'schema': 'gn_meta'}
-    id_program = DB.Column(DB.Integer, primary_key=True)
-    program_name = DB.Column(DB.Unicode)
-    program_desc = DB.Column(DB.Unicode)
-    active = DB.Column(DB.Boolean)
-
-    datasets = relationship("TDatasets", lazy='joined')
-
-    def get_programs(self, recursif=False):
-        return self.as_dict(recursif)
 
 @serializable
 class TAcquisitionFramework(DB.Model):
