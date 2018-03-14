@@ -23,15 +23,6 @@ routes = Blueprint('gn_meta', __name__)
 log = logging.getLogger()
 
 
-@routes.route('/programswithdatasets', methods=['GET'])
-@json_resp
-def get_programsWithDatasets():
-    q = DB.session.query(TPrograms)
-    data = q.all()
-
-    return [n.as_dict(False) for n in data]
-
-
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
 def get_datasets_list():
@@ -39,7 +30,7 @@ def get_datasets_list():
     data = q.all()
 
     return [
-            d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
+        d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
     ]
 
 
