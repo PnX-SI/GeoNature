@@ -306,22 +306,6 @@ CREATE TABLE cor_dataset_protocol (
 COMMENT ON TABLE cor_dataset_protocol IS 'A dataset can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) rattaché(s) au jeu de données (protocole de synthèse et/ou de collecte). On se rapportera au type "Protocole Type". - RECOMMANDE';
 
 
-CREATE TABLE cor_role_dataset_application (
-    id_role integer NOT NULL,
-    id_dataset integer NOT NULL,
-    id_application integer NOT NULL
-);
-COMMENT ON TABLE cor_role_dataset_application IS 'Allow to identify for each GeoNature module (1 module = 1 application in UsersHub) among which dataset connected user can create observations. Reminder : A dataset is a dataset or a survey and each observation is attached to a dataset. GeoNature V2 backoffice allows to manage datasets.';
-
-
-CREATE TABLE cor_role_privilege_entity (
-    id_role integer NOT NULL,
-    id_privilege integer NOT NULL,
-    entity_name character varying(255) NOT NULL
-);
-COMMENT ON TABLE cor_role_privilege_entity IS 'Allow to manage privileges of a group or user on entities (tables) into backoffice (CRUD depending on privileges).';
-
-
 ----------------
 --PRIMARY KEYS--
 ----------------
@@ -367,14 +351,6 @@ ALTER TABLE ONLY cor_dataset_actor
 
 ALTER TABLE ONLY cor_dataset_territory
     ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
-
-
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT pk_cor_role_privilege_entity PRIMARY KEY (id_role, id_privilege, entity_name);
-
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT pk_cor_role_dataset_application PRIMARY KEY (id_role, id_dataset, id_application);
 
 
 ALTER TABLE ONLY cor_dataset_protocol
@@ -433,23 +409,6 @@ ALTER TABLE ONLY cor_acquisition_framework_protocol
 
 ALTER TABLE ONLY cor_acquisition_framework_protocol
     ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_publication FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT fk_cor_role_droit_application_id_privilege FOREIGN KEY (id_privilege) REFERENCES utilisateurs.bib_droits(id_droit) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_role_privilege_entity
-    ADD CONSTRAINT fk_cor_role_privilege_entity_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_droit_application_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_role_dataset_application
-    ADD CONSTRAINT fk_cor_role_dataset_application_id_privilege FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY t_datasets
