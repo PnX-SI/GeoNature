@@ -155,7 +155,7 @@ def gn_module_activate(module_name):
     except Exception:
         raise
 
-def gn_module_desactivate(module_name):
+def gn_module_deactivate(module_name):
     log.info('Desactivate module')
     if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
         cmd = "sudo rm {}/{}".format(
