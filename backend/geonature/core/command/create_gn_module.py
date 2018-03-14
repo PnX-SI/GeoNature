@@ -24,7 +24,7 @@ from geonature.utils.gn_module_import import (
     gn_module_import_requirements,
     gn_module_register_config,
     gn_module_activate,
-    gn_module_desactivate,
+    gn_module_deactivate,
     check_codefile_validity,
     create_external_assets_symlink,
     add_application_db
@@ -169,9 +169,9 @@ def activate_gn_module(module_name):
 
 @main.command()
 @click.argument('module_name')
-def desactivate_gn_module(module_name):
+def deactivate_gn_module(module_name):
     """
         Desactive un module gn activé
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_desactivate(module_name)
+    gn_module_deactivate(module_name)
