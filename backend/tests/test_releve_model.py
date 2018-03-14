@@ -51,28 +51,34 @@ user_low = {
 
 ### Test on abstract class ReleveModel and its methods
 
+import sys
+import os
+d = os.path.join(os.path.dirname('.'), '../../contrib')
+sys.path.append(d)
+
 class TestGetReleveIfAllowed:
     # Test of the releve model
     def test_user_is_observers(self, geonature_app):
-        """ 
+        """
             user is observer of the releve
             Must be True
         """
-        from geonature.modules.pr_contact.models import ReleveModel, VReleveList
+
+        from occtax.backend.models import ReleveModel, VReleveList
         from geonature.core.users.models import UserRigth
         user_hight = UserRigth(**user_admin)
         valide_occ_tax_releve['observers'].append(user_hight)
         releveInstance = VReleveList(**valide_occ_tax_releve)
         releve = releveInstance.get_releve_if_allowed(user_hight)
         assert isinstance(releve, VReleveList)
-    
+
     def test_user_is_in_dataset(self, geonature_app):
-        """ 
+        """
             user is not observer but can see its organism data
             via rigth in dataset number 1
             Must be True
         """
-        from geonature.modules.pr_contact.models import ReleveModel, VReleveList
+        from occtax.backend.models import ReleveModel, VReleveList
         from geonature.core.users.models import UserRigth
 
         user_hight = UserRigth(**user_admin)
@@ -82,12 +88,12 @@ class TestGetReleveIfAllowed:
         assert isinstance(releve, VReleveList)
 
     def test_user_not_in_dataset(self, geonature_app):
-        """ 
+        """
             user is not observer of the releve cannot see dataset
             number 1
             Must return an InsufficientRightsError
         """
-        from geonature.modules.pr_contact.models import ReleveModel, VReleveList
+        from occtax.backend.models import ReleveModel, VReleveList
         from geonature.core.users.models import UserRigth
         from geonature.utils.errors import InsufficientRightsError
 
@@ -95,31 +101,31 @@ class TestGetReleveIfAllowed:
         releveInstance = VReleveList(**valide_occ_tax_releve)
         with pytest.raises(InsufficientRightsError):
             releveInstance.get_releve_if_allowed(_user_agent)
-        
+
 
     def test_user_not_observer(self, geonature_app):
-        """ 
+        """
             user is not observer of the releve and have low right
             Must return an InsufficientRightsError
         """
-        from geonature.modules.pr_contact.models import ReleveModel, VReleveList
+        from occtax.backend.models import ReleveModel, VReleveList
         from geonature.core.users.models import UserRigth
         from geonature.utils.errors import InsufficientRightsError
-        
+
         user_2 = UserRigth(**user_low)
         releveInstance = VReleveList(**valide_occ_tax_releve)
         with pytest.raises(InsufficientRightsError):
             releveInstance.get_releve_if_allowed(user_2)
 
     def test_user_low_digitiser(self, geonature_app):
-        """ 
+        """
             user is digitiser of the releve and have low right
             Must return true
         """
-        from geonature.modules.pr_contact.models import ReleveModel, VReleveList
+        from occtax.backend.models import ReleveModel, VReleveList
         from geonature.core.users.models import UserRigth
         from geonature.utils.errors import InsufficientRightsError
-        
+
         user_2 = UserRigth(**user_low)
         valide_occ_tax_releve['id_digitiser'] = 125
         releveInstance = VReleveList(**valide_occ_tax_releve)
@@ -129,7 +135,7 @@ class TestGetReleveIfAllowed:
 
 
 
-#TODO test on get_cruved
+# TODO test on get_cruved
 
 
 
