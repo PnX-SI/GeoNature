@@ -209,13 +209,6 @@ CREATE TABLE cor_acquisition_framework_publication (
 COMMENT ON TABLE cor_acquisition_framework_publication IS 'A acquisition framework can have 0 or n "publication". Implement 1.3.8 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition - RECOMMANDE';
 
 
-CREATE TABLE cor_acquisition_framework_protocol (
-    id_acquisition_framework integer NOT NULL,
-    id_protocol integer NOT NULL
-);
-COMMENT ON TABLE cor_acquisition_framework_protocol IS 'A acquisition framework can have 0 or n "protocole". Implement 1.3.8 SINP metadata standard : Protocole(s) éventuel(s) pour le cadre d''acquisition et/ou sa fiche de métadonnées. Contient le type "ProtocoleType" autant de fois que nécessaire - RECOMMANDE';
-
-
 CREATE TABLE t_datasets (
     id_dataset integer NOT NULL,
     unique_dataset_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
@@ -339,9 +332,6 @@ ALTER TABLE ONLY cor_acquisition_framework_actor
 ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT pk_cor_acquisition_framework_publication PRIMARY KEY (id_acquisition_framework, id_publication);
 
-ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT pk_cor_acquisition_framework_protocol PRIMARY KEY (id_acquisition_framework, id_protocol);
-
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
@@ -402,13 +392,6 @@ ALTER TABLE ONLY cor_acquisition_framework_publication
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-
-ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
-
-ALTER TABLE ONLY cor_acquisition_framework_protocol
-    ADD CONSTRAINT fk_cor_acquisition_framework_protocol_id_publication FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 ALTER TABLE ONLY t_datasets
@@ -548,6 +531,15 @@ ALTER TABLE cor_dataset_actor
 ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_is_unique_cor_dataset_actor_organism UNIQUE(id_dataset, id_organism, id_nomenclature_actor_role);
 
+
+--------
+--VIEW--
+--------
+CREATE OR REPLACE VIEW v_acquisition_frameworks_protocols AS 
+	SELECT d.id_acquisition_framework, cdp.id_protocol
+	FROM gn_meta.t_acquisition_frameworks taf
+	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
+	JOIN gn_meta.cor_dataset_protocol cdp ON cdp.id_dataset = d.id_dataset;
 
 
 ---------------
