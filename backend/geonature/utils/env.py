@@ -162,7 +162,7 @@ def import_requirements(req_file):
                 raise Exception('Package {} not installed'.format(req))
 
 
-def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
+def list_and_import_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
     for f in mod_path.iterdir():
         if f.is_dir():
             conf_manifest = load_and_validate_toml(
@@ -194,6 +194,25 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
             yield conf_module, conf_manifest, module_blueprint
 
 
+def list_enabled_module(mod_path=GN_MODULES_ETC_ENABLED):
+    for f in mod_path.iterdir():
+        if f.is_dir():
+            conf_manifest = load_and_validate_toml(
+                str(f / 'manifest.toml'),
+                ManifestSchemaProdConf
+            )
+            class GnModuleSchemaProdConf(
+                GnModuleProdConf
+            ):
+                pass
+
+            conf_module = load_and_validate_toml(
+                str(f / 'conf_gn_module.toml'),
+                GnModuleSchemaProdConf
+            )
+            yield conf_module, conf_manifest
+
+
 def frontend_routes_templating():
     with open(
         str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'),
@@ -202,7 +221,7 @@ def frontend_routes_templating():
 
         template = Template(input_file.read())
         routes = []
-        for conf, manifest, blueprint in list_gn_modules():
+        for conf, manifest in list_enabled_module():
             location = Path(manifest['module_path'])
             path = conf['api_url'].lstrip('/')
             location = '{}/{}#GeonatureModule'.format(
