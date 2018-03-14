@@ -25,20 +25,12 @@ INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework
 (1,387)
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_territory (id_acquisition_framework, id_nomenclature_territory, territory_desc) VALUES
-(1,400,'Territoire du parc national des Ecrins et de ses environs immédiats')
-;
-
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (1, 1, NULL, 2, 393)
 ,(2, 1, NULL, 2, 398)
 ,(3, 1, NULL, 2, 429)
 ;
 SELECT pg_catalog.setval('gn_meta.cor_acquisition_framework_actor_id_cafa_seq', 4, true);
-
-INSERT INTO gn_meta.cor_acquisition_framework_protocol (id_acquisition_framework, id_protocol) VALUES
-(1,0)
-;
 
 INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (1, 1, NULL, 2, 393)
