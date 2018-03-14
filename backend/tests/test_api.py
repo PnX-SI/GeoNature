@@ -66,7 +66,7 @@ class TestApiModulePrConcact:
         token = self.get_token(geonature_app.config['API_ENDPOINT'])
 
         response = requests.get(
-            '{}/contact/releves'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/releves'.format(geonature_app.config['API_ENDPOINT']),
             cookies={'token': token}
         )
 
@@ -79,7 +79,7 @@ class TestApiModulePrConcact:
         token = self.get_token(geonature_app.config['API_ENDPOINT'])
 
         response = requests.post(
-            '{}/contact/releve'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/releve'.format(geonature_app.config['API_ENDPOINT']),
             json=releve_data,
             cookies={'token': token}
         )
@@ -92,7 +92,7 @@ class TestApiModulePrConcact:
         update_data['properties']['comment'] = 'Super MODIIFF'
 
         response = requests.post(
-            '{}/contact/releve'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/releve'.format(geonature_app.config['API_ENDPOINT']),
             json=update_data,
             cookies={'token': token}
         )
@@ -105,7 +105,7 @@ class TestApiModulePrConcact:
             assert True
 
         response = requests.delete(
-            '{}/contact/releve/{}'.format(
+            '{}/occtax/releve/{}'.format(
                 geonature_app.config['API_ENDPOINT'],
                 resp_data['properties']['id_releve_contact']
             ),
@@ -121,7 +121,7 @@ class TestApiModulePrConcact:
         token = self.get_token(geonature_app.config['API_ENDPOINT'])
 
         response = requests.get(
-            '{}/contact/export/sinp'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/export/sinp'.format(geonature_app.config['API_ENDPOINT']),
             cookies={'token': token}
         )
 
@@ -141,7 +141,7 @@ class TestApiModulePrConcact:
             password="admin"
         )
         response = requests.get(
-            '{}/contact/releve/1'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/releve/1'.format(geonature_app.config['API_ENDPOINT']),
             cookies={'token': token}
         )
         assert response.status_code == 200
@@ -157,7 +157,7 @@ class TestApiModulePrConcact:
             password="admin"
         )
         response = requests.get(
-            '{}/contact/releve/1'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/releve/1'.format(geonature_app.config['API_ENDPOINT']),
             cookies={'token': token}
         )
         assert response.status_code == 403
@@ -173,7 +173,7 @@ class TestApiModulePrConcact:
             password="admin"
         )
         response = requests.delete(
-            '{}/contact/releve/1'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/occtax/releve/1'.format(geonature_app.config['API_ENDPOINT']),
             cookies={'token': token}
         )
         assert response.status_code == 403
