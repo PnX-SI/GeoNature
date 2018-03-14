@@ -8,7 +8,7 @@ from flask import Flask
 
 from flask_cors import CORS
 
-from geonature.utils.env import  DB, list_gn_modules
+from geonature.utils.env import  DB, list_and_import_gn_modules
 
 
 def get_app(config, _app=None):
@@ -62,7 +62,7 @@ def get_app(config, _app=None):
         CORS(app, supports_credentials=True)
 
         # Chargement des modules tiers
-        for conf, manifest, module in list_gn_modules():
+        for conf, manifest, module in list_and_import_gn_modules():
             app.register_blueprint(
                 module.backend.blueprint.blueprint,
                 url_prefix=conf['api_url']
