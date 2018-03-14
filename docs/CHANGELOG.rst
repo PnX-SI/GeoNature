@@ -5,7 +5,22 @@ CHANGELOG
 2.0.0.beta2 (unreleased)
 ------------------------
 
+**Nouveautés**
+
+* Compléments de la documentation (schéma architecture, administration, installation, FAQ...)
+* Amélioration de l'ergonomie du module OccTax (composant MapList, filtres, colonnes et formulaires) et du module Exports
+* Amélioration du composant de recherche d'un taxon #324
+* Amélioration et optimisation de la sérialisation des données
+* Ajout de tests unitaires au niveau du backend
+* Ajout d'un mécanisme de log par email (paramètres MAILERROR)
+* Migration du module occtax dans le répertoire ``/contrib`` pour homogénéiser les modules
+* Création du schéma ``gn_monitoring`` pour gérer la partie générique des modules de suivi (sites et visites centralisés)
+
 **Corrections**
+
+* Corrections de l'installation globale et autonome
+* Renommage Contact en OccTax (en cours)
+* Nettoyage du schéma des métadonnées (``gn_meta``)
 
 2.0.0.beta1 (2018-02-16)
 ------------------------
