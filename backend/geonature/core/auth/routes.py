@@ -109,10 +109,10 @@ def loginCas():
                 if organism_id is None:
                     # group socle 1
                     users.insert_in_cor_role(20003, user['id_role'])
-                else:
+                elif current_app.config['CAS']['USERS_CAN_SEE_ORGANISM_DATA']:
                     # group socle 2
                     users.insert_in_cor_role(20001, user['id_role'])
-                user["id_application"] = current_app.config['ID_APPLICATION_GEONATURE']
+                user['id_application'] = current_app.config['ID_APPLICATION_GEONATURE']
             except Exception as e:
                 gunicorn_error_logger.info(e)
                 log.error(e)
