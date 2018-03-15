@@ -32,16 +32,12 @@ def remove_file(filepath):
         raise e
 
 
-def rename_file(old_chemin, old_title, new_title):
-    new_chemin = old_chemin.replace(
-        removeDisallowedFilenameChars(old_title),
-        removeDisallowedFilenameChars(new_title)
-    )
+def rename_file(old_path, new_path):
     os.rename(
-        os.path.join(current_app.config['BASE_DIR'], old_chemin),
-        os.path.join(current_app.config['BASE_DIR'], new_chemin)
+        os.path.join(current_app.config['BASE_DIR'], old_path),
+        os.path.join(current_app.config['BASE_DIR'], new_path)
     )
-    return new_chemin
+    return new_path
 
 
 def upload_file(file, file_folder, file_name):
@@ -63,7 +59,6 @@ def upload_file(file, file_folder, file_name):
             ext=ext
         )
     )
-    print(filepath)
     try:
         file.save(os.path.join(current_app.config['BASE_DIR'], filepath))
     except FileNotFoundError as e:
