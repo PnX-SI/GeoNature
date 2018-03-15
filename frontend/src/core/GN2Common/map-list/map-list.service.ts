@@ -111,7 +111,9 @@ export class MapListService {
         this.loadTableData(data.items, customCallBack);
       },
       err => {
-        this._commonService.translateToaster('error', 'ErrorMessage');
+        if (err.status === 500 || err.status === 404) {
+          this._commonService.translateToaster('error', 'ErrorMessage');
+        }
       }
     );
   }
