@@ -37,6 +37,6 @@ def start_geonature_front():
 
 
 def build_geonature_front():
+    subprocess.call(['npm', 'rebuild', 'node-sass', '--force'], cwd=str(ROOT_DIR / 'frontend'))
     subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
-
 
