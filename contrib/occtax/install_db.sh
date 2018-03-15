@@ -24,7 +24,7 @@ echo "--------------------" &> /var/log/geonature/install_contact_schema.log
 echo "Create export contact view(s)" &>> /var/log/geonature/install_contact_schema.log
 echo "--------------------" &>> /var/log/geonature/install_contact_schema.log
 echo "" &>> /var/log/geonature/install_contact_schema.log
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/modules/contact/exports_contact.sql  &>> /var/log/geonature/install_contact_schema.log
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/exports_contact.sql  &>> /var/log/geonature/install_contact_schema.log
 
 
 echo "INSTALL SAMPLE  = $add_sample_data "
@@ -38,7 +38,7 @@ if $add_sample_data
 	echo "Insert sample data in contact schema..." &>> /var/log/geonature/install_contact_schema.log
 	echo "--------------------" &>> /var/log/geonature/install_contact_schema.log
 	echo "" &>> /var/log/geonature/install_contact_schema.log
-	export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/modules/contact/sample_data.sql  &>> /var/log/geonature/install_contact_schema.log
+	export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/sample_data.sql  &>> /var/log/geonature/install_contact_schema.log
 fi
 
 echo "Cleaning files..."
