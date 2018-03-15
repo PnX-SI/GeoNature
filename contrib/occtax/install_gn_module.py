@@ -13,3 +13,4 @@ def gnmodule_install_app(gn_db, gn_app):
     '''
     with gn_app.app_context() :
         subprocess.call(['./install_db.sh'], cwd=str(ROOT_DIR))
+        subprocess.call(['./install_app.sh'], cwd=str(ROOT_DIR))
