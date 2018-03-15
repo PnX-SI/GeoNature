@@ -32,6 +32,7 @@ class CasSchemaConf(Schema):
         missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
+    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing='false')
 
 
 class RightsSchemaConf(Schema):
