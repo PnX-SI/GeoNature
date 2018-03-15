@@ -175,7 +175,83 @@ Pour redémarer les API:
 ``sudo supervisorctl reload``
 
 
-Sauvegarde
-----------
+Sauvegarde et restauration
+--------------------------
 
-Quoi et comment sauvegarder
+- Sauvegarge:
+
+    **Sauvegarde de la base de données**:
+
+    Opération à faire régulièrement grâce à une tâche cron
+
+    ::
+
+        pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
+
+
+    **Sauvegarde des fichiers de configuration**:
+
+    Opération à faire à chaque modification d'un paramètre de configuration
+
+    ::
+
+        cd /etc/geonature
+        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
+        cd /home/<MY_USER>/geonature
+        cp config/settings.ini <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-settings.ini
+
+    **Sauvegarde des fichiers de customisation**:
+
+    Opération à faire à chaque modification de la customisation de l'application
+
+    ::
+
+        cd /home/<MY_USER>geonature/frontend/src/custom
+        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
+
+
+- Restauration
+
+    **Restauration de la base de données**:
+
+    - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus)
+    
+        Si ce n'est pas le cas, adaptez le nom de la base et également la configuration de connexion de l'application à la BDD dans ``/etc/geonature/geonature_config.toml``
+        ::
+
+            sudo -n -u postgres -s createdb -O theo geonature2db
+            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
+            sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+        
+    - Restaurer la base à partir du backup
+
+        ::
+            
+            pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
+
+    **Restauration de la configutration et de la customisation**:
+
+    Décomprésser les fichiers precedemment sauvegardées pour les remettre au bon emplacement:
+
+    :: 
+    
+        sudo rm -r /etc/geonature/*
+        cd /etc/geonature
+        sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
+
+        cd /home/<MY_USER>/geonature/frontend/src/custom
+        rm -r <MY_USER>/geonature/frontend/src/custom/*
+        tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
+
+        rm /home/<MY_USER>/geonature/config/settings.ini
+        cp <MY_BACKUP_DIRECTORY>/201803151036-settings.ini /home/<MY_USER>/geonature/config/settings.ini
+
+
+- Relancer l'application:
+
+    ::
+
+        cd /<MY_USER>/geonature/frontend
+        npm run build
+        sudo supervisorctl reload
