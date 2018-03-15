@@ -87,6 +87,9 @@ INSERT INTO pr_contact.t_occurrences_contact  (id_occurrence_contact, id_releve_
 
 
 SELECT pg_catalog.setval('pr_contact.t_occurrences_contact_id_occurrence_contact_seq', 4, true);
+SELECT pg_catalog.setval('pr_contact.t_releves_contact_id_releve_contact_seq', 4, true);
+SELECT pg_catalog.setval('pr_contact.cor_counting_contact_id_counting_contact_seq', 4, true);
+
 
 INSERT INTO pr_contact.cor_role_releves_contact VALUES
 (1,1)
