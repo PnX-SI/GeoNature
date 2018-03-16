@@ -6,6 +6,7 @@ from flask import current_app
 
 # custom class to send email in SSL and with non ascii character
 class SSLSMTPHandler(SMTPHandler):
+    """ Custom class to emit email log with SSL """
     def emit(self, record):
         """
         Emit a record.
@@ -34,7 +35,6 @@ class SSLSMTPHandler(SMTPHandler):
             raise
         except:
             self.handleError(record)
-
 
 MAIL_CONFIG = current_app.config['MAILERROR']
 mail_handler = SSLSMTPHandler(

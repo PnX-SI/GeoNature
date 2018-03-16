@@ -4,7 +4,7 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 
 
-if  [ ! -f /etc/default/locale ];
+if  [ $LANG == "" ];
 then
     echo -e "\e[91m\e[1mAucune langue par défaut n'a été définit sur serveur, lancez la commande 'sudo dpkg-reconfigure locales'
             pour la définir
@@ -112,20 +112,27 @@ sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" co
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
+sed -i "s/enable_https=.*$/enable_https=$enable_https/g" config/settings.ini
+sed -i "s/https_cert_path=.*$/https_cert_path=$https_cert_path/g" config/settings.ini
+sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.ini
 
 
 
 # Installation de la base de données GeoNature en root
 ./install_db.sh
-# installation du module occtax
-./data/modules/contact/install_schema.sh
+
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
 
+# installation du module occtax
+source backend/venv/bin/activate
+geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax
+deactivate
+
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
-# Front end
+
 sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
 conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
@@ -136,7 +143,7 @@ sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
 # backend
 sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "ProxyPass http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
@@ -170,6 +177,10 @@ sed -i "s/usershub_port=.*$/usershub_port=$pg_port/g" settings.ini
 sed -i "s/usershub_db=.*$/usershub_db=$usershubdb_name/g" settings.ini
 sed -i "s/usershub_user=.*$/usershub_user=$user_pg/g" settings.ini
 sed -i "s/usershub_pass=.*$/usershub_pass=$user_pg_pass/g" settings.ini
+sed -i "s/enable_https=.*$/enable_https=$enable_https/g" settings.ini
+sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
+sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
+
 
 # Configuration Apache de TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf

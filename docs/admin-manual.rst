@@ -9,6 +9,7 @@ Architecture
 - A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
 - ``ref_geo`` is a geographical referential to manage areas, DEM and spatial functions such as intersections
 
+.. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
 
 Database
 --------
@@ -121,11 +122,136 @@ Après chaque modification du fichier de configuration globale ou d'une module, 
 
 Exploitation
 ------------
+Logs
+"""""
+Les logs de GeoNature sont dans le répertoire `/var/log/geonature`:
 
-Logs, vérifier services, relancer services...
+- logs d'installation de la BDD: ``install_db.log``
+- logs d'installation en BDD d'un module: ``install_<nom_module>_schema.log``
+- logs de l'API : ``gn-errors.log``
+
+Les logs de Taxhub sont dans le repertoire ``/var/log/taxhub``:
+
+- logs de l'API: ``taxhub-errors.log``
+Verification des services
+""""""""""""""""""""""""""
+Les API de GeoNature et de TaxHub sont lancés par deux serveurs http python indépendants (Gunicorn), eux mêmes controlés par le supervisor.
+
+Par défaut:
+
+- L'API de GeoNature tourne sur le port 8000
+- L'API de taxhub tourne sur le port 5000
+
+Pour vérifier que les API de GeoNature et de TaxHub sont lancés executer la commande:
+
+``ps -aux |grep gunicorn``
+
+La commande doit renvoyer 4 fois la ligne suivante pour GeoNature:
+
+::
+
+    root      27074  4.6  0.1  73356 23488 ?        S    17:35   0:00       /home/theo/workspace/GN2/GeoNature/backend/venv/bin/python3 /home/theo/workspace/GN2/GeoNature/backend/venv/bin/gunicorn wsgi:app --error-log /var/log/geonature/api_errors.log --pid=geonature2.pid -w 4 -b 0.0.0.0:8000 -n geonature2
+
+et 4 fois la ligne suivante pour TaxHub:
+
+::
+
+    root      27103 10.0  0.3 546188 63328 ?        Sl   17:35   0:00 /home/theo/workspace/GN2/TaxHub/venv/bin/python3.5 /home/theo/workspace/GN2/TaxHub/venv/bin/gunicorn server:app --access-logfile /var/log/taxhub/taxhub-access.log --error-log /var/log/taxhub/taxhub-errors.log --pid=taxhub.pid -w 4 -b 0.0.0.0:5000 -n taxhub
+    
+Chaque ligne correspond à un worker Gunicorn.
+
+Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancé ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
+
+Stopper/Redémarrer les API
+"""""""""""""""""""""""""""
+Les API de GeoNature et de TaxHub sont gérés par le supervisor pour être lancé automatiquement au démarage du serveur.
+
+Pour les stopper, executer les commande suivantes:
+
+- GeoNature: ``sudo supervisorctl stop geonature2``
+- TaxHub: ``sudo supervisorctl stop taxhub``
+
+Pour redémarer les API:
+``sudo supervisorctl reload``
 
 
-Sauvegarde
-----------
+Sauvegarde et restauration
+--------------------------
 
-Quoi et comment sauvegarder
+- Sauvegarge:
+
+    **Sauvegarde de la base de données**:
+
+    Opération à faire régulièrement grâce à une tâche cron
+
+    ::
+
+        pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
+
+
+    **Sauvegarde des fichiers de configuration**:
+
+    Opération à faire à chaque modification d'un paramètre de configuration
+
+    ::
+
+        cd /etc/geonature
+        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
+        cd /home/<MY_USER>/geonature
+        cp config/settings.ini <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-settings.ini
+
+    **Sauvegarde des fichiers de customisation**:
+
+    Opération à faire à chaque modification de la customisation de l'application
+
+    ::
+
+        cd /home/<MY_USER>geonature/frontend/src/custom
+        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
+
+
+- Restauration
+
+    **Restauration de la base de données**:
+
+    - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus)
+    
+        Si ce n'est pas le cas, adaptez le nom de la base et également la configuration de connexion de l'application à la BDD dans ``/etc/geonature/geonature_config.toml``
+        ::
+
+            sudo -n -u postgres -s createdb -O theo geonature2db
+            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
+            sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+        
+    - Restaurer la base à partir du backup
+
+        ::
+            
+            pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
+
+    **Restauration de la configutration et de la customisation**:
+
+    Décomprésser les fichiers precedemment sauvegardées pour les remettre au bon emplacement:
+
+    :: 
+    
+        sudo rm -r /etc/geonature/*
+        cd /etc/geonature
+        sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
+
+        cd /home/<MY_USER>/geonature/frontend/src/custom
+        rm -r <MY_USER>/geonature/frontend/src/custom/*
+        tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
+
+        rm /home/<MY_USER>/geonature/config/settings.ini
+        cp <MY_BACKUP_DIRECTORY>/201803151036-settings.ini /home/<MY_USER>/geonature/config/settings.ini
+
+
+- Relancer l'application:
+
+    ::
+
+        cd /<MY_USER>/geonature/frontend
+        npm run build
+        sudo supervisorctl reload

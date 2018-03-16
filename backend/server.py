@@ -8,7 +8,7 @@ from flask import Flask
 
 from flask_cors import CORS
 
-from geonature.utils.env import  DB, list_gn_modules
+from geonature.utils.env import  DB, list_and_import_gn_modules
 
 
 def get_app(config, _app=None):
@@ -24,15 +24,8 @@ def get_app(config, _app=None):
 
     with app.app_context():
         from geonature.utils.logs import mail_handler
-        loggers = [
-            app.logger,
-            logging.getLogger(),
-            logging.getLogger('sqlalchemy'),
-            logging.getLogger('werkzeug')
-        ]
-        for logger in loggers:
-            if app.config['MAILERROR']['MAIL_ON_ERROR']:
-                logger.addHandler(mail_handler)
+        if app.config['MAILERROR']['MAIL_ON_ERROR']:
+            logging.getLogger().addHandler(mail_handler)
         DB.create_all()
 
         from pypnusershub.routes import routes
@@ -43,9 +36,6 @@ def get_app(config, _app=None):
 
         from geonature.core.users.routes import routes
         app.register_blueprint(routes, url_prefix='/users')
-
-        from geonature.modules.pr_contact.routes import routes
-        app.register_blueprint(routes, url_prefix='/contact')
 
         from geonature.core.gn_meta.routes import routes
         app.register_blueprint(routes, url_prefix='/meta')
@@ -59,8 +49,12 @@ def get_app(config, _app=None):
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
+        from geonature.core.gn_medias.routes import routes
+        app.register_blueprint(routes, url_prefix='/gn_medias')
+
         from geonature.modules.module_list.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_modules')
+
 
         # errors
         from geonature.core.errors import routes
@@ -68,7 +62,7 @@ def get_app(config, _app=None):
         CORS(app, supports_credentials=True)
 
         # Chargement des modules tiers
-        for conf, manifest, module in list_gn_modules():
+        for conf, manifest, module in list_and_import_gn_modules():
             app.register_blueprint(
                 module.backend.blueprint.blueprint,
                 url_prefix=conf['api_url']

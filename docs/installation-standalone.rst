@@ -69,7 +69,7 @@ Installation de l'application
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche develop (remplacer ``X.Y.Z`` par ``develop``).
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de developpement. Elle n'est pas encore stable et se trouve sur la branche geonature2beta (remplacer ``X.Y.Z`` par ``geonature2beta``).
 
 ::
 
@@ -158,13 +158,22 @@ Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 Passer en mode développement
 ----------------------------
 
-Editez les fichiers de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` et ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` de la manière suivante : 
+Editez le fichier de configuration de GeoNature ``/etc/geonature/geonature_config.toml`` de la manière suivante:
 
 ::
     
+    URL_APPLICATION = 'http://127.0.0.1:4200'
+    API_ENDPOINT = 'http://127.0.0.1:8000'
+    API_TAXHUB =  'http://127.0.0.1:5000/api'
+    ID_APPLICATION_GEONATURE = 14
+
+puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts``:
+::
+
+    
     URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000/',
-    API_TAXHUB:  'http://127.0.0.1:5000/api/',
+    API_ENDPOINT: 'http://127.0.0.1:8000',
+    API_TAXHUB:  'http://127.0.0.1:5000/api',
     ID_APPLICATION_GEONATURE: 14
 
 * Lancer le serveur de développement du frontend grâce à Angular-CLI :
@@ -194,7 +203,6 @@ Puis lancer le backend en mode développement :
     
     source venv/bin/activate
     geonature dev_back
-    deactivate
 
 **Le serveur de développement du backend est disponible à l'adresse 127.0.0.1:8000**
 

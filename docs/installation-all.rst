@@ -47,6 +47,35 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 ::
 
     apt-get install -y sudo ca-certificates
+    
+* Mettre à jour les sources-list
+A l'installation de l'OS, les sources-list (liste des sources à partir duquel sont téléchargés les paquets) ne sont pas toujours corrects.
+
+::
+        
+        nano /etc/apt/sources.list
+
+Coller la liste des dépôts suivants:
+
+Pour Debian 9:
+
+::
+
+        deb http://security.debian.org/debian-security stretch/updates main contrib non-free
+        deb-src http://security.debian.org/debian-security stretch/updates main contrib non-free
+        deb http://deb.debian.org/debian/ stretch-updates main contrib non-free
+        deb-src http://deb.debian.org/debian/ stretch-updates main contrib non-free
+        deb http://deb.debian.org/debian stretch main contrib non-free
+        deb-src http://deb.debian.org/debian stretch main contrib non-free
+
+Pour Debian 8:
+
+::
+
+        deb http://deb.debian.org/debian/ jessie main contrib non-free
+        deb http://security.debian.org/ jessie/updates main contrib non-free
+        deb http://deb.debian.org/debian/ jessie-updates main contrib non-free
+
 
 * Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ROOT (en lui donnant les droits sudo)
 
@@ -71,7 +100,7 @@ Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informat
 
 Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour crypter le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
 
-* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``develop``, remplacez donc ``X.Y.Z`` par ``develop``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``geonature2beta``, remplacez donc ``X.Y.Z`` par ``geonature2beta``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
 ::
     
@@ -112,7 +141,7 @@ Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adre
 Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
 
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
-- Pour ``/saisie`` : ``Alias / /home/test/geonature/frontend/dist``
+- Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
 
 
 Installation d'un module GeoNature
