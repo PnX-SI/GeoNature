@@ -126,7 +126,7 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 ./install_app.sh
 
 # installation du module occtax
-source venv/bin/activate
+source backend/venv/bin/activate
 geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax
 deactivate
 

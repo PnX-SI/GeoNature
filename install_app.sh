@@ -188,10 +188,6 @@ if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
   cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
 fi
 
-if [ ! -f src/modules/contact/contact.config.ts ]; then
-  cp src/modules/contact/contact.config.ts.sample src/modules/contact/contact.config.ts
-fi
-
 
 #generate the tsconfig.json 
 geonature generate_frontend_tsconfig

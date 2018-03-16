@@ -30,7 +30,7 @@ from geonature.utils.command import (
 )
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 
 @click.group()
@@ -163,13 +163,17 @@ def dev_front():
     """
     start_geonature_front()
 
-
+@click.option(
+    '--build-sass',
+    type=bool,
+    default=False
+)
 @main.command()
-def frontend_build():
+def frontend_build(build_sass):
     """
         Lance le build du frontend
     """
-    build_geonature_front()
+    build_geonature_front(build_sass)
 
 
 @main.command()
