@@ -49,8 +49,12 @@ corSiteApplication = DB.Table(
     )
 )
 
+
 @serializable
 class TBaseVisits(DB.Model):
+    '''
+        Table de centralisation des visites liées à un site
+    '''
     __tablename__ = 't_base_visits'
     __table_args__ = {'schema': 'gn_monitoring'}
     id_base_visit = DB.Column(DB.Integer, primary_key=True)
@@ -87,6 +91,9 @@ class TBaseVisits(DB.Model):
 @serializable
 @geoserializable
 class TBaseSites(DB.Model):
+    '''
+        Table centralisant les données élémentaire des sites
+    '''
     __tablename__ = 't_base_sites'
     __table_args__ = {'schema': 'gn_monitoring'}
     id_base_site = DB.Column(DB.Integer, primary_key=True)
@@ -118,4 +125,3 @@ class TBaseSites(DB.Model):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
-
