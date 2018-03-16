@@ -9,7 +9,7 @@ import logging
 
 from flask import (
     Blueprint, request, make_response,
-    redirect, current_app, jsonify
+    redirect, current_app, jsonify, render_template
 )
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
@@ -19,10 +19,9 @@ from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
 
 
-routes = Blueprint('auth_cas', __name__)
+routes = Blueprint('auth_cas', __name__, template_folder="templates")
 log = logging.getLogger()
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
-
 
 
 @routes.route('/login', methods=['GET', 'POST'])
@@ -150,14 +149,16 @@ def loginCas():
             )
             return response
         else:
-            # redirect to inpn sss
-            return ("""<p> Echec de l'authentification. <p>
-             <p> Deconnectez-vous du service INPN avant de retenter
-             une connexion à GeoNature </p>
-             <p> <a target="_blank" href={}> Deconnexion </a> </p>
-             <p> <a target="_blank" href={}> Retour vers GeoNature </a> </p>
-             """).format(
-                current_app.config['CAS']['CAS_URL_LOGOUT'],
-                current_app.config['URL_APPLICATION']
+            gunicorn_error_logger.info(
+                "Erreur d'authentification lié au CAS, voir log du CAS"
+            )
+            log.error(
+                "Erreur d'authentification lié au CAS, voir log du CAS"
+            )
+            return render_template(
+                'cas_login_error.html',
+                cas_logout=current_app.config['CAS']['CAS_URL_LOGOUT'],
+                url_geonature=current_app.config['URL_APPLICATION']
             )
     return jsonify({'message': 'Authentification error'}, 500)
+
