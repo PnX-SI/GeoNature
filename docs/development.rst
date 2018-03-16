@@ -169,7 +169,6 @@ Les composants décrit ci dessous sont intégrés dans le coeur de GeoNature et 
 Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs.
 
 - Inputs
-
         - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôller la logique et les valeurs du formulaire depuis l'exterieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
 
         - L'input ``placeholder`` (string) permet en réalité d'afficher un label au dessus de l'input (A renommer).
@@ -177,7 +176,6 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
         - L'input ``disabled`` (boolean) permet de rendre le composant non-saisissable
 
 - Outputs
-
         Plusieurs ``Output`` communs à ses composants permette d'emmètre des événements liés aux formulaires.
 
         - ``onChange`` : événement émit à chaque fois qu'un changement est effectué sur le composant. Renvoie la valeur fraiche de l'input.
