@@ -158,10 +158,9 @@ Chaque gn_module de GeoNature doit être un module Angular indépendant https://
 Ce gn_module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et réutilisables dans n'importe quel module. 
 
 **Les composants génériques**
-
-
+------------------------------
 1. Les composants formulaires
-
+""""""""""""""""""""""""""""""
 Les composants décrit ci dessous sont intégrés dans le coeur de GeoNature et permette au développeur de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type "input" ou "select" et seront souvent réutilisés dans les différents module de GeoNature.
 
 *Input et Output communs*:
@@ -227,7 +226,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
 
 - **TaxonomyComponent**
-        Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et taxonomie.cor_nom_listes``.
+        Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
 
         **Selector**: ``pnx-taxonomy``
 
@@ -334,6 +333,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
 
 2. Les composants cartographiques
+"""""""""""""""""""""""""""""""""
 
 - **MapComponent**
         Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
