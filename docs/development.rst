@@ -159,7 +159,183 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 
 **Les composants génériques**
 
-1. Les composant cartographiques
+
+1. Les composants formulaires
+
+Les composants décrit ci dessous sont intégrés dans le coeur de GeoNature et permette au développeur de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type "input" ou "select" et seront souvent réutilisés dans les différents module de GeoNature.
+
+*Input et Output communs*:
+
+Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs.
+
+- Inputs
+
+        - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôller la logique et les valeurs du formulaire depuis l'exterieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
+
+        - L'input ``placeholder`` (string) permet en réalité d'afficher un label au dessus de l'input (A renommer).
+
+        - L'input ``disabled`` (boolean) permet de rendre le composant non-saisissable
+
+- Outputs
+
+        Plusieurs ``Output`` communs à ses composants permette d'emmètre des événements liés aux formulaires.
+
+        - ``onChange`` : événement émit à chaque fois qu'un changement est effectué sur le composant. Renvoie la valeur fraiche de l'input.
+
+        - ``onDelete`` : événement émit chaque fois que le champ du formulaire est supprimé. Renvoie un évenement vide.
+
+        NB: Le nom de l'output change suivant les composant (``taxonChanged`` et ``taxonDeleted`` pour le composant TaxonomyComponent par exemple), mais la logique reste commune.
+
+
+Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
+
+- **NomenclatureComponent**
+        Ce composant permet de créer un "input" de type "select" à partir d'une liste d'items définit dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+
+        **Selector**: ``pnx-nomenclature``
+
+        **Inputs**:
+
+        :``idTypeNomenclature``:
+                Id_type des items de nomenclatures qui doivent être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
+                 
+                *Type*: ``number``
+        :``regne``:
+                Permet de filter les items de nomenclature corespondant à un règne (facultatif)
+
+                *Type*: ``string``
+        :``group2Inpn``:
+                Permet de filter les items de nomenclature corespondant à un group2Inpn (facultatif)
+
+                *Type*: ``string``
+
+        **Valeur retourné par le FormControl**:
+
+        id_nomenclature de l'item séléctionné. *Type*: number
+
+
+        NB: La table ``ref_nomenclatures.cor_taxref_nomenclature`` permet de faire corespondre des items de nomenclature à des groupe INPN et des règne. A chaque fois que ces deux derniers input sont modifiés, la liste des items est rechargée. Ce composant peut ainsi être couplé au composant taxonomy qui renvoie le regne et le groupe INPN de l'espèce saisie.
+
+        Exemple d'utilisation:
+        ::
+
+                <pnx-nomenclature
+                  [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
+                  idTypeNomenclature="7"
+                  regne="Animalia"
+                  group2Inpn="Mammifères"
+                  >
+                </pnx-nomenclature>``
+
+
+- **TaxonomyComponent**
+        Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et taxonomie.cor_nom_listes``.
+
+        **Selector**: ``pnx-taxonomy``
+
+        **Inputs**:
+
+        :``idList``:
+                Id de la liste de taxon (obligatoire)
+
+                *Type*: ``number``
+        
+        :``charNumber``:
+                Nombre de charactere avant que la recherche AJAX soit lançé (obligatoire)
+
+                *Type*: ``number``
+        :``listLength``:
+                Nombre de résultat affiché (obligatoire)
+
+                *Type*: ``number``
+        
+        **Valeur retourné par le FormControl**:
+
+        Taxon séléctionné. *Type*: any
+
+        ::
+
+                {
+                  "nom_valide": "Alburnus alburnus (Linnaeus, 1758)",
+                  "id_liste": 1001,
+                  "lb_nom": "Alburnus alburnus",
+                  "group2_inpn": "Poissons",
+                  "regne": "Animalia",
+                  "cd_nom": 67111,
+                  "search_name": "Ablette = Alburnus alburnus (Linnaeus, 1758)"
+                }
+
+
+- **DatasetComponent**
+        Ce composant permet de créer un "input" de type "select" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
+
+        **Selector**: ``pnx-dataset``
+
+        :``displayAll``:
+                Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
+
+                *Type*: ``boolean``
+        
+        **Valeur retourné par le FormControl**:
+
+        Id du dataset sélectionné: *Type*: number
+
+- **DateComponent**
+        Ce composant permet de créer un input de type "datepicker". Crée à parti de https://github.com/ng-bootstrap/ng-bootstrap
+
+        **Selector**: ``pnx-date``
+
+        **Valeur retourné par le FormControl**:
+
+        Date sélectionnée: *Type*: any
+
+        ::
+
+                {
+                  "year": 2018,
+                  "month": 3,
+                   "day": 9
+                } 
+
+- **ObserversComponent**
+        Ce composant permet d'afficher un input de type "autocomplete" sur un liste d'observateur définit dans le schéma ``utilisateur.t_menus`` et ``utilisateurs.cor_role_menu``. Il permet de séléctionner plusieurs utilisateurs dans le même input.
+        Composant basé sur https://www.primefaces.org/primeng/#/autocomplete
+
+        **Selector**: ``pnx-observers``
+
+        :``idMenu``:
+                Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
+
+                *Type*: ``number``
+        
+        **Valeur retourné par le FormControl**:
+
+        Observateur sélectionné: *Type*: any
+
+        ::
+
+                {
+                  "nom_complet": "ADMINISTRATEUR test",
+                  "nom_role": "Administrateur",
+                  "id_role": 1,
+                  "prenom_role": "test",
+                  "id_menu": 9
+                }
+
+        
+
+- **ObserversTextComponent**
+        Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
+
+        **Selector**: ``pnx-observers-text``        
+
+        **Valeur retourné par le FormControl**:
+        
+        Valeur du champ. *Type*: string
+
+
+
+2. Les composants cartographiques
 
 - **MapComponent**
         Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
