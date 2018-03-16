@@ -30,7 +30,7 @@ from geonature.utils.command import (
 )
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 
 @click.group()
