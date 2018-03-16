@@ -1,4 +1,3 @@
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -31,7 +30,7 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
---USAGE : SELECT gn_medias.check_entity_field_exist('contactfaune.t_releves_cfaune.id_releve_cfaune');
+--USAGE : SELECT gn_medias.check_entity_field_exist('pr_contact.t_releves_contact.id_releve_contact');
 
 
 CREATE OR REPLACE FUNCTION check_entity_value_exist(myentity character varying, myvalue integer)
@@ -44,6 +43,11 @@ $BODY$
     r record;
     _row_ct integer;
   BEGIN
+    -- Cas particulier quand on insère le média avant l'entité
+    IF myvalue = -1 Then
+	    RETURN TRUE;
+    END IF;
+
     entity_array = string_to_array(myentity,'.');
     EXECUTE 'SELECT '||entity_array[3]|| ' FROM '||entity_array[1]||'.'||entity_array[2]||' WHERE '||entity_array[3]||'=' ||myvalue INTO r;
     GET DIAGNOSTICS _row_ct = ROW_COUNT;
@@ -56,7 +60,7 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 --USAGE
---SELECT gn_medias.check_entity_value_exist('contactfaune.t_releves_cfaune.id_releve_cfaune', 1);
+--SELECT gn_medias.check_entity_value_exist('pr_contact.t_releves_contact.id_releve_contact', 2);
 
 CREATE TABLE bib_media_types
 (

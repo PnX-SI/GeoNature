@@ -4,6 +4,7 @@ import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatLis
         MatToolbarModule} from '@angular/material';
 
 
+
 import {Http} from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -43,6 +44,7 @@ import { MapService } from './map/map.service';
 import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
+import { FormService } from './form/form.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -94,6 +96,7 @@ export function HttpLoaderFactory(http: Http) {
     DataFormService,
     MapListService,
     CommonService,
+    FormService,
     ],
   exports: [
     NomenclatureComponent,

@@ -24,6 +24,7 @@ from geonature.utils.gn_module_import import (
     gn_module_import_requirements,
     gn_module_register_config,
     gn_module_activate,
+    gn_module_deactivate,
     check_codefile_validity,
     create_external_assets_symlink,
     add_application_db
@@ -81,7 +82,7 @@ def install_gn_module(module_path, url, conf_file):
         # Activation du module
         gn_module_activate(module_name)
         # Rebuild the frontend
-        build_geonature_front()
+        build_geonature_front(rebuild_sass=True)
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
@@ -164,3 +165,13 @@ def activate_gn_module(module_name):
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
     gn_module_activate(module_name)
+
+
+@main.command()
+@click.argument('module_name')
+def deactivate_gn_module(module_name):
+    """
+        Desactive un module gn activé
+    """
+    # TODO vérifier que l'utilisateur est root ou du groupe geonature
+    gn_module_deactivate(module_name)

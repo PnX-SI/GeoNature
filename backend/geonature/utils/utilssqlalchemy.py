@@ -1,25 +1,20 @@
-
-# coding: utf8
-from __future__ import (unicode_literals, print_function,
-                        absolute_import, division)
-
 '''
 Fonctions utilitaires
 '''
 import json
-
-from flask import Response, current_app
 from functools import wraps
+
+from dateutil import parser
+from flask import Response, current_app
 from werkzeug.datastructures import Headers
 
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import class_mapper, ColumnProperty, RelationshipProperty
 from sqlalchemy.dialects.postgresql import UUID
-
-from geoalchemy2.shape import to_shape
-from geoalchemy2 import Geometry
+from sqlalchemy import create_engine, MetaData
 
 from geojson import Feature
+
+from geoalchemy2 import Geometry
+from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
 
@@ -38,7 +33,6 @@ def testDataType(value, sqlType, paramName):
                 .format(paramName)
     elif sqlType == DB.DateTime or isinstance(sqlType, (DB.Date, DB.DateTime)):
         try:
-            from dateutil import parser
             dt = parser.parse(value)
         except Exception as e:
             return '{0} must be an date (yyyy-mm-dd)'.format(paramName)
@@ -91,57 +85,96 @@ def serializeQueryOneResult(row, columnDef):
     return row
 
 
-class serializableModel(DB.Model):
-    """
-    Classe qui ajoute une méthode de transformation des données
-    de l'objet en tableau json
+"""
+    Liste des types de données sql qui
+    nécessite une sérialisation particulière en
+    @TODO MANQUE FLOAT
+"""
+SERIALIZERS = {
+    'Date': lambda x: str(x) if x else None,
+    'DateTime': lambda x: str(x) if x else None,
+    'UUID': lambda x: str(x) if x else None
 
-    Paramètres:
-       -
-    """
-    __abstract__ = True
+}
 
-    def as_dict(self, recursif=False, columns=()):
+
+def serializable(cls):
+    """
+        Décorateur de classe pour les DB.Models
+        Permet de rajouter la fonction as_dict qui est basée sur le mapping SQLAlchemy
+    """
+
+    """
+        Liste des propriétés sérialisables de la classe
+        associées à leur sérializer en fonction de leur type
+    """
+    cls_db_columns = [
+        (
+            db_col.key,
+            SERIALIZERS.get(
+                db_col.type.__class__.__name__,
+                lambda x: x
+            )
+        )
+        for db_col in cls.__mapper__.c
+        if not db_col.type.__class__.__name__ == 'Geometry'
+    ]
+
+    """
+        Liste des propriétés de type relationship
+        uselist permet de savoir si c'est une collection de sous objet
+        sa valeur est déduite du type de relation
+        (OneToMany, ManyToOne ou ManyToMany)
+    """
+    cls_db_relationships = [
+        (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
+    ]
+
+    def serializefn(self, recursif=False, columns=()):
         """
         Méthode qui renvoie les données de l'objet sous la forme d'un dict
 
         Parameters
         ----------
-            recursif: bollean
+            recursif: boolean
                 Spécifie si on veut que les sous objet (relationship)
                 soit également sérialisé
             columns: liste
                 liste des colonnes qui doivent être prises en compte
         """
-        obj = {}
-        if (not columns):
-            columns = self.__table__.columns
-        for prop in class_mapper(self.__class__).iterate_properties:
-            if (isinstance(prop, ColumnProperty) and (prop.key in columns)):
-                column = self.__table__.columns[prop.key]
-                if isinstance(column.type, (DB.Date, DB.DateTime, UUID)):
-                    obj[prop.key] = str(getattr(self, prop.key))
-                elif isinstance(column.type, DB.Numeric):
-                    obj[prop.key] = float(getattr(self, prop.key))
-                elif not isinstance(column.type, Geometry):
-                    obj[prop.key] = getattr(self, prop.key)
-            if ((isinstance(prop, RelationshipProperty)) and (recursif)):
-                if hasattr(getattr(self, prop.key), '__iter__'):
-                    obj[prop.key] = [
-                        d.as_dict(recursif) for d in getattr(self, prop.key)
-                    ]
-                else:
-                    if (getattr(getattr(self, prop.key), "as_dict", None)):
-                        obj[prop.key] = getattr(self, prop.key)\
-                            .as_dict(recursif)
+        if columns:
+            fprops = list(filter(lambda d: d[0] in columns, cls_db_columns))
+        else:
+            fprops = cls_db_columns
 
-        return obj
+        out = {
+            item: _serializer(getattr(self, item)) for item, _serializer in fprops
+        }
+
+        if recursif is False:
+            return out
+        for (rel, uselist) in cls_db_relationships:
+            if getattr(self, rel) is None:
+                break
+
+            if uselist is True:
+                out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
+            else:
+                out[rel] = getattr(self, rel).as_dict(recursif)
+
+        return out
+
+    cls.as_dict = serializefn
+    return cls
 
 
-class serializableGeoModel(serializableModel):
-    __abstract__ = True
+def geoserializable(cls):
+    """
+        Décorateur de classe
+        Permet de rajouter la fonction as_geofeature à une classe
+    """
 
-    def as_geofeature(self, geoCol, idCol, recursif=False, columns=()):
+    def serializegeofn(self, geoCol, idCol, recursif=False, columns=()):
         """
         Méthode qui renvoie les données de l'objet sous la forme
         d'une Feature geojson
@@ -165,6 +198,9 @@ class serializableGeoModel(serializableModel):
             properties=self.as_dict(recursif, columns)
         )
         return feature
+
+    cls.as_geofeature = serializegeofn
+    return cls
 
 
 def json_resp(fn):

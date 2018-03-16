@@ -8,26 +8,27 @@
             </select>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-          <div *ngIf="regneControl.value !== null"> 
+          <div *ngIf="regneControl.value !== null">
             <small class="font-sm">Groupe:</small>
             <select [formControl]="groupControl" class="form-control form-control-sm" id="sel1"  placeholder="Taxonomiques">
-              <option *ngFor="let group2 of regnesAndGroup[regneControl.value]"
+              <option class="clickable" *ngFor="let group2 of regnesAndGroup[regneControl.value]"
               [value]="group2">{{ group2 }}</option>
             </select>
-          </div> 
+          </div>
         </div>
       </div>
     </div>
-   
+
 </div>
 <small> {{ 'Taxon.Taxon' | translate }} </small>
 <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
   <input type="text" class="form-control form-control-sm "
-    [ngClass]="{'loading' : showSpinner}"
+    [ngClass]="{'loading' : isLoading}"
     id="taxonInput"
     [formControl]="parentFormControl"
-    [ngbTypeahead]="searchTaxon" 
-    [inputFormatter]="formatter" 
+    [disableControl]="disabled"
+    [ngbTypeahead]="searchTaxon"
+    [inputFormatter]="formatter"
     [resultTemplate]="rt"
     (selectItem)="taxonSelected($event)"/>
     <span class="input-group-addon" id="filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -37,8 +38,9 @@
   <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r.search_name">  </span>
   </ng-template>
-  
+
 </div>
-<small *ngIf="noResult && parentFormControl.value.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound' | translate}}</small> 
+<small *ngIf="!isLoading && noResult && parentFormControl.value.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound' | translate}}</small>
+
 
 
