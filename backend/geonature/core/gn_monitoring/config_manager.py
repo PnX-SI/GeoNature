@@ -1,14 +1,22 @@
+'''
+    Fonctions permettant de lire un fichier yml de configuration
+    et de le parser
+'''
+
 import sys
 from ruamel.yaml import YAML
 
-from pypnnomenclature.repository import get_nomenclature_list
+from pypnnomenclature.repository import get_nomenclature_list_formated
 
 yml = YAML(typ='safe')
+
+
 def generate_config(file_path):
     '''
         Lecture et modification des fichiers de configuration yml
-        Pour l'instant utile pour la compatiblité avec l'application projet_suivi
-            ou le frontend génrère les formulaires à partir de ces données
+        Pour l'instant utile pour la compatiblité avec l'application
+            projet_suivi
+            ou le frontend génère les formulaires à partir de ces données
     '''
     # Chargement du fichier de configuration
     config = open_and_load_yml(file_path)
@@ -33,6 +41,10 @@ def find_field_config(config_data):
 
 
 def open_and_load_yml(file_path):
+    '''
+        Ouvre et charge un fichier yml
+        @TODO gestion des exceptions
+    '''
     with open(file_path, 'r') as fp:
         result = yml.load(fp)
         return result
@@ -64,16 +76,10 @@ def format_nomenclature_list(params):
     '''
         Mise en forme des listes de valeurs de façon à assurer une
         compatibilité avec l'application de suivis
-        @TODO Devrait être modifier dans l'application suivis
     '''
-    nomenclature = get_nomenclature_list(**params)
-    result = []
-    if 'values' not in nomenclature:
-        return []
-    for term in nomenclature['values']:
-        result.append({
-            'id': term['id_nomenclature'],
-            'libelle': term['label_default']
-        })
-
-    return result
+    mapping = {
+        'id': {'object': 'nomenclature', 'field': 'id_nomenclature'},
+        'libelle': {'object': 'nomenclature', 'field': 'label_default'}
+    }
+    nomenclature = get_nomenclature_list_formated(params, mapping)
+    return nomenclature
