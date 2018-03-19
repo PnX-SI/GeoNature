@@ -6,7 +6,6 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { error } from 'util';
 import { of } from 'rxjs/observable/of';
 import { CommonService } from '@geonature_common/service/common.service';
-import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 export interface Taxon {
   search_name: string;
@@ -39,8 +38,9 @@ export interface Taxon {
   styleUrls: ['./taxonomy.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaxonomyComponent extends GenericFormComponent implements OnInit {
-  //@Input() parentFormControl: FormControl;
+export class TaxonomyComponent implements OnInit {
+  @Input() parentFormControl: FormControl;
+  @Input() label: string;
   @Input() idList: string;
   @Input() charNumber: number;
   @Input() listLength: number;
@@ -54,18 +54,16 @@ export class TaxonomyComponent extends GenericFormComponent implements OnInit {
   noResult: boolean;
   isLoading = false;
   showResultList = true;
-  @Output() taxonChanged = new EventEmitter<Taxon>();
-  @Output() taxonDeleted = new EventEmitter<Taxon>();
+  @Output() onChange = new EventEmitter<Taxon>();
+  @Output() onDelete = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, private _commonService: CommonService) {
-    super();
-  }
+  constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {
     this.parentFormControl.valueChanges
       .filter(value => value !== null && value.length === 0)
       .subscribe(value => {
-        this.taxonDeleted.emit();
+        this.onDelete.emit();
         this.showResultList = false;
       });
     // get regne and group2
@@ -94,7 +92,7 @@ export class TaxonomyComponent extends GenericFormComponent implements OnInit {
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
-    this.taxonChanged.emit(e.item);
+    this.onChange.emit(e.item);
   }
 
   formatter(taxon) {

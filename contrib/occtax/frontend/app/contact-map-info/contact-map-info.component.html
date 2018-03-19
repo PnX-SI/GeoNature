@@ -37,7 +37,7 @@
           </div>
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <pnx-nomenclature
-            placeholder= "{{ 'Releve.ObsTechnique' | translate }}"
+            label= "{{ 'Releve.ObsTechnique' | translate }}"
             [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_obs_technique"
             [idTypeNomenclature]="100"
             [disabled]=disabled
@@ -87,7 +87,7 @@
             <div class="row row-sm">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <pnx-nomenclature 
-                    placeholder="{{ 'Taxon.ObsMethod' | translate }}"
+                    label="{{ 'Taxon.ObsMethod' | translate }}"
                     [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
                     [idTypeNomenclature]="14" 
                     [disabled]="disabled">
@@ -95,7 +95,7 @@
               </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <pnx-nomenclature 
-                    placeholder="{{ 'Taxon.BiologicalCondition' | translate }}"
+                    label="{{ 'Taxon.BiologicalCondition' | translate }}"
                     [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
                     [idTypeNomenclature]="7" 
                     [disabled]="disabled" > 
@@ -105,7 +105,7 @@
               <div class="row row-sm">
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                     <pnx-nomenclature 
-                      placeholder="{{ 'Taxon.BiologicalStatus' | translate }}"
+                      label="{{ 'Taxon.BiologicalStatus' | translate }}"
                       [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
                       [idTypeNomenclature]="13" 
                       [disabled]="disabled"> 
@@ -113,7 +113,7 @@
                   </div>          
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                     <pnx-nomenclature 
-                      placeholder="{{ 'Taxon.Naturalness' | translate }}"
+                      label="{{ 'Taxon.Naturalness' | translate }}"
                       [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
                       [idTypeNomenclature]="8" 
                       [disabled]="disabled">
@@ -121,7 +121,7 @@
                   </div>
                   <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
                       <pnx-nomenclature 
-                        placeholder="{{ 'Taxon.DeterminationMethod' | translate }}"
+                        label="{{ 'Taxon.DeterminationMethod' | translate }}"
                         [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
                         [idTypeNomenclature]="106" 
                         [regne]="fs.currentTaxon.regne" 
@@ -141,7 +141,7 @@
                   </div>
                   <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm"> 
                     <pnx-nomenclature 
-                      placeholder="{{ 'Taxon.ValidationStatus' | translate }}"
+                      label="{{ 'Taxon.ValidationStatus' | translate }}"
                       [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
                       [idTypeNomenclature]="101" 
                       [disabled]="disabled">
@@ -149,7 +149,7 @@
                   </div>
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                       <pnx-nomenclature 
-                        placeholder="{{ 'Taxon.ExistProof' | translate }}"
+                        label="{{ 'Taxon.ExistProof' | translate }}"
                         [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
                         [idTypeNomenclature]="15" 
                         [disabled]="disabled">
@@ -192,7 +192,7 @@
                 <div class="row row-sm">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm col-counting">
                         <pnx-nomenclature
-                          placeholder="{{ 'Counting.LifeStage' | translate }}" 
+                          label="{{ 'Counting.LifeStage' | translate }}" 
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_life_stage"
                           [idTypeNomenclature]="10"
                           [disabled]="disabled"> 
@@ -200,7 +200,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
                         <pnx-nomenclature
-                          placeholder="{{ 'Counting.Sex' | translate }}"
+                          label="{{ 'Counting.Sex' | translate }}"
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_sex"
                           [idTypeNomenclature]="9"
                           [disabled]="disabled">
@@ -208,7 +208,7 @@
                   </div>
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
                         <pnx-nomenclature 
-                          placeholder="{{ 'Counting.CountingObject' | translate }}"
+                          label="{{ 'Counting.CountingObject' | translate }}"
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_obj_count"
                           [idTypeNomenclature]="6"
                           [disabled]="disabled" >
@@ -220,7 +220,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
                         <pnx-nomenclature
                           #typeDenombrement
-                          placeholder="{{ 'Counting.CountingType' | translate }}"
+                          label="{{ 'Counting.CountingType' | translate }}"
                           [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_type_count"
                           [idTypeNomenclature]="21"
                           [disabled]="disabled">
