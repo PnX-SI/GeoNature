@@ -215,7 +215,7 @@ def list_enabled_module(mod_path=GN_MODULES_ETC_ENABLED):
 
 def frontend_routes_templating():
     with open(
-        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'),
+        str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts.sample'),
         'r'
     ) as input_file:
 
