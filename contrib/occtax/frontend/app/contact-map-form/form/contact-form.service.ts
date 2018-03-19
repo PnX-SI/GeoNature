@@ -14,14 +14,15 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { OccTaxConfig } from "../../occtax.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
+import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 
 @Injectable()
 export class ContactFormService {
-  public currentTaxon: any;
+  public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
   public indexOccurrence: number = 0;
-  public taxonsList = [];
+  public taxonsList: Array<Taxon> = [];
   public showOccurrence: boolean;
   public showCounting: boolean;
   public editionMode: boolean;
