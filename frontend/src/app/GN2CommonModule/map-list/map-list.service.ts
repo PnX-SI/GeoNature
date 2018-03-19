@@ -51,8 +51,8 @@ export class MapListService {
   ) {
     this.columns = [];
     this.page.pageNumber = 0;
-    this.page.size = 15;
-    this.urlQuery.set('limit', '15');
+    this.page.size = 12;
+    this.urlQuery.set('limit', '12');
     this.urlQuery.set('offset', '0');
     this.colSelected = { prop: '', name: '' };
   }
