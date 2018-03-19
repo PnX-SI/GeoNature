@@ -22,8 +22,10 @@
     "baseUrl": "{{geonature_path}}/frontend/node_modules",
     "paths": {
       "@angular/*": ["{{geonature_path}}/frontend/node_modules/@angular/*"],
-      "@geonature_common/*" : ["{{geonature_path}}/frontend/src/core/GN2Common/*"],
-      "@geonature/*" : ["{{geonature_path}}/frontend/src/*"],
+      "@geonature_common/*" : ["{{geonature_path}}/frontend/src/app/GN2CommonModule/*"],
+      "@geonature/*" : ["{{geonature_path}}/frontend/src/app/*"],
+      "@geonature_config/*" : ["{{geonature_path}}/frontend/src/conf/*"],
+
     }
   }
 }

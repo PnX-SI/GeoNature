@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
 import { Observable } from 'rxjs/Rx';
+import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
 export class DataFormService {
@@ -44,7 +45,7 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
 
-  searchTaxonomy(taxonName: string, id: string, regne?: string, groupe2Inpn?: string) {
+  searchTaxonomy(taxonName: string, idList: string, regne?: string, groupe2Inpn?: string) {
     let params: HttpParams = new HttpParams();
     params = params.set('search_name', taxonName);
     if (regne) {
@@ -53,7 +54,7 @@ export class DataFormService {
     if (groupe2Inpn) {
       params = params.set('group2_inpn', groupe2Inpn);
     }
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${id}`, {
+    return this._http.get<Array<Taxon>>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`, {
       params: params
     });
   }

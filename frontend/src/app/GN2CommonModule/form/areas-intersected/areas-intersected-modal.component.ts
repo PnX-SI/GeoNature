@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-import { DataFormService } from '../../../../core/GN2Common/form/data-form.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 @Component({
   selector: 'pnx-areas-intersected-modal',
   templateUrl: 'areas-intersected-modal.component.html'
@@ -27,7 +27,7 @@ export class AreasIntersectedComponent implements OnInit, OnChanges {
           this.areasIntersected = res;
         });
       }
-      
+
     }
   }
 }

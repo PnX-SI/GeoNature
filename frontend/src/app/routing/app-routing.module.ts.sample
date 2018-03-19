@@ -7,7 +7,7 @@ import { AuthGuard } from '../components/auth/auth-guard.service';
 import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 import { ExportsComponent } from '../exports/exports.component';
-import { AppConfig } from '@geonature/conf/app.config';
+import { AppConfig } from '@geonature_config/app.config';
 
 
 const defaultRoutes: Routes = [
@@ -19,7 +19,7 @@ const defaultRoutes: Routes = [
         {path: '{{route.path}}', loadChildren: '{{route.location}}' },
         {% endfor %}
       { path: '', component: HomeContentComponent },
-      { path: 'exports', loadChildren: '@geonature/core/exports/exports.module#ExportsModule'},
+      { path: 'exports', loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
       { path: '**',  component: PageNotFoundComponent },
      ] },
 ];
