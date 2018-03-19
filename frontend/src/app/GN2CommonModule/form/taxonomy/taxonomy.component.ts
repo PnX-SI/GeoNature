@@ -6,6 +6,7 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { error } from 'util';
 import { of } from 'rxjs/observable/of';
 import { CommonService } from '@geonature_common/service/common.service';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 export interface Taxon {
   search_name: string;
@@ -38,8 +39,8 @@ export interface Taxon {
   styleUrls: ['./taxonomy.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaxonomyComponent implements OnInit {
-  @Input() parentFormControl: FormControl;
+export class TaxonomyComponent extends GenericFormComponent implements OnInit {
+  //@Input() parentFormControl: FormControl;
   @Input() idList: string;
   @Input() charNumber: number;
   @Input() listLength: number;
@@ -56,7 +57,9 @@ export class TaxonomyComponent implements OnInit {
   @Output() taxonChanged = new EventEmitter<Taxon>();
   @Output() taxonDeleted = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
+  constructor(private _dfService: DataFormService, private _commonService: CommonService) {
+    super();
+  }
 
   ngOnInit() {
     this.parentFormControl.valueChanges
