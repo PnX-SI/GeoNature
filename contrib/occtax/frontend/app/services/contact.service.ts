@@ -13,4 +13,8 @@ export class ContactService {
   deleteReleve(id) {
     return this._api.delete(`${AppConfig.API_ENDPOINT}/occtax/releve/${id}`);
   }
+
+  postContact(form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
+  }
 }

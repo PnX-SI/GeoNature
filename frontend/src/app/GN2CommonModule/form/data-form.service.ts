@@ -97,8 +97,4 @@ export class DataFormService {
       return areasIntersected;
     });
   }
-
-  postContact(form) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
-  }
 }

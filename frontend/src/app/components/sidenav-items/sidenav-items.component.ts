@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavService } from '../../services/nav.service';
 import { AuthService } from '../auth/auth.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { SideNavService } from './sidenav.service';
-
-
 
 @Component({
   selector: 'pnx-sidenav-items',
@@ -17,23 +14,25 @@ export class SidenavItemsComponent implements OnInit {
   public toastrConfig: ToastrConfig;
   public appConfig: any;
 
-  constructor(private _navService: NavService, private _authService: AuthService,
-              private router: Router,  private toastrService: ToastrService, private _sideNavService: SideNavService) {
+  constructor(
+    private _authService: AuthService,
+    private router: Router,
+    private toastrService: ToastrService,
+    private _sideNavService: SideNavService
+  ) {
     this.toastrConfig = {
-        positionClass: 'toast-top-center',
-        tapToDismiss: true,
-        timeOut: 2000
+      positionClass: 'toast-top-center',
+      tapToDismiss: true,
+      timeOut: 2000
     };
-    this.nav = _navService.getAppList();
+    this.nav = _sideNavService.getAppList();
   }
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
   onSetApp(app) {
-    this._navService.setCurrentApp(app);
+    this._sideNavService.setCurrentApp(app);
     if (app.moduleName === 'Accueil') {
       this._sideNavService.setHome(this._sideNavService.sidenav);
-    } else {
+    } else {
       this._sideNavService.setModule(this._sideNavService.sidenav);
     }
   }
