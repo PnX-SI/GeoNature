@@ -1,8 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ViewEncapsulation
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DataFormService } from '../data-form.service';
-import { TranslateService, LangChangeEvent} from '@ngx-translate/core';
+import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 @Component({
   selector: 'pnx-nomenclature',
@@ -10,7 +21,8 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./nomenclature.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
+export class NomenclatureComponent extends GenericFormComponent
+  implements OnInit, OnChanges, OnDestroy {
   public labels: Array<any>;
   public labelLang: string;
   public definitionLang: string;
@@ -18,14 +30,13 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
   public valueSubscription: Subscription;
   public currentCdNomenclature = 'null';
   public currentIdNomenclature: number;
-  @Input() placeholder: string;
-  @Input() parentFormControl: FormControl;
   @Input() idTypeNomenclature: number;
   @Input() regne: string;
   @Input() group2Inpn: string;
   @Input() disabled: boolean;
-  @Output() valueSelected = new EventEmitter<number>();
-  constructor(private _dfService: DataFormService, private _translate:TranslateService) { }
+  constructor(private _dfService: DataFormService, private _translate: TranslateService) {
+    super();
+  }
 
   ngOnInit() {
     this.labelLang = 'label_' + this._translate.currentLang;
@@ -39,30 +50,28 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     // output
-    this.valueSubscription = this.parentFormControl.valueChanges
-      .subscribe(id => {
-        this.currentIdNomenclature = id;
-        this.valueSelected.emit(id);
-        const self = this;
-        if (this.labels) {
-          this.labels.forEach(label => {
-            if (this.currentIdNomenclature === label.id_nomenclature) {
-              self.currentCdNomenclature = label.cd_nomenclature;
-            }
-          });
-        }
-      });
+    this.valueSubscription = this.parentFormControl.valueChanges.subscribe(id => {
+      this.currentIdNomenclature = id;
+      const self = this;
+      if (this.labels) {
+        this.labels.forEach(label => {
+          if (this.currentIdNomenclature === label.id_nomenclature) {
+            self.currentCdNomenclature = label.cd_nomenclature;
+          }
+        });
+      }
+    });
   }
 
   getCdNomenclature() {
     let cdNomenclature;
     if (this.labels) {
       this.labels.forEach(label => {
-        if (this.currentIdNomenclature === label.id_nomenclature){
+        if (this.currentIdNomenclature === label.id_nomenclature) {
           cdNomenclature = label.cd_nomenclature;
         }
       });
-    return cdNomenclature;
+      return cdNomenclature;
     }
   }
 
@@ -72,22 +81,22 @@ export class NomenclatureComponent implements OnInit, OnChanges, OnDestroy {
       this.initLabels();
     }
     // if only change groupe2inpn
-    if (changes.regne === undefined && changes.group2Inpn !== undefined && !changes.group2Inpn.firstChange) {
+    if (
+      changes.regne === undefined &&
+      changes.group2Inpn !== undefined &&
+      !changes.group2Inpn.firstChange
+    ) {
       this.initLabels();
     }
   }
 
   initLabels() {
-    this._dfService.getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
-      .subscribe(
-        data => {
+    this._dfService
+      .getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
+      .subscribe(data => {
         this.labels = data.values;
-        }
-      );
+      });
   }
-
-
-
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

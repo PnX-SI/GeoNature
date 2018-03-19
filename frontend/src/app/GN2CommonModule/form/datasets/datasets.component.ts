@@ -12,10 +12,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 export class DatasetsComponent extends GenericFormComponent implements OnInit {
   public dataSets: any;
   @Input() displayAll: false; // param to display the field 'all' in the list, default at false
-  //@Input() parentFormControl: FormControl;
   @Input() disabled: boolean;
-  // @Output() dataSetChanged = new EventEmitter<number>();
-  // @Output() dataSetDeleted = new EventEmitter();
   constructor(private _dfs: DataFormService, private _auth: AuthService) {
     super();
   }

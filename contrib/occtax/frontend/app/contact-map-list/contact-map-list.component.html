@@ -3,12 +3,13 @@
   <div class="row row-sm" >
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
         <pnx-taxonomy
+          label="{{ 'Taxon.Taxon' | translate }}"
           [parentFormControl]="inputTaxon"
           [idList]="500"
           [charNumber]="3"
           [listLength]="20"
-          (taxonChanged)="taxonChanged($event)"
-          (taxonDeleted)="mapListService.deleteAndRefresh(apiEndPoint,'cd_nom')">
+          (onChange)="taxonChanged($event)"
+          (onDelete)="mapListService.deleteAndRefresh(apiEndPoint,'cd_nom')">
         </pnx-taxonomy>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
@@ -125,9 +126,8 @@
       [offset]="mapListService.page.pageNumber"
       [limit]="mapListService.page.size"
       [rowClass]="mapListService.getRowClass"
-      (page)="mapListService.setTablePage($event, apiEndPoint )"
+      (page)="mapListService.setTablePage($event, apiEndPoint)"
       (select)="mapListService.onRowSelect($event)"
-      [messages]="tableMessages"
     >
 
     <!-- ACTION COLUMNS -->
