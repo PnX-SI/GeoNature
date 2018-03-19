@@ -1,38 +1,47 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+  OnDestroy
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({})
-export class GenericFormComponent implements OnInit, AfterViewInit {
+export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() debounceTime: number;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+  public sub: Subscription;
 
-  constructor() {
-    console.log('init generic');
-  }
+  constructor() {}
 
   ngOnInit() {}
 
   ngAfterViewInit() {
     if (!this.debounceTime) {
-      console.log('no debouncetime');
       this.debounceTime = 0;
     }
-    this.parentFormControl.valueChanges
+    this.sub = this.parentFormControl.valueChanges
       .distinctUntilChanged()
       .debounceTime(this.debounceTime)
       .subscribe(value => {
-        if (value && (value.length === 0 || value === '')) {
-          console.log('delete');
+        if (!value || (value && (value.length === 0 || value === ''))) {
           this.onDelete.emit();
         } else {
-          this.onChange.emit(value);
           console.log('change');
-          console.log(value);
+          this.onChange.emit(value);
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 }

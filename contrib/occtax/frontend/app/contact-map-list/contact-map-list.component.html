@@ -26,9 +26,9 @@
             <pnx-observers
               [parentFormControl]="inputObservers"
               [idMenu]="9"
-              (observerSelected)="observerChanged($event)"
-              (observerDeleted)="observerDeleted($event)"
-              placeholder="{{ 'Releve.Observers' | translate }}">
+              (onChange)="observerChanged($event)"
+              (onDelete)="observerDeleted($event)"
+              label="{{ 'Releve.Observers' | translate }}">
             </pnx-observers>
           </ng-template>
       </div>
