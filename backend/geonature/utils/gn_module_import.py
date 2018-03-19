@@ -140,8 +140,6 @@ def gn_module_activate(module_name):
             )
             subprocess.call(cmd.split(" "))
             log.info("...ok\n")
-        else:
-            log.info("...module already activated")
     else:
         raise GeoNatureError(
             "Module {} is not installed"
