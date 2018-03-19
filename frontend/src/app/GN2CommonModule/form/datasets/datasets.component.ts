@@ -3,38 +3,27 @@ import { DataFormService } from '../data-form.service';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '../../../components/auth/auth.service';
 import { AppConfig } from '../../../../conf/app.config';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 @Component({
   selector: 'pnx-datasets',
-  templateUrl: 'datasets.component.html',
+  templateUrl: 'datasets.component.html'
 })
-
-export class DatasetsComponent implements OnInit {
+export class DatasetsComponent extends GenericFormComponent implements OnInit {
   public dataSets: any;
-  @Input() placeholder: string;
   @Input() displayAll: false; // param to display the field 'all' in the list, default at false
-  @Input() parentFormControl: FormControl;
+  //@Input() parentFormControl: FormControl;
   @Input() disabled: boolean;
-  @Output() dataSetChanged = new EventEmitter<number>();
-  @Output() dataSetDeleted = new EventEmitter();
-  constructor(private _dfs: DataFormService, private _auth: AuthService) { }
+  // @Output() dataSetChanged = new EventEmitter<number>();
+  // @Output() dataSetDeleted = new EventEmitter();
+  constructor(private _dfs: DataFormService, private _auth: AuthService) {
+    super();
+  }
 
   ngOnInit() {
-      // TODO : recuperer l'id du module en cours
-      this._dfs.getDatasets()
-      .subscribe(res => {
-        this.dataSets = res;
-     });
-
-     this.parentFormControl.valueChanges
-      .subscribe(id_dataset => {
-        if (id_dataset === null) {
-          this.dataSetDeleted.emit();
-        } else {
-          this.dataSetChanged.emit(id_dataset);
-        }
-      });
-
-    }
-
+    // TODO : recuperer l'id du module en cours
+    this._dfs.getDatasets().subscribe(res => {
+      this.dataSets = res;
+    });
+  }
 }
