@@ -4,16 +4,15 @@ import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {HttpModule, Http} from '@angular/http';
-
+import { HttpModule, Http } from '@angular/http';
 
 // For Angular Dependencies
 import 'hammerjs';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ChartModule } from 'angular2-chartjs';
-import {TranslateModule, TranslateLoader, TranslateService} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
 
 // Modules
@@ -34,7 +33,6 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 
 // Service
 import { AppConfig } from '../conf/app.config';
-import { NavService } from './services/nav.service';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
@@ -44,7 +42,7 @@ import { CookieService } from 'ng2-cookies';
 import { MyCustomInterceptor } from './services/http.interceptor';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -60,11 +58,11 @@ export function HttpLoaderFactory(http: Http) {
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [Http]
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [Http]
       }
-  }),
+    })
   ],
   declarations: [
     AppComponent,
@@ -76,11 +74,14 @@ export function HttpLoaderFactory(http: Http) {
     FooterComponent,
     IntroductionComponent
   ],
-  providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService, HttpClient,
+  providers: [
+    AuthService,
+    AuthGuard,
+    SideNavService,
+    CookieService,
+    HttpClient,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
-   ],
-  bootstrap: [AppComponent],
+  ],
+  bootstrap: [AppComponent]
 })
-
-export class AppModule {
- }
+export class AppModule {}

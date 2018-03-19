@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { NavService } from "@geonature/services/nav.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -16,7 +15,6 @@ export class ContactMapFormComponent implements OnInit, OnDestroy {
   private _sub: Subscription;
   public id: number;
   constructor(
-    private _navService: NavService,
     private _ms: MapService,
     private _route: ActivatedRoute,
     private _router: Router
