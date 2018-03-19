@@ -54,13 +54,13 @@ export class DataFormService {
     if (groupe2Inpn) {
       params = params.set('group2_inpn', groupe2Inpn);
     }
-    return this._http.get<Array<Taxon>>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`, {
+    return this._http.get<Taxon[]>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`, {
       params: params
     });
   }
 
   getTaxonInfo(cd_nom: number) {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
+    return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
   }
 
   getRegneAndGroup2Inpn() {
