@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GN2CommonModule } from '../GN2Common/GN2Common.module';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { ExportsComponent } from './exports.component';
 import { ExportsService } from './exports.service';
 import { Routes, RouterModule } from '@angular/router';

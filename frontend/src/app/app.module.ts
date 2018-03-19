@@ -17,7 +17,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
 
 // Modules
-import { GN2CommonModule } from './GN2Common/GN2Common.module';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
@@ -38,7 +38,7 @@ import { NavService } from './services/nav.service';
 import { AuthService } from './components/auth/auth.service';
 import { AuthGuard } from './components/auth/auth-guard.service';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
-import { MapListService } from './GN2Common/map-list/map-list.service';
+import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
@@ -77,7 +77,8 @@ export function HttpLoaderFactory(http: Http) {
     IntroductionComponent
   ],
   providers: [NavService, AuthService, AuthGuard, SideNavService, CookieService, HttpClient,
-    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true } ],
+    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
+   ],
   bootstrap: [AppComponent],
 })
 

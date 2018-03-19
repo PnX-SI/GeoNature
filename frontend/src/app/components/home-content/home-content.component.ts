@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppConfig } from '../../../conf/app.config';
 import { NavService } from '../../services/nav.service';
-import { MapService } from '../../GN2Common/map/map.service';
+import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav.service';
 
 @Component({

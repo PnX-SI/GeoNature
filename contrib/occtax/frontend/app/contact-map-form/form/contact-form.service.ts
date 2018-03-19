@@ -7,15 +7,12 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
-import { AppConfig } from "@geonature/conf/app.config";
+import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { OccTaxConfig } from "../../occtax.config";
-import {
-  AuthService,
-  User
-} from "@geonature/core/components/auth/auth.service";
+import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
 
 @Injectable()
