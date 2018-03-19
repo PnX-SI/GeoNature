@@ -33,7 +33,6 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() idTypeNomenclature: number;
   @Input() regne: string;
   @Input() group2Inpn: string;
-  @Input() disabled: boolean;
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
@@ -49,7 +48,7 @@ export class NomenclatureComponent extends GenericFormComponent
       this.definitionLang = 'definition_' + this._translate.currentLang;
     });
 
-    // output
+    // set cdNomenclature
     this.valueSubscription = this.parentFormControl.valueChanges.subscribe(id => {
       this.currentIdNomenclature = id;
       const self = this;

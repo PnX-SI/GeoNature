@@ -12,11 +12,11 @@ import { Observable } from 'rxjs/Observable';
 export class ObserversComponent implements OnInit {
   filteredObservers: Array<any>;
   @Input() idMenu: number;
-  @Input() placeholder: string;
+  @Input() label: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
-  @Output() observerSelected = new EventEmitter<any>();
-  @Output() observerDeleted = new EventEmitter<any>();
+  @Output() onChange = new EventEmitter<any>();
+  @Output() onDelete = new EventEmitter<any>();
 
   observers: Array<any>;
   selectedObservers: Array<string>;
@@ -35,9 +35,9 @@ export class ObserversComponent implements OnInit {
     });
   }
   addObservers(observer) {
-    this.observerSelected.emit(observer);
+    this.onChange.emit(observer);
   }
   removeObservers(observer) {
-    this.observerDeleted.emit(observer);
+    this.onDelete.emit(observer);
   }
 }
