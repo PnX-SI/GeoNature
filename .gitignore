@@ -7,7 +7,11 @@ geonature_config.toml
 gunicorn_start.sh
 external_assets/
 
+
 config.py
+backend/static/*
+
+
 .vscode
 
 *.perm
@@ -39,6 +43,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
