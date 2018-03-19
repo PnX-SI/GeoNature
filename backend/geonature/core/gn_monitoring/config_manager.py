@@ -3,7 +3,6 @@
     et de le parser
 '''
 
-import sys
 from ruamel.yaml import YAML
 
 from pypnnomenclature.repository import get_nomenclature_list_formated
@@ -21,7 +20,7 @@ def generate_config(file_path):
     # Chargement du fichier de configuration
     config = open_and_load_yml(file_path)
     config_data = find_field_config(config)
-    return yml.dump(config_data, sys.stdout)
+    return config_data
 
 
 def find_field_config(config_data):
