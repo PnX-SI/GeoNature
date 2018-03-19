@@ -165,14 +165,16 @@ Les composants décrit ci dessous sont intégrés dans le coeur de GeoNature et 
 
 *Input et Output communs*:
 
-Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs.
+Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 - Inputs
         - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôller la logique et les valeurs du formulaire depuis l'exterieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
 
-        - L'input ``placeholder`` (string) permet en réalité d'afficher un label au dessus de l'input (A renommer).
+        - L'input ``label`` (string) permet d'afficher un label au dessus de l'input.
 
         - L'input ``disabled`` (boolean) permet de rendre le composant non-saisissable
+
+        - L'input ``debounceTime`` définit un durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
 
 - Outputs
         Plusieurs ``Output`` communs à ses composants permette d'emmètre des événements liés aux formulaires.
@@ -181,7 +183,6 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
 
         - ``onDelete`` : événement émit chaque fois que le champ du formulaire est supprimé. Renvoie un évenement vide.
 
-        NB: Le nom de l'output change suivant les composant (``taxonChanged`` et ``taxonDeleted`` pour le composant TaxonomyComponent par exemple), mais la logique reste commune.
 
 
 Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
