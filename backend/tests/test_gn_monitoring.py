@@ -20,6 +20,12 @@ class TestAPIMonitoring:
             print (s.as_dict(recursif=True))
         assert True
 
-    def test_gn_monitoring_config(self, geonature_app):
-        generate_config('/home/sahl/dev/GeoNature/backend/static/configs/form.yml')
+    def test_gn_monitoring_route_config(self, geonature_app):
+        response = requests.get(
+            '{}/gn_monitoring/config?app=chiro&vue=site&vue=list'.format(
+                geonature_app.config['API_ENDPOINT']
+            )
+        )
+        if not response.ok:
+            assert False
         assert True
