@@ -10,31 +10,28 @@ import { Observable } from 'rxjs/Observable';
   encapsulation: ViewEncapsulation.None
 })
 export class ObserversComponent implements OnInit {
-
   filteredObservers: Array<any>;
-  @Input()idMenu: number;
+  @Input() idMenu: number;
   @Input() placeholder: string;
   @Input() disabled: boolean;
-  @Input() parentFormControl:FormControl;
+  @Input() parentFormControl: FormControl;
   @Output() observerSelected = new EventEmitter<any>();
   @Output() observerDeleted = new EventEmitter<any>();
 
   observers: Array<any>;
   selectedObservers: Array<string>;
 
-  constructor(private _dfService: DataFormService) {
-   }
+  constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
     this.selectedObservers = [];
-    this._dfService.getObservers(this.idMenu)
-      .subscribe(data => this.observers = data);
+    this._dfService.getObservers(this.idMenu).subscribe(data => (this.observers = data));
   }
 
   filterObservers(event) {
     const query = event.query;
     this.filteredObservers = this.observers.filter(obs => {
-      return obs.nom_complet.toLowerCase().indexOf(query.toLowerCase()) === 0
+      return obs.nom_complet.toLowerCase().indexOf(query.toLowerCase()) === 0;
     });
   }
   addObservers(observer) {
@@ -43,8 +40,4 @@ export class ObserversComponent implements OnInit {
   removeObservers(observer) {
     this.observerDeleted.emit(observer);
   }
-
-    
-
-
 }
