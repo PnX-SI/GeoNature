@@ -105,7 +105,10 @@ def loginCas():
                 log.error(e)
             # push the user in the right group
             try:
-                if organism_id is None:
+                if not current_app.config['CAS']['USERS_CAN_SEE_ORGANISM_DATA']:
+                    # group socle 1
+                    users.insert_in_cor_role(20003, user['id_role'])
+                elif organism_id is None:
                     # group socle 1
                     users.insert_in_cor_role(20003, user['id_role'])
                 elif current_app.config['CAS']['USERS_CAN_SEE_ORGANISM_DATA']:
