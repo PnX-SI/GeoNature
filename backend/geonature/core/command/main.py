@@ -30,7 +30,7 @@ from geonature.utils.command import (
 )
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 
 @click.group()
@@ -139,14 +139,7 @@ def dev_back(host, port, conf_file):
         Lance l'api du backend avec flask
     """
     app = get_app_for_cmd(conf_file)
-    if app.config['ENABLE_HTTPS']:
-        ssl_context = (
-           app.config['HTTPS_CERT_PATH'],
-           app.config['HTTPS_KEY_PATH']
-        )
-        app.run(host=host, port=int(port), debug=True, ssl_context=ssl_context)
-    else:
-        app.run(host=host, port=int(port), debug=True)
+    app.run(host=host, port=int(port), debug=True)
 
 
 @main.command()
@@ -170,13 +163,17 @@ def dev_front():
     """
     start_geonature_front()
 
-
+@click.option(
+    '--build-sass',
+    type=bool,
+    default=False
+)
 @main.command()
-def frontend_build():
+def frontend_build(build_sass):
     """
         Lance le build du frontend
     """
-    build_geonature_front()
+    build_geonature_front(build_sass)
 
 
 @main.command()

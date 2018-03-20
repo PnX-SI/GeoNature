@@ -82,6 +82,7 @@ CREATE TABLE synthese (
     id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value(18),
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value(4),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value(19),
+    id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value(23),
     id_municipality character(25),
     count_min integer,
     count_max integer,
@@ -96,6 +97,7 @@ CREATE TABLE synthese (
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    id_area integer,
     date_min date NOT NULL,
     date_max date NOT NULL,
     id_validator integer,
@@ -136,6 +138,7 @@ COMMENT ON COLUMN synthese.id_nomenclature_sensitivity IS 'Correspondance nomenc
 COMMENT ON COLUMN synthese.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs = 18';
 COMMENT ON COLUMN synthese.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou = 4';
 COMMENT ON COLUMN synthese.id_nomenclature_source_status IS 'Correspondance nomenclature INPN = statut_source = 19';
+COMMENT ON COLUMN synthese.id_nomenclature_info_geo_type IS 'Correspondance nomenclature INPN = typ_inf_geo = 23';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -148,10 +151,8 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 
 CREATE TABLE cor_area_synthese (
     id_synthese integer,
-    id_area integer,
-    id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value(23)
+    id_area integer
 );
-COMMENT ON COLUMN cor_area_synthese.id_nomenclature_info_geo_type IS 'Correspondance nomenclature INPN = typ_inf_geo = 23';
 
 CREATE TABLE defaults_nomenclatures_value (
     id_type integer NOT NULL,
@@ -258,8 +259,14 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_info_geo_type FOREIGN KEY (id_nomenclature_info_geo_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
+    
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
@@ -269,9 +276,6 @@ ALTER TABLE ONLY cor_area_synthese
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_info_geo_type FOREIGN KEY (id_nomenclature_info_geo_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value

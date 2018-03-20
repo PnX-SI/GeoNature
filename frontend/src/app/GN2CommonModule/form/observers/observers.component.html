@@ -1,0 +1,19 @@
+<div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <small> {{ label }} </small>
+  <span class="ui-fluid">
+      <p-autoComplete 
+        styleClass="wid100"
+        [inputStyle]="has-error"
+        [formControl]="parentFormControl"        
+        (completeMethod)="filterObservers($event)"
+        (onSelect)="addObservers($event)"
+        (onUnselect)="removeObservers($event)"
+        [suggestions]="filteredObservers" field="nom_complet"
+        [disableControl]="disabled"
+        [minLength]="1" [multiple]="true">
+      </p-autoComplete>
+  </span>
+  <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+
+
+

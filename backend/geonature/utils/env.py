@@ -39,7 +39,7 @@ GN_MODULE_FILES = (
 GN_MODULES_ETC_AVAILABLE = GEONATURE_ETC / 'mods-available'
 GN_MODULES_ETC_ENABLED = GEONATURE_ETC / 'mods-enabled'
 GN_MODULES_ETC_FILES = ("manifest.toml", "conf_gn_module.toml")
-GN_MODULE_FE_FILE = 'frontend/app/gnModule'
+GN_MODULE_FE_FILE = 'frontend/app/gnModule.module'
 
 
 def in_virtualenv():
@@ -162,7 +162,7 @@ def import_requirements(req_file):
                 raise Exception('Package {} not installed'.format(req))
 
 
-def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
+def list_and_import_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
     for f in mod_path.iterdir():
         if f.is_dir():
             conf_manifest = load_and_validate_toml(
@@ -194,15 +194,34 @@ def list_gn_modules(mod_path=GN_MODULES_ETC_ENABLED):
             yield conf_module, conf_manifest, module_blueprint
 
 
+def list_enabled_module(mod_path=GN_MODULES_ETC_ENABLED):
+    for f in mod_path.iterdir():
+        if f.is_dir():
+            conf_manifest = load_and_validate_toml(
+                str(f / 'manifest.toml'),
+                ManifestSchemaProdConf
+            )
+            class GnModuleSchemaProdConf(
+                GnModuleProdConf
+            ):
+                pass
+
+            conf_module = load_and_validate_toml(
+                str(f / 'conf_gn_module.toml'),
+                GnModuleSchemaProdConf
+            )
+            yield conf_module, conf_manifest
+
+
 def frontend_routes_templating():
     with open(
-        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts.sample'),
+        str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts.sample'),
         'r'
     ) as input_file:
 
         template = Template(input_file.read())
         routes = []
-        for conf, manifest, blueprint in list_gn_modules():
+        for conf, manifest in list_enabled_module():
             location = Path(manifest['module_path'])
             path = conf['api_url'].lstrip('/')
             location = '{}/{}#GeonatureModule'.format(
@@ -215,7 +234,7 @@ def frontend_routes_templating():
         route_template = template.render(routes=routes)
 
     with open(
-        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts'), 'w'
+        str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts'), 'w'
     ) as output_file:
         output_file.write(route_template)
 
