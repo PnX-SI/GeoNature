@@ -8,7 +8,7 @@ from flask import Flask
 
 from flask_cors import CORS
 
-from geonature.utils.env import  DB, list_gn_modules
+from geonature.utils.env import DB, list_and_import_gn_modules
 
 
 def get_app(config, _app=None):
@@ -40,9 +40,6 @@ def get_app(config, _app=None):
         from geonature.core.gn_synthese.routes import routes
         app.register_blueprint(routes, url_prefix='/synthese')
 
-        from geonature.modules.pr_contact.routes import routes
-        app.register_blueprint(routes, url_prefix='/contact')
-
         from geonature.core.gn_meta.routes import routes
         app.register_blueprint(routes, url_prefix='/meta')
 
@@ -55,6 +52,12 @@ def get_app(config, _app=None):
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
+        from geonature.core.gn_medias.routes import routes
+        app.register_blueprint(routes, url_prefix='/gn_medias')
+
+        from geonature.core.gn_monitoring.routes import routes
+        app.register_blueprint(routes, url_prefix='/gn_monitoring')
+
         from geonature.modules.module_list.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_modules')
 
@@ -64,7 +67,7 @@ def get_app(config, _app=None):
         CORS(app, supports_credentials=True)
 
         # Chargement des modules tiers
-        for conf, manifest, module in list_gn_modules():
+        for conf, manifest, module in list_and_import_gn_modules():
             app.register_blueprint(
                 module.backend.blueprint.blueprint,
                 url_prefix=conf['api_url']

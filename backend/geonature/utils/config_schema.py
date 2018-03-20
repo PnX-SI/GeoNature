@@ -32,6 +32,7 @@ class CasSchemaConf(Schema):
         missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
+    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing='false')
 
 
 class RightsSchemaConf(Schema):
@@ -57,13 +58,10 @@ class GnPySchemaConf(Schema):
     COOKIE_EXPIRATION = fields.Integer(missing=7200)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
-    ENABLE_HTTPS = fields.Boolean(missing=False)
-    HTTPS_CERT_PATH = fields.String(missing="/etc/geonature/ssl/cert.perm") 
-    HTTPS_KEY_PATH = fields.String(missing="/etc/geonature/ssl/key.pem") 
 
     UPLOAD_FOLDER = fields.String(missing='static/medias')
     BASE_DIR = fields.String(
-        missing=os.path.abspath(os.path.dirname(__file__))
+        missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
 
 

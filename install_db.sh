@@ -321,6 +321,15 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/exports.sql  &>> /var/log/geonature/install_db.log
 
 
+    echo "Creating 'monitoring' schema..."
+    echo "" &>> /var/log/geonature/install_db.log
+    echo "" &>> /var/log/geonature/install_db.log
+    echo "--------------------" &>> /var/log/geonature/install_db.log
+    echo "Creating 'monitoring' schema" &>> /var/log/geonature/install_db.log
+    echo "--------------------" &>> /var/log/geonature/install_db.log
+    echo "" &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring.sql  &>> /var/log/geonature/install_db.log
+
     # Suppression des fichiers : on ne conserve que les fichiers compressés
     echo "Cleaning files..."
     sudo rm /tmp/geonature/*.sql
