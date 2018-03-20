@@ -35,7 +35,6 @@ CREATE TABLE t_base_visits
   id_base_site integer,
   id_digitiser integer,
   visit_date date NOT NULL,
-  geom public.geometry,
   comments text,
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone
@@ -131,19 +130,10 @@ ALTER TABLE t_base_sites
   ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_site,116));
 
 
-ALTER TABLE t_base_visits
-  ADD CONSTRAINT enforce_srid_geom CHECK ((public.st_srid(geom) = 4326));
-
-ALTER TABLE t_base_visits
-  ADD CONSTRAINT enforce_dims_geom CHECK ((public.st_ndims(geom) = 2));
-
-
 ---------
 --INDEX--
 ---------
 CREATE INDEX idx_t_base_visits_fk_bs_id ON t_base_visits USING btree(id_base_site);
-
-CREATE INDEX idx_t_base_visits_geom ON t_base_visits USING gist (geom);
 
 
 CREATE INDEX idx_t_base_sites_geom ON t_base_sites USING gist (geom);
@@ -176,19 +166,13 @@ $BODY$
 ------------
 --TRIGGERS--
 ------------
-CREATE TRIGGER tri_meta_dates_change_base_sites 
-  BEFORE INSERT OR UPDATE 
+CREATE TRIGGER tri_meta_dates_change_base_sites
+  BEFORE INSERT OR UPDATE
   ON t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-CREATE TRIGGER trg_add_obs_geom
-  BEFORE INSERT OR UPDATE
-  ON t_base_visits
-  FOR EACH ROW
-  EXECUTE PROCEDURE fct_trg_add_obs_geom();
-
-CREATE TRIGGER tri_meta_dates_change_base_visits 
+CREATE TRIGGER tri_meta_dates_change_base_visits
   BEFORE INSERT OR UPDATE
   ON t_base_visits
   FOR EACH ROW
