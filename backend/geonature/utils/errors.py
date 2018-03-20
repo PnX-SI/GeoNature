@@ -42,8 +42,6 @@ class GeonatureApiError(Exception):
             raised_error,
             message
         )
-        log.info(log_message)
-
     def to_dict(self):
         return {
             'message': self.message,

@@ -16,6 +16,7 @@ Welcome to GeoNature's documentation!
    user-manual
    admin-manual
    development
+   FAQ
    CHANGELOG 
 
 

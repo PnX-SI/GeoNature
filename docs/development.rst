@@ -80,7 +80,7 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
   
   - ``frontend`` : le dossier ``app`` comprend les fichiers typescript du module, et le dossier ``assets`` l'ensemble des médias (images, son).
 
-    - Le dossier ``app`` doit comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.ts`` 
+    - Le dossier ``app`` doit comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
     - A la racine du dossier ``frontend``, on retrouve également un fichier ``package.json`` qui décrit l'ensemble des librairies JS necessaires au module.
       
   - ``data`` : ce dossier comprenant les scripts SQL d'installation du module
@@ -158,8 +158,183 @@ Chaque gn_module de GeoNature doit être un module Angular indépendant https://
 Ce gn_module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et réutilisables dans n'importe quel module. 
 
 **Les composants génériques**
+------------------------------
+1. Les composants formulaires
+""""""""""""""""""""""""""""""
+Les composants décrit ci dessous sont intégrés dans le coeur de GeoNature et permette au développeur de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type "input" ou "select" et seront souvent réutilisés dans les différents module de GeoNature.
 
-1. Les composant cartographiques
+*Input et Output communs*:
+
+Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+
+- Inputs
+        - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôller la logique et les valeurs du formulaire depuis l'exterieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
+
+        - L'input ``label`` (string) permet d'afficher un label au dessus de l'input.
+
+        - L'input ``disabled`` (boolean) permet de rendre le composant non-saisissable
+
+        - L'input ``debounceTime`` définit un durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
+
+- Outputs
+        Plusieurs ``Output`` communs à ses composants permette d'emmètre des événements liés aux formulaires.
+
+        - ``onChange`` : événement émit à chaque fois qu'un changement est effectué sur le composant. Renvoie la valeur fraiche de l'input.
+
+        - ``onDelete`` : événement émit chaque fois que le champ du formulaire est supprimé. Renvoie un évenement vide.
+
+
+
+Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
+
+- **NomenclatureComponent**
+        Ce composant permet de créer un "input" de type "select" à partir d'une liste d'items définit dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+
+        **Selector**: ``pnx-nomenclature``
+
+        **Inputs**:
+
+        :``idTypeNomenclature``:
+                Id_type des items de nomenclatures qui doivent être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
+                 
+                *Type*: ``number``
+        :``regne``:
+                Permet de filter les items de nomenclature corespondant à un règne (facultatif)
+
+                *Type*: ``string``
+        :``group2Inpn``:
+                Permet de filter les items de nomenclature corespondant à un group2Inpn (facultatif)
+
+                *Type*: ``string``
+
+        **Valeur retourné par le FormControl**:
+
+        id_nomenclature de l'item séléctionné. *Type*: number
+
+
+        NB: La table ``ref_nomenclatures.cor_taxref_nomenclature`` permet de faire corespondre des items de nomenclature à des groupe INPN et des règne. A chaque fois que ces deux derniers input sont modifiés, la liste des items est rechargée. Ce composant peut ainsi être couplé au composant taxonomy qui renvoie le regne et le groupe INPN de l'espèce saisie.
+
+        Exemple d'utilisation:
+        ::
+
+                <pnx-nomenclature
+                  [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
+                  idTypeNomenclature="7"
+                  regne="Animalia"
+                  group2Inpn="Mammifères"
+                  >
+                </pnx-nomenclature>``
+
+
+- **TaxonomyComponent**
+        Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
+
+        **Selector**: ``pnx-taxonomy``
+
+        **Inputs**:
+
+        :``idList``:
+                Id de la liste de taxon (obligatoire)
+
+                *Type*: ``number``
+        
+        :``charNumber``:
+                Nombre de charactere avant que la recherche AJAX soit lançé (obligatoire)
+
+                *Type*: ``number``
+        :``listLength``:
+                Nombre de résultat affiché (obligatoire)
+
+                *Type*: ``number``
+        
+        **Valeur retourné par le FormControl**:
+
+        Taxon séléctionné. *Type*: any
+
+        ::
+
+                {
+                  "nom_valide": "Alburnus alburnus (Linnaeus, 1758)",
+                  "id_liste": 1001,
+                  "lb_nom": "Alburnus alburnus",
+                  "group2_inpn": "Poissons",
+                  "regne": "Animalia",
+                  "cd_nom": 67111,
+                  "search_name": "Ablette = Alburnus alburnus (Linnaeus, 1758)"
+                }
+
+
+- **DatasetComponent**
+        Ce composant permet de créer un "input" de type "select" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
+
+        **Selector**: ``pnx-dataset``
+
+        :``displayAll``:
+                Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
+
+                *Type*: ``boolean``
+        
+        **Valeur retourné par le FormControl**:
+
+        Id du dataset sélectionné: *Type*: number
+
+- **DateComponent**
+        Ce composant permet de créer un input de type "datepicker". Crée à parti de https://github.com/ng-bootstrap/ng-bootstrap
+
+        **Selector**: ``pnx-date``
+
+        **Valeur retourné par le FormControl**:
+
+        Date sélectionnée: *Type*: any
+
+        ::
+
+                {
+                  "year": 2018,
+                  "month": 3,
+                   "day": 9
+                } 
+
+- **ObserversComponent**
+        Ce composant permet d'afficher un input de type "autocomplete" sur un liste d'observateur définit dans le schéma ``utilisateur.t_menus`` et ``utilisateurs.cor_role_menu``. Il permet de séléctionner plusieurs utilisateurs dans le même input.
+        Composant basé sur https://www.primefaces.org/primeng/#/autocomplete
+
+        **Selector**: ``pnx-observers``
+
+        :``idMenu``:
+                Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
+
+                *Type*: ``number``
+        
+        **Valeur retourné par le FormControl**:
+
+        Observateur sélectionné: *Type*: any
+
+        ::
+
+                {
+                  "nom_complet": "ADMINISTRATEUR test",
+                  "nom_role": "Administrateur",
+                  "id_role": 1,
+                  "prenom_role": "test",
+                  "id_menu": 9
+                }
+
+        
+
+- **ObserversTextComponent**
+        Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
+
+        **Selector**: ``pnx-observers-text``        
+
+        **Valeur retourné par le FormControl**:
+        
+        Valeur du champ. *Type*: string
+
+
+
+2. Les composants cartographiques
+"""""""""""""""""""""""""""""""""
 
 - **MapComponent**
         Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
