@@ -506,3 +506,27 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_list AS
      LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
   GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+
+
+---------------
+--SAMPLE DATA--
+---------------
+
+INSERT INTO pr_contact.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+(14,0,0,0,42)
+,(7,0,0,0,178)
+,(13,0,0,0,30)
+,(8,0,0,0,182)
+,(15,0,0,0,91)
+,(101,0,0,0,347)
+,(5,0,0,0,163)
+,(106,0,0,0,370)
+,(10,0,0,0,2)
+,(9,0,0,0,194)
+,(6,0,0,0,166)
+,(21,0,0,0,109)
+,(18,0,0,0,101)
+,(4,0,0,0,200)
+,(24,0,0,0,150)
+,(100,0,0,0,343)
+;
