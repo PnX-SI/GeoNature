@@ -56,25 +56,6 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES
 (1, 'Contact faune flore', 'Données issues du contact aléatoire', 'pr_contact.cor_counting_contact.id_counting_contact', '/occtax', NULL, NULL, 'CONTACT', true);
 
-INSERT INTO pr_contact.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
-(14,0,0,0,42)
-,(7,0,0,0,178)
-,(13,0,0,0,30)
-,(8,0,0,0,182)
-,(15,0,0,0,91)
-,(101,0,0,0,347)
-,(5,0,0,0,163)
-,(106,0,0,0,370)
-,(10,0,0,0,2)
-,(9,0,0,0,194)
-,(6,0,0,0,166)
-,(21,0,0,0,109)
-,(18,0,0,0,101)
-,(4,0,0,0,200)
-,(24,0,0,0,150)
-,(100,0,0,0,343)
-;
-
 INSERT INTO pr_contact.t_releves_contact (id_releve_contact,id_dataset,id_digitiser,observers_txt,id_nomenclature_obs_technique,id_nomenclature_grp_typ,date_min,date_max,hour_min,hour_max,altitude_min,altitude_max,deleted,meta_device_entry,meta_create_date,meta_update_date,comment,geom_local,geom_4326,precision) VALUES 
 (1,1,1,'Obervateur test insert',343,151,'2017-01-01','2017-01-01','12:05:02','12:05:02',1500,1565,FALSE,'web',now(),now(),'Exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',10)
 ,(2,1,1,'Obervateur test insert',343,151,'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,FALSE,'web',now(),now(),'Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
