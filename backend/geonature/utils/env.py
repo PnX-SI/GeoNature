@@ -255,4 +255,6 @@ def tsconfig_templating():
 def update_app_configuration(conf_file):
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
+    subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
+
 
