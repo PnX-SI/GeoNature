@@ -2,13 +2,8 @@
     Fonctions permettant de lire un fichier yml de configuration
     et de le parser
 '''
-
-from ruamel.yaml import YAML
-
 from pypnnomenclature.repository import get_nomenclature_list_formated
-
-yml = YAML(typ='safe')
-
+from geonature.utils.utilstoml import load_toml
 
 def generate_config(file_path):
     '''
@@ -18,7 +13,7 @@ def generate_config(file_path):
             ou le frontend génère les formulaires à partir de ces données
     '''
     # Chargement du fichier de configuration
-    config = open_and_load_yml(file_path)
+    config = load_toml(file_path)
     config_data = find_field_config(config)
     return config_data
 
@@ -37,16 +32,6 @@ def find_field_config(config_data):
                 for idx, val in enumerate(config_data[ckey]):
                     config_data[ckey][idx] = find_field_config(val)
     return config_data
-
-
-def open_and_load_yml(file_path):
-    '''
-        Ouvre et charge un fichier yml
-        @TODO gestion des exceptions
-    '''
-    with open(file_path, 'r') as fp:
-        result = yml.load(fp)
-        return result
 
 
 def parse_field(fieldlist):
