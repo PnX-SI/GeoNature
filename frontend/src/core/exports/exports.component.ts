@@ -28,7 +28,7 @@ export class ExportsComponent implements OnInit {
     if (idDataSet) {
       document.location.href = `${
         AppConfig.API_ENDPOINT
-      }/contact/export/sinp?id_dataset=${idDataSet}`;
+      }/occtax/export/sinp?id_dataset=${idDataSet}`;
     } else {
       document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp`;
     }
