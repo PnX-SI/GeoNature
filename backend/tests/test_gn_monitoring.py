@@ -22,7 +22,7 @@ class TestAPIMonitoring:
 
     def test_gn_monitoring_route_config(self, geonature_app):
         response = requests.get(
-            '{}/gn_monitoring/config?app=chiro&vue=site&vue=list'.format(
+            '{}/gn_monitoring/config?app=test&vue=test'.format(
                 geonature_app.config['API_ENDPOINT']
             )
         )
