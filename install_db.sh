@@ -8,7 +8,6 @@ fi
 
 . config/settings.ini
 
-echo $db_host
 
 if [ ! -d '/tmp/geonature/' ]
 then
@@ -35,6 +34,8 @@ then
   chmod -R 775 /var/log/geonature
 fi
 
+echo "--------------------" &> /var/log/geonature/install_db.log
+
 function database_exists () {
     a=`export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d postgres -c "SELECT datname FROM pg_database WHERE datname= '$1';" |grep $1`
     if [ $a ]
@@ -50,7 +51,7 @@ then
         if $drop_apps_db
             then
             echo "Drop database..."
-            export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d postgres -c "DROP DATABASE $db_name;" &>> /var/log/geonature/install_db.log
+            export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d postgres -c "DROP DATABASE $db_name;"
         else
             echo "Database exists but the settings file indicate that we don't have to drop it."
         fi
@@ -59,7 +60,7 @@ fi
 if ! database_exists $db_name
 then
     echo "Creating GeoNature database..."
-    echo "--------------------" &> /var/log/geonature/install_db.log
+    echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "Creating GeoNature database" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
@@ -86,7 +87,7 @@ then
     echo "GRANT" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name-f /tmp/geonature/grant.sql &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/grant.sql &>> /var/log/geonature/install_db.log
 
     echo "Creating 'public' functions..."
     echo "" &>> /var/log/geonature/install_db.log
