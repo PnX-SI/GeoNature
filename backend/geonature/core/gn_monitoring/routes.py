@@ -24,7 +24,7 @@ def get_config():
     vue_name = request.args.getlist('vue')
     if not vue_name:
         vue_name = ['default']
-    filename = '{}.yml'.format(os.path.abspath(
+    filename = '{}.toml'.format(os.path.abspath(
         os.path.join(
             current_app.config['BASE_DIR'], 'static',
             'configs', app_name, *vue_name
