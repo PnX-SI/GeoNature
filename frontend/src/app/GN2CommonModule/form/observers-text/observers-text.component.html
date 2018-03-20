@@ -1,0 +1,6 @@
+<small> {{ 'Releve.Observers' | translate }} </small>
+<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <input class="form-control" type="text"
+  [formControl]="parentFormControl" placeholder=""
+  [disableControl]="disabled" >
+</div>

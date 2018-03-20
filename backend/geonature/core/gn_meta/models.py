@@ -7,68 +7,12 @@ from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
 
-from geonature.utils.utilssqlalchemy import serializableModel
+from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 
 
-class TPrograms(serializableModel):
-    __tablename__ = 't_programs'
-    __table_args__ = {'schema': 'gn_meta'}
-    id_program = DB.Column(DB.Integer, primary_key=True)
-    program_name = DB.Column(DB.Unicode)
-    program_desc = DB.Column(DB.Unicode)
-    active = DB.Column(DB.Boolean)
-
-    datasets = relationship("TDatasets", lazy='joined')
-
-    def get_programs(self, recursif=False):
-        return self.as_dict(recursif)
-
-
-class TAcquisitionFramework(serializableModel):
-    __tablename__ = 't_acquisition_frameworks'
-    __table_args__ = {'schema': 'gn_meta'}
-    id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
-    unique_acquisition_framework_id = DB.Column(
-        UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()]))
-    acquisition_framework_name = DB.Column(DB.Unicode)
-    acquisition_framework_desc = DB.Column(DB.Unicode)
-    id_nomenclature_territorial_level = DB.Column(DB.Integer)
-    territory_desc = DB.Column(DB.Unicode)
-    keywords = DB.Column(DB.Unicode)
-    id_nomenclature_financing_type = DB.Column(DB.Integer)
-    target_description = DB.Column(DB.Unicode)
-    ecologic_or_geologic_target = DB.Column(DB.Unicode)
-    acquisition_framework_parent_id = DB.Column(DB.Integer)
-    is_parent = DB.Column(DB.Integer)
-    acquisition_framework_start_date = DB.Column(DB.DateTime)
-    acquisition_framework_end_date = DB.Column(DB.DateTime)
-
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-
-    cor_af_actor = relationship(
-        "CorAcquisitionFrameworkActor",
-        lazy='joined',
-        cascade="save-update, delete, delete-orphan"
-    )
-
-    @staticmethod
-    def get_id(uuid_af):
-        """
-            return the acquisition framework's id
-            from its UUID if exist or None
-        """
-        a_f = DB.session.query(
-            TAcquisitionFramework.id_acquisition_framework
-        ).filter(
-            TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
-        ).first()
-        return a_f
-
-
-class CorAcquisitionFrameworkActor(serializableModel):
+@serializable
+class CorAcquisitionFrameworkActor(DB.Model):
     __tablename__ = 'cor_acquisition_framework_actor'
     __table_args__ = {'schema': 'gn_meta'}
     id_cafa = DB.Column(DB.Integer, primary_key=True)
@@ -80,7 +24,22 @@ class CorAcquisitionFrameworkActor(serializableModel):
     id_nomenclature_actor_role = DB.Column(DB.Integer)
 
 
-class TDatasets(serializableModel):
+@serializable
+class CorDatasetsActor(DB.Model):
+    __tablename__ = 'cor_dataset_actor'
+    __table_args__ = {'schema': 'gn_meta'}
+    id_cda = DB.Column(DB.Integer, primary_key=True)
+    id_dataset = DB.Column(
+        DB.Integer,
+        ForeignKey('gn_meta.t_datasets.id_dataset')
+    )
+    id_role = DB.Column(DB.Integer)
+    id_organism = DB.Column(DB.Integer)
+    id_nomenclature_actor_role = DB.Column(DB.Integer)
+
+
+@serializable
+class TDatasets(DB.Model):
     __tablename__ = 't_datasets'
     __table_args__ = {'schema': 'gn_meta'}
     id_dataset = DB.Column(DB.Integer, primary_key=True)
@@ -124,10 +83,6 @@ class TDatasets(serializableModel):
     id_nomenclature_resource_type = DB.Column(
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature(102)
-    )
-    id_program = DB.Column(
-        DB.Integer,
-        ForeignKey('gn_meta.t_programs.id_program')
     )
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
@@ -186,20 +141,52 @@ class TDatasets(serializableModel):
         return [d.id_dataset for d in q.all()]
 
 
-class CorDatasetsActor(serializableModel):
-    __tablename__ = 'cor_dataset_actor'
+@serializable
+class TAcquisitionFramework(DB.Model):
+    __tablename__ = 't_acquisition_frameworks'
     __table_args__ = {'schema': 'gn_meta'}
-    id_cda = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(
-        DB.Integer,
-        ForeignKey('gn_meta.t_datasets.id_dataset')
+    id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
+    unique_acquisition_framework_id = DB.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()]))
+    acquisition_framework_name = DB.Column(DB.Unicode)
+    acquisition_framework_desc = DB.Column(DB.Unicode)
+    id_nomenclature_territorial_level = DB.Column(DB.Integer)
+    territory_desc = DB.Column(DB.Unicode)
+    keywords = DB.Column(DB.Unicode)
+    id_nomenclature_financing_type = DB.Column(DB.Integer)
+    target_description = DB.Column(DB.Unicode)
+    ecologic_or_geologic_target = DB.Column(DB.Unicode)
+    acquisition_framework_parent_id = DB.Column(DB.Integer)
+    is_parent = DB.Column(DB.Integer)
+    acquisition_framework_start_date = DB.Column(DB.DateTime)
+    acquisition_framework_end_date = DB.Column(DB.DateTime)
+
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
+    cor_af_actor = relationship(
+        "CorAcquisitionFrameworkActor",
+        lazy='joined',
+        cascade="save-update, delete, delete-orphan"
     )
-    id_role = DB.Column(DB.Integer)
-    id_organism = DB.Column(DB.Integer)
-    id_nomenclature_actor_role = DB.Column(DB.Integer)
+
+    @staticmethod
+    def get_id(uuid_af):
+        """
+            return the acquisition framework's id
+            from its UUID if exist or None
+        """
+        a_f = DB.session.query(
+            TAcquisitionFramework.id_acquisition_framework
+        ).filter(
+            TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
+        ).first()
+        return a_f
 
 
-class TParameters(serializableModel):
+@serializable
+class TParameters(DB.Model):
     __tablename__ = 't_parameters'
     __table_args__ = {'schema': 'gn_meta'}
     id_parameter = DB.Column(DB.Integer, primary_key=True)

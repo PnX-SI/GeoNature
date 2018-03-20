@@ -16,7 +16,8 @@ SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
-
+TRAP_ALL_EXCEPTIONS = false
+HTTPS = false
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"

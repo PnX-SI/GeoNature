@@ -8,7 +8,7 @@ from sqlalchemy.sql import text
 from geonature.utils.env import DB
 
 from geonature.core.gn_meta.models import (
-    TPrograms, TDatasets, TParameters,
+    TDatasets, TParameters,
     CorDatasetsActor, TAcquisitionFramework,
     CorAcquisitionFrameworkActor
 )
@@ -23,35 +23,6 @@ routes = Blueprint('gn_meta', __name__)
 log = logging.getLogger()
 
 
-@routes.route('/list/programs', methods=['GET'])
-@json_resp
-def get_programs_list():
-    q = DB.session.query(TPrograms)
-    data = q.all()
-
-    return [
-        d.as_dict(columns=('id_program', 'program_desc')) for d in data
-    ]
-
-
-@routes.route('/programs', methods=['GET'])
-@json_resp
-def get_programs():
-    q = DB.session.query(TPrograms)
-    data = q.all()
-
-    return [n.as_dict(False) for n in data]
-
-
-@routes.route('/programswithdatasets', methods=['GET'])
-@json_resp
-def get_programsWithDatasets():
-    q = DB.session.query(TPrograms)
-    data = q.all()
-
-    return [n.as_dict(False) for n in data]
-
-
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
 def get_datasets_list():
@@ -59,7 +30,7 @@ def get_datasets_list():
     data = q.all()
 
     return [
-            d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
+        d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
     ]
 
 
