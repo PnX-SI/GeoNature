@@ -78,7 +78,14 @@ Pour Debian 8:
     
 
 
-* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ROOT (en lui donnant les droits sudo)
+* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ROOT 
+
+::
+
+    useradd -m geonatureadmin
+    passwd geonatureadmin
+
+Lui donner ensuite des droits sudo
 
 ::
 
