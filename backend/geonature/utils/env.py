@@ -234,7 +234,7 @@ def frontend_routes_templating():
         route_template = template.render(routes=routes)
 
     with open(
-        str(ROOT_DIR / 'frontend/src/core/routing/app-routing.module.ts'), 'w'
+        str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts'), 'w'
     ) as output_file:
         output_file.write(route_template)
 
