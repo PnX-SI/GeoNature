@@ -2,6 +2,7 @@
     Fonctions utilisés pour l'installation et le chargement
     d'un nouveau module geonature
 '''
+import inspect
 import subprocess
 import logging
 import os
@@ -187,7 +188,7 @@ def check_codefile_validity(module_path, module_name):
     if gn_file.is_file():
         try:
             from install_gn_module import gnmodule_install_app as fonc
-            if not fonc.__code__.co_varnames == ('gn_db', 'gn_app'):
+            if not inspect.getargspec(fonc).args == ['gn_db', 'gn_app']:
                 raise GeoNatureError('Invalid variable')
             log.info('      install_gn_module  OK')
         except (ImportError, GeoNatureError):
@@ -244,6 +245,7 @@ def create_external_assets_symlink(module_path, module_name):
     module_assets_dir = "{path}/frontend/assets/".format(
         path=module_path
     )
+
     # test if module have frontend
     if not Path(module_assets_dir).is_dir():
         log.info('no frontend for this module \n')
