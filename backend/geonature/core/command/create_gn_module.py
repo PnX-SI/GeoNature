@@ -15,7 +15,7 @@ from geonature.utils.env import (
     DB,
     DEFAULT_CONFIG_FIlE,
     GN_MODULES_ETC_ENABLED
-) 
+)
 
 from geonature.utils.command import (
     get_app_for_cmd,
@@ -59,7 +59,7 @@ def install_gn_module(module_path, url, conf_file):
         # Vérification que le chemin module path soit correct
         if not Path(module_path).is_dir():
             raise GeoNatureError("dir {} doesn't exists".format(module_path))
-        
+
         # TODO vérifier que l'utilisateur est root ou du groupe geonature
         app = get_app_for_cmd(conf_file)
 

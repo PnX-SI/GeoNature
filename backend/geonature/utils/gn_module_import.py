@@ -244,6 +244,10 @@ def create_external_assets_symlink(module_path, module_name):
     module_assets_dir = "{path}/frontend/assets/".format(
         path=module_path
     )
+    # test if module have frontend
+    if not Path(module_assets_dir).is_dir():
+        log.info('no frontend for this module \n')
+        return
 
     geonature_asset_symlink = "{}/frontend/src/external_assets/{}".format(
         str(ROOT_DIR),
@@ -272,9 +276,3 @@ def add_application_db(module_name):
             DB.session.commit()
         except Exception as e:
             log.error(e)
-    
-
-    
-
-
-
