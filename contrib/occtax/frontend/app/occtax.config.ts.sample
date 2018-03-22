@@ -1,13 +1,14 @@
 export const OccTaxConfig = {
-  digital_proof_validator: true,
+  digital_proof_validator: true, /* Add a validation rule between Proof fields. If yes, fulfil at least one proof */
   default_maplist_columns: [
     { prop: "taxons", name: "Taxon" },
     { prop: "date_min", name: "Date début" },
-    { prop: "date_max", name: "Date fin" }
+    { prop: "observers", name: "Observateur" }
   ],
+  /* Allow to hide or display some fields. If hidden, database default value is used */
   form_fields: {
     releve: {
-      observers_txt: true,
+      observers_txt: false, /* Switch between Observer field as text or as list */
       date_min: true,
       date_max: true,
       hour_min: true,
