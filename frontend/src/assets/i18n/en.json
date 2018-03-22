@@ -79,11 +79,7 @@
     "AddTaxonOnReleve": "Add a taxon on this releve",
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
-    "GroupType": "Grouping type",
-    "DiffusionLevel": "Diffusion level",
-    "ObservationStatus": "Observation status",
-    "Blurring": "Blurring"
-
+    "GroupType": "Grouping type"
   },
   "Taxon": {
     "ObservedTaxon": "Observed taxon",
@@ -112,6 +108,9 @@
     "SaveTaxon": "Save taxon",
     "AddTaxon": "Add taxon",
     "ValidateTaxon": "Validate taxon",
+    "DiffusionLevel": "Diffusion level",
+    "ObservationStatus": "Observation status",
+    "Blurring": "Blurring",
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
     "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'"
