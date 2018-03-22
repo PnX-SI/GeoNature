@@ -79,10 +79,7 @@
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
-    "GroupType": "Type de regroupement",
-    "DiffusionLevel": "Niveau de diffusion",
-    "ObservationStatus": "Statut d'observation",
-    "Blurring": "Floutage"
+    "GroupType": "Type de regroupement"
 
   },
   "Taxon": {
@@ -112,6 +109,9 @@
     "SaveTaxon": "Enregistrer le taxon",
     "AddTaxon": "Ajouter le taxon",
     "ValidateTaxon": "Valider le taxon",
+    "DiffusionLevel": "Niveau de diffusion",
+    "ObservationStatus": "Statut d'observation",
+    "Blurring": "Floutage",
     "CurrentlyEditing":
       "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",

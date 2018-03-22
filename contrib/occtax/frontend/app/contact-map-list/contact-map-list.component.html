@@ -13,7 +13,6 @@
         </pnx-taxonomy>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-          {{contactConfig.observers_txt.observers_txt}}
         <div *ngIf="contactConfig.observers_txt; else elseBlock">
           <pnx-observers-text
             [parentFormControl]= "observerAsTextInput"

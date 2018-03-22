@@ -23,8 +23,8 @@ import { OccTaxConfig } from "../../../occtax.config";
   styleUrls: ["./occurrence.component.scss"],
   encapsulation: ViewEncapsulation.None
 })
-export class OccurrenceComponent implements AfterViewInit {
-  public contactConfig: any;
+export class OccurrenceComponent implements OnInit, AfterViewInit {
+  public occtaxConfig: any;
   @Input() occurrenceForm: FormGroup;
   @ViewChild("taxon") taxon;
   @ViewChildren(NomenclatureComponent)
@@ -34,6 +34,10 @@ export class OccurrenceComponent implements AfterViewInit {
     public fs: ContactFormService,
     private _commonService: CommonService
   ) {}
+
+  ngOnInit() {
+    this.occtaxConfig = OccTaxConfig;
+  }
 
   validateDigitalProof(c: FormControl) {
     let REGEX = new RegExp("^(http://|https://|ftp://){1}.+$");
@@ -47,7 +51,6 @@ export class OccurrenceComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.contactConfig = OccTaxConfig;
     document.getElementById("taxonInput").focus();
 
     this.occurrenceForm.controls.id_nomenclature_exist_proof.valueChanges.subscribe(
