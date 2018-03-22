@@ -13,6 +13,7 @@ import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
 import { OccTaxConfig } from "../occtax.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
+import { FormGroup, FormBuilder } from "@angular/forms";
 
 @Component({
   selector: "pnx-contact-map-list",
@@ -34,8 +35,9 @@ export class ContactMapListComponent implements OnInit {
   public dateMaxInput = new FormControl();
   public observerAsTextInput = new FormControl();
   public datasetInput = new FormControl();
+  public nomenclatureForm: FormGroup;
   public columnActions: ColumnActions;
-  public contactConfig: any;
+  public occtaxConfig: any;
 
   // provisoire
   public tableMessages = {
@@ -51,11 +53,12 @@ export class ContactMapListComponent implements OnInit {
     private _commonService: CommonService,
     private _translate: TranslateService,
     private _router: Router,
-    public ngbModal: NgbModal
+    public ngbModal: NgbModal,
+    private _fb: FormBuilder
   ) {}
 
   ngOnInit() {
-    this.contactConfig = OccTaxConfig;
+    this.occtaxConfig = OccTaxConfig;
 
     // parameters for maplist
     // columns to be default displayed
@@ -89,6 +92,29 @@ export class ContactMapListComponent implements OnInit {
     this.idName = "id_releve_contact";
     this.apiEndPoint = "occtax/vreleve";
 
+    this.nomenclatureForm = this._fb.group({
+      // releve
+      id_nomenclature_obs_technique: null,
+      id_nomenclature_grp_typ: null,
+      // occurrence
+
+      id_nomenclature_obs_meth: null,
+      id_nomenclature_bio_condition: null,
+      id_nomenclature_naturalness: null,
+      id_nomenclature_exist_proof: null,
+      id_nomenclature_bio_status: null,
+      id_nomenclature_observation_status: null,
+      id_nomenclature_diffusion_level: null,
+      id_nomenclature_blurring: null,
+      id_nomenclature_determination_method: null,
+      // counting
+      id_nomenclature_life_stage: null,
+      id_nomenclature_sex: null,
+      id_nomenclature_obj_count: null,
+      id_nomenclature_type_count: null,
+      id_nomenclature_valid_status: null
+    });
+
     // FETCH THE DATA
     this.mapListService.getData(
       "occtax/vreleve",
@@ -96,6 +122,18 @@ export class ContactMapListComponent implements OnInit {
       this.customColumns
     );
     // end OnInit
+  }
+
+  searchData() {
+    const params = [];
+    for (let key in this.nomenclatureForm.value) {
+      if (this.nomenclatureForm.value[key]) {
+        params.push({ param: key, value: this.nomenclatureForm.value[key] });
+      }
+    }
+    console.log(params);
+
+    this.mapListService.refreshData(this.apiEndPoint, "set", params);
   }
 
   taxonChanged(taxonObj) {
