@@ -100,7 +100,6 @@
     "DeterminationMethod": "Determination method",
     "DeterminationMethodComplement": "Determination method complement",
     "Determiner": "Determiner",
-    "ValidationStatus": "Validation status",
     "ExistProof": "Existence proof",
     "SampleNumber": "Sample number",
     "DigitalProof": "Digital proof",
@@ -125,6 +124,7 @@
     "Phenology": "Phénology",
     "CountingObject": "Counting object",
     "CountingType": "Counting type",
+    "ValidationStatus": "Validation status",    
     "Numbers": "Numbers",
     "Total": "Total",
     "CountError": "Max counting can't be inferior to counting min"
