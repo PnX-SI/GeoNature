@@ -88,11 +88,6 @@
       </div>
 
       <div class="row row-0">
-        <div *ngIf="occtaxConfig.form_fields.occurrence.determination_method_as_text" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <small> {{ 'Taxon.DeterminationMethodComplement' | translate }} </small>
-          <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determination_method_as_text"
-            type="text">
-        </div>
         <div *ngIf="occtaxConfig.form_fields.occurrence.determiner" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <small> {{ 'Taxon.Determiner' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determiner"

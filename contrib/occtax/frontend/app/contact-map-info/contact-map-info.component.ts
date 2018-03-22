@@ -16,6 +16,7 @@ import { OccTaxConfig } from "../occtax.config";
 export class ContactMapInfoComponent implements OnInit {
   private _sub: Subscription;
   public id: number;
+  public occtaxConfig = OccTaxConfig;
   public releve: any;
   public observers: any;
   public selectedOccurrence: any;
@@ -54,7 +55,7 @@ export class ContactMapInfoComponent implements OnInit {
 
           this.releveForm.patchValue(data.releve);
           this.releve = data.releve;
-          if (!OccTaxConfig.observers_txt) {
+          if (!OccTaxConfig.form_fields.releve.observers_txt) {
             this.observers = data.releve.properties.observers
               .map(obs => obs.nom_role + " " + obs.prenom_role)
               .join(", ");

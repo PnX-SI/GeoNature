@@ -33,7 +33,7 @@ export const OccTaxConfig = {
       sample_number_proof: true,
       digital_proof: true,
       non_digital_proof: true,
-      comment: false
+      comment: true
     },
     counting: {
       life_stage: true,
