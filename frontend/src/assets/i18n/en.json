@@ -78,7 +78,12 @@
     "ObsTechnique": "Observation technic",
     "AddTaxonOnReleve": "Add a taxon on this releve",
     "CancelTaxon": "Cancel this taxon",
-    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte"
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
+    "GroupType": "Grouping type",
+    "DiffusionLevel": "Diffusion level",
+    "ObservationStatus": "Observation status",
+    "Blurring": "Blurring"
+
   },
   "Taxon": {
     "ObservedTaxon": "Observed taxon",
