@@ -3,8 +3,6 @@ import logging
 
 from flask import Blueprint, request, current_app, jsonify
 
-from sqlalchemy.sql import text
-
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
 from geonature.utils.utilssqlalchemy import json_resp, GenericTable
@@ -13,7 +11,7 @@ from geonature.utils.utilssqlalchemy import json_resp, GenericTable
 # from pypnusershub import routes as fnauth
 
 
-routes = Blueprint('gn_monitoring', __name__)
+routes = Blueprint('core', __name__)
 
 # get the root logger
 log = logging.getLogger()
@@ -50,8 +48,8 @@ def get_generic_view(view_schema, view_name):
             offset : numéro de page
             nom_colonne=val : Si nom_colonne fait partie des colonnes de la vue
                 alors filtre nom_colonne=val
-            ilike_nom_colonne=val : Si nom_colonne fait partie des colonnes de la vue
-                et que la colonne est de type texte
+            ilike_nom_colonne=val : Si nom_colonne fait partie des colonnes
+                de la vue et que la colonne est de type texte
                 alors filtre nom_colonne ilike '%val%'
             filtre de date : @TODO
             filter numérique lower greater : @TODO
