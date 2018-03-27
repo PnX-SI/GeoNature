@@ -42,6 +42,7 @@ export class ContactMapListComponent implements OnInit {
     emptyMessage: "Aucune observation à afficher",
     totalMessage: "observation(s) au total"
   };
+  advandedFilterOpen = false;
   @ViewChild(NgbModal) public modalCol: NgbModal;
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor(
@@ -135,6 +136,10 @@ export class ContactMapListComponent implements OnInit {
     this.filterControl.setValue(null);
   }
 
+  toggleAdvancedFilters() {
+    this.advandedFilterOpen = !this.advandedFilterOpen;
+  }
+
   searchData() {
     this.mapListService.refreshUrlQuery(12);
     const params = [];
@@ -150,6 +155,7 @@ export class ContactMapListComponent implements OnInit {
         params.push({ param: key, value: value });
       }
     }
+    this.toggleAdvancedFilters();
     this.mapListService.refreshData(this.apiEndPoint, "set", params);
   }
 

@@ -111,5 +111,19 @@ export const FILTERSLIST = [
     key: "id_nomenclature_valid_status",
     idTypeNomenclature: 101,
     required: false
+  },
+  {
+    controlType: "textbox",
+    type: "number",
+    label: "Altitude min",
+    key: "altitude_min",
+    required: false
+  },
+  {
+    controlType: "textbox",
+    type: "number",
+    label: "Altitude max",
+    key: "altitude_max",
+    required: false
   }
 ];
