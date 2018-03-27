@@ -14,6 +14,8 @@ import { OccTaxConfig } from "../occtax.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { FormGroup, FormBuilder } from "@angular/forms";
+import { DynamicFormComponent } from "@geonature_common/form/dynamic-form/dynamic-form.component";
+import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
 
 @Component({
   selector: "pnx-contact-map-list",
@@ -38,7 +40,9 @@ export class ContactMapListComponent implements OnInit {
   public nomenclatureForm: FormGroup;
   public columnActions: ColumnActions;
   public occtaxConfig: any;
-
+  public formsDefinition: Array<any>;
+  public dynamicFormGroup: FormGroup;
+  public formsSelected = [];
   // provisoire
   public tableMessages = {
     emptyMessage: "Aucune observation à afficher",
@@ -54,10 +58,38 @@ export class ContactMapListComponent implements OnInit {
     private _translate: TranslateService,
     private _router: Router,
     public ngbModal: NgbModal,
-    private _fb: FormBuilder
+    private _fb: FormBuilder,
+    private _dynformService: DynamicFormService
   ) {}
 
   ngOnInit() {
+    this.formsDefinition = [
+      {
+        controlType: "textbox",
+        label: "truc",
+        key: "test",
+        type: "text",
+        required: false
+      },
+      {
+        controlType: "dropdown",
+        label: "machin",
+        required: false,
+        key: "test2",
+        type: "lala",
+        options: [{ key: "la", value: "lo" }, { key: "la", value: "li" }]
+      },
+      {
+        controlType: "nomenclature",
+        label: "nom",
+        required: false,
+        key: "id_nomen",
+        idTypeNomenclature: 100
+      }
+    ];
+
+    this.dynamicFormGroup = this._dynformService.toFormGroup([]);
+
     this.occtaxConfig = OccTaxConfig;
 
     // parameters for maplist
@@ -122,6 +154,20 @@ export class ContactMapListComponent implements OnInit {
       this.customColumns
     );
     // end OnInit
+  }
+
+  addFormControl(formDef) {
+    console.log(formDef);
+    this.formsSelected.push(formDef);
+    console.log(this.formsSelected);
+    this._dynformService.addNewControl(formDef, this.dynamicFormGroup);
+    console.log(this.dynamicFormGroup);
+  }
+
+  removeFormControl(i) {
+    const formDef = this.formsSelected[i];
+    this.formsSelected.splice(i, 1);
+    this.dynamicFormGroup.removeControl(formDef.key);
   }
 
   searchData() {

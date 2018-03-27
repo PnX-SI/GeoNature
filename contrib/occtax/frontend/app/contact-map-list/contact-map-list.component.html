@@ -87,6 +87,27 @@
         <button matTooltip=" {{ 'Releve.AddReleve' | translate }} " type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </button>
+
+        <select [ngModel]="selectedForm" (ngModelChange)="addFormControl($event)">
+          <option [ngValue]="null" >
+          <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
+            {{formDef.label}}
+          </option>
+
+          </select>
+
+
+        <div [formGroup]="dynamicFormGroup" >
+
+          <div *ngFor="let formDef of formsSelected; let i = index" >
+            <pnx-dynamic-form
+            [formDef]="formDef"
+            [form]="dynamicFormGroup"
+            >
+            </pnx-dynamic-form>
+            <button (click)="removeFormControl(i)" > X</button>
+          </div>
+        </div>
   </div>
 
 
@@ -233,6 +254,9 @@
           [apiEndPoint]= "apiEndPoint"
         >
         </pnx-map-list-generic-filter>
+
+
+
   </div>
   <!-- END SPECIFIC FILTERS -->
 </div>
