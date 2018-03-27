@@ -28,8 +28,19 @@ i.action {
   color: #7e7e7e
 }
 
-#collapse-settings {
-  margin-top: 15px;
+.filter-control {
+  height: 2.1rem !important;
+}
+
+.dynamic-form{
+  display: flex;
+  margin-right: 5px;
+  max-width: 15%;
+}
+
+.trash-btn {
+  margin-top: 30px;
+  margin-left: 5px;
 }
 
 #specific-filter {
