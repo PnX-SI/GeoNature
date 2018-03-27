@@ -46,24 +46,26 @@ def testDataType(value, sqlType, paramName):
 SERIALIZERS = {
     'Date': lambda x: str(x) if x else None,
     'DateTime': lambda x: str(x) if x else None,
+    'TIME': lambda x: str(x) if x else None,
+    'TIMESTAMP': lambda x: str(x) if x else None,
     'UUID': lambda x: str(x) if x else None
-
 }
+
 
 class GenericTable:
     """
         Classe permettant de créer à la volée un mapping
-            d'une vue avec la base de donnéespar rétroingénierie
-
-        Limitation : pas de traitement pour les vues avec géométrie - a voir
+            d'une vue avec la base de données par rétroingénierie
     """
-    def __init__(self, tableName, schemaName):
+    def __init__(self, tableName, schemaName, geometry_field):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
         try:
             self.tableDef = meta.tables["{}.{}".format(schemaName, tableName)]
         except KeyError:
             raise KeyError("table doesn't exists")
+
+        self.geometry_field = geometry_field
 
         # Mise en place d'un mapping des colonnes en vue d'une sérialisation
         self.serialize_columns = [
@@ -79,11 +81,18 @@ class GenericTable:
         ]
         self.columns = [column.name for column in self.tableDef.columns]
 
-    def serialize(self, data):
+    def as_dict(self, data):
         return {
             item: _serializer(getattr(data, item)) for item, _serializer in self.serialize_columns
         }
 
+    def as_geo_feature(self, data):
+        geometry = to_shape(getattr(data, self.geometry_field))
+        feature = Feature(
+            geometry=geometry,
+            properties=self.as_dict(data)
+        )
+        return feature
 
 def serializeQuery(data, columnDef):
     rows = [
