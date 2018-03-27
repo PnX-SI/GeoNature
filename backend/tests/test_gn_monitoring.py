@@ -22,7 +22,17 @@ class TestAPIMonitoring:
 
     def test_gn_monitoring_route_config(self, geonature_app):
         response = requests.get(
-            '{}/gn_monitoring/config?app=test&vue=test'.format(
+            '{}/config?app=test&vue=test'.format(
+                geonature_app.config['API_ENDPOINT']
+            )
+        )
+        if not response.ok:
+            assert False
+        assert True
+
+    def test_gn_monitoring_view(self, geonature_app):
+        response = requests.get(
+            '{}/genericview/taxonomie/v_bibtaxon_attributs_animalia?cd_nom=18437&ilike_patrimonial=o'.format(
                 geonature_app.config['API_ENDPOINT']
             )
         )
