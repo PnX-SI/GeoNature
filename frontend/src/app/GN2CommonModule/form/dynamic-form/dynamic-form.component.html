@@ -1,0 +1,23 @@
+<div [formGroup]="form">
+
+    <label [attr.for]="formDef.key">{{formDef.label}}</label>
+
+  <div [ngSwitch]="formDef.controlType">
+
+      <input *ngSwitchCase="'textbox'" [formControlName]="formDef.key"
+      [id]="formDef.key" [type]="formDef.type">
+
+      <select [id]="formDef.key" *ngSwitchCase="'dropdown'" [formControlName]="formDef.key">
+          <option *ngFor="let opt of formDef.options" [value]="opt.key">{{opt.value}}</option>
+      </select>
+
+      <pnx-nomenclature *ngSwitchCase="'nomenclature'"
+        [label]=formDef.label
+        [parentFormControl]="form.controls[formDef.key]"
+        [idTypeNomenclature]="formDef.idTypeNomenclature"
+      >
+      </pnx-nomenclature>
+
+  </div>
+
+</div>
