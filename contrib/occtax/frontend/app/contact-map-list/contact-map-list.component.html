@@ -4,29 +4,22 @@
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
         <pnx-taxonomy
           label="{{ 'Taxon.Taxon' | translate }}"
-          [parentFormControl]="inputTaxon"
+          [parentFormControl]="dynamicFormGroup.controls.cd_nom"
           [idList]="500"
           [charNumber]="3"
-          [listLength]="20"
-          (onChange)="taxonChanged($event)"
-          (onDelete)="mapListService.deleteAndRefresh(apiEndPoint,'cd_nom')">
+          [listLength]="20">
         </pnx-taxonomy>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-        <div *ngIf="contactConfig.observers_txt; else elseBlock">
+        <div *ngIf="occtaxConfig.form_fields.releve.observers_txt; else elseBlock">
           <pnx-observers-text
-            [parentFormControl]= "observerAsTextInput"
-            debounceTime=600
-            (onChange)="observerTextChange($event)"
-            (onDelete)= "observerTextDelete()">
+            [parentFormControl]= "dynamicFormGroup.controls.observers_txt">
           </pnx-observers-text>
         </div>
           <ng-template #elseBlock>
             <pnx-observers
-              [parentFormControl]="inputObservers"
+              [parentFormControl]="dynamicFormGroup.controls.observer"
               [idMenu]="9"
-              (onChange)="observerChanged($event)"
-              (onDelete)="observerDeleted($event)"
               label="{{ 'Releve.Observers' | translate }}">
             </pnx-observers>
           </ng-template>
@@ -35,28 +28,22 @@
         <pnx-datasets
           [displayAll]="true"
           label="{{ 'Releve.Dataset' | translate }}"
-          [parentFormControl]="datasetInput"
+          [parentFormControl]="dynamicFormGroup.controls.id_dataset"
           appId="14"
-          (onChange)="onDataSetChange($event)"
-          (onDelete)="onDataSetDelete()"
         >
         </pnx-datasets>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
           <pnx-date
             label="{{ 'Releve.MinDate' | translate }} "
-            [parentFormControl]="dateMinInput"
-            (onChange)="dateMinChanged($event)"
-            (onDelete)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_up')">
+            [parentFormControl]="dynamicFormGroup.controls.date_low">
           </pnx-date>
       </div>
 
       <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
           <pnx-date
             label="{{ 'Releve.MaxDate' | translate }} "
-            [parentFormControl]="dateMaxInput"
-            (onChange)="dateMaxChanged($event)"
-            (onDelete)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_low')">
+            [parentFormControl]="dynamicFormGroup.controls.date_up">
           </pnx-date>
       </div>
 
@@ -69,27 +56,56 @@
         </i>
 
         <i
-        id="settings"
-        class="fa fa-cog action clickable"
-        aria-hidden="true"
-        matTooltip="{{ 'Form.AdvancedFilters' | translate }}"
-        data-toggle="collapse" data-target="#collapse-settings"
+          id="settings"
+          class="fa fa-cog action clickable"
+          aria-hidden="true"
+          matTooltip="{{ 'Form.AdvancedFilters' | translate }}"
+          (click)="toggleAdvancedFilters()"
         ></i>
-        <button matTooltip=" {{ 'Releve.AddReleve' | translate }} " type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
+        <svg *ngIf="formsSelected.length > 0" height="40" width="10">
+            <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
+        </svg>
+
+        <i
+        (click)="searchData()"
+        id="settings"
+        class="fa fa-search action clickable"
+        aria-hidden="true"
+        matTooltip="{{ 'Search' | translate }}"
+        ></i>
+
+        <button matTooltip=" {{ 'Releve.AddReleve' | translate }}" type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </button>
   </div>
+  <div *ngIf="advandedFilterOpen" id="collapse-settings">
+    <div class="form-group col-sm-4 padding-sm">
+      <small class="label-sm"> Autres Critères </small>
+      <select class="form-control filter-control" [formControl]="filterControl">
+          <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
+          <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
+            {{formDef.label}}
+          </option>
+      </select>
+    </div>
 
 
-  <div class="collapse" id="collapse-settings">
-    <h5> {{ 'Form.OtherFilters' | translate}} : </h5>
-        <pnx-map-list-generic-filter
-          [displayColumns]="mapListService.displayColumns"
-          [availableColumns]= "mapListService.availableColumns"
-          [filterableColumns]="mapListService.filterableColumns"
-          [apiEndPoint]= "apiEndPoint"
-        >
-        </pnx-map-list-generic-filter>
+
+    <div class='form-inline' [formGroup]="dynamicFormGroup">
+      
+        <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
+            <pnx-dynamic-form
+            [formDef]="formDef"
+            [form]="dynamicFormGroup"
+            >
+            </pnx-dynamic-form>
+            <i class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>
+        </div>
+      
+
+    </div>
+
+
   </div>
   <!-- END SPECIFIC FILTERS -->
 </div>
