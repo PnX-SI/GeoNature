@@ -46,8 +46,8 @@
           <pnx-date
             label="{{ 'Releve.MinDate' | translate }} "
             [parentFormControl]="dateMinInput"
-            (dateChanged)="dateMinChanged($event)"
-            (dateDeleted)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_up')">
+            (onChange)="dateMinChanged($event)"
+            (onDelete)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_up')">
           </pnx-date>
       </div>
 
@@ -55,8 +55,8 @@
           <pnx-date
             label="{{ 'Releve.MaxDate' | translate }} "
             [parentFormControl]="dateMaxInput"
-            (dateChanged)="dateMaxChanged($event)"
-            (dateDeleted)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_low')">
+            (onChange)="dateMaxChanged($event)"
+            (onDelete)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_low')">
           </pnx-date>
       </div>
 
