@@ -16,6 +16,7 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { DynamicFormComponent } from "@geonature_common/form/dynamic-form/dynamic-form.component";
 import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
+import { FILTERSLIST } from "./filters-list";
 
 @Component({
   selector: "pnx-contact-map-list",
@@ -26,22 +27,15 @@ import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-
 export class ContactMapListComponent implements OnInit {
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
-  public filterableColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
   public idName: string;
   public apiEndPoint: string;
-  public inputTaxon = new FormControl();
-  public inputObservers = new FormControl();
-  public dateMinInput = new FormControl();
-  public dateMaxInput = new FormControl();
-  public observerAsTextInput = new FormControl();
-  public datasetInput = new FormControl();
-  public nomenclatureForm: FormGroup;
   public columnActions: ColumnActions;
   public occtaxConfig: any;
-  public formsDefinition: Array<any>;
+  public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
+  public filterControl = new FormControl();
   public formsSelected = [];
   // provisoire
   public tableMessages = {
@@ -63,32 +57,23 @@ export class ContactMapListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.formsDefinition = [
-      {
-        controlType: "textbox",
-        label: "truc",
-        key: "test",
-        type: "text",
-        required: false
-      },
-      {
-        controlType: "dropdown",
-        label: "machin",
-        required: false,
-        key: "test2",
-        type: "lala",
-        options: [{ key: "la", value: "lo" }, { key: "la", value: "li" }]
-      },
-      {
-        controlType: "nomenclature",
-        label: "nom",
-        required: false,
-        key: "id_nomen",
-        idTypeNomenclature: 100
-      }
-    ];
+    this.dynamicFormGroup = this._fb.group({
+      cd_nom: null,
+      observer: null,
+      date_min: null,
+      date_max: null,
+      dataset: null,
+      observers_txt: null,
+      id_dataset: null,
+      date_up: null,
+      date_low: null
+    });
 
-    this.dynamicFormGroup = this._dynformService.toFormGroup([]);
+    this.filterControl.valueChanges
+      .filter(value => value !== null)
+      .subscribe(formDef => {
+        this.addFormControl(formDef);
+      });
 
     this.occtaxConfig = OccTaxConfig;
 
@@ -124,29 +109,6 @@ export class ContactMapListComponent implements OnInit {
     this.idName = "id_releve_contact";
     this.apiEndPoint = "occtax/vreleve";
 
-    this.nomenclatureForm = this._fb.group({
-      // releve
-      id_nomenclature_obs_technique: null,
-      id_nomenclature_grp_typ: null,
-      // occurrence
-
-      id_nomenclature_obs_meth: null,
-      id_nomenclature_bio_condition: null,
-      id_nomenclature_naturalness: null,
-      id_nomenclature_exist_proof: null,
-      id_nomenclature_bio_status: null,
-      id_nomenclature_observation_status: null,
-      id_nomenclature_diffusion_level: null,
-      id_nomenclature_blurring: null,
-      id_nomenclature_determination_method: null,
-      // counting
-      id_nomenclature_life_stage: null,
-      id_nomenclature_sex: null,
-      id_nomenclature_obj_count: null,
-      id_nomenclature_type_count: null,
-      id_nomenclature_valid_status: null
-    });
-
     // FETCH THE DATA
     this.mapListService.getData(
       "occtax/vreleve",
@@ -157,9 +119,10 @@ export class ContactMapListComponent implements OnInit {
   }
 
   addFormControl(formDef) {
-    console.log(formDef);
     this.formsSelected.push(formDef);
-    console.log(this.formsSelected);
+    this.formsDefinition = this.formsDefinition.filter(form => {
+      return form.key != formDef.key;
+    });
     this._dynformService.addNewControl(formDef, this.dynamicFormGroup);
     console.log(this.dynamicFormGroup);
   }
@@ -167,92 +130,27 @@ export class ContactMapListComponent implements OnInit {
   removeFormControl(i) {
     const formDef = this.formsSelected[i];
     this.formsSelected.splice(i, 1);
+    this.formsDefinition.push(formDef);
     this.dynamicFormGroup.removeControl(formDef.key);
+    this.filterControl.setValue(null);
   }
 
   searchData() {
+    this.mapListService.refreshUrlQuery(12);
     const params = [];
-    for (let key in this.nomenclatureForm.value) {
-      if (this.nomenclatureForm.value[key]) {
-        params.push({ param: key, value: this.nomenclatureForm.value[key] });
+    for (let key in this.dynamicFormGroup.value) {
+      console.log(key);
+      console.log(this.dynamicFormGroup.value[key]);
+
+      let value = this.dynamicFormGroup.value[key];
+      if (key === "cd_nom" && this.dynamicFormGroup.value[key]) {
+        value = this.dynamicFormGroup.value[key].cd_nom;
+      }
+      if (value && value !== "") {
+        params.push({ param: key, value: value });
       }
     }
-    console.log(params);
-
     this.mapListService.refreshData(this.apiEndPoint, "set", params);
-  }
-
-  taxonChanged(taxonObj) {
-    this.mapListService.refreshData(this.apiEndPoint, "set", [
-      { param: "cd_nom", value: taxonObj.cd_nom }
-    ]);
-  }
-
-  observerChanged(observer) {
-    this.mapListService.refreshData(this.apiEndPoint, "append", [
-      { param: "observer", value: observer.id_role }
-    ]);
-  }
-
-  observerDeleted(observer) {
-    const idObservers = this.mapListService.urlQuery.getAll("observer");
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
-      "observer"
-    );
-    idObservers.forEach(id => {
-      if (id !== observer.id_role) {
-        this.mapListService.urlQuery = this.mapListService.urlQuery.append(
-          "observer",
-          id
-        );
-      }
-    });
-    this.mapListService.refreshData(this.apiEndPoint, "set");
-  }
-
-  observerTextChange(observer) {
-    this.mapListService.refreshData(this.apiEndPoint, "set", [
-      { param: "observateurs", value: observer }
-    ]);
-  }
-
-  observerTextDelete() {
-    this.mapListService.deleteAndRefresh(this.apiEndPoint, "observateurs");
-  }
-
-  onDataSetChange(id_dataset) {
-    this.mapListService.refreshData(this.apiEndPoint, "set", [
-      { param: "id_dataset", value: id_dataset }
-    ]);
-  }
-
-  onDataSetDelete() {
-    this.mapListService.deleteAndRefresh(this.apiEndPoint, "id_dataset");
-  }
-
-  dateMinChanged(date) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
-      "date_up"
-    );
-    if (date.length > 0) {
-      this.mapListService.refreshData(this.apiEndPoint, "set", [
-        { param: "date_up", value: date }
-      ]);
-    } else {
-      this.mapListService.deleteAndRefresh(this.apiEndPoint, "date_up");
-    }
-  }
-  dateMaxChanged(date) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
-      "date_low"
-    );
-    if (date.length > 0) {
-      this.mapListService.refreshData(this.apiEndPoint, "set", [
-        { param: "date_low", value: date }
-      ]);
-    } else {
-      this.mapListService.deleteAndRefresh(this.apiEndPoint, "date_low");
-    }
   }
 
   onEditReleve(id_releve) {
@@ -324,17 +222,8 @@ export class ContactMapListComponent implements OnInit {
   }
   refreshFilters() {
     this.taxonomyComponent.refreshAllInput();
-    this.dateMaxInput.reset();
-    this.dateMinInput.reset();
-    if (OccTaxConfig.observers_txt) {
-      this.observerAsTextInput.reset();
-    } else {
-      this.inputObservers.reset();
-    }
-    this.datasetInput.reset();
-    this.mapListService.genericFilterInput.reset();
+    this.dynamicFormGroup.reset();
     this.mapListService.refreshUrlQuery(12);
-    this.mapListService.refreshData(this.apiEndPoint, "set");
   }
 
   toggle(col) {

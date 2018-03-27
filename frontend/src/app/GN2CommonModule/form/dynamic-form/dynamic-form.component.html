@@ -1,6 +1,6 @@
 <div [formGroup]="form">
 
-    <label [attr.for]="formDef.key">{{formDef.label}}</label>
+    <label *ngIf="formDef == 'textbox' || formDef == 'dropdown'" [attr.for]="formDef.key">{{formDef.label}}</label>
 
   <div [ngSwitch]="formDef.controlType">
 

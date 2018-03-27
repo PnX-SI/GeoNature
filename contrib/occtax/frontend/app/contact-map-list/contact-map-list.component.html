@@ -4,29 +4,22 @@
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
         <pnx-taxonomy
           label="{{ 'Taxon.Taxon' | translate }}"
-          [parentFormControl]="inputTaxon"
+          [parentFormControl]="dynamicFormGroup.controls.cd_nom"
           [idList]="500"
           [charNumber]="3"
-          [listLength]="20"
-          (onChange)="taxonChanged($event)"
-          (onDelete)="mapListService.deleteAndRefresh(apiEndPoint,'cd_nom')">
+          [listLength]="20">
         </pnx-taxonomy>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
         <div *ngIf="occtaxConfig.form_fields.releve.observers_txt; else elseBlock">
           <pnx-observers-text
-            [parentFormControl]= "observerAsTextInput"
-            debounceTime=600
-            (onChange)="observerTextChange($event)"
-            (onDelete)= "observerTextDelete()">
+            [parentFormControl]= "dynamicFormGroup.controls.observers_txt">
           </pnx-observers-text>
         </div>
           <ng-template #elseBlock>
             <pnx-observers
-              [parentFormControl]="inputObservers"
+              [parentFormControl]="dynamicFormGroup.controls.observer"
               [idMenu]="9"
-              (onChange)="observerChanged($event)"
-              (onDelete)="observerDeleted($event)"
               label="{{ 'Releve.Observers' | translate }}">
             </pnx-observers>
           </ng-template>
@@ -35,28 +28,22 @@
         <pnx-datasets
           [displayAll]="true"
           label="{{ 'Releve.Dataset' | translate }}"
-          [parentFormControl]="datasetInput"
+          [parentFormControl]="dynamicFormGroup.controls.id_dataset"
           appId="14"
-          (onChange)="onDataSetChange($event)"
-          (onDelete)="onDataSetDelete()"
         >
         </pnx-datasets>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
           <pnx-date
             label="{{ 'Releve.MinDate' | translate }} "
-            [parentFormControl]="dateMinInput"
-            (dateChanged)="dateMinChanged($event)"
-            (dateDeleted)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_up')">
+            [parentFormControl]="dynamicFormGroup.controls.date_low">
           </pnx-date>
       </div>
 
       <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
           <pnx-date
             label="{{ 'Releve.MaxDate' | translate }} "
-            [parentFormControl]="dateMaxInput"
-            (dateChanged)="dateMaxChanged($event)"
-            (dateDeleted)= "mapListService.deleteAndRefresh(apiEndPoint, 'date_low')">
+            [parentFormControl]="dynamicFormGroup.controls.date_up">
           </pnx-date>
       </div>
 
@@ -88,173 +75,35 @@
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </button>
 
-        <select [ngModel]="selectedForm" (ngModelChange)="addFormControl($event)">
-          <option [ngValue]="null" >
+
+  </div>
+
+
+  <div class="collapse row row-0" id="collapse-settings">
+    <div class="form-group col-sm-4 padding-sm">
+      <label class="label-sm"> Autres Critères </label>
+      <select class="form-control filter-control" [formControl]="filterControl">
+          <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
           <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
             {{formDef.label}}
           </option>
+      </select>
+    </div>
 
-          </select>
 
-
-        <div [formGroup]="dynamicFormGroup" >
-
-          <div *ngFor="let formDef of formsSelected; let i = index" >
+    <div class='form-inline' [formGroup]="dynamicFormGroup">
+      
+        <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
             <pnx-dynamic-form
             [formDef]="formDef"
             [form]="dynamicFormGroup"
             >
             </pnx-dynamic-form>
-            <button (click)="removeFormControl(i)" > X</button>
-          </div>
+            <i class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>
         </div>
-  </div>
+      
 
-
-  <div class="collapse" id="collapse-settings">
-            <div class="row row-0">
-                <div *ngIf="occtaxConfig.form_fields.releve.obs_technique" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature
-                      label="{{ 'Releve.ObsTechnique' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_obs_technique"
-                      [idTypeNomenclature]="100">
-                    </pnx-nomenclature>
-                  </div>
-                <div *ngIf="occtaxConfig.form_fields.releve.group_type" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-                  <pnx-nomenclature
-                    label="{{ 'Releve.GroupType' | translate }}"
-                    [parentFormControl]="nomenclatureForm.controls.id_nomenclature_grp_typ"
-                    [idTypeNomenclature]="24">
-                  </pnx-nomenclature>
-                </div>
-            </div>
-
-            <div class="row row-0">
-            
-                <div *ngIf="occtaxConfig.form_fields.occurrence.observation_status" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                      label="{{ 'Taxon.ObservationStatus' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_observation_status"
-                      [idTypeNomenclature]="18" 
-                      >
-                    </pnx-nomenclature>
-                </div>
-                <div *ngIf="occtaxConfig.form_fields.occurrence.obs_method" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                        label="{{ 'Taxon.ObsMethod' | translate }}"
-                        [parentFormControl]="nomenclatureForm.controls.id_nomenclature_obs_meth"
-                        [idTypeNomenclature]="14" > 
-                    </pnx-nomenclature>
-                </div>
-                <div *ngIf="occtaxConfig.form_fields.occurrence.bio_condition" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                      label="{{ 'Taxon.BiologicalCondition' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_bio_condition"
-                      [idTypeNomenclature]="7" 
-                    > 
-                    </pnx-nomenclature>
-                </div> 
-                <div *ngIf="occtaxConfig.form_fields.occurrence.bio_status" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                      label="{{ 'Taxon.BiologicalStatus' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_bio_status"
-                      [idTypeNomenclature]="13" 
-                      > 
-                    </pnx-nomenclature> 
-                </div>
-                <div *ngIf="occtaxConfig.form_fields.occurrence.naturalness" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                      label="{{ 'Taxon.Naturalness' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_naturalness"
-                      [idTypeNomenclature]="8" 
-                      >
-                    </pnx-nomenclature>
-                </div>   
-            </div>
-            <div class="row row-0">
-                <div *ngIf="occtaxConfig.form_fields.occurrence.determination_method" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.DeterminationMethod' | translate }}"
-                    [parentFormControl]="nomenclatureForm.controls.id_nomenclature_determination_method"
-                    [idTypeNomenclature]="106" 
-                    >
-                  </pnx-nomenclature>
-                </div>     
-                <div *ngIf="occtaxConfig.form_fields.occurrence.exist_proof" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.ExistProof' | translate }}"
-                    [parentFormControl]="nomenclatureForm.controls.id_nomenclature_exist_proof"
-                    [idTypeNomenclature]="15" 
-                  >
-                  </pnx-nomenclature>
-                </div>
-                <div *ngIf="occtaxConfig.form_fields.occurrence.diffusion_level" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                      label="{{ 'Taxon.DiffusionLevel' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_diffusion_level"
-                      [idTypeNomenclature]="5" 
-                      >
-                    </pnx-nomenclature>
-                  </div>
-                  <div *ngIf="occtaxConfig.form_fields.occurrence.blurring" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 padding-sm">
-                    <pnx-nomenclature 
-                      label="{{ 'Taxon.Blurring' | translate }}"
-                      [parentFormControl]="nomenclatureForm.controls.id_nomenclature_blurring"
-                      [idTypeNomenclature]="4" 
-                      >
-                    </pnx-nomenclature>
-                  </div>
-            </div>
-
-
-        <div class="row row-0">
-            <div *ngIf="occtaxConfig.form_fields.counting.life_stage" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-counting padding-sm">
-                <pnx-nomenclature
-                  label="{{ 'Counting.LifeStage' | translate }}" 
-                  [parentFormControl]="nomenclatureForm.controls.id_nomenclature_life_stage"
-                  [idTypeNomenclature]="10"> 
-                </pnx-nomenclature>
-            </div>
-            <div *ngIf="occtaxConfig.form_fields.counting.sex" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-counting padding-sm">
-                  <pnx-nomenclature
-                    label="{{ 'Counting.Sex' | translate }}"
-                    [parentFormControl]="nomenclatureForm.controls.id_nomenclature_sex"
-                    [idTypeNomenclature]="9">
-                  </pnx-nomenclature>
-            </div>
-            <div *ngIf="occtaxConfig.form_fields.counting.obj_count" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-counting padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Counting.CountingObject' | translate }}"
-                    [parentFormControl]="nomenclatureForm.controls.id_nomenclature_obj_count"
-                    [idTypeNomenclature]="6">
-                  </pnx-nomenclature>
-            </div>
-            <div *ngIf="occtaxConfig.form_fields.counting.type_count" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-counting padding-sm">
-                <pnx-nomenclature
-                  #typeDenombrement
-                  label="{{ 'Counting.CountingType' | translate }}"
-                  [parentFormControl]="nomenclatureForm.controls.id_nomenclature_type_count"
-                  [idTypeNomenclature]="21">
-                </pnx-nomenclature> 
-            </div>
-            <div *ngIf="occtaxConfig.form_fields.counting.validation_status" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-counting padding-sm">
-                <pnx-nomenclature
-                  label="{{ 'Counting.ValidationStatus' | translate }}"
-                  [parentFormControl]="nomenclatureForm.controls.id_nomenclature_valid_status"
-                  [idTypeNomenclature]="101">
-                </pnx-nomenclature> 
-            </div>
-        </div>
-        
-    <h5> {{ 'Form.OtherFilters' | translate}} : </h5>
-        <pnx-map-list-generic-filter
-          [displayColumns]="mapListService.displayColumns"
-          [availableColumns]= "mapListService.availableColumns"
-          [filterableColumns]="mapListService.filterableColumns"
-          [apiEndPoint]= "apiEndPoint"
-        >
-        </pnx-map-list-generic-filter>
-
+    </div>
 
 
   </div>
