@@ -23,8 +23,8 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
-  @Output() dateChanged = new EventEmitter<any>();
-  @Output() dateDeleted = new EventEmitter<any>();
+  @Output() onChange = new EventEmitter<any>();
+  @Output() onDelete = new EventEmitter<any>();
   dynamicId;
   public changeSub: Subscription;
   public today: NgbDateStruct;
@@ -38,9 +38,9 @@ export class DateComponent implements OnInit, OnDestroy {
 
     this.changeSub = this.parentFormControl.valueChanges.subscribe(date => {
       if (date !== null && this._dateParser.format(date) !== 'undefined--') {
-        this.dateChanged.emit(this._dateParser.format(date));
+        this.onChange.emit(this._dateParser.format(date));
       } else {
-        this.dateDeleted.emit(null);
+        this.onDelete.emit(null);
       }
     });
   }

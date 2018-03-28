@@ -109,11 +109,15 @@ export class ContactFormService {
         id_nomenclature_obs_technique: [null, Validators.required],
         observers: [
           null,
-          !OccTaxConfig.observers_txt ? Validators.required : null
+          !OccTaxConfig.form_fields.releve.observers_txt
+            ? Validators.required
+            : null
         ],
         observers_txt: [
           null,
-          OccTaxConfig.observers_txt ? Validators.required : null
+          OccTaxConfig.form_fields.releve.observers_txt
+            ? Validators.required
+            : null
         ],
         id_nomenclature_grp_typ: null,
         t_occurrences_contact: [new Array()]

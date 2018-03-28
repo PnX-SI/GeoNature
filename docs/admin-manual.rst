@@ -106,20 +106,20 @@ Configuration
 
 Pour configurer GeoNature, actuellement il y a : 
 
-- Une configuration pour l'installation : config/settings.ini
-- Une configuration globale de l'application : /etc/geonature/geonature_config.toml
-- Une configuration frontend par module : contrib/occtax/frontend/app/occtax.config.ts.sample
+- Une configuration pour l'installation : ``config/settings.ini``
+- Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
+- Une configuration frontend par module : ``contrib/occtax/frontend/app/occtax.config.ts`` (générée à partir de ``contrib/occtax/frontend/app/occtax.config.ts.sample`` lors de l'installation du module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
-A l'installation, cela génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est copié dans le frontend (à ne pas modifier).
+L'installation de GeoNature génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
 
-Par défaut, le fichier ``/etc/geonature/geonature_config.toml`` est minimaliste et généré à partir du fichier ``config/settings.ini``.
+Par défaut, le fichier ``/etc/geonature/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
 
 Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
 
-Quand on modifie le fichier global de configuration, il faut régénérer le fichier de configuration du frontend.
+Quand on modifie le fichier global de configuration (``/etc/geonature/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
 
-Ainsi après chaque modification du fichier de configuration globale ou d'un module, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
+Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
 
 ::
 
@@ -127,7 +127,19 @@ Ainsi après chaque modification du fichier de configuration globale ou d'un mod
     geonature update_configuration
     deactivate
 
-Et le FRONT ? A clarifier : Quand on modifie le fichier global de CONF, il faut régénérer la conf du Front (commande generate_frontend_config ?
+Si vous modifiez la configuration Frontend d'un module, il faut relancer la génération du frontend :
+
+::
+
+    cd /home/myuser/geonature/fontend
+    npm run build
+    
+Si vous modifiez la configuration Backend d'un module, il faut relancer le backend :
+
+::
+
+    sudo supervisorctl reload
+
 
 Exploitation
 ------------

@@ -32,7 +32,7 @@ class CasSchemaConf(Schema):
         missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
-    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing='false')
+    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
 
 
 class RightsSchemaConf(Schema):
@@ -66,7 +66,7 @@ class GnPySchemaConf(Schema):
 
 
 class GnFrontEndConf(Schema):
-    PROD_MOD = fields.Boolean(missing=False)
+    PROD_MOD = fields.Boolean(missing=True)
     DISPLAY_FOOTER = fields.Boolean(missing=False)
     PROD_MOD = fields.Boolean(missing=True)
 

@@ -38,18 +38,61 @@ def testDataType(value, sqlType, paramName):
             return '{0} must be an date (yyyy-mm-dd)'.format(paramName)
     return None
 
+"""
+    Liste des types de données sql qui
+    nécessite une sérialisation particulière en
+    @TODO MANQUE FLOAT
+"""
+SERIALIZERS = {
+    'Date': lambda x: str(x) if x else None,
+    'DateTime': lambda x: str(x) if x else None,
+    'TIME': lambda x: str(x) if x else None,
+    'TIMESTAMP': lambda x: str(x) if x else None,
+    'UUID': lambda x: str(x) if x else None
+}
+
 
 class GenericTable:
-    def __init__(self, tableName, schemaName):
-        engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
-        meta = MetaData(schema=schemaName, bind=engine)
+    """
+        Classe permettant de créer à la volée un mapping
+            d'une vue avec la base de données par rétroingénierie
+    """
+    def __init__(self, tableName, schemaName, geometry_field):
+        meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
-        self.tableDef = meta.tables[tableName]
+        try:
+            self.tableDef = meta.tables["{}.{}".format(schemaName, tableName)]
+        except KeyError:
+            raise KeyError("table doesn't exists")
+
+        self.geometry_field = geometry_field
+
+        # Mise en place d'un mapping des colonnes en vue d'une sérialisation
+        self.serialize_columns = [
+            (
+                name,
+                SERIALIZERS.get(
+                    db_col.type.__class__.__name__,
+                    lambda x: x
+                )
+            )
+            for name, db_col in self.tableDef.columns.items()
+            if not db_col.type.__class__.__name__ == 'Geometry'
+        ]
         self.columns = [column.name for column in self.tableDef.columns]
 
-    def serialize(self, data):
-        return serializeQuery(data, self.columns)
+    def as_dict(self, data):
+        return {
+            item: _serializer(getattr(data, item)) for item, _serializer in self.serialize_columns
+        }
 
+    def as_geo_feature(self, data):
+        geometry = to_shape(getattr(data, self.geometry_field))
+        feature = Feature(
+            geometry=geometry,
+            properties=self.as_dict(data)
+        )
+        return feature
 
 def serializeQuery(data, columnDef):
     rows = [
@@ -85,16 +128,6 @@ def serializeQueryOneResult(row, columnDef):
     return row
 
 
-"""
-    Liste des types de données sql qui
-    nécessite une sérialisation particulière en
-    @TODO MANQUE FLOAT
-"""
-SERIALIZERS = {
-    'Date': lambda x: str(x) if x else None,
-    'DateTime': lambda x: str(x) if x else None,
-    'UUID': lambda x: str(x) if x else None
-}
 
 
 def serializable(cls):

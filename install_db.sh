@@ -8,6 +8,7 @@ fi
 
 . config/settings.ini
 
+
 if [ ! -d '/tmp/geonature/' ]
 then
   mkdir /tmp/geonature
@@ -33,27 +34,24 @@ then
   chmod -R 775 /var/log/geonature
 fi
 
+echo "--------------------" &> /var/log/geonature/install_db.log
+
 function database_exists () {
-    # /!\ Will return false if psql can't list database. Edit your pg_hba.conf
-    # as appropriate.
-    if [ -z $1 ]
+    a=`export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d postgres -c "SELECT datname FROM pg_database WHERE datname= '$1';" |grep $1`
+    if [ $a ]
         then
-        # Argument is null
         return 0
     else
-        # Grep db name in the list of database
-        sudo -n -u postgres -s -- psql -tAl | grep -q "^$1|"
-        return $?
+        return 1
     fi
 }
-
 
 if database_exists $db_name
 then
         if $drop_apps_db
             then
             echo "Drop database..."
-            sudo -n -u postgres -s dropdb $db_name
+            export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d postgres -c "DROP DATABASE $db_name;"
         else
             echo "Database exists but the settings file indicate that we don't have to drop it."
         fi
@@ -62,11 +60,11 @@ fi
 if ! database_exists $db_name
 then
     echo "Creating GeoNature database..."
-    echo "--------------------" &> /var/log/geonature/install_db.log
+    echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "Creating GeoNature database" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s createdb -O $user_pg $db_name
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d postgres -c "CREATE DATABASE $db_name;"
     echo "Adding PostGIS and PLPGSQL extensions..."
     echo "" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
@@ -74,9 +72,9 @@ then
     echo "Adding PostGIS and PLPGSQL extensions" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' &>> /var/log/geonature/install_db.log
 
 
     # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
@@ -89,7 +87,7 @@ then
     echo "GRANT" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f /tmp/geonature/grant.sql &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/grant.sql &>> /var/log/geonature/install_db.log
 
     echo "Creating 'public' functions..."
     echo "" &>> /var/log/geonature/install_db.log
@@ -157,7 +155,7 @@ then
     echo "Inserting INPN taxonomic data" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f /tmp/taxhub/data_inpn_taxhub.sql &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/data_inpn_taxhub.sql &>> /var/log/geonature/install_db.log
 
     echo "Creating dictionaries data for taxonomic schema..."
     echo "" &>> /var/log/geonature/install_db.log
@@ -337,7 +335,7 @@ then
     sudo rm /tmp/taxhub/*.txt
     sudo rm /tmp/taxhub/*.sql
     sudo rm /tmp/taxhub/*.csv
-    
+
     if $install_default_dem
     then
         sudo rm /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
