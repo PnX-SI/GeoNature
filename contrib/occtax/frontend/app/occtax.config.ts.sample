@@ -1,6 +1,7 @@
 export const OccTaxConfig = {
   digital_proof_validator: true, /* Add a validation rule between Proof fields. If yes, fulfil at least one proof */
   releve_map_zoom_level: 6, /* Zoom level on the map from which you can add point/line/polygon */
+  id_taxon_list: 500, /* id of the taxon list -- taxonomie.bib_listes */
   default_maplist_columns: [
     { prop: "taxons", name: "Taxon" },
     { prop: "date_min", name: "Date début" },
