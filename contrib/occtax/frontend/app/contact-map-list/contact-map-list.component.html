@@ -5,7 +5,7 @@
         <pnx-taxonomy
           label="{{ 'Taxon.Taxon' | translate }}"
           [parentFormControl]="dynamicFormGroup.controls.cd_nom"
-          [idList]="500"
+          [idList]="occtaxConfig.id_taxon_list"
           [charNumber]="3"
           [listLength]="20">
         </pnx-taxonomy>

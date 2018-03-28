@@ -6,7 +6,7 @@
             #taxon
             label="{{ 'Taxon.Taxon' | translate }}"
             [parentFormControl]="occurrenceForm.controls.cd_nom"
-            [idList]="500"
+            [idList]="occtaxConfig.id_taxon_list"
             [charNumber]="3"
             [listLength]="20"
             (onChange)="fs.onTaxonChanged($event);">
