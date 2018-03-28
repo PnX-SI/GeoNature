@@ -11,7 +11,11 @@ from pathlib import Path
 
 import click
 
-from geonature.utils.env import DB, DEFAULT_CONFIG_FIlE
+from geonature.utils.env import (
+    DB,
+    DEFAULT_CONFIG_FIlE,
+    GN_MODULES_ETC_ENABLED
+)
 
 from geonature.utils.command import (
     get_app_for_cmd,
@@ -67,6 +71,9 @@ def install_gn_module(module_path, url, conf_file):
         #   Vérification de la version de geonature par rapport au manifest
         try:
             module_name = check_manifest(module_path)
+            # Vérification que le module n'est pas déjà activé
+            if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
+                raise GeoNatureError("...module {} already activated".format(module_name))
         except ConfigError as ex:
             log.critical(str(ex) + "\n")
             sys.exit(1)

@@ -8,7 +8,7 @@ from flask import Flask
 
 from flask_cors import CORS
 
-from geonature.utils.env import  DB, list_and_import_gn_modules
+from geonature.utils.env import DB, list_and_import_gn_modules
 
 
 def get_app(config, _app=None):
@@ -34,6 +34,9 @@ def get_app(config, _app=None):
         from pypnnomenclature.routes import routes
         app.register_blueprint(routes, url_prefix='/nomenclatures')
 
+        from geonature.core.routes import routes
+        app.register_blueprint(routes, url_prefix='')
+
         from geonature.core.users.routes import routes
         app.register_blueprint(routes, url_prefix='/users')
 
@@ -52,9 +55,9 @@ def get_app(config, _app=None):
         from geonature.core.gn_medias.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_medias')
 
+
         from geonature.modules.module_list.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_modules')
-
 
         # errors
         from geonature.core.errors import routes

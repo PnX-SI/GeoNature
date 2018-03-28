@@ -26,6 +26,7 @@ export class ContactFormComponent implements OnInit {
     private _ms: MapService,
     private _dateParser: NgbDateParserFormatter,
     private _dfs: DataFormService,
+    private _cfs: ContactService
     private toastr: ToastrService,
     private router: Router,
     private contactService: ContactService,
@@ -121,6 +122,8 @@ export class ContactFormComponent implements OnInit {
   }
 
   submitData() {
+    console.log(this.fs.releveForm);
+    
     // set the releveForm
     // copy the form value without reference
     const finalForm = JSON.parse(JSON.stringify(this.fs.releveForm.value));
@@ -144,7 +147,7 @@ export class ContactFormComponent implements OnInit {
     }
     // Post
     console.log(JSON.stringify(finalForm));
-    this._dfs.postContact(finalForm).subscribe(
+    this._cfs.postContact(finalForm).subscribe(
       response => {
         this.toastr.success('Relevé enregistré', '', { positionClass: 'toast-top-center' });
         // resert the forms

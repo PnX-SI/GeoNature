@@ -1,0 +1,10 @@
+<small> {{label}} </small>
+<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+  <select
+    class="form-control form-control-sm"
+    [disableControl]="disabled"
+    [formControl]="parentFormControl">
+      <option *ngFor="let label of labels" [ngValue]="label.id_nomenclature"
+      [title]="label[definitionLang]"> {{label[labelLang]}} </option>
+  </select>
+</div>

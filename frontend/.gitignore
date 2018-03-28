@@ -7,7 +7,7 @@ src/conf/app.config.ts
 src/modules/contact/contact.config.ts
 
 #routing
-src/core/routing/app-routing.module.ts
+src/app/routing/app-routing.module.ts
 #tsconfig
 tsconfig.json
 
