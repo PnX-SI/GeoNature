@@ -97,4 +97,17 @@ export class DataFormService {
       return areasIntersected;
     });
   }
+
+  getMunicipalities(nom_com?, limit?) {
+    let params: HttpParams = new HttpParams();
+
+    if (nom_com) {
+      params = params.set('nom_com', nom_com);
+    }
+    if (limit) {
+      params = params.set('limit', limit);
+    }
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
+  }
 }
