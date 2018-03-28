@@ -15,4 +15,8 @@
     <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
         <strong> {{'LoginError' | translate }} </strong>
     </p>
+    <img *ngIf="_authService.isLoading" src="assets/images/Spinner.gif" 
+        alt="Chargement..." 
+        height="40" 
+        width="40">
 </div>
