@@ -87,10 +87,6 @@ export class ReleveComponent implements OnInit, OnDestroy {
     this.showTime = !this.showTime;
   }
 
-  dateChanged(date) {
-    const newDate = new Date(date);
-  }
-
   ngOnDestroy() {
     this.geojsonSubscription$.unsubscribe();
   }

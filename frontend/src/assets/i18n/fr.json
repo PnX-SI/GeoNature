@@ -78,7 +78,9 @@
     "ObsTechnique": "Technique d'observation",
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
-    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
+    "GroupType": "Type de regroupement"
+
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
@@ -99,7 +101,6 @@
     "DeterminationMethod": "Méthode de détermination",
     "DeterminationMethodComplement": "Complément méthode de détermination",
     "Determiner": "Déterminateur",
-    "ValidationStatus": "Statut de validation",
     "ExistProof": "Preuve d'existence",
     "SampleNumber": "Numéro du prélevement",
     "DigitalProof": "Preuve numérique",
@@ -107,6 +108,9 @@
     "SaveTaxon": "Enregistrer le taxon",
     "AddTaxon": "Ajouter le taxon",
     "ValidateTaxon": "Valider le taxon",
+    "DiffusionLevel": "Niveau de diffusion",
+    "ObservationStatus": "Statut d'observation",
+    "Blurring": "Floutage",
     "CurrentlyEditing":
       "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
@@ -119,6 +123,7 @@
     "Type": "Type",
     "LifeStage": "Stade de vie",
     "Sex": "Sexe",
+    "ValidationStatus": "Statut de validation",    
     "Phenology": "Phénologie",
     "CountingObject": "Objet du dénombrement",
     "CountingType": "Type de dénombrement",

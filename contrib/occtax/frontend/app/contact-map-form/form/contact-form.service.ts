@@ -7,24 +7,22 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
-import { AppConfig } from "@geonature/conf/app.config";
+import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { OccTaxConfig } from "../../occtax.config";
-import {
-  AuthService,
-  User
-} from "@geonature/core/components/auth/auth.service";
+import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
+import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 
 @Injectable()
 export class ContactFormService {
-  public currentTaxon: any;
+  public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
   public indexOccurrence: number = 0;
-  public taxonsList = [];
+  public taxonsList: Array<Taxon> = [];
   public showOccurrence: boolean;
   public showCounting: boolean;
   public editionMode: boolean;
@@ -111,11 +109,15 @@ export class ContactFormService {
         id_nomenclature_obs_technique: [null, Validators.required],
         observers: [
           null,
-          !OccTaxConfig.observers_txt ? Validators.required : null
+          !OccTaxConfig.form_fields.releve.observers_txt
+            ? Validators.required
+            : null
         ],
         observers_txt: [
           null,
-          OccTaxConfig.observers_txt ? Validators.required : null
+          OccTaxConfig.form_fields.releve.observers_txt
+            ? Validators.required
+            : null
         ],
         id_nomenclature_grp_typ: null,
         t_occurrences_contact: [new Array()]

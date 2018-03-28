@@ -1,0 +1,46 @@
+<div class="collapse" id="collapseExample">
+    <div class="well well-sm well-margin">
+      <div class="row ">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <small class="font-sm">Règne:</small>
+            <select [formControl]="regneControl" class="form-control form-control-sm">
+              <option *ngFor="let regne of regnes" [value]="regne">{{ regne }}</option>
+            </select>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+          <div *ngIf="regneControl.value !== null">
+            <small class="font-sm">Groupe:</small>
+            <select [formControl]="groupControl" class="form-control form-control-sm" id="sel1"  placeholder="Taxonomiques">
+              <option class="clickable" *ngFor="let group2 of regnesAndGroup[regneControl.value]"
+              [value]="group2">{{ group2 }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+<small> {{label}} </small>
+<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
+  <input type="text" class="form-control form-control-sm "
+    [ngClass]="{'loading' : isLoading}"
+    id="taxonInput"
+    [formControl]="parentFormControl"
+    [disableControl]="disabled"
+    [ngbTypeahead]="searchTaxon"
+    [inputFormatter]="formatter"
+    [resultTemplate]="rt"
+    (selectItem)="taxonSelected($event)"/>
+    <span class="input-group-addon" id="filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      <i class="fa fa-filter" aria-hidden="true"></i>
+    </span>
+
+  <ng-template #rt let-r="result" let-t="term">
+    <span [innerHTML]="r.search_name">  </span>
+  </ng-template>
+
+</div>
+<small *ngIf="!isLoading && noResult && parentFormControl.value.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound' | translate}}</small>
+
+
+

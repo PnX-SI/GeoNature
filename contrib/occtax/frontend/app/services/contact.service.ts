@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AppConfig } from "@geonature/conf/app.config";
+import { AppConfig } from "@geonature_config/app.config";
 
 @Injectable()
 export class ContactService {
@@ -12,5 +12,9 @@ export class ContactService {
 
   deleteReleve(id) {
     return this._api.delete(`${AppConfig.API_ENDPOINT}/occtax/releve/${id}`);
+  }
+
+  postContact(form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
   }
 }

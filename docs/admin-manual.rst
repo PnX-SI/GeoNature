@@ -29,9 +29,9 @@ Database schemas prefixs : ``ref_`` for external referentials, ``gn_`` for GeoNa
 - pas de nom de table dans les noms de champs
 - nom de schema eventuellement dans nom de table
 
-Latest version of the database (2017-12-13) : 
+Latest version of the database (2018-03-19) : 
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-13-GN2-MCD.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
 
 Sorry for the relations, it is too long to arrange...
 
@@ -90,11 +90,11 @@ Données SIG :
 Modularité
 ----------
 
-Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/data/modules/contact
+Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data
 
-Côté backend, chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/backend/geonature/modules/pr_contact
+Côté backend, chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend
 
-Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/src/modules/contact
+Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app
 
 Mais en pouvant utiliser des composants du CORE comme expliqué dans la doc Developpeur.
 
@@ -106,12 +106,20 @@ Configuration
 
 Pour configurer GeoNature, actuellement il y a : 
 
-- Une configuration pour l'installation : config/settings.ini
-- Une configuration globale de l'application : /etc/geonature/geonature_config.toml
-- Une configuration frontend par module : frontend/geonature/modules/contact/contact.config.ts
+- Une configuration pour l'installation : ``config/settings.ini``
+- Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
+- Une configuration frontend par module : ``contrib/occtax/frontend/app/occtax.config.ts`` (générée à partir de ``contrib/occtax/frontend/app/occtax.config.ts.sample`` lors de l'installation du module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
-Après chaque modification du fichier de configuration globale ou d'une module, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancer les commandes : 
+L'installation de GeoNature génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
+
+Par défaut, le fichier ``/etc/geonature/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
+
+Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
+
+Quand on modifie le fichier global de configuration (``/etc/geonature/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
+
+Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
 
 ::
 
@@ -119,40 +127,56 @@ Après chaque modification du fichier de configuration globale ou d'une module, 
     geonature update_configuration
     deactivate
 
+Si vous modifiez la configuration Frontend d'un module, il faut relancer la génération du frontend :
+
+::
+
+    cd /home/myuser/geonature/fontend
+    npm run build
+    
+Si vous modifiez la configuration Backend d'un module, il faut relancer le backend :
+
+::
+
+    sudo supervisorctl reload
+
 
 Exploitation
 ------------
+
 Logs
 """""
-Les logs de GeoNature sont dans le répertoire `/var/log/geonature`:
+Les logs de GeoNature sont dans le répertoire ``/var/log/geonature`` :
 
-- logs d'installation de la BDD: ``install_db.log``
-- logs d'installation en BDD d'un module: ``install_<nom_module>_schema.log``
+- logs d'installation de la BDD : ``install_db.log``
+- logs d'installation de la BDD d'un module : ``install_<nom_module>_schema.log``
 - logs de l'API : ``gn-errors.log``
 
-Les logs de Taxhub sont dans le repertoire ``/var/log/taxhub``:
+Les logs de TaxHub sont dans le repertoire ``/var/log/taxhub``:
 
-- logs de l'API: ``taxhub-errors.log``
+- logs de l'API de TaxHub : ``taxhub-errors.log``
+
 Verification des services
-""""""""""""""""""""""""""
-Les API de GeoNature et de TaxHub sont lancés par deux serveurs http python indépendants (Gunicorn), eux mêmes controlés par le supervisor.
+"""""""""""""""""""""""""
+
+Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor.
 
 Par défaut:
 
 - L'API de GeoNature tourne sur le port 8000
 - L'API de taxhub tourne sur le port 5000
 
-Pour vérifier que les API de GeoNature et de TaxHub sont lancés executer la commande:
+Pour vérifier que les API de GeoNature et de TaxHub sont lancées, éxecuter la commande :
 
 ``ps -aux |grep gunicorn``
 
-La commande doit renvoyer 4 fois la ligne suivante pour GeoNature:
+La commande doit renvoyer 4 fois la ligne suivante pour GeoNature :
 
 ::
 
     root      27074  4.6  0.1  73356 23488 ?        S    17:35   0:00       /home/theo/workspace/GN2/GeoNature/backend/venv/bin/python3 /home/theo/workspace/GN2/GeoNature/backend/venv/bin/gunicorn wsgi:app --error-log /var/log/geonature/api_errors.log --pid=geonature2.pid -w 4 -b 0.0.0.0:8000 -n geonature2
 
-et 4 fois la ligne suivante pour TaxHub:
+et 4 fois la ligne suivante pour TaxHub :
 
 ::
 
@@ -160,13 +184,14 @@ et 4 fois la ligne suivante pour TaxHub:
     
 Chaque ligne correspond à un worker Gunicorn.
 
-Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancé ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
+Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
 
 Stopper/Redémarrer les API
 """""""""""""""""""""""""""
-Les API de GeoNature et de TaxHub sont gérés par le supervisor pour être lancé automatiquement au démarage du serveur.
 
-Pour les stopper, executer les commande suivantes:
+Les API de GeoNature et de TaxHub sont gérées par le supervisor pour être lancé automatiquement au démarage du serveur.
+
+Pour les stopper, éxecuter les commandes suivantes :
 
 - GeoNature: ``sudo supervisorctl stop geonature2``
 - TaxHub: ``sudo supervisorctl stop taxhub``
@@ -180,7 +205,7 @@ Sauvegarde et restauration
 
 - Sauvegarge:
 
-    **Sauvegarde de la base de données**:
+    **Sauvegarde de la base de données** :
 
     Opération à faire régulièrement grâce à une tâche cron
 
@@ -189,7 +214,7 @@ Sauvegarde et restauration
         pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
 
 
-    **Sauvegarde des fichiers de configuration**:
+    **Sauvegarde des fichiers de configuration** :
 
     Opération à faire à chaque modification d'un paramètre de configuration
 
@@ -212,11 +237,11 @@ Sauvegarde et restauration
 
 - Restauration
 
-    **Restauration de la base de données**:
+    **Restauration de la base de données** :
 
     - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus)
     
-        Si ce n'est pas le cas, adaptez le nom de la base et également la configuration de connexion de l'application à la BDD dans ``/etc/geonature/geonature_config.toml``
+        Si ce n'est pas le cas, adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``/etc/geonature/geonature_config.toml``
         ::
 
             sudo -n -u postgres -s createdb -O theo geonature2db
@@ -224,15 +249,15 @@ Sauvegarde et restauration
             sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
             sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         
-    - Restaurer la base à partir du backup
+    - Restaurer la BDD à partir du backup
 
         ::
             
             pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
 
-    **Restauration de la configutration et de la customisation**:
+    **Restauration de la configutration et de la customisation** :
 
-    Décomprésser les fichiers precedemment sauvegardées pour les remettre au bon emplacement:
+    Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
 
     :: 
     
@@ -248,7 +273,7 @@ Sauvegarde et restauration
         cp <MY_BACKUP_DIRECTORY>/201803151036-settings.ini /home/<MY_USER>/geonature/config/settings.ini
 
 
-- Relancer l'application:
+- Relancer l'application :
 
     ::
 
