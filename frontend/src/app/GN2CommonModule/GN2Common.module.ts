@@ -20,7 +20,8 @@ import {
 } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AutoCompleteModule } from 'primeng/primeng';
+import { AutoCompleteModule, DropdownModule, ListboxModule } from 'primeng/primeng';
+import { SelectModule } from 'ng2-select';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -45,6 +46,8 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
+import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -80,7 +83,10 @@ export function HttpLoaderFactory(http: Http) {
     NgxDatatableModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
-    AutoCompleteModule
+    AutoCompleteModule,
+    DropdownModule,
+    ListboxModule,
+    SelectModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -100,7 +106,8 @@ export function HttpLoaderFactory(http: Http) {
     DatasetsComponent,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
-    DynamicFormComponent
+    DynamicFormComponent,
+    MunicipalitiesComponent
   ],
   providers: [
     TranslateService,
@@ -112,6 +119,7 @@ export function HttpLoaderFactory(http: Http) {
     DynamicFormService
   ],
   exports: [
+    MunicipalitiesComponent,
     DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
