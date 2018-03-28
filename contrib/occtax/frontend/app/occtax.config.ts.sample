@@ -5,7 +5,7 @@ export const OccTaxConfig = {
   default_maplist_columns: [
     { prop: "taxons", name: "Taxon" },
     { prop: "date_min", name: "Date début" },
-    { prop: "observers", name: "Observateur" }
+    { prop: "observateurs", name: "Observateur" }
   ],
   /* Allow to hide or display some fields. If hidden, database default value is used */
   form_fields: {
