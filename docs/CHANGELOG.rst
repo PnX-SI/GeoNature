@@ -2,7 +2,12 @@
 CHANGELOG
 =========
 
-2.0.0.beta3 (unreleased)
+2.0.0.beta4 (unreleased)
+------------------------
+
+**Corrections**
+
+2.0.0.beta3 (2018-03-28)
 ------------------------
 
 **Nouveautés**
