@@ -30,7 +30,7 @@ export class ExportsComponent implements OnInit {
         AppConfig.API_ENDPOINT
       }/occtax/export/sinp?id_dataset=${idDataSet}`;
     } else {
-      document.location.href = `${AppConfig.API_ENDPOINT}/contact/export/sinp`;
+      document.location.href = `${AppConfig.API_ENDPOINT}/occtax/export/sinp`;
     }
   }
 }
