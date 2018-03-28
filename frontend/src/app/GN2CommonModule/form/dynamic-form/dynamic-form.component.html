@@ -1,0 +1,29 @@
+<div [formGroup]="form">
+
+    <small *ngIf="formDef.controlType == 'textbox' || formDef.controlType == 'dropdown'" [attr.for]="formDef.key">{{formDef.label}}</small>
+
+  <div [ngSwitch]="formDef.controlType">
+
+      <input class="form-control form-control-sm" *ngSwitchCase="'textbox'" [formControlName]="formDef.key"
+      [id]="formDef.key" [type]="formDef.type">
+
+      <select *ngSwitchCase="'dropdown'" class="form-control" [id]="formDef.key" [formControlName]="formDef.key">
+          <option *ngFor="let opt of formDef.options" [value]="opt.key">{{opt.value}}</option>
+      </select>
+
+      <pnx-nomenclature *ngSwitchCase="'nomenclature'"
+        [label]=formDef.label
+        [parentFormControl]="form.controls[formDef.key]"
+        [idTypeNomenclature]="formDef.idTypeNomenclature"
+      >
+      </pnx-nomenclature>
+
+      <!-- TODO:
+       - composant générique (dataset, observateur, date ...)
+       - radio
+       - checkbox
+       - text area -->
+
+  </div>
+
+</div>

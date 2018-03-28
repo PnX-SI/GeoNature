@@ -163,6 +163,7 @@ def dev_front():
     """
     start_geonature_front()
 
+
 @click.option(
     '--build-sass',
     type=bool,
@@ -191,6 +192,7 @@ def generate_frontend_tsconfig():
         Génere tsconfig du frontend
     """
     tsconfig_templating()
+
 
 @main.command()
 @click.option(

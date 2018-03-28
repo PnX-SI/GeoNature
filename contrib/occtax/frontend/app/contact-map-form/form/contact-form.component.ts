@@ -122,6 +122,8 @@ export class ContactFormComponent implements OnInit {
   }
 
   submitData() {
+    console.log(this.fs.releveForm);
+    
     // set the releveForm
     // copy the form value without reference
     const finalForm = JSON.parse(JSON.stringify(this.fs.releveForm.value));

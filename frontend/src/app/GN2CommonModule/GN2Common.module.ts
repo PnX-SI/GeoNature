@@ -29,6 +29,8 @@ import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
+import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
+import { DynamicFormService } from './form/dynamic-form/dynamic-form.service';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
@@ -97,7 +99,8 @@ export function HttpLoaderFactory(http: Http) {
     ReadablePropertiePipe,
     DatasetsComponent,
     MapListGenericFiltersComponent,
-    ObserversTextComponent
+    ObserversTextComponent,
+    DynamicFormComponent
   ],
   providers: [
     TranslateService,
@@ -105,9 +108,11 @@ export function HttpLoaderFactory(http: Http) {
     DataFormService,
     MapListService,
     CommonService,
-    FormService
+    FormService,
+    DynamicFormService
   ],
   exports: [
+    DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
     DateComponent,

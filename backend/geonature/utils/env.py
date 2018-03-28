@@ -223,6 +223,11 @@ def frontend_routes_templating():
         routes = []
         for conf, manifest in list_enabled_module():
             location = Path(manifest['module_path'])
+
+            # test if module have frontend
+            if not (location / 'frontend').is_dir():
+                break
+
             path = conf['api_url'].lstrip('/')
             location = '{}/{}#GeonatureModule'.format(
                 location, GN_MODULE_FE_FILE
@@ -255,4 +260,6 @@ def tsconfig_templating():
 def update_app_configuration(conf_file):
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
+    subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
+
 

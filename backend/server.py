@@ -34,6 +34,9 @@ def get_app(config, _app=None):
         from pypnnomenclature.routes import routes
         app.register_blueprint(routes, url_prefix='/nomenclatures')
 
+        from geonature.core.routes import routes
+        app.register_blueprint(routes, url_prefix='')
+
         from geonature.core.users.routes import routes
         app.register_blueprint(routes, url_prefix='/users')
 
@@ -55,8 +58,6 @@ def get_app(config, _app=None):
         from geonature.core.gn_medias.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_medias')
 
-        from geonature.core.gn_monitoring.routes import routes
-        app.register_blueprint(routes, url_prefix='/gn_monitoring')
 
         from geonature.modules.module_list.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_modules')

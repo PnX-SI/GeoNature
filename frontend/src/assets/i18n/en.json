@@ -78,7 +78,8 @@
     "ObsTechnique": "Observation technic",
     "AddTaxonOnReleve": "Add a taxon on this releve",
     "CancelTaxon": "Cancel this taxon",
-    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte"
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
+    "GroupType": "Grouping type"
   },
   "Taxon": {
     "ObservedTaxon": "Observed taxon",
@@ -99,7 +100,6 @@
     "DeterminationMethod": "Determination method",
     "DeterminationMethodComplement": "Determination method complement",
     "Determiner": "Determiner",
-    "ValidationStatus": "Validation status",
     "ExistProof": "Existence proof",
     "SampleNumber": "Sample number",
     "DigitalProof": "Digital proof",
@@ -107,6 +107,9 @@
     "SaveTaxon": "Save taxon",
     "AddTaxon": "Add taxon",
     "ValidateTaxon": "Validate taxon",
+    "DiffusionLevel": "Diffusion level",
+    "ObservationStatus": "Observation status",
+    "Blurring": "Blurring",
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
     "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'"
@@ -121,6 +124,7 @@
     "Phenology": "Phénology",
     "CountingObject": "Counting object",
     "CountingType": "Counting type",
+    "ValidationStatus": "Validation status",    
     "Numbers": "Numbers",
     "Total": "Total",
     "CountError": "Max counting can't be inferior to counting min"
