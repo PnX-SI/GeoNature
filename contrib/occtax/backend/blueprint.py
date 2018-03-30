@@ -594,7 +594,7 @@ def export_sinp(info_role):
         - id_dataset : integer
         - uuid_dataset: uuid
     """
-    viewSINP = GenericTable('pr_contact.export_occtax_dlb', 'pr_contact')
+    viewSINP = GenericTable('export_occtax_dlb', 'pr_contact', None)
     q = DB.session.query(viewSINP.tableDef)
     params = request.args
     allowed_datasets = TDatasets.get_user_datasets(info_role)
