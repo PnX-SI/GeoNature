@@ -1,13 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatListModule, MatIconModule,
-        MatToolbarModule} from '@angular/material';
+import {
+  MatCardModule,
+  MatMenuModule,
+  MatSidenavModule,
+  MatTooltipModule,
+  MatListModule,
+  MatIconModule,
+  MatToolbarModule
+} from '@angular/material';
 
-
-
-import {Http} from '@angular/http';
+import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClient,
+  HttpClientXsrfModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
@@ -19,6 +29,8 @@ import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
+import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
+import { DynamicFormService } from './form/dynamic-form/dynamic-form.service';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
@@ -49,7 +61,6 @@ import { FormService } from './form/form.service';
 // add all rxjs operators
 import 'rxjs/Rx';
 
-
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -68,8 +79,8 @@ export function HttpLoaderFactory(http: Http) {
     ReactiveFormsModule,
     NgxDatatableModule,
     TranslateModule.forChild(),
-  NgbModule.forRoot(),
-  AutoCompleteModule
+    NgbModule.forRoot(),
+    AutoCompleteModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -88,17 +99,20 @@ export function HttpLoaderFactory(http: Http) {
     ReadablePropertiePipe,
     DatasetsComponent,
     MapListGenericFiltersComponent,
-    ObserversTextComponent
+    ObserversTextComponent,
+    DynamicFormComponent
   ],
-  providers : [
+  providers: [
     TranslateService,
     MapService,
     DataFormService,
     MapListService,
     CommonService,
     FormService,
-    ],
+    DynamicFormService
+  ],
   exports: [
+    DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
     DateComponent,
@@ -130,6 +144,4 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent
   ]
 })
-export class GN2CommonModule {
-
-}
+export class GN2CommonModule {}

@@ -17,6 +17,7 @@ from .models import (
     DefaultNomenclaturesValue
 )
 from .repositories import ReleveRepository
+from .utils import get_nomenclature_filters
 from geonature.utils.utilssqlalchemy import (
     json_resp,
     testDataType,
@@ -275,6 +276,7 @@ def getViewReleveList(info_role):
         observers_query = "%{}%".format(params.pop('observateurs'))
         q = q.filter(VReleveList.observateurs.ilike(observers_query))
 
+
     # Generic Filters
     for param in params:
         if param in VReleveList.__table__.columns:
@@ -283,6 +285,49 @@ def getViewReleveList(info_role):
             if testT:
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
+    
+    releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(params)
+    if len(releve_filters) > 0:
+        q = q.join(
+            TRelevesContact,
+            VReleveList.id_releve_contact ==
+            TRelevesContact.id_releve_contact
+        )
+        for nomenclature in releve_filters:
+            col = getattr(TRelevesContact.__table__.columns, nomenclature)            
+            q = q.filter(col == params.pop(nomenclature))
+
+    if len(occurrence_filters) > 0:
+        q = q.join(
+            TOccurrencesContact,
+            VReleveList.id_releve_contact ==
+            TOccurrencesContact.id_releve_contact
+        )
+        for nomenclature in occurrence_filters:
+            col = getattr(TOccurrencesContact.__table__.columns, nomenclature)
+            q = q.filter(col == params.pop(nomenclature))
+            
+    if len(counting_filters) > 0:
+        if len(occurrence_filters) > 0:
+            q = q.join(
+                CorCountingContact,
+                TOccurrencesContact.id_occurrence_contact ==
+                CorCountingContact.id_occurrence_contact
+            )
+        else:
+            q = q.join(
+                TOccurrencesContact,
+                TOccurrencesContact.id_releve_contact ==
+                VReleveList.id_releve_contact
+            ).join(
+                CorCountingContact,
+                TOccurrencesContact.id_occurrence_contact ==
+                CorCountingContact.id_occurrence_contact
+
+            )
+        for nomenclature in counting_filters:
+            col = getattr(CorCountingContact.__table__.columns, nomenclature)
+            q = q.filter(col == params.pop(nomenclature))
 
     nbResults = q.count()
 
@@ -549,7 +594,7 @@ def export_sinp(info_role):
         - id_dataset : integer
         - uuid_dataset: uuid
     """
-    viewSINP = GenericTable('pr_contact.export_occtax_dlb', 'pr_contact')
+    viewSINP = GenericTable('export_occtax_dlb', 'pr_contact', None)
     q = DB.session.query(viewSINP.tableDef)
     params = request.args
     allowed_datasets = TDatasets.get_user_datasets(info_role)

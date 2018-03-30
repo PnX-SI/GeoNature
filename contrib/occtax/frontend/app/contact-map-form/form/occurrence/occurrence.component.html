@@ -6,7 +6,7 @@
             #taxon
             label="{{ 'Taxon.Taxon' | translate }}"
             [parentFormControl]="occurrenceForm.controls.cd_nom"
-            [idList]="500"
+            [idList]="occtaxConfig.id_taxon_list"
             [charNumber]="3"
             [listLength]="20"
             (onChange)="fs.onTaxonChanged($event);">
@@ -39,7 +39,7 @@
           [idTypeNomenclature]="7" 
           [regne]="fs.currentTaxon.regne" 
           [group2Inpn]="fs.currentTaxon.group2_inpn"
-           > 
+        > 
         </pnx-nomenclature>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm"> 

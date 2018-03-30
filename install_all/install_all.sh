@@ -207,8 +207,8 @@ sudo a2enmod proxy_http
 
 
 
-echo "Installation de l'application Usershub"
-if [ install_usershub_app ]; then
+if [ "$install_usershub_app" = true ]; then
+    echo "Installation de l'application Usershub"
     os_version=$(cat /etc/os-release |grep VERSION_ID)
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 

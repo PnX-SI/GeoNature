@@ -13,6 +13,10 @@ import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
 import { OccTaxConfig } from "../occtax.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
+import { FormGroup, FormBuilder } from "@angular/forms";
+import { DynamicFormComponent } from "@geonature_common/form/dynamic-form/dynamic-form.component";
+import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
+import { FILTERSLIST } from "./filters-list";
 
 @Component({
   selector: "pnx-contact-map-list",
@@ -23,25 +27,22 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 export class ContactMapListComponent implements OnInit {
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
-  public filterableColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
   public idName: string;
   public apiEndPoint: string;
-  public inputTaxon = new FormControl();
-  public inputObservers = new FormControl();
-  public dateMinInput = new FormControl();
-  public dateMaxInput = new FormControl();
-  public observerAsTextInput = new FormControl();
-  public datasetInput = new FormControl();
   public columnActions: ColumnActions;
-  public contactConfig: any;
-
+  public occtaxConfig: any;
+  public formsDefinition = FILTERSLIST;
+  public dynamicFormGroup: FormGroup;
+  public filterControl = new FormControl();
+  public formsSelected = [];
   // provisoire
   public tableMessages = {
     emptyMessage: "Aucune observation à afficher",
     totalMessage: "observation(s) au total"
   };
+  advandedFilterOpen = false;
   @ViewChild(NgbModal) public modalCol: NgbModal;
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
   constructor(
@@ -51,11 +52,31 @@ export class ContactMapListComponent implements OnInit {
     private _commonService: CommonService,
     private _translate: TranslateService,
     private _router: Router,
-    public ngbModal: NgbModal
+    public ngbModal: NgbModal,
+    private _fb: FormBuilder,
+    private _dynformService: DynamicFormService
   ) {}
 
   ngOnInit() {
-    this.contactConfig = OccTaxConfig;
+    this.dynamicFormGroup = this._fb.group({
+      cd_nom: null,
+      observer: null,
+      date_min: null,
+      date_max: null,
+      dataset: null,
+      observers_txt: null,
+      id_dataset: null,
+      date_up: null,
+      date_low: null
+    });
+
+    this.filterControl.valueChanges
+      .filter(value => value !== null)
+      .subscribe(formDef => {
+        this.addFormControl(formDef);
+      });
+
+    this.occtaxConfig = OccTaxConfig;
 
     // parameters for maplist
     // columns to be default displayed
@@ -98,77 +119,48 @@ export class ContactMapListComponent implements OnInit {
     // end OnInit
   }
 
-  taxonChanged(taxonObj) {
-    this.mapListService.refreshData(this.apiEndPoint, "set", [
-      { param: "cd_nom", value: taxonObj.cd_nom }
-    ]);
-  }
-
-  observerChanged(observer) {
-    this.mapListService.refreshData(this.apiEndPoint, "append", [
-      { param: "observer", value: observer.id_role }
-    ]);
-  }
-
-  observerDeleted(observer) {
-    const idObservers = this.mapListService.urlQuery.getAll("observer");
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
-      "observer"
-    );
-    idObservers.forEach(id => {
-      if (id !== observer.id_role) {
-        this.mapListService.urlQuery = this.mapListService.urlQuery.append(
-          "observer",
-          id
-        );
-      }
+  addFormControl(formDef) {
+    this.formsSelected.push(formDef);
+    this.formsDefinition = this.formsDefinition.filter(form => {
+      return form.key != formDef.key;
     });
-    this.mapListService.refreshData(this.apiEndPoint, "set");
+    this._dynformService.addNewControl(formDef, this.dynamicFormGroup);
+    console.log(this.dynamicFormGroup);
   }
 
-  observerTextChange(observer) {
-    this.mapListService.refreshData(this.apiEndPoint, "set", [
-      { param: "observateurs", value: observer }
-    ]);
+  removeFormControl(i) {
+    const formDef = this.formsSelected[i];
+    this.formsSelected.splice(i, 1);
+    this.formsDefinition.push(formDef);
+    this.dynamicFormGroup.removeControl(formDef.key);
+    this.filterControl.setValue(null);
   }
 
-  observerTextDelete() {
-    this.mapListService.deleteAndRefresh(this.apiEndPoint, "observateurs");
+  toggleAdvancedFilters() {
+    this.advandedFilterOpen = !this.advandedFilterOpen;
   }
 
-  onDataSetChange(id_dataset) {
-    this.mapListService.refreshData(this.apiEndPoint, "set", [
-      { param: "id_dataset", value: id_dataset }
-    ]);
+  closeAdvancedFilters() {
+    this.advandedFilterOpen = false;
   }
 
-  onDataSetDelete() {
-    this.mapListService.deleteAndRefresh(this.apiEndPoint, "id_dataset");
-  }
+  searchData() {
+    this.mapListService.refreshUrlQuery(12);
+    const params = [];
+    for (let key in this.dynamicFormGroup.value) {
+      console.log(key);
+      console.log(this.dynamicFormGroup.value[key]);
 
-  dateMinChanged(date) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
-      "date_up"
-    );
-    if (date.length > 0) {
-      this.mapListService.refreshData(this.apiEndPoint, "set", [
-        { param: "date_up", value: date }
-      ]);
-    } else {
-      this.mapListService.deleteAndRefresh(this.apiEndPoint, "date_up");
+      let value = this.dynamicFormGroup.value[key];
+      if (key === "cd_nom" && this.dynamicFormGroup.value[key]) {
+        value = this.dynamicFormGroup.value[key].cd_nom;
+      }
+      if (value && value !== "") {
+        params.push({ param: key, value: value });
+      }
     }
-  }
-  dateMaxChanged(date) {
-    this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
-      "date_low"
-    );
-    if (date.length > 0) {
-      this.mapListService.refreshData(this.apiEndPoint, "set", [
-        { param: "date_low", value: date }
-      ]);
-    } else {
-      this.mapListService.deleteAndRefresh(this.apiEndPoint, "date_low");
-    }
+    this.closeAdvancedFilters();
+    this.mapListService.refreshData(this.apiEndPoint, "set", params);
   }
 
   onEditReleve(id_releve) {
@@ -240,17 +232,8 @@ export class ContactMapListComponent implements OnInit {
   }
   refreshFilters() {
     this.taxonomyComponent.refreshAllInput();
-    this.dateMaxInput.reset();
-    this.dateMinInput.reset();
-    if (OccTaxConfig.observers_txt) {
-      this.observerAsTextInput.reset();
-    } else {
-      this.inputObservers.reset();
-    }
-    this.datasetInput.reset();
-    this.mapListService.genericFilterInput.reset();
+    this.dynamicFormGroup.reset();
     this.mapListService.refreshUrlQuery(12);
-    this.mapListService.refreshData(this.apiEndPoint, "set");
   }
 
   toggle(col) {

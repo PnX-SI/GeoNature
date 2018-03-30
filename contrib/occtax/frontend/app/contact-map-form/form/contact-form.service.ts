@@ -15,6 +15,7 @@ import { OccTaxConfig } from "../../occtax.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
+import { CommonService } from "@geonature_common/service/common.service";
 
 @Injectable()
 export class ContactFormService {
@@ -46,7 +47,8 @@ export class ContactFormService {
     private _dfs: DataFormService,
     private _router: Router,
     private _auth: AuthService,
-    private _formService: FormService
+    private _formService: FormService,
+    private _commonService: CommonService
   ) {
     this.currentTaxon = {};
     this.indexCounting = 0;
@@ -439,5 +441,14 @@ export class ContactFormService {
   }
   backToList() {
     this._router.navigate(["occtax"]);
+  }
+
+  formDisabled() {
+    if (this.disabled) {
+      this._commonService.translateToaster(
+        "warning",
+        "Releve.FillGeometryFirst"
+      );
+    }
   }
 }
