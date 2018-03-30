@@ -140,6 +140,10 @@ export class ContactMapListComponent implements OnInit {
     this.advandedFilterOpen = !this.advandedFilterOpen;
   }
 
+  closeAdvancedFilters() {
+    this.advandedFilterOpen = false;
+  }
+
   searchData() {
     this.mapListService.refreshUrlQuery(12);
     const params = [];
@@ -155,7 +159,7 @@ export class ContactMapListComponent implements OnInit {
         params.push({ param: key, value: value });
       }
     }
-    this.toggleAdvancedFilters();
+    this.closeAdvancedFilters();
     this.mapListService.refreshData(this.apiEndPoint, "set", params);
   }
 
