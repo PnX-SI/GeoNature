@@ -82,8 +82,7 @@ Pour Debian 8:
 
 ::
 
-    useradd -m geonatureadmin
-    passwd geonatureadmin
+    adduser geonatureadmin
 
 Lui donner ensuite des droits sudo
 
