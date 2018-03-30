@@ -31,10 +31,10 @@ VALUES (1, 101);
 
 
 INSERT INTO gn_monitoring.t_base_visits(
-    id_base_visit, id_base_site, id_digitiser, visit_date, geom, comments
+    id_base_visit, id_base_site, id_digitiser, visit_date,  comments
 )
 VALUES (
-    1, 1, 1, '2018-01-01', NULL, 'Visite test pour l''exemple'
+    1, 1, 1, '2018-01-01',  'Visite test pour l''exemple'
 );
 SELECT pg_catalog.setval('gn_monitoring.t_base_visits_id_base_visit_seq', 1, true);
 
