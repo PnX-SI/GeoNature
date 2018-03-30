@@ -1,4 +1,4 @@
-<div [formGroup]="releveForm">
+<div (click)="fs.formDisabled()" [formGroup]="releveForm">
   <div class="row row-0">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
       <div *ngIf="!occtaxConfig.form_fields.releve.observers_txt; else elseBlock">
@@ -24,7 +24,7 @@
   </div>
   <div class="row row-0">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-      <pnx-datasets label="{{ 'Releve.Dataset' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+      <pnx-datasets  label="{{ 'Releve.Dataset' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
         appId="14" [disabled]="fs.disabled">
       </pnx-datasets>
     </div>

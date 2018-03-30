@@ -1,4 +1,4 @@
-<div (click)="formDisabled()">
+<div>
   <div class="card line-height-sm" [class.disabled]="fs.disabled">
     <h5 class="card-header" [class.disabled]="fs.disabled">
       <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -19,7 +19,7 @@
       <i class="fa fa-paw" aria-hidden="true"></i>
       Taxon
       <span>
-        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence()">
+        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence();">
           <i class="fa fa-chevron-down" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
         </button>
