@@ -364,6 +364,13 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
         
         **Selector**: ``pnx-marker``
+
+        **Inputs**:
+
+        :``zoomLevel``:
+                Niveau de zoom à partir du quel on peut ajouter un marker sur la carte
+
+                *Type*: ``number``
         
         **Ouputs**:
         
@@ -381,7 +388,12 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
                 Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-form/contact-map-form.component.ts#L27>`_ 
-                
+
+        :``zoomLevel``:
+                Niveau de zoom à partir du quel on peut dessiner sur la carte
+
+                *Type*: ``number``
+
         **Output**
         
         :``layerDrawed``:
