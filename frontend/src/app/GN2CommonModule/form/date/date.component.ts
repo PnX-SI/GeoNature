@@ -36,8 +36,9 @@ export class DateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-    const _defaultDate = this.defaultDate || this.today;
-    this.parentFormControl.setValue(_defaultDate);
+    if (this.defaultDate) {
+      this.parentFormControl.setValue(this.today);
+    }
 
     this.changeSub = this.parentFormControl.valueChanges.subscribe(date => {
       if (date !== null && this._dateParser.format(date) !== 'undefined--') {
