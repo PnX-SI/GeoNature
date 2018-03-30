@@ -44,11 +44,11 @@ def testDataType(value, sqlType, paramName):
     @TODO MANQUE FLOAT
 """
 SERIALIZERS = {
-    'Date': lambda x: str(x) if x else None,
-    'DateTime': lambda x: str(x) if x else None,
-    'TIME': lambda x: str(x) if x else None,
-    'TIMESTAMP': lambda x: str(x) if x else None,
-    'UUID': lambda x: str(x) if x else None
+    'date': lambda x: str(x) if x else None,
+    'datetime': lambda x: str(x) if x else None,
+    'time': lambda x: str(x) if x else None,
+    'timestamp': lambda x: str(x) if x else None,
+    'uuid': lambda x: str(x) if x else None
 }
 
 
@@ -72,7 +72,7 @@ class GenericTable:
             (
                 name,
                 SERIALIZERS.get(
-                    db_col.type.__class__.__name__,
+                    db_col.type.__class__.__name__.lower(),
                     lambda x: x
                 )
             )
@@ -144,7 +144,7 @@ def serializable(cls):
         (
             db_col.key,
             SERIALIZERS.get(
-                db_col.type.__class__.__name__,
+                db_col.type.__class__.__name__.lower(),
                 lambda x: x
             )
         )
