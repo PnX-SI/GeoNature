@@ -90,8 +90,9 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   initLabels() {
+    const filters = { orderby: 'label_default' };
     this._dfService
-      .getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn)
+      .getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn, filters)
       .subscribe(data => {
         this.labels = data.values;
       });

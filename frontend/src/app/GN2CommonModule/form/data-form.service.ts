@@ -9,12 +9,18 @@ import { Taxon } from './taxonomy/taxonomy.component';
 export class DataFormService {
   constructor(private _http: HttpClient) {}
 
-  getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
+  getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string, filters?: any) {
     let params: HttpParams = new HttpParams();
     regne ? (params = params.set('regne', regne)) : (params = params.set('regne', ''));
     group2_inpn
       ? (params = params.set('group2_inpn', group2_inpn))
       : (params = params.set('group2_inpn', ''));
+    if (filters['orderby']) {
+      params = params.set('orderby', filters['orderby']);
+    }
+    if (filters['order']) {
+      params = params.set('order', filters['order']);
+    }
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${id_nomenclature}`,
       { params: params }
