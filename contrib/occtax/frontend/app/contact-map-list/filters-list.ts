@@ -3,77 +3,77 @@ export const FILTERSLIST = [
     controlType: "nomenclature",
     label: "Technique d'observation",
     key: "id_nomenclature_obs_technique",
-    idTypeNomenclature: 100,
+    idComponent: 100,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Type de regroupement",
     key: "id_nomenclature_grp_typ",
-    idTypeNomenclature: 24,
+    idComponent: 24,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Statut d'observation",
     key: "id_nomenclature_observation_status",
-    idTypeNomenclature: 18,
+    idComponent: 18,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Méthode d'observation",
     key: "id_nomenclature_obs_meth",
-    idTypeNomenclature: 14,
+    idComponent: 14,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Etat biologique",
     key: "id_nomenclature_bio_condition",
-    idTypeNomenclature: 7,
+    idComponent: 7,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Status biologique",
     key: "id_nomenclature_bio_status",
-    idTypeNomenclature: 13,
+    idComponent: 13,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Naturalité",
     key: "id_nomenclature_naturalness",
-    idTypeNomenclature: 8,
+    idComponent: 8,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Méthode de détermination",
     key: "id_nomenclature_determination_method",
-    idTypeNomenclature: 106,
+    idComponent: 106,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Preuve d'existance",
     key: "id_nomenclature_exist_proof",
-    idTypeNomenclature: 15,
+    idComponent: 15,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Niveau de diffusion",
     key: "id_nomenclature_diffusion_level",
-    idTypeNomenclature: 5,
+    idComponent: 5,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Floutage",
     key: "id_nomenclature_blurring",
-    idTypeNomenclature: 4,
+    idComponent: 4,
     required: false
   },
   // counting
@@ -81,35 +81,35 @@ export const FILTERSLIST = [
     controlType: "nomenclature",
     label: "Stade de vie",
     key: "id_nomenclature_life_stage",
-    idTypeNomenclature: 10,
+    idComponent: 10,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Sexe",
     key: "id_nomenclature_sex",
-    idTypeNomenclature: 9,
+    idComponent: 9,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Objet du dénombrement",
     key: "id_nomenclature_obj_count",
-    idTypeNomenclature: 6,
+    idComponent: 6,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Type de dénombrement dénombrement",
     key: "id_nomenclature_type_count",
-    idTypeNomenclature: 21,
+    idComponent: 21,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Statut de validation",
     key: "id_nomenclature_valid_status",
-    idTypeNomenclature: 101,
+    idComponent: 101,
     required: false
   },
   {
@@ -124,6 +124,52 @@ export const FILTERSLIST = [
     type: "number",
     label: "Altitude max",
     key: "altitude_max",
+    required: false
+  },
+  {
+    controlType: "checkbox",
+    type: "checkbox",
+    label: "checkbox test",
+    key: "check_test",
+    values: ["la", "li", "lu"],
+    required: false
+  },
+  {
+    controlType: "radio",
+    type: "radio",
+    label: "radio test",
+    key: "radio_test",
+    values: ["test", "test3", "test4"],
+    required: false
+  },
+  {
+    controlType: "textbox",
+    type: "text",
+    label: "text test",
+    key: "text_test",
+    required: false
+  },
+  {
+    controlType: "taxonomy",
+    type: "text",
+    idComponent: 500,
+    label: "tax test",
+    key: "cd_nom_bis",
+    required: false
+  },
+  {
+    controlType: "observers",
+    type: "text",
+    idComponent: 9,
+    label: "obs test",
+    key: "obs_nom_bis",
+    required: false
+  },
+  {
+    controlType: "dataset",
+    type: "text",
+    label: "dataset test",
+    key: "dataset_bis",
     required: false
   }
 ];
