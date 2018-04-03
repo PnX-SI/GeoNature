@@ -1,0 +1,21 @@
+<small> {{label}} </small>
+
+<!-- <p-dropdown
+ [formControl]="parentFormControl"
+  [options]="municipalities"
+  optionLabel="nom_com"
+  [style]="{'width':'150px'}"
+  editable="true"
+  placeholder="Communes"
+  filter="true">
+</p-dropdown> -->
+
+
+<ng-select
+[items]="municipalities?.nom_com"
+(data)="refreshValue($event)"
+(selected)="selected($event)"
+(removed)="removed($event)"
+(typed)="typed($event)"
+placeholder="No city selected">
+</ng-select>
