@@ -63,6 +63,7 @@ import { FormService } from './form/form.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
+import { SelectSearchComponent } from './form/select-search/select-search.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -107,7 +108,8 @@ export function HttpLoaderFactory(http: Http) {
     MapListGenericFiltersComponent,
     ObserversTextComponent,
     DynamicFormComponent,
-    MunicipalitiesComponent
+    MunicipalitiesComponent,
+    SelectSearchComponent
   ],
   providers: [
     TranslateService,
@@ -149,7 +151,8 @@ export function HttpLoaderFactory(http: Http) {
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
-    ObserversTextComponent
+    ObserversTextComponent,
+    SelectSearchComponent
   ]
 })
 export class GN2CommonModule {}

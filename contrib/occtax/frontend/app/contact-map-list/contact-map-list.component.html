@@ -92,6 +92,7 @@
     <pnx-municipalities
       label="municp"
       [parentFormControl]="dynamicFormGroup.controls.municipality"
+      (onSearch)="test($event)"
     >
     </pnx-municipalities>
 

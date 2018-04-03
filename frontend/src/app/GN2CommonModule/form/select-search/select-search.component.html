@@ -1,0 +1,18 @@
+<small> {{label }} </small>
+<div>
+    <button type="button" class="btn dropdown-toggle btn-white btn-sm full-width"
+     data-toggle="dropdown"
+    role="button"
+    id="button-input">
+      <span class="filter-option"> {{currentValue}} </span>
+      <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu full-width select-data" >
+      <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
+      <ul ul-dropdown>
+        <li *ngFor="let val of values" (click)="setCurrentValue(val)" class="clickable li-dropdown"> 
+            <span class="li-label">{{val[key]}} </span>
+        </li>
+      </ul>
+    </div>
+</div>

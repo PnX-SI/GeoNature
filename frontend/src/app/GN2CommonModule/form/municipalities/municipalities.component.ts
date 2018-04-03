@@ -1,7 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { DataFormService } from '../data-form.service';
 import { FormControl } from '@angular/forms';
+import { log } from 'util';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-municipalities',
@@ -10,24 +12,35 @@ import { FormControl } from '@angular/forms';
 })
 export class MunicipalitiesComponent implements OnInit {
   public municipalities: Array<any>;
+  public searchControl = new FormControl();
   @Input() parentFormControl: FormControl;
   @Input() label: string;
   @Input() disabled: boolean;
-  constructor(private _dfs: DataFormService) {}
+  @Input() debounceTime: number;
+  @Output() onSearch = new EventEmitter();
+  public currentValue: any;
+  constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {
     this._dfs.getMunicipalities().subscribe(data => {
       this.municipalities = data;
     });
-
-    this.parentFormControl.valueChanges
-      .filter(value => value >= 3)
-      .distinctUntilChanged()
-      .subscribe(value => {
-        console.log('changeeelelelelel');
-        this._dfs.getMunicipalities(value).subscribe(municipalities => {
-          this.municipalities = municipalities;
-        });
-      });
+  }
+  refreshMunicipalities(municipality) {
+    console.log(municipality);
+    this._dfs.getMunicipalities(municipality).subscribe(
+      data => {
+        this.municipalities = data;
+      },
+      err => {
+        if (err.status === 404) {
+          this.municipalities = [{ nom_com: 'No data to display' }];
+        } else {
+          this.municipalities = [];
+          this._commonService.translateToaster('error', 'ErrorMessage');
+        }
+        console.log(err);
+      }
+    );
   }
 }

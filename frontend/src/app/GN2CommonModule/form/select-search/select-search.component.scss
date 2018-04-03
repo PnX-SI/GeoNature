@@ -4,14 +4,25 @@ ul, li {
 
 ul {
   padding-left: 0px;
+  margin-top: 45px;
 }
 
 .full-width {
   width: 100%;
 }
 
+.select-data {
+  margin:0px;
+  padding:0px;
+}
+
 #button-input{
   border: 1px solid rgba(0,0,0,.15);
+  text-align: left;
+}
+
+#search-input {
+  position: fixed;
 }
 
 #button-input:focus{
