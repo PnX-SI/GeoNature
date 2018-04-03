@@ -67,7 +67,8 @@ export class ContactMapListComponent implements OnInit {
       observers_txt: null,
       id_dataset: null,
       date_up: null,
-      date_low: null
+      date_low: null,
+      municipality: null
     });
 
     this.filterControl.valueChanges
