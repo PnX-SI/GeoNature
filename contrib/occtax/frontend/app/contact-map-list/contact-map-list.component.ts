@@ -57,6 +57,10 @@ export class ContactMapListComponent implements OnInit {
     private _dynformService: DynamicFormService
   ) {}
 
+  test(event) {
+    console.log(event);
+  }
+
   ngOnInit() {
     this.dynamicFormGroup = this._fb.group({
       cd_nom: null,
