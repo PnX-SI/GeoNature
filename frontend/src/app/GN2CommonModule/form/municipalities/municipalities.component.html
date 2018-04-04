@@ -2,7 +2,7 @@
   [values]="municipalities"
   [parentFormControl]="parentFormControl"
   key="nom_com"
-  label="Villes"
+  [label]="'Geo.Municipalities' | translate"
   debounceTime="500"
   (onSearch)="refreshMunicipalities($event)"
 >

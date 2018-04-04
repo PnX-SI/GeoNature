@@ -129,6 +129,9 @@
     "Total": "Total",
     "CountError": "Max counting can't be inferior to counting min"
   },
+  "Geo" : {
+    "Municipalities": "Cities"
+  },
   "IntroMessage":
     "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",
   "ErrorMessage": "Game over",
