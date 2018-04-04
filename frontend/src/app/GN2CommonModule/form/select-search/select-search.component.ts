@@ -34,6 +34,14 @@ export class SelectSearchComponent implements OnInit {
       .subscribe(value => {
         this.onSearch.emit(value);
       });
+
+    this.parentFormControl.valueChanges.filter(value => value === null).subscribe(value => {
+      if (this.multiselect) {
+        this.selectedItems = [];
+      } else {
+        this.currentValue = null;
+      }
+    });
   }
 
   setCurrentValue(val) {
