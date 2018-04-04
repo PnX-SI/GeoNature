@@ -1,22 +1,10 @@
-<small> {{label}} </small>
-<div class="form-group">
-    <button type="button" class="btn dropdown-toggle btn-white full-width btn-sm"
-     data-toggle="dropdown"
-    role="button"
-    aria-expanded="true"
-    [ngClass]="{'disabled': disabled, 'has-danger' : parentFormControl.invalid && !disabled}"
-    id="button-input">
-      <span *ngFor="let obs of selectedObservers" class="filter-option input-value pull-left"> {{obs.nom_complet}} <i (click)="removeObserver(obs)" class="fa fa-times clickable remove-button"> </i>  </span>
-      &nbsp;<span class="caret caret-input"></span>
-    </button>
-    <div class="dropdown-menu full-width select-data" >
-      <div class="search-box">
-        <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
-      </div>
-      <ul ul-dropdown>
-        <li *ngFor="let obs of observers" (click)="addObserver(obs)" class="clickable li-dropdown"> 
-            <span class="li-label">{{obs.nom_complet}} </span>
-        </li>
-      </ul>
-    </div>
-</div>
+<pnx-select-search
+  [values]="filteredObservers"
+  [parentFormControl]="parentFormControl"
+  key="nom_complet"
+  [label]="label"
+  debounceTime="500"
+  (onSearch)="filterObservers($event)"
+  [multiselect]="true"
+  [disabled]="disabled">
+</pnx-select-search>
