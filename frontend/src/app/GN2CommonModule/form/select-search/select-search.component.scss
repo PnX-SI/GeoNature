@@ -11,15 +11,22 @@ ul {
 }
 
 .input-value{
+  font-size: 12px;
   padding: 3px;
   background-color: #6bb0db;
   border-radius: 3px;
+  margin-top: 2px;
   margin-left: 3px;
   margin-bottom: 2px;
 }
 
 .search-box {
   padding: 10px;
+}
+
+.dropdown-menu {
+  margin-top: -1rem;
+  z-index: 2000;
 }
 
 .dropdown-toggle::after {
@@ -49,6 +56,7 @@ ul {
 }
 
 #button-input{
+  border-radius: .25rem;
   position: relative;
   border: 1px solid rgba(0,0,0,.15);
 }

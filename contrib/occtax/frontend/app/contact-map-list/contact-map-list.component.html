@@ -18,7 +18,7 @@
         </div>
           <ng-template #elseBlock>
             <pnx-observers
-              [parentFormControl]="dynamicFormGroup.controls.observer"
+              [parentFormControl]="dynamicFormGroup.controls.observers"
               [idMenu]="9"
               label="{{ 'Releve.Observers' | translate }}">
             </pnx-observers>
@@ -87,16 +87,6 @@
             {{formDef.label}}
           </option>
       </select>
-    </div>
-
-    <div class="row row-0">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-            <pnx-municipalities
-              label="municp"
-              [parentFormControl]="dynamicFormGroup.controls.municipality"
-              >
-          </pnx-municipalities>
-        </div>
     </div>
 
     

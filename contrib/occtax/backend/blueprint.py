@@ -159,7 +159,7 @@ def getViewReleveList(info_role):
             Numéro de la page à retourner
         cd_nom: int
             Filtrer les relevés avec des occurrences avec le taxon x
-        observer: int
+        observers: int
         date_up: date
             Date minimum des relevés à retourner
         date_low: date
@@ -209,17 +209,17 @@ def getViewReleveList(info_role):
         ).filter(
             TOccurrencesContact.cd_nom == int(params.pop('cd_nom'))
         )
-    if 'observer' in params:
+    if 'observers' in params:
         q = q.join(
             corRoleRelevesContact,
             corRoleRelevesContact.columns.id_releve_contact ==
             VReleveList.id_releve_contact
         ).filter(
             corRoleRelevesContact.columns.id_role.in_(
-                params.getlist('observer')
+                request.args.getlist('observers')
             )
         )
-        params.pop('observer')
+        params.pop('observers')
 
     if 'date_up' in params:
         testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
