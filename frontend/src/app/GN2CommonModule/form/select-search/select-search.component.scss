@@ -11,24 +11,30 @@ ul {
 }
 
 .input-value{
-  display: inline-block;
-  overflow: hidden;
-  text-align: left;
+  position: absolute;
+  left: 2%;
+}
+
+.search-box {
+  padding: 10px;
 }
 
 .dropdown-toggle::after {
+  color: #44484a;
   position: absolute;
   right: 2%;
-  top: 70%;
+  top: 50%;
 }
 
-.caret-input{
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  margin-top: -2px;
-  vertical-align: middle;
+.has-danger {
+  border-color: #d9534f!important;
 }
+
+.disabled {
+  background-color: #eceeef;
+}
+
+
 
 .select-data {
   margin:0px;
@@ -40,6 +46,7 @@ ul {
 }
 
 #button-input{
+  position: relative;
   border: 1px solid rgba(0,0,0,.15);
 }
 

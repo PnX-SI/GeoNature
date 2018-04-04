@@ -7,13 +7,14 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./select-search.component.scss']
 })
 export class SelectSearchComponent implements OnInit {
-  public currentValue: any;
+  public currentValue = null;
   public searchControl = new FormControl();
   @Input() parentFormControl: FormControl;
   // value of the options
   @Input() values: Array<any>;
   // key of the array of options
   @Input() key: string;
+  @Input() disabled: boolean;
   @Input() label: any;
   @Input() debounceTime: number;
   @Output() onSearch = new EventEmitter();
@@ -21,8 +22,8 @@ export class SelectSearchComponent implements OnInit {
 
   ngOnInit() {
     this.debounceTime = this.debounceTime || 100;
+    this.disabled = this.disabled || false;
     this.searchControl.valueChanges
-      .filter(value => value !== null)
       .debounceTime(this.debounceTime)
       .distinctUntilChanged()
       .subscribe(value => {

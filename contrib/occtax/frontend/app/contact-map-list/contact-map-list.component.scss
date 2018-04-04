@@ -48,6 +48,10 @@ i.action {
   padding-bottom: 5px;
 }
 
+:host /deep/ #button-input {
+  height: 2rem;
+}
+
 .col-list{
   list-style: none;
 }

@@ -1,14 +1,18 @@
 <small> {{label }} </small>
-<div>
-    <button type="button" class="btn dropdown-toggle btn-white btn-sm full-width"
+<div class="form-group">
+    <button type="button" class="btn dropdown-toggle btn-white full-width btn-sm"
      data-toggle="dropdown"
     role="button"
+    aria-expanded="true"
+    [ngClass]="{'disabled': disabled, 'has-danger' : parentFormControl.invalid && !disabled}"
     id="button-input">
-      <span class="filter-option pull-left input-value"> {{currentValue}} </span>
+      <span class="filter-option input-value"> {{currentValue}} </span>
       &nbsp;<span class="caret caret-input"></span>
     </button>
     <div class="dropdown-menu full-width select-data" >
-      <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
+      <div class="search-box">
+        <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
+      </div>
       <ul ul-dropdown>
         <li *ngFor="let val of values" (click)="setCurrentValue(val)" class="clickable li-dropdown"> 
             <span class="li-label">{{val[key]}} </span>
