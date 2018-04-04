@@ -22,6 +22,7 @@ export class SelectSearchComponent implements OnInit {
   ngOnInit() {
     this.debounceTime = this.debounceTime || 100;
     this.searchControl.valueChanges
+      .filter(value => value !== null)
       .debounceTime(this.debounceTime)
       .distinctUntilChanged()
       .subscribe(value => {
@@ -31,6 +32,7 @@ export class SelectSearchComponent implements OnInit {
 
   setCurrentValue(val) {
     this.currentValue = val[this.key];
+    this.searchControl.reset();
     this.parentFormControl.patchValue(val);
   }
 }
