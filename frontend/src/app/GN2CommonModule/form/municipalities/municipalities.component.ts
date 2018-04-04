@@ -26,20 +26,20 @@ export class MunicipalitiesComponent implements OnInit {
     });
   }
   refreshMunicipalities(municipality) {
-    console.log(municipality);
-    this._dfs.getMunicipalities(municipality).subscribe(
-      data => {
-        this.municipalities = data;
-      },
-      err => {
-        if (err.status === 404) {
-          this.municipalities = [{ nom_com: 'No data to display' }];
-        } else {
-          this.municipalities = [];
-          this._commonService.translateToaster('error', 'ErrorMessage');
+    if (municipality) {
+      this._dfs.getMunicipalities(municipality).subscribe(
+        data => {
+          this.municipalities = data;
+        },
+        err => {
+          if (err.status === 404) {
+            this.municipalities = [{ nom_com: 'No data to display' }];
+          } else {
+            this.municipalities = [];
+            this._commonService.translateToaster('error', 'ErrorMessage');
+          }
         }
-        console.log(err);
-      }
-    );
+      );
+    }
   }
 }

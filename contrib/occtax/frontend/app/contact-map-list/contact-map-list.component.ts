@@ -57,14 +57,10 @@ export class ContactMapListComponent implements OnInit {
     private _dynformService: DynamicFormService
   ) {}
 
-  test(event) {
-    console.log(event);
-  }
-
   ngOnInit() {
     this.dynamicFormGroup = this._fb.group({
       cd_nom: null,
-      observer: null,
+      observers: null,
       date_min: null,
       date_max: null,
       dataset: null,
@@ -153,17 +149,18 @@ export class ContactMapListComponent implements OnInit {
     this.mapListService.refreshUrlQuery(12);
     const params = [];
     for (let key in this.dynamicFormGroup.value) {
-      console.log(key);
-      console.log(this.dynamicFormGroup.value[key]);
-
       let value = this.dynamicFormGroup.value[key];
       if (key === "cd_nom" && this.dynamicFormGroup.value[key]) {
         value = this.dynamicFormGroup.value[key].cd_nom;
-      }
-      if (value && value !== "") {
+      } else if (key === "observers" && this.dynamicFormGroup.value[key]) {
+        this.dynamicFormGroup.value.observers.forEach(observer => {
+          params.push({ param: "observers", value: observer.id_role });
+        });
+      } else if (value && value !== "") {
         params.push({ param: key, value: value });
       }
     }
+    console.log(params);
     this.closeAdvancedFilters();
     this.mapListService.refreshData(this.apiEndPoint, "set", params);
   }
