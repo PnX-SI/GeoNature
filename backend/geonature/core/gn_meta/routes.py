@@ -1,6 +1,6 @@
 import json
 import logging
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
@@ -15,12 +15,15 @@ from geonature.core.gn_meta.models import (
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
+from geonature.utils.errors import GeonatureApiError
+
 
 
 routes = Blueprint('gn_meta', __name__)
 
 # get the root logger
 log = logging.getLogger()
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
 
 
 @routes.route('/list/datasets', methods=['GET'])
@@ -42,6 +45,13 @@ def get_datasets(info_role):
         Retourne la liste des datasets
 
     """
+    if current_app.config['CAS']['CAS_AUTHENTIFICATION']:
+        # synchronise the CA and JDD from the MTD WS
+        try:
+            post_jdd_from_user_id(info_role.id_role, info_role.id_organisme)
+        except Exception as e:
+            gunicorn_error_logger.info(e)
+            log.error(e)
     q = DB.session.query(TDatasets)
     if info_role.tag_object_code == '2':
         q = q.join(
@@ -112,7 +122,12 @@ def get_cd_nomenclature(id_type, cd_nomenclature):
 @json_resp
 def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
-    xml_af = mtd_utils.get_acquisition_framework(uuid)
+    xml_af = None
+    try:
+        xml_af = mtd_utils.get_acquisition_framework(uuid)
+    except GeonatureApiError as e:
+        log.error(e)
+        gunicorn_error_logger.info(e)
 
     if xml_af:
         acquisition_framwork = mtd_utils.parse_acquisition_framwork_xml(xml_af)
@@ -154,7 +169,12 @@ def post_acquisition_framwork_mtd(uuid=None, id_user=None, id_organism=None):
 @json_resp
 def post_jdd_from_user_id(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
-    xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
+    xml_jdd = None
+    try:
+        xml_jdd = mtd_utils.get_jdd_by_user_id(id_user)
+    except GeonatureApiError as e:
+        log.error(e)
+        gunicorn_error_logger.info(e)
 
     if xml_jdd:
         dataset_list = mtd_utils.parse_jdd_xml(xml_jdd)
