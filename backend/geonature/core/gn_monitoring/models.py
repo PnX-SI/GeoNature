@@ -66,6 +66,7 @@ class TBaseVisits(DB.Model):
         DB.Integer,
         ForeignKey('utilisateurs.t_roles.id_role')
     )
+
     visit_date = DB.Column(DB.DateTime)
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
@@ -115,7 +116,7 @@ class TBaseSites(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
-    id_inventor = relationship("TRoles", foreign_keys=[id_digitiser])
+    inventor = relationship("TRoles", foreign_keys=[id_digitiser])
 
     t_base_visits = relationship(
         "TBaseVisits",
