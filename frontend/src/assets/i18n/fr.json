@@ -131,6 +131,9 @@
     "Total": "Total",
     "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
   },
+  "Geo" : {
+    "Municipalities": "Communes"
+  },
   "IntroMessage":
     "Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
   "ErrorMessage": "Une erreur s'est produite",
