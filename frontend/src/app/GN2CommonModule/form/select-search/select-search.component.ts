@@ -58,6 +58,7 @@ export class SelectSearchComponent implements OnInit {
   }
 
   removeItem(item) {
+    console.log('LAAAAAAAAAA');
     // push the element in the items list
     if (this.multiselect) {
       this.values.push(item);
