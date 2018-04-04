@@ -1,25 +1,25 @@
 <small> {{label }} </small>
 <div class="form-group">
-    <button type="button" class="btn dropdown-toggle btn-white full-width btn-sm"
-     data-toggle="dropdown"
-    role="button"
-    aria-expanded="true"
-    [ngClass]="{'disabled': disabled, 'has-danger' : parentFormControl.invalid && !disabled}"
-    id="button-input">
-    <span  *ngIf="multiselect; else elseBlock">
-      <span
-        *ngFor="let item of selectedItems"
-        class="filter-option input-value pull-left"> {{item[key]}}
-        <i (click)="removeItem(item)" class="fa fa-times clickable remove-button"> </i>
+    <div type="button" class="btn dropdown-toggle btn-white full-width btn-sm"
+        data-toggle="dropdown"
+        role="button"
+        aria-expanded="true"
+        [ngClass]="{'disabled': disabled, 'has-danger' : parentFormControl.invalid && !disabled}"
+        id="button-input">
+        <span  *ngIf="multiselect; else elseBlock">
+          <span
+            *ngFor="let item of selectedItems"
+            class="filter-option input-value pull-left"> {{item[key]}}
+            <div (click)="removeItem(item)" class="fa fa-times clickable remove-button"> </div>
+          </span>
       </span>
-  </span>
 
-  <ng-template #elseBlock>
-    <span  class="filter-option input-value"> {{currentValue}} </span>
-  </ng-template>
+      <ng-template #elseBlock>
+        <span  class="filter-option input-value"> {{currentValue}} </span>
+      </ng-template>
 
       &nbsp;<span class="caret caret-input"></span>
-    </button>
+    </div>
     <div class="dropdown-menu full-width select-data" >
       <div class="search-box">
         <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
