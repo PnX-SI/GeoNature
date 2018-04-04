@@ -24,7 +24,6 @@ export class ObserversComponent implements OnInit {
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    this.selectedObservers = [];
     this._dfService.getObservers(this.idMenu).subscribe(data => {
       this.observers = data;
       this.filteredObservers = data;
@@ -38,22 +37,22 @@ export class ObserversComponent implements OnInit {
       });
     }
   }
-  addObserver(obs) {
-    this.observers = this.observers.filter(observer => {
-      return observer.id_role !== obs.id_role;
-    });
-    this.selectedObservers.push(obs);
-    this.searchControl.reset();
-    this.parentFormControl.patchValue(this.selectedObservers);
-    this.onChange.emit(obs);
-  }
+  // addObserver(obs) {
+  //   this.observers = this.observers.filter(observer => {
+  //     return observer.id_role !== obs.id_role;
+  //   });
+  //   this.selectedObservers.push(obs);
+  //   this.searchControl.reset();
+  //   this.parentFormControl.patchValue(this.selectedObservers);
+  //   this.onChange.emit(obs);
+  // }
 
-  removeObserver(obs) {
-    this.observers.push(obs);
-    this.selectedObservers = this.selectedObservers.filter(selectObs => {
-      return selectObs.id_role !== obs.id_role;
-    });
-    this.parentFormControl.patchValue(this.selectedObservers);
-    this.onDelete.emit(obs);
-  }
+  // removeObserver(obs) {
+  //   this.observers.push(obs);
+  //   this.selectedObservers = this.selectedObservers.filter(selectObs => {
+  //     return selectObs.id_role !== obs.id_role;
+  //   });
+  //   this.parentFormControl.patchValue(this.selectedObservers);
+  //   this.onDelete.emit(obs);
+  // }
 }

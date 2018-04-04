@@ -20,8 +20,7 @@ import {
 } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AutoCompleteModule, DropdownModule, ListboxModule } from 'primeng/primeng';
-import { SelectModule } from 'ng2-select';
+import { AutoCompleteModule } from 'primeng/primeng';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -84,10 +83,7 @@ export function HttpLoaderFactory(http: Http) {
     NgxDatatableModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
-    AutoCompleteModule,
-    DropdownModule,
-    ListboxModule,
-    SelectModule
+    AutoCompleteModule
   ],
   declarations: [
     NomenclatureComponent,
