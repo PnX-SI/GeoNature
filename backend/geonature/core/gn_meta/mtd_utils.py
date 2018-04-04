@@ -3,6 +3,7 @@ import datetime
 from xml.etree import ElementTree as ET
 
 from geonature.utils import utilsrequests
+from geonature.utils.errors import GeonatureApiError
 from flask import current_app
 
 namespace = current_app.config['XML_NAMESPACE']
@@ -11,10 +12,12 @@ api_endpoint = current_app.config['MTD_API_ENDPOINT']
 
 def get_acquisition_framework(uuid_af):
     url = "{}/cadre/export/xml/GetRecordById?id={}"
-    r = utilsrequests.get(url.format(api_endpoint, uuid_af))
-    if r.status_code == 200:
-        return r.content
-    return None
+    try:
+        r = utilsrequests.get(url.format(api_endpoint, uuid_af))
+    except AssertionError:
+        raise GeonatureApiError(message="Error with the MTD Web Service")
+    return r.content
+
 
 
 def parse_acquisition_framwork_xml(xml):
@@ -44,11 +47,12 @@ def get_jdd_by_user_id(id_user):
             - id:  id_user from CAS
         return: a XML """
     url = "{}/cadre/jdd/export/xml/GetRecordsByUserId?id={}"
-    r = utilsrequests.get(url.format(api_endpoint, str(id_user)))
-    if r.status_code == 200:
-        return r.content
-    return None
-
+    try:
+        r = utilsrequests.get(url.format(api_endpoint, str(id_user)))
+        assert r.status_code == 200
+    except AssertionError:
+        raise GeonatureApiError(message="Error with the MTD Web Service")
+    return r.content
 
 def parse_jdd_xml(xml):
     """ parse an mtd xml, return a list of datasets"""
