@@ -1,19 +1,22 @@
-<div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
-  <small> {{ label }} </small>
-  <span class="ui-fluid">
-      <p-autoComplete 
-        styleClass="wid100"
-        [inputStyle]="has-error"
-        [formControl]="parentFormControl"        
-        (completeMethod)="filterObservers($event)"
-        (onSelect)="addObservers($event)"
-        (onUnselect)="removeObservers($event)"
-        [suggestions]="filteredObservers" field="nom_complet"
-        [disableControl]="disabled"
-        [minLength]="1" [multiple]="true">
-      </p-autoComplete>
-  </span>
-  <div class="form-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
-
-
-
+<small> {{label}} </small>
+<div class="form-group">
+    <button type="button" class="btn dropdown-toggle btn-white full-width btn-sm"
+     data-toggle="dropdown"
+    role="button"
+    aria-expanded="true"
+    [ngClass]="{'disabled': disabled, 'has-danger' : parentFormControl.invalid && !disabled}"
+    id="button-input">
+      <span *ngFor="let obs of selectedObservers" class="filter-option input-value pull-left"> {{obs.nom_complet}} <i (click)="removeObserver(obs)" class="fa fa-times clickable remove-button"> </i>  </span>
+      &nbsp;<span class="caret caret-input"></span>
+    </button>
+    <div class="dropdown-menu full-width select-data" >
+      <div class="search-box">
+        <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
+      </div>
+      <ul ul-dropdown>
+        <li *ngFor="let obs of observers" (click)="addObserver(obs)" class="clickable li-dropdown"> 
+            <span class="li-label">{{obs.nom_complet}} </span>
+        </li>
+      </ul>
+    </div>
+</div>
