@@ -17,7 +17,6 @@ export class MunicipalitiesComponent implements OnInit {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() debounceTime: number;
-  @Output() onSearch = new EventEmitter();
   public currentValue: any;
   constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
 
