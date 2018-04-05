@@ -24,4 +24,6 @@ Parc national des Cevennes
 CONTRIBUTORS
 ============
 
+* Claire Lagaye
+* Kevin Samuel
 * Donovan Maillard
