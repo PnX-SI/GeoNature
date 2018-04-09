@@ -98,16 +98,7 @@ export class OcctaxMapListComponent implements OnInit {
       { prop: "taxons", name: "taxons" }
     ];
     this.mapListService.availableColumns = this.availableColumns;
-    // column available to filter
-    this.filterableColumns = [
-      { prop: "altitude_max", name: "altitude_max" },
-      { prop: "altitude_min", name: "altitude_min" },
-      { prop: "comment", name: "Commentaire" },
-      { prop: "id_dataset", name: "ID dataset" },
-      { prop: "id_digitiser", name: "Id rédacteur" },
-      { prop: "id_releve_occtax", name: "Id relevé" }
-    ];
-    this.mapListService.filterableColumns = this.filterableColumns;
+
     this.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/vreleve";
 
