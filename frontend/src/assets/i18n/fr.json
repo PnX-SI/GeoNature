@@ -79,7 +79,8 @@
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
-    "GroupType": "Type de regroupement"
+    "GroupType": "Type de regroupement",
+    "DoesNotExist": "Ce relevé n'existe pas"
 
   },
   "Taxon": {
