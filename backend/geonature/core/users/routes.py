@@ -15,11 +15,22 @@ routes = Blueprint('users', __name__)
 def getRolesByMenuId(id_menu):
     '''
         Retourne la liste des roles associés à un menu
+
+        Parameters
+        ----------
+         - nom_complet : début du nom complet du role
     '''
     q = DB.session.query(
         VUserslistForallMenu
     ).filter_by(id_menu=id_menu)
 
+    parameters = request.args
+    if parameters.get('nom_complet'):
+        q = q.filter(
+            VUserslistForallMenu.nom_complet.ilike(
+                '{}%'.format(parameters.get('nom_complet'))
+            )
+        )
     data = q.all()
     return [n.as_dict() for n in data]
 
