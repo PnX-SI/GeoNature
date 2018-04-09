@@ -91,7 +91,7 @@ class ReleveModel(DB.Model):
         }
 
 
-corRoleRelevesContact = DB.Table(
+corRoleRelevesOccurrence = DB.Table(
     'cor_role_releves_occtax',
     DB.MetaData(schema='pr_occtax'),
     DB.Column(
@@ -109,7 +109,7 @@ corRoleRelevesContact = DB.Table(
 )
 
 @serializable
-class CorCountingContact(DB.Model):
+class CorCountingOccurrence(DB.Model):
     __tablename__ = 'cor_counting_occtax'
     __table_args__ = {'schema': 'pr_occtax'}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
@@ -134,7 +134,7 @@ class CorCountingContact(DB.Model):
 
 
 @serializable
-class TOccurrencesContact(DB.Model):
+class TOccurrencesOccurrence(DB.Model):
     __tablename__ = 't_occurrences_occtax'
     __table_args__ = {'schema': 'pr_occtax'}
     id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
@@ -167,7 +167,7 @@ class TOccurrencesContact(DB.Model):
     comment = DB.Column(DB.Unicode)
 
     cor_counting_occtax = relationship(
-        "CorCountingContact",
+        "CorCountingOccurrence",
         lazy='joined',
         cascade="all, delete-orphan"
     )
@@ -176,7 +176,7 @@ class TOccurrencesContact(DB.Model):
 
 @serializable
 @geoserializable
-class TRelevesContact(ReleveModel):
+class TRelevesOccurrence(ReleveModel):
     __tablename__ = 't_releves_occtax'
     __table_args__ = {'schema': 'pr_occtax'}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
@@ -203,21 +203,21 @@ class TRelevesContact(ReleveModel):
     geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
 
     t_occurrences_occtax = relationship(
-        "TOccurrencesContact",
+        "TOccurrencesOccurrence",
         lazy='joined',
         cascade="all,delete-orphan"
     )
 
     observers = DB.relationship(
         'TRoles',
-        secondary=corRoleRelevesContact,
+        secondary=corRoleRelevesOccurrence,
         primaryjoin=(
-            corRoleRelevesContact.c.id_releve_occtax == id_releve_occtax
+            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
         ),
-        secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
         foreign_keys=[
-            corRoleRelevesContact.c.id_releve_occtax,
-            corRoleRelevesContact.c.id_role
+            corRoleRelevesOccurrence.c.id_releve_occtax,
+            corRoleRelevesOccurrence.c.id_role
         ]
     )
 
@@ -229,7 +229,7 @@ class TRelevesContact(ReleveModel):
 
 @serializable
 @geoserializable
-class VReleveContact(ReleveModel):
+class VReleveOccurrence(ReleveModel):
     __tablename__ = 'v_releve_occtax'
     __table_args__ = {'schema': 'pr_occtax'}
     id_releve_occtax = DB.Column(DB.Integer)
@@ -258,14 +258,14 @@ class VReleveContact(ReleveModel):
     observateurs = DB.Column(DB.Unicode)
     observers = DB.relationship(
         'TRoles',
-        secondary=corRoleRelevesContact,
+        secondary=corRoleRelevesOccurrence,
         primaryjoin=(
-            corRoleRelevesContact.c.id_releve_occtax == id_releve_occtax
+            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
         ),
-        secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
         foreign_keys=[
-            corRoleRelevesContact.c.id_releve_occtax,
-            corRoleRelevesContact.c.id_role
+            corRoleRelevesOccurrence.c.id_releve_occtax,
+            corRoleRelevesOccurrence.c.id_role
         ]
     )
 
@@ -300,14 +300,14 @@ class VReleveList(ReleveModel):
     observateurs = DB.Column(DB.Unicode)
     observers = DB.relationship(
         'TRoles',
-        secondary=corRoleRelevesContact,
+        secondary=corRoleRelevesOccurrence,
         primaryjoin=(
-            corRoleRelevesContact.c.id_releve_occtax == id_releve_occtax
+            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
         ),
-        secondaryjoin=(corRoleRelevesContact.c.id_role == TRoles.id_role),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
         foreign_keys=[
-            corRoleRelevesContact.c.id_releve_occtax,
-            corRoleRelevesContact.c.id_role
+            corRoleRelevesOccurrence.c.id_releve_occtax,
+            corRoleRelevesOccurrence.c.id_role
         ]
     )
 

@@ -14,7 +14,7 @@ import {
   FormArray,
   Validators
 } from "@angular/forms";
-import { ContactFormService } from "../contact-form.service";
+import { OcctaxFormService } from "../occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OccTaxConfig } from "../../../occtax.config";
 
@@ -33,7 +33,7 @@ export class CountingComponent implements OnInit {
   @Output() countingAdded = new EventEmitter<any>();
   @ViewChild("typeDenombrement") public typeDenombrement: any;
   constructor(
-    public fs: ContactFormService,
+    public fs: OcctaxFormService,
     private _commonService: CommonService
   ) {}
 

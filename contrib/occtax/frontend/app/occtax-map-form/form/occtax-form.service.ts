@@ -18,7 +18,7 @@ import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { CommonService } from "@geonature_common/service/common.service";
 
 @Injectable()
-export class ContactFormService {
+export class OcctaxFormService {
   public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
@@ -86,7 +86,7 @@ export class ContactFormService {
     const releveForm = this._fb.group({
       geometry: [null, Validators.required],
       properties: this._fb.group({
-        id_releve_contact: null,
+        id_releve_occtax: null,
         id_dataset: [null, Validators.required],
         id_digitiser: this.currentUser.userId,
         date_min: [null, Validators.required],
@@ -122,7 +122,7 @@ export class ContactFormService {
             : null
         ],
         id_nomenclature_grp_typ: null,
-        t_occurrences_contact: [new Array()]
+        t_occurrences_occtax: [new Array()]
       })
     });
     // validtors on date and hours
@@ -143,7 +143,7 @@ export class ContactFormService {
 
   initOccurenceForm(): FormGroup {
     return this._fb.group({
-      id_releve_contact: null,
+      id_releve_occtax: null,
       id_nomenclature_obs_meth: [null, Validators.required],
       id_nomenclature_bio_condition: [null, Validators.required],
       id_nomenclature_bio_status: null,
@@ -162,7 +162,7 @@ export class ContactFormService {
       non_digital_proof: [{ value: null, disabled: true }],
       deleted: false,
       comment: null,
-      cor_counting_contact: ""
+      cor_counting_occtax: ""
     });
   }
 
@@ -236,37 +236,37 @@ export class ContactFormService {
   addOccurrence(index, cancel?: boolean) {
     // Add the current occurrence in releve form or the saved occurrence if cancel
     // push the counting
-    this.occurrenceForm.controls.cor_counting_contact.patchValue(
+    this.occurrenceForm.controls.cor_counting_occtax.patchValue(
       this.countingForm.value
     );
     // format the taxon
     this.occurrenceForm.value.cd_nom = this.occurrenceForm.value.cd_nom.cd_nom;
     // push or update the occurrence
     if (
-      this.releveForm.value.properties.t_occurrences_contact.length ===
+      this.releveForm.value.properties.t_occurrences_occtax.length ===
       this.indexOccurrence
     ) {
       // push the current taxon in the taxon list
       this.taxonsList.push(this.currentTaxon);
-      this.releveForm.value.properties.t_occurrences_contact.push(
+      this.releveForm.value.properties.t_occurrences_occtax.push(
         this.occurrenceForm.value
       );
     } else {
       if (cancel) {
         // push the saved occurrence
-        this.releveForm.value.properties.t_occurrences_contact[
+        this.releveForm.value.properties.t_occurrences_occtax[
           this.indexOccurrence
         ] = this.savedOccurrenceData;
         this.taxonsList.splice(index, 0, this.savedCurrentTaxon);
       } else {
-        this.releveForm.value.properties.t_occurrences_contact[
+        this.releveForm.value.properties.t_occurrences_occtax[
           this.indexOccurrence
         ] = this.occurrenceForm.value;
         this.taxonsList.splice(index, 0, this.currentTaxon);
       }
     }
     // set occurrence index
-    this.indexOccurrence = this.releveForm.value.properties.t_occurrences_contact.length;
+    this.indexOccurrence = this.releveForm.value.properties.t_occurrences_occtax.length;
     // reset counting
     this.nbCounting = [""];
     this.indexCounting = 0;
@@ -307,14 +307,15 @@ export class ContactFormService {
     // set the current index
     this.indexOccurrence = index;
     // get the occurrence data from releve form
-    const occurenceData = this.releveForm.value.properties
-      .t_occurrences_contact[index];
+    const occurenceData = this.releveForm.value.properties.t_occurrences_occtax[
+      index
+    ];
     this.savedOccurrenceData = Object.assign(
       {},
-      this.releveForm.value.properties.t_occurrences_contact[index]
+      this.releveForm.value.properties.t_occurrences_occtax[index]
     );
 
-    const countingData = occurenceData.cor_counting_contact;
+    const countingData = occurenceData.cor_counting_occtax;
     const nbCounting = countingData.length;
     // load the taxons info
     this._dfs.getTaxonInfo(occurenceData.cd_nom).subscribe(taxon => {
@@ -349,7 +350,7 @@ export class ContactFormService {
 
   removeOneOccurrence(index) {
     this.taxonsList.splice(index, 1);
-    this.releveForm.value.properties.t_occurrences_contact.splice(index, 1);
+    this.releveForm.value.properties.t_occurrences_occtax.splice(index, 1);
     this.indexOccurrence = this.indexOccurrence - 1;
   }
 

@@ -6,12 +6,12 @@ import { Subscription } from "rxjs/Subscription";
 import { OccTaxConfig } from "../occtax.config";
 
 @Component({
-  selector: "pnx-contact-map-form",
-  templateUrl: "./contact-map-form.component.html",
-  styleUrls: ["./contact-map-form.component.scss"],
+  selector: "pnx-occtax-map-form",
+  templateUrl: "./occtax-map-form.component.html",
+  styleUrls: ["./occtax-map-form.component.scss"],
   providers: [MapService]
 })
-export class ContactMapFormComponent implements OnInit, OnDestroy {
+export class OcctaxMapFormComponent implements OnInit, OnDestroy {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;

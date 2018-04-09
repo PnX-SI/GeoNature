@@ -5,31 +5,31 @@ import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
-import { ContactFormService } from './contact-form.service';
+import { OcctaxFormService } from './occtax-form.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
-import { ContactConfig } from '../../contact.config';
-import { ContactService } from '../../services/contact.service';
+import { OcctaxConfig } from '../../occtax.config';
+import { OcctaxService } from '../../services/occtax.service';
 import { timeout } from 'rxjs/operators/timeout';
 
 @Component({
-  selector: 'pnx-contact-form',
-  templateUrl: './contact-form.component.html',
-  styleUrls: ['./contact-form.component.scss'],
+  selector: 'pnx-occtax-form',
+  templateUrl: './occtax-form.component.html',
+  styleUrls: ['./occtax-form.component.scss'],
   providers: []
 })
-export class ContactFormComponent implements OnInit {
+export class OcctaxFormComponent implements OnInit {
   @Input() id: number;
 
   constructor(
-    public fs: ContactFormService,
+    public fs: OcctaxFormService,
     private _ms: MapService,
     private _dateParser: NgbDateParserFormatter,
     private _dfs: DataFormService,
-    private _cfs: ContactService
+    private _cfs: OcctaxService
     private toastr: ToastrService,
     private router: Router,
-    private contactService: ContactService,
+    private occtaxService: OcctaxService,
     private _commonService: CommonService
   ) {}
 
@@ -61,7 +61,7 @@ export class ContactFormComponent implements OnInit {
       this.fs.showOccurrence = false;
       this.fs.editionMode = true;
       // load one releve
-      this.contactService.getOneReleve(this.id).subscribe(data => {
+      this.occtaxService.getOneReleve(this.id).subscribe(data => {
         // pre fill the form
         this.fs.releveForm.patchValue({ properties: data.releve.properties });
 
@@ -84,7 +84,7 @@ export class ContactFormComponent implements OnInit {
         });
         (this.fs.releveForm.controls.properties as FormGroup).patchValue({ observers: observers });
         const orderedCdNomList = [];
-        data.releve.properties.t_occurrences_contact.forEach(occ => {
+        data.releve.properties.t_occurrences_occtax.forEach(occ => {
           orderedCdNomList.push(occ.cd_nom);
           this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
             this.fs.taxonsList.push(taxon);
@@ -107,7 +107,7 @@ export class ContactFormComponent implements OnInit {
         }, 1500);
 
         // set the occurrence
-        this.fs.indexOccurrence = data.releve.properties.t_occurrences_contact.length;
+        this.fs.indexOccurrence = data.releve.properties.t_occurrences_occtax.length;
         // push the geometry in releveForm
         this.fs.releveForm.patchValue({ geometry: data.releve.geometry });
         // load the geometry in the map
@@ -138,7 +138,7 @@ export class ContactFormComponent implements OnInit {
     finalForm.properties.date_min = this._dateParser.format(finalForm.properties.date_min);
     finalForm.properties.date_max = this._dateParser.format(finalForm.properties.date_max);
     // format nom_cite and update date
-    finalForm.properties.t_occurrences_contact.forEach((occ, index) => {
+    finalForm.properties.t_occurrences_occtax.forEach((occ, index) => {
       if (this.fs.taxonsList[index].search_name) {
         occ.nom_cite = this.fs.taxonsList[index].search_name.replace('<i>', '');
         occ.nom_cite = occ.nom_cite.replace('</i>', '');
@@ -153,7 +153,7 @@ export class ContactFormComponent implements OnInit {
     }
     // Post
     console.log(JSON.stringify(finalForm));
-    this._cfs.postContact(finalForm).subscribe(
+    this._cfs.postOcctax(finalForm).subscribe(
       response => {
         this.toastr.success('Relevé enregistré', '', { positionClass: 'toast-top-center' });
         // resert the forms
