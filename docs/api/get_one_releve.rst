@@ -5,7 +5,7 @@ API DOCS (draft)
 get one releve
 ================
 
-* url : ../pr_contact/releve/<id_releve_contact:interger>
+* url : ../pr_occtax/releve/<id_releve_occtax:interger>
 * return json :
  
   ::  
@@ -21,7 +21,7 @@ get one releve
 			"id": 1, 
 			"type": "Feature", 
 			"properties": {
-				"id_releve_contact": 1,
+				"id_releve_occtax": 1,
 				"id_dataset": 1,
 				"id_digitiser": 1, 
 				"date_min": "2017-01-01 00:00:00",
@@ -42,8 +42,8 @@ get one releve
 				], 
 				"occurrences": [
 					{
-						"id_occurrence_contact": 1,
-						"id_releve_contact": 1,
+						"id_occurrence_occtax": 1,
+						"id_releve_occtax": 1,
 						"id_nomenclature_obs_meth": 65,
 						"id_nomenclature_bio_condition": 177,
 						"id_nomenclature_bio_status": 30,
@@ -66,8 +66,8 @@ get one releve
 						"comment": "test",
 						"countingContact": [
 							{
-								"id_counting_contact": 1,
-								"id_occurrence_contact": 1, 
+								"id_counting_occtax": 1,
+								"id_occurrence_occtax": 1, 
 								"id_nomenclature_life_stage": 4,
 								"id_nomenclature_sex": 190,  
 								"id_nomenclature_obj_count": 166, 
@@ -76,8 +76,8 @@ get one releve
 								"count_max": 60, 
 							},
 							{
-								"id_counting_contact": 2,
-								"id_occurrence_contact": 1, 
+								"id_counting_occtax": 2,
+								"id_occurrence_occtax": 1, 
 								"id_nomenclature_life_stage": 4,
 								"id_nomenclature_sex": 191,  
 								"id_nomenclature_obj_count": 166, 
