@@ -4,7 +4,7 @@ import requests
 from .bootstrap_test import geonature_app
 import datetime
 valide_occ_tax_releve = {
-    'id_releve_contact' : 1,
+    'id_releve_occtax' : 1,
     'id_dataset' : 1,
     'id_digitiser' : 1,
     'date_min' : datetime.datetime.now(),
