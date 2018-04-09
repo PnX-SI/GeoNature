@@ -30,7 +30,7 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
---USAGE : SELECT gn_medias.check_entity_field_exist('pr_contact.t_releves_contact.id_releve_contact');
+--USAGE : SELECT gn_medias.check_entity_field_exist('pr_occtax.t_releves_occtax.id_releve_occtax');
 
 
 CREATE OR REPLACE FUNCTION check_entity_value_exist(myentity character varying, myvalue integer)
@@ -60,7 +60,7 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 --USAGE
---SELECT gn_medias.check_entity_value_exist('pr_contact.t_releves_contact.id_releve_contact', 2);
+--SELECT gn_medias.check_entity_value_exist('pr_occtax.t_releves_occtax.id_releve_occtax', 2);
 
 CREATE TABLE bib_media_types
 (
