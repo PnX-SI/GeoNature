@@ -12,7 +12,7 @@ import {
   QueryList
 } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ContactFormService } from "../contact-form.service";
+import { OcctaxFormService } from "../occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NomenclatureComponent } from "@geonature_common/form/nomenclature/nomenclature.component";
 import { OccTaxConfig } from "../../../occtax.config";
@@ -31,7 +31,7 @@ export class OccurrenceComponent implements OnInit, AfterViewInit {
   nomenclatures: QueryList<NomenclatureComponent>;
   @ViewChild("existProof") existProof: NomenclatureComponent;
   constructor(
-    public fs: ContactFormService,
+    public fs: OcctaxFormService,
     private _commonService: CommonService
   ) {}
 

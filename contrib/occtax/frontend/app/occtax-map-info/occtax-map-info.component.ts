@@ -1,19 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
-import { ContactFormService } from "../contact-map-form/form/contact-form.service";
+import { OcctaxFormService } from "../occtax-map-form/form/occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { FormGroup, FormArray, FormControl } from "@angular/forms";
-import { ContactService } from "../services/contact.service";
+import { OcctaxService } from "../services/occtax.service";
 import { OccTaxConfig } from "../occtax.config";
 
 @Component({
-  selector: "pnx-contact-map-info",
-  templateUrl: "contact-map-info.component.html",
-  styleUrls: ["./contact-map-info.component.scss"]
+  selector: "pnx-occtax-map-info",
+  templateUrl: "occtax-map-info.component.html",
+  styleUrls: ["./occtax-map-info.component.scss"]
 })
-export class ContactMapInfoComponent implements OnInit {
+export class OcctaxMapInfoComponent implements OnInit {
   private _sub: Subscription;
   public id: number;
   public occtaxConfig = OccTaxConfig;
@@ -31,12 +31,12 @@ export class ContactMapInfoComponent implements OnInit {
   public releveForm: FormGroup;
   public userReleveCruved: any;
   constructor(
-    public fs: ContactFormService,
+    public fs: OcctaxFormService,
     private _route: ActivatedRoute,
     private _ms: MapService,
     private _dfs: DataFormService,
     private _router: Router,
-    private _contactService: ContactService
+    private _occtaxService: OcctaxService
   ) {}
 
   ngOnInit() {
@@ -50,7 +50,7 @@ export class ContactMapInfoComponent implements OnInit {
       this.id = +params["id"];
       if (!isNaN(this.id)) {
         // load one releve
-        this._contactService.getOneReleve(this.id).subscribe(data => {
+        this._occtaxService.getOneReleve(this.id).subscribe(data => {
           this.userReleveCruved = data.cruved;
 
           this.releveForm.patchValue(data.releve);
@@ -68,7 +68,7 @@ export class ContactMapInfoComponent implements OnInit {
           this._ms.loadGeometryReleve(data.releve, false);
 
           // load taxonomy info
-          data.releve.properties.t_occurrences_contact.forEach(occ => {
+          data.releve.properties.t_occurrences_occtax.forEach(occ => {
             this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
               occ["taxon"] = taxon;
               this.showSpinner = false;
@@ -84,9 +84,7 @@ export class ContactMapInfoComponent implements OnInit {
     this.selectedOccurrence = occ;
     this.occurrenceForm.patchValue(occ);
     // init counting form with data
-    this.countingFormArray = this.fs.initCountingArray(
-      occ.cor_counting_contact
-    );
+    this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_occtax);
   }
 
   loadNomenclaturesOccurrence() {

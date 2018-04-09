@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 import { GeoJSON } from "leaflet";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { Subscription } from "rxjs/Subscription";
-import { ContactService } from "../services/contact.service";
+import { OcctaxService } from "../services/occtax.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
@@ -19,12 +19,12 @@ import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-
 import { FILTERSLIST } from "./filters-list";
 
 @Component({
-  selector: "pnx-contact-map-list",
-  templateUrl: "contact-map-list.component.html",
-  styleUrls: ["./contact-map-list.component.scss"],
+  selector: "pnx-occtax-map-list",
+  templateUrl: "occtax-map-list.component.html",
+  styleUrls: ["./occtax-map-list.component.scss"],
   providers: [MapListService]
 })
-export class ContactMapListComponent implements OnInit {
+export class OcctaxMapListComponent implements OnInit {
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public pathEdit: string;
@@ -48,7 +48,7 @@ export class ContactMapListComponent implements OnInit {
   constructor(
     private _http: Http,
     private mapListService: MapListService,
-    private _contactService: ContactService,
+    private _occtaxService: OcctaxService,
     private _commonService: CommonService,
     private _translate: TranslateService,
     private _router: Router,
@@ -93,7 +93,7 @@ export class ContactMapListComponent implements OnInit {
       { prop: "date_min", name: "Date début" },
       { prop: "id_dataset", name: "ID dataset" },
       { prop: "id_digitiser", name: "ID rédacteur" },
-      { prop: "id_releve_contact", name: "ID relevé" },
+      { prop: "id_releve_occtax", name: "ID relevé" },
       { prop: "observateurs", name: "observateurs" },
       { prop: "taxons", name: "taxons" }
     ];
@@ -105,10 +105,10 @@ export class ContactMapListComponent implements OnInit {
       { prop: "comment", name: "Commentaire" },
       { prop: "id_dataset", name: "ID dataset" },
       { prop: "id_digitiser", name: "Id rédacteur" },
-      { prop: "id_releve_contact", name: "Id relevé" }
+      { prop: "id_releve_occtax", name: "Id relevé" }
     ];
     this.mapListService.filterableColumns = this.filterableColumns;
-    this.idName = "id_releve_contact";
+    this.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/vreleve";
 
     // FETCH THE DATA
@@ -174,7 +174,7 @@ export class ContactMapListComponent implements OnInit {
   }
 
   onDeleteReleve(id) {
-    this._contactService.deleteReleve(id).subscribe(
+    this._occtaxService.deleteReleve(id).subscribe(
       data => {
         this.deleteObsFront(id);
         this._commonService.translateToaster(

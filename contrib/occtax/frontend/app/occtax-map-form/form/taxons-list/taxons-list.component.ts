@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { ContactFormService } from "../../../contact-map-form/form/contact-form.service";
+import { OcctaxFormService } from "../../../occtax-map-form/form/occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Taxon } from "@geonature_common_form/taxonomy/taxonomy.component";
 
@@ -14,7 +14,7 @@ export class TaxonsListComponent implements OnInit {
   @Output() taxonEdited = new EventEmitter<number>();
 
   constructor(
-    private _cfs: ContactFormService,
+    private _cfs: OcctaxFormService,
     private _commonService: CommonService
   ) {}
 

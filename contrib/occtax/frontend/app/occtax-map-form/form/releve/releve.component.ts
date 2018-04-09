@@ -4,7 +4,7 @@ import { Subscription } from "rxjs/Subscription";
 import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { ContactFormService } from "../contact-form.service";
+import { OcctaxFormService } from "../occtax-form.service";
 import { ViewEncapsulation } from "@angular/core";
 import {
   NgbDateStruct,
@@ -35,7 +35,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   constructor(
     private _ms: MapService,
     private _dfs: DataFormService,
-    public fs: ContactFormService,
+    public fs: OcctaxFormService,
     private _commonService: CommonService,
     private modalService: NgbModal,
     private _dateFormater: NgbDateParserFormatter

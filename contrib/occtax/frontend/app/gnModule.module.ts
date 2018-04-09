@@ -5,38 +5,38 @@ import { Routes, RouterModule } from "@angular/router";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { Http } from "@angular/http";
 // Components
-import { ContactMapFormComponent } from "./contact-map-form/contact-map-form.component";
-import { ReleveComponent } from "./contact-map-form/form/releve/releve.component";
-import { CountingComponent } from "./contact-map-form/form/counting/counting.component";
-import { OccurrenceComponent } from "./contact-map-form/form/occurrence/occurrence.component";
-import { ContactFormComponent } from "./contact-map-form/form/contact-form.component";
-import { TaxonsListComponent } from "./contact-map-form/form/taxons-list/taxons-list.component";
-import { ContactMapListComponent } from "./contact-map-list/contact-map-list.component";
-import { ContactMapInfoComponent } from "./contact-map-info/contact-map-info.component";
+import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
+import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
+import { CountingComponent } from "./occtax-map-form/form/counting/counting.component";
+import { OccurrenceComponent } from "./occtax-map-form/form/occurrence/occurrence.component";
+import { OcctaxFormComponent } from "./occtax-map-form/form/occtax-form.component";
+import { TaxonsListComponent } from "./occtax-map-form/form/taxons-list/taxons-list.component";
+import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
+import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 // Service
-import { ContactFormService } from "./contact-map-form/form/contact-form.service";
-import { ContactService } from "./services/contact.service";
+import { OcctaxFormService } from "./occtax-map-form/form/occtax-form.service";
+import { OcctaxService } from "./services/occtax.service";
 
 const routes: Routes = [
-  { path: "", component: ContactMapListComponent },
-  { path: "form", component: ContactMapFormComponent },
-  { path: "form/:id", component: ContactMapFormComponent, pathMatch: "full" },
-  { path: "info/:id", component: ContactMapInfoComponent, pathMatch: "full" }
+  { path: "", component: OcctaxMapListComponent },
+  { path: "form", component: OcctaxMapFormComponent },
+  { path: "form/:id", component: OcctaxMapFormComponent, pathMatch: "full" },
+  { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" }
 ];
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
   declarations: [
-    ContactMapFormComponent,
-    ContactFormComponent,
-    ContactMapInfoComponent,
+    OcctaxMapFormComponent,
+    OcctaxFormComponent,
+    OcctaxMapInfoComponent,
     ReleveComponent,
     CountingComponent,
     OccurrenceComponent,
     TaxonsListComponent,
-    ContactMapListComponent
+    OcctaxMapListComponent
   ],
-  providers: [ContactFormService, ContactService],
-  bootstrap: [ContactMapFormComponent]
+  providers: [OcctaxFormService, OcctaxService],
+  bootstrap: [OcctaxMapFormComponent]
 })
 export class GeonatureModule {}

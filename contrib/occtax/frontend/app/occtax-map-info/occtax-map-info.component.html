@@ -63,7 +63,7 @@
               width="40">
               <div *ngIf="!showSpinner">
                 <table class="table table-hover ">
-                  <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_contact; let i = index" 
+                  <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_occtax; let i = index" 
                   (click)="selectOccurrence(occ, i)">
                     <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
                     <td><i class="fa fa-eye clickable" aria-hidden="true"></i></td>
@@ -224,7 +224,7 @@
 
           <!-- denombrement -->
           <div class="tab-pane" id="counting" role="tabpanel">
-            <div *ngFor="let counting of selectedOccurrence?.cor_counting_contact; let index = index">
+            <div *ngFor="let counting of selectedOccurrence?.cor_counting_occtax; let index = index">
                 <div class="row row-sm">
                     <div *ngIf="occtaxConfig.form_fields.counting.life_stage" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm col-counting">
                         <pnx-nomenclature
