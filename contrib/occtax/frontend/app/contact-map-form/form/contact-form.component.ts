@@ -92,6 +92,7 @@ export class ContactFormComponent implements OnInit {
         });
 
         // HACK to re order taxon list because of side effect of ajax
+        // TODO: do it with async
         const reOrderTaxon = [];
         setTimeout(() => {
           for (let i = 0; i < orderedCdNomList.length; i++) {
@@ -111,7 +112,12 @@ export class ContactFormComponent implements OnInit {
         this.fs.releveForm.patchValue({ geometry: data.releve.geometry });
         // load the geometry in the map
         this._ms.loadGeometryReleve(data.releve, true);
-      }); // end subscribe
+      },
+    error => {
+      this._commonService.translateToaster('error', 'Releve.DoesNotExist');
+      this.router.navigate(['/occtax']);
+    }
+    ); // end subscribe
     }
   } // end ngOnInit
 

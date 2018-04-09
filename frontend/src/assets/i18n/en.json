@@ -79,7 +79,8 @@
     "AddTaxonOnReleve": "Add a taxon on this releve",
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
-    "GroupType": "Grouping type"
+    "GroupType": "Grouping type",
+    "DoesNotExist": "This releve does not exist"
   },
   "Taxon": {
     "ObservedTaxon": "Observed taxon",
