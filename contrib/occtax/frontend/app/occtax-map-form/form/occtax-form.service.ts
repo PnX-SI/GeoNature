@@ -142,7 +142,7 @@ export class OcctaxFormService {
   }
 
   initOccurenceForm(): FormGroup {
-    return this._fb.group({
+    const occForm = this._fb.group({
       id_releve_occtax: null,
       id_nomenclature_obs_meth: [null, Validators.required],
       id_nomenclature_bio_condition: [null, Validators.required],
@@ -154,7 +154,7 @@ export class OcctaxFormService {
       id_nomenclature_blurring: null,
       determiner: null,
       id_nomenclature_determination_method: null,
-      cd_nom: [null, Validators.required],
+      cd_nom: [null, Validators.compose([Validators.required])],
       nom_cite: null,
       meta_v_taxref: "Taxref V9.0",
       sample_number_proof: null,
@@ -164,6 +164,10 @@ export class OcctaxFormService {
       comment: null,
       cor_counting_occtax: ""
     });
+
+    occForm.controls.cd_nom.setValidators([this._formService.taxonValidator]);
+
+    return occForm;
   }
 
   initCounting(): FormGroup {
