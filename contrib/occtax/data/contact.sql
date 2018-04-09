@@ -98,7 +98,6 @@ CREATE TABLE t_occurrences_contact (
     id_nomenclature_blurring integer, --DEFAULT get_default_nomenclature_value(4),
     determiner character varying(255),
     id_nomenclature_determination_method integer, --DEFAULT get_default_nomenclature_value(106),
-    determination_method_as_text text,
     cd_nom integer,
     nom_cite character varying(255),
     meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'')',
