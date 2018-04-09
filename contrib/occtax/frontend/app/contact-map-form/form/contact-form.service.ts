@@ -154,7 +154,6 @@ export class ContactFormService {
       id_nomenclature_blurring: null,
       determiner: null,
       id_nomenclature_determination_method: null,
-      determination_method_as_text: "",
       cd_nom: [null, Validators.required],
       nom_cite: null,
       meta_v_taxref: "Taxref V9.0",
