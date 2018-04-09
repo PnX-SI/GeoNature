@@ -55,36 +55,36 @@ def get_datasets(info_role):
         except Exception as e:
             gunicorn_error_logger.info(e)
             log.error(e)
-        finally:
-            q = DB.session.query(TDatasets)
-            if info_role.tag_object_code == '2':
-                q = q.join(
-                    CorDatasetsActor,
-                    CorDatasetsActor.id_dataset == TDatasets.id_dataset
-                )
-                # if organism is None => do not filter on id_organism even if level = 2
-                if info_role.id_organisme is None:
-                    q = q.filter(
-                        CorDatasetsActor.id_role == info_role.id_role
-                    )
-                else:
-                    q = q.filter(
-                        or_(
-                            CorDatasetsActor.id_organism == info_role.id_organisme,
-                            CorDatasetsActor.id_role == info_role.id_role
-                        )
-                    )
-            elif info_role.tag_object_code == '1':
-                q = q.join(
-                    CorDatasetsActor,
-                    CorDatasetsActor.id_dataset == TDatasets.id_dataset
-                ).filter(
+            
+    q = DB.session.query(TDatasets)
+    if info_role.tag_object_code == '2':
+        q = q.join(
+            CorDatasetsActor,
+            CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        )
+        # if organism is None => do not filter on id_organism even if level = 2
+        if info_role.id_organisme is None:
+            q = q.filter(
+                CorDatasetsActor.id_role == info_role.id_role
+            )
+        else:
+            q = q.filter(
+                or_(
+                    CorDatasetsActor.id_organism == info_role.id_organisme,
                     CorDatasetsActor.id_role == info_role.id_role
                 )
+            )
+    elif info_role.tag_object_code == '1':
+        q = q.join(
+            CorDatasetsActor,
+            CorDatasetsActor.id_dataset == TDatasets.id_dataset
+        ).filter(
+            CorDatasetsActor.id_role == info_role.id_role
+        )
 
-            data = q.all()
+    data = q.all()
 
-            return [d.as_dict(True) for d in data]
+    return [d.as_dict(True) for d in data]
 
 
 @routes.route('/list/parameters', methods=['GET'])
