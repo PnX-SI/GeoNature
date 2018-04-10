@@ -33,7 +33,7 @@ def get_mod_list(info_role):
     for app in all_apps:
         for mod in get_mods_enabled():
             if mod['module_name'] == app.nom_application:
-                user_cruved = fnauth.get_cruved(
+                user_cruved = fnauth.cruved_for_user_in_app(
                     user.id_role,
                     app.id_application
                 )
