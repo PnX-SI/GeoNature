@@ -81,9 +81,9 @@ INSERT INTO pr_occtax.cor_role_releves_occtax VALUES
 (1,1)
 ,(2,1);
 
-INSERT INTO  pr_occtax.cor_counting_occtax (id_counting_occtax, id_occurrence_occtax, id_nomenclature_life_stage, id_nomenclature_sex, id_nomenclature_obj_count, id_nomenclature_type_count, count_min, count_max, id_nomenclature_valid_status, id_validator, validation_comment) VALUES
-(1,1,4,190,166,107,5,5,347,1,NULL)
-,(2,1,4,191,166,107,1,1,347,1,'la détermination est évidente et valide puisque c''est moi qui l''ai obervé...'),
-(3,2,4,191,166,107,1,1,347,1,NULL),
-(4,3,4,191,166,107,1,1,347,1,NULL);
+INSERT INTO  pr_occtax.cor_counting_occtax (id_counting_occtax, id_occurrence_occtax, id_nomenclature_life_stage, id_nomenclature_sex, id_nomenclature_obj_count, id_nomenclature_type_count, count_min, count_max) VALUES
+(1,1,4,190,166,107,5,5)
+,(2,1,4,191,166,107,1,1),
+(3,2,4,191,166,107,1,1),
+(4,3,4,191,166,107,1,1);
 SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', 5, true);
