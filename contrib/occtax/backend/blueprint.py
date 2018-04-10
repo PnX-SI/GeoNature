@@ -8,15 +8,16 @@ from sqlalchemy import exc, or_, func, distinct
 
 from geonature.utils.env import DB
 from .models import (
-    TRelevesContact,
-    TOccurrencesContact,
-    CorCountingContact,
-    VReleveContact,
+    TRelevesOccurrence,
+    TOccurrencesOccurrence,
+    CorCountingOccurrence,
+    VReleveOccurrence,
     VReleveList,
-    corRoleRelevesContact,
+    corRoleRelevesOccurrence,
     DefaultNomenclaturesValue
 )
 from .repositories import ReleveRepository
+from .utils import get_nomenclature_filters
 from geonature.utils.utilssqlalchemy import (
     json_resp,
     testDataType,
@@ -44,7 +45,7 @@ blueprint = Blueprint('pr_occtax', __name__)
 @fnauth.check_auth_cruved('R', True)
 @json_resp
 def getReleves(info_role):
-    releve_repository = ReleveRepository(TRelevesContact)
+    releve_repository = ReleveRepository(TRelevesOccurrence)
     data = releve_repository.get_all(info_role)
     return FeatureCollection([n.get_geofeature() for n in data])
 
@@ -53,7 +54,7 @@ def getReleves(info_role):
 @fnauth.check_auth_cruved('R')
 @json_resp
 def getOccurrences():
-    q = DB.session.query(TOccurrencesContact)
+    q = DB.session.query(TOccurrencesOccurrence)
     data = q.all()
 
     return ([n.as_dict() for n in data])
@@ -63,7 +64,7 @@ def getOccurrences():
 @fnauth.check_auth_cruved('R', True)
 @json_resp
 def getOneReleve(id_releve, info_role):
-    releve_repository = ReleveRepository(TRelevesContact)
+    releve_repository = ReleveRepository(TRelevesOccurrence)
     data = releve_repository.get_one(id_releve, info_role)
     user_cruved = fnauth.get_cruved(
         info_role.id_role,
@@ -76,36 +77,36 @@ def getOneReleve(id_releve, info_role):
         }
 
 
-@blueprint.route('/vrelevecontact', methods=['GET'])
+@blueprint.route('/vreleveocctax', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
-def getViewReleveContact(info_role):
-    releve_repository = ReleveRepository(VReleveContact)
+def getViewReleveOccurrence(info_role):
+    releve_repository = ReleveRepository(VReleveOccurrence)
     q = releve_repository.get_filtered_query(info_role)
 
     parameters = request.args
 
-    nbResultsWithoutFilter = DB.session.query(VReleveContact).count()
+    nbResultsWithoutFilter = DB.session.query(VReleveOccurrence).count()
 
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
     page = int(parameters.get('offset')) if parameters.get('offset') else 0
 
     # Filters
     for param in parameters:
-        if param in VReleveContact.__table__.columns:
-            col = getattr(VReleveContact.__table__.columns, param)
+        if param in VReleveOccurrence.__table__.columns:
+            col = getattr(VReleveOccurrence.__table__.columns, param)
             q = q.filter(col == parameters[param])
 
     # Order by
     if 'orderby' in parameters:
-        if parameters.get('orderby') in VReleveContact.__table__.columns:
+        if parameters.get('orderby') in VReleveOccurrence.__table__.columns:
             orderCol = getattr(
-                VReleveContact.__table__.columns,
+                VReleveOccurrence.__table__.columns,
                 parameters['orderby']
             )
         else:
             orderCol = getattr(
-                VReleveContact.__table__.columns,
+                VReleveOccurrence.__table__.columns,
                 'occ_meta_create_date'
             )
 
@@ -158,7 +159,7 @@ def getViewReleveList(info_role):
             Numéro de la page à retourner
         cd_nom: int
             Filtrer les relevés avec des occurrences avec le taxon x
-        observer: int
+        observers: int
         date_up: date
             Date minimum des relevés à retourner
         date_low: date
@@ -202,23 +203,23 @@ def getViewReleveList(info_role):
         if testT:
             raise GeonatureApiError(message=testT)
         q = q.join(
-            TOccurrencesContact,
-            TOccurrencesContact.id_releve_contact ==
-            VReleveList.id_releve_contact
+            TOccurrencesOccurrence,
+            TOccurrencesOccurrence.id_releve_occtax ==
+            VReleveList.id_releve_occtax
         ).filter(
-            TOccurrencesContact.cd_nom == int(params.pop('cd_nom'))
+            TOccurrencesOccurrence.cd_nom == int(params.pop('cd_nom'))
         )
-    if 'observer' in params:
+    if 'observers' in params:
         q = q.join(
-            corRoleRelevesContact,
-            corRoleRelevesContact.columns.id_releve_contact ==
-            VReleveList.id_releve_contact
+            corRoleRelevesOccurrence,
+            corRoleRelevesOccurrence.columns.id_releve_occtax ==
+            VReleveList.id_releve_occtax
         ).filter(
-            corRoleRelevesContact.columns.id_role.in_(
-                params.getlist('observer')
+            corRoleRelevesOccurrence.columns.id_role.in_(
+                request.args.getlist('observers')
             )
         )
-        params.pop('observer')
+        params.pop('observers')
 
     if 'date_up' in params:
         testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
@@ -275,6 +276,7 @@ def getViewReleveList(info_role):
         observers_query = "%{}%".format(params.pop('observateurs'))
         q = q.filter(VReleveList.observateurs.ilike(observers_query))
 
+
     # Generic Filters
     for param in params:
         if param in VReleveList.__table__.columns:
@@ -283,6 +285,49 @@ def getViewReleveList(info_role):
             if testT:
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
+    
+    releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(params)
+    if len(releve_filters) > 0:
+        q = q.join(
+            TRelevesOccurrence,
+            VReleveList.id_releve_occtax ==
+            TRelevesOccurrence.id_releve_occtax
+        )
+        for nomenclature in releve_filters:
+            col = getattr(TRelevesOccurrence.__table__.columns, nomenclature)            
+            q = q.filter(col == params.pop(nomenclature))
+
+    if len(occurrence_filters) > 0:
+        q = q.join(
+            TOccurrencesOccurrence,
+            VReleveList.id_releve_occtax ==
+            TOccurrencesOccurrence.id_releve_occtax
+        )
+        for nomenclature in occurrence_filters:
+            col = getattr(TOccurrencesOccurrence.__table__.columns, nomenclature)
+            q = q.filter(col == params.pop(nomenclature))
+            
+    if len(counting_filters) > 0:
+        if len(occurrence_filters) > 0:
+            q = q.join(
+                CorCountingOccurrence,
+                TOccurrencesOccurrence.id_occurrence_occtax ==
+                CorCountingOccurrence.id_occurrence_occtax
+            )
+        else:
+            q = q.join(
+                TOccurrencesOccurrence,
+                TOccurrencesOccurrence.id_releve_occtax ==
+                VReleveList.id_releve_occtax
+            ).join(
+                CorCountingOccurrence,
+                TOccurrencesOccurrence.id_occurrence_occtax ==
+                CorCountingOccurrence.id_occurrence_occtax
+
+            )
+        for nomenclature in counting_filters:
+            col = getattr(CorCountingOccurrence.__table__.columns, nomenclature)
+            q = q.filter(col == params.pop(nomenclature))
 
     nbResults = q.count()
 
@@ -332,25 +377,25 @@ def getViewReleveList(info_role):
 @fnauth.check_auth_cruved('C', True)
 @json_resp
 def insertOrUpdateOneReleve(info_role):
-    releveRepository = ReleveRepository(TRelevesContact)
+    releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
 
-    if 't_occurrences_contact' in data['properties']:
-        occurrences_contact = data['properties']['t_occurrences_contact']
-        data['properties'].pop('t_occurrences_contact')
+    if 't_occurrences_occtax' in data['properties']:
+        occurrences_occtax = data['properties']['t_occurrences_occtax']
+        data['properties'].pop('t_occurrences_occtax')
 
     if 'observers' in data['properties']:
         observersList = data['properties']['observers']
         data['properties'].pop('observers')
 
-    # Test et suppression des propriétés inexistantes de TRelevesContact
+    # Test et suppression des propriétés inexistantes de TRelevesOccurrence
     attliste = [k for k in data['properties']]
     for att in attliste:
-        if not getattr(TRelevesContact, att, False):
+        if not getattr(TRelevesOccurrence, att, False):
             data['properties'].pop(att)
     # set id_digitiser
     data['properties']['id_digitiser'] = info_role.id_role
-    releve = TRelevesContact(**data['properties'])
+    releve = TRelevesOccurrence(**data['properties'])
 
     shape = asShape(data['geometry'])
     releve.geom_4326 = from_shape(shape, srid=4326)
@@ -361,32 +406,32 @@ def insertOrUpdateOneReleve(info_role):
         for o in observers:
             releve.observers.append(o)
 
-    for occ in occurrences_contact:
-        if occ['cor_counting_contact']:
-            cor_counting_contact = occ['cor_counting_contact']
-            occ.pop('cor_counting_contact')
+    for occ in occurrences_occtax:
+        if occ['cor_counting_occtax']:
+            cor_counting_occtax = occ['cor_counting_occtax']
+            occ.pop('cor_counting_occtax')
 
         # Test et suppression
-        #   des propriétés inexistantes de TOccurrencesContact
+        #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
         for att in attliste:
-            if not getattr(TOccurrencesContact, att, False):
+            if not getattr(TOccurrencesOccurrence, att, False):
                 occ.pop(att)
 
-        contact = TOccurrencesContact(**occ)
-        for cnt in cor_counting_contact:
+        occtax = TOccurrencesOccurrence(**occ)
+        for cnt in cor_counting_occtax:
             # Test et suppression
-            #   des propriétés inexistantes de CorCountingContact
+            #   des propriétés inexistantes de CorCountingOccurrence
             attliste = [k for k in cnt]
             for att in attliste:
-                if not getattr(CorCountingContact, att, False):
+                if not getattr(CorCountingOccurrence, att, False):
                     cnt.pop(att)
 
-            countingContact = CorCountingContact(**cnt)
-            contact.cor_counting_contact.append(countingContact)
-        releve.t_occurrences_contact.append(contact)
+            countingOccurrence = CorCountingOccurrence(**cnt)
+            occtax.cor_counting_occtax.append(countingOccurrence)
+        releve.t_occurrences_occtax.append(occtax)
 
-    if releve.id_releve_contact:
+    if releve.id_releve_occtax:
         # get update right of the user
         user_cruved = fnauth.get_cruved(
             info_role.id_role,
@@ -419,7 +464,7 @@ def insertOrUpdateOneReleve(info_role):
 @json_resp
 def deleteOneReleve(id_releve, info_role):
     """Suppression d'une données d'un relevé et des occurences associés
-      c-a-d un enregistrement de la table t_releves_contact
+      c-a-d un enregistrement de la table t_releves_occtax
 
     Parameters
     ----------
@@ -427,7 +472,7 @@ def deleteOneReleve(id_releve, info_role):
             identifiant de l'enregistrement à supprimer
 
     """
-    releveRepository = ReleveRepository(TRelevesContact)
+    releveRepository = ReleveRepository(TRelevesOccurrence)
     releveRepository.delete(id_releve, info_role)
 
     return {'message': 'delete with success'}, 200
@@ -438,7 +483,7 @@ def deleteOneReleve(id_releve, info_role):
 @json_resp
 def deleteOneOccurence(id_occ):
     """Suppression d'une données d'occurrence et des dénombrements associés
-      c-a-d un enregistrement de la table t_occurrences_contact
+      c-a-d un enregistrement de la table t_occurrences_occtax
 
     Parameters
     ----------
@@ -446,7 +491,7 @@ def deleteOneOccurence(id_occ):
             identifiant de l'enregistrement à supprimer
 
     """
-    q = DB.session.query(TOccurrencesContact)
+    q = DB.session.query(TOccurrencesOccurrence)
 
     try:
         data = q.get(id_occ)
@@ -472,7 +517,7 @@ def deleteOneOccurence(id_occ):
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Suppression d'une données de dénombrement
-      c-a-d un enregistrement de la table cor_counting_contact
+      c-a-d un enregistrement de la table cor_counting_occtax
 
 
     Parameters
@@ -481,7 +526,7 @@ def deleteOneOccurenceCounting(id_count):
             identifiant de l'enregistrement à supprimer
 
     """
-    q = DB.session.query(CorCountingContact)
+    q = DB.session.query(CorCountingOccurrence)
 
     try:
         data = q.get(id_count)
@@ -519,7 +564,7 @@ def getDefaultNomenclatures():
 
     q = DB.session.query(
         distinct(DefaultNomenclaturesValue.id_type),
-        func.pr_contact.get_default_nomenclature_value(
+        func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.id_type,
             organism,
             regne,
@@ -543,13 +588,13 @@ def getDefaultNomenclatures():
 @csv_resp
 def export_sinp(info_role):
     """ Return the data (CSV) at SINP format
-        from pr_contact.export_occtax_sinp view
+        from pr_occtax.export_occtax_sinp view
     If no paramater return all the dataset allowed of the user
     params:
         - id_dataset : integer
         - uuid_dataset: uuid
     """
-    viewSINP = GenericTable('pr_contact.export_occtax_dlb', 'pr_contact')
+    viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)
     q = DB.session.query(viewSINP.tableDef)
     params = request.args
     allowed_datasets = TDatasets.get_user_datasets(info_role)
@@ -583,29 +628,29 @@ def export_sinp(info_role):
                     403
                 )
             elif info_role.tag_object_code == '1':
-                # join on TCounting, TOccurrence, Treleve and corRoleContact
+                # join on TCounting, TOccurrence, Treleve and corRoleOccurrence
                 #   to get users
                 q = q.outerjoin(
-                    CorCountingContact,
+                    CorCountingOccurrence,
                     viewSINP.tableDef.columns.permId ==
-                    CorCountingContact.unique_id_sinp_occtax
+                    CorCountingOccurrence.unique_id_sinp_occtax
                 ).join(
-                    TOccurrencesContact,
-                    CorCountingContact.id_occurrence_contact ==
-                    TOccurrencesContact.id_occurrence_contact
+                    TOccurrencesOccurrence,
+                    CorCountingOccurrence.id_occurrence_occtax ==
+                    TOccurrencesOccurrence.id_occurrence_occtax
                 ).join(
-                    TRelevesContact,
-                    TOccurrencesContact.id_releve_contact ==
-                    TRelevesContact.id_releve_contact
+                    TRelevesOccurrence,
+                    TOccurrencesOccurrence.id_releve_occtax ==
+                    TRelevesOccurrence.id_releve_occtax
                 ).outerjoin(
-                    corRoleRelevesContact,
-                    TRelevesContact.id_releve_contact ==
-                    corRoleRelevesContact.columns.id_releve_contact
+                    corRoleRelevesOccurrence,
+                    TRelevesOccurrence.id_releve_occtax ==
+                    corRoleRelevesOccurrence.columns.id_releve_occtax
                 )
                 q = q.filter(
                     or_(
-                        corRoleRelevesContact.columns.id_role == info_role.id_role,
-                        TRelevesContact.id_digitiser == info_role.id_role
+                        corRoleRelevesOccurrence.columns.id_role == info_role.id_role,
+                        TRelevesOccurrence.id_digitiser == info_role.id_role
                     )
                 )
         q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))

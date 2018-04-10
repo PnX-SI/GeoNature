@@ -2,10 +2,42 @@
 CHANGELOG
 =========
 
-2.0.0.beta3 (unreleased)
+2.0.0.beta4 (unreleased)
 ------------------------
 
 **Corrections**
+
+2.0.0.beta3 (2018-03-28)
+------------------------
+
+**Nouveautés**
+
+* Travail sur le module générique de Suivi intégré à GeoNature (``gn_monitoring``). Gestion des fichiers de configuration
+* Gestion de l'installation d'un module qui n'a pas de Frontend dans GeoNature
+* Mise en place de tests automatiques au niveau du Frontend
+* Ménage et réorganisation du code du Frontend
+* Factorisation et harmonisation des composants génériques Angular
+* Suppression des blocs non fonctionnels sur la Home
+* Mise à jour de la doc et du MCD
+* Possibilité de masquer ou afficher les différents champs dans le formulaire Occtax (#344)
+* Ajout des nomenclatures dans les filtres d'OccTax à partir du nouveau composant ``dynamicForm`` qui permet de créer dynamiquement un formulaire en déclarant les champs (#318)
+* Amélioration du composant de recherche d'un taxon en ne recherchant que sur les débuts de mot et en affichant en premier les noms de référence (ordrer_by cd_nom=cd_ref DESC) - #334
+* Mise en place d'une route générique permettant de requêter dans une vue non mappée
+* Suppression des options vides dans les listes déroulantes des nomenclatures
+* Ajout de quelques paramètres (niveau de zoom mini dans chaque module, ID de la liste des taxons saisissables dans Occtax...)
+
+**Corrections**
+
+* Correction de la pagination du composant MapList
+* Correction des droits attribués automatiquement quand on se connecte avec le CAS
+* Correction de l'installation optionnelle de UsersHub dans le script ``install_all.sh``
+
+**Modules annexes**
+
+* Début de refonte du module Suivi chiro (https://github.com/PnCevennes/gn_module_suivi_chiro) connecté au module générique de suivi de GeoNature, dont le front sera externe à GeoNature (https://github.com/PnCevennes/projet_suivi)
+* Maquettage et avancée sur le module Validation (https://github.com/PnX-SI/gn_module_validation)
+* Définition du module Suivi Habitat Territoire (https://github.com/PnX-SI/gn_module_suivi_habitat_territoire)
+* Piste de définition du module Interopérabilité (https://github.com/PnX-SI/gn_module_interoperabilite)
 
 2.0.0.beta2 (2018-03-16)
 ------------------------
@@ -14,7 +46,7 @@ CHANGELOG
 
 * Compléments de la documentation (schéma architecture, administration, installation, développement, FAQ...)
 * Amélioration de l'ergonomie du module OccTax (composant MapList, filtres, colonnes et formulaires) et du module Exports
-* Amélioration du composant de recherche d'un taxon #324
+* Amélioration du composant de recherche d'un taxon (#324)
 * Amélioration et optimisation de la sérialisation des données
 * Ajout de tests unitaires au niveau du backend
 * Ajout d'un mécanisme de log par email (paramètres MAILERROR)

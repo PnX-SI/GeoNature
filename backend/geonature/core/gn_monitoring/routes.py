@@ -1,34 +1,53 @@
-import os
-import logging
+from flask import Blueprint, request
 
-from flask import Blueprint, request, current_app, jsonify
+from geonature.utils.env import DB
 
-from geonature.core.gn_monitoring.config_manager import generate_config
-
-# from pypnusershub import routes as fnauth
+from geonature.core.gn_monitoring.models import (
+    TBaseSites
+)
+from geonature.utils.utilssqlalchemy import json_resp
 
 
 routes = Blueprint('gn_monitoring', __name__)
 
-# get the root logger
-log = logging.getLogger()
 
+@routes.route('/siteslist', methods=['GET'])
+@json_resp
+def get_list_sites():
+    '''
+        Retourne la liste des sites pour une application au format :
+            {id_base_site, nom site}
 
-@routes.route('/config', methods=['GET'])
-def get_config():
+        Parameters
+        ----------
+         - id_site : identifiant de la base site
     '''
-        Retourne les fichiers de configuration en yml
-        après les avoir parsé
-    '''
-    app_name = request.args.get('app', 'base_app')
-    vue_name = request.args.getlist('vue')
-    if not vue_name:
-        vue_name = ['default']
-    filename = '{}.toml'.format(os.path.abspath(
-        os.path.join(
-            current_app.config['BASE_DIR'], 'static',
-            'configs', app_name, *vue_name
+    q = DB.session.query(
+        TBaseSites.id_base_site,
+        TBaseSites.base_site_name,
+        TBaseSites.base_site_code
+    )
+    parameters = request.args
+
+    if parameters.get('id_app'):
+        q = q.filter(
+            TBaseSites.applications.any(id_application=parameters.get('id_app'))
         )
-    ))
-    config_file = generate_config(filename)
-    return jsonify(config_file)
+
+    if parameters.get('id_base_site'):
+        q = q.filter(
+            TBaseSites.id_base_site == parameters.get('id_base_site')
+        )
+
+    if parameters.get('base_site_name'):
+        q = q.filter(
+            TBaseSites.base_site_name.ilike("%{}%".format(parameters.get('base_site_name')))
+        )
+
+    data = q.all()
+    return [
+        {
+            'id_base_site': n.id_base_site,
+            'base_site_name': n.base_site_name
+        } for n in data]
+

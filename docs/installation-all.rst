@@ -82,8 +82,7 @@ Pour Debian 8:
 
 ::
 
-    useradd -m geonatureadmin
-    passwd geonatureadmin
+    adduser geonatureadmin
 
 Lui donner ensuite des droits sudo
 
@@ -123,7 +122,7 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
     chmod +x install_all.sh
     ./install_all.sh
 
-Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
+Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``. Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
 
 'nvm' (node version manager) est utilisé pour installer les dernières versions de node et npm.
 

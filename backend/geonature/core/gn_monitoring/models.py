@@ -13,7 +13,8 @@ from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
 from geonature.utils.env import DB
-from geonature.core.users.models import TRoles
+from geonature.core.users.models import TRoles, TApplications
+
 
 corVisitObserver = DB.Table(
     'cor_visit_observer',
@@ -36,9 +37,9 @@ corSiteApplication = DB.Table(
     'cor_site_application',
     DB.MetaData(schema='gn_monitoring'),
     DB.Column(
-        'id_base_visit',
+        'id_base_site',
         DB.Integer,
-        ForeignKey('gn_monitoring.cor_site_application.id_base_visit'),
+        ForeignKey('gn_monitoring.cor_site_application.id_base_site'),
         primary_key=True
     ),
     DB.Column(
@@ -66,6 +67,7 @@ class TBaseVisits(DB.Model):
         DB.Integer,
         ForeignKey('utilisateurs.t_roles.id_role')
     )
+
     visit_date = DB.Column(DB.DateTime)
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
@@ -115,7 +117,7 @@ class TBaseSites(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
-    id_inventor = relationship("TRoles", foreign_keys=[id_digitiser])
+    inventor = relationship("TRoles", foreign_keys=[id_digitiser])
 
     t_base_visits = relationship(
         "TBaseVisits",
@@ -123,5 +125,19 @@ class TBaseSites(DB.Model):
         cascade="all,delete-orphan"
     )
 
+    applications = DB.relationship(
+        'TApplications',
+        secondary=corSiteApplication,
+        primaryjoin=(
+            corSiteApplication.c.id_base_site == id_base_site
+        ),
+        secondaryjoin=(
+            corSiteApplication.c.id_application == TApplications.id_application
+        ),
+        foreign_keys=[
+            corSiteApplication.c.id_base_site,
+            corSiteApplication.c.id_application
+        ]
+    )
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature('geom_4326', 'id_releve_contact', recursif)
+        return self.as_geofeature('geom_4326', 'id_base_site', recursif)

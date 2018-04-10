@@ -364,6 +364,13 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
         
         **Selector**: ``pnx-marker``
+
+        **Inputs**:
+
+        :``zoomLevel``:
+                Niveau de zoom à partir du quel on peut ajouter un marker sur la carte
+
+                *Type*: ``number``
         
         **Ouputs**:
         
@@ -380,8 +387,13 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         :``options``:
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
-                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-form/contact-map-form.component.ts#L27>`_ 
-                
+                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_ 
+
+        :``zoomLevel``:
+                Niveau de zoom à partir du quel on peut dessiner sur la carte
+
+                *Type*: ``number``
+
         **Output**
         
         :``layerDrawed``:
@@ -424,9 +436,9 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
 		Exemple: afficher les 10 premiers relevés du cd_nom 212 :
 
-		``mapListService.getData('contact/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
+		``mapListService.getData('occtax/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
 
-		`Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-list/contact-map-list.component.ts#L84/>`_
+		`Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-list/occtax-map-list.component.ts#L84/>`_
 
 		L'API doit necessairement renvoyer un objet comportant un GeoJson. La structure du l'objet doit être la suivante :
 
@@ -446,19 +458,19 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 		
 		Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2.
 
-		``mapListService.refreshData('contact/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
+		``mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
 
 		puis
 
-		``refreshData('contact/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
+		``refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
 
 		Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
 
-		``mapListService.refreshData('contact/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
+		``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
 
 		puis
 
-		``mapListService.refreshData('contact/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
+		``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
 		
 	- Gestion des évenements:
 		- Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
@@ -485,7 +497,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 	::
 
 		<pnx-map-list 
-			idName="id_releve_contact"
+			idName="id_releve_occtax"
 			height="80vh">
 		</pnx-map-list>
 		<table>

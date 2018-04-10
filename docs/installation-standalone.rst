@@ -97,6 +97,11 @@ Installation de l'application
 
 **Création de la base de données**
 
+Créer un utilisateur de base de donnée (cf ``settings.ini``)
+::
+
+    sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
+
 Pendant l'installation, vous serez invité à fournir le mot de passe sudo de votre utilisateur linux.
 
 ::
