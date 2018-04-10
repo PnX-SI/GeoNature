@@ -135,7 +135,7 @@ class TestGetReleveIfAllowed:
 
 
 
-# TODO test on get_cruved
+# TODO test on cruved_for_user_in_app
 
 
 

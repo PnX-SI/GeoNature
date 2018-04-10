@@ -66,7 +66,7 @@ def getOccurrences():
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
     data = releve_repository.get_one(id_releve, info_role)
-    user_cruved = fnauth.get_cruved(
+    user_cruved = fnauth.cruved_for_user_in_app(
         info_role.id_role,
         current_app.config['ID_APPLICATION_GEONATURE']
     )
@@ -123,7 +123,7 @@ def getViewReleveOccurrence(info_role):
         raise
 
     user = info_role
-    user_cruved = fnauth.get_cruved(
+    user_cruved = fnauth.cruved_for_user_in_app(
         user.id_role,
         current_app.config['ID_APPLICATION_GEONATURE']
     )
@@ -353,7 +353,7 @@ def getViewReleveList(info_role):
     data = q.limit(limit).offset(page * limit).all()
 
     user = info_role
-    user_cruved = fnauth.get_cruved(
+    user_cruved = fnauth.cruved_for_user_in_app(
         user.id_role,
         current_app.config['ID_APPLICATION_GEONATURE']
     )
@@ -433,7 +433,7 @@ def insertOrUpdateOneReleve(info_role):
 
     if releve.id_releve_occtax:
         # get update right of the user
-        user_cruved = fnauth.get_cruved(
+        user_cruved = fnauth.cruved_for_user_in_app(
             info_role.id_role,
             current_app.config['ID_APPLICATION_GEONATURE']
         )
