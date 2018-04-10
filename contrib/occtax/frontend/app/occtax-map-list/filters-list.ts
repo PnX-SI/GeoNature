@@ -36,7 +36,7 @@ export const FILTERSLIST = [
   },
   {
     controlType: "nomenclature",
-    label: "Status biologique",
+    label: "Statut biologique",
     key: "id_nomenclature_bio_status",
     idComponent: 13,
     required: false
@@ -57,7 +57,7 @@ export const FILTERSLIST = [
   },
   {
     controlType: "nomenclature",
-    label: "Preuve d'existance",
+    label: "Preuve d'existence",
     key: "id_nomenclature_exist_proof",
     idComponent: 15,
     required: false
@@ -100,7 +100,7 @@ export const FILTERSLIST = [
   },
   {
     controlType: "nomenclature",
-    label: "Type de dénombrement dénombrement",
+    label: "Type de dénombrement",
     key: "id_nomenclature_type_count",
     idComponent: 21,
     required: false
