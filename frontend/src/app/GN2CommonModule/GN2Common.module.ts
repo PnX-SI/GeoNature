@@ -1,13 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatCardModule, MatMenuModule, MatSidenavModule, MatTooltipModule, MatListModule, MatIconModule,
-        MatToolbarModule} from '@angular/material';
+import {
+  MatCardModule,
+  MatMenuModule,
+  MatSidenavModule,
+  MatTooltipModule,
+  MatListModule,
+  MatIconModule,
+  MatToolbarModule
+} from '@angular/material';
 
-
-
-import {Http} from '@angular/http';
+import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClient,
+  HttpClientXsrfModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
@@ -19,6 +29,8 @@ import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
+import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
+import { DynamicFormService } from './form/dynamic-form/dynamic-form.service';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
@@ -33,6 +45,8 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
+import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -48,7 +62,7 @@ import { FormService } from './form/form.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
-
+import { SelectSearchComponent } from './form/select-search/select-search.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -68,8 +82,8 @@ export function HttpLoaderFactory(http: Http) {
     ReactiveFormsModule,
     NgxDatatableModule,
     TranslateModule.forChild(),
-  NgbModule.forRoot(),
-  AutoCompleteModule
+    NgbModule.forRoot(),
+    AutoCompleteModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -88,17 +102,23 @@ export function HttpLoaderFactory(http: Http) {
     ReadablePropertiePipe,
     DatasetsComponent,
     MapListGenericFiltersComponent,
-    ObserversTextComponent
+    ObserversTextComponent,
+    DynamicFormComponent,
+    MunicipalitiesComponent,
+    SelectSearchComponent
   ],
-  providers : [
+  providers: [
     TranslateService,
     MapService,
     DataFormService,
     MapListService,
     CommonService,
     FormService,
-    ],
+    DynamicFormService
+  ],
   exports: [
+    MunicipalitiesComponent,
+    DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
     DateComponent,
@@ -127,9 +147,8 @@ export function HttpLoaderFactory(http: Http) {
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
-    ObserversTextComponent
+    ObserversTextComponent,
+    SelectSearchComponent
   ]
 })
-export class GN2CommonModule {
-
-}
+export class GN2CommonModule {}

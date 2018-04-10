@@ -10,20 +10,50 @@ from geonature.utils.utilssqlalchemy import json_resp
 routes = Blueprint('users', __name__)
 
 
-@routes.route('/menu/<int:idMenu>', methods=['GET'])
+@routes.route('/menu/<int:id_menu>', methods=['GET'])
 @json_resp
-def getRolesByMenuId(idMenu):
+def getRolesByMenuId(id_menu):
+    '''
+        Retourne la liste des roles associés à un menu
+
+        Parameters
+        ----------
+         - nom_complet : début du nom complet du role
+    '''
     q = DB.session.query(
         VUserslistForallMenu
-    ).filter_by(id_menu=idMenu)
+    ).filter_by(id_menu=id_menu)
 
+    parameters = request.args
+    if parameters.get('nom_complet'):
+        q = q.filter(
+            VUserslistForallMenu.nom_complet.ilike(
+                '{}%'.format(parameters.get('nom_complet'))
+            )
+        )
     data = q.all()
     return [n.as_dict() for n in data]
+
+
+@routes.route('/role/<int:id_role>', methods=['GET'])
+@json_resp
+def get_role(id_role):
+    '''
+        Retourne le détail d'un role
+    '''
+    user = DB.session.query(
+        TRoles
+    ).filter_by(id_role=id_role).one()
+    return user.as_dict()
 
 
 @routes.route('/role', methods=['POST'])
 @json_resp
 def insert_role(user=None):
+    '''
+        Insert un role
+        @TODO : Ne devrait pas être là mais dans UserHub
+    '''
     if user:
         data = user
     else:
@@ -41,11 +71,15 @@ def insert_role(user=None):
     DB.session.flush()
     return user.as_dict()
 
-# TODO ajouter test sur les POST de données
 
 @routes.route('/cor_role', methods=['POST'])
 @json_resp
 def insert_in_cor_role(id_group=None, id_user=None):
+    '''
+        Insert une correspondante role groupe
+        c-a-d permet d'attacher un role à un groupe
+       # TODO ajouter test sur les POST de données
+    '''
     exist_user = DB.session.query(
         CorRole
     ).filter(
@@ -62,10 +96,12 @@ def insert_in_cor_role(id_group=None, id_user=None):
     return {'message': 'cor already exists'}, 500
 
 
-
 @routes.route('/organism', methods=['POST'])
 @json_resp
 def insert_organism(organism):
+    '''
+        Insert un organisme
+    '''
     if organism is not None:
         data = organism
     else:
