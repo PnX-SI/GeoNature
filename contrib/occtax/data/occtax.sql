@@ -139,10 +139,6 @@ CREATE TABLE cor_counting_occtax (
     id_nomenclature_type_count integer, --DEFAULT get_default_nomenclature_value(21),
     count_min integer,
     count_max integer,
-    id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
-    id_validator integer,
-    validation_comment text,
-    meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     unique_id_sinp_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4()
@@ -151,7 +147,7 @@ COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_life_stage IS 'Corresponda
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe (9)';
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_obj_count IS 'Correspondance nomenclature INPN = obj_denbr (6)';
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_type_count IS 'Correspondance nomenclature INPN = typ_denbr (21)';
-COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valid (101)';
+
 
 CREATE SEQUENCE cor_counting_occtax_id_counting_occtax_seq
     START WITH 1
@@ -264,12 +260,6 @@ ALTER TABLE ONLY cor_counting_occtax
 ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT fk_cor_counting_occtax_typ_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY cor_counting_occtax
-    ADD CONSTRAINT fk_cor_counting_occtax_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY cor_counting_occtax
-    ADD CONSTRAINT fk_cor_counting_occtax_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
 
 ALTER TABLE ONLY cor_role_releves_occtax
     ADD CONSTRAINT fk_cor_role_releves_occtax_t_releves_occtax FOREIGN KEY (id_releve_occtax) REFERENCES t_releves_occtax(id_releve_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -349,9 +339,6 @@ ALTER TABLE cor_counting_occtax
 
 ALTER TABLE cor_counting_occtax
   ADD CONSTRAINT check_cor_counting_occtax_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
-
-ALTER TABLE cor_counting_occtax
-  ADD CONSTRAINT check_cor_counting_occtax_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
 
 ALTER TABLE cor_counting_occtax
     ADD CONSTRAINT check_cor_counting_occtax_count_min CHECK (count_min > 0);

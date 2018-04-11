@@ -128,8 +128,6 @@ def serializeQueryOneResult(row, columnDef):
     return row
 
 
-
-
 def serializable(cls):
     """
         Décorateur de classe pour les DB.Models
