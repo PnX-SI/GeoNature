@@ -437,10 +437,11 @@ def insertOrUpdateOneReleve(info_role):
             info_role.id_role,
             current_app.config['ID_APPLICATION_GEONATURE']
         )
-        update_data_scope = next(
-            (u['level'] for u in user_cruved if u['action'] == 'U'),
-            None
-        )
+        # update_data_scope = next(
+        #     (u['level'] for u in user_cruved if u['action'] == 'U'),
+        #     None
+        # )
+        update_data_scope = user_cruved['U']
         # info_role.tag_object_code = update_data_scope
         user = UserRigth(
             id_role=info_role.id_role,

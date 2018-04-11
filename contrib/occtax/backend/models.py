@@ -86,8 +86,8 @@ class ReleveModel(DB.Model):
             - user_cruved: object return by fnauth.cruved_for_user_in_app(user)
         """
         return {
-            obj['action']: self.user_is_allowed_to(user, obj['level'])
-            for obj in user_cruved
+            action: self.user_is_allowed_to(user, level)
+            for action, level in user_cruved.items()
         }
 
 
