@@ -8,7 +8,11 @@ fi
 
 . ../../config/settings.ini
 
-mkdir /tmp/geonature
+if [ ! -d '/tmp/geonature/' ]
+then
+  mkdir /tmp/geonature
+  chmod -R 775 /tmp/geonature
+fi
 
 echo "Create occtax schema..."
 echo "--------------------" &> /var/log/geonature/install_occtax_schema.log
@@ -20,7 +24,7 @@ sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/geonature/occtax.sql
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/occtax.sql  &>> /var/log/geonature/install_occtax_schema.log
 
 echo "Create export occtax view(s)..."
-echo "--------------------" &> /var/log/geonature/install_occtax_schema.log
+echo "--------------------" &>> /var/log/geonature/install_occtax_schema.log
 echo "Create export occtax view(s)" &>> /var/log/geonature/install_occtax_schema.log
 echo "--------------------" &>> /var/log/geonature/install_occtax_schema.log
 echo "" &>> /var/log/geonature/install_occtax_schema.log

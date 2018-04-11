@@ -56,6 +56,11 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 ;
 SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', 2, true);
 
+INSERT INTO gn_commons.bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES 
+(1, 'Dénombrement d''une occurence de taxon du module occtax', 'pr_occtax', 'cor_counting_occtax', 'id_counting_occtax', 'unique_id_sinp_occtax')
+(2, 'occurence de taxon du module occtax', 'pr_occtax', 't_occurrences_occtax', 'id_occurrence_occtax', 'unique_id_occurence_occtax')
+(3, 'Relevé correspondant à un regroupement d''occurence de taxon du module occtax', 'pr_occtax', 't_releves_occtax', 'id_releve_occtax', 'unique_id_sinp_grp')
+;
 
 INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES
 (1, 'Contact faune flore', 'Données issues du occtax aléatoire', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '/occtax', NULL, NULL, 'CONTACT', true);
@@ -64,17 +69,13 @@ INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_s
 INSERT INTO pr_occtax.t_releves_occtax (id_releve_occtax,id_dataset,id_digitiser,observers_txt,id_nomenclature_obs_technique,id_nomenclature_grp_typ,date_min,date_max,hour_min,hour_max,altitude_min,altitude_max,deleted,meta_device_entry,meta_create_date,meta_update_date,comment,geom_local,geom_4326,precision) VALUES 
 (1,1,1,'Obervateur test insert',343,151,'2017-01-01','2017-01-01','12:05:02','12:05:02',1500,1565,FALSE,'web',now(),now(),'Exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',10)
 ,(2,1,1,'Obervateur test insert',343,151,'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,FALSE,'web',now(),now(),'Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
-SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', 2, true);
+SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', 3, true);
 
 INSERT INTO pr_occtax.t_occurrences_occtax  (id_occurrence_occtax, id_releve_occtax, id_nomenclature_obs_meth, id_nomenclature_bio_condition, id_nomenclature_bio_status, id_nomenclature_naturalness, id_nomenclature_exist_proof, id_nomenclature_diffusion_level, id_nomenclature_observation_status, id_nomenclature_blurring, determiner, id_nomenclature_determination_method, cd_nom, nom_cite, meta_v_taxref, sample_number_proof, digital_proof, non_digital_proof, deleted, meta_create_date, meta_update_date, comment) VALUES
 (1,1,65,177,30,182,91,163,101,200,'Gil',379,60612,'Lynx Boréal','Taxref V9.0','','','Poil',FALSE, now(),now(),'Test')
 ,(2,1,65,177,30,182,91,163,101,200,'Gil D',370,351,'Grenouille rousse','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Autre test')
 ,(3,2,65,177,30,182,91,163,101,200,'Donovan M',370,67111,'Ablette','Taxref V9.0','','','Poils de plumes',FALSE, now(),now(),'Troisieme test');
-
-
 SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', 4, true);
-SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', 4, true);
-SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', 4, true);
 
 
 INSERT INTO pr_occtax.cor_role_releves_occtax VALUES
