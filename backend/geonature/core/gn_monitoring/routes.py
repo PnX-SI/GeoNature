@@ -51,3 +51,29 @@ def get_list_sites():
             'base_site_name': n.base_site_name
         } for n in data]
 
+
+@routes.route('/siteslist/<int:id_site>', methods=['GET'])
+@json_resp
+def get_onelist_site(id_site):
+    '''
+        Retourne les informations minimal pour un site:
+            {id_base_site, nom site}
+
+        Parameters
+        ----------
+         - id_site : identifiant de la base site
+    '''
+    q = DB.session.query(
+        TBaseSites.id_base_site,
+        TBaseSites.base_site_name,
+        TBaseSites.base_site_code
+    ).filter(
+        TBaseSites.id_base_site == id_site
+    )
+
+    data = q.one()
+    return {
+        'id_base_site': data.id_base_site,
+        'base_site_name': data.base_site_name
+    }
+
