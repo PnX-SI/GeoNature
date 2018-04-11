@@ -83,11 +83,11 @@ class ReleveModel(DB.Model):
         Use in the map-list interface to allow or not an action
         params:
             - user : a TRole object
-            - user_cruved: object return by fnauth.get_cruved(user)
+            - user_cruved: object return by fnauth.cruved_for_user_in_app(user)
         """
         return {
-            obj['action']: self.user_is_allowed_to(user, obj['level'])
-            for obj in user_cruved
+            action: self.user_is_allowed_to(user, level)
+            for action, level in user_cruved.items()
         }
 
 
