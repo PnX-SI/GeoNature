@@ -71,24 +71,29 @@ DECLARE
 	theidtablelocation int;
 	theuuidfieldname character varying(50);
 	theuuid uuid;
+  thecomment text := 'auto = default value';
 BEGIN
-	SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
+	--retrouver l'id de la table source stockant l'enregistrement en cours de validation
+  SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
 	WHERE "schema_name" = theschema AND "table_name" = thetable;
+  --retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
 	SELECT INTO theuuidfieldname uuid_field_name FROM gn_commons.bib_tables_location
 	WHERE "schema_name" = theschema AND "table_name" = thetable;
+  --récupérer l'uuid de l'enregistrement en cours de validation
 	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
 	
-		INSERT INTO gn_commons.t_validations (id_table_location,uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
-		VALUES(
-			theidtablelocation,
-			theuuid,
-			ref_nomenclatures.get_default_nomenclature_value(101),
-			null,
-			'auto : trigger insert',
-			NOW()
-		);
+  --insertion du statut de validation et des informations associées dans t_validations
+  INSERT INTO gn_commons.t_validations (id_table_location,uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
+  VALUES(
+    theidtablelocation,
+    theuuid,
+    ref_nomenclatures.get_default_nomenclature_value(101), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+    null,
+    thecomment,
+    NOW()
+  );
 		
-        return NEW;
+  return NEW;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
