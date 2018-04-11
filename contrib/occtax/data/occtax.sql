@@ -87,7 +87,7 @@ SELECT pg_catalog.setval('t_releves_occtax_id_releve_occtax_seq', 1, false);
 
 CREATE TABLE t_occurrences_occtax (
     id_occurrence_occtax bigint NOT NULL,
-    unique_id_occurence_occtax uuid NOT NULL DEFAULT uuid_generate_v4(),
+    unique_id_occurence_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     id_releve_occtax bigint NOT NULL,
     id_nomenclature_obs_meth integer NOT NULL, --DEFAULT get_default_nomenclature_value(14),
     id_nomenclature_bio_condition integer NOT NULL, --DEFAULT get_default_nomenclature_value(7),
@@ -511,7 +511,7 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne,
 ,(13,0,0,0,30)
 ,(8,0,0,0,182)
 ,(15,0,0,0,91)
-,(101,0,0,0,494)
+,(101,0,0,0,493)
 ,(5,0,0,0,163)
 ,(106,0,0,0,370)
 ,(10,0,0,0,2)
