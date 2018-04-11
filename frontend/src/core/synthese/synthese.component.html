@@ -1,0 +1,21 @@
+<div class="row row-0">
+    <div class="col-sm-12 col-md-4 padding-sm">
+        <pnx-synthese-search
+            (searchClicked)="loadAndStoreData($event)"
+        ></pnx-synthese-search>
+    </div>
+    <div class="col-sm-12 col-md-8 padding-sm">
+        <div class="row row-0">
+            <div class="col-sm-12 col-md-7 padding-sm">
+                <pnx-synthese-carte
+                    [inputSyntheseData]="syntheseDataStore"
+                ></pnx-synthese-carte>
+            </div>
+            <div class="col-sm-12 col-md-5 padding-sm">
+                <pnx-synthese-list
+                    [inputSyntheseData]="syntheseDataStore"
+                ></pnx-synthese-list>
+            </div>
+        </div>
+    </div>
+</div>

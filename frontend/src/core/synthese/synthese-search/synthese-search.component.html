@@ -1,0 +1,22 @@
+<pnx-datasets
+    [parentFormControl]="searchForm.controls.id_dataset"
+    placeholder="{{ 'Datasets' | translate}}">
+</pnx-datasets>
+<pnx-taxonomy 
+    [parentFormControl]="searchForm.controls.cd_nom" 
+    [idList]="500" 
+    [charNumber]="3" 
+    [listLength]="20">
+</pnx-taxonomy>
+<pnx-observers-text 
+    [parentFormControl]="searchForm.controls.observers">
+</pnx-observers-text>
+<pnx-nomenclature 
+    placeholder="{{ 'Taxon.BiologicalCondition' | translate }}" 
+    [parentFormControl]="searchForm.controls.id_nomenclature_bio_condition"
+    [idTypeNomenclature]="7" >
+</pnx-nomenclature>
+
+<button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+
+<pre>form value: <br>{{searchForm.value | json}}</pre>
