@@ -304,6 +304,22 @@ ALTER TABLE ONLY t_history_actions ALTER COLUMN id_history_action SET DEFAULT ne
 SELECT pg_catalog.setval('t_history_actions_id_history_action_seq', 1, false);
 
 
+CREATE TABLE t_modules(
+  id_module integer NOT NULL,
+  module_name character varying(255) NOT NULL,
+  module_picto character varying(255),
+  module_desc text,
+  module_group character varying(50),
+  module_url character(255) NOT NULL,
+  module_target character(10),
+  module_comment text,
+  active boolean NOT NULL
+);
+COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
+COMMENT ON COLUMN t_modules.module_url IS 'URL absolue vers le chemin de l''application. On peux ainsi référencer des modules externes avec target = "blank".';
+COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';
+-- Ne surtout pas créer de séquence sur cette table pour associer librement id_module et id_application.
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -321,6 +337,9 @@ ALTER TABLE ONLY t_validations
 
 ALTER TABLE ONLY t_history_actions
     ADD CONSTRAINT pk_t_history_actions PRIMARY KEY (id_history_action);
+
+ALTER TABLE ONLY t_modules
+    ADD CONSTRAINT pk_t_modules PRIMARY KEY (id_module);
 
 
 ----------------
@@ -348,6 +367,9 @@ ALTER TABLE ONLY t_history_actions
 
 --ALTER TABLE ONLY t_history_actions
     --ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_modules
+  ADD CONSTRAINT fk_t_modules_utilisateurs_t_applications FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications (id_application) ON UPDATE CASCADE;
 
 
 ---------------
@@ -378,7 +400,11 @@ CREATE TRIGGER tri_meta_dates_change_t_medias
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-
+CREATE TRIGGER tri_log_changes_t_medias
+  AFTER INSERT OR UPDATE OR DELETE
+  ON t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 ---------
 --DATAS--
 ---------
