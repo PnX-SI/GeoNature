@@ -29,9 +29,6 @@ get one releve
 				"altitude_min": 1500, 
 				"altitude_max": 1565,
 				"meta_device_entry": "web", 
-				"deleted": false,
-				"meta_create_date": "None",  
-				"meta_update_date": "None", 
 				"comment": "exemple test",
 				"observers": [
 					{
@@ -60,9 +57,6 @@ get one releve
 						"sample_number_proof": "",
 						"digital_proof": "",
 						"non_digital_proof": "poil",
-						"deleted": false,
-						"meta_create_date": "2017-08-24 09:51:57.044894", 
-						"meta_update_date": "2017-08-24 09:51:57.044894",
 						"comment": "test",
 						"countingContact": [
 							{

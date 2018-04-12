@@ -143,7 +143,6 @@ export class OcctaxFormComponent implements OnInit {
         occ.nom_cite = this.fs.taxonsList[index].search_name.replace('<i>', '');
         occ.nom_cite = occ.nom_cite.replace('</i>', '');
       }
-      occ.meta_update_date = new Date();
     });
     // format observers
     if (finalForm.properties.observers && finalForm.properties.observers.length > 0) {
