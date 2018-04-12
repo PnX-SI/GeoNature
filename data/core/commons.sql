@@ -382,6 +382,11 @@ CREATE TRIGGER tri_meta_dates_change_t_medias
 ---------
 --DATAS--
 ---------
+INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES 
+(1, 'Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
+;
+SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 1, true);
+
 INSERT INTO bib_media_types (id_type, label_fr, label_en, description_fr) VALUES
   (2, 'Photo', 'Photo', 'photos'),
   (3, 'Page web', 'Web page', 'URL d''une page web'),
