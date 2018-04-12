@@ -195,26 +195,11 @@ ALTER TABLE ONLY bib_tables_location ALTER COLUMN id_table_location SET DEFAULT 
 SELECT pg_catalog.setval('bib_tables_location_id_table_location_seq', 1, false);
 
 
-CREATE TABLE bib_media_types
-(
-  id_type integer NOT NULL,
-  label_fr character varying(100),
-  label_en character varying(100),
-  label_it character varying(100),
-  label_es character varying(100),
-  label_de character varying(100),
-  description_fr text,
-  description_en text,
-  description_it text,
-  description_es text,
-  description_de text
-);
-
 CREATE TABLE t_medias
 (
   id_media integer NOT NULL,
   unique_id_media uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-  id_type integer NOT NULL,
+  id_nomenclature_media_type integer NOT NULL,
   id_table_location integer NOT NULL,
   uuid_attached_row uuid NOT NULL,
   title_fr character varying(255),
@@ -232,6 +217,7 @@ CREATE TABLE t_medias
   description_de text,
   is_public boolean NOT NULL DEFAULT true
 );
+COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Correspondance nomenclature GEONATURE = TYPE_MEDIA (117)';
 
 CREATE SEQUENCE t_medias_id_media_seq
     START WITH 1
@@ -324,9 +310,6 @@ COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux a
 ALTER TABLE ONLY bib_tables_location
     ADD CONSTRAINT pk_bib_tables_location PRIMARY KEY (id_table_location);
 
-ALTER TABLE ONLY bib_media_types
-    ADD CONSTRAINT pk_media_types PRIMARY KEY (id_type);
-
 ALTER TABLE ONLY t_medias
     ADD CONSTRAINT pk_t_medias PRIMARY KEY (id_media);
 
@@ -344,7 +327,7 @@ ALTER TABLE ONLY t_modules
 --FOREIGN KEYS--
 ----------------
 ALTER TABLE ONLY t_medias
-  ADD CONSTRAINT fk_t_medias_bib_media_types FOREIGN KEY (id_type) REFERENCES bib_media_types (id_type) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_medias_media_type FOREIGN KEY (id_nomenclature_media_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
@@ -380,6 +363,9 @@ ALTER TABLE ONLY t_modules
 --ALTER TABLE ONLY t_medias
   --ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
 
+ALTER TABLE t_medias
+  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_media_type,117));
+
 
 ALTER TABLE t_validations
   ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
@@ -406,16 +392,3 @@ INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, tab
 (1, 'Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
 ;
 SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 1, true);
-
-INSERT INTO bib_media_types (id_type, label_fr, label_en, description_fr) VALUES
-  (2, 'Photo', 'Photo', 'photos'),
-  (3, 'Page web', 'Web page', 'URL d''une page web'),
-  (4, 'PDF', 'PDF', 'Document de type PDF'),
-  (5, 'Audio', 'Audio', 'Fichier audio MP3'),
-  (6, 'Video (fichier)', 'Video (file)', 'Fichier video hébergé'),
-  (7, 'Video Youtube', 'Youtube video', 'ID d''une video hébergée sur Youtube'),
-  (8, 'Video Dailymotion', 'Dailymotion video', 'ID d''une video hébergée sur Dailymotion'),
-  (9, 'Video Vimeo', 'Vimeo video', 'ID d''une video hébergée sur Vimeo');
-
-
-SELECT pg_catalog.setval('t_medias_id_media_seq', 10, true);
