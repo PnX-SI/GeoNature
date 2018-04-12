@@ -162,6 +162,7 @@ SELECT pg_catalog.setval('cor_counting_occtax_id_counting_occtax_seq', 1, false)
 
 
 CREATE TABLE cor_role_releves_occtax (
+    unique_id_cor_role_releve uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     id_releve_occtax bigint NOT NULL,
     id_role integer NOT NULL
 );
@@ -189,7 +190,7 @@ ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT pk_cor_counting_occtax_occtax PRIMARY KEY (id_counting_occtax);
 
 ALTER TABLE ONLY cor_role_releves_occtax
-    ADD CONSTRAINT pk_cor_role_releves_occtax PRIMARY KEY (id_releve_occtax, id_role);
+    ADD CONSTRAINT pk_cor_role_releves_occtax PRIMARY KEY (unique_id_cor_role_releve);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_pr_occtax_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, regne, group2_inpn);
@@ -448,6 +449,12 @@ CREATE TRIGGER tri_log_changes_t_releves_occtax
   ON t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_cor_role_releves_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON cor_role_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 ------------
 --VIEWS--
 ------------
@@ -525,9 +532,9 @@ INSERT INTO gn_commons.bib_tables_location (id_table_location, table_desc, schem
 (1, 'Dénombrement d''une occurence de taxon du module occtax', 'pr_occtax', 'cor_counting_occtax', 'id_counting_occtax', 'unique_id_sinp_occtax')
 ,(2, 'occurence de taxon du module occtax', 'pr_occtax', 't_occurrences_occtax', 'id_occurrence_occtax', 'unique_id_occurence_occtax')
 ,(3, 'Relevé correspondant à un regroupement d''occurence de taxon du module occtax', 'pr_occtax', 't_releves_occtax', 'id_releve_occtax', 'unique_id_sinp_grp')
-,(4, 'Observateurs des relevés du module occtax', 'pr_occtax', 'cor_role_releves_occtax', 'id_releve_occtax', 'unique_id_cor_role_releves')
+,(4, 'Observateurs des relevés du module occtax', 'pr_occtax', 'cor_role_releves_occtax', 'unique_id_cor_role_releve', 'unique_id_cor_role_releve')
 ;
-SELECT pg_catalog.setval('gn_commons.t_history_actions_id_history_action_seq', 5, true);
+SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 4, true);
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 (14,0,0,0,42)
