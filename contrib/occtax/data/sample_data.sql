@@ -72,7 +72,7 @@ INSERT INTO pr_occtax.t_occurrences_occtax  (id_occurrence_occtax, id_releve_occ
 SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', 4, true);
 
 
-INSERT INTO pr_occtax.cor_role_releves_occtax VALUES
+INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
 (1,1)
 ,(2,1);
 
