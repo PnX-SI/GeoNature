@@ -105,7 +105,6 @@ export class OcctaxFormService {
         ],
         altitude_min: null,
         altitude_max: null,
-        deleted: false,
         meta_device_entry: "web",
         comment: null,
         id_nomenclature_obs_technique: [null, Validators.required],
@@ -160,7 +159,6 @@ export class OcctaxFormService {
       sample_number_proof: null,
       digital_proof: [{ value: null, disabled: true }],
       non_digital_proof: [{ value: null, disabled: true }],
-      deleted: false,
       comment: null,
       cor_counting_occtax: ""
     });

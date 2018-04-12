@@ -58,10 +58,7 @@ CREATE TABLE t_releves_occtax (
     hour_max time,
     altitude_min integer,
     altitude_max integer,
-    deleted boolean DEFAULT false NOT NULL,
     meta_device_entry character varying(20),
-    meta_create_date timestamp without time zone DEFAULT now(),
-    meta_update_date timestamp without time zone DEFAULT now(),
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
@@ -105,9 +102,6 @@ CREATE TABLE t_occurrences_occtax (
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
-    deleted boolean DEFAULT false NOT NULL,
-    meta_create_date timestamp without time zone,
-    meta_update_date timestamp without time zone,
     comment character varying
 );
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_obs_meth IS 'Correspondance nomenclature INPN = methode_obs';
@@ -140,9 +134,7 @@ CREATE TABLE cor_counting_occtax (
     id_nomenclature_obj_count integer NOT NULL, --DEFAULT get_default_nomenclature_value(6),
     id_nomenclature_type_count integer, --DEFAULT get_default_nomenclature_value(21),
     count_min integer,
-    count_max integer,
-    meta_create_date timestamp without time zone,
-    meta_update_date timestamp without time zone    
+    count_max integer 
 );
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie (10)';
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe (9)';
@@ -468,19 +460,13 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
     rel.date_max,
     rel.altitude_min,
     rel.altitude_max,
-    rel.deleted,
     rel.meta_device_entry,
-    rel.meta_create_date,
-    rel.meta_update_date,
     rel.comment,
     rel.geom_4326,
     rel."precision",
     occ.id_occurrence_occtax,
     occ.cd_nom,
     occ.nom_cite,
-    occ.deleted AS occ_deleted,
-    occ.meta_create_date AS occ_meta_create_date,
-    occ.meta_update_date AS occ_meta_update_date,
     t.lb_nom,
     t.nom_valide,
     t.nom_vern,
@@ -491,7 +477,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, occ.deleted, occ.meta_create_date, occ.meta_update_date, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
 
@@ -506,10 +492,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
     rel.date_max,
     rel.altitude_min,
     rel.altitude_max,
-    rel.deleted,
     rel.meta_device_entry,
-    rel.meta_create_date,
-    rel.meta_update_date,
     rel.comment,
     rel.geom_4326,
     rel."precision",
@@ -521,7 +504,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision";
 
 
 --------------------
