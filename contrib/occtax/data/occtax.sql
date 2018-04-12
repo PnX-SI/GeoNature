@@ -431,7 +431,23 @@ CREATE TRIGGER tri_insert_default_validation_status
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_add_default_validation_status();
 
+CREATE TRIGGER tri_log_changes_cor_counting_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON cor_counting_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+CREATE TRIGGER tri_log_changes_t_occurrences_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON t_occurrences_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_t_releves_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON t_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 ------------
 --VIEWS--
 ------------
