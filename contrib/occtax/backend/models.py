@@ -94,16 +94,22 @@ corRoleRelevesOccurrence = DB.Table(
     'cor_role_releves_occtax',
     DB.MetaData(schema='pr_occtax'),
     DB.Column(
+        'unique_id_cor_role_releve',
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()]),
+        primary_key=True
+    )
+    DB.Column(
         'id_releve_occtax',
         DB.Integer,
         ForeignKey('pr_occtax.t_releves_occtax.id_releve_occtax'),
-        primary_key=True
+        primary_key=False
     ),
     DB.Column(
         'id_role',
         DB.Integer,
         ForeignKey('utilisateurs.t_roles.id_role'),
-        primary_key=True
+        primary_key=False
     )
 )
 

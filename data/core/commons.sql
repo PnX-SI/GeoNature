@@ -281,7 +281,7 @@ CREATE TABLE t_history_actions
   id_history_action integer NOT NULL,
   id_table_location integer NOT NULL,
   uuid_attached_row uuid NOT NULL,
-  operation_type character (1), --C, U ou D
+  operation_type character (1), --I, U ou D
   operation_date timestamp without time zone,
   --id_digitiser integer,
   table_content json
