@@ -98,7 +98,7 @@ corRoleRelevesOccurrence = DB.Table(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]),
         primary_key=True
-    )
+    ),
     DB.Column(
         'id_releve_occtax',
         DB.Integer,
@@ -128,10 +128,6 @@ class CorCountingOccurrence(DB.Model):
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
-    id_validator = DB.Column(DB.Integer)
-    validation_comment = DB.Column(DB.Unicode)
-
     unique_id_sinp_occtax = DB.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()])

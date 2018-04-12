@@ -156,7 +156,7 @@ def run_install_gn_module(app, module_path, module_name, url):
         log.info("...ok\n")
 
     # ajout du module dans la table users.t_application
-    id_app = add_application_db(module_name)
+    id_app = add_application_db(module_name, url)
 
     #   Enregistrement du module
     gn_module_register_config(module_name, module_path, url, id_app)
