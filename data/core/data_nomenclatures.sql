@@ -106,6 +106,7 @@ INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_f
 ,(114, 'JDD_OBJECTIFS', 'Objectif du jeu de données', 'Nomenclature des valeurs permises pour les objectifs du jeu de données.', 'SINP', 'Validé', '2017-11-02 00:00:00', '2017-11-02 00:00:00')
 ,(115, 'METHO_RECUEIL', 'Méthode de recueil des données', 'Nomenclature de l''ensemble de techniques, savoir-faire et outils mobilisés pour collecter des données.', 'SINP', 'Validé', '2017-11-02 00:00:00', '2017-11-02 00:00:00')
 ,(116, 'TYPE_SITE', 'Type de sites', 'Nomenclature des types de sites suivi dans gn_monitoring.', 'GEONATURE', 'Non validé', '2018-03-13 00:00:00', '2018-03-13 00:00:00')
+,(117, 'TYPE_MEDIA', 'Type de médias', 'Nomenclature des types de médias.', 'GEONATURE', 'Non validé', '2018-04-12 00:00:00', '2018-04-12 00:00:00')
 
 ;
 
@@ -582,9 +583,17 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(479, 116, '5', 'Rocher', 'Rocher', 'Site chiroptères de type rocher', 'GEONATURE', 'Non validé', 116, '116.001.005', '2018-03-13 00:00:00', NULL, true)
 ,(480, 116, '6', 'Hors gîte', 'Hors gîte', 'Site chiroptères de type hors gîte', 'GEONATURE', 'Non validé', 116, '116.001.006', '2018-03-13 00:00:00', NULL, true)
 ,(481, 116, '7', 'Indéterminé', 'Indéterminé', 'Site chiroptères de type indéterminé', 'GEONATURE', 'Non validé', 116, '116.001.007', '2018-03-13 00:00:00', NULL, true)
---next 494
+,(494, 117, '2', 'Photo', 'Photo', 'Média de type image', 'GEONATURE', 'Non validé', 117, '117.002', '2018-04-12 00:00:00', NULL, true)
+,(495, 117, '3', 'Page web', 'Page web', 'Média de type page web', 'GEONATURE', 'Non validé', 117, '117.003', '2018-04-12 00:00:00', NULL, true)
+,(496, 117, '4', 'PDF', 'PDF', 'Média de type document PDF', 'GEONATURE', 'Non validé', 117, '117.004', '2018-04-12 00:00:00', NULL, true)
+,(497, 117, '5', 'Audio', 'Audio', 'Média de type fichier audio mp3', 'GEONATURE', 'Non validé', 117, '117.005', '2018-04-12 00:00:00', NULL, true)
+,(498, 117, '6', 'Vidéo (fichier)', 'Vidéo (fichier)', 'Média de type fichier vidéo hébergé', 'GEONATURE', 'Non validé', 117, '117.006', '2018-04-12 00:00:00', NULL, true)
+,(499, 117, '7', 'Vidéo Youtube', 'Vidéo Youtube', 'ID d''une video hébergée sur Youtube', 'GEONATURE', 'Non validé', 117, '117.007', '2018-04-12 00:00:00', NULL, true)
+,(500, 117, '8', 'Vidéo Dailymotion', 'Vidéo Dailymotion', 'ID d''une video hébergée sur Dailymotion', 'GEONATURE', 'Non validé', 117, '117.008', '2018-04-12 00:00:00', NULL, true)
+,(501, 117, '9', 'Vidéo Vimeo', 'Vidéo Vimeo', 'ID d''une video hébergée sur Vimeo', 'GEONATURE', 'Non validé', 117, '117.009', '2018-04-12 00:00:00', NULL, true)
+--next 502
 ;
-SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 494, true);
+SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 501, true);
 
 UPDATE t_nomenclatures SET label_default = label_fr;
 UPDATE t_nomenclatures SET definition_default = definition_fr;
