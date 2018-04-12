@@ -12,9 +12,6 @@ valide_occ_tax_releve = {
     'altitude_min' : 1100,
     'altitude_max' : 1200,
     'meta_device_entry' : 'web',
-    'deleted' : False,
-    'meta_create_date' : datetime.datetime.now(),
-    'meta_update_date' : datetime.datetime.now(),
     'comment' : 'test',
     'geom_4326' : 'test',
     'taxons' : 'ablette, lynx',
@@ -134,11 +131,4 @@ class TestGetReleveIfAllowed:
 
 
 
-
 # TODO test on cruved_for_user_in_app
-
-
-
-
-
-

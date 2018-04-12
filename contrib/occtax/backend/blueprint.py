@@ -108,11 +108,11 @@ def getViewReleveOccurrence(info_role):
                 VReleveOccurrence.__table__.columns,
                 parameters['orderby']
             )
-        else:
-            orderCol = getattr(
-                VReleveOccurrence.__table__.columns,
-                'occ_meta_create_date'
-            )
+        # else:
+        #     orderCol = getattr(
+        #         VReleveOccurrence.__table__.columns,
+        #         'occ_meta_create_date'
+        #     )
 
         if 'order' in parameters:
             if (parameters['order'] == 'desc'):
@@ -345,11 +345,11 @@ def getViewReleveList(info_role):
                 VReleveList.__table__.columns,
                 params['orderby']
             )
-        else:
-            orderCol = getattr(
-                VReleveList.__table__.columns,
-                'occ_meta_create_date'
-            )
+        # else:
+        #     orderCol = getattr(
+        #         VReleveList.__table__.columns,
+        #         'occ_meta_create_date'
+        #     )
 
         if 'order' in params:
             if (params['order'] == 'desc'):

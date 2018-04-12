@@ -230,8 +230,6 @@ CREATE TABLE t_medias
   description_it text,
   description_es text,
   description_de text,
-  meta_create_date timestamp without time zone,
-  meta_update_date timestamp without time zone,
   is_public boolean NOT NULL DEFAULT true
 );
 
@@ -394,17 +392,13 @@ ALTER TABLE t_history_actions
 ------------
 --TRIGGERS--
 ------------
-CREATE TRIGGER tri_meta_dates_change_t_medias
-  BEFORE INSERT OR UPDATE
-  ON t_medias
-  FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-
 CREATE TRIGGER tri_log_changes_t_medias
   AFTER INSERT OR UPDATE OR DELETE
   ON t_medias
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+
 ---------
 --DATAS--
 ---------
