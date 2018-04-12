@@ -46,6 +46,7 @@ $$;
 
 CREATE TABLE t_releves_occtax (
     id_releve_occtax bigint NOT NULL,
+    unique_id_sinp_grp uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     id_dataset integer NOT NULL,
     id_digitiser integer,
     observers_txt varchar(500),
@@ -64,8 +65,7 @@ CREATE TABLE t_releves_occtax (
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
-    precision integer DEFAULT 100,
-    unique_id_sinp_grp uuid NOT NULL DEFAULT public.uuid_generate_v4(),
+    precision integer DEFAULT 100,    
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -87,6 +87,7 @@ SELECT pg_catalog.setval('t_releves_occtax_id_releve_occtax_seq', 1, false);
 
 CREATE TABLE t_occurrences_occtax (
     id_occurrence_occtax bigint NOT NULL,
+    unique_id_occurence_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     id_releve_occtax bigint NOT NULL,
     id_nomenclature_obs_meth integer NOT NULL, --DEFAULT get_default_nomenclature_value(14),
     id_nomenclature_bio_condition integer NOT NULL, --DEFAULT get_default_nomenclature_value(7),
@@ -132,6 +133,7 @@ SELECT pg_catalog.setval('t_occurrences_occtax_id_occurrence_occtax_seq', 1, fal
 
 CREATE TABLE cor_counting_occtax (
     id_counting_occtax bigint NOT NULL,
+    unique_id_sinp_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     id_occurrence_occtax bigint NOT NULL,
     id_nomenclature_life_stage integer NOT NULL, --DEFAULT get_default_nomenclature_value(10),
     id_nomenclature_sex integer NOT NULL, --DEFAULT get_default_nomenclature_value(9),
@@ -140,8 +142,7 @@ CREATE TABLE cor_counting_occtax (
     count_min integer,
     count_max integer,
     meta_create_date timestamp without time zone,
-    meta_update_date timestamp without time zone,
-    unique_id_sinp_occtax uuid NOT NULL DEFAULT public.uuid_generate_v4()
+    meta_update_date timestamp without time zone    
 );
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie (10)';
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe (9)';
@@ -424,6 +425,12 @@ CREATE TRIGGER tri_meta_dates_change_cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
+CREATE TRIGGER tri_insert_default_validation_status
+  AFTER INSERT
+  ON cor_counting_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_add_default_validation_status();
+
 
 ------------
 --VIEWS--
@@ -504,7 +511,7 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne,
 ,(13,0,0,0,30)
 ,(8,0,0,0,182)
 ,(15,0,0,0,91)
-,(101,0,0,0,347)
+,(101,0,0,0,493)
 ,(5,0,0,0,163)
 ,(106,0,0,0,370)
 ,(10,0,0,0,2)
