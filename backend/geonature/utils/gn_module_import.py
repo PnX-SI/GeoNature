@@ -9,6 +9,7 @@ import os
 
 from pathlib import Path
 from packaging import version
+from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import (
@@ -176,9 +177,23 @@ def gn_module_deactivate(module_name):
     log.info("Regenerate frontend routes")
     try:
         frontend_routes_templating()
+        # set the module as inactive
+        
         log.info("...ok\n")
     except Exception:
         raise
+    try:
+        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+        with app.app_context():
+            module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
+            module.active = False
+            DB.session.merge(module)
+            DB.session.commit()
+    except NoResultFound:
+        raise GeoNatureError(
+            'The module does not exist. \n Check the gn_commons.t_module to get the module name'
+        )
+
 
 
 def check_codefile_validity(module_path, module_name):
@@ -273,26 +288,50 @@ def add_application_db(module_name, url):
     log.info('Register the module in t_application ... \n')
     conf_file = load_config(DEFAULT_CONFIG_FIlE)
     id_application_geonature = conf_file['ID_APPLICATION_GEONATURE']
-    new_application = TApplications(
-        nom_application=module_name,
-        id_parent=id_application_geonature
-    )
     app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
-    with app.app_context():
-        try:
-            DB.session.add(new_application)
-            DB.session.commit()
-            DB.session.flush()
-            id_app = new_application.id_application
-            new_module = TModules(
-                id_module = id_app,
-                module_name = module_name,
-                module_url = url,
-                active = True
-            )
-            DB.session.add(new_module)
-            DB.session.commit()
-        except Exception as e:
-            log.error(e)
+    try:
+        with app.app_context():
+            # check if the module in TApplications
+            try:
+                id_app = None
+                exist_app = DB.session.query(TApplications).filter(
+                    TApplications.nom_application == module_name
+                ).one()
+            except NoResultFound:
+                # if no result, write in TApplication
+                new_application = TApplications(
+                    nom_application=module_name,
+                    id_parent=id_application_geonature
+                )
+                DB.session.add(new_application)
+                DB.session.commit()
+                DB.session.flush()
+                id_app = new_application.id_application
+            else:
+                log.info('the module is already in t_application')
+            finally:
+                id_app = id_app if id_app is not None else exist_app.id_application
+            try:
+                module = DB.session.query(TModules).filter(
+                    TModules.module_name == module_name
+                ).one()
+            except NoResultFound:
+                new_module = TModules(
+                    id_module=id_app,
+                    module_name=module_name,
+                    module_url=url,
+                    active=True
+                )
+                DB.session.add(new_module)
+                DB.session.commit()
+            else:
+                log.info('the module is already in t_module, reactivate it')
+                module.active = True
+                DB.session.merge(module)
+                DB.session.commit()
+
+    except Exception as e:
+        raise GeoNatureError(e)
+
     log.info('... ok \n')
     return id_app
