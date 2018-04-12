@@ -33,6 +33,7 @@ from geonature.utils.config_schema import (
 )
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.core.users.models import TApplications
+from geonature.core.gn_commons.models import TModules
 
 log = logging.getLogger(__name__)
 
@@ -268,7 +269,7 @@ def create_external_assets_symlink(module_path, module_name):
         )
     log.info('...ok \n')
 
-def add_application_db(module_name):
+def add_application_db(module_name, url):
     log.info('Register the module in t_application ... \n')
     conf_file = load_config(DEFAULT_CONFIG_FIlE)
     id_application_geonature = conf_file['ID_APPLICATION_GEONATURE']
@@ -283,6 +284,14 @@ def add_application_db(module_name):
             DB.session.commit()
             DB.session.flush()
             id_app = new_application.id_application
+            new_module = TModules(
+                id_module = id_app,
+                module_name = module_name,
+                module_url = url,
+                active = True
+            )
+            DB.session.add(new_module)
+            DB.session.commit()
         except Exception as e:
             log.error(e)
     log.info('... ok \n')
