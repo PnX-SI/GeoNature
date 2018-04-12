@@ -10,6 +10,5 @@ routes = Blueprint('gn_commons', __name__)
 @routes.route('/modules', methods=['GET'])
 @json_resp
 def get_modules():
-    print('ENTER')
     data = DB.session.query(TModules).all()
     return [d.as_dict() for d in data]
