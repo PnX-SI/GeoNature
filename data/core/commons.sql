@@ -366,7 +366,7 @@ ALTER TABLE t_validations
 
 
 ALTER TABLE t_history_actions
-  ADD CONSTRAINT check_t_history_actions_operation_type CHECK (operation_type IN('C','U','D'));
+  ADD CONSTRAINT check_t_history_actions_operation_type CHECK (operation_type IN('I','U','D'));
 
 
 ------------

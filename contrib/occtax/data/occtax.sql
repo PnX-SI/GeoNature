@@ -517,9 +517,17 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
   GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
 
 
----------------
---SAMPLE DATA--
----------------
+--------------------
+-- ASSOCIATED DATA--
+--------------------
+
+INSERT INTO gn_commons.bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES 
+(1, 'Dénombrement d''une occurence de taxon du module occtax', 'pr_occtax', 'cor_counting_occtax', 'id_counting_occtax', 'unique_id_sinp_occtax')
+,(2, 'occurence de taxon du module occtax', 'pr_occtax', 't_occurrences_occtax', 'id_occurrence_occtax', 'unique_id_occurence_occtax')
+,(3, 'Relevé correspondant à un regroupement d''occurence de taxon du module occtax', 'pr_occtax', 't_releves_occtax', 'id_releve_occtax', 'unique_id_sinp_grp')
+,(4, 'Observateurs des relevés du module occtax', 'pr_occtax', 'cor_role_releves_occtax', 'id_releve_occtax', 'unique_id_cor_role_releves')
+;
+SELECT pg_catalog.setval('gn_commons.t_history_actions_id_history_action_seq', 5, true);
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 (14,0,0,0,42)
