@@ -1,8 +1,7 @@
-from flask import Blueprint, request, current_app
-
 import datetime
 import psycopg2
-from flask import Blueprint, request, current_app
+
+from flask import Blueprint, request, current_app, session
 from sqlalchemy import exc, or_, func, distinct
 
 
@@ -30,9 +29,12 @@ from geonature.utils import filemanager
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import TRoles, UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
-from pypnusershub.db.tools import InsufficientRightsError
-
+from pypnusershub.db.tools import (
+    InsufficientRightsError,
+    get_or_fetch_user_cruved,
+)
 from pypnusershub import routes as fnauth
+
 
 from geojson import FeatureCollection
 from shapely.geometry import asShape
@@ -66,9 +68,11 @@ def getOccurrences():
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
     data = releve_repository.get_one(id_releve, info_role)
-    user_cruved = fnauth.cruved_for_user_in_app(
-        info_role.id_role,
-        current_app.config['ID_APPLICATION_GEONATURE']
+    user_cruved = get_or_fetch_user_cruved(
+        session=session,
+        id_role=info_role.id_role,
+        id_application=blueprint.config['id_application'],
+        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     releve_cruved = data.get_releve_cruved(info_role, user_cruved)
     return {
@@ -123,11 +127,14 @@ def getViewReleveOccurrence(info_role):
         raise
 
     user = info_role
-    user_cruved = fnauth.cruved_for_user_in_app(
-        user.id_role,
-        current_app.config['ID_APPLICATION_GEONATURE']
+    user_cruved = get_or_fetch_user_cruved(
+        session=session,
+        id_role=info_role.id_role,
+        id_application=blueprint.config['id_application'],
+        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     featureCollection = []
+
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature()
@@ -353,9 +360,12 @@ def getViewReleveList(info_role):
     data = q.limit(limit).offset(page * limit).all()
 
     user = info_role
-    user_cruved = fnauth.cruved_for_user_in_app(
-        user.id_role,
-        current_app.config['ID_APPLICATION_GEONATURE']
+
+    user_cruved = get_or_fetch_user_cruved(
+        session=session,
+        id_role=info_role.id_role,
+        id_application=blueprint.config['id_application'],
+        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     featureCollection = []
     for n in data:
@@ -363,7 +373,6 @@ def getViewReleveList(info_role):
         feature = n.get_geofeature()
         feature['properties']['rights'] = releve_cruved
         featureCollection.append(feature)
-
     return {
         'total': nbResultsWithoutFilter,
         'total_filtered': nbResults,
@@ -433,14 +442,12 @@ def insertOrUpdateOneReleve(info_role):
 
     if releve.id_releve_occtax:
         # get update right of the user
-        user_cruved = fnauth.cruved_for_user_in_app(
-            info_role.id_role,
-            current_app.config['ID_APPLICATION_GEONATURE']
+        user_cruved = get_or_fetch_user_cruved(
+            session=session,
+            id_role=info_role.id_role,
+            id_application=blueprint.config['id_application'],
+            id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
         )
-        # update_data_scope = next(
-        #     (u['level'] for u in user_cruved if u['action'] == 'U'),
-        #     None
-        # )
         update_data_scope = user_cruved['U']
         # info_role.tag_object_code = update_data_scope
         user = UserRigth(
