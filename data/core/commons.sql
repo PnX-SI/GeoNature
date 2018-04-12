@@ -62,6 +62,43 @@ $BODY$
 --USAGE
 --SELECT gn_commons.check_entity_value_exist('pr_occtax.t_releves_occtax.id_releve_occtax', 2);
 
+CREATE OR REPLACE FUNCTION gn_commons.fct_trg_add_default_validation_status()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	theschema text := quote_ident(TG_TABLE_SCHEMA);
+	thetable text := quote_ident(TG_TABLE_NAME);
+	theidtablelocation int;
+	theuuidfieldname character varying(50);
+	theuuid uuid;
+  thecomment text := 'auto = default value';
+BEGIN
+	--retrouver l'id de la table source stockant l'enregistrement en cours de validation
+  SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
+	WHERE "schema_name" = theschema AND "table_name" = thetable;
+  --retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
+	SELECT INTO theuuidfieldname uuid_field_name FROM gn_commons.bib_tables_location
+	WHERE "schema_name" = theschema AND "table_name" = thetable;
+  --récupérer l'uuid de l'enregistrement en cours de validation
+	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
+	
+  --insertion du statut de validation et des informations associées dans t_validations
+  INSERT INTO gn_commons.t_validations (id_table_location,uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
+  VALUES(
+    theidtablelocation,
+    theuuid,
+    ref_nomenclatures.get_default_nomenclature_value(101), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+    null,
+    thecomment,
+    NOW()
+  );
+		
+  return NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 
 CREATE TABLE bib_tables_location
 (
@@ -72,6 +109,15 @@ CREATE TABLE bib_tables_location
   pk_field character varying(50) NOT NULL,
   uuid_field_name character varying(50) NOT NULL
 );
+CREATE SEQUENCE bib_tables_location_id_table_location_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE bib_tables_location_id_table_location_seq OWNED BY bib_tables_location.id_table_location;
+ALTER TABLE ONLY bib_tables_location ALTER COLUMN id_table_location SET DEFAULT nextval('bib_tables_location_id_table_location_seq'::regclass);
+SELECT pg_catalog.setval('bib_tables_location_id_table_location_seq', 1, false);
 
 
 CREATE TABLE bib_media_types
@@ -111,7 +157,7 @@ CREATE TABLE t_medias
   description_de text,
   meta_create_date timestamp without time zone,
   meta_update_date timestamp without time zone,
-  is_public boolean NOT NULL DEFAULT true,
+  is_public boolean NOT NULL DEFAULT true
 );
 
 CREATE SEQUENCE t_medias_id_media_seq
@@ -128,7 +174,7 @@ SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
 CREATE TABLE t_validations
 (
   id_validation integer NOT NULL,
-  unique_id_validation uuid NOT NULL DEFAULT public.uuid_generate_v4(),
+  --unique_id_validation uuid NOT NULL DEFAULT public.uuid_generate_v4(),
   id_table_location integer NOT NULL,
   uuid_attached_row uuid NOT NULL,
   id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
@@ -136,7 +182,7 @@ CREATE TABLE t_validations
   validation_comment text,
   validation_date timestamp without time zone
 );
-COMMENT ON COLUMN t_validations.unique_id_validation IS 'Un uuid est nécessaire pour tracer l''historique des validations dans "tracked_objects_actions"';
+--COMMENT ON COLUMN t_validations.unique_id_validation IS 'Un uuid est nécessaire pour tracer l''historique des validations dans "tracked_objects_actions"';
 COMMENT ON COLUMN t_validations.id_table_location IS 'FK vers la table où se trouve l''enregistrement validé';
 COMMENT ON COLUMN t_validations.uuid_attached_row IS 'Uuid de l''enregistrement validé';
 COMMENT ON COLUMN t_validations.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valid (101)';
@@ -168,7 +214,7 @@ CREATE TABLE t_history_actions
 COMMENT ON COLUMN t_history_actions.id_table_location IS 'FK vers la table où se trouve l''enregistrement tracé';
 COMMENT ON COLUMN t_history_actions.uuid_attached_row IS 'Uuid de l''enregistrement tracé';
 COMMENT ON COLUMN t_history_actions.operation_type IS 'Type d''événement tracé (Create, Update, Delete)';
-COMMENT ON COLUMN t_validations.operation_date IS 'Date de l''événement';
+COMMENT ON COLUMN t_history_actions.operation_date IS 'Date de l''événement';
 COMMENT ON COLUMN t_history_actions.id_digitiser IS 'Nom de l''utilisateur logué ayant généré l''événement tracé';
 COMMENT ON COLUMN t_history_actions.content IS 'Contenu au format json de l''événement tracé. On enregistre le NEW pour CREATE et UPDATE. LE OLD (ou rien?) pour le DELETE.';
 

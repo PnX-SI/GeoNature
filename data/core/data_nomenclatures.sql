@@ -374,7 +374,6 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(271, 100, '61', 'Observation directe terrestre nocturne au phare', 'Observation directe terrestre nocturne au phare', 'Observation directe terrestre nocturne au phare', 'CAMPANULE', 'Validation en cours', 0, '100.061', '2017-06-19 15:12:46.794127', NULL, true)
 ,(273, 100, '63', 'Observation marine par caméra suspendue', 'Observation marine par caméra suspendue', 'Observation marine par caméra suspendue', 'CAMPANULE', 'Validation en cours', 0, '100.063', '2017-06-19 15:12:46.794127', NULL, true)
 ,(274, 100, '64', 'Observation marine par traineau vidéo', 'Observation marine par traineau vidéo', 'Observation marine par traineau vidéo', 'CAMPANULE', 'Validation en cours', 0, '100.064', '2017-06-19 15:12:46.794127', NULL, true)
-,(345, 101, '0', 'Inconnu', 'Inconnu', 'Le statut de validation n''est pas connu', 'GEONATURE', 'non validé', 0, '101.000', '2017-08-08 10:05:18.161067', NULL, true)
 ,(275, 100, '65', 'Observation marine par véhicule téléguidé (ROV)', 'Observation marine par véhicule téléguidé (ROV)', 'Observation marine par véhicule téléguidé (ROV)', 'CAMPANULE', 'Validation en cours', 0, '100.065', '2017-06-19 15:12:46.794127', NULL, true)
 ,(276, 100, '66', 'Observation marine photographique (observation photographique en plongée)', 'Observation marine photographique (observation photographique en plongée)', 'Observation marine photographique (observation photographique en plongée)', 'CAMPANULE', 'Validation en cours', 0, '100.066', '2017-06-19 15:12:46.794127', NULL, true)
 ,(277, 100, '67', 'Observation par piège photographique', 'Observation par piège photographique', 'Observation par piège photographique', 'CAMPANULE', 'Validation en cours', 0, '100.067', '2017-06-19 15:12:46.794127', NULL, true)
@@ -434,11 +433,13 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(340, 100, '130', 'Prospection à pied de cours d''eau (macrophytes)', 'Prospection à pied de cours d''eau (macrophytes)', 'Prospection à pied de cours d''eau (macrophytes)', 'CAMPANULE', 'Validation en cours', 0, '100.130', '2017-06-19 15:13:18.161067', NULL, true)
 ,(341, 100, '131', 'Prospection active dans l''habitat naturel (talus, souches, pierres…)', 'Prospection active dans l''habitat naturel (talus, souches, pierres…)', 'Prospection active dans l''habitat naturel (talus, souches, pierres…)', 'CAMPANULE', 'Validation en cours', 0, '100.131', '2017-06-19 15:13:18.161067', NULL, true)
 ,(342, 100, '132', 'Recherche dans filtres de piscines, skimmer', 'Recherche dans filtres de piscines, skimmer', 'Recherche dans filtres de piscines, skimmer', 'CAMPANULE', 'Validation en cours', 0, '100.132', '2017-06-19 15:13:18.161067', NULL, true)
-,(346, 101, '1', 'Non renseigné', 'Non renseigné', 'Le statut de validation n''est pas renseignée', 'GEONATURE', 'non validé', 0, '101.001', '2017-08-08 10:05:18.161068', NULL, true)
-,(347, 101, '2', 'En attente de validation', 'En attente de validation', 'Le travail de validation n''a pas encore été réalisé. Le statut de validation est en attente', 'GEONATURE', 'non validé', 0, '101.002', '2017-08-08 10:05:18.161069', NULL, true)
-,(348, 101, '3', 'Valide', 'Valide', 'La donnée d''observation est valide', 'GEONATURE', 'non validé', 0, '101.003', '2017-08-08 10:05:18.16107', NULL, true)
-,(349, 101, '4', 'Non valide', 'Non valide', 'La donnée d''observation n''est pas valide', 'GEONATURE', 'non validé', 0, '101.004', '2017-08-08 10:05:18.161071', NULL, true)
-,(350, 101, '5', 'Douteux', 'Douteux', 'La donnée est douteuse. Sans information complémentaire permettant d''étayer l''observation, elle ne peut pas être validée', 'GEONATURE', 'non validé', 0, '101.005', '2017-08-08 10:05:18.161072', NULL, true)
+,(345, 101, '1', 'Certain - très probable', 'Certain - très probable', 'La donnée est exacte. Il n’y a pas de doute notable et significatif quant à l’exactitude de l’observation ou de la détermination du taxon. La validation a été réalisée notamment à partir d’une preuve de l’observation qui confirme la détermination du producteur ou après vérification auprès de l’observateur et/ou du déterminateur.', 'SINP', 'validé', 0, '101.001', '2018-04-11 10:05:00', NULL, true)
+,(346, 101, '2', 'Probable', 'Probable', ' La donnée présente un bon niveau de fiabilité. Elle est vraisemblable et crédible. Il n’y a, a priori, aucune raison de douter de l’exactitude de la donnée mais il n’y a pas d’éléments complémentaires suffisants disponibles ou évalués (notamment la présence d’une preuve ou la possibilité de revenir à la donnée source) permettant d’attribuer un plus haut niveau de certitude.', 'SINP', 'validé', 0, '101.002', '2018-04-11 10:05:00', NULL, true)
+,(347, 101, '3', 'Douteux', 'Douteux', 'La donnée est peu vraisemblable ou surprenante mais on ne dispose pas d’éléments suffisants pour attester d’une erreur manifeste. La donnée est considérée comme douteuse.', 'SINP', 'validé', 0, '101.003', '2018-08-11 10:05:00', NULL, true)
+,(348, 101, '4', 'Invalide', 'Invalide', 'La donnée a été infirmée (erreur manifeste/avérée) ou présente un trop bas niveau de fiabilité. Elle est considérée comme trop improbable (aberrante notamment au regard de l’aire de répartition connue, des paramètres biotiques et abiotiques de la niche écologique du taxon, la preuve révèle une erreur de détermination). Elle est considérée comme invalide.', 'SINP', 'validé', 0, '101.004', '2018-04-11 10:05:00', NULL, true)
+,(349, 101, '5', 'Non réalisable', 'Non réalisable', 'La donnée a été soumise à l’ensemble du processus de validation mais l’opérateur (humain ou machine) n’a pas pu statuer sur le niveau de fiabilité, notamment à cause des points suivants : état des connaissances du taxon insuffisantes, ou informations insuffisantes sur l’observation.', 'SINP', 'validé', 0, '101.005', '2018-04-11 10:05:00', NULL, true)
+,(350, 101, '6', 'Inconnu', 'Inconnu', 'Le statut de validation n''est pas connu.', 'GEONATURE', 'non validé', 0, '101.006', '2018-04-11 10:05:00', NULL, true)
+,(493, 101, '0', 'En attente de validation', 'En attente de validation', 'Le travail de validation n''a pas encore été réalisé. Le statut de validation est en attente', 'GEONATURE', 'non validé', 0, '101.000', '2018-04-11 10:05:00', NULL, true)
 ,(351, 102, '1', 'Dataset', 'Dataset', 'Jeu de données', 'SINP', 'Validé', 0, '102.001', '2017-10-16 16:05:18', NULL, true)
 ,(352, 102, '2', 'Series', 'Series', 'ensemble de séries de données', 'SINP', 'Validé', 0, '102.002', '2017-10-16 16:05:18', NULL, true)
 ,(353, 103, '1', 'DS', 'Données source', 'Jeu de données-source dans les bases de données d''un producteur ou Jeu de données-source transmises par un producteur à une plateforme régionale ou thématique', 'SINP', 'Validé', 0, '103.001', '2017-10-16 16:25:00', NULL, true)
@@ -581,9 +582,9 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(479, 116, '5', 'Rocher', 'Rocher', 'Site chiroptères de type rocher', 'GEONATURE', 'Non validé', 116, '116.001.005', '2018-03-13 00:00:00', NULL, true)
 ,(480, 116, '6', 'Hors gîte', 'Hors gîte', 'Site chiroptères de type hors gîte', 'GEONATURE', 'Non validé', 116, '116.001.006', '2018-03-13 00:00:00', NULL, true)
 ,(481, 116, '7', 'Indéterminé', 'Indéterminé', 'Site chiroptères de type indéterminé', 'GEONATURE', 'Non validé', 116, '116.001.007', '2018-03-13 00:00:00', NULL, true)
---next 493
+--next 494
 ;
-SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 482, true);
+SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 494, true);
 
 UPDATE t_nomenclatures SET label_default = label_fr;
 UPDATE t_nomenclatures SET definition_default = definition_fr;
@@ -603,8 +604,9 @@ $$;
 INSERT INTO defaults_nomenclatures_value (id_type, id_organism, id_nomenclature) VALUES
 (2,0,80)
 ,(19,0,76)
-,(103,0,353)
+,(101,0,493)
 ,(102,0,351)
+,(103,0,353)
 ,(114,0,442)
 ,(115,0,430)
 ,(107,0,382)
@@ -1429,6 +1431,7 @@ INSERT INTO cor_taxref_nomenclature VALUES
 ,(348, 'all', 'all', now(), NULL)
 ,(349, 'all', 'all', now(), NULL)
 ,(350, 'all', 'all', now(), NULL)
+,(493, 'all', 'all', now(), NULL)
 
 
 -----------------------------

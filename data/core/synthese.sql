@@ -354,9 +354,9 @@ ALTER TABLE synthese
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19));
 
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_info_geo_type,23));
 
-ALTER TABLE cor_area_synthese
-  ADD CONSTRAINT check_cor_area_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_info_geo_type,23));
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
