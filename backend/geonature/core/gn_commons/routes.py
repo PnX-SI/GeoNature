@@ -3,21 +3,36 @@
     contenus dans gn_media
 '''
 
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
+from pypnusershub import routes as fnauth
+from pypnusershub.db.tools import cruved_for_user_in_app
 
 routes = Blueprint('gn_commons', __name__)
 
 
 @routes.route('/modules', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def get_modules():
-    data = DB.session.query(TModules).all()
-    return [d.as_dict() for d in data]
+def get_modules(info_role):
+    '''
+    Return the allowed modules of user from its cruved
+    '''
+    modules = DB.session.query(TModules).all()
+    allowed_modules = []
+    for mod in modules:
+        app_cruved = cruved_for_user_in_app(
+            id_role=info_role.id_role,
+            id_application=mod.id_module,
+            id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+        )
+        if app_cruved['R'] != '1':
+            allowed_modules.append(mod.as_dict())
+    return allowed_modules
 
 
 @routes.route('/<int:id_media>', methods=['GET'])

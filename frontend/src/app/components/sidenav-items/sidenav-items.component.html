@@ -14,19 +14,14 @@
             <h3 mat-line> {{_sideNavService.home.module_name}} </h3>
         </mat-list-item>
     </a>
-    <div *ngFor="let module of _sideNavService.modules">
-        <a 
+        <a *ngFor="let module of _sideNavService.modules" 
           href="#{{module.module_url}}"
-          [target]="module.module_target"
-          >
-            <mat-list-item  (click)="onSetApp(module)"
-            class="sidenav-item"
-             >
-                <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
-                <h3 mat-line> {{module.module_name}} </h3>
+          [target]="module.module_target">
+            <mat-list-item  (click)="onSetApp(module)" class="sidenav-item">
+              <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
+              <h3 mat-line> {{module.module_name}} </h3>
             </mat-list-item>
         </a>
-    </div>
 
 
 </mat-nav-list>

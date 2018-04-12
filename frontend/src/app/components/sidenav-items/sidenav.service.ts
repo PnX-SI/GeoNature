@@ -12,7 +12,7 @@ export class SideNavService {
   public currentModule: any;
   gettingCurrentModule = this._module.asObservable();
   // List of the apps
-  public modules = [{}];
+  public modules: Array<any>;
   public home;
 
   constructor(private _api: HttpClient) {
