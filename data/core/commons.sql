@@ -278,11 +278,12 @@ ALTER TABLE ONLY t_history_actions
 ---------------
 --CONSTRAINTS--
 ---------------
-ALTER TABLE ONLY t_medias
-  ADD CONSTRAINT fk_t_medias_check_entity_exist CHECK (check_entity_field_exist(entity_name));
+--TODO revoir ces 2 fonctions qui ne fonctionnent plus car 'entity_name' a été déplacé et réorganisé dans t_tables_location
+--ALTER TABLE ONLY t_medias
+  --ADD CONSTRAINT fk_t_medias_check_entity_exist CHECK (check_entity_field_exist(entity_name));
 
-ALTER TABLE ONLY t_medias
-  ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
+--ALTER TABLE ONLY t_medias
+  --ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
 
 
 ALTER TABLE t_validations
