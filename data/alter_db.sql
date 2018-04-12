@@ -28,17 +28,12 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_contact AS
     rel.altitude_max,
     rel.deleted,
     rel.meta_device_entry,
-    rel.meta_create_date,
-    rel.meta_update_date,
     rel.comment,
     rel.geom_4326,
     rel."precision",
     occ.id_occurrence_contact,
     occ.cd_nom,
     occ.nom_cite,
-    occ.deleted as occ_deleted,
-    occ.meta_create_date as occ_meta_create_date,
-    occ.meta_update_date as occ_meta_update_date,
     t.lb_nom,
     t.nom_valide,
     t.nom_vern,
@@ -50,9 +45,9 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_contact AS
    LEFT JOIN  pr_contact.cor_role_releves_contact cor_role on cor_role.id_releve_contact = rel.id_releve_contact
    LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
    GROUP BY rel.id_releve_contact, id_dataset, id_digitiser, date_min, date_max,
-       altitude_min, altitude_max, rel.deleted, meta_device_entry, rel.meta_create_date,
-       rel.meta_update_date, rel.comment, geom_4326, "precision", t.cd_nom, nom_cite,
-       id_occurrence_contact, occ_deleted, occ_meta_create_date, occ_meta_update_date, lb_nom,
+       altitude_min, altitude_max, meta_device_entry,
+       rel.comment, geom_4326, "precision", t.cd_nom, nom_cite,
+       id_occurrence_contact, occ_deleted, lb_nom,
        nom_valide, nom_complet_html, nom_vern;
 
 
@@ -67,10 +62,7 @@ SELECT rel.id_releve_contact,
    rel.date_max,
    rel.altitude_min,
    rel.altitude_max,
-   rel.deleted,
    rel.meta_device_entry,
-   rel.meta_create_date,
-   rel.meta_update_date,
    rel.comment,
    rel.geom_4326,
    rel."precision",
@@ -82,8 +74,8 @@ SELECT rel.id_releve_contact,
     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
     LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
- GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted,
-  rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+ GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max,
+  rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision";
 
 
 -- fonction retournant le cd_nomenclature à partir de l'id_type de la nomenclature et de l'id_nomenclature
@@ -122,19 +114,13 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_contact AS
     rel.date_max,
     rel.altitude_min,
     rel.altitude_max,
-    rel.deleted,
     rel.meta_device_entry,
-    rel.meta_create_date,
-    rel.meta_update_date,
     rel.comment,
     rel.geom_4326,
     rel."precision",
     occ.id_occurrence_contact,
     occ.cd_nom,
     occ.nom_cite,
-    occ.deleted AS occ_deleted,
-    occ.meta_create_date AS occ_meta_create_date,
-    occ.meta_update_date AS occ_meta_update_date,
     t.lb_nom,
     t.nom_valide,
     t.nom_vern,
@@ -145,7 +131,7 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_contact AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_contact, occ.deleted, occ.meta_create_date, occ.meta_update_date, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_contact, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
 CREATE OR REPLACE VIEW pr_contact.v_releve_list AS 
@@ -156,10 +142,7 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_list AS
     rel.date_max,
     rel.altitude_min,
     rel.altitude_max,
-    rel.deleted,
     rel.meta_device_entry,
-    rel.meta_create_date,
-    rel.meta_update_date,
     rel.comment,
     rel.geom_4326,
     rel."precision",
@@ -171,7 +154,7 @@ CREATE OR REPLACE VIEW pr_contact.v_releve_list AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_contact.cor_role_releves_contact cor_role ON cor_role.id_releve_contact = rel.id_releve_contact
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry, rel.meta_create_date, rel.meta_update_date, rel.comment, rel.geom_4326, rel."precision";
+  GROUP BY rel.id_releve_contact, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision";
 
 
 

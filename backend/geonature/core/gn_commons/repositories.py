@@ -128,7 +128,6 @@ class TMediaRepository():
 
         # Suppression logique du média dans la base
         try:
-            self.media.deleted = True
             self._persist_media_db()
         except Exception:
             new_path = rename_file("{}/deleted_{}".format(file_path, file_name), initial_path)
