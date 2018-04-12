@@ -74,7 +74,7 @@ def check_manifest(module_path):
     return configs_py['module_name']
 
 
-def gn_module_register_config(module_name, module_path, url):
+def gn_module_register_config(module_name, module_path, url, id_app):
     '''
         Enregistrement du module dans les variables etc
     '''
@@ -104,7 +104,11 @@ def gn_module_register_config(module_name, module_path, url):
         {
             'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
             'msg': "api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8')
-        }
+        },
+        {
+            'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
+            'msg': "id_application = {}\n".format(id_app).encode('utf-8')
+        },
     ]
     for cmd in cmds:
         proc = subprocess.Popen(
@@ -265,6 +269,7 @@ def create_external_assets_symlink(module_path, module_name):
     log.info('...ok \n')
 
 def add_application_db(module_name):
+    log.info('Register the module in t_application ... \n')
     conf_file = load_config(DEFAULT_CONFIG_FIlE)
     id_application_geonature = conf_file['ID_APPLICATION_GEONATURE']
     new_application = TApplications(
@@ -276,5 +281,9 @@ def add_application_db(module_name):
         try:
             DB.session.add(new_application)
             DB.session.commit()
+            DB.session.flush()
+            id_app = new_application.id_application
         except Exception as e:
             log.error(e)
+    log.info('... ok \n')
+    return id_app
