@@ -400,24 +400,6 @@ CREATE TRIGGER tri_update_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE update_occurrences_occtax();
 
-CREATE TRIGGER tri_meta_dates_change_occurrences_occtax
-  BEFORE INSERT OR UPDATE
-  ON t_occurrences_occtax
-  FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-
-CREATE TRIGGER tri_meta_dates_change_t_releves_occtax
-  BEFORE INSERT OR UPDATE
-  ON t_releves_occtax
-  FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-
-CREATE TRIGGER tri_meta_dates_change_cor_counting_occtax
-  BEFORE INSERT OR UPDATE
-  ON cor_counting_occtax
-  FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
   ON cor_counting_occtax
