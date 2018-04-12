@@ -155,11 +155,13 @@ def run_install_gn_module(app, module_path, module_name, url):
         gnmodule_install_app(DB, app)
         log.info("...ok\n")
 
-    #   Enregistrement du module
-    gn_module_register_config(module_name, module_path, url)
-
     # ajout du module dans la table users.t_application
-    add_application_db(module_name)
+    id_app = add_application_db(module_name)
+
+    #   Enregistrement du module
+    gn_module_register_config(module_name, module_path, url, id_app)
+
+
     # creation du lien symbolique des assets externes
     create_external_assets_symlink(module_path, module_name)
 
