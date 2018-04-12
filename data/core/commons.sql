@@ -62,6 +62,40 @@ $BODY$
 --USAGE
 --SELECT gn_commons.check_entity_value_exist('pr_occtax.t_releves_occtax.id_releve_occtax', 2);
 
+CREATE OR REPLACE FUNCTION get_table_location_id(myschema text, mytable text)
+  RETURNS integer AS
+$BODY$
+DECLARE
+	theidtablelocation int;
+BEGIN
+	--retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
+  SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
+	WHERE "schema_name" = myschema AND "table_name" = mytable;	
+  RETURN theidtablelocation;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+--USAGE
+--SELECT gn_commons.get_table_location_id('pr_occtax', 't_releves_occtax');
+
+CREATE OR REPLACE FUNCTION get_uuid_field_name(myschema text, mytable text)
+  RETURNS text AS
+$BODY$
+DECLARE
+	theuuidfieldname character varying(50);
+BEGIN
+	--retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
+  SELECT INTO theuuidfieldname uuid_field_name FROM gn_commons.bib_tables_location
+	WHERE "schema_name" = myschema AND "table_name" = mytable;	
+  RETURN theuuidfieldname;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+--USAGE
+--SELECT gn_commons.get_uuid_field_name('pr_occtax', 't_occurrences_occtax');
+
 CREATE OR REPLACE FUNCTION gn_commons.fct_trg_add_default_validation_status()
   RETURNS trigger AS
 $BODY$
@@ -74,14 +108,11 @@ DECLARE
   thecomment text := 'auto = default value';
 BEGIN
 	--retrouver l'id de la table source stockant l'enregistrement en cours de validation
-  SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
-	WHERE "schema_name" = theschema AND "table_name" = thetable;
+	SELECT INTO theidtablelocation gn_commons.get_table_location_id(theschema,thetable);
   --retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
-	SELECT INTO theuuidfieldname uuid_field_name FROM gn_commons.bib_tables_location
-	WHERE "schema_name" = theschema AND "table_name" = thetable;
+	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
   --récupérer l'uuid de l'enregistrement en cours de validation
 	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
-	
   --insertion du statut de validation et des informations associées dans t_validations
   INSERT INTO gn_commons.t_validations (id_table_location,uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
   VALUES(
@@ -91,9 +122,53 @@ BEGIN
     null,
     thecomment,
     NOW()
-  );
-		
-  return NEW;
+  );	
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION fct_trg_log_changes()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	theschema text := quote_ident(TG_TABLE_SCHEMA);
+	thetable text := quote_ident(TG_TABLE_NAME);
+	theidtablelocation int;
+	theuuidfieldname character varying(50);
+	theuuid uuid;
+	theoperation character(1);
+	thecontent json;
+BEGIN
+	--retrouver l'id de la table source stockant l'enregistrement à tracer
+	SELECT INTO theidtablelocation gn_commons.get_table_location_id(theschema,thetable);
+	--retouver le nom du champ stockant l'uuid de l'enregistrement à tracer
+	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
+	--Retrouver la première lettre du type d'opération (C, U, ou D)
+	SELECT INTO theoperation LEFT(TG_OP,1);
+	--Construction du JSON du contenu de l'enregistrement tracé
+	IF(TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+		--construction du JSON
+		thecontent :=  row_to_json(NEW.*);
+		--récupérer l'uuid de l'enregistrement à tracer
+		EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
+	ELSIF (TG_OP = 'DELETE') THEN
+		--construction du JSON
+		thecontent :=  row_to_json(OLD.*);
+		--récupérer l'uuid de l'enregistrement à tracer
+		EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING OLD;
+	END IF;
+  --insertion du statut de validation et des informations associées dans t_validations
+  INSERT INTO gn_commons.t_history_actions (id_table_location,uuid_attached_row,operation_type,operation_date,table_content)
+  VALUES(
+    theidtablelocation,
+    theuuid,
+    theoperation,
+    NOW(),
+    thecontent    
+  );	
+  RETURN NEW;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -208,15 +283,15 @@ CREATE TABLE t_history_actions
   uuid_attached_row uuid NOT NULL,
   operation_type character (1), --C, U ou D
   operation_date timestamp without time zone,
-  id_digitiser integer,
-  content json
+  --id_digitiser integer,
+  table_content json
 );
 COMMENT ON COLUMN t_history_actions.id_table_location IS 'FK vers la table où se trouve l''enregistrement tracé';
 COMMENT ON COLUMN t_history_actions.uuid_attached_row IS 'Uuid de l''enregistrement tracé';
 COMMENT ON COLUMN t_history_actions.operation_type IS 'Type d''événement tracé (Create, Update, Delete)';
 COMMENT ON COLUMN t_history_actions.operation_date IS 'Date de l''événement';
-COMMENT ON COLUMN t_history_actions.id_digitiser IS 'Nom de l''utilisateur logué ayant généré l''événement tracé';
-COMMENT ON COLUMN t_history_actions.content IS 'Contenu au format json de l''événement tracé. On enregistre le NEW pour CREATE et UPDATE. LE OLD (ou rien?) pour le DELETE.';
+--COMMENT ON COLUMN t_history_actions.id_digitiser IS 'Nom de l''utilisateur logué ayant généré l''événement tracé';
+COMMENT ON COLUMN t_history_actions.table_content IS 'Contenu au format json de l''événement tracé. On enregistre le NEW pour CREATE et UPDATE. LE OLD (ou rien?) pour le DELETE.';
 
 CREATE SEQUENCE t_history_actions_id_history_action_seq
     START WITH 1
@@ -271,8 +346,8 @@ ALTER TABLE ONLY t_validations
 ALTER TABLE ONLY t_history_actions
   ADD CONSTRAINT fk_t_history_actions_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_history_actions
-    ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+--ALTER TABLE ONLY t_history_actions
+    --ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ---------------
