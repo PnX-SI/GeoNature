@@ -72,8 +72,9 @@ def get_app(config, _app=None):
                 module.backend.blueprint.blueprint,
                 url_prefix=conf['api_url']
             )
-            #chargement de la configuration du module
-            app.config[manifest['module_name']] = conf
+            #chargement de la configuration du module dans le blueprint.config
+            module.backend.blueprint.blueprint.config = conf
+            
 
         _app = app
     return app
