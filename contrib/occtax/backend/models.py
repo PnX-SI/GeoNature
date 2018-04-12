@@ -59,7 +59,6 @@ class ReleveModel(DB.Model):
             level in ('2', '3')
         ):
             return True
-
         return False
 
     def get_releve_if_allowed(self, user):
@@ -83,7 +82,7 @@ class ReleveModel(DB.Model):
         Use in the map-list interface to allow or not an action
         params:
             - user : a TRole object
-            - user_cruved: object return by fnauth.cruved_for_user_in_app(user)
+            - user_cruved: object return by cruved_for_user_in_app(user)
         """
         return {
             action: self.user_is_allowed_to(user, level)
