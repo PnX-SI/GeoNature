@@ -27,8 +27,9 @@ export class SidenavItemsComponent implements OnInit {
     };
   }
   ngOnInit() {
-    this._sideNavService.getModules().subscribe(data => {
+    this._sideNavService.fetchModules().subscribe(data => {
       this._sideNavService.modules = data;
+      this._sideNavService.setModulesLocalStorage(data);
     });
   }
 

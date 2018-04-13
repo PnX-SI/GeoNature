@@ -20,8 +20,25 @@ export class SideNavService {
     this.home = { module_url: '/', module_name: 'Accueil', module_picto: 'home', id: '1' };
   }
 
-  getModules() {
+  fetchModules() {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`);
+  }
+
+  setModulesLocalStorage(modules) {
+    localStorage.setItem('modules', JSON.stringify(modules));
+  }
+
+  getModules(id_module) {
+    const modules = localStorage.getItem('modules');
+    let searchModule = null;
+    if (modules) {
+      JSON.parse(modules).forEach(mod => {
+        if (mod.id_module === id_module) {
+          searchModule = mod;
+        }
+      });
+    }
+    return searchModule;
   }
 
   setSideNav(sidenav) {
