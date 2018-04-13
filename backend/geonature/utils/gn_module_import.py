@@ -162,6 +162,17 @@ def gn_module_activate(module_name):
 
 def gn_module_deactivate(module_name):
     log.info('Desactivate module')
+    try:
+        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+        with app.app_context():
+            module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
+            module.active = False
+            DB.session.merge(module)
+            DB.session.commit()
+    except NoResultFound:
+        raise GeoNatureError(
+            'The module does not exist. \n Check the gn_commons.t_module to get the module name'
+        )
     if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
         cmd = "sudo rm {}/{}".format(
             GN_MODULES_ETC_ENABLED,
@@ -182,17 +193,6 @@ def gn_module_deactivate(module_name):
         log.info("...ok\n")
     except Exception:
         raise
-    try:
-        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
-        with app.app_context():
-            module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
-            module.active = False
-            DB.session.merge(module)
-            DB.session.commit()
-    except NoResultFound:
-        raise GeoNatureError(
-            'The module does not exist. \n Check the gn_commons.t_module to get the module name'
-        )
 
 
 
@@ -286,8 +286,8 @@ def create_external_assets_symlink(module_path, module_name):
 
 def add_application_db(module_name, url):
     log.info('Register the module in t_application ... \n')
-    conf_file = load_config(DEFAULT_CONFIG_FIlE)
-    id_application_geonature = conf_file['ID_APPLICATION_GEONATURE']
+    app_conf = load_config(DEFAULT_CONFIG_FIlE)
+    id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
     app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
     try:
         with app.app_context():
@@ -316,10 +316,13 @@ def add_application_db(module_name, url):
                     TModules.module_name == module_name
                 ).one()
             except NoResultFound:
+                update_url = "{}/#/{}".format(app_conf['URL_APPLICATION'], url)
                 new_module = TModules(
                     id_module=id_app,
                     module_name=module_name,
-                    module_url=url,
+                    module_url=update_url,
+                    module_target="_self",
+                    module_picto="extension"
                     active=True
                 )
                 DB.session.add(new_module)
