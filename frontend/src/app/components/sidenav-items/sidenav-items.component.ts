@@ -33,10 +33,6 @@ export class SidenavItemsComponent implements OnInit {
     });
   }
 
-  truc() {
-    this.router.navigate(['/lalala']);
-  }
-
   onSetApp(app) {
     this._sideNavService.setCurrentApp(app);
     if (app.module_name === 'Accueil') {

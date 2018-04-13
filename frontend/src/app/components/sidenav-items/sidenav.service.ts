@@ -17,7 +17,7 @@ export class SideNavService {
 
   constructor(private _api: HttpClient) {
     this.opened = false;
-    this.home = { module_url: '/', module_name: 'Accueil', module_picto: 'home', id: '1' };
+    this.home = { module_url: '/', module_label: 'Accueil', module_picto: 'home', id: '1' };
   }
 
   fetchModules() {

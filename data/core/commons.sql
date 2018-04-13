@@ -291,6 +291,7 @@ SELECT pg_catalog.setval('t_history_actions_id_history_action_seq', 1, false);
 CREATE TABLE t_modules(
   id_module integer NOT NULL,
   module_name character varying(255) NOT NULL,
+  module_label character varying(255) NOT NULL,
   module_picto character varying(255),
   module_desc text,
   module_group character varying(50),

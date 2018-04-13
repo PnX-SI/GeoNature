@@ -10,7 +10,7 @@
           [routerLink]="_sideNavService.home.module_url"
           routerLinkActive="active" class="sidenav-item" >
             <mat-icon mat-list-icon>{{_sideNavService.home.module_picto}}</mat-icon>
-            <h3 mat-line> {{_sideNavService.home.module_name}} </h3>
+            <h3 mat-line> {{_sideNavService.home.module_label}} </h3>
         </mat-list-item>
     </a>
     
@@ -19,7 +19,7 @@
           [target]="module.module_target">
             <mat-list-item  (click)="onSetApp(module)" class="sidenav-item">
               <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
-              <h3 mat-line> {{module.module_name}} </h3>
+              <h3 mat-line> {{module.module_label}} </h3>
             </mat-list-item>
         </a>
 

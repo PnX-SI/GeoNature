@@ -232,7 +232,7 @@ def frontend_routes_templating():
             location = '{}/{}#GeonatureModule'.format(
                 location, GN_MODULE_FE_FILE
             )
-            routes.append({'path': path, 'location': location})
+            routes.append({'path': path, 'location': location, 'id_module': conf['id_application']})
 
             # TODO test if two modules with the same name is okay for Angular
 
