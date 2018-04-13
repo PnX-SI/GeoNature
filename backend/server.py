@@ -52,9 +52,6 @@ def get_app(config, _app=None):
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
-        # from geonature.core.gn_medias.routes import routes
-        # app.register_blueprint(routes, url_prefix='/gn_medias')
-
         from geonature.core.gn_monitoring.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_monitoring')
 
