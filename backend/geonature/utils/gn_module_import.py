@@ -322,7 +322,7 @@ def add_application_db(module_name, url):
                     module_name=module_name,
                     module_url=update_url,
                     module_target="_self",
-                    module_picto="extension"
+                    module_picto="extension",
                     active=True
                 )
                 DB.session.add(new_module)
