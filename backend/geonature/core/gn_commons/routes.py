@@ -30,7 +30,7 @@ def get_modules(info_role):
             id_application=mod.id_module,
             id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
         )
-        if app_cruved['R'] != '1':
+        if app_cruved['R'] != '0':
             allowed_modules.append(mod.as_dict())
     return allowed_modules
 
