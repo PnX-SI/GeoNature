@@ -115,7 +115,8 @@
     "CurrentlyEditing":
       "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'"
+    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
+    "StatusSource": "Statut source"
   },
   "Counting": {
     "Counting": "Dénombrement",

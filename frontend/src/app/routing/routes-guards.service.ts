@@ -16,7 +16,6 @@ export class ModuleGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const id_module = route.data['id_module'];
     if (this._sideNavService.getModules(id_module)) {
-      console.log('oui tu as le droit');
       return true;
     } else {
       this._router.navigate(['/']);
