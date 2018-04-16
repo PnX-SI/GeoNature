@@ -44,7 +44,7 @@ blueprint = Blueprint('pr_occtax', __name__)
 
 
 @blueprint.route('/releves', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@fnauth.check_auth_cruved('R', True, id_app=current_app.config.get('occtax'))
 @json_resp
 def getReleves(info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
@@ -53,7 +53,7 @@ def getReleves(info_role):
 
 
 @blueprint.route('/occurrences', methods=['GET'])
-@fnauth.check_auth_cruved('R')
+@fnauth.check_auth_cruved('R', id_app=current_app.config.get('occtax'))
 @json_resp
 def getOccurrences():
     q = DB.session.query(TOccurrencesOccurrence)
@@ -63,7 +63,7 @@ def getOccurrences():
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@fnauth.check_auth_cruved('R', True, id_app=current_app.config.get('occtax'))
 @json_resp
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
@@ -82,7 +82,11 @@ def getOneReleve(id_releve, info_role):
 
 
 @blueprint.route('/vreleveocctax', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@fnauth.check_auth_cruved(
+    'R',
+    True,
+    id_app=current_app.config.get('occtax')
+)
 @json_resp
 def getViewReleveOccurrence(info_role):
     releve_repository = ReleveRepository(VReleveOccurrence)
@@ -149,9 +153,13 @@ def getViewReleveOccurrence(info_role):
     return {'message': 'not found'}, 404
 
 
-
+    
 @blueprint.route('/vreleve', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@fnauth.check_auth_cruved(
+    'R',
+    True,
+    id_app=current_app.config.get('occtax')
+)
 @json_resp
 def getViewReleveList(info_role):
     """
@@ -360,7 +368,6 @@ def getViewReleveList(info_role):
     data = q.limit(limit).offset(page * limit).all()
 
     user = info_role
-
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
@@ -383,7 +390,7 @@ def getViewReleveList(info_role):
 
 
 @blueprint.route('/releve', methods=['POST'])
-@fnauth.check_auth_cruved('C', True)
+@fnauth.check_auth_cruved('C', True, id_app=current_app.config.get('occtax'))
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesOccurrence)
@@ -468,7 +475,7 @@ def insertOrUpdateOneReleve(info_role):
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D', True)
+@fnauth.check_auth_cruved('D', True, id_app=current_app.config.get('occtax'))
 @json_resp
 def deleteOneReleve(id_releve, info_role):
     """Suppression d'une données d'un relevé et des occurences associés
@@ -487,7 +494,7 @@ def deleteOneReleve(id_releve, info_role):
 
 
 @blueprint.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D')
+@fnauth.check_auth_cruved('D', id_app=current_app.config.get('occtax'))
 @json_resp
 def deleteOneOccurence(id_occ):
     """Suppression d'une données d'occurrence et des dénombrements associés
@@ -521,7 +528,7 @@ def deleteOneOccurence(id_occ):
 
 
 @blueprint.route('/releve/occurrence_counting/<int:id_count>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D')
+@fnauth.check_auth_cruved('D', id_app=current_app.config.get('occtax'))
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Suppression d'une données de dénombrement
@@ -592,7 +599,7 @@ def getDefaultNomenclatures():
 
 
 @blueprint.route('/export/sinp', methods=['GET'])
-@fnauth.check_auth_cruved('E', True)
+@fnauth.check_auth_cruved('E', True, id_app=current_app.config.get('occtax'))
 @csv_resp
 def export_sinp(info_role):
     """ Return the data (CSV) at SINP format
