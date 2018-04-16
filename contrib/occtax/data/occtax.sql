@@ -94,6 +94,7 @@ CREATE TABLE t_occurrences_occtax (
     id_nomenclature_diffusion_level integer, --DEFAULT get_default_nomenclature_value(5),
     id_nomenclature_observation_status integer, --DEFAULT get_default_nomenclature_value(18),
     id_nomenclature_blurring integer, --DEFAULT get_default_nomenclature_value(4),
+    id_nomenclature_source_status integer,
     determiner character varying(255),
     id_nomenclature_determination_method integer, --DEFAULT get_default_nomenclature_value(106),
     cd_nom integer,
@@ -113,6 +114,7 @@ COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_diffusion_level IS 'Corre
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_determination_method IS 'Correspondance nomenclature GEONATURE = meth_determin';
+COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_source_status IS 'Correspondance nomenclature INPN = statut_source: id = 19';
 
 CREATE SEQUENCE t_occurrences_occtax_id_occurrence_occtax_seq
     START WITH 1
@@ -234,6 +236,8 @@ ALTER TABLE ONLY t_occurrences_occtax
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+ALTER TABLE ONLY t_occurrences_occtax
+    ADD CONSTRAINT fk_t_occurrences_occtax_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -317,6 +321,9 @@ ALTER TABLE t_occurrences_occtax
 
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_blurring CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_blurring,4));
+
+ALTER TABLE t_occurrences_occtax
+  ADD CONSTRAINT check_t_occurrences_occtax_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19));
 
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_determination_method,106));
@@ -518,4 +525,5 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne,
 ,(4,0,0,0,200)
 ,(24,0,0,0,150)
 ,(100,0,0,0,343)
+,(19,0, 0, 0, 76)
 ;

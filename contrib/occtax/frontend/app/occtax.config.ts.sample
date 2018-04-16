@@ -34,6 +34,7 @@ export const OccTaxConfig = {
       determination_method: true,
       sample_number_proof: true,
       digital_proof: true,
+      source_status: false,
       non_digital_proof: true,
       comment: true
     },

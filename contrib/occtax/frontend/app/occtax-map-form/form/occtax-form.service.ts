@@ -151,6 +151,7 @@ export class OcctaxFormService {
       id_nomenclature_observation_status: null,
       id_nomenclature_diffusion_level: null,
       id_nomenclature_blurring: null,
+      id_nomenclature_source_status: null,
       determiner: null,
       id_nomenclature_determination_method: null,
       cd_nom: [null, Validators.compose([Validators.required])],
@@ -373,7 +374,8 @@ export class OcctaxFormService {
       id_nomenclature_determination_method: defaultNomenclatures[106],
       id_nomenclature_observation_status: defaultNomenclatures[18],
       id_nomenclature_diffusion_level: defaultNomenclatures[5],
-      id_nomenclature_blurring: defaultNomenclatures[4]
+      id_nomenclature_blurring: defaultNomenclatures[4],
+      id_nomenclature_source_status: defaultNomenclatures[19]
     });
   }
 

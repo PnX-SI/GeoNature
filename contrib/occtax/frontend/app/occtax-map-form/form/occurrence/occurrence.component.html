@@ -144,6 +144,16 @@
               >
             </pnx-nomenclature>
           </div>
+          <div *ngIf="occtaxConfig.form_fields.occurrence.bio_condition" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+            <pnx-nomenclature 
+              label="{{ 'Taxon.StatusSource' | translate }}"
+              [parentFormControl]="occurrenceForm.controls.id_nomenclature_source_status"
+              [idTypeNomenclature]="19" 
+              [regne]="fs.currentTaxon.regne" 
+              [group2Inpn]="fs.currentTaxon.group2_inpn"
+            > 
+            </pnx-nomenclature>
+          </div>
       </div>
       <div class="row row-0" id="row-commentaire">
         <div *ngIf="occtaxConfig.form_fields.occurrence.comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">               

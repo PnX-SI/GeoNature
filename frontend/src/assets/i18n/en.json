@@ -113,7 +113,8 @@
     "Blurring": "Blurring",
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
-    "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'"
+    "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
+    "StatusSource": "Source status"
   },
   "Counting": {
     "Counting": "Counting",
