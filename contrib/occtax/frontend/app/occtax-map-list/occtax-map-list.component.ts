@@ -16,6 +16,7 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { DynamicFormComponent } from "@geonature_common/form/dynamic-form/dynamic-form.component";
 import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
+import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 
 @Component({
@@ -54,15 +55,14 @@ export class OcctaxMapListComponent implements OnInit {
     private _router: Router,
     public ngbModal: NgbModal,
     private _fb: FormBuilder,
-    private _dynformService: DynamicFormService
+    private _dynformService: DynamicFormService,
+    private _dateParser: NgbDateParserFormatter
   ) {}
 
   ngOnInit() {
     this.dynamicFormGroup = this._fb.group({
       cd_nom: null,
       observers: null,
-      date_min: null,
-      date_max: null,
       dataset: null,
       observers_txt: null,
       id_dataset: null,
@@ -143,6 +143,14 @@ export class OcctaxMapListComponent implements OnInit {
       let value = this.dynamicFormGroup.value[key];
       if (key === "cd_nom" && this.dynamicFormGroup.value[key]) {
         value = this.dynamicFormGroup.value[key].cd_nom;
+      } else if (
+        (key === "date_up" || key === "date_low") &&
+        this.dynamicFormGroup.value[key]
+      ) {
+        params.push({
+          param: key,
+          value: this._dateParser.format(this.dynamicFormGroup.value[key])
+        });
       } else if (key === "observers" && this.dynamicFormGroup.value[key]) {
         this.dynamicFormGroup.value.observers.forEach(observer => {
           params.push({ param: "observers", value: observer.id_role });
