@@ -33,49 +33,49 @@
         >
         </pnx-datasets>
       </div>
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+      <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
           <pnx-date
             label="{{ 'Releve.MinDate' | translate }} "
             [parentFormControl]="dynamicFormGroup.controls.date_low">
           </pnx-date>
       </div>
 
-      <div class="col-xs-2 col-sm-2 col-md-1 col-lg-2 padding-sm">
+      <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
           <pnx-date
             label="{{ 'Releve.MaxDate' | translate }} "
             [parentFormControl]="dynamicFormGroup.controls.date_up">
           </pnx-date>
       </div>
 
+      <button class="btn btn-secondary actions" (click)="refreshFilters()"
+         matTooltip="{{ 'Form.RefreshFilters' | translate }}">
         <i
           id="refresh-filter"
           class="fa fa-trash-o clickable action"
           aria-hidden="true"
-          matTooltip="{{ 'Form.RefreshFilters' | translate }}"
-          (click)="refreshFilters()">
+          
+          >
         </i>
+      </button>
 
-        <i
-          id="settings"
-          class="fa fa-cog action clickable"
+
+        <button class="btn btn-secondary actions" (click)="toggleAdvancedFilters()"
+          matTooltip="{{ 'Form.AdvancedFilters' | translate }}">
+          <i
+          class="fa fa-filter"
           aria-hidden="true"
-          matTooltip="{{ 'Form.AdvancedFilters' | translate }}"
-          (click)="toggleAdvancedFilters()"
+          
         ></i>
+        </button>
+
         <svg *ngIf="formsSelected.length > 0" height="40" width="10">
             <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
         </svg>
 
-        <i
-        (click)="searchData()"
-        id="settings"
-        class="fa fa-search action clickable"
-        aria-hidden="true"
-        matTooltip="{{ 'Search' | translate }}"
-        ></i>
 
-        <button matTooltip=" {{ 'Releve.AddReleve' | translate }}" type="button" id="redirect" class="btn btn-success" (click)="onAddReleve()">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        <button id="search-btn" class="btn btn-primary" (click)="searchData()" >
+            {{ 'Search' | translate }}
+          <i class="fa fa-search" aria-hidden="true"></i>
         </button>
   </div>
   <div *ngIf="advandedFilterOpen" id="collapse-settings">
@@ -90,10 +90,6 @@
     </div>
 
     
-
-
-
-
     <div class='form-inline' [formGroup]="dynamicFormGroup">
       
         <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
@@ -116,7 +112,7 @@
 
 <div class="row row-sm">
 
-  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm">
     <!-- MAP -->
     <pnx-map-list
       [idName]="idName"
@@ -124,7 +120,7 @@
     </pnx-map-list>
   </div>
 
-  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm tab-container">
     <!-- LIST -->
     <!--Table-->
     <ngx-datatable
@@ -133,9 +129,9 @@
       [rows]="mapListService.tableData"
       [columns]="mapListService.displayColumns"
       [columnMode]="'force'"
-      [headerHeight]="50"
-      [footerHeight]="35"
-      [rowHeight]="50"
+      [headerHeight]="35"
+      [footerHeight]="40"
+      [rowHeight]="40"
       [draggable]="false"
       [selected]="mapListService.selectedRow"
       [externalPaging]="true"
@@ -189,8 +185,13 @@
       *ngFor="let col of mapListService.displayColumns"
       [name]="col.name"
       [prop]="col.prop">
-      </ngx-datatable-column>
-    </ngx-datatable>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <button id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
+      <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
+  </button>
+  
+
 
     <!-- MODAL COLUMNS -->
     <ng-template #modalCol let-c="close" let-d="dismiss">

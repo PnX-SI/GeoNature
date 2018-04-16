@@ -10,22 +10,42 @@
   height: 40px;
   width: 40px;
   border-radius: 30px;
-  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+
   //padding: 0px;
+}
+
+.box-shadow {
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#search-btn {
+  position: absolute;
+  right: 1%;
+  top: 25%;
+  height: 35px;
+  font-size: 15px;
+
+
+}
+
+#add-btn { 
+  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
+  padding: 5px;
 }
 
 #refresh-filter{
   color:red;
 }
 
-i.action {
-  margin-top: 30px;
-  margin-left: 10px;
-}
 
-#settings {
-  padding-left: 10px;
-  color: #7e7e7e
+.actions {
+  height: 35px;
+  margin-left: 5px;
+  margin-top: 21px;
+  padding: 8px;
 }
 
 .filter-control {
@@ -59,14 +79,15 @@ i.action {
 .modal-body{
   text-align: left!important;
 }
+
+.tab-container {
+  max-height: 81vh;
+  height: 80vh;
+}
 ngx-datatable {
-  height: 85vh!important;
-  // position: absolute;
-  // right:0;
-  // left:0;
-  // top:0;
-  // bottom:0;
-  overflow-y: scroll;
+  max-height: 79vh!important;
+  box-shadow: none!important;
+   overflow-y: scroll;
 }
 
 .form-control-sm {
