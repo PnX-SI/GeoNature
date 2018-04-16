@@ -71,7 +71,7 @@ def get_app(config, _app=None):
             )
             #chargement de la configuration du module dans le blueprint.config
             module.backend.blueprint.blueprint.config = conf
-            
+            app.config[manifest['module_name']] = conf
 
         _app = app
     return app
