@@ -7,14 +7,14 @@ import os
 import requests
 
 from .bootstrap_test import geonature_app
-from geonature.core.gn_medias.repositories import TMediaRepository
+from geonature.core.gn_commons.repositories import TMediaRepository
 
 
 class TestAPIMedias:
 
     def _get_media(self, geonature_app, id_media):
         response = requests.get(
-            '{}/gn_medias/{}'.format(
+            '{}/gn_commons/media/{}'.format(
                 geonature_app.config['API_ENDPOINT'], id_media
             )
         )
@@ -28,13 +28,13 @@ class TestAPIMedias:
         )
         data = {
             "isFile": True,
-            "title_fr": "Super test",
-            "id_type": 2,
-            "entity_name": "gn_monitoring.t_base_sites.id_base_site",
-            "entity_value": -1
+            "id_nomenclature_media_type": 494,
+            "id_table_location": 1,
+            "uuid_attached_row": "cfecc9af-3949-44ab-bde5-8d1ecd1ab581",
+            "title_fr": "Super test"
         }
         response = requests.post(
-            '{}/gn_medias/'.format(geonature_app.config['API_ENDPOINT']),
+            '{}/gn_commons/media'.format(geonature_app.config['API_ENDPOINT']),
             data=data,
             files={'file': test_file}
         )
@@ -43,7 +43,7 @@ class TestAPIMedias:
             assert False
         if not os.path.isfile(os.path.join(
             geonature_app.config['BASE_DIR'],
-            media_data['path']
+            media_data['media_path']
         )):
             assert False
         return media_data
@@ -52,7 +52,7 @@ class TestAPIMedias:
         data['isFile'] = False
         data['url'] = 'http://codebasicshub.com/uploads/lang/py_pandas.png'
         response = requests.post(
-            '{}/gn_medias/{}'.format(
+            '{}/gn_commons/media/{}'.format(
                 geonature_app.config['API_ENDPOINT'], data['id_media']
             ),
             data=data
@@ -62,7 +62,7 @@ class TestAPIMedias:
 
     def _delete_media(self, geonature_app, id_media):
         response = requests.delete(
-            '{}/gn_medias/{}'.format(
+            '{}/gn_commons/media/{}'.format(
                 geonature_app.config['API_ENDPOINT'], id_media
             )
         )
@@ -75,4 +75,3 @@ class TestAPIMedias:
         self._update_media(geonature_app, data)
         self._get_media(geonature_app, data['id_media'])
         self._delete_media(geonature_app, data['id_media'])
-        self._get_media(geonature_app, data['id_media'])
