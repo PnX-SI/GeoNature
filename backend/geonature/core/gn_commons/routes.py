@@ -35,18 +35,19 @@ def get_modules(info_role):
     return allowed_modules
 
 
-@routes.route('/<int:id_media>', methods=['GET'])
+@routes.route('/media/<int:id_media>', methods=['GET'])
 @json_resp
 def get_media(id_media):
     '''
         Retourne un media
     '''
     m = TMediaRepository(id_media=id_media).media
-    return m.as_dict()
+    if m:
+        return m.as_dict()
 
 
-@routes.route('/', methods=['POST', 'PUT'])
-@routes.route('/<int:id_media>', methods=['POST', 'PUT'])
+@routes.route('/media', methods=['POST', 'PUT'])
+@routes.route('/media/<int:id_media>', methods=['POST', 'PUT'])
 @json_resp
 def insert_or_update_media(id_media=None):
     '''
@@ -72,7 +73,7 @@ def insert_or_update_media(id_media=None):
     return m.as_dict()
 
 
-@routes.route('/<int:id_media>', methods=['DELETE'])
+@routes.route('/media/<int:id_media>', methods=['DELETE'])
 @json_resp
 def delete_media(id_media):
     '''
