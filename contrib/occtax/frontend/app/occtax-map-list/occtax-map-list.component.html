@@ -68,6 +68,14 @@
         ></i>
         </button>
 
+        <button class="btn btn-secondary actions" (click)="openModalDownload($event, modalDownload)"
+          matTooltip="{{ 'DownloadData' | translate }}">
+          <i
+            class="fa fa-download"
+            aria-hidden="true">
+          </i>
+      </button>
+
         <svg *ngIf="formsSelected.length > 0" height="40" width="10">
             <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
         </svg>
@@ -224,6 +232,30 @@
       <button type="button" class="btn btn-danger" (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)"> {{'Delete' | translate }} </button>
     </div>
     </ng-template>
+
+
+    <ng-template #modalDownload let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{'DownloadData' | translate }}</h5>
+      </div>
+      <div class="modal-body">
+        <button (click)="downloadData('csv')" type="button" class="btn btn-default" (click)="c()"> <i aria-hidden="true" class="fa file-alt"> </i>
+          <i
+          id="refresh-filter"
+          class="fas fa-alt"
+          aria-hidden="true"
+          
+          >
+        </i> 
+         CSV
+         </button>
+        <p> En construction ...</p>
+        <button type="button" class="btn btn-default" (click)="downloadData('geojson')"> <i aria-hidden="true" class="fa globe"> </i> GeoJson </button>
+        <button type="button" class="btn btn-default" (click)="c()"> <i aria-hidden="true" class="fa globe"> </i> ShapeFile </button>
+      </div>
+      </ng-template>
+
+
 
   <!-- END COL 6 -->
   </div>

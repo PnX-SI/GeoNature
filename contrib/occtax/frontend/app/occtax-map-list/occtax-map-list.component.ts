@@ -18,6 +18,7 @@ import { DynamicFormComponent } from "@geonature_common/form/dynamic-form/dynami
 import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
+import { AppConfig } from "@geonature_config/app.config";
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -141,17 +142,13 @@ export class OcctaxMapListComponent implements OnInit {
     const params = [];
     for (let key in this.dynamicFormGroup.value) {
       let value = this.dynamicFormGroup.value[key];
-      if (key === "cd_nom" && this.dynamicFormGroup.value[key]) {
+      if (key === "cd_nom" && value) {
         value = this.dynamicFormGroup.value[key].cd_nom;
-      } else if (
-        (key === "date_up" || key === "date_low") &&
-        this.dynamicFormGroup.value[key]
-      ) {
-        params.push({
-          param: key,
-          value: this._dateParser.format(this.dynamicFormGroup.value[key])
-        });
-      } else if (key === "observers" && this.dynamicFormGroup.value[key]) {
+        params.push({ param: key, value: value });
+      } else if ((key === "date_up" || key === "date_low") && value) {
+        value = this._dateParser.format(this.dynamicFormGroup.value[key]);
+        params.push({ param: key, value: value });
+      } else if (key === "observers" && value) {
         this.dynamicFormGroup.value.observers.forEach(observer => {
           params.push({ param: "observers", value: observer.id_role });
         });
@@ -159,7 +156,6 @@ export class OcctaxMapListComponent implements OnInit {
         params.push({ param: key, value: value });
       }
     }
-    console.log(params);
     this.closeAdvancedFilters();
     this.mapListService.refreshData(this.apiEndPoint, "set", params);
   }
@@ -206,6 +202,7 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   openDeleteModal(event, modal, iElement, row) {
+    this.mapListService.urlQuery;
     this.mapListService.selectedRow = [];
     this.mapListService.selectedRow.push(row);
     event.stopPropagation();
@@ -217,9 +214,16 @@ export class OcctaxMapListComponent implements OnInit {
     this.ngbModal.open(modal);
   }
 
+  openModalDownload(event, modal) {
+    this.ngbModal.open(modal);
+    console.log(this.mapListService.urlQuery);
+  }
+
   onAddReleve() {
     this._router.navigate(["occtax/form"]);
   }
+
+  download();
 
   customColumns(feature) {
     // function pass to the getData and the maplist service to format date
@@ -255,6 +259,12 @@ export class OcctaxMapListComponent implements OnInit {
 
   openModalCol(event, modal) {
     this.ngbModal.open(modal);
+  }
+
+  downloadData(format) {
+    document.location.href = `${
+      AppConfig.API_ENDPOINT
+    }/occtax/export?${this.mapListService.urlQuery.toString()}&format=${format}`;
   }
 
   onChangeFilterOps(col) {
