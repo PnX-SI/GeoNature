@@ -49,19 +49,19 @@ class TMediaRepository():
 
         # Si le média à un fichier associé
         if self.file:
-            self.media_data['path'] = self.upload_file()
-            self.media_data['url'] = None
+            self.media_data['media_path'] = self.upload_file()
+            self.media_data['media_url'] = None
         else:
-            self.media_data['path'] = None
+            self.media_data['media_path'] = None
 
         # Si le média avait un fichier associé
         # et qu'il a été remplacé par une url
         if (
             (not self.new) and
             (self.data['isFile'] is not True) and
-            (self.media.path is not None)
+            (self.media.media_path is not None)
         ):
-            remove_file(self.media.path)
+            remove_file(self.media.media_path)
 
         for k in self.media_data:
             setattr(self.media, k, self.media_data[k])
@@ -78,17 +78,17 @@ class TMediaRepository():
             DB.session.add(self.media)
             DB.session.commit()
         except IntegrityError as e:
-            # @TODO envoyer exceptions spécialisées
+            # @TODO A revoir avec les nouvelles contrainte
             DB.session.rollback()
             if 'check_entity_field_exist' in e.args[0]:
                 raise Exception(
-                    "{} doesn't exists".format(self.data['entity_name'])
+                    "{} doesn't exists".format(self.data['id_table_location'])
                 )
             if 'fk_t_medias_check_entity_value' in e.args[0]:
                 raise Exception(
                     "id {} of {} doesn't exists".format(
-                        self.data['entity_value'],
-                        self.data['entity_name']
+                        self.data['uuid_attached_row'],
+                        self.data['id_table_location']
                     )
                 )
 
@@ -99,7 +99,7 @@ class TMediaRepository():
         # @TODO récupérer les exceptions
         filepath = upload_file(
             self.file,
-            self.data['entity_name'],
+            str(self.media.id_table_location),
             "{id_media}_{file_name}".format(
                 id_media=self.media.id_media,
                 file_name=self.file.filename
@@ -110,27 +110,31 @@ class TMediaRepository():
     def delete(self):
         # Suppression du média physiquement
         # En réalité renommage
-        if self.media.path:
-            initial_path = self.media.path
+        if self.media.media_path:
+            initial_path = self.media.media_path
             (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
             file_name = inv_file_name[::-1]
             file_path = inv_file_path[::-1]
 
             try:
                 new_path = rename_file(
-                    self.media.path, "{}/deleted_{}".format(
+                    self.media.media_path, "{}/deleted_{}".format(
                         file_path, file_name
                     )
                 )
-                self.media.path = new_path
+                self.media.media_path = new_path
             except FileNotFoundError:
                 raise Exception('Unable to delete file')
 
-        # Suppression logique du média dans la base
+        # Suppression du média dans la base
         try:
-            self._persist_media_db()
+            DB.session.delete(self.media)
+            DB.session.commit()
         except Exception:
-            new_path = rename_file("{}/deleted_{}".format(file_path, file_name), initial_path)
+            new_path = rename_file(
+                "{}/deleted_{}".format(file_path, file_name),
+                initial_path
+            )
 
     def _load_from_id(self, id_media):
         '''

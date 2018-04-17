@@ -11,6 +11,21 @@ from geonature.utils.env import DB
 
 
 @serializable
+class BibTablesLocation(DB.Model):
+    __tablename__ = 'bib_tables_location'
+    __table_args__ = {'schema': 'gn_commons'}
+    id_table_location = DB.Column(
+        DB.Integer,
+        primary_key=True
+    )
+    table_desc = DB.Column(DB.Unicode)
+    schema_name = DB.Column(DB.Unicode)
+    table_name = DB.Column(DB.Unicode)
+    pk_field = DB.Column(DB.Unicode)
+    uuid_field_name = DB.Column(DB.Unicode)
+
+
+@serializable
 class TModules(DB.Model):
     __tablename__ = 't_modules'
     __table_args__ = {'schema': 'gn_commons'}
@@ -36,8 +51,9 @@ class TMedias(DB.Model):
     __table_args__ = {'schema': 'gn_commons'}
     id_media = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature_media_type = DB.Column(
-        DB.Integer,
-        ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
+        DB.Integer
+        # ,
+        # ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
     )
     id_table_location = DB.Column(
         DB.Integer,
@@ -53,8 +69,8 @@ class TMedias(DB.Model):
     title_it = DB.Column(DB.Unicode)
     title_es = DB.Column(DB.Unicode)
     title_de = DB.Column(DB.Unicode)
-    url = DB.Column(DB.Unicode)
-    path = DB.Column(DB.Unicode)
+    media_url = DB.Column(DB.Unicode)
+    media_path = DB.Column(DB.Unicode)
     author = DB.Column(DB.Unicode)
     description_fr = DB.Column(DB.Unicode)
     description_en = DB.Column(DB.Unicode)
