@@ -13,16 +13,19 @@ from .models import (
     VReleveOccurrence,
     VReleveList,
     corRoleRelevesOccurrence,
-    DefaultNomenclaturesValue
+    DefaultNomenclaturesValue,
+    ViewExportDLB
 )
-from .repositories import ReleveRepository
+from .repositories import ReleveRepository, get_query_occtax_filters
 from .utils import get_nomenclature_filters
 from geonature.utils.utilssqlalchemy import (
     json_resp,
     testDataType,
     csv_resp,
     GenericTable,
-    serializeQueryTest
+    serializeQueryTest,
+    to_json_resp,
+    to_csv_resp
 )
 
 from geonature.utils import filemanager
@@ -598,86 +601,45 @@ def getDefaultNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
-@blueprint.route('/export/sinp', methods=['GET'])
+
+@blueprint.route('/export', methods=['GET'])
 @fnauth.check_auth_cruved('E', True, id_app=current_app.config.get('occtax'))
-@csv_resp
-def export_sinp(info_role):
-    """ Return the data (CSV) at SINP format
-        from pr_occtax.export_occtax_sinp view
-    If no paramater return all the dataset allowed of the user
-    params:
-        - id_dataset : integer
-        - uuid_dataset: uuid
-    """
-    viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)
-    q = DB.session.query(viewSINP.tableDef)
-    params = request.args
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-    # if params in empty and user not admin,
-    #    get the data off all dataset allowed
-    if not params.get('id_dataset') and not params.get('uuid_dataset'):
-        if info_role.tag_object_code != '3':
-            allowed_uuid = (
-                str(TDatasets.get_uuid(id_dataset))
-                for id_dataset in allowed_datasets
-            )
-            q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))
-    # filter by dataset id or uuid
-    else:
-        if 'id_dataset' in params:
-            id_dataset = int(params['id_dataset'])
-            uuid_dataset = TDatasets.get_uuid(id_dataset)
-        elif 'uuid_dataset' in params:
-            id_dataset = TDatasets.get_id(params['uuid_dataset'])
-            uuid_dataset = params['uuid_dataset']
-        # if data_scope 1 or 2, check if the dataset requested is allorws
-        if (
-            info_role.tag_object_code == '1' or
-            info_role.tag_object_code == '2'
-        ):
-            if id_dataset not in allowed_datasets:
-                raise InsufficientRightsError(
-                    (
-                        'User "{}" cannot export dataset no "{}'
-                    ).format(info_role.id_role, id_dataset),
-                    403
-                )
-            elif info_role.tag_object_code == '1':
-                # join on TCounting, TOccurrence, Treleve and corRoleOccurrence
-                #   to get users
-                q = q.outerjoin(
-                    CorCountingOccurrence,
-                    viewSINP.tableDef.columns.permId ==
-                    CorCountingOccurrence.unique_id_sinp_occtax
-                ).join(
-                    TOccurrencesOccurrence,
-                    CorCountingOccurrence.id_occurrence_occtax ==
-                    TOccurrencesOccurrence.id_occurrence_occtax
-                ).join(
-                    TRelevesOccurrence,
-                    TOccurrencesOccurrence.id_releve_occtax ==
-                    TRelevesOccurrence.id_releve_occtax
-                ).outerjoin(
-                    corRoleRelevesOccurrence,
-                    TRelevesOccurrence.id_releve_occtax ==
-                    corRoleRelevesOccurrence.columns.id_releve_occtax
-                )
-                q = q.filter(
-                    or_(
-                        corRoleRelevesOccurrence.columns.id_role == info_role.id_role,
-                        TRelevesOccurrence.id_digitiser == info_role.id_role
-                    )
-                )
-        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
+def export(info_role):
+    from . import models
+    
+    export_view_name = blueprint.config['export_view_name']
+    export_geom_column = blueprint.config['export_geom_columns_name']
+    export_id_column_name = blueprint.config['export_id_column_name']
+    export_columns = blueprint.config['export_columns']
+
+    # module = __import__('occtax.backend.models')
+    mapped_class = getattr(models, export_view_name)
+
+    releve_repository = ReleveRepository(mapped_class)
+    q = releve_repository.get_filtered_query(info_role)    
+
+    q = get_query_occtax_filters(request.args, mapped_class, q)
     data = q.all()
-    data = serializeQueryTest(data, q.column_descriptions)
-    viewSINP.columns.remove('jddId')
-    file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')
-    return (
-        filemanager.removeDisallowedFilenameChars(file_name),
-        data,
-        viewSINP.columns,
-        ';'
-    )
 
-
+    file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+    
+    export_format = request.args['format'] if 'format' in request.args else 'geojson'
+    if export_format == 'csv':
+        columns = export_columns if len(export_columns) > 0 else mapped_class.__table__.columns.keys()
+        return to_csv_resp(
+            filemanager.removeDisallowedFilenameChars(file_name),
+            [d.as_dict() for d in data],
+            columns,
+            ';'
+        )
+    else:
+        return to_json_resp(
+            [d.as_geofeature(
+                export_geom_column,
+                export_id_column_name,
+                recursif=True,
+                columns=export_columns
+            ) for d in data],
+            as_file=True,
+            filename=file_name
+        )

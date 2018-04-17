@@ -48,7 +48,8 @@ SERIALIZERS = {
     'datetime': lambda x: str(x) if x else None,
     'time': lambda x: str(x) if x else None,
     'timestamp': lambda x: str(x) if x else None,
-    'uuid': lambda x: str(x) if x else None
+    'uuid': lambda x: str(x) if x else None,
+    'unicode': lambda x: str(x) if x else None
 }
 
 
@@ -79,7 +80,9 @@ class GenericTable:
             for name, db_col in self.tableDef.columns.items()
             if not db_col.type.__class__.__name__ == 'Geometry'
         ]
+
         self.columns = [column.name for column in self.tableDef.columns]
+
 
     def as_dict(self, data):
         return {
@@ -223,7 +226,7 @@ def geoserializable(cls):
         """
         geometry = to_shape(getattr(self, geoCol))
         feature = Feature(
-            id=getattr(self, idCol),
+            id=str(getattr(self, idCol)),
             geometry=geometry,
             properties=self.as_dict(recursif, columns)
         )
@@ -241,21 +244,42 @@ def json_resp(fn):
     @wraps(fn)
     def _json_resp(*args, **kwargs):
         res = fn(*args, **kwargs)
-        if isinstance(res, tuple):
-            res, status = res
-        else:
-            status = 200
-
-        if not res:
-            status = 404
-            res = {'message': 'not found'}
-
-        return Response(
-            json.dumps(res),
-            status=status,
-            mimetype='application/json'
-        )
+        return to_json_resp(res)
     return _json_resp
+
+
+def to_json_resp(
+    params,
+    filename=None,
+    as_file=False
+):
+    if isinstance(params, tuple):
+            res, status = params
+    else:
+        res = params
+        status = 200
+
+    if not res:
+        status = 404
+        res = {'message': 'not found'}
+
+    headers = None
+    if as_file:
+        headers = Headers()
+        headers.add('Content-Type', 'application/json')
+        headers.add(
+            'Content-Disposition',
+            'attachment',
+            filename='export_%s.json' % filename
+        )
+
+    return Response(
+        json.dumps(res),
+        status=status,
+        mimetype='application/json',
+        headers=headers
+    )
+
 
 
 def csv_resp(fn):
@@ -266,23 +290,26 @@ def csv_resp(fn):
     def _csv_resp(*args, **kwargs):
         res = fn(*args, **kwargs)
         filename, data, columns, separator = res
-        outdata = [separator.join(columns)]
-
-        headers = Headers()
-        headers.add('Content-Type', 'text/plain')
-        headers.add(
-            'Content-Disposition',
-            'attachment',
-            filename='export_%s.csv' % filename
-        )
-
-        for o in data:
-            outdata.append(
-                separator.join(
-                    '"%s"' % (o.get(i), '')
-                    [o.get(i) is None] for i in columns
-                )
-            )
-        out = '\r\n'.join(outdata)
-        return Response(out, headers=headers)
+        return to_csv_resp(filename, data, columns, separator)
     return _csv_resp
+
+
+def to_csv_resp(filename, data, columns, separator):
+    outdata = [separator.join(columns)]
+
+    headers = Headers()
+    headers.add('Content-Type', 'text/plain')
+    headers.add(
+        'Content-Disposition',
+        'attachment',
+        filename='export_%s.csv' % filename
+    )
+    for o in data:
+        outdata.append(
+            separator.join(
+                '"%s"' % (o.get(i), '')
+                [o.get(i) is None] for i in columns
+            )
+        )
+    out = '\r\n'.join(outdata)
+    return Response(out, headers=headers)

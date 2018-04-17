@@ -27,6 +27,7 @@
   "Delete": "Delete",
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
+  "DownloadData": "Download data",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
     "NoColumnSelected": "Please select a column to filter",

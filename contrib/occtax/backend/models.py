@@ -310,3 +310,63 @@ class DefaultNomenclaturesValue(DB.Model):
     id_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)
+
+
+@serializable
+@geoserializable
+class ViewExportDLB(DB.Model):
+    __tablename__ = 'export_occtax_dlb'
+    __table_args__ = {'schema': 'pr_occtax'}
+    permId = DB.Column('permId', DB.Unicode, primary_key=True)
+    statObs = DB.Column('statObs', DB.Unicode)
+    nomCite = DB.Column('nomCite', DB.Unicode)
+    dateDebut = DB.Column('dateDebut', DB.Unicode)
+    dateFin = DB.Column('dateFin', DB.Unicode)
+    heureDebut = DB.Column('heureDebut', DB.Unicode)
+    altMax = DB.Column('altMax', DB.Unicode)
+    altMin = DB.Column('altMin', DB.Unicode)
+    dateDet = DB.Column('dateDet', DB.Unicode)
+    comment = DB.Column('comment', DB.Unicode)
+    dSPublique = DB.Column('dSPublique', DB.Unicode)
+    statSource = DB.Column('statSource', DB.Unicode)
+    idOrigine = DB.Column('idOrigine', DB.Unicode)
+    refBiblio = DB.Column('refBiblio', DB.Unicode)
+    obsMeth = DB.Column('obsMeth', DB.Unicode)
+    ocEtatBio = DB.Column('ocEtatBio', DB.Unicode)
+    ocNat = DB.Column('ocNat', DB.Unicode)
+    ocSex = DB.Column('ocSex', DB.Unicode)
+    ocStade = DB.Column('ocStade', DB.Unicode)
+    ocBiogeo = DB.Column('ocBiogeo', DB.Unicode)
+    ocStatBio = DB.Column('ocStatBio', DB.Unicode)
+    preuveOui = DB.Column('preuveOui', DB.Unicode)
+    ocMethDet = DB.Column('ocMethDet', DB.Unicode)
+    preuvNum = DB.Column('preuvNum', DB.Unicode)
+    preuvNoNum = DB.Column('preuvNoNum', DB.Unicode)
+
+
+
+
+    ### added_columns
+    date_min = DB.Column(DB.DateTime)
+    date_max = DB.Column(DB.DateTime)
+    id_dataset = DB.Column(DB.Integer)
+    id_releve_occtax = DB.Column(DB.Integer)
+    id_occurrence_occtax = DB.Column(DB.Integer)
+    id_digitiser = DB.Column(DB.Integer)
+    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    
+
+
+    observers = DB.relationship(
+        'TRoles',
+        secondary=corRoleRelevesOccurrence,
+        primaryjoin=(
+            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
+        ),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
+        foreign_keys=[
+            corRoleRelevesOccurrence.c.id_releve_occtax,
+            corRoleRelevesOccurrence.c.id_role
+        ]
+    )
+

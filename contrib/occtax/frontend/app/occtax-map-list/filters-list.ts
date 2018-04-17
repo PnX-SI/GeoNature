@@ -71,6 +71,13 @@ export const FILTERSLIST = [
   },
   {
     controlType: "nomenclature",
+    label: "Statut source",
+    key: "id_nomenclature_source_status",
+    idComponent: 19,
+    required: false
+  },
+  {
+    controlType: "nomenclature",
     label: "Floutage",
     key: "id_nomenclature_blurring",
     idComponent: 4,
