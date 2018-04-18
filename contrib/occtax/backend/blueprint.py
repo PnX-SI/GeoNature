@@ -3,6 +3,7 @@ import psycopg2
 
 from flask import Blueprint, request, current_app, session
 from sqlalchemy import exc, or_, func, distinct
+from geojson import FeatureCollection
 
 
 from geonature.utils.env import DB
@@ -633,13 +634,16 @@ def export(info_role):
             ';'
         )
     else:
-        return to_json_resp(
+        results = FeatureCollection(
             [d.as_geofeature(
                 export_geom_column,
                 export_id_column_name,
                 recursif=True,
                 columns=export_columns
-            ) for d in data],
+            ) for d in data]
+        )
+        return to_json_resp(
+            results,
             as_file=True,
             filename=file_name
         )
