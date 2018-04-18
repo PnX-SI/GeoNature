@@ -317,19 +317,23 @@ class DefaultNomenclaturesValue(DB.Model):
 class ViewExportDLB(DB.Model):
     __tablename__ = 'export_occtax_dlb'
     __table_args__ = {'schema': 'pr_occtax'}
-    permId = DB.Column('permId', DB.Unicode, primary_key=True)
+    permId = DB.Column('permId', UUID(as_uuid=True), primary_key=True)
     statObs = DB.Column('statObs', DB.Unicode)
     nomCite = DB.Column('nomCite', DB.Unicode)
     dateDebut = DB.Column('dateDebut', DB.Unicode)
     dateFin = DB.Column('dateFin', DB.Unicode)
-    heureDebut = DB.Column('heureDebut', DB.Unicode)
+    heureDebut = DB.Column('heureDebut', DB.DateTime)
+    heureFin = DB.Column('heureFin', DB.DateTime)
     altMax = DB.Column('altMax', DB.Unicode)
     altMin = DB.Column('altMin', DB.Unicode)
+    cdNom = DB.Column('cdNom', DB.Integer)
+    cdRef = DB.Column('cdRef', DB.Integer)
     dateDet = DB.Column('dateDet', DB.Unicode)
     comment = DB.Column('comment', DB.Unicode)
     dSPublique = DB.Column('dSPublique', DB.Unicode)
     statSource = DB.Column('statSource', DB.Unicode)
-    idOrigine = DB.Column('idOrigine', DB.Unicode)
+    idOrigine = DB.Column('idOrigine', UUID(as_uuid=True))
+    jddId = DB.Column('jddId', UUID(as_uuid=True))
     refBiblio = DB.Column('refBiblio', DB.Unicode)
     obsMeth = DB.Column('obsMeth', DB.Unicode)
     ocEtatBio = DB.Column('ocEtatBio', DB.Unicode)
@@ -342,8 +346,21 @@ class ViewExportDLB(DB.Model):
     ocMethDet = DB.Column('ocMethDet', DB.Unicode)
     preuvNum = DB.Column('preuvNum', DB.Unicode)
     preuvNoNum = DB.Column('preuvNoNum', DB.Unicode)
-
-
+    obsCtx = DB.Column('obsCtx', DB.Unicode)
+    permIdGrp = DB.Column('permIdGrp', DB.Unicode)
+    methGrp = DB.Column('methGrp', DB.Unicode)
+    typGrp = DB.Column('typGrp', DB.Unicode)
+    denbrMax = DB.Column('denbrMax', DB.Integer)
+    denbrMin = DB.Column('denbrMin', DB.Integer)
+    objDenbr = DB.Column('objDenbr', DB.Unicode)
+    typDenbr = DB.Column('typDenbr', DB.Unicode)
+    obsId = DB.Column('obsId', DB.Unicode)
+    obsNomOrg = DB.Column('obsNomOrg', DB.Unicode)
+    detId = DB.Column('detId', DB.Unicode)
+    detNomOrg = DB.Column('detNomOrg', DB.Unicode)
+    orgGestDat = DB.Column('orgGestDat', DB.Unicode)
+    WKT = DB.Column('WKT', DB.Unicode)
+    natObjGeo = DB.Column('natObjGeo', DB.Unicode)
 
 
     ### added_columns
