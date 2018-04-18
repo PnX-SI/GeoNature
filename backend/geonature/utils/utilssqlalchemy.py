@@ -49,7 +49,6 @@ SERIALIZERS = {
     'time': lambda x: str(x) if x else None,
     'timestamp': lambda x: str(x) if x else None,
     'uuid': lambda x: str(x) if x else None,
-    'unicode': lambda x: str(x) if x else None
 }
 
 
