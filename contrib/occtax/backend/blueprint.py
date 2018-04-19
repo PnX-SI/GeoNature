@@ -613,8 +613,9 @@ def export(info_role):
     export_id_column_name = blueprint.config['export_id_column_name']
     export_columns = blueprint.config['export_columns']
     
-
     mapped_class = getattr(models, export_view_name)
+
+    
 
     releve_repository = ReleveRepository(mapped_class)
     q = releve_repository.get_filtered_query(info_role)    
@@ -646,19 +647,28 @@ def export(info_role):
         return to_json_resp(
             results,
             as_file=True,
-            filename=file_name
+            filename=file_name,
+            indent=4
         )
         
     else:
-        dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-        ViewExportDLB.as_shape(
-            geom_col='geom_4326',
-            data=data,
-            dir_path=dir_path,
-            file_name=file_name
-        )
-        return send_from_directory(
-            dir_path,
-            file_name+'.zip',
-            as_attachment=True
-        )
+        try:
+            assert hasattr(mapped_class, 'as_shape')
+            dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+            mapped_class.as_shape(
+                geom_col='geom_4326',
+                data=data,
+                dir_path=dir_path,
+                file_name=file_name,
+                columns=export_columns
+            )
+            return send_from_directory(
+                dir_path,
+                file_name+'.zip',
+                as_attachment=True
+            )
+        except AssertionError:
+            raise GeonatureApiError(
+                message='The mapped class is not shapeserializable'
+            )
+            
