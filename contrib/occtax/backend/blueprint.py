@@ -1,8 +1,19 @@
 import os
 import datetime
+import json
 import psycopg2
 
-from flask import Blueprint, request, current_app, session, send_from_directory
+from flask import(
+    Blueprint,
+    request,
+    current_app,
+    session,
+    send_from_directory,
+    redirect,
+    make_response,
+    Response,
+    render_template
+)
 from sqlalchemy import exc, or_, func, distinct
 from geojson import FeatureCollection
 
@@ -668,7 +679,15 @@ def export(info_role):
                 as_attachment=True
             )
         except AssertionError:
-            raise GeonatureApiError(
-                message='The mapped class is not shapeserializable'
-            )
+            message  = 'The mapped class is not shapeserializable'
+            
+        except GeonatureApiError as e:
+            message = str(e)
+        
+        return render_template(
+            'error.html',
+            error=message,
+            redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
+        )
+
             

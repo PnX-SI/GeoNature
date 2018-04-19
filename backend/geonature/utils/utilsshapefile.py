@@ -1,7 +1,6 @@
 import os
 import zipfile
 import datetime
-from .env import ROOT_DIR
 
 import shapefile
 
@@ -10,6 +9,8 @@ from pyproj import Proj, transform
 from geoalchemy2.shape import to_shape
 from shapely.geometry import Point, Polygon
 
+from .env import ROOT_DIR
+from geonature.utils.errors import GeonatureApiError
 
 SERIALIZERS = {
     'date': lambda x: str(x) if x else None,
@@ -28,7 +29,7 @@ COLUMNTYPE = {
     'boolean': 'C',
     'integer': 'N',
     'float': 'F',
-    'unicode': 'C',
+    'unicode': 'D',
     'nonetype': 'C'
 }
 
@@ -37,8 +38,6 @@ SHAPETYPE = {
     'POLYLINE': 3,
     'POLYGON': 5
 }
-
-
 
 def shapeseralizable(cls):
     """
@@ -168,26 +167,36 @@ def create_shapes(cls, geom_col, data, dir_path, file_name, columns=None):
             polygon.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
             polyline.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
     #datas
-    for d in data:
-        field_values = d.as_list()
-        geom = to_shape(getattr(d, geom_col))
-        if isinstance(geom, Point):
-            point.point(geom.x, geom.y)
-            point.record(*field_values)
-        elif isinstance(geom, Polygon):
-            polygon.poly(parts=([geom.exterior.coords]))
-            polygon.record(*field_values)
-        else:
-            polyline.line(parts=([geom.coords]))
-            polyline.record(*field_values)
+    try:
+        for d in data:
+            field_values = d.as_list()
+            geom = to_shape(getattr(d, geom_col))
+            if isinstance(geom, Point):
+                point.point(geom.x, geom.y)
+                point.record(*field_values)
+            elif isinstance(geom, Polygon):
+                polygon.poly(parts=([geom.exterior.coords]))
+                polygon.record(*field_values)
+            else:
+                polyline.line(parts=([geom.coords]))
+                polyline.record(*field_values)
     
-    file_point = dir_path+"/POINT_"+file_name
-    file_polygon = dir_path+"/POLYGON_"+file_name
-    file_polyline = dir_path+"/POLYLINE_"+file_name
+            file_point = dir_path+"/POINT_"+file_name
+            file_polygon = dir_path+"/POLYGON_"+file_name
+            file_polyline = dir_path+"/POLYLINE_"+file_name
 
-    point.save(file_point)
-    polygon.save(file_polygon)
-    polyline.save(file_polyline)
+            point.save(file_point)
+            polygon.save(file_polygon)
+            polyline.save(file_polyline)
+    except AttributeError:
+        raise GeonatureApiError(
+            message="Class {} has no {} attribute".format(
+                cls, geom_col
+            )
+        )
+    except Exception as e:
+        raise GeonatureApiError(message=e)
+
 
     zip_it(
         dir_path,
