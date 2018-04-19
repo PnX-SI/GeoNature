@@ -671,7 +671,8 @@ def export(info_role):
                 data=data,
                 dir_path=dir_path,
                 file_name=file_name,
-                columns=export_columns
+                columns=export_columns,
+                srid=blueprint.config['export_srid']
             )
             return send_from_directory(
                 dir_path,
@@ -690,4 +691,4 @@ def export(info_role):
             redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
         )
 
-            
+
