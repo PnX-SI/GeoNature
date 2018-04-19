@@ -70,7 +70,7 @@ DECLARE
 BEGIN
 	--retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
   SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
-	WHERE "schema_name" = myschema AND "table_name" = mytable;	
+	WHERE "schema_name" = myschema AND "table_name" = mytable;
   RETURN theidtablelocation;
 END;
 $BODY$
@@ -87,7 +87,7 @@ DECLARE
 BEGIN
 	--retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
   SELECT INTO theuuidfieldname uuid_field_name FROM gn_commons.bib_tables_location
-	WHERE "schema_name" = myschema AND "table_name" = mytable;	
+	WHERE "schema_name" = myschema AND "table_name" = mytable;
   RETURN theuuidfieldname;
 END;
 $BODY$
@@ -122,7 +122,7 @@ BEGIN
     null,
     thecomment,
     NOW()
-  );	
+  );
   RETURN NEW;
 END;
 $BODY$
@@ -166,8 +166,8 @@ BEGIN
     theuuid,
     theoperation,
     NOW(),
-    thecontent    
-  );	
+    thecontent
+  );
   RETURN NEW;
 END;
 $BODY$
@@ -389,7 +389,40 @@ CREATE TRIGGER tri_log_changes_t_medias
 ---------
 --DATAS--
 ---------
-INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES 
+INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 (1, 'Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
 ;
 SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 1, true);
+
+
+
+
+---------
+--VIEWS--
+---------
+CREATE VIEW gn_commons.v_meta_actions_on_object AS
+WITH insert_a AS (
+	SELECT
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content -> 'id_digitiser')::text::int as id_creator
+	FROM gn_commons.t_history_actions
+	WHERE operation_type = 'I'
+),
+delete_a AS (
+	SELECT
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date
+	FROM gn_commons.t_history_actions
+	WHERE operation_type = 'D'
+),
+last_update_a AS (
+	SELECT DISTINCT ON (uuid_attached_row)
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date
+	FROM gn_commons.t_history_actions
+	WHERE operation_type = 'U'
+	ORDER BY uuid_attached_row, operation_date DESC
+)
+SELECT
+	i.id_table_location, i.uuid_attached_row, i.operation_date as meta_create_date, i.id_creator, u.operation_date as meta_update_date,
+	d.operation_date as meta_delete_date
+FROM insert_a i
+LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
+LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;

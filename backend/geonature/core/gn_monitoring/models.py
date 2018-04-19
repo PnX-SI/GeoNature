@@ -71,8 +71,6 @@ class TBaseVisits(DB.Model):
     visit_date = DB.Column(DB.DateTime)
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
 
@@ -113,8 +111,6 @@ class TBaseSites(DB.Model):
     base_site_code = DB.Column(DB.Unicode)
     first_use_date = DB.Column(DB.DateTime)
     geom = DB.Column(Geometry('GEOMETRY', 4326))
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
     inventor = relationship("TRoles", foreign_keys=[id_digitiser])
