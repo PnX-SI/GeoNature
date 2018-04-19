@@ -229,21 +229,19 @@ def json_resp(fn):
     @wraps(fn)
     def _json_resp(*args, **kwargs):
         res = fn(*args, **kwargs)
-        return to_json_resp(res)
+        if isinstance(res, tuple):
+            return to_json_resp(*res)
+        else:
+            return to_json_resp(res)
     return _json_resp
 
-
 def to_json_resp(
-    params,
+    res,
+    status=200,
     filename=None,
-    as_file=False
+    as_file=False,
+    indent=None
 ):
-    if isinstance(params, tuple):
-            res, status = params
-    else:
-        res = params
-        status = 200
-
     if not res:
         status = 404
         res = {'message': 'not found'}
@@ -259,7 +257,7 @@ def to_json_resp(
         )
 
     return Response(
-        json.dumps(res),
+        json.dumps(res, indent=indent),
         status=status,
         mimetype='application/json',
         headers=headers
