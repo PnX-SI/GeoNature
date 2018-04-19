@@ -8,6 +8,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
+from geonature.utils.utilsshapefile import shapeseralizable
+
 
 
 from geonature.utils.env import DB
@@ -313,6 +315,7 @@ class DefaultNomenclaturesValue(DB.Model):
 
 
 @serializable
+@shapeseralizable
 @geoserializable
 class ViewExportDLB(DB.Model):
     __tablename__ = 'export_occtax_dlb'

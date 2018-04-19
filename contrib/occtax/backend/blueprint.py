@@ -1,12 +1,14 @@
+import os
 import datetime
 import psycopg2
 
-from flask import Blueprint, request, current_app, session
+from flask import Blueprint, request, current_app, session, send_from_directory
 from sqlalchemy import exc, or_, func, distinct
 from geojson import FeatureCollection
 
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, ROOT_DIR
+from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
     TOccurrencesOccurrence,
@@ -24,12 +26,10 @@ from geonature.utils.utilssqlalchemy import (
     testDataType,
     csv_resp,
     GenericTable,
-    serializeQueryTest,
     to_json_resp,
     to_csv_resp
 )
 
-from geonature.utils import filemanager
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import TRoles, UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
@@ -623,17 +623,18 @@ def export(info_role):
     data = q.all()
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
     
     export_format = request.args['format'] if 'format' in request.args else 'geojson'
     if export_format == 'csv':
         columns = export_columns if len(export_columns) > 0 else mapped_class.__table__.columns.keys()
         return to_csv_resp(
-            filemanager.removeDisallowedFilenameChars(file_name),
+            file_name,
             [d.as_dict() for d in data],
             columns,
             ';'
         )
-    else:
+    elif export_format == 'geojson':
         results = FeatureCollection(
             [d.as_geofeature(
                 export_geom_column,
@@ -646,4 +647,18 @@ def export(info_role):
             results,
             as_file=True,
             filename=file_name
+        )
+        
+    else:
+        dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+        ViewExportDLB.as_shape(
+            geom_col='geom_4326',
+            data=data,
+            dir_path=dir_path,
+            file_name=file_name
+        )
+        return send_from_directory(
+            dir_path,
+            file_name+'.zip',
+            as_attachment=True
         )
