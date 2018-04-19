@@ -106,21 +106,6 @@ def serializeQuery(data, columnDef):
     return rows
 
 
-def serializeQueryTest(data, columnDef):
-    rows = list()
-    for row in data:
-        inter = {}
-        for c in columnDef:
-            if getattr(row, c['name']) is not None:
-                if isinstance(c['type'], (DB.Date, DB.DateTime, UUID)):
-                    inter[c['name']] = str(getattr(row, c['name']))
-                elif isinstance(c['type'], DB.Numeric):
-                    inter[c['name']] = float(getattr(row, c['name']))
-                elif not isinstance(c['type'], Geometry):
-                    inter[c['name']] = getattr(row, c['name'])
-        rows.append(inter)
-    return rows
-
 
 def serializeQueryOneResult(row, columnDef):
     row = {
@@ -195,6 +180,7 @@ def serializable(cls):
                 out[rel] = getattr(self, rel).as_dict(recursif)
 
         return out
+
 
     cls.as_dict = serializefn
     return cls
