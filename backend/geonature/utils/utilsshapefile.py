@@ -3,11 +3,14 @@ import zipfile
 import datetime
 
 import shapefile
+import urllib.request
+
 
 from flask import current_app
-from pyproj import Proj, transform
+from pyproj import Proj
 from geoalchemy2.shape import to_shape
 from shapely.geometry import Point, Polygon
+from osgeo import osr
 
 from .env import ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
@@ -29,7 +32,7 @@ COLUMNTYPE = {
     'boolean': 'C',
     'integer': 'N',
     'float': 'F',
-    'unicode': 'D',
+    'unicode': 'C',
     'nonetype': 'C'
 }
 
@@ -91,7 +94,7 @@ def shapeseralizable(cls):
         return out
     
     @classmethod
-    def to_shape_fn(cls, geom_col=None, data=[], dir_path=None, file_name=None, columns=None):
+    def to_shape_fn(cls, geom_col=None, srid=None, data=[], dir_path=None, file_name=None, columns=None):
         """
         Class method to create 3 shapes from datas
         Parameters
@@ -102,7 +105,7 @@ def shapeseralizable(cls):
         columns: columns to be serialize (list)
         """
         file_name = file_name or datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
-        create_shapes(cls, geom_col, data, dir_path, file_name, columns)
+        create_shapes(cls, geom_col, srid, data, dir_path, file_name, columns)
         
 
     cls.as_shape = to_shape_fn
@@ -110,42 +113,8 @@ def shapeseralizable(cls):
     return cls
 
 
-def create_shape(cls, shapetype, geom_col, data, dir_path, file_name, columns=None):
-    """
-        Create a shapefile from data of a SQLAlchemy Class
-        the class must be serializable
-    """
-    w = shapefile.Writer(SHAPETYPE.get(shapetype))
 
-    if columns:
-        db_cols = [db_col for db_col in cls.__mapper__.c if db_col.key in columns]
-    else:
-        db_cols = cls.__mapper__.c
-
-    # fields
-    for db_col in db_cols:
-        col_type = db_col.type.__class__.__name__.lower()
-        if col_type != 'geometry':
-            w.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
-    #datas
-    for d in data:
-        field_values = d.as_list()
-        geom = to_shape(getattr(d, geom_col))
-        if isinstance(geom, Point):
-            w.point(geom.x, geom.y)
-        elif isinstance(geom, Polygon):
-            w.poly(parts=([geom.exterior.coords]))
-        else:
-            w.line(parts=([geom.coords]))
-        w.record(*field_values)
-    filepath = '{}/{}_{}'.format(
-        current_app.config['UPLOAD_FOLDER'],
-        shapetype,
-        file_name
-    )
-    w.save(filepath)
-
-def create_shapes(cls, geom_col, data, dir_path, file_name, columns=None):
+def create_shapes(cls, geom_col, srid, data, dir_path, file_name, columns=None):
     """
         Create tree shapefiles (point, line, polyline) from data of a SQLAlchemy Class
         the class must be serializable
@@ -166,11 +135,15 @@ def create_shapes(cls, geom_col, data, dir_path, file_name, columns=None):
             point.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
             polygon.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
             polyline.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
+    
+
+
     #datas
     try:
         for d in data:
             field_values = d.as_list()
             geom = to_shape(getattr(d, geom_col))
+
             if isinstance(geom, Point):
                 point.point(geom.x, geom.y)
                 point.record(*field_values)
@@ -180,15 +153,22 @@ def create_shapes(cls, geom_col, data, dir_path, file_name, columns=None):
             else:
                 polyline.line(parts=([geom.coords]))
                 polyline.record(*field_values)
-    
+
             file_point = dir_path+"/POINT_"+file_name
             file_polygon = dir_path+"/POLYGON_"+file_name
             file_polyline = dir_path+"/POLYLINE_"+file_name
 
-            point.save(file_point)
-            polygon.save(file_polygon)
-            polyline.save(file_polyline)
-    except AttributeError:
+            
+        proj = osr.SpatialReference()
+        proj.ImportFromEPSG(srid)
+        for shape in ['POINT', 'POLYLINE', 'POLYGON']:
+            path = dir_path+'/'+shape+'_'+file_name+'.prj'
+            with open(path, "w") as prj_file:
+                prj_file.write(str(proj))
+        point.save(file_point)
+        polygon.save(file_polygon)
+        polyline.save(file_polyline)
+    except AttributeError as e:
         raise GeonatureApiError(
             message="Class {} has no {} attribute".format(
                 cls, geom_col
@@ -220,5 +200,5 @@ def zip_it(dir_path, file_name, formats):
         zf.write(final_file_name+".dbf", shape_format+"_"+file_name+".dbf")
         zf.write(final_file_name+".shx", shape_format+"_"+file_name+".shx")
         zf.write(final_file_name+".shp", shape_format+"_"+file_name+".shp")
-        #TODO: add .prj
+        zf.write(final_file_name+".prj", shape_format+"_"+file_name+".prj")
     zf.close()
