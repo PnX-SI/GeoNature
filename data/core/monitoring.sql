@@ -35,7 +35,7 @@ CREATE TABLE t_base_visits
   id_digitiser integer,
   visit_date date NOT NULL,
   comments text,
-  uuid_base_visits UUID DEFAULT public.uuid_generate_v4()
+  uuid_base_visit UUID DEFAULT public.uuid_generate_v4()
 );
 
 CREATE TABLE cor_visit_observer
@@ -167,7 +167,7 @@ $BODY$
 INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
 VALUES
 ('Table centralisant les sites faisant l''objet de protocole de suivis', 'gn_monitoring', 't_base_sites', 'id_base_site', 'uuid_base_site'),
-('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visits');
+('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit');
 
 CREATE TRIGGER tri_log_changes
   AFTER INSERT OR UPDATE OR DELETE
