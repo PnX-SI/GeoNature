@@ -1,9 +1,9 @@
 --- Insertion de la notion d'application
 
 INSERT INTO utilisateurs.t_applications(id_application, nom_application, desc_application, id_parent)
-VALUES (100, 'suivi', 'Ensemble des applications relatives à un protocole de suivis', NULL);
+VALUES (100, 'Suivis', 'Ensemble des applications relatives à un protocole de suivi', NULL);
 INSERT INTO utilisateurs.t_applications(id_application, nom_application, desc_application, id_parent)
-VALUES (101, 'suivi chiro', 'Suivis des gites à chiroptère', 100);
+VALUES (101, 'Suivi chiro', 'Suivi des gites à chiroptère', 100);
 
 INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role)
 VALUES
