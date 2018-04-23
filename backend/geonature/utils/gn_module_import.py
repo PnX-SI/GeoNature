@@ -6,15 +6,20 @@ import inspect
 import subprocess
 import logging
 import os
+import json
 
 from pathlib import Path
 from packaging import version
 from sqlalchemy.orm.exc import NoResultFound
 
+from geonature.utils.config_schema import ManifestSchemaProdConf
+from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import (
     get_app_for_cmd
 )
+
+
 from geonature.utils.env import (
     GEONATURE_VERSION,
     GN_MODULE_FILES,
@@ -110,7 +115,7 @@ def gn_module_register_config(module_name, module_path, url, id_app):
         {
             'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
             'msg': "id_application = {}\n".format(id_app).encode('utf-8')
-        },
+        }
     ]
     for cmd in cmds:
         proc = subprocess.Popen(
@@ -339,3 +344,27 @@ def add_application_db(module_name, url):
 
     log.info('... ok \n')
     return id_app
+
+import sys
+def create_module_config(module_name, mod_path=GN_MODULES_ETC_ENABLED):
+    conf_manifest = load_and_validate_toml(
+            str(mod_path / module_name / 'manifest.toml'),
+            ManifestSchemaProdConf
+        )
+
+    # import du module dans le sys.path
+    module_path = Path(conf_manifest['module_path'])
+    module_parent_dir = str(module_path.parent)
+    module_config_path = "{}.conf_schema_toml".format(module_path.name)
+    sys.path.insert(0, module_parent_dir)
+    module = __import__(module_config_path, globals=globals())
+    front_module_conf_file = mod_path / module_name / 'conf_gn_module.toml'
+    config_module = utilstoml.load_and_validate_toml(front_module_conf_file, module.conf_schema_toml.GnModuleSchemaConf)
+
+    frontend_config_path = conf_manifest['module_path']+'/frontend/app/module.config.ts'
+    with open(
+        str(ROOT_DIR / frontend_config_path), 'w'
+    ) as outputfile:
+        outputfile.write("export const ModuleConfig = ")
+        json.dump(config_module, outputfile, indent=True, sort_keys=True)
+

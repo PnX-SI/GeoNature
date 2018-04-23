@@ -3,7 +3,7 @@ import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
-import { OccTaxConfig } from "../occtax.config";
+import { ModuleConfig } from "../module.config";
 
 @Component({
   selector: "pnx-occtax-map-form",
@@ -15,7 +15,7 @@ export class OcctaxMapFormComponent implements OnInit, OnDestroy {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;
-  public occtaxConfig = OccTaxConfig;
+  public occtaxConfig = ModuleConfig;
   constructor(
     private _ms: MapService,
     private _route: ActivatedRoute,

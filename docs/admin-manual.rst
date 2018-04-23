@@ -108,7 +108,7 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration frontend par module : ``contrib/occtax/frontend/app/occtax.config.ts`` (générée à partir de ``contrib/occtax/frontend/app/occtax.config.ts.sample`` lors de l'installation du module)
+- Une configuration frontend par module : ``contrib/occtax/frontend/app/module.config.ts`` (générée à partir de ``contrib/occtax/frontend/app/module.config.ts.sample`` lors de l'installation du module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
 L'installation de GeoNature génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).

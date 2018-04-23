@@ -8,7 +8,7 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { OcctaxFormService } from './occtax-form.service';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
-import { OcctaxConfig } from '../../occtax.config';
+import { ModuleConfig } from '../../module.config';
 import { OcctaxService } from '../../services/occtax.service';
 import { timeout } from 'rxjs/operators/timeout';
 
