@@ -6,6 +6,8 @@
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import select, func
 
 from geoalchemy2 import Geometry
 
@@ -71,6 +73,10 @@ class TBaseVisits(DB.Model):
     visit_date = DB.Column(DB.DateTime)
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
+    uuid_base_visit = DB.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()])
+    )
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
 
@@ -111,6 +117,10 @@ class TBaseSites(DB.Model):
     base_site_code = DB.Column(DB.Unicode)
     first_use_date = DB.Column(DB.DateTime)
     geom = DB.Column(Geometry('GEOMETRY', 4326))
+    uuid_base_site = DB.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()])
+    )
 
     digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
     inventor = relationship("TRoles", foreign_keys=[id_digitiser])
@@ -135,5 +145,6 @@ class TBaseSites(DB.Model):
             corSiteApplication.c.id_application
         ]
     )
+
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_base_site', recursif)
