@@ -90,7 +90,7 @@ def install_gn_module(module_path, url, conf_file):
             # Activation du module
             gn_module_activate(module_name)
             #generation du fichier de configuration
-            create_module_config(module_name)
+            update_module_configuration(module_name, False)
             # Rebuild the frontend
             build_geonature_front(rebuild_sass=True)
 
@@ -197,11 +197,13 @@ def deactivate_gn_module(module_name):
     required=False,
     default=True
 )
-def generate_frontend_module_config(module_name, build):
+def update_module_configuration(module_name, build):
     """
         Génère la config frontend d'un module
     """
-    # TODO vérifier que l'utilisateur est root ou du groupe geonature
+    subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_module_config(module_name)
     if build:
         build_geonature_front()
+
+    
