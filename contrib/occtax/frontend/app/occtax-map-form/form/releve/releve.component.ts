@@ -11,7 +11,7 @@ import {
   NgbDateParserFormatter
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
-import { OccTaxConfig } from "../../../occtax.config";
+import { ModuleConfig } from "../../../module.config";
 
 @Component({
   selector: "pnx-releve",
@@ -42,7 +42,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.occtaxConfig = OccTaxConfig;
+    this.occtaxConfig = ModuleConfig;
 
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {

@@ -6,7 +6,7 @@ import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { FormGroup, FormArray, FormControl } from "@angular/forms";
 import { OcctaxService } from "../services/occtax.service";
-import { OccTaxConfig } from "../occtax.config";
+import { ModuleConfig } from "../module.config";
 
 @Component({
   selector: "pnx-occtax-map-info",
@@ -16,7 +16,7 @@ import { OccTaxConfig } from "../occtax.config";
 export class OcctaxMapInfoComponent implements OnInit {
   private _sub: Subscription;
   public id: number;
-  public occtaxConfig = OccTaxConfig;
+  public occtaxConfig = ModuleConfig;
   public releve: any;
   public observers: any;
   public selectedOccurrence: any;
@@ -55,7 +55,7 @@ export class OcctaxMapInfoComponent implements OnInit {
 
           this.releveForm.patchValue(data.releve);
           this.releve = data.releve;
-          if (!OccTaxConfig.form_fields.releve.observers_txt) {
+          if (!ModuleConfig.form_fields.releve.observers_txt) {
             this.observers = data.releve.properties.observers
               .map(obs => obs.nom_role + " " + obs.prenom_role)
               .join(", ");

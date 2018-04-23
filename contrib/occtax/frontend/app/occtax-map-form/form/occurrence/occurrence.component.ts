@@ -15,7 +15,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NomenclatureComponent } from "@geonature_common/form/nomenclature/nomenclature.component";
-import { OccTaxConfig } from "../../../occtax.config";
+import { ModuleConfig } from "../../../module.config";
 
 @Component({
   selector: "pnx-occurrence",
@@ -36,7 +36,7 @@ export class OccurrenceComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.occtaxConfig = OccTaxConfig;
+    this.occtaxConfig = ModuleConfig;
   }
 
   validateDigitalProof(c: FormControl) {
@@ -69,7 +69,7 @@ export class OccurrenceComponent implements OnInit, AfterViewInit {
             this.occurrenceForm.value.non_digital_proof === null
           ) {
             // digital proof must begin with 'http, https'...
-            if (OccTaxConfig.digital_proof_validator) {
+            if (ModuleConfig.digital_proof_validator) {
               this.occurrenceForm.controls.digital_proof.setValidators(
                 this.validateDigitalProof
               );
@@ -89,7 +89,7 @@ export class OccurrenceComponent implements OnInit, AfterViewInit {
       .filter(value => value !== null)
       .subscribe(value => {
         // set validator if it has been removed
-        if (OccTaxConfig.digital_proof_validator) {
+        if (ModuleConfig.digital_proof_validator) {
           this.occurrenceForm.controls.digital_proof.setValidators(
             this.validateDigitalProof
           );

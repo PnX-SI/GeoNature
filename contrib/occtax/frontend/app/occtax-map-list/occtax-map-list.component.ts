@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
 import { FormControl } from "@angular/forms";
 import { ColumnActions } from "@geonature_common/map-list/map-list.component";
 import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
-import { OccTaxConfig } from "../occtax.config";
+import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { FormGroup, FormBuilder } from "@angular/forms";
@@ -78,11 +78,11 @@ export class OcctaxMapListComponent implements OnInit {
         this.addFormControl(formDef);
       });
 
-    this.occtaxConfig = OccTaxConfig;
+    this.occtaxConfig = ModuleConfig;
 
     // parameters for maplist
     // columns to be default displayed
-    this.displayColumns = OccTaxConfig.default_maplist_columns;
+    this.displayColumns = ModuleConfig.default_maplist_columns;
     this.mapListService.displayColumns = this.displayColumns;
 
     // columns available for display

@@ -11,7 +11,7 @@ import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { OccTaxConfig } from "../../occtax.config";
+import { ModuleConfig } from "../../module.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
@@ -110,13 +110,13 @@ export class OcctaxFormService {
         id_nomenclature_obs_technique: [null, Validators.required],
         observers: [
           null,
-          !OccTaxConfig.form_fields.releve.observers_txt
+          !ModuleConfig.form_fields.releve.observers_txt
             ? Validators.required
             : null
         ],
         observers_txt: [
           null,
-          OccTaxConfig.form_fields.releve.observers_txt
+          ModuleConfig.form_fields.releve.observers_txt
             ? Validators.required
             : null
         ],

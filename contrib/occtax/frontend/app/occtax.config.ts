@@ -1,16 +1,15 @@
 export const ModuleConfig = {
-  digital_proof_validator: true, /* Add a validation rule between Proof fields. If yes, fulfil at least one proof */
-  releve_map_zoom_level: 6, /* Zoom level on the map from which you can add point/line/polygon */
-  id_taxon_list: 500, /* id of the taxon list -- taxonomie.bib_listes */
+  digital_proof_validator: true,
+  releve_map_zoom_level: 6,
+  id_taxon_list: 500,
   default_maplist_columns: [
     { prop: "taxons", name: "Taxon" },
     { prop: "date_min", name: "Date début" },
-    { prop: "observateurs", name: "Observateur" }
+    { prop: "observateurs", name: "Observateurs" }
   ],
-  /* Allow to hide or display some fields. If hidden, database default value is used */
   form_fields: {
     releve: {
-      observers_txt: false, /* Switch between Observer field as text or as list */
+      observers_txt: false,
       date_min: true,
       date_max: true,
       hour_min: true,
@@ -18,24 +17,25 @@ export const ModuleConfig = {
       altitude_min: true,
       altitude_max: true,
       obs_technique: true,
-      group_type: false,
+      group_type: true,
       comment: true
     },
     occurrence: {
       obs_method: true,
       bio_condition: true,
-      bio_status: false,
+      bio_status: true,
       naturalness: true,
       exist_proof: true,
-      observation_status: false,
-      diffusion_level: false,
-      blurring: false,
+      observation_status: true,
+      diffusion_level: true,
+      blurring: true,
       determiner: true,
       determination_method: true,
+      determination_method_as_text: true,
       sample_number_proof: true,
       digital_proof: true,
-      source_status: false,
       non_digital_proof: true,
+      source_status: true,
       comment: true
     },
     counting: {
@@ -45,7 +45,7 @@ export const ModuleConfig = {
       type_count: true,
       count_min: true,
       count_max: true,
-      validation_status: false
+      validation_status: true
     }
   }
 };
