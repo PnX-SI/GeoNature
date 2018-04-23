@@ -239,18 +239,24 @@
         <h5 class="modal-title" id="exampleModalLabel"> {{'DownloadData' | translate }}</h5>
       </div>
       <div class="modal-body">
-        <button (click)="downloadData('csv')" type="button" class="btn btn-default" (click)="c()"> <i aria-hidden="true" class="fa file-alt"> </i>
-          <i
-          id="refresh-filter"
-          class="fas fa-alt"
-          aria-hidden="true"
-          
-          >
-        </i> 
-         CSV
-         </button>
-        <button type="button" class="btn btn-default" (click)="downloadData('geojson')"> <i aria-hidden="true" class="fa globe"> </i> GeoJson </button>
-        <button type="button" class="btn btn-default" (click)="downloadData('shapefile')"> <i aria-hidden="true" class="fa globe"> </i> ShapeFile </button>
+        <span [innerHTML]="occtaxConfig.export_message"></span>
+        <div class="export-button">
+          <button (click)="downloadData('csv')" type="button" class="btn btn-primary" (click)="c()"> <i aria-hidden="true" class="fa file-alt"> </i>
+            <i
+            id="refresh-filter"
+            class="fas fa-alt"
+            aria-hidden="true"
+            
+            >
+          </i> 
+            Format CSV
+            </button>
+          <button type="button" class="btn btn-primary" (click)="downloadData('geojson')"> <i aria-hidden="true" class="fa globe"> </i>  Format GeoJson </button>
+          <!-- <button type="button" class="btn btn-default" (click)="downloadData('shapefile')"> <i aria-hidden="true" class="fa globe"> </i> ShapeFile </button> -->
+        
+
+        </div>
+
       </div>
       </ng-template>
 
