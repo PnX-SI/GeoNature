@@ -114,6 +114,7 @@ class GnModuleSchemaConf(Schema):
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_columns = fields.List(fields.String(), missing=default_columns_export)
+    export_message = fields.String(missing="")
     export_srid = fields.Integer(missing=4326)
     digital_proof_validator = fields.Boolean(missing=True)
     releve_map_zoom_level = fields.Integer(missing=6)
