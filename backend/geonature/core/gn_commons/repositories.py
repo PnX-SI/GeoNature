@@ -49,9 +49,17 @@ class TMediaRepository():
 
         # Si le média à un fichier associé
         if self.file:
+            self.data['isFile'] = True
             self.media_data['media_path'] = self.upload_file()
             self.media_data['media_url'] = None
+        elif (self.data['media_path'] != ''):
+            self.data['isFile'] = True
+            self.media_data['media_url'] = None
         else:
+            print('else')
+            print(self.data)
+            print(getattr(self.data, 'media_path', ''))
+            self.data['isFile'] = False
             self.media_data['media_path'] = None
 
         # Si le média avait un fichier associé
