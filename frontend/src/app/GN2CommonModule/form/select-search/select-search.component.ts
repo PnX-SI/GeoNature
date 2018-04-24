@@ -40,8 +40,6 @@ export class SelectSearchComponent implements OnInit {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
-      console.log('value change');
-      console.log(value);
       if (value === null) {
         if (this.multiselect) {
           this.selectedItems = [];
@@ -67,7 +65,6 @@ export class SelectSearchComponent implements OnInit {
       return curItem[this.key] !== item[this.key];
     });
     if (this.multiselect) {
-      console.log('PASS LAAAAAAAA');
       this.selectedItems.push(item);
       this.parentFormControl.patchValue(this.selectedItems);
     } else {
