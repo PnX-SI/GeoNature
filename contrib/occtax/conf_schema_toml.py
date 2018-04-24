@@ -57,7 +57,8 @@ class FormConfig(Schema):
 default_map_list_conf = [
     { "prop": "taxons", "name": "Taxon" },
     { "prop": "date_min", "name": "Date début" },
-    { "prop": "observateurs", "name": "Observateurs" }
+    { "prop": "observateurs", "name": "Observateurs" },
+    { "prop": "dataset_name", "name": "Jeu de données" }
   ]
 
 default_columns_export = [

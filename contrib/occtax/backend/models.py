@@ -287,6 +287,7 @@ class VReleveList(ReleveModel):
     taxons = DB.Column(DB.Unicode)
     leaflet_popup = DB.Column(DB.Unicode)
     observateurs = DB.Column(DB.Unicode)
+    dataset_name = DB.Column(DB.Unicode)
     observers = DB.relationship(
         'TRoles',
         secondary=corRoleRelevesOccurrence,

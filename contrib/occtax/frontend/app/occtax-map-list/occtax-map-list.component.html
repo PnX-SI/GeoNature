@@ -68,14 +68,6 @@
         ></i>
         </button>
 
-        <button class="btn btn-secondary actions" (click)="openModalDownload($event, modalDownload)"
-          matTooltip="{{ 'DownloadData' | translate }}">
-          <i
-            class="fa fa-download"
-            aria-hidden="true">
-          </i>
-      </button>
-
         <svg *ngIf="formsSelected.length > 0" height="40" width="10">
             <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
         </svg>
@@ -195,6 +187,17 @@
       [prop]="col.prop">
     </ngx-datatable-column>
   </ngx-datatable>
+  <button
+    id="download-btn"
+    class="btn btn-primary box-shadow"
+    (click)="openModalDownload($event, modalDownload)"
+    matTooltip="">
+    <i
+      class="fa fa-download"
+      aria-hidden="true">
+    </i>
+    <small> {{ 'DownloadData' | translate }} </small> 
+  </button>
   <button id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
       <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
   </button>
@@ -241,7 +244,7 @@
       <div class="modal-body">
         <span [innerHTML]="occtaxConfig.export_message"></span>
         <div class="export-button">
-          <button (click)="downloadData('csv')" type="button" class="btn btn-primary" (click)="c()"> <i aria-hidden="true" class="fa file-alt"> </i>
+          <button (click)="downloadData('csv')" type="button" class="btn btn-success"> <i aria-hidden="true" class="fa file-alt"> </i>
             <i
             id="refresh-filter"
             class="fas fa-alt"
@@ -251,7 +254,7 @@
           </i> 
             Format CSV
             </button>
-          <button type="button" class="btn btn-primary" (click)="downloadData('geojson')"> <i aria-hidden="true" class="fa globe"> </i>  Format GeoJson </button>
+          <button type="button" class="btn btn-success" (click)="downloadData('geojson')"> <i aria-hidden="true" class="fa globe"> </i>  Format GeoJson </button>
           <!-- <button type="button" class="btn btn-default" (click)="downloadData('shapefile')"> <i aria-hidden="true" class="fa globe"> </i> ShapeFile </button> -->
         
 
