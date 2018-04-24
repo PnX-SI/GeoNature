@@ -11,7 +11,7 @@
         </pnx-taxonomy>
       </div>
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-        <div *ngIf="occtaxConfig.form_fields.releve.observers_txt; else elseBlock">
+        <div *ngIf="occtaxConfig.observers_txt; else elseBlock">
           <pnx-observers-text
             [parentFormControl]= "dynamicFormGroup.controls.observers_txt">
           </pnx-observers-text>
@@ -141,6 +141,7 @@
       [offset]="mapListService.page.pageNumber"
       [limit]="mapListService.page.size"
       [rowClass]="mapListService.getRowClass"
+      [messages]="occtaxConfig.list_messages"
       (page)="mapListService.setTablePage($event, apiEndPoint)"
       (select)="mapListService.onRowSelect($event)"
     >
@@ -237,27 +238,20 @@
     </ng-template>
 
 
-    <ng-template #modalDownload let-c="close" let-d="dismiss">
+    <ng-template #modalDownload id="modal-download" let-c="close" let-d="dismiss">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel"> {{'DownloadData' | translate }}</h5>
       </div>
       <div class="modal-body">
         <span [innerHTML]="occtaxConfig.export_message"></span>
-        <div class="export-button">
-          <button (click)="downloadData('csv')" type="button" class="btn btn-success"> <i aria-hidden="true" class="fa file-alt"> </i>
-            <i
-            id="refresh-filter"
-            class="fas fa-alt"
-            aria-hidden="true"
-            
-            >
-          </i> 
-            Format CSV
-            </button>
-          <button type="button" class="btn btn-success" (click)="downloadData('geojson')"> <i aria-hidden="true" class="fa globe"> </i>  Format GeoJson </button>
-          <!-- <button type="button" class="btn btn-default" (click)="downloadData('shapefile')"> <i aria-hidden="true" class="fa globe"> </i> ShapeFile </button> -->
         
-
+        <div class="export-button">
+          <button *ngFor="let format of occtaxConfig.export_available_format"
+           (click)="downloadData(format)"
+           type="button"
+           class="btn btn-success format-btn">
+            Format {{format}}
+          </button>
         </div>
 
       </div>

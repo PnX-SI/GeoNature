@@ -8,7 +8,6 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { FormControl } from "@angular/forms";
-import { ColumnActions } from "@geonature_common/map-list/map-list.component";
 import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
@@ -33,7 +32,6 @@ export class OcctaxMapListComponent implements OnInit {
   public pathInfo: string;
   public idName: string;
   public apiEndPoint: string;
-  public columnActions: ColumnActions;
   public occtaxConfig: any;
   public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
@@ -86,19 +84,8 @@ export class OcctaxMapListComponent implements OnInit {
     this.mapListService.displayColumns = this.displayColumns;
 
     // columns available for display
-    this.availableColumns = [
-      { prop: "altitude_max", name: "altitude_max" },
-      { prop: "altitude_min", name: "altitude_min" },
-      { prop: "comment", name: "Commentaire" },
-      { prop: "date_max", name: "Date fin" },
-      { prop: "date_min", name: "Date début" },
-      { prop: "id_dataset", name: "ID dataset" },
-      { prop: "id_digitiser", name: "ID rédacteur" },
-      { prop: "id_releve_occtax", name: "ID relevé" },
-      { prop: "observateurs", name: "observateurs" },
-      { prop: "taxons", name: "taxons" }
-    ];
-    this.mapListService.availableColumns = this.availableColumns;
+
+    this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
     this.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/vreleve";
@@ -215,15 +202,13 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   openModalDownload(event, modal) {
-    this.ngbModal.open(modal);
+    this.ngbModal.open(modal, { size: "lg" });
     console.log(this.mapListService.urlQuery);
   }
 
   onAddReleve() {
     this._router.navigate(["occtax/form"]);
   }
-
-  download();
 
   customColumns(feature) {
     // function pass to the getData and the maplist service to format date

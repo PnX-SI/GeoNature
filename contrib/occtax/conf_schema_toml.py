@@ -10,7 +10,6 @@ class MapListConfig(Schema):
 
 
 class ReleveFormConfig(Schema):
-    observers_txt = fields.Boolean(missing=True)
     date_min = fields.Boolean(missing=True)
     date_max = fields.Boolean(missing=True)
     hour_min = fields.Boolean(missing=True)
@@ -61,6 +60,19 @@ default_map_list_conf = [
     { "prop": "dataset_name", "name": "Jeu de données" }
   ]
 
+available_maplist_column = [
+    { "prop": "altitude_max", "name": "altitude_max" },
+    { "prop": "altitude_min", "name": "altitude_min" },
+    { "prop": "comment", "name": "Commentaire" },
+    { "prop": "date_max", "name": "Date fin" },
+    { "prop": "date_min", "name": "Date début" },
+    { "prop": "id_dataset", "name": "ID dataset" },
+    { "prop": "id_digitiser", "name": "ID rédacteur" },
+    { "prop": "id_releve_occtax", "name": "ID relevé" },
+    { "prop": "observateurs", "name": "observateurs" },
+    { "prop": "taxons", "name": "taxons" }
+]
+
 default_columns_export = [
   "permId",
   "statObs",
@@ -108,19 +120,33 @@ default_columns_export = [
   "natObjGeo"
  ]
 
+ 
+
+available_export_format = ['csv', 'geojson', 'shapefile']
+
+list_messages = {"emptyMessage": "Aucune donnée à afficher", "totalMessage": "observations au total"}
+
+export_message = """
+<p> <b> Attention: </b> </br>
+Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>
+"""
 
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
+    observers_txt = fields.Boolean(missing=False)
     export_view_name = fields.String(missing='ViewExportDLB')
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
+    export_srid = fields.Integer(missing=4326)    
+    export_available_format = fields.List(fields.String(), missing=available_export_format)
     export_columns = fields.List(fields.String(), missing=default_columns_export)
-    export_message = fields.String(missing="")
-    export_srid = fields.Integer(missing=4326)
+    export_message = fields.String(missing=export_message)
+    list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
     releve_map_zoom_level = fields.Integer(missing=6)
     id_taxon_list = fields.Integer(missing=500)
     default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
+    available_maplist_column = fields.List(fields.Dict(), missing=available_maplist_column)
     
 
 
