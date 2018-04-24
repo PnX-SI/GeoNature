@@ -140,3 +140,17 @@ ngx-datatable {
   width: 70%;
   margin: 0 auto;
 }
+
+.modal-dialog{
+  max-width: none !important;
+  width: 50%;
+}
+
+#modal-download {
+  max-width: none !important;
+  width: 50%;
+}
+
+.format-btn{
+  margin-left: 5px;
+}
