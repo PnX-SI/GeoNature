@@ -154,7 +154,7 @@ export class OcctaxFormService {
       id_nomenclature_source_status: null,
       determiner: null,
       id_nomenclature_determination_method: null,
-      cd_nom: [null, Validators.compose([Validators.required])],
+      cd_nom: null,
       nom_cite: null,
       meta_v_taxref: "Taxref V9.0",
       sample_number_proof: null,
@@ -164,7 +164,10 @@ export class OcctaxFormService {
       cor_counting_occtax: ""
     });
 
-    occForm.controls.cd_nom.setValidators([this._formService.taxonValidator]);
+    occForm.controls.cd_nom.setValidators([
+      this._formService.taxonValidator,
+      Validators.required
+    ]);
 
     return occForm;
   }
