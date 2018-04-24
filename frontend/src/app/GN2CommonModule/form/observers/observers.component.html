@@ -1,10 +1,10 @@
 <pnx-select-search
   [values]="filteredObservers"
   [parentFormControl]="parentFormControl"
-  key="nom_complet"
+  [key]="'nom_complet'"
   [label]="label"
   debounceTime="500"
   (onSearch)="filterObservers($event)"
-  [multiselect]="true"
+  [multiselect]="'true'"
   [disabled]="disabled">
 </pnx-select-search>

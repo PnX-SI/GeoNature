@@ -131,7 +131,6 @@ export class MapListService {
         this.loadTableData(res.items, this.customCallBack);
       },
       err => {
-        console.log(err);
         if (err.status === 500) {
           this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
         }
