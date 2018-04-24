@@ -21,7 +21,7 @@ export class MapListService {
   public columns = [];
   public layerDict = {};
   public selectedLayer: any;
-  public onMapClik$: Observable<number> = this.mapSelected.asObservable();
+  public onMapClik$: Observable<string> = this.mapSelected.asObservable();
   public onTableClick$: Observable<number> = this.tableSelected.asObservable();
   public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
@@ -67,9 +67,13 @@ export class MapListService {
 
     this.onMapClik$.subscribe(id => {
       this.selectedRow = []; // clear selected list
-      for (const i in this.tableData) {
-        if (this.tableData[i][this.idName] === id) {
+
+      const integerId = parseInt(id);
+      // const integerId = parseInt(id);
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i][this.idName] === integerId) {
           this.selectedRow.push(this.tableData[i]);
+          break;
         }
       }
     });
