@@ -33,7 +33,6 @@ export class DynamicFormComponent implements OnInit {
   }
 
   onRadioChange(val, formControl: FormControl) {
-    console.log(val);
     formControl.patchValue(val);
   }
 }

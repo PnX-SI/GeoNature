@@ -105,7 +105,6 @@ export class OcctaxMapListComponent implements OnInit {
       return form.key != formDef.key;
     });
     this._dynformService.addNewControl(formDef, this.dynamicFormGroup);
-    console.log(this.dynamicFormGroup);
   }
 
   removeFormControl(i) {
@@ -203,7 +202,6 @@ export class OcctaxMapListComponent implements OnInit {
 
   openModalDownload(event, modal) {
     this.ngbModal.open(modal, { size: "lg" });
-    console.log(this.mapListService.urlQuery);
   }
 
   onAddReleve() {
