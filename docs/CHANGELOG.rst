@@ -5,6 +5,17 @@ CHANGELOG
 2.0.0.beta4 (unreleased)
 ------------------------
 
+**Nouveautés**
+
+* Synthèse : début de mise en place du backend, de l'API et du frontend #345
+* Complément de la nomenclature des Méthodes de détermination et suppression du champs Complement_Determination. Merci DonovanMaillard. #341
+* Nouveaux composants Angular (SelectSearch, Municipalities, Observers)
+* Amélioration de composants Angular (Date du jour par défaut, Option de tri des nomenclatures, DynamicForm
+* Connexion à MTD INPN : Mise à jour des JDD à chaque appel de la route
+* Finalisation du renommage de Contact en OccTax (BDD, API, backend)
+* Droits CRUVED : La définition du CRUVED d'un rôle (utilisateur ou groupe) sur un module de GeoNature surcouche ses droits GeoNature même si ils sont inférieurs. #292
+* Si un rôle a un R à 0 pour un module, alors celui-ci ne lui est pas listé dans le Menu et il ne lui ai pas accessible si il en connait l'URL #360
+
 **Corrections**
 
 2.0.0.beta3 (2018-03-28)
