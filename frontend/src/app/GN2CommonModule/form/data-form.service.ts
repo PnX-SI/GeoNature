@@ -69,6 +69,13 @@ export class DataFormService {
     return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
   }
 
+  async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
+    const response = await this._http
+      .get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`)
+      .toPromise();
+    return response;
+  }
+
   getRegneAndGroup2Inpn() {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
   }

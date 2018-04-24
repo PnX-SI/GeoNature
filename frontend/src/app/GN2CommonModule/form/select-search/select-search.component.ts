@@ -40,6 +40,8 @@ export class SelectSearchComponent implements OnInit {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
+      console.log('value change');
+      console.log(value);
       if (value === null) {
         if (this.multiselect) {
           this.selectedItems = [];
@@ -47,20 +49,16 @@ export class SelectSearchComponent implements OnInit {
           this.currentValue = null;
         }
       } else {
-        if (this.multiselect) {
+        if (this.multiselect && this.selectedItems.length === 0) {
           value.forEach(item => {
             this.selectedItems.push(item);
           });
-        } else {
+        }
+        if (!this.multiselect) {
           this.currentValue = value[this.key];
         }
       }
     });
-  }
-
-  setCurrentValue(val) {
-    this.searchControl.reset();
-    this.parentFormControl.patchValue(val);
   }
 
   addItem(item) {
@@ -69,6 +67,7 @@ export class SelectSearchComponent implements OnInit {
       return curItem[this.key] !== item[this.key];
     });
     if (this.multiselect) {
+      console.log('PASS LAAAAAAAA');
       this.selectedItems.push(item);
       this.parentFormControl.patchValue(this.selectedItems);
     } else {

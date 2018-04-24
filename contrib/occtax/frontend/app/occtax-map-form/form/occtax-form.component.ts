@@ -62,6 +62,12 @@ export class OcctaxFormComponent implements OnInit {
       this.fs.editionMode = true;
       // load one releve
       this.occtaxService.getOneReleve(this.id).subscribe(data => {
+
+        data.releve.properties.observers = data.releve.properties.observers.map(obs => {
+          obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
+          return obs;
+        });
+
         // pre fill the form
         this.fs.releveForm.patchValue({ properties: data.releve.properties });
 
@@ -77,11 +83,7 @@ export class OcctaxFormComponent implements OnInit {
           data.releve.properties.hour_max === 'None' ? null : data.releve.properties.hour_max;
         (this.fs.releveForm.controls.properties as FormGroup).patchValue({ hour_min: hour_min });
         (this.fs.releveForm.controls.properties as FormGroup).patchValue({ hour_max: hour_max });
-        // format observers
-        const observers = data.releve.properties.observers.map(obs => {
-          obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
-          return obs;
-        });
+
         const orderedCdNomList = [];
         data.releve.properties.t_occurrences_occtax.forEach(occ => {
           orderedCdNomList.push(occ.cd_nom);
