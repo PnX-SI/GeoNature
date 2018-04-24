@@ -82,7 +82,6 @@ export class OcctaxFormComponent implements OnInit {
           obs['nom_complet'] = obs.nom_role + ' ' + obs.prenom_role;
           return obs;
         });
-        (this.fs.releveForm.controls.properties as FormGroup).patchValue({ observers: observers });
         const orderedCdNomList = [];
         data.releve.properties.t_occurrences_occtax.forEach(occ => {
           orderedCdNomList.push(occ.cd_nom);
@@ -128,7 +127,6 @@ export class OcctaxFormComponent implements OnInit {
   }
 
   submitData() {
-    console.log(this.fs.releveForm);
     
     // set the releveForm
     // copy the form value without reference
