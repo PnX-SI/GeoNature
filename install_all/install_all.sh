@@ -32,14 +32,23 @@ if [ "$(id -u)" == "0" ]; then
    exit 1
 fi
 
-if [ -f install_all.log ]; then
-  rm install_all.log
+
+
+if [ ! -d '/var/log/geonature/' ]
+then
+  sudo mkdir /var/log/geonature
+  sudo chown "$(id -u)" /var/log/geonature
+  chmod -R 775 /var/log/geonature
 fi
-touch install_all.log
 
-echo "############### Installation des paquets systèmes ###############"&>> install_all.log
+if [ -f /var/log/geonature/ ]; then
+  rm /var/log/geonature/
+fi
+touch /var/log/geonature/
 
-sudo apt-get install -y nano 2>install_all.log 
+echo "############### Installation des paquets systèmes ###############"&>> /var/log/geonature/
+
+sudo apt-get install -y nano 2>/var/log/geonature/ 
 nano install_all.ini
 . install_all.ini
 
@@ -48,33 +57,33 @@ nano install_all.ini
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate 2>install_all.log 
-sudo ntpdate-debian &>> install_all.log 2>install_all.log 
-sudo apt-get install -y curl unzip git &>> install_all.log 2>install_all.log 
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2>install_all.log 
-sudo apt-get install -y postgresql 2>install_all.log 
+sudo apt-get -y install ntpdate 2>/var/log/geonature/ 
+sudo ntpdate-debian &>> /var/log/geonature/ 2>/var/log/geonature/ 
+sudo apt-get install -y curl unzip git &>> /var/log/geonature/ 2>/var/log/geonature/ 
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2>/var/log/geonature/ 
+sudo apt-get install -y postgresql 2>/var/log/geonature/ 
 if [ "$OS_VERSION" == "9" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.6 2>install_all.log 
+    sudo apt-get install -y postgresql-server-dev-9.6 2>/var/log/geonature/ 
 else
-    sudo apt-get install -y postgresql-server-dev-9.4 2>install_all.log 
+    sudo apt-get install -y postgresql-server-dev-9.4 2>/var/log/geonature/ 
 fi
-sudo apt-get install -y postgis 2>install_all.log 
-sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal1-dev python-gdal python-virtualenv build-essential 2>install_all.log 
+sudo apt-get install -y postgis 2>/var/log/geonature/ 
+sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential 2>/var/log/geonature/ 
 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>install_all.log
+sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>/var/log/geonature/
 if [ "$OS_VERSION" == "9" ]
 then
     sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install nodejs
 else
-    sudo apt-get install -y npm 2>install_all.log 
+    sudo apt-get install -y npm 2>/var/log/geonature/ 
 fi
 
-sudo apt-get install -y supervisor 2>install_all.log 
+sudo apt-get install -y supervisor 2>/var/log/geonature/ 
 # for make work opencv(taxhub) on debian8
-sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2>install_all.log 
-sudo apt-get install -y python-qt4 2>install_all.log 
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2>/var/log/geonature/ 
+sudo apt-get install -y python-qt4 2>/var/log/geonature/ 
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -124,11 +133,6 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 # Installation et configuration de l'application GeoNature
 ./install_app.sh
-
-# installation du module occtax
-source backend/venv/bin/activate
-geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax
-deactivate
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
@@ -213,9 +217,9 @@ if [ "$install_usershub_app" = true ]; then
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 
     then
-        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>install_all.log 
+        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>/var/log/geonature/ 
     else
-        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>install_all.log 
+        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>/var/log/geonature/ 
     fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip

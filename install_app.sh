@@ -194,6 +194,13 @@ geonature generate_frontend_tsconfig
 # generate the modules routing file by templating
 geonature generate_frontend_modules_route
 
+
+cd /home/$monuser/geonature
+# installation du module occtax
+source backend/venv/bin/activate
+geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax --build=false
+deactivate
+
 echo "Build du frontend..."
 npm run build
 

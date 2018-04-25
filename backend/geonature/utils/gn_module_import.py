@@ -16,7 +16,8 @@ from geonature.utils.config_schema import ManifestSchemaProdConf
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import (
-    get_app_for_cmd
+    get_app_for_cmd,
+    build_geonature_front
 )
 
 
@@ -346,7 +347,8 @@ def add_application_db(module_name, url):
     return id_app
 
 import sys
-def create_module_config(module_name, mod_path=GN_MODULES_ETC_ENABLED):
+def create_module_config(module_name, mod_path=GN_MODULES_ETC_ENABLED, build=True):
+    """ Create the frontend config for a module and rebuild if build=True"""
     conf_manifest = load_and_validate_toml(
             str(mod_path / module_name / 'manifest.toml'),
             ManifestSchemaProdConf
@@ -367,4 +369,7 @@ def create_module_config(module_name, mod_path=GN_MODULES_ETC_ENABLED):
     ) as outputfile:
         outputfile.write("export const ModuleConfig = ")
         json.dump(config_module, outputfile, indent=True, sort_keys=True)
+    
+    if build:
+        build_geonature_front()
 

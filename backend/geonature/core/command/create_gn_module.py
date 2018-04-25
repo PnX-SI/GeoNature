@@ -50,7 +50,13 @@ log = logging.getLogger(__name__)
     required=False,
     default=DEFAULT_CONFIG_FIlE
 )
-def install_gn_module(module_path, url, conf_file):
+@click.option(
+    '--build',
+    type=bool,
+    required=False,
+    default=True
+)
+def install_gn_module(module_path, url, conf_file, build):
     """
         Installation d'un module gn
     """
@@ -90,9 +96,10 @@ def install_gn_module(module_path, url, conf_file):
             # Activation du module
             gn_module_activate(module_name)
             #generation du fichier de configuration
-            update_module_configuration(module_name, False)
-            # Rebuild the frontend
-            build_geonature_front(rebuild_sass=True)
+            create_module_config(module_name, build=False)
+            if build:
+                # Rebuild the frontend
+                build_geonature_front(rebuild_sass=True)
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
@@ -202,8 +209,6 @@ def update_module_configuration(module_name, build):
         Génère la config frontend d'un module
     """
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
-    create_module_config(module_name)
-    if build:
-        build_geonature_front()
+    create_module_config(module_name, build)
 
     
