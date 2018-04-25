@@ -121,7 +121,8 @@ Il est également possible d'éditer des listes à partir de l'application TaxHu
 Gérer les valeurs par défaut des nomenclatures
 """""""""""""""""""""""""""""""""""""""""""""""
 
-Le formulaire de saisie pré-remplit des valeurs par défaut pour simplifier la saisie.
+Le formulaire de saisie pré-rempli des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui prise en compre remplir la BDD des champs du formulaire qui sont masqués.
+
 La table ``pr_occtax.defaults_nomenclatures_value`` définit les valeur par défaut pour chaque nomenclature du standard.
 
 La table contient les deux colonnes suivantes:
@@ -136,6 +137,8 @@ La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous le
 
 
 Une interface de gestion des nomenclatures est prévu d'être réalisé pour simplifier cette configuration.
+
+TODO: valeur par defaut de la validation
 
 Personaliser l'inteface map-list
 """"""""""""""""""""""""""""""""
@@ -195,3 +198,5 @@ Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``) ou
 La corespondance entre id_tag_action, id_tag_object, id_application, id_role, donnera les droit d'un personne ou d'un groupe pour une application (ou module) donnée.
 
 L'administration des droits des utilisateurs se fera bientôt dans une nouvelle version de UsersHub qui prendra en compte ce nouveau mécanisme du CRUVED.
+
+
