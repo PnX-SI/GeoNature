@@ -326,7 +326,7 @@ def add_application_db(module_name, url):
                 new_module = TModules(
                     id_module=id_app,
                     module_name=module_name,
-                    module_label=module_name,
+                    module_label=module_name.title(),
                     module_url=update_url,
                     module_target="_self",
                     module_picto="extension",
