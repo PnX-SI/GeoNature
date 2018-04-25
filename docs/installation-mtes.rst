@@ -85,13 +85,13 @@ Configuration du frontend
 (Pour l'instance de préprod, rajouter "instance de démo" à la variable ``appName``
 ::
 
-  # Nom de l'application sur la page d'acceuil
-  appName = 'Depôt légal de biodiviersité - saisie'
-  [FRONTEND]
-      # Compilation du fronend en mode production
-      PROD_MOD = true
-      # Affichage du footer sur la page d'acceuil
-      DISPLAY_FOOTER = true
+    # Nom de l'application sur la page d'acceuil
+    appName = 'Depôt légal de biodiviersité - saisie'
+    [FRONTEND]
+        # Compilation du fronend en mode production
+        PROD_MOD = true
+        # Affichage du footer sur la page d'acceuil
+        DISPLAY_FOOTER = true
 
 
 
