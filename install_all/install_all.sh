@@ -160,8 +160,23 @@ sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
 
-
 sudo a2ensite geonature
+
+
+
+# Configuration apache maintenance GeoNature
+sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
+
+conf="Alias /geonature /home/"$monuser"/geonature/frontend/src/app/maintenance"
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
+sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature_maintenance.conf'
+conf="<Directory /home/$monuser/geonature/frontend/src/app/maintenance>"
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
+sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
+sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
+
+
+
 
 # Installation de TaxHub avec l'utilisateur courant
 echo "Téléchargement et installation de TaxHub ..."
