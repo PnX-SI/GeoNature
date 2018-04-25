@@ -27,16 +27,14 @@ class OccurrenceFormConfig(Schema):
       naturalness = fields.Boolean(missing=True)
       exist_proof = fields.Boolean(missing=True)
       observation_status = fields.Boolean(missing=True)
-      diffusion_level = fields.Boolean(missing=True)
-      blurring = fields.Boolean(missing=True)
+      diffusion_level = fields.Boolean(missing=False)
+      blurring = fields.Boolean(missing=False)
       determiner = fields.Boolean(missing=True)
       determination_method = fields.Boolean(missing=True)
-      determination_method_as_text = fields.Boolean(missing=True)
       sample_number_proof = fields.Boolean(missing=True)
       digital_proof = fields.Boolean(missing=True)
       non_digital_proof = fields.Boolean(missing=True)
-      digital_proof = fields.Boolean(missing=True)
-      source_status = fields.Boolean(missing=True)
+      source_status = fields.Boolean(missing=False)
       comment = fields.Boolean(missing=True)
 
 class CountingFormConfig(Schema):
@@ -46,7 +44,7 @@ class CountingFormConfig(Schema):
       type_count = fields.Boolean(missing=True)
       count_min = fields.Boolean(missing=True)
       count_max = fields.Boolean(missing=True)
-      validation_status = fields.Boolean(missing=True)
+      validation_status = fields.Boolean(missing=False)
 
 class FormConfig(Schema):
     releve = fields.Nested(ReleveFormConfig, missing=dict())

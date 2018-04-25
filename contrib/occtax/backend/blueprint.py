@@ -368,11 +368,6 @@ def getViewReleveList(info_role):
                 VReleveList.__table__.columns,
                 params['orderby']
             )
-        # else:
-        #     orderCol = getattr(
-        #         VReleveList.__table__.columns,
-        #         'occ_meta_create_date'
-        #     )
 
         if 'order' in params:
             if (params['order'] == 'desc'):
