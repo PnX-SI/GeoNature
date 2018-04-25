@@ -4,38 +4,43 @@ MANUEL ADMINISTRATEUR
 Architecture
 ------------
 
-- UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` (actually called ``utilisateurs``) database schema and to authentificate
-- TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` (actually called ``taxonomie``) database schema. We also use TaxHub API to get information about taxons, species...
-- A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
-- ``ref_geo`` is a geographical referential to manage areas, DEM and spatial functions such as intersections
+
+GeoNature possède une architecture modulaire et s'appuye sur de plusieurs "services" indépendants pour fonctionner:
+
+- UsersHub and le sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs`` et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (liste, organisme, droits) des différentes application de son système d'information.
+- Taxhub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellemenet nommé ``taxonomie``). L'API de Taxhub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
+- Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
+- ``ref_geo`` est le schéma de base de donnée qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude ou d'intesection spatiales.
+
+GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données. 
+NB: Le backend en le frontend se lance séparement dans GeoNature.
 
 .. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
 
-Database
---------
+Base de données
+---------------
 
-In GeoNature V2, the whole database is still done with PostgreSQL/PostGIS but it has also been totally rebuilt. 
+Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l'architecture du modèle de données a été complétement revue.
 
-It is based on MNHN SINP standard Occurrences de Taxons.
-Details at https://github.com/PnX-SI/GeoNature/issues/183.
+La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183)
 
-The database has also been translated into English and supports multilingual values. 
+La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
-Database schemas prefixs : ``ref_`` for external referentials, ``gn_`` for GeoNature core schemas, ``pr_`` for protocols schemas.
+Les préfixe des schéma de BDD sont désormais standardisé: ``ref_`` concerne les référentiels externes, ``gn`` concerne les schémas du coeur de GeoNature et ``pr`` les schémas des protocoles. 
+
+Autres standards:
 
 - Noms de tables, commentaires et fonctions en anglais
-- meta_create_date et meta_update_date dans les différentes tables
-- deleted (boolean)
 - pas de nom de table dans les noms de champs
 - nom de schema eventuellement dans nom de table
 
-Latest version of the database (2018-03-19) : 
+Dernière version de la base de données (2018-03-19) : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
 
-Sorry for the relations, it is too long to arrange...
+Désolé pour les relations complexes entre tables...
 
-Here is a simplified model of the database (2017-12-15) : 
+Voici un modèle simplifié de la BDD (2017-12-15) : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
@@ -90,7 +95,7 @@ Données SIG :
 Modularité
 ----------
 
-Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module Contact (OCCTAX) : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data
+Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module OccTax : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data
 
 Côté backend, chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend
 
@@ -108,8 +113,12 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration frontend par module : ``contrib/occtax/frontend/app/module.config.ts`` (générée à partir de ``contrib/occtax/frontend/app/module.config.ts.sample`` lors de l'installation du module)
+- Une configuration par module : ``/etc/geonature/mods-enabled<nom_module>/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
+
+
+Configuration générale de l'application
+"""""""""""""""""""""""""""""""""""""""
 
 L'installation de GeoNature génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
 
@@ -117,7 +126,7 @@ Par défaut, le fichier ``/etc/geonature/geonature_config.toml`` est minimaliste
 
 Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
 
-Quand on modifie le fichier global de configuration (``/etc/geonature/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
+A chaque modification fichier global de configuration (``/etc/geonature/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
 
 Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
 
@@ -127,18 +136,21 @@ Ainsi après chaque modification des fichiers de configuration globale, placez-v
     geonature update_configuration
     deactivate
 
-Si vous modifiez la configuration Frontend d'un module, il faut relancer la génération du frontend :
+Configuration d'un gn_module
+""""""""""""""""""""""""""""
+
+Lors de l'instalation d'un module, un fichier de configuration est créé: ``/etc/geonature/mods-enabled/<nom_module>/conf_gn_module.toml``.
+
+Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example`` situé à la racine du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
+
+A chaque modification de ce fichier lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompiler)
 
 ::
 
-    cd /home/myuser/geonature/fontend
-    npm run build
-    
-Si vous modifiez la configuration Backend d'un module, il faut relancer le backend :
+    source venv/bin/activate
+    geonature update_module_configuration <NOM_DE_MODULE>
+    deactivate
 
-::
-
-    sudo supervisorctl reload
 
 
 Exploitation
@@ -199,6 +211,28 @@ Pour les stopper, éxecuter les commandes suivantes :
 Pour redémarer les API:
 ``sudo supervisorctl reload``
 
+Maintenance
+"""""""""""
+
+Lors d'une opération de maintenance (monté en version, modification en base de données), vous pouvez rendre l'application momentanémment indisponible.
+
+Pour cela, désactiver la configuration Apache de GeoNature, puis activer la configuration du mode de maintenance:
+
+::
+
+    sudo a2dissite geonature
+    sudo a2ensite geonature_maintenance
+
+A la fin de l'opération de maintenance, effectuer la manipulation inverse
+
+::
+
+    sudo a2dissite geonature_maintenance     
+    sudo a2ensite geonature
+
+
+
+Attention: ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompue)
 
 Sauvegarde et restauration
 --------------------------
@@ -302,10 +336,4 @@ Nous présenterons ici la première solution qui est privilégiée pour disposer
 * Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
 
 
-OccTax
-------
 
-- Modifier la configuration
-- Modifier les valeurs par défaut (nomenclatures et statut de validation)
-- Définir les taxons saisissables (Liste dans TaxHub)
-- Attribuer des droits CRUVED aux différents rôles (UsersHub)
