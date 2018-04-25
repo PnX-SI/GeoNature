@@ -118,6 +118,7 @@ cd /home/$monuser/geonature
 cp config/settings.ini.sample config/settings.ini
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
 my_url="${my_url//\//\\/}"
+sed -i "s/monuser=.*$/monuser=$monuser/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini

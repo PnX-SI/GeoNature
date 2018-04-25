@@ -131,7 +131,6 @@ echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis '/etc/geonature/geonature_config.toml'..."
 geonature generate_frontend_config --conf-file /etc/geonature/geonature_config.toml --build=false
-echo "Désactivation du virtual env..."
 
 #Lancement de l'application
 echo "Configuration de l'application api backend dans supervisor..."
@@ -158,8 +157,6 @@ nvm install 8.1.1
 echo " ############"
 echo "Instalation des paquets npm"
 npm install
-npm rebuild node-sass
-
 
 # creation du dossier des assets externes
 mkdir src/external_assets
