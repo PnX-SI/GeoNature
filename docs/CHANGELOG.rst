@@ -8,15 +8,23 @@ CHANGELOG
 **Nouveautés**
 
 * Synthèse : début de mise en place du backend, de l'API et du frontend #345
-* Complément de la nomenclature des Méthodes de détermination et suppression du champs Complement_Determination. Merci DonovanMaillard. #341
+* Complément de la nomenclature des Méthodes de détermination et suppression du champs Complement_Determination. Merci @DonovanMaillard. #341
 * Nouveaux composants Angular (SelectSearch, Municipalities, Observers)
 * Amélioration de composants Angular (Date du jour par défaut, Option de tri des nomenclatures, DynamicForm
 * Connexion à MTD INPN : Mise à jour des JDD à chaque appel de la route
 * Finalisation du renommage de Contact en OccTax (BDD, API, backend)
-* Droits CRUVED : La définition du CRUVED d'un rôle (utilisateur ou groupe) sur un module de GeoNature surcouche ses droits GeoNature même si ils sont inférieurs. #292
-* Si un rôle a un R à 0 pour un module, alors celui-ci ne lui est pas listé dans le Menu et il ne lui ai pas accessible si il en connait l'URL #360
+* Droits CRUVED : La définition du CRUVED d'un rôle (utilisateur ou groupe) sur un module de GeoNature surcouche ses droits GeoNature même si ils sont inférieurs. Si une action du CRUVED n'est pas définie au niveau du module, on prend celle de l'application parente. #292
+* Si un rôle a un R du CRUVED à 0 pour un module, alors celui-ci ne lui est pas listé dans le Menu et il ne lui ai pas accessible si il en connait l'URL. #360
+* Mise en place d'un schéma ``gn_commons`` dans la BDD qui permet de stocker de manière générique des informations qui peuvent être communes aux autres modules : l'historique des actions sur chaque objet de la BDD, la validation d'une donnée et les médias associés à une donnée. Accompagné de fonctions génériques d'historisation et de validation des données mises en place sur le module Occtax. #339
+* Amélioration de l'ergonomie du MapList de OccTax. #361
+* Mise en place d'un export CSV, SHP, GeoJSON paramétrable dans OccTax. #363 et #366
+* Amélioration du module générique ``gn_monitoring`` et de ses sous-modules https://github.com/PnCevennes/gn_module_suivi_chiro et https://github.com/PnCevennes/projet_suivis_frontend
+* Amélioration et compléments des scripts d'installation
 
-**Corrections**
+**Documentation**
+
+* Complément des différentes documentations
+* Ajout d'une documentation d'administration d'OccTax
 
 2.0.0.beta3 (2018-03-28)
 ------------------------
