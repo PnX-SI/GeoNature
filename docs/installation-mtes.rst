@@ -1,7 +1,7 @@
 SPECIFICITES INSTANCE NATIONALE
 ===============================
 
-Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES).
+Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES) dans le cadre du projet de Depôt Légal des données de bioldiversité.
 
 Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst). 
 
@@ -18,8 +18,127 @@ GeoNature se sert de flux internet externes durant son installation et son fonct
 - https://raw.githubusercontent.com/
 - https://inpn.mnhn.fr/mtd
 - https://preprod-inpn.mnhn.fr/mtd
-- https://inpn.mnhn.fr/mtd
-- https://wxs.ign.fr/KEY/geoportail/r/wms
+- https://wxs.ign.fr/
+
+
+Configuration de l'application
+------------------------------
+
+Une fois l'installation terminé, il est necessaire d'adapter les fichiers de configuration de l'application pour les besoins spécifiques de l'instance nationale.
+
+Voir le fichier ``/home/<my_user>/<my_geonature_directory>/config/default_config.tomls.example``, qui liste l'ensemble des variables de configuration disponible ainsi que leurs valeurs par défaut. 
+
+Editer le fichier de configuration de GeoNature pour surcoucher ces variables:
+
+``sudo nano /etc/geonoature/geonature_config.toml``
+
+
+La première variable ``SQLALCHEMY_DATABASE_URI`` corespond aux identifiants de connexion à la BDD, vérifier que les informations corespondent bien à ce que vous avez remplit dans le fichier ``settings.ini`` lors de l'installation.
+
+Configuration des URLS
+***********************
+
+Les URLS doivent correspondre aux informations renseignés dans la configuration Apache et au Load Balancer. Elle ne doivent pas contenir de ``/`` final.
+Pour la préprod, ajouter le préfixe "pp" avant ``saisie`` et ``taxhub`` (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la configuration Apache en conséquence.
+
+::
+
+    # URL d'accès à l'application
+    URL_APPLICATION = 'https://depot-legal-biodiversite.naturefrance.fr/saisie'
+    # URL de l'API de GeoNature
+    API_ENDPOINT = 'https://depot-legal-biodiversite.naturefrance.fr/saisie/api'
+    # URL de l'API de Taxhub
+    API_TAXHUB = 'https://depot-legal-biodiversite.naturefrance.fr/taxhub/api'
+
+
+Clé secrète
+***********
+
+Mettre un clé secrète personnalisée
+
+::
+    
+    SECRET_KEY = '<MA_CLE_CRYPTEE>'
+
+Connexion au CAS INPN - gestion centralisé des utilisateurs
+***********************************************************
+
+Bien changer les variables ID et PASSWORD avec les bonnes valeurs
+
+NB: pour la préprod, utiliser ``https://preprod-inpn.mnhn.fr``
+::
+
+  [CAS]
+      CAS_AUTHENTIFICATION = true
+      CAS_URL_LOGIN = 'https://inpn.mnhn.fr/auth/login'
+      CAS_URL_LOGOUT = 'https://inpn.mnhn.fr/auth/logout'
+      CAS_URL_VALIDATION = 'https://inpn.mnhn.fr/auth/serviceValidate'
+      USERS_CAN_SEE_ORGANISM_DATA = false
+      [CAS.CAS_USER_WS]
+          URL = 'https://inpn.mnhn.fr/authentication/information'
+          ID = '<THE_INPN_LOGIN>'
+          PASSWORD = '<THE_INPN_PASSWORD>'
+
+Configuration du frontend
+**************************
+
+(Pour l'instance de préprod, rajouter "instance de démo" à la variable ``appName``
+::
+
+  # Nom de l'application sur la page d'acceuil
+  appName = 'Depôt légal de biodiviersité - saisie'
+  [FRONTEND]
+      # Compilation du fronend en mode production
+      PROD_MOD = true
+      # Affichage du footer sur la page d'acceuil
+      DISPLAY_FOOTER = true
+
+
+
+Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue: recompilation du frontend).
+
+Depuis le répertoire ``backend`` de GeoNature
+
+::
+
+    source venv/bin/activate
+    geonature update_configuration
+    deactivate
+
+
+Configuration de la cartographie
+********************************
+
+Pour l'instance nationale, l'application est fournie avec des fonds de carte IGN (Topo, Scan-Express et Orto).
+
+Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique: ``frontend/src/conf/mam.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend`` ``npm run build``.
+
+
+
+Configuration du module occurrence de taxon: OCCTAX
+***************************************************
+
+Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
+
+Le fichier ``/home/<my_user>/<my_geonature_directory>/contrib/occtax/configuration_occtax.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeur par défault.
+
+Editez le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module``
+
+Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue: recompilation du frontend).
+
+Depuis le répertoire ``backend`` de GeoNature
+
+::
+
+    source venv/bin/activate
+    geonature update_module_configuration occtax
+    deactivate
+
+
+
+*TODO*
+Script de collage des modules de customisation et de configuration des listes de taxon
+
 
 
 Attention, communes, zonages et MNT national ?
