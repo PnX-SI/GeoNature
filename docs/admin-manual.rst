@@ -4,8 +4,8 @@ MANUEL ADMINISTRATEUR
 Architecture
 ------------
 
-- UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` database schema and to authentificate
-- TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` database schema. We also use TaxHub API to get information about taxons, species...
+- UsersHub and its Flask module (https://github.com/PnX-SI/UsersHub-authentification-module) are used to manage ``ref_users`` (actually called ``utilisateurs``) database schema and to authentificate
+- TaxHub (https://github.com/PnX-SI/TaxHub) is used to manage ``ref_taxonomy`` (actually called ``taxonomie``) database schema. We also use TaxHub API to get information about taxons, species...
 - A Flask module has been created to manage nomenclatures datas and their API (https://github.com/PnX-SI/Nomenclature-api-module/)
 - ``ref_geo`` is a geographical referential to manage areas, DEM and spatial functions such as intersections
 
@@ -280,3 +280,32 @@ Sauvegarde et restauration
         cd /<MY_USER>/geonature/frontend
         npm run build
         sudo supervisorctl reload
+
+
+Intégrer des données externes
+-----------------------------
+
+Il peut s'agir de données partenaires, de données historiques ou de données saisies dans d'autres outils. 
+
+2 possibilités s'offrent à vous : 
+
+* Créer un schéma dédié aux données pour les intégrer de manière complète et en extraire les DEE dans la Synthèse
+* N'intégrer que les DEE dans la Synthèse
+
+Nous présenterons ici la première solution qui est privilégiée pour disposer des données brutes mais aussi les avoir dans la Synthèse.
+
+* Créer un JDD dédié. Eventuellement un CA si elles ne s'intègrent pas dans un CA déjà existant.
+* Ajouter une Source de données dans ``synthese.t_sources``.
+* Créer le schéma dédié à accueillir les données brutes.
+* Créer les tables nécessaires à accueillir les données brutes.
+* Intégrer les données dans ces tables.
+* Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
+
+
+OccTax
+------
+
+- Modifier la configuration
+- Modifier les valeurs par défaut (nomenclatures et statut de validation)
+- Définir les taxons saisissables (Liste dans TaxHub)
+- Attribuer des droits CRUVED aux différents rôles (UsersHub)
