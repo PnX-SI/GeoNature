@@ -69,8 +69,15 @@ else
     sudo apt-get install -y postgresql-server-dev-9.4 2>/var/log/geonature/ 
 fi
 sudo apt-get install -y postgis 2>/var/log/geonature/ 
-sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential 2>/var/log/geonature/ 
-
+sudo apt-get install -y python3 2>/var/log/geonature/ 
+sudo apt-get install -y python3-dev 2>/var/log/geonature/ 
+sudo apt-get install -y python3-setuptools 2>/var/log/geonature/ 
+sudo apt-get install -y python-pip 2>/var/log/geonature/ 
+sudo apt-get install -y libpq-dev 2>/var/log/geonature/ 
+sudo apt-get install -y libgdal-dev 2>/var/log/geonature/ 
+sudo apt-get install -y python-gdal 2>/var/log/geonature/ 
+sudo apt-get install -y python-virtualenv 2>/var/log/geonature/ 
+sudo apt-get install -y build-essential 2>/var/log/geonature/ 
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>/var/log/geonature/
 if [ "$OS_VERSION" == "9" ]
 then
