@@ -1,39 +1,27 @@
-SPECIFICITES INSTANCE NATIONALE
-===============================
+SPECIFICITES INSTANCE DEPOT LEGAL DE BIODIVERSITE
+=================================================
 
 Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES) dans le cadre du projet de Depôt Légal des données de bioldiversité.
 
-Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst). 
-
-Configuration serveur
----------------------
-GeoNature se sert de flux internet externes durant son installation et son fonctionnement. Le serveur acceuillant l'application doit autoriser les flux externes suivants:
-
-- https://pypi.python.org
-- http://geonature.fr/
-- https://codeload.github.com/
-- https://nodejs.org/dist
-- https://registry.npmjs.org
-- https://www.npmjs.com
-- https://raw.githubusercontent.com/
-- https://inpn.mnhn.fr/mtd
-- https://preprod-inpn.mnhn.fr/mtd
-- https://wxs.ign.fr/
+Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst).
 
 
 Configuration de l'application
 ------------------------------
 
-Une fois l'installation terminé, il est necessaire d'adapter les fichiers de configuration de l'application pour les besoins spécifiques de l'instance nationale.
+Une fois l'installation terminée, il est necessaire d'adapter les fichiers de configuration de l'application pour les besoins spécifiques de l'instance nationale.
 
-Voir le fichier ``/home/<my_user>/<my_geonature_directory>/config/default_config.tomls.example``, qui liste l'ensemble des variables de configuration disponible ainsi que leurs valeurs par défaut. 
+Lancer le script:
+
+``/home/<my_user>/geonature/install_all/configuration_mtes.sh``
+
+
+Le fichier ``/home/<my_user>/geonature/config/default_config.tomls.example`` liste l'ensemble des variables de configuration disponible ainsi que leurs valeurs par défaut. 
 
 Editer le fichier de configuration de GeoNature pour surcoucher ces variables:
 
 ``sudo nano /etc/geonoature/geonature_config.toml``
 
-
-La première variable ``SQLALCHEMY_DATABASE_URI`` corespond aux identifiants de connexion à la BDD, vérifier que les informations corespondent bien à ce que vous avez remplit dans le fichier ``settings.ini`` lors de l'installation.
 
 Configuration des URLS
 ***********************
@@ -117,6 +105,10 @@ Pour modifier cette configuration par défaut, éditer le fichier de configurati
 
 Configuration du module occurrence de taxon: OCCTAX
 ***************************************************
+
+Le fichier de configuration du module Occtax se trouve dans:
+
+``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml
 
 Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
 

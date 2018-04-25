@@ -18,6 +18,21 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
+Configuration serveur
+---------------------
+GeoNature se sert de flux internet externes durant son installation et son fonctionnement. Le serveur acceuillant l'application doit autoriser les flux externes suivants:
+
+- https://pypi.python.org
+- http://geonature.fr/
+- https://codeload.github.com/
+- https://nodejs.org/dist
+- https://registry.npmjs.org
+- https://www.npmjs.com
+- https://raw.githubusercontent.com/
+- https://inpn.mnhn.fr/mtd
+- https://preprod-inpn.mnhn.fr/mtd
+- https://wxs.ign.fr/
+
 Installation de l'application
 -----------------------------
 
