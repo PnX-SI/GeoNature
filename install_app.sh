@@ -199,9 +199,9 @@ cd /home/$monuser/geonature
 # installation du module occtax
 source backend/venv/bin/activate
 geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax --build=false
-deactivate
 
 echo "Build du frontend..."
+npm rebuild node-sass --force
 npm run build
 
 echo "désactiver le virtual env"

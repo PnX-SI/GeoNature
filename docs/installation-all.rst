@@ -133,6 +133,8 @@ Une fois l'installation terminée, lancer cette commande pour ajouter 'nvm' dans
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
+
+
 Les applications sont disponibles aux adresses suivantes:
 
 - http://monip.com/geonature
@@ -140,12 +142,20 @@ Les applications sont disponibles aux adresses suivantes:
 
 Vous pouvez vous connecter avec l'utilisateur par défaut (admin/admin)
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
 
-- Pour ``/``: ``npm run build -- --base-href=/``
-- Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
+Si vous rencontrez une erreur, se reporter aux fichiers de logs:
 
-Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
+Logs de l'instalation de la base de données
+
+``/var/log/geonature/install_db.log``
+
+Log général de l'installation de l'application
+
+``/var/log/geonature/install_log.log``
+
+
+
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, editez  le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
 
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
 - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
@@ -154,7 +164,7 @@ Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-availabl
 Installation d'un module GeoNature
 ----------------------------------
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur. Pour ajouter un gn_module externe, il est nécessaire de l'installer :
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB: le module Occurence de Taxon - Occtax - est fournit par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
 Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
 
