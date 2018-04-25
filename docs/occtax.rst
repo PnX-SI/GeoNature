@@ -31,8 +31,8 @@ Le fichier de configuration du module se trouve ici:
 Pour voir l'ensemble des variables de configuration du module ainsi qu leurs valeurs par défaut, ouvrir le fichier `/home/<mon_user>/geonature/contrib/occtax/conf_gn_module.toml`
 
 
-Afficher/masquer des champs
-"""""""""""""""""""""""""""
+Afficher/masquer des champs du formaulaire
+""""""""""""""""""""""""""""""""""""""""""
 La quasi-totalité des champs du standard d'occurrences de taxon sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.
 
 Pour plus de souplesse et afin de répondre aux besoins de chacun, l'ensemble des champs sont masquables (sauf les champs primoridaux: observateur, taxon ...)
