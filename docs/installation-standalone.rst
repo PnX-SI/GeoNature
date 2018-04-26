@@ -59,7 +59,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
   ::  
 
     sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
-    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal1-dev python-gdal python-virtualenv build-essential
+    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
     sudo apt-get install -y npm
     sudo apt-get install -y supervisor
