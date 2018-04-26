@@ -529,3 +529,8 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne,
 ,(100,0,0,0,343)
 ,(19,0, 0, 0, 76)
 ;
+
+
+INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES 
+('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 14 )
+;
