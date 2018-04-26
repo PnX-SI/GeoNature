@@ -143,6 +143,7 @@ class GnModuleSchemaConf(Schema):
     digital_proof_validator = fields.Boolean(missing=True)
     releve_map_zoom_level = fields.Integer(missing=6)
     id_taxon_list = fields.Integer(missing=500)
+    id_observers_list = fields.Integer(missing=9)
     default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
     available_maplist_column = fields.List(fields.Dict(), missing=available_maplist_column)
     

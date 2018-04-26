@@ -415,9 +415,9 @@ Modifier le champ observateur
 Par défaut le champ observateur est une liste déroulante qui pointe vers une liste du schéma utilisateur.
 Il est possible de passer ce champ en texte libre en mettant à "true" la variable `observers_txt`
 
-TODO: personaliser la liste des observateurs.
+Le paramètre ``id_observers_list`` permet de changer la liste d'observateur proposé dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_menus`` et ``utilisateurs.cor_role_menu``)
 
-Par défaut, l'ensemble des observateurs de la liste 9 (observateur faune/flore) sont affichés. Pour remplir cette liste, ajouter des utilisateurs dans la table ``utilisateurs.cor_role_menu``
+Par défaut, l'ensemble des observateurs de la liste 9 (observateur faune/flore) sont affichés.
 
 Personnaliser la liste des taxons saisissables dans le module
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
