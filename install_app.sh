@@ -197,6 +197,7 @@ cd /home/$monuser/geonature
 source backend/venv/bin/activate
 geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax --build=false
 
+cd frontend
 echo "Build du frontend..."
 npm rebuild node-sass --force
 npm run build
