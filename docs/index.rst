@@ -16,6 +16,7 @@ Bienvenue sur la documentation de GeoNature
    user-manual
    admin-manual
    development
+   occtax
    FAQ
    CHANGELOG 
 

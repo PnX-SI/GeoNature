@@ -15,8 +15,9 @@ Documentation générale
 - `Developement, modules, components <development.rst>`_
 
 
-Module OccTax
--------------
+Documentation module OccTax
+---------------------------
 
-- `User manual <user-manual.rst>`_
+- `Manuel utilisateur <user-manual.rst>`_
+- `Configuration du module <user-manual.rst>`_
 

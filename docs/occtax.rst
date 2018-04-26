@@ -152,12 +152,15 @@ La liste des champs affiché par défaut sur le tableau peut être modifié avec
 
 Par défaut:
 
-default_maplist_columns = [
-    { prop = "taxons", name = "Taxon" },
-    { prop = "date_min", name = "Date début" },
-    { prop = "observateurs", name = "Observateurs" },
-    { prop = "dataset_name", name = "Jeu de données" }
-]
+::
+
+
+    default_maplist_columns = [
+        { prop = "taxons", name = "Taxon" },
+        { prop = "date_min", name = "Date début" },
+        { prop = "observateurs", name = "Observateurs" },
+        { prop = "dataset_name", name = "Jeu de données" }
+    ]
 
 Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
 
