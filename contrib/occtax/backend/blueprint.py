@@ -761,7 +761,8 @@ def export_sinp(info_role):
     data = q.all()	
     data = serializeQueryTest(data, q.column_descriptions)
 
-    export_columns = blueprint.config['export_columns']	
+    export_columns = blueprint.config['export_columns']
+    
     file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')	
     return (	
         filemanager.removeDisallowedFilenameChars(file_name),	
