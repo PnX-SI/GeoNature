@@ -476,11 +476,10 @@ def insertOrUpdateOneReleve(info_role):
         releve = releveRepository.update(releve, user)
     else:
             DB.session.add(releve)
-    try:
-        DB.session.commit()
-        DB.session.flush()
-    except Exception as e:
-        return {'message': str(e.args)}, 500
+
+    DB.session.commit()
+    DB.session.flush()
+
     return releve.get_geofeature()
 
 

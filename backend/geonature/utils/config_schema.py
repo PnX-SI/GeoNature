@@ -67,8 +67,7 @@ class GnPySchemaConf(Schema):
 
 class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
-    DISPLAY_FOOTER = fields.Boolean(missing=False)
-    PROD_MOD = fields.Boolean(missing=True)
+    DISPLAY_FOOTER = fields.Boolean(missing=True)
 
 
 class MailErrorConf(Schema):
@@ -92,6 +91,7 @@ class GnGeneralSchemaConf(Schema):
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
+    LOCAL_SRID = fields.Integer(required=True, missing=2154)
     ID_APPLICATION_GEONATURE = fields.Integer(missing=14)
     XML_NAMESPACE = fields.String(missing="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")

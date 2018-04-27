@@ -42,7 +42,7 @@ INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism,
 ,(5, 2, NULL, 2, 398)
 ,(6, 2, 3, NULL, 429)
 ,(7, 2, 2, NULL, 397)
-;
+;.
 SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', 8, true);
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
