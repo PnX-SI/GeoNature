@@ -13,11 +13,19 @@ export class SideNavService {
   gettingCurrentModule = this._module.asObservable();
   // List of the apps
   public modules: Array<any>;
-  public home;
+  public default_module;
 
   constructor(private _api: HttpClient) {
     this.opened = false;
-    this.home = { module_url: '/', module_label: 'Accueil', module_picto: 'home', id: '1' };
+    this.default_module = [
+      { module_url: '/', module_label: 'Accueil', module_picto: 'home', id: '1' },
+      {
+        module_url: '/exports',
+        module_label: 'Export',
+        module_picto: 'file_download',
+        id: '2'
+      }
+    ];
   }
 
   fetchModules() {

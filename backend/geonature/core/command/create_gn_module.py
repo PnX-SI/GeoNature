@@ -209,6 +209,6 @@ def update_module_configuration(module_name, build):
         Génère la config frontend d'un module
     """
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
-    create_module_config(module_name, build)
+    create_module_config(module_name, build=build)
 
     
