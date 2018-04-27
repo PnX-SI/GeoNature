@@ -470,8 +470,6 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
 
 
 
-
-
 --Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
  SELECT rel.id_releve_occtax,
