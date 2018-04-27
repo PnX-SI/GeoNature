@@ -1,4 +1,5 @@
 
+from flask import current_app
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
@@ -197,8 +198,14 @@ class TRelevesOccurrence(ReleveModel):
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
-    geom_local = DB.Column(Geometry)
     geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    geom_local = DB.Column(
+        Geometry('GEOMETRY', current_app.config['LOCAL_SRID']),
+        default=select([func.st_transform(
+            geom_4326, current_app.config['LOCAL_SRID'])]
+        )
+    )
+    
 
     t_occurrences_occtax = relationship(
         "TOccurrencesOccurrence",

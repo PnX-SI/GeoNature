@@ -97,6 +97,7 @@ if [ ! -f /etc/geonature/geonature_config.toml ]; then
   sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/LOCAL_SRID = .*$/LOCAL_SRID = '${srid_local}'/g" /etc/geonature/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
 fi
@@ -200,6 +201,7 @@ geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax --bui
 cd frontend
 echo "Build du frontend..."
 npm rebuild node-sass --force
+
 npm run build
 
 echo "désactiver le virtual env"
