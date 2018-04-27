@@ -481,7 +481,6 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
     rel.date_max,
     rel.altitude_min,
     rel.altitude_max,
-    rel.deleted,
     rel.meta_device_entry,
     rel.comment,
     rel.geom_4326,
@@ -496,7 +495,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
      LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
      LEFT JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
-  GROUP BY dataset.dataset_name, rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.deleted, rel.meta_device_entry
+  GROUP BY dataset.dataset_name, rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry
 
 --------------------
 -- ASSOCIATED DATA--
