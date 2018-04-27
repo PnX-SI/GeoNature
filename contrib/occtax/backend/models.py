@@ -176,6 +176,7 @@ class TOccurrencesOccurrence(DB.Model):
 
 
 
+
 @serializable
 @geoserializable
 class TRelevesOccurrence(ReleveModel):
@@ -200,10 +201,7 @@ class TRelevesOccurrence(ReleveModel):
     comment = DB.Column(DB.Unicode)
     geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
     geom_local = DB.Column(
-        Geometry('GEOMETRY', current_app.config['LOCAL_SRID']),
-        default=select([func.st_transform(
-            geom_4326, current_app.config['LOCAL_SRID'])]
-        )
+        Geometry('GEOMETRY', current_app.config['LOCAL_SRID'])
     )
     
 
