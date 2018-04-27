@@ -88,7 +88,6 @@ default_columns_export = [
   "dSPublique",
   "statSource",
   "idOrigine",
-  "jddId",
   "refBiblio",
   "obsMeth",
   "ocEtatBio",

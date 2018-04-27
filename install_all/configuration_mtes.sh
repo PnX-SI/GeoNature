@@ -1,6 +1,6 @@
 #/bin/bash
 
-Make sure only root can run our script
+#Make sure only root can run our script
 if [ "$(id -u)" == "0" ]; then
    echo "This script must NOT be run as root" 1>&2
    exit 1
@@ -26,6 +26,18 @@ cp -r custom /home/$monuser/geonature/frontend/src/custom
 cp configuration/map.config.ts /home/$monuser/geonature/frontend/src/conf/map.config.ts
 
 
+url_app=https://depot-legal-biodiversite.naturefrance.fr/saisie
+api_end_point=https://depot-legal-biodiversite.naturefrance.fr/saisie/api
+api_taxhub=https://depot-legal-biodiversite.naturefrance.fr/taxhub/api
+
+url_app="${url_app//\//\\/}"
+api_end_point="${api_end_point//\//\\/}"
+api_taxhub="${api_taxhub//\//\\/}"
+
+sudo sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${url_app}' /g" /etc/geonature/geonature_config.toml
+sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${api_end_point}'/g" /etc/geonature/geonature_config.toml
+sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${api_taxhub}'/g" /etc/geonature/geonature_config.toml
+
 cat configuration/occtax.config.toml | sudo tee -a /etc/geonature/mods-enabled/occtax/conf_gn_module.toml
 cat configuration/geonature.config.toml | sudo tee -a /etc/geonature/geonature_config.toml
  
@@ -38,5 +50,6 @@ deactivate
 
 rm -r custom
 rm -r configuration
-rm custom.zip
+rm custom_frontend.zip
+rm config_dlb.zip
 rm update_db.sql

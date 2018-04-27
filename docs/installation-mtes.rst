@@ -6,6 +6,45 @@ Cette documentation mentionne les spécificités et la configuration de l'instal
 Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst).
 
 
+
+Configuration Apache
+--------------------
+
+Editez la configuration Apache de GeoNature et de Taxhub pour l'adapter au contexte de production:
+
+Fichier ``/etc/apache/site-enabled/geonature.conf``
+
+::
+    #Configuration GeoNature
+
+    Alias /pp-saisie /home/ecrins/geonature/frontend/dist
+    <Directory /home/ecrins/geonature/frontend/dist>
+        Require all granted
+    </Directory>
+
+    <Location /pp-saisie/api>
+        ProxyPass http://127.0.0.1:8000
+        ProxyPassReverse  http://127.0.0.1:8000
+    </Location>
+
+Fichier ``/etc/apache/site-enabled/taxhub.conf``
+
+::
+
+
+    # Configuration TaxHub
+    RewriteEngine  on
+    RewriteRule    "taxhub$"  "taxhub/"  [R]
+    <Location /pp-saisie/taxhub>
+    ProxyPass  http://127.0.0.1:5000 retry=0
+    ProxyPassReverse  http://127.0.0.1:5000
+    </Location>
+    #FIN Configuration TaxHub
+
+
+Le fichier ``/etc/apache/site-enabled/000-default.conf`` doit également être éditer pour faire fonctionner le load balancing (Voir la configuration de la preprod pour l'adapter au serveur de production).
+
+
 Configuration de l'application
 ------------------------------
 
@@ -22,6 +61,8 @@ Editer le fichier de configuration de GeoNature pour surcoucher ces variables:
 
 ``sudo nano /etc/geonoature/geonature_config.toml``
 
+
+Ci dessous, les paramètres de configuration pour l'instance de production
 
 Configuration des URLS
 ***********************
@@ -119,13 +160,13 @@ Editez le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module``
 Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue: recompilation du frontend).
 
 Depuis le répertoire ``backend`` de GeoNature
-
 ::
 
     source venv/bin/activate
     geonature update_module_configuration occtax
     deactivate
 
+Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#administration-du-module-occtax)
 
 
 Référentiel géographique
