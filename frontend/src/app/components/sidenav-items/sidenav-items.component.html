@@ -4,15 +4,18 @@
  </a>
 </mat-card>
 <mat-nav-list class="appnav">
-    <a href="#{{_sideNavService.home.module_url}}">
-        <mat-list-item 
-          (click)="onSetApp(_sideNavService.home)"
-          [routerLink]="_sideNavService.home.module_url"
-          routerLinkActive="active" class="sidenav-item" >
-            <mat-icon mat-list-icon>{{_sideNavService.home.module_picto}}</mat-icon>
-            <h3 mat-line> {{_sideNavService.home.module_label}} </h3>
-        </mat-list-item>
-    </a>
+    <div *ngFor="let mod of _sideNavService.default_module">
+    <a  href="#{{mod.module_url}}">
+            <mat-list-item 
+                (click)="onSetApp(mod)"
+                [routerLink]="mod.module_url"
+                routerLinkActive="active" class="sidenav-item" >
+                <mat-icon mat-list-icon>{{mod.module_picto}}</mat-icon>
+                <h3 mat-line> {{mod.module_label}} </h3>
+            </mat-list-item>
+        </a>
+    </div>
+
     
         <a *ngFor="let module of _sideNavService.modules" 
           href="{{module.module_url}}"

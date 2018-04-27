@@ -7,6 +7,8 @@ import subprocess
 import logging
 import os
 import json
+import sys
+
 
 from pathlib import Path
 from packaging import version
@@ -346,7 +348,6 @@ def add_application_db(module_name, url):
     log.info('... ok \n')
     return id_app
 
-import sys
 def create_module_config(module_name, mod_path=GN_MODULES_ETC_ENABLED, build=True):
     """ Create the frontend config for a module and rebuild if build=True"""
     conf_manifest = load_and_validate_toml(
