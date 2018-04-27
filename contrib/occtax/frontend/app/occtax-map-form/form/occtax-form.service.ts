@@ -110,15 +110,11 @@ export class OcctaxFormService {
         id_nomenclature_obs_technique: [null, Validators.required],
         observers: [
           null,
-          !ModuleConfig.form_fields.releve.observers_txt
-            ? Validators.required
-            : null
+          !ModuleConfig.observers_txt ? Validators.required : null
         ],
         observers_txt: [
           null,
-          ModuleConfig.form_fields.releve.observers_txt
-            ? Validators.required
-            : null
+          ModuleConfig.observers_txt ? Validators.required : null
         ],
         id_nomenclature_grp_typ: null,
         t_occurrences_occtax: [new Array()]

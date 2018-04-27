@@ -16,8 +16,8 @@ class ReleveFormConfig(Schema):
     hour_max = fields.Boolean(missing=True)
     altitude_min = fields.Boolean(missing=True)
     altitude_max = fields.Boolean(missing=True)
-    obs_technique = fields.Boolean(missing=True)
-    group_type = fields.Boolean(missing=True)
+    obs_technique = fields.Boolean(missing=False)
+    group_type = fields.Boolean(missing=False)
     comment = fields.Boolean(missing=True)
 
 class OccurrenceFormConfig(Schema):
