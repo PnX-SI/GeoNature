@@ -243,11 +243,17 @@
         <h5 class="modal-title" id="exampleModalLabel"> {{'DownloadData' | translate }}</h5>
       </div>
       <div class="modal-body">
-        <span [innerHTML]="occtaxConfig.export_message"></span>
-        
+        <span [innerHTML]="occtaxConfig.export_message"> </span> <span> {{ 'MapList.ObservationNumer' | translate}}: {{mapListService.page.totalElements}}  </span> <br><br>
+
+        <div *ngIf="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER">
+          {{'DownloadOverflow' | translate }}
+          <br><br>
+        </div>
+
         <div class="export-button">
           <button *ngFor="let format of occtaxConfig.export_available_format"
-           (click)="downloadData(format)"
+           (click)="downloadData(format); c()"
+           [disabled]="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER"
            type="button"
            class="btn btn-success format-btn">
             Format {{format}}

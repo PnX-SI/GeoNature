@@ -28,6 +28,7 @@
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
   "DownloadData": "Télécharger les données",
+  "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "Map": {
     "SearchLocation": "Rechercher un lieu",
     "LocationError": "Localisation non trouvée",
@@ -47,7 +48,8 @@
   },
   "MapList": {
     "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
-    "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer"
+    "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer",
+    "ObservationNumer": "Nombre d'observation(s)"
   },
   "Releve": {
     "Releve": "Relevé",
