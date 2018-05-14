@@ -627,6 +627,7 @@ def export(info_role):
     q = releve_repository.get_filtered_query(info_role)    
 
     q = get_query_occtax_filters(request.args, mapped_class, q)
+    
     data = q.all()
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')

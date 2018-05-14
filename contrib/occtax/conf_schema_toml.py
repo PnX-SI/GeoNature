@@ -145,6 +145,7 @@ class GnModuleSchemaConf(Schema):
     id_observers_list = fields.Integer(missing=9)
     default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
     available_maplist_column = fields.List(fields.Dict(), missing=available_maplist_column)
+    MAX_EXPORT_NUMBER = fields.Integer(missing=50000)
     
 
 

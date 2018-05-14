@@ -28,11 +28,13 @@
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
+  "DownloadOverflow": "The number of items is too important to be downloaded, please modify your request or contact your administrator",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
     "NoColumnSelected": "Please select a column to filter",
     "Validate": "Validate",
-    "UnValidate": "UnValidate"
+    "UnValidate": "UnValidate",
+    "ObservationNumer": "Observation number"
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
