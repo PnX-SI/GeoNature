@@ -422,9 +422,9 @@ Par défaut, l'ensemble des observateurs de la liste 9 (observateur faune/flore)
 Personnaliser la liste des taxons saisissables dans le module
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Le module est fournit avec une liste restreinte de taxon (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Le module est fournit avec une liste restreinte de taxons (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
-Le paramètre ``id_taxon_list = 500 `` correspont à un ID de liste de la table ``taxonomie.bib_liste`` (L'ID 500 corespond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Le paramètre ``id_taxon_list = 500`` correspond à un ID de liste de la table ``taxonomie.bib_liste`` (L'ID 500 corespond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
 Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du genre : 
 
@@ -528,6 +528,6 @@ Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il fau
 
 Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``), où ``id_tag_action`` correspond à l'id du tag d'une action (CRUVED), et ``id_tag_object`` à l'id du tag de la portée pour chaque action (0,1,2,3). Voir la table ``utilisateurs.t_tags`` pour voir la corespondant entre les tags et les actions, ainsi que les portées.
 
-La correspondance entre id_tag_action, id_tag_object, id_application, id_role, donnera les droits d'une personne ou d'un groupe pour une application (ou module) donnée.
+La correspondance entre ``id_tag_action``, ``id_tag_object``, ``id_application`` et ``id_role`` donnera les droits d'une personne ou d'un groupe pour une application (ou module) donnée.
 
 L'administration des droits des utilisateurs se fera bientôt dans une nouvelle version de UsersHub qui prendra en compte ce nouveau mécanisme du CRUVED.
