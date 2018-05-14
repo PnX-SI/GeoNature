@@ -77,6 +77,7 @@ def shapeseralizable(cls):
     def serialize_list(self, columns=()):
         """
         Methods which return the object as a list
+        exclude geom column of the serialization
 
         Parameters
         ----------
@@ -90,7 +91,7 @@ def shapeseralizable(cls):
             fprops = cls_db_columns
 
         out = [_serializer(getattr(self, item)) for item, _serializer in fprops]
-        
+
         return out
     
     @classmethod
@@ -136,12 +137,10 @@ def create_shapes(cls, geom_col, srid, data, dir_path, file_name, columns=None):
             polygon.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
             polyline.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
     
-
-
     #datas
     try:
         for d in data:
-            field_values = d.as_list()
+            field_values = d.as_list(columns=columns)
             geom = to_shape(getattr(d, geom_col))
 
             if isinstance(geom, Point):
