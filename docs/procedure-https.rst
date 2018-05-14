@@ -15,35 +15,32 @@ Lancer la commande suivant pour générer des certificats et des clés pour l’
 
 ::
   
-    sudo certbot certonly --webroot --webroot-path /var/html/www --domain test.ecrins-parcnational.net --email theo.lechemia@ecrins-parcnational.fr
+    sudo certbot certonly --webroot --webroot-path /var/html/www --domain test.ecrins-parcnational.net --email monemail@ecrins-parcnational.fr
 
-``certonly`` : on demande la création du certificat uniquement.
-
-``--webroot`` : on utilise le plugin webroot qui se contente d’ajouter des fichiers dans le dossier défini via --webroot-path.
-
-``--webroot-path`` : le chemin de votre « DocumentRoot » Apache. Certbot placera ses fichiers dans $DocumentRoot/.well-known/ pour les tests et vérifications
-
-``--domain`` : le nom de domaine à certifier : mettre tous les sous domaines que l’on veut certifier
-
-``--email`` : l’adresse qui recevra les notifications de Let’s Encrypt. Principalement pour rappeler de renouveler le certificat le moment venu.
+- ``certonly`` : on demande la création du certificat uniquement.
+- ``--webroot`` : on utilise le plugin webroot qui se contente d’ajouter des fichiers dans le dossier défini via ``--webroot-path``.
+- ``--webroot-path`` : le chemin de votre « DocumentRoot » Apache. Certbot placera ses fichiers dans ``$DocumentRoot/.well-known/`` pour les tests et vérifications
+- ``--domain`` : le nom de domaine à certifier : mettre tous les sous domaines que l’on veut certifier
+- ``--email`` : l’adresse qui recevra les notifications de Let’s Encrypt. Principalement pour rappeler de renouveler le certificat le moment venu.
 
 
 Les certificats obtenus
 ***********************
 
-Les certificats, se trouvent dans les dossiers : /etc/letsencrypt/live/<nom_domaine>/
+Les certificats, se trouvent dans les dossiers : ``/etc/letsencrypt/live/<nom_domaine>/``
+
 Pour chaque certificat 4 fichiers sont générés :
-privkey.pem : La clé privée de votre certificat. A garder confidentielle en toutes circonstances et à ne communiquer à personne quel que soit le prétexte. Vous êtes prévenus !
-cert.pem : Le certificat serveur et à préciser pour les versions d’Apache < 2.4.8. Ce qui est notre cas ici.
-chain.pem : Les autres certificats, SAUF le certificat serveur. Par exemple les certificats intermédiaires. Là encore pour les versions d’Apache < 2.4.8.
-fullchain.pem : Logiquement, l’ensemble des certificats. La concaténation du cert.pem et du chain.pem. A utiliser cette fois-ci pour les versions d’Apache >= 2.4.8.
+
+- ``privkey.pem`` : La clé privée de votre certificat. A garder confidentielle en toutes circonstances et à ne communiquer à personne quel que soit le prétexte. Vous êtes prévenus !
+- ``cert.pem`` : Le certificat serveur et à préciser pour les versions d’Apache < 2.4.8. Ce qui est notre cas ici.
+- ``chain.pem`` : Les autres certificats, SAUF le certificat serveur. Par exemple les certificats intermédiaires. Là encore pour les versions d’Apache < 2.4.8.
+- ``fullchain.pem`` : Logiquement, l’ensemble des certificats. La concaténation du ``cert.pem`` et du ``chain.pem``. A utiliser cette fois-ci pour les versions d’Apache >= 2.4.8.
 
 
 Configuration apache
 ********************
 
 Ouvrir le fichier ``/etc/apache2/sites-availables/000-default.conf`` et le modifier de la manière suivante :
-
 
 ::
     
@@ -93,13 +90,13 @@ Automatiser le renouvellement du certificat
 Le certificat fournit par LetsEncrypt n’est valable que 3 mois. Il faut donc mettre un place un renouvellement automatique.
 Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le certificat :
 
-
-
 ::
 
     sudo crontab -e
     1 8 * * Sat certbot renew --renew-hook "service apache2 reload" >> /var/log/certbot.log
 
 
-Ressource : 
-https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/
+Ressources : 
+
+- https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/
+- https://korben.info/securiser-facilement-gratuitement-site-https.html
