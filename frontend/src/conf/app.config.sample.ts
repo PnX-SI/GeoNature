@@ -1,5 +1,5 @@
 export const AppConfig = {
-  appName : 'Geonature 2',
+  appName : 'GeoNature 2',
   defaultLanguage:  'fr',
   URL_APPLICATION: 'http://127.0.0.1:4200',
   API_ENDPOINT: 'http://127.0.0.1:8000/',
