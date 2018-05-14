@@ -4,16 +4,15 @@ MANUEL ADMINISTRATEUR
 Architecture
 ------------
 
+GeoNature possède une architecture modulaire et s'appuie sur de plusieurs "services" indépendants pour fonctionner:
 
-GeoNature possède une architecture modulaire et s'appuye sur de plusieurs "services" indépendants pour fonctionner:
-
-- UsersHub and le sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs`` et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (liste, organisme, droits) des différentes application de son système d'information.
-- Taxhub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellemenet nommé ``taxonomie``). L'API de Taxhub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
+- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (liste, organisme, droits) utilisable par les différentes applications de son système d'information.
+- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellemenet nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
-- ``ref_geo`` est le schéma de base de donnée qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude ou d'intesection spatiales.
+- ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude et les intersections spatiales.
 
 GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données. 
-NB: Le backend en le frontend se lance séparement dans GeoNature.
+NB: Le backend en le frontend se lancent séparement dans GeoNature.
 
 .. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
 
@@ -26,7 +25,7 @@ La base de données a notemment été refondue pour s'appuyer au maximum sur des
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
-Les préfixe des schéma de BDD sont désormais standardisé: ``ref_`` concerne les référentiels externes, ``gn`` concerne les schémas du coeur de GeoNature et ``pr`` les schémas des protocoles. 
+Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` concerne les référentiels externes, ``gn`` concerne les schémas du coeur de GeoNature et ``pr`` les schémas des protocoles. 
 
 Autres standards:
 
@@ -158,6 +157,7 @@ Exploitation
 
 Logs
 """""
+
 Les logs de GeoNature sont dans le répertoire ``/var/log/geonature`` :
 
 - logs d'installation de la BDD : ``install_db.log``
@@ -333,11 +333,11 @@ Nous présenterons ici la première solution qui est privilégiée pour disposer
 * Créer le schéma dédié à accueillir les données brutes.
 * Créer les tables nécessaires à accueillir les données brutes.
 * Intégrer les données dans ces tables.
-* Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
+* Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers (en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
 
 
-Administration du module OCCTAX
--------------------------------
+Module OCCTAX
+-------------
 
 **Installer le module**
 """"""""""""""""""""""""
@@ -355,20 +355,19 @@ Si vous l'avez supprimé, lancer les commandes suivantes depuis le repertoire ``
 **Configuration du module**
 """""""""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici :
+Le fichier de configuration du module se trouve ici : ``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``
 
-``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``
-
-Pour voir l'ensemble des variables de configuration du module ainsi qu leurs valeurs par défaut, ouvrir le fichier `/home/<mon_user>/geonature/contrib/occtax/conf_gn_module.toml`
+Pour voir l'ensemble des variables de configuration du module ainsi qu leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/contrib/occtax/conf_gn_module.toml``
 
 
-Afficher/masquer des champs du formaulaire
-""""""""""""""""""""""""""""""""""""""""""
-La quasi-totalité des champs du standard d'occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.
+Afficher/masquer des champs du formulaire
+"""""""""""""""""""""""""""""""""""""""""
 
-Pour plus de souplesse et afin de répondre aux besoins de chacun, l'ensemble des champs sont masquables (sauf les champs primoridaux: observateur, taxon ...)
+La quasi-totalité des champs du standard Occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.
 
-En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser le formulaire:
+Pour plus de souplesse et afin de répondre aux besoins de chacun, l'ensemble des champs sont masquables (sauf les champs essentiels : observateur, taxon ...)
+
+En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser le formulaire :
 
 ::
 
@@ -408,12 +407,13 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 		count_max = true
 		validation_status = false
 
-Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs)
+Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 
 Modifier le champ observateur
 """""""""""""""""""""""""""""
-Par défaut le champ observateur est une liste déroulante qui pointe vers une liste du schéma utilisateur.
-Il est possible de passer ce champ en texte libre en mettant à "true" la variable `observers_txt`
+
+Par défaut le champ Observateur est une liste déroulante qui pointe vers une liste du schéma utilisateur.
+Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``
 
 Le paramètre ``id_observers_list`` permet de changer la liste d'observateur proposé dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_menus`` et ``utilisateurs.cor_role_menu``)
 
@@ -421,16 +421,16 @@ Par défaut, l'ensemble des observateurs de la liste 9 (observateur faune/flore)
 
 Personnaliser la liste des taxons saisissables dans le module
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Le module est fournit avec une liste restreinte de taxon (3 seulements !). C'est à l'administrateur de changer ou de remplir cette liste.
 
-Le paramètre ``id_taxon_list = 500 `` correspont à un ID de liste de la table ``taxonomie.bib_liste`` (L'ID 500 corespond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez où garder cet ID et changer le contenu de cette liste.
+Le module est fournit avec une liste restreinte de taxon (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+
+Le paramètre ``id_taxon_list = 500 `` correspont à un ID de liste de la table ``taxonomie.bib_liste`` (L'ID 500 corespond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
 Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du genre : 
 
 Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 500, avec l'ensemble des taxons de ``bib_noms``
 
 :: 
-
 
     DELETE FROM taxonomie.cor_nom_liste;
     DELETE FROM taxonomie.bib_noms;
@@ -441,8 +441,6 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
       'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
 
-
-
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
     SELECT 500,n.id_nom FROM taxonomie.bib_noms n
 
@@ -452,29 +450,28 @@ Il est également possible d'éditer des listes à partir de l'application TaxHu
 Gérer les valeurs par défaut des nomenclatures
 """""""""""""""""""""""""""""""""""""""""""""""
 
-Le formulaire de saisie pré-rempli des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prise en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
+Le formulaire de saisie pré-rempli des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
 
 La table ``pr_occtax.defaults_nomenclatures_value`` définit les valeurs par défaut pour chaque nomenclature du standard.
 
 La table contient les deux colonnes suivantes :
 
 - l'id_type de nomenclature (voir table ``ref_nomenclature.bib_nomenclatures_types``)
-- l'id_nomenclature (voir table ``ref_nomenclature.t_nomenclatures``
+- l'id_nomenclature (voir table ``ref_nomenclature.t_nomenclatures``)
 
 Pour chaque type de nomenclature, on associe l'ID de la nomenclature que l'on souhaite voir apparaitre par défaut.
 
-Le mécanisme peut être poussé plus loin en associé une nomenclature par défaut par organisme, règne et group2_inpn.
-La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous les organisme, tous les règne et tout les group2_inpn.
+Le mécanisme peut être poussé plus loin en associant une nomenclature par défaut par organisme, règne et group2_inpn.
+La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous les organismes, tous les règnes et tous les group2_inpn.
 
-
-Une interface de gestion des nomenclatures est prévu d'être réalisé pour simplifier cette configuration.
+Une interface de gestion des nomenclatures est prévue d'être réalisée pour simplifier cette configuration.
 
 TODO: valeur par défaut de la validation
 
 Personaliser l'inteface map-list
 """"""""""""""""""""""""""""""""
 
-La liste des champs affiché par défaut sur le tableau peut être modifié avec le paramètre ``default_maplist_columns``
+La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre ``default_maplist_columns``
 
 Par défaut:
 
@@ -492,10 +489,11 @@ Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
 
 Gestion des exports
 """""""""""""""""""
+
 Les exports du module sont basés sur une vue (par défaut ``pr_occtax.export_occtax_dlb``)
 
 Il est possible de définir une autre vue pour avoir des exports personnalisés.
-Pour cela, créer votre vue, et modifier les paramètres suivants:
+Pour cela, créer votre vue, et modifier les paramètres suivants :
 
 ::
 
@@ -508,7 +506,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants:
     # Name of the primary key column of the view
     export_id_column_name = 'permId'
 
-La vue doit cependant contenir les champs suivant pour que les filtres de recherche fonctionnent
+La vue doit cependant contenir les champs suivants pour que les filtres de recherche fonctionnent :
 
 ::
 
@@ -522,16 +520,14 @@ La vue doit cependant contenir les champs suivant pour que les filtres de recher
     dataset_name
 
 Attribuer des droits
-"""""""""""""""""""""
+""""""""""""""""""""
 
-La gestion des droits (CRUVED: voir doc administrateur) se fait module par module. Cependant si on ne redéfinit pas de droit pour un module,ce sont les droits de l'application mère (GeoNature elle même) qui seront attribués à l'utilisateur pour l'ensemble de ses sous-modules.
+La gestion des droits (CRUVED) se fait module par module. Cependant si on ne redéfinit pas de droit pour un module, ce sont les droits de l'application mère (GeoNature elle-même) qui seront attribués à l'utilisateur pour l'ensemble de ses sous-modules.
 
 Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0 par exemple.
 
-Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``), où ``id_tag_action`` corespond à l'id du tag d'une action (CRUVED), et ``id_tag_object``, à l'id du tag de la portée pour chaque action (0,1,2,3). Voir la table ``utilisateurs.t_tags`` pour voir la corespondant entre les tags et les actions, ainsi que les portées.
-La corespondance entre id_tag_action, id_tag_object, id_application, id_role, donnera les droits d'une personne où d'un groupe pour une application (ou module) donnée.
+Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``), où ``id_tag_action`` correspond à l'id du tag d'une action (CRUVED), et ``id_tag_object`` à l'id du tag de la portée pour chaque action (0,1,2,3). Voir la table ``utilisateurs.t_tags`` pour voir la corespondant entre les tags et les actions, ainsi que les portées.
+
+La correspondance entre id_tag_action, id_tag_object, id_application, id_role, donnera les droits d'une personne ou d'un groupe pour une application (ou module) donnée.
 
 L'administration des droits des utilisateurs se fera bientôt dans une nouvelle version de UsersHub qui prendra en compte ce nouveau mécanisme du CRUVED.
-
-
-

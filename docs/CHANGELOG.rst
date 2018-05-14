@@ -20,11 +20,12 @@ CHANGELOG
 * Mise en place d'un export CSV, SHP, GeoJSON paramétrable dans OccTax. #363 et #366
 * Amélioration du module générique ``gn_monitoring`` et de ses sous-modules https://github.com/PnCevennes/gn_module_suivi_chiro et https://github.com/PnCevennes/projet_suivis_frontend
 * Amélioration et compléments des scripts d'installation
+* Mise en place d'un script pour la customisation de la plateforme nationale (https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh)
 
 **Documentation**
 
 * Complément des différentes documentations
-* Ajout d'une documentation d'administration d'OccTax
+* Ajout d'une documentation d'administration d'OccTax (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax)
 
 2.0.0.beta3 (2018-03-28)
 ------------------------
