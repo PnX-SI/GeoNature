@@ -102,8 +102,29 @@ else
   echo "Le fichier de configuration existe déjà"
 fi
 
-#Installation du virtual env
 cd backend
+
+# Creation des dossiers static, shapefiles et medias
+
+if [ ! -d './static/' ]
+then
+  mkdir static
+fi
+
+if [ ! -d './static/shapefiles/' ]
+then
+  mkdir ./static/shapefiles
+fi
+
+if [ ! -d './static/medias/' ]
+then
+  mkdir ./static/medias
+fi
+
+
+
+#Installation du virtual env
+
 
 # Suppression du venv s'il existe
 if [ -d 'venv/' ]
