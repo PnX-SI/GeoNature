@@ -172,7 +172,7 @@ conf="Alias /geonature /home/"$monuser"/geonature/frontend/src/app/maintenance"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature_maintenance.conf'
 conf="<Directory /home/$monuser/geonature/frontend/src/app/maintenance>"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenanceins.conf 
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
 
