@@ -19,10 +19,10 @@ unzip configuration_dlb.zip
 echo "Ecriture de la liste de taxons"
 
 echo "Ecriture de la liste de taxons" >> /var/log/geonature/install_db.log
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f update_db.sql  &>> /var/log/geonature/install_db.log
+export PGPASSWORD=$user_pg_pass;psql -h $pg_host -U $user_pg -d $db_name -f /tmp/update_db.sql  &>> /var/log/geonature/install_db.log
 
-
-cp -r custom /home/$monuser/geonature/frontend/src/custom
+rm -r /home/$monuser/geonature/frontend/src/custom
+cp -r custom /home/$monuser/geonature/frontend/src/
 cp configuration/map.config.ts /home/$monuser/geonature/frontend/src/conf/map.config.ts
 
 
