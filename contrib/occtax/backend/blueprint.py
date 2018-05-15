@@ -760,7 +760,6 @@ def export_sinp(info_role):
                 )	
         q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))	
     data = q.all()	
-    #data = serializeQueryTest(data, q.column_descriptions)
 
     export_columns = blueprint.config['export_columns']
     
