@@ -627,7 +627,7 @@ def export(info_role):
     q = releve_repository.get_filtered_query(info_role)    
 
     q = get_query_occtax_filters(request.args, mapped_class, q)
-    
+
     data = q.all()
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
@@ -692,11 +692,11 @@ def export(info_role):
 @fnauth.check_auth_cruved('E', True, id_app=current_app.config.get('occtax'))
 @csv_resp
 def export_sinp(info_role):
-    """ Return the data (CSV) at SINP format	+    
-        from pr_occtax.export_occtax_sinp view	+    export_view_name = blueprint.config['export_view_name']
-    If no paramater return all the dataset allowed of the user	+    export_geom_column = blueprint.config['export_geom_columns_name']
-    params:	+    export_id_column_name = blueprint.config['export_id_column_name']
-        - id_dataset : integer	+    export_columns = blueprint.config['export_columns']
+    """ Return the data (CSV) at SINP   
+        from pr_occtax.export_occtax_sinp view
+        If no paramater return all the dataset allowed of the user
+        params:	
+        - id_dataset : integer	
         - uuid_dataset: uuid	
     """	
     viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)	
@@ -760,14 +760,14 @@ def export_sinp(info_role):
                 )	
         q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))	
     data = q.all()	
-    data = serializeQueryTest(data, q.column_descriptions)
+    #data = serializeQueryTest(data, q.column_descriptions)
 
     export_columns = blueprint.config['export_columns']
     
     file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')	
     return (	
         filemanager.removeDisallowedFilenameChars(file_name),	
-        data,
+        [d.as_dict() for d in data],
         export_columns,	
         ';'	
     )

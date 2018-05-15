@@ -245,9 +245,11 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   downloadData(format) {
-    document.location.href = `${
+    const url = `${
       AppConfig.API_ENDPOINT
     }/occtax/export?${this.mapListService.urlQuery.toString()}&format=${format}`;
+
+    document.location.href = url;
   }
 
   onChangeFilterOps(col) {

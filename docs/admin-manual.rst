@@ -222,6 +222,7 @@ Pour cela, désactiver la configuration Apache de GeoNature, puis activer la con
 
     sudo a2dissite geonature
     sudo a2ensite geonature_maintenance
+    sudo apachectl restart
 
 A la fin de l'opération de maintenance, effectuer la manipulation inverse
 
@@ -229,6 +230,8 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse
 
     sudo a2dissite geonature_maintenance     
     sudo a2ensite geonature
+    sudo apachectl restart
+    
 
 
 

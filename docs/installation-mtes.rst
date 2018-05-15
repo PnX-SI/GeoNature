@@ -15,14 +15,15 @@ Editez la configuration Apache de GeoNature et de Taxhub pour l'adapter au conte
 Fichier ``/etc/apache/site-enabled/geonature.conf``
 
 ::
+
     #Configuration GeoNature
 
-    Alias /pp-saisie /home/ecrins/geonature/frontend/dist
+    Alias /saisie /home/ecrins/geonature/frontend/dist
     <Directory /home/ecrins/geonature/frontend/dist>
         Require all granted
     </Directory>
 
-    <Location /pp-saisie/api>
+    <Location /saisie/api>
         ProxyPass http://127.0.0.1:8000
         ProxyPassReverse  http://127.0.0.1:8000
     </Location>
@@ -31,15 +32,14 @@ Fichier ``/etc/apache/site-enabled/taxhub.conf``
 
 ::
 
-
-    # Configuration TaxHub
-    RewriteEngine  on
-    RewriteRule    "taxhub$"  "taxhub/"  [R]
-    <Location /pp-saisie/taxhub>
-    ProxyPass  http://127.0.0.1:5000 retry=0
-    ProxyPassReverse  http://127.0.0.1:5000
-    </Location>
-    #FIN Configuration TaxHub
+        # Configuration TaxHub
+        RewriteEngine  on
+        RewriteRule    "taxhub$"  "taxhub/"  [R]
+        <Location /saisie/taxhub>
+            ProxyPass  http://127.0.0.1:5000 retry=0
+            ProxyPassReverse  http://127.0.0.1:5000
+        </Location>
+        #FIN Configuration TaxHub
 
 
 Le fichier ``/etc/apache/site-enabled/000-default.conf`` doit également être éditer pour faire fonctionner le load balancing (Voir la configuration de la preprod pour l'adapter au serveur de production).
@@ -50,12 +50,12 @@ Configuration de l'application
 
 Une fois l'installation terminée, il est necessaire d'adapter les fichiers de configuration de l'application pour les besoins spécifiques de l'instance nationale.
 
-Lancer le script:
+Lancer le script pour effectuer automatiquement la configuration de l'application:
 
 ``/home/<my_user>/geonature/install_all/configuration_mtes.sh``
 
 
-Le fichier ``/home/<my_user>/geonature/config/default_config.tomls.example`` liste l'ensemble des variables de configuration disponible ainsi que leurs valeurs par défaut. 
+Il est cependant possible de modifier ces configuraitons. Le fichier ``/home/<my_user>/geonature/config/default_config.tomls.example`` liste l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut. 
 
 Editer le fichier de configuration de GeoNature pour surcoucher ces variables:
 
@@ -67,8 +67,8 @@ Ci dessous, les paramètres de configuration pour l'instance de production
 Configuration des URLS
 ***********************
 
-Les URLS doivent correspondre aux informations renseignés dans la configuration Apache et au Load Balancer. Elle ne doivent pas contenir de ``/`` final.
-Pour la préprod, ajouter le préfixe "pp" avant ``saisie`` et ``taxhub`` (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la configuration Apache en conséquence.
+Les URLS doivent correspondre aux informations renseignées dans la configuration Apache et au Load Balancer. Elle ne doivent pas contenir de ``/`` final.
+Pour la préprod, ajouter le préfixe "pp-" avant ``saisie`` et ``taxhub`` (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la configuration Apache en conséquence.
 
 ::
 
@@ -140,7 +140,7 @@ Configuration de la cartographie
 
 Pour l'instance nationale, l'application est fournie avec des fonds de carte IGN (Topo, Scan-Express et Orto).
 
-Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique: ``frontend/src/conf/mam.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend`` ``npm run build``.
+Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique: ``frontend/src/conf/map.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend`` ``npm run build``.
 
 
 
@@ -149,7 +149,7 @@ Configuration du module occurrence de taxon: OCCTAX
 
 Le fichier de configuration du module Occtax se trouve dans:
 
-``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml
+``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``
 
 Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
 
