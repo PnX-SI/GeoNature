@@ -19,15 +19,6 @@
             <span class="toolbar-spacer"></span>
             
             <span style="font-size:15px" class="toolbar-rigth"> {{currentUser?.userName}} </span>
-            <div class="dropdown">
-                <mat-icon class="clickable toolbar-rigth" matTooltip="{{ 'Language' | translate }}" id="dropdownMenuButton"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">language</mat-icon>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" (click)="changeLanguage('en')" href="#">{{ 'Languages.English' | translate }}</a>
-                  <a class="dropdown-item" (click)="changeLanguage('fr')" href="#">{{ 'Languages.French' | translate }}</a>
-                  <a class="dropdown-item" (click)="changeLanguage('cn')" href="#">{{ 'Languages.Chinese' | translate }}</a>
-                </div>
-              </div>
               <mat-icon class="clickable toolbar-rigth" (click)="_authService.logout()" matTooltip="{{ 'LogOut' | translate }}" >exit_to_app</mat-icon>    
 
 
