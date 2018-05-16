@@ -38,6 +38,7 @@ class TMediaRepository():
             self.new = True
             self.media = TMedias(**self.media_data)
 
+
     def create_or_update_media(self):
         '''
             Création ou modification d'un média :
@@ -56,9 +57,6 @@ class TMediaRepository():
             self.data['isFile'] = True
             self.media_data['media_url'] = None
         else:
-            print('else')
-            print(self.data)
-            print(getattr(self.data, 'media_path', ''))
             self.data['isFile'] = False
             self.media_data['media_path'] = None
 
@@ -150,3 +148,20 @@ class TMediaRepository():
         '''
         media = DB.session.query(TMedias).get(id_media)
         return media
+
+
+class TMediumRepository():
+    '''
+        Classe permettant de manipuler des collections
+        d'objet média
+    '''
+
+    def get_medium_for_entity(entity_uuid):
+        '''
+            Retourne la liste des médias pour un objet
+            en fonction de son uuid
+        '''
+        medium = DB.session.query(TMedias).filter(
+            TMedias.uuid_attached_row == entity_uuid
+        ).all()
+        return medium
