@@ -48,8 +48,8 @@ geonature update_configuration --build=false
 geonature update_module_configuration occtax
 deactivate
 
-rm -r custom
-rm -r configuration
-rm custom_frontend.zip
-rm config_dlb.zip
-rm update_db.sql
+rm -r /tmp/custom
+rm -r /tmp/configuration
+rm /tmp/custom_frontend.zip
+rm /tmp/config_dlb.zip
+rm /tmp/update_db.sql

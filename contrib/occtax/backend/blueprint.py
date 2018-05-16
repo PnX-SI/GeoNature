@@ -766,7 +766,7 @@ def export_sinp(info_role):
     file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')	
     return (	
         filemanager.removeDisallowedFilenameChars(file_name),	
-        [d.as_dict() for d in data],
+        [viewSINP.as_dict(d) for d in data],
         export_columns,	
         ';'	
     )

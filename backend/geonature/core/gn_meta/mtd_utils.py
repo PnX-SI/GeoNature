@@ -65,7 +65,7 @@ def get_jdd_by_user_id(id_user):
         r = utilsrequests.get(url.format(api_endpoint, str(id_user)))
         assert r.status_code == 200
     except AssertionError:
-        raise GeonatureApiError(message="Error with the MTD Web Service")
+        raise GeonatureApiError(message="Error with the MTD Web Service, status_code: {}".format(r.status_code))
     return r.content
 
 def parse_jdd_xml(xml):

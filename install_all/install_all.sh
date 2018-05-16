@@ -66,7 +66,7 @@ sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 2>/var/log/geonature/install_log.log
-    sudo apt install postgis postgresql-9.6-postgis-2.3 2>/var/log/geonature/install_log.log
+    sudo apt install -y postgis postgresql-9.6-postgis-2.3 2>/var/log/geonature/install_log.log
 else
     sudo apt-get install -y postgresql-server-dev-9.4 2>/var/log/geonature/install_log.log 
     sudo apt install postgis 2>/var/log/geonature/install_log.log
