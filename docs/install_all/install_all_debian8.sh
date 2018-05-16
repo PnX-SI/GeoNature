@@ -15,32 +15,26 @@ fi
 
 # Installation de l'environnement nécessaire à UsersHub, GeoNature, TaxHub et GeoNature-atlas
 echo "Installation de l'environnement logiciel..."
+#sudo sh -c 'echo "" >> /etc/apt/sources.list'
+#sudo sh -c 'echo "#Backports" >> /etc/apt/sources.list'
+#sudo sh -c 'echo "deb http://http.debian.net/debian jessie-backports main contrib non-free" >> /etc/apt/sources.list'
 sudo apt-get update
-#correction et mise à jour régulière de l'heure du serveur
 sudo apt-get -y install ntpdate
 sudo ntpdate-debian
-sudo apt-get install -y curl unzip git apt-transport-https
-# debian 9 : installation des paquets de Ondrej pour php 5.6
-curl https://packages.sury.org/php/apt.gpg | sudo apt-key add -
-echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php5.list
-sudo apt-get update
-
-# debian 9 installation de npm
-curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
-sudo apt-get install -y nodejs
-# installation de apache, php, mapserver, gdal, postgresql&postgis, python, supervisor
-sudo apt-get install -y apache2 libapache2-mod-php5.6 libapache2-mod-proxy-html libapache2-mod-perl2
-sudo apt-get install -y php5.6 php5.6-gd php5.6-pgsql
+sudo apt-get install -y curl unzip git
+sudo apt-get install -y apache2 php5 libapache2-mod-php5 libapache2-mod-wsgi libapache2-mod-perl2
+sudo apt-get install -y php5-gd php5-pgsql
 sudo apt-get install -y cgi-mapserver gdal-bin libgeos-dev
-sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
-sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential supervisor
-# sudo apt-get install -y python3 python3-dev  
+sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
+sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential
+sudo apt-get install -y npm
+# sudo apt-get install -y python3 python3-dev 
 
 sudo pip install virtualenv
 
 echo "Configuration de postgreSQL..."
 sudo sed -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" -i /etc/postgresql/*/main/postgresql.conf
-sudo sh -c 'echo "host    all             all             0.0.0.0/0            md5" >> /etc/postgresql/9.6/main/pg_hba.conf'
+sudo sh -c 'echo "host    all             all             0.0.0.0/0            md5" >> /etc/postgresql/9.4/main/pg_hba.conf'
 sudo /etc/init.d/postgresql restart
 
 echo "Création des utilisateurs postgreSQL..."
@@ -52,10 +46,8 @@ sudo -n -u postgres -s psql -c "CREATE ROLE $user_atlas WITH LOGIN PASSWORD '$us
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 echo "Activation des modules apache rewrite, wsgi et cgi..."
 sudo a2enmod rewrite
-sudo a2enmod proxy
-sudo a2enmod proxy_http
 sudo a2enmod cgi
-# sudo a2enmod wsgi
+sudo a2enmod wsgi
 sudo apache2ctl restart
 
 # Installation de UsersHub avec l'utilisateur courant
@@ -70,7 +62,6 @@ cd /home/$monuser/usershub
 # Configuration des settings de UsersHub
 echo "Installation de la base de données et configuration de l'application UsersHub ..."
 cp config/settings.ini.sample config/settings.ini
-cp config/config.php.sample config/config.php.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_usershubdb/g" config/settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$usershubdb_name/g" config/settings.ini
@@ -172,14 +163,14 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 #sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 #sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000/" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8000/ retry=0" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000/" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 
 sudo sed -i "s/<\/VirtualHost>//g" /etc/apache2/sites-available/000-default.conf
 sudo sed -i "s/# vim.*$//g" /etc/apache2/sites-available/000-default.conf
-sudo sh -c 'echo "# Configuration TaxHub - ne fonctionne pas dans le taxhub.conf" >> /etc/apache2/sites-available/000-default.conf'
+sudo sh -c 'echo "# Configuration TaxHub - ne fonctionne pas dans le 000-default.conf" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf'
@@ -187,6 +178,8 @@ sudo sh -c 'echo "" >> /etc/apache2/sites-available/000-default.conf'
 sudo sh -c 'echo "# vim: syntax=apache ts=4 sw=4 sts=4 sr noet" >> /etc/apache2/sites-available/000-default.conf'
 
 sudo a2ensite taxhub
+sudo a2enmod proxy
+sudo a2enmod proxy_http
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
 sudo apache2ctl restart
@@ -200,9 +193,28 @@ rm $atlas_release.zip
 mv GeoNature-atlas-$atlas_release /home/$monuser/atlas/
 cd /home/$monuser/atlas
 
+echo "Création de l'environnement virtuel de GeoNature-atlas ..."
+virtualenv ./venv
+. ./venv/bin/activate
+
+echo "Installation des dépendances pour l'application GeoNature-atlas ..."
+pip install -r requirements.txt
+
 echo "Configuration de l'application GeoNature-atlas ..."
+mkdir ./static/custom/images/
 cp ./main/configuration/config.py.sample ./main/configuration/config.py
 cp ./main/configuration/settings.ini.sample ./main/configuration/settings.ini
+cp ./static/custom/templates/footer.html.sample ./static/custom/templates/footer.html
+cp ./static/custom/templates/introduction.html.sample ./static/custom/templates/introduction.html
+cp ./static/custom/templates/presentation.html.sample ./static/custom/templates/presentation.html
+cp ./static/custom/templates/credits.html.sample ./static/custom/templates/credits.html
+cp ./static/custom/templates/mentions-legales.html.sample ./static/custom/templates/mentions-legales.html
+cp ./static/custom/custom.css.sample ./static/custom/custom.css
+cp ./static/custom/glossaire.json.sample ./static/custom/glossaire.json
+cp ./static/images/sample.favicon.ico ./static/custom/images/favicon.ico
+cp ./static/images/sample.accueil-intro.jpg ./static/custom/images/accueil-intro.jpg
+cp ./static/images/sample.logo-structure.png ./static/custom/images/logo-structure.png
+cp ./static/images/sample.logo_patrimonial.png ./static/custom/images/logo_patrimonial.png
 cp ./data/ref/communes.dbf.sample ./data/ref/communes.dbf
 cp ./data/ref/communes.prj.sample ./data/ref/communes.prj
 cp ./data/ref/communes.shp.sample ./data/ref/communes.shp
@@ -230,8 +242,6 @@ sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i "s/MYUSERLINUX/$monuser/g"  main/configuration/settings.ini
-#temp afb suppression d'un import inutile et source d'un bug
-sed -i "s/from werkzeug.wsgi.*$//g"  initAtlas.py
 
 # Mise à jour de config.py
 sed -i "s/database_connection =.*$/database_connection = \"postgresql:\/\/$user_atlas:$user_atlas_pass@$pg_host:$pg_port\/$atlasdb_name\"/g" main/configuration/config.py
@@ -243,10 +253,7 @@ sed -i "s/IGNAPIKEY =.*/IGNAPIKEY = \'$macleign\';/g" main/configuration/config.
 #sed -i "s/+IGNAPIKEY+/+$macleign+/g" main/configuration/config.py
 sed -i "s/'LAT_LONG':.*$/\'LAT_LONG\': [$y, $x],/g" main/configuration/config.py
 
-# installation de la base de données de GeoNature-atlas
 sudo ./install_db.sh
-# Installation et configuration de l'application GeoNature-atlas
-./install_app.sh
 
 # Configuration Apache de GeoNature-atlas
 if [ -f '/etc/apache2/sites-available/atlas.conf' ]
@@ -255,11 +262,14 @@ if [ -f '/etc/apache2/sites-available/atlas.conf' ]
 fi
 sudo touch /etc/apache2/sites-available/atlas.conf
 sudo sh -c 'echo "# Configuration de GeoNature-atlas" >> /etc/apache2/sites-available/atlas.conf'
-sudo sh -c 'echo "<Location /atlas>" >> /etc/apache2/sites-available/atlas.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:8080/ retry=0" >> /etc/apache2/sites-available/atlas.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8080/" >> /etc/apache2/sites-available/atlas.conf'
-sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/atlas.conf'
-sudo sh -c 'echo "#FIN Configuration GeoNature-atlas" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "WSGIScriptAlias /atlas \"/home/'$monuser'/atlas/atlas.wsgi\"" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "<Directory \"/home/'$monuser'/atlas/\">" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "WSGIApplicationGroup %{GLOBAL}" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "WSGIScriptReloading On" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "Order deny,allow" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "Allow from all" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/atlas.conf'
+sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/atlas.conf'
 sudo a2ensite atlas
 sudo apachectl restart
 # Nettoyage

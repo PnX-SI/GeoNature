@@ -8,7 +8,7 @@ Les scripts proposés installent l'environnement logiciel du serveur, téléchar
 Pré-requis
 ----------
 
-- Un serveur Debian 9 (Ubuntu 16.04 LTS devrait fonctionner également mais le script install_all.sh est à adapter pour cet OS)
+- Un serveur Debian 8 (Ubuntu 16.04 LTS devrait fonctionner également - non testé)
 - Une clé IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur répond
 
 Installation
@@ -24,11 +24,12 @@ Après installation de l'OS avec OpenSSH server, créer un utilisateur linux (no
     
     adduser geonatureadmin sudo
 
-L’ajouter aussi au groupe ``www-data``
+L’ajouter aussi aux groupes ``www-data`` et ``root``
 
 ::
     
     usermod -g www-data geonatureadmin
+    usermod -a -G root geonatureadmin
 
 Reconnectez-vous au serveur en SSH avec votre utilisateur (``geonatureadmin`` dans notre cas) pour ne pas travailler avec le super-utilisateur ``root``. 
 
@@ -40,26 +41,30 @@ Pour cela, modifier le fichier
     
     sudo nano /etc/apt/sources.list
     
-Il doit contenir à minima les 3 lignes suivantes :
+Supprimer tout son contenu pour le remplacer par cet exemple permettant un bon fonctionnement sur Debian 8 :
 
 ::
     
-    deb http://security.debian.org/debian-security stretch/updates main contrib non-free
-    deb http://deb.debian.org/debian/ stretch-updates main contrib non-free
-    deb http://deb.debian.org/debian stretch main contrib non-free
+    deb http://httpredir.debian.org/debian jessie main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie main contrib non-free
     
-Enregistrer et fermer le fichier puis mettez à jour apt.
+    deb http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    
+    deb http://security.debian.org/ jessie/updates main contrib non-free
+    deb-src http://security.debian.org/ jessie/updates main contrib non-free
+    
+    #Backports
+    deb http://http.debian.net/debian jessie-backports main contrib non-free
+    
+Enregistrer et fermer le fichier.
+
+Placez vous dans le répertoire ``home`` de votre utilisateur et entrez les commandes suivantes :
 
 ::
     
     sudo apt-get update
-
-
-Placez vous dans le répertoire ``home`` de votre utilisateur
-
-::
-    
-    cd
+    sudo apt-get install -y ca-certificates
     
 Récupérer les scripts d'installation (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_) :
 
@@ -69,7 +74,13 @@ Récupérer les scripts d'installation (``X.Y.Z`` à remplacer par le numéro de
 	wget https://raw.githubusercontent.com/PnEcrins/GeoNature/X.Y.Z/docs/install_all/install_all.sh
 	chmod +x install_all.sh
 
-Mettez à jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas le fichier ``install_all.sh`` tant que vous n'avez pas totalement complété ce fichier.
+Mettez à jour le fichier ``install_all.ini`` avec vos informations. Attention, ne lancez pas les fichiers .sh tant que vous n'avez pas totalement complété ce fichier.
+
+TODO : détailler la procédure pour l'atlas avec : 
+
+* install avec données exemple 
+* mettre à jour les shapes territoire 
+* relancer le install.db de l'atlas.
 
 Lancez ensuite l'installation des applications :
  
@@ -77,7 +88,7 @@ Lancez ensuite l'installation des applications :
   
 	./install_all.sh
 
-Le mot de passe sudo vous sera demandé (il peut être demandé à plusieurs reprises selon la durée de l'installation).
+Le mot de passe sudo vous sera demandé a plusieurs reprises. 2 fichiers de la configuration de Taxhub seront affichés. Il vous est possible de les modifier mais vous pouvez laisser les valeurs par défaut. Pour enregistrer ``ctrl + o``, pour sortir et poursuivre l'installation : ``ctrl + x``.
 
 Vous devriez alors pouvoir vous connecter à vos applications avec les adresses (adaptez mondomaine.fr à votre nom de domaine ou avec votre adresse IP) :
 
