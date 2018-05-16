@@ -9,6 +9,7 @@ CHANGELOG
 
 * Installation - Suppression des couches SIG (communes, znieff...) pour les télécharger sur http://geonature.fr/data/inpn/layers/ et ainsi alléger le dépôt de 158 Mo.
 * Compléments mineurs de la documentation
+* mise à jour du install_all pour debian 9
 
 **Notes de version**
 

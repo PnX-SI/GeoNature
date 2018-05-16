@@ -31,27 +31,26 @@ Configuration Apache
 
 Editer les fichiers de configuration Apache : ``apache/sf.conf``, ``apache/synthese.conf`` et ``apache/wms.conf`` et adapter les chemins à ceux de votre serveur. Pour Apache 2.4 et supérieur, le répertoire de publication web par défaut est ``/var/www/html/geonature`` ; à changer dans ``apache/synthese.conf``.
 
-* Prise en compte de la configuration Apache requises pour Symfony (avant Apache2.4) :
+* Prise en compte de la configuration Apache requises pour Symfony (avant Apache2.4) (debian 7):
  
   ::  
   
 	sudo sh -c 'echo "Include /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 	sudo apache2ctl restart
         
-* Prise en compte de la configuration Apache requises pour Symfony Apache 2.4 et supérieur :
+* Prise en compte de la configuration Apache requises pour Symfony Apache 2.4 et supérieur (debian 8 et 9):
  
   ::  
   
 	sudo sh -c 'echo "IncludeOptional /home/synthese/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 	sudo apache2ctl restart
         
-* Pour les utilisateurs d'Apache 2.4 (par défaut dans Debian 8), installer perl et cgi
+* Pour les utilisateurs d'Apache 2.4 (par défaut dans Debian 8 et 9), activiver le module cgi
  
   ::  
   
-    	sudo apt-get install libapache2-mod-perl2
-	sudo a2enmod cgi
-	sudo apache2ctl restart
+	    sudo a2enmod cgi
+	    sudo apache2ctl restart
 	
 
 Configuration de la base de données PostgreSQL
