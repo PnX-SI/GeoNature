@@ -1,8 +1,8 @@
 --TODO
 --En console :
--- cd data/inpn
+-- cd data/taxonomie/inpn
 -- unzip TAXREF_INPN_v9.0.zip
--- unzip ESPECES_REGLEMENTEES_v9.zip
+-- unzip ESPECES_REGLEMENTEES.zip
 -- unzip LR_FRANCE.zip
 
 
@@ -85,6 +85,7 @@ ALTER TABLE taxonomie.taxref
 
 --------------------import taxref--------------------
 TRUNCATE TABLE taxonomie.import_taxref;
+-- Etre en SUPERUSER pour exectuter :
 ALTER TABLE taxonomie.import_taxref ADD cd_sup integer;
 ALTER TABLE taxonomie.import_taxref ADD nom_complet_html character varying(255);
 COPY taxonomie.import_taxref (regne, phylum, classe, ordre, famille, group1_inpn, group2_inpn, 
@@ -152,6 +153,7 @@ ALTER TABLE taxonomie.taxref_protection_articles DROP COLUMN cd_arrete;
 ALTER TABLE taxonomie.taxref_protection_articles ADD COLUMN url_inpn character varying(250);
 ALTER TABLE taxonomie.taxref_protection_articles ADD COLUMN cd_doc integer;
 
+-- Etre en SUPERUSER pour exectuter :
 COPY taxonomie.taxref_protection_articles (cd_protection, article, intitule, arrete, url_inpn, cd_doc, url, date_arrete, type_protection)
 FROM  '/home/synthese/geonature/data/taxonomie/inpn/PROTECTION_ESPECES_TYPES_90.csv'
 WITH  CSV HEADER 
@@ -168,6 +170,7 @@ CREATE TABLE taxonomie.import_protection_especes (
 	cd_nom_cite int
 );
 
+-- Etre en SUPERUSER pour exectuter :
 COPY taxonomie.import_protection_especes
 FROM  '/home/synthese/geonature/data/taxonomie/inpn/PROTECTION_ESPECES_90.csv'
 WITH  CSV HEADER 

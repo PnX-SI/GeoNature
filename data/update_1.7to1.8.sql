@@ -1705,6 +1705,80 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+CREATE OR REPLACE FUNCTION contactflore.synthese_insert_releve_cflore()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	fiche RECORD;
+	mesobservateurs character varying(255);
+	idsourcecflore integer;
+    cdnom integer;
+BEGIN
+	--Récupération des données id_source dans la table synthese.bib_sources
+	SELECT INTO idsourcecflore id_source FROM synthese.bib_sources  WHERE db_schema='contactflore' AND db_field = 'id_releve_cflore' AND nom_source = 'Contact flore';
+    --récup du cd_nom du taxon
+	SELECT INTO cdnom cd_nom FROM taxonomie.bib_noms WHERE id_nom = new.id_nom;
+	--Récupération des données dans la table t_fiches_cf et de la liste des observateurs
+	SELECT INTO fiche * FROM contactflore.t_fiches_cflore WHERE id_cflore = new.id_cflore;
+	
+	SELECT INTO mesobservateurs o.observateurs FROM contactflore.t_releves_cflore r
+	JOIN contactflore.t_fiches_cflore f ON f.id_cflore = r.id_cflore
+	LEFT JOIN (
+                SELECT id_cflore, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
+                FROM contactflore.cor_role_fiche_cflore c
+                JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+                GROUP BY id_cflore
+            ) o ON o.id_cflore = f.id_cflore
+	WHERE r.id_releve_cflore = new.id_releve_cflore;
+	
+	INSERT INTO synthese.syntheseff (
+		id_source,
+		id_fiche_source,
+		code_fiche_source,
+		id_organisme,
+		id_protocole,
+		id_precision,
+		cd_nom,
+		insee,
+		dateobs,
+		observateurs,
+		determinateur,
+		altitude_retenue,
+		remarques,
+		derniere_action,
+		supprime,
+		the_geom_3857,
+		the_geom_2154,
+		the_geom_point,
+		id_lot
+	)
+	VALUES(
+	idsourcecflore,
+	new.id_releve_cflore,
+	'f'||new.id_cflore||'-r'||new.id_releve_cflore,
+	fiche.id_organisme,
+	fiche.id_protocole,
+	1,
+	cdnom,
+	fiche.insee,
+	fiche.dateobs,
+	mesobservateurs,
+        new.determinateur,
+	fiche.altitude_retenue,
+	new.commentaire,
+	'c',
+	false,
+	fiche.the_geom_3857,
+	fiche.the_geom_2154,
+	fiche.the_geom_3857,
+	fiche.id_lot
+	);
+	RETURN NEW; 			
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
 CREATE OR REPLACE FUNCTION contactflore.update_releve_cflore() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
