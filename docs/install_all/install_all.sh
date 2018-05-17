@@ -70,16 +70,18 @@ cd /home/$monuser/usershub
 # Configuration des settings de UsersHub
 echo "Installation de la base de données et configuration de l'application UsersHub ..."
 cp config/settings.ini.sample config/settings.ini
-cp config/config.php.sample config/config.php.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_usershubdb/g" config/settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$usershubdb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
+
 # Installation de la base de données UsersHub en root
 sudo ./install_db.sh
+
 # Installation et configuration de l'application UsersHub
 ./install_app.sh
+
 # Configuration de la connexion à la base de données GeoNature
 rm config/dbconnexions.json
 touch config/dbconnexions.json
@@ -104,6 +106,21 @@ echo "            ,\"port\":\"$pg_port\"" >> config/dbconnexions.json
 echo "        }" >> config/dbconnexions.json  
 echo "    ]" >> config/dbconnexions.json
 echo "}" >> config/dbconnexions.json
+
+# Configuration apache de UsersHub
+sudo touch /etc/apache2/sites-available/usershub.conf
+sudo sh -c 'echo "# Configuration UsersHub" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "Alias /usershub  /home/'$monuser'/usershub/web" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "<Directory /home/'$monuser'/usershub/web>" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "Options Indexes MultiViews" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "Order allow,deny" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "Allow from all" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "Require all granted" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "</Directory>" >> /etc/apache2/sites-available/usershub.conf'
+sudo sh -c 'echo "#FIN Configuration UsersHub" >> /etc/apache2/sites-available/usershub.conf'
+sudo a2ensite usershub
+sudo service apache2 restart
+
 
 # Installation de GeoNature avec l'utilisateur courant
 echo "Téléchargement et installation de GeoNature ..."
@@ -140,6 +157,7 @@ sed -i -e "s/mon-domaine.fr/$mondomaine/g" web/js/config.js
 sed -i -e "s/ma_cle_api_ign/$macleign/g" web/js/configmap.js
 sudo sh -c 'echo "IncludeOptional /home/'$monuser'/geonature/apache/*.conf" >> /etc/apache2/apache2.conf'
 #sudo apache2ctl restart
+
 
 # Installation de TaxHub avec l'utilisateur courant
 echo "Téléchargement et installation de TaxHub ..."
@@ -190,6 +208,7 @@ sudo a2ensite taxhub
 # Installation et configuration de l'application TaxHub
 ./install_app.sh
 sudo apache2ctl restart
+
 
 # Installation de l'atlas avec l'utilisateur courant
 echo "Téléchargement et installation de GeoNature-atlas ..."
