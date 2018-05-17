@@ -90,9 +90,9 @@ abstract class BaseBibNoms extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 4,
              ));
-        $this->hasColumn('nom_francais', 'string', 255, array(
+        $this->hasColumn('nom_francais', 'string', 1000, array(
              'type' => 'string',
-             'length' => 255,
+             'length' => 1000,
              ));
     }
 

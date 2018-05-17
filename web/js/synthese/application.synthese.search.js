@@ -282,10 +282,10 @@ application.synthese.search = function() {
             ,new Ext.XTemplate(
                 '<p style="color:grey;"><b>Réglementation</b> : </p>'
                     ,'<tpl for="protections">'
-                        ,'<tpl if="url==\'pas de version \u00e0 jour\'">'
+                        ,'<tpl if="url==\'pas de version à jour\'">'
                             ,'<p style="color:grey;">{texte}</p>'
                         ,'</tpl>'
-                        ,'<tpl if="url!=\'pas de version \u00e0 jour\'">'
+                        ,'<tpl if="url!=\'pas de version à jour\'">'
                             ,'<p><a href="{url}" target="_blank">{texte}</a></p>'
                         ,'</tpl>'
                     ,'</tpl>'

@@ -323,7 +323,7 @@ BibNoms:
       primary: true
     cd_nom: integer(4)
     cd_ref: integer(4)
-    nom_francais: string(255)
+    nom_francais: string(1000)
   relations:
     Taxref:
       class: Taxref
@@ -1215,21 +1215,27 @@ Taxref:
       primary: true
     id_statut: string(1)
     id_habitat: integer(8)
-    id_rang: string(4)
+    id_rang: string(10)
     regne: string(20)
     phylum: string(50)
     classe: string(50) 
     ordre: string(50)
     famille: string(50)
+    sous_famille: string(50)
+    tribu: string(50)
     cd_taxsup: integer(8)
+    cd_sup: integer(8)
     cd_ref: integer(8)
     lb_nom: string(100)
     lb_auteur: string(500)
     nom_complet: string(255)
-    nom_vern: string(255)
-    nom_vern_eng: string(100)
+    nom_complet_html: string(255)
+    nom_valide: string(255)
+    nom_vern: string(1000)
+    nom_vern_eng: string(500)
     group1_inpn: string(255)
     group2_inpn: string(255)
+    url: string()
 TaxrefProtectionArticles:
   tableName: taxonomie.taxref_protection_articles
   columns:

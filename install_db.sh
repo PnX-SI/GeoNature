@@ -86,9 +86,9 @@ then
     wget -N http://geonature.fr/data/inpn/taxonomie/TAXREF_INPN_v11.zip
     wget -N http://geonature.fr/data/inpn/taxonomie/ESPECES_REGLEMENTEES_v11.zip
     wget -N http://geonature.fr/data/inpn/taxonomie/LR_FRANCE_20160000.zip
-    unzip TAXREF_INPN_v11.zip -d /tmp
-    unzip ESPECES_REGLEMENTEES_v11.zip -d /tmp
-    unzip LR_FRANCE_20160000.zip -d /tmp
+    unzip TAXREF_INPN_v11.zip -d /tmp/taxhub/
+    unzip ESPECES_REGLEMENTEES_v11.zip -d /tmp/taxhub/
+    unzip LR_FRANCE_20160000.zip -d /tmp/taxhub/
     cd ..
 
     echo "Récupération des scripts de création du schéma taxonomie..."
@@ -523,6 +523,8 @@ then
 
     # suppression des fichiers : on ne conserve que les fichiers compressés
     echo "nettoyage..."
+    rm /tmp/taxhub/*.txt
+    rm /tmp/taxhub/*.csv
     rm /tmp/*.txt
     rm /tmp/*.csv
     rm data/utilisateurs/usershub.sql
@@ -531,7 +533,7 @@ then
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/*.zip
-    rm data/taxonomie/inpn/data_inpn_v9_taxhub.sql
+    rm data/taxonomie/inpn/data_inpn_taxhub.sql
     # rm data/layers/zonesstatut.sql
     if $install_sig_layers
     then

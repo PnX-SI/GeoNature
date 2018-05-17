@@ -14,15 +14,21 @@
  * @property string $classe
  * @property string $ordre
  * @property string $famille
+ * @property string $sous_famille
+ * @property string $tribu
  * @property integer $cd_taxsup
+ * @property integer $cd_sup
  * @property integer $cd_ref
  * @property string $lb_nom
  * @property string $lb_auteur
  * @property string $nom_complet
+ * @property string $nom_complet_html
+ * @property string $nom_valide
  * @property string $nom_vern
  * @property string $nom_vern_eng
  * @property string $group1_inpn
  * @property string $group2_inpn
+ * @property string $url
  * @property Doctrine_Collection $BibNoms
  * @property Doctrine_Collection $CorBryoTaxon
  * @property Doctrine_Collection $CorFsTaxon
@@ -38,15 +44,21 @@
  * @method string              get()                        Returns the current record's "classe" value
  * @method string              get()                        Returns the current record's "ordre" value
  * @method string              get()                        Returns the current record's "famille" value
+ * @method string              get()                        Returns the current record's "sous_famille" value
+ * @method string              get()                        Returns the current record's "tribu" value
  * @method integer             get()                        Returns the current record's "cd_taxsup" value
+ * @method integer             get()                        Returns the current record's "cd_sup" value
  * @method integer             get()                        Returns the current record's "cd_ref" value
  * @method string              get()                        Returns the current record's "lb_nom" value
  * @method string              get()                        Returns the current record's "lb_auteur" value
  * @method string              get()                        Returns the current record's "nom_complet" value
+ * @method string              get()                        Returns the current record's "nom_complet_html" value
+ * @method string              get()                        Returns the current record's "nom_valide" value
  * @method string              get()                        Returns the current record's "nom_vern" value
  * @method string              get()                        Returns the current record's "nom_vern_eng" value
  * @method string              get()                        Returns the current record's "group1_inpn" value
  * @method string              get()                        Returns the current record's "group2_inpn" value
+ * @method string              get()                        Returns the current record's "url" value
  * @method Doctrine_Collection get()                        Returns the current record's "BibNoms" collection
  * @method Doctrine_Collection get()                        Returns the current record's "CorBryoTaxon" collection
  * @method Doctrine_Collection get()                        Returns the current record's "CorFsTaxon" collection
@@ -61,15 +73,21 @@
  * @method Taxref              set()                        Sets the current record's "classe" value
  * @method Taxref              set()                        Sets the current record's "ordre" value
  * @method Taxref              set()                        Sets the current record's "famille" value
+ * @method Taxref              set()                        Sets the current record's "sous_famille" value
+ * @method Taxref              set()                        Sets the current record's "tribu" value
  * @method Taxref              set()                        Sets the current record's "cd_taxsup" value
+ * @method Taxref              set()                        Sets the current record's "cd_sup" value
  * @method Taxref              set()                        Sets the current record's "cd_ref" value
  * @method Taxref              set()                        Sets the current record's "lb_nom" value
  * @method Taxref              set()                        Sets the current record's "lb_auteur" value
  * @method Taxref              set()                        Sets the current record's "nom_complet" value
+ * @method Taxref              set()                        Sets the current record's "nom_complet_html" value
+ * @method Taxref              set()                        Sets the current record's "nom_valide" value
  * @method Taxref              set()                        Sets the current record's "nom_vern" value
  * @method Taxref              set()                        Sets the current record's "nom_vern_eng" value
  * @method Taxref              set()                        Sets the current record's "group1_inpn" value
  * @method Taxref              set()                        Sets the current record's "group2_inpn" value
+ * @method Taxref              set()                        Sets the current record's "url" value
  * @method Taxref              set()                        Sets the current record's "BibNoms" collection
  * @method Taxref              set()                        Sets the current record's "CorBryoTaxon" collection
  * @method Taxref              set()                        Sets the current record's "CorFsTaxon" collection
@@ -99,9 +117,9 @@ abstract class BaseTaxref extends sfDoctrineRecord
              'type' => 'integer',
              'length' => 8,
              ));
-        $this->hasColumn('id_rang', 'string', 4, array(
+        $this->hasColumn('id_rang', 'string', 10, array(
              'type' => 'string',
-             'length' => 4,
+             'length' => 10,
              ));
         $this->hasColumn('regne', 'string', 20, array(
              'type' => 'string',
@@ -123,7 +141,19 @@ abstract class BaseTaxref extends sfDoctrineRecord
              'type' => 'string',
              'length' => 50,
              ));
+        $this->hasColumn('sous_famille', 'string', 50, array(
+             'type' => 'string',
+             'length' => 50,
+             ));
+        $this->hasColumn('tribu', 'string', 50, array(
+             'type' => 'string',
+             'length' => 50,
+             ));
         $this->hasColumn('cd_taxsup', 'integer', 8, array(
+             'type' => 'integer',
+             'length' => 8,
+             ));
+        $this->hasColumn('cd_sup', 'integer', 8, array(
              'type' => 'integer',
              'length' => 8,
              ));
@@ -143,13 +173,21 @@ abstract class BaseTaxref extends sfDoctrineRecord
              'type' => 'string',
              'length' => 255,
              ));
-        $this->hasColumn('nom_vern', 'string', 255, array(
+        $this->hasColumn('nom_complet_html', 'string', 255, array(
              'type' => 'string',
              'length' => 255,
              ));
-        $this->hasColumn('nom_vern_eng', 'string', 100, array(
+        $this->hasColumn('nom_valide', 'string', 255, array(
              'type' => 'string',
-             'length' => 100,
+             'length' => 255,
+             ));
+        $this->hasColumn('nom_vern', 'string', 1000, array(
+             'type' => 'string',
+             'length' => 1000,
+             ));
+        $this->hasColumn('nom_vern_eng', 'string', 500, array(
+             'type' => 'string',
+             'length' => 500,
              ));
         $this->hasColumn('group1_inpn', 'string', 255, array(
              'type' => 'string',
@@ -158,6 +196,10 @@ abstract class BaseTaxref extends sfDoctrineRecord
         $this->hasColumn('group2_inpn', 'string', 255, array(
              'type' => 'string',
              'length' => 255,
+             ));
+        $this->hasColumn('url', 'string', null, array(
+             'type' => 'string',
+             'length' => '',
              ));
     }
 
