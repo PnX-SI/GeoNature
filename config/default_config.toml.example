@@ -47,6 +47,7 @@ UPLOAD_FOLDER = 'static/medias'
 [FRONTEND]
 PROD_MOD = false
 DISPLAY_FOOTER = false
+MULTILINGUAL = false
 
 [MAILERROR]
     MAIL_ON_ERROR = false
