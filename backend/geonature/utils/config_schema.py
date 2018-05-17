@@ -81,7 +81,7 @@ class MailErrorConf(Schema):
 
 
 class GnGeneralSchemaConf(Schema):
-    appName = fields.String(missing='Geonature2')
+    appName = fields.String(missing='GeoNature2')
     DEFAULT_LANGUAGE = fields.String(missing='fr')
     PASS_METHOD = fields.String(
         missing='hash',
