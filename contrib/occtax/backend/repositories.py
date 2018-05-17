@@ -142,7 +142,7 @@ def get_query_occtax_filters(args, mappedView, q):
         testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.date_min >= params.pop('date_up'))
+        q = q.filter(mappedView.date_max <= params.pop('date_up'))
     if 'date_low' in params:
         testT = testDataType(
             params.get('date_low'),
@@ -151,7 +151,7 @@ def get_query_occtax_filters(args, mappedView, q):
         )
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.date_max <= params.pop('date_low'))
+        q = q.filter(mappedView.date_min >= params.pop('date_low'))
     if 'date_eq' in params:
         testT = testDataType(
             params.get('date_eq'),
@@ -245,8 +245,6 @@ def get_query_occtax_filters(args, mappedView, q):
         for nomenclature in counting_filters:
             col = getattr(CorCountingOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
-
-    nbResults = q.count()
 
     # Order by
     if 'orderby' in params:
