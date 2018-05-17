@@ -101,7 +101,7 @@ def getOneReleve(id_releve, info_role):
 @fnauth.check_auth_cruved(
     'R',
     True,
-    id_app=current_app.config.get('occtax')
+    id_app=current_app.config.get('occtax'),
 )
 @json_resp
 def getViewReleveOccurrence(info_role):
@@ -128,11 +128,6 @@ def getViewReleveOccurrence(info_role):
                 VReleveOccurrence.__table__.columns,
                 parameters['orderby']
             )
-        # else:
-        #     orderCol = getattr(
-        #         VReleveOccurrence.__table__.columns,
-        #         'occ_meta_create_date'
-        #     )
 
         if 'order' in parameters:
             if (parameters['order'] == 'desc'):
@@ -467,7 +462,12 @@ def getDefaultNomenclatures():
 
 
 @blueprint.route('/export', methods=['GET'])
-@fnauth.check_auth_cruved('E', True, id_app=current_app.config.get('occtax'))
+@fnauth.check_auth_cruved(
+    'E',
+    True,
+    id_app=current_app.config.get('occtax'),
+    redirect_on_expiration=current_app.config.get('URL_APPLICATION')
+)
 def export(info_role):
     from . import models
     
@@ -545,7 +545,12 @@ def export(info_role):
 
 
 @blueprint.route('/export/sinp', methods=['GET'])
-@fnauth.check_auth_cruved('E', True, id_app=current_app.config.get('occtax'))
+@fnauth.check_auth_cruved(
+    'E',
+    True,
+    id_app=current_app.config.get('occtax'),
+    redirect_on_expiration=current_app.config.get('URL_APPLICATION')
+)
 @csv_resp
 def export_sinp(info_role):
     """ Return the data (CSV) at SINP   
