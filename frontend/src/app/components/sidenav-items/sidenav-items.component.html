@@ -4,27 +4,36 @@
  </a>
 </mat-card>
 <mat-nav-list class="appnav">
-    <div *ngFor="let mod of _sideNavService.default_module">
-    <a  href="#{{mod.module_url}}">
-            <mat-list-item 
-                (click)="onSetApp(mod)"
-                [routerLink]="mod.module_url"
-                routerLinkActive="active" class="sidenav-item" >
-                <mat-icon mat-list-icon>{{mod.module_picto}}</mat-icon>
-                <h3 mat-line> {{mod.module_label}} </h3>
-            </mat-list-item>
-        </a>
-    </div>
+    <a  href="#{{_sideNavService.home_page.module_url}}">
+        <mat-list-item 
+            (click)="onSetApp(_sideNavService.home_page)"
+            [routerLink]="_sideNavService.home_page.module_url"
+            routerLinkActive="active" class="sidenav-item" >
+            <mat-icon mat-list-icon>{{_sideNavService.home_page.module_picto}}</mat-icon>
+            <h3 mat-line> {{_sideNavService.home_page.module_label}} </h3>
+        </mat-list-item>
+    </a>
 
     
-        <a *ngFor="let module of _sideNavService.modules" 
-          href="{{module.module_url}}"
-          [target]="module.module_target">
-            <mat-list-item  (click)="onSetApp(module)" class="sidenav-item">
-              <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
-              <h3 mat-line> {{module.module_label}} </h3>
-            </mat-list-item>
-        </a>
+    <a 
+      *ngFor="let module of _sideNavService.modules" 
+      href="{{module.module_url}}"
+      [target]="module.module_target">
+        <mat-list-item  (click)="onSetApp(module)" class="sidenav-item">
+            <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
+            <h3 mat-line> {{module.module_label}} </h3>
+        </mat-list-item>
+    </a>
+
+    <a  href="#{{_sideNavService.export_module.module_url}}">
+        <mat-list-item 
+            (click)="onSetApp(_sideNavService.export_module)"
+            [routerLink]="_sideNavService.export_module.module_url"
+            routerLinkActive="active" class="sidenav-item" >
+            <mat-icon mat-list-icon>{{_sideNavService.export_module.module_picto}}</mat-icon>
+            <h3 mat-line> {{_sideNavService.export_module.module_label}} </h3>
+        </mat-list-item>
+    </a>
 
 
 </mat-nav-list>
