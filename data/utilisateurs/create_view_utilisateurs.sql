@@ -80,6 +80,3 @@ CREATE OR REPLACE VIEW v_userslist_forall_menu AS
              JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role
              JOIN utilisateurs.cor_role_menu c ON c.id_role = g.id_role_groupe
           WHERE u.groupe = false) a;
-    EXCEPTION WHEN duplicate_object  THEN
-    -- do nothing, it's already there
-END

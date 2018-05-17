@@ -73,7 +73,7 @@ then
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
     cd data/utilisateurs
-    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql
+    wget -N https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql
     cd ../..
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/usershub.sql  &>> log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/create_view_utilisateurs.sql  &>> log/install_db.log
@@ -82,20 +82,20 @@ then
     echo "Création du schéma taxonomie..."
     echo "Téléchargement et décompression des fichiers du taxref..."
     cd data/taxonomie/inpn
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_v9_taxhub.sql
-    wget http://geonature.fr/data/inpn/taxonomie/TAXREF_INPN_v9.0.zip
-    wget http://geonature.fr/data/inpn/taxonomie/ESPECES_REGLEMENTEES_20161103.zip
-    wget http://geonature.fr/data/inpn/taxonomie/LR_FRANCE_20160000.zip
-    unzip TAXREF_INPN_v9.0.zip -d /tmp
-    unzip ESPECES_REGLEMENTEES_20161103.zip -d /tmp
+    wget -N https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_taxhub.sql
+    wget -N http://geonature.fr/data/inpn/taxonomie/TAXREF_INPN_v11.zip
+    wget -N http://geonature.fr/data/inpn/taxonomie/ESPECES_REGLEMENTEES_v11.zip
+    wget -N http://geonature.fr/data/inpn/taxonomie/LR_FRANCE_20160000.zip
+    unzip TAXREF_INPN_v11.zip -d /tmp
+    unzip ESPECES_REGLEMENTEES_v11.zip -d /tmp
     unzip LR_FRANCE_20160000.zip -d /tmp
     cd ..
 
     echo "Récupération des scripts de création du schéma taxonomie..."
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/vm_hierarchie_taxo.sql
+    wget -N https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql
+    wget -N https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql
+    wget -N https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql
+    wget -N https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql
     cd ../..
 
     echo "Création du schéma taxonomie..."
@@ -114,7 +114,7 @@ then
     echo "Insertion  des données taxonomiques de l'inpn" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    sudo -n -u postgres -s psql -d $db_name -f data/taxonomie/inpn/data_inpn_v9_taxhub.sql &>> log/install_db.log
+    sudo -n -u postgres -s psql -d $db_name -f data/taxonomie/inpn/data_inpn_taxhub.sql &>> log/install_db.log
 
     echo "Création des données dictionnaires du schéma taxonomie..."
     echo "" &>> log/install_db.log
@@ -141,7 +141,7 @@ then
     echo "Création de la vue représentant la hierarchie taxonomique" &>> log/install_db.log
     echo "--------------------" &>> log/install_db.log
     echo "" &>> log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/vm_hierarchie_taxo.sql  &>> log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/taxonomie/materialized_views.sql  &>> log/install_db.log
 
     echo "Copie des scripts de création de la base GeoNature dans un répertoire temporaire..."
     cp data/core/synthese.sql /tmp/synthese.sql
@@ -253,7 +253,7 @@ then
     echo "Décompression des fichiers des communes de France métropolitaine..."
     mkdir -p data/layers
     cd data/layers
-    wget http://geonature.fr/data/inpn/layers/2016/communes_metropole.tar.gz
+    wget -N http://geonature.fr/data/inpn/layers/2016/communes_metropole.tar.gz
     tar -xzvf communes_metropole.tar.gz
     cd ../..
 
@@ -270,27 +270,27 @@ then
 
         echo "Téléchargement et décompression des fichiers du référentiel géographique..."
         cd data/layers
-        wget http://geonature.fr/data/inpn/layers/2016/apb.zip
-        wget http://geonature.fr/data/inpn/layers/2016/bios.zip
-        wget http://geonature.fr/data/inpn/layers/2016/cdl.zip
-        wget http://geonature.fr/data/inpn/layers/2016/cen.zip
-        wget http://geonature.fr/data/inpn/layers/2016/pn.zip
-        wget http://geonature.fr/data/inpn/layers/2016/pnr.zip
-        wget http://geonature.fr/data/inpn/layers/2016/pnm.zip
-        wget http://geonature.fr/data/inpn/layers/2016/ramsar.zip
-        wget http://geonature.fr/data/inpn/layers/2016/rb.zip
-        wget http://geonature.fr/data/inpn/layers/2016/ripn.zip
-        wget http://geonature.fr/data/inpn/layers/2016/rnc.zip
-        wget http://geonature.fr/data/inpn/layers/2016/rncfs.zip
-        wget http://geonature.fr/data/inpn/layers/2016/rnn.zip
-        wget http://geonature.fr/data/inpn/layers/2016/rnr.zip
-        wget http://geonature.fr/data/inpn/layers/2016/sic.zip
-        wget http://geonature.fr/data/inpn/layers/2016/zps.zip
-        wget http://geonature.fr/data/inpn/layers/2016/zico.zip
-        wget http://geonature.fr/data/inpn/layers/2016/znieff1.zip
-        wget http://geonature.fr/data/inpn/layers/2016/znieff2.zip
-        wget http://geonature.fr/data/inpn/layers/2016/znieff1_mer.zip
-        wget http://geonature.fr/data/inpn/layers/2016/znieff2_mer.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/apb.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/bios.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/cdl.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/cen.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/pn.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/pnr.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/pnm.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/ramsar.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/rb.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/ripn.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/rnc.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/rncfs.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/rnn.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/rnr.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/sic.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/zps.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/zico.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/znieff1.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/znieff2.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/znieff1_mer.zip
+        wget -N http://geonature.fr/data/inpn/layers/2016/znieff2_mer.zip
         unzip apb.zip
         unzip bios.zip
         unzip cdl.zip
@@ -527,7 +527,7 @@ then
     rm /tmp/*.csv
     rm data/utilisateurs/usershub.sql
     rm data/taxonomie/taxhubdb.sql
-    rm data/taxonomie/vm_hierarchie_taxo.sql
+    rm data/taxonomie/materialized_views.sql
     rm data/taxonomie/taxhubdata.sql
     rm data/taxonomie/taxhubdata_taxon_example.sql
     rm data/taxonomie/inpn/*.zip
