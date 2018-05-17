@@ -48,6 +48,7 @@ Les applications suivantes seront installées :
 
 Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
 
+
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
 * Mettre à jour les sources-list
@@ -103,7 +104,7 @@ Lui donner ensuite des droits sudo
 
 ::
 
-    adduser geonatureadmin sudo
+    adduser geonatureadmin sudoåå
 
 * L'ajouter aussi aux groupes www-data et root
 
@@ -138,6 +139,8 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
     ./install_all.sh
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``. Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+Pour le remplissage des numéro de release, voir le `tableau de compatibilité <compat_version.md>`_ des versions GeoNature avec ses dépendances. 
+
 
 'nvm' (node version manager) est utilisé pour installer les dernières versions de node et npm.
 
