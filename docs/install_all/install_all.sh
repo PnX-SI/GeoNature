@@ -230,8 +230,6 @@ sed -i "s/metropole=.*$/metropole=$metropole/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i "s/taillemaille=.*$/taillemaille=$taillemaille/g"  main/configuration/settings.ini
 sed -i "s/MYUSERLINUX/$monuser/g"  main/configuration/settings.ini
-#temp afb suppression d'un import inutile et source d'un bug
-sed -i "s/from werkzeug.wsgi.*$//g"  initAtlas.py
 
 # Mise à jour de config.py
 sed -i "s/database_connection =.*$/database_connection = \"postgresql:\/\/$user_atlas:$user_atlas_pass@$pg_host:$pg_port\/$atlasdb_name\"/g" main/configuration/config.py
