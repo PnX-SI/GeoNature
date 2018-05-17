@@ -77,7 +77,7 @@ sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 
 # Installation de la base de données UsersHub en root
-sudo ./install_db.sh
+./install_db.sh
 
 # Installation et configuration de l'application UsersHub
 ./install_app.sh
