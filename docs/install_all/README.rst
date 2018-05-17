@@ -8,7 +8,8 @@ Les scripts proposés installent l'environnement logiciel du serveur, téléchar
 Pré-requis
 ----------
 
-- Un serveur Debian 9 (Ubuntu 16.04 LTS devrait fonctionner également mais le script install_all.sh est à adapter pour cet OS)
+- Un serveur Debian 9 (Ubuntu 16.04 LTS devrait fonctionner également mais le script ``install_all.sh`` est à adapter pour cet OS)
+- Le scripts Debian 8 et sa doc restent disponibles mais ne sont plus testés (docs/install_all/README_debian8.rst)
 - Une clé IGN pour l'API Geoportail valide pour le domaine sur lequel votre serveur répond
 
 Installation
