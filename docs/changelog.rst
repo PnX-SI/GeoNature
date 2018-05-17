@@ -5,17 +5,18 @@ CHANGELOG
 1.9.1 (2018-05-17)
 ----------------------
 
-**Nouveautés**
+**Corrections**
 
 * Installation - Suppression des couches SIG (communes, znieff...) pour les télécharger sur http://geonature.fr/data/inpn/layers/ et ainsi alléger le dépôt de 158 Mo.
 * Compléments mineurs de la documentation
-* mise à jour du install_all pour debian 9
-* corrections mineures
-* compatibilité avec taxhub 1.3.2, usershub 1.3.1, atlas 1.3.2
+* Migration du script ``install_all`` en Debian 9. La doc et le script Debian 8 restent disponibles dans le répertoire ``docs/install_all``
+* Corrections mineures de triggers
+* Compatibilité avec TaxHub 1.3.2, UsersHub 1.3.1, GeoNature-atlas 1.3.2
 
 **Notes de version**
 
 * Vous pouvez passer directement d'une 1.7.X à la 1.9.1, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
+* Exécuter le script de mise à jour de la BDD ``data/update_1.9.0to1.9.1.sql``
 
 
 1.9.0 (2017-07-06)
