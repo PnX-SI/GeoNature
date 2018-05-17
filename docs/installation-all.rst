@@ -52,6 +52,7 @@ Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une aut
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
 * Mettre à jour les sources-list
+
 A l'installation de l'OS, les sources-list (liste des sources à partir duquel sont téléchargés les paquets) ne sont pas toujours corrects.
 
 ::
@@ -104,7 +105,7 @@ Lui donner ensuite des droits sudo
 
 ::
 
-    adduser geonatureadmin sudoåå
+    adduser geonatureadmin sudo
 
 * L'ajouter aussi aux groupes www-data et root
 
@@ -139,6 +140,7 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
     ./install_all.sh
 
 Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``. Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+
 Pour le remplissage des numéro de release, voir le `tableau de compatibilité <compat_version.md>`_ des versions GeoNature avec ses dépendances. 
 
 
