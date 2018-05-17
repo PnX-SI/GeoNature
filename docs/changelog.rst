@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-1.9.1 (2017-08-25)
+1.9.1 (2018-05-17)
 ----------------------
 
 **Nouveautés**
@@ -10,6 +10,8 @@ CHANGELOG
 * Installation - Suppression des couches SIG (communes, znieff...) pour les télécharger sur http://geonature.fr/data/inpn/layers/ et ainsi alléger le dépôt de 158 Mo.
 * Compléments mineurs de la documentation
 * mise à jour du install_all pour debian 9
+* corrections mineures
+* compatibilité avec taxhub 1.3.2, usershub 1.3.1, atlas 1.3.2
 
 **Notes de version**
 
