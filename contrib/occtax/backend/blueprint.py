@@ -228,153 +228,10 @@ def getViewReleveList(info_role):
 
     limit = int(params.get('limit')) if params.get('limit') else 100
     page = int(params.get('offset')) if params.get('offset') else 0
-    # Specific Filters
-    if 'cd_nom' in params:
-        testT = testDataType(params.get('cd_nom'), DB.Integer, 'cd_nom')
-        if testT:
-            raise GeonatureApiError(message=testT)
-        q = q.join(
-            TOccurrencesOccurrence,
-            TOccurrencesOccurrence.id_releve_occtax ==
-            VReleveList.id_releve_occtax
-        ).filter(
-            TOccurrencesOccurrence.cd_nom == int(params.pop('cd_nom'))
-        )
-    if 'observers' in params:
-        q = q.join(
-            corRoleRelevesOccurrence,
-            corRoleRelevesOccurrence.columns.id_releve_occtax ==
-            VReleveList.id_releve_occtax
-        ).filter(
-            corRoleRelevesOccurrence.columns.id_role.in_(
-                request.args.getlist('observers')
-            )
-        )
-        params.pop('observers')
 
-    if 'date_up' in params:
-        testT = testDataType(params.get('date_up'), DB.DateTime, 'date_up')
-        if testT:
-            raise GeonatureApiError(message=testT)
-        q = q.filter(VReleveList.date_min >= params.pop('date_up'))
-    if 'date_low' in params:
-        testT = testDataType(
-            params.get('date_low'),
-            DB.DateTime,
-            'date_low'
-        )
-        if testT:
-            raise GeonatureApiError(message=testT)
-        q = q.filter(VReleveList.date_max <= params.pop('date_low'))
-    if 'date_eq' in params:
-        testT = testDataType(
-            params.get('date_eq'),
-            DB.DateTime,
-            'date_eq'
-        )
-        if testT:
-            raise GeonatureApiError(message=testT)
-        q = q.filter(VReleveList.date_min == params.pop('date_eq'))
-    if 'altitude_max' in params:
-        testT = testDataType(
-            params.get('altitude_max'),
-            DB.Integer,
-            'altitude_max'
-        )
-        if testT:
-            raise GeonatureApiError(message=testT)
-        q = q.filter(VReleveList.altitude_max <= params.pop('altitude_max'))
-
-    if 'altitude_min' in params:
-        testT = testDataType(
-            params.get('altitude_min'),
-            DB.Integer,
-            'altitude_min'
-        )
-        if testT:
-            raise GeonatureApiError(message=testT)
-        q = q.filter(VReleveList.altitude_min >= params.pop('altitude_min'))
-
-    if 'organism' in params:
-        q = q.join(
-            CorDatasetsActor,
-            CorDatasetsActor.id_dataset == VReleveList.id_dataset
-        ).filter(
-            CorDatasetsActor.id_actor == int(params.pop('organism'))
-        )
-
-    if 'observateurs' in params:
-        observers_query = "%{}%".format(params.pop('observateurs'))
-        q = q.filter(VReleveList.observateurs.ilike(observers_query))
-
-
-    # Generic Filters
-    for param in params:
-        if param in VReleveList.__table__.columns:
-            col = getattr(VReleveList.__table__.columns, param)
-            testT = testDataType(params[param], col.type, param)
-            if testT:
-                raise GeonatureApiError(message=testT)
-            q = q.filter(col == params[param])
-    
-    releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(params)
-    if len(releve_filters) > 0:
-        q = q.join(
-            TRelevesOccurrence,
-            VReleveList.id_releve_occtax ==
-            TRelevesOccurrence.id_releve_occtax
-        )
-        for nomenclature in releve_filters:
-            col = getattr(TRelevesOccurrence.__table__.columns, nomenclature)            
-            q = q.filter(col == params.pop(nomenclature))
-
-    if len(occurrence_filters) > 0:
-        q = q.join(
-            TOccurrencesOccurrence,
-            VReleveList.id_releve_occtax ==
-            TOccurrencesOccurrence.id_releve_occtax
-        )
-        for nomenclature in occurrence_filters:
-            col = getattr(TOccurrencesOccurrence.__table__.columns, nomenclature)
-            q = q.filter(col == params.pop(nomenclature))
-            
-    if len(counting_filters) > 0:
-        if len(occurrence_filters) > 0:
-            q = q.join(
-                CorCountingOccurrence,
-                TOccurrencesOccurrence.id_occurrence_occtax ==
-                CorCountingOccurrence.id_occurrence_occtax
-            )
-        else:
-            q = q.join(
-                TOccurrencesOccurrence,
-                TOccurrencesOccurrence.id_releve_occtax ==
-                VReleveList.id_releve_occtax
-            ).join(
-                CorCountingOccurrence,
-                TOccurrencesOccurrence.id_occurrence_occtax ==
-                CorCountingOccurrence.id_occurrence_occtax
-
-            )
-        for nomenclature in counting_filters:
-            col = getattr(CorCountingOccurrence.__table__.columns, nomenclature)
-            q = q.filter(col == params.pop(nomenclature))
+    q = get_query_occtax_filters(request.args, VReleveList, q)
 
     nbResults = q.count()
-
-    # Order by
-    if 'orderby' in params:
-        if params.get('orderby') in VReleveList.__table__.columns:
-            orderCol = getattr(
-                VReleveList.__table__.columns,
-                params['orderby']
-            )
-
-        if 'order' in params:
-            if (params['order'] == 'desc'):
-                orderCol = orderCol.desc()
-
-        q = q.order_by(orderCol)
 
     data = q.limit(limit).offset(page * limit).all()
 
@@ -476,7 +333,7 @@ def insertOrUpdateOneReleve(info_role):
         )
         releve = releveRepository.update(releve, user)
     else:
-            DB.session.add(releve)
+        DB.session.add(releve)
 
     DB.session.commit()
     DB.session.flush()
@@ -656,8 +513,7 @@ def export(info_role):
             as_file=True,
             filename=file_name,
             indent=4
-        )
-        
+        )  
     else:
         try:
             assert hasattr(mapped_class, 'as_shape')
