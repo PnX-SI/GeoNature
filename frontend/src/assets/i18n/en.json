@@ -34,7 +34,7 @@
     "NoColumnSelected": "Please select a column to filter",
     "Validate": "Validate",
     "UnValidate": "UnValidate",
-    "ObservationNumer": "Observation number"
+    "ObservationNumber": "Observation number:"
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
