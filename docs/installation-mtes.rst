@@ -1,16 +1,15 @@
 SPECIFICITES INSTANCE DEPOT LEGAL DE BIODIVERSITE
 =================================================
 
-Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES) dans le cadre du projet de Depôt Légal des données de bioldiversité.
+Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de bioldiversité.
 
 Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst).
-
 
 
 Configuration Apache
 --------------------
 
-Editez la configuration Apache de GeoNature et de Taxhub pour l'adapter au contexte de production:
+Editez la configuration Apache de GeoNature et de Taxhub pour l'adapter au contexte de production :
 
 Fichier ``/etc/apache/site-enabled/geonature.conf``
 
@@ -42,32 +41,31 @@ Fichier ``/etc/apache/site-enabled/taxhub.conf``
         #FIN Configuration TaxHub
 
 
-Le fichier ``/etc/apache/site-enabled/000-default.conf`` doit également être éditer pour faire fonctionner le load balancing (Voir la configuration de la preprod pour l'adapter au serveur de production).
+Le fichier ``/etc/apache/site-enabled/000-default.conf`` doit également être édité pour faire fonctionner le load balancing (Voir la configuration de la preprod pour l'adapter au serveur de production).
 
 
 Configuration de l'application
 ------------------------------
 
-Une fois l'installation terminée, il est necessaire d'adapter les fichiers de configuration de l'application pour les besoins spécifiques de l'instance nationale.
+Une fois l'installation terminée, il est nécessaire d'adapter les fichiers de configuration de l'application pour les besoins spécifiques de l'instance nationale.
 
-Lancer le script pour effectuer automatiquement la configuration de l'application:
+Lancer le script pour effectuer automatiquement la configuration de l'application :
 
 ``/home/<my_user>/geonature/install_all/configuration_mtes.sh``
-
 
 Il est cependant possible de modifier ces configuraitons. Le fichier ``/home/<my_user>/geonature/config/default_config.tomls.example`` liste l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut. 
 
 Editer le fichier de configuration de GeoNature pour surcoucher ces variables:
 
-``sudo nano /etc/geonoature/geonature_config.toml``
+``sudo nano /etc/geonature/geonature_config.toml``
 
-
-Ci dessous, les paramètres de configuration pour l'instance de production
+Ci-dessous, les paramètres de configuration pour l'instance de production.
 
 Configuration des URLS
 ***********************
 
 Les URLS doivent correspondre aux informations renseignées dans la configuration Apache et au Load Balancer. Elle ne doivent pas contenir de ``/`` final.
+
 Pour la préprod, ajouter le préfixe "pp-" avant ``saisie`` et ``taxhub`` (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la configuration Apache en conséquence.
 
 ::
@@ -94,7 +92,8 @@ Connexion au CAS INPN - gestion centralisé des utilisateurs
 
 Bien changer les variables ID et PASSWORD avec les bonnes valeurs
 
-NB: pour la préprod, utiliser ``https://preprod-inpn.mnhn.fr``
+NB : pour la préprod, utiliser ``https://preprod-inpn.mnhn.fr``
+
 ::
 
   [CAS]
@@ -112,6 +111,7 @@ Configuration du frontend
 **************************
 
 (Pour l'instance de préprod, rajouter "instance de démo" à la variable ``appName``
+
 ::
 
     # Nom de l'application sur la page d'acceuil
@@ -122,9 +122,7 @@ Configuration du frontend
         # Affichage du footer sur la page d'acceuil
         DISPLAY_FOOTER = true
 
-
-
-Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue: recompilation du frontend).
+Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue car il s'agit de la recompilation du frontend).
 
 Depuis le répertoire ``backend`` de GeoNature
 
@@ -140,16 +138,13 @@ Configuration de la cartographie
 
 Pour l'instance nationale, l'application est fournie avec des fonds de carte IGN (Topo, Scan-Express et Orto).
 
-Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique: ``frontend/src/conf/map.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend`` ``npm run build``.
-
+Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique : ``frontend/src/conf/map.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend``, lancer ``npm run build``).
 
 
 Configuration du module occurrence de taxon: OCCTAX
 ***************************************************
 
-Le fichier de configuration du module Occtax se trouve dans:
-
-``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``
+Le fichier de configuration du module Occtax se trouve dans le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``.
 
 Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
 
@@ -157,30 +152,30 @@ Le fichier ``/home/<my_user>/<my_geonature_directory>/contrib/occtax/configurati
 
 Editez le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module``
 
-Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue: recompilation du frontend).
+Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue car il s'agit de la recompilation du frontend).
 
 Depuis le répertoire ``backend`` de GeoNature
+
 ::
 
     source venv/bin/activate
     geonature update_module_configuration occtax
     deactivate
 
-Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#administration-du-module-occtax)
-
+Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#administration-du-module-occtax).
 
 Référentiel géographique
 ------------------------
 
-Sur l'instance nationale on charge dans le référentiel géographique l'ensemble des communes du territoire français, ainsi qu'un MNT (modèle numérique de terrain) national de résolution 50m (calcul automatique des altitudes pour chaque observation)
+Sur l'instance nationale on charge dans le référentiel géographique l'ensemble des communes du territoire français, ainsi qu'un MNT (modèle numérique de terrain) national de résolution 250m (pour le calcul automatique des altitudes pour chaque observation).
 
 .. image :: http://geonature.fr/docs/img/admin-manual/design-geonature-mtes.png
 
 Authentification CAS INPN
 -------------------------
 
-- Code source : https://github.com/PnX-SI/GeoNature/blob/develop/backend/geonature/core/auth/routes.py#L19-L106
-- Config : https://github.com/PnX-SI/GeoNature/blob/develop/config/default_config.toml.example#L20-L36
+- Code source : https://github.com/PnX-SI/GeoNature/blob/develop/backend/geonature/core/auth/routes.py
+- Config : https://github.com/PnX-SI/GeoNature/blob/develop/config/default_config.toml.example#L29-L44
 
 
 Connexion et droits dans GeoNature
