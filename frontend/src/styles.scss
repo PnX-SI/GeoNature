@@ -12,6 +12,7 @@ html, body, material-app, mat-sidenav-container{
 
 mat-sidenav-content {
   height: 100%;
+  background-color: $solitude;
 }
 
 .mat-toolbar{
@@ -22,8 +23,8 @@ mat-sidenav-content {
 }
 
 .app-content {
-    background-color: $solitude;
-    height: calc(100% - 5vh);
+    //background-color: $solitude;
+    //height: calc(100% - 5vh);
     padding-top: 5px;
 }
 
@@ -75,6 +76,10 @@ md-sidenav-layout /deep/ .md-sidenav-content {
 
 .btn {
   cursor: pointer;
+}
+
+.btn-white{
+  background-color: white;
 }
 
 .label-sm {

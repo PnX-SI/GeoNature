@@ -1,11 +1,14 @@
 import os
 import toml
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.users.models import TApplications
 from pypnusershub import routes as fnauth
+from pypnusershub.db.tools import (
+    cruved_for_user_in_app,
+)
 
 routes = Blueprint('gn_modules', __name__)
 
@@ -33,9 +36,9 @@ def get_mod_list(info_role):
     for app in all_apps:
         for mod in get_mods_enabled():
             if mod['module_name'] == app.nom_application:
-                user_cruved = fnauth.get_cruved(
-                    user.id_role,
-                    app.id_application
+                user_cruved = cruved_for_user_in_app(
+                    info_role.id_role,
+                    current_app.config['ID_APPLICATION_GEONATURE']
                 )
                 # TODO: n'afficher que si R >=1
                 mod['cruved'] = user_cruved

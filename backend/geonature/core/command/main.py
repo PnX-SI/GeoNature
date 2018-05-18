@@ -200,8 +200,14 @@ def generate_frontend_tsconfig():
     required=False,
     default=DEFAULT_CONFIG_FIlE
 )
-def update_configuration(conf_file):
+@click.option(
+    '--build',
+    type=bool,
+    required=False,
+    default=True
+)
+def update_configuration(conf_file, build):
     """
         Regénère la configuration de l'application
     """
-    update_app_configuration(conf_file)
+    update_app_configuration(conf_file, build)

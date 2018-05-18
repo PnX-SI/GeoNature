@@ -27,11 +27,14 @@
   "Delete": "Delete",
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
+  "DownloadData": "Download data",
+  "DownloadOverflow": "The number of items is too important to be downloaded, please modify your request or contact your administrator",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
     "NoColumnSelected": "Please select a column to filter",
     "Validate": "Validate",
-    "UnValidate": "UnValidate"
+    "UnValidate": "UnValidate",
+    "ObservationNumer": "Observation number"
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
@@ -79,7 +82,8 @@
     "AddTaxonOnReleve": "Add a taxon on this releve",
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
-    "GroupType": "Grouping type"
+    "GroupType": "Grouping type",
+    "DoesNotExist": "This releve does not exist"
   },
   "Taxon": {
     "ObservedTaxon": "Observed taxon",
@@ -112,7 +116,8 @@
     "Blurring": "Blurring",
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
-    "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'"
+    "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
+    "StatusSource": "Source status"
   },
   "Counting": {
     "Counting": "Counting",
@@ -128,6 +133,9 @@
     "Numbers": "Numbers",
     "Total": "Total",
     "CountError": "Max counting can't be inferior to counting min"
+  },
+  "Geo" : {
+    "Municipalities": "Cities"
   },
   "IntroMessage":
     "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",

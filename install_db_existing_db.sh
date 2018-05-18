@@ -47,11 +47,11 @@ function schema_exists () {
     echo $a
     if [ $a ]
         then
-        echo "schema exists"
-        return 1
-    else
-        echo "schema not exists"
+        echo "schema $1 exists"
         return 0
+    else
+        echo "schema  $1 not exists"
+        return 1
     fi
 }
 
@@ -86,7 +86,7 @@ then
     echo "" &>> /var/log/geonature/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/public.sql  &>> /var/log/geonature/install_db.log
 
-    if schema_exists "ref_nomenclatures"
+    if ! schema_exists "ref_nomenclatures"
     then
         echo "Creating 'nomenclatures' schema..."
         echo "" &>> /var/log/geonature/install_db.log
@@ -122,16 +122,16 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> /var/log/geonature/install_db.log
     fi
 
-    if ! schema_exists "gn_medias"
+    if ! schema_exists "gn_commons"
     then
-        echo "Creating 'medias' schema..."
+        echo "Creating 'commons' schema..."
         echo "" &>> /var/log/geonature/install_db.log
         echo "" &>> /var/log/geonature/install_db.log
         echo "--------------------" &>> /var/log/geonature/install_db.log
-        echo "Creating 'medias' schema" &>> /var/log/geonature/install_db.log
+        echo "Creating 'commons' schema" &>> /var/log/geonature/install_db.log
         echo "--------------------" &>> /var/log/geonature/install_db.log
         echo "" &>> /var/log/geonature/install_db.log
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> /var/log/geonature/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> /var/log/geonature/install_db.log
     fi
 
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -c "DROP SCHEMA IF EXISTS gn_synthese CASCADE;"  &>> /var/log/geonature/install_db.log

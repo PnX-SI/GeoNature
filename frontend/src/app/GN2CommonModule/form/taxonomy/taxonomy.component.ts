@@ -16,7 +16,7 @@ export interface Taxon {
   cd_nom: number;
   cd_ref?: number;
   cd_sup?: number;
-  cd_taxsup?: 189946;
+  cd_taxsup?: number;
   classe?: string;
   famille?: string;
   group1_inpn?: string;

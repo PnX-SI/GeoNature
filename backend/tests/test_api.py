@@ -36,7 +36,7 @@ class TestApiUsersMenu:
 
 class TestApiModulePrConcact:
     """
-        Test de l'api du module pr_contact
+        Test de l'api du module pr_occtax
     """
 
     def get_token(self, base_url, login="admin", password="admin"):
@@ -107,7 +107,7 @@ class TestApiModulePrConcact:
         response = requests.delete(
             '{}/occtax/releve/{}'.format(
                 geonature_app.config['API_ENDPOINT'],
-                resp_data['properties']['id_releve_contact']
+                resp_data['properties']['id_releve_occtax']
             ),
             cookies={'token': token}
         )

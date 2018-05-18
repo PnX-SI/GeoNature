@@ -1,6 +1,8 @@
 <div [formGroup]="form">
-
-    <small *ngIf="formDef.controlType == 'textbox' || formDef.controlType == 'dropdown'" [attr.for]="formDef.key">{{formDef.label}}</small>
+    <small
+     *ngIf="formDef.controlType == 'checkbox'
+      || formDef.controlType == 'textbox'
+      || formDef.controlType == 'radio'" [attr.for]="formDef.key">{{formDef.label}}</small>
 
   <div [ngSwitch]="formDef.controlType">
 
@@ -8,22 +10,62 @@
       [id]="formDef.key" [type]="formDef.type">
 
       <select *ngSwitchCase="'dropdown'" class="form-control" [id]="formDef.key" [formControlName]="formDef.key">
-          <option *ngFor="let opt of formDef.options" [value]="opt.key">{{opt.value}}</option>
+          <option *ngFor="let val of formDef.values" [value]="val">{{val}}</option>
       </select>
 
       <pnx-nomenclature *ngSwitchCase="'nomenclature'"
         [label]=formDef.label
         [parentFormControl]="form.controls[formDef.key]"
-        [idTypeNomenclature]="formDef.idTypeNomenclature"
-      >
+        [idTypeNomenclature]="formDef.idComponent">
       </pnx-nomenclature>
 
-      <!-- TODO:
-       - composant générique (dataset, observateur, date ...)
-       - radio
-       - checkbox
-       - text area -->
+      <div *ngSwitchCase="'checkbox'">
+        <label *ngFor="let val of formDef.values">
+          <input [type]="formDef.type" [name]="formDef.key" [value]="val"
+          [formControlName]="formDef.key"
+          (change)="onCheckChange($event, form.controls[formDef.key])"> {{val}} 
+        </label>
+      </div>
 
+      <div *ngSwitchCase="'radio'">
+          <label *ngFor="let val of formDef.values">
+            <input (click)="onRadioChange(val, form.controls[formDef.key])" [type]="formDef.type" [name]="formDef.key" [value]="val" 
+              [formControlName]="formDef.key"
+             > {{val}} 
+          </label>
+      </div>
+      
+      <pnx-taxonomy *ngSwitchCase="'taxonomy'"
+        [label]="formDef.label"
+        [parentFormControl]="form.controls[formDef.key]"
+        [idList]="formDef.idComponent"
+        [charNumber]="3"
+        [listLength]="20">
+      </pnx-taxonomy>
+
+      <pnx-datasets *ngSwitchCase="'dataset'"
+        [label]="formDef.label"
+        [parentFormControl]="form.controls[formDef.key]">
+      </pnx-datasets>
+
+      <pnx-observers *ngSwitchCase="'observers'"
+        [label]="formDef.label"
+        [parentFormControl]="form.controls[formDef.key]"
+        [idMenu]="formDef.idComponent">
+      </pnx-observers>
+
+      <pnx-date *ngSwitchCase="'date'"
+        [label]="formDef.label"
+        [parentFormControl]="form.controls[formDef.key]">
+      </pnx-date>
+
+      <pnx-municipalities *ngSwitchCase="'municipalities'"
+        [label]="formDef.label"
+        [parentFormControl]="form.controls[formDef.key]">
+      </pnx-municipalities>
+      
+
+      
   </div>
 
 </div>

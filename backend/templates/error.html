@@ -1,0 +1,38 @@
+<html>
+<head>
+    <style>
+        body {
+            margin: 0 auto;
+            max-width: 50em;
+            font-family: "Helvetica", "Arial", sans-serif;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        h2 {
+            margin-top: 1em;
+            padding-top: 1em;
+        }
+        h1,h2,strong {
+            color: #333;
+        }
+        a {
+            color: #e81c4f;
+        }
+        pre {
+            overflow-x: auto;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h2> Erreur GeoNature </h2>
+        <p>  Une erreur s'est produite, veuillez la signaler à l'administrateur</p>
+
+          <pre>
+            {{error}}
+          </pre>
+        <p> <a target="_blank" href={{redirect}}> Retour vers ma page </a> </p>
+</body>
+</html>

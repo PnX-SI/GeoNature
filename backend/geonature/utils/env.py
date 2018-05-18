@@ -232,7 +232,7 @@ def frontend_routes_templating():
             location = '{}/{}#GeonatureModule'.format(
                 location, GN_MODULE_FE_FILE
             )
-            routes.append({'path': path, 'location': location})
+            routes.append({'path': path, 'location': location, 'id_module': conf['id_application']})
 
             # TODO test if two modules with the same name is okay for Angular
 
@@ -257,9 +257,10 @@ def tsconfig_templating():
         output_file.write(tsconfig_templated)
 
 
-def update_app_configuration(conf_file):
+def update_app_configuration(conf_file, build=True):
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
-    subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
+    if build:
+        subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
 
 

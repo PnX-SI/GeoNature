@@ -14,4 +14,4 @@ source $FLASKDIR/$venv_dir/bin/activate
 cd $FLASKDIR
 
 # Start your gunicorn
-exec gunicorn  wsgi:app --error-log /tmp/gn_errors.log --pid="${app_name}.pid" -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}"
+exec gunicorn  wsgi:app --error-log /var/log/geonature/gn_errors.log --pid="${app_name}.pid" -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}"

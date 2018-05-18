@@ -1,3 +1,4 @@
+from geoalchemy2 import Geometry
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
@@ -25,3 +26,14 @@ class BibAreasTypes(DB.Model):
     ref_name = DB.Column(DB.Unicode)
     ref_version = DB.Column(DB.Integer)
     num_version = DB.Column(DB.Unicode)
+
+
+
+@serializable
+class LiMunicipalities(DB.Model):
+    __tablename__ = 'li_municipalities'
+    __table_args__ = {'schema': 'ref_geo'}
+    id_municipality = DB.Column(DB.Unicode, primary_key=True)
+    nom_com = DB.Column(DB.Unicode)
+    id_area = DB.Column(DB.Integer)
+    insee_com = DB.Column(DB.Integer)

@@ -1,0 +1,30 @@
+ul, li {
+  list-style-type: none;
+}
+
+ul {
+  padding-left: 0px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+#button-input{
+  border: 1px solid rgba(0,0,0,.15);
+}
+
+#button-input:focus{
+  box-shadow: none;
+  border-color: #5cb3fd!important;
+  outline: 0;
+}
+
+.li-dropdown:hover {
+  background-color: #428bca!important;
+  color:white;
+}
+
+.li-label {
+  padding-left: 15px;
+}

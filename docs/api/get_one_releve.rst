@@ -5,7 +5,7 @@ API DOCS (draft)
 get one releve
 ================
 
-* url : ../pr_contact/releve/<id_releve_contact:interger>
+* url : ../pr_occtax/releve/<id_releve_occtax:interger>
 * return json :
  
   ::  
@@ -21,7 +21,7 @@ get one releve
 			"id": 1, 
 			"type": "Feature", 
 			"properties": {
-				"id_releve_contact": 1,
+				"id_releve_occtax": 1,
 				"id_dataset": 1,
 				"id_digitiser": 1, 
 				"date_min": "2017-01-01 00:00:00",
@@ -29,9 +29,6 @@ get one releve
 				"altitude_min": 1500, 
 				"altitude_max": 1565,
 				"meta_device_entry": "web", 
-				"deleted": false,
-				"meta_create_date": "None",  
-				"meta_update_date": "None", 
 				"comment": "exemple test",
 				"observers": [
 					{
@@ -42,8 +39,8 @@ get one releve
 				], 
 				"occurrences": [
 					{
-						"id_occurrence_contact": 1,
-						"id_releve_contact": 1,
+						"id_occurrence_occtax": 1,
+						"id_releve_occtax": 1,
 						"id_nomenclature_obs_meth": 65,
 						"id_nomenclature_bio_condition": 177,
 						"id_nomenclature_bio_status": 30,
@@ -60,14 +57,11 @@ get one releve
 						"sample_number_proof": "",
 						"digital_proof": "",
 						"non_digital_proof": "poil",
-						"deleted": false,
-						"meta_create_date": "2017-08-24 09:51:57.044894", 
-						"meta_update_date": "2017-08-24 09:51:57.044894",
 						"comment": "test",
 						"countingContact": [
 							{
-								"id_counting_contact": 1,
-								"id_occurrence_contact": 1, 
+								"id_counting_occtax": 1,
+								"id_occurrence_occtax": 1, 
 								"id_nomenclature_life_stage": 4,
 								"id_nomenclature_sex": 190,  
 								"id_nomenclature_obj_count": 166, 
@@ -76,8 +70,8 @@ get one releve
 								"count_max": 60, 
 							},
 							{
-								"id_counting_contact": 2,
-								"id_occurrence_contact": 1, 
+								"id_counting_occtax": 2,
+								"id_occurrence_occtax": 1, 
 								"id_nomenclature_life_stage": 4,
 								"id_nomenclature_sex": 191,  
 								"id_nomenclature_obj_count": 166, 

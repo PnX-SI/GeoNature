@@ -4,7 +4,7 @@ import requests
 from .bootstrap_test import geonature_app
 import datetime
 valide_occ_tax_releve = {
-    'id_releve_contact' : 1,
+    'id_releve_occtax' : 1,
     'id_dataset' : 1,
     'id_digitiser' : 1,
     'date_min' : datetime.datetime.now(),
@@ -12,9 +12,6 @@ valide_occ_tax_releve = {
     'altitude_min' : 1100,
     'altitude_max' : 1200,
     'meta_device_entry' : 'web',
-    'deleted' : False,
-    'meta_create_date' : datetime.datetime.now(),
-    'meta_update_date' : datetime.datetime.now(),
     'comment' : 'test',
     'geom_4326' : 'test',
     'taxons' : 'ablette, lynx',
@@ -134,11 +131,4 @@ class TestGetReleveIfAllowed:
 
 
 
-
-# TODO test on get_cruved
-
-
-
-
-
-
+# TODO test on cruved_for_user_in_app

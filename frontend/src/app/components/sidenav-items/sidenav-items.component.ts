@@ -25,12 +25,17 @@ export class SidenavItemsComponent implements OnInit {
       tapToDismiss: true,
       timeOut: 2000
     };
-    this.nav = _sideNavService.getAppList();
   }
-  ngOnInit() {}
+  ngOnInit() {
+    this._sideNavService.fetchModules().subscribe(data => {
+      this._sideNavService.modules = data;
+      this._sideNavService.setModulesLocalStorage(data);
+    });
+  }
+
   onSetApp(app) {
     this._sideNavService.setCurrentApp(app);
-    if (app.moduleName === 'Accueil') {
+    if (app.module_name === 'Accueil') {
       this._sideNavService.setHome(this._sideNavService.sidenav);
     } else {
       this._sideNavService.setModule(this._sideNavService.sidenav);

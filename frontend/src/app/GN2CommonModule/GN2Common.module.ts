@@ -45,6 +45,8 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
+import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -60,6 +62,7 @@ import { FormService } from './form/form.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
+import { SelectSearchComponent } from './form/select-search/select-search.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -100,7 +103,9 @@ export function HttpLoaderFactory(http: Http) {
     DatasetsComponent,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
-    DynamicFormComponent
+    DynamicFormComponent,
+    MunicipalitiesComponent,
+    SelectSearchComponent
   ],
   providers: [
     TranslateService,
@@ -112,6 +117,7 @@ export function HttpLoaderFactory(http: Http) {
     DynamicFormService
   ],
   exports: [
+    MunicipalitiesComponent,
     DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
@@ -141,7 +147,8 @@ export function HttpLoaderFactory(http: Http) {
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
-    ObserversTextComponent
+    ObserversTextComponent,
+    SelectSearchComponent
   ]
 })
 export class GN2CommonModule {}

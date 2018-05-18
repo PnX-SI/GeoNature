@@ -2,7 +2,7 @@
 
 # Make sure only root can run our script
 if [ "$(id -u)" == "0" ]; then
-   echo "This script must be run as root" 1>&2
+   echo "This script must NOT be run as root" 1>&2
    exit 1
 fi
 
@@ -283,14 +283,14 @@ then
     fi
 
 
-    echo "Creating 'medias' schema..."
+    echo "Creating 'commons' schema..."
     echo "" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
-    echo "Creating 'medias' schema" &>> /var/log/geonature/install_db.log
+    echo "Creating 'commons' schema" &>> /var/log/geonature/install_db.log
     echo "--------------------" &>> /var/log/geonature/install_db.log
     echo "" &>> /var/log/geonature/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/medias.sql  &>> /var/log/geonature/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> /var/log/geonature/install_db.log
 
 
     echo "Creating 'synthese' schema..."

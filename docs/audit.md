@@ -191,7 +191,7 @@ Verifier la taille du dataset pour:
         raise
 
     user = info_role[0]
-    user_cruved = fnauth.get_cruved(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
+    user_cruved = cruved_for_user_in_app(user.id_role,current_app.config['ID_APPLICATION_GEONATURE'] )
     featureCollection = []
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)

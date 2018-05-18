@@ -36,22 +36,18 @@ def releve_data(request):
             "hour_max": None,
             "altitude_min": None,
             "altitude_max": None,
-            "deleted": False,
             "meta_device_entry": "web",
             "comment": None,
             "id_nomenclature_obs_technique": 343,
             "observers": [],
             "observers_txt": "tatatato",
             "id_nomenclature_grp_typ": 150,
-            "t_occurrences_contact": [
+            "t_occurrences_occtax": [
             {
                 "id_nomenclature_naturalness": 182,
-                "determination_method_as_text": "",
-                "meta_create_date": "2018-03-05 10:50:11.894492",
-                "meta_update_date": "2018-03-05T10:08:13.937Z",
                 "id_nomenclature_obs_meth": 42,
                 "digital_proof": None,
-                "cor_counting_contact": [
+                "cor_counting_occtax": [
                 {
                     "unique_id_sinp_occtax": "10f937db-54e1-409d-915d-b8c85055fa32",
                     "count_min": 1,
@@ -77,7 +73,6 @@ def releve_data(request):
                 "id_nomenclature_exist_proof": 91,
                 "cd_nom": 67111,
                 "id_nomenclature_diffusion_level": 163,
-                "deleted": False,
                 "sample_number_proof": None,
                 "determiner": None
             }

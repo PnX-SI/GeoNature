@@ -9,12 +9,18 @@ import { Taxon } from './taxonomy/taxonomy.component';
 export class DataFormService {
   constructor(private _http: HttpClient) {}
 
-  getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string) {
+  getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string, filters?: any) {
     let params: HttpParams = new HttpParams();
     regne ? (params = params.set('regne', regne)) : (params = params.set('regne', ''));
     group2_inpn
       ? (params = params.set('group2_inpn', group2_inpn))
       : (params = params.set('group2_inpn', ''));
+    if (filters['orderby']) {
+      params = params.set('orderby', filters['orderby']);
+    }
+    if (filters['order']) {
+      params = params.set('order', filters['order']);
+    }
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${id_nomenclature}`,
       { params: params }
@@ -63,6 +69,13 @@ export class DataFormService {
     return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
   }
 
+  async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
+    const response = await this._http
+      .get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`)
+      .toPromise();
+    return response;
+  }
+
   getRegneAndGroup2Inpn() {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
   }
@@ -96,5 +109,18 @@ export class DataFormService {
       });
       return areasIntersected;
     });
+  }
+
+  getMunicipalities(nom_com?, limit?) {
+    let params: HttpParams = new HttpParams();
+
+    if (nom_com) {
+      params = params.set('nom_com', nom_com);
+    }
+    if (limit) {
+      params = params.set('limit', limit);
+    }
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
   }
 }

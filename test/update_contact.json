@@ -7,7 +7,7 @@
 		]
 	},  
 	"properties": {	 
-		"id_releve_contact": 1,
+		"id_releve_occtax": 1,
 		"id_dataset": 1,
 		"id_digitiser": 1,  
 		"date_min": "2017-01-01 00:00:00",
@@ -17,11 +17,11 @@
 		"meta_device_entry": "web",
 		"comment": "exemple test",
 		"observers": [1,2,3],
-		"t_occurrences_contact": [
+		"t_occurrences_occtax": [
 			{
 				 
-				"id_occurrence_contact": 1,
-				"id_releve_contact": 1,
+				"id_occurrence_occtax": 1,
+				"id_releve_occtax": 1,
 				"id_nomenclature_obs_meth": 65,
 				"id_nomenclature_bio_condition": 177,
 				"id_nomenclature_bio_status": 30,
@@ -38,13 +38,12 @@
 				"sample_number_proof": "Herbier_Dentant-15-37869", 
 				"digital_proof": "", 
 				"non_digital_proof": "plante en herbier",
-				"deleted": false, 
 				"comment": "Première observation de cette plante rare pour le territoire",
-				"cor_counting_contact": [
+				"cor_counting_occtax": [
 					{
 						
-						"id_counting_contact": 1,
-						"id_occurrence_contact": 1,
+						"id_counting_occtax": 1,
+						"id_occurrence_occtax": 1,
 						"id_nomenclature_life_stage": 4,
 						"id_nomenclature_sex": 190,
 						"id_nomenclature_obj_count": 166,
@@ -54,8 +53,8 @@
 					},
 					{
 						
-						"id_counting_contact": 2,
-						"id_occurrence_contact": 1,
+						"id_counting_occtax": 2,
+						"id_occurrence_occtax": 1,
 						"id_nomenclature_life_stage": 4,
 						"id_nomenclature_sex": 191,
 						"id_nomenclature_obj_count": 166,
