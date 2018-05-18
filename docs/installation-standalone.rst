@@ -120,6 +120,8 @@ La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent �
 
 Lancer le script d'installation de l'application :
 
+Attention, si vous installez GeoNature sur Ubuntu, il est necessaire de changer un numéro de version pour une librairie python. Editez le fichier ``backend/requirements.txt`` et remplacer la version de ``pygdal`` par celle indiqué dans le fichier
+
 ::
 
     ./install_app.sh
