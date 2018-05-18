@@ -118,12 +118,6 @@ def loginCas():
             except Exception as e:
                 gunicorn_error_logger.info(e)
                 log.error(e)
-            # Creation of datasets
-            try:
-                gn_meta.post_jdd_from_user_id(user_id, organism_id)
-            except Exception as e:
-                gunicorn_error_logger.info(e)
-                log.error(e)
 
             # creation de la Response
             response = make_response(

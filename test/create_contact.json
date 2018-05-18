@@ -16,7 +16,7 @@
 		"meta_device_entry": "web",
 		"comment": "exemple test",
 		"observers": [1,2,3],
-		"t_occurrences_contact": [
+		"t_occurrences_occtax": [
 			{
 				"id_nomenclature_obs_meth": 65,
 				"id_nomenclature_bio_condition": 177,
@@ -34,9 +34,8 @@
 				"sample_number_proof": "Herbier_Dentant-15-37869", 
 				"digital_proof": "", 
 				"non_digital_proof": "plante en herbier",
-				"deleted": false, 
 				"comment": "Première observation de cette plante rare pour le territoire",
-				"cor_counting_contact": [
+				"cor_counting_occtax": [
 					{
 						"id_nomenclature_life_stage": 4,
 						"id_nomenclature_sex": 190,

@@ -35,7 +35,6 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!value || (value && (value.length === 0 || value === ''))) {
           this.onDelete.emit();
         } else {
-          console.log('change');
           this.onChange.emit(value);
         }
       });

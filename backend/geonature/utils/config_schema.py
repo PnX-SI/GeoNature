@@ -67,8 +67,8 @@ class GnPySchemaConf(Schema):
 
 class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
-    DISPLAY_FOOTER = fields.Boolean(missing=False)
-    PROD_MOD = fields.Boolean(missing=True)
+    DISPLAY_FOOTER = fields.Boolean(missing=True)
+    MULTILINGUAL = fields.Boolean(missing=False)
 
 
 class MailErrorConf(Schema):
@@ -82,7 +82,7 @@ class MailErrorConf(Schema):
 
 
 class GnGeneralSchemaConf(Schema):
-    appName = fields.String(missing='Geonature2')
+    appName = fields.String(missing='GeoNature2')
     DEFAULT_LANGUAGE = fields.String(missing='fr')
     PASS_METHOD = fields.String(
         missing='hash',
@@ -92,6 +92,7 @@ class GnGeneralSchemaConf(Schema):
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
+    LOCAL_SRID = fields.Integer(required=True, missing=2154)
     ID_APPLICATION_GEONATURE = fields.Integer(missing=14)
     XML_NAMESPACE = fields.String(missing="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
@@ -112,7 +113,10 @@ class ManifestSchemaConf(Schema):
 
 class ManifestSchemaProdConf(Schema):
     module_path = fields.String(required=True)
+    module_name = fields.String(required=True)
 
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
+    id_application = fields.Integer(required=True)
+

@@ -97,12 +97,34 @@ if [ ! -f /etc/geonature/geonature_config.toml ]; then
   sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" /etc/geonature/geonature_config.toml
   sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/LOCAL_SRID = .*$/LOCAL_SRID = '${srid_local}'/g" /etc/geonature/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
 fi
 
-#Installation du virtual env
 cd backend
+
+# Creation des dossiers static, shapefiles et medias
+
+if [ ! -d './static/' ]
+then
+  mkdir static
+fi
+
+if [ ! -d './static/shapefiles/' ]
+then
+  mkdir ./static/shapefiles
+fi
+
+if [ ! -d './static/medias/' ]
+then
+  mkdir ./static/medias
+fi
+
+
+
+#Installation du virtual env
+
 
 # Suppression du venv s'il existe
 if [ -d 'venv/' ]
@@ -131,7 +153,6 @@ echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis '/etc/geonature/geonature_config.toml'..."
 geonature generate_frontend_config --conf-file /etc/geonature/geonature_config.toml --build=false
-echo "Désactivation du virtual env..."
 
 #Lancement de l'application
 echo "Configuration de l'application api backend dans supervisor..."
@@ -158,8 +179,6 @@ nvm install 8.1.1
 echo " ############"
 echo "Instalation des paquets npm"
 npm install
-npm rebuild node-sass
-
 
 # creation du dossier des assets externes
 mkdir src/external_assets
@@ -194,7 +213,16 @@ geonature generate_frontend_tsconfig
 # generate the modules routing file by templating
 geonature generate_frontend_modules_route
 
+
+cd /home/$monuser/geonature
+# installation du module occtax
+source backend/venv/bin/activate
+geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax --build=false
+
+cd frontend
 echo "Build du frontend..."
+npm rebuild node-sass --force
+
 npm run build
 
 echo "désactiver le virtual env"

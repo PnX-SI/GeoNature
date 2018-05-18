@@ -44,11 +44,11 @@ def testDataType(value, sqlType, paramName):
     @TODO MANQUE FLOAT
 """
 SERIALIZERS = {
-    'Date': lambda x: str(x) if x else None,
-    'DateTime': lambda x: str(x) if x else None,
-    'TIME': lambda x: str(x) if x else None,
-    'TIMESTAMP': lambda x: str(x) if x else None,
-    'UUID': lambda x: str(x) if x else None
+    'date': lambda x: str(x) if x else None,
+    'datetime': lambda x: str(x) if x else None,
+    'time': lambda x: str(x) if x else None,
+    'timestamp': lambda x: str(x) if x else None,
+    'uuid': lambda x: str(x) if x else None,
 }
 
 
@@ -72,14 +72,16 @@ class GenericTable:
             (
                 name,
                 SERIALIZERS.get(
-                    db_col.type.__class__.__name__,
+                    db_col.type.__class__.__name__.lower(),
                     lambda x: x
                 )
             )
             for name, db_col in self.tableDef.columns.items()
             if not db_col.type.__class__.__name__ == 'Geometry'
         ]
+
         self.columns = [column.name for column in self.tableDef.columns]
+
 
     def as_dict(self, data):
         return {
@@ -104,6 +106,14 @@ def serializeQuery(data, columnDef):
     return rows
 
 
+
+def serializeQueryOneResult(row, columnDef):
+    row = {
+        c['name']: getattr(row, c['name'])
+        for c in columnDef if getattr(row, c['name']) is not None
+    }
+    return row
+
 def serializeQueryTest(data, columnDef):
     rows = list()
     for row in data:
@@ -119,17 +129,6 @@ def serializeQueryTest(data, columnDef):
         rows.append(inter)
     return rows
 
-
-def serializeQueryOneResult(row, columnDef):
-    row = {
-        c['name']: getattr(row, c['name'])
-        for c in columnDef if getattr(row, c['name']) is not None
-    }
-    return row
-
-
-
-
 def serializable(cls):
     """
         Décorateur de classe pour les DB.Models
@@ -144,7 +143,7 @@ def serializable(cls):
         (
             db_col.key,
             SERIALIZERS.get(
-                db_col.type.__class__.__name__,
+                db_col.type.__class__.__name__.lower(),
                 lambda x: x
             )
         )
@@ -196,6 +195,7 @@ def serializable(cls):
 
         return out
 
+
     cls.as_dict = serializefn
     return cls
 
@@ -225,7 +225,7 @@ def geoserializable(cls):
         """
         geometry = to_shape(getattr(self, geoCol))
         feature = Feature(
-            id=getattr(self, idCol),
+            id=str(getattr(self, idCol)),
             geometry=geometry,
             properties=self.as_dict(recursif, columns)
         )
@@ -244,20 +244,39 @@ def json_resp(fn):
     def _json_resp(*args, **kwargs):
         res = fn(*args, **kwargs)
         if isinstance(res, tuple):
-            res, status = res
+            return to_json_resp(*res)
         else:
-            status = 200
-
-        if not res:
-            status = 404
-            res = {'message': 'not found'}
-
-        return Response(
-            json.dumps(res),
-            status=status,
-            mimetype='application/json'
-        )
+            return to_json_resp(res)
     return _json_resp
+
+def to_json_resp(
+    res,
+    status=200,
+    filename=None,
+    as_file=False,
+    indent=None
+):
+    if not res:
+        status = 404
+        res = {'message': 'not found'}
+
+    headers = None
+    if as_file:
+        headers = Headers()
+        headers.add('Content-Type', 'application/json')
+        headers.add(
+            'Content-Disposition',
+            'attachment',
+            filename='export_%s.json' % filename
+        )
+
+    return Response(
+        json.dumps(res, indent=indent),
+        status=status,
+        mimetype='application/json',
+        headers=headers
+    )
+
 
 
 def csv_resp(fn):
@@ -268,23 +287,26 @@ def csv_resp(fn):
     def _csv_resp(*args, **kwargs):
         res = fn(*args, **kwargs)
         filename, data, columns, separator = res
-        outdata = [separator.join(columns)]
-
-        headers = Headers()
-        headers.add('Content-Type', 'text/plain')
-        headers.add(
-            'Content-Disposition',
-            'attachment',
-            filename='export_%s.csv' % filename
-        )
-
-        for o in data:
-            outdata.append(
-                separator.join(
-                    '"%s"' % (o.get(i), '')
-                    [o.get(i) is None] for i in columns
-                )
-            )
-        out = '\r\n'.join(outdata)
-        return Response(out, headers=headers)
+        return to_csv_resp(filename, data, columns, separator)
     return _csv_resp
+
+
+def to_csv_resp(filename, data, columns, separator):
+    outdata = [separator.join(columns)]
+
+    headers = Headers()
+    headers.add('Content-Type', 'text/plain')
+    headers.add(
+        'Content-Disposition',
+        'attachment',
+        filename='export_%s.csv' % filename
+    )
+    for o in data:
+        outdata.append(
+            separator.join(
+                '"%s"' % (o.get(i), '')
+                [o.get(i) is None] for i in columns
+            )
+        )
+    out = '\r\n'.join(outdata)
+    return Response(out, headers=headers)

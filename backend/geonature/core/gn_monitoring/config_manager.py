@@ -5,6 +5,7 @@
 from pypnnomenclature.repository import get_nomenclature_list_formated
 from geonature.utils.utilstoml import load_toml
 
+
 def generate_config(file_path):
     '''
         Lecture et modification des fichiers de configuration yml
@@ -53,6 +54,9 @@ def parse_field(fieldlist):
                     'hierarchy': field['thesaurusHierarchyID']
                 }
             )
+        if 'fields' in field:
+            field['fields'] = parse_field(field['fields'])
+
     return fieldlist
 
 

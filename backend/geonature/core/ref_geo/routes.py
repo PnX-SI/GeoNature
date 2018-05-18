@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from .models import BibAreasTypes
+from .models import BibAreasTypes, LiMunicipalities
 
 routes = Blueprint('ref_geo', __name__)
 
@@ -97,3 +97,30 @@ def getAreasIntersection():
         ]
 
     return data
+
+
+@routes.route('/municipalities', methods=['GET'])
+@json_resp
+def get_municipalities():
+    """
+    Return the municipalities
+    """
+    parameters = request.args
+
+    q = DB.session.query(
+        LiMunicipalities
+        ).order_by(
+            LiMunicipalities.nom_com.asc()
+        )
+    
+    if 'nom_com' in parameters:
+        q = q.filter(
+            LiMunicipalities.nom_com.ilike(
+                '{}%'.format(parameters.get('nom_com'))
+            )
+        )
+    limit = int(parameters.get('limit')) if parameters.get('limit') else 100
+
+    data = q.limit(limit)
+    return [ d.as_dict() for d in data ]
+

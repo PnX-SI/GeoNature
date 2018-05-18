@@ -6,14 +6,23 @@ import inspect
 import subprocess
 import logging
 import os
+import json
+import sys
+
 
 from pathlib import Path
 from packaging import version
+from sqlalchemy.orm.exc import NoResultFound
 
+from geonature.utils.config_schema import ManifestSchemaProdConf
+from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import (
-    get_app_for_cmd
+    get_app_for_cmd,
+    build_geonature_front
 )
+
+
 from geonature.utils.env import (
     GEONATURE_VERSION,
     GN_MODULE_FILES,
@@ -33,6 +42,7 @@ from geonature.utils.config_schema import (
 )
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.core.users.models import TApplications
+from geonature.core.gn_commons.models import TModules
 
 log = logging.getLogger(__name__)
 
@@ -74,7 +84,7 @@ def check_manifest(module_path):
     return configs_py['module_name']
 
 
-def gn_module_register_config(module_name, module_path, url):
+def gn_module_register_config(module_name, module_path, url, id_app):
     '''
         Enregistrement du module dans les variables etc
     '''
@@ -104,6 +114,10 @@ def gn_module_register_config(module_name, module_path, url):
         {
             'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
             'msg': "api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8')
+        },
+        {
+            'cmd': 'sudo tee -a {}/{}/conf_gn_module.toml'.format(GN_MODULES_ETC_AVAILABLE, module_name),
+            'msg': "id_application = {}\n".format(id_app).encode('utf-8')
         }
     ]
     for cmd in cmds:
@@ -156,6 +170,17 @@ def gn_module_activate(module_name):
 
 def gn_module_deactivate(module_name):
     log.info('Desactivate module')
+    try:
+        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+        with app.app_context():
+            module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
+            module.active = False
+            DB.session.merge(module)
+            DB.session.commit()
+    except NoResultFound:
+        raise GeoNatureError(
+            'The module does not exist. \n Check the gn_commons.t_module to get the module name'
+        )
     if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
         cmd = "sudo rm {}/{}".format(
             GN_MODULES_ETC_ENABLED,
@@ -171,9 +196,12 @@ def gn_module_deactivate(module_name):
     log.info("Regenerate frontend routes")
     try:
         frontend_routes_templating()
+        # set the module as inactive
+        
         log.info("...ok\n")
     except Exception:
         raise
+
 
 
 def check_codefile_validity(module_path, module_name):
@@ -264,17 +292,85 @@ def create_external_assets_symlink(module_path, module_name):
         )
     log.info('...ok \n')
 
-def add_application_db(module_name):
-    conf_file = load_config(DEFAULT_CONFIG_FIlE)
-    id_application_geonature = conf_file['ID_APPLICATION_GEONATURE']
-    new_application = TApplications(
-        nom_application=module_name,
-        id_parent=id_application_geonature
-    )
+def add_application_db(module_name, url):
+    log.info('Register the module in t_application ... \n')
+    app_conf = load_config(DEFAULT_CONFIG_FIlE)
+    id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
     app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
-    with app.app_context():
-        try:
-            DB.session.add(new_application)
-            DB.session.commit()
-        except Exception as e:
-            log.error(e)
+    try:
+        with app.app_context():
+            # check if the module in TApplications
+            try:
+                id_app = None
+                exist_app = DB.session.query(TApplications).filter(
+                    TApplications.nom_application == module_name
+                ).one()
+            except NoResultFound:
+                # if no result, write in TApplication
+                new_application = TApplications(
+                    nom_application=module_name,
+                    id_parent=id_application_geonature
+                )
+                DB.session.add(new_application)
+                DB.session.commit()
+                DB.session.flush()
+                id_app = new_application.id_application
+            else:
+                log.info('the module is already in t_application')
+            finally:
+                id_app = id_app if id_app is not None else exist_app.id_application
+            try:
+                module = DB.session.query(TModules).filter(
+                    TModules.module_name == module_name
+                ).one()
+            except NoResultFound:
+                update_url = "{}/#/{}".format(app_conf['URL_APPLICATION'], url)
+                new_module = TModules(
+                    id_module=id_app,
+                    module_name=module_name,
+                    module_label=module_name.title(),
+                    module_url=update_url,
+                    module_target="_self",
+                    module_picto="extension",
+                    active=True
+                )
+                DB.session.add(new_module)
+                DB.session.commit()
+            else:
+                log.info('the module is already in t_module, reactivate it')
+                module.active = True
+                DB.session.merge(module)
+                DB.session.commit()
+
+    except Exception as e:
+        raise GeoNatureError(e)
+
+    log.info('... ok \n')
+    return id_app
+
+def create_module_config(module_name, mod_path=GN_MODULES_ETC_ENABLED, build=True):
+    """ Create the frontend config for a module and rebuild if build=True"""
+    conf_manifest = load_and_validate_toml(
+            str(mod_path / module_name / 'manifest.toml'),
+            ManifestSchemaProdConf
+        )
+
+    # import du module dans le sys.path
+    module_path = Path(conf_manifest['module_path'])
+    module_parent_dir = str(module_path.parent)
+    module_config_path = "{}.conf_schema_toml".format(module_path.name)
+    sys.path.insert(0, module_parent_dir)
+    module = __import__(module_config_path, globals=globals())
+    front_module_conf_file = mod_path / module_name / 'conf_gn_module.toml'
+    config_module = utilstoml.load_and_validate_toml(front_module_conf_file, module.conf_schema_toml.GnModuleSchemaConf)
+
+    frontend_config_path = conf_manifest['module_path']+'/frontend/app/module.config.ts'
+    with open(
+        str(ROOT_DIR / frontend_config_path), 'w'
+    ) as outputfile:
+        outputfile.write("export const ModuleConfig = ")
+        json.dump(config_module, outputfile, indent=True, sort_keys=True)
+    
+    if build:
+        build_geonature_front()
+

@@ -31,7 +31,8 @@ from geonature.utils.gn_module_import import (
     gn_module_deactivate,
     check_codefile_validity,
     create_external_assets_symlink,
-    add_application_db
+    add_application_db,
+    create_module_config
 )
 from geonature.utils.errors import (
     ConfigError, GNModuleInstallError, GeoNatureError
@@ -49,7 +50,13 @@ log = logging.getLogger(__name__)
     required=False,
     default=DEFAULT_CONFIG_FIlE
 )
-def install_gn_module(module_path, url, conf_file):
+@click.option(
+    '--build',
+    type=bool,
+    required=False,
+    default=True
+)
+def install_gn_module(module_path, url, conf_file, build):
     """
         Installation d'un module gn
     """
@@ -62,34 +69,37 @@ def install_gn_module(module_path, url, conf_file):
 
         # TODO vérifier que l'utilisateur est root ou du groupe geonature
         app = get_app_for_cmd(conf_file)
+        with app.app_context():
+            sys.path.append(module_path)
+            # Vérification de la conformité du module
+            #   Vérification de la présence de certain fichiers
+            check_gn_module_file(module_path)
 
-        sys.path.append(module_path)
-        # Vérification de la conformité du module
-        #   Vérification de la présence de certain fichiers
-        check_gn_module_file(module_path)
+            #   Vérification de la version de geonature par rapport au manifest
+            try:
+                module_name = check_manifest(module_path)
+                # Vérification que le module n'est pas déjà activé
+                if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
+                    raise GeoNatureError("...module {} already activated".format(module_name))
+            except ConfigError as ex:
+                log.critical(str(ex) + "\n")
+                sys.exit(1)
 
-        #   Vérification de la version de geonature par rapport au manifest
-        try:
-            module_name = check_manifest(module_path)
-            # Vérification que le module n'est pas déjà activé
-            if (GN_MODULES_ETC_ENABLED / module_name).is_symlink():
-                raise GeoNatureError("...module {} already activated".format(module_name))
-        except ConfigError as ex:
-            log.critical(str(ex) + "\n")
-            sys.exit(1)
+            # Vérification de la conformité du code :
+            #   installation
+            #   front end
+            #   backend
+            check_codefile_validity(module_path, module_name)
 
-        # Vérification de la conformité du code :
-        #   installation
-        #   front end
-        #   backend
-        check_codefile_validity(module_path, module_name)
-
-        # Installation du module
-        run_install_gn_module(app, module_path, module_name, url)
-        # Activation du module
-        gn_module_activate(module_name)
-        # Rebuild the frontend
-        build_geonature_front(rebuild_sass=True)
+            # Installation du module
+            run_install_gn_module(app, module_path, module_name, url)
+            # Activation du module
+            gn_module_activate(module_name)
+            #generation du fichier de configuration
+            create_module_config(module_name, build=False)
+            if build:
+                # Rebuild the frontend
+                build_geonature_front(rebuild_sass=True)
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
@@ -155,11 +165,13 @@ def run_install_gn_module(app, module_path, module_name, url):
         gnmodule_install_app(DB, app)
         log.info("...ok\n")
 
-    #   Enregistrement du module
-    gn_module_register_config(module_name, module_path, url)
-
     # ajout du module dans la table users.t_application
-    add_application_db(module_name)
+    id_app = add_application_db(module_name, url)
+
+    #   Enregistrement du module
+    gn_module_register_config(module_name, module_path, url, id_app)
+
+
     # creation du lien symbolique des assets externes
     create_external_assets_symlink(module_path, module_name)
 
@@ -182,3 +194,21 @@ def deactivate_gn_module(module_name):
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
     gn_module_deactivate(module_name)
+
+
+@main.command()
+@click.argument('module_name')
+@click.option(
+    '--build',
+    type=bool,
+    required=False,
+    default=True
+)
+def update_module_configuration(module_name, build):
+    """
+        Génère la config frontend d'un module
+    """
+    subprocess.call(['sudo', 'supervisorctl', 'reload'])
+    create_module_config(module_name, build=build)
+
+    
