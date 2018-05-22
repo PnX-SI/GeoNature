@@ -235,7 +235,10 @@ Puis cliquez sur le bouton "Télécharger les données" en bas de la liste des r
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-download-data.jpg
 
   
-Une fenêtre s'ouvre, fournissant des informations sur le téléchargement des données. Selectionnez ensuite le format CSV pour GINCO.
+Une fenêtre s'ouvre, fournissant des informations sur le téléchargement des données. Selectionnez ensuite le format CSV pour GINCO:
+
+.. image :: http://geonature.fr/docs/img/user-manual/06-occtax-download.jpg
+
 
 - Depuis le module d'export:
 
