@@ -121,7 +121,7 @@ default_columns_export = [
 
 available_export_format = ['csv', 'geojson', 'shapefile']
 
-list_messages = {"emptyMessage": "Aucune donnée à afficher", "totalMessage": "observations au total"}
+list_messages = {"emptyMessage": "Aucune donnée à afficher", "totalMessage": "Relevé(s) au total"}
 
 export_message = """
 <p> <b> Attention: </b> </br>
