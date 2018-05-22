@@ -134,7 +134,7 @@ class GnModuleSchemaConf(Schema):
     export_view_name = fields.String(missing='ViewExportDLB')
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
-    export_srid = fields.Integer(missing=4326)    
+    export_srid = fields.Integer(missing=4326)
     export_available_format = fields.List(fields.String(), missing=available_export_format)
     export_columns = fields.List(fields.String(), missing=default_columns_export)
     export_message = fields.String(missing=export_message)
