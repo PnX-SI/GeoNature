@@ -16,7 +16,7 @@ Accueil
 Vous accédez alors à la page d'accueil de l'application GeoNature, permettant la saisie puis l'export 
 de données brutes de biodiversité. 
 
-.. image :: http://geonature.fr/docs/img/user-manual/ 
+.. image :: http://geonature.fr/docs/img/user-manual/01-home-MTES.jpg
 
 Le Menu de navigation à gauche permet d'accéder aux différents modules de l'application
 
