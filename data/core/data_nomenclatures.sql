@@ -620,6 +620,7 @@ INSERT INTO defaults_nomenclatures_value (id_type, id_organism, id_nomenclature)
 ,(115,0,430)
 ,(107,0,382)
 ,(111,0,417)
+,(106,0,473)
 ;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
