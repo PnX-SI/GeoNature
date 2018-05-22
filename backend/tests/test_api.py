@@ -34,7 +34,7 @@ class TestApiUsersMenu:
             assert False
 
 
-class TestApiModulePrConcact:
+class TestApiModulePrOcctax:
     """
         Test de l'api du module pr_occtax
     """
@@ -129,6 +129,33 @@ class TestApiModulePrConcact:
             assert True
         else:
             assert False
+    
+    def test_export_sinp_multiformat(self, geonature_app):
+        token = self.get_token(geonature_app.config['API_ENDPOINT'])
+
+        # CSV
+        query_url = "&id_dataset=1&cd_nom=67111&date_up=2017-05-11&date_low=2009-05-01"
+        url = '{}/occtax/export'.format(geonature_app.config['API_ENDPOINT'])
+        response = requests.get(
+            url+"?format=csv"+query_url,
+            cookies={'token': token}
+        )
+
+        assert response.ok
+
+        # geojson
+        response = requests.get(
+            url+"?format=geojson"+query_url,
+            cookies={'token': token}
+        )
+        assert response.ok
+        
+        response = requests.get(
+            url+"?format=shapefile"+query_url,
+            cookies={'token': token}
+        )
+        assert response.ok
+        
 
     # ## Test des droits ####
     def test_user_can_get_releve(self, geonature_app):
