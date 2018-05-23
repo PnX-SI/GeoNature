@@ -515,7 +515,7 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne,
 ,(15,0,0,0,91)
 ,(101,0,0,0,493)
 ,(5,0,0,0,163)
-,(106,0,0,0,370)
+,(106,0,0,0,473)
 ,(10,0,0,0,2)
 ,(9,0,0,0,194)
 ,(6,0,0,0,166)

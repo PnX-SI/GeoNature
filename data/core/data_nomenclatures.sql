@@ -473,8 +473,8 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(378, 106, '11', 'Examen des organes reproducteurs ou critères spécifiques en laboratoire', 'Examen des organes reproducteurs ou critères spécifiques en laboratoire', 'La détermination repose sur l''examen précis des organes reproducteurs ou autres critères spécifiques en laboratoire', 'GEONATURE', 'non validé', 0, '106.011', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
 ,(482, 106, '12', 'Examen des organes reproducteurs ou critères spécifiques sur le terrain', 'Examen des organes reproducteurs ou critères spécifiques sur le terrain', 'La détermination repose sur l''examen des organes reproducteurs ou autres critères spécifiques directement sur le terrain', 'GEONATURE', 'non validé', 0, '106.012', '2018-03-29 00:00:00', NULL, true)
 ,(483, 106, '13', 'Examen des restes de l’individu sous loupe ou microscope', 'Examen des restes de l’individu sous loupe ou microscope', 'La détermination repose sur un examen visuel précis des restes (fragments ou résidus) de l''individu sous loupe ou microscope ', 'GEONATURE', 'non validé', 0, '106.013', '2018-03-29 00:00:00', NULL, true)
-,(484, 106, '14', 'Examen direct des restes de l’individu à l''œil nu', 'Examen direct des restes de l’individu à l''œil nu', 'La détermination repose sur un examen visuel des restes (fragments ou résidus) de l''individu à l''œil nu', 'GEONATURE', 'non validé', 0, '106.014', '2018-03-29 00:00:00', NULL, true)
-,(485, 106, '15', 'Examen des restes de l''individu par photo ou vidéo', 'Examen des restes de l''individu par photo ou vidéo', 'La détermination repose sur un examen visuel des restes (fragments ou résidus) de l''individu sur photographie ou vidéo', 'GEONATURE', 'non validé', 0, '106.015', '2018-03-29 00:00:00', NULL, true)
+,(484, 106, '14', 'Examen visuel des restes de l’individu', 'Examen visuel des restes de l’individu', 'La détermination repose sur un examen visuel des restes (fragments ou résidus) de l''individu à l''œil nu', 'GEONATURE', 'non validé', 0, '106.014', '2018-05-17 00:00:00', NULL, true)
+,(485, 106, '15', 'Examen des restes de l''individu sur photo ou vidéo', 'Examen des restes de l''individu sur photo ou vidéo', 'La détermination repose sur un examen visuel des restes (fragments ou résidus) de l''individu sur photographie ou vidéo', 'GEONATURE', 'non validé', 0, '106.015', '2018-03-29 00:00:00', NULL, true)
 ,(486, 106, '16', 'Examen des traces ou indices de présence sur photo ou vidéo', 'Examen des traces ou indices de présence sur photo ou vidéo', 'La détermination repose sur l''examen de photographies ou de vidéos représentant des traces ou indices de présences', 'GEONATURE', 'non validé', 0, '106.016', '2018-03-29 00:00:00', NULL, true)
 ,(487, 106, '17', 'Examen direct des traces ou indices de présence', 'Examen direct des traces ou indices de présence', 'La détermination repose sur l''examen direct des traces ou indices de présences par le déterminateur', 'GEONATURE', 'non validé', 0, '106.017', '2018-03-29 00:00:00', NULL, true)
 ,(488, 106, '18', 'Examen visuel à distance', 'Examen visuel à distance', 'La détermination a été effectuée à distance sur le terrain, à l''œil nu ou à l''aide de longue vue, jumelles etc', 'GEONATURE', 'non validé', 0, '106.018', '2018-03-29 00:00:00', NULL, true)
@@ -620,6 +620,7 @@ INSERT INTO defaults_nomenclatures_value (id_type, id_organism, id_nomenclature)
 ,(115,0,430)
 ,(107,0,382)
 ,(111,0,417)
+,(106,0,473)
 ;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
@@ -988,7 +989,12 @@ INSERT INTO cor_taxref_nomenclature VALUES
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
---TODO : "Annélides"
+
+,(4, 'Animalia', 'Annélides', now(), NULL)
+,(6, 'Animalia', 'Annélides', now(), NULL)
+,(7, 'Animalia', 'Annélides', now(), NULL)
+,(11, 'Animalia', 'Annélides', now(), NULL)
+
 --TODO : "Pycnogonides"
 --TODO : "Nématodes"
 
@@ -1457,23 +1463,297 @@ INSERT INTO cor_taxref_nomenclature VALUES
 -------------------------
 --DETERMINATION METHODS--
 -------------------------
+,(473, 'all', 'all', now(), NULL)
+,(379, 'all', 'all', now(), NULL)
 ,(370, 'all', 'all', now(), NULL)
 ,(371, 'all', 'all', now(), NULL)
-,(372, 'all', 'all', now(), NULL)
-,(374, 'all', 'all', now(), NULL)
-,(375, 'all', 'all', now(), NULL)
-,(376, 'all', 'all', now(), NULL)
-,(377, 'all', 'all', now(), NULL)
-,(379, 'all', 'all', now(), NULL)
 
-,(372, 'Animalia', 'Insectes', now(), NULL)
-,(373, 'Animalia', 'Insectes', now(), NULL)
+,(372, 'Bacteria', 'all', now(), NULL)
 
-,(372, 'Animalia', 'Arachnides', now(), NULL)
-,(373, 'Animalia', 'Arachnides', now(), NULL)
+,(378, 'Plantae', 'all', now(), NULL)
+,(382, 'Plantae', 'all', now(), NULL)
+,(383, 'Plantae', 'all', now(), NULL)
+,(384, 'Plantae', 'all', now(), NULL)
+,(385, 'Plantae', 'all', now(), NULL)
+,(488, 'Plantae', 'all', now(), NULL)
+,(489, 'Plantae', 'all', now(), NULL)
+,(490, 'Plantae', 'all', now(), NULL)
+,(491, 'Plantae', 'all', now(), NULL)
+,(492, 'Plantae', 'all', now(), NULL)
 
-,(372, 'Animalia', 'Gastéropodes', now(), NULL)
-,(373, 'Animalia', 'Gastéropodes', now(), NULL)
+,(374, 'Plantae', 'Angiospermes', now(), NULL)
 
-,(378, 'Animalia', 'Mammifères', now(), NULL)
+,(374, 'Plantae', 'Gymnospermes', now(), NULL)
+
+,(374, 'Plantae', 'Fougères', now(), NULL)
+
+,(374, 'Plantae', 'Autres', now(), NULL)
+
+,(372, 'Fungi', 'all', now(), NULL)
+,(374, 'Fungi', 'all', now(), NULL)
+,(378, 'Fungi', 'all', now(), NULL)
+,(382, 'Fungi', 'all', now(), NULL)
+,(383, 'Fungi', 'all', now(), NULL)
+,(384, 'Fungi', 'all', now(), NULL)
+,(385, 'Fungi', 'all', now(), NULL)
+,(488, 'Fungi', 'all', now(), NULL)
+,(489, 'Fungi', 'all', now(), NULL)
+,(490, 'Fungi', 'all', now(), NULL)
+,(491, 'Fungi', 'all', now(), NULL)
+,(492, 'Fungi', 'all', now(), NULL)
+
+,(378, 'Animalia', 'all', now(), NULL)
+,(483, 'Animalia', 'all', now(), NULL)
+,(489, 'Animalia', 'all', now(), NULL)
+,(490, 'Animalia', 'all', now(), NULL)
+
+,(375, 'Animalia', 'Bivalves', now(), NULL)
+,(482, 'Animalia', 'Bivalves', now(), NULL)
+,(484, 'Animalia', 'Bivalves', now(), NULL)
+,(485, 'Animalia', 'Bivalves', now(), NULL)
+,(488, 'Animalia', 'Bivalves', now(), NULL)
+,(491, 'Animalia', 'Bivalves', now(), NULL)
+,(492, 'Animalia', 'Bivalves', now(), NULL)
+
+-- Acanthocéphales à compléter ou améliorer
+,(482, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(484, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(485, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(488, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(491, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(492, 'Animalia', 'Acanthocéphales', now(), NULL)
+
+,(374, 'Animalia', 'Insectes', now(), NULL)
+,(375, 'Animalia', 'Insectes', now(), NULL)
+,(376, 'Animalia', 'Insectes', now(), NULL)
+,(377, 'Animalia', 'Insectes', now(), NULL)
+,(482, 'Animalia', 'Insectes', now(), NULL)
+,(484, 'Animalia', 'Insectes', now(), NULL)
+,(485, 'Animalia', 'Insectes', now(), NULL)
+,(486, 'Animalia', 'Insectes', now(), NULL)
+,(487, 'Animalia', 'Insectes', now(), NULL)
+,(488, 'Animalia', 'Insectes', now(), NULL)
+,(491, 'Animalia', 'Insectes', now(), NULL)
+,(492, 'Animalia', 'Insectes', now(), NULL)
+
+,(375, 'Animalia', 'Céphalopodes', now(), NULL)
+,(482, 'Animalia', 'Céphalopodes', now(), NULL)
+,(484, 'Animalia', 'Céphalopodes', now(), NULL)
+,(485, 'Animalia', 'Céphalopodes', now(), NULL)
+,(488, 'Animalia', 'Céphalopodes', now(), NULL)
+,(491, 'Animalia', 'Céphalopodes', now(), NULL)
+,(492, 'Animalia', 'Céphalopodes', now(), NULL)
+
+,(482, 'Animalia', 'Reptiles', now(), NULL)
+,(484, 'Animalia', 'Reptiles', now(), NULL)
+,(485, 'Animalia', 'Reptiles', now(), NULL)
+,(486, 'Animalia', 'Reptiles', now(), NULL)
+,(487, 'Animalia', 'Reptiles', now(), NULL)
+,(488, 'Animalia', 'Reptiles', now(), NULL)
+,(491, 'Animalia', 'Reptiles', now(), NULL)
+,(492, 'Animalia', 'Reptiles', now(), NULL)
+
+,(377, 'Animalia', 'Crustacés', now(), NULL)
+,(482, 'Animalia', 'Crustacés', now(), NULL)
+,(484, 'Animalia', 'Crustacés', now(), NULL)
+,(485, 'Animalia', 'Crustacés', now(), NULL)
+,(486, 'Animalia', 'Crustacés', now(), NULL)
+,(487, 'Animalia', 'Crustacés', now(), NULL)
+,(488, 'Animalia', 'Crustacés', now(), NULL)
+,(491, 'Animalia', 'Crustacés', now(), NULL)
+,(492, 'Animalia', 'Crustacés', now(), NULL)
+
+-- Scléractiniaires à compléter ou améliorer
+,(482, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(484, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(485, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(488, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(491, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(492, 'Animalia', 'Scléractiniaires', now(), NULL)
+
+-- Hydrozoaires à compléter ou améliorer
+,(482, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(484, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(485, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(486, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(487, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(488, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(491, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(492, 'Animalia', 'Hydrozoaires', now(), NULL)
+
+,(373, 'Animalia', 'Oiseaux', now(), NULL)
+,(374, 'Animalia', 'Oiseaux', now(), NULL)
+,(376, 'Animalia', 'Oiseaux', now(), NULL)
+,(482, 'Animalia', 'Oiseaux', now(), NULL)
+,(484, 'Animalia', 'Oiseaux', now(), NULL)
+,(485, 'Animalia', 'Oiseaux', now(), NULL)
+,(486, 'Animalia', 'Oiseaux', now(), NULL)
+,(487, 'Animalia', 'Oiseaux', now(), NULL)
+,(488, 'Animalia', 'Oiseaux', now(), NULL)
+,(491, 'Animalia', 'Oiseaux', now(), NULL)
+,(492, 'Animalia', 'Oiseaux', now(), NULL)
+
+,(373, 'Animalia', 'Poissons', now(), NULL)
+,(482, 'Animalia', 'Poissons', now(), NULL)
+,(484, 'Animalia', 'Poissons', now(), NULL)
+,(485, 'Animalia', 'Poissons', now(), NULL)
+,(488, 'Animalia', 'Poissons', now(), NULL)
+,(491, 'Animalia', 'Poissons', now(), NULL)
+,(492, 'Animalia', 'Poissons', now(), NULL)
+
+-- Némertes à compléter ou améliorer
+,(482, 'Animalia', 'Némertes', now(), NULL)
+,(484, 'Animalia', 'Némertes', now(), NULL)
+,(485, 'Animalia', 'Némertes', now(), NULL)
+,(488, 'Animalia', 'Némertes', now(), NULL)
+,(491, 'Animalia', 'Némertes', now(), NULL)
+,(492, 'Animalia', 'Némertes', now(), NULL)
+
+,(482, 'Animalia', 'Arachnides', now(), NULL)
+,(484, 'Animalia', 'Arachnides', now(), NULL)
+,(485, 'Animalia', 'Arachnides', now(), NULL)
+,(486, 'Animalia', 'Arachnides', now(), NULL)
+,(487, 'Animalia', 'Arachnides', now(), NULL)
+,(488, 'Animalia', 'Arachnides', now(), NULL)
+,(491, 'Animalia', 'Arachnides', now(), NULL)
+,(492, 'Animalia', 'Arachnides', now(), NULL)
+
+,(375, 'Animalia', 'Gastéropodes', now(), NULL)
+,(482, 'Animalia', 'Gastéropodes', now(), NULL)
+,(484, 'Animalia', 'Gastéropodes', now(), NULL)
+,(485, 'Animalia', 'Gastéropodes', now(), NULL)
+,(488, 'Animalia', 'Gastéropodes', now(), NULL)
+,(491, 'Animalia', 'Gastéropodes', now(), NULL)
+,(492, 'Animalia', 'Gastéropodes', now(), NULL)
+
+,(374, 'Animalia', 'Amphibiens', now(), NULL)
+,(376, 'Animalia', 'Amphibiens', now(), NULL)
+,(482, 'Animalia', 'Amphibiens', now(), NULL)
+,(484, 'Animalia', 'Amphibiens', now(), NULL)
+,(485, 'Animalia', 'Amphibiens', now(), NULL)
+,(486, 'Animalia', 'Amphibiens', now(), NULL)
+,(487, 'Animalia', 'Amphibiens', now(), NULL)
+,(488, 'Animalia', 'Amphibiens', now(), NULL)
+,(491, 'Animalia', 'Amphibiens', now(), NULL)
+,(492, 'Animalia', 'Amphibiens', now(), NULL)
+
+-- Octocoralliaires à compléter ou améliorer
+,(482, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(484, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(485, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(488, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(491, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(492, 'Animalia', 'Octocoralliaires', now(), NULL)
+
+-- Entognathes : pas d'ajouts spécifiques
+
+-- Pyctnogonides à compléter ou améliorer
+,(482, 'Animalia', 'Pycnogonides', now(), NULL)
+,(484, 'Animalia', 'Pycnogonides', now(), NULL)
+,(485, 'Animalia', 'Pycnogonides', now(), NULL)
+,(488, 'Animalia', 'Pycnogonides', now(), NULL)
+,(491, 'Animalia', 'Pycnogonides', now(), NULL)
+,(492, 'Animalia', 'Pycnogonides', now(), NULL)
+
+-- Autres Animalia à compléter ou améliorer
+,(375, 'Animalia', 'Autres', now(), NULL)
+,(482, 'Animalia', 'Autres', now(), NULL)
+,(484, 'Animalia', 'Autres', now(), NULL)
+,(485, 'Animalia', 'Autres', now(), NULL)
+,(486, 'Animalia', 'Autres', now(), NULL)
+,(487, 'Animalia', 'Autres', now(), NULL)
+,(488, 'Animalia', 'Autres', now(), NULL)
+,(491, 'Animalia', 'Autres', now(), NULL)
+,(492, 'Animalia', 'Autres', now(), NULL)
+
+,(482, 'Animalia', 'Annélides', now(), NULL)
+,(488, 'Animalia', 'Annélides', now(), NULL)
+,(491, 'Animalia', 'Annélides', now(), NULL)
+,(492, 'Animalia', 'Annélides', now(), NULL)
+
+-- Nématodes à compléter ou améliorer
+,(484, 'Animalia', 'Nématodes', now(), NULL)
+,(485, 'Animalia', 'Nématodes', now(), NULL)
+,(491, 'Animalia', 'Nématodes', now(), NULL)
+,(492, 'Animalia', 'Nématodes', now(), NULL)
+
+,(373, 'Animalia', 'Mammifères', now(), NULL)
+,(374, 'Animalia', 'Mammifères', now(), NULL)
+,(375, 'Animalia', 'Mammifères', now(), NULL)
+,(376, 'Animalia', 'Mammifères', now(), NULL)
+,(377, 'Animalia', 'Mammifères', now(), NULL)
+,(482, 'Animalia', 'Mammifères', now(), NULL)
+,(484, 'Animalia', 'Mammifères', now(), NULL)
+,(485, 'Animalia', 'Mammifères', now(), NULL)
+,(486, 'Animalia', 'Mammifères', now(), NULL)
+,(487, 'Animalia', 'Mammifères', now(), NULL)
+,(488, 'Animalia', 'Mammifères', now(), NULL)
+,(491, 'Animalia', 'Mammifères', now(), NULL)
+,(492, 'Animalia', 'Mammifères', now(), NULL)
+
+-- Ascidies à compléter ou améliorer
+,(482, 'Animalia', 'Ascidies', now(), NULL)
+,(484, 'Animalia', 'Ascidies', now(), NULL)
+,(485, 'Animalia', 'Ascidies', now(), NULL)
+,(488, 'Animalia', 'Ascidies', now(), NULL)
+,(491, 'Animalia', 'Ascidies', now(), NULL)
+,(492, 'Animalia', 'Ascidies', now(), NULL)
+
+,(482, 'Animalia', 'Myriapodes', now(), NULL)
+,(484, 'Animalia', 'Myriapodes', now(), NULL)
+,(485, 'Animalia', 'Myriapodes', now(), NULL)
+,(488, 'Animalia', 'Myriapodes', now(), NULL)
+,(491, 'Animalia', 'Myriapodes', now(), NULL)
+,(492, 'Animalia', 'Myriapodes', now(), NULL)
+
+-- Plathelminthes à compléter ou améliorer
+,(482, 'Animalia', 'Plathelminthes', now(), NULL)
+,(484, 'Animalia', 'Plathelminthes', now(), NULL)
+,(485, 'Animalia', 'Plathelminthes', now(), NULL)
+,(488, 'Animalia', 'Plathelminthes', now(), NULL)
+,(491, 'Animalia', 'Plathelminthes', now(), NULL)
+,(492, 'Animalia', 'Plathelminthes', now(), NULL)
+
+-- Autres chromista à compléter ou améliorer
+,(372, 'Chromista', 'Autres', now(), NULL)
+,(378, 'Chromista', 'Autres', now(), NULL)
+,(482, 'Chromista', 'Autres', now(), NULL)
+,(483, 'Chromista', 'Autres', now(), NULL)
+,(484, 'Chromista', 'Autres', now(), NULL)
+,(485, 'Chromista', 'Autres', now(), NULL)
+,(488, 'Chromista', 'Autres', now(), NULL)
+,(489, 'Chromista', 'Autres', now(), NULL)
+,(490, 'Chromista', 'Autres', now(), NULL)
+,(491, 'Chromista', 'Autres', now(), NULL)
+,(492, 'Chromista', 'Autres', now(), NULL)
+
+-- Algues brunes à compléter ou améliorer
+,(372, 'Chromista', 'Algues brunes', now(), NULL)
+,(378, 'Chromista', 'Algues brunes', now(), NULL)
+,(482, 'Chromista', 'Algues brunes', now(), NULL)
+,(483, 'Chromista', 'Algues brunes', now(), NULL)
+,(484, 'Chromista', 'Algues brunes', now(), NULL)
+,(485, 'Chromista', 'Algues brunes', now(), NULL)
+,(488, 'Chromista', 'Algues brunes', now(), NULL)
+,(489, 'Chromista', 'Algues brunes', now(), NULL)
+,(490, 'Chromista', 'Algues brunes', now(), NULL)
+,(491, 'Chromista', 'Algues brunes', now(), NULL)
+,(492, 'Chromista', 'Algues brunes', now(), NULL)
+
+-- Diatomées à compléter ou améliorer
+,(372, 'Chromista', 'Diatomées', now(), NULL)
+,(378, 'Chromista', 'Diatomées', now(), NULL)
+,(483, 'Chromista', 'Diatomées', now(), NULL)
+,(485, 'Chromista', 'Diatomées', now(), NULL)
+,(488, 'Chromista', 'Diatomées', now(), NULL)
+,(489, 'Chromista', 'Diatomées', now(), NULL)
+,(490, 'Chromista', 'Diatomées', now(), NULL)
+,(492, 'Chromista', 'Diatomées', now(), NULL)
+
+-- Protozoa à compléter ou améliorer
+,(378, 'Protozoa', 'Autres', now(), NULL)
+,(483, 'Protozoa', 'Autres', now(), NULL)
+,(485, 'Protozoa', 'Autres', now(), NULL)
+,(490, 'Protozoa', 'Autres', now(), NULL)
+,(492, 'Protozoa', 'Autres', now(), NULL)
 ;

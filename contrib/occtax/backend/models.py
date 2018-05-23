@@ -356,7 +356,7 @@ class ViewExportDLB(DB.Model):
     preuvNum = DB.Column('preuvNum', DB.Unicode)
     preuvNoNum = DB.Column('preuvNoNum', DB.Unicode)
     obsCtx = DB.Column('obsCtx', DB.Unicode)
-    permIdGrp = DB.Column('permIdGrp', DB.Unicode)
+    permIdGrp = DB.Column('permIdGrp',  UUID(as_uuid=True))
     methGrp = DB.Column('methGrp', DB.Unicode)
     typGrp = DB.Column('typGrp', DB.Unicode)
     denbrMax = DB.Column('denbrMax', DB.Integer)
