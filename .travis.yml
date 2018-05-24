@@ -5,7 +5,7 @@ python:
 
 
 before_install:
-  - sudo apt-get -y libgdal-dev
+  - sudo apt-get install -y libgdal-dev
   - sudo apt-get install -y python-gdal
 
 # install dependencies
