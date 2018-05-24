@@ -12,6 +12,8 @@ before_install:
 install:
   - cd backend
   - pip install -r requirements-travis.txt
+  - cd tests/travis_test
+  - 
 
 script:
   - pytest
