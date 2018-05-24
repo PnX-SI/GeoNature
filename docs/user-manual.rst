@@ -39,7 +39,7 @@ Ce module permet de saisir des données selon le standard Occurrence de taxon du
 Les données sont organisées en relevés (localisation, jeu de données, date, observateur...) qui sont composés d'observations 
 d'un ou plusieurs taxons (méthode, état, statut, détermination...).
 
-Pour chaque taxon observé, il est possible de renseigner un plusieurs dénombrements. 
+Pour chaque taxon observé, il est possible de renseigner un ou plusieurs dénombrements. 
 
 Chaque dénombrement correspond à un stade de vie et un sexe.
 
@@ -84,7 +84,7 @@ Selon les droits dont vous disposez, il est possible d'afficher, de modifier ou 
 
 .. image :: http://geonature.fr/docs/img/user-manual/02-occtax-tools.jpg
 
-Sur la liste, il est également possible de modifier les colonnes affichées par défaut:
+Sur la liste, il est également possible de modifier les colonnes affichées :
 
 .. image :: http://geonature.fr/docs/img/user-manual/02-occtax-modify-columns.jpg
 
@@ -94,7 +94,7 @@ Sur la liste, il est également possible de modifier les colonnes affichées par
 AFFICHER UN RELEVE
 """"""""""""""""""
 
-Si vous afficher un relevé, vous accéderez à sa fiche complète : 
+Si vous affichez un relevé, vous accéderez à sa fiche complète : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/03-occtax-detail.jpg
 
@@ -102,7 +102,7 @@ Si vous cliquez sur un des taxons observé dans ce relevé, cela affichera le d�
 
 .. image :: http://geonature.fr/docs/img/user-manual/03-occtax-detail-info.jpg
 
-Vous pouvez aussi consultez les dénombrement du taxon observé : 
+Vous pouvez aussi consulter les dénombrements du taxon observé : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/03-occtax-detail-counting.jpg
 
@@ -185,7 +185,7 @@ Par défaut, un dénombrement indéterminé d'un individu est renseigné :
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-counting.jpg
 
-Une fois le taxon renseigné, cliquer sur AJOUTER LE TAXON pour l'enregistrer : 
+Une fois le taxon renseigné, cliquer sur VALIDER LE TAXON pour l'enregistrer : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-save.jpg
 
@@ -220,13 +220,13 @@ Ou modifier une observation existante d'un taxon en le selectionnant dans la lis
 EXPORT
 """"""
 
-Une fois que vous avez saisi vos relevés et observations depuis le forumaire, vous pouvez exporter ces données en CSV selon le standard Occurrence de taxon du SINP.
+Une fois que vous avez saisi vos relevés et observations depuis le formulaire, vous pouvez exporter ces données en CSV selon le standard Occurrence de taxon du SINP.
 
-Deux méthodes sont possibles pour expoter les données:
+Deux méthodes sont possibles pour exporter les données :
 
 - Depuis le module "OccTax"
 
-Depuis la liste de vos relevés de l'interface carte-liste, filtrez d'abbord vos relevé par **jeu de données** et cliquez sur le bouton "Rechercher". 
+Depuis la liste de vos relevés de l'interface carte-liste, filtrez d'abord vos relevés par **jeu de données** (ou autre) et cliquez sur le bouton "Rechercher". 
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-search-bar.jpg
 
@@ -234,11 +234,9 @@ Puis cliquez sur le bouton "Télécharger les données" en bas de la liste des r
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-download-data.jpg
 
-  
-Une fenêtre s'ouvre, fournissant des informations sur le téléchargement des données. Selectionnez ensuite le format CSV pour GINCO:
+Une fenêtre s'ouvre, fournissant des informations sur le téléchargement des données. Selectionnez ensuite le format CSV pour GINCO :
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-download.jpg
-
 
 - Depuis le module d'export:
 
