@@ -6,8 +6,7 @@ python:
 # install dependencies
 install:
   - cd backend
-  - pip install -r requirements.txt
-  - pip install -r requirements-dev.txt
+  - pip install -r requirements-travis.txt
 
 script:
   - pytest
