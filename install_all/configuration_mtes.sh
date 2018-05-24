@@ -51,5 +51,5 @@ deactivate
 rm -r /tmp/custom
 rm -r /tmp/configuration
 rm /tmp/custom_frontend.zip
-rm /tmp/config_dlb.zip
+rm /tmp/configuration_dlb.zip
 rm /tmp/update_db.sql
