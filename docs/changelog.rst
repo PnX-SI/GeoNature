@@ -1,9 +1,24 @@
 =========
 CHANGELOG
 =========
+1.10.0-dev (unrelease)
+----------------------
+
+**Nouveautés**
+
+* compatibilité taxref v11
+* corrections mineures
+* compatibilité avec taxhub 1.4.0 (taxref v11), usershub 1.3.1, atlas 1.3.2
+
+**Notes de version**
+
+* Le passage à la version 11 de taxref est une opération assez lourde et complexe qui nécessite de passer à la version 1.4.0 de TaxHub. 
+Des scripts préparés par @amandinesahl sont disponibles sur le dépot de TaxHub et permettent de migrer votre contenu. Le script permettant de migrer la structure de la base ``update1.3.2to1.4.0.sql`` est incomplet pour GeoNature 1. Vous pouvez utiliser à la place le script ``update_1.9.1_to_1.10.0.sql`` qui est dédié à GeoNature 1. Vous devrez executer et éventuellement adapter ce script.
+* Vous pouvez passer directement d'une 1.7.X à la 1.10.0, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
+
 
 1.9.1 (2018-05-17)
-----------------------
+------------------
 
 **Nouveautés**
 

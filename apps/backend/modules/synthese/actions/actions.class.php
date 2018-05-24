@@ -121,7 +121,7 @@ class syntheseActions extends sfGeonatureActions
         }
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=synthese_observations_".date("Y-m-d_His").".xls");
-        print utf8_decode($csv_output);
+        print $csv_output;
         exit;
     }
     
@@ -152,7 +152,7 @@ class syntheseActions extends sfGeonatureActions
 
         header("Content-type: application/vnd.ms-excel; charset=utf-8\n\n");
         header("Content-disposition: attachment; filename=synthese_statuts_".date("Y-m-d_His").".xls");
-        print utf8_decode($csv_output);
+        print $csv_output;
         exit;
     
     }

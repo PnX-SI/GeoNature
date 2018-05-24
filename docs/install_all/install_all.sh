@@ -30,7 +30,7 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
 sudo apt-get install -y nodejs
 # installation de apache, php, mapserver, gdal, postgresql&postgis, python, supervisor
 sudo apt-get install -y apache2 libapache2-mod-php5.6 libapache2-mod-proxy-html libapache2-mod-perl2
-sudo apt-get install -y php5.6 php5.6-gd php5.6-pgsql
+sudo apt-get install -y php5.6 php5.6-gd php5.6-pgsql php5.6-zip php5.6-xml
 sudo apt-get install -y cgi-mapserver gdal-bin libgeos-dev
 sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
 sudo apt-get install -y python-dev python-pip libpq-dev python-setuptools python-gdal python-virtualenv build-essential supervisor
