@@ -8,7 +8,7 @@ sudo cp ./geonature_config.toml /etc/geonature_config.toml
 
 python ../../../geonature_cmd.py install_command
 
-geonature install_gn_module /home/$(whoami)/PnX-SI/GeoNature/contrib/occtax occtax --build=false
+geonature install_gn_module $(TRAVIS_BUILD_DIR)contrib/occtax occtax --build=false
 
 
 
