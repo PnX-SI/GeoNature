@@ -1,0 +1,13 @@
+language: python
+
+python:
+    - "3.5"
+
+# install dependencies
+install: 
+  - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
+
+script:
+  - pytest ./test.py
+  
