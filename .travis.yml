@@ -3,6 +3,11 @@ language: python
 python:
     - "3.5"
 
+
+before_install:
+  - sudo apt-get -y libgdal-dev
+  - sudo apt-get install -y python-gdal
+
 # install dependencies
 install:
   - cd backend
