@@ -9,5 +9,8 @@ install:
   - pip install -r requirements-dev.txt
 
 script:
-  - pytest ./test.py
-  
+  - cd backend
+  - pytest
+
+notifications:
+  email: false
