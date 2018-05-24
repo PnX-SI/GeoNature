@@ -4,12 +4,12 @@ python:
     - "3.5"
 
 # install dependencies
-install: 
+install:
+  - cd backend
   - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
 
 script:
-  - cd backend
   - pytest
 
 notifications:
