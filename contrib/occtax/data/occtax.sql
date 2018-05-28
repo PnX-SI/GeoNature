@@ -436,6 +436,14 @@ CREATE TRIGGER tri_log_changes_cor_role_releves_occtax
   ON cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_calculate_geom_local
+  BEFORE INSERT OR UPDATE
+  ON pr_occtax.t_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
+
 ------------
 --VIEWS--
 ------------
