@@ -179,6 +179,26 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
+  RETURNS text AS
+$BODY$
+    DECLARE
+        theparamvalue text; 
+-- Function that allows to get value of a parameter depending on his name and organism
+-- USAGE : SELECT gn_commons.get_default_parameter('taxref_version');
+-- OR      SELECT gn_commons.get_default_parameter('uuid_url_value', 2);
+  BEGIN
+    IF myidorganisme IS NOT NULL THEN
+      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
+    ELSE
+      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
+    END IF;
+    RETURN theparamvalue;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
 
 -------------
 --TABLES--
@@ -214,26 +234,6 @@ ALTER SEQUENCE bib_tables_location_id_table_location_seq OWNED BY bib_tables_loc
 ALTER TABLE ONLY bib_tables_location ALTER COLUMN id_table_location SET DEFAULT nextval('bib_tables_location_id_table_location_seq'::regclass);
 SELECT pg_catalog.setval('bib_tables_location_id_table_location_seq', 1, false);
 
-
-CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
-  RETURNS text AS
-$BODY$
-    DECLARE
-        theparamvalue text; 
--- Function that allows to get value of a parameter depending on his name and organism
--- USAGE : SELECT gn_meta.get_default_parameter('taxref_version');
--- OR      SELECT gn_meta.get_default_parameter('uuid_url_value', 2);
-  BEGIN
-    IF myidorganisme IS NOT NULL THEN
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
-    ELSE
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
-    END IF;
-    RETURN theparamvalue;
-  END;
-$BODY$
-  LANGUAGE plpgsql IMMUTABLE
-  COST 100;
 
 
 CREATE TABLE t_medias

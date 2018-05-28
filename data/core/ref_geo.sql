@@ -21,6 +21,9 @@ CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
 -- La fonction prend deux parametres:
 -- 1er param: nom de la colonne de la geom en 4326
 -- 2eme param: nom de la colonne de la geom local
+
+--USAGE : ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -201,7 +204,7 @@ $BODY$
 DECLARE
     isrid int;
 BEGIN
-    SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+    SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
     RETURN QUERY
     WITH d  as (
         SELECT st_transform(myGeom,isrid) a
@@ -226,7 +229,7 @@ $BODY$
 DECLARE
   isrid int;
 BEGIN
-  SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
   RETURN QUERY
   WITH d  as (
       SELECT st_transform(myGeom,isrid) geom_trans
