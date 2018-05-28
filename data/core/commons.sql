@@ -13,6 +13,11 @@ SET search_path = gn_commons, pg_catalog;
 SET default_with_oids = false;
 
 
+-------------
+--FUNCTIONS--
+-------------
+
+
 CREATE OR REPLACE FUNCTION check_entity_field_exist(myentity character varying)
   RETURNS boolean AS
 $BODY$
@@ -175,6 +180,21 @@ $BODY$
   COST 100;
 
 
+-------------
+--TABLES--
+-------------
+
+CREATE TABLE t_parameters (
+    id_parameter integer NOT NULL,
+    id_organism integer,
+    parameter_name character varying(100) NOT NULL,
+    parameter_desc text,
+    parameter_value text NOT NULL,
+    parameter_extra_value character varying(255)
+);
+COMMENT ON TABLE t_parameters IS 'Allow to manage content configuration depending on organism or not (CRUD depending on privileges).';
+
+
 CREATE TABLE bib_tables_location
 (
   id_table_location integer NOT NULL,
@@ -193,6 +213,27 @@ CREATE SEQUENCE bib_tables_location_id_table_location_seq
 ALTER SEQUENCE bib_tables_location_id_table_location_seq OWNED BY bib_tables_location.id_table_location;
 ALTER TABLE ONLY bib_tables_location ALTER COLUMN id_table_location SET DEFAULT nextval('bib_tables_location_id_table_location_seq'::regclass);
 SELECT pg_catalog.setval('bib_tables_location_id_table_location_seq', 1, false);
+
+
+CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
+  RETURNS text AS
+$BODY$
+    DECLARE
+        theparamvalue text; 
+-- Function that allows to get value of a parameter depending on his name and organism
+-- USAGE : SELECT gn_meta.get_default_parameter('taxref_version');
+-- OR      SELECT gn_meta.get_default_parameter('uuid_url_value', 2);
+  BEGIN
+    IF myidorganisme IS NOT NULL THEN
+      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
+    ELSE
+      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
+    END IF;
+    RETURN theparamvalue;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
 
 
 CREATE TABLE t_medias
@@ -308,6 +349,9 @@ COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux a
 ---------------
 --PRIMARY KEY--
 ---------------
+ALTER TABLE ONLY t_parameters
+    ADD CONSTRAINT pk_t_parameters PRIMARY KEY (id_parameter);
+
 ALTER TABLE ONLY bib_tables_location
     ADD CONSTRAINT pk_bib_tables_location PRIMARY KEY (id_table_location);
 
