@@ -6,7 +6,7 @@ if [ "$(id -u)" == "0" ]; then
    exit 1
 fi
 
-. ../config/settings.ini
+. install_all.ini
 
 cd /tmp
 
@@ -16,10 +16,9 @@ wget http://geonature.fr/documents/install_dlb/custom_frontend.zip
 unzip custom_frontend.zip
 unzip configuration_dlb.zip
 
-echo "Ecriture de la liste de taxons"
 
 echo "Ecriture de la liste de taxons" >> /var/log/geonature/install_db.log
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/update_db.sql  &>> /var/log/geonature/install_db.log
+export PGPASSWORD=$user_pg_pass;psql -h $pg_host -U $user_pg -d $geonaturedb_name -f /tmp/update_db.sql  &>> /var/log/geonature/install_db.log
 
 rm -r /home/$monuser/geonature/frontend/src/custom
 cp -r custom /home/$monuser/geonature/frontend/src/
