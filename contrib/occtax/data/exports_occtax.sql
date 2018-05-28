@@ -18,7 +18,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     rel.altitude_min AS "altMin",
     occ.cd_nom AS "cdNom",
     taxonomie.find_cdref(occ.cd_nom) AS "cdRef",
-    gn_meta.get_default_parameter('taxref_version'::text, NULL::integer) AS "versionTAXREF",
+    gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "versionTAXREF",
     rel.date_min AS datedet,
     occ.comment,
     'NSP'::text AS "dSPublique",
