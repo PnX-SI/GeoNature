@@ -18,7 +18,6 @@ from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
 
-
 def testDataType(value, sqlType, paramName):
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
         try:
@@ -49,6 +48,7 @@ SERIALIZERS = {
     'time': lambda x: str(x) if x else None,
     'timestamp': lambda x: str(x) if x else None,
     'uuid': lambda x: str(x) if x else None,
+    'numeric': lambda x: str(x) if x else None
 }
 
 
@@ -151,6 +151,7 @@ def serializable(cls):
         if not db_col.type.__class__.__name__ == 'Geometry'
     ]
 
+
     """
         Liste des propriétés de type relationship
         uselist permet de savoir si c'est une collection de sous objet
@@ -160,6 +161,7 @@ def serializable(cls):
     cls_db_relationships = [
         (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
     ]
+
 
     def serializefn(self, recursif=False, columns=()):
         """
@@ -184,6 +186,7 @@ def serializable(cls):
 
         if recursif is False:
             return out
+
         for (rel, uselist) in cls_db_relationships:
             if getattr(self, rel) is None:
                 break
