@@ -1,20 +1,27 @@
-import pytest
+import json
 
+import pytest
 import server
 from geonature.utils.env import load_config, get_config_file_path
 
 #TODO: fixture pour mettre des données test dans la base a chaque test
 
 @pytest.fixture
-def geonature_app():
-    """ set the application context """
+def app():
     config_path = get_config_file_path()
     config = load_config(config_path)
     app = server.get_app(config)
-    ctx = app.app_context()
-    ctx.push()
-    yield app
-    ctx.pop()
+    app.config['TESTING'] = True
+    return app
+
+
+def post_json(client, url, json_dict):
+    """Send dictionary json_dict as a json to the specified url """
+    return client.post(url, data=json.dumps(json_dict), content_type='application/json')
+
+def json_of_response(response):
+    """Decode json from response"""
+    return json.loads(response.data.decode('utf8'))
 
 
 @pytest.fixture()
@@ -39,7 +46,7 @@ def releve_data(request):
             "meta_device_entry": "web",
             "comment": None,
             "id_nomenclature_obs_technique": 343,
-            "observers": [],
+            "observers": [1],
             "observers_txt": "tatatato",
             "id_nomenclature_grp_typ": 150,
             "t_occurrences_occtax": [

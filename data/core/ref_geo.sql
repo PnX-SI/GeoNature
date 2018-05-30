@@ -12,6 +12,45 @@ CREATE SCHEMA IF NOT EXISTS ref_geo;
 
 SET search_path = ref_geo, pg_catalog;
 
+
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
+-- Foncion générique permettant de calculer une geom locale à partir d'une geom source (en récupérant le parametre 'local_srid' de la table gn_commons.t_parameters)
+-- La fonction prend deux parametres:
+-- 1er param: nom de la colonne de la geom en 4326
+-- 2eme param: nom de la colonne de la geom local
+
+--USAGE : ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+	thelocalgeomcol text := quote_ident(TG_ARGV[1]);
+        thelocalsrid int;
+        thegeomlocalvalue public.geometry;
+        thegeomchange boolean;
+BEGIN
+	-- Test si la geom a été modifiée
+	EXECUTE FORMAT(
+		'SELECT ST_EQUALS($1.%I, $1.%I)', the4326geomcol, thelocalgeomcol
+		) INTO thegeomchange USING NEW;
+	-- si insertion ou geom modifiée, on calcule la geom locale
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, %L)',the4326geomcol, thelocalsrid ) INTO thegeomlocalvalue USING NEW;
+		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
 ----------------------
 --TABLES & SEQUENCES--
 ----------------------
@@ -165,7 +204,7 @@ $BODY$
 DECLARE
     isrid int;
 BEGIN
-    SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+    SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
     RETURN QUERY
     WITH d  as (
         SELECT st_transform(myGeom,isrid) a
@@ -190,7 +229,7 @@ $BODY$
 DECLARE
   isrid int;
 BEGIN
-  SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
   RETURN QUERY
   WITH d  as (
       SELECT st_transform(myGeom,isrid) geom_trans

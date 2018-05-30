@@ -88,7 +88,7 @@ CREATE TABLE synthese (
     count_max integer,
     cd_nom integer,
     nom_cite character varying(255) NOT NULL,
-    meta_v_taxref character varying(50) DEFAULT 'SELECT get_default_parameter(''taxref_version'',NULL)',
+    meta_v_taxref character varying(50) DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)',
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
