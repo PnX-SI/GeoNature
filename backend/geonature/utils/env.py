@@ -225,14 +225,12 @@ def frontend_routes_templating():
             location = Path(manifest['module_path'])
 
             # test if module have frontend
-            if not (location / 'frontend').is_dir():
-                break
-
-            path = conf['api_url'].lstrip('/')
-            location = '{}/{}#GeonatureModule'.format(
-                location, GN_MODULE_FE_FILE
-            )
-            routes.append({'path': path, 'location': location, 'id_module': conf['id_application']})
+            if (location / 'frontend').is_dir():   
+                path = conf['api_url'].lstrip('/')
+                location = '{}/{}#GeonatureModule'.format(
+                    location, GN_MODULE_FE_FILE
+                )
+                routes.append({'path': path, 'location': location, 'id_module': conf['id_application']})
 
             # TODO test if two modules with the same name is okay for Angular
 
