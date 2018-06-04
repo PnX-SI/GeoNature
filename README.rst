@@ -1,6 +1,11 @@
 ============
-GeoNature V2
+GeoNature V2 
 ============
+
+.. image:: https://travis-ci.org/PnX-SI/GeoNature.svg?branch=develop
+    :target: https://travis-ci.org/PnX-SI/GeoNature
+    
+    
 
 GeoNature V2 en cours de développement. Refonte complète de la BDD et changement de technologies : 
 
