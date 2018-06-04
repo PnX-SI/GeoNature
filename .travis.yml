@@ -20,4 +20,8 @@ script:
   - pytest
 
 notifications:
-  email: false
+  on_failure: always
+  on_success: never
+  email:
+  recipients:
+    - theo.lechemia@ecrins-parcnational.net
