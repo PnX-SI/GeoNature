@@ -4,6 +4,8 @@ from flask import url_for
 
 from .bootstrap_test import app, post_json, json_of_response, get_token
 
+from geonature.core.users import routes as users
+
 
 @pytest.mark.usefixtures('client_class')
 class TestGnMeta:
@@ -21,7 +23,6 @@ class TestGnMeta:
         """
         token = get_token(self.client)
         response = self.client.get(url_for('gn_meta.get_datasets'))
-        print(response)
         assert response.status_code == 200
         
         dataset_list = json_of_response(response)
@@ -46,6 +47,39 @@ class TestGnMeta:
         )
         
         
+    def test_mtd_interraction(self):
+        from geonature.core.gn_meta.mtd_utils import post_jdd_from_user, get_jdd_by_user_id, parse_jdd_xml
+        
+        """
+        Test du web service MTD
+        A partir d'un utilisateur renvoyé par le CAS
+        on insert l'utilisateur 'demo.geonature' et son organisme s'il existe pas
+        puis on poste les CA et JDD renvoyé à le WS MTD
+        """
+        user = {
+            "id_role": 10991,
+            "identifiant": 'test.mtd',
+            "nom_role": 'test_mtd',
+            "prenom_role": 'test_mtd',
+            "id_organisme": 104,
+        }
+
+        organism = {
+            "id_organisme": 104,
+            "nom_organisme": 'test'
+        }
+        resp = users.insert_organism(organism)
+        assert resp.status_code == 200
+        
+        resp = users.insert_role(user)
+        users.insert_in_cor_role(20003, user['id_role'])
+        assert resp.status_code == 200
+
+        jdds = post_jdd_from_user(id_user=10991, id_organism=104)
+        assert len(jdds) >= 1
+
+
+            
         
 
 
