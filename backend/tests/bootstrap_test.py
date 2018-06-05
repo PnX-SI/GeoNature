@@ -1,10 +1,15 @@
 import json
 
 import pytest
+
+from flask import url_for
+from cookies import Cookie
+
 import server
 from geonature.utils.env import load_config, get_config_file_path
 
 #TODO: fixture pour mettre des données test dans la base a chaque test
+
 
 @pytest.fixture
 def app():
@@ -22,6 +27,35 @@ def post_json(client, url, json_dict):
 def json_of_response(response):
     """Decode json from response"""
     return json.loads(response.data.decode('utf8'))
+
+mimetype = 'application/json'
+headers = {
+    'Content-Type': mimetype,
+    'Accept': mimetype
+}
+
+def get_token(client, login="admin", password="admin"):
+    data = {
+            'login': login,
+            'password': password,
+            'id_application': 14,
+            'with_cruved': True
+        }
+    response = client.post(
+        url_for('auth.login'),
+        data = json.dumps(data),
+        headers = headers
+    )
+    try:
+        token = Cookie.from_string(response.headers['Set-Cookie'])
+        return token.value
+    except Exception:
+        raise Exception('Invalid login {}, {}'.format(login, password))
+
+
+    
+
+
 
 
 @pytest.fixture()

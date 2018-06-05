@@ -1,7 +1,7 @@
 import json
 import pytest
 from flask import url_for, session, Response, request
-from .bootstrap_test import app, releve_data, post_json, json_of_response
+from .bootstrap_test import app, releve_data, post_json, json_of_response, get_token
 from cookies import Cookie
 
 from geonature.utils.errors import InsufficientRightsError
@@ -18,27 +18,9 @@ class TestApiModulePrOcctax:
         'Accept': mimetype
     }
 
-    def get_token(self, login="admin", password="admin"):
-        data = {
-                'login': login,
-                'password': password,
-                'id_application': 14,
-                'with_cruved': True
-            }
-        response = self.client.post(
-            url_for('auth.login'),
-            data = json.dumps(data),
-            headers = self.headers
-        )
-        try:
-            token = Cookie.from_string(response.headers['Set-Cookie'])
-            return token.value
-        except Exception:
-            raise Exception('Invalid login {}, {}'.format(login, password))
-
 
     def test_get_releves(self):
-        token = self.get_token()
+        token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
         response = self.client.get(
             url_for('pr_occtax.getReleves')
@@ -48,7 +30,7 @@ class TestApiModulePrOcctax:
 
 
     def test_insert_update_delete_releves(self, releve_data):
-        token = self.get_token()
+        token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
 
 
@@ -90,7 +72,7 @@ class TestApiModulePrOcctax:
 
 
     def test_get_export_sinp(self):
-        token = self.get_token()
+        token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
 
         response = self.client.get(
@@ -100,7 +82,7 @@ class TestApiModulePrOcctax:
         assert response.status_code == 200
     
     def test_export_sinp_multiformat(self):
-        token = self.get_token()
+        token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
 
         base_query_string = {
@@ -143,7 +125,7 @@ class TestApiModulePrOcctax:
         """
             user admin is observer of releve 1
         """
-        token = self.get_token()
+        token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
 
         response = self.client.get(
@@ -155,7 +137,8 @@ class TestApiModulePrOcctax:
             user agent is not observer, digitiser
             or in cor_dataset_actor
         """
-        token = self.get_token(
+        token = get_token(
+            self.client,
             login="agent",
             password="admin"
         )
@@ -173,7 +156,8 @@ class TestApiModulePrOcctax:
             user agent is not observer, digitiser
             or in cor_dataset_actor
         """
-        token = self.get_token(
+        token = get_token(
+            self.client,
             login="agent",
             password="admin"
         )

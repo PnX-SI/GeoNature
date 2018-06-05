@@ -8,12 +8,8 @@ from geonature.utils.env import load_config, get_config_file_path
 def pytest_sessionstart(session):
     """ before session.main() is called. """
     print('BEGIN')
-    execute_script('sample_data.sql')
-
-def pytest_sessionfinish(session, exitstatus):
-    """ whole test run finishes. """
     execute_script('delete_sample_data.sql')
-    print('FINISHE')
+    execute_script('sample_data.sql')
 
 def execute_script(file_name):
     """ 
