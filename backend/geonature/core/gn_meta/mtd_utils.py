@@ -29,7 +29,7 @@ def get_acquisition_framework(uuid_af):
     try:
         r = utilsrequests.get(url.format(api_endpoint, uuid_af))
     except AssertionError:
-        raise GeonatureApiError(message="Error with the MTD Web Service")
+        raise GeonatureApiError(message="Error with the MTD Web Service while getting Acquisition Framwork")
     return r.content
 
 
@@ -65,7 +65,7 @@ def get_jdd_by_user_id(id_user):
         r = utilsrequests.get(url.format(api_endpoint, str(id_user)))
         assert r.status_code == 200
     except AssertionError:
-        raise GeonatureApiError(message="Error with the MTD Web Service, status_code: {}".format(r.status_code))
+        raise GeonatureApiError(message="Error with the MTD Web Service (JDD), status_code: {}".format(r.status_code))
     return r.content
 
 def parse_jdd_xml(xml):
@@ -105,11 +105,8 @@ def parse_jdd_xml(xml):
 def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
     xml_af = None
-    try:
-        xml_af = get_acquisition_framework(uuid)
-    except GeonatureApiError as e:
-        log.error(e)
-        gunicorn_error_logger.info(e)
+    xml_af = get_acquisition_framework(uuid)
+
 
     if xml_af:
         acquisition_framwork = parse_acquisition_framwork_xml(xml_af)
@@ -150,11 +147,7 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
 def post_jdd_from_user(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
     xml_jdd = None
-    try:
-        xml_jdd = get_jdd_by_user_id(id_user)
-    except GeonatureApiError as e:
-        log.error(e)
-        gunicorn_error_logger.info(e)
+    xml_jdd = get_jdd_by_user_id(id_user)
 
     if xml_jdd:
         dataset_list = parse_jdd_xml(xml_jdd)

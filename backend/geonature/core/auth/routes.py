@@ -13,7 +13,6 @@ from flask import (
 )
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from geonature.core.gn_meta import routes as gn_meta
 from geonature.core.users import routes as users
 from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
