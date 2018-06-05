@@ -12,7 +12,7 @@ ALTER TABLE ONLY gn_commons.t_parameters
     ADD CONSTRAINT pk_t_parameters PRIMARY KEY (id_parameter);
 
 
-CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
+CREATE OR REPLACE FUNCTION gn_commons.get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
   RETURNS text AS
 $BODY$
     DECLARE
@@ -37,27 +37,30 @@ INSERT INTO gn_commons.t_parameters (id_parameter, id_organism, parameter_name, 
 SELECT * FROM gn_meta.t_parameters;
 
 
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_area_intersection(
+  IN mygeom public.geometry,
+  IN myidtype integer DEFAULT NULL::integer)
+RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
+$BODY$
+DECLARE
+  isrid int;
+BEGIN
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+  RETURN QUERY
+  WITH d  as (
+      SELECT st_transform(myGeom,isrid) geom_trans
+  )
+  SELECT a.id_area, a.id_type, a.area_code, a.area_name
+  FROM ref_geo.l_areas a, d
+  WHERE st_intersects(geom_trans, a.geom)
+    AND (myIdType IS NULL OR a.id_type = myIdType)
+    AND enable=true;
 
-CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
-  RETURNS text AS
+END;
 $BODY$
-    DECLARE
-        theparamvalue text; 
--- Function that allows to get value of a parameter depending on his name and organism
--- USAGE : SELECT gn_commons.get_default_parameter('taxref_version');
--- OR      SELECT gn_commons.get_default_parameter('uuid_url_value', 2);
-  BEGIN
-    IF myidorganisme IS NOT NULL THEN
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
-    ELSE
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
-    END IF;
-    RETURN theparamvalue;
-  END;
-$BODY$
-  LANGUAGE plpgsql IMMUTABLE
-  COST 100;
-  
+LANGUAGE plpgsql VOLATILE
+COST 100
+ROWS 1000;
 
 ALTER TABLE gn_synthese.synthese
 ALTER COLUMN meta_v_taxref SET DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)'::character varying;
