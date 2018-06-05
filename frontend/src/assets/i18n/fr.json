@@ -37,6 +37,9 @@
     "AddPolygon": "Localisez l'observation (polygone)",
     "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
   },
+  "MetaData": {
+    "JddError": "Erreur lors de la récupération des jeux de données"
+  },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
     "AdvancedFilters": "Filtres avancés",
