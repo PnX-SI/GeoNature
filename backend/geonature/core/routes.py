@@ -13,7 +13,7 @@ from geojson import FeatureCollection
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
 from geonature.utils.utilssqlalchemy import (
-    json_resp, GenericTable, testDataType
+    json_resp, GenericQuery, testDataType
 )
 from geonature.utils.errors import GeonatureApiError
 
@@ -109,72 +109,10 @@ def get_generic_view(view_schema, view_name):
     # @TODO créer un système de mise en cache des vues mappées
     geom = parameters.get('geometry_field', None)
 
-    view = GenericTable(view_name, view_schema, geom)
+    results = GenericQuery(
+        DB.session,
+        view_name, view_schema, geom,
+        parameters, limit, page
+    ).return_query()
 
-    # Construction de la requête en fonction des filtres
-    q = DB.session.query(view.tableDef)
-    nbResultsWithoutFilter = q.count()
-    for f in parameters:
-        if f in view.columns:
-            q = q.filter(view.tableDef.columns[f] == parameters.get(f))
-
-        if f.startswith('ilike_'):
-            col = view.tableDef.columns[f[6:]]
-            if col.type.__class__.__name__ == "TEXT":
-                q = q.filter(col.ilike('%{}%'.format(parameters.get(f))))
-
-        if f.startswith('filter_d_'):
-            col = view.tableDef.columns[f[12:]]
-            col_type = col.type.__class__.__name__
-            testT = testDataType(parameters.get(f), DB.DateTime, col)
-            if testT:
-                raise GeonatureApiError(message=testT)
-            if col_type in ("Date", "DateTime", "TIMESTAMP"):
-                if f.startswith('filter_d_up_'):
-                    q = q.filter(col >= parameters.get(f))
-                if f.startswith('filter_d_lo_'):
-                    q = q.filter(col <= parameters.get(f))
-                if f.startswith('filter_d_eq_'):
-                    q = q.filter(col == parameters.get(f))
-
-        if f.startswith('filter_n_'):
-            col = view.tableDef.columns[f[12:]]
-            col_type = col.type.__class__.__name__
-            testT = testDataType(parameters.get(f), DB.Numeric, col)
-            if testT:
-                raise GeonatureApiError(message=testT)
-            if f.startswith('filter_n_up_'):
-                q = q.filter(col >= parameters.get(f))
-            if f.startswith('filter_n_lo_'):
-                q = q.filter(col <= parameters.get(f))
-
-    # Ordonnancement
-    if 'orderby' in parameters:
-        if parameters.get('orderby') in view.columns:
-            orderCol = getattr(
-                view.tableDef.columns,
-                parameters['orderby']
-            )
-
-        if 'order' in parameters:
-            if parameters['order'] == 'desc':
-                orderCol = orderCol.desc()
-
-        q = q.order_by(orderCol)
-
-    # Récupération des résulats
-    data = q.limit(limit).offset(page * limit).all()
-    nbResults = q.count()
-
-    if geom:
-        results = FeatureCollection([view.as_geo_feature(d) for d in data])
-    else:
-        results = [view.as_dict(d) for d in data]
-
-    return {
-        'total': nbResultsWithoutFilter,
-        'total_filtered': nbResults,
-        'page': page,
-        'limit': limit,
-        'items': results
-    }
+    return results
