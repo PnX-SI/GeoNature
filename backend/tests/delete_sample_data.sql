@@ -9,9 +9,9 @@ DELETE FROM gn_meta.cor_dataset_territory;
 DELETE FROM gn_meta.cor_dataset_actor;
 DELETE FROM gn_meta.t_datasets;
 
-DELETE FROM gn_meta.cor_acquisition_framework_objectif
-DELETE FROM gn_meta.cor_acquisition_framework_publication
-DELETE FROM gn_meta.cor_acquisition_framework_voletsinp
+DELETE FROM gn_meta.cor_acquisition_framework_objectif;
+DELETE FROM gn_meta.cor_acquisition_framework_publication;
+DELETE FROM gn_meta.cor_acquisition_framework_voletsinp;
 DELETE FROM gn_meta.cor_acquisition_framework_actor;
 DELETE FROM gn_meta.t_acquisition_frameworks;
 
