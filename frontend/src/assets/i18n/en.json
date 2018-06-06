@@ -37,7 +37,9 @@
     "ObservationNumber": "Observation number:"
   },
   "MetaData": {
-    "JddError": "Error while fetching datasets"
+    "JddError": "Error while fetching datasets",
+    "NoJDD": "No dataset found, contact your administrator",
+    "NoJDDMTD": "No dataset found, first go to the MTD application"
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
