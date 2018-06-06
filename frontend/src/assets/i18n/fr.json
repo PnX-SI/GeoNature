@@ -40,7 +40,7 @@
   "MetaData": {
     "JddError": "Erreur lors de la récupération des jeux de données",
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
-    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abbord les saisir dans l'application MTD"
+    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD"
   },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
