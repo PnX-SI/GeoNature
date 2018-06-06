@@ -24,4 +24,4 @@ notifications:
   on_success: never
   email:
   recipients:
-    - theo.lechemia@ecrins-parcnational.net
+    - theo.lechemia@ecrins-parcnational.fr
