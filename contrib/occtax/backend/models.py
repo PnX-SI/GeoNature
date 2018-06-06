@@ -161,7 +161,7 @@ class TOccurrencesOccurrence(DB.Model):
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
-        default=select([func.get_default_parameter('taxref_version', 'NULL')])
+        default=select([func.gn_commons.get_default_parameter('taxref_version', 'NULL')])
     )
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
@@ -356,7 +356,7 @@ class ViewExportDLB(DB.Model):
     preuvNum = DB.Column('preuvNum', DB.Unicode)
     preuvNoNum = DB.Column('preuvNoNum', DB.Unicode)
     obsCtx = DB.Column('obsCtx', DB.Unicode)
-    permIdGrp = DB.Column('permIdGrp',  UUID(as_uuid=True))
+    permIdGrp = DB.Column('permIdGrp', UUID(as_uuid=True))
     methGrp = DB.Column('methGrp', DB.Unicode)
     typGrp = DB.Column('typGrp', DB.Unicode)
     denbrMax = DB.Column('denbrMax', DB.Integer)

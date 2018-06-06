@@ -44,11 +44,10 @@
       </pnx-date>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1 padding-md">
-      <span class="time-button" (click)="toggleTime()">
-        <i *ngIf="!showTime" class="fa fa-plus time-plus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
-        <i *ngIf="showTime" class="fa fa-minus" data-toggle="collapse" data-target="#collapseTime" aria-expanded="false"></i>
-      </span>
-    </div>
+       <button class="btn btn-sm btn-secondary time-button" *ngIf="!showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime">
+         <i class="fa fa-plus time-plus"  aria-expanded="false"></i></button> 
+       <button class="btn btn-sm btn-secondary time-button" *ngIf="showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime"> 
+         <i class="fa fa-minus"  aria-expanded="false"></i></button>
     <small *ngIf="releveForm.errors?.invalidDate" class="error" style="color:red">
       {{ 'Releve.DateMaxError' | translate }}
     </small>

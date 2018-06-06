@@ -12,43 +12,10 @@ SET search_path = gn_meta, pg_catalog;
 
 SET default_with_oids = false;
 
--------------
---FUNCTIONS--
--------------
-CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
-  RETURNS text AS
-$BODY$
-    DECLARE
-        theparamvalue text; 
--- Function that allows to get value of a parameter depending on his name and organism
--- USAGE : SELECT gn_meta.get_default_parameter('taxref_version');
--- OR      SELECT gn_meta.get_default_parameter('uuid_url_value', 2);
-  BEGIN
-    IF myidorganisme IS NOT NULL THEN
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
-    ELSE
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
-    END IF;
-    RETURN theparamvalue;
-  END;
-$BODY$
-  LANGUAGE plpgsql IMMUTABLE
-  COST 100;
-
 
 ----------
 --TABLES--
 ----------
-CREATE TABLE t_parameters (
-    id_parameter integer NOT NULL,
-    id_organism integer,
-    parameter_name character varying(100) NOT NULL,
-    parameter_desc text,
-    parameter_value text NOT NULL,
-    parameter_extra_value character varying(255)
-);
-COMMENT ON TABLE t_parameters IS 'Allow to manage content configuration depending on organism or not (CRUD depending on privileges).';
-
 
 -- CREATE TABLE sinp_datatype_actors (
 --     id_actor integer NOT NULL,

@@ -100,7 +100,6 @@ Pour Debian 8:
 ::
 
     adduser geonatureadmin
-
 Lui donner ensuite des droits sudo
 
 ::

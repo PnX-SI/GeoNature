@@ -10,7 +10,7 @@ external_assets/
 
 config.py
 backend/static/*
-
+backend/run.py
 
 .vscode
 

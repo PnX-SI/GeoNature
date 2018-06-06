@@ -270,27 +270,33 @@ def create_external_assets_symlink(module_path, module_name):
     """
         Create a symlink for the module assets
     """
-    module_assets_dir = "{path}/frontend/assets/".format(
-        path=module_path
-    )
-
+    module_assets_dir = os.path.join(module_path, "frontend/assets")
+    
     # test if module have frontend
     if not Path(module_assets_dir).is_dir():
         log.info('no frontend for this module \n')
         return
-
-    geonature_asset_symlink = "{}/frontend/src/external_assets/{}".format(
+    
+    geonature_asset_symlink = os.path.join(
         str(ROOT_DIR),
+        'frontend/src/external_assets',
         module_name
     )
     # create the symlink if not exist
-    if not os.path.isdir(geonature_asset_symlink):
-        log.info('Create a symlink for assets \n')
-        subprocess.call(
-            ['ln', '-s', module_assets_dir, module_name],
-            cwd=str(ROOT_DIR / 'frontend/src/external_assets')
-        )
-    log.info('...ok \n')
+    try:
+        if not os.path.isdir(geonature_asset_symlink):
+            log.info('Create a symlink for assets \n')
+            subprocess.call(
+                ['ln', '-s', module_assets_dir, module_name],
+                cwd=str(ROOT_DIR / 'frontend/src/external_assets')
+            )
+        else:
+            log.info('symlink already exist \n')
+
+        log.info('...ok \n')
+    except Exception as e:
+        log.info('...error when create symlink externalassets \n')
+        raise GeoNatureError(e)
 
 def add_application_db(module_name, url):
     log.info('Register the module in t_application ... \n')

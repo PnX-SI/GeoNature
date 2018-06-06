@@ -109,18 +109,6 @@ def get_one_parameter(param_name, id_org=None):
     return [d.as_dict() for d in data]
 
 
-def get_cd_nomenclature(id_type, cd_nomenclature):
-    query = 'SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)'
-    result = DB.engine.execute(
-        text(query),
-        id_type=id_type,
-        cd_n=cd_nomenclature
-    ).first()
-    value = None
-    if len(result) >= 1:
-        value = result[0]
-    return value
-
 
 @routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
 @json_resp

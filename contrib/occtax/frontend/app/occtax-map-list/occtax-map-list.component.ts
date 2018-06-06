@@ -119,6 +119,10 @@ export class OcctaxMapListComponent implements OnInit {
     this.advandedFilterOpen = !this.advandedFilterOpen;
   }
 
+  closeAdvandedFilters() {
+    this.advandedFilterOpen = false;
+  }
+
   closeAdvancedFilters() {
     this.advandedFilterOpen = false;
   }
