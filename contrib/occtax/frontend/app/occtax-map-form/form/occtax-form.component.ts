@@ -19,6 +19,7 @@ import { timeout } from 'rxjs/operators/timeout';
   providers: []
 })
 export class OcctaxFormComponent implements OnInit {
+  public disabledAfterPost = false;
   @Input() id: number;
 
   constructor(
@@ -150,10 +151,14 @@ export class OcctaxFormComponent implements OnInit {
         observer => observer.id_role
       );
     }
+    // disable button
+    this.disabledAfterPost = true;
     // Post
     console.log(JSON.stringify(finalForm));
+
     this._cfs.postOcctax(finalForm).subscribe(
       response => {
+        this.disabledAfterPost = false;
         this.toastr.success('Relevé enregistré', '', { positionClass: 'toast-top-center' });
         // resert the forms
         this.fs.releveForm = this.fs.initReleveForm();

@@ -36,6 +36,9 @@
     "UnValidate": "UnValidate",
     "ObservationNumber": "Observation number:"
   },
+  "MetaData": {
+    "JddError": "Error while fetching datasets"
+  },
   "Form": {
     "RefreshFilters": "Refresh filters",
     "AdvancedFilters": "Filtres avancés",
