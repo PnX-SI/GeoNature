@@ -19,13 +19,13 @@ INSERT INTO gn_meta.t_datasets (id_dataset, unique_dataset_id, id_acquisition_fr
 ;
 SELECT pg_catalog.setval('gn_meta.t_acquisition_frameworks_id_acquisition_framework_seq', 2, true);
 
--- INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framework, id_nomenclature_voletsinp) VALUES
--- (1,426)
--- ;
+INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framework, id_nomenclature_voletsinp) VALUES
+(1,426)
+;
 
--- INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
--- (1,387)
--- ;
+INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
+(1,387)
+;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (1, 1, NULL, 2, 393)
@@ -51,16 +51,16 @@ UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4
 INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
 (12,21,14,3);
 
--- INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
--- (1,400,'Territoire du parc national des Ecrins et de ses environs immédiats')
--- ,(2,400,'Réserve intégrale de lauvitel')
--- ;
+INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
+(1,400,'Territoire du parc national des Ecrins et de ses environs immédiats')
+,(2,400,'Réserve intégrale de lauvitel')
+;
 
--- INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
--- (1,0)
--- ,(2,0)
--- ;
--- SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', 2, true);
+INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
+(1,0)
+,(2,0)
+;
+SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', 2, true);
 
 -- INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES
 -- (1, 'Contact faune flore', 'Données issues du occtax aléatoire', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '/occtax', NULL, NULL, 'CONTACT', true);
