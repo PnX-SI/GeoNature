@@ -172,7 +172,7 @@ class GenericQuery:
         return query
 
     def build_query_filter(self, query, param_name, param_value):
-        if param_name in self.view.columns:
+        if param_name in self.view.tableDef.columns:
             query = query.filter(self.view.tableDef.columns[param_name] == param_value)
 
         if param_name.startswith('ilike_'):
