@@ -262,3 +262,12 @@ def update_app_configuration(conf_file, build=True):
         subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
 
 
+def get_module_id(module_name):
+    conf_path = '{}/{}/conf_gn_module.toml'.format(
+        GN_MODULES_ETC_ENABLED,
+        module_name
+    )
+    return load_and_validate_toml(
+        conf_path,
+        GnModuleProdConf
+    )['id_application']
