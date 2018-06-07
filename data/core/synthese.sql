@@ -423,9 +423,9 @@ $BODY$
     --USAGE (getting all fields): SELECT * FROM gn_synthese.fct_calculate_min_max_for_taxon(351);
     --USAGE (getting one or more field) : SELECT cd_ref, bbox4326 FROM gn_synthese.fct_calculate_min_max_for_taxon(351)
     --See field names and types in TABLE declaration above
-    --RETURN one row for the supplied cd_nom
+    --RETURN one row for the supplied cd_ref or cd_nom
     --This function can be use in a FROM clause, like a table or a view
-	RETURN QUERY SELECT * FROM gn_synthese.vm_min_max_for_taxons;
+	RETURN QUERY SELECT * FROM gn_synthese.vm_min_max_for_taxons WHERE cd_ref = taxonomie.find_cdref(mycdnom);
   END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
