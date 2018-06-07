@@ -20,12 +20,13 @@ class TMediaRepository():
     media = None
     new = False
 
-    def __init__(self, data=dict(), file=None, id_media=None):
-        self.data = data
+    def __init__(self, data=None, file=None, id_media=None):
+        self.data = data or {}
+
         # filtrer les données du dict qui
         # vont être insérées dans l'objet TMedias
         self.media_data = {
-            k: data[k] for k in TMedias.__mapper__.c.keys() if k in data
+            k: self.data[k] for k in TMedias.__mapper__.c.keys() if k in self.data
         }
         self.file = file
 
@@ -38,7 +39,6 @@ class TMediaRepository():
             self.new = True
             self.media = TMedias(**self.media_data)
 
-
     def create_or_update_media(self):
         '''
             Création ou modification d'un média :
@@ -46,14 +46,17 @@ class TMediaRepository():
              - Stockage du fichier
         '''
         if self.new:
-            self._persist_media_db()
+            try:
+                self._persist_media_db()
+            except Exception as e:
+                raise e
 
         # Si le média à un fichier associé
         if self.file:
             self.data['isFile'] = True
             self.media_data['media_path'] = self.upload_file()
             self.media_data['media_url'] = None
-        elif (self.data['media_path'] != ''):
+        elif self.data['media_path'] != '':
             self.data['isFile'] = True
             self.media_data['media_url'] = None
         else:
@@ -95,6 +98,12 @@ class TMediaRepository():
                     "id {} of {} doesn't exists".format(
                         self.data['uuid_attached_row'],
                         self.data['id_table_location']
+                    )
+                )
+            else:
+                raise Exception(
+                    "Errors {}".format(
+                        e.args
                     )
                 )
 
