@@ -29,7 +29,6 @@ from .models import (
     VReleveList,
     corRoleRelevesOccurrence,
     DefaultNomenclaturesValue,
-    ViewExportDLB
 )
 from .repositories import ReleveRepository, get_query_occtax_filters
 from .utils import get_nomenclature_filters
