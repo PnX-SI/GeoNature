@@ -174,26 +174,6 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism, regne, group2_inpn);
 
 
----------
---INDEX--
----------
-CREATE INDEX index_synthese_t_sources ON synthese USING btree (id_source);
-
-CREATE INDEX index_synthese_cd_nom ON synthese USING btree (cd_nom);
-
-CREATE INDEX index_synthese_date_min ON synthese USING btree (date_min DESC);
-
-CREATE INDEX index_synthese_date_max ON synthese USING btree (date_max DESC);
-
-CREATE INDEX index_synthese_id_dataset ON synthese USING btree (id_dataset);
-
-CREATE INDEX index_synthese_the_geom_local ON synthese USING gist (the_geom_local);
-
-CREATE INDEX index_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
-
-CREATE INDEX index_synthese_the_geom_point ON synthese USING gist (the_geom_point);
-
-
 ---------------
 --FOREIGN KEY--
 ---------------
@@ -367,6 +347,101 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
 
 
+---------
+--VIEWS--
+---------
+--DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons; 
+CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS 
+WITH 
+s as (
+  SELECT synt.cd_nom, t.cd_ref, the_geom_local, date_min, date_max, altitude_min, altitude_max 
+  FROM gn_synthese.synthese synt 
+  LEFT JOIN taxonomie.taxref t ON t.cd_nom = synt.cd_nom 
+  WHERE id_nomenclature_valid_status IN(345,346)
+)
+,loc AS (
+  SELECT cd_ref,
+	count(*) AS nbobs,
+	ST_Transform(ST_SetSRID(box2d(st_extent(s.the_geom_local))::geometry,2154), 4326) AS bbox4326
+  FROM  s
+  GROUP BY cd_ref
+)
+,dat AS (
+  SELECT cd_ref, 
+	min(TO_CHAR(date_min, 'DDD')::int) AS daymin,
+	max(TO_CHAR(date_max, 'DDD')::int) AS daymax
+  FROM s
+  GROUP BY cd_ref
+)
+,alt AS (
+  SELECT cd_ref,
+	min(altitude_min) AS altitudemin,
+	max(altitude_max) AS altitudemax
+  FROM s
+  GROUP BY cd_ref
+)
+SELECT loc.cd_ref, nbobs,  daymin, daymax, altitudemin, altitudemax, bbox4326
+FROM loc
+LEFT JOIN alt ON alt.cd_ref = loc.cd_ref
+LEFT JOIN dat ON dat.cd_ref = loc.cd_ref 
+ORDER BY loc.cd_ref;
+
+
+-----------
+--INDEXES--
+-----------
+CREATE INDEX _synthese_t_sources ON synthese USING btree (id_source);
+
+CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
+
+CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
+
+CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
+CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
+
+CREATE INDEX i_synthese_altitude_min ON synthese USING btree (altitude_min);
+CREATE INDEX i_synthese_altitude_max ON synthese USING btree (altitude_max);
+
+CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
+
+CREATE INDEX i_synthese_the_geom_local ON synthese USING gist (the_geom_local);
+
+CREATE INDEX i_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
+
+CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
+
+CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
+--REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
+
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
+  RETURNS TABLE(cd_ref int, nbobs bigint,  daymin int, daymax int, altitudemin int, altitudemax int, bbox4326 geometry) AS
+$BODY$
+  BEGIN
+    --USAGE (getting all fields): SELECT * FROM gn_synthese.fct_calculate_min_max_for_taxon(351);
+    --USAGE (getting one or more field) : SELECT cd_ref, bbox4326 FROM gn_synthese.fct_calculate_min_max_for_taxon(351)
+    --See field names and types in TABLE declaration above
+    --RETURN one row for the supplied cd_nom
+    --This function can be use in a FROM clause, like a table or a view
+	RETURN QUERY SELECT * FROM gn_synthese.vm_min_max_for_taxons;
+  END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+  RETURNS trigger AS
+$BODY$
+begin
+        PERFORM REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
 ------------
 --TRIGGERS--
 ------------
@@ -381,6 +456,12 @@ CREATE TRIGGER tri_meta_dates_t_sources
   ON t_sources
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
+  AFTER INSERT OR UPDATE OR DELETE
+  ON synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE tri_refresh_vm_min_max_for_taxons();
 
 
 --------
