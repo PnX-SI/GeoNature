@@ -97,10 +97,8 @@ class ReleveRepository():
         Return a prepared query filter with cruved authorization
         from a generic_table (a view)
         """
-        print('ENTER PAR LA')
         q = DB.session.query(self.model.tableDef)
-        print('et la ?')
-        if user.tag_object_code in ('1', 2):
+        if user.tag_object_code in ('1', '2'):
             q.join(corRoleRelevesOccurrence, self.model.tableDef.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
             if user.tag_object_code == '2':
                 allowed_datasets = TDatasets.get_user_datasets(user)
