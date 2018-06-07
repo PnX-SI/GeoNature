@@ -5,18 +5,20 @@ import json
 from functools import wraps
 
 from dateutil import parser
-from flask import Response, current_app
+from flask import Response
 from werkzeug.datastructures import Headers
 
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import MetaData
 
-from geojson import Feature
+from geojson import Feature, FeatureCollection
 
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
+from geonature.utils.errors import GeonatureApiError
+
 
 def testDataType(value, sqlType, paramName):
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
@@ -36,6 +38,7 @@ def testDataType(value, sqlType, paramName):
         except Exception as e:
             return '{0} must be an date (yyyy-mm-dd)'.format(paramName)
     return None
+
 
 """
     Liste des types de données sql qui
@@ -96,6 +99,119 @@ class GenericTable:
         )
         return feature
 
+
+class GenericQuery:
+    '''
+        Classe permettant de manipuler des objets GenericTable
+    '''
+    def __init__(
+        self,
+        db_session,
+        tableName, schemaName, geometry_field,
+        filters, limit=100, offset=0
+    ):
+        self.db_session = db_session
+        self.tableName = tableName
+        self.schemaName = schemaName
+        self.geometry_field = geometry_field
+        self.filters = filters
+        self.limit = limit
+        self.offset = offset
+        self.view = GenericTable(tableName, schemaName, geometry_field)
+
+    def build_query_filters(self, query, parameters):
+        '''
+            Construction des filtres
+        '''
+        for f in parameters:
+            query = self.build_query_filter(query, f, parameters.get(f))
+
+        return query
+
+    def build_query_filter(self, query, param_name, param_value):
+        if param_name in self.view.columns:
+            query = query.filter(self.view.tableDef.columns[param_name] == param_value)
+
+        if param_name.startswith('ilike_'):
+            col = self.view.tableDef.columns[param_name[6:]]
+            if col.type.__class__.__name__ == "TEXT":
+                query = query.filter(col.ilike('%{}%'.format(param_value)))
+
+        if param_name.startswith('filter_d_'):
+            col = self.view.tableDef.columns[f[12:]]
+            col_type = col.type.__class__.__name__
+            testT = testDataType(param_value, DB.DateTime, col)
+            if testT:
+                raise GeonatureApiError(message=testT)
+            if col_type in ("Date", "DateTime", "TIMESTAMP"):
+                if param_name.startswith('filter_d_up_'):
+                    query = query.filter(col >= param_value)
+                if param_name.startswith('filter_d_lo_'):
+                    query = query.filter(col <= param_value)
+                if param_name.startswith('filter_d_eq_'):
+                    query = query.filter(col == param_value)
+
+        if param_name.startswith('filter_n_'):
+            col = self.view.tableDef.columns[f[12:]]
+            col_type = col.type.__class__.__name__
+            testT = testDataType(param_value, DB.Numeric, col)
+            if testT:
+                raise GeonatureApiError(message=testT)
+            if param_name.startswith('filter_n_up_'):
+                query = query.filter(col >= param_value)
+            if param_name.startswith('filter_n_lo_'):
+                query = query.filter(col <= param_value)
+        return query
+
+    def build_query_order(self, query, parameters):
+        # Ordonnancement
+        if 'orderby' in parameters:
+            if parameters.get('orderby') in self.view.columns:
+                orderCol = getattr(
+                    self.view.tableDef.columns,
+                    parameters['orderby']
+                )
+        else:
+            return query
+
+        if 'order' in parameters:
+            if parameters['order'] == 'desc':
+                orderCol = orderCol.desc()
+                return query.order_by(orderCol)
+        else:
+            return query
+
+        return query
+
+    def return_query(self):
+        '''
+            Lance la requete et retourne les résutats dans un format standard
+        '''
+        q = self.db_session.query(self.view.tableDef)
+        nbResultsWithoutFilter = q.count()
+
+        if self.filters:
+            q = self.build_query_filters(q, self.filters)
+            q = self.build_query_order(q, self.filters)
+
+        data = q.limit(self.limit).offset(self.offset * self.limit).all()
+        nbResults = q.count()
+
+        if self.geometry_field:
+            results = FeatureCollection(
+                [self.view.as_geo_feature(d) for d in data]
+            )
+        else:
+            results = [self.view.as_dict(d) for d in data]
+
+        return {
+            'total': nbResultsWithoutFilter,
+            'total_filtered': nbResults,
+            'page': self.offset,
+            'limit': self.limit,
+            'items': results
+        }
+
 def serializeQuery(data, columnDef):
     rows = [
         {
@@ -104,8 +220,6 @@ def serializeQuery(data, columnDef):
         } for row in data
     ]
     return rows
-
-
 
 def serializeQueryOneResult(row, columnDef):
     row = {
