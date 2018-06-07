@@ -18,6 +18,9 @@ from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.utilsshapefile import(
+    create_shapes, create_shapes_generic
+) 
 
 
 def testDataType(value, sqlType, paramName):
@@ -60,7 +63,7 @@ class GenericTable:
         Classe permettant de créer à la volée un mapping
             d'une vue avec la base de données par rétroingénierie
     """
-    def __init__(self, tableName, schemaName, geometry_field):
+    def __init__(self, tableName, schemaName, geometry_field, srid=None):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
         try:
@@ -69,35 +72,75 @@ class GenericTable:
             raise KeyError("table doesn't exists")
 
         self.geometry_field = geometry_field
+        self.srid = srid
 
         # Mise en place d'un mapping des colonnes en vue d'une sérialisation
-        self.serialize_columns = [
-            (
-                name,
-                SERIALIZERS.get(
-                    db_col.type.__class__.__name__.lower(),
-                    lambda x: x
+        # self.serialize_columns = self.serialize_column(SERIALIZERS)
+        self.serialize_columns, self.db_cols = self.get_serialized_columns()
+
+
+    def get_serialized_columns(self):
+        """
+            Return a tuple of serialize_columns, and db_cols
+            from the generic table
+        """
+        regular_serialize = []
+        db_cols = []
+        for name, db_col in self.tableDef.columns.items():
+            if not db_col.type.__class__.__name__ == 'Geometry':
+                serialize_attr = (
+                    name,
+                    SERIALIZERS.get(
+                        db_col.type.__class__.__name__.lower(),
+                        lambda x: x
+                    )
                 )
-            )
-            for name, db_col in self.tableDef.columns.items()
-            if not db_col.type.__class__.__name__ == 'Geometry'
-        ]
+                regular_serialize.append(serialize_attr)
 
-        self.columns = [column.name for column in self.tableDef.columns]
+            db_cols.append(db_col)
+        return regular_serialize, db_cols
 
 
-    def as_dict(self, data):
+
+    def as_dict(self, data, columns=None):
+        if columns:
+            fprops = list(filter(lambda d: d[0] in columns, self.serialize_columns))
+        else:
+            fprops = self.serialize_columns
+        
         return {
-            item: _serializer(getattr(data, item)) for item, _serializer in self.serialize_columns
+            item: _serializer(getattr(data, item)) for item, _serializer in fprops
         }
 
-    def as_geo_feature(self, data):
+    def as_geofeature(self, data, columns=None):
         geometry = to_shape(getattr(data, self.geometry_field))
         feature = Feature(
             geometry=geometry,
-            properties=self.as_dict(data)
+            properties=self.as_dict(data, columns)
         )
         return feature
+
+    def as_list(self, data=None, columns=None):
+        if columns:
+            fprops = list(filter(lambda d: d[0] in columns, self.serialize_columns))
+        else:
+            fprops = self.serialize_columns
+        
+        return [_serializer(getattr(data, item)) for item, _serializer in fprops]
+        
+
+    def as_shape(self, data=[], dir_path=None, file_name=None, columns=None):
+        create_shapes_generic(
+            mapped_table=self,
+            db_cols=self.db_cols,
+            data=data,
+            geom_col=self.geometry_field,
+            srid=self.srid,
+            dir_path=dir_path,
+            file_name=file_name,
+            columns=columns
+        )
+
 
 
 class GenericQuery:
