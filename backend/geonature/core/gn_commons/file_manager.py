@@ -55,7 +55,7 @@ def upload_file(file, file_folder, file_name):
     filepath = os.path.join(
         filedir,
         "{file_name}.{ext}".format(
-            file_name=removeDisallowedFilenameChars(file_name),
+            file_name=removeDisallowedFilenameChars(file_name.rsplit('.', 1)[0]),
             ext=ext
         )
     )
