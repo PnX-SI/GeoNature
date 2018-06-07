@@ -22,9 +22,9 @@ $BODY$
 -- OR      SELECT gn_commons.get_default_parameter('uuid_url_value', 2);
   BEGIN
     IF myidorganisme IS NOT NULL THEN
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
+      SELECT INTO theparamvalue parameter_value FROM gn_commons.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
     ELSE
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
+      SELECT INTO theparamvalue parameter_value FROM gn_commons.t_parameters WHERE parameter_name = myparamname LIMIT 1;
     END IF;
     RETURN theparamvalue;
   END;
@@ -55,6 +55,28 @@ BEGIN
   WHERE st_intersects(geom_trans, a.geom)
     AND (myIdType IS NULL OR a.id_type = myIdType)
     AND enable=true;
+
+
+CREATE OR REPLACE FUNCTION fct_get_altitude_intersection(IN mygeom public.geometry)
+  RETURNS TABLE(altitude_min integer, altitude_max integer) AS
+$BODY$
+DECLARE
+    isrid int;
+BEGIN
+    SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+    RETURN QUERY
+    WITH d  as (
+        SELECT st_transform(myGeom,isrid) a
+     )
+    SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
+    FROM ref_geo.dem_vector, d
+    WHERE st_intersects(a,geom);
+
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100
+  ROWS 1000;
 
 END;
 $BODY$
