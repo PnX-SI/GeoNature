@@ -266,6 +266,7 @@ def check_codefile_validity(module_path, module_name):
     log.info('...ok\n')
 
 
+
 def create_external_assets_symlink(module_path, module_name):
     """
         Create a symlink for the module assets

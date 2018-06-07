@@ -2,6 +2,7 @@ import os
 import datetime
 import json
 import psycopg2
+import logging
 
 from flask import(
     Blueprint,
@@ -57,9 +58,13 @@ from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 
 blueprint = Blueprint('pr_occtax', __name__)
+log = logging.getLogger(__name__)
 
 
-ID_MODULE = get_module_id('occtax')
+try:
+    ID_MODULE = get_module_id('occtax')
+except Exception as e:
+    ID_MODULE = 'Error'
 
 @blueprint.route('/releves', methods=['GET'])
 @fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
@@ -470,22 +475,19 @@ def getDefaultNomenclatures():
     id_app=ID_MODULE,
     redirect_on_expiration=current_app.config.get('URL_APPLICATION')
 )
-def export(info_role):
-    from . import models
-    
+def export(info_role):    
     export_view_name = blueprint.config['export_view_name']
     export_geom_column = blueprint.config['export_geom_columns_name']
     export_id_column_name = blueprint.config['export_id_column_name']
     export_columns = blueprint.config['export_columns']
+    export_srid = blueprint.config['export_srid']
     
-    mapped_class = getattr(models, export_view_name)
+    export_view = GenericTable(export_view_name, 'pr_occtax', export_geom_column, export_srid)	
 
-    
 
-    releve_repository = ReleveRepository(mapped_class)
-    q = releve_repository.get_filtered_query(info_role)    
-
-    q = get_query_occtax_filters(request.args, mapped_class, q)
+    releve_repository = ReleveRepository(export_view)
+    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)    
+    q = get_query_occtax_filters(request.args, export_view, q, from_generic_table=True)
 
     data = q.all()
 
@@ -494,19 +496,17 @@ def export(info_role):
     
     export_format = request.args['format'] if 'format' in request.args else 'geojson'
     if export_format == 'csv':
-        columns = export_columns if len(export_columns) > 0 else mapped_class.__table__.columns.keys()
+        columns = export_columns if len(export_columns) > 0 else export_view.__table__.columns.keys()
         return to_csv_resp(
             file_name,
-            [d.as_dict() for d in data],
+            [export_view.as_dict(d) for d in data],
             columns,
             ';'
         )
     elif export_format == 'geojson':
         results = FeatureCollection(
-            [d.as_geofeature(
-                export_geom_column,
-                export_id_column_name,
-                recursif=False,
+            [export_view.as_geofeature(
+                d,
                 columns=export_columns
             ) for d in data]
         )
@@ -518,23 +518,19 @@ def export(info_role):
         )  
     else:
         try:
-            assert hasattr(mapped_class, 'as_shape')
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-            mapped_class.as_shape(
-                geom_col='geom_4326',
+            export_view.as_shape(
                 data=data,
                 dir_path=dir_path,
                 file_name=file_name,
                 columns=export_columns,
-                srid=blueprint.config['export_srid']
             )
+
             return send_from_directory(
                 dir_path,
                 file_name+'.zip',
                 as_attachment=True
             )
-        except AssertionError:
-            message  = 'The mapped class is not shapeserializable'
             
         except GeonatureApiError as e:
             message = str(e)
@@ -637,18 +633,25 @@ def export_sinp(info_role):
 
 @blueprint.route('/test', methods=['GET'])
 def test():
-    viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None, srid=4326)
-    q = DB.session.query(viewSINP.tableDef)
-    data = q.all()
+    # viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', 'geom_4326', srid=4326)
+    # q = DB.session.query(viewSINP.tableDef)
+    # data = q.all()
 
-    test = [viewSINP.as_list(d) for d in data]
-
-    print('LAAAAAAAAA')
-    print(current_app.config.get('occtax'))
     # viewSINP.as_shape(
     #     data=data,
     #     dir_path = str(ROOT_DIR / 'backend/static/shapefiles'),
     #     file_name='lala',
     # )
+
+    data = DB.session.query(VReleveList).all()
+
+    VReleveList.as_shape(
+        geom_col='geom_4326',
+        data=data,
+        dir_path = str(ROOT_DIR / 'backend/static/shapefiles'),
+        file_name='lala',
+        srid=blueprint.config['export_srid']
+    )
+
 
     return 'la'

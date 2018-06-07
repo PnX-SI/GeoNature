@@ -92,6 +92,36 @@ class ReleveRepository():
             )
         return q
 
+    def filter_query_generic_table(self, user):
+        """
+        Return a prepared query filter with cruved authorization
+        from a generic_table (a view)
+        """
+        print('ENTER PAR LA')
+        q = DB.session.query(self.model.tableDef)
+        print('et la ?')
+        if user.tag_object_code in ('1', 2):
+            q.join(corRoleRelevesOccurrence, self.model.tableDef.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
+            if user.tag_object_code == '2':
+                allowed_datasets = TDatasets.get_user_datasets(user)
+                q = q.filter(
+                    or_(
+                        self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
+                        corRoleRelevesOccurrence.columns.id_role == user.id_role,
+                        self.model.tableDef.columns.id_digitiser == user.id_role
+                    )
+                )
+            elif user.tag_object_code == '1':
+                q = q.filter(
+                    or_(
+                        corRoleRelevesOccurrence.columns.id_role == user.id_role,
+                        self.model.tableDef.columns.id_digitiser == user.id_role
+                    )
+                )
+        print(q)
+        return q
+
+
     def get_all(self, info_user):
         """
             Return all the data from Releve model filtered with
@@ -103,16 +133,21 @@ class ReleveRepository():
             return data
         raise NotFound('No releve found')
 
-    def get_filtered_query(self, info_user):
+    def get_filtered_query(self, info_user, from_generic_table=False):
         """
             Return a query object already filtered with
             the cruved authorization
         """
-        return self.filter_query_with_autorization(info_user)
+        if not from_generic_table:
+            return self.filter_query_with_autorization(info_user)
+        else:
+            return self.filter_query_generic_table(info_user)
 
 
 
-def get_query_occtax_filters(args, mappedView, q):
+def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
+    if from_generic_table:
+        mappedView = mappedView.tableDef.columns
     params = args.to_dict()
     testT = None
     if 'cd_nom' in params:
@@ -193,11 +228,15 @@ def get_query_occtax_filters(args, mappedView, q):
         observers_query = "%{}%".format(params.pop('observateurs'))
         q = q.filter(mappedView.observateurs.ilike(observers_query))
 
-
+    if from_generic_table:
+        table_columns = mappedView
+    else:
+        table_columns = mappedView.__table__.columns
+    
     # Generic Filters
     for param in params:
-        if param in mappedView.__table__.columns:
-            col = getattr(mappedView.__table__.columns, param)
+        if param in table_columns:
+            col = getattr(table_columns, param)
             testT = testDataType(params[param], col.type, param)
             if testT:
                 raise GeonatureApiError(message=testT)
