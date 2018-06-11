@@ -258,8 +258,12 @@ Montée en version
 
 - Suivez les instructions de montée en version décrit ici https://github.com/PnX-SI/GeoNature/releases.
 
-- Lancez le script ``migration.sh`` à la racine du dossier ``geonature``
+- Lancez le script de migration.sh à la racine du dossier ``geonature``:
 
+::
+
+    
+    ./migration.sh
 
 
 Sauvegarde et restauration
