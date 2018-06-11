@@ -9,7 +9,8 @@ external_assets/
 
 
 config.py
-backend/static/*
+backend/static/medias/*
+backend/static/shapefiles/*
 backend/run.py
 
 .vscode
