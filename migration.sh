@@ -5,6 +5,25 @@ cp ../geonature_old/config/settings.ini config/settings.ini
 cp ../geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
 cp -r ../geonature_old/frontend/src/custom/* frontend/src/custom/
 
+# Création du répertoitre statci et rapattriement des médias
+if [ ! -d 'backend/static/' ]
+then
+  mkdir static
+fi
+
+if [ ! -d 'backend/static/medias/' ]
+then
+  mkdir ./static/medias
+fi
+cp -r ../geonature_old/backend/static/medias/* backend/static/medias
+
+if [ ! -d 'backend/static/shapefiles/' ]
+then
+  mkdir backend/static/shapefiles
+fi
+
+
+
 . config/settings.ini
 
 cd frontend
