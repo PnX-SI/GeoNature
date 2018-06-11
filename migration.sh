@@ -1,8 +1,5 @@
 #!/bin/bash
 
-mv ../geonature ../geonature_old
-mv ../GeoNature ../geonature
-
 
 cp ../geonature_old/config/settings.ini config/settings.ini
 cp ../geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
