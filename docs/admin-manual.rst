@@ -237,6 +237,31 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse
 
 Attention: ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompue)
 
+Montée en version
+-----------------
+
+- Télécharger la dernière version de GeoNature 
+
+::
+
+    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
+    unzip GeoNature-X.Y.Z.zip
+
+- Renommer l'ancien repertoire de l'application, ainsi que le nouveau
+
+::
+
+    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
+    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
+    cd geonature
+
+
+- Suivez les instructions de montée en version décrit ici https://github.com/PnX-SI/GeoNature/releases.
+
+- Lancez le script ``migration.sh`` à la racine du dossier ``geonature``
+
+
+
 Sauvegarde et restauration
 --------------------------
 
