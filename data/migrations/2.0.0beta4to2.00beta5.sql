@@ -63,7 +63,7 @@ COST 100
 ROWS 1000;
 
 
-CREATE OR REPLACE FUNCTION fct_get_altitude_intersection(IN mygeom public.geometry)
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry)
   RETURNS TABLE(altitude_min integer, altitude_max integer) AS
 $BODY$
 DECLARE
