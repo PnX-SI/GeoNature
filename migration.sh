@@ -4,6 +4,7 @@
 cp ../geonature_old/config/settings.ini config/settings.ini
 cp ../geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
 cp -r ../geonature_old/frontend/src/custom/* frontend/src/custom/
+cp ../geonature_old/backend/gunicorn_start.sh.sample backend/gunicorn_start.sh
 
 # Création du répertoitre statci et rapattriement des médias
 if [ ! -d 'backend/static/' ]
