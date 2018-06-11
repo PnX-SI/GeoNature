@@ -309,6 +309,7 @@ def add_application_db(module_name, url):
             # check if the module in TApplications
             try:
                 id_app = None
+                exist_app = None
                 exist_app = DB.session.query(TApplications).filter(
                     TApplications.nom_application == module_name
                 ).one()
