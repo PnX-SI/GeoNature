@@ -56,6 +56,12 @@ BEGIN
     AND (myIdType IS NULL OR a.id_type = myIdType)
     AND enable=true;
 
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100
+ROWS 1000;
+
 
 CREATE OR REPLACE FUNCTION fct_get_altitude_intersection(IN mygeom public.geometry)
   RETURNS TABLE(altitude_min integer, altitude_max integer) AS
@@ -78,11 +84,6 @@ $BODY$
   COST 100
   ROWS 1000;
 
-END;
-$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100
-ROWS 1000;
 
 ALTER TABLE gn_synthese.synthese
 ALTER COLUMN meta_v_taxref SET DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)'::character varying;
