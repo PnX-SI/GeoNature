@@ -153,7 +153,7 @@ Cliquer sur ``SAVE`` pour enregistrer les modifications apportées à une ligne 
 
 Les altitudes minimum et maximum du relevé sont calculées automatiquement mais peuvent être modifiées manuellement. 
 
-Les informations géographiques du relevé (communes notamment) sont aussi calculés automatiquement.
+Les informations géographiques du relevé (communes notamment) sont aussi calculées automatiquement.
 
 Pour les afficher, il faut cliquer sur le bouton d'information : 
 
@@ -162,7 +162,7 @@ Pour les afficher, il faut cliquer sur le bouton d'information :
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-geo.jpg
 
 Une fois les informations du relevé renseignées (observateurs, jeu de données, date et commentaire optionnel), 
-vous pouvez ajouter un premier taxon à celui-ci en cliquant sur "Ajouter un taxon sur ce relevé" :
+vous pouvez ajouter un premier taxon à celui-ci en cliquant sur ``Ajouter un taxon sur ce relevé`` :
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-add-taxon.jpg
 
@@ -177,7 +177,7 @@ du rang et du groupe du taxon selectionné :
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-plus.jpg
 
-Des valeurs par défaut sont renseignées par défaut pour certains.
+Des valeurs par défaut sont renseignées pour certains.
 
 Vous pouvez ensuite renseigner un ou plusieurs dénombrements pour le taxon observé. 
 
@@ -185,7 +185,7 @@ Par défaut, un dénombrement indéterminé d'un individu est renseigné :
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-counting.jpg
 
-Une fois le taxon renseigné, cliquer sur VALIDER LE TAXON pour l'enregistrer : 
+Une fois le taxon renseigné, cliquer sur ``VALIDER LE TAXON`` pour l'enregistrer : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-save.jpg
 
@@ -196,7 +196,7 @@ Vous pouvez alors :
 - Ajouter un autre taxon au relevé
 - Enregistrer le relevé pour revenir à la liste des relevés.
 
-Pour ajouter un taxon au relevé, il faut cliquer sur "Ajouter un taxon sur ce relevé" et le renseigner comme le précédent : 
+Pour ajouter un taxon au relevé, il faut cliquer sur ``Ajouter un taxon sur ce relevé`` et le renseigner comme le précédent : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg
 
@@ -207,7 +207,7 @@ Si vous modifiez un relevé existant, vous accédez à sa fiche renseignée, sur
 
 .. image :: http://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg
 
-Vous pouvez ajouter un taxon au relevé en cliquant sur "Ajouter un taxon sur ce relevé" : 
+Vous pouvez ajouter un taxon au relevé en cliquant sur ``Ajouter un taxon sur ce relevé`` : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon.jpg
 
@@ -226,11 +226,11 @@ Deux méthodes sont possibles pour exporter les données :
 
 - Depuis le module "OccTax"
 
-Depuis la liste de vos relevés de l'interface carte-liste, filtrez d'abord vos relevés par **jeu de données** (ou autre) et cliquez sur le bouton "Rechercher". 
+Depuis la liste de vos relevés de l'interface carte-liste, filtrez d'abord vos relevés par **jeu de données** (ou autre) et cliquez sur le bouton ``Rechercher``. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-search-bar.jpg
 
-Puis cliquez sur le bouton "Télécharger les données" en bas de la liste des relevés.
+Puis cliquez sur le bouton ``Télécharger les données`` en bas de la liste des relevés.
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-download-data.jpg
 
@@ -238,15 +238,14 @@ Une fenêtre s'ouvre, fournissant des informations sur le téléchargement des d
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-occtax-download.jpg
 
-- Depuis le module d'export:
+- Depuis le module d'export :
 
-  Les exports se font jeu de données par jeu de données.
+  Les exports se font par jeu de données.
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-export.jpg
 
-
 Vous obtenez alors un CSV par jeu de données.
 
-Pour disposer de toutes les informations saisies dans l'export, une ligne correspond à un dénombrement d'un taxon. 
+Pour disposer dans l'export de toutes les informations saisies, une ligne correspond à un dénombrement d'un taxon. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-export-csv.jpg
