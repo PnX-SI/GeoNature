@@ -7,7 +7,7 @@ SET client_min_messages = warning;
 
 CREATE SCHEMA gn_synthese;
 
-SET search_path = gn_synthese, pg_catalog;
+SET search_path = gn_synthese, public, pg_catalog;
 
 SET default_with_oids = false;
 
@@ -245,7 +245,7 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
-    
+
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
@@ -350,13 +350,13 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ---------
 --VIEWS--
 ---------
---DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons; 
-CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS 
-WITH 
+--DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons;
+CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
+WITH
 s as (
-  SELECT synt.cd_nom, t.cd_ref, the_geom_local, date_min, date_max, altitude_min, altitude_max 
-  FROM gn_synthese.synthese synt 
-  LEFT JOIN taxonomie.taxref t ON t.cd_nom = synt.cd_nom 
+  SELECT synt.cd_nom, t.cd_ref, the_geom_local, date_min, date_max, altitude_min, altitude_max
+  FROM gn_synthese.synthese synt
+  LEFT JOIN taxonomie.taxref t ON t.cd_nom = synt.cd_nom
   WHERE id_nomenclature_valid_status IN(345,346)
 )
 ,loc AS (
@@ -367,7 +367,7 @@ s as (
   GROUP BY cd_ref
 )
 ,dat AS (
-  SELECT cd_ref, 
+  SELECT cd_ref,
 	min(TO_CHAR(date_min, 'DDD')::int) AS daymin,
 	max(TO_CHAR(date_max, 'DDD')::int) AS daymax
   FROM s
@@ -383,7 +383,7 @@ s as (
 SELECT loc.cd_ref, nbobs,  daymin, daymax, altitudemin, altitudemax, bbox4326
 FROM loc
 LEFT JOIN alt ON alt.cd_ref = loc.cd_ref
-LEFT JOIN dat ON dat.cd_ref = loc.cd_ref 
+LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
 ORDER BY loc.cd_ref;
 
 
@@ -397,9 +397,9 @@ CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
 CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
 
 CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
-CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
 
 CREATE INDEX i_synthese_altitude_min ON synthese USING btree (altitude_min);
+
 CREATE INDEX i_synthese_altitude_max ON synthese USING btree (altitude_max);
 
 CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
@@ -461,7 +461,7 @@ CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
   AFTER INSERT OR UPDATE OR DELETE
   ON synthese
   FOR EACH ROW
-  EXECUTE PROCEDURE tri_refresh_vm_min_max_for_taxons();
+  EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
 
 --------
