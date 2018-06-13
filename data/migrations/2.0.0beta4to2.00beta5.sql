@@ -153,3 +153,13 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
 DROP TABLE gn_meta.t_parameters;
 
 DROP FUNCTION gn_meta.get_default_parameter(text, integer);
+
+
+
+-- Modification de la table gn_commons.t_modules
+
+ALTER TABLE gn_commons.t_modules
+RENAME COLUMN active TO active_frontend; 
+
+ALTER TABLE gn_commons.t_modules
+ADD COLUMN active_backend BOOLEAN;

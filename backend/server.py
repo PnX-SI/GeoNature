@@ -62,9 +62,9 @@ def get_app(config, _app=None):
         from geonature.core.errors import routes
 
         CORS(app, supports_credentials=True)
-
-        # Chargement des modules tiers
-        for conf, manifest, module in list_and_import_gn_modules():
+        # Chargement des mosdules tiers
+        for conf, manifest, module in list_and_import_gn_modules(app):
+            print('ET LAAAAAAAAAA ???')
             app.register_blueprint(
                 module.backend.blueprint.blueprint,
                 url_prefix=conf['api_url']
