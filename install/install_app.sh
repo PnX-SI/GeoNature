@@ -63,41 +63,31 @@ then
   chmod -R 775 /tmp/usershub
 fi
 
-if [ ! -d '/var/log/geonature/' ]
+if [ ! -d 'var' ]
 then
-  sudo mkdir /var/log/geonature
-  sudo chown "$(id -u)" /var/log/geonature
-  chmod -R 775 /var/log/geonature
+  mkdir var
 fi
 
-if [ ! -d '/etc/geonature/' ]
+if [ ! -d 'var/log' ]
 then
-  sudo mkdir /etc/geonature
-  sudo mkdir /etc/geonature/mods-available
-  sudo mkdir /etc/geonature/mods-enabled
-else
-  if [ ! -d '/etc/geonature/mods-available' ]
-  then
-    sudo mkdir /etc/geonature/mods-available
-  elif [ ! -d '/etc/geonature/mods-enabled' ]
-  then
-    sudo mkdir /etc/geonature/mods-enabled
-  fi
+  mkdir var/log
+  chmod -R 775 var/log/
 fi
 
-if [ ! -f /etc/geonature/geonature_config.toml ]; then
+
+if [ ! -f config/geonature_config.toml ]; then
   echo "Création du fichier de configuration ..."
-  sudo cp config/geonature_config.toml.sample /etc/geonature/geonature_config.toml
+  sudo cp config/geonature_config.toml.sample config/geonature_config.toml
   echo "préparation du fichier de configuration..."
   echo $my_url
   my_url="${my_url//\//\\/}"
   echo $my_url
-  sudo sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" /etc/geonature/geonature_config.toml
-  sudo sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" /etc/geonature/geonature_config.toml
-  sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" /etc/geonature/geonature_config.toml
-  sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" /etc/geonature/geonature_config.toml
-  sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" /etc/geonature/geonature_config.toml
-  sudo sed -i "s/LOCAL_SRID = .*$/LOCAL_SRID = '${srid_local}'/g" /etc/geonature/geonature_config.toml
+  sudo sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name\"/" config/geonature_config.toml
+  sudo sed -i "s/URL_APPLICATION = .*$/URL_APPLICATION = '${my_url}geonature' /g" config/geonature_config.toml
+  sudo sed -i "s/API_ENDPOINT = .*$/API_ENDPOINT = '${my_url}geonature\/api'/g" config/geonature_config.toml
+  sudo sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" config/geonature_config.toml
+  sudo sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" config/geonature_config.toml
+  sudo sed -i "s/LOCAL_SRID = .*$/LOCAL_SRID = '${srid_local}'/g" config/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
 fi
@@ -131,8 +121,8 @@ then
 fi
 echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
-echo "Création de la configuration du frontend depuis '/etc/geonature/geonature_config.toml'..."
-geonature generate_frontend_config --conf-file /etc/geonature/geonature_config.toml --build=false
+echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
+geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_config.toml --build=false
 
 #Lancement de l'application
 echo "Configuration de l'application api backend dans supervisor..."

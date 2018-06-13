@@ -42,7 +42,8 @@ class TModules(DB.Model):
     module_target = DB.Column(DB.Unicode)
     module_comment = DB.Column(DB.Unicode)
     module_target = DB.Column(DB.Unicode)
-    active = DB.Column(DB.Boolean)
+    active_frontend = DB.Column(DB.Boolean)
+    active_backend = DB.Column(DB.Boolean)
 
 
 @serializable

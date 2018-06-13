@@ -127,8 +127,8 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
  
 ::
     
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 	
 	
 * Lancer l'installation
@@ -170,7 +170,7 @@ Logs de l'instalation de la base de données
 
 Log général de l'installation de l'application
 
-``/var/log/geonature/install_log.log``
+``/var/log/geonature/install_app.log``
 
 
 
