@@ -43,6 +43,16 @@ def testDataType(value, sqlType, paramName):
     return None
 
 
+def get_geojson_feature(wkb):
+    ''' retourne une feature geojson à partir d'un WKB'''
+    geometry = to_shape(wkb)
+    feature = Feature(
+        geometry=geometry,
+        properties={}
+    )
+    return feature
+
+
 """
     Liste des types de données sql qui
     nécessite une sérialisation particulière en
@@ -75,7 +85,6 @@ class GenericTable:
         self.srid = srid
 
         # Mise en place d'un mapping des colonnes en vue d'une sérialisation
-        # self.serialize_columns = self.serialize_column(SERIALIZERS)
         self.serialize_columns, self.db_cols = self.get_serialized_columns()
 
 
@@ -99,7 +108,6 @@ class GenericTable:
 
             db_cols.append(db_col)
         return regular_serialize, db_cols
-
 
 
     def as_dict(self, data, columns=None):
@@ -242,7 +250,7 @@ class GenericQuery:
 
         if self.geometry_field:
             results = FeatureCollection(
-                [self.view.as_geo_feature(d) for d in data]
+                [self.view.as_geofeature(d) for d in data]
             )
         else:
             results = [self.view.as_dict(d) for d in data]
