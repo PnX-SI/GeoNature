@@ -52,6 +52,23 @@ corSiteApplication = DB.Table(
     )
 )
 
+corSiteArea = DB.Table(
+    'cor_site_area',
+    DB.MetaData(schema='gn_monitoring'),
+    DB.Column(
+        'id_base_site',
+        DB.Integer,
+        ForeignKey('gn_monitoring.cor_site_application.id_base_site'),
+        primary_key=True
+    ),
+    DB.Column(
+        'id_area',
+        DB.Integer,
+        ForeignKey('ref_geo.l_areas.id_area'),
+        primary_key=True
+    )
+)
+
 
 @serializable
 class TBaseVisits(DB.Model):
