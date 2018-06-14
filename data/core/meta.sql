@@ -260,9 +260,6 @@ COMMENT ON TABLE cor_dataset_protocol IS 'A dataset can have 0 or n "protocole".
 ----------------
 --PRIMARY KEYS--
 ----------------
-ALTER TABLE ONLY t_parameters
-    ADD CONSTRAINT pk_t_parameters PRIMARY KEY (id_parameter);
-
 -- ALTER TABLE ONLY sinp_datatype_actors
 --     ADD CONSTRAINT pk_sinp_datatype_actors PRIMARY KEY (id_actor);
 
@@ -292,7 +289,7 @@ ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT pk_cor_dataset_actor PRIMARY KEY (id_cda);    
+    ADD CONSTRAINT pk_cor_dataset_actor PRIMARY KEY (id_cda);
 
 ALTER TABLE ONLY cor_dataset_territory
     ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
@@ -304,9 +301,6 @@ ALTER TABLE ONLY cor_dataset_protocol
 ----------------
 --FOREIGN KEYS--
 ----------------
-ALTER TABLE ONLY t_parameters
-    ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
-
 
 ALTER TABLE ONLY cor_acquisition_framework_voletsinp
     ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
@@ -479,14 +473,14 @@ ALTER TABLE cor_dataset_actor
 --------
 --VIEW--
 --------
-CREATE OR REPLACE VIEW v_acquisition_frameworks_protocols AS 
+CREATE OR REPLACE VIEW v_acquisition_frameworks_protocols AS
 	SELECT d.id_acquisition_framework, cdp.id_protocol
 	FROM gn_meta.t_acquisition_frameworks taf
 	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
 	JOIN gn_meta.cor_dataset_protocol cdp ON cdp.id_dataset = d.id_dataset;
 
 
-CREATE OR REPLACE VIEW gn_meta.v_acquisition_frameworks_territories AS 
+CREATE OR REPLACE VIEW gn_meta.v_acquisition_frameworks_territories AS
 	SELECT d.id_acquisition_framework, cdt.id_nomenclature_territory, cdt.territory_desc
 	FROM gn_meta.t_acquisition_frameworks taf
 	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
@@ -496,12 +490,6 @@ CREATE OR REPLACE VIEW gn_meta.v_acquisition_frameworks_territories AS
 ---------------
 --SAMPLE DATA--
 ---------------
-
-INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(1,0,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
-,(2,0,'local_srid','Valeur du SRID local','2154',NULL)
-,(3,0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
-;
 
 -- INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
 -- (1,'Parc nationaux de France',null,null)
