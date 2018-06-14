@@ -112,7 +112,7 @@ class ManifestSchemaConf(Schema):
 
 
 class ManifestSchemaProdConf(Schema):
-    module_path = fields.String(required=True)
+    #module_path = fields.String(required=True)
     module_name = fields.String(required=True)
 
 

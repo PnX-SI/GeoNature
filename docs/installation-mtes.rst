@@ -144,13 +144,11 @@ Pour modifier cette configuration par défaut, éditer le fichier de configurati
 Configuration du module occurrence de taxon: OCCTAX
 ***************************************************
 
-Le fichier de configuration du module Occtax se trouve dans le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``.
+Le fichier de configuration du module Occtax se trouve dans le fichier ``<GEONATURE_DIRECTORY>/external_module/occtax/config/conf_gn_module.toml``.
 
 Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
 
-Le fichier ``/home/<my_user>/<my_geonature_directory>/contrib/occtax/configuration_occtax.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeur par défault.
-
-Editez le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module``
+Le fichier ``<GEONATURE_DIRECTORY>/external_module/occtax/config/conf_gn_module.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeur par défault.
 
 Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue car il s'agit de la recompilation du frontend).
 
