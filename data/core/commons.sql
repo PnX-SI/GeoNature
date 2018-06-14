@@ -183,7 +183,7 @@ CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme
   RETURNS text AS
 $BODY$
     DECLARE
-        theparamvalue text; 
+        theparamvalue text;
 -- Function that allows to get value of a parameter depending on his name and organism
 -- USAGE : SELECT gn_commons.get_default_parameter('taxref_version');
 -- OR      SELECT gn_commons.get_default_parameter('uuid_url_value', 2);
@@ -372,6 +372,9 @@ ALTER TABLE ONLY t_modules
 ----------------
 --FOREIGN KEYS--
 ----------------
+ALTER TABLE ONLY t_parameters
+    ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
+
 ALTER TABLE ONLY t_medias
     ADD CONSTRAINT fk_t_medias_media_type FOREIGN KEY (id_nomenclature_media_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
@@ -440,6 +443,12 @@ INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, tab
 SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 1, true);
 
 
+
+INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
+(1,0,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
+,(2,0,'local_srid','Valeur du SRID local','2154',NULL)
+,(3,0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
+;
 
 
 ---------
