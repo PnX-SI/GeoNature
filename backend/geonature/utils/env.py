@@ -151,7 +151,6 @@ def import_requirements(req_file):
                 raise Exception('Package {} not installed'.format(req))
 
 
-
 def get_module_id(module_name):
     conf_path = '{}/{}/config/conf_gn_module.toml'.format(
         GN_EXTERNAL_MODULE,
@@ -177,9 +176,6 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 str(f / 'manifest.toml'),
                 ManifestSchemaProdConf
             )
-            print('ENTER HERE')
-            print(conf_manifest['module_name'])
-
             module_name = conf_manifest['module_name']
             if module_name in enabled_modules:
                 #TODO CHECK WHAT MODULE NAME BELOW MEAN
@@ -208,15 +204,12 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
 def list_frontend_enabled_modules(mod_path=GN_EXTERNAL_MODULE):
     # Get all the module frontend enabled from gn_commons.t_modules
     from geonature.utils.command import get_app_for_cmd
-    app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+    app = get_app_for_cmd(DEFAULT_CONFIG_FIlE, with_external_mods=False)
     with app.app_context():
         data = DB.session.query(TModules).filter(
             TModules.active_frontend == True
             ).all()
-        for d in data:
-            print(d)
         enabled_modules = [d.as_dict()['module_name'] for d in data]
-        print(enabled_modules)
     for f in mod_path.iterdir():
         if f.is_dir():
             conf_manifest = load_and_validate_toml(
