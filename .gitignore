@@ -8,7 +8,8 @@ geonature_config.toml
 gunicorn_start.sh
 external_assets/
 external_modules/*
-
+tmp/
+var/
 
 config.py
 backend/static/medias/*

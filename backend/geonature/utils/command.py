@@ -29,11 +29,11 @@ def start_gunicorn_cmd(uri, worker):
     )
 
 
-def get_app_for_cmd(config_file=None):
+def get_app_for_cmd(config_file=None, with_external_mods=True):
     """ Return the flask app object, logging error instead of raising them"""
     try:
         conf = load_config(config_file)
-        return get_app(conf)
+        return get_app(conf, with_external_mods=with_external_mods)
     except ConfigError as e:
         log.critical(str(e) + "\n")
         sys.exit(1)
@@ -64,8 +64,6 @@ def frontend_routes_templating():
         template = Template(input_file.read())
         routes = []
         for conf, manifest in list_frontend_enabled_modules():
-            print('YTER Y')
-            print(manifest['module_name'])
             location = Path(GN_EXTERNAL_MODULE / manifest['module_name'])
             # test if module have frontend
             if (location / 'frontend').is_dir():   

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #settings.ini file path. Default value overwriten by settings-path parameter
-SETTINGS='./config/settings.ini'
+cd ../
+SETTINGS='config/settings.ini'
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -45,22 +46,22 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 BASE_DIR=$(readlink -e "${0%/*}")
 
-if [ ! -d '/tmp/geonature/' ]
+if [ ! -d 'tmp/geonature/' ]
 then
-  mkdir /tmp/geonature
-  chmod -R 775 /tmp/geonature
+  mkdir tmp/geonature
+  chmod -R 775 tmp/geonature
 fi
 
-if [ ! -d '/tmp/taxhub/' ]
+if [ ! -d 'tmp/taxhub/' ]
 then
-  mkdir /tmp/taxhub
-  chmod -R 775 /tmp/taxhub
+  mkdir tmp/taxhub
+  chmod -R 775 tmp/taxhub
 fi
 
-if [ ! -d '/tmp/usershub/' ]
+if [ ! -d 'tmp/usershub/' ]
 then
-  mkdir /tmp/usershub
-  chmod -R 775 /tmp/usershub
+  mkdir tmp/usershub
+  chmod -R 775 tmp/usershub
 fi
 
 if [ ! -d 'var' ]
