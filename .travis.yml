@@ -23,5 +23,5 @@ notifications:
   email:
     recipients:
       - geonature@ecrins-parcnational.fr
-    on_failure: always
+    on_failure: never
     on_success: never

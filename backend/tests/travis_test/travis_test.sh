@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo 'FROM TRAViS #########################################'
+echo $db_name
+echo $db_pass
+
 sudo mkdir /etc/geonature
 sudo mkdir /etc/geonature/mods-enabled
 sudo mkdir /etc/geonature/mods-available
