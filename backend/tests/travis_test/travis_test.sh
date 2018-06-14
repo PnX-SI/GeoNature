@@ -6,7 +6,7 @@ sudo mkdir /etc/geonature/mods-available
 
 mkdir $TRAVIS_BUILD_DIR/frontend/src/external_assets
 
-sudo cp $TRAVIS_BUILD_DIR/backend/tests/travis_test/geonature_config_tests.toml /etc/geonature/geonature_config.toml
+sudo cp $TRAVIS_BUILD_DIR/backend/tests/travis_test/geonature_config_tests.toml $TRAVIS_BUILD_DIR/config/geonature_config.toml
 
 python ../../../geonature_cmd.py install_command
 

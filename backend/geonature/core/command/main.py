@@ -8,25 +8,23 @@ import logging
 
 import click
 
-
 from geonature.utils.env import (
     virtualenv_status,
     DEFAULT_VIRTUALENV_DIR,
     DEFAULT_CONFIG_FIlE,
     install_geonature_command,
     GEONATURE_VERSION,
-    create_frontend_config,
-    frontend_routes_templating,
-    tsconfig_templating,
-    update_app_configuration
 )
-
 from geonature.utils.command import (
     get_app_for_cmd,
     start_gunicorn_cmd,
     supervisor_cmd,
     start_geonature_front,
-    build_geonature_front
+    build_geonature_front,
+    create_frontend_config,
+    frontend_routes_templating,
+    tsconfig_templating,
+    update_app_configuration
 )
 
 

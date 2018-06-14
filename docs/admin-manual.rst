@@ -112,20 +112,20 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration par module : ``/etc/geonature/mods-enabled<nom_module>/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
+- Une configuration par module : ``<GEONATURE_DIRECTORY>/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
 
 Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
-L'installation de GeoNature génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
+L'installation de GeoNature génère le fichier de configuration globale ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
 
-Par défaut, le fichier ``/etc/geonature/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
+Par défaut, le fichier ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
 
 Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
 
-A chaque modification fichier global de configuration (``/etc/geonature/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
+A chaque modification fichier global de configuration (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
 
 Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
 
@@ -138,11 +138,11 @@ Ainsi après chaque modification des fichiers de configuration globale, placez-v
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
 
-Lors de l'instalation d'un module, un fichier de configuration est créé: ``/etc/geonature/mods-enabled/<nom_module>/conf_gn_module.toml``.
+Lors de l'instalation d'un module, un fichier de configuration est créé: ``<GEONATURE_DIRECTORY>/<nom_module>/config/conf_gn_module.toml``.
 
-Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example`` situé à la racine du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
+Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example`` situé à dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
 
-A chaque modification de ce fichier lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompiler)
+A chaque modification de ce fichier lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé)
 
 ::
 
@@ -388,9 +388,9 @@ Si vous l'avez supprimé, lancer les commandes suivantes depuis le repertoire ``
 **Configuration du module**
 """""""""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici : ``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``
+Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/conf_gn_module.toml``
 
-Pour voir l'ensemble des variables de configuration du module ainsi qu leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/contrib/occtax/conf_gn_module.toml``
+Pour voir l'ensemble des variables de configuration du module ainsi qu leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml``
 
 
 Afficher/masquer des champs du formulaire
