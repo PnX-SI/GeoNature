@@ -294,7 +294,6 @@ def serializeQueryTest(data, columnDef):
         rows.append(inter)
     return rows
 
-<<<<<<< HEAD
 
 def serializeQueryOneResult(row, columnDef):
     row = {
@@ -306,8 +305,6 @@ def serializeQueryOneResult(row, columnDef):
 
 
 
-=======
->>>>>>> origin/develop
 def serializable(cls):
     """
         Décorateur de classe pour les DB.Models
