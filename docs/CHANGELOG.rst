@@ -2,12 +2,63 @@
 CHANGELOG
 =========
 
-2.0.0.beta3 (unreleased)
+2.0.0.beta5 (unreleased)
+------------------------
+
+https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
+
+**Nouveautés**
+
+* Ajout d'un message d'erreur si l'utilisateur n'a pas de JDD ou si il y a eu un problème lors de la récupération des JDD de MTD
+* Ajout d'une vue matérialisée (``gn_synthese.vm_min_max_for_taxons``) et d'une fonction (``gn_synthese.fct_calculate_min_max_for_taxon``) permettant de renvoyer des informations sur les observations existantes d'un taxon (étendue des observations, date min et max, altitude min et max, nombre d'observations) pour orienter la validation et la saisie (https://github.com/PnX-SI/gn_module_validation/issues/5)
+* L'export OccTax est désormais basé sur une vue qu'il est possible d'adapter
+* Ajouts de nouveaux tests automatisés du code et mise en place de Travis pour les lancer automatiquement code à chaque commit (https://travis-ci.org/PnX-SI/GeoNature)
+* Ajout de données test
+* Mise à jour des scripts de déploiement spécifiques de DEPOBIO (MTES)
+* Déplacement de la table centrale de gestion des paramètres ``t_parameters`` dans le schéma ``gn_commons`` (#376)
+* Ajout d'un trigger générique pour calculer la géométrie dans la projection locale à partir de la géométrie 4326 (#370)
+* Mise en place de scripts de migration de la BDD
+
+**Corrections**
+
+* OccTax : Correction du double post
+* Correction de la gestion générique des médias
+
+**Notes de version**
+
+* Exécutez le script de mise à jour de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``)
+
+2.0.0.beta4 (2018-05-25)
 ------------------------
 
 **Nouveautés**
 
-* Travail sur le module générique de Suivi intégré à GeoNature (gn_monitoring). Gestion des fichiers de configuration
+* Synthèse : début de mise en place du backend, de l'API et du frontend #345
+* Complément de la nomenclature des Méthodes de détermination et suppression du champs Complement_Determination. Merci @DonovanMaillard. #341
+* Nouveaux composants Angular (SelectSearch, Municipalities, Observers)
+* Amélioration de composants Angular (Date du jour par défaut, Option de tri des nomenclatures, DynamicForm
+* Connexion à MTD INPN : Mise à jour des JDD à chaque appel de la route
+* Finalisation du renommage de Contact en OccTax (BDD, API, backend)
+* Droits CRUVED : La définition du CRUVED d'un rôle (utilisateur ou groupe) sur un module de GeoNature surcouche ses droits GeoNature même si ils sont inférieurs. Si une action du CRUVED n'est pas définie au niveau du module, on prend celle de l'application parente. #292
+* Si un rôle a un R du CRUVED à 0 pour un module, alors celui-ci ne lui est pas listé dans le Menu et il ne lui ai pas accessible si il en connait l'URL. #360
+* Mise en place d'un schéma ``gn_commons`` dans la BDD qui permet de stocker de manière générique des informations qui peuvent être communes aux autres modules : l'historique des actions sur chaque objet de la BDD, la validation d'une donnée et les médias associés à une donnée. Accompagné de fonctions génériques d'historisation et de validation des données mises en place sur le module Occtax. #339
+* Amélioration de l'ergonomie du MapList de OccTax. #361
+* Mise en place d'un export CSV, SHP, GeoJSON paramétrable dans OccTax. #363 et #366
+* Amélioration du module générique ``gn_monitoring`` et de ses sous-modules https://github.com/PnCevennes/gn_module_suivi_chiro et https://github.com/PnCevennes/projet_suivis_frontend
+* Amélioration et compléments des scripts d'installation
+* Mise en place d'un script pour la customisation de la plateforme nationale (https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh)
+
+**Documentation**
+
+* Complément des différentes documentations
+* Ajout d'une documentation d'administration d'OccTax (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax)
+
+2.0.0.beta3 (2018-03-28)
+------------------------
+
+**Nouveautés**
+
+* Travail sur le module générique de Suivi intégré à GeoNature (``gn_monitoring``). Gestion des fichiers de configuration
 * Gestion de l'installation d'un module qui n'a pas de Frontend dans GeoNature
 * Mise en place de tests automatiques au niveau du Frontend
 * Ménage et réorganisation du code du Frontend
@@ -15,13 +66,17 @@ CHANGELOG
 * Suppression des blocs non fonctionnels sur la Home
 * Mise à jour de la doc et du MCD
 * Possibilité de masquer ou afficher les différents champs dans le formulaire Occtax (#344)
+* Ajout des nomenclatures dans les filtres d'OccTax à partir du nouveau composant ``dynamicForm`` qui permet de créer dynamiquement un formulaire en déclarant les champs (#318)
 * Amélioration du composant de recherche d'un taxon en ne recherchant que sur les débuts de mot et en affichant en premier les noms de référence (ordrer_by cd_nom=cd_ref DESC) - #334
 * Mise en place d'une route générique permettant de requêter dans une vue non mappée
+* Suppression des options vides dans les listes déroulantes des nomenclatures
+* Ajout de quelques paramètres (niveau de zoom mini dans chaque module, ID de la liste des taxons saisissables dans Occtax...)
 
 **Corrections**
 
 * Correction de la pagination du composant MapList
 * Correction des droits attribués automatiquement quand on se connecte avec le CAS
+* Correction de l'installation optionnelle de UsersHub dans le script ``install_all.sh``
 
 **Modules annexes**
 

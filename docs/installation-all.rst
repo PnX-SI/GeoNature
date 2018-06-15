@@ -18,6 +18,21 @@ Le script global d'installation de GeoNature va aussi se charger d'installer les
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
+Configuration serveur
+---------------------
+GeoNature se sert de flux internet externes durant son installation et son fonctionnement. Le serveur acceuillant l'application doit autoriser les flux externes suivants:
+
+- https://pypi.python.org
+- http://geonature.fr/
+- https://codeload.github.com/
+- https://nodejs.org/dist
+- https://registry.npmjs.org
+- https://www.npmjs.com
+- https://raw.githubusercontent.com/
+- https://inpn.mnhn.fr/mtd
+- https://preprod-inpn.mnhn.fr/mtd
+- https://wxs.ign.fr/
+
 Installation de l'application
 -----------------------------
 
@@ -33,9 +48,11 @@ Les applications suivantes seront installées :
 
 Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
 
+
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ROOT.
 
 * Mettre à jour les sources-list
+
 A l'installation de l'OS, les sources-list (liste des sources à partir duquel sont téléchargés les paquets) ne sont pas toujours corrects.
 
 ::
@@ -82,9 +99,7 @@ Pour Debian 8:
 
 ::
 
-    useradd -m geonatureadmin
-    passwd geonatureadmin
-
+    adduser geonatureadmin
 Lui donner ensuite des droits sudo
 
 ::
@@ -112,8 +127,8 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
  
 ::
     
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.ini
-    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install_all/install_all.sh
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 	
 	
 * Lancer l'installation
@@ -123,7 +138,10 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
     chmod +x install_all.sh
     ./install_all.sh
 
-Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``.
+Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``. Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+
+Pour le remplissage des numéro de release, voir le `tableau de compatibilité <compat_version.md>`_ des versions GeoNature avec ses dépendances. 
+
 
 'nvm' (node version manager) est utilisé pour installer les dernières versions de node et npm.
 
@@ -134,6 +152,8 @@ Une fois l'installation terminée, lancer cette commande pour ajouter 'nvm' dans
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
+
+
 Les applications sont disponibles aux adresses suivantes:
 
 - http://monip.com/geonature
@@ -141,12 +161,20 @@ Les applications sont disponibles aux adresses suivantes:
 
 Vous pouvez vous connecter avec l'utilisateur par défaut (admin/admin)
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
 
-- Pour ``/``: ``npm run build -- --base-href=/``
-- Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
+Si vous rencontrez une erreur, se reporter aux fichiers de logs:
 
-Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
+Logs de l'instalation de la base de données
+
+``/var/log/geonature/install_db.log``
+
+Log général de l'installation de l'application
+
+``/var/log/geonature/install_app.log``
+
+
+
+Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, editez  le fichier de configuration Apache: ``/etc/apache2/sites-available/geonature.conf`` en modifiant "l'alias":
 
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
 - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
@@ -155,7 +183,7 @@ Editez ensuite le fichier de configuration Apache: ``/etc/apache2/sites-availabl
 Installation d'un module GeoNature
 ----------------------------------
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur. Pour ajouter un gn_module externe, il est nécessaire de l'installer :
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB: le module Occurence de Taxon - Occtax - est fournit par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
 Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
 

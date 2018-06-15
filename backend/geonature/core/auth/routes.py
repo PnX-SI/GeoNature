@@ -13,7 +13,6 @@ from flask import (
 )
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from geonature.core.gn_meta import routes as gn_meta
 from geonature.core.users import routes as users
 from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
@@ -115,12 +114,6 @@ def loginCas():
                     # group socle 2
                     users.insert_in_cor_role(20001, user['id_role'])
                 user['id_application'] = current_app.config['ID_APPLICATION_GEONATURE']
-            except Exception as e:
-                gunicorn_error_logger.info(e)
-                log.error(e)
-            # Creation of datasets
-            try:
-                gn_meta.post_jdd_from_user_id(user_id, organism_id)
             except Exception as e:
                 gunicorn_error_logger.info(e)
                 log.error(e)

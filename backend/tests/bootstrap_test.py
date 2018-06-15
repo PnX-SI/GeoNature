@@ -1,20 +1,61 @@
+import json
+
 import pytest
+
+from flask import url_for
+from cookies import Cookie
 
 import server
 from geonature.utils.env import load_config, get_config_file_path
 
 #TODO: fixture pour mettre des données test dans la base a chaque test
 
+
 @pytest.fixture
-def geonature_app():
-    """ set the application context """
+def app():
     config_path = get_config_file_path()
     config = load_config(config_path)
     app = server.get_app(config)
-    ctx = app.app_context()
-    ctx.push()
-    yield app
-    ctx.pop()
+    app.config['TESTING'] = True
+    return app
+
+
+def post_json(client, url, json_dict):
+    """Send dictionary json_dict as a json to the specified url """
+    return client.post(url, data=json.dumps(json_dict), content_type='application/json')
+
+def json_of_response(response):
+    """Decode json from response"""
+    return json.loads(response.data.decode('utf8'))
+
+mimetype = 'application/json'
+headers = {
+    'Content-Type': mimetype,
+    'Accept': mimetype
+}
+
+def get_token(client, login="admin", password="admin"):
+    data = {
+            'login': login,
+            'password': password,
+            'id_application': 14,
+            'with_cruved': True
+        }
+    response = client.post(
+        url_for('auth.login'),
+        data = json.dumps(data),
+        headers = headers
+    )
+    try:
+        token = Cookie.from_string(response.headers['Set-Cookie'])
+        return token.value
+    except Exception:
+        raise Exception('Invalid login {}, {}'.format(login, password))
+
+
+    
+
+
 
 
 @pytest.fixture()
@@ -36,22 +77,18 @@ def releve_data(request):
             "hour_max": None,
             "altitude_min": None,
             "altitude_max": None,
-            "deleted": False,
             "meta_device_entry": "web",
             "comment": None,
             "id_nomenclature_obs_technique": 343,
-            "observers": [],
+            "observers": [1],
             "observers_txt": "tatatato",
             "id_nomenclature_grp_typ": 150,
-            "t_occurrences_contact": [
+            "t_occurrences_occtax": [
             {
                 "id_nomenclature_naturalness": 182,
-                "determination_method_as_text": "",
-                "meta_create_date": "2018-03-05 10:50:11.894492",
-                "meta_update_date": "2018-03-05T10:08:13.937Z",
                 "id_nomenclature_obs_meth": 42,
                 "digital_proof": None,
-                "cor_counting_contact": [
+                "cor_counting_occtax": [
                 {
                     "unique_id_sinp_occtax": "10f937db-54e1-409d-915d-b8c85055fa32",
                     "count_min": 1,
@@ -77,7 +114,6 @@ def releve_data(request):
                 "id_nomenclature_exist_proof": 91,
                 "cd_nom": 67111,
                 "id_nomenclature_diffusion_level": 163,
-                "deleted": False,
                 "sample_number_proof": None,
                 "determiner": None
             }

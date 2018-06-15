@@ -106,13 +106,14 @@ INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_f
 ,(114, 'JDD_OBJECTIFS', 'Objectif du jeu de données', 'Nomenclature des valeurs permises pour les objectifs du jeu de données.', 'SINP', 'Validé', '2017-11-02 00:00:00', '2017-11-02 00:00:00')
 ,(115, 'METHO_RECUEIL', 'Méthode de recueil des données', 'Nomenclature de l''ensemble de techniques, savoir-faire et outils mobilisés pour collecter des données.', 'SINP', 'Validé', '2017-11-02 00:00:00', '2017-11-02 00:00:00')
 ,(116, 'TYPE_SITE', 'Type de sites', 'Nomenclature des types de sites suivi dans gn_monitoring.', 'GEONATURE', 'Non validé', '2018-03-13 00:00:00', '2018-03-13 00:00:00')
+,(117, 'TYPE_MEDIA', 'Type de médias', 'Nomenclature des types de médias.', 'GEONATURE', 'Non validé', '2018-04-12 00:00:00', '2018-04-12 00:00:00')
 
 ;
 
-UPDATE bib_nomenclatures_types SET label_default = label_MYDEFAULTLANGUAGE;
-UPDATE bib_nomenclatures_types SET definition_default = definition_MYDEFAULTLANGUAGE;
+UPDATE bib_nomenclatures_types SET label_default = label_fr;
+UPDATE bib_nomenclatures_types SET definition_default = definition_fr;
 ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_default SET NOT NULL;
-ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
+ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_fr SET NOT NULL;
 
 INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemonique, label_fr, definition_fr, source, statut, id_broader, hierarchy, meta_create_date, meta_update_date, active) VALUES
 (81, 2, 'Re', 'Publique Régie', 'Publique Régie', 'Publique Régie : La Donnée Source est publique et a été produite directement par un organisme ayant autorité publique avec ses moyens humains et techniques propres.', 'SINP', 'Validé', 80, '002.001.001', '2013-12-05 00:00:00', '2013-12-05 00:00:00', true)
@@ -374,7 +375,6 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(271, 100, '61', 'Observation directe terrestre nocturne au phare', 'Observation directe terrestre nocturne au phare', 'Observation directe terrestre nocturne au phare', 'CAMPANULE', 'Validation en cours', 0, '100.061', '2017-06-19 15:12:46.794127', NULL, true)
 ,(273, 100, '63', 'Observation marine par caméra suspendue', 'Observation marine par caméra suspendue', 'Observation marine par caméra suspendue', 'CAMPANULE', 'Validation en cours', 0, '100.063', '2017-06-19 15:12:46.794127', NULL, true)
 ,(274, 100, '64', 'Observation marine par traineau vidéo', 'Observation marine par traineau vidéo', 'Observation marine par traineau vidéo', 'CAMPANULE', 'Validation en cours', 0, '100.064', '2017-06-19 15:12:46.794127', NULL, true)
-,(345, 101, '0', 'Inconnu', 'Inconnu', 'Le statut de validation n''est pas connu', 'GEONATURE', 'non validé', 0, '101.000', '2017-08-08 10:05:18.161067', NULL, true)
 ,(275, 100, '65', 'Observation marine par véhicule téléguidé (ROV)', 'Observation marine par véhicule téléguidé (ROV)', 'Observation marine par véhicule téléguidé (ROV)', 'CAMPANULE', 'Validation en cours', 0, '100.065', '2017-06-19 15:12:46.794127', NULL, true)
 ,(276, 100, '66', 'Observation marine photographique (observation photographique en plongée)', 'Observation marine photographique (observation photographique en plongée)', 'Observation marine photographique (observation photographique en plongée)', 'CAMPANULE', 'Validation en cours', 0, '100.066', '2017-06-19 15:12:46.794127', NULL, true)
 ,(277, 100, '67', 'Observation par piège photographique', 'Observation par piège photographique', 'Observation par piège photographique', 'CAMPANULE', 'Validation en cours', 0, '100.067', '2017-06-19 15:12:46.794127', NULL, true)
@@ -434,15 +434,17 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(340, 100, '130', 'Prospection à pied de cours d''eau (macrophytes)', 'Prospection à pied de cours d''eau (macrophytes)', 'Prospection à pied de cours d''eau (macrophytes)', 'CAMPANULE', 'Validation en cours', 0, '100.130', '2017-06-19 15:13:18.161067', NULL, true)
 ,(341, 100, '131', 'Prospection active dans l''habitat naturel (talus, souches, pierres…)', 'Prospection active dans l''habitat naturel (talus, souches, pierres…)', 'Prospection active dans l''habitat naturel (talus, souches, pierres…)', 'CAMPANULE', 'Validation en cours', 0, '100.131', '2017-06-19 15:13:18.161067', NULL, true)
 ,(342, 100, '132', 'Recherche dans filtres de piscines, skimmer', 'Recherche dans filtres de piscines, skimmer', 'Recherche dans filtres de piscines, skimmer', 'CAMPANULE', 'Validation en cours', 0, '100.132', '2017-06-19 15:13:18.161067', NULL, true)
-,(346, 101, '1', 'Non renseigné', 'Non renseigné', 'Le statut de validation n''est pas renseignée', 'GEONATURE', 'non validé', 0, '101.001', '2017-08-08 10:05:18.161068', NULL, true)
-,(347, 101, '2', 'En attente de validation', 'En attente de validation', 'Le travail de validation n''a pas encore été réalisé. Le statut de validation est en attente', 'GEONATURE', 'non validé', 0, '101.002', '2017-08-08 10:05:18.161069', NULL, true)
-,(348, 101, '3', 'Valide', 'Valide', 'La donnée d''observation est valide', 'GEONATURE', 'non validé', 0, '101.003', '2017-08-08 10:05:18.16107', NULL, true)
-,(349, 101, '4', 'Non valide', 'Non valide', 'La donnée d''observation n''est pas valide', 'GEONATURE', 'non validé', 0, '101.004', '2017-08-08 10:05:18.161071', NULL, true)
-,(350, 101, '5', 'Douteux', 'Douteux', 'La donnée est douteuse. Sans information complémentaire permettant d''étayer l''observation, elle ne peut pas être validée', 'GEONATURE', 'non validé', 0, '101.005', '2017-08-08 10:05:18.161072', NULL, true)
+,(345, 101, '1', 'Certain - très probable', 'Certain - très probable', 'La donnée est exacte. Il n’y a pas de doute notable et significatif quant à l’exactitude de l’observation ou de la détermination du taxon. La validation a été réalisée notamment à partir d’une preuve de l’observation qui confirme la détermination du producteur ou après vérification auprès de l’observateur et/ou du déterminateur.', 'SINP', 'validé', 0, '101.001', '2018-04-11 10:05:00', NULL, true)
+,(346, 101, '2', 'Probable', 'Probable', ' La donnée présente un bon niveau de fiabilité. Elle est vraisemblable et crédible. Il n’y a, a priori, aucune raison de douter de l’exactitude de la donnée mais il n’y a pas d’éléments complémentaires suffisants disponibles ou évalués (notamment la présence d’une preuve ou la possibilité de revenir à la donnée source) permettant d’attribuer un plus haut niveau de certitude.', 'SINP', 'validé', 0, '101.002', '2018-04-11 10:05:00', NULL, true)
+,(347, 101, '3', 'Douteux', 'Douteux', 'La donnée est peu vraisemblable ou surprenante mais on ne dispose pas d’éléments suffisants pour attester d’une erreur manifeste. La donnée est considérée comme douteuse.', 'SINP', 'validé', 0, '101.003', '2018-08-11 10:05:00', NULL, true)
+,(348, 101, '4', 'Invalide', 'Invalide', 'La donnée a été infirmée (erreur manifeste/avérée) ou présente un trop bas niveau de fiabilité. Elle est considérée comme trop improbable (aberrante notamment au regard de l’aire de répartition connue, des paramètres biotiques et abiotiques de la niche écologique du taxon, la preuve révèle une erreur de détermination). Elle est considérée comme invalide.', 'SINP', 'validé', 0, '101.004', '2018-04-11 10:05:00', NULL, true)
+,(349, 101, '5', 'Non réalisable', 'Non réalisable', 'La donnée a été soumise à l’ensemble du processus de validation mais l’opérateur (humain ou machine) n’a pas pu statuer sur le niveau de fiabilité, notamment à cause des points suivants : état des connaissances du taxon insuffisantes, ou informations insuffisantes sur l’observation.', 'SINP', 'validé', 0, '101.005', '2018-04-11 10:05:00', NULL, true)
+,(350, 101, '6', 'Inconnu', 'Inconnu', 'Le statut de validation n''est pas connu.', 'GEONATURE', 'non validé', 0, '101.006', '2018-04-11 10:05:00', NULL, true)
+,(493, 101, '0', 'En attente de validation', 'En attente de validation', 'Le travail de validation n''a pas encore été réalisé. Le statut de validation est en attente', 'GEONATURE', 'non validé', 0, '101.000', '2018-04-11 10:05:00', NULL, true)
 ,(351, 102, '1', 'Dataset', 'Dataset', 'Jeu de données', 'SINP', 'Validé', 0, '102.001', '2017-10-16 16:05:18', NULL, true)
 ,(352, 102, '2', 'Series', 'Series', 'ensemble de séries de données', 'SINP', 'Validé', 0, '102.002', '2017-10-16 16:05:18', NULL, true)
 ,(353, 103, '1', 'DS', 'Données source', 'Jeu de données-source dans les bases de données d''un producteur ou Jeu de données-source transmises par un producteur à une plateforme régionale ou thématique', 'SINP', 'Validé', 0, '103.001', '2017-10-16 16:25:00', NULL, true)
-,(354, 103, '2', 'DSR', 'Données source régionale', 'Jeu de données au standard régional dans la plateforme régionale/thématique', 'SINP', 'Validé', 0, '103.002', '2017-10-16 16:25:00', NULL, true)
+,(354, 103, '2', 'DSR', 'Données source régionale', 'Jeu de données au standard régional dans la plaåteforme régionale/thématique', 'SINP', 'Validé', 0, '103.002', '2017-10-16 16:25:00', NULL, true)
 ,(355, 103, '3', 'DEE', 'Données élémentaires d''échange', 'Jeu de données élémentaires d''échange (échangé entre plateforme régionale ou thématique et plateforme nationale)', 'SINP', 'Validé', 0, '103.003', '2017-10-16 16:25:00', NULL, true)
 ,(356, 104, '1', 'Aléatoire simple', 'Aléatoire simple', 'Les tirages des unités sont équiprobables et indépendants)', 'SINP', 'Validé', 0, '104.001', '2017-10-16 17:15:00', NULL, true)
 ,(357, 104, '2', 'Systématique', 'Systématique', 'Les unités sont ordonnées (par ex. selon leurs coordonnées). Une première unité est tirée au hasard et les suivantes s''en déduisent en respectant l''agencement', 'SINP', 'Validé', 0, '104.002', '2017-10-16 17:15:00', NULL, true)
@@ -458,17 +460,28 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(367, 105, '4', 'Placettes', 'Placettes', 'Surface de format variable (souvent circulaire, peut également être rectangulaire, etc.)', 'SINP', 'Validé', 0, '105.004', '2017-10-16 17:15:00', NULL, true)
 ,(368, 105, '5', 'Transects', 'Transects', 'Mesure en continu le long d''un tracé entre deux points (Désigne parfois une série de placettes effectuées le long d''un parcours entre deux points, mais c''est un abus de langage : dans ce cas, l''unité d''échantillonnage est la placette)', 'SINP', 'Validé', 0, '105.005', '2017-10-16 17:15:00', NULL, true)
 ,(369, 105, '6', 'Autre', 'Autre', 'Autre type d''unités d''échantillonnage', 'SINP', 'Validé', 0, '105.006', '2017-10-16 17:15:00', NULL, true)
-,(370, 106, '1', 'Examen macroscopique terrain', 'Examen macroscopique terrain', 'Examen de l''individu sur le terrain sans loupe ni microscope', 'GEONATURE', 'non validé', 0, '106.001', '2017-10-26 00:00:00', NULL, true)
-,(371, 106, '2', 'Examen macroscopique laboratoire', 'Examen macroscopique laboratoire', 'Examen de l''individu en laboratoire sans loupe ni microscope', 'GEONATURE', 'non validé', 0, '106.002', '2017-10-26 00:00:00', NULL, true)
-,(372, 106, '3', 'Examen genitalia terrain', 'Examen genitalia terrain', 'Examen des pièces génitales de l''individu sur le terrain', 'GEONATURE', 'non validé', 0, '106.003', '2017-10-26 00:00:00', NULL, true)
-,(373, 106, '4', 'Examen genitalia laboratoire', 'Examen genitalia laboratoire', 'Examen des pièces génitales de l''individu en laboratoire', 'GEONATURE', 'non validé', 0, '106.004', '2017-10-26 00:00:00', NULL, true)
-,(374, 106, '5', 'Examen en collection', 'Examen en collection', 'Examen de l''individu à partir d''une collection', 'GEONATURE', 'non validé', 0, '106.005', '2017-10-26 00:00:00', NULL, true)
-,(375, 106, '6', 'Examen sur photo', 'Examen sur photo', 'Examen de l''individu à partir de photo(s)', 'GEONATURE', 'non validé', 0, '106.006', '2017-10-26 00:00:00', NULL, true)
-,(376, 106, '7', 'Déterminé après élevage', 'Déterminé après élevage', 'La détermination a été réalisées après élevage ou plantation (chenille, graine par exemple)', 'GEONATURE', 'non validé', 0, '106.007', '2017-10-26 00:00:00', NULL, true)
-,(377, 106, '8', 'Analyse génétique', 'Analyse génétique', 'Une analyse génétique a été réalisée à partir d''un échantillon prélevé sur un ou plusieurs individus', 'GEONATURE', 'non validé', 0, '106.008', '2017-10-26 00:00:00', NULL, true)
-,(378, 106, '9', 'Examen de la dentition', 'Examen de la dentition', 'La détermination a été réalisées après examen de la dentition', 'GEONATURE', 'non validé', 0, '106.009', '2017-10-26 00:00:00', NULL, true)
-,(379, 106, '10', 'Autre critère', 'Autre critère', 'Le critère de détermination n''est pas présent dans cette liste', 'GEONATURE', 'non validé', 0, '106.010', '2017-10-26 00:00:00', NULL, true)
-,(473, 106, '11', 'Non renseigné', 'Non renseigné', 'L''information n''a pas été renseignée.', 'GEONATURE', 'non validé', 0, '106.011', '2018-01-11 00:00:00', NULL, true)
+,(473, 106, '1', 'Non renseigné', 'Non renseigné', 'La méthode de détermination n''a pas été renseignée', 'GEONATURE', 'non validé', 0, '106.001', '2018-01-11 00:00:00', '2018-03-29 00:00:00', true)
+,(379, 106, '2', 'Autre méthode de détermination', 'Autre méthode de détermination', 'La méthode de détermination n''est pas présente dans cette liste', 'GEONATURE', 'non validé', 0, '106.002', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(370, 106, '3', 'Analyse d’ADN environnemental', 'Analyse d’ADN environnemental', 'La détermination a été effectuée sur la base des résultats d''une analyse d''ADN environnemental', 'GEONATURE', 'non validé', 0, '106.003', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(371, 106, '4', 'Analyse ADN de l''individu ou de ses restes', 'Analyse ADN de l''individu ou de ses restes', 'La détermination a été effectuée sur la base des résultats d''une analyse d''ADN réalisée à partir d''un échantillon prélevé sur un ou des individus, des traces ou restes (fragments ou résidus) d''individus', 'GEONATURE', 'non validé', 0, '106.004', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(372, 106, '5', 'Analyse biophysique ou biochimique', 'Analyse biophysique ou biochimique', 'La détermination repose sur des méthodes biophysiques ou biochimiques', 'GEONATURE', 'non validé', 0, '106.005', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(373, 106, '6', 'Déduction de l''espèce par n° d''identification', 'Déduction de l''espèce par n° d''identification', 'L''espèce est déduite sur la base d''un numéro d''identification attribué précédemment à un individu : n° de bague, n° de balise gps etc', 'GEONATURE', 'non validé', 0, '106.006', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(374, 106, '7', 'Détermination informatique par un outil de reconnaissance automatique', 'Détermination informatique par un outil de reconnaissance automatique', 'La détermination a été effectuée à l''aide d''une ou des applications de reconnaissance automatique visuelle ou auditive des espèces, sur informatique ou appareils mobiles', 'GEONATURE', 'non validé', 0, '106.007', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(375, 106, '8', 'Examen biométrique', 'Examen biométrique', 'La détermination repose sur des examens biométriques', 'GEONATURE', 'non validé', 0, '106.008', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(376, 106, '9', 'Examen auditif direct', 'Examen auditif direct', 'La détermination repose sur une écoute directe des sons produits par l''espèce, à l''oreille et sans transformation', 'GEONATURE', 'non validé', 0, '106.009', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(377, 106, '10', 'Examen auditif avec transformation électronique', 'Examen auditif avec transformation électronique', 'La détermination repose sur une écoute des sons produits par l''espèce après transformation électronique : transformation d''ultrasons, signaux hétérodynes, expansions de temps…', 'GEONATURE', 'non validé', 0, '106.010', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(378, 106, '11', 'Examen des organes reproducteurs ou critères spécifiques en laboratoire', 'Examen des organes reproducteurs ou critères spécifiques en laboratoire', 'La détermination repose sur l''examen précis des organes reproducteurs ou autres critères spécifiques en laboratoire', 'GEONATURE', 'non validé', 0, '106.011', '2017-10-26 00:00:00', '2018-03-29 00:00:00', true)
+,(482, 106, '12', 'Examen des organes reproducteurs ou critères spécifiques sur le terrain', 'Examen des organes reproducteurs ou critères spécifiques sur le terrain', 'La détermination repose sur l''examen des organes reproducteurs ou autres critères spécifiques directement sur le terrain', 'GEONATURE', 'non validé', 0, '106.012', '2018-03-29 00:00:00', NULL, true)
+,(483, 106, '13', 'Examen des restes de l’individu sous loupe ou microscope', 'Examen des restes de l’individu sous loupe ou microscope', 'La détermination repose sur un examen visuel précis des restes (fragments ou résidus) de l''individu sous loupe ou microscope ', 'GEONATURE', 'non validé', 0, '106.013', '2018-03-29 00:00:00', NULL, true)
+,(484, 106, '14', 'Examen visuel des restes de l’individu', 'Examen visuel des restes de l’individu', 'La détermination repose sur un examen visuel des restes (fragments ou résidus) de l''individu à l''œil nu', 'GEONATURE', 'non validé', 0, '106.014', '2018-05-17 00:00:00', NULL, true)
+,(485, 106, '15', 'Examen des restes de l''individu sur photo ou vidéo', 'Examen des restes de l''individu sur photo ou vidéo', 'La détermination repose sur un examen visuel des restes (fragments ou résidus) de l''individu sur photographie ou vidéo', 'GEONATURE', 'non validé', 0, '106.015', '2018-03-29 00:00:00', NULL, true)
+,(486, 106, '16', 'Examen des traces ou indices de présence sur photo ou vidéo', 'Examen des traces ou indices de présence sur photo ou vidéo', 'La détermination repose sur l''examen de photographies ou de vidéos représentant des traces ou indices de présences', 'GEONATURE', 'non validé', 0, '106.016', '2018-03-29 00:00:00', NULL, true)
+,(487, 106, '17', 'Examen direct des traces ou indices de présence', 'Examen direct des traces ou indices de présence', 'La détermination repose sur l''examen direct des traces ou indices de présences par le déterminateur', 'GEONATURE', 'non validé', 0, '106.017', '2018-03-29 00:00:00', NULL, true)
+,(488, 106, '18', 'Examen visuel à distance', 'Examen visuel à distance', 'La détermination a été effectuée à distance sur le terrain, à l''œil nu ou à l''aide de longue vue, jumelles etc', 'GEONATURE', 'non validé', 0, '106.018', '2018-03-29 00:00:00', NULL, true)
+,(489, 106, '19', 'Examen visuel en collection ', 'Examen visuel en collection ', 'La détermination repose sur l''examen visuel d''un individu en collection : boite entomologique, herbier, collections en alcool ou formol…', 'GEONATURE', 'non validé', 0, '106.019', '2018-03-29 00:00:00', NULL, true)
+,(490, 106, '20', 'Examen visuel sous loupe ou microscope', 'Examen visuel sous loupe ou microscope', 'La détermination repose sur l''examen précis de l''individu sous loupe ou microscope', 'GEONATURE', 'non validé', 0, '106.020', '2018-03-29 00:00:00', NULL, true)
+,(491, 106, '21', 'Examen visuel de l’individu en main', 'Examen visuel de l’individu en main', 'La détermination repose sur l''examen direct de l''individu en main à l''œil nu', 'GEONATURE', 'non validé', 0, '106.021', '2018-03-29 00:00:00', NULL, true)
+,(492, 106, '22', 'Examen visuel sur photo ou vidéo', 'Examen visuel sur photo ou vidéo', 'La détermination repose sur l''examen de photographies ou de vidéos sur lesquelles apparait l''espèce', 'GEONATURE', 'non validé', 0, '106.022', '2018-03-29 00:00:00', NULL, true)
 ,(380, 107, '1', 'International', 'International', 'niveau international', 'SINP', 'Validé', 0, '107.001', '2017-10-30 00:00:00', NULL, true)
 ,(381, 107, '2', 'Européen', 'Européen', 'niveau européen', 'SINP', 'Validé', 0, '107.002', '2017-10-30 00:00:00', NULL, true)
 ,(382, 107, '3', 'National', 'National', 'niveau national', 'SINP', 'Validé', 0, '107.003', '2017-10-30 00:00:00', NULL, true)
@@ -570,14 +583,22 @@ INSERT INTO t_nomenclatures (id_nomenclature, id_type, cd_nomenclature, mnemoniq
 ,(479, 116, '5', 'Rocher', 'Rocher', 'Site chiroptères de type rocher', 'GEONATURE', 'Non validé', 116, '116.001.005', '2018-03-13 00:00:00', NULL, true)
 ,(480, 116, '6', 'Hors gîte', 'Hors gîte', 'Site chiroptères de type hors gîte', 'GEONATURE', 'Non validé', 116, '116.001.006', '2018-03-13 00:00:00', NULL, true)
 ,(481, 116, '7', 'Indéterminé', 'Indéterminé', 'Site chiroptères de type indéterminé', 'GEONATURE', 'Non validé', 116, '116.001.007', '2018-03-13 00:00:00', NULL, true)
---next 482
+,(494, 117, '2', 'Photo', 'Photo', 'Média de type image', 'GEONATURE', 'Non validé', 117, '117.002', '2018-04-12 00:00:00', NULL, true)
+,(495, 117, '3', 'Page web', 'Page web', 'Média de type page web', 'GEONATURE', 'Non validé', 117, '117.003', '2018-04-12 00:00:00', NULL, true)
+,(496, 117, '4', 'PDF', 'PDF', 'Média de type document PDF', 'GEONATURE', 'Non validé', 117, '117.004', '2018-04-12 00:00:00', NULL, true)
+,(497, 117, '5', 'Audio', 'Audio', 'Média de type fichier audio mp3', 'GEONATURE', 'Non validé', 117, '117.005', '2018-04-12 00:00:00', NULL, true)
+,(498, 117, '6', 'Vidéo (fichier)', 'Vidéo (fichier)', 'Média de type fichier vidéo hébergé', 'GEONATURE', 'Non validé', 117, '117.006', '2018-04-12 00:00:00', NULL, true)
+,(499, 117, '7', 'Vidéo Youtube', 'Vidéo Youtube', 'ID d''une video hébergée sur Youtube', 'GEONATURE', 'Non validé', 117, '117.007', '2018-04-12 00:00:00', NULL, true)
+,(500, 117, '8', 'Vidéo Dailymotion', 'Vidéo Dailymotion', 'ID d''une video hébergée sur Dailymotion', 'GEONATURE', 'Non validé', 117, '117.008', '2018-04-12 00:00:00', NULL, true)
+,(501, 117, '9', 'Vidéo Vimeo', 'Vidéo Vimeo', 'ID d''une video hébergée sur Vimeo', 'GEONATURE', 'Non validé', 117, '117.009', '2018-04-12 00:00:00', NULL, true)
+--next 502
 ;
-SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 482, true);
+SELECT pg_catalog.setval('t_nomenclatures_id_nomenclature_seq', 501, true);
 
-UPDATE t_nomenclatures SET label_default = label_MYDEFAULTLANGUAGE;
-UPDATE t_nomenclatures SET definition_default = definition_MYDEFAULTLANGUAGE;
+UPDATE t_nomenclatures SET label_default = label_fr;
+UPDATE t_nomenclatures SET definition_default = definition_fr;
 ALTER TABLE t_nomenclatures ALTER COLUMN label_default SET NOT NULL;
-ALTER TABLE t_nomenclatures ALTER COLUMN label_MYDEFAULTLANGUAGE SET NOT NULL;
+ALTER TABLE t_nomenclatures ALTER COLUMN label_fr SET NOT NULL;
 
 -- inserting organism représenting all organisms with 0 as id_organisme
 DO
@@ -589,15 +610,17 @@ EXCEPTION WHEN unique_violation  THEN
 END
 $$;
 
-INSERT INTO ref_nomenclatures.defaults_nomenclatures_value (id_type, id_organism, id_nomenclature) VALUES
+INSERT INTO defaults_nomenclatures_value (id_type, id_organism, id_nomenclature) VALUES
 (2,0,80)
 ,(19,0,76)
-,(103,0,353)
+,(101,0,493)
 ,(102,0,351)
+,(103,0,353)
 ,(114,0,442)
 ,(115,0,430)
 ,(107,0,382)
 ,(111,0,417)
+,(106,0,473)
 ;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
@@ -966,7 +989,12 @@ INSERT INTO cor_taxref_nomenclature VALUES
 
 --TODO : "Octocoralliaires"
 --TODO : "Entognathes"
---TODO : "Annélides"
+
+,(4, 'Animalia', 'Annélides', now(), NULL)
+,(6, 'Animalia', 'Annélides', now(), NULL)
+,(7, 'Animalia', 'Annélides', now(), NULL)
+,(11, 'Animalia', 'Annélides', now(), NULL)
+
 --TODO : "Pycnogonides"
 --TODO : "Nématodes"
 
@@ -1418,6 +1446,7 @@ INSERT INTO cor_taxref_nomenclature VALUES
 ,(348, 'all', 'all', now(), NULL)
 ,(349, 'all', 'all', now(), NULL)
 ,(350, 'all', 'all', now(), NULL)
+,(493, 'all', 'all', now(), NULL)
 
 
 -----------------------------
@@ -1434,23 +1463,297 @@ INSERT INTO cor_taxref_nomenclature VALUES
 -------------------------
 --DETERMINATION METHODS--
 -------------------------
+,(473, 'all', 'all', now(), NULL)
+,(379, 'all', 'all', now(), NULL)
 ,(370, 'all', 'all', now(), NULL)
 ,(371, 'all', 'all', now(), NULL)
-,(372, 'all', 'all', now(), NULL)
-,(374, 'all', 'all', now(), NULL)
-,(375, 'all', 'all', now(), NULL)
-,(376, 'all', 'all', now(), NULL)
-,(377, 'all', 'all', now(), NULL)
-,(379, 'all', 'all', now(), NULL)
 
-,(372, 'Animalia', 'Insectes', now(), NULL)
-,(373, 'Animalia', 'Insectes', now(), NULL)
+,(372, 'Bacteria', 'all', now(), NULL)
 
-,(372, 'Animalia', 'Arachnides', now(), NULL)
-,(373, 'Animalia', 'Arachnides', now(), NULL)
+,(378, 'Plantae', 'all', now(), NULL)
+,(382, 'Plantae', 'all', now(), NULL)
+,(383, 'Plantae', 'all', now(), NULL)
+,(384, 'Plantae', 'all', now(), NULL)
+,(385, 'Plantae', 'all', now(), NULL)
+,(488, 'Plantae', 'all', now(), NULL)
+,(489, 'Plantae', 'all', now(), NULL)
+,(490, 'Plantae', 'all', now(), NULL)
+,(491, 'Plantae', 'all', now(), NULL)
+,(492, 'Plantae', 'all', now(), NULL)
 
-,(372, 'Animalia', 'Gastéropodes', now(), NULL)
-,(373, 'Animalia', 'Gastéropodes', now(), NULL)
+,(374, 'Plantae', 'Angiospermes', now(), NULL)
 
-,(378, 'Animalia', 'Mammifères', now(), NULL)
+,(374, 'Plantae', 'Gymnospermes', now(), NULL)
+
+,(374, 'Plantae', 'Fougères', now(), NULL)
+
+,(374, 'Plantae', 'Autres', now(), NULL)
+
+,(372, 'Fungi', 'all', now(), NULL)
+,(374, 'Fungi', 'all', now(), NULL)
+,(378, 'Fungi', 'all', now(), NULL)
+,(382, 'Fungi', 'all', now(), NULL)
+,(383, 'Fungi', 'all', now(), NULL)
+,(384, 'Fungi', 'all', now(), NULL)
+,(385, 'Fungi', 'all', now(), NULL)
+,(488, 'Fungi', 'all', now(), NULL)
+,(489, 'Fungi', 'all', now(), NULL)
+,(490, 'Fungi', 'all', now(), NULL)
+,(491, 'Fungi', 'all', now(), NULL)
+,(492, 'Fungi', 'all', now(), NULL)
+
+,(378, 'Animalia', 'all', now(), NULL)
+,(483, 'Animalia', 'all', now(), NULL)
+,(489, 'Animalia', 'all', now(), NULL)
+,(490, 'Animalia', 'all', now(), NULL)
+
+,(375, 'Animalia', 'Bivalves', now(), NULL)
+,(482, 'Animalia', 'Bivalves', now(), NULL)
+,(484, 'Animalia', 'Bivalves', now(), NULL)
+,(485, 'Animalia', 'Bivalves', now(), NULL)
+,(488, 'Animalia', 'Bivalves', now(), NULL)
+,(491, 'Animalia', 'Bivalves', now(), NULL)
+,(492, 'Animalia', 'Bivalves', now(), NULL)
+
+-- Acanthocéphales à compléter ou améliorer
+,(482, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(484, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(485, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(488, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(491, 'Animalia', 'Acanthocéphales', now(), NULL)
+,(492, 'Animalia', 'Acanthocéphales', now(), NULL)
+
+,(374, 'Animalia', 'Insectes', now(), NULL)
+,(375, 'Animalia', 'Insectes', now(), NULL)
+,(376, 'Animalia', 'Insectes', now(), NULL)
+,(377, 'Animalia', 'Insectes', now(), NULL)
+,(482, 'Animalia', 'Insectes', now(), NULL)
+,(484, 'Animalia', 'Insectes', now(), NULL)
+,(485, 'Animalia', 'Insectes', now(), NULL)
+,(486, 'Animalia', 'Insectes', now(), NULL)
+,(487, 'Animalia', 'Insectes', now(), NULL)
+,(488, 'Animalia', 'Insectes', now(), NULL)
+,(491, 'Animalia', 'Insectes', now(), NULL)
+,(492, 'Animalia', 'Insectes', now(), NULL)
+
+,(375, 'Animalia', 'Céphalopodes', now(), NULL)
+,(482, 'Animalia', 'Céphalopodes', now(), NULL)
+,(484, 'Animalia', 'Céphalopodes', now(), NULL)
+,(485, 'Animalia', 'Céphalopodes', now(), NULL)
+,(488, 'Animalia', 'Céphalopodes', now(), NULL)
+,(491, 'Animalia', 'Céphalopodes', now(), NULL)
+,(492, 'Animalia', 'Céphalopodes', now(), NULL)
+
+,(482, 'Animalia', 'Reptiles', now(), NULL)
+,(484, 'Animalia', 'Reptiles', now(), NULL)
+,(485, 'Animalia', 'Reptiles', now(), NULL)
+,(486, 'Animalia', 'Reptiles', now(), NULL)
+,(487, 'Animalia', 'Reptiles', now(), NULL)
+,(488, 'Animalia', 'Reptiles', now(), NULL)
+,(491, 'Animalia', 'Reptiles', now(), NULL)
+,(492, 'Animalia', 'Reptiles', now(), NULL)
+
+,(377, 'Animalia', 'Crustacés', now(), NULL)
+,(482, 'Animalia', 'Crustacés', now(), NULL)
+,(484, 'Animalia', 'Crustacés', now(), NULL)
+,(485, 'Animalia', 'Crustacés', now(), NULL)
+,(486, 'Animalia', 'Crustacés', now(), NULL)
+,(487, 'Animalia', 'Crustacés', now(), NULL)
+,(488, 'Animalia', 'Crustacés', now(), NULL)
+,(491, 'Animalia', 'Crustacés', now(), NULL)
+,(492, 'Animalia', 'Crustacés', now(), NULL)
+
+-- Scléractiniaires à compléter ou améliorer
+,(482, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(484, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(485, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(488, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(491, 'Animalia', 'Scléractiniaires', now(), NULL)
+,(492, 'Animalia', 'Scléractiniaires', now(), NULL)
+
+-- Hydrozoaires à compléter ou améliorer
+,(482, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(484, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(485, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(486, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(487, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(488, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(491, 'Animalia', 'Hydrozoaires', now(), NULL)
+,(492, 'Animalia', 'Hydrozoaires', now(), NULL)
+
+,(373, 'Animalia', 'Oiseaux', now(), NULL)
+,(374, 'Animalia', 'Oiseaux', now(), NULL)
+,(376, 'Animalia', 'Oiseaux', now(), NULL)
+,(482, 'Animalia', 'Oiseaux', now(), NULL)
+,(484, 'Animalia', 'Oiseaux', now(), NULL)
+,(485, 'Animalia', 'Oiseaux', now(), NULL)
+,(486, 'Animalia', 'Oiseaux', now(), NULL)
+,(487, 'Animalia', 'Oiseaux', now(), NULL)
+,(488, 'Animalia', 'Oiseaux', now(), NULL)
+,(491, 'Animalia', 'Oiseaux', now(), NULL)
+,(492, 'Animalia', 'Oiseaux', now(), NULL)
+
+,(373, 'Animalia', 'Poissons', now(), NULL)
+,(482, 'Animalia', 'Poissons', now(), NULL)
+,(484, 'Animalia', 'Poissons', now(), NULL)
+,(485, 'Animalia', 'Poissons', now(), NULL)
+,(488, 'Animalia', 'Poissons', now(), NULL)
+,(491, 'Animalia', 'Poissons', now(), NULL)
+,(492, 'Animalia', 'Poissons', now(), NULL)
+
+-- Némertes à compléter ou améliorer
+,(482, 'Animalia', 'Némertes', now(), NULL)
+,(484, 'Animalia', 'Némertes', now(), NULL)
+,(485, 'Animalia', 'Némertes', now(), NULL)
+,(488, 'Animalia', 'Némertes', now(), NULL)
+,(491, 'Animalia', 'Némertes', now(), NULL)
+,(492, 'Animalia', 'Némertes', now(), NULL)
+
+,(482, 'Animalia', 'Arachnides', now(), NULL)
+,(484, 'Animalia', 'Arachnides', now(), NULL)
+,(485, 'Animalia', 'Arachnides', now(), NULL)
+,(486, 'Animalia', 'Arachnides', now(), NULL)
+,(487, 'Animalia', 'Arachnides', now(), NULL)
+,(488, 'Animalia', 'Arachnides', now(), NULL)
+,(491, 'Animalia', 'Arachnides', now(), NULL)
+,(492, 'Animalia', 'Arachnides', now(), NULL)
+
+,(375, 'Animalia', 'Gastéropodes', now(), NULL)
+,(482, 'Animalia', 'Gastéropodes', now(), NULL)
+,(484, 'Animalia', 'Gastéropodes', now(), NULL)
+,(485, 'Animalia', 'Gastéropodes', now(), NULL)
+,(488, 'Animalia', 'Gastéropodes', now(), NULL)
+,(491, 'Animalia', 'Gastéropodes', now(), NULL)
+,(492, 'Animalia', 'Gastéropodes', now(), NULL)
+
+,(374, 'Animalia', 'Amphibiens', now(), NULL)
+,(376, 'Animalia', 'Amphibiens', now(), NULL)
+,(482, 'Animalia', 'Amphibiens', now(), NULL)
+,(484, 'Animalia', 'Amphibiens', now(), NULL)
+,(485, 'Animalia', 'Amphibiens', now(), NULL)
+,(486, 'Animalia', 'Amphibiens', now(), NULL)
+,(487, 'Animalia', 'Amphibiens', now(), NULL)
+,(488, 'Animalia', 'Amphibiens', now(), NULL)
+,(491, 'Animalia', 'Amphibiens', now(), NULL)
+,(492, 'Animalia', 'Amphibiens', now(), NULL)
+
+-- Octocoralliaires à compléter ou améliorer
+,(482, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(484, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(485, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(488, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(491, 'Animalia', 'Octocoralliaires', now(), NULL)
+,(492, 'Animalia', 'Octocoralliaires', now(), NULL)
+
+-- Entognathes : pas d'ajouts spécifiques
+
+-- Pyctnogonides à compléter ou améliorer
+,(482, 'Animalia', 'Pycnogonides', now(), NULL)
+,(484, 'Animalia', 'Pycnogonides', now(), NULL)
+,(485, 'Animalia', 'Pycnogonides', now(), NULL)
+,(488, 'Animalia', 'Pycnogonides', now(), NULL)
+,(491, 'Animalia', 'Pycnogonides', now(), NULL)
+,(492, 'Animalia', 'Pycnogonides', now(), NULL)
+
+-- Autres Animalia à compléter ou améliorer
+,(375, 'Animalia', 'Autres', now(), NULL)
+,(482, 'Animalia', 'Autres', now(), NULL)
+,(484, 'Animalia', 'Autres', now(), NULL)
+,(485, 'Animalia', 'Autres', now(), NULL)
+,(486, 'Animalia', 'Autres', now(), NULL)
+,(487, 'Animalia', 'Autres', now(), NULL)
+,(488, 'Animalia', 'Autres', now(), NULL)
+,(491, 'Animalia', 'Autres', now(), NULL)
+,(492, 'Animalia', 'Autres', now(), NULL)
+
+,(482, 'Animalia', 'Annélides', now(), NULL)
+,(488, 'Animalia', 'Annélides', now(), NULL)
+,(491, 'Animalia', 'Annélides', now(), NULL)
+,(492, 'Animalia', 'Annélides', now(), NULL)
+
+-- Nématodes à compléter ou améliorer
+,(484, 'Animalia', 'Nématodes', now(), NULL)
+,(485, 'Animalia', 'Nématodes', now(), NULL)
+,(491, 'Animalia', 'Nématodes', now(), NULL)
+,(492, 'Animalia', 'Nématodes', now(), NULL)
+
+,(373, 'Animalia', 'Mammifères', now(), NULL)
+,(374, 'Animalia', 'Mammifères', now(), NULL)
+,(375, 'Animalia', 'Mammifères', now(), NULL)
+,(376, 'Animalia', 'Mammifères', now(), NULL)
+,(377, 'Animalia', 'Mammifères', now(), NULL)
+,(482, 'Animalia', 'Mammifères', now(), NULL)
+,(484, 'Animalia', 'Mammifères', now(), NULL)
+,(485, 'Animalia', 'Mammifères', now(), NULL)
+,(486, 'Animalia', 'Mammifères', now(), NULL)
+,(487, 'Animalia', 'Mammifères', now(), NULL)
+,(488, 'Animalia', 'Mammifères', now(), NULL)
+,(491, 'Animalia', 'Mammifères', now(), NULL)
+,(492, 'Animalia', 'Mammifères', now(), NULL)
+
+-- Ascidies à compléter ou améliorer
+,(482, 'Animalia', 'Ascidies', now(), NULL)
+,(484, 'Animalia', 'Ascidies', now(), NULL)
+,(485, 'Animalia', 'Ascidies', now(), NULL)
+,(488, 'Animalia', 'Ascidies', now(), NULL)
+,(491, 'Animalia', 'Ascidies', now(), NULL)
+,(492, 'Animalia', 'Ascidies', now(), NULL)
+
+,(482, 'Animalia', 'Myriapodes', now(), NULL)
+,(484, 'Animalia', 'Myriapodes', now(), NULL)
+,(485, 'Animalia', 'Myriapodes', now(), NULL)
+,(488, 'Animalia', 'Myriapodes', now(), NULL)
+,(491, 'Animalia', 'Myriapodes', now(), NULL)
+,(492, 'Animalia', 'Myriapodes', now(), NULL)
+
+-- Plathelminthes à compléter ou améliorer
+,(482, 'Animalia', 'Plathelminthes', now(), NULL)
+,(484, 'Animalia', 'Plathelminthes', now(), NULL)
+,(485, 'Animalia', 'Plathelminthes', now(), NULL)
+,(488, 'Animalia', 'Plathelminthes', now(), NULL)
+,(491, 'Animalia', 'Plathelminthes', now(), NULL)
+,(492, 'Animalia', 'Plathelminthes', now(), NULL)
+
+-- Autres chromista à compléter ou améliorer
+,(372, 'Chromista', 'Autres', now(), NULL)
+,(378, 'Chromista', 'Autres', now(), NULL)
+,(482, 'Chromista', 'Autres', now(), NULL)
+,(483, 'Chromista', 'Autres', now(), NULL)
+,(484, 'Chromista', 'Autres', now(), NULL)
+,(485, 'Chromista', 'Autres', now(), NULL)
+,(488, 'Chromista', 'Autres', now(), NULL)
+,(489, 'Chromista', 'Autres', now(), NULL)
+,(490, 'Chromista', 'Autres', now(), NULL)
+,(491, 'Chromista', 'Autres', now(), NULL)
+,(492, 'Chromista', 'Autres', now(), NULL)
+
+-- Algues brunes à compléter ou améliorer
+,(372, 'Chromista', 'Algues brunes', now(), NULL)
+,(378, 'Chromista', 'Algues brunes', now(), NULL)
+,(482, 'Chromista', 'Algues brunes', now(), NULL)
+,(483, 'Chromista', 'Algues brunes', now(), NULL)
+,(484, 'Chromista', 'Algues brunes', now(), NULL)
+,(485, 'Chromista', 'Algues brunes', now(), NULL)
+,(488, 'Chromista', 'Algues brunes', now(), NULL)
+,(489, 'Chromista', 'Algues brunes', now(), NULL)
+,(490, 'Chromista', 'Algues brunes', now(), NULL)
+,(491, 'Chromista', 'Algues brunes', now(), NULL)
+,(492, 'Chromista', 'Algues brunes', now(), NULL)
+
+-- Diatomées à compléter ou améliorer
+,(372, 'Chromista', 'Diatomées', now(), NULL)
+,(378, 'Chromista', 'Diatomées', now(), NULL)
+,(483, 'Chromista', 'Diatomées', now(), NULL)
+,(485, 'Chromista', 'Diatomées', now(), NULL)
+,(488, 'Chromista', 'Diatomées', now(), NULL)
+,(489, 'Chromista', 'Diatomées', now(), NULL)
+,(490, 'Chromista', 'Diatomées', now(), NULL)
+,(492, 'Chromista', 'Diatomées', now(), NULL)
+
+-- Protozoa à compléter ou améliorer
+,(378, 'Protozoa', 'Autres', now(), NULL)
+,(483, 'Protozoa', 'Autres', now(), NULL)
+,(485, 'Protozoa', 'Autres', now(), NULL)
+,(490, 'Protozoa', 'Autres', now(), NULL)
+,(492, 'Protozoa', 'Autres', now(), NULL)
 ;

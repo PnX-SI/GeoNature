@@ -10,8 +10,8 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-https://github.com/PnX-SI/UsersHub-authentification-module/archive/pass_plus.zip
-https://github.com/PnX-SI/Nomenclature-api-module/archive/master.zip
+https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.1.1.zip
+https://github.com/PnX-SI/Nomenclature-api-module/archive/v1.0.0.zip
 certifi==2017.11.5
 chardet==3.0.4
 click==6.7
@@ -39,3 +39,8 @@ toml==0.9.4
 urllib3==1.22
 werkzeug==0.14.1
 xmltodict==0.11.0
+pyproj==1.9.5.1
+pyshp==1.2.12
+pygdal==2.1.2.3
+# sur ubuntu il faut installer la version 1.11.3.3
+#pygdal==1.11.3.3

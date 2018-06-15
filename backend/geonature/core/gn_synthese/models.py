@@ -109,7 +109,6 @@ class Synthese(DB.Model):
     determiner = DB.Column(DB.Unicode)
     determination_method = DB.Column(DB.Unicode)
     comments = DB.Column(DB.Unicode)
-    deleted = DB.Column(DB.Boolean)
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)

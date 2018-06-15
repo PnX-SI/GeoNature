@@ -12,12 +12,50 @@ CREATE SCHEMA IF NOT EXISTS ref_geo;
 
 SET search_path = ref_geo, pg_catalog;
 
+
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
+-- Foncion générique permettant de calculer une geom locale à partir d'une geom source (en récupérant le parametre 'local_srid' de la table gn_commons.t_parameters)
+-- La fonction prend deux parametres:
+-- 1er param: nom de la colonne de la geom en 4326
+-- 2eme param: nom de la colonne de la geom local
+
+--USAGE : ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+	thelocalgeomcol text := quote_ident(TG_ARGV[1]);
+        thelocalsrid int;
+        thegeomlocalvalue public.geometry;
+        thegeomchange boolean;
+BEGIN
+	-- Test si la geom a été modifiée
+	EXECUTE FORMAT(
+		'SELECT ST_EQUALS($1.%I, $1.%I)', the4326geomcol, thelocalgeomcol
+		) INTO thegeomchange USING NEW;
+	-- si insertion ou geom modifiée, on calcule la geom locale
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, %L)',the4326geomcol, thelocalsrid ) INTO thegeomlocalvalue USING NEW;
+		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
 ----------------------
 --TABLES & SEQUENCES--
 ----------------------
 CREATE TABLE bib_areas_types (
     id_type integer NOT NULL,
-    id_nomenclature_area_type integer,
     type_name character varying(200),
     type_code character varying(25),
     type_desc text,
@@ -122,9 +160,6 @@ ALTER TABLE ONLY dem_vector
 ----------------
 --FOREIGN KEYS--
 ----------------
-ALTER TABLE ONLY bib_areas_types
-    ADD CONSTRAINT fk_bib_areas_types_id_nomenclature_area_type FOREIGN KEY (id_nomenclature_area_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES bib_areas_types(id_type) ON UPDATE CASCADE;
 
@@ -133,13 +168,6 @@ ALTER TABLE ONLY li_municipalities
 
 ALTER TABLE ONLY li_grids
     ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
-
-
---------------
---CONSTRAINS--
---------------
-ALTER TABLE bib_areas_types
-  ADD CONSTRAINT check_bib_areas_types_area_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_area_type,22));
 
 
 ---------
@@ -165,7 +193,7 @@ $BODY$
 DECLARE
     isrid int;
 BEGIN
-    SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+    SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
     RETURN QUERY
     WITH d  as (
         SELECT st_transform(myGeom,isrid) a
@@ -190,7 +218,7 @@ $BODY$
 DECLARE
   isrid int;
 BEGIN
-  SELECT gn_meta.get_default_parameter('local_srid', NULL) INTO isrid;
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
   RETURN QUERY
   WITH d  as (
       SELECT st_transform(myGeom,isrid) geom_trans
@@ -235,6 +263,7 @@ INSERT INTO bib_areas_types (id_type, type_name, type_code, type_desc, ref_name,
 (21, 'Natura 2000 - Zones spéciales de conservation', 'ZSC', NULL, NULL,NULL),
 (22, 'Natura 2000 - Proposition de sites d''intéret communautaire', 'pSIC', NULL, NULL,NULL),
 (23, 'Périmètre d''étude de la charte des Parcs nationaux', 'PEC', NULL, NULL,NULL),
+(24, 'Unités géographiques', NULL, 'Unités géographiques permettant une orientation des prospections', NULL, NULL),
 (101, 'Communes', NULL, 'type commune', 'IGN admin_express',2017),
 (102, 'Départements', NULL, 'type département', 'IGN admin_express',2017),
 (201, 'Mailles10*10', NULL, 'type maille inpn 10*10', NULL,NULL),

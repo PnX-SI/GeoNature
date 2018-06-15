@@ -4,7 +4,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = false
 
 # Application
 
-appName = 'Geonature 2'
+appName = 'GeoNature 2'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
 PASS_METHOD = 'hash'                                    # Authentification password encoding method (hash or md5)
 DEBUG = true
@@ -47,6 +47,7 @@ UPLOAD_FOLDER = 'static/medias'
 [FRONTEND]
 PROD_MOD = false
 DISPLAY_FOOTER = false
+MULTILINGUAL = false
 
 [MAILERROR]
     MAIL_ON_ERROR = false

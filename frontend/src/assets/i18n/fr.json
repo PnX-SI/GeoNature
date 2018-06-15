@@ -27,6 +27,8 @@
   "Delete": "Supprimer",
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
+  "DownloadData": "Télécharger les données",
+  "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "Map": {
     "SearchLocation": "Rechercher un lieu",
     "LocationError": "Localisation non trouvée",
@@ -34,6 +36,11 @@
     "AddLine": "Localisez l'observation (ligne)",
     "AddPolygon": "Localisez l'observation (polygone)",
     "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
+  },
+  "MetaData": {
+    "JddError": "Erreur lors de la récupération des jeux de données",
+    "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
+    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD"
   },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
@@ -46,7 +53,8 @@
   },
   "MapList": {
     "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
-    "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer"
+    "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer",
+    "ObservationNumber": "Nombre d'observation(s) :"
   },
   "Releve": {
     "Releve": "Relevé",
@@ -79,7 +87,8 @@
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
-    "GroupType": "Type de regroupement"
+    "GroupType": "Type de regroupement",
+    "DoesNotExist": "Ce relevé n'existe pas"
 
   },
   "Taxon": {
@@ -114,7 +123,8 @@
     "CurrentlyEditing":
       "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'"
+    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
+    "StatusSource": "Statut source"
   },
   "Counting": {
     "Counting": "Dénombrement",
@@ -130,6 +140,9 @@
     "Numbers": "Effectif",
     "Total": "Total",
     "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
+  },
+  "Geo" : {
+    "Municipalities": "Communes"
   },
   "IntroMessage":
     "Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
