@@ -1,0 +1,27 @@
+language: python
+
+python:
+    - "3.5"
+
+
+before_install:
+  - sudo apt-get install -y libgdal1-dev libgdal-dev
+  - sudo apt-get install -y python-gdal
+
+# install dependencies
+install:
+  - cd backend
+  - pip install -r requirements-travis.txt
+  - cd tests/travis_test
+  - ./travis_test.sh
+  - cd ../../
+
+script:
+  - pytest
+
+notifications:
+  email:
+    recipients:
+      - geonature@ecrins-parcnational.fr
+    on_failure: always
+    on_success: never

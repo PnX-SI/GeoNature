@@ -34,10 +34,10 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AppConfig } from '../conf/app.config';
 import { AuthService } from './components/auth/auth.service';
-import { AuthGuard } from './components/auth/auth-guard.service';
 import { SideNavService } from './components/sidenav-items/sidenav.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
+import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
 // AoT requires an exported function for factories
@@ -80,6 +80,7 @@ export function HttpLoaderFactory(http: Http) {
     SideNavService,
     CookieService,
     HttpClient,
+    ModuleGuardService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

@@ -25,8 +25,7 @@ CREATE TABLE t_base_sites
   base_site_code character varying(25) DEFAULT NULL::character varying,
   first_use_date date,
   geom public.geometry NOT NULL,
-  meta_create_date timestamp without time zone DEFAULT now(),
-  meta_update_date timestamp without time zone
+  uuid_base_site UUID DEFAULT public.uuid_generate_v4()
 );
 
 CREATE TABLE t_base_visits
@@ -36,8 +35,7 @@ CREATE TABLE t_base_visits
   id_digitiser integer,
   visit_date date NOT NULL,
   comments text,
-  meta_create_date timestamp without time zone DEFAULT now(),
-  meta_update_date timestamp without time zone
+  uuid_base_visit UUID DEFAULT public.uuid_generate_v4()
 );
 
 CREATE TABLE cor_visit_observer
@@ -146,34 +144,30 @@ CREATE INDEX idx_t_base_sites_type_site ON t_base_sites USING btree (id_nomencla
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
---Trigger permettant de fournir le geom du site à la visite s'il n'est pas rempli pour la visite.
-CREATE OR REPLACE FUNCTION fct_trg_add_obs_geom()
-  RETURNS trigger AS
-$BODY$
-begin
-	if(NEW.geom is NULL and NEW.id_base_site IS NOT NULL) THEN
-		NEW.geom = (select geom from gn_monitoring.t_base_sites WHERE id_base_site=NEW.id_base_site);
-	end if;
-	return NEW;
-end;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 --@ TODO Trigger de calcul des intersections avec la table l_areas ????
 
 
 ------------
 --TRIGGERS--
 ------------
-CREATE TRIGGER tri_meta_dates_change_base_sites
-  BEFORE INSERT OR UPDATE
-  ON t_base_sites
+CREATE TRIGGER tri_log_changes
+  AFTER INSERT OR UPDATE OR DELETE
+  ON gn_monitoring.t_base_visits
   FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
-CREATE TRIGGER tri_meta_dates_change_base_visits
-  BEFORE INSERT OR UPDATE
-  ON t_base_visits
+
+CREATE TRIGGER tri_log_changes
+  AFTER INSERT OR UPDATE OR DELETE
+  ON gn_monitoring.t_base_sites
   FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+
+---------
+--DATAS--
+---------
+INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
+VALUES
+('Table centralisant les sites faisant l''objet de protocole de suivis', 'gn_monitoring', 't_base_sites', 'id_base_site', 'uuid_base_site'),
+('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit');

@@ -1,16 +1,40 @@
 <mat-card class="logo">
-  
  <a routerLink="/" routerLinkActive="active">
   <img mat-card-image src="assets/images/LogoGeonature.png">
  </a>
 </mat-card>
 <mat-nav-list class="appnav">
-    <a href="#{{app.route}}" *ngFor="let app of nav">
-        <mat-list-item  (click)="onSetApp(app)" routerLink={{app.route}} routerLinkActive="active" class="sidenav-item" >
-            <mat-icon mat-list-icon>{{app.icon}}</mat-icon>
-            <h3 mat-line> {{app.moduleName}} </h3>
+    <a  href="#{{_sideNavService.home_page.module_url}}">
+        <mat-list-item 
+            (click)="onSetApp(_sideNavService.home_page)"
+            [routerLink]="_sideNavService.home_page.module_url"
+            routerLinkActive="active" class="sidenav-item" >
+            <mat-icon mat-list-icon>{{_sideNavService.home_page.module_picto}}</mat-icon>
+            <h3 mat-line> {{_sideNavService.home_page.module_label}} </h3>
         </mat-list-item>
     </a>
+
+    
+    <a 
+      *ngFor="let module of _sideNavService.modules" 
+      href="{{module.module_url}}"
+      [target]="module.module_target">
+        <mat-list-item  (click)="onSetApp(module)" class="sidenav-item">
+            <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
+            <h3 mat-line> {{module.module_label}} </h3>
+        </mat-list-item>
+    </a>
+
+    <a  href="#{{_sideNavService.export_module.module_url}}">
+        <mat-list-item 
+            (click)="onSetApp(_sideNavService.export_module)"
+            [routerLink]="_sideNavService.export_module.module_url"
+            routerLinkActive="active" class="sidenav-item" >
+            <mat-icon mat-list-icon>{{_sideNavService.export_module.module_picto}}</mat-icon>
+            <h3 mat-line> {{_sideNavService.export_module.module_label}} </h3>
+        </mat-list-item>
+    </a>
+
 
 </mat-nav-list>
 

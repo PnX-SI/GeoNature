@@ -11,7 +11,7 @@ from flask_cors import CORS
 from geonature.utils.env import DB, list_and_import_gn_modules
 
 
-def get_app(config, _app=None):
+def get_app(config, _app=None, with_external_mods=True):
     # Make sure app is a singleton
     if _app is not None:
         return _app
@@ -55,24 +55,26 @@ def get_app(config, _app=None):
         from geonature.core.auth.routes import routes
         app.register_blueprint(routes, url_prefix='/auth_cas')
 
-        from geonature.core.gn_medias.routes import routes
-        app.register_blueprint(routes, url_prefix='/gn_medias')
+        from geonature.core.gn_monitoring.routes import routes
+        app.register_blueprint(routes, url_prefix='/gn_monitoring')
 
-
-        from geonature.modules.module_list.routes import routes
-        app.register_blueprint(routes, url_prefix='/gn_modules')
+        from geonature.core.gn_commons.routes import routes
+        app.register_blueprint(routes, url_prefix='/gn_commons')
 
         # errors
         from geonature.core.errors import routes
 
         CORS(app, supports_credentials=True)
-
-        # Chargement des modules tiers
-        for conf, manifest, module in list_and_import_gn_modules():
-            app.register_blueprint(
-                module.backend.blueprint.blueprint,
-                url_prefix=conf['api_url']
-            )
+        # Chargement des mosdules tiers
+        if with_external_mods:
+            for conf, manifest, module in list_and_import_gn_modules(app):
+                app.register_blueprint(
+                    module.backend.blueprint.blueprint,
+                    url_prefix=conf['api_url']
+                )
+                #chargement de la configuration du module dans le blueprint.config
+                module.backend.blueprint.blueprint.config = conf
+                app.config[manifest['module_name']] = conf
 
         _app = app
     return app

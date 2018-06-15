@@ -1,36 +1,22 @@
 <pnx-datasets
     [parentFormControl]="searchForm.controls.id_dataset"
-    label="{{ 'Datasets' | translate}}">
+    placeholder="{{ 'Datasets' | translate}}">
 </pnx-datasets>
-<pnx-taxonomy
-    [parentFormControl]="searchForm.controls.cd_nom"
-    [idList]="500"
-    [charNumber]="3"
+<pnx-taxonomy 
+    [parentFormControl]="searchForm.controls.cd_nom" 
+    [idList]="500" 
+    [charNumber]="3" 
     [listLength]="20">
 </pnx-taxonomy>
-<pnx-observers-text
+<pnx-observers-text 
     [parentFormControl]="searchForm.controls.observers">
 </pnx-observers-text>
-<pnx-nomenclature
-    label="{{ 'Taxon.BiologicalCondition' | translate }}"
+<pnx-nomenclature 
+    placeholder="{{ 'Taxon.BiologicalCondition' | translate }}" 
     [parentFormControl]="searchForm.controls.id_nomenclature_bio_condition"
     [idTypeNomenclature]="7" >
 </pnx-nomenclature>
 
-<pnx-date
-    label="{{ 'Releve.MinDate' | translate }} "
-    [parentFormControl]="searchForm.controls.date_min">
-</pnx-date>
-<pnx-date
-    label="{{ 'Releve.MaxDate' | translate }} "
-    [parentFormControl]="searchForm.controls.date_max">
-</pnx-date>
-<small class="error" *ngIf="searchForm.errors?.invalidDate">
-    {{ 'Releve.DateMaxError' | translate }}
-</small>
-
-<button [disabled]="searchForm.errors" class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+<button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
 
 <pre>form value: <br>{{searchForm.value | json}}</pre>
-
-<pre>form value: <br>Errors : {{searchForm.errors | json}}</pre>

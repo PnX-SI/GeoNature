@@ -67,7 +67,7 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
   - ``requirements.txt`` : liste des librairies python necessaires au module
   - ``manifest.toml`` : fichier de description du module (nom, version du module, version de GeoNature compatible)
   - ``conf_gn_module.toml`` : fichier de configuration de l'application (livré en version sample)
-  - ``conf_schema_toml.py`` : schéma 'marshmallow' (https://marshmallow.readthedocs.io/en/latest/) du fichier de configuration (permet de s'assurer la conformité des paramètres renseignés par l'utilisateur)
+  - ``conf_schema_toml.py`` : schéma 'marshmallow' (https://marshmallow.readthedocs.io/en/latest/) du fichier de configuration (permet de s'assurer la conformité des paramètres renseignés par l'utilisateur). Ce fichier doit contenir une classe ``GnModuleSchemaConf`` dans laquelle toutes les configurations sont synchronisées.
   - ``install_gn_module.py`` : script python lançant les commandes relatives à l'installation du module (Bas de données, ...). Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisée pour installer le module (`Voir exemple < https://github.com/PnX-SI/gn_module_validation/blob/master/install_gn_module.py>`__)
  
 
@@ -81,6 +81,7 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
   - ``frontend`` : le dossier ``app`` comprend les fichiers typescript du module, et le dossier ``assets`` l'ensemble des médias (images, son).
 
     - Le dossier ``app`` doit comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
+    - Le dossier ``app`` doit contenir un fichier ``module.config.ts``. Ce fichier est automatiquement synchronisé avec le fichier de configuration du module ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/conf_gn_module.toml`` grâce à la commande ``geonature update_module_configuration <nom_module>``. C'est à partir de ce fichier que toutes les configuration doivent pointer.
     - A la racine du dossier ``frontend``, on retrouve également un fichier ``package.json`` qui décrit l'ensemble des librairies JS necessaires au module.
       
   - ``data`` : ce dossier comprenant les scripts SQL d'installation du module
@@ -364,6 +365,13 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
         
         **Selector**: ``pnx-marker``
+
+        **Inputs**:
+
+        :``zoomLevel``:
+                Niveau de zoom à partir du quel on peut ajouter un marker sur la carte
+
+                *Type*: ``number``
         
         **Ouputs**:
         
@@ -380,8 +388,13 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         :``options``:
                 Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
                 
-                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-form/contact-map-form.component.ts#L27>`_ 
-                
+                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_ 
+
+        :``zoomLevel``:
+                Niveau de zoom à partir du quel on peut dessiner sur la carte
+
+                *Type*: ``number``
+
         **Output**
         
         :``layerDrawed``:
@@ -424,9 +437,9 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
 		Exemple: afficher les 10 premiers relevés du cd_nom 212 :
 
-		``mapListService.getData('contact/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
+		``mapListService.getData('occtax/releve', [{'param': 'limit', 'value': 10'},{'param': 'cd_nom', 'value': 212'}])``
 
-		`Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/contact/contact-map-list/contact-map-list.component.ts#L84/>`_
+		`Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-list/occtax-map-list.component.ts#L84/>`_
 
 		L'API doit necessairement renvoyer un objet comportant un GeoJson. La structure du l'objet doit être la suivante :
 
@@ -446,19 +459,19 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 		
 		Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2.
 
-		``mapListService.refreshData('contact/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
+		``mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
 
 		puis
 
-		``refreshData('contact/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
+		``refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
 
 		Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
 
-		``mapListService.refreshData('contact/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
+		``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
 
 		puis
 
-		``mapListService.refreshData('contact/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
+		``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
 		
 	- Gestion des évenements:
 		- Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
@@ -485,7 +498,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 	::
 
 		<pnx-map-list 
-			idName="id_releve_contact"
+			idName="id_releve_occtax"
 			height="80vh">
 		</pnx-map-list>
 		<table>

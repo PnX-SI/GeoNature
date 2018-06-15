@@ -17,27 +17,24 @@ export class ObserversComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-
-  observers: Array<any>;
-  selectedObservers: Array<string>;
+  public searchControl = new FormControl();
+  public observers: Array<any>;
+  public selectedObservers = [];
 
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    this.selectedObservers = [];
-    this._dfService.getObservers(this.idMenu).subscribe(data => (this.observers = data));
+    this._dfService.getObservers(this.idMenu).subscribe(data => {
+      this.observers = data;
+      this.filteredObservers = data;
+    });
   }
 
   filterObservers(event) {
-    const query = event.query;
-    this.filteredObservers = this.observers.filter(obs => {
-      return obs.nom_complet.toLowerCase().indexOf(query.toLowerCase()) === 0;
-    });
-  }
-  addObservers(observer) {
-    this.onChange.emit(observer);
-  }
-  removeObservers(observer) {
-    this.onDelete.emit(observer);
+    if (event !== null) {
+      this.filteredObservers = this.observers.filter(obs => {
+        return obs.nom_complet.toLowerCase().indexOf(event.toLowerCase()) === 0;
+      });
+    }
   }
 }

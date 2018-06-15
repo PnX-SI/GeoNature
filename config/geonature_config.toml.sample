@@ -9,4 +9,6 @@ API_TAXHUB = 'http://url.com/taxhub/api'
 
 SECRET_KEY = 'super secret key'
 
+LOCAL_SRID = 2154
+
 DEFAULT_LANGUAGE='fr'

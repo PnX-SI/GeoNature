@@ -1,20 +1,37 @@
 import datetime
+import logging
 
+from flask import current_app
 from xml.etree import ElementTree as ET
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from geonature.utils import utilsrequests
-from flask import current_app
+from geonature.utils.errors import GeonatureApiError
+
+from geonature.utils.env import DB
+from geonature.core.gn_meta.models import (
+    TDatasets, CorDatasetsActor,
+    TAcquisitionFramework, CorAcquisitionFrameworkActor
+)
+
+
 
 namespace = current_app.config['XML_NAMESPACE']
 api_endpoint = current_app.config['MTD_API_ENDPOINT']
 
+# get the root logger
+log = logging.getLogger()
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
 
 def get_acquisition_framework(uuid_af):
     url = "{}/cadre/export/xml/GetRecordById?id={}"
-    r = utilsrequests.get(url.format(api_endpoint, uuid_af))
-    if r.status_code == 200:
-        return r.content
-    return None
+    try:
+        r = utilsrequests.get(url.format(api_endpoint, uuid_af))
+    except AssertionError:
+        raise GeonatureApiError(message="Error with the MTD Web Service while getting Acquisition Framwork")
+    return r.content
+
 
 
 def parse_acquisition_framwork_xml(xml):
@@ -44,11 +61,12 @@ def get_jdd_by_user_id(id_user):
             - id:  id_user from CAS
         return: a XML """
     url = "{}/cadre/jdd/export/xml/GetRecordsByUserId?id={}"
-    r = utilsrequests.get(url.format(api_endpoint, str(id_user)))
-    if r.status_code == 200:
-        return r.content
-    return None
-
+    try:
+        r = utilsrequests.get(url.format(api_endpoint, str(id_user)))
+        assert r.status_code == 200
+    except AssertionError:
+        raise GeonatureApiError(message="Error with the MTD Web Service (JDD), status_code: {}".format(r.status_code))
+    return r.content
 
 def parse_jdd_xml(xml):
     """ parse an mtd xml, return a list of datasets"""
@@ -82,3 +100,102 @@ def parse_jdd_xml(xml):
 
         jdd_list.append(current_jdd)
     return jdd_list
+
+
+def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
+    """ Post an acquisition framwork from MTD XML"""
+    xml_af = None
+    xml_af = get_acquisition_framework(uuid)
+
+
+    if xml_af:
+        acquisition_framwork = parse_acquisition_framwork_xml(xml_af)
+        new_af = TAcquisitionFramework(**acquisition_framwork)
+        actor = CorAcquisitionFrameworkActor(
+            id_role=id_user,
+            id_nomenclature_actor_role=393
+        )
+        new_af.cor_af_actor.append(actor)
+        if id_organism:
+            organism = CorAcquisitionFrameworkActor(
+                id_organism=id_organism,
+                id_nomenclature_actor_role=393
+            )
+            new_af.cor_af_actor.append(organism)
+        # check if exist
+        id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
+        try:
+            if id_acquisition_framework:
+                new_af.id_acquisition_framework = id_acquisition_framework[0]
+                DB.session.merge(new_af)
+            else:
+                DB.session.add(new_af)
+                DB.session.commit()
+        # TODO catch db error ?
+        except SQLAlchemyError as e:
+            DB.session.rollback()
+            error_msg = """
+                Error posting an aquisition framework {} \n\n Trace: \n {}
+                """.format(uuid, e)
+            log.error(error_msg)
+
+        return new_af.as_dict()
+
+    return {'message': 'Not found'}, 404
+
+
+def post_jdd_from_user(id_user=None, id_organism=None):
+    """ Post a jdd from the mtd XML"""
+    xml_jdd = None
+    xml_jdd = get_jdd_by_user_id(id_user)
+
+    if xml_jdd:
+        dataset_list = parse_jdd_xml(xml_jdd)
+        dataset_list_model = []
+        for ds in dataset_list:
+            new_af = post_acquisition_framework(
+                uuid=ds['uuid_acquisition_framework'],
+                id_user=id_user,
+                id_organism=id_organism
+            )
+            ds['id_acquisition_framework'] = new_af['id_acquisition_framework']
+
+            ds.pop('uuid_acquisition_framework')
+            # get the id of the dataset to check if exists
+            id_dataset = TDatasets.get_id(ds['unique_dataset_id'])
+            ds['id_dataset'] = id_dataset
+
+            dataset = TDatasets(**ds)
+
+            # id_role in cor_dataset_actor
+            actor = CorDatasetsActor(
+                id_role=id_user,
+                id_nomenclature_actor_role=393
+            )
+            dataset.cor_datasets_actor.append(actor)
+            # id_organism in cor_dataset_actor
+            if id_organism:
+                actor = CorDatasetsActor(
+                    id_organism=id_organism,
+                    id_nomenclature_actor_role=393
+                )
+                dataset.cor_datasets_actor.append(actor)
+
+            dataset_list_model.append(dataset)
+            try:
+                if id_dataset:
+                    DB.session.merge(dataset)
+                else:
+                    DB.session.add(dataset)
+                DB.session.commit()
+                DB.session.flush()
+            # TODO catch db error ?
+            except SQLAlchemyError as e:
+                DB.session.rollback()
+                error_msg = """
+                Error posting JDD {} \n\n Trace: \n {}
+                """.format(ds['unique_dataset_id'], e)
+                log.error(error_msg)
+
+        return [d.as_dict() for d in dataset_list_model]
+    return {'message': 'Not found'}, 404

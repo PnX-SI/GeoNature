@@ -1,5 +1,3 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
 
 from geonature.utils.env import DB
@@ -12,7 +10,7 @@ from geonature.utils.utilssqlalchemy import (
 from geonature.utils.env import DB
 
 @serializable
-class LAreasWithoutGeom(DB.Model):
+class LAreas(DB.Model):
     __tablename__ = 'l_areas'
     __table_args__ = {'schema': 'ref_geo'}
     id_area = DB.Column(DB.Integer, primary_key=True)
@@ -22,10 +20,9 @@ class LAreasWithoutGeom(DB.Model):
     geom = DB.Column(Geometry('GEOMETRY', 2154))
     # centroid = DB.Column(Geometry('GEOMETRY', 2154))
     source = DB.Column(DB.Unicode)
-    comment = DB.Column(DB.Unicode)
-    enable = DB.Column(DB.Boolean)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    geom = DB.Column(Geometry('GEOMETRY', 4326))
+
+
 
 
 @serializable

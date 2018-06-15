@@ -11,32 +11,31 @@ import * as L from 'leaflet';
   selector: 'pnx-leaflet-draw',
   templateUrl: 'leaflet-draw.component.html'
 })
-
 export class LeafletDrawComponent implements OnInit {
   public map: Map;
-  private _currentDraw:any;
+  private _currentDraw: any;
   private _Le: any;
-  public drawnItems:any;
+  public drawnItems: any;
   @Input() options: any;
+  @Input() zoomLevel: number;
   @Output() layerDrawed = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) { }
+  constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
+    this.zoomLevel = this.zoomLevel || MAP_CONFIG.ZOOM_LEVEL_RELEVE;
     this._Le = L as any;
     this.enableLeafletDraw();
-
-
   }
 
-   enableLeafletDraw() {
+  enableLeafletDraw() {
     this.options.edit['featureGroup'] = this.drawnItems;
     this.options.edit['featureGroup'] = this.mapservice.releveFeatureGroup;
-    const drawControl =  new this._Le.Control.Draw(this.options);
+    const drawControl = new this._Le.Control.Draw(this.options);
     this.map.addControl(drawControl);
 
-    this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
+    this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
       // remove the current draw
       if (this._currentDraw !== null) {
         this.mapservice.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
@@ -54,10 +53,10 @@ export class LeafletDrawComponent implements OnInit {
     });
 
     // on draw layer created
-    this.map.on(this._Le.Draw.Event.CREATED, (e) => {
-      if (this.map.getZoom() < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+    this.map.on(this._Le.Draw.Event.CREATED, e => {
+      if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
-      }else {
+      } else {
         this._currentDraw = (e as any).layer;
         const layerType = (e as any).layerType;
         const latlngTab = this._currentDraw._latlngs;
@@ -70,7 +69,7 @@ export class LeafletDrawComponent implements OnInit {
     });
 
     // on draw edited
-    this.mapservice.map.on('draw:edited', (e) => {
+    this.mapservice.map.on('draw:edited', e => {
       let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
       geojson = (geojson as any).features[0];
       // output
