@@ -135,6 +135,12 @@ def start_gunicorn(uri, worker, config_file=None):
 def dev_back(host, port, conf_file):
     """
         Lance l'api du backend avec flask
+
+        Exemples
+
+        - geonature dev_back
+
+        - geonature dev_back --port=8080 --port=0.0.0.0
     """
     app = get_app_for_cmd(conf_file)
     app.run(host=host, port=int(port), debug=True)
@@ -207,5 +213,12 @@ def generate_frontend_tsconfig():
 def update_configuration(conf_file, build):
     """
         Regénère la configuration de l'application
+
+        Example:
+
+        - geonature update_configuration
+
+        - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
+
     """
     update_app_configuration(conf_file, build)

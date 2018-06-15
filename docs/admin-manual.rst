@@ -111,7 +111,7 @@ Configuration
 Pour configurer GeoNature, actuellement il y a : 
 
 - Une configuration pour l'installation : ``config/settings.ini``
-- Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
+- Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
 - Une configuration par module : ``<GEONATURE_DIRECTORY>/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
@@ -167,6 +167,33 @@ Les logs de GeoNature sont dans le répertoire ``/var/log/geonature`` :
 Les logs de TaxHub sont dans le repertoire ``/var/log/taxhub``:
 
 - logs de l'API de TaxHub : ``taxhub-errors.log``
+
+Commandes GeoNature 
+"""""""""""""""""""
+
+GeoNature est fourni avec une série de commande pour administrer l'application.
+Pour les executer, il est necessaire d'être dans le virtualenv python de GeoNature
+
+::
+    cd <GEONATURE_DIRECTORY>/backend
+    source venv/bin/activate
+
+Le préfixe (venv) se met alors au début de votre invite de commande.
+
+Voici la liste des commandes disponible (aussi disponible en tapant la commande ``geonature --help``:
+
+- activate_gn_module: Active un gn_module installé (Possibilté d'activer seulement la backend ou le frontend)
+- deactivate_gn_module: Désactive gn_un module activé (Possibilté de désactiver seulement la backend ou le frontend)
+- dev_back: Lance le backend en mode développement
+- dev_front: Lance le frontend en mode développement
+- generate_frontend_module_route: Génère ou regénère le fichier de routing du frontend en incluant les gn_module installé (Fait automatiquement lors de l'installation d'un module)
+- install_gn_module: Installe un gn_module 
+- start_gunicorn: Lance l'API du backend avec gunicorn
+- supervisor : Execute les commande supervisor (supervisor stop <service>, supervisor reload)
+- update_configuration: met à jour la configuration du coeur de l'application. A executer suite à un modification du fichier ``geonature_config.toml``
+- update_module_configuration: met à jour la configuration d'un module. A éxecuter suite à une modification du fichier ``conf_gn_module.toml``.
+
+Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
 
 Verification des services
 """""""""""""""""""""""""
@@ -286,10 +313,9 @@ Sauvegarde et restauration
 
     ::
 
-        cd /etc/geonature
+        cd geonature/config
         tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
         cd /home/<MY_USER>/geonature
-        cp config/settings.ini <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-settings.ini
 
     **Sauvegarde des fichiers de customisation**:
 
@@ -300,6 +326,12 @@ Sauvegarde et restauration
         cd /home/<MY_USER>geonature/frontend/src/custom
         tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
 
+    **Sauvegarde des modules externes**
+
+    ::
+
+        cd /home/<MY_USER>geonature/external_modules
+        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
 
 - Restauration
 
@@ -307,7 +339,7 @@ Sauvegarde et restauration
 
     - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus)
     
-        Si ce n'est pas le cas, adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``/etc/geonature/geonature_config.toml``
+        Si ce n'est pas le cas, adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
         ::
 
             sudo -n -u postgres -s createdb -O theo geonature2db
@@ -328,16 +360,17 @@ Sauvegarde et restauration
 
     :: 
     
-        sudo rm -r /etc/geonature/*
-        cd /etc/geonature
+        sudo rm <GEONATURE_DIRECTORY>/config/*
+        cd <GEONATURE_DIRECTORY>/config
         sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
 
         cd /home/<MY_USER>/geonature/frontend/src/custom
         rm -r <MY_USER>/geonature/frontend/src/custom/*
         tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
 
-        rm /home/<MY_USER>/geonature/config/settings.ini
-        cp <MY_BACKUP_DIRECTORY>/201803151036-settings.ini /home/<MY_USER>/geonature/config/settings.ini
+        rm /home/<MY_USER>/geonature/external_modules/*
+        cd <GEONATURE_DIRECTORY>/external_modules
+        tar -zxvf <MY_BACKUP_DIRECTORY>/201803151036-external_modules.tar.gz 
 
 
 - Relancer l'application :

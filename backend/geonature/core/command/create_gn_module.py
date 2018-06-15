@@ -213,9 +213,12 @@ def run_install_gn_module(app, module_path, module_name, url):
 def activate_gn_module(module_name, frontend, backend):
     """
         Active un module gn installé
-        Paramètre: 
-            --frontend: boolean: defaut = True
-            --backend : boolean: defaut = True
+
+        Exemples:
+
+        - geonature activate_gn_module occtax --frontend=false (Active que le backend du module occtax)
+
+        - geonature activate_gn_module occtax --backend=false (Active que le frontend du module occtax)
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
@@ -238,9 +241,14 @@ def activate_gn_module(module_name, frontend, backend):
 def deactivate_gn_module(module_name, frontend, backend):
     """
         Desactive un module gn activé
-        Paramètre: 
-            -- frontend: boolean: defaut = True
-            -- backend : boolean: defaut = True
+
+
+        Exemples:
+
+        - geonature deactivate_gn_module occtax --frontend=false (Désactive que le backend du module occtax)
+
+        - geonature deactivate_gn_module occtax --backend=false (Désctive que le frontend du module occtax)
+
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
     gn_module_deactivate(module_name, frontend, backend)
@@ -257,6 +265,10 @@ def deactivate_gn_module(module_name, frontend, backend):
 def update_module_configuration(module_name, build):
     """
         Génère la config frontend d'un module
+
+        Example:
+
+        geonature update_module_configuration occtax
     """
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_module_config(module_name, build=build)
