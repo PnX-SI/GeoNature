@@ -1,4 +1,4 @@
-SQLALCHEMY_DATABASE_URI = "postgresql://$db_user:$db_pass@test.ecrins-parcnational.net:5432/$db_name"
+SQLALCHEMY_DATABASE_URI = "postgresql://db_user:db_pass@test.ecrins-parcnational.net:5432/db_name"
 URL_APPLICATION = 'http://127.0.0.1:4200'
 API_ENDPOINT = 'http://127.0.0.1:8000'
 API_TAXHUB = 'http://127.0.0.1:5000'
