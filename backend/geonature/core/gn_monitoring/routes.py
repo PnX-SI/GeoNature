@@ -108,7 +108,6 @@ def get_site_areas(id_site):
         q = q.filter(LAreas.id_type == params['id_area_type'])
     if 'id_module' in params:
         q = q.filter(TBaseSites.applications.any(id_application=params['id_module']))
-        print(q)
 
     data = q.all()
 
