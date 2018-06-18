@@ -4,4 +4,8 @@
         [geojson]="inputSyntheseData"
         [onEachFeature]="onEachFeature.bind(this)"
     ></pnx-geojson>
+    <pnx-leaflet-draw
+    [options]="leafletDrawOptions"
+    (layerDrawed)="sendGeoInfo($event)" >
+</pnx-leaflet-draw>
 </pnx-map>

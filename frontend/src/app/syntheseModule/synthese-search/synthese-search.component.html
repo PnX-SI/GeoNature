@@ -1,22 +1,67 @@
-<pnx-datasets
-    [parentFormControl]="searchForm.controls.id_dataset"
-    placeholder="{{ 'Datasets' | translate}}">
-</pnx-datasets>
-<pnx-taxonomy 
-    [parentFormControl]="searchForm.controls.cd_nom" 
-    [idList]="500" 
-    [charNumber]="3" 
-    [listLength]="20">
-</pnx-taxonomy>
-<pnx-observers-text 
-    [parentFormControl]="searchForm.controls.observers">
-</pnx-observers-text>
-<pnx-nomenclature 
-    placeholder="{{ 'Taxon.BiologicalCondition' | translate }}" 
-    [parentFormControl]="searchForm.controls.id_nomenclature_bio_condition"
-    [idTypeNomenclature]="7" >
-</pnx-nomenclature>
+<div class="card">
+      <fieldset>
+              <legend> Quoi ?</legend>
+          <pnx-datasets
+              [parentFormControl]="searchForm.controls.id_dataset"
+              label="{{ 'Datasets' | translate}}">
+          </pnx-datasets>
+          <pnx-taxonomy 
+              label="{{'Taxon.Taxon' | translate }} " 
+              [parentFormControl]="searchForm.controls.cd_nom" 
+              [idList]="500" 
+              [charNumber]="3" 
+              [listLength]="20">
+      </pnx-taxonomy>
+      </fieldset>
 
-<button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+      <fieldset>
+          <legend> Quand ?</legend>
+          <pnx-date
+          label = "Date min"
+          [parentFormControl]="searchForm.controls.date_min">
+          </pnx-date>
 
-<pre>form value: <br>{{searchForm.value | json}}</pre>
+          <pnx-date
+          label = "Date max"
+          [parentFormControl]="searchForm.controls.date_max">>
+            
+          </pnx-date>
+      </fieldset>
+
+      <fieldset>
+          <legend> Ou ?</legend>
+          <pnx-municipalities
+          label="Commubes"
+          [parentFormControl]="searchForm.controls.municipalities"
+          ></pnx-municipalities>
+      </fieldset>
+
+      
+
+        
+          <fieldset>
+            <legend> Qui ?</legend>
+            
+            <pnx-observers-text
+              label=" {{'Releve.Observer' | translate }} "
+              [parentFormControl]="searchForm.controls.observers">
+            </pnx-observers-text>
+
+            <!-- TODO: Organisme -->
+          </fieldset>
+
+        
+          <fieldset>
+              <legend> Comment ?</legend>
+            <pnx-nomenclature 
+                label="{{ 'Taxon.BiologicalCondition' | translate }}" 
+                [parentFormControl]="searchForm.controls.id_nomenclature_bio_condition"
+                [idTypeNomenclature]="7" >
+            </pnx-nomenclature>
+          </fieldset>
+
+        
+        <button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+        
+        <pre>form value: <br>{{searchForm.value | json}}</pre>
+</div>

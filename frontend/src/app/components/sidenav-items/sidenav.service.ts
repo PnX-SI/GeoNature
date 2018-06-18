@@ -14,31 +14,24 @@ export class SideNavService {
   // List of the apps
   public modules: Array<any>;
   public home_page;
-  public export_module;
+  public exportModule;
+  public syntheseModule;
 
   constructor(private _api: HttpClient) {
     this.opened = false;
     this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'home', id: '1' };
 
-<<<<<<< HEAD
-    this._nav = [
-      { route: '/', moduleName: 'Accueil', icon: 'home', id: '1' },
-      {route: '/synthese', moduleName: 'Synthèse', icon: 'device_hub', id:'2'},
-      { route: '/occtax', moduleName: 'OccTax', icon: 'visibility', id: '14' },
-      // {route: '/flore-station', moduleName: 'Flore Station', icon: 'local_florist', id: '15'},
-      // {route: '/suivi-flore', moduleName: 'Suivi Flore', icon: 'filter_vintage', id: '16'},
-      // {route: '/suivi-chiro', moduleName: 'Suivi Chiro', icon: 'youtube_searched_for', id: '17'},
-      { route: '/exports', moduleName: 'Exports', icon: 'cloud_download', id: '18' },
-      { route: '/validation', moduleName: 'validation', icon: 'cloud_download', id: '22' }
-      // {route: '/prospections', moduleName: 'Prospections', icon: 'feedback', id: '19'},
-      // {route: '/parametres', moduleName: 'Paramètres', icon: 'settings', id: '20'}
-    ];
-=======
-    this.export_module = {
+    this.exportModule = {
       module_url: '/exports',
       module_label: 'Export',
       module_picto: 'file_download',
       id: '2'
+    };
+    this.syntheseModule = {
+      module_url: '/synthese',
+      module_label: 'Synthese',
+      module_picto: 'extension',
+      id: '3'
     };
   }
 
@@ -61,7 +54,6 @@ export class SideNavService {
       });
     }
     return searchModule;
->>>>>>> origin/develop
   }
 
   setSideNav(sidenav) {
