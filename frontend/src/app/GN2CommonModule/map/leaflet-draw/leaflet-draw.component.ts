@@ -3,6 +3,7 @@ import { Map, FeatureGroup } from 'leaflet';
 import { MapService } from '../map.service';
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { CommonService } from '../../service/common.service';
+import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
@@ -25,6 +26,7 @@ export class LeafletDrawComponent implements OnInit {
   ngOnInit() {
     this.map = this.mapservice.map;
     this.zoomLevel = this.zoomLevel || MAP_CONFIG.ZOOM_LEVEL_RELEVE;
+    this.options = this.options || leafletDrawOption;
     this._Le = L as any;
     this.enableLeafletDraw();
   }

@@ -119,8 +119,6 @@ def get_synthese():
     if 'date_max' in filters:
         q = q.filter(Synthese.date_min <= filters.pop('date_max'))
 
-    q = q.filter(Synthese.deleted==False)
-
     for colname, value in filters.items():
         col = getattr(Synthese.__table__.columns, colname)
         testT = testDataType(value, col.type, colname)
@@ -182,3 +180,75 @@ def get_one_synthese(synthese_id):
 
     data = q.all()
     return [d.as_dict() for d in data]
+
+
+# data = {
+#     id_dataset: 1,
+#     id_nomenclature_geo_object_nature: 3,
+#     id_nomenclature_grp_typ,
+#     id_nomenclature_obs_meth,
+#     id_nomenclature_obs_technique,
+#     id_nomenclature_bio_status,
+#     id_nomenclature_bio_condition
+#     id_nomenclature_naturalness
+#     id_nomenclature_exist_proof
+#     id_nomenclature_valid_status
+#     id_nomenclature_diffusion_level
+#     id_nomenclature_life_stage
+#     id_nomenclature_sex
+#     id_nomenclature_obj_count
+#     id_nomenclature_type_count
+#     id_nomenclature_sensitivity
+#     id_nomenclature_observation_status
+#     id_nomenclature_blurring
+#     id_nomenclature_source_status
+#     id_nomenclature_info_geo_type
+#     id_municipality
+#     count_min
+#     count_max
+#     cd_nom
+
+
+# }
+
+# import copy
+# from datetime import datetime
+# @blueprint.route('/test/insert', methods=['POST'])
+# def insertData():
+#     for i in range(10000):
+#         data = copy.deepcopy(sample_data)
+#         taxon_val = [351,60612,67111,18437,8326,11165,81065,95186]
+#         life_stage_val = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]
+#         naturality_val = [181,182,183,184,185]
+
+#         # d1 = datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y')
+#         # d2 = datetime.strptime('1/1/20018 4:50 AM', '%m/%d/%Y')
+
+#         # date_max = random_date(d1, d2)
+#         # date_min = date_max
+
+#         occurrences_occtax = data['properties']['t_occurrences_occtax']
+#         data['properties'].pop('t_occurrences_occtax')
+
+
+#         releve = TRelevesOccurrence(**data['properties'])
+#         releve.geom_4326 = from_shape(generate_random_point(), srid=4326)
+        
+        
+
+#         for occ in occurrences_occtax:
+#             occ['id_nomenclature_naturalness'] = get_random_value(naturality_val)
+#             occ['cd_nom'] = get_random_value(taxon_val)
+#             counting = occ.pop('cor_counting_occtax')
+#             occurrence = TOccurrencesOccurrence(**occ)
+
+#             for count in counting:
+#                 count['id_nomenclature_life_stage'] = get_random_value(life_stage_val)
+#                 occurrence.cor_counting_occtax.append(CorCountingOccurrence(**count))
+#         releve.t_occurrences_occtax.append(occurrence)
+
+#         DB.session.add(releve)
+#     DB.session.commit()
+#     DB.session.flush()
+
+#     return 'ça marche bien'
