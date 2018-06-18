@@ -112,7 +112,7 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration par module : ``<GEONATURE_DIRECTORY>/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
+- Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
 
 
@@ -138,11 +138,11 @@ Ainsi après chaque modification des fichiers de configuration globale, placez-v
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
 
-Lors de l'instalation d'un module, un fichier de configuration est créé: ``<GEONATURE_DIRECTORY>/<nom_module>/config/conf_gn_module.toml``.
+Lors de l'instalation d'un module, un fichier de configuration est créé: ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml``.
 
 Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example`` situé à dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
 
-A chaque modification de ce fichier lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé)
+A chaque modification de ce fichier, lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé)
 
 ::
 
@@ -150,15 +150,13 @@ A chaque modification de ce fichier lancer les commandes suivantes (le fichier e
     geonature update_module_configuration <NOM_DE_MODULE>
     deactivate
 
-
-
 Exploitation
 ------------
 
 Logs
-"""""
+""""
 
-Les logs de GeoNature sont dans le répertoire ``/var/log/geonature`` :
+Les logs de GeoNature sont dans le répertoire ``<GEONATURE_DIRECTORY>/var/log/`` :
 
 - logs d'installation de la BDD : ``install_db.log``
 - logs d'installation de la BDD d'un module : ``install_<nom_module>_schema.log``
@@ -171,27 +169,28 @@ Les logs de TaxHub sont dans le repertoire ``/var/log/taxhub``:
 Commandes GeoNature 
 """""""""""""""""""
 
-GeoNature est fourni avec une série de commande pour administrer l'application.
-Pour les executer, il est necessaire d'être dans le virtualenv python de GeoNature
+GeoNature est fourni avec une série de commandes pour administrer l'application.
+Pour les éxecuter, il est nécessaire d'être dans le virtualenv python de GeoNature
 
 ::
+
     cd <GEONATURE_DIRECTORY>/backend
     source venv/bin/activate
 
 Le préfixe (venv) se met alors au début de votre invite de commande.
 
-Voici la liste des commandes disponible (aussi disponible en tapant la commande ``geonature --help``:
+Voici la liste des commandes disponible (aussi disponible en tapant la commande ``geonature --help``) :
 
-- activate_gn_module: Active un gn_module installé (Possibilté d'activer seulement la backend ou le frontend)
-- deactivate_gn_module: Désactive gn_un module activé (Possibilté de désactiver seulement la backend ou le frontend)
-- dev_back: Lance le backend en mode développement
-- dev_front: Lance le frontend en mode développement
-- generate_frontend_module_route: Génère ou regénère le fichier de routing du frontend en incluant les gn_module installé (Fait automatiquement lors de l'installation d'un module)
-- install_gn_module: Installe un gn_module 
-- start_gunicorn: Lance l'API du backend avec gunicorn
-- supervisor : Execute les commande supervisor (supervisor stop <service>, supervisor reload)
-- update_configuration: met à jour la configuration du coeur de l'application. A executer suite à un modification du fichier ``geonature_config.toml``
-- update_module_configuration: met à jour la configuration d'un module. A éxecuter suite à une modification du fichier ``conf_gn_module.toml``.
+- activate_gn_module : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
+- deactivate_gn_module : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
+- dev_back : Lance le backend en mode développement
+- dev_front : Lance le frontend en mode développement
+- generate_frontend_module_route : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installé (Fait automatiquement lors de l'installation d'un module)
+- install_gn_module : Installe un gn_module 
+- start_gunicorn : Lance l'API du backend avec gunicorn
+- supervisor : Execute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``)
+- update_configuration : met à jour la configuration du coeur de l'application. A éxecuter suite à un modification du fichier ``geonature_config.toml``
+- update_module_configuration : met à jour la configuration d'un module. A éxecuter suite à une modification du fichier ``conf_gn_module.toml``.
 
 Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
 
@@ -243,7 +242,7 @@ Maintenance
 
 Lors d'une opération de maintenance (monté en version, modification en base de données), vous pouvez rendre l'application momentanémment indisponible.
 
-Pour cela, désactiver la configuration Apache de GeoNature, puis activer la configuration du mode de maintenance:
+Pour cela, désactiver la configuration Apache de GeoNature, puis activer la configuration du mode de maintenance :
 
 ::
 
@@ -260,43 +259,13 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse
     sudo apachectl restart
     
 
-
-
-Attention: ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompue)
-
-Montée en version
------------------
-
-- Télécharger la dernière version de GeoNature 
-
-::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-    unzip GeoNature-X.Y.Z.zip
-
-- Renommer l'ancien repertoire de l'application, ainsi que le nouveau
-
-::
-
-    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
-    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
-    cd geonature
-
-
-- Suivez les instructions de montée en version décrit ici https://github.com/PnX-SI/GeoNature/releases.
-
-- Lancez le script de migration.sh à la racine du dossier ``geonature``:
-
-::
-
-    
-    ./migration.sh
+Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompue)
 
 
 Sauvegarde et restauration
 --------------------------
 
-- Sauvegarge:
+- Sauvegarde:
 
     **Sauvegarde de la base de données** :
 
