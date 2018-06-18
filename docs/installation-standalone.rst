@@ -164,6 +164,35 @@ Voir la doc d'installation de TaxHub: http://taxhub.readthedocs.io/
 
 Voir la doc d'installation de UsersHub: http://usershub.readthedocs.io/
 
+Mise à jour de l'application
+----------------------------
+
+- Télécharger la dernière version de GeoNature 
+
+::
+
+    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
+    unzip GeoNature-X.Y.Z.zip
+
+- Renommer l'ancien repertoire de l'application, ainsi que le nouveau
+
+::
+
+    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
+    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
+    cd geonature
+
+
+- Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
+
+- Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
+
+::
+
+    
+    ./install/migration/migration.sh
+
+
 Passer en mode développement
 ----------------------------
 
