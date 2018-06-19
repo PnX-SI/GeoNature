@@ -1,18 +1,17 @@
-=======================
 Mise en place du  HTTPS
 =======================
 
 La procédure décrit la certification HTTPS du sous-domaine ``test.ecrins-parcnational.fr`` grâce au service `Let's Encrypt <https://letsencrypt.org/>`_. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.
 
 Installer certbot
-=================
+-----------------
 
 ::
   
     sudo apt-get install python-certbot-apache
 
 Lancer la commande cerbot
-=========================
+-------------------------
 
 Lancer la commande suivant pour générer des certificats et des clés pour l’ensemble des noms de domaines que vous souhaitez mettre en HTTPS.
 
@@ -28,7 +27,7 @@ Lancer la commande suivant pour générer des certificats et des clés pour l’
 
 
 Les certificats obtenus
-=======================
+-----------------------
 
 Les certificats se trouvent dans les dossiers ``/etc/letsencrypt/live/<nom_domaine>/``.
 
@@ -41,7 +40,7 @@ Pour chaque certificat, 4 fichiers sont générés :
 
 
 Configuration Apache
-====================
+--------------------
 
 Ouvrir le fichier ``/etc/apache2/sites-availables/000-default.conf`` et le modifier de la manière suivante :
 
@@ -88,7 +87,7 @@ Les fichiers de configuration des sites GeoNature, TaxHub et UsersHub ne sont pa
 
 
 Automatiser le renouvellement du certificat
-===========================================
+-------------------------------------------
 
 Le certificat fourni par Let's Encrypt n’est valable que 3 mois. Il faut donc mettre en place un renouvellement automatique.
 Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le certificat :
