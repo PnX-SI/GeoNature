@@ -30,7 +30,7 @@ import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
-import { DynamicFormService } from './form/dynamic-form/dynamic-form.service';
+import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
@@ -46,6 +46,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
+import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -105,7 +106,8 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     DynamicFormComponent,
     MunicipalitiesComponent,
-    SelectSearchComponent
+    SelectSearchComponent,
+    GenericFormGeneratorComponent
   ],
   providers: [
     TranslateService,
@@ -148,7 +150,8 @@ export function HttpLoaderFactory(http: Http) {
     TranslateModule,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
-    SelectSearchComponent
+    SelectSearchComponent,
+    GenericFormGeneratorComponent
   ]
 })
 export class GN2CommonModule {}

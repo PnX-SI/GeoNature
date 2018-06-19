@@ -37,8 +37,6 @@
       </fieldset>
 
       
-
-        
           <fieldset>
             <legend> Qui ?</legend>
             
@@ -53,11 +51,13 @@
         
           <fieldset>
               <legend> Comment ?</legend>
-            <pnx-nomenclature 
-                label="{{ 'Taxon.BiologicalCondition' | translate }}" 
-                [parentFormControl]="searchForm.controls.id_nomenclature_bio_condition"
-                [idTypeNomenclature]="7" >
-            </pnx-nomenclature>
+
+            <pnx-dynamic-form-generator
+                [formGroup]="searchForm"
+                [formsDefinition]="nomenclaturesForms"
+            >
+
+            </pnx-dynamic-form-generator>
           </fieldset>
 
         
