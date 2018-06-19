@@ -28,26 +28,26 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour de la liste des dépôts Linux :
 
-::
+  ::
 
     apt-get update
     apt-get upgrade
 
 * Installer sudo :
 
-::
+  ::
 
     apt-get install -y sudo ca-certificates
 
 * Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` (en lui donnant les droits sudo) :
 
-::
+  ::
 
     adduser geonatureadmin sudo
 
 * L'ajouter aussi aux groupes ``www-data`` et ``root`` :
 
-::
+  ::
 
     usermod -g www-data geonatureadmin
     usermod -a -G root geonatureadmin
@@ -69,30 +69,28 @@ Installation de l'application
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de développement. Elle n'est pas encore stable et se trouve sur la branche ``geonature2beta`` (remplacer ``X.Y.Z`` par ``geonature2beta``).
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de développement. Elle n'est pas encore stable et se trouve sur la branche ``geonature2beta`` (remplacer ``X.Y.Z`` par ``geonature2beta``). Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
 
-Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
-
-::
+  ::
 
     wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 
 * Dézipper l'archive de l'application
 
-::
+  ::
 
     unzip GeoNature-X.Y.Z.zip
 
 * Renommer le répertoire de l'application puis placez-vous dedans : 
 
-::
+  ::
 
     mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
     cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
 
-::
+  ::
 
     cp config/settings.ini.sample config/settings.ini
     nano config/settings.ini
@@ -170,27 +168,26 @@ Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
 Mise à jour de l'application
 ----------------------------
 
-- Télécharger la dernière version de GeoNature :
+* Télécharger la dernière version de GeoNature :
 
-::
+  ::
 
     wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
     unzip GeoNature-X.Y.Z.zip
 
-- Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
+* Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
 
-::
+  ::
 
     mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
     mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
     cd geonature
 
+* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
 
-- Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
+* Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
 
-- Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
-
-::
+  ::
     
     ./install/migration/migration.sh
 
@@ -220,7 +217,7 @@ Puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` :
 
 * Lancer le serveur de développement du frontend grâce à Angular-CLI :
 
-::
+  ::
     
     cd frontend
     npm run start
