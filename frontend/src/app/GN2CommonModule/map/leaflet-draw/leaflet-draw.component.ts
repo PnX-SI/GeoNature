@@ -61,11 +61,18 @@ export class LeafletDrawComponent implements OnInit {
       } else {
         this._currentDraw = (e as any).layer;
         const layerType = (e as any).layerType;
-        const latlngTab = this._currentDraw._latlngs;
+        console.log(layerType);
         this.mapservice.releveFeatureGroup.addLayer(this._currentDraw);
-        let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
-        geojson = (geojson as any).features[0];
+        let geojson: any = this.mapservice.releveFeatureGroup.toGeoJSON();
+        console.log(geojson);
+
+        geojson = geojson.features[0];
         // output
+        if (layerType === 'circle') {
+          const radius = this._currentDraw.getRadius();
+          console.log(radius);
+          geojson.properties.radius = radius;
+        }
         this.layerDrawed.emit(geojson);
       }
     });
