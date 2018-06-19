@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SearchService } from '../search.service';
+import { DataService } from '../services/data.service';
+import { FormService } from '../services/form.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -133,20 +134,13 @@ export class SyntheseSearchComponent implements OnInit {
   ];
 
   @Output() searchClicked = new EventEmitter();
-  constructor(private _fb: FormBuilder, public searchService: SearchService) {}
+  constructor(
+    private _fb: FormBuilder,
+    public dataService: DataService,
+    public formService: FormService
+  ) {}
 
-  ngOnInit() {
-    this.searchForm = this._fb.group({
-      cd_nom: null,
-      observers: null,
-      id_dataset: null,
-      id_nomenclature_bio_condition: null,
-      date_min: null,
-      date_max: null,
-      municipalities: null,
-      geojson: null
-    });
-  }
+  ngOnInit() {}
 
   onSubmitForm() {
     const params = Object.assign({}, this.searchForm.value);

@@ -2,12 +2,12 @@
       <fieldset>
               <legend> Quoi ?</legend>
           <pnx-datasets
-              [parentFormControl]="searchForm.controls.id_dataset"
+              [parentFormControl]="formService.searchForm.controls.id_dataset"
               label="{{ 'Datasets' | translate}}">
           </pnx-datasets>
           <pnx-taxonomy 
               label="{{'Taxon.Taxon' | translate }} " 
-              [parentFormControl]="searchForm.controls.cd_nom" 
+              [parentFormControl]="formService.searchForm.controls.cd_nom" 
               [idList]="500" 
               [charNumber]="3" 
               [listLength]="20">
@@ -18,12 +18,12 @@
           <legend> Quand ?</legend>
           <pnx-date
           label = "Date min"
-          [parentFormControl]="searchForm.controls.date_min">
+          [parentFormControl]="formService.searchForm.controls.date_min">
           </pnx-date>
 
           <pnx-date
           label = "Date max"
-          [parentFormControl]="searchForm.controls.date_max">>
+          [parentFormControl]="formService.searchForm.controls.date_max">>
             
           </pnx-date>
       </fieldset>
@@ -32,7 +32,7 @@
           <legend> Ou ?</legend>
           <pnx-municipalities
           label="Commubes"
-          [parentFormControl]="searchForm.controls.municipalities"
+          [parentFormControl]="formService.searchForm.controls.municipalities"
           ></pnx-municipalities>
       </fieldset>
 
@@ -42,7 +42,7 @@
             
             <pnx-observers-text
               label=" {{'Releve.Observer' | translate }} "
-              [parentFormControl]="searchForm.controls.observers">
+              [parentFormControl]="formService.searchForm.controls.observers">
             </pnx-observers-text>
 
             <!-- TODO: Organisme -->
@@ -53,7 +53,7 @@
               <legend> Comment ?</legend>
 
             <pnx-dynamic-form-generator
-                [formGroup]="searchForm"
+                [formGroup]="formService.searchForm"
                 [formsDefinition]="nomenclaturesForms"
             >
 
@@ -63,5 +63,5 @@
         
         <button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
         
-        <pre>form value: <br>{{searchForm.value | json}}</pre>
+        <pre>form value: <br>{{formService.searchForm.value | json}}</pre>
 </div>
