@@ -43,6 +43,10 @@ Voici un modèle simplifié de la BDD (2017-12-15) :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
+Et un autre schéma simplifié : 
+
+.. image :: http://geonature.fr/docs/img/admin-manual/bdd-geonature-v2.jpg
+
 Gestion des droits :
 """"""""""""""""""""
 
@@ -114,6 +118,8 @@ Pour configurer GeoNature, actuellement il y a :
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
 - Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
+
+.. image :: http://geonature.fr/docs/img/admin-manual/administration-geonature.png
 
 
 Configuration générale de l'application
