@@ -1,0 +1,10 @@
+<pnx-select-search
+  [values]="areas"
+  [parentFormControl]="parentFormControl"
+  key="area_name"
+  [label]="label"
+  debounceTime="500"
+  (onSearch)="refreshAreas($event)"
+  multiselect="true"
+  [disabled]="disabled">
+</pnx-select-search>

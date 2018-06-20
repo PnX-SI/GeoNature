@@ -47,6 +47,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
+import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -107,7 +108,8 @@ export function HttpLoaderFactory(http: Http) {
     DynamicFormComponent,
     MunicipalitiesComponent,
     SelectSearchComponent,
-    GenericFormGeneratorComponent
+    GenericFormGeneratorComponent,
+    AreasComponent
   ],
   providers: [
     TranslateService,
@@ -151,7 +153,8 @@ export function HttpLoaderFactory(http: Http) {
     MapListGenericFiltersComponent,
     ObserversTextComponent,
     SelectSearchComponent,
-    GenericFormGeneratorComponent
+    GenericFormGeneratorComponent,
+    AreasComponent
   ]
 })
 export class GN2CommonModule {}

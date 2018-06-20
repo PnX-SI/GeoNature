@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from .models import BibAreasTypes, LiMunicipalities
+from .models import BibAreasTypes, LiMunicipalities, LAreas
 
 routes = Blueprint('ref_geo', __name__)
 
@@ -122,5 +122,33 @@ def get_municipalities():
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
 
     data = q.limit(limit)
-    return [ d.as_dict() for d in data ]
+    return [ d.as_dict() for d in data]
 
+
+@routes.route('/areas', methods=['GET'])
+@json_resp
+def get_areas():
+    """
+        Return the areas of ref_geo.l_areas without geometry
+    """
+    params = request.args
+
+    q = DB.session.query(LAreas).order_by(
+            LAreas.area_name.asc()
+        )
+
+    if 'id_type' in params:
+        q = q.filter(LAreas.id_type == params['id_type'])
+    
+    if 'area_name' in params:
+        q = q.filter(
+            LAreas.area_name.ilike(
+                '{}%'.format(params.get('area_name'))
+            )
+        )
+
+    limit = int(params.get('limit')) if params.get('limit') else 100
+
+    data = q.limit(limit)
+    return [d.as_dict() for d in data]
+    

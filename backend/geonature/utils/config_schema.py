@@ -70,6 +70,9 @@ class GnFrontEndConf(Schema):
     DISPLAY_FOOTER = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
 
+class Synthese(Schema):
+    AREA_FILTERS = fields.List(fields.Dict)
+
 
 class MailErrorConf(Schema):
     MAIL_ON_ERROR = fields.Boolean(missing=False)
@@ -100,6 +103,7 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
+    SYNTHESE = fields.Nested(Synthese, missing=dict())
 
 
 class ManifestSchemaConf(Schema):
@@ -119,4 +123,3 @@ class ManifestSchemaProdConf(Schema):
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
     id_application = fields.Integer(required=True)
-
