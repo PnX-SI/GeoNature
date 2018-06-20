@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DataService } from '../services/data.service';
 import { FormService } from '../services/form.service';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -137,7 +138,8 @@ export class SyntheseSearchComponent implements OnInit {
   constructor(
     private _fb: FormBuilder,
     public dataService: DataService,
-    public formService: FormService
+    public formService: FormService,
+    public ngbModal: NgbModal
   ) {}
 
   ngOnInit() {}
@@ -148,5 +150,9 @@ export class SyntheseSearchComponent implements OnInit {
       params.cd_nom = params.cd_nom.cd_nom;
     }
     this.searchClicked.emit(params);
+  }
+
+  openModalCol(e, modalName) {
+    this.ngbModal.open(modalName, { size: 'lg' });
   }
 }
