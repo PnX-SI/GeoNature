@@ -163,3 +163,13 @@ RENAME COLUMN active TO active_frontend;
 
 ALTER TABLE gn_commons.t_modules
 ADD COLUMN active_backend BOOLEAN;
+
+
+-- Modification de gn_meta.sinp_datatype_protocols
+ALTER TABLE gn_meta.sinp_datatype_protocols ALTER COLUMN protocol_desc TYPE text;
+
+
+--suppression du lien entre les nomenclatures ref_geo
+ALTER TABLE ONLY ref_geo.l_areas DROP COLUMN id_nomenclature_area_type;
+ALTER TABLE ONLY ref_geo.bib_areas_types DROP CONSTRAINT fk_bib_areas_types_id_nomenclature_area_type;
+ALTER TABLE ref_geo.bib_areas_types DROP CONSTRAINT check_bib_areas_types_area_type;
