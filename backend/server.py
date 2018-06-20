@@ -33,6 +33,7 @@ def get_app(config, _app=None, with_external_mods=True):
 
         from pypnnomenclature.routes import routes
         app.register_blueprint(routes, url_prefix='/nomenclatures')
+        from pypnnomenclature.admin import admin
 
         from geonature.core.routes import routes
         app.register_blueprint(routes, url_prefix='')
