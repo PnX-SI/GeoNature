@@ -1,8 +1,8 @@
 FAQ
 ===
 
-Problème lié au frontend
-------------------------
+Problèmes liés au frontend
+--------------------------
 
 
 - Message d'erreur lié à node-saas

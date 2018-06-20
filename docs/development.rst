@@ -28,19 +28,19 @@ GeoNature utilise :
 
 Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/geonature-v2/7TDmFuN
 
+@TODO : Doc API à mettre à jour
 
 Développer et installer un gn_module
 ------------------------------------
 
 GeoNature a été conçu pour fonctionner en briques modulaires.
 
-Chaque protocole, répondant à une question scientifique, est ammené à avoir son propre module GeoNature 
-comportant son modèle de base de données, son API et son interface utilisateur.
+Chaque protocole, répondant à une question scientifique, est amené à avoir son propre module GeoNature comportant son modèle de base de données, son API et son interface utilisateur.
 
 Les modules développés s'appuieront sur le coeur de GeoNature qui est constitué d'un ensemble de briques réutilisables.
 
 En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, géographique)
-et du schéma 'synthèse' regroupant l'ensemble données saisis dans les différents protocoles.
+et du schéma ``synthese`` regroupant l'ensemble données saisies dans les différents protocoles.
 
 L'API du coeur (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__) permet d'interroger les schémas de la base de données "coeur" de GeoNature.
 
@@ -50,7 +50,7 @@ des cartes, des formulaires etc...
 Développer un gn_module
 """""""""""""""""""""""
 
-Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst>`__).
+Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst>`__).
 
 Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature.
 
@@ -58,9 +58,9 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
 
 - Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module"
 
-  Exemple: *gn_module_validation*
+  Exemple : *gn_module_validation*
 
-- La racine du module comportera les fichiers suivants: 
+- La racine du module comportera les fichiers suivants : 
 
   - ``install_app.sh`` : script bash d'installation des librairies python ou npm necessaires au module
   - ``install_env.sh`` : script bash d'installation des paquets Linux
@@ -68,10 +68,10 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
   - ``manifest.toml`` : fichier de description du module (nom, version du module, version de GeoNature compatible)
   - ``conf_gn_module.toml`` : fichier de configuration de l'application (livré en version sample)
   - ``conf_schema_toml.py`` : schéma 'marshmallow' (https://marshmallow.readthedocs.io/en/latest/) du fichier de configuration (permet de s'assurer la conformité des paramètres renseignés par l'utilisateur). Ce fichier doit contenir une classe ``GnModuleSchemaConf`` dans laquelle toutes les configurations sont synchronisées.
-  - ``install_gn_module.py`` : script python lançant les commandes relatives à l'installation du module (Bas de données, ...). Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisée pour installer le module (`Voir exemple < https://github.com/PnX-SI/gn_module_validation/blob/master/install_gn_module.py>`__)
+  - ``install_gn_module.py`` : script python lançant les commandes relatives à l'installation du module (Base de données, ...). Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisée pour installer le module (Voir l'`exemple du module validation <https://github.com/PnX-SI/gn_module_validation/blob/master/install_gn_module.py>`__)
  
 
-- La racine du module comportera les dossiers suivants:
+- La racine du module comportera les dossiers suivants :
 
   - ``backend`` : dossier comportant l'API du module utilisant un blueprint Flask
     
@@ -95,24 +95,29 @@ Frontend
 
 - Pour l'ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants présents dans le module 'GN2CommonModule'.
   
-  Importez ce module dans le module racine de la manière suivante:
+  Importez ce module dans le module racine de la manière suivante :
 
-  ``import { GN2CommonModule } from '@geonature_common/GN2Common.module';``
+  ::
+
+    import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 - Les librairies JS seront installées par npm dans un dossier ``node_modules`` à la racine du dossier ``frontend`` du module. (Il n'est pas nécessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...). Le ``package.json`` de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module.
 
-Lancer ``npm init`` pour initialisez le module.
+Lancer ``npm init`` pour initialiser le module.
 
 - Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend. Angular-cli impose cependant que tous les assets soient dans le répertoire mère de l'application (celui de GeoNature). Un lien symbolique est créé à l'installation du module pour faire entre le dossier d'assets du module et celui de Geonature.
 
-Pour les utiliser à l'interieur du module, utiliser la synthaxe suivante:
+Pour les utiliser à l'interieur du module, utiliser la syntaxe suivante :
 
-``<img src="external_assets/<MY_MODULE_NAME>/afb.png">``
+::
 
-Exemple pour le module de validation:
+    <img src="external_assets/<MY_MODULE_NAME>/afb.png">
 
-``<img src="external_assets/<gn_module_validation>/afb.png">``
+Exemple pour le module de validation :
 
+::
+
+    <img src="external_assets/<gn_module_validation>/afb.png">
 
 - Installer le linter ``tslint`` dans son éditeur de texte (TODO: définir un style à utiliser) 
 
@@ -127,17 +132,23 @@ Installer un gn_module
 
 Pour installer un module, rendez vous dans le dossier ``backend`` de GeoNature.
 
-Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature:
+Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature :
 
-``source venv/bin/activate``
+::
 
-Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>``
+    source venv/bin/activate
+
+Lancez ensuite la commande : 
+
+::
+
+    geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>
 
 Le premier paramètre est l'emplacement absolu du module sur votre machine et le 2ème le chemin derrière lequel on retrouvera les routes de l'API du module.
 
-Ex 'validation' pour atteindre les routes du module de validation à l'adresse 'http://mon-geonature.fr/api/geonature/validation'
+Exemple pour atteindre les routes du module de validation à l'adresse 'http://mon-geonature.fr/api/geonature/validation'
 
-Cette commande éxecute les actions suivantes :
+Cette commande exécute les actions suivantes :
 
 - Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
 - Intégration du blueprint du module dans l'API de GeoNature
@@ -152,7 +163,7 @@ Développement Frontend
 Modules
 """""""
 
-Bonnes pratiques:
+Bonnes pratiques :
 
 Chaque gn_module de GeoNature doit être un module Angular indépendant https://angular.io/guide/ngmodule. 
 
@@ -162,14 +173,14 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 ------------------------------
 1. Les composants formulaires
 """"""""""""""""""""""""""""""
-Les composants décrit ci dessous sont intégrés dans le coeur de GeoNature et permette au développeur de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type "input" ou "select" et seront souvent réutilisés dans les différents module de GeoNature.
+Les composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type ``input`` ou ``select`` et seront souvent réutilisés dans les différents module de GeoNature.
 
 *Input et Output communs*:
 
 Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 - Inputs
-        - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôller la logique et les valeurs du formulaire depuis l'exterieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
+        - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôler la logique et les valeurs du formulaire depuis l'extérieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
 
         - L'input ``label`` (string) permet d'afficher un label au dessus de l'input.
 
@@ -178,18 +189,17 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
         - L'input ``debounceTime`` définit un durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
 
 - Outputs
-        Plusieurs ``Output`` communs à ses composants permette d'emmètre des événements liés aux formulaires.
+        Plusieurs ``Output`` communs à ses composants permettent d'émettre des événements liés aux formulaires.
 
         - ``onChange`` : événement émit à chaque fois qu'un changement est effectué sur le composant. Renvoie la valeur fraiche de l'input.
 
         - ``onDelete`` : événement émit chaque fois que le champ du formulaire est supprimé. Renvoie un évenement vide.
 
 
-
 Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
 - **NomenclatureComponent**
-        Ce composant permet de créer un "input" de type "select" à partir d'une liste d'items définit dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+        Ce composant permet de créer un "input" de type "select" à partir d'une liste d'items définie dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
 
         **Selector**: ``pnx-nomenclature``
 
@@ -509,21 +519,13 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 			</tr>
 		</table>
                 
-2. Les composants des formulaires
-
-- *Taxonomy* : recherche automplété (typeahead sur une liste de taxon)
-- *Nomenclature*: liste déroulante sur un id_type_nomenclature
-- *Datasets*: liste déroulante de JDD accessibles pour un utilisateur connecté
-- *Date*: formulaire de type calendrier
-- *Observers*: liste déroulante d'observateurs construit à partir d'une liste d'observateur de la table ``utilisateur.core_role_menu``
-
 
 Outils d'aide à la qualité du code
 ----------------------------------
 
 Des outils d'amélioration du code pour les développeurs peuvent être utilisés : flake8, pylint, mypy, pytest, coverage.
 
-La documentation peut être générée avec sphinx.
+La documentation peut être générée avec Sphinx.
 
 Les fichiers de configuration de ces outils se trouvent à la racine du projet :
 
@@ -568,7 +570,7 @@ Sphinx
 
 Sphinx est un générateur de documentation.
 
-Pour générer la documentation html, se placer dans le répertoire ``docs`` et modifier les fichiers .rst
+Pour générer la documentation HTML, se placer dans le répertoire ``docs`` et modifier les fichiers .rst
 
 ::
 
