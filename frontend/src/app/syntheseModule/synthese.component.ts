@@ -22,6 +22,7 @@ export class SyntheseComponent implements OnInit {
     });
   }
   ngOnInit() {
-    this.loadAndStoreData({});
+    const initialData = { limit: 100 };
+    this.loadAndStoreData(initialData);
   }
 }
