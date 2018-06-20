@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DataService } from '../services/data.service';
 import { FormService } from '../services/form.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -10,6 +11,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['synthese-search.component.scss']
 })
 export class SyntheseSearchComponent implements OnInit {
+  public AppConfig = AppConfig;
   public searchForm: FormGroup;
   public nomenclaturesForms = [
     {
