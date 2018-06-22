@@ -20,7 +20,7 @@ from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsshapefile import(
     create_shapes, create_shapes_generic
-) 
+)
 
 
 def testDataType(value, sqlType, paramName):
@@ -107,27 +107,28 @@ class GenericTable:
             fprops = list(filter(lambda d: d[0] in columns, self.serialize_columns))
         else:
             fprops = self.serialize_columns
-        
+
         return {
             item: _serializer(getattr(data, item)) for item, _serializer in fprops
         }
 
     def as_geofeature(self, data, columns=None):
-        geometry = to_shape(getattr(data, self.geometry_field))
-        feature = Feature(
-            geometry=geometry,
-            properties=self.as_dict(data, columns)
-        )
-        return feature
+        if getattr(data, self.geometry_field) is not None:
+            geometry = to_shape(getattr(data, self.geometry_field))
+
+            return Feature(
+                geometry=geometry,
+                properties=self.as_dict(data, columns)
+            )
 
     def as_list(self, data=None, columns=None):
         if columns:
             fprops = list(filter(lambda d: d[0] in columns, self.serialize_columns))
         else:
             fprops = self.serialize_columns
-        
+
         return [_serializer(getattr(data, item)) for item, _serializer in fprops]
-        
+
 
     def as_shape(self, data=[], dir_path=None, file_name=None, columns=None):
         create_shapes_generic(
@@ -140,8 +141,6 @@ class GenericTable:
             file_name=file_name,
             columns=columns
         )
-
-
 
 class GenericQuery:
     '''
@@ -242,7 +241,11 @@ class GenericQuery:
 
         if self.geometry_field:
             results = FeatureCollection(
-                [self.view.as_geo_feature(d) for d in data]
+                [
+                    self.view.as_geofeature(d)
+                    for d in data
+                    if getattr(d, self.geometry_field) is not None
+                ]
             )
         else:
             results = [self.view.as_dict(d) for d in data]
