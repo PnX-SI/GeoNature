@@ -17,16 +17,22 @@ https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
 * Mise à jour des scripts de déploiement spécifiques de DEPOBIO (MTES)
 * Déplacement de la table centrale de gestion des paramètres ``t_parameters`` dans le schéma ``gn_commons`` (#376)
 * Ajout d'un trigger générique pour calculer la géométrie dans la projection locale à partir de la géométrie 4326 (#370)
-* Mise en place de scripts de migration de la BDD
+* Regroupement des fichiers liés à l'installation et la mise à jour dans un répertoire dédié (``install``) (#383)
+* Mise en place de scripts de migration de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``), d'un script générique de migration de l'application (``install/migration/migration.sh``) et d'une doc de mise à jour (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst#mise-%C3%A0-jour-de-lapplication)
+* Réintégration des fichiers de configuration, de logs et de modules externes dans les répertoires de l'application (#375)
+* Ajout de routes à ``gn_monitoring``
 
 **Corrections**
 
 * OccTax : Correction du double post
 * Correction de la gestion générique des médias
+* Suppression du lien entre ref_geo et ref_nomenclatures (#374)
 
 **Notes de version**
 
 * Exécutez le script de mise à jour de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``)
+* Exécutez le script ``install/migration/beta4tobeta5.sh``
+* Si vous avez développé des modules externes, voir https://github.com/PnX-SI/GeoNature/issues/375, en ajoutant un lien symbolique depuis le répertoire ``external_modules`` et en réintégrant la configuration du module dans son répertoire ``config``
 
 2.0.0.beta4 (2018-05-25)
 ------------------------

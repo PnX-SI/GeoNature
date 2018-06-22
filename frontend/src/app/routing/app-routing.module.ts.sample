@@ -23,6 +23,7 @@ const defaultRoutes: Routes = [
         {% endfor %}
       { path: '', component: HomeContentComponent },
       { path: 'exports', loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
+      { path: 'exports', loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
       { path: '**',  component: PageNotFoundComponent },
      ] },
 ];

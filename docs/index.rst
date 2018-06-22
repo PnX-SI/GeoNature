@@ -16,8 +16,10 @@ Bienvenue sur la documentation de GeoNature
    user-manual
    admin-manual
    development
-   occtax
+   versions-compatibility
+   https
    FAQ
+   authors
    CHANGELOG 
 
 

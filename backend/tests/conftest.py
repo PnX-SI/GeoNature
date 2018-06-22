@@ -7,7 +7,6 @@ from geonature.utils.env import load_config, get_config_file_path
 
 def pytest_sessionstart(session):
     """ before session.main() is called. """
-    print('BEGIN')
     execute_script('delete_sample_data.sql')
     execute_script('sample_data.sql')
 

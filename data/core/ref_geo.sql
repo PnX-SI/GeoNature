@@ -56,7 +56,6 @@ $BODY$
 ----------------------
 CREATE TABLE bib_areas_types (
     id_type integer NOT NULL,
-    id_nomenclature_area_type integer,
     type_name character varying(200),
     type_code character varying(25),
     type_desc text,
@@ -161,9 +160,6 @@ ALTER TABLE ONLY dem_vector
 ----------------
 --FOREIGN KEYS--
 ----------------
-ALTER TABLE ONLY bib_areas_types
-    ADD CONSTRAINT fk_bib_areas_types_id_nomenclature_area_type FOREIGN KEY (id_nomenclature_area_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES bib_areas_types(id_type) ON UPDATE CASCADE;
 
@@ -172,13 +168,6 @@ ALTER TABLE ONLY li_municipalities
 
 ALTER TABLE ONLY li_grids
     ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
-
-
---------------
---CONSTRAINS--
---------------
-ALTER TABLE bib_areas_types
-  ADD CONSTRAINT check_bib_areas_types_area_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_area_type,22));
 
 
 ---------
@@ -274,6 +263,7 @@ INSERT INTO bib_areas_types (id_type, type_name, type_code, type_desc, ref_name,
 (21, 'Natura 2000 - Zones spéciales de conservation', 'ZSC', NULL, NULL,NULL),
 (22, 'Natura 2000 - Proposition de sites d''intéret communautaire', 'pSIC', NULL, NULL,NULL),
 (23, 'Périmètre d''étude de la charte des Parcs nationaux', 'PEC', NULL, NULL,NULL),
+(24, 'Unités géographiques', NULL, 'Unités géographiques permettant une orientation des prospections', NULL, NULL),
 (101, 'Communes', NULL, 'type commune', 'IGN admin_express',2017),
 (102, 'Départements', NULL, 'type département', 'IGN admin_express',2017),
 (201, 'Mailles10*10', NULL, 'type maille inpn 10*10', NULL,NULL),

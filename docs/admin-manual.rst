@@ -4,7 +4,7 @@ MANUEL ADMINISTRATEUR
 Architecture
 ------------
 
-GeoNature possède une architecture modulaire et s'appuie sur de plusieurs "services" indépendants pour fonctionner:
+GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner:
 
 - UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (liste, organisme, droits) utilisable par les différentes applications de son système d'information.
 - TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellemenet nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
@@ -30,8 +30,8 @@ Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` conce
 Autres standards:
 
 - Noms de tables, commentaires et fonctions en anglais
-- pas de nom de table dans les noms de champs
-- nom de schema eventuellement dans nom de table
+- Pas de nom de table dans les noms de champs
+- Nom de schema éventuellement dans nom de table
 
 Dernière version de la base de données (2018-03-19) : 
 
@@ -42,6 +42,10 @@ Désolé pour les relations complexes entre tables...
 Voici un modèle simplifié de la BDD (2017-12-15) : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
+
+Et un autre schéma simplifié : 
+
+.. image :: http://geonature.fr/docs/img/admin-manual/bdd-geonature-v2.jpg
 
 Gestion des droits :
 """"""""""""""""""""
@@ -54,10 +58,9 @@ Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en pla
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
 - 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
 - Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``utilisateurs.v_usersaction_forall_gn_modules``)
-- Des fonctions PostgreSQL ont aussi été intégrés pour faciliter la récupération de ces informations (``utilisateurs.cruved_for_user_in_module``, ``utilisateurs.can_user_do_in_module``, ...)
+- Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``utilisateurs.cruved_for_user_in_module``, ``utilisateurs.can_user_do_in_module``, ...)
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
-- Tous ces éléments sont en train d'être intégrés dans le schéma ``utilisateurs`` de UsersHub pour supprimer le schéma spécifique ``utilisateurs`` de GeoNature
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
 Nomenclatures :
@@ -73,7 +76,7 @@ Nomenclatures :
 - Si organisme = 0 alors la valeur par défaut s'applique à tous les organismes. Idem pour les règnes et group2inpn
 - La fonction ``pr_occtax.get_default_nomenclature_value`` permet de renvoyer l'id de la nomenclature par défaut
 - Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
-- Il existe aussi une table pour définir des valeurs par défaut de nomenclature générales (``ref_nomenclatures.defaults_nomenclatures_value``)
+- Il existe aussi une table pour définir des valeurs par défaut générales de nomenclature (``ref_nomenclatures.defaults_nomenclatures_value``)
 
 Métadonnées :
 """""""""""""
@@ -85,7 +88,7 @@ Données SIG :
 """""""""""""
 
 - Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
-- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et du MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
+- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
 - La fonction ``ref_geo.fct_get_area_intersection`` permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
@@ -96,11 +99,11 @@ Modularité
 
 Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module OccTax : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data
 
-Côté backend, chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend
+Côté Backend, chaque module a aussi son modèle et ses routes : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend
 
-Idem côté FRONT, où chaque module a sa config et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app
+Idem côté Frontend, où chaque module a sa configuration et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app
 
-Mais en pouvant utiliser des composants du CORE comme expliqué dans la doc Developpeur.
+Mais en pouvant utiliser des composants du Coeur comme expliqué dans la documentation Developpeur.
 
 Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
 
@@ -111,21 +114,22 @@ Configuration
 Pour configurer GeoNature, actuellement il y a : 
 
 - Une configuration pour l'installation : ``config/settings.ini``
-- Une configuration globale de l'application : ``/etc/geonature/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration par module : ``/etc/geonature/mods-enabled<nom_module>/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
-- Une table ``gn_meta.t_parameters`` pour des paramètres gérés dans la BDD
+- Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
+- Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
+- Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 
+.. image :: http://geonature.fr/docs/img/admin-manual/administration-geonature.png
 
 Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
-L'installation de GeoNature génère le fichier de configuration globale ``/etc/geonature/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
+L'installation de GeoNature génère le fichier de configuration globale ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
 
-Par défaut, le fichier ``/etc/geonature/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
+Par défaut, le fichier ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
 
 Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
 
-A chaque modification fichier global de configuration (``/etc/geonature/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
+A chaque modification du fichier global de configuration (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
 
 Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
 
@@ -138,11 +142,11 @@ Ainsi après chaque modification des fichiers de configuration globale, placez-v
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
 
-Lors de l'instalation d'un module, un fichier de configuration est créé: ``/etc/geonature/mods-enabled/<nom_module>/conf_gn_module.toml``.
+Lors de l'installation d'un module, un fichier de configuration est créé : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml``.
 
-Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example`` situé à la racine du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
+Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example``, situé dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
 
-A chaque modification de ce fichier lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompiler)
+A chaque modification de ce fichier, lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé)
 
 ::
 
@@ -151,36 +155,65 @@ A chaque modification de ce fichier lancer les commandes suivantes (le fichier e
     deactivate
 
 
-
 Exploitation
 ------------
 
 Logs
-"""""
+""""
 
-Les logs de GeoNature sont dans le répertoire ``/var/log/geonature`` :
+Les logs de GeoNature sont dans le répertoire ``<GEONATURE_DIRECTORY>/var/log/`` :
 
-- logs d'installation de la BDD : ``install_db.log``
-- logs d'installation de la BDD d'un module : ``install_<nom_module>_schema.log``
-- logs de l'API : ``gn-errors.log``
+- Logs d'installation de la BDD : ``install_db.log``
+- Logs d'installation de la BDD d'un module : ``install_<nom_module>_schema.log``
+- Logs de l'API : ``gn-errors.log``
 
 Les logs de TaxHub sont dans le repertoire ``/var/log/taxhub``:
 
-- logs de l'API de TaxHub : ``taxhub-errors.log``
+- Logs de l'API de TaxHub : ``taxhub-errors.log``
+
+Commandes GeoNature 
+"""""""""""""""""""
+
+GeoNature est fourni avec une série de commandes pour administrer l'application.
+Pour les exécuter, il est nécessaire d'être dans le virtualenv python de GeoNature
+
+::
+
+    cd <GEONATURE_DIRECTORY>/backend
+    source venv/bin/activate
+
+Le préfixe (venv) se met alors au début de votre invite de commande.
+
+Voici la liste des commandes disponible (aussi disponible en tapant la commande ``geonature --help``) :
+
+- activate_gn_module : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
+- deactivate_gn_module : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
+- dev_back : Lance le backend en mode développement
+- dev_front : Lance le frontend en mode développement
+- generate_frontend_module_route : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
+- install_gn_module : Installe un gn_module 
+- start_gunicorn : Lance l'API du backend avec gunicorn
+- supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``)
+- update_configuration : Met à jour la configuration du coeur de l'application. A exécuter suite à un modification du fichier ``geonature_config.toml``
+- update_module_configuration : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
+
+Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
 
 Verification des services
 """""""""""""""""""""""""
 
 Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor.
 
-Par défaut:
+Par défaut :
 
 - L'API de GeoNature tourne sur le port 8000
 - L'API de taxhub tourne sur le port 5000
 
-Pour vérifier que les API de GeoNature et de TaxHub sont lancées, éxecuter la commande :
+Pour vérifier que les API de GeoNature et de TaxHub sont lancées, exécuter la commande :
 
-``ps -aux |grep gunicorn``
+::
+
+    ps -aux |grep gunicorn
 
 La commande doit renvoyer 4 fois la ligne suivante pour GeoNature :
 
@@ -201,22 +234,25 @@ Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas ét�
 Stopper/Redémarrer les API
 """""""""""""""""""""""""""
 
-Les API de GeoNature et de TaxHub sont gérées par le supervisor pour être lancé automatiquement au démarage du serveur.
+Les API de GeoNature et de TaxHub sont gérées par le supervisor pour être lancées automatiquement au démarrage du serveur.
 
-Pour les stopper, éxecuter les commandes suivantes :
+Pour les stopper, exécuter les commandes suivantes :
 
 - GeoNature: ``sudo supervisorctl stop geonature2``
 - TaxHub: ``sudo supervisorctl stop taxhub``
 
-Pour redémarer les API:
-``sudo supervisorctl reload``
+Pour redémarer les API :
+
+::
+
+    sudo supervisorctl reload
 
 Maintenance
 """""""""""
 
-Lors d'une opération de maintenance (monté en version, modification en base de données), vous pouvez rendre l'application momentanémment indisponible.
+Lors d'une opération de maintenance (montée en version, modification de la base de données...), vous pouvez rendre l'application momentanémment indisponible.
 
-Pour cela, désactiver la configuration Apache de GeoNature, puis activer la configuration du mode de maintenance:
+Pour cela, désactivez la configuration Apache de GeoNature, puis activez la configuration du mode de maintenance :
 
 ::
 
@@ -224,7 +260,7 @@ Pour cela, désactiver la configuration Apache de GeoNature, puis activer la con
     sudo a2ensite geonature_maintenance
     sudo apachectl restart
 
-A la fin de l'opération de maintenance, effectuer la manipulation inverse
+A la fin de l'opération de maintenance, effectuer la manipulation inverse :
 
 ::
 
@@ -232,121 +268,95 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse
     sudo a2ensite geonature
     sudo apachectl restart
     
-
-
-
-Attention: ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompue)
-
-Montée en version
------------------
-
-- Télécharger la dernière version de GeoNature 
-
-::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-    unzip GeoNature-X.Y.Z.zip
-
-- Renommer l'ancien repertoire de l'application, ainsi que le nouveau
-
-::
-
-    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
-    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
-    cd geonature
-
-
-- Suivez les instructions de montée en version décrit ici https://github.com/PnX-SI/GeoNature/releases.
-
-- Lancez le script de migration.sh à la racine du dossier ``geonature``:
-
-::
-
-    
-    ./migration.sh
+Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompues)
 
 
 Sauvegarde et restauration
 --------------------------
 
-- Sauvegarge:
+Sauvegarde
+""""""""""
 
-    **Sauvegarde de la base de données** :
+* Sauvegarde de la base de données :
 
-    Opération à faire régulièrement grâce à une tâche cron
+  ::
 
-    ::
+    pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
 
-        pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
+Opération à faire régulièrement grâce à une tâche cron.
 
+* Sauvegarde des fichiers de configuration :
 
-    **Sauvegarde des fichiers de configuration** :
+  ::
 
-    Opération à faire à chaque modification d'un paramètre de configuration
-
-    ::
-
-        cd /etc/geonature
-        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
-        cd /home/<MY_USER>/geonature
-        cp config/settings.ini <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-settings.ini
-
-    **Sauvegarde des fichiers de customisation**:
-
-    Opération à faire à chaque modification de la customisation de l'application
-
-    ::
-
-        cd /home/<MY_USER>geonature/frontend/src/custom
-        tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
-
-
-- Restauration
-
-    **Restauration de la base de données** :
-
-    - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus)
+    cd geonature/config
+    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
+    cd /home/<MY_USER>/geonature
     
-        Si ce n'est pas le cas, adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``/etc/geonature/geonature_config.toml``
-        ::
+Opération à faire à chaque modification d'un paramètre de configuration.
 
-            sudo -n -u postgres -s createdb -O theo geonature2db
-            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
-            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS hstore;"
-            sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
-            sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+* Sauvegarde des fichiers de customisation :
+
+  ::
+
+    cd /home/<MY_USER>geonature/frontend/src/custom
+    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
+
+Opération à faire à chaque modification de la customisation de l'application.
+
+* Sauvegarde des modules externes :
+
+  ::
+
+    cd /home/<MY_USER>geonature/external_modules
+    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
+
+Restauration :
+""""""""""""""
+
+* Restauration de la base de données :
+
+  - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
+
+    ::
+
+        sudo -n -u postgres -s createdb -O theo geonature2db
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS hstore;"
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         
-    - Restaurer la BDD à partir du backup
+  - Restaurer la BDD à partir du backup
 
-        ::
-            
-            pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
+    ::
 
-    **Restauration de la configutration et de la customisation** :
+        pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
 
-    Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
+* Restauration de la configutration et de la customisation :
 
-    :: 
-    
-        sudo rm -r /etc/geonature/*
-        cd /etc/geonature
+  - Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
+
+    ::
+
+        sudo rm <GEONATURE_DIRECTORY>/config/*
+        cd <GEONATURE_DIRECTORY>/config
         sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
-
+        
         cd /home/<MY_USER>/geonature/frontend/src/custom
         rm -r <MY_USER>/geonature/frontend/src/custom/*
         tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
+        
+        rm /home/<MY_USER>/geonature/external_modules/*
+        cd <GEONATURE_DIRECTORY>/external_modules
+        tar -zxvf <MY_BACKUP_DIRECTORY>/201803151036-external_modules.tar.gz 
 
-        rm /home/<MY_USER>/geonature/config/settings.ini
-        cp <MY_BACKUP_DIRECTORY>/201803151036-settings.ini /home/<MY_USER>/geonature/config/settings.ini
+* Relancer l'application :
 
+  ::
 
-- Relancer l'application :
-
-    ::
-
-        cd /<MY_USER>/geonature/frontend
-        npm run build
-        sudo supervisorctl reload
+    cd /<MY_USER>/geonature/frontend
+    npm run build
+    sudo supervisorctl reload
 
 
 Intégrer des données externes
@@ -372,8 +382,8 @@ Nous présenterons ici la première solution qui est privilégiée pour disposer
 Module OCCTAX
 -------------
 
-**Installer le module**
-""""""""""""""""""""""""
+Installer le module
+"""""""""""""""""""
 
 Le module est fourni par défaut avec l'instalation de GeoNature.
 
@@ -385,16 +395,15 @@ Si vous l'avez supprimé, lancer les commandes suivantes depuis le repertoire ``
     geonature install_gn_module /home/<mon_user>/geonature/contrib/occtax occtax
 
 
-**Configuration du module**
-"""""""""""""""""""""""""""
+Configuration du module
+"""""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici : ``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``
+Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/conf_gn_module.toml``.
 
-Pour voir l'ensemble des variables de configuration du module ainsi qu leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/contrib/occtax/conf_gn_module.toml``
-
+Pour voir l'ensemble des variables de configuration du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml``.
 
 Afficher/masquer des champs du formulaire
-"""""""""""""""""""""""""""""""""""""""""
+*****************************************
 
 La quasi-totalité des champs du standard Occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.
 
@@ -442,26 +451,26 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 
 Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 
-Modifier le champ observateur
-"""""""""""""""""""""""""""""
+Modifier le champ Observateurs
+******************************
 
-Par défaut le champ Observateur est une liste déroulante qui pointe vers une liste du schéma utilisateur.
-Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``
+Par défaut le champ ``Observateurs`` est une liste déroulante qui pointe vers une liste du schéma ``utilisateurs``.
+Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``.
 
-Le paramètre ``id_observers_list`` permet de changer la liste d'observateur proposé dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_menus`` et ``utilisateurs.cor_role_menu``)
+Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_menus`` et ``utilisateurs.cor_role_menu``)
 
-Par défaut, l'ensemble des observateurs de la liste 9 (observateur faune/flore) sont affichés.
+Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
 Personnaliser la liste des taxons saisissables dans le module
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+*************************************************************
 
-Le module est fournit avec une liste restreinte de taxons (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Le module est fourni avec une liste restreinte de taxons (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
-Le paramètre ``id_taxon_list = 500`` correspond à un ID de liste de la table ``taxonomie.bib_liste`` (L'ID 500 corespond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Le paramètre ``id_taxon_list = 500`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 500 correspond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
-Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du genre : 
+Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
-Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 500, avec l'ensemble des taxons de ``bib_noms``
+Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 500, avec l'ensemble des taxons de ``bib_noms`` :
 
 :: 
 
@@ -477,36 +486,35 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
     SELECT 500,n.id_nom FROM taxonomie.bib_noms n
 
-
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
 Gérer les valeurs par défaut des nomenclatures
-"""""""""""""""""""""""""""""""""""""""""""""""
+**********************************************
 
-Le formulaire de saisie pré-rempli des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
+Le formulaire de saisie pré-remplit des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
 
-La table ``pr_occtax.defaults_nomenclatures_value`` définit les valeurs par défaut pour chaque nomenclature du standard.
+La table ``pr_occtax.defaults_nomenclatures_value`` définit les valeurs par défaut pour chaque nomenclature.
 
 La table contient les deux colonnes suivantes :
 
-- l'id_type de nomenclature (voir table ``ref_nomenclature.bib_nomenclatures_types``)
-- l'id_nomenclature (voir table ``ref_nomenclature.t_nomenclatures``)
+- l'``id_type`` de nomenclature (voir table ``ref_nomenclature.bib_nomenclatures_types``)
+- l'``id_nomenclature`` (voir table ``ref_nomenclature.t_nomenclatures``)
 
 Pour chaque type de nomenclature, on associe l'ID de la nomenclature que l'on souhaite voir apparaitre par défaut.
 
 Le mécanisme peut être poussé plus loin en associant une nomenclature par défaut par organisme, règne et group2_inpn.
 La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous les organismes, tous les règnes et tous les group2_inpn.
 
-Une interface de gestion des nomenclatures est prévue d'être réalisée pour simplifier cette configuration.
+Une interface de gestion des nomenclatures est prévue d'être développée pour simplifier cette configuration.
 
 TODO: valeur par défaut de la validation
 
-Personaliser l'inteface map-list
-""""""""""""""""""""""""""""""""
+Personnaliser l'interface Map-list
+**********************************
 
-La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre ``default_maplist_columns``
+La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre ``default_maplist_columns``.
 
-Par défaut:
+Par défaut :
 
 ::
 
@@ -557,9 +565,9 @@ Attribuer des droits
 
 La gestion des droits (CRUVED) se fait module par module. Cependant si on ne redéfinit pas de droit pour un module, ce sont les droits de l'application mère (GeoNature elle-même) qui seront attribués à l'utilisateur pour l'ensemble de ses sous-modules.
 
-Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0 par exemple.
+Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0.
 
-Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``), où ``id_tag_action`` correspond à l'id du tag d'une action (CRUVED), et ``id_tag_object`` à l'id du tag de la portée pour chaque action (0,1,2,3). Voir la table ``utilisateurs.t_tags`` pour voir la corespondant entre les tags et les actions, ainsi que les portées.
+Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``), où ``id_tag_action`` correspond à l'id du tag d'une action (CRUVED), et ``id_tag_object`` à l'id du tag de la portée pour chaque action (0,1,2,3). Voir la table ``utilisateurs.t_tags`` pour identifier la correspondance entre les tags et les actions, ainsi que les portées.
 
 La correspondance entre ``id_tag_action``, ``id_tag_object``, ``id_application`` et ``id_role`` donnera les droits d'une personne ou d'un groupe pour une application (ou module) donnée.
 

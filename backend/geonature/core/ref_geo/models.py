@@ -5,7 +5,7 @@ from geonature.utils.utilssqlalchemy import serializable
 
 
 @serializable
-class LAreasWithoutGeom(DB.Model):
+class LAreas(DB.Model):
     __tablename__ = 'l_areas'
     __table_args__ = {'schema': 'ref_geo'}
     id_area = DB.Column(DB.Integer, primary_key=True)
@@ -13,6 +13,9 @@ class LAreasWithoutGeom(DB.Model):
     area_name = DB.Column(DB.Unicode)
     area_code = DB.Column(DB.Unicode)
     source = DB.Column(DB.Unicode)
+    geom = DB.Column(Geometry('GEOMETRY', 4326))
+
+
 
 
 @serializable
