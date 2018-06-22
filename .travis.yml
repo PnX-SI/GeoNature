@@ -22,6 +22,6 @@ script:
 notifications:
   email:
     recipients:
-      - theo.lechemia@ecrins-parcnational.fr
+      - geonature@ecrins-parcnational.fr
     on_failure: always
     on_success: never

@@ -3,22 +3,18 @@ from flask import current_app
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
-# from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.dialects.postgresql import UUID
+from geoalchemy2 import Geometry
 
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
 from geonature.utils.utilsshapefile import shapeseralizable
-
-
-
 from geonature.utils.env import DB
 from geonature.utils.errors import InsufficientRightsError
 from geonature.core.users.models import TRoles
 from geonature.core.gn_meta.models import TDatasets
 
-from geoalchemy2 import Geometry
 
 
 class ReleveModel(DB.Model):

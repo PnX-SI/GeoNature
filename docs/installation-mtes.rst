@@ -1,7 +1,7 @@
 SPECIFICITES INSTANCE DEPOT LEGAL DE BIODIVERSITE
 =================================================
 
-Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de bioldiversité.
+Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (https://depot-legal-biodiversite.naturefrance.fr/).
 
 Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst).
 
@@ -9,9 +9,9 @@ Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature
 Configuration Apache
 --------------------
 
-Editez la configuration Apache de GeoNature et de Taxhub pour l'adapter au contexte de production :
+Editez la configuration Apache de GeoNature et de TaxHub pour l'adapter au contexte de production.
 
-Fichier ``/etc/apache/site-enabled/geonature.conf``
+Fichier ``/etc/apache/site-enabled/geonature.conf`` :
 
 ::
 
@@ -27,7 +27,7 @@ Fichier ``/etc/apache/site-enabled/geonature.conf``
         ProxyPassReverse  http://127.0.0.1:8000
     </Location>
 
-Fichier ``/etc/apache/site-enabled/taxhub.conf``
+Fichier ``/etc/apache/site-enabled/taxhub.conf`` :
 
 ::
 
@@ -41,7 +41,7 @@ Fichier ``/etc/apache/site-enabled/taxhub.conf``
         #FIN Configuration TaxHub
 
 
-Le fichier ``/etc/apache/site-enabled/000-default.conf`` doit également être édité pour faire fonctionner le load balancing (Voir la configuration de la preprod pour l'adapter au serveur de production).
+Le fichier ``/etc/apache/site-enabled/000-default.conf`` doit également être édité pour faire fonctionner le load balancing (Voir la configuration de la pre-prod pour l'adapter au serveur de production).
 
 
 Configuration de l'application
@@ -51,13 +51,15 @@ Une fois l'installation terminée, il est nécessaire d'adapter les fichiers de 
 
 Lancer le script pour effectuer automatiquement la configuration de l'application :
 
-``/home/<my_user>/geonature/install_all/configuration_mtes.sh``
+``/home/<my_user>/geonature/install/install_all/configuration_mtes.sh``
 
-Il est cependant possible de modifier ces configuraitons. Le fichier ``/home/<my_user>/geonature/config/default_config.tomls.example`` liste l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut. 
+Il est cependant possible de modifier ces configuraitons. Le fichier ``/home/<my_user>/geonature/config/default_config.toml.example`` liste l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut. 
 
-Editer le fichier de configuration de GeoNature pour surcoucher ces variables:
+Editer le fichier de configuration de GeoNature pour surcoucher ces variables :
 
-``sudo nano /etc/geonature/geonature_config.toml``
+::
+
+        sudo nano /etc/geonature/geonature_config.toml`
 
 Ci-dessous, les paramètres de configuration pour l'instance de production.
 
@@ -66,7 +68,7 @@ Configuration des URLS
 
 Les URLS doivent correspondre aux informations renseignées dans la configuration Apache et au Load Balancer. Elle ne doivent pas contenir de ``/`` final.
 
-Pour la préprod, ajouter le préfixe "pp-" avant ``saisie`` et ``taxhub`` (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la configuration Apache en conséquence.
+Pour la pré-prod, ajouter le préfixe "pp-" avant ``saisie`` et ``taxhub`` (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la configuration Apache en conséquence.
 
 ::
 
@@ -87,12 +89,12 @@ Mettre un clé secrète personnalisée
     
     SECRET_KEY = '<MA_CLE_CRYPTEE>'
 
-Connexion au CAS INPN - gestion centralisé des utilisateurs
+Connexion au CAS INPN - gestion centralisée des utilisateurs
 ***********************************************************
 
-Bien changer les variables ID et PASSWORD avec les bonnes valeurs
+Bien changer les variables ID et PASSWORD avec les bonnes valeurs.
 
-NB : pour la préprod, utiliser ``https://preprod-inpn.mnhn.fr``
+NB : pour la pré-prod, utiliser ``https://preprod-inpn.mnhn.fr``
 
 ::
 
@@ -110,7 +112,7 @@ NB : pour la préprod, utiliser ``https://preprod-inpn.mnhn.fr``
 Configuration du frontend
 **************************
 
-(Pour l'instance de préprod, rajouter "instance de démo" à la variable ``appName``
+Pour l'instance de pré-prod, rajouter "instance de démo" à la variable ``appName``.
 
 ::
 
@@ -138,19 +140,17 @@ Configuration de la cartographie
 
 Pour l'instance nationale, l'application est fournie avec des fonds de carte IGN (Topo, Scan-Express et Orto).
 
-Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique : ``frontend/src/conf/map.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend``, lancer ``npm run build``).
+Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique ``frontend/src/conf/map.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend``, lancer ``npm run build``).
 
 
-Configuration du module occurrence de taxon: OCCTAX
+Configuration du module Occurrence de taxon: OCCTAX
 ***************************************************
 
-Le fichier de configuration du module Occtax se trouve dans le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module.toml``.
+Le fichier de configuration du module Occtax se trouve dans le fichier ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml``.
 
 Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
 
-Le fichier ``/home/<my_user>/<my_geonature_directory>/contrib/occtax/configuration_occtax.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeur par défault.
-
-Editez le fichier ``/etc/geonature/mods-enabled/occtax/conf_gn_module``
+Le fichier ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeurs par défault.
 
 Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue car il s'agit de la recompilation du frontend).
 
@@ -162,7 +162,7 @@ Depuis le répertoire ``backend`` de GeoNature
     geonature update_module_configuration occtax
     deactivate
 
-Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#administration-du-module-occtax).
+Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax).
 
 Référentiel géographique
 ------------------------
@@ -181,7 +181,7 @@ Authentification CAS INPN
 Connexion et droits dans GeoNature
 ----------------------------------
 
-- A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur. On ajoute cet utilisateur dans la base GeoNature (``utilisateurs.t_roles`` et ``utilisateurs.bib_organisme``) et on lui affecte des droits CRUVED.
+- A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur. On ajoute cet utilisateur dans la base de données de GeoNature (``utilisateurs.t_roles`` et ``utilisateurs.bib_organisme``) et on lui affecte des droits CRUVED par défaut.
 
 - On assigne à l'utilisateur le « socle 1 » (C1-R1-V0-E1-D1). Il pourra voir seulement les données qu’il a saisi lui-même et les JDD qu’il a créé dans MTD.
 
@@ -195,7 +195,7 @@ Récupération des JDD
 
 Grâce à l'API de MTD, il est désormais possible d’ajouter les jeux de données (et des cadres d’acquisition) créés dans MTD dans la BDD GeoNature.
 
-- On récupère la liste des JDD créés par l’utilisateur grâce à l’API MTD au chargement de la liste déroulante des JDD:
+- On récupère la liste des JDD créés par l’utilisateur grâce à l’API MTD au chargement de la liste déroulante des JDD :
 https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId?id=<ID_USER>
 
 - On récupère l’UUID du cadre CA associé au JDD dans le XML renvoyé et on fait appel au l’API MTD pour récupérer le fichier XML du CA :

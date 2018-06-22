@@ -34,21 +34,26 @@ fi
 
 
 
-if [ ! -d '/var/log/geonature/install_log.log' ]
+if [ ! -d 'var' ]
 then
-  sudo mkdir /var/log/geonature
-  sudo chown "$(id -u)" /var/log/geonature
-  chmod -R 775 /var/log/geonature
+  mkdir var
+  chmod -R 775 var
 fi
 
-if [ -f /var/log/geonature/install_log.log ]; then
-  rm /var/log/geonature/install_log.log
+if [ ! -d 'var/log' ]
+then
+  mkdir var/log
+  chmod -R 775 var/log/
 fi
-touch /var/log/geonature/install_log.log
 
-echo "############### Installation des paquets systèmes ###############"&>> /var/log/geonature/install_log.log
+if [ -f  var/log/install_app.log ]; then
+  rm  var/log/install_app.log
+fi
+touch  var/log/install_app.log
 
-sudo apt-get install -y nano 2>/var/log/geonature/install_log.log 
+echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
+
+sudo apt-get install -y nano 2> var/log/install_app.log 
 nano install_all.ini
 . install_all.ini
 
@@ -57,44 +62,44 @@ nano install_all.ini
 # Installation de l'environnement nécessaire à GeoNature2, TaxHub et
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate 2>/var/log/geonature/install_log.log 
-sudo ntpdate-debian &>> /var/log/geonature/install_log.log 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y curl unzip git &>> /var/log/geonature/install_log.log 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y postgresql 2>/var/log/geonature/install_log.log
+sudo apt-get -y install ntpdate 2> var/log/install_app.log 
+sudo ntpdate-debian &>>  var/log/install_app.log 2> var/log/install_app.log 
+sudo apt-get install -y curl unzip git &>>  var/log/install_app.log 2> var/log/install_app.log 
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2> var/log/install_app.log 
+sudo apt-get install -y postgresql 2> var/log/install_app.log
 sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.6 2>/var/log/geonature/install_log.log
-    sudo apt install -y postgis postgresql-9.6-postgis-2.3 2>/var/log/geonature/install_log.log
+    sudo apt-get install -y postgresql-server-dev-9.6 2> var/log/install_app.log
+    sudo apt install -y postgis postgresql-9.6-postgis-2.3 2> var/log/install_app.log
 else
-    sudo apt-get install -y postgresql-server-dev-9.4 2>/var/log/geonature/install_log.log 
-    sudo apt install postgis 2>/var/log/geonature/install_log.log
+    sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
+    sudo apt install postgis 2> var/log/install_app.log
     
 fi
-sudo apt-get install -y python3 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y python3-dev 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y python3-setuptools 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y python-pip 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y libpq-dev 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y libgdal-dev 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y python-gdal 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y python-virtualenv 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y build-essential 2>/var/log/geonature/install_log.log 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper 2>/var/log/geonature/install_log.log
+sudo apt-get install -y python3 2> var/log/install_app.log 
+sudo apt-get install -y python3-dev 2> var/log/install_app.log 
+sudo apt-get install -y python3-setuptools 2> var/log/install_app.log 
+sudo apt-get install -y python-pip 2> var/log/install_app.log 
+sudo apt-get install -y libpq-dev 2> var/log/install_app.log 
+sudo apt-get install -y libgdal-dev 2> var/log/install_app.log 
+sudo apt-get install -y python-gdal 2> var/log/install_app.log 
+sudo apt-get install -y python-virtualenv 2> var/log/install_app.log 
+sudo apt-get install -y build-essential 2> var/log/install_app.log 
+sudo pip install --upgrade pip virtualenv virtualenvwrapper 2> var/log/install_app.log
 
 if [ "$OS_VERSION" == "9" ]
 then
     sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install nodejs
 else
-    sudo apt-get install -y npm 2>/var/log/geonature/install_log.log 
+    sudo apt-get install -y npm 2> var/log/install_app.log 
 fi
 
-sudo apt-get install -y supervisor 2>/var/log/geonature/install_log.log 
+sudo apt-get install -y supervisor 2> var/log/install_app.log 
 # for make work opencv(taxhub) on debian8
-sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2>/var/log/geonature/install_log.log 
-sudo apt-get install -y python-qt4 2>/var/log/geonature/install_log.log 
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2> var/log/install_app.log 
+sudo apt-get install -y python-qt4 2> var/log/install_app.log 
 
 
 echo "Création des utilisateurs postgreSQL..."
@@ -140,11 +145,11 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 
 # Installation de la base de données GeoNature en root
-./install_db.sh
+./install/install_db.sh
 
 
 # Installation et configuration de l'application GeoNature
-./install_app.sh
+./install/install_app.sh
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
@@ -244,9 +249,9 @@ if [ "$install_usershub_app" = true ]; then
     # Sur debian 9: php7 - debian8 php5
     if [ "$OS_VERSION" == "9" ] 
     then
-        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2>/var/log/geonature/install_log.log 
+        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2> var/log/install_app.log 
     else
-        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2>/var/log/geonature/install_log.log 
+        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2> var/log/install_app.log 
     fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
