@@ -413,11 +413,11 @@ ALTER TABLE ONLY t_modules
   --ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
 
 ALTER TABLE t_medias
-  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_media_type,117));
+  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_media_type,117)) NOT VALID;
 
 
 ALTER TABLE t_validations
-  ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
+  ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101)) NOT VALID;
 
 
 ALTER TABLE t_history_actions
