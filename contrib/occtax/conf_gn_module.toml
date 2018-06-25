@@ -1,0 +1,5 @@
+#Parametres de configuration du module occtax
+
+
+api_url = '/occtax'
+id_application = 1000000

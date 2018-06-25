@@ -404,41 +404,41 @@ CREATE TRIGGER tri_meta_dates_change_t_acquisition_frameworks
 --CONSTRAINS--
 --------------
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_resource_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_resource_type,102));
+  ADD CONSTRAINT check_t_datasets_resource_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_resource_type,102)) NOT VALID;
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_data_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_type,103));
+  ADD CONSTRAINT check_t_datasets_data_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_type,103)) NOT VALID;
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_dataset_objectif,114));
+  ADD CONSTRAINT check_t_datasets_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_dataset_objectif,114)) NOT VALID;
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_collecting_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_collecting_method,115));
+  ADD CONSTRAINT check_t_datasets_collecting_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_collecting_method,115)) NOT VALID;
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_data_origin CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_origin,2));
+  ADD CONSTRAINT check_t_datasets_data_origin CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_data_origin,2)) NOT VALID;
 
 ALTER TABLE t_datasets
-  ADD CONSTRAINT check_t_datasets_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19));
+  ADD CONSTRAINT check_t_datasets_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19)) NOT VALID;
 
 
 ALTER TABLE t_acquisition_frameworks
-  ADD CONSTRAINT check_t_acquisition_frameworks_territorial_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territorial_level,107));
+  ADD CONSTRAINT check_t_acquisition_frameworks_territorial_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territorial_level,107)) NOT VALID;
 
 ALTER TABLE t_acquisition_frameworks
-  ADD CONSTRAINT check_t_acquisition_financing_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_financing_type,111));
+  ADD CONSTRAINT check_t_acquisition_financing_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_financing_type,111)) NOT VALID;
 
 
 ALTER TABLE cor_acquisition_framework_voletsinp
-  ADD CONSTRAINT check_cor_acquisition_framework_voletsinp CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_voletsinp,113));
+  ADD CONSTRAINT check_cor_acquisition_framework_voletsinp CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_voletsinp,113)) NOT VALID;
 
 
 ALTER TABLE cor_acquisition_framework_objectif
-  ADD CONSTRAINT check_cor_acquisition_framework_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_objectif,108));
+  ADD CONSTRAINT check_cor_acquisition_framework_objectif CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_objectif,108)) NOT VALID;
 
 
 ALTER TABLE cor_acquisition_framework_actor
-  ADD CONSTRAINT check_cor_acquisition_framework_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109));
+  ADD CONSTRAINT check_cor_acquisition_framework_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109)) NOT VALID;
 
 ALTER TABLE cor_acquisition_framework_actor
   ADD CONSTRAINT check_is_actor_in_cor_acquisition_framework_actor CHECK (id_role IS NOT NULL OR id_organism IS NOT NULL);
@@ -451,17 +451,17 @@ ALTER TABLE cor_acquisition_framework_actor
 
 
 ALTER TABLE sinp_datatype_protocols
-  ADD CONSTRAINT check_sinp_datatype_protocol_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_protocol_type,112));
+  ADD CONSTRAINT check_sinp_datatype_protocol_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_protocol_type,112)) NOT VALID;
 
 
 ALTER TABLE cor_dataset_actor
-  ADD CONSTRAINT check_cor_dataset_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109));
+  ADD CONSTRAINT check_cor_dataset_actor CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_actor_role,109)) NOT VALID;
 
 ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_is_actor_in_cor_dataset_actor CHECK (id_role IS NOT NULL OR id_organism IS NOT NULL);
 
 ALTER TABLE cor_dataset_territory
-  ADD CONSTRAINT check_cor_dataset_territory CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territory,110));
+  ADD CONSTRAINT check_cor_dataset_territory CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_territory,110)) NOT VALID;
 
 ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_is_unique_cor_dataset_actor_role UNIQUE(id_dataset, id_role, id_nomenclature_actor_role);
