@@ -62,24 +62,24 @@ def get_datasets(info_role):
     if info_role.tag_object_code == '2':
         q = q.join(
             CorDatasetActor,
-            CorDatasetActor.c.id_dataset == TDatasets.id_dataset
+            CorDatasetActor.id_dataset == TDatasets.id_dataset
         )
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
             q = q.filter(
-                CorDatasetActor.c.id_role == info_role.id_role
+                CorDatasetActor.id_role == info_role.id_role
             )
         else:
             q = q.filter(
                 or_(
-                    CorDatasetActor.c.id_organism == info_role.id_organisme,
-                    CorDatasetActor.c.id_role == info_role.id_role
+                    CorDatasetActor.id_organism == info_role.id_organisme,
+                    CorDatasetActor.id_role == info_role.id_role
                 )
             )
     elif info_role.tag_object_code == '1':
         q = q.join(
             CorDatasetActor,
-            CorDatasetActor.c.id_dataset == TDatasets.id_dataset
+            CorDatasetActor.id_dataset == TDatasets.id_dataset
         ).filter(
             CorDatasetActor.id_role == info_role.id_role
         )
