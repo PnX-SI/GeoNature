@@ -90,8 +90,9 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                 module_name = check_manifest(module_path)
                 # Vérification que le module n'est pas déjà activé
                 mod = DB.session.query(TModules).filter(
-                    TModules.module_name == module_name).one()
-   
+                    TModules.module_name == module_name
+                ).one()
+
             except NoResultFound:
                 #Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
                 # sinon on leve une execption et on arrête la commande
@@ -115,16 +116,16 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                 gn_module_register_config(module_name, url, module_id)
 
                 # creation du lien symbolique des assets externes
-                create_external_assets_symlink(module_path, module_name)
+                frontend = create_external_assets_symlink(
+                    module_path, module_name
+                )
 
-                # generation du du routing du frontend
-                frontend_routes_templating()
+                if frontend:
+                    # generation du du routing du frontend
+                    frontend_routes_templating()
+                    # generation du fichier de configuration du frontend
+                    create_module_config(module_name, module_path, build=False)
 
-                # generation du fichier de configuration du frontend
-                create_module_config(module_name, module_path, build=False)
-
-
-                
                 if build:
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
@@ -133,7 +134,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
-            "\n\nError while installing GN module '{}'.The process returned:\n\t{}"
+            "\n\n\033[91mError while installing GN module '{}'\033[0m.The process returned:\n\t{}"
         ).format(module_name, ex))
         sys.exit(1)
 
@@ -167,7 +168,7 @@ def run_install_gn_module(app, module_path, module_name, url):
 
     try:
         subprocess.call([str(gn_file)], cwd=str(module_path))
-        log.info("...ok\n")
+        log.info("...\033[92mok\033[0m\n")
     except FileNotFoundError:
         pass
     except OSError as ex:
@@ -193,7 +194,7 @@ def run_install_gn_module(app, module_path, module_name, url):
         log.info("run install_gn_module.py")
         from install_gn_module import gnmodule_install_app
         gnmodule_install_app(DB, app)
-        log.info("...ok\n")
+        log.info("...\033[92mok\033[0m\n")
 
 
 @click.option(
@@ -273,4 +274,3 @@ def update_module_configuration(module_name, build):
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_module_config(module_name, build=build)
 
-    

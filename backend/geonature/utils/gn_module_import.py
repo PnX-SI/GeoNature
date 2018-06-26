@@ -20,7 +20,7 @@ from geonature.utils.config_schema import(
     GnGeneralSchemaConf,
     ManifestSchemaProdConf,
     GnModuleProdConf
-) 
+)
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import (
@@ -54,7 +54,7 @@ def check_gn_module_file(module_path):
     for file in GN_MODULE_FILES:
         if not (Path(module_path) / file).is_file():
             raise GeoNatureError("Missing file {}".format(file))
-    log.info("...ok\n")
+    log.info("...\033[92mok\033[0m\n")
 
 
 def check_manifest(module_path):
@@ -83,7 +83,7 @@ def check_manifest(module_path):
                 "Geonature version {} is imcompatible with module"
                 .format(GEONATURE_VERSION)
             )
-    log.info("...ok\n")
+    log.info("...\033[92mok\033[0m\n")
     return configs_py['module_name']
 
 def copy_in_external_mods(module_path, module_name):
@@ -100,7 +100,7 @@ def copy_in_external_mods(module_path, module_name):
 def gn_module_register_config(module_name, url, id_app):
     '''
         Création du fichier de configuration et
-        enregistrement des variables du module dans 
+        enregistrement des variables du module dans
         le fichier conf_gn_module.toml du module
 
     '''
@@ -108,7 +108,7 @@ def gn_module_register_config(module_name, url, id_app):
     module_path = str(GN_EXTERNAL_MODULE / module_name)
     conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_name / 'config/conf_gn_module.toml')
     conf_gn_module_file = open(conf_gn_module_path, 'w')
-    
+
     exist_config = utilstoml.load_toml(conf_gn_module_path)
     cmds = []
     if not 'api_url' in exist_config:
@@ -139,7 +139,7 @@ def gn_module_register_config(module_name, url, id_app):
         proc.stdin.close()
         proc.wait()
 
-    log.info("...ok\n")
+    log.info("...\033[92mok\033[0m\n")
 
 
 def gn_module_import_requirements(module_path):
@@ -147,7 +147,7 @@ def gn_module_import_requirements(module_path):
     if req_p.is_file():
         log.info("import_requirements")
         import_requirements(str(req_p))
-        log.info("...ok\n")
+        log.info("...\033[92mok\033[0m\n")
 
 
 def gn_module_activate(module_name, activ_front, activ_back):
@@ -161,7 +161,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
             .format(module_name)
         )
     else:
-        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)        
+        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
         with app.app_context():
             try:
                 module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
@@ -176,7 +176,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
     log.info("Generate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...ok\n")
+        log.info("...\033[92mok\033[0m\n")
     except Exception:
         log.error('Error while generating frontend routing')
         raise
@@ -198,7 +198,7 @@ def gn_module_deactivate(module_name, activ_front, activ_back):
     log.info("Regenerate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...ok\n")
+        log.info("...\033[92mok\033[0m\n")
     except Exception as e:
         raise GeoNatureError(e)
 
@@ -267,7 +267,7 @@ def check_codefile_validity(module_path, module_name):
     if gn_dir.is_dir():
         log.info('Config directory ...ok')
     else:
-        raise GeoNatureError( 
+        raise GeoNatureError(
             """Module {} ,
                     No config directory
                 """.format(module_name, gn_file)
@@ -281,12 +281,12 @@ def create_external_assets_symlink(module_path, module_name):
         Create a symlink for the module assets
     """
     module_assets_dir = os.path.join(module_path, "frontend/assets")
-    
+
     # test if module have frontend
     if not Path(module_assets_dir).is_dir():
-        log.info('no frontend for this module \n')
-        return
-    
+        log.info('No frontend for this module \n')
+        return False
+
     geonature_asset_symlink = os.path.join(
         str(ROOT_DIR),
         'frontend/src/external_assets',
@@ -377,9 +377,9 @@ def create_module_config(module_name, mod_path=None, build=True):
     manifest_path = os.path.join(mod_path, 'manifest.toml')
     """ Create the frontend config for a module and rebuild if build=True"""
     conf_manifest = utilstoml.load_and_validate_toml(
-            manifest_path,
-            ManifestSchemaProdConf
-        )
+        manifest_path,
+        ManifestSchemaProdConf
+    )
 
     # import du module dans le sys.path
     module_parent_dir = str(Path(mod_path).parent)
@@ -387,13 +387,19 @@ def create_module_config(module_name, mod_path=None, build=True):
     sys.path.insert(0, module_parent_dir)
     module = __import__(module_schema_conf, globals=globals())
     front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml')
-    config_module = utilstoml.load_and_validate_toml(front_module_conf_file, module.config.conf_schema_toml.GnModuleSchemaConf)
+    config_module = utilstoml.load_and_validate_toml(
+        front_module_conf_file,
+        module.config.conf_schema_toml.GnModuleSchemaConf
+    )
 
     frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')
-    with open(
-        str(ROOT_DIR / frontend_config_path), 'w'
-    ) as outputfile:
-        outputfile.write("export const ModuleConfig = ")
-        json.dump(config_module, outputfile, indent=True, sort_keys=True)
+    try:
+        with open(
+            str(ROOT_DIR / frontend_config_path), 'w'
+        ) as outputfile:
+            outputfile.write("export const ModuleConfig = ")
+            json.dump(config_module, outputfile, indent=True, sort_keys=True)
+    except FileNotFoundError:
+        log.info('No frontend config file')
     if build:
         build_geonature_front()
