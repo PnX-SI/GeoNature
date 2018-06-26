@@ -76,8 +76,8 @@ export class DatasetFormComponent implements OnInit {
   generateCorDatasetActorForm(): FormGroup {
     return this._fb.group({
       id_nomenclature_actor_role: null,
-      organisms: [],
-      roles: []
+      organisms: [new Array()],
+      roles: [new Array()]
     });
   }
 
@@ -124,6 +124,7 @@ export class DatasetFormComponent implements OnInit {
     const cor_dataset_actor_array = JSON.parse(JSON.stringify(this.cor_dataset_actor_array.value));
     const update_cor_dataset_actor = [];
     cor_dataset_actor_array.forEach(element => {
+      console.log(element);
       element.organisms.forEach(org => {
         const corOrg = {
           id_nomenclature_actor_role: element.id_nomenclature_actor_role,
@@ -152,7 +153,7 @@ export class DatasetFormComponent implements OnInit {
       data => {
         console.log(data);
         this._router.navigate(['/admin/datasets']);
-        this._commonService.translateToaster('success', 'Admin.Meta.DatasetSuccessfullyAdded');
+        this._commonService.translateToaster('success', 'Meta.Datasetadded');
       },
       error => {
         this._commonService.translateToaster('error', 'ErrorMessage');
