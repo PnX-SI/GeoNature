@@ -14,8 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.env import (
     DB,
-    DEFAULT_CONFIG_FIlE,
-    GN_EXTERNAL_MODULE
+    DEFAULT_CONFIG_FILE
 )
 
 from geonature.utils.command import (
@@ -53,7 +52,7 @@ log = logging.getLogger(__name__)
 @click.option(
     '--conf-file',
     required=False,
-    default=DEFAULT_CONFIG_FIlE
+    default=DEFAULT_CONFIG_FILE
 )
 @click.option(
     '--build',
@@ -94,7 +93,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                 ).one()
 
             except NoResultFound:
-                #Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
+                # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
                 # sinon on leve une execption et on arrête la commande
 
                 # Vérification de la conformité du code :
@@ -109,7 +108,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                 # ajout du module dans la table utilisateurs.t_application and gn_commons.t_modules
                 module_id = add_application_db(module_name, url, module_id)
 
-                #copie dans external mods:
+                # copie dans external mods:
                 copy_in_external_mods(module_path, module_name)
 
                 # Enregistrement de la config du module
@@ -137,7 +136,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
             else:
-                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_name))
+                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_name)) # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((

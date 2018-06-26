@@ -1,0 +1,163 @@
+subDataUrl = "chiro/observation/site/"
+subSchemaUrl = "chiro/config/observation/list"
+mapSize = "large"
+dataUrl = "chiro/site/"
+mapConfig = "js/resources/chiro_site.json"
+editAccess = 3
+mapData = "chiro/site"
+subEditAccess = 2
+[[groups]]
+name = "Informations"
+glyphicon = "glyphicon-info-sign"
+[[groups.fields]]
+name = "bsCode"
+type = "string"
+label = "Code site"
+
+[[groups.fields]]
+name = "nomObservateur"
+type = "string"
+label = "Observateur"
+
+[[groups.fields]]
+help = "Date d'ajout du site à la base de données"
+name = "bsDate"
+type = "date"
+label = "Date de création"
+
+[[groups.fields]]
+help = "Type de lieu"
+name = "bsTypeId"
+thesaurusID = 7
+type = "select"
+label = "Type"
+
+[[groups.fields]]
+name = "refCommune"
+type = "xhr"
+label = "Commune"
+
+[groups.fields.options]
+url = "commune"
+multi = true
+[[groups.fields]]
+name = "cisSiteActif"
+type = "bool"
+label = "Site actif"
+
+
+[[groups]]
+name = "Détails"
+glyphicon = "glyphicon-search"
+[[groups.fields]]
+name = "bsDescription"
+type = "string"
+label = "Description"
+
+[[groups.fields]]
+name = "siteFichiers"
+type = "file"
+label = "Fichiers associés"
+
+[groups.fields.options]
+target = "uploads/chiro/site/"
+[[groups.fields]]
+help = "Fréquentation du site"
+name = "cisFrequentation"
+thesaurusID = 10
+type = "select"
+label = "Fréquentation"
+
+[[groups.fields]]
+help = "Menaces pesant sur le site"
+name = "cisMenace"
+thesaurusID = 11
+type = "multisel"
+label = "Menaces"
+
+[[groups.fields]]
+help = "Description des menaces pesant sur le site"
+name = "cisMenaceCmt"
+type = "string"
+label = "Description menaces"
+
+[[groups.fields]]
+help = "Aménagements effectués sur le site"
+name = "cisAmenagement"
+thesaurusID = 13
+type = "multisel"
+label = "Aménagements"
+
+[[groups.fields]]
+help = "Actions entreprises pour la préservation du site"
+name = "cisActions"
+type = "string"
+label = "Actions"
+
+
+[[groups]]
+name = "Contact"
+glyphicon = "glyphicon-phone-alt"
+[[groups.fields]]
+name = "cisContactNom"
+type = "string"
+label = "Nom du contact"
+
+[[groups.fields]]
+name = "cisContactPrenom"
+type = "string"
+label = "Prénom du contact"
+
+[[groups.fields]]
+name = "cisContactAdresse"
+type = "string"
+label = "Adresse du contact"
+
+[[groups.fields]]
+name = "cisContactCodePostal"
+type = "string"
+label = "Code postal"
+
+[[groups.fields]]
+name = "cisContactVille"
+type = "string"
+label = "Ville"
+
+[[groups.fields]]
+name = "cisContactTelephone"
+type = "string"
+label = "Téléphone"
+
+[[groups.fields]]
+name = "cisContactPortable"
+type = "string"
+label = "Portable"
+
+[[groups.fields]]
+help = "Informations complémentaires contact"
+name = "cisContactCommentaire"
+type = "string"
+label = "Commentaires contact"
+
+
+[[groups]]
+name = "Metadonnées"
+glyphicon = "glyphicon-stats"
+[[groups.fields]]
+name = "metaNumerisateurId"
+type = "xhr"
+label = "Numérisateur"
+
+[groups.fields.options]
+url = "users/id"
+[[groups.fields]]
+name = "metaCreateTimestamp"
+type = "date"
+label = "Création donnée"
+
+[[groups.fields]]
+name = "metaUpdateTimestamp"
+type = "date"
+label = "Dernière mise à jour"
+
+

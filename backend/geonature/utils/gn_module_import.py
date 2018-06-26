@@ -36,7 +36,7 @@ from geonature.utils.env import (
     GN_MODULE_FE_FILE,
     ROOT_DIR,
     DB,
-    DEFAULT_CONFIG_FIlE,
+    DEFAULT_CONFIG_FILE,
     load_config,
     import_requirements,
 )
@@ -161,7 +161,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
             .format(module_name)
         )
     else:
-        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+        app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
         with app.app_context():
             try:
                 module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
@@ -184,7 +184,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
 def gn_module_deactivate(module_name, activ_front, activ_back):
     log.info('Desactivate module')
     try:
-        app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+        app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
         with app.app_context():
             module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
             module.active_frontend = not activ_front
@@ -312,9 +312,9 @@ def create_external_assets_symlink(module_path, module_name):
 
 def add_application_db(module_name, url, module_id=None):
     log.info('Register the module in t_application ... \n')
-    app_conf = load_config(DEFAULT_CONFIG_FIlE)
+    app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
-    app = get_app_for_cmd(DEFAULT_CONFIG_FIlE)
+    app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
     try:
         with app.app_context():
             # if module_id: try to insert in t_application
