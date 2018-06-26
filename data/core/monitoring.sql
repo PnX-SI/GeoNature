@@ -125,7 +125,7 @@ ALTER TABLE t_base_sites
   ADD CONSTRAINT enforce_dims_geom CHECK ((public.st_ndims(geom) = 2));
 
 ALTER TABLE t_base_sites
-  ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_site,116));
+  ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_site,116)) NOT VALID;
 
 
 ---------
