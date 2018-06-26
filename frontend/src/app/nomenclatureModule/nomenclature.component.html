@@ -1,5 +1,4 @@
 
-
-<iframe title="exemple 1 avec iframe" src="http://127.0.0.1:8000/nomenclatures/admin/bibnomenclaturestypes/" width="100%" height="1000px;">
+<iframe title="exemple 1 avec iframe" [src]="sanitizer.bypassSecurityTrustResourceUrl(nomenclatureURL)" width="100%" height="1000px;">
   <p>Your browser does not support iframes.</p>
 </iframe>
