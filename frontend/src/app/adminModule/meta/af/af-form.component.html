@@ -1,0 +1,86 @@
+
+<div class=" row row-0 ">
+    <div class="card center">
+        <div class="card-block">
+            <h3>
+                Cadre d'acquisition
+            </h3>
+      
+
+              <small>Nom </small>
+              <div class="input-group " [ngClass]="{'has-danger' : afForm.controls.acquisition_framework_name.invalid}">
+                  <input class="form-control form-control-sm" type="text" name="" id=""
+                  [formControl]="afForm.controls.acquisition_framework_name">
+              </div>
+      
+              <small>Description</small>
+              <div class="input-group" [ngClass]="{'has-danger' : afForm.controls.acquisition_framework_desc.invalid}">
+                  <input class="form-control form-control-sm" type="text" name="" id=""
+                  [formControl]="afForm.controls.acquisition_framework_desc">
+              </div>
+
+              <small>Cadre d'acquisition parent </small>
+              <div class="input-group" >
+                <select
+                  class="form-control form-control-sm"
+                  [formControl]="afForm.controls.acquisition_framework_parent_id">
+                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
+                    {{ac.acquisition_framework_name}}
+                  </option>
+                </select>
+              </div>
+
+              <small>Est un cadre d'acquisition parent </small>
+              <div class="input-group" >
+                  <input class="form-control form-control-sm" type="checkbox" name="" id=""
+                  [formControl]="afForm.controls.is_parent">
+              </div>
+  
+
+  
+              <pnx-nomenclature
+               label="Niveau territorial" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level"
+              [idTypeNomenclature]="107">
+              </pnx-nomenclature>
+
+              <small>Description du territoire </small>
+              <div class="input-group">
+                  <input class="form-control form-control-sm" type="text" name="" id=""
+                  [formControl]="afForm.controls.territory_desc">
+              </div>
+              <small>Mots clés </small>
+              <div class="input-group" >
+                  <input class="form-control form-control-sm" type="text" name="" id=""
+                  [formControl]="afForm.controls.keywords">
+              </div>
+
+              <pnx-nomenclature
+              label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level"
+              [idTypeNomenclature]="111">
+             </pnx-nomenclature>
+
+             <small>Description de la cible </small>
+             <div class="input-group" >
+                 <input class="form-control form-control-sm" type="text" name="" id=""
+                 [formControl]="afForm.controls.keywords">
+             </div>
+
+             <small>Cibles écologiques ou géologiquess </small>
+             <div class="input-group" >
+                <input class="form-control form-control-sm" type="text" name="" id=""
+                [formControl]="afForm.controls.ecologic_or_geologic_target">
+            </div>
+
+             
+      
+            <pnx-date label="Date début" [parentFormControl]="afForm.controls.acquisition_framework_start_date"
+            >
+          </pnx-date>
+
+          <pnx-date label="Date fin" [parentFormControl]="afForm.controls.acquisition_framework_end_date"
+          >
+          </pnx-date>
+    </div>
+  </div>
+  
+</div>

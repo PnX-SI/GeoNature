@@ -11,7 +11,7 @@ from geonature.utils.errors import GeonatureApiError
 
 from geonature.utils.env import DB
 from geonature.core.gn_meta.models import (
-    TDatasets, CorDatasetsActor,
+    TDatasets, CorDatasetActor,
     TAcquisitionFramework, CorAcquisitionFrameworkActor
 )
 
@@ -168,14 +168,14 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             dataset = TDatasets(**ds)
 
             # id_role in cor_dataset_actor
-            actor = CorDatasetsActor(
+            actor = CorDatasetActor(
                 id_role=id_user,
                 id_nomenclature_actor_role=393
             )
             dataset.cor_datasets_actor.append(actor)
             # id_organism in cor_dataset_actor
             if id_organism:
-                actor = CorDatasetsActor(
+                actor = CorDatasetActor(
                     id_organism=id_organism,
                     id_nomenclature_actor_role=393
                 )
