@@ -11,7 +11,7 @@ import click
 from geonature.utils.env import (
     virtualenv_status,
     DEFAULT_VIRTUALENV_DIR,
-    DEFAULT_CONFIG_FIlE,
+    DEFAULT_CONFIG_FILE,
     install_geonature_command,
     GEONATURE_VERSION,
 )
@@ -87,7 +87,7 @@ def install_command(ctx):
 @click.option(
     '--conf-file',
     required=False,
-    default=DEFAULT_CONFIG_FIlE
+    default=DEFAULT_CONFIG_FILE
 )
 @click.option(
     '--build',
@@ -115,7 +115,7 @@ def generate_frontend_config(conf_file, build):
 @click.option(
     '--conf-file',
     required=False,
-    default=DEFAULT_CONFIG_FIlE
+    default=DEFAULT_CONFIG_FILE
 )
 def start_gunicorn(uri, worker, config_file=None):
     """
@@ -130,7 +130,7 @@ def start_gunicorn(uri, worker, config_file=None):
 @click.option(
     '--conf-file',
     required=False,
-    default=DEFAULT_CONFIG_FIlE
+    default=DEFAULT_CONFIG_FILE
 )
 def dev_back(host, port, conf_file):
     """
@@ -202,7 +202,7 @@ def generate_frontend_tsconfig():
 @click.option(
     '--conf-file',
     required=False,
-    default=DEFAULT_CONFIG_FIlE
+    default=DEFAULT_CONFIG_FILE
 )
 @click.option(
     '--build',
