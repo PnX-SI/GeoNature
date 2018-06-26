@@ -279,6 +279,7 @@ def check_codefile_validity(module_path, module_name):
 def create_external_assets_symlink(module_path, module_name):
     """
         Create a symlink for the module assets
+        return True if module have a frontend. False otherwise
     """
     module_assets_dir = os.path.join(module_path, "frontend/assets")
 
@@ -305,8 +306,9 @@ def create_external_assets_symlink(module_path, module_name):
 
         log.info('...ok \n')
     except Exception as e:
-        log.info('...error when create symlink externalassets \n')
+        log.info('...error when create symlink external assets \n')
         raise GeoNatureError(e)
+    return True
 
 def add_application_db(module_name, url, module_id=None):
     log.info('Register the module in t_application ... \n')
