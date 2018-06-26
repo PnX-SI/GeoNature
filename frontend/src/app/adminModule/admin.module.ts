@@ -9,13 +9,15 @@ import { DatasetListComponent } from './meta/datasets/dataset-list.component';
 import { DatasetFormComponent } from './meta/datasets/dataset-form.component';
 import { AfListComponent } from './meta/af/af-list.component';
 import { AfFormComponent } from './meta/af/af-form.component';
+import { NomenclatureComponent } from './nomenclatures/nomenclature.component';
 const routes: Routes = [
   { path: '', component: AdminComponent },
   { path: 'dataset', component: DatasetFormComponent },
   { path: 'datasets', component: DatasetListComponent },
   { path: 'dataset/:id', component: DatasetFormComponent },
   { path: 'afs', component: AfListComponent },
-  { path: 'af', component: AfFormComponent }
+  { path: 'af', component: AfFormComponent },
+  { path: 'nomenclatures', component: NomenclatureComponent }
 ];
 
 @NgModule({
@@ -27,7 +29,8 @@ const routes: Routes = [
     DatasetListComponent,
     DatasetFormComponent,
     AfListComponent,
-    AfFormComponent
+    AfFormComponent,
+    NomenclatureComponent
   ],
   providers: []
 })
