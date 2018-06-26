@@ -87,7 +87,7 @@ def get_app(config, _app=None, with_external_mods=True):
         # errors
         from geonature.core.errors import routes
 
-        app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config['URL_APPLICATION'])
+        app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config['API_ENDPOINT'])
 
         CORS(app, supports_credentials=True)
         # Chargement des mosdules tiers
