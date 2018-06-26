@@ -44,7 +44,7 @@ from geonature.utils.utilssqlalchemy import (
 
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import TRoles, UserRigth
-from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
+from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from pypnusershub.db.tools import (
     InsufficientRightsError,
     get_or_fetch_user_cruved,
