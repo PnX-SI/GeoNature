@@ -16,14 +16,14 @@ CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myid
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id 
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
   BEGIN
       SELECT INTO thenomenclatureid id_nomenclature
-      FROM ref_nomenclatures.defaults_nomenclatures_value 
-      WHERE id_type = myidtype 
+      FROM ref_nomenclatures.defaults_nomenclatures_value
+      WHERE id_type = myidtype
       AND (id_organism = myidorganism OR id_organism = 0)
       ORDER BY id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
@@ -64,27 +64,27 @@ BEGIN
   theregne = NULL;
 
   IF mygroup IS NOT NULL THEN
-      SELECT INTO thegroup DISTINCT group2_inpn 
+      SELECT INTO thegroup DISTINCT group2_inpn
       FROM taxonomie.cor_taxref_nomenclature ctn
-      JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature 
+      JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature
       WHERE n.id_type = idtype
       AND group2_inpn = mygroup;
   END IF;
 
   IF myregne IS NOT NULL THEN
-    SELECT INTO theregne DISTINCT regne 
+    SELECT INTO theregne DISTINCT regne
     FROM taxonomie.cor_taxref_nomenclature ctn
-    JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature 
+    JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature
     WHERE n.id_type = idtype
     AND regne = myregne;
   END IF;
 
-  IF theregne IS NOT NULL THEN 
+  IF theregne IS NOT NULL THEN
     IF thegroup IS NOT NULL THEN
-      FOR r IN 
+      FOR r IN
         SELECT DISTINCT ctn.id_nomenclature
         FROM taxonomie.cor_taxref_nomenclature ctn
-        JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature 
+        JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature
         WHERE n.id_type = idtype
         AND regne = theregne
         AND group2_inpn = mygroup
@@ -93,10 +93,10 @@ BEGIN
       END LOOP;
       RETURN;
     ELSE
-      FOR r IN 
+      FOR r IN
         SELECT DISTINCT ctn.id_nomenclature
         FROM taxonomie.cor_taxref_nomenclature ctn
-        JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature 
+        JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature
         WHERE n.id_type = idtype
         AND regne = theregne
       LOOP
@@ -105,10 +105,10 @@ BEGIN
       RETURN;
     END IF;
   ELSE
-    FOR r IN 
+    FOR r IN
       SELECT DISTINCT ctn.id_nomenclature
       FROM taxonomie.cor_taxref_nomenclature ctn
-      JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature 
+      JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = ctn.id_nomenclature
       WHERE n.id_type = idtype
     LOOP
       RETURN NEXT r;
@@ -128,12 +128,12 @@ $BODY$
   DECLARE
   sensitivityid integer;
   BEGIN
-    SELECT max(id_nomenclature_niv_precis) INTO sensitivityid 
+    SELECT max(id_nomenclature_niv_precis) INTO sensitivityid
     FROM ref_nomenclatures.cor_taxref_sensitivity
     WHERE cd_nom = mycdnom
     AND (id_nomenclature = mynomenclatureid OR id_nomenclature = 0);
   IF sensitivityid IS NULL THEN
-    sensitivityid = 163;  
+    sensitivityid = 163;
   END IF;
   RETURN sensitivityid;
   END;
@@ -182,7 +182,7 @@ CREATE OR REPLACE FUNCTION get_nomenclature_label(
   RETURNS character varying AS
 $BODY$
 --Function which return the label from the id_nomenclature and the language
-DECLARE 
+DECLARE
 	labelfield character varying;
 	thelabel character varying;
   BEGIN
@@ -289,6 +289,16 @@ CREATE TABLE defaults_nomenclatures_value (
     id_organism integer NOT NULL,
     id_nomenclature integer NOT NULL
 );
+
+
+CREATE TABLE cor_application_nomenclature
+(
+  id_nomenclature integer NOT NULL,
+  id_application integer NOT NULL
+);
+COMMENT ON TABLE cor_application_nomenclature
+  IS 'Allow to create specific list per module for one nomenclature.';
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -309,6 +319,9 @@ ALTER TABLE ONLY cor_taxref_sensitivity
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism);
+
+ALTER TABLE ONLY cor_application_nomenclature
+  ADD CONSTRAINT pk_cor_application_nomenclature PRIMARY KEY (id_nomenclature, id_application);
 
 
 ---------------
@@ -352,22 +365,26 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
+ALTER TABLE ONLY cor_application_nomenclature
+  ADD CONSTRAINT fk_cor_application_nomenclature_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_application_nomenclature ADD CONSTRAINT fk_cor_application_nomenclature_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications (id_application) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 --------------
 --CONSTRAINS--
 --------------
 ALTER TABLE ONLY cor_taxref_nomenclature
-    ADD CONSTRAINT check_cor_taxref_nomenclature_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = 'all'::text);
+    ADD CONSTRAINT check_cor_taxref_nomenclature_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = 'all'::text) NOT VALID;
 
 ALTER TABLE ONLY cor_taxref_nomenclature
-    ADD CONSTRAINT check_cor_taxref_nomenclature_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = 'all'::text);
+    ADD CONSTRAINT check_cor_taxref_nomenclature_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = 'all'::text) NOT VALID;
 
 
 ALTER TABLE ONLY cor_taxref_sensitivity
-    ADD CONSTRAINT check_cor_taxref_sensitivity_niv_precis CHECK (check_nomenclature_type(id_nomenclature_niv_precis,5));
+    ADD CONSTRAINT check_cor_taxref_sensitivity_niv_precis CHECK (check_nomenclature_type(id_nomenclature_niv_precis,5)) NOT VALID;
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type(id_nomenclature, id_type));
+    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type(id_nomenclature, id_type)) NOT VALID;
 
 ---------
 --INDEX--
@@ -378,7 +395,7 @@ CREATE INDEX index_t_nomenclatures_bib_nomenclatures_types_fkey ON t_nomenclatur
 ---------
 --VIEWS--
 ---------
-CREATE OR REPLACE VIEW v_nomenclature_taxonomie AS 
+CREATE OR REPLACE VIEW v_nomenclature_taxonomie AS
   SELECT tn.id_type,
     tn.label_default AS type_label,
     tn.definition_default AS type_definition,
@@ -426,8 +443,8 @@ WHERE n.id_type = 100
 --SELECT * FROM ref_nomenclatures.v_technique_obs WHERE group2_inpn = 'Oiseaux';
 --SELECT * FROM ref_nomenclatures.v_technique_obs WHERE regne = 'Plantae';
 
-CREATE OR REPLACE VIEW v_eta_bio AS 
-  SELECT 
+CREATE OR REPLACE VIEW v_eta_bio AS
+  SELECT
     n.id_nomenclature,
     n.mnemonique,
     n.label_default AS label,
@@ -435,27 +452,27 @@ CREATE OR REPLACE VIEW v_eta_bio AS
     n.id_broader,
     n.hierarchy
   FROM ref_nomenclatures.t_nomenclatures n
-  WHERE n.id_type = 7 
+  WHERE n.id_type = 7
   AND n.active = true;
-  
-CREATE OR REPLACE VIEW v_stade_vie AS 
-SELECT 
+
+CREATE OR REPLACE VIEW v_stade_vie AS
+SELECT
     ctn.regne,
-    ctn.group2_inpn, 
-    n.id_nomenclature, 
-    n.mnemonique, 
-    n.label_default AS label, 
-    n.definition_default AS definition, 
-    n.id_broader, 
+    ctn.group2_inpn,
+    n.id_nomenclature,
+    n.mnemonique,
+    n.label_default AS label,
+    n.definition_default AS definition,
+    n.id_broader,
     n.hierarchy
 FROM ref_nomenclatures.t_nomenclatures n
 LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
 WHERE n.id_type = 10
 AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_stade_vie WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
-CREATE OR REPLACE VIEW v_sexe AS 
+CREATE OR REPLACE VIEW v_sexe AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -468,10 +485,10 @@ CREATE OR REPLACE VIEW v_sexe AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 9
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_sexe WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
-CREATE OR REPLACE VIEW v_objet_denbr AS 
+CREATE OR REPLACE VIEW v_objet_denbr AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -484,10 +501,10 @@ CREATE OR REPLACE VIEW v_objet_denbr AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 6
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_objet_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
-CREATE OR REPLACE VIEW v_type_denbr AS 
+CREATE OR REPLACE VIEW v_type_denbr AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -500,10 +517,10 @@ CREATE OR REPLACE VIEW v_type_denbr AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 21
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_type_denbr WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
-CREATE OR REPLACE VIEW v_meth_obs AS 
+CREATE OR REPLACE VIEW v_meth_obs AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -516,10 +533,10 @@ CREATE OR REPLACE VIEW v_meth_obs AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 14
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_meth_obs WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
-CREATE OR REPLACE VIEW v_statut_bio AS 
+CREATE OR REPLACE VIEW v_statut_bio AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -532,10 +549,10 @@ CREATE OR REPLACE VIEW v_statut_bio AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 13
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_statut_bio WHERE (regne = 'Animalia' OR regne = 'all') AND (group2_inpn = 'Amphibiens' OR group2_inpn = 'all');
 
-CREATE OR REPLACE VIEW v_naturalite AS 
+CREATE OR REPLACE VIEW v_naturalite AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -548,10 +565,10 @@ CREATE OR REPLACE VIEW v_naturalite AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 8
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_naturalite WHERE (regne = 'Animalia' OR regne = 'all');
 
-CREATE OR REPLACE VIEW v_preuve_exist AS 
+CREATE OR REPLACE VIEW v_preuve_exist AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -562,12 +579,12 @@ CREATE OR REPLACE VIEW v_preuve_exist AS
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type = 15 
+  WHERE n.id_type = 15
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_preuve_exist;
 
-CREATE OR REPLACE VIEW v_statut_obs AS 
+CREATE OR REPLACE VIEW v_statut_obs AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -578,12 +595,12 @@ CREATE OR REPLACE VIEW v_statut_obs AS
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type = 18 
+  WHERE n.id_type = 18
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_statut_obs;
 
-CREATE OR REPLACE VIEW v_statut_valid AS 
+CREATE OR REPLACE VIEW v_statut_valid AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -594,12 +611,12 @@ CREATE OR REPLACE VIEW v_statut_valid AS
     n.hierarchy
    FROM ref_nomenclatures.t_nomenclatures n
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-  WHERE n.id_type = 101 
+  WHERE n.id_type = 101
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_statut_valid;
 
-CREATE OR REPLACE VIEW v_niv_precis AS 
+CREATE OR REPLACE VIEW v_niv_precis AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -612,10 +629,10 @@ CREATE OR REPLACE VIEW v_niv_precis AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 5
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_niv_precis;
 
-CREATE OR REPLACE VIEW v_resource_typ AS 
+CREATE OR REPLACE VIEW v_resource_typ AS
  SELECT
     n.id_nomenclature,
     n.mnemonique,
@@ -626,10 +643,10 @@ CREATE OR REPLACE VIEW v_resource_typ AS
   FROM ref_nomenclatures.t_nomenclatures n
   WHERE n.id_type = 102
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_resource_typ;
 
-CREATE OR REPLACE VIEW v_data_typ AS 
+CREATE OR REPLACE VIEW v_data_typ AS
  SELECT
     n.id_nomenclature,
     n.mnemonique,
@@ -640,11 +657,11 @@ CREATE OR REPLACE VIEW v_data_typ AS
    FROM ref_nomenclatures.t_nomenclatures n
    WHERE n.id_type = 103
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_data_typ;
 
-CREATE OR REPLACE VIEW v_sampling_plan_typ AS 
- SELECT 
+CREATE OR REPLACE VIEW v_sampling_plan_typ AS
+ SELECT
     n.id_nomenclature,
     n.mnemonique,
     n.label_default AS label,
@@ -654,10 +671,10 @@ CREATE OR REPLACE VIEW v_sampling_plan_typ AS
    FROM ref_nomenclatures.t_nomenclatures n
    WHERE n.id_type = 104
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_sampling_plan_typ;
 
-CREATE OR REPLACE VIEW v_sampling_units_typ AS 
+CREATE OR REPLACE VIEW v_sampling_units_typ AS
  SELECT
     n.id_nomenclature,
     n.mnemonique,
@@ -668,10 +685,10 @@ CREATE OR REPLACE VIEW v_sampling_units_typ AS
   FROM ref_nomenclatures.t_nomenclatures n
   WHERE n.id_type = 105
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_sampling_units_typ;
 
-CREATE OR REPLACE VIEW v_meth_determin AS 
+CREATE OR REPLACE VIEW v_meth_determin AS
  SELECT ctn.regne,
     ctn.group2_inpn,
     n.id_nomenclature,
@@ -684,7 +701,7 @@ CREATE OR REPLACE VIEW v_meth_determin AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
   WHERE n.id_type = 106
   AND n.active = true;
---USAGE : 
+--USAGE :
 --SELECT * FROM ref_nomenclatures.v_meth_determin;
 
 ------------
@@ -695,19 +712,19 @@ CREATE TRIGGER tri_meta_dates_change_bib_nomenclatures_types
   ON bib_nomenclatures_types
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-  
+
 CREATE TRIGGER tri_meta_dates_change_cor_taxref_nomenclature
   BEFORE INSERT OR UPDATE
   ON cor_taxref_nomenclature
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-  
+
 CREATE TRIGGER tri_meta_dates_change_cor_taxref_sensitivity
   BEFORE INSERT OR UPDATE
   ON cor_taxref_sensitivity
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-  
+
 CREATE TRIGGER tri_meta_dates_change_t_nomenclatures
   BEFORE INSERT OR UPDATE
   ON t_nomenclatures
