@@ -125,6 +125,13 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                     frontend_routes_templating()
                     # generation du fichier de configuration du frontend
                     create_module_config(module_name, module_path, build=False)
+                else:
+                    module = DB.session.query(TModules).filter(
+                        TModules.id_module == module_id
+                    ).one()
+                    module.active_frontend = False
+                    DB.session.add(module)
+                    DB.session.commit()
 
                 if build:
                     # Rebuild the frontend
