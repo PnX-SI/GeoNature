@@ -34,7 +34,8 @@ from geonature.utils.gn_module_import import (
     add_application_db,
     create_module_config,
     copy_in_external_mods,
-    frontend_routes_templating
+    frontend_routes_templating,
+    MSG_OK
 )
 from geonature.utils.errors import (
     ConfigError, GNModuleInstallError, GeoNatureError
@@ -174,7 +175,7 @@ def run_install_gn_module(app, module_path, module_name, url):
 
     try:
         subprocess.call([str(gn_file)], cwd=str(module_path))
-        log.info("...\033[92mok\033[0m\n")
+        log.info("...{}\n".format(MSG_OK))
     except FileNotFoundError:
         pass
     except OSError as ex:
@@ -200,7 +201,7 @@ def run_install_gn_module(app, module_path, module_name, url):
         log.info("run install_gn_module.py")
         from install_gn_module import gnmodule_install_app
         gnmodule_install_app(DB, app)
-        log.info("...\033[92mok\033[0m\n")
+        log.info("...{}\n".format(MSG_OK))
 
 
 @click.option(
