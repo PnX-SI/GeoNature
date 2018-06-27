@@ -48,13 +48,14 @@ from geonature.core.gn_commons.models import TModules
 
 log = logging.getLogger(__name__)
 
+MSG_OK = "\033[92mok\033[0m\n"
 
 def check_gn_module_file(module_path):
     log.info("checking file")
     for file in GN_MODULE_FILES:
         if not (Path(module_path) / file).is_file():
             raise GeoNatureError("Missing file {}".format(file))
-    log.info("...\033[92mok\033[0m\n")
+    log.info("...{}".format(MSG_OK))
 
 
 def check_manifest(module_path):
@@ -83,7 +84,7 @@ def check_manifest(module_path):
                 "Geonature version {} is imcompatible with module"
                 .format(GEONATURE_VERSION)
             )
-    log.info("...\033[92mok\033[0m\n")
+    log.info("...{}\n".format(MSG_OK))
     return configs_py['module_name']
 
 def copy_in_external_mods(module_path, module_name):
@@ -139,7 +140,7 @@ def gn_module_register_config(module_name, url, id_app):
         proc.stdin.close()
         proc.wait()
 
-    log.info("...\033[92mok\033[0m\n")
+    log.info("...{}\n".format(MSG_OK))
 
 
 def gn_module_import_requirements(module_path):
@@ -147,7 +148,7 @@ def gn_module_import_requirements(module_path):
     if req_p.is_file():
         log.info("import_requirements")
         import_requirements(str(req_p))
-        log.info("...\033[92mok\033[0m\n")
+        log.info("...{}\n".format(MSG_OK))
 
 
 def gn_module_activate(module_name, activ_front, activ_back):
@@ -176,7 +177,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
     log.info("Generate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...\033[92mok\033[0m\n")
+        log.info("...{}\n".format(MSG_OK))
     except Exception:
         log.error('Error while generating frontend routing')
         raise
@@ -198,7 +199,7 @@ def gn_module_deactivate(module_name, activ_front, activ_back):
     log.info("Regenerate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...\033[92mok\033[0m\n")
+        log.info("...{}\n".format(MSG_OK))
     except Exception as e:
         raise GeoNatureError(e)
 
@@ -265,14 +266,14 @@ def check_codefile_validity(module_path, module_name):
     # Config
     gn_dir = Path(module_path) / 'config'
     if gn_dir.is_dir():
-        log.info('Config directory ...ok')
+        log.info("Config directory ...{}\n".format(MSG_OK))
     else:
         raise GeoNatureError(
             """Module {} ,
                     No config directory
                 """.format(module_name, gn_file)
         )
-    log.info('...ok\n')
+    log.info("...{}\n".format(MSG_OK))
 
 
 
@@ -304,7 +305,7 @@ def create_external_assets_symlink(module_path, module_name):
         else:
             log.info('symlink already exist \n')
 
-        log.info('...ok \n')
+        log.info("...{}\n".format(MSG_OK))
     except Exception as e:
         log.info('...error when create symlink external assets \n')
         raise GeoNatureError(e)
@@ -367,7 +368,7 @@ def add_application_db(module_name, url, module_id=None):
     except Exception as e:
         raise GeoNatureError(e)
 
-    log.info('... ok \n')
+    log.info("...{}\n".format(MSG_OK))
     return module_id
 
 def create_module_config(module_name, mod_path=None, build=True):
