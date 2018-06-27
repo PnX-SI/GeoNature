@@ -1,6 +1,8 @@
 GeoNature
 =========
 
+**Attention** : GeoNature est en cours de refonte totale depuis aout 2017 dans la branche ``develop`` : https://github.com/PnX-SI/GeoNature/tree/develop
+
 Application de saisie et de synthèse des observations faune et flore.
 
 GeoNature est une application permettant de regrouper l'ensemble des données provenant des **protocoles Faune et Flore**, de saisir les protocoles de **contact occasionnel faune** et **Flore station** et de consulter l'ensemble de ces données dans une application de **synthèse**.
