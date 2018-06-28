@@ -22,7 +22,15 @@
 
 
       <div class="card-block releve">
-        <p><b> Relevé numéro </b>: {{releve?.id}} <b> Observateur(s) </b>: {{observers}} </p>
+        <p><b> Relevé numéro </b>: {{releve?.id}} <b>
+          Observateur(s) </b>:
+           <span *ngIf="occtaxConfig.observers_txt">
+             {{releve?.properties.observers_txt}}
+          </span> 
+          <span *ngIf="!occtaxConfig.observers_txt">
+              {{observers}}
+          </span>
+        </p>
         <p> <b> Entre le  </b>: {{dateMin}}  <b> et le </b>: {{dateMax}}  </p> 
         <p> <b> Altitude min  </b>: {{releve?.properties.altitude_min }}<b> Altitude max  </b>: {{releve?.properties.altitude_max }} </p>
 
