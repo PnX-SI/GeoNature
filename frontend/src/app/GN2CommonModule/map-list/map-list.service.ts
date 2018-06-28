@@ -26,6 +26,7 @@ export class MapListService {
   public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
   public genericFilterInput = new FormControl();
+  public isLoading = false;
   filterableColumns: Array<any>;
   availableColumns: Array<any>;
   displayColumns: Array<any>;
@@ -100,7 +101,11 @@ export class MapListService {
 
   // fetch the data
   loadData(endPoint, param?) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, { params: this.urlQuery });
+    this.isLoading = true;
+    return this._http
+      .get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, { params: this.urlQuery })
+      .delay(200)
+      .finally(() => (this.isLoading = false));
   }
 
   getData(endPoint, param?: Array<any>, customCallBack?) {
