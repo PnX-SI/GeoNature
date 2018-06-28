@@ -174,6 +174,8 @@ ALTER TABLE ONLY ref_geo.l_areas DROP COLUMN id_nomenclature_area_type;
 ALTER TABLE ONLY ref_geo.bib_areas_types DROP CONSTRAINT fk_bib_areas_types_id_nomenclature_area_type;
 ALTER TABLE ref_geo.bib_areas_types DROP CONSTRAINT check_bib_areas_types_area_type;
 
+--Correction de type de la table synthese
+ALTER TABLE gn_synthese.synthese ALTER COLUMN id_municipality TYPE character varying(25);
 
 
 --- Modification des contraintes pour qu'elles soient dans la section postdata
