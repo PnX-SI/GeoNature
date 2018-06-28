@@ -1,6 +1,9 @@
 *.*~
 settings.ini
 config/geonature_config.toml
+
+**/conf_gn_module.toml
+
 log/*
 .vscode/
 /backend/venv/*
@@ -14,6 +17,7 @@ var/
 config.py
 backend/static/medias/*
 backend/static/shapefiles/*
+backend/static/configs/*
 backend/run.py
 
 .vscode

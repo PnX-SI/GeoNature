@@ -22,7 +22,7 @@ BACKEND_DIR = ROOT_DIR / 'backend'
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 with open(str((ROOT_DIR / 'VERSION'))) as v:
     GEONATURE_VERSION = v.read()
-DEFAULT_CONFIG_FIlE = ROOT_DIR / 'config/geonature_config.toml'
+DEFAULT_CONFIG_FILE = ROOT_DIR / 'config/geonature_config.toml'
 
 GEONATURE_ETC = Path('/etc/geonature')
 
@@ -124,7 +124,7 @@ def get_config_file_path(config_file=None):
         3 - Default config file value
     """
     config_file = config_file or os.environ.get('GEONATURE_CONFIG_FILE')
-    return Path(config_file or DEFAULT_CONFIG_FIlE)
+    return Path(config_file or DEFAULT_CONFIG_FILE)
 
 
 def load_config(config_file=None):
@@ -204,7 +204,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
 def list_frontend_enabled_modules(mod_path=GN_EXTERNAL_MODULE):
     # Get all the module frontend enabled from gn_commons.t_modules
     from geonature.utils.command import get_app_for_cmd
-    app = get_app_for_cmd(DEFAULT_CONFIG_FIlE, with_external_mods=False)
+    app = get_app_for_cmd(DEFAULT_CONFIG_FILE, with_external_mods=False)
     with app.app_context():
         data = DB.session.query(TModules).filter(
             TModules.active_frontend == True

@@ -20,14 +20,14 @@ CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype integer, myid
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn 
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
   BEGIN
       SELECT INTO thenomenclatureid id_nomenclature
-      FROM pr_occtax.defaults_nomenclatures_value 
-      WHERE id_type = myidtype 
+      FROM pr_occtax.defaults_nomenclatures_value
+      WHERE id_type = myidtype
       AND (id_organism = 0 OR id_organism = myidorganism)
       AND (regne = '0' OR regne = myregne)
       AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
@@ -62,7 +62,7 @@ CREATE TABLE t_releves_occtax (
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
-    precision integer DEFAULT 100,    
+    precision integer DEFAULT 100,
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -136,7 +136,7 @@ CREATE TABLE cor_counting_occtax (
     id_nomenclature_obj_count integer NOT NULL, --DEFAULT get_default_nomenclature_value(6),
     id_nomenclature_type_count integer, --DEFAULT get_default_nomenclature_value(21),
     count_min integer,
-    count_max integer 
+    count_max integer
 );
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie (10)';
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe (9)';
@@ -289,57 +289,57 @@ ALTER TABLE t_releves_occtax
   ADD CONSTRAINT check_t_releves_occtax_hour_max CHECK (hour_min <= hour_max OR date_min < date_max);
 
 ALTER TABLE t_releves_occtax
-  ADD CONSTRAINT check_t_releves_occtax_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100));
+  ADD CONSTRAINT check_t_releves_occtax_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_technique,100)) NOT VALID;
 
 ALTER TABLE t_releves_occtax
-  ADD CONSTRAINT check_t_releves_occtax_regroupement_typ CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_grp_typ,24));
+  ADD CONSTRAINT check_t_releves_occtax_regroupement_typ CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_grp_typ,24)) NOT VALID;
 
 
 ALTER TABLE ONLY t_occurrences_occtax
-    ADD CONSTRAINT check_t_occurrences_occtax_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom));
+    ADD CONSTRAINT check_t_occurrences_occtax_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14));
+  ADD CONSTRAINT check_t_occurrences_occtax_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obs_meth,14)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_condition,7));
+  ADD CONSTRAINT check_t_occurrences_occtax_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_condition,7)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_bio_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_status,13));
+  ADD CONSTRAINT check_t_occurrences_occtax_bio_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_bio_status,13)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_naturalness CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_naturalness,8));
+  ADD CONSTRAINT check_t_occurrences_occtax_naturalness CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_naturalness,8)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15));
+  ADD CONSTRAINT check_t_occurrences_occtax_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_exist_proof,15)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5));
+  ADD CONSTRAINT check_t_occurrences_occtax_accur_level CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_diffusion_level,5)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_obs_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_observation_status,18));
+  ADD CONSTRAINT check_t_occurrences_occtax_obs_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_observation_status,18)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_blurring CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_blurring,4));
+  ADD CONSTRAINT check_t_occurrences_occtax_blurring CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_blurring,4)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19));
+  ADD CONSTRAINT check_t_occurrences_occtax_source_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_source_status,19)) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_determination_method,106));
+  ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_determination_method,106)) NOT VALID;
 
 
 ALTER TABLE cor_counting_occtax
-  ADD CONSTRAINT check_cor_counting_occtax_life_stage CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_life_stage,10));
+  ADD CONSTRAINT check_cor_counting_occtax_life_stage CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_life_stage,10)) NOT VALID;
 
 ALTER TABLE cor_counting_occtax
-  ADD CONSTRAINT check_cor_counting_occtax_sexe CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sex,9));
+  ADD CONSTRAINT check_cor_counting_occtax_sexe CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_sex,9)) NOT VALID;
 
 ALTER TABLE cor_counting_occtax
-  ADD CONSTRAINT check_cor_counting_occtax_obj_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obj_count,6));
+  ADD CONSTRAINT check_cor_counting_occtax_obj_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_obj_count,6)) NOT VALID;
 
 ALTER TABLE cor_counting_occtax
-  ADD CONSTRAINT check_cor_counting_occtax_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21));
+  ADD CONSTRAINT check_cor_counting_occtax_type_count CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_count,21)) NOT VALID;
 
 ALTER TABLE cor_counting_occtax
     ADD CONSTRAINT check_cor_counting_occtax_count_min CHECK (count_min > 0);
@@ -349,13 +349,13 @@ ALTER TABLE cor_counting_occtax
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type));
+    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature, id_type)) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text);
+    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text) NOT VALID
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text);
+    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
 
 ----------------------
@@ -449,7 +449,7 @@ CREATE TRIGGER tri_calculate_geom_local
 ------------
 --Vue représentant l'ensemble des observations du protocole occtax pour la représentation du module carte liste
 DROP VIEW IF EXISTS v_releve_occtax;
-CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS 
+CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
     rel.id_digitiser,
@@ -479,7 +479,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
 
 
 --Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
-CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
+CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
     rel.id_digitiser,
@@ -508,7 +508,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
 --------------------
 -- Liste et structure des tables dont le contenu est tracé dans t_history_actions
 -- On ne défini pas d'id pour la PK car au moment de la création du module on ne sais pas où en est la séquence
-INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES 
+INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('Dénombrement d''une occurence de taxon du module occtax', 'pr_occtax', 'cor_counting_occtax', 'id_counting_occtax', 'unique_id_sinp_occtax')
 ,('occurence de taxon du module occtax', 'pr_occtax', 't_occurrences_occtax', 'id_occurrence_occtax', 'unique_id_occurence_occtax')
 ,('Relevé correspondant à un regroupement d''occurence de taxon du module occtax', 'pr_occtax', 't_releves_occtax', 'id_releve_occtax', 'unique_id_sinp_grp')
@@ -536,6 +536,6 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (id_type, id_organism, regne,
 ;
 
 
-INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES 
+INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
 ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 14 )
 ;

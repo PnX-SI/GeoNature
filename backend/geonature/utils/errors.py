@@ -47,7 +47,7 @@ class GeonatureApiError(Exception):
             'message': self.message,
             'status_code': self.status_code,
             'raisedError': self.__class__.__name__
-            }
+        }
 
     def __str__(self):
         message = "Error {}, Message: {}, raised error: {}"
