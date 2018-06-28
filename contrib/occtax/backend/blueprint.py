@@ -334,6 +334,13 @@ def insertOrUpdateOneReleve(info_role):
         )
         releve = releveRepository.update(releve, user)
     else:
+        # Check if user can add a releve in the current dataset
+        allowed  = releve.user_is_in_dataset_actor(info_role)
+        if not allowed:
+            raise InsufficientRightsError(
+                'User {} has no right in dataset {}'.format(
+                    info_role.id_role, releve.id_dataset),
+                 403)
         DB.session.add(releve)
 
     DB.session.commit()
