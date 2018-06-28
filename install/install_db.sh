@@ -47,7 +47,7 @@ function database_exists () {
         return 0
     else
         # Grep db name in the list of database
-        sudo -n -u postgres -s -- psql -tAl | grep -q "^$1|"
+        sudo -u postgres -s -- psql -tAl | grep -q "^$1|"
         return $?
     fi
 }
@@ -58,7 +58,7 @@ then
         if $drop_apps_db
             then
             echo "Drop database..."
-            sudo -n -u postgres -s dropdb $db_name
+            sudo -u postgres -s dropdb $db_name
         else
             echo "Database exists but the settings file indicate that we don't have to drop it."
         fi
@@ -329,7 +329,7 @@ then
     sudo rm /tmp/taxhub/*.txt
     sudo rm /tmp/taxhub/*.sql
     sudo rm /tmp/taxhub/*.csv
-    
+
     if $install_default_dem
     then
         sudo rm /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
