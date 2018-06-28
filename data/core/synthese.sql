@@ -83,7 +83,7 @@ CREATE TABLE synthese (
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value(4),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value(19),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value(23),
-    id_municipality character(25),
+    id_municipality character varying(25),
     count_min integer,
     count_max integer,
     cd_nom integer,

@@ -42,7 +42,7 @@ CREATE TABLE sinp_datatype_protocols (
     id_protocol integer NOT NULL,
     unique_protocol_id uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     protocol_name character varying(255) NOT NULL,
-    protocol_desc character varying(255),
+    protocol_desc text,
     id_nomenclature_protocol_type integer NOT NULL,
     protocol_url character varying(255)
 );
