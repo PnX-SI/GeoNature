@@ -189,9 +189,9 @@ $BODY$
 -- OR      SELECT gn_commons.get_default_parameter('uuid_url_value', 2);
   BEGIN
     IF myidorganisme IS NOT NULL THEN
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
+      SELECT INTO theparamvalue parameter_value FROM gn_commons.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
     ELSE
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
+      SELECT INTO theparamvalue parameter_value FROM gn_commons.t_parameters WHERE parameter_name = myparamname LIMIT 1;
     END IF;
     RETURN theparamvalue;
   END;
