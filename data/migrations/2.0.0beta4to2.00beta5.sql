@@ -265,3 +265,26 @@ ALTER TABLE gn_synthese.defaults_nomenclatures_value DROP CONSTRAINT check_gn_sy
 ALTER TABLE gn_synthese.defaults_nomenclatures_value ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK ((taxonomie.check_is_regne((regne)::text) OR ((regne)::text = '0'::text))) NOT VALID;
 ALTER TABLE gn_monitoring.t_base_sites DROP CONSTRAINT check_t_base_sites_type_site;
 ALTER TABLE gn_monitoring.t_base_sites ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_site, 116)) NOT VALID;
+
+
+-- Modification monitoring : rajout trigger de calcul des intersections avec ref_geo
+
+CREATE FUNCTION gn_monitoring.fct_trg_cor_site_area()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+
+	DELETE FROM gn_monitoring.cor_site_area WHERE id_base_site = NEW.id_base_site;
+	INSERT INTO gn_monitoring.cor_site_area
+	SELECT NEW.id_base_site, (ref_geo.fct_get_area_intersection(NEW.geom)).id_area;
+
+  RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_cor_site_area
+  AFTER INSERT OR UPDATE OF geom ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_monitoring.fct_trg_cor_site_area();
