@@ -8,10 +8,11 @@ from sqlalchemy.sql import text
 from geonature.utils.env import DB
 
 from geonature.core.gn_meta.models import (
-    TDatasets, TParameters,
+    TDatasets,
     CorDatasetsActor, TAcquisitionFramework,
     CorAcquisitionFrameworkActor
 )
+from geonature.core.gn_commons.models import TParameters
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
@@ -55,7 +56,7 @@ def get_datasets(info_role):
         except Exception as e:
             gunicorn_error_logger.info(e)
             log.error(e)
-            
+
     q = DB.session.query(TDatasets)
     if info_role.tag_object_code == '2':
         q = q.join(

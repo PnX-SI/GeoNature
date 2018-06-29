@@ -183,18 +183,3 @@ class TAcquisitionFramework(DB.Model):
             TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
         ).first()
         return a_f
-
-
-@serializable
-class TParameters(DB.Model):
-    __tablename__ = 't_parameters'
-    __table_args__ = {'schema': 'gn_meta'}
-    id_parameter = DB.Column(DB.Integer, primary_key=True)
-    id_organism = DB.Column(
-        DB.Integer,
-        ForeignKey('utilisateurs.bib_organismes.id_organisme')
-    )
-    parameter_name = DB.Column(DB.Unicode)
-    parameter_desc = DB.Column(DB.Unicode)
-    parameter_value = DB.Column(DB.Unicode)
-    parameter_extra_value = DB.Column(DB.Unicode)
