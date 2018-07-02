@@ -28,14 +28,14 @@ CREATE OR REPLACE FUNCTION get_default_nomenclature_value(mytype character varyi
 IMMUTABLE
 LANGUAGE plpgsql AS 
 $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id
+--Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
   BEGIN
       SELECT INTO thenomenclatureid id_nomenclature
       FROM ref_nomenclatures.defaults_nomenclatures_value
-      WHERE id_type = ref_nomenclatures.get_id_nomenclature_type(mytype)
+      WHERE mnemonique_type = mytype
       AND (id_organism = myidorganism OR id_organism = 0)
       ORDER BY id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
@@ -329,7 +329,7 @@ CREATE TABLE cor_taxref_sensitivity
 
 
 CREATE TABLE defaults_nomenclatures_value (
-    id_type integer NOT NULL,
+    mnemonique_type character varying(255) NOT NULL,
     id_organism integer NOT NULL,
     id_nomenclature integer NOT NULL
 );
@@ -362,10 +362,31 @@ ALTER TABLE ONLY cor_taxref_sensitivity
     ADD CONSTRAINT pk_cor_taxref_sensitivity PRIMARY KEY (cd_nom, id_nomenclature_niv_precis, id_nomenclature);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (id_type, id_organism);
+    ADD CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism);
 
 ALTER TABLE ONLY cor_application_nomenclature
   ADD CONSTRAINT pk_cor_application_nomenclature PRIMARY KEY (id_nomenclature, id_application);
+
+
+--------------
+--CONSTRAINS--
+--------------
+ALTER TABLE bib_nomenclatures_types
+  ADD CONSTRAINT unique_bib_nomenclatures_types_mnemonique UNIQUE (mnemonique);
+
+ALTER TABLE ONLY cor_taxref_nomenclature
+    ADD CONSTRAINT check_cor_taxref_nomenclature_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = 'all'::text) NOT VALID;
+
+ALTER TABLE ONLY cor_taxref_nomenclature
+    ADD CONSTRAINT check_cor_taxref_nomenclature_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = 'all'::text) NOT VALID;
+
+
+ALTER TABLE ONLY cor_taxref_sensitivity
+    ADD CONSTRAINT check_cor_taxref_sensitivity_niv_precis CHECK (check_nomenclature_type_by_mnemonique(id_nomenclature_niv_precis,'NIV_PRECIS')) NOT VALID;
+
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type_by_id(id_nomenclature, id_type)) NOT VALID;
 
 
 ---------------
@@ -400,7 +421,7 @@ ALTER TABLE ONLY cor_taxref_sensitivity
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT fk_defaults_nomenclatures_value_id_type FOREIGN KEY (id_type) REFERENCES bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_defaults_nomenclatures_value_id_type FOREIGN KEY (mnemonique_type) REFERENCES bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
@@ -414,26 +435,6 @@ ALTER TABLE ONLY cor_application_nomenclature
 
 ALTER TABLE ONLY cor_application_nomenclature ADD CONSTRAINT fk_cor_application_nomenclature_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications (id_application) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 
-
---------------
---CONSTRAINS--
---------------
-ALTER TABLE bib_nomenclatures_types
-  ADD CONSTRAINT unique_bib_nomenclatures_types_mnemonique UNIQUE (mnemonique);
-
-ALTER TABLE ONLY cor_taxref_nomenclature
-    ADD CONSTRAINT check_cor_taxref_nomenclature_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = 'all'::text) NOT VALID;
-
-ALTER TABLE ONLY cor_taxref_nomenclature
-    ADD CONSTRAINT check_cor_taxref_nomenclature_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = 'all'::text) NOT VALID;
-
-
-ALTER TABLE ONLY cor_taxref_sensitivity
-    ADD CONSTRAINT check_cor_taxref_sensitivity_niv_precis CHECK (check_nomenclature_type_by_mnemonique(id_nomenclature_niv_precis,'NIV_PRECIS')) NOT VALID;
-
-
-ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type_by_id(id_nomenclature, id_type)) NOT VALID;
 
 ---------
 --INDEX--
