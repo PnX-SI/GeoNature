@@ -30,7 +30,7 @@ export class NomenclatureComponent extends GenericFormComponent
   public valueSubscription: Subscription;
   public currentCdNomenclature = 'null';
   public currentIdNomenclature: number;
-  @Input() idTypeNomenclature: number;
+  @Input() codeNomenclatureType: string;
   @Input() regne: string;
   @Input() group2Inpn: string;
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
@@ -38,6 +38,7 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   ngOnInit() {
+    console.log(this.codeNomenclatureType);
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
@@ -92,7 +93,7 @@ export class NomenclatureComponent extends GenericFormComponent
   initLabels() {
     const filters = { orderby: 'label_default' };
     this._dfService
-      .getNomenclature(this.idTypeNomenclature, this.regne, this.group2Inpn, filters)
+      .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
       .subscribe(data => {
         this.labels = data.values;
       });
