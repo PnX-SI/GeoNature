@@ -610,17 +610,17 @@ EXCEPTION WHEN unique_violation  THEN
 END
 $$;
 
-INSERT INTO defaults_nomenclatures_value (id_type, id_organism, id_nomenclature) VALUES
-(2,0,80)
-,(19,0,76)
-,(101,0,493)
-,(102,0,351)
-,(103,0,353)
-,(114,0,442)
-,(115,0,430)
-,(107,0,382)
-,(111,0,417)
-,(106,0,473)
+INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, id_nomenclature) VALUES
+('DS_PUBLIQUE',0,80)
+,('STATUT_SOURCE',0,76)
+,('STATUT_VALID',0,493)
+,('RESOURCE_TYP',0,351)
+,('DATA_TYP',0,353)
+,('JDD_OBJECTIFS',0,442)
+,('METHO_RECUEIL',0,430)
+,('NIVEAU_TERRITORIAL',0,382)
+,('TYPE_FINANCEMENT',0,417)
+,('METH_DETERMIN',0,473)
 ;
 
 TRUNCATE TABLE cor_taxref_nomenclature;
