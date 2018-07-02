@@ -386,7 +386,7 @@ ALTER TABLE ONLY cor_taxref_sensitivity
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type_by_id(id_nomenclature, id_type)) NOT VALID;
+    ADD CONSTRAINT check_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
 
 
 ---------------
@@ -421,7 +421,7 @@ ALTER TABLE ONLY cor_taxref_sensitivity
 
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT fk_defaults_nomenclatures_value_id_type FOREIGN KEY (mnemonique_type) REFERENCES bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
