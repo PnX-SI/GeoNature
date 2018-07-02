@@ -61,6 +61,22 @@ $$
   END;
 $$;
 
+CREATE OR REPLACE FUNCTION check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) RETURNS boolean
+IMMUTABLE
+LANGUAGE plpgsql AS 
+$$
+--Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+  BEGIN
+    IF (mycdnomenclature IN (SELECT cd_nomenclature FROM ref_nomenclatures.t_nomenclatures WHERE id_type = ref_nomenclatures.get_id_nomenclature_type(mytype))
+        OR mycdnomenclature IS NULL) THEN
+      RETURN true;
+    ELSE
+	    RAISE EXCEPTION 'Error : cd_nomenclature and nomenclature type didn''t match. Use cd_nomenclature in corresponding type (mnemonique field). See ref_nomenclatures.t_nomenclatures.id_type and ref_nomenclatures.bib_nomenclatures_types.mnemonique';
+    END IF;
+    RETURN false;
+  END;
+$$;
+
 CREATE OR REPLACE FUNCTION check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean 
   IMMUTABLE
 LANGUAGE plpgsql AS
@@ -71,7 +87,7 @@ $$
         OR id IS NULL) THEN
       RETURN true;
     ELSE
-	    RAISE EXCEPTION 'Error : id_nomenclature and id_type didn''t match. Use nomenclature with corresponding type (id_type). See ref_nomenclatures.t_nomenclatures.id_type.';
+	    RAISE EXCEPTION 'Error : id_nomenclature and id_type didn''t match. Use nomenclature with corresponding type (id_type). See ref_nomenclatures.t_nomenclatures.id_type and ref_nomenclatures.bib_nomenclatures_types.id_type.';
     END IF;
     RETURN false;
   END;
@@ -171,8 +187,7 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION get_cd_nomenclature(
-    myidnomenclature integer)
+CREATE OR REPLACE FUNCTION get_cd_nomenclature(myidnomenclature integer)
   RETURNS character varying AS
 $BODY$
 --Function which return the cd_nomenclature from an id_type and an id_nomenclature
