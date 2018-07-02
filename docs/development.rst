@@ -205,7 +205,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Inputs**:
 
-        :``idTypeNomenclature``:
+        :``codeNomenclatureType``:
                 Id_type des items de nomenclatures qui doivent être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
                  
                 *Type*: ``number``
@@ -230,7 +230,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
                 <pnx-nomenclature
                   [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
-                  idTypeNomenclature="7"
+                  codeNomenclatureType="ETA_BIO"
                   regne="Animalia"
                   group2Inpn="Mammifères"
                   >
