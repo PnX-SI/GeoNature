@@ -270,18 +270,20 @@ WITH (
 
 --Datas
 
+
 INSERT INTO ref_nomenclatures.defaults_nomenclatures_value (mnemonique_type, id_organism, id_nomenclature) VALUES
-('DS_PUBLIQUE',0,80)
-,('STATUT_SOURCE',0,76)
-,('STATUT_VALID',0,493)
-,('RESOURCE_TYP',0,351)
-,('DATA_TYP',0,353)
-,('JDD_OBJECTIFS',0,442)
-,('METHO_RECUEIL',0,430)
-,('NIVEAU_TERRITORIAL',0,382)
-,('TYPE_FINANCEMENT',0,417)
-,('METH_DETERMIN',0,473)
+('DS_PUBLIQUE',0,ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'))
+,('STATUT_SOURCE',0,ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
+,('STATUT_VALID',0,ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '0')))
+,('RESOURCE_TYP',0,ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1')))
+,('DATA_TYP',0,ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1')))
+,('JDD_OBJECTIFS',0,ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1')))
+,('METHO_RECUEIL',0,ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1')))
+,('NIVEAU_TERRITORIAL',0,ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '3')))
+,('TYPE_FINANCEMENT',0,ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1')))
+,('METH_DETERMIN',0,ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '1')))
 ;
+
 
 
 --- Modification des contraintes pour qu'elles soient dans la section postdata
@@ -734,3 +736,4 @@ INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organi
 ,('STATUT_SOURCE',0,0,0,'NSP')
 ,('METH_DETERMIN',0,0,0,'1') 
 ;
+

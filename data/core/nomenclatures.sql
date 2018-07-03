@@ -205,10 +205,10 @@ $BODY$
 CREATE OR REPLACE FUNCTION get_id_nomenclature(
     mytype character varying,
     mycdnomenclature character varying)
-  RETURNS character varying AS
+  RETURNS integer AS
 $BODY$
 --Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
-DECLARE theidnomenclature character varying;
+DECLARE theidnomenclature integer;
   BEGIN
 SELECT INTO theidnomenclature id_nomenclature
 FROM ref_nomenclatures.t_nomenclatures n
