@@ -55,14 +55,14 @@ class TDatasets(DB.Model):
     dataset_desc = DB.Column(DB.Unicode)
     id_nomenclature_data_type = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(103)
+        default=TNomenclatures.get_default_nomenclature("DATA_TYP")
     )
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
     id_nomenclature_dataset_objectif = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(114)
+        default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS")
     )
     bbox_west = DB.Column(DB.Unicode)
     bbox_east = DB.Column(DB.Unicode)
@@ -70,19 +70,19 @@ class TDatasets(DB.Model):
     bbox_north = DB.Column(DB.Unicode)
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(115)
+        default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL")
     )
     id_nomenclature_data_origin = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(2)
+        default=TNomenclatures.get_default_nomenclature("DS_PUBLIQUE")
     )
     id_nomenclature_source_status = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(19)
+        default=TNomenclatures.get_default_nomenclature("STATUT_SOURCE")
     )
     id_nomenclature_resource_type = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(102)
+        default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP")
     )
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
