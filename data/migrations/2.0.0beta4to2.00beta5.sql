@@ -732,5 +732,5 @@ INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organi
 ,('TECHNIQUE_OBS',0,0,0,'133')
 ,('SENSIBILITE',0,0,0,'0')
 ,('STATUT_SOURCE',0,0,0,'NSP')
-,('METH_DETERMIN',0,0,0,'1') --méthode de détermination en texte dans la synthèse pour le moment
+,('METH_DETERMIN',0,0,0,'1') 
 ;
