@@ -15,7 +15,7 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION get_default_cd_nomenclature_value(myidtype integer, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+CREATE OR REPLACE FUNCTION get_default_cd_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
@@ -104,7 +104,7 @@ CREATE TABLE synthese (
     validation_comment text,
     observers character varying(255),
     determiner character varying(255),
-    determination_method character varying(255),
+    cd_nomenclature_determination_method character varying(20) DEFAULT gn_synthese.get_default_cd_nomenclature_value('METH_DETERMIN'),
     comments text,
     meta_validation_date timestamp without time zone DEFAULT now(),
     meta_create_date timestamp without time zone DEFAULT now(),
@@ -135,11 +135,11 @@ CREATE TABLE cor_area_synthese (
 );
 
 CREATE TABLE defaults_nomenclatures_value (
-    mnemonique_type integer NOT NULL,
+    mnemonique_type character varying(50) NOT NULL,
     id_organism integer NOT NULL DEFAULT 0,
     regne character varying(20) NOT NULL DEFAULT '0',
     group2_inpn character varying(255) NOT NULL DEFAULT '0',
-    cd_nomenclature integer NOT NULL
+    cd_nomenclature character varying(20) NOT NULL
 );
 ---------------
 --PRIMARY KEY--
@@ -165,63 +165,6 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_typ_grp FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_bio_status FOREIGN KEY (id_nomenclature_bio_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_bio_condition FOREIGN KEY (id_nomenclature_bio_condition) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_naturalness FOREIGN KEY (id_nomenclature_naturalness) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_life_stage FOREIGN KEY (id_nomenclature_life_stage) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_sex FOREIGN KEY (id_nomenclature_sex) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_obj_count FOREIGN KEY (id_nomenclature_obj_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_type_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_sensitivity FOREIGN KEY (id_nomenclature_sensitivity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_observation_status FOREIGN KEY (id_nomenclature_observation_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_info_geo_type FOREIGN KEY (id_nomenclature_info_geo_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
@@ -230,16 +173,14 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_validator FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
-
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
 
-
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_type FOREIGN KEY (id_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
@@ -259,7 +200,6 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
 
-
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature_by_cd_nomenclature(cd_nomenclature_obs_technique,'METH_OBS')) NOT VALID;
 
@@ -276,10 +216,10 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_bio_status CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_bio_status,'STATUT_BIO')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_bio_condition,7)) NOT VALID;
+  ADD CONSTRAINT check_synthese_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_bio_condition,'ETA_BIO')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_naturalness CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(id_nomenclature_naturalness,'ETA_BIO')) NOT VALID;
+  ADD CONSTRAINT check_synthese_naturalness CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_naturalness,'NATURALITE')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_exist_proof,'PREUVE_EXIST')) NOT VALID;
@@ -288,7 +228,7 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_valid_status CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_valid_status,'STATUT_VALID')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_diffusion_level CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_diffusion_level,'NIV_PRECIS') NOT VALID;
+  ADD CONSTRAINT check_synthese_diffusion_level CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_diffusion_level,'NIV_PRECIS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_life_stage CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_life_stage,'STADE_VIE')) NOT VALID;
@@ -368,6 +308,152 @@ LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
 ORDER BY loc.cd_ref;
 
 
+
+CREATE OR REPLACE VIEW v_synthese_for_web_app AS
+WITH nomenclatures AS (
+  SELECT
+    s.id_synthese, 
+    n3.label_default AS nat_obj_geo,
+    n24.label_default AS grp_typ,
+    n14.label_default AS obs_meth,
+    n100.label_default AS obs_technique,
+    n13.label_default AS bio_status,
+    n7.label_default AS bio_condition,
+    n8.label_default AS naturalness,
+    n15.label_default AS exist_proof,
+    n101.label_default AS valid_status,
+    n5.label_default AS diffusion_level,
+    n10.label_default AS life_stage,
+    n9.label_default AS sex,
+    n6.label_default AS obj_count,
+    n21.label_default AS type_count,
+    n16.label_default AS sensitivity,
+    n18.label_default AS observation_status,
+    n4.label_default AS blurring,
+    n19.label_default AS source_status,
+    n20.label_default AS determination_method
+FROM gn_synthese.synthese s
+JOIN ref_nomenclatures.t_nomenclatures n3 ON n3.cd_nomenclature = s.cd_nomenclature_geo_object_nature
+JOIN ref_nomenclatures.t_nomenclatures n24 ON n24.cd_nomenclature = s.cd_nomenclature_grp_typ
+JOIN ref_nomenclatures.t_nomenclatures n14 ON n14.cd_nomenclature = s.cd_nomenclature_obs_meth
+JOIN ref_nomenclatures.t_nomenclatures n100 ON n100.cd_nomenclature = s.cd_nomenclature_obs_technique
+JOIN ref_nomenclatures.t_nomenclatures n13 ON n13.cd_nomenclature = s.cd_nomenclature_bio_status
+JOIN ref_nomenclatures.t_nomenclatures n7 ON n7.cd_nomenclature = s.cd_nomenclature_bio_condition
+JOIN ref_nomenclatures.t_nomenclatures n8 ON n8.cd_nomenclature = s.cd_nomenclature_naturalness
+JOIN ref_nomenclatures.t_nomenclatures n15 ON n15.cd_nomenclature = s.cd_nomenclature_exist_proof
+JOIN ref_nomenclatures.t_nomenclatures n101 ON n101.cd_nomenclature = s.cd_nomenclature_valid_status
+JOIN ref_nomenclatures.t_nomenclatures n5 ON n5.cd_nomenclature = s.cd_nomenclature_diffusion_level
+JOIN ref_nomenclatures.t_nomenclatures n10 ON n10.cd_nomenclature = s.cd_nomenclature_life_stage
+JOIN ref_nomenclatures.t_nomenclatures n9 ON n9.cd_nomenclature = s.cd_nomenclature_sex
+JOIN ref_nomenclatures.t_nomenclatures n6 ON n6.cd_nomenclature = s.cd_nomenclature_obj_count
+JOIN ref_nomenclatures.t_nomenclatures n21 ON n21.cd_nomenclature = s.cd_nomenclature_type_count
+JOIN ref_nomenclatures.t_nomenclatures n16 ON n16.cd_nomenclature = s.cd_nomenclature_sensitivity
+JOIN ref_nomenclatures.t_nomenclatures n18 ON n18.cd_nomenclature = s.cd_nomenclature_observation_status
+JOIN ref_nomenclatures.t_nomenclatures n4 ON n4.cd_nomenclature = s.cd_nomenclature_blurring
+JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.cd_nomenclature = s.cd_nomenclature_source_status
+JOIN ref_nomenclatures.t_nomenclatures n20 ON n19.cd_nomenclature = s.cd_nomenclature_determination_method
+)
+SELECT 
+  s.id_synthese, 
+  s.id_source, 
+  so.name_source,
+  so.entity_source_pk_field,
+  s.entity_source_pk_value,
+  d.dataset_name,
+  n.nat_obj_geo,
+  n.grp_typ,
+  n.obs_meth,
+  n.obs_technique,
+  n.bio_status,
+  n.bio_condition,
+  n.naturalness,
+  n.exist_proof,
+  n.valid_status,
+  n.diffusion_level,
+  n.life_stage,
+  n.sex,
+  n.obj_count,
+  n.type_count,
+  n.sensitivity,
+  n.observation_status,
+  n.blurring,
+  n.source_status,
+  m.insee_com, --TODO attention changer le JOIN en prod
+  m.nom_com,
+  s.count_min,
+  s.count_max,
+  s.cd_nom,
+  t.nom_complet,
+  COALESCE(t.nom_vern, 'Null'::character varying(255)) AS nom_vern,
+  s.nom_cite,
+  s.meta_v_taxref AS taxref_version,
+  s.sample_number_proof,
+  s.digital_proof,
+  s.non_digital_proof,
+  s.altitude_min,
+  s.altitude_max,
+  s.the_geom_point,
+  s.the_geom_4326,
+  s.date_min,
+  s.date_max,
+  v.prenom_role || ' ' || v.nom_role AS validateur,
+  s.validation_comment,
+  s.meta_validation_date AS validation_date,
+  s.observers,
+  s.determiner,
+  n.determination_method,
+  s.comments
+FROM gn_synthese.synthese s
+JOIN gn_synthese.t_sources so ON so.id_source = s.id_source
+JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+JOIN nomenclatures n ON n.id_synthese = s.id_synthese
+LEFT JOIN ref_geo.li_municipalities m ON m.insee_com = s.id_municipality --TODO attention changer le JOIN en prod
+LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
+JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+;
+
+CREATE OR REPLACE VIEW v_synthese_decode_nomenclatures AS 
+ SELECT s.id_synthese,
+    n3.label_default AS nat_obj_geo,
+    n24.label_default AS grp_typ,
+    n14.label_default AS obs_meth,
+    n100.label_default AS obs_technique,
+    n13.label_default AS bio_status,
+    n7.label_default AS bio_condition,
+    n8.label_default AS naturalness,
+    n15.label_default AS exist_proof,
+    n101.label_default AS valid_status,
+    n5.label_default AS diffusion_level,
+    n10.label_default AS life_stage,
+    n9.label_default AS sex,
+    n6.label_default AS obj_count,
+    n21.label_default AS type_count,
+    n16.label_default AS sensitivity,
+    n18.label_default AS observation_status,
+    n4.label_default AS blurring,
+    n19.label_default AS source_status,
+    n20.label_default AS determination_method
+   FROM gn_synthese.synthese s
+     JOIN ref_nomenclatures.t_nomenclatures n3 ON n3.cd_nomenclature = s.cd_nomenclature_geo_object_nature
+     JOIN ref_nomenclatures.t_nomenclatures n24 ON n24.cd_nomenclature = s.cd_nomenclature_grp_typ
+     JOIN ref_nomenclatures.t_nomenclatures n14 ON n14.cd_nomenclature = s.cd_nomenclature_obs_meth
+     JOIN ref_nomenclatures.t_nomenclatures n100 ON n100.cd_nomenclature = s.cd_nomenclature_obs_technique
+     JOIN ref_nomenclatures.t_nomenclatures n13 ON n13.cd_nomenclature = s.cd_nomenclature_bio_status
+     JOIN ref_nomenclatures.t_nomenclatures n7 ON n7.cd_nomenclature = s.cd_nomenclature_bio_condition
+     JOIN ref_nomenclatures.t_nomenclatures n8 ON n8.cd_nomenclature = s.cd_nomenclature_naturalness
+     JOIN ref_nomenclatures.t_nomenclatures n15 ON n15.cd_nomenclature = s.cd_nomenclature_exist_proof
+     JOIN ref_nomenclatures.t_nomenclatures n101 ON n101.cd_nomenclature = s.cd_nomenclature_valid_status
+     JOIN ref_nomenclatures.t_nomenclatures n5 ON n5.cd_nomenclature = s.cd_nomenclature_diffusion_level
+     JOIN ref_nomenclatures.t_nomenclatures n10 ON n10.cd_nomenclature = s.cd_nomenclature_life_stage
+     JOIN ref_nomenclatures.t_nomenclatures n9 ON n9.cd_nomenclature = s.cd_nomenclature_sex
+     JOIN ref_nomenclatures.t_nomenclatures n6 ON n6.cd_nomenclature = s.cd_nomenclature_obj_count
+     JOIN ref_nomenclatures.t_nomenclatures n21 ON n21.cd_nomenclature = s.cd_nomenclature_type_count
+     JOIN ref_nomenclatures.t_nomenclatures n16 ON n16.cd_nomenclature = s.cd_nomenclature_sensitivity
+     JOIN ref_nomenclatures.t_nomenclatures n18 ON n18.cd_nomenclature = s.cd_nomenclature_observation_status
+     JOIN ref_nomenclatures.t_nomenclatures n4 ON n4.cd_nomenclature = s.cd_nomenclature_blurring
+     JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.cd_nomenclature = s.cd_nomenclature_source_status
+     JOIN ref_nomenclatures.t_nomenclatures n20 ON n19.cd_nomenclature = s.cd_nomenclature_determination_method
+     ;
 -----------
 --INDEXES--
 -----------

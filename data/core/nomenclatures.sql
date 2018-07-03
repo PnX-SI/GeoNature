@@ -190,7 +190,7 @@ $BODY$
 CREATE OR REPLACE FUNCTION get_cd_nomenclature(myidnomenclature integer)
   RETURNS character varying AS
 $BODY$
---Function which return the cd_nomenclature from an id_type and an id_nomenclature
+--Function which return the cd_nomenclature from an an id_nomenclature
 DECLARE thecdnomenclature character varying;
   BEGIN
 SELECT INTO thecdnomenclature cd_nomenclature
@@ -207,7 +207,7 @@ CREATE OR REPLACE FUNCTION get_id_nomenclature(
     mycdnomenclature character varying)
   RETURNS character varying AS
 $BODY$
---Function which return the cd_nomenclature from an id_type and an id_nomenclature
+--Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
 DECLARE theidnomenclature character varying;
   BEGIN
 SELECT INTO theidnomenclature id_nomenclature
