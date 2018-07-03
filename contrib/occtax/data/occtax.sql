@@ -516,25 +516,27 @@ INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name,
 ;
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
-('METH_OBS',0,0,0,42)
-,('ETA_BIO',0,0,0,178)
-,('STATUT_BIO',0,0,0,30)
-,('NATURALITE',0,0,0,182)
-,('PREUVE_EXIST',0,0,0,91)
-,('STATUT_VALID',0,0,0,493)
-,('NIV_PRECIS',0,0,0,163)
-,('METH_DETERMIN',0,0,0,473)
-,('STADE_VIE',0,0,0,2)
-,('SEXE',0,0,0,194)
-,('OBJ_DENBR',0,0,0,166)
-,('TYP_DENBR',0,0,0,109)
-,('STATUT_OBS',0,0,0,101)
-,('DEE_FLOU',0,0,0,200)
-,('TYP_GRP',0,0,0,150)
-,('TECHNIQUE_OBS',0,0,0,343)
-,('STATUT_SOURCE',0, 0, 0, 76)
+('METH_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', '0'))
+,('ETA_BIO',0,0,0, ref_nomenclatures.get_id_nomenclature('ETA_BIO', '2'))
+,('STATUT_BIO',0,0,0, ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'))
+,('NATURALITE',0,0,0, ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'))
+,('PREUVE_EXIST',0,0,0, ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'))
+,('STATUT_VALID',0,0,0, ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '0'))
+,('NIV_PRECIS',0,0,0, ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '5'))
+,('METH_DETERMIN',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '1'))
+,('STADE_VIE',0,0,0, ref_nomenclatures.get_id_nomenclature('STADE_VIE', '0'))
+,('SEXE',0,0,0, ref_nomenclatures.get_id_nomenclature('SEXE', '6'))
+,('OBJ_DENBR',0,0,0, ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'))
+,('TYP_DENBR',0,0,0, ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'))
+,('STATUT_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'))
+,('DEE_FLOU',0,0,0, ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'))
+,('TYP_GRP',0,0,0, ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'NSP'))
+,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
+,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ;
 
+
+SELECT ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu')
 
 INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
 ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 14 )
