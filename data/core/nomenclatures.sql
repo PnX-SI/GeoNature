@@ -26,7 +26,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
 IMMUTABLE
-LANGUAGE plpgsql AS 
+LANGUAGE plpgsql AS
 $$
 --Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
 --Return -1 if nothing matche with given parameters
@@ -47,7 +47,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
 IMMUTABLE
-LANGUAGE plpgsql AS 
+LANGUAGE plpgsql AS
 $$
 --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
   BEGIN
@@ -63,7 +63,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) RETURNS boolean
 IMMUTABLE
-LANGUAGE plpgsql AS 
+LANGUAGE plpgsql AS
 $$
 --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
   BEGIN
@@ -77,7 +77,7 @@ $$
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean 
+CREATE OR REPLACE FUNCTION check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
   IMMUTABLE
 LANGUAGE plpgsql AS
 $$
@@ -95,7 +95,7 @@ $$;
 
 
 CREATE FUNCTION get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying) RETURNS SETOF integer
-IMMUTABLE 
+IMMUTABLE
 LANGUAGE plpgsql AS
 $$
 --Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
@@ -487,7 +487,7 @@ CREATE OR REPLACE VIEW v_technique_obs AS(
 SELECT ctn.regne,ctn.group2_inpn, n.id_nomenclature, n.mnemonique, n.label_default AS label, n.definition_default AS definition, n.id_broader, n.hierarchy
 FROM ref_nomenclatures.t_nomenclatures n
 LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ctn.id_nomenclature = n.id_nomenclature
-WHERE n.mnemoniquue = 'TECHNIQUE_OBS'
+WHERE n.mnemonique = 'TECHNIQUE_OBS'
 );
 --USAGE :
 --SELECT * FROM ref_nomenclatures.v_technique_obs WHERE group2_inpn = 'Oiseaux';

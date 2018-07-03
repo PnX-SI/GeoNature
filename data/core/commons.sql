@@ -123,7 +123,7 @@ BEGIN
   VALUES(
     theidtablelocation,
     theuuid,
-    ref_nomenclatures.get_default_nomenclature_value(101), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+    ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
     null,
     thecomment,
     NOW()
