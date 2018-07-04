@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import TMedias
+from geonature.core.gn_commons.models import TMedias, BibTablesLocation
 from geonature.core.gn_commons.file_manager import (
     upload_file, remove_file,
     rename_file
@@ -50,7 +50,6 @@ class TMediaRepository():
                 self._persist_media_db()
             except Exception as e:
                 raise e
-
         # Si le média à un fichier associé
         if self.file:
             self.data['isFile'] = True
@@ -174,3 +173,15 @@ class TMediumRepository():
             TMedias.uuid_attached_row == entity_uuid
         ).all()
         return medium
+
+
+def get_table_location_id(schema_name, table_name):
+    try:
+        location = DB.session.query(BibTablesLocation).filter(
+            BibTablesLocation.schema_name == schema_name
+        ).filter(
+            BibTablesLocation.table_name == table_name
+        ).one()
+    except :
+        return None
+    return location.id_table_location
