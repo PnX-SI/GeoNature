@@ -13,8 +13,7 @@ import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { DynamicFormComponent } from "@geonature_common/form/dynamic-form/dynamic-form.component";
-import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
+import { DynamicFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
@@ -35,7 +34,6 @@ export class OcctaxMapListComponent implements OnInit {
   public occtaxConfig: any;
   public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
-  public filterControl = new FormControl();
   public formsSelected = [];
   // provisoire
   public tableMessages = {
@@ -45,6 +43,8 @@ export class OcctaxMapListComponent implements OnInit {
   advandedFilterOpen = false;
   @ViewChild(NgbModal) public modalCol: NgbModal;
   @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
+  @ViewChild("dynamicForm") public dynamicForm: DynamicFormGeneratorComponent;
+
   constructor(
     private _http: Http,
     private mapListService: MapListService,
@@ -54,7 +54,6 @@ export class OcctaxMapListComponent implements OnInit {
     private _router: Router,
     public ngbModal: NgbModal,
     private _fb: FormBuilder,
-    private _dynformService: DynamicFormService,
     private _dateParser: NgbDateParserFormatter
   ) {}
 
@@ -69,12 +68,6 @@ export class OcctaxMapListComponent implements OnInit {
       date_low: null,
       municipality: null
     });
-
-    this.filterControl.valueChanges
-      .filter(value => value !== null)
-      .subscribe(formDef => {
-        this.addFormControl(formDef);
-      });
 
     this.occtaxConfig = ModuleConfig;
 
@@ -97,22 +90,6 @@ export class OcctaxMapListComponent implements OnInit {
       this.customColumns
     );
     // end OnInit
-  }
-
-  addFormControl(formDef) {
-    this.formsSelected.push(formDef);
-    this.formsDefinition = this.formsDefinition.filter(form => {
-      return form.key != formDef.key;
-    });
-    this._dynformService.addNewControl(formDef, this.dynamicFormGroup);
-  }
-
-  removeFormControl(i) {
-    const formDef = this.formsSelected[i];
-    this.formsSelected.splice(i, 1);
-    this.formsDefinition.push(formDef);
-    this.dynamicFormGroup.removeControl(formDef.key);
-    this.filterControl.setValue(null);
   }
 
   toggleAdvancedFilters() {

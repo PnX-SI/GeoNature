@@ -407,13 +407,13 @@ export class OcctaxFormService {
     });
   }
 
-  onTaxonChanged(taxon) {
-    this.currentTaxon = taxon;
+  onTaxonChanged($event) {
+    this.currentTaxon = $event.item;
     // fetch default nomenclature value filtered by organism, regne, group2_inpn
     this.getDefaultValues(
       this.currentUser.organismId,
-      taxon.regne,
-      taxon.group2_inpn
+      $event.item.regne,
+      $event.item.group2_inpn
     ).subscribe(data => {
       // occurrence
       this.patchDefaultNomenclatureOccurrence(data);

@@ -128,4 +128,20 @@ export class DataFormService {
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
   }
+
+  getAcquisitionFrameworks() {
+    return this._http.get(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+  }
+
+  getOrganisms() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
+  }
+
+  getRoles() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`);
+  }
+
+  getDataset(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
+  }
 }
