@@ -38,7 +38,6 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   ngOnInit() {
-    console.log(this.codeNomenclatureType);
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
