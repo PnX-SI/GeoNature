@@ -143,13 +143,14 @@ sed -i "s/https_cert_path=.*$/https_cert_path=$https_cert_path/g" config/setting
 sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.ini
 
 
-
+cd install/
 # Installation de la base de données GeoNature en root
-./install/install_db.sh
-
+./install_db.sh
 
 # Installation et configuration de l'application GeoNature
-./install/install_app.sh
+./install_app.sh
+
+cd ../
 
 #configuration apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
