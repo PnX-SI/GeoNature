@@ -5,6 +5,7 @@
 from pypnnomenclature.repository import get_nomenclature_list_formated
 from geonature.utils.utilstoml import load_toml
 
+from geonature.core.gn_commons.repositories import get_table_location_id
 
 def generate_config(file_path):
     '''
@@ -57,6 +58,11 @@ def parse_field(fieldlist):
                     'id_type': field['thesaurusID'],
                     'hierarchy': field['thesaurusHierarchyID']
                 }
+            )
+        if 'attached_table_location' in field['options']:
+            (schema_name, table_name) = field['options']['attached_table_location'].split('.') # noqa
+            field['options']['id_table_location'] = (
+                get_table_location_id(schema_name, table_name)
             )
         if 'fields' in field:
             field['fields'] = parse_field(field['fields'])
