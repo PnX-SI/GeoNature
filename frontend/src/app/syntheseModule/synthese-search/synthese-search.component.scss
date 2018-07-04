@@ -1,0 +1,40 @@
+.pnx-card {
+  padding: 10px;
+  border-color: #CCCCCC;
+  background-color: white;
+}
+
+fieldset {
+  padding: .35em .625em .75em !important;
+  border: 1px solid silver !important;
+  margin: 0 2px!important;
+  border-radius: 3px;
+}
+
+legend {
+  width: auto;
+  font-size: inherit;
+}
+
+:host /deep/ .dynamic-form {
+  display: flex;
+}
+
+:host /deep/ .trash-btn {
+  position: relative;
+  top: 28px;
+  left: 5px;
+}
+
+:host /deep/ pnx-dynamic-form {
+  width: 90%;
+}
+
+.taxon-list {
+  margin-bottom: 0px;
+}
+.taxon-alert {
+  margin-top: 5px;
+  padding: 2px;
+  margin-bottom: 5px;
+}

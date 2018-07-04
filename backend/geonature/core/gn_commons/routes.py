@@ -81,3 +81,27 @@ def delete_media(id_media):
     '''
     TMediaRepository(id_media=id_media).delete()
     return {"resp": "media {} deleted".format(id_media)}
+
+
+# Parameters
+
+@routes.route('/list/parameters', methods=['GET'])
+@json_resp
+def get_parameters_list():
+    q = DB.session.query(TParameters)
+    data = q.all()
+
+    return [d.as_dict() for d in data]
+
+
+@routes.route('/parameters/<param_name>', methods=['GET'])
+@routes.route('/parameters/<param_name>/<int:id_org>', methods=['GET'])
+@json_resp
+def get_one_parameter(param_name, id_org=None):
+    q = DB.session.query(TParameters)
+    q = q.filter(TParameters.parameter_name == param_name)
+    if id_org:
+        q = q.filter(TParameters.id_organism == id_org)
+
+    data = q.all()
+    return [d.as_dict() for d in data]

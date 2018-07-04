@@ -68,7 +68,7 @@
         ></i>
         </button>
 
-        <svg *ngIf="formsSelected.length > 0" height="40" width="10">
+        <svg *ngIf="dynamicForm?.formsSelected.length > 0" height="40" width="10">
             <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
         </svg>
 
@@ -79,30 +79,12 @@
         </button>
   </div>
   <div *ngIf="advandedFilterOpen" id="collapse-settings">
-    <div class="form-group col-sm-4 padding-sm">
-      <small class="label-sm"> Autres Critères </small>
-      <select class="form-control filter-control" [formControl]="filterControl">
-          <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
-          <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
-            {{formDef.label}}
-          </option>
-      </select>
-    </div>
-
-    
-    <div class='form-inline' [formGroup]="dynamicFormGroup">
-      
-        <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
-            <pnx-dynamic-form
-            [formDef]="formDef"
-            [form]="dynamicFormGroup"
-            >
-            </pnx-dynamic-form>
-            <i class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>
-        </div>
-      
-
-    </div>
+      <pnx-dynamic-form-generator
+      #dynamicForm
+      selectLabel="Autres Critères"
+      [formGroup]="dynamicFormGroup"
+      [formsDefinition]="formsDefinition">
+    </pnx-dynamic-form-generator>
 
 
   </div>
