@@ -14,7 +14,7 @@ from .models import (
     CorCountingOccurrence,
     corRoleRelevesOccurrence,
 )
-from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
+from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 
 
 
@@ -216,10 +216,10 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
 
     if 'organism' in params:
         q = q.join(
-            CorDatasetsActor,
-            CorDatasetsActor.id_dataset == mappedView.id_dataset
+            CorDatasetActor,
+            CorDatasetActor.id_dataset == mappedView.id_dataset
         ).filter(
-            CorDatasetsActor.id_actor == int(params.pop('organism'))
+            CorDatasetActor.id_actor == int(params.pop('organism'))
         )
 
     if 'observateurs' in params:

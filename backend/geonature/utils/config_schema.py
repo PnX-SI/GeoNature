@@ -100,6 +100,7 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
+    ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
 
 
 class ManifestSchemaConf(Schema):

@@ -297,6 +297,17 @@ def serializeQueryTest(data, columnDef):
         rows.append(inter)
     return rows
 
+
+def serializeQueryOneResult(row, columnDef):
+    row = {
+        c['name']: getattr(row, c['name'])
+        for c in columnDef if getattr(row, c['name']) is not None
+    }
+    return row
+
+
+
+
 def serializable(cls):
     """
         Décorateur de classe pour les DB.Models
