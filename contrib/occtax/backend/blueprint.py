@@ -454,16 +454,16 @@ def getDefaultNomenclatures():
     types = request.args.getlist('id_type')
 
     q = DB.session.query(
-        distinct(DefaultNomenclaturesValue.id_type),
+        distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
-            DefaultNomenclaturesValue.id_type,
+            DefaultNomenclaturesValue.mnemonique_type,
             organism,
             regne,
             group2_inpn
         )
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.id_type.in_(tuple(types)))
+        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
