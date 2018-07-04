@@ -5,10 +5,13 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+SET search_path = gn_synthese, public, pg_catalog;
+
+
 ---------
 --DATAS--
 ---------
-INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, cd_nomenclature) VALUES
+INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, cd_nomenclature) VALUES
 ('TYP_INF_GEO',0,0,0,'1')
 ,('NAT_OBJ_GEO',0,0,0,'NSP')
 ,('METH_OBS',0,0,0,'21')
@@ -28,5 +31,5 @@ INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organi
 ,('TECHNIQUE_OBS',0,0,0,'133')
 ,('SENSIBILITE',0,0,0,'0')
 ,('STATUT_SOURCE',0,0,0,'NSP')
---,(106,0,0,0,473) --méthode de détermination en texte dans la synthèse pour le moment
+,('METH_DETERMIN',0,0,0,'1') 
 ;

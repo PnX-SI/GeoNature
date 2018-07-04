@@ -85,10 +85,6 @@ $BODY$
   ROWS 1000;
 
 
-ALTER TABLE gn_synthese.synthese
-ALTER COLUMN meta_v_taxref SET DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)'::character varying;
-
-
 
 DROP TABLE gn_meta.t_parameters;
 
@@ -144,6 +140,7 @@ CREATE TRIGGER trg_cor_site_area
 
 -- functions
 
+
 CREATE OR REPLACE FUNCTION ref_nomenclatures.get_id_nomenclature_type(mytype character varying) RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql AS
@@ -159,10 +156,10 @@ $$;
 CREATE OR REPLACE FUNCTION ref_nomenclatures.get_id_nomenclature(
     mytype character varying,
     mycdnomenclature character varying)
-  RETURNS character varying AS
+  RETURNS integer AS
 $BODY$
 --Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
-DECLARE theidnomenclature character varying;
+DECLARE theidnomenclature integer;
   BEGIN
 SELECT INTO theidnomenclature id_nomenclature
 FROM ref_nomenclatures.t_nomenclatures n
@@ -246,11 +243,43 @@ $$;
 ALTER TABLE ref_nomenclatures.bib_nomenclatures_types
   ADD CONSTRAINT unique_bib_nomenclatures_types_mnemonique UNIQUE (mnemonique);
 
+-- Modification de defauts dans gn_meta
+
+ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
+  ALTER COLUMN id_nomenclature_territorial_level SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('NIVEAU_TERRITORIAL');
+
+ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
+  ALTER COLUMN id_nomenclature_financing_type SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('TYPE_FINANCEMENT');
+
+ALTER TABLE ONLY gn_meta.t_datasets
+  ALTER COLUMN id_nomenclature_data_type SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('DATA_TYP');
+
+ALTER TABLE ONLY gn_meta.t_datasets
+  ALTER COLUMN id_nomenclature_dataset_objectif SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('SAMPLING_PLAN_TYP');
+
+ALTER TABLE ONLY gn_meta.t_datasets
+  ALTER COLUMN id_nomenclature_collecting_method SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('METHO_RECUEIL');
+
+ALTER TABLE ONLY gn_meta.t_datasets
+  ALTER COLUMN id_nomenclature_data_origin SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('DS_PUBLIQUE');
+
+ALTER TABLE ONLY gn_meta.t_datasets
+  ALTER COLUMN id_nomenclature_source_status SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('STATUT_SOURCE');
+
+ALTER TABLE ONLY gn_meta.t_datasets
+  ALTER COLUMN id_nomenclature_resource_type SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('RESOURCE_TYP');
+
+
+-- ref_nomenclature.defaults_nomenclatures_value
+
+-- TABLE
+
 DROP TABLE ref_nomenclatures.defaults_nomenclatures_value;
+
 CREATE TABLE ref_nomenclatures.defaults_nomenclatures_value
 (
-  mnemonique_type character varying(255) NOT NULL,
-  id_organism integer NOT NULL,
+  mnemonique_type character varying(50) NOT NULL,
+  id_organism integer NOT NULL DEFAULT 0,
   id_nomenclature integer NOT NULL,
   CONSTRAINT pk_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism),
   CONSTRAINT fk_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature)
@@ -270,18 +299,17 @@ WITH (
 
 --Datas
 
-
 INSERT INTO ref_nomenclatures.defaults_nomenclatures_value (mnemonique_type, id_organism, id_nomenclature) VALUES
 ('DS_PUBLIQUE',0,ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'))
 ,('STATUT_SOURCE',0,ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
-,('STATUT_VALID',0,ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '0')))
-,('RESOURCE_TYP',0,ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1')))
-,('DATA_TYP',0,ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1')))
-,('JDD_OBJECTIFS',0,ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1')))
-,('METHO_RECUEIL',0,ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1')))
-,('NIVEAU_TERRITORIAL',0,ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '3')))
-,('TYPE_FINANCEMENT',0,ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1')))
-,('METH_DETERMIN',0,ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '1')))
+,('STATUT_VALID',0,ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '0'))
+,('RESOURCE_TYP',0,ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'))
+,('DATA_TYP',0,ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'))
+,('JDD_OBJECTIFS',0,ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'))
+,('METHO_RECUEIL',0,ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1'))
+,('NIVEAU_TERRITORIAL',0,ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '3'))
+,('TYPE_FINANCEMENT',0,ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1'))
+,('METH_DETERMIN',0,ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '1'))
 ;
 
 
@@ -338,7 +366,6 @@ ALTER TABLE gn_monitoring.t_base_sites ADD CONSTRAINT check_t_base_sites_type_si
 --FUNCTIONS--
 -------------
 
-DROP FUNCTION gn_synthese.get_default_nomenclature_value(integer, integer, character varying, character varying);
 
 CREATE OR REPLACE FUNCTION gn_synthese.get_default_cd_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
 IMMUTABLE
@@ -367,8 +394,6 @@ $$;
 ----TABLE----
 -------------
 
-DROP VIEW gn_synthese.v_synthese_for_web_app ;
-DROP VIEW gn_synthese.v_synthese_decode_nomenclatures;
 DROP TABLE gn_synthese.cor_area_synthese;
 DROP TABLE gn_synthese.synthese;
 DROP TABLE gn_synthese.defaults_nomenclatures_value;
@@ -737,3 +762,8 @@ INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organi
 ,('METH_DETERMIN',0,0,0,'1') 
 ;
 
+-- Suppression des fonction obselètes
+DROP FUNCTION ref_nomenclatures.get_default_nomenclature_value(integer, integer);
+DROP FUNCTION ref_nomenclatures.get_id_nomenclature(integer, character varying);
+
+DROP FUNCTION gn_synthese.get_default_nomenclature_value(integer, integer, character varying, character varying);
