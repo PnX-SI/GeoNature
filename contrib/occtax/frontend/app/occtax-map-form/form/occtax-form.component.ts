@@ -154,7 +154,7 @@ export class OcctaxFormComponent implements OnInit {
     // disable button
     this.disabledAfterPost = true;
     // Post
-    console.log(JSON.stringify(finalForm));
+    //console.log(JSON.stringify(finalForm));
 
     this._cfs.postOcctax(finalForm).subscribe(
       response => {

@@ -22,7 +22,6 @@ export class FormService {
   }
 
   getCurrentTaxon($event) {
-    console.log($event);
     this.taxonsList.push($event.item);
     $event.preventDefault();
     this.searchForm.controls.cd_nom.reset();
