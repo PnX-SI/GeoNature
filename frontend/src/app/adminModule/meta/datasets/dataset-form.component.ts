@@ -110,7 +110,6 @@ export class DatasetFormComponent implements OnInit {
         } else {
           const formCor = this.generateCorDatasetActorForm();
           this.cor_dataset_actor_array.push(formCor);
-          console.log(formCor.get('roles'));
           //hack pour attendre que le template soit rendu avant de mettre les valeurs au formulaire
           setTimeout(() => {
             this.cor_dataset_actor_array.controls[index].patchValue(formData);
@@ -124,7 +123,6 @@ export class DatasetFormComponent implements OnInit {
     const cor_dataset_actor_array = JSON.parse(JSON.stringify(this.cor_dataset_actor_array.value));
     const update_cor_dataset_actor = [];
     cor_dataset_actor_array.forEach(element => {
-      console.log(element);
       element.organisms.forEach(org => {
         const corOrg = {
           id_nomenclature_actor_role: element.id_nomenclature_actor_role,
@@ -143,15 +141,11 @@ export class DatasetFormComponent implements OnInit {
       });
     });
 
-    console.log(update_cor_dataset_actor);
-
     const dataset = this.datasetForm.value;
 
     dataset['cor_dataset_actor'] = update_cor_dataset_actor;
-    console.log(this.datasetForm.value);
     this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(
       data => {
-        console.log(data);
         this._router.navigate(['/admin/datasets']);
         this._commonService.translateToaster('success', 'Meta.Datasetadded');
       },

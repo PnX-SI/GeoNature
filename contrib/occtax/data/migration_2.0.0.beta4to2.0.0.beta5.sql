@@ -1,3 +1,27 @@
+CREATE OR REPLACE FUNCTION pr_occtax.get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
+--Return -1 if nothing matche with given parameters
+  DECLARE
+    thenomenclatureid integer;
+  BEGIN
+      SELECT INTO thenomenclatureid id_nomenclature
+      FROM pr_occtax.defaults_nomenclatures_value
+      WHERE mnemonique_type = mytype
+      AND (id_organism = 0 OR id_organism = myidorganism)
+      AND (regne = '0' OR regne = myregne)
+      AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
+      ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
+    IF (thenomenclatureid IS NOT NULL) THEN
+      RETURN thenomenclatureid;
+    END IF;
+    RETURN NULL;
+  END;
+$$;
+
+
 DROP TABLE pr_occtax.defaults_nomenclatures_value;
 
 CREATE TABLE pr_occtax.defaults_nomenclatures_value (
@@ -83,3 +107,7 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ;
+
+
+
+DROP FUNCTION pr_occtax.get_default_nomenclature_value(integer, integer, character varying, character varying);

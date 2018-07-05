@@ -395,8 +395,6 @@ export class OcctaxFormService {
   patchAllDefaultNomenclature() {
     // fetch and patch all default nomenclature
     this.getDefaultValues(this.currentUser.organismId).subscribe(data => {
-      console.log(data);
-
       this.defaultValues = data;
       this.patchDefaultNomenclatureReleve(data);
       this.patchDefaultNomenclatureOccurrence(data);

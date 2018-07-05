@@ -109,7 +109,6 @@ export class TaxonomyComponent implements OnInit {
         }
       })
       .map(response => {
-        console.log(response);
         this.noResult = response.length === 0;
         this.isLoading = false;
         return response.slice(0, this.listLength);

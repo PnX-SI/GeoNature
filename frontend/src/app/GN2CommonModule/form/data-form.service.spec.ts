@@ -34,7 +34,6 @@ describe('DataFormService', () => {
         cd_nom: 67111
       };
       service.searchTaxonomy('ablette', '1001').subscribe(taxons => {
-        console.log(taxons);
         expect(taxons.length).toBe(1);
         expect(taxons[0]).toEqual(dummyTaxon);
       });
