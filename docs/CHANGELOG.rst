@@ -21,16 +21,23 @@ https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
 * Mise en place de scripts de migration global de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``) et du schéma ``pr_occtax`` (``contrib/occtax/data/migration_2.0.0.beta4to2.0.0.beta5.sql``), d'un script générique de migration de l'application (``install/migration/migration.sh``) et d'une doc de mise à jour (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst#mise-%C3%A0-jour-de-lapplication)
 * Réintégration des fichiers de configuration, de logs et des modules externes dans les répertoires de l'application (#375)
 * Ajout de routes à ``gn_monitoring``
+* Ajout d'un trigger pour calculer automatiquement les zonages des sites de suivi (``gn_monitoring.fct_trg_cor_site_area()``)
 * Améliorations et documentation des commandes d'installation d'un module
 * Ajout des unités géographiques dans le schéma ``ref_geo``
+* Ajout d'un bouton ``Annuler`` dans le formulaire Occtax
+* Gestion des conflits de nomenclatures en n'utilisant plus leur ``id_type`` ni leur ``id_nomenclature`` (#384)
+* Migration du SQL de ``ref_nomenclautres`` dans le dépôt du sous-module (https://github.com/PnX-SI/Nomenclature-api-module)
+* Début de mise en place d'un backoffice (métadonnées et nomenclatures)
 
 **Corrections**
 
 * OccTax : Correction du double post
+* OccTax : Correction des droits dans les JDD
+* OccTax : Correction de l'affichage des observers_txt dans la fiche d'un relevé
 * Correction de la gestion générique des médias
 * Suppression du lien entre ref_geo et ref_nomenclatures (#374)
 * Compléments et relecture de la documentation
-* Correction
+* Correction 
 
 **Notes de version**
 
