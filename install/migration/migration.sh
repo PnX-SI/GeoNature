@@ -1,12 +1,12 @@
 #!/bin/bash
 
 
-cp ../geonature_old/config/settings.ini config/settings.ini
-cp ../geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
-cp -r ../geonature_old/frontend/src/custom/* frontend/src/custom/
-cp ../geonature_old/backend/gunicorn_start.sh.sample backend/gunicorn_start.sh
+cp /home/$USER/geonature_old/config/settings.ini config/settings.ini
+cp /home/$USER/geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
+cp -r /home/$USER/geonature_old/frontend/src/custom/* frontend/src/custom/
+cp -r /home/$USER/geonature_old/external_modules/* external_modules
 
-# Création du répertoitre statci et rapattriement des médias
+# Création du répertoitre static et rapattriement des médias
 if [ ! -d 'backend/static/' ]
 then
   mkdir static
@@ -16,21 +16,21 @@ if [ ! -d 'backend/static/medias/' ]
 then
   mkdir ./static/medias
 fi
-cp -r ../geonature_old/backend/static/medias/* backend/static/medias
+cp -r /home/$USER/geonature_old/backend/static/medias/* backend/static/medias
 
 if [ ! -d 'backend/static/shapefiles/' ]
 then
-  mkdir backend/static/shapefiles
+  mkdir /home/$USER/geonature/backend/static/shapefiles
 fi
 
 
 
-. config/settings.ini
+. /home/$USER/geonature/config/settings.ini
 
-cd frontend
+cd /home/$USER/geonature/frontend
 npm install
 
-cd ../backend
+cd /home/$USER/geonature/backend
 
 if [ -d 'venv/' ]
 then
