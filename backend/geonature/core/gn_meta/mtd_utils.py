@@ -5,6 +5,7 @@ from flask import current_app
 from xml.etree import ElementTree as ET
 
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.sql import func
 
 from geonature.utils import utilsrequests
 from geonature.utils.errors import GeonatureApiError
@@ -170,14 +171,14 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             # id_role in cor_dataset_actor
             actor = CorDatasetActor(
                 id_role=id_user,
-                id_nomenclature_actor_role=393
+                id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
             )
             dataset.cor_dataset_actor.append(actor)
             # id_organism in cor_dataset_actor
             if id_organism:
                 actor = CorDatasetActor(
                     id_organism=id_organism,
-                    id_nomenclature_actor_role=393
+                    id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
                 )
                 dataset.cor_dataset_actor.append(actor)
 
@@ -195,7 +196,8 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                 error_msg = """
                 Error posting JDD {} \n\n Trace: \n {}
                 """.format(ds['unique_dataset_id'], e)
-                log.error(error_msg)
+                log.error(error_msg)                
+                raise GeonatureApiError(error_msg)
 
         return [d.as_dict() for d in dataset_list_model]
     return {'message': 'Not found'}, 404
