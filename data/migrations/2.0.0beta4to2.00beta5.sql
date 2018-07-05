@@ -86,12 +86,6 @@ $BODY$
 
 
 
-DROP TABLE gn_meta.t_parameters;
-
-DROP FUNCTION gn_meta.get_default_parameter(text, integer);
-
-
-
 -- Modification de la table gn_commons.t_modules
 
 ALTER TABLE gn_commons.t_modules
@@ -100,15 +94,19 @@ RENAME COLUMN active TO active_frontend;
 ALTER TABLE gn_commons.t_modules
 ADD COLUMN active_backend BOOLEAN;
 
+UPDATE gn_commons.t_modules
+SET active_backend = true WHERE module_name = 'occtax';
+
 
 -- Modification de gn_meta.sinp_datatype_protocols
 ALTER TABLE gn_meta.sinp_datatype_protocols ALTER COLUMN protocol_desc TYPE text;
 
 
 --suppression du lien entre les nomenclatures ref_geo
-ALTER TABLE ONLY ref_geo.l_areas DROP COLUMN id_nomenclature_area_type;
 ALTER TABLE ONLY ref_geo.bib_areas_types DROP CONSTRAINT fk_bib_areas_types_id_nomenclature_area_type;
 ALTER TABLE ref_geo.bib_areas_types DROP CONSTRAINT check_bib_areas_types_area_type;
+ALTER TABLE ONLY ref_geo.bib_areas_types DROP COLUMN id_nomenclature_area_type;
+
 
 
 -- Modification monitoring : rajout trigger de calcul des intersections avec ref_geo
@@ -859,8 +857,13 @@ $BODY$
   COST 100;
 
 
--- Suppression des fonction obselètes
+-- Suppression des tables et fonctions obselètes
 DROP FUNCTION ref_nomenclatures.get_default_nomenclature_value(integer, integer);
 DROP FUNCTION ref_nomenclatures.get_id_nomenclature(integer, character varying);
 
 DROP FUNCTION gn_synthese.get_default_nomenclature_value(integer, integer, character varying, character varying);
+
+
+DROP TABLE gn_meta.t_parameters;
+
+DROP FUNCTION gn_meta.get_default_parameter(text, integer);
