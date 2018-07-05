@@ -33,7 +33,7 @@ class TRoles (DB.Model):
     nom_role = DB.Column(DB.Unicode)
     prenom_role = DB.Column(DB.Unicode)
     id_organisme = DB.Column(DB.Integer)
-    groupe = DB.Column(DB.Boolean)
+    groupe = DB.Column(DB.Boolean, default=False)
 
     def as_dict(self, recursif=False, columns=()):
         nom_role = self.nom_role or ''

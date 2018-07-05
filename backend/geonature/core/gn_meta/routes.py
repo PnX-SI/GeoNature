@@ -18,11 +18,7 @@ from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
 
-
-
 routes = Blueprint('gn_meta', __name__)
-
-
 
 # get the root logger
 log = logging.getLogger()
@@ -84,7 +80,6 @@ def get_datasets(info_role):
         ).filter(
             CorDatasetActor.id_role == info_role.id_role
         )
-
     data = q.all()
 
     return [d.as_dict(True) for d in data]
