@@ -169,6 +169,7 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0;
         this.fs.disabled = true;
+        this.fs.showCounting = false;
         // redirect
         this.router.navigate(['/occtax']);
       },
