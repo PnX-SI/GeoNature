@@ -265,9 +265,9 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
 
----------
---VIEWS--
----------
+----------------------
+--MATERIALIZED VIEWS--
+----------------------
 --DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons;
 CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
 WITH
@@ -305,7 +305,64 @@ LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
 ORDER BY loc.cd_ref;
 
 
+-----------
+--INDEXES--
+-----------
+CREATE INDEX _synthese_t_sources ON synthese USING btree (id_source);
 
+CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
+
+CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
+
+CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
+
+CREATE INDEX i_synthese_altitude_min ON synthese USING btree (altitude_min);
+
+CREATE INDEX i_synthese_altitude_max ON synthese USING btree (altitude_max);
+
+CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
+
+CREATE INDEX i_synthese_the_geom_local ON synthese USING gist (the_geom_local);
+
+CREATE INDEX i_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
+
+CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
+
+CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
+--REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
+
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
+  RETURNS TABLE(cd_ref int, nbobs bigint,  daymin int, daymax int, altitudemin int, altitudemax int, bbox4326 geometry) AS
+$BODY$
+  BEGIN
+    --USAGE (getting all fields): SELECT * FROM gn_synthese.fct_calculate_min_max_for_taxon(351);
+    --USAGE (getting one or more field) : SELECT cd_ref, bbox4326 FROM gn_synthese.fct_calculate_min_max_for_taxon(351)
+    --See field names and types in TABLE declaration above
+    --RETURN one row for the supplied cd_ref or cd_nom
+    --This function can be use in a FROM clause, like a table or a view
+	RETURN QUERY SELECT * FROM gn_synthese.vm_min_max_for_taxons WHERE cd_ref = taxonomie.find_cdref(mycdnom);
+  END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+  RETURNS trigger AS
+$BODY$
+begin
+        PERFORM REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+---------
+--VIEWS--
+---------
 CREATE OR REPLACE VIEW v_synthese_for_web_app AS
 WITH nomenclatures AS (
   SELECT
@@ -451,59 +508,6 @@ CREATE OR REPLACE VIEW v_synthese_decode_nomenclatures AS
      JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.cd_nomenclature = s.cd_nomenclature_source_status
      JOIN ref_nomenclatures.t_nomenclatures n20 ON n19.cd_nomenclature = s.cd_nomenclature_determination_method
      ;
------------
---INDEXES--
------------
-CREATE INDEX _synthese_t_sources ON synthese USING btree (id_source);
-
-CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
-
-CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
-
-CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
-
-CREATE INDEX i_synthese_altitude_min ON synthese USING btree (altitude_min);
-
-CREATE INDEX i_synthese_altitude_max ON synthese USING btree (altitude_max);
-
-CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
-
-CREATE INDEX i_synthese_the_geom_local ON synthese USING gist (the_geom_local);
-
-CREATE INDEX i_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
-
-CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
-
-CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
---REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
-
--------------
---FUNCTIONS--
--------------
-CREATE OR REPLACE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
-  RETURNS TABLE(cd_ref int, nbobs bigint,  daymin int, daymax int, altitudemin int, altitudemax int, bbox4326 geometry) AS
-$BODY$
-  BEGIN
-    --USAGE (getting all fields): SELECT * FROM gn_synthese.fct_calculate_min_max_for_taxon(351);
-    --USAGE (getting one or more field) : SELECT cd_ref, bbox4326 FROM gn_synthese.fct_calculate_min_max_for_taxon(351)
-    --See field names and types in TABLE declaration above
-    --RETURN one row for the supplied cd_ref or cd_nom
-    --This function can be use in a FROM clause, like a table or a view
-	RETURN QUERY SELECT * FROM gn_synthese.vm_min_max_for_taxons WHERE cd_ref = taxonomie.find_cdref(mycdnom);
-  END;
-$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
-
-CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
-  RETURNS trigger AS
-$BODY$
-begin
-        PERFORM REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
-end;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
 
 
 ------------
@@ -527,151 +531,6 @@ CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
   FOR EACH ROW
   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
-
----------
---VIEWS--
----------
-CREATE OR REPLACE VIEW v_synthese_for_web_app AS
-WITH nomenclatures AS (
-  SELECT
-    s.id_synthese, 
-    n3.label_default AS nat_obj_geo,
-    n24.label_default AS grp_typ,
-    n14.label_default AS obs_meth,
-    n100.label_default AS obs_technique,
-    n13.label_default AS bio_status,
-    n7.label_default AS bio_condition,
-    n8.label_default AS naturalness,
-    n15.label_default AS exist_proof,
-    n101.label_default AS valid_status,
-    n5.label_default AS diffusion_level,
-    n10.label_default AS life_stage,
-    n9.label_default AS sex,
-    n6.label_default AS obj_count,
-    n21.label_default AS type_count,
-    n16.label_default AS sensitivity,
-    n18.label_default AS observation_status,
-    n4.label_default AS blurring,
-    n19.label_default AS source_status
-FROM gn_synthese.synthese s
-JOIN ref_nomenclatures.t_nomenclatures n3 ON n3.id_nomenclature = s.id_nomenclature_geo_object_nature
-JOIN ref_nomenclatures.t_nomenclatures n24 ON n24.id_nomenclature = s.id_nomenclature_grp_typ
-JOIN ref_nomenclatures.t_nomenclatures n14 ON n14.id_nomenclature = s.id_nomenclature_obs_meth
-JOIN ref_nomenclatures.t_nomenclatures n100 ON n100.id_nomenclature = s.id_nomenclature_obs_technique
-JOIN ref_nomenclatures.t_nomenclatures n13 ON n13.id_nomenclature = s.id_nomenclature_bio_status
-JOIN ref_nomenclatures.t_nomenclatures n7 ON n7.id_nomenclature = s.id_nomenclature_bio_condition
-JOIN ref_nomenclatures.t_nomenclatures n8 ON n8.id_nomenclature = s.id_nomenclature_naturalness
-JOIN ref_nomenclatures.t_nomenclatures n15 ON n15.id_nomenclature = s.id_nomenclature_exist_proof
-JOIN ref_nomenclatures.t_nomenclatures n101 ON n101.id_nomenclature = s.id_nomenclature_valid_status
-JOIN ref_nomenclatures.t_nomenclatures n5 ON n5.id_nomenclature = s.id_nomenclature_diffusion_level
-JOIN ref_nomenclatures.t_nomenclatures n10 ON n10.id_nomenclature = s.id_nomenclature_life_stage
-JOIN ref_nomenclatures.t_nomenclatures n9 ON n9.id_nomenclature = s.id_nomenclature_sex
-JOIN ref_nomenclatures.t_nomenclatures n6 ON n6.id_nomenclature = s.id_nomenclature_obj_count
-JOIN ref_nomenclatures.t_nomenclatures n21 ON n21.id_nomenclature = s.id_nomenclature_type_count
-JOIN ref_nomenclatures.t_nomenclatures n16 ON n16.id_nomenclature = s.id_nomenclature_sensitivity
-JOIN ref_nomenclatures.t_nomenclatures n18 ON n18.id_nomenclature = s.id_nomenclature_observation_status
-JOIN ref_nomenclatures.t_nomenclatures n4 ON n4.id_nomenclature = s.id_nomenclature_blurring
-JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.id_nomenclature = s.id_nomenclature_source_status
-)
-SELECT 
-  s.id_synthese, 
-  s.id_source, 
-  so.name_source,
-  so.entity_source_pk_field,
-  s.entity_source_pk_value,
-  d.dataset_name,
-  n.nat_obj_geo,
-  n.grp_typ,
-  n.obs_meth,
-  n.obs_technique,
-  n.bio_status,
-  n.bio_condition,
-  n.naturalness,
-  n.exist_proof,
-  n.valid_status,
-  n.diffusion_level,
-  n.life_stage,
-  n.sex,
-  n.obj_count,
-  n.type_count,
-  n.sensitivity,
-  n.observation_status,
-  n.blurring,
-  n.source_status,
-  m.insee_com, --TODO attention changer le JOIN en prod
-  m.nom_com,
-  s.count_min,
-  s.count_max,
-  s.cd_nom,
-  t.nom_complet,
-  COALESCE(t.nom_vern, 'Null'::character varying(255)) AS nom_vern,
-  s.nom_cite,
-  s.meta_v_taxref AS taxref_version,
-  s.sample_number_proof,
-  s.digital_proof,
-  s.non_digital_proof,
-  s.altitude_min,
-  s.altitude_max,
-  s.the_geom_point,
-  s.the_geom_4326,
-  s.date_min,
-  s.date_max,
-  v.prenom_role || ' ' || v.nom_role AS validateur,
-  s.validation_comment,
-  s.meta_validation_date AS validation_date,
-  s.observers,
-  s.determiner,
-  s.determination_method,
-  s.comments
-FROM gn_synthese.synthese s
-JOIN gn_synthese.t_sources so ON so.id_source = s.id_source
-JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-JOIN nomenclatures n ON n.id_synthese = s.id_synthese
-LEFT JOIN ref_geo.li_municipalities m ON m.insee_com = s.id_municipality --TODO attention changer le JOIN en prod
-LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
-JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
-WHERE deleted = false;
-
-CREATE OR REPLACE VIEW v_synthese_decode_nomenclatures AS 
- SELECT s.id_synthese,
-    n3.label_default AS nat_obj_geo,
-    n24.label_default AS grp_typ,
-    n14.label_default AS obs_meth,
-    n100.label_default AS obs_technique,
-    n13.label_default AS bio_status,
-    n7.label_default AS bio_condition,
-    n8.label_default AS naturalness,
-    n15.label_default AS exist_proof,
-    n101.label_default AS valid_status,
-    n5.label_default AS diffusion_level,
-    n10.label_default AS life_stage,
-    n9.label_default AS sex,
-    n6.label_default AS obj_count,
-    n21.label_default AS type_count,
-    n16.label_default AS sensitivity,
-    n18.label_default AS observation_status,
-    n4.label_default AS blurring,
-    n19.label_default AS source_status
-   FROM gn_synthese.synthese s
-     JOIN ref_nomenclatures.t_nomenclatures n3 ON n3.id_nomenclature = s.id_nomenclature_geo_object_nature
-     JOIN ref_nomenclatures.t_nomenclatures n24 ON n24.id_nomenclature = s.id_nomenclature_grp_typ
-     JOIN ref_nomenclatures.t_nomenclatures n14 ON n14.id_nomenclature = s.id_nomenclature_obs_meth
-     JOIN ref_nomenclatures.t_nomenclatures n100 ON n100.id_nomenclature = s.id_nomenclature_obs_technique
-     JOIN ref_nomenclatures.t_nomenclatures n13 ON n13.id_nomenclature = s.id_nomenclature_bio_status
-     JOIN ref_nomenclatures.t_nomenclatures n7 ON n7.id_nomenclature = s.id_nomenclature_bio_condition
-     JOIN ref_nomenclatures.t_nomenclatures n8 ON n8.id_nomenclature = s.id_nomenclature_naturalness
-     JOIN ref_nomenclatures.t_nomenclatures n15 ON n15.id_nomenclature = s.id_nomenclature_exist_proof
-     JOIN ref_nomenclatures.t_nomenclatures n101 ON n101.id_nomenclature = s.id_nomenclature_valid_status
-     JOIN ref_nomenclatures.t_nomenclatures n5 ON n5.id_nomenclature = s.id_nomenclature_diffusion_level
-     JOIN ref_nomenclatures.t_nomenclatures n10 ON n10.id_nomenclature = s.id_nomenclature_life_stage
-     JOIN ref_nomenclatures.t_nomenclatures n9 ON n9.id_nomenclature = s.id_nomenclature_sex
-     JOIN ref_nomenclatures.t_nomenclatures n6 ON n6.id_nomenclature = s.id_nomenclature_obj_count
-     JOIN ref_nomenclatures.t_nomenclatures n21 ON n21.id_nomenclature = s.id_nomenclature_type_count
-     JOIN ref_nomenclatures.t_nomenclatures n16 ON n16.id_nomenclature = s.id_nomenclature_sensitivity
-     JOIN ref_nomenclatures.t_nomenclatures n18 ON n18.id_nomenclature = s.id_nomenclature_observation_status
-     JOIN ref_nomenclatures.t_nomenclatures n4 ON n4.id_nomenclature = s.id_nomenclature_blurring
-     JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.id_nomenclature = s.id_nomenclature_source_status
-  WHERE s.deleted = false;
 
 --------
 --DATA--
