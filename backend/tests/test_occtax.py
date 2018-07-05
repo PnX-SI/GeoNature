@@ -121,7 +121,7 @@ class TestApiModulePrOcctax:
         
 
     # ## Test des droits ####
-    def test_get_releve_right(self):
+    def test_get_and_delete_releve(self):
         """
             user admin is observer of releve 1
         """
@@ -133,25 +133,8 @@ class TestApiModulePrOcctax:
         )
         assert response.status_code == 200
 
-        """
-            user agent is not observer, digitiser
-            or in cor_dataset_actor
-        """
-        token = get_token(
-            self.client,
-            login="agent",
-            password="admin"
-        )
-        self.client.set_cookie('/', 'token', token)
-
-        with pytest.raises(InsufficientRightsError):
-            response = self.client.get(
-                url_for('pr_occtax.deleteOneReleve', id_releve=1)
-            )
 
     def test_user_cannot_delete_releve(self):
-        import requests
-
         """
             user agent is not observer, digitiser
             or in cor_dataset_actor
