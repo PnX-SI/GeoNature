@@ -480,7 +480,7 @@ CREATE OR REPLACE VIEW v_acquisition_frameworks_protocols AS
 	JOIN gn_meta.cor_dataset_protocol cdp ON cdp.id_dataset = d.id_dataset;
 
 
-CREATE OR REPLACE VIEW gn_meta.v_acquisition_frameworks_territories AS
+CREATE OR REPLACE VIEW v_acquisition_frameworks_territories AS
 	SELECT d.id_acquisition_framework, cdt.id_nomenclature_territory, cdt.territory_desc
 	FROM gn_meta.t_acquisition_frameworks taf
 	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
@@ -499,7 +499,7 @@ CREATE OR REPLACE VIEW gn_meta.v_acquisition_frameworks_territories AS
 -- ;
 -- SELECT pg_catalog.setval('sinp_datatype_actors_id_actor_seq', 5, false);
 
-INSERT INTO gn_meta.sinp_datatype_protocols (id_protocol, unique_protocol_id, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
-(0, '9ed37cb1-803b-4eec-9ecd-31880475bbe9', 'hors protocole','observation réalisées hors protocole',422,null)
+INSERT INTO sinp_datatype_protocols (id_protocol, unique_protocol_id, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
+(0, '9ed37cb1-803b-4eec-9ecd-31880475bbe9', 'hors protocole','observation réalisées hors protocole',ref_nomenclatures.get_id_nomenclature('TYPE_PROTOCOLE','1'),null)
 ;
 SELECT pg_catalog.setval('sinp_datatype_protocols_id_protocol_seq', 1, false);
