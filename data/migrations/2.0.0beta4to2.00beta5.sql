@@ -138,6 +138,18 @@ CREATE TRIGGER trg_cor_site_area
 
 -- functions
 
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_id_nomenclature_type(mytype character varying) RETURNS integer
+IMMUTABLE
+LANGUAGE plpgsql AS
+$$
+--Function which return the id_type from the mnemonique of a nomenclature type
+DECLARE theidtype character varying;
+  BEGIN
+SELECT INTO theidtype id_type FROM ref_nomenclatures.bib_nomenclatures_types WHERE mnemonique = mytype;
+return theidtype;
+  END;
+$$;
+
 
 CREATE OR REPLACE FUNCTION ref_nomenclatures.get_id_nomenclature(
     mytype character varying,

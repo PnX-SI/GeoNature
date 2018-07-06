@@ -37,8 +37,6 @@ cp /etc/geonature/geonature_config.toml $geonature_dir/config/geonature_config.t
 cp /etc/geonature/mods-enabled/occtax/conf_gn_module.toml $geonature_dir/external_modules/occtax/config/conf_gn_module.toml
 
 
-sudo rm -r /etc/geonature
-
 sudo cp -r /var/log/geonature $geonature_dir/var/log
 sudo chown -R $USER $geonature_dir/var/log/*
 
