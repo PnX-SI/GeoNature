@@ -352,7 +352,7 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
-    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text) NOT VALID
+    ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
@@ -535,8 +535,6 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ;
 
-
-SELECT ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu')
 
 INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
 ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 14 )
