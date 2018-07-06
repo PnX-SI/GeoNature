@@ -315,7 +315,7 @@ ALTER TABLE ONLY gn_meta.t_datasets
   ALTER COLUMN id_nomenclature_data_type SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('DATA_TYP');
 
 ALTER TABLE ONLY gn_meta.t_datasets
-  ALTER COLUMN id_nomenclature_dataset_objectif SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('SAMPLING_PLAN_TYP');
+  ALTER COLUMN id_nomenclature_dataset_objectif SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_OBJECTIFS');
 
 ALTER TABLE ONLY gn_meta.t_datasets
   ALTER COLUMN id_nomenclature_collecting_method SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('METHO_RECUEIL');

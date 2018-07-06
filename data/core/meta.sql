@@ -178,7 +178,7 @@ CREATE TABLE t_datasets (
     keywords text,
     marine_domain boolean NOT NULL,
     terrestrial_domain boolean NOT NULL,
-    id_nomenclature_dataset_objectif integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('SAMPLING_PLAN_TYP'),
+    id_nomenclature_dataset_objectif integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_OBJECTIFS'),
     bbox_west character varying(10),
     bbox_east character varying(10),
     bbox_south character varying(10),
