@@ -59,7 +59,7 @@ if [ ! -d 'backend/static/medias/' ]
 then
   mkdir /home/$USER/geonature/backend/static/medias
 fi
-cp -r /home/$USER/geonature_old/backend/static/medias/* backend/static/medias
+cp -r /home/$USER/geonature_old/backend/static/medias/* mkdir /home/$USER/geonature/backend/static/medias
 
 if [ ! -d 'backend/static/shapefiles/' ]
 then
@@ -74,7 +74,7 @@ cd /home/$USER/geonature/backend
 
 if [ -d 'venv/' ]
 then
-  sudo rm -rf venv
+  sudo rm -r venv
 fi
 
 if [[ $python_path ]]; then
