@@ -22,17 +22,17 @@ AS $$
 --Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
 --Return -1 if nothing matche with given parameters
   DECLARE
-    thecdnomenclatureid integer;
+    thenomenclaturecd integer;
   BEGIN
-      SELECT INTO thecdnomenclatureid cd_nomenclature
+      SELECT INTO thenomenclaturecd cd_nomenclature
       FROM gn_synthese.defaults_nomenclatures_value
       WHERE mnemonique_type = myidtype
       AND (id_organism = 0 OR id_organism = myidorganism)
       AND (regne = '0' OR regne = myregne)
       AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
       ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
-    IF (thenomenclatureid IS NOT NULL) THEN
-      RETURN thenomenclatureid;
+    IF (thenomenclaturecd IS NOT NULL) THEN
+      RETURN thenomenclaturecd;
     END IF;
     RETURN NULL;
   END;
@@ -62,7 +62,7 @@ CREATE TABLE synthese (
     unique_id_sinp uuid,
     unique_id_sinp_grp uuid,
     id_source integer,
-    entity_source_pk_value integer,
+    entity_source_pk_value character varying,
     id_dataset integer,
     cd_nomenclature_geo_object_nature character varying DEFAULT get_default_cd_nomenclature_value('NAT_OBJ_GEO'),
     cd_nomenclature_grp_typ character varying DEFAULT get_default_cd_nomenclature_value('TYP_GRP'),
