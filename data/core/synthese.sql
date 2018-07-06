@@ -72,7 +72,7 @@ CREATE TABLE synthese (
     cd_nomenclature_bio_condition character varying DEFAULT get_default_cd_nomenclature_value('ETA_BIO'),
     cd_nomenclature_naturalness character varying DEFAULT get_default_cd_nomenclature_value('NATURALITE'),
     cd_nomenclature_exist_proof character varying DEFAULT get_default_cd_nomenclature_value('PREUVE_EXIST'),
-    cd_nomenclature_valid_status character varying DEFAULT get_default_cd_nomenclature_value('SENSIBILITE'),
+    cd_nomenclature_valid_status character varying DEFAULT get_default_cd_nomenclature_value('STATUT_VALID'),
     cd_nomenclature_diffusion_level character varying DEFAULT get_default_cd_nomenclature_value('NIV_PRECIS'),
     cd_nomenclature_life_stage character varying DEFAULT get_default_cd_nomenclature_value('STADE_VIE'),
     cd_nomenclature_sex character varying DEFAULT get_default_cd_nomenclature_value('SEXE'),
@@ -366,7 +366,7 @@ $BODY$
 CREATE OR REPLACE VIEW v_synthese_for_web_app AS
 WITH nomenclatures AS (
   SELECT
-    s.id_synthese, 
+    s.id_synthese,
     n3.label_default AS nat_obj_geo,
     n24.label_default AS grp_typ,
     n14.label_default AS obs_meth,
@@ -407,9 +407,9 @@ JOIN ref_nomenclatures.t_nomenclatures n4 ON n4.cd_nomenclature = s.cd_nomenclat
 JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.cd_nomenclature = s.cd_nomenclature_source_status
 JOIN ref_nomenclatures.t_nomenclatures n20 ON n19.cd_nomenclature = s.cd_nomenclature_determination_method
 )
-SELECT 
-  s.id_synthese, 
-  s.id_source, 
+SELECT
+  s.id_synthese,
+  s.id_source,
   so.name_source,
   so.entity_source_pk_field,
   s.entity_source_pk_value,
@@ -466,7 +466,7 @@ LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
 
-CREATE OR REPLACE VIEW v_synthese_decode_nomenclatures AS 
+CREATE OR REPLACE VIEW v_synthese_decode_nomenclatures AS
  SELECT s.id_synthese,
     n3.label_default AS nat_obj_geo,
     n24.label_default AS grp_typ,
