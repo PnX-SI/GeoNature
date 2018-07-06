@@ -193,7 +193,7 @@ $$
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION ref_nomenclature.check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) RETURNS boolean
+CREATE OR REPLACE FUNCTION ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) RETURNS boolean
 IMMUTABLE
 LANGUAGE plpgsql AS
 $$
@@ -318,7 +318,7 @@ ALTER TABLE ONLY gn_meta.t_datasets
   ALTER COLUMN id_nomenclature_resource_type SET DEFAULT ref_nomenclatures.get_default_nomenclature_value('RESOURCE_TYP');
 
 
--- ref_nomenclature.defaults_nomenclatures_value
+-- ref_nomenclatures.defaults_nomenclatures_value
 
 -- TABLE
 
@@ -449,8 +449,6 @@ $BODY$
 -- Suppression des tables et fonctions obselètes
 DROP FUNCTION ref_nomenclatures.get_default_nomenclature_value(integer, integer);
 DROP FUNCTION ref_nomenclatures.get_id_nomenclature(integer, character varying);
-
-DROP FUNCTION gn_synthese.get_default_nomenclature_value(integer, integer, character varying, character varying);
 
 
 DROP TABLE gn_meta.t_parameters;
