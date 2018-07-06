@@ -52,12 +52,12 @@ rm /tmp/synthese.sql
 # Création du répertoitre static et rapattriement des médias
 if [ ! -d 'backend/static/' ]
 then
-  mkdir static
+  mkdir /home/$USER/geonature/backend/static
 fi
 
 if [ ! -d 'backend/static/medias/' ]
 then
-  mkdir ./static/medias
+  mkdir /home/$USER/geonature/backend/static/medias
 fi
 cp -r /home/$USER/geonature_old/backend/static/medias/* backend/static/medias
 
