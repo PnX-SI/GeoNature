@@ -231,6 +231,18 @@ Chaque ligne correspond à un worker Gunicorn.
 
 Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
 
+Supervision des services
+""""""""""""""""""""""""
+
+- Vérifier que les applications GeoNature et TaxHub sont accessibles en http
+- Vérifier que leurs services (API) sont lancés et fonctionnent correctement (tester les deux routes ci-dessous).
+
+  - Exemple de route locale pour tester l'API GeoNature : http://127.0.0.1:8000/occtax/defaultNomenclatures qui ne doit pas renvoyer de 404. URL absolue : https://urlgeonature/api/occtax/defaultNomenclatures
+  - Exemple de route locale pour tester l'API TaxHub : http://127.0.0.1:5000/api/taxref/regnewithgroupe2 qui ne doit pas renvoyer de 404. URL absolue : https://urltaxhub/api/taxref/regnewithgroupe2
+    
+- Vérifier que les fichiers de logs de TaxHub et GeoNature ne sont pas trop volumineux pour la capacité du serveur
+- Vérifier que les services nécessaires au fonctionnement de l'application tournent bien (Apache, PostgreSQL)
+
 Stopper/Redémarrer les API
 """""""""""""""""""""""""""
 
@@ -238,8 +250,8 @@ Les API de GeoNature et de TaxHub sont gérées par le supervisor pour être lan
 
 Pour les stopper, exécuter les commandes suivantes :
 
-- GeoNature: ``sudo supervisorctl stop geonature2``
-- TaxHub: ``sudo supervisorctl stop taxhub``
+- GeoNature : ``sudo supervisorctl stop geonature2``
+- TaxHub : ``sudo supervisorctl stop taxhub``
 
 Pour redémarer les API :
 
@@ -332,7 +344,7 @@ Restauration :
 
         pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
 
-* Restauration de la configutration et de la customisation :
+* Restauration de la configuration et de la customisation :
 
   - Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
 
