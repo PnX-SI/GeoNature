@@ -466,3 +466,13 @@ DROP FUNCTION ref_nomenclatures.get_id_nomenclature(integer, character varying);
 DROP TABLE gn_meta.t_parameters;
 
 DROP FUNCTION gn_meta.get_default_parameter(text, integer);
+
+
+-- Nomenclature modification colonne id_type de int en serial
+
+CREATE SEQUENCE ref_nomenclatures.bib_nomenclatures_types_id_type_seq;
+ALTER TABLE ref_nomenclatures.bib_nomenclatures_types  ALTER COLUMN id_type SET DEFAULT nextval('ref_nomenclatures.bib_nomenclatures_types_id_type_seq');
+ALTER SEQUENCE ref_nomenclatures.bib_nomenclatures_types_id_type_seq OWNED BY ref_nomenclatures.bib_nomenclatures_types.id_type;
+
+SELECT setval('ref_nomenclatures.bib_nomenclatures_types_id_type_seq', (SELECT max(id_type) FROM ref_nomenclatures.bib_nomenclatures_types), true);
+

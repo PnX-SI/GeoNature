@@ -245,7 +245,7 @@ $BODY$
 --TABLES--
 ----------
 CREATE TABLE bib_nomenclatures_types (
-    id_type integer NOT NULL,
+    id_type SERIAL,
     mnemonique character varying(255),
     label_default character varying(255),
     definition_default text,
