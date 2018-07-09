@@ -110,6 +110,10 @@ INSERT INTO bib_nomenclatures_types (id_type, mnemonique, label_fr, definition_f
 
 ;
 
+
+SELECT setval('ref_nomenclatures.bib_nomenclatures_types_id_type_seq', (SELECT max(id_type) FROM ref_nomenclatures.bib_nomenclatures_types), true);
+
+
 UPDATE bib_nomenclatures_types SET label_default = label_fr;
 UPDATE bib_nomenclatures_types SET definition_default = definition_fr;
 ALTER TABLE bib_nomenclatures_types ALTER COLUMN label_default SET NOT NULL;
