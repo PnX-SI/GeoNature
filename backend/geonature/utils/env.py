@@ -3,19 +3,20 @@
 
 import os
 import sys
-import pip
 
 from pathlib import Path
 from collections import ChainMap, namedtuple
 
+
 from flask_sqlalchemy import SQLAlchemy
+
+import pip
 
 from geonature.utils.config_schema import (
     GnGeneralSchemaConf, GnPySchemaConf,
     GnModuleProdConf, ManifestSchemaProdConf
 )
 from geonature.utils.utilstoml import load_and_validate_toml
-
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
@@ -27,6 +28,8 @@ DEFAULT_CONFIG_FILE = ROOT_DIR / 'config/geonature_config.toml'
 GEONATURE_ETC = Path('/etc/geonature')
 
 DB = SQLAlchemy()
+
+# L'import doit être réalisé après la déclaration de DB
 from geonature.core.gn_commons.models import TModules
 
 
@@ -115,7 +118,6 @@ def install_geonature_command():
     cmd_path.chmod(0o777)
 
 
-
 def get_config_file_path(config_file=None):
     """ Return the config file path by checking several sources
 
@@ -163,22 +165,26 @@ def get_module_id(module_name):
 
 
 def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
-    # Get all the module enabled from gn_commons.t_modules
+    """
+        Get all the module enabled from gn_commons.t_modules
+    """
     with app.app_context():
         data = DB.session.query(TModules).filter(
             TModules.active_backend == True
         )
         enabled_modules = [d.as_dict()['module_name'] for d in data]
-                #iter over external_modules dir and import only modules which are enabled
+
+    # iter over external_modules dir
+    #   and import only modules which are enabled
     for f in mod_path.iterdir():
-        if f.is_dir() :
+        if f.is_dir():
             conf_manifest = load_and_validate_toml(
                 str(f / 'manifest.toml'),
                 ManifestSchemaProdConf
             )
             module_name = conf_manifest['module_name']
             if module_name in enabled_modules:
-                #TODO CHECK WHAT MODULE NAME BELOW MEAN
+                # TODO CHECK WHAT MODULE NAME BELOW MEAN
                 # import du module dans le sys.path
                 module_path = Path(GN_EXTERNAL_MODULE / module_name)
                 module_parent_dir = str(module_path.parent)
@@ -190,8 +196,8 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 sys.path.pop(0)
 
                 class GnModuleSchemaProdConf(
-                    module.config.conf_schema_toml.GnModuleSchemaConf,
-                    GnModuleProdConf
+                        module.config.conf_schema_toml.GnModuleSchemaConf,
+                        GnModuleProdConf
                 ):
                     pass
                 conf_module = load_and_validate_toml(
@@ -201,14 +207,19 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
 
                 yield conf_module, conf_manifest, module_blueprint
 
+
 def list_frontend_enabled_modules(mod_path=GN_EXTERNAL_MODULE):
-    # Get all the module frontend enabled from gn_commons.t_modules
+    """
+        Get all the module frontend enabled from gn_commons.t_modules
+    """
     from geonature.utils.command import get_app_for_cmd
+    from geonature.core.gn_commons.models import TModules
+
     app = get_app_for_cmd(DEFAULT_CONFIG_FILE, with_external_mods=False)
     with app.app_context():
         data = DB.session.query(TModules).filter(
             TModules.active_frontend == True
-            ).all()
+        ).all()
         enabled_modules = [d.as_dict()['module_name'] for d in data]
     for f in mod_path.iterdir():
         if f.is_dir():
@@ -216,8 +227,9 @@ def list_frontend_enabled_modules(mod_path=GN_EXTERNAL_MODULE):
                 str(f / 'manifest.toml'),
                 ManifestSchemaProdConf
             )
+
             class GnModuleSchemaProdConf(
-                GnModuleProdConf
+                    GnModuleProdConf
             ):
                 pass
 

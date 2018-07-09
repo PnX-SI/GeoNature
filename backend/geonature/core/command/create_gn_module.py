@@ -175,7 +175,7 @@ def run_install_gn_module(app, module_path, module_name, url):
 
     try:
         subprocess.call([str(gn_file)], cwd=str(module_path))
-        log.info("...{}\n".format(MSG_OK))
+        log.info("...%s\n", MSG_OK)
     except FileNotFoundError:
         pass
     except OSError as ex:
@@ -201,7 +201,7 @@ def run_install_gn_module(app, module_path, module_name, url):
         log.info("run install_gn_module.py")
         from install_gn_module import gnmodule_install_app
         gnmodule_install_app(DB, app)
-        log.info("...{}\n".format(MSG_OK))
+        log.info("...%s\n", MSG_OK)
 
 
 @click.option(
@@ -231,6 +231,7 @@ def activate_gn_module(module_name, frontend, backend):
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
     gn_module_activate(module_name, frontend, backend)
+
 
 @click.option(
     '--frontend',
