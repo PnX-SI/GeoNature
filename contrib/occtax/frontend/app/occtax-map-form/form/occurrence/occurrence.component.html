@@ -18,7 +18,7 @@
           <pnx-nomenclature 
             label="{{ 'Taxon.ObservationStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_observation_status"
-            [idTypeNomenclature]="18" 
+            codeNomenclatureType="STATUT_OBS" 
             >
           </pnx-nomenclature>
       </div>
@@ -26,7 +26,7 @@
         <pnx-nomenclature 
           label="{{ 'Taxon.ObsMethod' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
-          [idTypeNomenclature]="14" 
+          codeNomenclatureType="METH_OBS" 
           [regne]="fs.currentTaxon.regne" 
           [group2Inpn]="fs.currentTaxon.group2_inpn"
           > 
@@ -36,7 +36,7 @@
         <pnx-nomenclature 
           label="{{ 'Taxon.BiologicalCondition' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
-          [idTypeNomenclature]="7" 
+          codeNomenclatureType="ETA_BIO" 
           [regne]="fs.currentTaxon.regne" 
           [group2Inpn]="fs.currentTaxon.group2_inpn"
         > 
@@ -59,7 +59,7 @@
             <pnx-nomenclature 
               label="{{ 'Taxon.DeterminationMethod' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
-              [idTypeNomenclature]="106" 
+              codeNomenclatureType="METH_DETERMIN" 
               [regne]="fs.currentTaxon.regne" 
               [group2Inpn]="fs.currentTaxon.group2_inpn"
               >
@@ -69,7 +69,7 @@
           <pnx-nomenclature 
             label="{{ 'Taxon.BiologicalStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
-            [idTypeNomenclature]="13" 
+            codeNomenclatureType="STATUT_BIO" 
             [regne]="fs.currentTaxon.regne" 
             [group2Inpn]="fs.currentTaxon.group2_inpn"
             > 
@@ -79,7 +79,7 @@
           <pnx-nomenclature 
             label="{{ 'Taxon.Naturalness' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
-            [idTypeNomenclature]="8" 
+            codeNomenclatureType="NATURALITE" 
             [regne]="fs.currentTaxon.regne" 
             [group2Inpn]="fs.currentTaxon.group2_inpn"
             >
@@ -100,7 +100,7 @@
           <pnx-nomenclature 
             label="{{ 'Taxon.ExistProof' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
-            [idTypeNomenclature]="15" 
+            codeNomenclatureType="PREUVE_EXIST" 
             [regne]="fs.currentTaxon.regne" 
             [group2Inpn]="fs.currentTaxon.group2_inpn"
             (getCdNomenclature)="getCdNomencl($event)"
@@ -132,7 +132,7 @@
             <pnx-nomenclature 
               label="{{ 'Taxon.DiffusionLevel' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_diffusion_level"
-              [idTypeNomenclature]="5" 
+              codeNomenclatureType="NIV_PRECIS" 
               >
             </pnx-nomenclature>
           </div>
@@ -140,7 +140,7 @@
             <pnx-nomenclature 
               label="{{ 'Taxon.Blurring' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_blurring"
-              [idTypeNomenclature]="4" 
+              codeNomenclatureType="DEE_FLOU" 
               >
             </pnx-nomenclature>
           </div>
@@ -148,7 +148,7 @@
             <pnx-nomenclature 
               label="{{ 'Taxon.StatusSource' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_source_status"
-              [idTypeNomenclature]="19" 
+              codeNomenclatureType="STATUT_SOURCE" 
             > 
             </pnx-nomenclature>
           </div>

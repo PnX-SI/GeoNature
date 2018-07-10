@@ -84,7 +84,7 @@ class TMedias(DB.Model):
 @serializable
 class TParameters(DB.Model):
     __tablename__ = 't_parameters'
-    __table_args__ = {'schema': 'gn_meta'}
+    __table_args__ = {'schema': 'gn_commons'}
     id_parameter = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(
         DB.Integer,

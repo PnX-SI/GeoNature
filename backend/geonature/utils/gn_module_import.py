@@ -8,15 +8,12 @@ import logging
 import os
 import json
 import sys
-import shutil
-
 
 from pathlib import Path
 from packaging import version
 from sqlalchemy.orm.exc import NoResultFound
 
-
-from geonature.utils.config_schema import(
+from geonature.utils.config_schema import (
     GnGeneralSchemaConf,
     ManifestSchemaProdConf,
     GnModuleProdConf
@@ -50,12 +47,13 @@ log = logging.getLogger(__name__)
 
 MSG_OK = "\033[92mok\033[0m\n"
 
+
 def check_gn_module_file(module_path):
     log.info("checking file")
     for file in GN_MODULE_FILES:
         if not (Path(module_path) / file).is_file():
             raise GeoNatureError("Missing file {}".format(file))
-    log.info("...{}".format(MSG_OK))
+    log.info("...%s\n", MSG_OK)
 
 
 def check_manifest(module_path):
@@ -84,14 +82,21 @@ def check_manifest(module_path):
                 "Geonature version {} is imcompatible with module"
                 .format(GEONATURE_VERSION)
             )
-    log.info("...{}\n".format(MSG_OK))
+    log.info("...%s\n", MSG_OK)
     return configs_py['module_name']
+
 
 def copy_in_external_mods(module_path, module_name):
     '''
         Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
     '''
-    cmd = "ln -s {} {}/{}".format(module_path, GN_EXTERNAL_MODULE.resolve(), module_name)
+    # Suppression du lien symbolique s'il existe déja
+    cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_name)
+    subprocess.call(cmd.split(" "))
+    # creation du lien symbolique
+    cmd = "ln -s {} {}/{}".format(
+        module_path, GN_EXTERNAL_MODULE.resolve(), module_name
+    )
     try:
         assert subprocess.call(cmd.split(" ")) == 0
     except AssertionError as e:
@@ -106,30 +111,28 @@ def gn_module_register_config(module_name, url, id_app):
 
     '''
     log.info("Register module")
-    module_path = str(GN_EXTERNAL_MODULE / module_name)
-    conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_name / 'config/conf_gn_module.toml')
-    conf_gn_module_file = open(conf_gn_module_path, 'w')
+    conf_gn_module_path = str(
+        GN_EXTERNAL_MODULE / module_name / 'config/conf_gn_module.toml'
+    )
+    # creation du fichier s'il n'existe pas
+    config_file = open(conf_gn_module_path, 'w+')
 
     exist_config = utilstoml.load_toml(conf_gn_module_path)
     cmds = []
-    if not 'api_url' in exist_config:
-        cmds.append(
-            {
+    if 'api_url' not in exist_config:
+        cmds.append({
             'cmd': 'sudo tee -a {}'.format(
                 conf_gn_module_path
             ),
             'msg': "api_url = '/{}'\n".format(url.lstrip('/')).encode('utf8')
-            }
-        )
-    if not 'id_application' in exist_config:
-        cmds.append(
-            {
+        })
+    if 'id_application' not in exist_config:
+        cmds.append({
             'cmd': 'sudo tee -a {}'.format(
                 conf_gn_module_path
             ),
             'msg': "id_application = {}\n".format(id_app).encode('utf-8')
-            }
-        )
+        })
     for cmd in cmds:
         proc = subprocess.Popen(
             cmd['cmd'].split(" "),
@@ -140,7 +143,7 @@ def gn_module_register_config(module_name, url, id_app):
         proc.stdin.close()
         proc.wait()
 
-    log.info("...{}\n".format(MSG_OK))
+    log.info("...%s\n", MSG_OK)
 
 
 def gn_module_import_requirements(module_path):
@@ -148,7 +151,7 @@ def gn_module_import_requirements(module_path):
     if req_p.is_file():
         log.info("import_requirements")
         import_requirements(str(req_p))
-        log.info("...{}\n".format(MSG_OK))
+        log.info("...%s\n", MSG_OK)
 
 
 def gn_module_activate(module_name, activ_front, activ_back):
@@ -165,44 +168,50 @@ def gn_module_activate(module_name, activ_front, activ_back):
         app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
         with app.app_context():
             try:
-                module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
+                module = DB.session.query(TModules).filter(
+                    TModules.module_name == module_name
+                ).one()
                 module.active_frontend = activ_front
                 module.active_backend = activ_back
                 DB.session.merge(module)
                 DB.session.commit()
             except NoResultFound:
                 raise GeoNatureError(
-                    'The module does not exist. \n Check the gn_commons.t_module to get the module name'
+                    """The module does not exist.
+                    \n Check the gn_commons.t_module to get the module name"""
                 )
     log.info("Generate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...{}\n".format(MSG_OK))
+        log.info("...%s\n", MSG_OK)
     except Exception:
         log.error('Error while generating frontend routing')
         raise
+
 
 def gn_module_deactivate(module_name, activ_front, activ_back):
     log.info('Desactivate module')
     try:
         app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
         with app.app_context():
-            module = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
+            module = DB.session.query(TModules).filter(
+                TModules.module_name == module_name
+            ).one()
             module.active_frontend = not activ_front
             module.active_backend = not activ_back
             DB.session.merge(module)
             DB.session.commit()
     except NoResultFound:
         raise GeoNatureError(
-            'The module does not exist. \n Check the gn_commons.t_module to get the module name'
+            """The module does not exist.
+            \n Check the gn_commons.t_module to get the module name"""
         )
     log.info("Regenerate frontend routes")
     try:
         frontend_routes_templating()
-        log.info("...{}\n".format(MSG_OK))
+        log.info("...%s\n", MSG_OK)
     except Exception as e:
         raise GeoNatureError(e)
-
 
 
 def check_codefile_validity(module_path, module_name):
@@ -214,6 +223,7 @@ def check_codefile_validity(module_path, module_name):
     log.info('Checking file conformity')
     # Installation
     gn_file = Path(module_path) / "install_gn_module.py"
+
     if gn_file.is_file():
         try:
             from install_gn_module import gnmodule_install_app as fonc
@@ -235,7 +245,7 @@ def check_codefile_validity(module_path, module_name):
     if gn_file.is_file():
         try:
             from backend.blueprint import blueprint
-        except (ImportError, GeoNatureError):
+        except (ImportError, GeoNatureError) as e:
             raise GeoNatureError(
                 """Module {}
                     File {} must have a variable call :
@@ -255,7 +265,7 @@ def check_codefile_validity(module_path, module_name):
     gn_file = Path(module_path) / "{}.ts".format(GN_MODULE_FE_FILE)
     if gn_file.is_file():
         if 'export class GeonatureModule' in open(str(gn_file)).read():
-            log.info('      {}  OK'.format(GN_MODULE_FE_FILE))
+            log.info('      %s  OK', GN_MODULE_FE_FILE)
         else:
             raise GeoNatureError(
                 """Module {} ,
@@ -266,15 +276,14 @@ def check_codefile_validity(module_path, module_name):
     # Config
     gn_dir = Path(module_path) / 'config'
     if gn_dir.is_dir():
-        log.info("Config directory ...{}\n".format(MSG_OK))
+        log.info("Config directory ...%s\n", MSG_OK)
     else:
         raise GeoNatureError(
             """Module {} ,
                     No config directory
-                """.format(module_name, gn_file)
+            """.format(module_name)
         )
-    log.info("...{}\n".format(MSG_OK))
-
+    log.info("...%s\n", MSG_OK)
 
 
 def create_external_assets_symlink(module_path, module_name):
@@ -305,10 +314,10 @@ def create_external_assets_symlink(module_path, module_name):
         else:
             log.info('symlink already exist \n')
 
-        log.info("...{}\n".format(MSG_OK))
-    except Exception as e:
+        log.info("...%s\n", MSG_OK)
+    except Exception as exp:
         log.info('...error when create symlink external assets \n')
-        raise GeoNatureError(e)
+        raise GeoNatureError(exp)
     return True
 
 def add_application_db(module_name, url, module_id=None):
@@ -368,7 +377,7 @@ def add_application_db(module_name, url, module_id=None):
     except Exception as e:
         raise GeoNatureError(e)
 
-    log.info("...{}\n".format(MSG_OK))
+    log.info("...%s\n", MSG_OK)
     return module_id
 
 def create_module_config(module_name, mod_path=None, build=True):
@@ -378,7 +387,8 @@ def create_module_config(module_name, mod_path=None, build=True):
     if not mod_path:
         mod_path = str(GN_EXTERNAL_MODULE / module_name)
     manifest_path = os.path.join(mod_path, 'manifest.toml')
-    """ Create the frontend config for a module and rebuild if build=True"""
+
+    # Create the frontend config for a module and rebuild if build=True
     conf_manifest = utilstoml.load_and_validate_toml(
         manifest_path,
         ManifestSchemaProdConf
@@ -386,16 +396,16 @@ def create_module_config(module_name, mod_path=None, build=True):
 
     # import du module dans le sys.path
     module_parent_dir = str(Path(mod_path).parent)
-    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)
+    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name) # noqa
     sys.path.insert(0, module_parent_dir)
     module = __import__(module_schema_conf, globals=globals())
-    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml')
+    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml') # noqa
     config_module = utilstoml.load_and_validate_toml(
         front_module_conf_file,
         module.config.conf_schema_toml.GnModuleSchemaConf
     )
 
-    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')
+    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts') # noqa
     try:
         with open(
             str(ROOT_DIR / frontend_config_path), 'w'

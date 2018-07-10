@@ -123,7 +123,7 @@ BEGIN
   VALUES(
     theidtablelocation,
     theuuid,
-    ref_nomenclatures.get_default_nomenclature_value(101), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+    ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
     null,
     thecomment,
     NOW()
@@ -413,11 +413,11 @@ ALTER TABLE ONLY t_modules
   --ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
 
 ALTER TABLE t_medias
-  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_media_type,117)) NOT VALID;
+  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_media_type,'TYPE_MEDIA')) NOT VALID;
 
 
 ALTER TABLE t_validations
-  ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101)) NOT VALID;
+  ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_valid_status,'STATUT_VALID')) NOT VALID;
 
 
 ALTER TABLE t_history_actions

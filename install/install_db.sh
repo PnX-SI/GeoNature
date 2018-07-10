@@ -21,6 +21,12 @@ then
   chmod -R 775 /tmp/taxhub
 fi
 
+if [ ! -d '/tmp/nomenclatures/' ]
+then
+  mkdir /tmp/nomenclatures
+  chmod -R 775 /tmp/nomenclatures
+fi
+
 if [ ! -d '/tmp/usershub/' ]
 then
   mkdir /tmp/usershub
@@ -184,6 +190,11 @@ then
     echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/materialized_views.sql  &>> var/log/install_db.log
 
+    echo "Getting 'nomenclature' schema creation scripts..."
+    wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures.sql -P /tmp/nomenclatures
+    wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures.sql -P /tmp/nomenclatures
+    wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures_taxonomie.sql -P /tmp/nomenclatures
+    wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures_taxonomie.sql -P /tmp/nomenclatures
 
     echo "Creating 'nomenclatures' schema..."
     echo "" &>> var/log/install_db.log
@@ -192,7 +203,8 @@ then
     echo "Creating 'nomenclatures' schema" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/nomenclatures.sql  &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/nomenclatures/nomenclatures.sql  &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/nomenclatures/nomenclatures_taxonomie.sql  &>> var/log/install_db.log
 
     echo "Inserting 'nomenclatures' data..."
     echo "" &>> var/log/install_db.log
@@ -201,9 +213,9 @@ then
     echo "Inserting 'nomenclatures' data" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    cp data/core/data_nomenclatures.sql /tmp/geonature/data_nomenclatures.sql
-    sudo sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" /tmp/geonature/data_nomenclatures.sql
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/data_nomenclatures.sql  &>> var/log/install_db.log
+    sudo sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" /tmp/nomenclatures/data_nomenclatures.sql
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/nomenclatures/data_nomenclatures.sql  &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/nomenclatures/data_nomenclatures_taxonomie.sql  &>> var/log/install_db.log
 
     echo "Creating 'meta' schema..."
     echo "" &>> var/log/install_db.log
@@ -329,6 +341,7 @@ then
     sudo rm /tmp/taxhub/*.txt
     sudo rm /tmp/taxhub/*.sql
     sudo rm /tmp/taxhub/*.csv
+    sudo rm /tmp/nomenclatures/*.sql
 
     if $install_default_dem
     then

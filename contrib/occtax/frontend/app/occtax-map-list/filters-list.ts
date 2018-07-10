@@ -3,84 +3,84 @@ export const FILTERSLIST = [
     controlType: "nomenclature",
     label: "Technique d'observation",
     key: "id_nomenclature_obs_technique",
-    idComponent: 100,
+    codeNomenclatureType: "TECHNIQUE_OBS",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Type de regroupement",
     key: "id_nomenclature_grp_typ",
-    idComponent: 24,
+    codeNomenclatureType: "TYP_GRP",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Statut d'observation",
     key: "id_nomenclature_observation_status",
-    idComponent: 18,
+    codeNomenclatureType: "STATUT_OBS",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Méthode d'observation",
     key: "id_nomenclature_obs_meth",
-    idComponent: 14,
+    codeNomenclatureType: "METH_OBS",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Etat biologique",
     key: "id_nomenclature_bio_condition",
-    idComponent: 7,
+    codeNomenclatureType: "ETA_BIO",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Statut biologique",
     key: "id_nomenclature_bio_status",
-    idComponent: 13,
+    codeNomenclatureType: "STATUT_BIO",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Naturalité",
     key: "id_nomenclature_naturalness",
-    idComponent: 8,
+    codeNomenclatureType: 8,
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Méthode de détermination",
     key: "id_nomenclature_determination_method",
-    idComponent: 106,
+    codeNomenclatureType: "NATURALITE",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Preuve d'existence",
     key: "id_nomenclature_exist_proof",
-    idComponent: 15,
+    codeNomenclatureType: "PREUVE_EXIST",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Niveau de diffusion",
     key: "id_nomenclature_diffusion_level",
-    idComponent: 5,
+    codeNomenclatureType: "NIV_PRECIS",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Statut source",
     key: "id_nomenclature_source_status",
-    idComponent: 19,
+    codeNomenclatureType: "STATUT_SOURCE",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Floutage",
     key: "id_nomenclature_blurring",
-    idComponent: 4,
+    codeNomenclatureType: "DEE_FLOU",
     required: false
   },
   // counting
@@ -88,35 +88,35 @@ export const FILTERSLIST = [
     controlType: "nomenclature",
     label: "Stade de vie",
     key: "id_nomenclature_life_stage",
-    idComponent: 10,
+    codeNomenclatureType: "STADE_VIE",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Sexe",
     key: "id_nomenclature_sex",
-    idComponent: 9,
+    codeNomenclatureType: "SEXE",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Objet du dénombrement",
     key: "id_nomenclature_obj_count",
-    idComponent: 6,
+    codeNomenclatureType: "OBJ_DENBR",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Type de dénombrement",
     key: "id_nomenclature_type_count",
-    idComponent: 21,
+    codeNomenclatureType: "TYP_DENBR",
     required: false
   },
   {
     controlType: "nomenclature",
     label: "Statut de validation",
     key: "id_nomenclature_valid_status",
-    idComponent: 101,
+    codeNomenclatureType: "STATUT_VALID",
     required: false
   }
 ];

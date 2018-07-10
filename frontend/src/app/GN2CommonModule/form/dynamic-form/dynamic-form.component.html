@@ -16,7 +16,7 @@
       <pnx-nomenclature *ngSwitchCase="'nomenclature'"
         [label]=formDef.label
         [parentFormControl]="form.controls[formDef.key]"
-        [idTypeNomenclature]="formDef.idComponent">
+        [codeNomenclatureType]="formDef.codeNomenclatureType">
       </pnx-nomenclature>
 
       <div *ngSwitchCase="'checkbox'">
@@ -62,10 +62,7 @@
       <pnx-municipalities *ngSwitchCase="'municipalities'"
         [label]="formDef.label"
         [parentFormControl]="form.controls[formDef.key]">
-      </pnx-municipalities>
-      
-
-      
+      </pnx-municipalities>      
   </div>
 
 </div>

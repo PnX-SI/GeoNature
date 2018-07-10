@@ -89,7 +89,15 @@ export class OcctaxMapInfoComponent implements OnInit {
 
   loadNomenclaturesOccurrence() {
     this._dfs
-      .getNomenclatures(100, 14, 7, 13, 8, 101, 15)
+      .getNomenclatures(
+        "TECHNIQUE_OBS",
+        "METH_OBS",
+        "ETA_BIO",
+        "STATUT_BIO",
+        "NATURALITE",
+        "STATUT_VALID",
+        "PREUVE_EXIST"
+      )
       .subscribe(data => {});
   }
 }
