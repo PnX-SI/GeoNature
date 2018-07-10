@@ -16,3 +16,4 @@ DELETE FROM gn_meta.cor_acquisition_framework_actor;
 DELETE FROM gn_meta.t_acquisition_frameworks;
 
 DELETE FROM utilisateurs.cor_app_privileges WHERE id_role = 3;
+DELETE FROM utilisateurs.t_roles WHERE id_role IN (1,2);
