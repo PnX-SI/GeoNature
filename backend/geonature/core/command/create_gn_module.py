@@ -78,7 +78,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
         if not Path(module_path).is_dir():
             raise GeoNatureError("dir {} doesn't exists".format(module_path))
         # TODO vérifier que l'utilisateur est root ou du groupe geonature
-        app = get_app_for_cmd(conf_file)
+        app = get_app_for_cmd(conf_file, with_external_mods=False)
         with app.app_context():
             sys.path.append(module_path)
             # Vérification de la conformité du module

@@ -90,6 +90,10 @@ def copy_in_external_mods(module_path, module_name):
     '''
         Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
     '''
+    # Suppression du lien symbolique s'il existe déja
+    cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_name)
+    subprocess.call(cmd.split(" "))
+    # creation du lien symbolique
     cmd = "ln -s {} {}/{}".format(
         module_path, GN_EXTERNAL_MODULE.resolve(), module_name
     )
@@ -110,6 +114,8 @@ def gn_module_register_config(module_name, url, id_app):
     conf_gn_module_path = str(
         GN_EXTERNAL_MODULE / module_name / 'config/conf_gn_module.toml'
     )
+    # creation du fichier s'il n'existe pas
+    config_file = open(conf_gn_module_path, 'w+')
 
     exist_config = utilstoml.load_toml(conf_gn_module_path)
     cmds = []
@@ -239,7 +245,7 @@ def check_codefile_validity(module_path, module_name):
     if gn_file.is_file():
         try:
             from backend.blueprint import blueprint
-        except (ImportError, GeoNatureError):
+        except (ImportError, GeoNatureError) as e:
             raise GeoNatureError(
                 """Module {}
                     File {} must have a variable call :
