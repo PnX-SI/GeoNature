@@ -85,7 +85,7 @@ def releve_data(request):
             "id_nomenclature_grp_typ": 150,
             "t_occurrences_occtax": [
             {
-                "id_nomenclature_naturalness": 182,
+                "id_nomenclature_naturalness": 161,
                 "id_nomenclature_obs_meth": 42,
                 "digital_proof": None,
                 "cor_counting_occtax": [
@@ -96,24 +96,24 @@ def releve_data(request):
                     "id_nomenclature_life_stage": 2,
                     "count_max": 1,
                     "id_nomenclature_valid_status": 347,
-                    "id_nomenclature_sex": 194,
+                    "id_nomenclature_sex": 172,
                     "id_validator": None,
-                    "id_nomenclature_type_count": 109,
-                    "id_nomenclature_obj_count": 166
+                    "id_nomenclature_type_count": 95,
+                    "id_nomenclature_obj_count": 147
                 }
                 ],
                 "nom_cite": "Ablette = Alburnus alburnus (Linnaeus, 1758)",
                 "meta_v_taxref": "Taxref V9.0",
-                "id_nomenclature_blurring": 200,
+                "id_nomenclature_blurring": 176,
                 "id_nomenclature_bio_status": 30,
                 "id_nomenclature_bio_condition": 178,
                 "comment": None,
-                "id_nomenclature_observation_status": 101,
-                "id_nomenclature_determination_method": 370,
+                "id_nomenclature_observation_status": 89,
+                "id_nomenclature_determination_method": 446,
                 "non_digital_proof": None,
-                "id_nomenclature_exist_proof": 91,
+                "id_nomenclature_exist_proof": 81,
                 "cd_nom": 67111,
-                "id_nomenclature_diffusion_level": 163,
+                "id_nomenclature_diffusion_level": 145,
                 "sample_number_proof": None,
                 "determiner": None
             }
