@@ -70,9 +70,10 @@ Nomenclatures :
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
 - Chaque nomenclature est associée à un type et une vue par type de nomenclature a été ajoutée pour simplifier leur usage 
 - Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d'autres applications : https://github.com/PnX-SI/Nomenclature-api-module/
+- Les id des nomenclatures et des types de nomenclature sont des serial et ne sont pas prédéfinis lors de l'installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le cd_nomenclature et le mnémonique du type de nomenclature pour retrouver dynamiquement l'id_nomenclature d'une nomenclature. C'est cependant cet id qu'on stocke au niveau des données pour garantir l'intégrité référentielle
 - Chaque nomenclature peut être associée à un règne ou un group2inpn (``ref_nomenclatures.cor_taxref_nomenclature``) pour proposer des nomenclatures correspondants à un taxon
 - Les valeurs par défaut sont définies dans chaque module
-- Pour OCCTAX c'est dans ``pr_occtax.defaults_nomenclatures_value``. Elle peut être définie pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn
+- Pour OccTax c'est dans ``pr_occtax.defaults_nomenclatures_value``. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn
 - Si organisme = 0 alors la valeur par défaut s'applique à tous les organismes. Idem pour les règnes et group2inpn
 - La fonction ``pr_occtax.get_default_nomenclature_value`` permet de renvoyer l'id de la nomenclature par défaut
 - Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
