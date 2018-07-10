@@ -81,6 +81,7 @@ export class OcctaxMapListComponent implements OnInit {
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
     this.idName = "id_releve_occtax";
+    this.mapListService.idName = this.idName;
     this.apiEndPoint = "occtax/vreleve";
 
     // FETCH THE DATA
@@ -136,9 +137,13 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   onDeleteReleve(id) {
+    console.log("olooooo");
+
     this._occtaxService.deleteReleve(id).subscribe(
       data => {
-        this.deleteObsFront(id);
+        console.log("lalalala");
+
+        this.mapListService.deleteObsFront(id);
         this._commonService.translateToaster(
           "success",
           "Releve.DeleteSuccessfully"
@@ -150,20 +155,6 @@ export class OcctaxMapListComponent implements OnInit {
         } else {
           this._commonService.translateToaster("error", "ErrorMessage");
         }
-      }
-    );
-  }
-
-  deleteObsFront(idDelete) {
-    this.mapListService.tableData = this.mapListService.tableData.filter(
-      row => {
-        return row[this.idName] !== idDelete;
-      }
-    );
-
-    this.mapListService.geojsonData.features = this.mapListService.geojsonData.features.filter(
-      row => {
-        return row.properties[this.idName] !== idDelete;
       }
     );
   }
