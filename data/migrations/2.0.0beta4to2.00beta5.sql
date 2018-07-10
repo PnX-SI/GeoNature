@@ -239,6 +239,31 @@ $$
 $$;
 
 
+CREATE OR REPLACE FUNCTION ref_nomenclatures.calculate_sensitivity(
+    mycdnom integer,
+    mynomenclatureid integer)
+  RETURNS integer AS
+$BODY$
+  --Function to return id_nomenclature depending on observation sensitivity
+  --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
+  DECLARE
+  sensitivityid integer;
+  BEGIN
+    SELECT max(id_nomenclature_niv_precis) INTO sensitivityid
+    FROM ref_nomenclatures.cor_taxref_sensitivity
+    WHERE cd_nom = mycdnom
+    AND (id_nomenclature = mynomenclatureid OR id_nomenclature = 0);
+  IF sensitivityid IS NULL THEN
+    sensitivityid = ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '5');
+  END IF;
+  RETURN sensitivityid;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+
+
 ALTER TABLE ref_nomenclatures.bib_nomenclatures_types
   ADD CONSTRAINT unique_bib_nomenclatures_types_mnemonique UNIQUE (mnemonique);
 

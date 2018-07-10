@@ -395,17 +395,21 @@ $BODY$
 ------------
 --TRIGGERS--
 ------------
-CREATE TRIGGER tri_insert_occurrences_occtax
-  BEFORE INSERT
-  ON t_occurrences_occtax
-  FOR EACH ROW
-  EXECUTE PROCEDURE insert_occurrences_occtax();
+-- Trigger d'insertion automatique du niveau de sensibilité à partir de la fonction
+-- calculate_sensitivity. A reboucler avec Gil
 
-CREATE TRIGGER tri_update_occurrences_occtax
-  BEFORE INSERT
-  ON t_occurrences_occtax
-  FOR EACH ROW
-  EXECUTE PROCEDURE update_occurrences_occtax();
+
+-- CREATE TRIGGER tri_insert_occurrences_occtax
+--   BEFORE INSERT
+--   ON t_occurrences_occtax
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE insert_occurrences_occtax();
+
+-- CREATE TRIGGER tri_update_occurrences_occtax
+--   BEFORE INSERT
+--   ON t_occurrences_occtax
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE update_occurrences_occtax();
 
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
