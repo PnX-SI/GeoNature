@@ -199,7 +199,7 @@ $$
         OR id IS NULL) THEN
       RETURN true;
     ELSE
-	    RAISE EXCEPTION 'Error : id_nomenclature and nomenclature type didn''t match. Use id_nomenclature in corresponding type (mnemonique field). See ref_nomenclatures.t_nomenclatures.id_type.';
+	    RAISE EXCEPTION 'Error : id_nomenclature --> (%) and nomenclature --> (%) type didn''t match. Use id_nomenclature in corresponding type (mnemonique field). See ref_nomenclatures.t_nomenclatures.id_type.', id,mytype;
     END IF;
     RETURN false;
   END;
@@ -232,7 +232,7 @@ $$
         OR id IS NULL) THEN
       RETURN true;
     ELSE
-	    RAISE EXCEPTION 'Error : id_nomenclature and id_type didn''t match. Use nomenclature with corresponding type (id_type). See ref_nomenclatures.t_nomenclatures.id_type and ref_nomenclatures.bib_nomenclatures_types.id_type.';
+	    RAISE EXCEPTION 'Error : id_nomenclature --> (%) and id_type --> (%) didn''t match. Use nomenclature with corresponding type (id_type). See ref_nomenclatures.t_nomenclatures.id_type and ref_nomenclatures.bib_nomenclatures_types.id_type.', id, myidtype ;
     END IF;
     RETURN false;
   END;
