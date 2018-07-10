@@ -422,15 +422,6 @@ $BODY$
   COST 100;
 
 
--- Suppression des tables et fonctions obselètes
-DROP FUNCTION ref_nomenclatures.get_default_nomenclature_value(integer, integer);
-DROP FUNCTION ref_nomenclatures.get_id_nomenclature(integer, character varying);
-
-
-DROP TABLE gn_meta.t_parameters;
-
-DROP FUNCTION gn_meta.get_default_parameter(text, integer);
-
 
 -- Nomenclature modification colonne id_type de int en serial
 

@@ -28,6 +28,8 @@ cp $geonature_dir/contrib/occtax/data/migration_2.0.0.beta4to2.0.0.beta5.sql /tm
 sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/migration_2.0.0.beta4to2.0.0.beta5.sql
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/migration_2.0.0.beta4to2.0.0.beta5.sql  &>> var/log/migration2.0.0beta4_beta5.log
 
+# Suppression des fonctions obselètes qui étaient utilisés dans occtax
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -c "DROP FUNCTION ref_nomenclatures.get_default_nomenclature_value(integer, integer);DROP FUNCTION ref_nomenclatures.get_id_nomenclature(integer, character varying);"
 
 ##### Migration arborescence #######
 
