@@ -215,10 +215,3 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
-
-INSERT INTO  pr_occtax.cor_counting_occtax (id_counting_occtax, id_occurrence_occtax, id_nomenclature_life_stage, id_nomenclature_sex, id_nomenclature_obj_count, id_nomenclature_type_count, count_min, count_max) VALUES
-(1,1,4,172,147,95,5,5)
-,(2,1,4,172,147,95,1,1),
-(3,2,4,172,147,95,1,1),
-(4,3,4,172,147,95,1,1);
-SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', 5, true);
