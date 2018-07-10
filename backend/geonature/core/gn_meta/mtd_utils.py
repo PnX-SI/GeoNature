@@ -114,13 +114,13 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
         new_af = TAcquisitionFramework(**acquisition_framwork)
         actor = CorAcquisitionFrameworkActor(
             id_role=id_user,
-            id_nomenclature_actor_role=393
+            id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
         )
         new_af.cor_af_actor.append(actor)
         if id_organism:
             organism = CorAcquisitionFrameworkActor(
                 id_organism=id_organism,
-                id_nomenclature_actor_role=393
+                id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
             )
             new_af.cor_af_actor.append(organism)
         # check if exist

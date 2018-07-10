@@ -53,11 +53,6 @@ def get_token(client, login="admin", password="admin"):
         raise Exception('Invalid login {}, {}'.format(login, password))
 
 
-    
-
-
-
-
 @pytest.fixture()
 def releve_data(request):
     data = {
@@ -79,10 +74,10 @@ def releve_data(request):
             "altitude_max": None,
             "meta_device_entry": "web",
             "comment": None,
-            "id_nomenclature_obs_technique": 343,
+            "id_nomenclature_obs_technique": 317,
             "observers": [1],
             "observers_txt": "tatatato",
-            "id_nomenclature_grp_typ": 150,
+            "id_nomenclature_grp_typ": 133,
             "t_occurrences_occtax": [
             {
                 "id_nomenclature_naturalness": 161,
@@ -106,7 +101,7 @@ def releve_data(request):
                 "meta_v_taxref": "Taxref V9.0",
                 "id_nomenclature_blurring": 176,
                 "id_nomenclature_bio_status": 30,
-                "id_nomenclature_bio_condition": 178,
+                "id_nomenclature_bio_condition": 158,
                 "comment": None,
                 "id_nomenclature_observation_status": 89,
                 "id_nomenclature_determination_method": 446,

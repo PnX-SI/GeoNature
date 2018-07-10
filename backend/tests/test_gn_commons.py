@@ -31,7 +31,7 @@ class TestAPIMedias:
         data = {
             'file': (io.BytesIO(b'my file contents'), 'hello world.txt'),
             "isFile": True,
-            "id_nomenclature_media_type": 494,
+            "id_nomenclature_media_type": 467,
             "id_table_location": 1,
             "uuid_attached_row": "cfecc9af-3949-44ab-bde5-8d1ecd1ab581",
             "title_fr": "Super test"
