@@ -3,6 +3,7 @@ import { Map, FeatureGroup } from 'leaflet';
 import { MapService } from '../map.service';
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { CommonService } from '../../service/common.service';
+import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
@@ -25,6 +26,7 @@ export class LeafletDrawComponent implements OnInit {
   ngOnInit() {
     this.map = this.mapservice.map;
     this.zoomLevel = this.zoomLevel || MAP_CONFIG.ZOOM_LEVEL_RELEVE;
+    this.options = this.options || leafletDrawOption;
     this._Le = L as any;
     this.enableLeafletDraw();
   }
@@ -59,11 +61,15 @@ export class LeafletDrawComponent implements OnInit {
       } else {
         this._currentDraw = (e as any).layer;
         const layerType = (e as any).layerType;
-        const latlngTab = this._currentDraw._latlngs;
         this.mapservice.releveFeatureGroup.addLayer(this._currentDraw);
-        let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
-        geojson = (geojson as any).features[0];
+        let geojson: any = this.mapservice.releveFeatureGroup.toGeoJSON();
+
+        geojson = geojson.features[0];
         // output
+        if (layerType === 'circle') {
+          const radius = this._currentDraw.getRadius();
+          geojson.properties.radius = radius;
+        }
         this.layerDrawed.emit(geojson);
       }
     });

@@ -130,6 +130,9 @@ footer {
   margin-bottom: 2px;
 }
 
+.error {
+  color: red;
+}
 
 .btn-no-padding{
   padding: 0px!important;
@@ -143,4 +146,29 @@ footer {
 
 .input-sm {
   height: 1.5rem;
+}
+
+.margin-top-sm {
+  margin-top: 5px;
+}
+
+.margin-top-lg {
+  margin-top: 10px;
+}
+
+padding-lg{
+  padding: 15px;
+}
+
+.center {
+  margin-left: 20%;
+}
+
+.center-in-div {
+  width: 50%;
+  margin: 0 auto;
+}
+
+li.no-bullet{
+  list-style-type: none;
 }

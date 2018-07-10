@@ -170,6 +170,20 @@ export class MapListService {
     this.refreshData(apiEndPoint, 'set');
   }
 
+  deleteObsFront(idDelete: number) {
+    // supprimer une observation sur la carte et la liste en front seulement
+    console.log(typeof idDelete);
+
+    this.tableData = this.tableData.filter(row => {
+      return row[this.idName] !== idDelete;
+    });
+
+    this.geojsonData.features = this.geojsonData.features.filter(row => {
+      return row['id'] !== idDelete.toString();
+    });
+    this.geojsonData = Object.assign({}, this.geojsonData);
+  }
+
   toggleStyle(selectedLayer) {
     // togle the style of selected layer
     if (this.selectedLayer !== undefined) {

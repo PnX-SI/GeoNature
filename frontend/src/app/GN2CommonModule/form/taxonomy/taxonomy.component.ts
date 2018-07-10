@@ -54,7 +54,7 @@ export class TaxonomyComponent implements OnInit {
   noResult: boolean;
   isLoading = false;
   showResultList = true;
-  @Output() onChange = new EventEmitter<Taxon>();
+  @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
   constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
@@ -74,15 +74,6 @@ export class TaxonomyComponent implements OnInit {
       }
     });
 
-    const test: Taxon = {
-      search_name: 'lalal',
-      nom_valide: 'lol',
-      group2_inpn: 'string',
-      regne: 'string',
-      lb_nom: 'string',
-      cd_nom: 15
-    };
-
     // put group to null if regne = null
     this.regneControl.valueChanges.subscribe(value => {
       if (value === '') {
@@ -92,7 +83,7 @@ export class TaxonomyComponent implements OnInit {
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {
-    this.onChange.emit(e.item);
+    this.onChange.emit(e);
   }
 
   formatter(taxon) {
@@ -118,7 +109,6 @@ export class TaxonomyComponent implements OnInit {
         }
       })
       .map(response => {
-        console.log(response);
         this.noResult = response.length === 0;
         this.isLoading = false;
         return response.slice(0, this.listLength);

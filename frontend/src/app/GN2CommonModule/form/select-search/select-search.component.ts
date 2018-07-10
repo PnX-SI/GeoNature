@@ -31,7 +31,6 @@ export class SelectSearchComponent implements OnInit {
   ngOnInit() {
     this.debounceTime = this.debounceTime || 100;
     this.disabled = this.disabled || false;
-
     this.searchControl.valueChanges
       .debounceTime(this.debounceTime)
       .distinctUntilChanged()

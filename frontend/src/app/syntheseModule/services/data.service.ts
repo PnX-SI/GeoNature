@@ -4,7 +4,8 @@ import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 
 @Injectable()
-export class SearchService {
+export class DataService {
+  public dataLoaded: Boolean = false;
   constructor(private _api: HttpClient) {}
 
   getSyntheseData(params) {

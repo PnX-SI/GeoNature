@@ -44,10 +44,10 @@ def parse_field(fieldlist):
     for field in fieldlist:
         if 'options' not in field:
             field['options'] = {}
-        if 'thesaurusID' in field:
+        if 'thesaurus_code_type' in field:
             field['options']['choices'] = format_nomenclature_list(
                 {
-                    'id_type': field['thesaurusID'],
+                    'code_type': field['thesaurus_code_type'],
                     'regne': field.get('regne'),
                     'group2_inpn': field.get('group2_inpn'),
                 }
@@ -55,7 +55,7 @@ def parse_field(fieldlist):
         if 'thesaurusHierarchyID' in field:
             field['options']['choices'] = format_nomenclature_list(
                 {
-                    'id_type': field['thesaurusID'],
+                    'code_type': field['thesaurus_code_type'],
                     'hierarchy': field['thesaurusHierarchyID']
                 }
             )
