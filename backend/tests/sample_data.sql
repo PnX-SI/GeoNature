@@ -46,7 +46,7 @@ SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', 8, true);
 
 
 -- Utilisateurs
-UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role=3;
+UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3);
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
 INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
 (12,21,14,3);
