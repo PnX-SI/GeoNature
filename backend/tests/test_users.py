@@ -1,7 +1,7 @@
 import json
 import pytest
 from flask import url_for, session, Response, request
-from .bootstrap_test import app, releve_data, post_json, json_of_response
+from .bootstrap_test import app, post_json, json_of_response
 from cookies import Cookie
 
 

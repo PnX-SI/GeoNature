@@ -6,7 +6,7 @@
 from flask import Blueprint, request, current_app
 
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models import TModules, TParameters
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
 from pypnusershub import routes as fnauth
