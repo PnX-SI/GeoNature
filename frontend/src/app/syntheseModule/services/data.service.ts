@@ -11,4 +11,8 @@ export class DataService {
   getSyntheseData(params) {
     return this._api.post<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/synthese`, params);
   }
+
+  getOneSyntheseObservation(id_synthese) {
+    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
+  }
 }
