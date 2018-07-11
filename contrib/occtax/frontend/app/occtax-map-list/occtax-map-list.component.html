@@ -78,7 +78,7 @@
           <i class="fa fa-search" aria-hidden="true"></i>
         </button>
   </div>
-  <div *ngIf="advandedFilterOpen" id="collapse-settings">
+  <div  [hidden]="!advandedFilterOpen" id="collapse-settings">
       <pnx-dynamic-form-generator
       #dynamicForm
       selectLabel="Autres Critères"
