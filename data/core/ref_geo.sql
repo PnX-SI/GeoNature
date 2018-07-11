@@ -17,13 +17,6 @@ SET search_path = ref_geo, pg_catalog;
 --FUNCTIONS--
 -------------
 CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
--- Foncion générique permettant de calculer une geom locale à partir d'une geom source (en récupérant le parametre 'local_srid' de la table gn_commons.t_parameters)
--- La fonction prend deux parametres:
--- 1er param: nom de la colonne de la geom en 4326
--- 2eme param: nom de la colonne de la geom local
-
---USAGE : ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
-
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -41,7 +34,8 @@ BEGIN
 	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
 		--récupérer le srid local
 		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
-		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, %L)',the4326geomcol, thelocalsrid ) INTO thegeomlocalvalue USING NEW;
+		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
+        -- insertion dans le NEW de la geom transformée
 		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
 	END IF;
   RETURN NEW;
