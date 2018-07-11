@@ -35,7 +35,7 @@ export class DataFormService {
   getNomenclatures(...codesNomenclatureType) {
     let params: HttpParams = new HttpParams();
     codesNomenclatureType.forEach(code => {
-      params = params.append('code', code);
+      params = params.append('code_type', code);
     });
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclatures`, {
       params: params

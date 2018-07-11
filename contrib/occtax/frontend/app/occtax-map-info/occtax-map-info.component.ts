@@ -43,8 +43,6 @@ export class OcctaxMapInfoComponent implements OnInit {
     // init forms
     this.releveForm = this.fs.initReleveForm();
     this.occurrenceForm = this.fs.initOccurenceForm();
-    // load nomenclatures
-    this.loadNomenclaturesOccurrence();
 
     this._sub = this._route.params.subscribe(params => {
       this.id = +params["id"];
@@ -85,19 +83,5 @@ export class OcctaxMapInfoComponent implements OnInit {
     this.occurrenceForm.patchValue(occ);
     // init counting form with data
     this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_occtax);
-  }
-
-  loadNomenclaturesOccurrence() {
-    this._dfs
-      .getNomenclatures(
-        "TECHNIQUE_OBS",
-        "METH_OBS",
-        "ETA_BIO",
-        "STATUT_BIO",
-        "NATURALITE",
-        "STATUT_VALID",
-        "PREUVE_EXIST"
-      )
-      .subscribe(data => {});
   }
 }
