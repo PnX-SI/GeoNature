@@ -7,20 +7,20 @@ import os
 import json
 import io
 
-from flask import url_for
 import pytest
+from flask import url_for
+from sqlalchemy.sql import text
 
 from .bootstrap_test import app, post_json, json_of_response
 
 
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.utils.env import BACKEND_DIR
+from geonature.utils.env import BACKEND_DIR, DB
 
 @pytest.mark.usefixtures('client_class')
 class TestAPIMedias:
 
     def _get_media(self, id_media):
-
         response = self.client.get(
             url_for('gn_commons.get_media', id_media=id_media)
         )
@@ -28,10 +28,16 @@ class TestAPIMedias:
         assert response.status_code == 200
 
     def _save_media(self, config):
+        sql = text(
+        """SELECT ref_nomenclatures.get_id_nomenclature('TYPE_MEDIA', '2')"""
+        )
+        result = DB.engine.execute(sql)
+        for r in result:
+            id_nomenclature_media = r[0]
         data = {
             'file': (io.BytesIO(b'my file contents'), 'hello world.txt'),
             "isFile": True,
-            "id_nomenclature_media_type": 494,
+            "id_nomenclature_media_type": id_nomenclature_media,
             "id_table_location": 1,
             "uuid_attached_row": "cfecc9af-3949-44ab-bde5-8d1ecd1ab581",
             "title_fr": "Super test"

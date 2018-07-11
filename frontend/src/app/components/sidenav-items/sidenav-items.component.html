@@ -25,16 +25,6 @@
         </mat-list-item>
     </a>
 
-    <a  href="#{{_sideNavService.syntheseModule.module_url}}">
-        <mat-list-item 
-            (click)="onSetApp(_sideNavService.syntheseModule)"
-            [routerLink]="_sideNavService.syntheseModule.module_url"
-            routerLinkActive="active" class="sidenav-item" >
-            <mat-icon mat-list-icon>{{_sideNavService.syntheseModule.module_picto}}</mat-icon>
-            <h3 mat-line> {{_sideNavService.syntheseModule.module_label}} </h3>
-        </mat-list-item>
-    </a>
-
     <a  href="#{{_sideNavService.exportModule.module_url}}">
         <mat-list-item 
             (click)="onSetApp(_sideNavService.exportModule)"

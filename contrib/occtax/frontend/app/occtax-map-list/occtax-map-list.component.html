@@ -101,7 +101,6 @@
       height="85vh">
     </pnx-map-list>
   </div>
-
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm tab-container">
     <!-- LIST -->
     <!--Table-->
@@ -110,6 +109,7 @@
       class="material striped margin-top-xs table-size expandable"
       [rows]="mapListService.tableData"
       [columns]="mapListService.displayColumns"
+      [loadingIndicator]="mapListService.isLoading"
       [columnMode]="'force'"
       [headerHeight]="35"
       [footerHeight]="40"
@@ -225,7 +225,7 @@
         <h5 class="modal-title" id="exampleModalLabel"> {{'DownloadData' | translate }}</h5>
       </div>
       <div class="modal-body">
-        <span [innerHTML]="occtaxConfig.export_message"> </span> <span> {{ 'MapList.ObservationNumber' | translate}} {{mapListService.page.totalElements}}  </span> <br><br>
+        <span [innerHTML]="occtaxConfig.export_message"> </span> <br><br>
 
         <div *ngIf="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER">
           {{'DownloadOverflow' | translate }}

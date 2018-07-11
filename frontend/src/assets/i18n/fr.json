@@ -150,5 +150,8 @@
 
   "Export": {
     "ExportModuleName": "Module d'export des données"
+  },
+  "Meta": {
+      "Datasetadded": "Jeu de donnée ajouté avec succès"
   }
 }

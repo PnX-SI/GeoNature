@@ -19,9 +19,7 @@ export class ExportsComponent implements OnInit {
     this.viewList.forEach((view, index) => {
       this.dataSetsControls.insert(index, this._fb.control(null));
     });
-    this.dataSetControl.valueChanges.subscribe(value => {
-      console.log(value);
-    });
+    this.dataSetControl.valueChanges.subscribe(value => {});
   }
 
   exportCsv(idView, idDataSet) {

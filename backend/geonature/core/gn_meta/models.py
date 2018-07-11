@@ -9,6 +9,8 @@ from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
+from geonature.core.users.models import TRoles, BibOrganismes
+
 
 
 @serializable
@@ -25,7 +27,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
 
 
 @serializable
-class CorDatasetsActor(DB.Model):
+class CorDatasetActor(DB.Model):
     __tablename__ = 'cor_dataset_actor'
     __table_args__ = {'schema': 'gn_meta'}
     id_cda = DB.Column(DB.Integer, primary_key=True)
@@ -33,9 +35,19 @@ class CorDatasetsActor(DB.Model):
         DB.Integer,
         ForeignKey('gn_meta.t_datasets.id_dataset')
     )
-    id_role = DB.Column(DB.Integer)
-    id_organism = DB.Column(DB.Integer)
+    id_role = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.t_roles.id_role')
+    )
+    id_organism = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+        )
+    
     id_nomenclature_actor_role = DB.Column(DB.Integer)
+    role = relationship("TRoles", foreign_keys=[id_role])
+    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
+    
 
 
 @serializable
@@ -55,14 +67,14 @@ class TDatasets(DB.Model):
     dataset_desc = DB.Column(DB.Unicode)
     id_nomenclature_data_type = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(103)
+        default=TNomenclatures.get_default_nomenclature("DATA_TYP")
     )
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
     id_nomenclature_dataset_objectif = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(114)
+        default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS")
     )
     bbox_west = DB.Column(DB.Unicode)
     bbox_east = DB.Column(DB.Unicode)
@@ -70,26 +82,26 @@ class TDatasets(DB.Model):
     bbox_north = DB.Column(DB.Unicode)
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(115)
+        default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL")
     )
     id_nomenclature_data_origin = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(2)
+        default=TNomenclatures.get_default_nomenclature("DS_PUBLIQUE")
     )
     id_nomenclature_source_status = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(19)
+        default=TNomenclatures.get_default_nomenclature("STATUT_SOURCE")
     )
     id_nomenclature_resource_type = DB.Column(
         DB.Integer,
-        default=TNomenclatures.get_default_nomenclature(102)
+        default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP")
     )
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
-    cor_datasets_actor = relationship(
-        "CorDatasetsActor",
+    cor_dataset_actor = relationship(
+        CorDatasetActor,
         lazy='joined',
         cascade="save-update, delete, delete-orphan"
     )
@@ -124,18 +136,18 @@ class TDatasets(DB.Model):
             param: user from TRole model
             return: a list of id_dataset """
         q = DB.session.query(
-            CorDatasetsActor,
-            CorDatasetsActor.id_dataset
+            CorDatasetActor,
+            CorDatasetActor.id_dataset
         )
         if user.id_organisme is None:
             q = q.filter(
-                CorDatasetsActor.id_role == user.id_role
+                CorDatasetActor.id_role == user.id_role
             )
         else:
             q = q.filter(
                 or_(
-                    CorDatasetsActor.id_organism == user.id_organisme,
-                    CorDatasetsActor.id_role == user.id_role
+                    CorDatasetActor.id_organism == user.id_organisme,
+                    CorDatasetActor.id_role == user.id_role
                 )
             )
         return [d.id_dataset for d in q.all()]
@@ -183,18 +195,3 @@ class TAcquisitionFramework(DB.Model):
             TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
         ).first()
         return a_f
-
-
-@serializable
-class TParameters(DB.Model):
-    __tablename__ = 't_parameters'
-    __table_args__ = {'schema': 'gn_meta'}
-    id_parameter = DB.Column(DB.Integer, primary_key=True)
-    id_organism = DB.Column(
-        DB.Integer,
-        ForeignKey('utilisateurs.bib_organismes.id_organisme')
-    )
-    parameter_name = DB.Column(DB.Unicode)
-    parameter_desc = DB.Column(DB.Unicode)
-    parameter_value = DB.Column(DB.Unicode)
-    parameter_extra_value = DB.Column(DB.Unicode)

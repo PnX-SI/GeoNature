@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import TMedias
+from geonature.core.gn_commons.models import TMedias, BibTablesLocation
 from geonature.core.gn_commons.file_manager import (
     upload_file, remove_file,
     rename_file
@@ -50,7 +50,6 @@ class TMediaRepository():
                 self._persist_media_db()
             except Exception as e:
                 raise e
-
         # Si le média à un fichier associé
         if self.file:
             self.data['isFile'] = True
@@ -66,9 +65,9 @@ class TMediaRepository():
         # Si le média avait un fichier associé
         # et qu'il a été remplacé par une url
         if (
-            (not self.new) and
-            (self.data['isFile'] is not True) and
-            (self.media.media_path is not None)
+                (not self.new) and
+                (self.data['isFile'] is not True) and
+                (self.media.media_path is not None)
         ):
             remove_file(self.media.media_path)
 
@@ -86,14 +85,14 @@ class TMediaRepository():
         try:
             DB.session.add(self.media)
             DB.session.commit()
-        except IntegrityError as e:
+        except IntegrityError as exp:
             # @TODO A revoir avec les nouvelles contrainte
             DB.session.rollback()
-            if 'check_entity_field_exist' in e.args[0]:
+            if 'check_entity_field_exist' in exp.args[0]:
                 raise Exception(
                     "{} doesn't exists".format(self.data['id_table_location'])
                 )
-            if 'fk_t_medias_check_entity_value' in e.args[0]:
+            if 'fk_t_medias_check_entity_value' in exp.args[0]:
                 raise Exception(
                     "id {} of {} doesn't exists".format(
                         self.data['uuid_attached_row'],
@@ -103,7 +102,7 @@ class TMediaRepository():
             else:
                 raise Exception(
                     "Errors {}".format(
-                        e.args
+                        exp.args
                     )
                 )
 
@@ -174,3 +173,15 @@ class TMediumRepository():
             TMedias.uuid_attached_row == entity_uuid
         ).all()
         return medium
+
+
+def get_table_location_id(schema_name, table_name):
+    try:
+        location = DB.session.query(BibTablesLocation).filter(
+            BibTablesLocation.schema_name == schema_name
+        ).filter(
+            BibTablesLocation.table_name == table_name
+        ).one()
+    except :
+        return None
+    return location.id_table_location

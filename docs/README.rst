@@ -13,11 +13,15 @@ Documentation générale
 - `Installation MTES specificities <installation-mtes.rst>`_
 - `Administrator manual <admin-manual.rst>`_
 - `Developement, modules, components <development.rst>`_
+- `Versions compatibility <versions-compatibility.rst>`_
+- `FAQ <FAQ.rst>`_
+- `Https <https.rst>`_
+- `Authors <authors.rst>`_
+- `Changelog <CHANGELOG.rst>`_
 
 
 Documentation module OccTax
 ---------------------------
 
 - `Manuel utilisateur <user-manual.rst>`_
-- `Configuration du module <user-manual.rst>`_
-
+- `Configuration du module <admin-manual.rst#module-occtax>`_
