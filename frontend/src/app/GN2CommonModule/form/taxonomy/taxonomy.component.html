@@ -23,7 +23,7 @@
 <small> {{label}} </small>
 <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
   <input type="text" class="form-control form-control-sm "
-    [ngClass]="{'loading' : isLoading}"
+    [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
     id="taxonInput"
     [formControl]="parentFormControl"
     [disableControl]="disabled"
@@ -40,7 +40,7 @@
   </ng-template>
 
 </div>
-<small *ngIf="!isLoading && noResult && parentFormControl.value.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound' | translate}}</small>
+<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound' | translate}}</small>
 
 
 

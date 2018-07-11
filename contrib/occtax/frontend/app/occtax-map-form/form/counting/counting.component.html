@@ -3,7 +3,7 @@
           <pnx-nomenclature
             label="{{ 'Counting.LifeStage' | translate }}" 
             [parentFormControl]="formArray.controls[index].controls.id_nomenclature_life_stage"
-            [idTypeNomenclature]="10" 
+            codeNomenclatureType="STADE_VIE" 
             [regne]="fs.currentTaxon.regne"  
             [group2Inpn]="fs.currentTaxon.group2_inpn"> 
           </pnx-nomenclature>
@@ -12,7 +12,7 @@
             <pnx-nomenclature
               label="{{ 'Counting.Sex' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_sex"
-              [idTypeNomenclature]="9" 
+              codeNomenclatureType="SEXE" 
               [regne]="fs.currentTaxon.regne" 
               [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature>
@@ -21,7 +21,7 @@
             <pnx-nomenclature 
               label="{{ 'Counting.CountingObject' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_obj_count"
-              [idTypeNomenclature]="6" 
+              codeNomenclatureType="OBJ_DENBR" 
               [regne]="fs.currentTaxon.regne"
               [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature>
@@ -34,7 +34,7 @@
               #typeDenombrement
               label="{{ 'Counting.CountingType' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_type_count"
-              [idTypeNomenclature]="21"
+              codeNomenclatureType="TYP_DENBR"
               [regne]="fs.currentTaxon.regne"
               [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature> 
@@ -71,7 +71,7 @@
             #typeDenombrement
             label="{{ 'Counting.ValidationStatus' | translate }}"
             [parentFormControl]="formArray.controls[index].controls.id_nomenclature_valid_status"
-            [idTypeNomenclature]="101">
+            codeNomenclatureType="STATUT_VALID">
           </pnx-nomenclature> 
       </div>
     </div>

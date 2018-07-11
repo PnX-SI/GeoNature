@@ -13,13 +13,14 @@ class TestGnMeta:
         """
         Api to get all datasets
         """
-        token = get_token(self.client)
+        #token = get_token(self.client)
         response = self.client.get(url_for('gn_meta.get_datasets_list'))
         assert response.status_code == 200
 
-    def test_dataset_cruved(self):
+    def test_dataset_cruved_3(self):
         """
         API to get datasets with CRUVED authorization
+        CRUVED right = 3
         """
         token = get_token(self.client)
         response = self.client.get(url_for('gn_meta.get_datasets'))
@@ -28,6 +29,11 @@ class TestGnMeta:
         dataset_list = json_of_response(response)
         assert len(dataset_list) == 2
 
+    def test_dataset_cruved_2(self):
+        """
+        API to get datasets with CRUVED authorization
+        CRUVED = 2
+        """
         token = get_token(self.client, login="agent", password="admin")
         response = self.client.get(url_for('gn_meta.get_datasets'))
         dataset_list = json_of_response(response)
@@ -37,6 +43,11 @@ class TestGnMeta:
             dataset_list[0]['id_dataset'] == 2
         )
 
+    def test_dataset_cruved_1(self):
+        """
+        API to get datasets with CRUVED authorization
+        CRUVED = 1
+        """
         token = get_token(self.client, login="partenaire", password="admin")
         response = self.client.get(url_for('gn_meta.get_datasets'))
         dataset_list = json_of_response(response)
@@ -45,7 +56,7 @@ class TestGnMeta:
             len(dataset_list) == 1 and
             dataset_list[0]['id_dataset'] == 1
         )
-        
+
         
     def test_mtd_interraction(self):
         from geonature.core.gn_meta.mtd_utils import post_jdd_from_user, get_jdd_by_user_id, parse_jdd_xml

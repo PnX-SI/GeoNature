@@ -1,19 +1,13 @@
-import os
 import zipfile
 import datetime
 
 import shapefile
-import urllib.request
 
-
-from flask import current_app
 from pyproj import Proj
 from geoalchemy2.shape import to_shape
 from shapely.geometry import Point, Polygon
 from osgeo import osr
 
-from .env import ROOT_DIR
-from geonature.utils.errors import GeonatureApiError
 
 SERIALIZERS = {
     'date': lambda x: str(x) if x else None,
@@ -25,7 +19,7 @@ SERIALIZERS = {
 
 COLUMNTYPE = {
     'date': 'C',
-    'datetime':'C',
+    'datetime': 'C',
     'time': 'C',
     'timestamp': 'C',
     'uuid': 'C',
@@ -44,6 +38,7 @@ SHAPETYPE = {
     'POLYLINE': 3,
     'POLYGON': 5
 }
+
 
 def shapeseralizable(cls):
     """
@@ -93,12 +88,17 @@ def shapeseralizable(cls):
         else:
             fprops = cls_db_columns
 
-        out = [_serializer(getattr(self, item)) for item, _serializer in fprops]
+        out = [
+            _serializer(getattr(self, item)) for item, _serializer in fprops
+        ]
 
         return out
-    
+
     @classmethod
-    def to_shape_fn(cls, geom_col=None, srid=None, data=[], dir_path=None, file_name=None, columns=None):
+    def to_shape_fn(
+            cls, geom_col=None, srid=None, data=None,
+            dir_path=None, file_name=None, columns=None
+    ):
         """
         Class method to create 3 shapes from datas
         Parameters
@@ -108,9 +108,17 @@ def shapeseralizable(cls):
         file_name: (string)
         columns: columns to be serialize (list)
         """
+        if not data:
+            data=[]
+
         file_name = file_name or datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
-        co(cls.__mapper__.c, columns, data, dir_path, file_name, geom_col, srid)
-        
+
+        # TODO ? Pas compris ce que représentait co
+        co(
+            cls.__mapper__.c,
+            columns, data, dir_path,
+            file_name, geom_col, srid
+        )
 
     cls.as_shape = to_shape_fn
     cls.as_list = serialize_list
@@ -125,22 +133,24 @@ def zip_it(dir_path, file_name, formats):
             -filename: string
             -formats: array of shape type ['POINT', 'POLYLINE', POLYGON']
     """
-    zip_path = dir_path+'/'+file_name+'.zip'
-    zf = zipfile.ZipFile(zip_path, mode='w')
-    
+    zip_path = dir_path + '/' + file_name + '.zip'
+    zp_file = zipfile.ZipFile(zip_path, mode='w')
+
     for shape_format in formats:
-        final_file_name = dir_path+'/'+shape_format+"_"+file_name
-        zf.write(final_file_name+".dbf", shape_format+"_"+file_name+".dbf")
-        zf.write(final_file_name+".shx", shape_format+"_"+file_name+".shx")
-        zf.write(final_file_name+".shp", shape_format+"_"+file_name+".shp")
-        zf.write(final_file_name+".prj", shape_format+"_"+file_name+".prj")
-    zf.close()
+        final_file_name = dir_path + '/' + shape_format + "_" + file_name
+        extentions = ("dbf", "shx", "shp", "prj")
+        for ext in extentions:
+            zp_file.write(
+                final_file_name + "." + ext,
+                shape_format + "_" + file_name + "." + ext
+            )
+    zp_file.close()
+
 
 def create_shape_struct(db_cols, columns):
     point = shapefile.Writer(1)
     polyline = shapefile.Writer(3)
     polygon = shapefile.Writer(5)
-
 
     if columns:
         db_cols = [db_col for db_col in db_cols if db_col.key in columns]
@@ -151,13 +161,11 @@ def create_shape_struct(db_cols, columns):
     for db_col in db_cols:
         col_type = db_col.type.__class__.__name__.lower()
         if col_type != 'geometry':
-            point.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
-            polygon.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
-            polyline.field(db_col.key, COLUMNTYPE.get(col_type) ,'100')
-    
+            point.field(db_col.key, COLUMNTYPE.get(col_type), '100')
+            polygon.field(db_col.key, COLUMNTYPE.get(col_type), '100')
+            polyline.field(db_col.key, COLUMNTYPE.get(col_type), '100')
+
     return point, polyline, polygon
-
-
 
 
 def get_fields_row_generic(mapped_table, data, columns=[]):
@@ -165,6 +173,7 @@ def get_fields_row_generic(mapped_table, data, columns=[]):
         for generic table
     """
     return mapped_table.as_list(data, columns)
+
 
 def get_fields_row(data, columns=[]):
     """ return the fields of of row serialized in a table
@@ -180,7 +189,7 @@ def create_features(row_as_list, row, geom_col, point, polyline, polygon):
     - row: the origingal data row, with the geom column
     """
     geom = to_shape(getattr(row, geom_col))
-    #TODO: catch exception
+    # TODO: catch exception
     if isinstance(geom, Point):
         point.point(geom.x, geom.y)
         point.record(*row_as_list)
@@ -191,21 +200,21 @@ def create_features(row_as_list, row, geom_col, point, polyline, polygon):
         polyline.line(parts=([geom.coords]))
         polyline.record(*row_as_list)
 
+
 def save_shape(dir_path, file_name, point, polyline, polygon, srid):
-        file_point = dir_path+"/POINT_"+file_name
-        file_polygon = dir_path+"/POLYGON_"+file_name
-        file_polyline = dir_path+"/POLYLINE_"+file_name
+    file_point = dir_path + "/POINT_" + file_name
+    file_polygon = dir_path + "/POLYGON_" + file_name
+    file_polyline = dir_path + "/POLYLINE_" + file_name
 
-        proj = osr.SpatialReference()
-        proj.ImportFromEPSG(srid)
-        for shape in ['POINT', 'POLYLINE', 'POLYGON']:
-            path = dir_path+'/'+shape+'_'+file_name+'.prj'
-            with open(path, "w") as prj_file:
-                prj_file.write(str(proj))
-        point.save(file_point)
-        polygon.save(file_polygon)
-        polyline.save(file_polyline)
-
+    proj = osr.SpatialReference()
+    proj.ImportFromEPSG(srid)
+    for shape in ['POINT', 'POLYLINE', 'POLYGON']:
+        path = dir_path + '/' + shape + '_' + file_name + '.prj'
+        with open(path, "w") as prj_file:
+            prj_file.write(str(proj))
+    point.save(file_point)
+    polygon.save(file_polygon)
+    polyline.save(file_polyline)
 
 
 def create_shapes(db_cols, columns, data, dir_path, file_name, geom_col, srid):
@@ -219,8 +228,6 @@ def create_shapes(db_cols, columns, data, dir_path, file_name, geom_col, srid):
         file_name,
         ['POINT', 'POLYLINE', 'POLYGON']
     )
-        
-
 
 def create_shapes_generic(mapped_table, db_cols, columns, data, dir_path, file_name, geom_col, srid):
     point, line, polygon = create_shape_struct(db_cols, columns)
@@ -233,6 +240,3 @@ def create_shapes_generic(mapped_table, db_cols, columns, data, dir_path, file_n
         file_name,
         ['POINT', 'POLYLINE', 'POLYGON']
     )
-        
-        
-    

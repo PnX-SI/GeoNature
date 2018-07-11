@@ -1,6 +1,7 @@
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
 
+
 @serializable
 class VUserslistForallMenu(DB.Model):
     __tablename__ = 'v_userslist_forall_menu'
@@ -24,8 +25,6 @@ class BibOrganismes(DB.Model):
     fax_organisme = DB.Column(DB.Unicode)
     email_organisme = DB.Column(DB.Unicode)
 
-
-@serializable
 class TRoles (DB.Model):
     __tablename__ = 't_roles'
     __table_args__ = {'schema': 'utilisateurs'}
@@ -34,6 +33,20 @@ class TRoles (DB.Model):
     nom_role = DB.Column(DB.Unicode)
     prenom_role = DB.Column(DB.Unicode)
     id_organisme = DB.Column(DB.Integer)
+    groupe = DB.Column(DB.Boolean, default=False)
+
+    def as_dict(self, recursif=False, columns=()):
+        nom_role = self.nom_role or ''
+        prenom_role = self.prenom_role or ''
+        return {
+            'id_role': self.id_role,
+            'identifiant': self.identifiant,
+            'nom_role': self.nom_role,
+            'prenom_role': self.prenom_role,
+            'id_organisme': self.id_organisme,
+            'groupe': self.groupe,
+            'nom_complet': nom_role+' '+prenom_role
+        }
 
 
 @serializable

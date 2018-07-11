@@ -24,6 +24,13 @@ const defaultRoutes: Routes = [
       { path: '', component: HomeContentComponent },
       { path: 'synthese', loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'},
       { path: 'exports', loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
+      //{
+      //  path: 'admin',
+      //  loadChildren: '@geonature/adminModule/admin.module#AdminModule',
+      //  canActivate: [ModuleGuardService],
+      //  data: { id_module: 21 }
+      //},
+
       { path: '**',  component: PageNotFoundComponent },
      ] },
 ];

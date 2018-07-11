@@ -1,11 +1,13 @@
 *.*~
 settings.ini
 config/geonature_config.toml
+
+**/conf_gn_module.toml
+
 log/*
 .vscode/
 /backend/venv/*
 geonature_config.toml
-gunicorn_start.sh
 external_assets/
 external_modules/*
 tmp/
@@ -14,6 +16,7 @@ var/
 config.py
 backend/static/medias/*
 backend/static/shapefiles/*
+backend/static/configs/*
 backend/run.py
 
 .vscode

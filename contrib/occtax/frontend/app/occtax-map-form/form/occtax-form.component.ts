@@ -154,7 +154,7 @@ export class OcctaxFormComponent implements OnInit {
     // disable button
     this.disabledAfterPost = true;
     // Post
-    console.log(JSON.stringify(finalForm));
+    //console.log(JSON.stringify(finalForm));
 
     this._cfs.postOcctax(finalForm).subscribe(
       response => {
@@ -169,6 +169,7 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0;
         this.fs.disabled = true;
+        this.fs.showCounting = false;
         // redirect
         this.router.navigate(['/occtax']);
       },

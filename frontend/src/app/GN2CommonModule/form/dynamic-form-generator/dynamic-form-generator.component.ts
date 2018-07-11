@@ -16,9 +16,6 @@ export class GenericFormGeneratorComponent implements OnInit {
   constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
-    console.log('alallalala');
-    console.log(this.formsDefinition);
-
     this.selectControl.valueChanges.filter(value => value !== null).subscribe(formDef => {
       this.addFormControl(formDef);
     });

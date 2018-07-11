@@ -123,7 +123,7 @@ BEGIN
   VALUES(
     theidtablelocation,
     theuuid,
-    ref_nomenclatures.get_default_nomenclature_value(101), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+    ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
     null,
     thecomment,
     NOW()
@@ -189,9 +189,9 @@ $BODY$
 -- OR      SELECT gn_commons.get_default_parameter('uuid_url_value', 2);
   BEGIN
     IF myidorganisme IS NOT NULL THEN
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
+      SELECT INTO theparamvalue parameter_value FROM gn_commons.t_parameters WHERE parameter_name = myparamname AND id_organism = myidorganisme LIMIT 1;
     ELSE
-      SELECT INTO theparamvalue parameter_value FROM gn_meta.t_parameters WHERE parameter_name = myparamname LIMIT 1;
+      SELECT INTO theparamvalue parameter_value FROM gn_commons.t_parameters WHERE parameter_name = myparamname LIMIT 1;
     END IF;
     RETURN theparamvalue;
   END;
@@ -339,7 +339,7 @@ CREATE TABLE t_modules(
   module_url character(255) NOT NULL,
   module_target character(10),
   module_comment text,
-  active_frontend boolean NOT NULL
+  active_frontend boolean NOT NULL,
   active_backend boolean NOT NULL
 );
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
@@ -413,11 +413,11 @@ ALTER TABLE ONLY t_modules
   --ADD CONSTRAINT fk_t_medias_check_entity_value CHECK (check_entity_value_exist(entity_name,entity_value));
 
 ALTER TABLE t_medias
-  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_media_type,117));
+  ADD CONSTRAINT check_t_medias_media_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_media_type,'TYPE_MEDIA')) NOT VALID;
 
 
 ALTER TABLE t_validations
-  ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_valid_status,101));
+  ADD CONSTRAINT check_t_validations_valid_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_valid_status,'STATUT_VALID')) NOT VALID;
 
 
 ALTER TABLE t_history_actions

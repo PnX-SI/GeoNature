@@ -57,9 +57,7 @@ sudo apt-get install -y nano 2> var/log/install_app.log
 nano install_all.ini
 . install_all.ini
 
-
-
-# Installation de l'environnement nécessaire à GeoNature2, TaxHub et
+# Installation de l'environnement nécessaire à GeoNature et TaxHub
 echo "Installation de l'environnement logiciel..."
 
 sudo apt-get -y install ntpdate 2> var/log/install_app.log 
@@ -75,7 +73,6 @@ then
 else
     sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
     sudo apt install postgis 2> var/log/install_app.log
-    
 fi
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 
@@ -97,14 +94,16 @@ else
 fi
 
 sudo apt-get install -y supervisor 2> var/log/install_app.log 
-# for make work opencv(taxhub) on debian8
+
+# To make opencv (TaxHub) work on Debian 8
 sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2> var/log/install_app.log 
 sudo apt-get install -y python-qt4 2> var/log/install_app.log 
 
-
-echo "Création des utilisateurs postgreSQL..."
+# Création de l'utilisateur PostgreSQL
+echo "Création de l'utilisateur PostgreSQL..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
 
+# Configuration Apache
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 sudo a2enmod rewrite
 sudo a2dismod mod_pyth
@@ -143,18 +142,19 @@ sed -i "s/https_cert_path=.*$/https_cert_path=$https_cert_path/g" config/setting
 sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.ini
 
 
-
+cd install/
 # Installation de la base de données GeoNature en root
-./install/install_db.sh
-
+./install_db.sh
 
 # Installation et configuration de l'application GeoNature
-./install/install_app.sh
+./install_app.sh
 
-#configuration apache de Geonature
+cd ../
+
+# Configuration Apache de Geonature
 sudo touch /etc/apache2/sites-available/geonature.conf
 
-sudo sh -c 'echo "# Configuration GeoNature 2" >> /etc/apache2/sites-available/geonature.conf'
+sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
 conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
@@ -162,7 +162,7 @@ conf="<Directory /home/$monuser/geonature/frontend/dist>"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
-# backend
+# Conf Apache du backend de GeoNature
 sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPass http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
@@ -171,9 +171,7 @@ sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geo
 
 sudo a2ensite geonature
 
-
-
-# Configuration apache maintenance GeoNature
+# Configuration Apache de la page de maintenance de GeoNature
 sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
 
 conf="Alias /geonature /home/"$monuser"/geonature/frontend/src/app/maintenance"
@@ -184,9 +182,6 @@ echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
 
-
-
-
 # Installation de TaxHub avec l'utilisateur courant
 echo "Téléchargement et installation de TaxHub ..."
 cd /tmp
@@ -196,7 +191,6 @@ rm $taxhub_release.zip
 mv TaxHub-$taxhub_release /home/$monuser/taxhub/
 sudo chown -R $monuser /home/$monuser/taxhub/
 cd /home/$monuser/taxhub
-
 
 # Configuration des settings de TaxHub
 echo "Configuration de l'application TaxHub ..."
@@ -217,7 +211,6 @@ sed -i "s/enable_https=.*$/enable_https=$enable_https/g" settings.ini
 sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
-
 # Configuration Apache de TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
@@ -237,16 +230,14 @@ sudo a2ensite taxhub
 sudo a2enmod proxy
 sudo a2enmod proxy_http
 
-# Installation et configuration de l'application TaxHub
+# Script d'installation de TaxHub
 ./install_app.sh
 
-
-
-
+# Installation et configuration de l'application UsersHub (si activée)
 if [ "$install_usershub_app" = true ]; then
     echo "Installation de l'application Usershub"
     os_version=$(cat /etc/os-release |grep VERSION_ID)
-    # Sur debian 9: php7 - debian8 php5
+    # Sur Debian 9 : php7. Sur Debian 8 : php5
     if [ "$OS_VERSION" == "9" ] 
     then
         sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2> var/log/install_app.log 
@@ -267,10 +258,10 @@ if [ "$install_usershub_app" = true ]; then
     sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
     sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 
-    # Installation et configuration de l'application UsersHub
+    # Script d'installation de UsersHub
     ./install_app.sh
     
-    # conf apache de usershub
+    # Conf Apache de UsersHub
     sudo touch /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
     conf="Alias /usershub /home/$monuser/usershub/web"
@@ -283,6 +274,3 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 sudo apache2ctl restart
-
-
-
