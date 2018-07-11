@@ -95,7 +95,7 @@ def releve_data(client):
                     "id_nomenclature_life_stage": 2,
                     "count_max": 1,
                     "id_nomenclature_valid_status": default_nomenclatures['STATUT_VALID'],
-                    "id_nomenclature_sex": 172,
+                    "id_nomenclature_sex": default_nomenclatures['SEXE'],
                     "id_validator": None,
                     "id_nomenclature_type_count": default_nomenclatures['TYP_DENBR'],
                     "id_nomenclature_obj_count": default_nomenclatures['OBJ_DENBR']
