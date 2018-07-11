@@ -3,6 +3,7 @@ import logging
 from flask import Blueprint, request
 
 from sqlalchemy import distinct, func
+from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
 from geojson import FeatureCollection
 
@@ -14,7 +15,8 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese, 
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
-    VSyntheseDecodeNomenclatures
+    VSyntheseDecodeNomenclatures,
+    VSyntheseForWebAppBis
 )
 from geonature.core.ref_geo.models import (
     LiMunicipalities
@@ -98,36 +100,26 @@ def get_synthese():
     result_limit = None
     if 'limit' in filters:
         result_limit = filters.pop('limit')
-    q = DB.session.query(Synthese)
-    q = q.join(
-        VSyntheseDecodeNomenclatures,
-        VSyntheseDecodeNomenclatures.id_synthese ==
-        Synthese.id_synthese
-    )
-    q = q.join(
-        LiMunicipalities,
-        LiMunicipalities.insee_com ==
-        Synthese.id_municipality
-    )
+    q = DB.session.query(VSyntheseForWebAppBis)
 
     if 'observers' in filters:
-        q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
+        q = q.filter(VSyntheseForWebAppBis.observers.ilike('%'+filters.pop('observers')+'%'))
     
     if 'date_min' in filters:
-        q = q.filter(Synthese.date_min >= filters.pop('date_min'))
+        q = q.filter(VSyntheseForWebAppBis.date_min >= filters.pop('date_min'))
     
     if 'date_max' in filters:
-        q = q.filter(Synthese.date_min <= filters.pop('date_max'))
+        q = q.filter(VSyntheseForWebAppBis.date_min <= filters.pop('date_max'))
 
     for colname, value in filters.items():
-        col = getattr(Synthese.__table__.columns, colname)
+        col = getattr(VSyntheseForWebAppBis.__table__.columns, colname)
         testT = testDataType(value, col.type, colname)
         if testT:
             return {'error': testT}, 500
         q = q.filter(col == value)
     if result_limit:
         q = q.order_by(
-            Synthese.date_min
+            VSyntheseForWebAppBis.date_min
             )
         data = q.limit(
                 result_limit
@@ -168,18 +160,21 @@ def get_vsynthese():
     return FeatureCollection([d.get_geofeature() for d in data])
 
 
-@routes.route('/synthese/<synthese_id>', methods=['GET'])
+@routes.route('/vsynthese/<id_synthese>', methods=['GET'])
 @json_resp
-def get_one_synthese(synthese_id):
+def get_one_synthese(id_synthese):
     """
-        return all synthese rows
-        only use for test with a few rows in synthese table
+        Retourne un enregistrement de la synthese
+        avec les nomenclatures décodées pour la webapp
     """
-    q = DB.session.query(Synthese)
-    q = q.filter(Synthese.id_synthese == synthese_id)
+    q = DB.session.query(VSyntheseDecodeNomenclatures)
+    q = q.filter(VSyntheseDecodeNomenclatures.id_synthese == id_synthese)
 
-    data = q.all()
-    return [d.as_dict() for d in data]
+    try:
+        data = q.one()
+        return data.as_dict()
+    except exc.NoResultFound:
+        return None
 
 
 # data = {

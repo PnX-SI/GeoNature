@@ -16,7 +16,6 @@
     #table class="material striped margin-top-xs table-size expandable" 
     [rows]="mapListService.tableData" 
     [columns]="SYNTHESE_CONFIG.default_columns"
-    [columnMode]="'force'"
     [loadingIndicator]="true"
     [headerHeight]="50" 
     [footerHeight]="35" 
@@ -59,6 +58,36 @@
     </ngx-datatable-column>
     -->
 
+    <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+          <div style="padding-left:35px;">
+            <div> <small>
+                    <b> Altitude </b>: entre {{row.atltude_min}}m - {{row.altitude_max}}m <br/>
+                    <b> Méthode d'observation:  </b> {{selectedObs?.obs_method}}  <b> Stade de vie:  </b> {{selectedObs?.life_stage}} <br/>
+                    <b> Denombrement </b> Entre {{row.count_min}}/{{row.count_min}}  individu de sexe:  {{selectedObs.sex}}
+                    <br/>
+            </small>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-row-detail>
+
+      <ngx-datatable-column
+      [width]="50"
+      [resizeable]="false"
+      [sortable]="false"
+      [draggable]="false"
+      [canAutoResize]="false">
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+        <a
+          href="javascript:void(0)"
+          [class.datatable-icon-right]="!expanded"
+          [class.datatable-icon-down]="expanded"
+          title="Expand/Collapse Row"
+          (click)="toggleExpandRow(row)">
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
 
     <!-- DATA COLOMNS -->
     <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
