@@ -79,7 +79,7 @@ Installation de l'application
 
   ::
 
-    unzip GeoNature-X.Y.Z.zip
+    unzip X.Y.Z.zip
 
 * Renommer le répertoire de l'application puis placez-vous dedans : 
 
@@ -173,7 +173,7 @@ Mise à jour de l'application
   ::
 
     wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-    unzip GeoNature-X.Y.Z.zip
+    unzip X.Y.Z.zip
 
 * Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
 
