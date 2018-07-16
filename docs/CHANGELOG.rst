@@ -12,7 +12,7 @@ https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
 * Ajout d'un message d'erreur si l'utilisateur n'a pas de JDD ou si il y a eu un problème lors de la récupération des JDD de MTD
 * Ajout d'une vue matérialisée (``gn_synthese.vm_min_max_for_taxons``) et d'une fonction (``gn_synthese.fct_calculate_min_max_for_taxon``) permettant de renvoyer des informations sur les observations existantes d'un taxon (étendue des observations, date min et max, altitude min et max, nombre d'observations) pour orienter la validation et la saisie (https://github.com/PnX-SI/gn_module_validation/issues/5)
 * L'export OccTax est désormais basé sur une vue qu'il est possible d'adapter
-* Ajouts de nouveaux tests automatisés du code et mise en place de Travis pour les lancer automatiquement code à chaque commit (https://travis-ci.org/PnX-SI/GeoNature)
+* Ajouts de nouveaux tests automatisés du code et mise en place de Travis pour les lancer automatiquement à chaque commit (https://travis-ci.org/PnX-SI/GeoNature)
 * Ajout de données test
 * Mise à jour des scripts de déploiement spécifiques de DEPOBIO (MTES)
 * Déplacement de la table centrale de gestion des paramètres ``t_parameters`` dans le schéma ``gn_commons`` (#376)
@@ -35,7 +35,7 @@ https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
 * OccTax : Correction des droits dans les JDD
 * OccTax : Correction de l'affichage des observers_txt dans la fiche d'un relevé
 * Correction de la gestion générique des médias
-* Suppression du lien entre ref_geo et ref_nomenclatures (#374)
+* Suppression du lien entre ``ref_geo`` et ``ref_nomenclatures`` (#374)
 * Compléments et relecture de la documentation
 * Correction 
 
