@@ -5,8 +5,6 @@ CHANGELOG
 2.0.0.beta5 (unreleased)
 ------------------------
 
-https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
-
 **Nouveautés**
 
 * Ajout d'un message d'erreur si l'utilisateur n'a pas de JDD ou si il y a eu un problème lors de la récupération des JDD de MTD
@@ -41,9 +39,24 @@ https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
 
 **Notes de version**
 
-* Exécutez le script de mise à jour global de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``)
-* Exécutez le script de mise à jour du schéma ``pr_occtax`` (``contrib/occtax/data/migration_2.0.0.beta4to2.0.0.beta5.sql``)
-* Exécutez le script ``install/migration/beta4tobeta5.sh``
+Si vous mettez à jour votre GeoNature depuis une Beta4 : 
+
+* Téléchargez la beta5 et renommer les répertoires :
+::
+
+    cd /home/myuser
+    wget https://github.com/PnX-SI/GeoNature/archive/geonature2beta.zip
+    unzip geonature2beta.zip
+    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
+    mv GeoNature-geonature2beta /home/<mon_user>/geonature/
+* Exécutez le script de migration ``install/migration/beta4tobeta5.sh`` depuis la racine de votre GeoNature :
+::
+
+    cd geonature
+   ./install/migration/beta4tobeta5.sh
+
+Celui-ci va récupérer vos fichiers de configuration, déplacer les modules et appliquer les changements de la BDD.
+
 * Si vous avez développé des modules externes, voir https://github.com/PnX-SI/GeoNature/issues/375, en ajoutant un lien symbolique depuis le répertoire ``external_modules`` et en réintégrant la configuration du module dans son répertoire ``config``
 
 2.0.0.beta4 (2018-05-25)
