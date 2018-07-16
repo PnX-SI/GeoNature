@@ -98,11 +98,9 @@ class ReleveRepository():
         """
         q = DB.session.query(self.model.tableDef)
         if user.tag_object_code in ('1', '2'):
-            q = q.join(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
+            q = q.outerjoin(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
             if user.tag_object_code == '2':
                 allowed_datasets = TDatasets.get_user_datasets(user)
-                print(allowed_datasets)
-                print(user.id_role)
                 q = q.filter(
                     or_(
                         self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
