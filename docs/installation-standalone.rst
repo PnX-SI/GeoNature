@@ -1,5 +1,5 @@
-INSTALLATION AUTONOME DE GEONATURE
-==================================
+INSTALLATION AUTONOME
+=====================
 
 **Attention** : Ne suivez cette documentation que si vous souhaitez installer GeoNature de manière autonome (sans TaxHub ou UsersHub).
 Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation-all.rst>`_.

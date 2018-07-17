@@ -1,5 +1,5 @@
-SPECIFICITES INSTANCE DEPOT LEGAL DE BIODIVERSITE
-=================================================
+SPECIFICITES DEPOBIO
+====================
 
 Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (https://depot-legal-biodiversite.naturefrance.fr/).
 

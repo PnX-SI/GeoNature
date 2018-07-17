@@ -1,5 +1,5 @@
-INSTALLATION GLOBALE DE GEONATURE
-=================================
+INSTALLATION GLOBALE
+====================
 
 Prérequis
 ---------
