@@ -40,8 +40,6 @@ export class NomenclatureComponent extends GenericFormComponent
 
   ngOnInit() {
     this.returnedValue = this.returnedValue || 'id_nomenclature';
-    console.log(this.returnedValue);
-
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
