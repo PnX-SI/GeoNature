@@ -6,6 +6,9 @@ cp /home/$USER/geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/m
 cp -r /home/$USER/geonature_old/frontend/src/custom/* frontend/src/custom/
 cp -r /home/$USER/geonature_old/external_modules/* external_modules
 
+mkdir $geonature_dir/var
+mkdir $geonature_dir/var/log
+
 # Création du répertoitre static et rapattriement des médias
 if [ ! -d 'backend/static/' ]
 then
