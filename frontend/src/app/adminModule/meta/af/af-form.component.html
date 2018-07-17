@@ -30,7 +30,7 @@
         <input class="form-control form-control-sm" type="checkbox" name="" id="" [formControl]="afForm.controls.is_parent">
       </div>
 
-      <pnx-nomenclature label="Niveau territorial" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level" [codeNomenclatureType]="NIVEAU_TERRITORIAL">
+      <pnx-nomenclature label="Niveau territorial" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level" codeNomenclatureType="NIVEAU_TERRITORIAL">
       </pnx-nomenclature>
 
       <small>Description du territoire </small>
@@ -42,7 +42,7 @@
         <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
       </div>
 
-      <pnx-nomenclature label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_financing_type" [codeNomenclatureType]="TYPE_FINANCEMENT">
+      <pnx-nomenclature label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_financing_type" codeNomenclatureType="TYPE_FINANCEMENT">
       </pnx-nomenclature>
 
       <small>Description de la cible </small>

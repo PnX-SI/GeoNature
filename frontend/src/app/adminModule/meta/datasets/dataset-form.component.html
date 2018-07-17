@@ -44,20 +44,20 @@
         </small>
       </div>
 
-      <pnx-nomenclature label="Objectif" [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif" [codeNomenclatureType]="JDD_OBJECTIFS">
+      <pnx-nomenclature label="Objectif" [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif" codeNomenclatureType="JDD_OBJECTIFS">
       </pnx-nomenclature>
 
       <pnx-nomenclature label="Méthode de collècte" [parentFormControl]="datasetForm.controls.id_nomenclature_collecting_method"
-        [codeNomenclatureType]="METHO_RECUEIL">
+        codeNomenclatureType="METHO_RECUEIL">
       </pnx-nomenclature>
 
-      <pnx-nomenclature label="Origine des données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin" [codeNomenclatureType]="DS_PUBLIQUE">
+      <pnx-nomenclature label="Origine des données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin" codeNomenclatureType="DS_PUBLIQUE">
       </pnx-nomenclature>
 
-      <pnx-nomenclature label="Statut source" [parentFormControl]="datasetForm.controls.id_nomenclature_source_status" [codeNomenclatureType]="STATUT_SOURCE">
+      <pnx-nomenclature label="Statut source" [parentFormControl]="datasetForm.controls.id_nomenclature_source_status" codeNomenclatureType="STATUT_SOURCE">
       </pnx-nomenclature>
 
-      <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type" [codeNomenclatureType]="RESOURCE_TYP">
+      <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type" codeNomenclatureType="RESOURCE_TYP">
       </pnx-nomenclature>
     </div>
 
@@ -82,7 +82,7 @@
         </pnx-select-search>
 
 
-        <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" [codeNomenclatureType]="ROLE_ACTEUR">
+        <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" codeNomenclatureType="ROLE_ACTEUR">
         </pnx-nomenclature>
 
         <button *ngIf="i != 0" class="btn btn-sm btn-danger margin-top-sm" (click)="deleteFormArray(i)">

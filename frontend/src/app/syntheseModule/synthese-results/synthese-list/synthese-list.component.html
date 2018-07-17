@@ -12,24 +12,12 @@
 </table> -->
 
 <!--Table-->
-<ngx-datatable 
-    #table class="material striped margin-top-xs table-size expandable" 
-    [rows]="mapListService.tableData" 
-    [columns]="SYNTHESE_CONFIG.default_columns"
-    [loadingIndicator]="true"
-    [headerHeight]="50" 
-    [footerHeight]="35" 
-    [rowHeight]="50"
-    [scrollbarV]="false"
-    [draggable]="false" 
-    [selected]="mapListService.selectedRow"
-    [externalPaging]="false" 
-    [selectionType]="'single'" 
-    [count]="mapListService.tableData.length" 
-    [rowClass]="mapListService.getRowClass" 
-    (select)="mapListService.onRowSelect($event)">
+<ngx-datatable #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.default_columns"
+  [loadingIndicator]="_ds.dataLoaded" [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [scrollbarV]="false" [draggable]="false"
+  [selected]="mapListService.selectedRow" [externalPaging]="false" [selectionType]="'single'" [count]="mapListService.tableData.length"
+  [rowClass]="mapListService.getRowClass" (select)="mapListService.onRowSelect($event)">
 
-    <!-- ACTION COLUMNS 
+  <!-- ACTION COLUMNS
     <ngx-datatable-column maxWidth="50">
         <ng-template let-row="row" ngx-datatable-cell-template>
             <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
@@ -58,38 +46,33 @@
     </ngx-datatable-column>
     -->
 
-    <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
-        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-          <div style="padding-left:35px;">
-            <div> <small>
-                    <b> Altitude </b>: entre {{row.atltude_min}}m - {{row.altitude_max}}m <br/>
-                    <b> Méthode d'observation:  </b> {{selectedObs?.obs_method}}  <b> Stade de vie:  </b> {{selectedObs?.life_stage}} <br/>
-                    <b> Denombrement </b> Entre {{row.count_min}}/{{row.count_min}}  individu de sexe:  {{selectedObs.sex}}
-                    <br/>
-            </small>
-            </div>
-          </div>
-        </ng-template>
-      </ngx-datatable-row-detail>
+  <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+      <div style="padding-left:35px;">
+        <div>
+          <small>
+            <b> Altitude </b>: entre {{row.atltude_min}}m - {{row.altitude_max}}m
+            <br/>
+            <b> Méthode d'observation: </b> {{selectedObs?.obs_method}}
+            <b> Stade de vie: </b> {{selectedObs?.life_stage}}
+            <br/>
+            <b> Denombrement </b> Entre {{row.count_min}}/{{row.count_min}} individu de sexe: {{selectedObs?.sex}}
+            <br/>
+          </small>
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-row-detail>
 
-      <ngx-datatable-column
-      [width]="50"
-      [resizeable]="false"
-      [sortable]="false"
-      [draggable]="false"
-      [canAutoResize]="false">
-      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
-        <a
-          href="javascript:void(0)"
-          [class.datatable-icon-right]="!expanded"
-          [class.datatable-icon-down]="expanded"
-          title="Expand/Collapse Row"
-          (click)="toggleExpandRow(row)">
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
+  <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+      <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expand/Collapse Row"
+        (click)="toggleExpandRow(row)">
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
 
-    <!-- DATA COLOMNS -->
-    <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
-    </ngx-datatable-column>
+  <!-- DATA COLOMNS -->
+  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
+  </ngx-datatable-column>
 </ngx-datatable>
