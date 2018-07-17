@@ -70,8 +70,9 @@ class GnFrontEndConf(Schema):
     DISPLAY_FOOTER = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
 
+
 class Synthese(Schema):
-    AREA_FILTERS = fields.List(fields.Dict)
+    AREA_FILTERS = fields.List(fields.Dict, missing=[])
 
 
 class MailErrorConf(Schema):

@@ -82,7 +82,7 @@
         </pnx-select-search>
 
 
-        <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" [idTypeNomenclature]="109">
+        <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" [codeNomenclatureType]="ROLE_ACTEUR">
         </pnx-nomenclature>
 
         <button *ngIf="i != 0" class="btn btn-sm btn-danger margin-top-sm" (click)="deleteFormArray(i)">
