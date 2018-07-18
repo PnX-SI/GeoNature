@@ -13,6 +13,8 @@ cp /home/$USER/geonature_old/config/settings.ini /home/$USER/geonature/config/se
 cp /home/$USER/geonature_old/frontend/src/conf/map.config.ts /home/$USER/geonature/frontend/src/conf/map.config.ts
 cp -r /home/$USER/geonature_old/frontend/src/custom/* /home/$USER/geonature/frontend/src/custom/
 cp -r /home/$USER/geonature_old/external_modules/* /home/$USER/geonature/external_modules
+mkdir frontend/src/external_assets
+cp -r /home/$USER/geonature_old/frontend/src/external_assets/* frontend/src/external_assets/
 
 ##### Migration SQL #######
 
