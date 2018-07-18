@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GeoJSON } from 'leaflet';
-import { SearchService } from './search.service';
+import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 
 @Component({
@@ -10,16 +10,19 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 export class SyntheseComponent implements OnInit {
   public syntheseDataStore: GeoJSON;
 
-  constructor(public searchService: SearchService, private _mapListService: MapListService) {}
+  constructor(public searchService: DataService, private _mapListService: MapListService) {}
 
   loadAndStoreData(formParams) {
+    this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(data => {
       this.syntheseDataStore = data;
       this._mapListService.loadTableData(data);
       this._mapListService.idName = 'id_synthese';
+      this.searchService.dataLoaded = true;
     });
   }
   ngOnInit() {
-    this.loadAndStoreData({});
+    const initialData = { limit: 100 };
+    this.loadAndStoreData(initialData);
   }
 }

@@ -1,0 +1,21 @@
+<small> {{selectLabel}} </small>
+<div class="input-group filter-control" >
+  <select class="form-control form-control-sm" [formControl]="selectControl">
+    <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
+    <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
+      {{formDef.label}}
+    </option>
+  </select>
+</div>
+
+<div class="dynamic-form-wrapper">
+    <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
+        <pnx-dynamic-form
+        [formDef]="formDef"
+        [form]="formGroup"
+        >
+      </pnx-dynamic-form>
+    <i class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>
+</div>
+
+</div>

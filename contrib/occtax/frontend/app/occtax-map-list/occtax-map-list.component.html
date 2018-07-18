@@ -68,7 +68,7 @@
         ></i>
         </button>
 
-        <svg *ngIf="formsSelected.length > 0" height="40" width="10">
+        <svg *ngIf="dynamicForm?.formsSelected.length > 0" height="40" width="10">
             <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
         </svg>
 
@@ -78,31 +78,13 @@
           <i class="fa fa-search" aria-hidden="true"></i>
         </button>
   </div>
-  <div *ngIf="advandedFilterOpen" id="collapse-settings">
-    <div class="form-group col-sm-4 padding-sm">
-      <small class="label-sm"> Autres Critères </small>
-      <select class="form-control filter-control" [formControl]="filterControl">
-          <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
-          <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
-            {{formDef.label}}
-          </option>
-      </select>
-    </div>
-
-    
-    <div class='form-inline' [formGroup]="dynamicFormGroup">
-      
-        <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
-            <pnx-dynamic-form
-            [formDef]="formDef"
-            [form]="dynamicFormGroup"
-            >
-            </pnx-dynamic-form>
-            <i class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>
-        </div>
-      
-
-    </div>
+  <div  [hidden]="!advandedFilterOpen" id="collapse-settings">
+      <pnx-dynamic-form-generator
+      #dynamicForm
+      selectLabel="Autres Critères"
+      [formGroup]="dynamicFormGroup"
+      [formsDefinition]="formsDefinition">
+    </pnx-dynamic-form-generator>
 
 
   </div>
@@ -119,7 +101,6 @@
       height="85vh">
     </pnx-map-list>
   </div>
-
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm tab-container">
     <!-- LIST -->
     <!--Table-->
@@ -128,6 +109,7 @@
       class="material striped margin-top-xs table-size expandable"
       [rows]="mapListService.tableData"
       [columns]="mapListService.displayColumns"
+      [loadingIndicator]="mapListService.isLoading"
       [columnMode]="'force'"
       [headerHeight]="35"
       [footerHeight]="40"
@@ -222,9 +204,8 @@
               <label [attr.for]="col.name">{{col.name | readablePropertie }}</label>
             </a>
           </li>
-
       </div>
-      </ng-template>
+    </ng-template>
 
     <!-- MODAL DELETE -->
     <ng-template #modalConfirm let-c="close" let-d="dismiss">
@@ -243,7 +224,7 @@
         <h5 class="modal-title" id="exampleModalLabel"> {{'DownloadData' | translate }}</h5>
       </div>
       <div class="modal-body">
-        <span [innerHTML]="occtaxConfig.export_message"> </span> <span> {{ 'MapList.ObservationNumber' | translate}} {{mapListService.page.totalElements}}  </span> <br><br>
+        <span [innerHTML]="occtaxConfig.export_message"> </span> <br><br>
 
         <div *ngIf="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER">
           {{'DownloadOverflow' | translate }}

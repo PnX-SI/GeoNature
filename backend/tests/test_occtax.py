@@ -82,8 +82,12 @@ class TestApiModulePrOcctax:
         assert response.status_code == 200
     
     def test_export_sinp_multiformat(self):
-        token = get_token(self.client)
-        self.client.set_cookie('/', 'token', token)
+        # User agent est digitiser que d'un seul relevé
+        token = get_token(
+            self.client,
+            login="agent",
+            password="admin"
+        )
 
         base_query_string = {
             'id_dataset':1,
@@ -101,6 +105,7 @@ class TestApiModulePrOcctax:
 
         assert response.status_code == 200
 
+
         # geojson
         geojson_query_string = base_query_string.copy()
         geojson_query_string['format'] = 'geojson'
@@ -109,7 +114,8 @@ class TestApiModulePrOcctax:
             query_string=geojson_query_string
         )
         assert response.status_code == 200
-        
+        data = json_of_response(response)
+        assert len(data['features']) == 1        
         #shapefile
         shape_query_string = base_query_string.copy()
         shape_query_string['format'] = 'shapefile'
@@ -121,7 +127,7 @@ class TestApiModulePrOcctax:
         
 
     # ## Test des droits ####
-    def test_get_releve_right(self):
+    def test_get_and_delete_releve(self):
         """
             user admin is observer of releve 1
         """
@@ -133,25 +139,8 @@ class TestApiModulePrOcctax:
         )
         assert response.status_code == 200
 
-        """
-            user agent is not observer, digitiser
-            or in cor_dataset_actor
-        """
-        token = get_token(
-            self.client,
-            login="agent",
-            password="admin"
-        )
-        self.client.set_cookie('/', 'token', token)
-
-        with pytest.raises(InsufficientRightsError):
-            response = self.client.get(
-                url_for('pr_occtax.deleteOneReleve', id_releve=1)
-            )
 
     def test_user_cannot_delete_releve(self):
-        import requests
-
         """
             user agent is not observer, digitiser
             or in cor_dataset_actor

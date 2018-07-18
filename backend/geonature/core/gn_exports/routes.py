@@ -4,8 +4,8 @@ from flask import Blueprint, request
 from sqlalchemy import or_
 
 from geonature.utils.env import DB
-from ...utils.utilssqlalchemy import json_resp
-from ...utils import filemanager
+from geonature.utils.utilssqlalchemy import json_resp
+from geonature.utils import filemanager
 
 
 routes = Blueprint('gn_exports', __name__)

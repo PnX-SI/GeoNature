@@ -1,22 +1,76 @@
-<pnx-datasets
-    [parentFormControl]="searchForm.controls.id_dataset"
-    placeholder="{{ 'Datasets' | translate}}">
-</pnx-datasets>
-<pnx-taxonomy 
-    [parentFormControl]="searchForm.controls.cd_nom" 
-    [idList]="500" 
-    [charNumber]="3" 
-    [listLength]="20">
-</pnx-taxonomy>
-<pnx-observers-text 
-    [parentFormControl]="searchForm.controls.observers">
-</pnx-observers-text>
-<pnx-nomenclature 
-    placeholder="{{ 'Taxon.BiologicalCondition' | translate }}" 
-    [parentFormControl]="searchForm.controls.id_nomenclature_bio_condition"
-    [idTypeNomenclature]="7" >
-</pnx-nomenclature>
+<div class="card">
+      <fieldset>
+              <legend> Quoi ?</legend>
+          <pnx-datasets
+              [parentFormControl]="formService.searchForm.controls.id_dataset"
+              label="{{ 'Datasets' | translate}}">
+          </pnx-datasets>
+          <pnx-taxonomy 
+              label="{{'Taxon.Taxon' | translate }} " 
+              [parentFormControl]="formService.searchForm.controls.cd_nom" 
+              [idList]="500" 
+              [charNumber]="3" 
+              [listLength]="20"
+              (onChange)=formService.getCurrentTaxon($event)>
+            </pnx-taxonomy>
+                <div class="alert alert-warning taxon-alert" *ngIf="formService.taxonsList.length > 0" >
+                <p class="taxon-list"> <b> Taxon(s) recherché(s):</b></p>
+                <p class="taxon-list" *ngFor="let taxon of formService.taxonsList; let i = index" > 
+                  - {{taxon.nom_valide}}
+                  <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
+                </p>
+          </div>
+            <button (click)="openModalCol($event, modalTaxon)" class="btn btn-sm btn-secondary"> Avancé</button>
+      </fieldset>
 
-<button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+      <fieldset>
+          <legend> Quand ?</legend>
+          <pnx-date
+          label = "Date min"
+          [parentFormControl]="formService.searchForm.controls.date_min">
+          </pnx-date>
 
-<pre>form value: <br>{{searchForm.value | json}}</pre>
+          <pnx-date
+          label = "Date max"
+          [parentFormControl]="formService.searchForm.controls.date_max">>
+            
+          </pnx-date>
+      </fieldset>
+
+      <fieldset>
+          <legend> Ou ?</legend>
+          <pnx-municipalities
+          label="Commubes"
+          [parentFormControl]="formService.searchForm.controls.municipalities"
+          ></pnx-municipalities>
+      </fieldset>
+
+      
+          <fieldset>
+            <legend> Qui ?</legend>
+            
+            <pnx-observers-text
+              label=" {{'Releve.Observer' | translate }} "
+              [parentFormControl]="formService.searchForm.controls.observers">
+            </pnx-observers-text>
+
+            <!-- TODO: Organisme -->
+          </fieldset>
+
+        
+          <fieldset>
+              <legend> Comment ?</legend>
+
+            <pnx-dynamic-form-generator
+                [formGroup]="formService.searchForm"
+                [formsDefinition]="nomenclaturesForms"
+            >
+
+            </pnx-dynamic-form-generator>
+          </fieldset>
+
+        
+        <button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+        
+        <pre>form value: <br>{{formService.searchForm.value | json}}</pre>
+</div>

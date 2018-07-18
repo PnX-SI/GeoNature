@@ -125,7 +125,7 @@ ALTER TABLE t_base_sites
   ADD CONSTRAINT enforce_dims_geom CHECK ((public.st_ndims(geom) = 2));
 
 ALTER TABLE t_base_sites
-  ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type(id_nomenclature_type_site,116));
+  ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_site,'TYPE_SITE')) NOT VALID;
 
 
 ---------
@@ -163,6 +163,26 @@ CREATE TRIGGER tri_log_changes
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+
+CREATE FUNCTION fct_trg_cor_site_area()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+
+	DELETE FROM gn_monitoring.cor_site_area WHERE id_base_site = NEW.id_base_site;
+	INSERT INTO gn_monitoring.cor_site_area
+	SELECT NEW.id_base_site, (ref_geo.fct_get_area_intersection(NEW.geom)).id_area;
+
+  RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_cor_site_area
+  AFTER INSERT OR UPDATE OF geom ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_monitoring.fct_trg_cor_site_area();
 
 ---------
 --DATAS--

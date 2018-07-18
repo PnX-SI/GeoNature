@@ -20,7 +20,7 @@ class SSLSMTPHandler(SMTPHandler):
                 port = smtplib.SMTP_PORT
             smtp = smtplib.SMTP_SSL(self.mailhost, port)
             msg = self.format(record)
-            message = MIMEText(msg, _charset = "utf-8")
+            message = MIMEText(msg, _charset="utf-8")
 
             message.add_header("Subject", self.getSubject(record))
             message.add_header("From", self.fromaddr)

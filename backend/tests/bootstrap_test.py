@@ -6,7 +6,7 @@ from flask import url_for
 from cookies import Cookie
 
 import server
-from geonature.utils.env import load_config, get_config_file_path
+from geonature.utils.env import load_config, get_config_file_path, DB
 
 #TODO: fixture pour mettre des données test dans la base a chaque test
 
@@ -18,7 +18,6 @@ def app():
     app = server.get_app(config)
     app.config['TESTING'] = True
     return app
-
 
 def post_json(client, url, json_dict):
     """Send dictionary json_dict as a json to the specified url """
@@ -53,13 +52,13 @@ def get_token(client, login="admin", password="admin"):
         raise Exception('Invalid login {}, {}'.format(login, password))
 
 
-    
-
-
-
-
 @pytest.fixture()
-def releve_data(request):
+def releve_data(client):
+
+    response = client.get(
+        url_for('pr_occtax.getDefaultNomenclatures'),
+    )
+    default_nomenclatures = json_of_response(response)
     data = {
         "geometry": {
             "type": "Point",
@@ -79,14 +78,14 @@ def releve_data(request):
             "altitude_max": None,
             "meta_device_entry": "web",
             "comment": None,
-            "id_nomenclature_obs_technique": 343,
+            "id_nomenclature_obs_technique": default_nomenclatures['TECHNIQUE_OBS'],
             "observers": [1],
             "observers_txt": "tatatato",
-            "id_nomenclature_grp_typ": 150,
+            "id_nomenclature_grp_typ": default_nomenclatures['TYP_GRP'] ,
             "t_occurrences_occtax": [
             {
-                "id_nomenclature_naturalness": 182,
-                "id_nomenclature_obs_meth": 42,
+                "id_nomenclature_naturalness": default_nomenclatures['NATURALITE'],
+                "id_nomenclature_obs_meth": default_nomenclatures['METH_OBS'],
                 "digital_proof": None,
                 "cor_counting_occtax": [
                 {
@@ -95,25 +94,25 @@ def releve_data(request):
                     "validation_comment": None,
                     "id_nomenclature_life_stage": 2,
                     "count_max": 1,
-                    "id_nomenclature_valid_status": 347,
-                    "id_nomenclature_sex": 194,
+                    "id_nomenclature_valid_status": default_nomenclatures['STATUT_VALID'],
+                    "id_nomenclature_sex": default_nomenclatures['SEXE'],
                     "id_validator": None,
-                    "id_nomenclature_type_count": 109,
-                    "id_nomenclature_obj_count": 166
+                    "id_nomenclature_type_count": default_nomenclatures['TYP_DENBR'],
+                    "id_nomenclature_obj_count": default_nomenclatures['OBJ_DENBR']
                 }
                 ],
                 "nom_cite": "Ablette = Alburnus alburnus (Linnaeus, 1758)",
                 "meta_v_taxref": "Taxref V9.0",
-                "id_nomenclature_blurring": 200,
-                "id_nomenclature_bio_status": 30,
-                "id_nomenclature_bio_condition": 178,
+                "id_nomenclature_blurring": default_nomenclatures['DEE_FLOU'],
+                "id_nomenclature_bio_status": default_nomenclatures['STATUT_BIO'],
+                "id_nomenclature_bio_condition": default_nomenclatures['ETA_BIO'],
                 "comment": None,
-                "id_nomenclature_observation_status": 101,
-                "id_nomenclature_determination_method": 370,
+                "id_nomenclature_observation_status": default_nomenclatures['STATUT_OBS'],
+                "id_nomenclature_determination_method": default_nomenclatures['METH_DETERMIN'],
                 "non_digital_proof": None,
-                "id_nomenclature_exist_proof": 91,
+                "id_nomenclature_exist_proof": default_nomenclatures['PREUVE_EXIST'],
                 "cd_nom": 67111,
-                "id_nomenclature_diffusion_level": 163,
+                "id_nomenclature_diffusion_level": default_nomenclatures['NIV_PRECIS'],
                 "sample_number_proof": None,
                 "determiner": None
             }

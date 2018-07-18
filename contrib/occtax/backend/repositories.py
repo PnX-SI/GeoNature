@@ -14,7 +14,7 @@ from .models import (
     CorCountingOccurrence,
     corRoleRelevesOccurrence,
 )
-from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
+from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 
 
 
@@ -98,11 +98,9 @@ class ReleveRepository():
         """
         q = DB.session.query(self.model.tableDef)
         if user.tag_object_code in ('1', '2'):
-            q = q.join(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
+            q = q.outerjoin(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
             if user.tag_object_code == '2':
                 allowed_datasets = TDatasets.get_user_datasets(user)
-                print(allowed_datasets)
-                print(user.id_role)
                 q = q.filter(
                     or_(
                         self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
@@ -216,10 +214,10 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
 
     if 'organism' in params:
         q = q.join(
-            CorDatasetsActor,
-            CorDatasetsActor.id_dataset == mappedView.id_dataset
+            CorDatasetActor,
+            CorDatasetActor.id_dataset == mappedView.id_dataset
         ).filter(
-            CorDatasetsActor.id_actor == int(params.pop('organism'))
+            CorDatasetActor.id_actor == int(params.pop('organism'))
         )
 
     if 'observateurs' in params:
