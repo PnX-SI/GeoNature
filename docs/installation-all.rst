@@ -35,7 +35,7 @@ GeoNature se sert de flux internet externes durant son installation et son fonct
 - https://wxs.ign.fr/
 
 Configuration de la locale du serveur
-=====================================
+""""""""""""""""""""""""""""""""""""""
 
 Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale.
 
