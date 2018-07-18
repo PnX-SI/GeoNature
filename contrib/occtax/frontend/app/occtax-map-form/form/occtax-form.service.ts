@@ -358,23 +358,24 @@ export class OcctaxFormService {
 
   patchDefaultNomenclatureReleve(defaultNomenclatures): void {
     this.releveForm.controls.properties.patchValue({
-      id_nomenclature_grp_typ: defaultNomenclatures[24],
-      id_nomenclature_obs_technique: defaultNomenclatures[100]
+      id_nomenclature_grp_typ: defaultNomenclatures["TYP_GRP"],
+      id_nomenclature_obs_technique: defaultNomenclatures["TECHNIQUE_OBS"]
     });
   }
 
   patchDefaultNomenclatureOccurrence(defaultNomenclatures): void {
     this.occurrenceForm.patchValue({
-      id_nomenclature_bio_condition: defaultNomenclatures[7],
-      id_nomenclature_naturalness: defaultNomenclatures[8],
-      id_nomenclature_obs_meth: defaultNomenclatures[14],
-      id_nomenclature_bio_status: defaultNomenclatures[13],
-      id_nomenclature_exist_proof: defaultNomenclatures[15],
-      id_nomenclature_determination_method: defaultNomenclatures[106],
-      id_nomenclature_observation_status: defaultNomenclatures[18],
-      id_nomenclature_diffusion_level: defaultNomenclatures[5],
-      id_nomenclature_blurring: defaultNomenclatures[4],
-      id_nomenclature_source_status: defaultNomenclatures[19]
+      id_nomenclature_bio_condition: defaultNomenclatures["ETA_BIO"],
+      id_nomenclature_naturalness: defaultNomenclatures["NATURALITE"],
+      id_nomenclature_obs_meth: defaultNomenclatures["METH_OBS"],
+      id_nomenclature_bio_status: defaultNomenclatures["STATUT_BIO"],
+      id_nomenclature_exist_proof: defaultNomenclatures["PREUVE_EXIST"],
+      id_nomenclature_determination_method:
+        defaultNomenclatures["METH_DETERMIN"],
+      id_nomenclature_observation_status: defaultNomenclatures["STATUT_OBS"],
+      id_nomenclature_diffusion_level: defaultNomenclatures["NIV_PRECIS"],
+      id_nomenclature_blurring: defaultNomenclatures["DEE_FLOU"],
+      id_nomenclature_source_status: defaultNomenclatures["STATUT_SOURCE"]
     });
   }
 
@@ -383,11 +384,11 @@ export class OcctaxFormService {
     defaultNomenclatures
   ): void {
     countingForm.patchValue({
-      id_nomenclature_life_stage: defaultNomenclatures[10],
-      id_nomenclature_sex: defaultNomenclatures[9],
-      id_nomenclature_obj_count: defaultNomenclatures[6],
-      id_nomenclature_type_count: defaultNomenclatures[21],
-      id_nomenclature_valid_status: defaultNomenclatures[101]
+      id_nomenclature_life_stage: defaultNomenclatures["STADE_VIE"],
+      id_nomenclature_sex: defaultNomenclatures["SEXE"],
+      id_nomenclature_obj_count: defaultNomenclatures["OBJ_DENBR"],
+      id_nomenclature_type_count: defaultNomenclatures["TYP_DENBR"],
+      id_nomenclature_valid_status: defaultNomenclatures["STATUT_VALID"]
     });
   }
 
@@ -404,13 +405,13 @@ export class OcctaxFormService {
     });
   }
 
-  onTaxonChanged(taxon) {
-    this.currentTaxon = taxon;
+  onTaxonChanged($event) {
+    this.currentTaxon = $event.item;
     // fetch default nomenclature value filtered by organism, regne, group2_inpn
     this.getDefaultValues(
       this.currentUser.organismId,
-      taxon.regne,
-      taxon.group2_inpn
+      $event.item.regne,
+      $event.item.group2_inpn
     ).subscribe(data => {
       // occurrence
       this.patchDefaultNomenclatureOccurrence(data);

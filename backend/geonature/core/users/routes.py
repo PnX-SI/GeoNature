@@ -118,3 +118,22 @@ def insert_organism(organism):
     DB.session.commit()
     DB.session.flush()
     return organism.as_dict()
+
+
+@routes.route('/roles', methods=['GET'])
+@json_resp
+def get_roles():
+    '''
+        Retourne tous les roles
+    '''
+    users = DB.session.query(TRoles).all()
+    return [user.as_dict() for user in users]
+
+@routes.route('/organisms', methods=['GET'])
+@json_resp
+def get_organismes():
+    '''
+        Retourne tous les organismes
+    '''
+    organisms = DB.session.query(BibOrganismes).all()
+    return [organism.as_dict() for organism in organisms]

@@ -26,6 +26,7 @@ export class MapListService {
   public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
   public genericFilterInput = new FormControl();
+  public isLoading = false;
   filterableColumns: Array<any>;
   availableColumns: Array<any>;
   displayColumns: Array<any>;
@@ -100,7 +101,11 @@ export class MapListService {
 
   // fetch the data
   loadData(endPoint, param?) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, { params: this.urlQuery });
+    this.isLoading = true;
+    return this._http
+      .get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, { params: this.urlQuery })
+      .delay(200)
+      .finally(() => (this.isLoading = false));
   }
 
   getData(endPoint, param?: Array<any>, customCallBack?) {
@@ -163,6 +168,20 @@ export class MapListService {
   deleteAndRefresh(apiEndPoint, param) {
     this.urlQuery = this.urlQuery.delete(param);
     this.refreshData(apiEndPoint, 'set');
+  }
+
+  deleteObsFront(idDelete: number) {
+    // supprimer une observation sur la carte et la liste en front seulement
+    console.log(typeof idDelete);
+
+    this.tableData = this.tableData.filter(row => {
+      return row[this.idName] !== idDelete;
+    });
+
+    this.geojsonData.features = this.geojsonData.features.filter(row => {
+      return row['id'] !== idDelete.toString();
+    });
+    this.geojsonData = Object.assign({}, this.geojsonData);
   }
 
   toggleStyle(selectedLayer) {

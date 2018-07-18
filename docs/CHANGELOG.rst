@@ -2,31 +2,69 @@
 CHANGELOG
 =========
 
-2.0.0.beta5 (unreleased)
+2.0.0.beta6 (unreleased)
 ------------------------
 
-https://github.com/PnX-SI/GeoNature/compare/geonature2beta...develop
+**Corrections**
+
+*
+
+2.0.0.beta5 (2018-07-16)
+------------------------
 
 **Nouveautés**
 
 * Ajout d'un message d'erreur si l'utilisateur n'a pas de JDD ou si il y a eu un problème lors de la récupération des JDD de MTD
 * Ajout d'une vue matérialisée (``gn_synthese.vm_min_max_for_taxons``) et d'une fonction (``gn_synthese.fct_calculate_min_max_for_taxon``) permettant de renvoyer des informations sur les observations existantes d'un taxon (étendue des observations, date min et max, altitude min et max, nombre d'observations) pour orienter la validation et la saisie (https://github.com/PnX-SI/gn_module_validation/issues/5)
 * L'export OccTax est désormais basé sur une vue qu'il est possible d'adapter
-* Ajouts de nouveaux tests automatisés du code et mise en place de Travis pour les lancer automatiquement code à chaque commit (https://travis-ci.org/PnX-SI/GeoNature)
+* Ajouts de nouveaux tests automatisés du code et mise en place de Travis pour les lancer automatiquement à chaque commit (https://travis-ci.org/PnX-SI/GeoNature)
 * Ajout de données test
 * Mise à jour des scripts de déploiement spécifiques de DEPOBIO (MTES)
 * Déplacement de la table centrale de gestion des paramètres ``t_parameters`` dans le schéma ``gn_commons`` (#376)
 * Ajout d'un trigger générique pour calculer la géométrie dans la projection locale à partir de la géométrie 4326 (#370)
-* Mise en place de scripts de migration de la BDD
+* Regroupement des fichiers liés à l'installation et la mise à jour dans un répertoire dédié (``install``) (#383)
+* Mise en place de scripts de migration global de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``) et du schéma ``pr_occtax`` (``contrib/occtax/data/migration_2.0.0.beta4to2.0.0.beta5.sql``), d'un script générique de migration de l'application (``install/migration/migration.sh``) et d'une doc de mise à jour (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst#mise-%C3%A0-jour-de-lapplication)
+* Réintégration des fichiers de configuration, de logs et des modules externes dans les répertoires de l'application (#375)
+* Ajout de routes à ``gn_monitoring``
+* Ajout d'un trigger pour calculer automatiquement les zonages des sites de suivi (``gn_monitoring.fct_trg_cor_site_area()``)
+* Améliorations et documentation des commandes d'installation d'un module
+* Ajout des unités géographiques dans le schéma ``ref_geo``
+* Ajout d'un bouton ``Annuler`` dans le formulaire Occtax
+* Gestion des conflits de nomenclatures en n'utilisant plus leur ``id_type`` ni leur ``id_nomenclature`` (#384)
+* Migration du SQL de ``ref_nomenclautres`` dans le dépôt du sous-module (https://github.com/PnX-SI/Nomenclature-api-module)
+* Début de mise en place d'un backoffice (métadonnées et nomenclatures)
 
 **Corrections**
 
 * OccTax : Correction du double post
+* OccTax : Correction des droits dans les JDD
+* OccTax : Correction de l'affichage des observers_txt dans la fiche d'un relevé
 * Correction de la gestion générique des médias
+* Suppression du lien entre ``ref_geo`` et ``ref_nomenclatures`` (#374)
+* Compléments et relecture de la documentation
+* Correction 
 
 **Notes de version**
 
-* Exécutez le script de mise à jour de la BDD (``data/migrations/2.0.0beta4to2.00beta5.sql``)
+Si vous mettez à jour votre GeoNature depuis une Beta4 : 
+
+* Téléchargez la beta5 et renommer les répertoires :
+::
+
+    cd /home/myuser
+    wget https://github.com/PnX-SI/GeoNature/archive/geonature2beta.zip
+    unzip geonature2beta.zip
+    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
+    mv GeoNature-geonature2beta /home/<mon_user>/geonature/
+* Exécutez le script de migration ``install/migration/beta4tobeta5.sh`` depuis la racine de votre GeoNature :
+::
+
+    cd geonature
+   ./install/migration/beta4tobeta5.sh
+
+Celui-ci va récupérer vos fichiers de configuration, déplacer les modules et appliquer les changements de la BDD.
+
+* Si vous avez développé des modules externes, voir https://github.com/PnX-SI/GeoNature/issues/375, en ajoutant un lien symbolique depuis le répertoire ``external_modules`` et en réintégrant la configuration du module dans son répertoire ``config``
 
 2.0.0.beta4 (2018-05-25)
 ------------------------

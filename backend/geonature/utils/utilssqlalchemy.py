@@ -20,7 +20,7 @@ from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsshapefile import(
     create_shapes, create_shapes_generic
-) 
+)
 
 
 def testDataType(value, sqlType, paramName):
@@ -109,35 +109,42 @@ class GenericTable:
             db_cols.append(db_col)
         return regular_serialize, db_cols
 
-
     def as_dict(self, data, columns=None):
         if columns:
-            fprops = list(filter(lambda d: d[0] in columns, self.serialize_columns))
+            fprops = list(
+                filter(lambda d: d[0] in columns, self.serialize_columns)
+            )
         else:
             fprops = self.serialize_columns
-        
+
         return {
             item: _serializer(getattr(data, item)) for item, _serializer in fprops
         }
 
     def as_geofeature(self, data, columns=None):
-        geometry = to_shape(getattr(data, self.geometry_field))
-        feature = Feature(
-            geometry=geometry,
-            properties=self.as_dict(data, columns)
-        )
-        return feature
+        if getattr(data, self.geometry_field) is not None:
+            geometry = to_shape(getattr(data, self.geometry_field))
+
+            return Feature(
+                geometry=geometry,
+                properties=self.as_dict(data, columns)
+            )
 
     def as_list(self, data=None, columns=None):
         if columns:
-            fprops = list(filter(lambda d: d[0] in columns, self.serialize_columns))
+            fprops = list(
+                filter(lambda d: d[0] in columns, self.serialize_columns)
+            )
         else:
             fprops = self.serialize_columns
-        
-        return [_serializer(getattr(data, item)) for item, _serializer in fprops]
-        
 
-    def as_shape(self, data=[], dir_path=None, file_name=None, columns=None):
+        return [
+            _serializer(getattr(data, item)) for item, _serializer in fprops
+        ]
+
+    def as_shape(self, data=None, dir_path=None, file_name=None, columns=None):
+        if not data:
+            data = []
         create_shapes_generic(
             mapped_table=self,
             db_cols=self.db_cols,
@@ -150,16 +157,15 @@ class GenericTable:
         )
 
 
-
 class GenericQuery:
     '''
         Classe permettant de manipuler des objets GenericTable
     '''
     def __init__(
-        self,
-        db_session,
-        tableName, schemaName, geometry_field,
-        filters, limit=100, offset=0
+            self,
+            db_session,
+            tableName, schemaName, geometry_field,
+            filters, limit=100, offset=0
     ):
         self.db_session = db_session
         self.tableName = tableName
@@ -181,7 +187,9 @@ class GenericQuery:
 
     def build_query_filter(self, query, param_name, param_value):
         if param_name in self.view.tableDef.columns:
-            query = query.filter(self.view.tableDef.columns[param_name] == param_value)
+            query = query.filter(
+                self.view.tableDef.columns[param_name] == param_value
+            )
 
         if param_name.startswith('ilike_'):
             col = self.view.tableDef.columns[param_name[6:]]
@@ -191,9 +199,9 @@ class GenericQuery:
         if param_name.startswith('filter_d_'):
             col = self.view.tableDef.columns[f[12:]]
             col_type = col.type.__class__.__name__
-            testT = testDataType(param_value, DB.DateTime, col)
-            if testT:
-                raise GeonatureApiError(message=testT)
+            test_type = testDataType(param_value, DB.DateTime, col)
+            if test_type:
+                raise GeonatureApiError(message=test_type)
             if col_type in ("Date", "DateTime", "TIMESTAMP"):
                 if param_name.startswith('filter_d_up_'):
                     query = query.filter(col >= param_value)
@@ -205,9 +213,9 @@ class GenericQuery:
         if param_name.startswith('filter_n_'):
             col = self.view.tableDef.columns[f[12:]]
             col_type = col.type.__class__.__name__
-            testT = testDataType(param_value, DB.Numeric, col)
-            if testT:
-                raise GeonatureApiError(message=testT)
+            test_type = testDataType(param_value, DB.Numeric, col)
+            if test_type:
+                raise GeonatureApiError(message=test_type)
             if param_name.startswith('filter_n_up_'):
                 query = query.filter(col >= param_value)
             if param_name.startswith('filter_n_lo_'):
@@ -218,7 +226,7 @@ class GenericQuery:
         # Ordonnancement
         if 'orderby' in parameters:
             if parameters.get('orderby') in self.view.columns:
-                orderCol = getattr(
+                ordel_col = getattr(
                     self.view.tableDef.columns,
                     parameters['orderby']
                 )
@@ -227,8 +235,8 @@ class GenericQuery:
 
         if 'order' in parameters:
             if parameters['order'] == 'desc':
-                orderCol = orderCol.desc()
-                return query.order_by(orderCol)
+                ordel_col = ordel_col.desc()
+                return query.order_by(ordel_col)
         else:
             return query
 
@@ -239,25 +247,29 @@ class GenericQuery:
             Lance la requete et retourne les résutats dans un format standard
         '''
         q = self.db_session.query(self.view.tableDef)
-        nbResultsWithoutFilter = q.count()
+        nb_result_without_filter = q.count()
 
         if self.filters:
             q = self.build_query_filters(q, self.filters)
             q = self.build_query_order(q, self.filters)
 
         data = q.limit(self.limit).offset(self.offset * self.limit).all()
-        nbResults = q.count()
+        nb_results = q.count()
 
         if self.geometry_field:
             results = FeatureCollection(
-                [self.view.as_geofeature(d) for d in data]
+                [
+                    self.view.as_geofeature(d)
+                    for d in data
+                    if getattr(d, self.geometry_field) is not None
+                ]
             )
         else:
             results = [self.view.as_dict(d) for d in data]
 
         return {
-            'total': nbResultsWithoutFilter,
-            'total_filtered': nbResults,
+            'total': nb_result_without_filter,
+            'total_filtered': nb_results,
             'page': self.offset,
             'limit': self.limit,
             'items': results
@@ -272,18 +284,19 @@ def serializeQuery(data, columnDef):
     ]
     return rows
 
-def serializeQueryOneResult(row, columnDef):
+def serializeQueryOneResult(row, column_def):
     row = {
         c['name']: getattr(row, c['name'])
-        for c in columnDef if getattr(row, c['name']) is not None
+        for c in column_def if getattr(row, c['name']) is not None
     }
     return row
 
-def serializeQueryTest(data, columnDef):
+
+def serializeQueryTest(data, column_def):
     rows = list()
     for row in data:
         inter = {}
-        for c in columnDef:
+        for c in column_def:
             if getattr(row, c['name']) is not None:
                 if isinstance(c['type'], (DB.Date, DB.DateTime, UUID)):
                     inter[c['name']] = str(getattr(row, c['name']))
@@ -294,10 +307,12 @@ def serializeQueryTest(data, columnDef):
         rows.append(inter)
     return rows
 
+
 def serializable(cls):
     """
         Décorateur de classe pour les DB.Models
-        Permet de rajouter la fonction as_dict qui est basée sur le mapping SQLAlchemy
+        Permet de rajouter la fonction as_dict
+        qui est basée sur le mapping SQLAlchemy
     """
 
     """
@@ -316,7 +331,6 @@ def serializable(cls):
         if not db_col.type.__class__.__name__ == 'Geometry'
     ]
 
-
     """
         Liste des propriétés de type relationship
         uselist permet de savoir si c'est une collection de sous objet
@@ -326,7 +340,6 @@ def serializable(cls):
     cls_db_relationships = [
         (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
     ]
-
 
     def serializefn(self, recursif=False, columns=()):
         """
@@ -362,7 +375,6 @@ def serializable(cls):
                 out[rel] = getattr(self, rel).as_dict(recursif)
 
         return out
-
 
     cls.as_dict = serializefn
     return cls
@@ -417,12 +429,13 @@ def json_resp(fn):
             return to_json_resp(res)
     return _json_resp
 
+
 def to_json_resp(
-    res,
-    status=200,
-    filename=None,
-    as_file=False,
-    indent=None
+        res,
+        status=200,
+        filename=None,
+        as_file=False,
+        indent=None
 ):
     if not res:
         status = 404
@@ -444,7 +457,6 @@ def to_json_resp(
         mimetype='application/json',
         headers=headers
     )
-
 
 
 def csv_resp(fn):

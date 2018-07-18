@@ -5,28 +5,31 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+SET search_path = gn_synthese, public, pg_catalog;
+
+
 ---------
 --DATAS--
 ---------
-INSERT INTO gn_synthese.defaults_nomenclatures_value (id_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
-(23,0,0,0,143)
-,(3,0,0,0,197)
-,(14,0,0,0,63)
-,(7,0,0,0,177)
-,(13,0,0,0,30)
-,(8,0,0,0,181)
-,(15,0,0,0,91)
-,(101,0,0,0,346)
-,(5,0,0,0,163)
-,(10,0,0,0,2)
-,(9,0,0,0,194)
-,(6,0,0,0,165)
-,(21,0,0,0,109)
-,(18,0,0,0,100)
-,(4,0,0,0,200)
-,(24,0,0,0,150)
-,(100,0,0,0,343)
-,(16,0,0,0,68)
-,(19,0,0,0,75)
---,(106,0,0,0,473) --méthode de détermination en texte dans la synthèse pour le moment
+INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, cd_nomenclature) VALUES
+('TYP_INF_GEO',0,0,0,'1')
+,('NAT_OBJ_GEO',0,0,0,'NSP')
+,('METH_OBS',0,0,0,'21')
+,('ETA_BIO',0,0,0,'1')
+,('STATUT_BIO',0,0,0,'1')
+,('NATURALITE',0,0,0,'0')
+,('PREUVE_EXIST',0,0,0,'0')
+,('STATUT_VALID',0,0,0,'2')
+,('NIV_PRECIS',0,0,0,'5')
+,('STADE_VIE',0,0,0,'0')
+,('SEXE',0,0,0,'6')
+,('OBJ_DENBR',0,0,0,'NSP')
+,('TYP_DENBR',0,0,0,'NSP')
+,('STATUT_OBS',0,0,0,'NSP')
+,('DEE_FLOU',0,0,0,'NON')
+,('TYP_GRP',0,0,0,'NSP')
+,('TECHNIQUE_OBS',0,0,0,'133')
+,('SENSIBILITE',0,0,0,'0')
+,('STATUT_SOURCE',0,0,0,'NSP')
+,('METH_DETERMIN',0,0,0,'1') 
 ;

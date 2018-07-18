@@ -1,0 +1,32 @@
+<div class="row row-0 card">
+
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
+        <div class="card-block">
+          <h3>Liste des cadres d'acquisitions</h3>
+          <table class="table table-striped">
+            <thead>
+              <td>ID</td>
+              <td>Nom</td>
+              <td>Description</td>
+
+            </thead>
+            <tr *ngFor="let af of acquisitionFrameworks">
+              <td>
+                {{af.id_acquisition_framework}}
+              </td>
+              <td>
+                {{af.acquisition_framework_name}}
+              </td>
+              <td>
+                  {{af.acquisition_framework_desc}}
+              </td>
+              <td class="clickable" routerLink="/admin/af"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+            </tr>
+
+          </table>
+      </div>
+    </div>
+</div>
+<button routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
+
+

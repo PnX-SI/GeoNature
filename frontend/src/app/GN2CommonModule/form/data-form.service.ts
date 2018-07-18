@@ -9,7 +9,12 @@ import { Taxon } from './taxonomy/taxonomy.component';
 export class DataFormService {
   constructor(private _http: HttpClient) {}
 
-  getNomenclature(id_nomenclature: number, regne?: string, group2_inpn?: string, filters?: any) {
+  getNomenclature(
+    codeNomenclatureType: string,
+    regne?: string,
+    group2_inpn?: string,
+    filters?: any
+  ) {
     let params: HttpParams = new HttpParams();
     regne ? (params = params.set('regne', regne)) : (params = params.set('regne', ''));
     group2_inpn
@@ -22,15 +27,15 @@ export class DataFormService {
       params = params.set('order', filters['order']);
     }
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${id_nomenclature}`,
+      `${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${codeNomenclatureType}`,
       { params: params }
     );
   }
 
-  getNomenclatures(...id_nomenclatures) {
+  getNomenclatures(...codesNomenclatureType) {
     let params: HttpParams = new HttpParams();
-    id_nomenclatures.forEach(id => {
-      params = params.append('id_type', id);
+    codesNomenclatureType.forEach(code => {
+      params = params.append('code_type', code);
     });
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclatures`, {
       params: params
@@ -122,5 +127,21 @@ export class DataFormService {
     }
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
+  }
+
+  getAcquisitionFrameworks() {
+    return this._http.get(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+  }
+
+  getOrganisms() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
+  }
+
+  getRoles() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`);
+  }
+
+  getDataset(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
 }

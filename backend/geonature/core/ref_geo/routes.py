@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from .models import BibAreasTypes, LiMunicipalities
+from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities
 
 routes = Blueprint('ref_geo', __name__)
 

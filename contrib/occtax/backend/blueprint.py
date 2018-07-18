@@ -44,7 +44,7 @@ from geonature.utils.utilssqlalchemy import (
 
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import TRoles, UserRigth
-from geonature.core.gn_meta.models import TDatasets, CorDatasetsActor
+from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from pypnusershub.db.tools import (
     InsufficientRightsError,
     get_or_fetch_user_cruved,
@@ -334,6 +334,14 @@ def insertOrUpdateOneReleve(info_role):
         )
         releve = releveRepository.update(releve, user)
     else:
+        if info_role.tag_object_code in ('0', '1', '2'):
+            # Check if user can add a releve in the current dataset
+            allowed  = releve.user_is_in_dataset_actor(info_role)
+            if not allowed:
+                raise InsufficientRightsError(
+                    'User {} has no right in dataset {}'.format(
+                        info_role.id_role, releve.id_dataset),
+                    403)
         DB.session.add(releve)
 
     DB.session.commit()
@@ -446,16 +454,16 @@ def getDefaultNomenclatures():
     types = request.args.getlist('id_type')
 
     q = DB.session.query(
-        distinct(DefaultNomenclaturesValue.id_type),
+        distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
-            DefaultNomenclaturesValue.id_type,
+            DefaultNomenclaturesValue.mnemonique_type,
             organism,
             regne,
             group2_inpn
         )
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.id_type.in_(tuple(types)))
+        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
