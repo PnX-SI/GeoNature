@@ -34,6 +34,14 @@ GeoNature se sert de flux internet externes durant son installation et son fonct
 - https://preprod-inpn.mnhn.fr/mtd
 - https://wxs.ign.fr/
 
+Configuration de la locale du serveur
+=====================================
+
+Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale.
+
+Depuis l'utilisateur ``root``, executer la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez "fr_FR.UTF-8 UTF-8", puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées ("fr_FR.UTF-8" doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
+
+
 Installation de l'application
 -----------------------------
 
