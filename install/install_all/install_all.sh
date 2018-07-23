@@ -4,22 +4,6 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_I
 
 
-sudo apt-get install -y locales
-sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
-sudo locale-gen
-echo "export LC_ALL=$my_local" >> ~/.bashrc
-echo "export LANG=$my_local" >> ~/.bashrc
-echo "export LANGUAGE=$my_local" >> ~/.bashrc
-source ~/.bashrc
-
-if  [ $LANG == "" ];
-then
-    echo -e "\e[91m\e[1mAucune langue par défaut n'a été définit sur serveur, lancez la commande 'sudo dpkg-reconfigure locales'
-            pour la définir
- \e[0m" >&2
-    exit 1
-fi
-
 # Check os and versions
 if [ "$OS_NAME" != "debian" ]
 then
@@ -64,6 +48,15 @@ echo "############### Installation des paquets systèmes ###############"&>>  va
 sudo apt-get install -y nano 2> var/log/install_app.log 
 nano install_all.ini
 . install_all.ini
+
+# Modification de la locale
+sudo apt-get install -y locales
+sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
+sudo locale-gen
+echo "export LC_ALL=$my_local" >> ~/.bashrc
+echo "export LANG=$my_local" >> ~/.bashrc
+echo "export LANGUAGE=$my_local" >> ~/.bashrc
+source ~/.bashrc
 
 # Installation de l'environnement nécessaire à GeoNature et TaxHub
 echo "Installation de l'environnement logiciel..."
