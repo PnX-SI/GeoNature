@@ -361,43 +361,44 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
-CREATE OR REPLACE FUNCTION insert_occurrences_occtax()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-    idsensitivity integer;
-BEGIN
-    --Calculate sensitivity value
-    SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
-    new.id_nomenclature_diffusion_level = idsensitivity;
-    RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+-- Calcul de la sensibilité à affiner
 
-CREATE OR REPLACE FUNCTION update_occurrences_occtax()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-    idsensitivity integer;
-BEGIN
-    --Calculate sensitivity value
-    SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
-    new.id_nomenclature_diffusion_level = idsensitivity;
-    RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+-- CREATE OR REPLACE FUNCTION insert_occurrences_occtax()
+--   RETURNS trigger AS
+-- $BODY$
+-- DECLARE
+--     idsensitivity integer;
+-- BEGIN
+--     --Calculate sensitivity value
+--     SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
+--     new.id_nomenclature_diffusion_level = idsensitivity;
+--     RETURN NEW;
+-- END;
+-- $BODY$
+--   LANGUAGE plpgsql VOLATILE
+--   COST 100;
+
+-- CREATE OR REPLACE FUNCTION update_occurrences_occtax()
+--   RETURNS trigger AS
+-- $BODY$
+-- DECLARE
+--     idsensitivity integer;
+-- BEGIN
+--     --Calculate sensitivity value
+--     SELECT INTO idsensitivity ref_nomenclatures.calculate_sensitivity(new.cd_nom,new.id_nomenclature_obs_meth);
+--     new.id_nomenclature_diffusion_level = idsensitivity;
+--     RETURN NEW;
+-- END;
+-- $BODY$
+--   LANGUAGE plpgsql VOLATILE
+--   COST 100;
 
 
 ------------
 --TRIGGERS--
 ------------
 -- Trigger d'insertion automatique du niveau de sensibilité à partir de la fonction
--- calculate_sensitivity. A reboucler avec Gil
-
+-- calculate_sensitivity
 
 -- CREATE TRIGGER tri_insert_occurrences_occtax
 --   BEFORE INSERT

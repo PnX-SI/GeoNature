@@ -27,7 +27,7 @@ export class OcctaxFormComponent implements OnInit {
     private _ms: MapService,
     private _dateParser: NgbDateParserFormatter,
     private _dfs: DataFormService,
-    private _cfs: OcctaxService
+    private _cfs: OcctaxService,
     private toastr: ToastrService,
     private router: Router,
     private occtaxService: OcctaxService,
