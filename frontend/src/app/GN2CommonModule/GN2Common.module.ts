@@ -110,11 +110,8 @@ export function HttpLoaderFactory(http: Http) {
     MunicipalitiesComponent,
     SelectSearchComponent,
     GenericFormGeneratorComponent,
-<<<<<<< HEAD
-    AreasComponent
-=======
+    AreasComponent,
     NomenclatureMultiSelectComponent
->>>>>>> 6069f65c7827f344c694f8991b95edd75e7ba383
   ],
   providers: [
     TranslateService,
@@ -123,8 +120,8 @@ export function HttpLoaderFactory(http: Http) {
     MapListService,
     CommonService,
     FormService,
-    DynamicFormService,
-     ],
+    DynamicFormService
+  ],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
