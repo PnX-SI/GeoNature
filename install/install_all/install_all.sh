@@ -4,6 +4,16 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_I
 
 
+sudo apt-get install -y locales
+sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
+sed -i "s/monuser=.*$/monuser=$monuser/g" config/settings.ini
+
+sudo locale-gen
+echo "export LC_ALL=fr_FR.UTF-8" >> ~/.bashrc
+echo "export LANG=fr_FR.UTF-8" >> ~/.bashrc
+echo "export LANGUAGE=fr_FR.UTF-8" >> ~/.bashrc
+source ~/.bashrc
+
 if  [ $LANG == "" ];
 then
     echo -e "\e[91m\e[1mAucune langue par défaut n'a été définit sur serveur, lancez la commande 'sudo dpkg-reconfigure locales'
