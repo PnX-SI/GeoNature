@@ -85,6 +85,34 @@ $BODY$
   ROWS 1000;
 
 
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+	thelocalgeomcol text := quote_ident(TG_ARGV[1]);
+        thelocalsrid int;
+        thegeomlocalvalue public.geometry;
+        thegeomchange boolean;
+BEGIN
+	-- Test si la geom a été modifiée
+	EXECUTE FORMAT(
+		'SELECT ST_EQUALS($1.%I, $1.%I)', the4326geomcol, thelocalgeomcol
+		) INTO thegeomchange USING NEW;
+	-- si insertion ou geom modifiée, on calcule la geom locale
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
+        -- insertion dans le NEW de la geom transformée
+		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 
 -- Modification de la table gn_commons.t_modules
 

@@ -65,6 +65,7 @@ import { FormService } from './form/form.service';
 // add all rxjs operators
 import 'rxjs/Rx';
 import { SelectSearchComponent } from './form/select-search/select-search.component';
+import { NomenclatureMultiSelectComponent } from './form/nomenclature-multi-select/nomenclature-multi-select.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -109,7 +110,11 @@ export function HttpLoaderFactory(http: Http) {
     MunicipalitiesComponent,
     SelectSearchComponent,
     GenericFormGeneratorComponent,
+<<<<<<< HEAD
     AreasComponent
+=======
+    NomenclatureMultiSelectComponent
+>>>>>>> 6069f65c7827f344c694f8991b95edd75e7ba383
   ],
   providers: [
     TranslateService,
@@ -118,8 +123,8 @@ export function HttpLoaderFactory(http: Http) {
     MapListService,
     CommonService,
     FormService,
-    DynamicFormService
-  ],
+    DynamicFormService,
+     ],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
@@ -154,7 +159,7 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     SelectSearchComponent,
     GenericFormGeneratorComponent,
-    AreasComponent
+    NomenclatureMultiSelectComponent
   ]
 })
 export class GN2CommonModule {}

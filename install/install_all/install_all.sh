@@ -1,7 +1,7 @@
 #!/bin/bash
 . /etc/os-release
 OS_NAME=$ID
-OS_VERSION=$VERSION_ID
+OS_VERSION=$VERSION_I
 
 
 if  [ $LANG == "" ];
@@ -69,10 +69,10 @@ sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 2> var/log/install_app.log
-    sudo apt install -y postgis postgresql-9.6-postgis-2.3 2> var/log/install_app.log
+    sudo apt install -y postgis-2.3 postgresql-9.6-postgis-2.3 2> var/log/install_app.log
 else
     sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
-    sudo apt install postgis 2> var/log/install_app.log
+    sudo apt install postgis-2.3 2> var/log/install_app.log
 fi
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 

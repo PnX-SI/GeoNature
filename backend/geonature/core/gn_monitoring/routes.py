@@ -93,7 +93,7 @@ def get_site_areas(id_site):
     params = request.args
 
     q = DB.session.query(
-        TBaseSites, func.ST_Transform(LAreas.geom, 4326)
+        TBaseSites, func.ST_Transform(LAreas.geom, 4326), corSiteArea
     ).join(
         corSiteArea,
         TBaseSites.id_base_site == corSiteArea.c.id_base_site
@@ -108,13 +108,17 @@ def get_site_areas(id_site):
         q = q.filter(LAreas.id_type == params['id_area_type'])
     if 'id_module' in params:
         q = q.filter(TBaseSites.applications.any(id_application=params['id_module']))
+   
 
     data = q.all()
 
     features = []
     for d in data:
-        feature = get_geojson_feature(d[1])
+        feature = get_geojson_feature(d[1], 'id_area')
         feature['properties'] = d[0].as_dict(True)
+        feature['id'] = d[3]
         features.append(feature)
     return FeatureCollection(features)
     
+
+   
