@@ -9,9 +9,9 @@ sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
 sed -i "s/monuser=.*$/monuser=$monuser/g" config/settings.ini
 
 sudo locale-gen
-echo "export LC_ALL=fr_FR.UTF-8" >> ~/.bashrc
-echo "export LANG=fr_FR.UTF-8" >> ~/.bashrc
-echo "export LANGUAGE=fr_FR.UTF-8" >> ~/.bashrc
+echo "export LC_ALL=$my_local" >> ~/.bashrc
+echo "export LANG=$my_local" >> ~/.bashrc
+echo "export LANGUAGE=$my_local" >> ~/.bashrc
 source ~/.bashrc
 
 if  [ $LANG == "" ];
