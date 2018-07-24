@@ -28,7 +28,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // event from the list
-    this.mapListService.enableMapListConnexion(this._ms.getMap());
+    this.mapListService.onTableClick(this._ms.getMap());
   }
 
   onEachFeature(feature, layer) {

@@ -148,10 +148,20 @@ export class SyntheseSearchComponent implements OnInit {
 
   onSubmitForm() {
     const params = Object.assign({}, this.searchForm.value);
-    if (params.cd_nom) {
-      params.cd_nom = params.cd_nom.cd_nom;
+    const updatedParams = {};
+    for (let key in params) {
+      if (params.cd_nom && params.cd_nom.length > 0) {
+        updatedParams['cd_nom'] = [];
+        params.cd_nom.forEach(el => {
+          params.cd_nom = params.cd_nom.cd_nom;
+          updatedParams['cd_nom'].push(el.cd_nom);
+        });
+      } else if (params[key]) {
+        updatedParams[key] = params[key];
+      }
     }
-    this.searchClicked.emit(params);
+
+    this.searchClicked.emit(updatedParams);
   }
 
   openModalCol(e, modalName) {
