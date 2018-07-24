@@ -37,7 +37,7 @@ class TSources(DB.Model):
 class VSyntheseDecodeNomenclatures(DB.Model):
     __tablename__ = 'v_synthese_decode_nomenclatures'
     __table_args__ = {'schema': 'gn_synthese'}
-    id_synthese = DB.Column(DB.Integer, primary_key=True) 
+    id_synthese = DB.Column(DB.Integer, primary_key=True)
     nat_obj_geo = DB.Column(DB.Unicode)
     grp_typ = DB.Column(DB.Unicode)
     obs_method = DB.Column(DB.Unicode)
@@ -63,7 +63,8 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 class Synthese(DB.Model):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}
-    id_synthese = DB.Column(DB.Integer, ForeignKey('gn_synthese.v_synthese_decode_nomenclatures.id_synthese'), primary_key=True)
+    id_synthese = DB.Column(DB.Integer, ForeignKey(
+        'gn_synthese.v_synthese_decode_nomenclatures.id_synthese'), primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
@@ -80,7 +81,7 @@ class Synthese(DB.Model):
     cd_nomenclature_valid_status = DB.Column(DB.Integer)
     cd_nomenclature_diffusion_level = DB.Column(DB.Integer)
     cd_nomenclature_life_stage = DB.Column(DB.Integer)
-    cd_nomenclature_sex = DB.Column(DB.Integer) 
+    cd_nomenclature_sex = DB.Column(DB.Integer)
     cd_nomenclature_obj_count = DB.Column(DB.Integer)
     cd_nomenclature_type_count = DB.Column(DB.Integer)
     cd_nomenclature_sensitivity = DB.Column(DB.Integer)
@@ -152,8 +153,8 @@ class DefaultsNomenclaturesValue(DB.Model):
 class VSyntheseForWebApp(DB.Model):
     __tablename__ = 'v_synthese_for_web_app'
     __table_args__ = {'schema': 'gn_synthese'}
-    id_synthese = DB.Column(DB.Integer, primary_key=True) 
-    id_source = DB.Column(DB.Integer) 
+    id_synthese = DB.Column(DB.Integer, primary_key=True)
+    id_source = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     entity_source_pk_field = DB.Column(DB.Unicode)
     entity_source_pk_value = DB.Column(DB.Integer)
@@ -203,18 +204,18 @@ class VSyntheseForWebApp(DB.Model):
     comments = DB.Column(DB.Unicode)
 
 
-
 @serializable
 @geoserializable
 class VSyntheseForWebAppBis(DB.Model):
     __tablename__ = 'v_synthese_for_web_app_bis'
     __table_args__ = {'schema': 'gn_synthese'}
-    id_synthese = DB.Column(DB.Integer, primary_key=True) 
-    id_source = DB.Column(DB.Integer) 
+    id_synthese = DB.Column(DB.Integer, primary_key=True)
+    id_source = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     entity_source_pk_field = DB.Column(DB.Unicode)
     entity_source_pk_value = DB.Column(DB.Integer)
     dataset_name = DB.Column(DB.Unicode)
+    id_dataset = DB.Column(DB.Integer)
     insee_com = DB.Column(DB.Unicode)
     nom_com = DB.Column(DB.Unicode)
     count_min = DB.Column(DB.Integer)
