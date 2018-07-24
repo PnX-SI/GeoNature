@@ -10,9 +10,9 @@ from geojson import FeatureCollection
 from geonature.utils.env import DB
 
 from geonature.core.gn_synthese.models import (
-    Synthese, 
-    TSources, 
-    CorAreaSynthese, 
+    Synthese,
+    TSources,
+    CorAreaSynthese,
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VSyntheseDecodeNomenclatures,
@@ -97,19 +97,20 @@ def get_synthese():
         'observers' param (string) is filtered with ilike clause
     """
     filters = dict(request.get_json())
-    result_limit = None
-    if 'limit' in filters:
-        result_limit = filters.pop('limit')
+    result_limit = filters.pop('limit', 10000)
     q = DB.session.query(VSyntheseForWebAppBis)
 
     if 'observers' in filters:
         q = q.filter(VSyntheseForWebAppBis.observers.ilike('%'+filters.pop('observers')+'%'))
-    
+
     if 'date_min' in filters:
         q = q.filter(VSyntheseForWebAppBis.date_min >= filters.pop('date_min'))
-    
+
     if 'date_max' in filters:
         q = q.filter(VSyntheseForWebAppBis.date_min <= filters.pop('date_max'))
+
+    if 'areas' in filters:
+        filters.pop('areas')
 
     for colname, value in filters.items():
         col = getattr(VSyntheseForWebAppBis.__table__.columns, colname)
@@ -120,10 +121,10 @@ def get_synthese():
     if result_limit:
         q = q.order_by(
             VSyntheseForWebAppBis.date_min
-            )
+        )
         data = q.limit(
-                result_limit
-            )
+            result_limit
+        )
     else:
         data = q.all()
     return FeatureCollection([d.get_geofeature() for d in data])
@@ -139,7 +140,7 @@ def get_vsynthese():
     """
     filters = dict(request.get_json())
     q = DB.session.query(VSyntheseForWebApp)
-    
+
     if 'observers' in filters and filters['observers']:
         q = q.filter(VSyntheseForWebApp.observers.ilike('%'+filters.pop('observers')+'%'))
 
@@ -152,9 +153,9 @@ def get_vsynthese():
     if 'limit' in filters:
         q = q.limit(
             filters['limit']
-            ).orderby(
-                VSyntheseForWebApp.date_min
-            )
+        ).orderby(
+            VSyntheseForWebApp.date_min
+        )
     else:
         data = q.all()
     return FeatureCollection([d.get_geofeature() for d in data])
@@ -228,8 +229,7 @@ def get_one_synthese(id_synthese):
 
 #         releve = TRelevesOccurrence(**data['properties'])
 #         releve.geom_4326 = from_shape(generate_random_point(), srid=4326)
-        
-        
+
 
 #         for occ in occurrences_occtax:
 #             occ['id_nomenclature_naturalness'] = get_random_value(naturality_val)
