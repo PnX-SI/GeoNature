@@ -1,7 +1,7 @@
 #!/bin/bash
 . /etc/os-release
 OS_NAME=$ID
-OS_VERSION=$VERSION_I
+OS_VERSION=$VERSION_ID
 
 
 # Check os and versions
