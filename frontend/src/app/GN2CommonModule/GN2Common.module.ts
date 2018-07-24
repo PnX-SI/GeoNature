@@ -156,7 +156,8 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     SelectSearchComponent,
     GenericFormGeneratorComponent,
-    NomenclatureMultiSelectComponent
+    NomenclatureMultiSelectComponent,
+    AreasComponent
   ]
 })
 export class GN2CommonModule {}

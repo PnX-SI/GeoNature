@@ -58,26 +58,35 @@ export class MapListService {
     this.colSelected = { prop: '', name: '' };
   }
 
-  enableMapListConnexion(map: Map): void {
-    // do the connexion between map and list
+  onTableClick(map: Map): void {
+    // On table click, change style layer and zoom
     this.onTableClick$.subscribe(id => {
       const selectedLayer = this.layerDict[id];
       this.toggleStyle(selectedLayer);
       this.zoomOnSelectedLayer(map, selectedLayer);
     });
+  }
 
+  onMapClick(): void {
     this.onMapClik$.subscribe(id => {
       this.selectedRow = []; // clear selected list
 
       const integerId = parseInt(id);
       // const integerId = parseInt(id);
-      for (let i = 0; i < this.tableData.length; i++) {
+      let i;
+      for (i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i][this.idName] === integerId) {
           this.selectedRow.push(this.tableData[i]);
           break;
         }
       }
     });
+  }
+
+  enableMapListConnexion(map: Map): void {
+    // do the connexion between map and list
+    this.onTableClick(map);
+    this.onMapClick();
   }
 
   onRowSelect(row) {

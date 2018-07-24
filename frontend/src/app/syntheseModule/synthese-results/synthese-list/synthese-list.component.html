@@ -13,9 +13,9 @@
 
 <!--Table-->
 <ngx-datatable #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.default_columns"
-  [loadingIndicator]="_ds.dataLoaded" [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [scrollbarV]="false" [draggable]="false"
-  [selected]="mapListService.selectedRow" [externalPaging]="false" [selectionType]="'single'" [count]="mapListService.tableData.length"
-  [rowClass]="mapListService.getRowClass" (select)="mapListService.onRowSelect($event)">
+  [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow"
+  [selectionType]="'single'" [count]="mapListService.tableData.length" [limit]="rowNumber" [rowClass]="mapListService.getRowClass"
+  [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
 
   <!-- ACTION COLUMNS
     <ngx-datatable-column maxWidth="50">
