@@ -16,17 +16,14 @@ import { Subscription } from 'rxjs/Subscription';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '@geonature_common/service/common.service';
 
-
 @Component({
   selector: 'pnx-nomenclature-multi-select',
   templateUrl: './nomenclature-multi-select.component.html',
   styleUrls: ['./nomenclature-multi-select.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
-
-export class NomenclatureMultiSelectComponent  extends GenericFormComponent
-implements OnInit, OnChanges, OnDestroy {
+export class NomenclatureMultiSelectComponent extends GenericFormComponent
+  implements OnInit, OnChanges, OnDestroy {
   public labels: Array<any>;
   public labelLang: string;
   public definitionLang: string;
@@ -41,14 +38,20 @@ implements OnInit, OnChanges, OnDestroy {
   @Input() group2Inpn: string;
   @Input() disabled: boolean;
   @Input() debounceTime: number;
+  @Input() multiSelect: boolean;
 
-  constructor(private _dfService: DataFormService, private _translate: TranslateService, private _commonService: CommonService) {
+  constructor(
+    private _dfService: DataFormService,
+    private _translate: TranslateService,
+    private _commonService: CommonService
+  ) {
     super();
   }
 
   ngOnInit() {
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
+    this.multiSelect = this.multiSelect || false;
     // load the data
     this.initLabels();
     // subscrib to the language change

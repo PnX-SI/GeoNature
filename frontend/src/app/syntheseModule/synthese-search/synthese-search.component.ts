@@ -12,7 +12,6 @@ import { AppConfig } from '@geonature_config/app.config';
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
-  public searchForm: FormGroup;
   public nomenclaturesForms = [
     {
       controlType: 'nomenclature',
@@ -147,7 +146,7 @@ export class SyntheseSearchComponent implements OnInit {
   ngOnInit() {}
 
   onSubmitForm() {
-    const params = Object.assign({}, this.searchForm.value);
+    const params = Object.assign({}, this.formService.searchForm.value);
     const updatedParams = {};
     for (let key in params) {
       if (params.cd_nom && params.cd_nom.length > 0) {
