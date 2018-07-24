@@ -16,6 +16,7 @@ export class SelectSearchComponent implements OnInit {
   // key of the array of options
   @Input() key: string;
   @Input() multiselect: boolean;
+  @Input() searchBar: boolean;
   @Input() disabled: boolean;
   @Input() label: any;
   @Input() debounceTime: number;
@@ -24,20 +25,20 @@ export class SelectSearchComponent implements OnInit {
   @Output() onDelete = new EventEmitter<any>();
   constructor() {}
 
-  // Component to generate a custom select input with a search bar
+  // Component to generate a custom select input with a search bar (which can be disabled)
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
   // With the multiselect Input you can control if multiple items can be selected
 
   ngOnInit() {
     this.debounceTime = this.debounceTime || 100;
     this.disabled = this.disabled || false;
+    this.searchBar = this.searchBar || false;
     this.searchControl.valueChanges
       .debounceTime(this.debounceTime)
       .distinctUntilChanged()
       .subscribe(value => {
         this.onSearch.emit(value);
       });
-
     this.parentFormControl.valueChanges.subscribe(value => {
       if (value === null) {
         if (this.multiselect) {
