@@ -25,6 +25,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
     this._dfs.getDatasets().subscribe(
       res => {
         this.dataSets = res;
+        console.log('datasets', res);
       },
       error => {
         if (error.status === 500) {

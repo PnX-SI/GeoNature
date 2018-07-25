@@ -16,7 +16,7 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() debounceTime: number;
-  @Input() multiselect: boolean;
+  @Input() multiSelect: boolean;
   @Input() searchBar: boolean;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
@@ -27,12 +27,11 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.disabled = this.disabled || false;
     this.searchBar = this.searchBar || false;
+    this.multiSelect = this.multiSelect || false;
+    this.debounceTime = this.debounceTime || 0;
   }
 
   ngAfterViewInit() {
-    if (!this.debounceTime) {
-      this.debounceTime = 0;
-    }
     this.sub = this.parentFormControl.valueChanges
       .distinctUntilChanged()
       .debounceTime(this.debounceTime)
