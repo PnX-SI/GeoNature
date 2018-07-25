@@ -13,7 +13,7 @@
     </select>
 
     <pnx-nomenclature *ngSwitchCase="'nomenclature'" [label]=formDef.label [parentFormControl]="form.controls[formDef.key]" [codeNomenclatureType]="formDef.codeNomenclatureType"
-      [returnedValue]="formDef.returnedValue">
+      [returnedValue]="formDef.returnedValue" [multiSelect]="formDef.multiSelect" [keyValue]="formDef.keyValue">
     </pnx-nomenclature>
 
     <div *ngSwitchCase="'checkbox'">
@@ -33,7 +33,7 @@
       [charNumber]="3" [listLength]="20">
     </pnx-taxonomy>
 
-    <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.label" [parentFormControl]="form.controls[formDef.key]">
+    <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.label" [parentFormControl]="form.controls[formDef.key]" [multiSelect]="formDef.multiSelect">
     </pnx-datasets>
 
     <pnx-observers *ngSwitchCase="'observers'" [label]="formDef.label" [parentFormControl]="form.controls[formDef.key]" [idMenu]="formDef.idComponent">

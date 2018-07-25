@@ -74,10 +74,17 @@ ul {
 }
 
 .li-dropdown:hover {
+  margin-left: -15px;
+  padding-left: 15px;
   background-color: #428bca !important;
   color: white;
 }
 
-.li-label {
-  padding-left: 15px;
+.padded-multiline {
+  border-left: 15px solid rgb(255, 255, 255);
+}
+
+.padded-multiline span {
+  display: inline;
+  margin: 0;
 }

@@ -16,8 +16,8 @@
       <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
     </div>
     <ul ul-dropdown>
-      <li *ngIf="displayAll" (click)="addItem('all')" class="clickable li-dropdown li-label"> {{'AllItems' | translate}} </li>
-      <li *ngFor="let val of values" (click)="addItem(val)" class="clickable li-dropdown">
+      <li *ngIf="displayAll" (click)="addItem('all')" class="clickable li-dropdown li-label padded-multiline"> {{'AllItems' | translate}} </li>
+      <li *ngFor="let val of values" (click)="addItem(val)" class="clickable li-dropdown padded-multiline">
         <span class="li-label">{{val[keyLabel]}} </span>
       </li>
     </ul>
