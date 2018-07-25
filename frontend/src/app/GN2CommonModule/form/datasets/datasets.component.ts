@@ -12,7 +12,6 @@ import { CommonService } from '../../service/common.service';
 })
 export class DatasetsComponent extends GenericFormComponent implements OnInit {
   public dataSets: any;
-  @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   constructor(
     private _dfs: DataFormService,
     private _auth: AuthService,

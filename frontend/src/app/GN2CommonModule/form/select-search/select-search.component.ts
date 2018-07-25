@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-select-search',
@@ -34,8 +34,7 @@ export class SelectSearchComponent implements OnInit {
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-  public subscription: Subscription;
-  constructor() {}
+  constructor(private _translate: TranslateService) {}
 
   // Component to generate a custom select input with a search bar (which can be disabled)
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
@@ -76,7 +75,13 @@ export class SelectSearchComponent implements OnInit {
       return curItem[this.keyLabel] !== item[this.keyLabel];
     });
     if (item === 'all') {
-      this.parentFormControl.patchValue(null);
+      this.selectedItems = [];
+      this._translate.get('AllItems', { value: 'AllItems' }).subscribe(value => {
+        const objAll = {};
+        objAll[this.keyLabel] = value;
+        this.selectedItems.push(objAll);
+      });
+      this.parentFormControl.patchValue([]);
       return;
     }
     // set the item for the formControl

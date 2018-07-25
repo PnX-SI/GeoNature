@@ -17,8 +17,6 @@
   "IntroText": "",
   "Observations": "Observations",
   "Species": "Species",
-  "Programs": "Programs",
-  "Datasets": "Datasets",
   "LatestObservations": "Latest observations",
   "Search": "Search",
   "By": "By",
@@ -148,6 +146,9 @@
     "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",
   "ErrorMessage": "Game over",
   "Export": {
-    "ExportModuleName": "Export module"
+    "ExportModuleName": "Export module",
+    "Programs": "Program",
+    "Datasets": "Dataset",
+    "AcquisitionFramework": "Acquisition framework"
   }
 }

@@ -2,9 +2,8 @@
   <div class="row row-0">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
       <div *ngIf="!occtaxConfig.observers_txt; else elseBlock">
-        <pnx-observers [parentFormControl]="releveForm.controls.properties.controls.observers" [idMenu]="occtaxConfig.id_observers_list" [disabled]="fs.disabled"
-          label="{{ 'Releve.Observers' | translate }}"
-          [disabled]="fs.disabled">
+        <pnx-observers [parentFormControl]="releveForm.controls.properties.controls.observers" [idMenu]="occtaxConfig.id_observers_list"
+          [disabled]="fs.disabled" label="{{ 'Releve.Observers' | translate }}" [disabled]="fs.disabled">
         </pnx-observers>
       </div>
       <ng-template #elseBlock>
@@ -25,16 +24,14 @@
   </div>
   <div class="row row-0">
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-      <pnx-datasets  label="{{ 'Releve.Dataset' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+      <pnx-datasets label="{{ 'Meta.Dataset' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
         appId="14" [disabled]="fs.disabled">
       </pnx-datasets>
     </div>
   </div>
   <div class="form-group row row-0">
     <div *ngIf="occtaxConfig.form_fields.releve.date_min" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-date label="{{ 'Releve.MinDate' | translate }}"
-        defaultDate="today"
-        [parentFormControl]="releveForm.controls.properties.controls.date_min"
+      <pnx-date label="{{ 'Releve.MinDate' | translate }}" defaultDate="today" [parentFormControl]="releveForm.controls.properties.controls.date_min"
         [disabled]="fs.disabled">
       </pnx-date>
     </div>
@@ -44,37 +41,40 @@
       </pnx-date>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-md">
-       <button [disabled]="fs.disabled" class="btn btn-sm btn-secondary time-button" *ngIf="!showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime">
-         <i class="fa fa-plus time-plus"  aria-expanded="false"></i></button> 
-       <button class="btn btn-sm btn-secondary time-button" *ngIf="showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime"> 
-         <i class="fa fa-minus"  aria-expanded="false"></i></button>
+      <button [disabled]="fs.disabled" class="btn btn-sm btn-secondary time-button" *ngIf="!showTime" (click)="toggleTime()" data-toggle="collapse"
+        data-target="#collapseTime">
+        <i class="fa fa-plus time-plus" aria-expanded="false"></i>
+      </button>
+      <button class="btn btn-sm btn-secondary time-button" *ngIf="showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime">
+        <i class="fa fa-minus" aria-expanded="false"></i>
+      </button>
       <small *ngIf="releveForm.errors?.invalidDate" class="error" style="color:red">
         {{ 'Releve.DateMaxError' | translate }}
       </small>
     </div>
   </div>
 
-    <div class="collapse" id="collapseTime">
-      <div class="row row-0">
-        <div *ngIf="occtaxConfig.form_fields.releve.hour_min" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_min.invalid}">
-            <small> {{'Releve.HourMin' | translate }} </small>
-            <input [formControl]="releveForm.controls.properties.controls.hour_min" class="form-control form-control-sm" type="text"
-              placeholder="{{'Releve.HourFormat' | translate }}" [disableControl]="fs.disabled">
-          </div>
-        </div>
-        <div *ngIf="occtaxConfig.form_fields.releve.hour_max" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_max.invalid}">
-            <small> {{'Releve.HourMax' | translate }} </small>
-            <input [formControl]="releveForm.controls.properties.controls.hour_max" class="form-control form-control-sm" type="text"
-              placeholder="{{'Releve.HourFormat' | translate }}" [disableControl]="fs.disabled">
-          </div>
+  <div class="collapse" id="collapseTime">
+    <div class="row row-0">
+      <div *ngIf="occtaxConfig.form_fields.releve.hour_min" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_min.invalid}">
+          <small> {{'Releve.HourMin' | translate }} </small>
+          <input [formControl]="releveForm.controls.properties.controls.hour_min" class="form-control form-control-sm" type="text"
+            placeholder="{{'Releve.HourFormat' | translate }}" [disableControl]="fs.disabled">
         </div>
       </div>
-      <small *ngIf="releveForm.errors?.invalidHour" class="error" style="color:red">
-        {{ 'Releve.HourMaxError' | translate }}
-      </small>
+      <div *ngIf="occtaxConfig.form_fields.releve.hour_max" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_max.invalid}">
+          <small> {{'Releve.HourMax' | translate }} </small>
+          <input [formControl]="releveForm.controls.properties.controls.hour_max" class="form-control form-control-sm" type="text"
+            placeholder="{{'Releve.HourFormat' | translate }}" [disableControl]="fs.disabled">
+        </div>
+      </div>
     </div>
+    <small *ngIf="releveForm.errors?.invalidHour" class="error" style="color:red">
+      {{ 'Releve.HourMaxError' | translate }}
+    </small>
+  </div>
 
 
   <div class="form-group">

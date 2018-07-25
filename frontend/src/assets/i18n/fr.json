@@ -17,8 +17,6 @@
   "IntroText": "",
   "Observations": "Observations",
   "Species": "Espèces",
-  "Programs": "Programmes",
-  "Datasets": "Jeux de données",
   "LatestObservations": "Dernières observations",
   "Search": "Rechercher",
   "By": "Par",
@@ -154,6 +152,9 @@
     "ExportModuleName": "Module d'export des données"
   },
   "Meta": {
-    "Datasetadded": "Jeu de donnée ajouté avec succès"
+    "Datasetadded": "Jeu de donnée ajouté avec succès",
+    "Programs": "Programmes",
+    "Datasets": "Jeux de données",
+    "AcquisitionFramework": "Cadre d'acquisition"
   }
 }
