@@ -48,10 +48,8 @@ export class SyntheseListComponent implements OnInit {
   }
 
   loadOneSyntheseReleve(event) {
-    console.log(event);
     this._ds.getOneSyntheseObservation(event.value.id_synthese).subscribe(data => {
       this.selectedObs = data;
-      console.log(data);
     });
   }
 

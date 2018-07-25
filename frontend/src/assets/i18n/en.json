@@ -28,7 +28,9 @@
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
-  "DownloadOverflow": "The number of items is too important to be downloaded, please modify your request or contact your administrator",
+  "DownloadOverflow":
+    "The number of items is too important to be downloaded, please modify your request or contact your administrator",
+  "AllItems": "all",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
     "NoColumnSelected": "Please select a column to filter",
@@ -134,12 +136,12 @@
     "Phenology": "Phénology",
     "CountingObject": "Counting object",
     "CountingType": "Counting type",
-    "ValidationStatus": "Validation status",    
+    "ValidationStatus": "Validation status",
     "Numbers": "Numbers",
     "Total": "Total",
     "CountError": "Max counting can't be inferior to counting min"
   },
-  "Geo" : {
+  "Geo": {
     "Municipalities": "Cities"
   },
   "IntroMessage":

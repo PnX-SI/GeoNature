@@ -2,15 +2,11 @@
 <div class="input-group">
   <div class="dropdown-toggle btn-white full-width clickable" data-toggle="dropdown" aria-expanded="true" [ngClass]="{'disabled': disabled, 'has-danger' : parentFormControl.invalid && !disabled}"
     id="button-input">
-    <span *ngIf="multiselect; else elseBlock">
-      <span *ngFor="let item of selectedItems" class="filter-option input-value pull-left"> {{item[key]}}
-        <div (click)="removeItem(item)" class="fa fa-times clickable remove-button"> </div>
-      </span>
+    <span *ngFor="let item of selectedItems" class="filter-option input-value pull-left"> {{item[keyLabel]}}
+      <div (click)="removeItem(item)" class="fa fa-times clickable remove-button"> </div>
     </span>
 
-    <ng-template #elseBlock>
-      <span class="filter-option single-value"> {{currentValue}} </span>
-    </ng-template>
+
 
     &nbsp;
     <span class="caret caret-input"></span>
@@ -20,8 +16,9 @@
       <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
     </div>
     <ul ul-dropdown>
+      <li *ngIf="displayAll" (click)="addItem('all')" class="clickable li-dropdown li-label"> {{'AllItems' | translate}} </li>
       <li *ngFor="let val of values" (click)="addItem(val)" class="clickable li-dropdown">
-        <span class="li-label">{{val[key]}} </span>
+        <span class="li-label">{{val[keyLabel]}} </span>
       </li>
     </ul>
   </div>

@@ -133,11 +133,8 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   onDeleteReleve(id) {
-    console.log("olooooo");
-
     this._occtaxService.deleteReleve(id).subscribe(
       data => {
-        console.log("lalalala");
 
         this.mapListService.deleteObsFront(id);
         this._commonService.translateToaster(

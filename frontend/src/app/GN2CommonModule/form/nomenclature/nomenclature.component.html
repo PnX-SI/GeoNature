@@ -1,3 +1,18 @@
-<pnx-select-search [values]="labels" [parentFormControl]="parentFormControl" key="label_default" [label]="label" debounceTime="500"
-  [multiselect]="multiselect" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)">
-</pnx-select-search>
+<div *ngIf="multiSelect; else elseBlock">
+  <pnx-select-search [values]="labels" [parentFormControl]="parentFormControl" keyLabel="label_default" [keyValue]="keyValue"
+    [label]="label" debounceTime="500" [multiselect]="multiselect" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)">
+  </pnx-select-search>
+</div>
+
+<ng-template #elseBlock>
+
+  <small> {{label}} </small>
+  <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
+    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
+      <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]"> {{label[labelLang]}} </option>
+    </select>
+  </div>
+</ng-template>
+
+
+{{multiSelect}}

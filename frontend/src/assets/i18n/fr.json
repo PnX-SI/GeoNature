@@ -28,7 +28,9 @@
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
   "DownloadData": "Télécharger les données",
-  "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
+  "DownloadOverflow":
+    "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
+  "AllItems": "Tous",
   "Map": {
     "SearchLocation": "Rechercher un lieu",
     "LocationError": "Localisation non trouvée",
@@ -40,7 +42,8 @@
   "MetaData": {
     "JddError": "Erreur lors de la récupération des jeux de données",
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
-    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD"
+    "NoJDDMTD":
+      "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD"
   },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
@@ -89,7 +92,6 @@
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas"
-
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
@@ -133,7 +135,7 @@
     "Type": "Type",
     "LifeStage": "Stade de vie",
     "Sex": "Sexe",
-    "ValidationStatus": "Statut de validation",    
+    "ValidationStatus": "Statut de validation",
     "Phenology": "Phénologie",
     "CountingObject": "Objet du dénombrement",
     "CountingType": "Type de dénombrement",
@@ -141,7 +143,7 @@
     "Total": "Total",
     "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
   },
-  "Geo" : {
+  "Geo": {
     "Municipalities": "Communes"
   },
   "IntroMessage":
@@ -152,6 +154,6 @@
     "ExportModuleName": "Module d'export des données"
   },
   "Meta": {
-      "Datasetadded": "Jeu de donnée ajouté avec succès"
+    "Datasetadded": "Jeu de donnée ajouté avec succès"
   }
 }
