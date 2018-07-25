@@ -12,6 +12,10 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor, TAcquisitionFramework,
     CorAcquisitionFrameworkActor
 )
+from geonature.core.gn_meta.repositories import (
+    get_datasets_cruved,
+    get_af_cruved
+)
 from geonature.core.gn_commons.models import TParameters
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
@@ -55,34 +59,8 @@ def get_datasets(info_role):
             gunicorn_error_logger.info(e)
             log.error(e)
 
-    q = DB.session.query(TDatasets)
-    if info_role.tag_object_code == '2':
-        q = q.join(
-            CorDatasetActor,
-            CorDatasetActor.id_dataset == TDatasets.id_dataset
-        )
-        # if organism is None => do not filter on id_organism even if level = 2
-        if info_role.id_organisme is None:
-            q = q.filter(
-                CorDatasetActor.id_role == info_role.id_role
-            )
-        else:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_organism == info_role.id_organisme,
-                    CorDatasetActor.id_role == info_role.id_role
-                )
-            )
-    elif info_role.tag_object_code == '1':
-        q = q.join(
-            CorDatasetActor,
-            CorDatasetActor.id_dataset == TDatasets.id_dataset
-        ).filter(
-            CorDatasetActor.id_role == info_role.id_role
-        )
-    data = q.all()
+    return get_datasets_cruved(info_role)
 
-    return [d.as_dict(True) for d in data]
 
 @routes.route('/dataset/<id_dataset>', methods=['GET'])
 @json_resp
@@ -93,18 +71,16 @@ def get_dataset(id_dataset):
     data = DB.session.query(TDatasets).get(id_dataset)
     cor = data.cor_dataset_actor
     dataset = data.as_dict(True)
-    print(dataset)
     organisms = []
     for c in cor:
         if c.organism:
             organisms.append(c.organism.as_dict())
         else:
             organisms.append(None)
-    i=0
+    i = 0
     for o in organisms:
         dataset['cor_dataset_actor'][i]['organism'] = o
-        i = i +1
-    print(dataset)
+        i = i + 1
     return dataset
 
 
@@ -118,19 +94,21 @@ def post_dataset():
 
     for cor in cor_dataset_actor:
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
-    
+
     DB.session.add(dataset)
     DB.session.commit()
     return dataset.as_dict(True)
 
+
 @routes.route('/acquisition_frameworks', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def get_acquisition_frameworks():
+def get_acquisition_frameworks(info_role):
     """
-    Retourne tous les cadres d'acquisition
+    Retourne tous les cadres d'acquisition filtrés avec le cruved
     """
-    data = DB.session.query(TAcquisitionFramework).all()
-    return [af.as_dict(True) for af in data]
+    return get_af_cruved(info_role)
+
 
 @routes.route('/acquisition_framework/<id_acquisition_framework>', methods=['GET'])
 @json_resp
@@ -143,9 +121,10 @@ def get_acquisition_framework(id_acquisition_framework):
         return af.as_dict()
     return None
 
+
 @routes.route('/acquisition_framework', methods=['POST'])
 @json_resp
-def post_acquisition_framework():   
+def post_acquisition_framework():
     data = dict(request.get_json())
 
     cor_af_actor = data.pop('cor_af_actor')
@@ -154,7 +133,7 @@ def post_acquisition_framework():
 
     for cor in cor_af_actor:
         af.cor_af_actor.append(cor_af_actor(**cor))
-    
+
     DB.session.add(af)
     DB.session.commit()
     return af.as_dict()
