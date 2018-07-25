@@ -1,7 +1,7 @@
 <div class="card">
   <fieldset>
     <legend> Quoi ?</legend>
-    <pnx-datasets [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Datasets' | translate}}">
+    <pnx-datasets [multiSelect]='true' [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Datasets' | translate}}">
     </pnx-datasets>
     <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom" [idList]="500"
       [charNumber]="3" [listLength]="20" (onChange)=formService.getCurrentTaxon($event)>
