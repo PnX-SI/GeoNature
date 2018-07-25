@@ -48,7 +48,7 @@ import { ObserversTextComponent } from '@geonature_common/form/observers-text/ob
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
 import { AreasComponent } from '@geonature_common/form/areas/areas.component';
-
+import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -111,7 +111,8 @@ export function HttpLoaderFactory(http: Http) {
     SelectSearchComponent,
     GenericFormGeneratorComponent,
     AreasComponent,
-    NomenclatureMultiSelectComponent
+    NomenclatureMultiSelectComponent,
+    AcquisitionFrameworksComponent
   ],
   providers: [
     TranslateService,
@@ -157,7 +158,8 @@ export function HttpLoaderFactory(http: Http) {
     SelectSearchComponent,
     GenericFormGeneratorComponent,
     NomenclatureMultiSelectComponent,
-    AreasComponent
+    AreasComponent,
+    AcquisitionFrameworksComponent
   ]
 })
 export class GN2CommonModule {}

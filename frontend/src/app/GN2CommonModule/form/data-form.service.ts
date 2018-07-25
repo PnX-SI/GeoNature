@@ -142,9 +142,9 @@ export class DataFormService {
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
   }
-  
+
   getAcquisitionFrameworks() {
-    return this._http.get(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
   }
 
   getOrganisms() {

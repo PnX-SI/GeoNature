@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  EventEmitter,
-  Output,
-  OnChanges,
-  AfterViewInit
-} from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -15,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: './select-search.component.html',
   styleUrls: ['./select-search.component.scss']
 })
-export class SelectSearchComponent implements OnInit, OnChanges {
+export class SelectSearchComponent implements OnInit {
   public selectedItems = [];
   public searchControl = new FormControl();
   public formControlValue = [];
@@ -61,8 +53,6 @@ export class SelectSearchComponent implements OnInit, OnChanges {
       .debounceTime(this.debounceTime)
       .distinctUntilChanged()
       .subscribe(value => {
-        console.log('EMIT');
-        console.log(value);
         this.onSearch.emit(value);
       });
 
@@ -96,7 +86,6 @@ export class SelectSearchComponent implements OnInit, OnChanges {
     } else {
       updateItem = item;
     }
-    console.log(this.keyValue);
     this.selectedItems.push(item);
     this.formControlValue.push(updateItem);
     // set the item for the formControl
@@ -112,8 +101,6 @@ export class SelectSearchComponent implements OnInit, OnChanges {
     this.selectedItems = this.selectedItems.filter(curItem => {
       return curItem[this.keyLabel] !== item[this.keyLabel];
     });
-
-    console.log(item);
     if (this.keyValue) {
       this.formControlValue = this.formControlValue.filter(el => {
         return el !== item[this.keyValue];
@@ -127,11 +114,5 @@ export class SelectSearchComponent implements OnInit, OnChanges {
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.onDelete.emit(item);
-  }
-
-  ngOnChanges(changes) {
-    // if (changes.values && changes.values.currentValue) {
-    //   this.itemsLoaded.next(changes.values.currentValue);
-    // }
   }
 }
