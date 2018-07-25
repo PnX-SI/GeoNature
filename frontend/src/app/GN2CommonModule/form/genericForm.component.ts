@@ -18,6 +18,7 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() debounceTime: number;
   @Input() multiSelect: boolean;
   @Input() searchBar: boolean;
+  @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   public sub: Subscription;

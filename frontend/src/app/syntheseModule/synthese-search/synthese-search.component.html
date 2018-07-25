@@ -1,11 +1,11 @@
 <div class="card">
   <fieldset>
     <legend> Quoi ?</legend>
-    <pnx-datasets [multiSelect]='true' [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Datasets' | translate}}">
+    <pnx-datasets [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
     </pnx-datasets>
 
-    <pnx-acquisition-frameworks [multiSelect]='true' [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
-      label="{{ 'Datasets' | translate}}">
+    <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
+      label="{{ 'Meta.AcquisitionFramework' | translate}}">
 
     </pnx-acquisition-frameworks>
     <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom" [idList]="500"
