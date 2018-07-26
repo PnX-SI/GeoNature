@@ -42,13 +42,26 @@ export class DataFormService {
     });
   }
 
-  getDatasets(idOrganism?) {
-    let params: HttpParams = new HttpParams();
-    if (idOrganism) {
-      params = params.set('organisme', idOrganism);
+  getDatasets(params?) {
+    let queryString: HttpParams = new HttpParams();
+    if (params) {
+      for (const key in params) {
+        if (key === 'idOrganism') {
+          queryString = queryString.set('organisme', params[key]);
+          // is its an array of id_af
+        } else if (key === 'id_acquisition_frameworks') {
+          params[key].forEach(id_af => {
+            queryString = queryString.append('id_acquisition_framework', id_af);
+          });
+          // if its a id_af alone
+        } else if (key === 'id_acquisition_framework' && params[key]) {
+          queryString = queryString.set('id_acquisition_framework', params[key]);
+        }
+      }
     }
+
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {
-      params: params
+      params: queryString
     });
   }
 

@@ -115,7 +115,6 @@ export class SelectSearchComponent implements OnInit {
         return el !== item;
       });
     }
-    console.log(this.formControlValue);
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.onDelete.emit(item);
