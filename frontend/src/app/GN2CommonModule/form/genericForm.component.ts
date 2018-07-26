@@ -14,10 +14,10 @@ import { Subscription } from 'rxjs/Subscription';
 export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
-  @Input() disabled: boolean;
+  @Input() disabled: false;
   @Input() debounceTime: number;
-  @Input() multiSelect: boolean;
-  @Input() searchBar: boolean;
+  @Input() multiSelect: false;
+  @Input() searchBar: false;
   @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
@@ -26,9 +26,6 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor() {}
 
   ngOnInit() {
-    this.disabled = this.disabled || false;
-    this.searchBar = this.searchBar || false;
-    this.multiSelect = this.multiSelect || false;
     this.debounceTime = this.debounceTime || 0;
   }
 

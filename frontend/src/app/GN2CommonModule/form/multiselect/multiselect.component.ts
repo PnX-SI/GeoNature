@@ -3,11 +3,11 @@ import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'pnx-select-search',
-  templateUrl: './select-search.component.html',
-  styleUrls: ['./select-search.component.scss']
+  selector: 'pnx-multiselect',
+  templateUrl: './multiselect.component.html',
+  styleUrls: ['./multiselect.component.scss']
 })
-export class SelectSearchComponent implements OnInit {
+export class MultiSelectComponent implements OnInit {
   public selectedItems = [];
   public searchControl = new FormControl();
   public formControlValue = [];
@@ -19,8 +19,6 @@ export class SelectSearchComponent implements OnInit {
   @Input() keyLabel: string;
   // key of the array of options for the formControl value
   @Input() keyValue: string;
-  // enabled multiselect
-  @Input() multiselect: boolean;
   // Display all in the select list (set the control to null)
   @Input() displayAll: boolean;
   // enable the search bar when dropdown
@@ -36,9 +34,8 @@ export class SelectSearchComponent implements OnInit {
   @Output() onDelete = new EventEmitter<any>();
   constructor(private _translate: TranslateService) {}
 
-  // Component to generate a custom select input with a search bar (which can be disabled)
+  // Component to generate a custom multiselect input with a search bar (which can be disabled)
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
-  // With the multiselect Input you can control if multiple items can be selected
 
   ngOnInit() {
     this.debounceTime = this.debounceTime || 100;
@@ -56,7 +53,6 @@ export class SelectSearchComponent implements OnInit {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
-      console.log('changement', value);
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = value;
