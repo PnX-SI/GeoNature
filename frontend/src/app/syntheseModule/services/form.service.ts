@@ -18,7 +18,6 @@ export class FormService {
       observers: null,
       id_dataset: null,
       id_acquisition_frameworks: null,
-      id_nomenclature_bio_condition: null,
       date_min: null,
       date_max: null,
       municipalities: null,

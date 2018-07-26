@@ -8,6 +8,7 @@ from sqlalchemy.sql import text
 from geojson import FeatureCollection
 
 from geonature.utils.env import DB
+from geonature.utils.errors import GeonatureApiError
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -17,6 +18,11 @@ from geonature.core.gn_synthese.models import (
     VSyntheseForWebApp,
     VSyntheseDecodeNomenclatures,
     VSyntheseForWebAppBis
+)
+
+from geonature.core.gn_meta.models import (
+    TDatasets,
+    TAcquisitionFramework
 )
 from geonature.core.ref_geo.models import (
     LiMunicipalities
@@ -96,8 +102,9 @@ def get_synthese():
         Params must have same synthese fields names
         'observers' param (string) is filtered with ilike clause
     """
+
     filters = dict(request.get_json())
-    result_limit = filters.pop('limit', 10000)
+    result_limit = filters.pop('limit', 100)
     q = DB.session.query(VSyntheseForWebAppBis)
 
     if 'observers' in filters:
@@ -112,21 +119,35 @@ def get_synthese():
     if 'areas' in filters:
         filters.pop('areas')
 
+    if 'id_acquisition_frameworks' in filters:
+        q = (q.join(TDatasets, VSyntheseForWebAppBis.id_dataset == TDatasets.id_dataset).join(
+            TAcquisitionFramework, TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework))
+
+        q = q.filter(TAcquisitionFramework.id_acquisition_framework.in_(filters.pop('id_acquisition_frameworks')))
+
+    # generic filters
+    join_on_synthese = False
     for colname, value in filters.items():
-        col = getattr(VSyntheseForWebAppBis.__table__.columns, colname)
-        testT = testDataType(value, col.type, colname)
-        if testT:
-            return {'error': testT}, 500
-        q = q.filter(col == value)
-    if result_limit:
-        q = q.order_by(
-            VSyntheseForWebAppBis.date_min
-        )
-        data = q.limit(
-            result_limit
-        )
-    else:
-        data = q.all()
+        # join on Syntese only if cd_nomenclature filters
+        if 'cd_nomenclature' in colname:
+            if not join_on_synthese:
+                q = q.join(Synthese, Synthese.id_synthese == VSyntheseForWebAppBis.id_synthese)
+                #table_columns = table_columns + Synthese.__table__.columns
+                join_on_synthese = True
+            col = getattr(Synthese.__table__.columns, colname)
+            q = q.filter(col.in_(value))
+        else:
+            col = getattr(VSyntheseForWebAppBis.__table__.columns, colname)
+            q = q.filter(col.in_(value))
+
+    q = q.order_by(
+        VSyntheseForWebAppBis.date_min.desc()
+    )
+    data = q.limit(
+        result_limit
+    )
+
+    print(q)
     return FeatureCollection([d.get_geofeature() for d in data])
 
 
