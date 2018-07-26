@@ -58,8 +58,8 @@ def get_datasets(info_role):
         except Exception as e:
             gunicorn_error_logger.info(e)
             log.error(e)
-
-    return get_datasets_cruved(info_role)
+    params = dict(request.args)
+    return get_datasets_cruved(info_role, params)
 
 
 @routes.route('/dataset/<id_dataset>', methods=['GET'])

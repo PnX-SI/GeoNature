@@ -10,7 +10,7 @@
   <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
     <select class="form-control form-control-sm" id="dataset-form " [formControl]="parentFormControl" [disableControl]="disabled">
       <option *ngIf="displayAll" [ngValue]="null"> Tous </option>
-      <option *ngFor="let af of values" [ngValue]="values.id_acquisition_framework">{{ af.acquisition_framework_name }}</option>
+      <option *ngFor="let af of values" [ngValue]="af.id_acquisition_framework">{{ af.acquisition_framework_name }}</option>
     </select>
   </div>
 </ng-template>
