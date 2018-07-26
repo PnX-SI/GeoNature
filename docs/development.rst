@@ -304,6 +304,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Selector**: ``pnx-dataset``
 
+        **Inputs**:
+
         :``multiSelect``:
                 Passe le composant du mode select à multiselect (facultatif)
 
@@ -348,6 +350,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Selector**: ``pnx-acqusitions-framework``
 
+        **Inputs**:
+
         :``multiSelect``:
                 Passe le composant du mode select à multiselect (facultatif)
 
@@ -367,6 +371,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         Exemple d'utilisation:
         ::
+
                 <pnx-acquisition-frameworks 
                   [multiSelect]='true'
                   [displayAll]="true" 
@@ -397,6 +402,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Selector**: ``pnx-observers``
 
+        **Inputs**:
+
         :``idMenu``:
                 Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
 
@@ -419,13 +426,76 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         
 
 - **ObserversTextComponent**
-        Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
+      Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
 
-        **Selector**: ``pnx-observers-text``        
+      **Selector**: ``pnx-observers-text``        
 
-        **Valeur retourné par le FormControl**:
-        
-        Valeur du champ. *Type*: string
+      **Valeur retourné par le FormControl**:
+      
+      Valeur du champ. *Type*: string
+
+
+- **MultiSelectComponent**
+      Ce composant permet d'afficher un input de type multiselect à partir d'une liste de valeurs passé en Input
+
+      **Selector**: ``pnx-observers-text``
+
+      **Inputs**:
+
+      :``values``:
+              Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire
+
+      *Type*: ``Array<any>`` *Obligatoire*
+
+      :``keyLabel``:
+              Clé du dictionnaire de valeur que le composant doit prendre pour l'affichage de la liste déroulante
+
+
+              Example, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour afficher "mon item", ``keyLabel`` doit valoir "label"
+
+      *Type*: ``string`` *Obligatoire*
+
+      :``keyValue``:
+          Clé du dictionnaire de valeur que le composant doit passer au formControl
+
+
+          Exemple, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour passer "1", ``keyValue`` doit valoir "id"
+
+      *Type*: ``string`` *Facultatif* (tout le dictionnaire est passé au formControl si l'input est absent)
+
+      :``displayAll``:
+              Est-ce que le composant doit afficher l'item "tous" dans les options du select ? 
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      :``displayAll``:
+              Est-ce que le composant doit afficher une barre de recherche dans la liste déroulante? 
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      **Ouputs**:
+
+      :``onSearch``:
+              Renvoie la saisie de l'utilisateur dans la barre de recherche
+
+      
+      **Valeur retourné par le FormControl**:
+      
+      Valeur du champ. *Type*: Array<any>
+
+      **Exemple d'utilisation**
+
+        ::
+
+                <pnx-multiselect
+                 [values]="organisms" 
+                 [parentFormControl]="form.controls.organisms" 
+                 [keyLabel]="'nom_organisme'" 
+                 [label]="'Organisme'"
+                 (onChange)="doWhatever($event)
+                 (onDelete)="deleteCallback($event)"
+                 (onSearch)="filterItems($event)">
+                </pnx-multiselect>
 
 
 
