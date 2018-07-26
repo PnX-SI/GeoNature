@@ -33,8 +33,6 @@ export class FormService {
       area['control'] = control;
     });
 
-    console.log(AppConfig.SYNTHESE.AREA_FILTERS);
-
     this.formBuilded = true;
   }
 
