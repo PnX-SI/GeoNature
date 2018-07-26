@@ -1,14 +1,6 @@
 <div class="card">
   <fieldset>
     <legend> Quoi ?</legend>
-    <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
-      label="{{ 'Meta.AcquisitionFramework' | translate}}">
-    </pnx-acquisition-frameworks>
-
-
-    <pnx-datasets [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value" [multiSelect]='true'
-      [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
-    </pnx-datasets>
 
     <!-- <pnx-datasets [idAcquisitionFramework]="formService.searchForm.controls.id_acquisition_frameworks.value" [multiSelect]='true'
       [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
@@ -28,7 +20,22 @@
         <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
       </p>
     </div>
-    <button (click)="openModalCol($event, modalTaxon)" class="btn btn-sm btn-secondary"> Avancé</button>
+    <button (click)="openModalCol($event, modalTaxon)" class="btn btn-sm btn-primary advanced"> Avancé (Taxonomie)</button>
+
+    <button class="btn btn-sm btn-primary advanced" data-toggle="collapse" data-target="#OccAdvanved" aria-expanded="false" aria-controls="OccAdvanved">
+      Avancé (Occurrence de taxon)
+    </button>
+
+    <div class="collapse advanced" id="OccAdvanved">
+      <div class="card card-block">
+        <small> Filtres occurrence de taxon </small>
+        <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="nomenclaturesForms">
+        </pnx-dynamic-form-generator>
+
+      </div>
+    </div>
+
+
   </fieldset>
 
   <fieldset>
@@ -70,9 +77,15 @@
   <fieldset>
     <legend> Comment ?</legend>
 
-    <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="nomenclaturesForms">
+    <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
+      label="{{ 'Meta.AcquisitionFramework' | translate}}">
+    </pnx-acquisition-frameworks>
 
-    </pnx-dynamic-form-generator>
+
+    <pnx-datasets [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value" [multiSelect]='true'
+      [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
+    </pnx-datasets>
+
 
 
   </fieldset>
