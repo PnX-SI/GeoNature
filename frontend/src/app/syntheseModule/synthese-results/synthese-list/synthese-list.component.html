@@ -12,10 +12,10 @@
 </table> -->
 
 <!--Table-->
-<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.default_columns"
-  [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow"
-  [selectionType]="'single'" [count]="mapListService.tableData.length" [limit]="rowNumber" [rowClass]="mapListService.getRowClass"
-  [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
+<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData"
+  [columns]="SYNTHESE_CONFIG.default_columns" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50" [footerHeight]="35"
+  [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
+  [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
 
   <!-- ACTION COLUMNS
     <ngx-datatable-column maxWidth="50">
@@ -57,6 +57,7 @@
             <b> Stade de vie: </b> {{selectedObs?.life_stage}}
             <br/>
             <b> Denombrement </b> Entre {{row.count_min}}/{{row.count_min}} individu de sexe: {{selectedObs?.sex}}
+            <br/> Stade de vie : {{ selectedObs?.bio_condition}}
             <br/>
           </small>
         </div>

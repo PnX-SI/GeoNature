@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, HostListener, OnChanges } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { SYNTHESE_CONFIG } from '../../synthese.config';
@@ -10,7 +10,7 @@ import { window } from 'rxjs/operator/window';
   templateUrl: 'synthese-list.component.html',
   styleUrls: ['synthese-list.component.scss']
 })
-export class SyntheseListComponent implements OnInit {
+export class SyntheseListComponent implements OnInit, OnChanges {
   public SYNTHESE_CONFIG = SYNTHESE_CONFIG;
   public selectedObs: any;
   public previousRow: any;
@@ -59,5 +59,12 @@ export class SyntheseListComponent implements OnInit {
     }
     this.table.rowDetail.toggleExpandRow(row);
     this.previousRow = row;
+  }
+
+  ngOnChanges(changes) {
+    if (changes && changes.inputSyntheseData.currentValue) {
+      // reset page 0 when new data appear
+      this.table.offset = 0;
+    }
   }
 }

@@ -52,7 +52,6 @@ def get_datasets_cruved(info_role, params):
     table_columns = TDatasets.__table__.columns
     # Generic Filters
     for param in params:
-        print(type(params[param]))
         if param in table_columns:
             col = getattr(table_columns, param)
             testT = testDataType(params[param], col.type, param)
