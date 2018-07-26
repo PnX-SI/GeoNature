@@ -56,6 +56,7 @@ export class SelectSearchComponent implements OnInit {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
+      console.log('changement', value);
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = value;
@@ -81,6 +82,7 @@ export class SelectSearchComponent implements OnInit {
         objAll[this.keyLabel] = value;
         this.selectedItems.push(objAll);
       });
+      this.formControlValue = [];
       this.parentFormControl.patchValue([]);
       return;
     }
@@ -107,11 +109,11 @@ export class SelectSearchComponent implements OnInit {
       return curItem[this.keyLabel] !== item[this.keyLabel];
     });
     if (this.keyValue) {
-      this.formControlValue = this.formControlValue.filter(el => {
+      this.formControlValue = this.parentFormControl.value.filter(el => {
         return el !== item[this.keyValue];
       });
     } else {
-      this.formControlValue = this.formControlValue.filter(el => {
+      this.formControlValue = this.parentFormControl.value.filter(el => {
         return el !== item;
       });
     }
