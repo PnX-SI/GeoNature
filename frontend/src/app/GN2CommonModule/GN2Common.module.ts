@@ -64,8 +64,7 @@ import { FormService } from './form/form.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
-import { SelectSearchComponent } from './form/select-search/select-search.component';
-import { NomenclatureMultiSelectComponent } from './form/nomenclature-multi-select/nomenclature-multi-select.component';
+import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -108,10 +107,9 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     DynamicFormComponent,
     MunicipalitiesComponent,
-    SelectSearchComponent,
+    MultiSelectComponent,
     GenericFormGeneratorComponent,
     AreasComponent,
-    NomenclatureMultiSelectComponent,
     AcquisitionFrameworksComponent
   ],
   providers: [
@@ -155,9 +153,8 @@ export function HttpLoaderFactory(http: Http) {
     TranslateModule,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
-    SelectSearchComponent,
+    MultiSelectComponent,
     GenericFormGeneratorComponent,
-    NomenclatureMultiSelectComponent,
     AreasComponent,
     AcquisitionFrameworksComponent
   ]
