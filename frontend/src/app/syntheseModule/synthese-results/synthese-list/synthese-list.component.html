@@ -13,38 +13,10 @@
 
 <!--Table-->
 <ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.default_columns" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50" [footerHeight]="35"
-  [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
+  [columns]="SYNTHESE_CONFIG.default_columns" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50"
+  [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
   [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
 
-  <!-- ACTION COLUMNS
-    <ngx-datatable-column maxWidth="50">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-                <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o"
-                    aria-hidden="true"></i>
-            </button>
-        </ng-template>
-    </ngx-datatable-column>
-
-    <ngx-datatable-column maxWidth="50">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])">
-                <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle"
-                    aria-hidden="true"></i>
-            </button>
-        </ng-template>
-    </ngx-datatable-column>
-
-    <ngx-datatable-column maxWidth="50">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-                <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}"
-                    class="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-        </ng-template>
-    </ngx-datatable-column>
-    -->
 
   <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
     <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
@@ -64,6 +36,26 @@
       </div>
     </ng-template>
   </ngx-datatable-row-detail>
+
+
+  <!-- ACTION COLUMNS -->
+  <ngx-datatable-column maxWidth="10">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.U" (click)="onEditReleve(row[mapListService.idName])">
+        <i [ngClass]="{'disabled' : !row.cruved.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o"
+          aria-hidden="true"></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column maxWidth="10">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+        <i [ngClass]="{'disabled' : !row.cruved.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}"
+          class="fa fa-trash-o" aria-hidden="true"></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
 
   <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
     <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
