@@ -156,5 +156,9 @@
     "Programs": "Programmes",
     "Datasets": "Jeux de données",
     "AcquisitionFramework": "Cadre d'acquisition"
+  },
+  "Synthese": {
+    "DeleteObs": "Supprimer l'observations",
+    "DeleteSuccess": "Observation supprimée avec succès"
   }
 }

@@ -4,6 +4,8 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { SYNTHESE_CONFIG } from '../../synthese.config';
 import { DataService } from '../../services/data.service';
 import { window } from 'rxjs/operator/window';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -17,7 +19,12 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   public rowNumber: number;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table') table: any;
-  constructor(public mapListService: MapListService, private _ds: DataService) {}
+  constructor(
+    public mapListService: MapListService,
+    private _ds: DataService,
+    public ngbModal: NgbModal,
+    private _commonService: CommonService
+  ) {}
 
   ngOnInit() {
     // Au clique sur la carte, selection dans la liste
@@ -59,6 +66,37 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     }
     this.table.rowDetail.toggleExpandRow(row);
     this.previousRow = row;
+  }
+
+  openDeleteModal(event, modal, iElement, row) {
+    console.log('LAAAAAAAAA/*  */');
+    this.mapListService.selectedRow = [];
+    this.mapListService.selectedRow.push(row);
+    //event.stopPropagation();
+    this.ngbModal.open(modal);
+
+    // prevent erreur link to the component
+    // iElement &&
+    //   iElement.parentElement &&
+    //   iElement.parentElement.parentElement &&
+    //   iElement.parentElement.parentElement.blur();
+  }
+
+  onDeleteObservation(id_synthese) {
+    console.log(id_synthese);
+    this._ds.deleteOneSyntheseObservation(id_synthese).subscribe(
+      data => {
+        this.mapListService.deleteObsFront(id_synthese);
+        this._commonService.translateToaster('success', 'Synthese.DeleteSuccess');
+      },
+      error => {
+        if (error.status === 403) {
+          this._commonService.translateToaster('error', 'NotAllowed');
+        } else {
+          this._commonService.translateToaster('error', 'ErrorMessage');
+        }
+      }
+    );
   }
 
   ngOnChanges(changes) {
