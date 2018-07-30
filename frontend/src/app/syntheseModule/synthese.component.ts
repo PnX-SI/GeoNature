@@ -5,6 +5,7 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 
 @Component({
   selector: 'pnx-synthese',
+  styleUrls: ['synthese.component.scss'],
   templateUrl: 'synthese.component.html'
 })
 export class SyntheseComponent implements OnInit {
