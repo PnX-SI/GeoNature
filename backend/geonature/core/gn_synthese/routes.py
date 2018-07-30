@@ -1,6 +1,6 @@
 import json
 import logging
-from flask import Blueprint, request
+from flask import Blueprint, request, session, current_app
 
 from sqlalchemy import distinct, func
 from sqlalchemy.orm import exc
@@ -28,6 +28,11 @@ from geonature.core.ref_geo.models import (
     LiMunicipalities
 )
 from pypnusershub import routes as fnauth
+from pypnusershub.db.tools import (
+    InsufficientRightsError,
+    get_or_fetch_user_cruved,
+    cruved_for_user_in_app
+)
 from geonature.utils.utilssqlalchemy import json_resp, testDataType
 from geonature.core.gn_meta import mtd_utils
 
@@ -95,8 +100,9 @@ def getDefaultsNomenclatures():
 
 
 @routes.route('/synthese', methods=['POST'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def get_synthese():
+def get_synthese(info_role):
     """
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
@@ -106,6 +112,12 @@ def get_synthese():
     filters = dict(request.get_json())
     result_limit = filters.pop('limit', 100)
     q = DB.session.query(VSyntheseForWebAppBis)
+
+    user_cruved = get_or_fetch_user_cruved(
+        session=session,
+        id_role=info_role.id_role,
+        id_application_parent=14
+    )
 
     if 'observers' in filters:
         q = q.filter(VSyntheseForWebAppBis.observers.ilike('%'+filters.pop('observers')+'%'))
@@ -147,8 +159,15 @@ def get_synthese():
         result_limit
     )
 
-    print(q)
-    return FeatureCollection([d.get_geofeature() for d in data])
+    user_datasets = TDatasets.get_user_datasets(info_role)
+
+    features = []
+    for d in data:
+        feature = d.get_geofeature()
+        cruved = d.get_synthese_cruved(info_role, user_cruved, user_datasets)
+        feature['properties']['cruved'] = cruved
+        features.append(feature)
+    return FeatureCollection(features)
 
 
 @routes.route('/vsynthese', methods=['POST'])

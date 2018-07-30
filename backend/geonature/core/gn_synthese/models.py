@@ -16,6 +16,66 @@ from geonature.utils.env import DB
 from geonature.core.ref_geo.models import LiMunicipalities
 
 
+class SyntheseCruved(DB.Model):
+    """
+        Abstract class to add method
+        to control the data access according
+        to the user rights
+    """
+    __abstract__ = True
+
+    def user_is_observer(self, user):
+        # faire la vérification sur le champs observateur ?
+        cor_observers = [d.id_role for d in self.cor_observers]
+        # return user.id_role == self.id_digitiser or user.id_role in observers
+        return user.id_role in cor_observers
+
+    def user_is_in_dataset_actor(self, user, users_datasets):
+        return self.id_dataset in users_datasets
+
+    def user_is_allowed_to(self, user, level, users_adtasets):
+        """
+            Function to know if a user can do action
+            on a data
+        """
+        # Si l'utilisateur n'a pas de droit d'accès aux données
+
+        if level not in ('1', '2', '3'):
+            return False
+
+        # Si l'utilisateur à le droit d'accéder à toutes les données
+        if level == '3':
+            return True
+
+        # Si l'utilisateur est propriétaire de la données
+        if self.user_is_observer(user):
+            return True
+
+        # Si l'utilisateur appartient à un organisme
+        # qui a un droit sur la données et
+        # que son niveau d'accès est 2 ou 3
+        if (
+            self.user_is_in_dataset_actor(user, users_adtasets) and
+            level in ('2', '3')
+        ):
+            return True
+        return False
+
+    def get_synthese_cruved(self, user, user_cruved, users_datasets):
+        """
+        Return the user's cruved for a Synthese instance.
+        Use in the map-list interface to allow or not an action
+        params:
+            - user : a TRole object
+            - user_cruved: object return by cruved_for_user_in_app(user)
+            - users_dataset: array of dataset ids where the users have rights
+        """
+        return {
+            action: self.user_is_allowed_to(user, level, users_datasets)
+            for action, level in user_cruved.items()
+        }
+
+
 @serializable
 class TSources(DB.Model):
     __tablename__ = 't_sources'
@@ -137,6 +197,13 @@ class CorAreaSynthese(DB.Model):
     id_area = DB.Column(DB.Integer)
 
 
+class CorRoleSynthese(DB.Model):
+    __tablename__ = 'cor_role_synthese'
+    __table_args__ = {'schema': 'gn_synthese'}
+    id_synthese = DB.Column(DB.Integer, ForeignKey('gn_synthese.synthese.id_synthese'), primary_key=True)
+    id_role = DB.Column(DB.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
+
+
 @serializable
 class DefaultsNomenclaturesValue(DB.Model):
     __tablename__ = 'defaults_nomenclatures_value'
@@ -187,7 +254,7 @@ class VSyntheseForWebApp(DB.Model):
 
 @serializable
 @geoserializable
-class VSyntheseForWebAppBis(DB.Model):
+class VSyntheseForWebAppBis(SyntheseCruved):
     __tablename__ = 'v_synthese_for_web_app_bis'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
@@ -221,6 +288,13 @@ class VSyntheseForWebAppBis(DB.Model):
     observers = DB.Column(DB.Unicode)
     determiner = DB.Column(DB.Unicode)
     comments = DB.Column(DB.Unicode)
+
+    cor_observers = relationship(
+        "CorRoleSynthese",
+        lazy='joined',
+        primaryjoin=(CorRoleSynthese.id_synthese == id_synthese),
+        foreign_keys=[CorRoleSynthese.id_synthese]
+    )
 
     def get_geofeature(self, recursif=False):
         return self.as_geofeature('the_geom_4326', 'id_synthese', recursif)
