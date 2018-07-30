@@ -9,3 +9,7 @@ ngx-datatable {
   // top:0;
   // overflow:scroll;
 }
+
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
+}
