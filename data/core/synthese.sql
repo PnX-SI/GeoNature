@@ -38,6 +38,40 @@ AS $$
   END;
 $$;
 
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+    geom_change = false;
+    IF(TG_OP = 'UPDATE') THEN
+      SELECT INTO geom_change ST_EQUALS(OLD.geom_local, NEW.geom_local);
+    END IF;
+
+    IF (geom_change) THEN
+      DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+    END IF;
+  
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
+        FOR id_area_loop IN (
+        SELECT id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese
+        )
+        LOOP
+          EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
+        END LOOP;
+    END IF;
+
+    END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 
 ------------------------
 --TABLES AND SEQUENCES--
@@ -554,7 +588,12 @@ CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
   FOR EACH ROW
   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
-
+CREATE TRIGGER tri_insert_cor_arera_synthese
+  AFTER INSERT OR UPDATE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+  
 --------
 --DATA--
 --------
