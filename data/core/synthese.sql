@@ -473,6 +473,7 @@ SELECT
   so.name_source,
   so.entity_source_pk_field,
   s.entity_source_pk_value,
+  so.url_source,
   d.dataset_name,
   m.insee_com, --TODO attention changer le JOIN en prod
   m.nom_com,

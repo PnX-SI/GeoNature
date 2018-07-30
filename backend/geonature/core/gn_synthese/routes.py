@@ -108,7 +108,6 @@ def get_synthese(info_role):
         Params must have same synthese fields names
         'observers' param (string) is filtered with ilike clause
     """
-
     filters = dict(request.get_json())
     result_limit = filters.pop('limit', 100)
     q = DB.session.query(VSyntheseForWebAppBis)
@@ -164,6 +163,7 @@ def get_synthese(info_role):
     features = []
     for d in data:
         feature = d.get_geofeature()
+        print(feature)
         cruved = d.get_synthese_cruved(info_role, user_cruved, user_datasets)
         feature['properties']['cruved'] = cruved
         features.append(feature)
@@ -218,7 +218,7 @@ def get_one_synthese(id_synthese):
         return None
 
 
-@routes.route('/synthese/<id_synthese>', methods=['DELETE'])
+@routes.route('/<id_synthese>', methods=['DELETE'])
 @fnauth.check_auth_cruved('D', True)
 @json_resp
 def delete_synthese(info_role, id_synthese):
@@ -248,71 +248,3 @@ def delete_synthese(info_role, id_synthese):
     DB.session.commit()
 
     return {'message': 'delete with success'}, 200
-
-
-@routes.route('/test')
-@json_resp
-def test():
-    # from psycopg2 import sql as psysql
-    from sqlalchemy.sql import text, literal_column, table, select
-    # from sqlalchemy import create_engine
-    # engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
-    # connection = engine.connect()
-    sql = text("select * from {tbl} limit 100".format(tbl="gn_synthese.synthese"))
-    print(table('gn_synthese.synthese'))
-    # s = select(['*']).select_from(table('gn_synthese.synthese')).limit(100)
-    # print(s)
-    # r = DB.engine.execute(
-    #     s
-    # )
-
-    # sql = 'SELECT * from {sch}.{tbl} LIMIT 100'
-    # # print(mysql)
-    # # r = DB.engine.execute(mysql)
-
-    # formatedSql = psysql.SQL(mysql).format(
-    #     sch=psysql.Identifier('gn_synthese'),
-    #     tbl=psysql.Identifier('synthese')).as_string(connection)
-
-    # print(formatedSql)
-
-    return 'la'
-
-# @blueprint.route('/test/insert', methods=['POST'])
-# def insertData():
-#     for i in range(10000):
-#         data = copy.deepcopy(sample_data)
-#         taxon_val = [351,60612,67111,18437,8326,11165,81065,95186]
-#         life_stage_val = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]
-#         naturality_val = [181,182,183,184,185]
-
-#         # d1 = datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y')
-#         # d2 = datetime.strptime('1/1/20018 4:50 AM', '%m/%d/%Y')
-
-#         # date_max = random_date(d1, d2)
-#         # date_min = date_max
-
-#         occurrences_occtax = data['properties']['t_occurrences_occtax']
-#         data['properties'].pop('t_occurrences_occtax')
-
-
-#         releve = TRelevesOccurrence(**data['properties'])
-#         releve.geom_4326 = from_shape(generate_random_point(), srid=4326)
-
-
-#         for occ in occurrences_occtax:
-#             occ['id_nomenclature_naturalness'] = get_random_value(naturality_val)
-#             occ['cd_nom'] = get_random_value(taxon_val)
-#             counting = occ.pop('cor_counting_occtax')
-#             occurrence = TOccurrencesOccurrence(**occ)
-
-#             for count in counting:
-#                 count['id_nomenclature_life_stage'] = get_random_value(life_stage_val)
-#                 occurrence.cor_counting_occtax.append(CorCountingOccurrence(**count))
-#         releve.t_occurrences_occtax.append(occurrence)
-
-#         DB.session.add(releve)
-#     DB.session.commit()
-#     DB.session.flush()
-
-#     return 'ça marche bien'

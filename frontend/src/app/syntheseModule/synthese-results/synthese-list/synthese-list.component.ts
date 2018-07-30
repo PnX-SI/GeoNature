@@ -6,6 +6,7 @@ import { DataService } from '../../services/data.service';
 import { window } from 'rxjs/operator/window';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -23,7 +24,8 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     public mapListService: MapListService,
     private _ds: DataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _router: Router
   ) {}
 
   ngOnInit() {
@@ -72,18 +74,18 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     console.log('LAAAAAAAAA/*  */');
     this.mapListService.selectedRow = [];
     this.mapListService.selectedRow.push(row);
-    //event.stopPropagation();
     this.ngbModal.open(modal);
+  }
 
-    // prevent erreur link to the component
-    // iElement &&
-    //   iElement.parentElement &&
-    //   iElement.parentElement.parentElement &&
-    //   iElement.parentElement.parentElement.blur();
+  onEditReleve(url_source, id_source) {
+    const link = document.createElement('a');
+    link.target = '_blank';
+    link.href = url_source + '/' + id_source;
+    link.setAttribute('visibility', 'hidden');
+    link.click();
   }
 
   onDeleteObservation(id_synthese) {
-    console.log(id_synthese);
     this._ds.deleteOneSyntheseObservation(id_synthese).subscribe(
       data => {
         this.mapListService.deleteObsFront(id_synthese);
