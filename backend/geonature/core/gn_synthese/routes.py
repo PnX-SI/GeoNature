@@ -99,7 +99,7 @@ def getDefaultsNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
-@routes.route('/synthese', methods=['POST'])
+@routes.route('', methods=['POST'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
 def get_synthese(info_role):
@@ -144,7 +144,7 @@ def get_synthese(info_role):
         if 'cd_nomenclature' in colname:
             if not join_on_synthese:
                 q = q.join(Synthese, Synthese.id_synthese == VSyntheseForWebAppBis.id_synthese)
-                #table_columns = table_columns + Synthese.__table__.columns
+                # table_columns = table_columns + Synthese.__table__.columns
                 join_on_synthese = True
             col = getattr(Synthese.__table__.columns, colname)
             q = q.filter(col.in_(value))
@@ -218,37 +218,66 @@ def get_one_synthese(id_synthese):
         return None
 
 
-# data = {
-#     id_dataset: 1,
-#     id_nomenclature_geo_object_nature: 3,
-#     id_nomenclature_grp_typ,
-#     id_nomenclature_obs_meth,
-#     id_nomenclature_obs_technique,
-#     id_nomenclature_bio_status,
-#     id_nomenclature_bio_condition
-#     id_nomenclature_naturalness
-#     id_nomenclature_exist_proof
-#     id_nomenclature_valid_status
-#     id_nomenclature_diffusion_level
-#     id_nomenclature_life_stage
-#     id_nomenclature_sex
-#     id_nomenclature_obj_count
-#     id_nomenclature_type_count
-#     id_nomenclature_sensitivity
-#     id_nomenclature_observation_status
-#     id_nomenclature_blurring
-#     id_nomenclature_source_status
-#     id_nomenclature_info_geo_type
-#     id_municipality
-#     count_min
-#     count_max
-#     cd_nom
+@routes.route('/synthese/<id_synthese>', methods=['DELETE'])
+@fnauth.check_auth_cruved('D', True)
+@json_resp
+def delete_synthese(info_role, id_synthese):
+    synthese_obs = DB.session.query(Synthese).get(id_synthese)
+    user_datasets = TDatasets.get_user_datasets(info_role)
+    synthese_releve = synthese_obs.get_observation_if_allowed(info_role, user_datasets)
+
+    # get and delete source
+    # FIX
+    # est-ce qu'on peut supprimer les données historiques depuis la synthese
+    source = DB.session.query(TSources).filter(TSources.id_source == synthese_obs.id_source).one()
+    pk_field_source = source.entity_source_pk_field
+    inter = pk_field_source.split('.')
+    pk_field = inter.pop()
+    table_source = inter.join('.')
+    sql = text("DELETE FROM {table} WHERE {pk_field} = :id".format(
+        table=table_source,
+        pk_field=pk_field)
+    )
+    result = DB.engine.execute(
+        sql,
+        id=synthese_obs.entity_source_pk_value
+    )
+
+    # delete synthese obs
+    DB.session.delete(synthese_releve)
+    DB.session.commit()
+
+    return {'message': 'delete with success'}, 200
 
 
-# }
+@routes.route('/test')
+@json_resp
+def test():
+    # from psycopg2 import sql as psysql
+    from sqlalchemy.sql import text, literal_column, table, select
+    # from sqlalchemy import create_engine
+    # engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
+    # connection = engine.connect()
+    sql = text("select * from {tbl} limit 100".format(tbl="gn_synthese.synthese"))
+    print(table('gn_synthese.synthese'))
+    # s = select(['*']).select_from(table('gn_synthese.synthese')).limit(100)
+    # print(s)
+    # r = DB.engine.execute(
+    #     s
+    # )
 
-# import copy
-# from datetime import datetime
+    # sql = 'SELECT * from {sch}.{tbl} LIMIT 100'
+    # # print(mysql)
+    # # r = DB.engine.execute(mysql)
+
+    # formatedSql = psysql.SQL(mysql).format(
+    #     sch=psysql.Identifier('gn_synthese'),
+    #     tbl=psysql.Identifier('synthese')).as_string(connection)
+
+    # print(formatedSql)
+
+    return 'la'
+
 # @blueprint.route('/test/insert', methods=['POST'])
 # def insertData():
 #     for i in range(10000):

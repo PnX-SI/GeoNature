@@ -14,6 +14,7 @@ from geonature.utils.utilssqlalchemy import (
 )
 from geonature.utils.env import DB
 from geonature.core.ref_geo.models import LiMunicipalities
+from pypnusershub.db.tools import InsufficientRightsError
 
 
 class SyntheseCruved(DB.Model):
@@ -30,10 +31,10 @@ class SyntheseCruved(DB.Model):
         # return user.id_role == self.id_digitiser or user.id_role in observers
         return user.id_role in cor_observers
 
-    def user_is_in_dataset_actor(self, user, users_datasets):
-        return self.id_dataset in users_datasets
+    def user_is_in_dataset_actor(self, user_datasets):
+        return self.id_dataset in user_datasets
 
-    def user_is_allowed_to(self, user, level, users_adtasets):
+    def user_is_allowed_to(self, user, level, user_datasets):
         """
             Function to know if a user can do action
             on a data
@@ -55,11 +56,26 @@ class SyntheseCruved(DB.Model):
         # qui a un droit sur la données et
         # que son niveau d'accès est 2 ou 3
         if (
-            self.user_is_in_dataset_actor(user, users_adtasets) and
+            self.user_is_in_dataset_actor(user_datasets) and
             level in ('2', '3')
         ):
             return True
         return False
+
+    def get_observation_if_allowed(self, user, user_datasets):
+        """
+            Return the observation if the user is allowed
+            params:
+                user: object from TRole
+        """
+        if self.user_is_allowed_to(user, user.tag_object_code, user_datasets):
+            return self
+
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" this current releve')
+            .format(user.id_role, user.tag_action_code),
+            403
+        )
 
     def get_synthese_cruved(self, user, user_cruved, users_datasets):
         """
@@ -120,7 +136,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 @serializable
 @geoserializable
-class Synthese(DB.Model):
+class Synthese(SyntheseCruved):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, ForeignKey(

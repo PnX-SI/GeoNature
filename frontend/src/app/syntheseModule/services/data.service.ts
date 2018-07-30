@@ -9,10 +9,14 @@ export class DataService {
   constructor(private _api: HttpClient) {}
 
   getSyntheseData(params) {
-    return this._api.post<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/synthese`, params);
+    return this._api.post<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese`, params);
   }
 
   getOneSyntheseObservation(id_synthese) {
     return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
+  }
+
+  deleteOneSyntheseObservation(id_synthese) {
+    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/synthese/synthese/${id_synthese}`);
   }
 }

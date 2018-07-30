@@ -150,5 +150,8 @@
     "Programs": "Program",
     "Datasets": "Dataset",
     "AcquisitionFramework": "Acquisition framework"
+  },
+  "Synthese": {
+    "DeleteObs": "Supprimer l'observations"
   }
 }
