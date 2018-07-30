@@ -277,6 +277,7 @@ class VSyntheseForWebAppBis(SyntheseCruved):
     id_source = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     entity_source_pk_field = DB.Column(DB.Unicode)
+    url_source = DB.Column(DB.Unicode)
     entity_source_pk_value = DB.Column(DB.Integer)
     dataset_name = DB.Column(DB.Unicode)
     id_dataset = DB.Column(DB.Integer)
