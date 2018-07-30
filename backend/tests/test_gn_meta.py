@@ -25,7 +25,7 @@ class TestGnMeta:
         token = get_token(self.client)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         assert response.status_code == 200
-        
+
         dataset_list = json_of_response(response)
         assert len(dataset_list) == 2
 
@@ -57,10 +57,9 @@ class TestGnMeta:
             dataset_list[0]['id_dataset'] == 1
         )
 
-        
     def test_mtd_interraction(self):
         from geonature.core.gn_meta.mtd_utils import post_jdd_from_user, get_jdd_by_user_id, parse_jdd_xml
-        
+
         """
         Test du web service MTD
         A partir d'un utilisateur renvoyé par le CAS
@@ -81,16 +80,10 @@ class TestGnMeta:
         }
         resp = users.insert_organism(organism)
         assert resp.status_code == 200
-        
+
         resp = users.insert_role(user)
         users.insert_in_cor_role(20003, user['id_role'])
         assert resp.status_code == 200
 
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)
         assert len(jdds) >= 1
-
-
-            
-        
-
-

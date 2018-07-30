@@ -16,25 +16,23 @@ from .bootstrap_test import app
 
 d = os.path.join(os.path.abspath(__file__ + "/../../../"), 'contrib')
 sys.path.append(d)
-print(sys.path)
-
 
 
 valide_occ_tax_releve = {
-    'id_releve_occtax' : 1,
-    'id_dataset' : 1,
-    'id_digitiser' : 1,
-    'date_min' : datetime.datetime.now(),
-    'date_max' : datetime.datetime.now(),
-    'altitude_min' : 1100,
-    'altitude_max' : 1200,
-    'meta_device_entry' : 'web',
-    'comment' : 'test',
-    'geom_4326' : 'test',
-    'taxons' : 'ablette, lynx',
-    'leaflet_popup' : 'test',
-    'observateurs' : 'admin',
-    'observers' : []
+    'id_releve_occtax': 1,
+    'id_dataset': 1,
+    'id_digitiser': 1,
+    'date_min': datetime.datetime.now(),
+    'date_max': datetime.datetime.now(),
+    'altitude_min': 1100,
+    'altitude_max': 1200,
+    'meta_device_entry': 'web',
+    'comment': 'test',
+    'geom_4326': 'test',
+    'taxons': 'ablette, lynx',
+    'leaflet_popup': 'test',
+    'observateurs': 'admin',
+    'observers': []
 }
 
 user_admin = {
@@ -42,7 +40,7 @@ user_admin = {
     'id_organisme': 2,
     'tag_action_code': 'R',
     'tag_object_code': '3',
-    'id_application':14
+    'id_application': 14
 }
 
 # has only right on dataset 2
@@ -51,7 +49,7 @@ user_agent = {
     'id_organisme': -1,
     'tag_action_code': 'R',
     'tag_object_code': '2',
-    'id_application':14
+    'id_application': 14
 }
 
 # can see only its data
@@ -60,13 +58,13 @@ user_low = {
     'id_organisme': -1,
     'tag_action_code': 'R',
     'tag_object_code': '1',
-    'id_application':14
+    'id_application': 14
 }
 
 
 @pytest.mark.usefixtures('client_class')
 class TestReleveModel:
-    ### Test on abstract class ReleveModel and its methods
+    #  Test on abstract class ReleveModel and its methods
     def test_user_is_observers(self):
         """
             user is observer of the releve
