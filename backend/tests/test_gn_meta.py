@@ -27,7 +27,7 @@ class TestGnMeta:
         assert response.status_code == 200
 
         dataset_list = json_of_response(response)
-        assert len(dataset_list) == 2
+        assert len(dataset_list) >= 2
 
     def test_dataset_cruved_2(self):
         """
