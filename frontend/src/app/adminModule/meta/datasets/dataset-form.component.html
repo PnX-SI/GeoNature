@@ -71,12 +71,14 @@
       <div *ngFor="let form of cor_dataset_actor_array.controls; let i=index;">
         <h5> </h5>
         <!-- Organismes -->
-        <pnx-multiselect [values]="organisms" [parentFormControl]="form.controls.organisms" [keyLabel]="'nom_organisme'" [label]="'Organisme'">
+        <pnx-multiselect [values]="organisms" [parentFormControl]="form.controls.organisms" [keyLabel]="'nom_organisme'" keyValue="id_organisme"
+          [label]="'Organisme'">
         </pnx-multiselect>
 
         <!-- Role -->
 
-        <pnx-multiselect [values]="roles" [parentFormControl]="form.controls.roles" [keyLabel]="'nom_complet'" [label]="'Personne ou groupe'">
+        <pnx-multiselect [values]="roles" [parentFormControl]="form.controls.roles" [keyLabel]="'nom_complet'" keyValue="id_role"
+          [label]="'Personne ou groupe'">
         </pnx-multiselect>
 
 

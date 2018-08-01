@@ -1,6 +1,6 @@
 <div *ngIf="multiSelect; else elseBlock">
   <pnx-multiselect [values]="labels" [parentFormControl]="parentFormControl" keyLabel="label_default" [keyValue]="keyValue"
-    [label]="label" debounceTime="500" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)">
+    [onlyBindId]="true" [label]="label" debounceTime="500" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)">
   </pnx-multiselect>
 </div>
 

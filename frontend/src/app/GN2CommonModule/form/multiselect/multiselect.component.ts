@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  AfterViewInit,
+  OnChanges
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -7,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './multiselect.component.html',
   styleUrls: ['./multiselect.component.scss']
 })
-export class MultiSelectComponent implements OnInit {
+export class MultiSelectComponent implements OnInit, OnChanges {
   public selectedItems = [];
   public searchControl = new FormControl();
   public formControlValue = [];
@@ -28,6 +36,7 @@ export class MultiSelectComponent implements OnInit {
   // label displayed above the input
   @Input() label: any;
   // time before the output are triggered
+  @Input() onlyBindId: false;
   @Input() debounceTime: number;
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
@@ -53,6 +62,7 @@ export class MultiSelectComponent implements OnInit {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
+      // filter the list of options to not display twice an item
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = value;
@@ -85,7 +95,7 @@ export class MultiSelectComponent implements OnInit {
     }
     // set the item for the formControl
     let updateItem;
-    if (this.keyValue) {
+    if (this.onlyBindId) {
       updateItem = item[this.keyValue];
     } else {
       updateItem = item;
@@ -117,5 +127,19 @@ export class MultiSelectComponent implements OnInit {
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.onDelete.emit(item);
+  }
+
+  ngOnChanges(changes) {
+    if (changes.values && changes.values.currentValue) {
+      this.values = changes.values.currentValue.filter(v => {
+        let isInArray = false;
+        this.formControlValue.forEach(element => {
+          if (v[this.keyValue] === element[this.keyValue]) {
+            isInArray = true;
+          }
+        });
+        return !isInArray;
+      });
+    }
   }
 }
