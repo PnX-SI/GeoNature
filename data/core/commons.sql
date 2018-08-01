@@ -445,7 +445,7 @@ SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq',
 
 
 INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(1,0,'taxref_version','Version du référentiel taxonomique','Taxref V9.0',NULL)
+(1,0,'taxref_version','Version du référentiel taxonomique','Taxref V11.0',NULL)
 ,(2,0,'local_srid','Valeur du SRID local','2154',NULL)
 ,(3,0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
