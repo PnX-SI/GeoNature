@@ -156,12 +156,16 @@ export class OcctaxFormComponent implements OnInit {
     finalForm.properties.date_max = this._dateParser.format(
       finalForm.properties.date_max
     );
-    // format nom_cite and update date
+    // format nom_cite, update date, set id_releve_occtax and id_occurrence_occtax
     finalForm.properties.t_occurrences_occtax.forEach((occ, index) => {
+      occ.id_releve_occtax = finalForm.properties.id_releve_occtax;
       if (this.fs.taxonsList[index].search_name) {
         occ.nom_cite = this.fs.taxonsList[index].search_name.replace("<i>", "");
         occ.nom_cite = occ.nom_cite.replace("</i>", "");
       }
+      occ.cor_counting_occtax.forEach(count => {
+        count.id_occurrence_occtax = occ.id_occurrence_occtax;
+      });
     });
     // format observers
     if (
@@ -175,7 +179,6 @@ export class OcctaxFormComponent implements OnInit {
     // disable button
     this.disabledAfterPost = true;
     // Post
-    //console.log(JSON.stringify(finalForm));
 
     this._cfs.postOcctax(finalForm).subscribe(
       response => {
