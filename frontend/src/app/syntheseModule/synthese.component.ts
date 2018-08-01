@@ -9,14 +9,12 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
   templateUrl: 'synthese.component.html'
 })
 export class SyntheseComponent implements OnInit {
-  public syntheseDataStore: GeoJSON;
-
   constructor(public searchService: DataService, private _mapListService: MapListService) {}
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(data => {
-      this.syntheseDataStore = data;
+      this._mapListService.geojsonData = data;
       this._mapListService.loadTableData(data);
       this._mapListService.idName = 'id_synthese';
       this.searchService.dataLoaded = true;

@@ -6,7 +6,6 @@ import { DataService } from '../../services/data.service';
 import { window } from 'rxjs/operator/window';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -24,8 +23,7 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     public mapListService: MapListService,
     private _ds: DataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService,
-    private _router: Router
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {

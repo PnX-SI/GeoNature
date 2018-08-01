@@ -17,6 +17,6 @@ export class DataService {
   }
 
   deleteOneSyntheseObservation(id_synthese) {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/synthese/synthese/${id_synthese}`);
+    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/synthese/${id_synthese}`);
   }
 }
