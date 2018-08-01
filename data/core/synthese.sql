@@ -167,6 +167,12 @@ CREATE TABLE cor_area_synthese (
     id_area integer
 );
 
+CREATE TABLE cor_role_synthese
+(
+  id_synthese integer NOT NULL,
+  id_role integer NOT NULL
+);
+
 CREATE TABLE defaults_nomenclatures_value (
     mnemonique_type character varying(50) NOT NULL,
     id_organism integer NOT NULL DEFAULT 0,
@@ -186,6 +192,8 @@ ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY K
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
+
+ALTER TABLE ONLY t_sources ADD CONSTRAINT pk_cor_role_synthese PRIMARY KEY (id_synthese, id_role);
 
 
 ---------------
@@ -217,6 +225,9 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_role_synthese
+    ADD CONSTRAINT fk_gn_synthese_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese) ON UPDATE CASCADE;
 
 --------------
 --CONSTRAINS--
