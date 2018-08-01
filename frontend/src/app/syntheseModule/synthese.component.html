@@ -8,10 +8,10 @@
   <div class="col-sm-12 col-md-9 padding-sm">
     <div class="row row-0">
       <div class="col-sm-12 col-md-6 padding-sm">
-        <pnx-synthese-carte [inputSyntheseData]="syntheseDataStore"></pnx-synthese-carte>
+        <pnx-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-synthese-carte>
       </div>
       <div class="col-sm-12 col-md-6 padding-sm">
-        <pnx-synthese-list [inputSyntheseData]="syntheseDataStore"></pnx-synthese-list>
+        <pnx-synthese-list [inputSyntheseData]="_mapListService.tableData"></pnx-synthese-list>
       </div>
     </div>
   </div>

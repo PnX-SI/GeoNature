@@ -1,10 +1,10 @@
-
-
 @import 'conf/names_variables.scss';
 @import 'custom/custom.scss';
 
-
-html, body, material-app, mat-sidenav-container{
+html,
+body,
+material-app,
+mat-sidenav-container {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -15,20 +15,20 @@ mat-sidenav-content {
   background-color: $solitude;
 }
 
-.mat-toolbar{
+.mat-toolbar {
   min-height: 5vh !important;
 }
-.mat-toolbar-row{
-  height:5vh !important;
+.mat-toolbar-row {
+  height: 5vh !important;
 }
 
 .app-content {
-    //background-color: $solitude;
-    //height: calc(100% - 5vh);
-    padding-top: 5px;
+  //background-color: $solitude;
+  //height: calc(100% - 5vh);
+  padding-top: 5px;
 }
 
-.row-sm{
+.row-sm {
   margin: 0px;
 }
 
@@ -38,19 +38,19 @@ mat-sidenav-content {
 }
 
 .padding-0 {
-   padding-right: 0 !important;
-   padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 .padding-sm {
-   padding-right: 2px !important;
-   padding-left: 2px !important;
+  padding-right: 2px !important;
+  padding-left: 2px !important;
 }
 .padding-md {
-   padding-right: 5px !important;
-   padding-left: 5px !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
 }
 
-.padding-md-all{
+.padding-md-all {
   padding: 5px !important;
 }
 
@@ -62,9 +62,9 @@ md-sidenav-layout /deep/ .md-sidenav-content {
   overflow: hidden;
 }
 
- .mat-autocomplete-panel {
-   position: absolute !important;
- }
+.mat-autocomplete-panel {
+  position: absolute !important;
+}
 
 .toolbar-spacer {
   flex: 1 1 auto;
@@ -78,19 +78,19 @@ md-sidenav-layout /deep/ .md-sidenav-content {
   cursor: pointer;
 }
 
-.btn-white{
+.btn-white {
   background-color: white;
 }
 
 .label-sm {
-  margin-bottom:0px;
+  margin-bottom: 0px;
 }
 
 .red {
-  color:red;
+  color: red;
 }
 
-#map{
+#map {
   height: 100%;
 }
 
@@ -122,11 +122,11 @@ footer {
   list-style-type: none;
 }
 
-.footer-list{
+.footer-list {
   margin-bottom: 2px;
 }
 
-.p-small{
+.p-small {
   margin-bottom: 2px;
 }
 
@@ -134,15 +134,14 @@ footer {
   color: red;
 }
 
-.btn-no-padding{
-  padding: 0px!important;
+.btn-no-padding {
+  padding: 0px !important;
 }
 
 .btn-ghost {
-  border-color: transparent!important;
-  background-color: transparent!important;
+  border-color: transparent !important;
+  background-color: transparent !important;
 }
-
 
 .input-sm {
   height: 1.5rem;
@@ -156,7 +155,7 @@ footer {
   margin-top: 10px;
 }
 
-padding-lg{
+padding-lg {
   padding: 15px;
 }
 
@@ -169,6 +168,6 @@ padding-lg{
   margin: 0 auto;
 }
 
-li.no-bullet{
+li.no-bullet {
   list-style-type: none;
 }
