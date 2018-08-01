@@ -38,26 +38,26 @@ AS $$
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_insert_in_cor_area_synthese()
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
   RETURNS trigger AS
-$BODY$
+  $BODY$
   DECLARE
   id_area_loop integer;
   geom_change boolean;
   BEGIN
-    geom_change = false;
-    IF(TG_OP = 'UPDATE') THEN
-      SELECT INTO geom_change ST_EQUALS(OLD.geom_local, NEW.geom_local);
-    END IF;
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change ST_EQUALS(OLD.geom_local, NEW.geom_local);
+  END IF;
 
-    IF (geom_change) THEN
-      DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
-    END IF;
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
   
   -- intersection avec toutes les areas et écriture dans cor_area_synthese 
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT geom_change )) THEN
         FOR id_area_loop IN (
-        SELECT id_area
+        SELECT a.id_area
         FROM ref_geo.l_areas a
         JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
         WHERE s.id_synthese = NEW.id_synthese
@@ -66,12 +66,11 @@ $BODY$
           EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
         END LOOP;
     END IF;
-
-    END;
+  RETURN NEW;
+  END;
   $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
 
 ------------------------
 --TABLES AND SEQUENCES--
@@ -132,8 +131,8 @@ CREATE TABLE synthese (
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
     id_area integer,
-    date_min date NOT NULL,
-    date_max date NOT NULL,
+    date_min date_min timestamp without time zone NOT NULL,
+    date_max date_min timestamp without time zone NOT NULL,
     id_validator integer,
     validation_comment text,
     observers character varying(255),
@@ -394,6 +393,53 @@ $BODY$
   COST 100;
 
 
+----------------------
+--FUNCTIONS TRIGGERS--
+----------------------
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+  
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+        FOR id_area_loop IN (
+        SELECT a.id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese
+        )
+        LOOP
+          EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
+        END LOOP;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_insert_cor_arera_synthese
+  AFTER INSERT OR UPDATE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+
 ---------
 --VIEWS--
 ---------
@@ -593,7 +639,7 @@ CREATE TRIGGER tri_insert_cor_arera_synthese
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
-  
+
 --------
 --DATA--
 --------
