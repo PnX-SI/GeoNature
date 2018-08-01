@@ -131,8 +131,8 @@ CREATE TABLE synthese (
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
     id_area integer,
-    date_min date_min timestamp without time zone NOT NULL,
-    date_max date_min timestamp without time zone NOT NULL,
+    date_min timestamp without time zone NOT NULL,
+    date_max timestamp without time zone NOT NULL,
     id_validator integer,
     validation_comment text,
     observers character varying(255),
@@ -193,7 +193,7 @@ ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY K
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
 
-ALTER TABLE ONLY t_sources ADD CONSTRAINT pk_cor_role_synthese PRIMARY KEY (id_synthese, id_role);
+ALTER TABLE ONLY cor_role_synthese ADD CONSTRAINT pk_cor_role_synthese PRIMARY KEY (id_synthese, id_role);
 
 
 ---------------
@@ -242,7 +242,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_obs_technique,'METH_OBS')) NOT VALID;
+  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_obs_meth,'METH_OBS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID;
@@ -393,15 +393,18 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
-CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
-  RETURNS trigger AS
-$BODY$
-begin
-        PERFORM REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
-end;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+
+-- A CREUSER : CAUSE A SYNTAXE ERROR 
+
+-- CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+--   RETURNS trigger AS
+-- $BODY$
+-- BEGIN
+--       EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
+-- END;
+-- $BODY$
+--   LANGUAGE plpgsql VOLATILE
+--   COST 100;
 
 
 ----------------------
@@ -598,8 +601,6 @@ LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
 
-DROP VIEW  gn_synthese.v_synthese_decode_nomenclatures;
-
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS 
 SELECT
 s.id_synthese,
@@ -623,7 +624,7 @@ ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('DEE_FLOU', s.cd_no
 ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('STATUT_SOURCE', s.cd_nomenclature_source_status) AS source_status,
 ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('TYP_INF_GEO', s.cd_nomenclature_info_geo_type) AS info_geo_type,
 ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('cd_nomenclature_determination_method', s.cd_nomenclature_determination_method) AS determination_method
-FROM gn_synthese.synthese s
+FROM gn_synthese.synthese s;
 ------------
 --TRIGGERS--
 ------------
@@ -645,7 +646,7 @@ CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
   FOR EACH ROW
   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
-CREATE TRIGGER tri_insert_cor_arera_synthese
+CREATE TRIGGER tri_insert_cor_area_synthese
   AFTER INSERT OR UPDATE
   ON gn_synthese.synthese
   FOR EACH ROW

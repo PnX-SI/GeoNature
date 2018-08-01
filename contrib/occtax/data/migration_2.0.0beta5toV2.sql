@@ -8,10 +8,10 @@ $BODY$
 DECLARE the_array_id_counting integer[];
 
 BEGIN
-SELECT INTO the_array_id_counting array_agg(count.id_counting_occtax)
+SELECT INTO the_array_id_counting array_agg(counting.id_counting_occtax)
 FROM pr_occtax.t_releves_occtax rel
 JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax count ON count.id_occurrence_occtax = occ.id_occurrence_occtax
+JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
 WHERE rel.id_releve_occtax = my_id_releve;
 RETURN the_array_id_counting;
 END;
@@ -19,15 +19,31 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
+CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
+  RETURNS integer AS
+$BODY$
+-- Function which return the id_releve from the id_counting
+DECLARE the_id_releve integer[];
 
-----------------------
---FUNCTIONS TRIGGERS--
-----------------------
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
-  RETURNS trigger AS
+BEGIN
+SELECT INTO the_id_releve rel.id_releve
+FROM pr_occtax.t_releves_occtax rel
+JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
+JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+WHERE counting.cor_counting_occtax = my_id_counting;
+RETURN the_id_releve;
+END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+
+CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
+  RETURNS integer[] AS
   $BODY$
 DECLARE
 
+new_count RECORD;
 occurrence RECORD;
 releve RECORD;
 id_source integer;
@@ -36,17 +52,13 @@ cd_nomenclature_source_status character varying;
 observers RECORD;
 id_municipality integer;
 id_role_loop integer;
-id_area_loop integer;
-last_id_synthese integer;
 
 BEGIN
 
---récupération du dernier id_synthese
-SELECT into last_id_synthese MAX(id_synthese) FROM gn_synthese.synthese;
-last_id_synthese = COALESCE(last_id_synthese,0)+1;
-
+--recupération du counting à partir de son ID
+SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
 -- Récupération de l'occurrence
-SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = NEW.id_occurrence_occtax;
+SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
 
 -- Récupération du relevé
 
@@ -56,7 +68,7 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
 
 -- Récupération du status de validation du counting dans la table t_validation
-SELECT INTO validation * FROM gn_commons.t_validations v WHERE uuid_attached_row = NEW.unique_id_sinp_occtax;
+SELECT INTO validation * FROM gn_commons.t_validations v WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 
 -- Récupération du status_source depuis le JDD
 SELECT INTO cd_nomenclature_source_status ref_nomenclatures.get_cd_nomenclature(d.id_nomenclature_source_status) FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
@@ -129,10 +141,10 @@ last_action
 )
 
 VALUES(
-  NEW.unique_id_sinp_occtax,
+  new_count.unique_id_sinp_occtax,
   releve.unique_id_sinp_grp,
   id_source,
-  NEW.id_counting_occtax,
+  new_count.id_counting_occtax,
   releve.id_dataset,
   --nature de l'objet geo: cd_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - a ajouter dans default_nomenclature du schema occtax
   'In',
@@ -146,10 +158,10 @@ VALUES(
   -- statut de validation récupérer à partir de gn_commons.t_validations
   ref_nomenclatures.get_cd_nomenclature(validation.id_nomenclature_valid_status),
   ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_diffusion_level),
-  ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_life_stage),
-  ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_sex),
-  ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obj_count),
-  ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_type_count),
+  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_life_stage),
+  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_sex),
+  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_obj_count),
+  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_type_count),
   -- cd_nomenclature_sensitivity le trigger qui calcule la sensibilité doit remplir le champs niveau de sensibilité, qui n'est pas présent dans occtax ??
   '0',
   ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_observation_status),
@@ -159,8 +171,8 @@ VALUES(
   -- cd_nomenclature_info_geo_type: type de rattachement = géoréferencement
   '1'	,
   id_municipality,
-  NEW.count_min,
-  NEW.count_max,
+  new_count.count_min,
+  new_count.count_max,
   occurrence.cd_nom,
   occurrence.nom_cite,
   occurrence.meta_v_taxref,
@@ -183,11 +195,46 @@ VALUES(
   'I'
   );
 
+  RETURN observers.observers_id ;       
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+
+
+----------------------
+--FUNCTIONS TRIGGERS--
+----------------------
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
+  RETURNS trigger AS
+  $BODY$
+DECLARE
+  observers integer[];
+  the_id_synthese integer;
+  the_id_releve integer;
+  id_role_loop integer;
+
+BEGIN
+
+  -- recupération de l'id_releve_occtax
+  SELECT INTO the_id_releve pr_occtax.id_releve_from_id_counting(NEW.id_counting_occtax::integer);
+  -- recupération des observateurs
+  SELECT INTO observers array_agg(id_role)
+  FROM pr_occtax.cor_role_releves_occtax
+  WHERE id_releve_occtax = the_id_releve;
+
+  -- insertion en synthese du counting + occ + releve
+  PERFORM pr_occtax.insert_in_synthese(NEW.id_counting_occtax::integer);
+
+  -- recupération de l'id_synthese nouvelement créé
+  SELECT INTO the_id_synthese id_synthese FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
 
 -- INSERTION DANS COR_ROLE_SYNTHESE
-FOREACH id_role_loop IN ARRAY observers.observers_id 
+FOREACH id_role_loop IN ARRAY observers 
   LOOP
-	  EXECUTE format('INSERT INTO gn_synthese.cor_role_synthese(id_synthese, id_role) VALUES ($1, $2);') USING last_id_synthese, id_role_loop;
+    INSERT INTO gn_synthese.cor_role_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
   END LOOP;
 
   RETURN NULL;       
@@ -195,6 +242,7 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.synthese_delete_counting()
