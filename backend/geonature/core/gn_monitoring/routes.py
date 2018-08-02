@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from sqlalchemy.sql import func, text
+from sqlalchemy.sql import func
 from geojson import FeatureCollection
 
 from geonature.utils.env import DB
