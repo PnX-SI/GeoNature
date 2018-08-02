@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Map, Marker } from 'leaflet';
 import { MapService } from '../map.service';
 import { MAP_CONFIG } from '../../../../conf/map.config';
@@ -9,8 +9,10 @@ import { CommonService } from '../../service/common.service';
   selector: 'pnx-marker',
   templateUrl: 'marker.component.html'
 })
-export class MarkerComponent implements OnInit {
+export class MarkerComponent implements OnInit, OnChanges {
   public map: Map;
+  public previousCoord: Array<any>;
+  @Input() coordinates: Array<any>;
   @Input() zoomLevel: number;
   @Output() markerChanged = new EventEmitter<any>();
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
@@ -56,10 +58,13 @@ export class MarkerComponent implements OnInit {
     if (this.mapservice.marker !== undefined) {
       this.mapservice.marker.remove();
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
+      this.previousCoord = [x, y];
       this.markerMoveEvent(this.mapservice.marker);
     } else {
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
+      // zoom to the layer
+      this.map.setView(this.mapservice.marker.getLatLng(), 15);
     }
     // observable if map click
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
@@ -69,6 +74,14 @@ export class MarkerComponent implements OnInit {
     marker.on('moveend', (event: MouseEvent) => {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+        this.mapservice.marker.remove();
+        this.mapservice.marker = this.mapservice.createMarker(
+          this.previousCoord[0],
+          this.previousCoord[1],
+          true
+        );
+        this.map.addLayer(this.mapservice.marker);
+        this.markerMoveEvent(this.mapservice.marker);
       } else {
         this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
       }
@@ -95,5 +108,13 @@ export class MarkerComponent implements OnInit {
 
   markerToGeojson(latLng) {
     return { geometry: { type: 'Point', coordinates: [latLng.lng, latLng.lat] } };
+  }
+
+  ngOnChanges(changes) {
+    if (changes.coordinates && changes.coordinates.currentValue) {
+      const coords = changes.coordinates.currentValue;
+      this.previousCoord = coords;
+      this.generateMarkerAndEvent(coords[0], coords[1]);
+    }
   }
 }
