@@ -10,6 +10,7 @@ export class AreasComponent implements OnInit {
   public areas: any;
   @Input() idType: number; // Areas id_type
   @Input() label: string;
+  @Input() searchBar = false;
   @Input() parentFormControl: FormControl;
   @Input() debounceTime: number;
   constructor(private _dfs: DataFormService) {}
