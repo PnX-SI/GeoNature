@@ -4,6 +4,7 @@ import { DataService } from '../services/data.service';
 import { FormService } from '../services/form.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AppConfig } from '@geonature_config/app.config';
+import { MapService } from '@geonature_common/map/map.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -174,7 +175,8 @@ export class SyntheseSearchComponent implements OnInit {
     private _fb: FormBuilder,
     public dataService: DataService,
     public formService: FormService,
-    public ngbModal: NgbModal
+    public ngbModal: NgbModal,
+    public mapService: MapService
   ) {}
 
   ngOnInit() {}
@@ -201,8 +203,15 @@ export class SyntheseSearchComponent implements OnInit {
         }
       }
     }
-    console.log(updatedParams);
     this.searchClicked.emit(updatedParams);
+  }
+
+  refreshFilters() {
+    this.formService.taxonsList = [];
+    this.formService.searchForm.reset();
+    // remove layers draw in the map
+    console.log(this.mapService.releveFeatureGroup);
+    this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
   }
 
   openModalCol(e, modalName) {
