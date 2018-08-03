@@ -17,6 +17,13 @@ class TestGnMeta:
         response = self.client.get(url_for('gn_meta.get_datasets_list'))
         assert response.status_code == 200
 
+    def test_one_dataset(self):
+        """
+        API to get one dataset from id_dataset
+        """
+        response = self.client.get(url_for('gn_meta.get_dataset', id_dataset=1))
+        assert response.status_code == 200
+
     def test_dataset_cruved_3(self):
         """
         API to get datasets with CRUVED authorization
