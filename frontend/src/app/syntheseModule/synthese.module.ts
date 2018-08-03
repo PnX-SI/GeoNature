@@ -9,6 +9,7 @@ import { SyntheseCarteComponent } from './synthese-results/synthese-carte/synthe
 import { SyntheseSearchComponent } from './synthese-search/synthese-search.component';
 import { DataService } from './services/data.service';
 import { FormService } from './services/form.service';
+import { MapService } from '@geonature_common/map/map.service';
 
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
@@ -20,6 +21,6 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     SyntheseCarteComponent,
     SyntheseSearchComponent
   ],
-  providers: [DataService, FormService]
+  providers: [DataService, FormService, MapService]
 })
 export class SyntheseModule {}

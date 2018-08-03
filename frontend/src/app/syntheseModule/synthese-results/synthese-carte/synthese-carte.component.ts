@@ -9,7 +9,7 @@ import { FormService } from '../../services/form.service';
   selector: 'pnx-synthese-carte',
   templateUrl: 'synthese-carte.component.html',
   styleUrls: ['synthese-carte.component.scss'],
-  providers: [MapService]
+  providers: []
 })
 export class SyntheseCarteComponent implements OnInit, AfterViewInit {
   public leafletDrawOptions = leafletDrawOption;
