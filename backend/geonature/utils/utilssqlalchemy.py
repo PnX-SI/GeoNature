@@ -18,7 +18,7 @@ from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsshapefile import(
+from geonature.utils.utilsgeometry import(
     create_shapes, create_shapes_generic
 )
 
@@ -73,6 +73,7 @@ class GenericTable:
         Classe permettant de créer à la volée un mapping
             d'une vue avec la base de données par rétroingénierie
     """
+
     def __init__(self, tableName, schemaName, geometry_field, srid=None):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
@@ -86,7 +87,6 @@ class GenericTable:
 
         # Mise en place d'un mapping des colonnes en vue d'une sérialisation
         self.serialize_columns, self.db_cols = self.get_serialized_columns()
-
 
     def get_serialized_columns(self):
         """
@@ -161,6 +161,7 @@ class GenericQuery:
     '''
         Classe permettant de manipuler des objets GenericTable
     '''
+
     def __init__(
             self,
             db_session,
@@ -275,6 +276,7 @@ class GenericQuery:
             'items': results
         }
 
+
 def serializeQuery(data, columnDef):
     rows = [
         {
@@ -283,6 +285,7 @@ def serializeQuery(data, columnDef):
         } for row in data
     ]
     return rows
+
 
 def serializeQueryOneResult(row, column_def):
     row = {
