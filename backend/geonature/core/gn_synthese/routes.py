@@ -127,26 +127,26 @@ def get_synthese(info_role):
     if 'date_max' in filters:
         q = q.filter(VSyntheseForWebAppBis.date_min <= filters.pop('date_max'))
 
-    if 'areas' in filters:
-        filters.pop('areas')
-
     if 'id_acquisition_frameworks' in filters:
         q = (q.join(TDatasets, VSyntheseForWebAppBis.id_dataset == TDatasets.id_dataset).join(
             TAcquisitionFramework, TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework))
 
         q = q.filter(TAcquisitionFramework.id_acquisition_framework.in_(filters.pop('id_acquisition_frameworks')))
 
+    if 'municipalities' in filters:
+        q = q.filter(VSyntheseForWebAppBis.id_municipality.in_([com['insee_com'] for com in filters['municipalities']]))
+        filters.pop('municipalities')
+
     # generic filters
-    join_on_synthese = False
     for colname, value in filters.items():
-        # join on Syntese only if cd_nomenclature filters
-        if 'cd_nomenclature' in colname:
-            if not join_on_synthese:
-                q = q.join(Synthese, Synthese.id_synthese == VSyntheseForWebAppBis.id_synthese)
-                # table_columns = table_columns + Synthese.__table__.columns
-                join_on_synthese = True
-            col = getattr(Synthese.__table__.columns, colname)
-            q = q.filter(col.in_(value))
+        if colname.startswith('area'):
+            q = q.join(
+                CorAreaSynthese,
+                CorAreaSynthese.id_synthese == VSyntheseForWebAppBis.id_synthese
+            )
+            q = q.filter(CorAreaSynthese.id_area.in_(
+                [a['id_area'] for a in value]
+            ))
         else:
             col = getattr(VSyntheseForWebAppBis.__table__.columns, colname)
             q = q.filter(col.in_(value))
@@ -163,7 +163,6 @@ def get_synthese(info_role):
     features = []
     for d in data:
         feature = d.get_geofeature()
-        print(feature)
         cruved = d.get_synthese_cruved(info_role, user_cruved, user_datasets)
         feature['properties']['cruved'] = cruved
         features.append(feature)

@@ -146,7 +146,7 @@ export class DataFormService {
     let params: HttpParams = new HttpParams();
 
     if (id_type) {
-      params = params.set('id_area', id_type);
+      params = params.set('id_type', id_type);
     }
 
     if (area_name) {
