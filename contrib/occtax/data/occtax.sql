@@ -619,10 +619,12 @@ BEGIN
   SELECT INTO the_id_synthese id_synthese FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
 
 -- INSERTION DANS COR_ROLE_SYNTHESE
-FOREACH id_role_loop IN ARRAY observers 
-  LOOP
-    INSERT INTO gn_synthese.cor_role_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
-  END LOOP;
+IF observers IS NOT NULL THEN
+  FOREACH id_role_loop IN ARRAY observers 
+    LOOP
+      INSERT INTO gn_synthese.cor_role_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
+    END LOOP;
+  END IF;
 
   RETURN NULL;       
 END;
@@ -655,12 +657,18 @@ RETURNS trigger AS
 $BODY$
 DECLARE
   the_id_source integer;
+  the_id_synthese integer;
   nb_counting integer;
 BEGIN
   -- recupération de l'id_source
   SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
-  -- suppression dans la synthese
-   DELETE FROM gn_synthese.synthese WHERE id_source = the_id_source AND entity_source_pk_value = to_char(OLD.id_counting_occtax, 'FM9999');
+  SELECT INTO the_id_synthese id_synthese 
+  FROM gn_synthese.synthese 
+  WHERE id_source = the_id_source AND entity_source_pk_value = to_char(OLD.id_counting_occtax, 'FM9999');
+  -- suppression de l'obs dans le schéma gn_synthese
+  DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
+  DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = the_id_synthese;
+  DELETE FROM gn_synthese.synthese WHERE id_synthese = the_id_synthese;
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
   SELECT INTO nb_counting count(*) FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax;
   IF nb_counting < 1 THEN
@@ -750,6 +758,7 @@ RETURNS trigger AS
 $BODY$
 DECLARE
   the_id_source integer;
+  the_id_synthese integer;
   nb_occ integer;
   nb_counting integer;
   counting RECORD;
@@ -758,8 +767,13 @@ BEGIN
   SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
   -- suppression dans la synthese
   FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax LOOP
-    DELETE FROM gn_synthese.synthese WHERE id_source = the_id_source AND entity_source_pk_value = OLD.id_counting_occtax::text;
-  END LOOP;
+    SELECT INTO the_id_synthese id_synthese
+    FROM gn_synthese.id_synthese
+    WHERE id_source = the_id_source AND entity_source_pk_value = to_char(counting.id_counting_occtax, 'FM9999');
+     -- suppression de l'obs dans le schéma gn_synthese
+    DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
+    DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = the_id_synthese;
+    DELETE FROM gn_synthese.synthese WHERE id_synthese = the_id_synthese;  END LOOP;
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
   SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
   IF nb_counting < 1 THEN
@@ -814,13 +828,20 @@ RETURNS trigger AS
 $BODY$
 DECLARE
   the_id_source integer;
+  the_id_synthese integer;
   occurrence RECORD;
   counting RECORD;
 BEGIN
   SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
     FOR occurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = OLD.id_releve_occtax LOOP
       FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = occurrence.id_occurrence_occtax LOOP
-        DELETE FROM gn_synthese.synthese WHERE id_source = the_id_source AND entity_source_pk_value = counting.id_counting_occtax::text;
+        SELECT INTO the_id_synthese id_synthese
+        FROM gn_synthese.id_synthese
+        WHERE id_source = the_id_source AND entity_source_pk_value = to_char(counting.id_counting_occtax, 'FM9999');
+     -- suppression de l'obs dans le schéma gn_synthese
+        DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
+        DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = the_id_synthese;
+        DELETE FROM gn_synthese.synthese WHERE id_synthese = the_id_synthese;
       END LOOP;
     END LOOP;
   RETURN OLD;
@@ -881,18 +902,19 @@ BEGIN
   SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_id_countings pr_occtax.get_id_counting_from_id_releve(NEW.id_releve_occtax::integer);
-
-  FOREACH the_id_counting IN ARRAY the_id_countings
-  LOOP
-    SELECT INTO the_id_synthese id_synthese
-    FROM gn_synthese.synthese
-    WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
-    -- update dans cor_role_synthese pour chaque counting
-    UPDATE gn_synthese.cor_role_synthese SET
-      id_synthese = the_id_synthese,
-      id_role = NEW.id_role
-      WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
-  END LOOP;
+  IF the_id_countings IS NOT NULL THEN
+    FOREACH the_id_counting IN ARRAY the_id_countings
+    LOOP
+      SELECT INTO the_id_synthese id_synthese
+      FROM gn_synthese.synthese
+      WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
+      -- update dans cor_role_synthese pour chaque counting
+      UPDATE gn_synthese.cor_role_synthese SET
+        id_synthese = the_id_synthese,
+        id_role = NEW.id_role
+        WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
+    END LOOP;
+  END IF;
 RETURN NULL;
 END;
 $BODY$
@@ -914,15 +936,17 @@ BEGIN
   SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_id_countings pr_occtax.get_id_counting_from_id_releve(OLD.id_releve_occtax::integer);
+  IF the_id_countings IS NOT NULL THEN
   FOREACH the_id_counting IN ARRAY the_id_countings
-  LOOP
-    SELECT INTO the_id_synthese id_synthese
-    FROM gn_synthese.synthese
-    WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
-    -- suppression dans cor_role_synthese pour chaque counting
-    DELETE FROM gn_synthese.cor_role_synthese 
-    WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
-  END LOOP;
+    LOOP
+      SELECT INTO the_id_synthese id_synthese
+      FROM gn_synthese.synthese
+      WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
+      -- suppression dans cor_role_synthese pour chaque counting
+      DELETE FROM gn_synthese.cor_role_synthese 
+      WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
+    END LOOP;
+  END IF;
 RETURN NULL;
 END;
 
