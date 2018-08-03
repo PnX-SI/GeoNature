@@ -13,6 +13,7 @@ from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
 from geonature.utils.env import DB
+from geonature.core.gn_meta.models import TDatasets
 from geonature.core.ref_geo.models import LiMunicipalities
 from pypnusershub.db.tools import InsufficientRightsError
 
@@ -110,6 +111,14 @@ class TSources(DB.Model):
 
 
 @serializable
+class CorRoleSynthese(DB.Model):
+    __tablename__ = 'cor_role_synthese'
+    __table_args__ = {'schema': 'gn_synthese'}
+    id_synthese = DB.Column(DB.Integer, ForeignKey('gn_synthese.synthese.id_synthese'), primary_key=True)
+    id_role = DB.Column(DB.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
+
+
+@serializable
 class VSyntheseDecodeNomenclatures(DB.Model):
     __tablename__ = 'v_synthese_decode_nomenclatures'
     __table_args__ = {'schema': 'gn_synthese'}
@@ -132,6 +141,15 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     observation_status = DB.Column(DB.Unicode)
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
+
+
+@serializable
+class Taxref(DB.Model):
+    __tablename__ = 'taxref'
+    __table_args__ = {'schema': 'taxonomie'}
+    cd_nom = DB.Column(DB.Integer, primary_key=True)
+    cd_ref = DB.Column(DB.Integer)
+    nom_valide = DB.Column(DB.Unicode)
 
 
 @serializable
@@ -191,18 +209,8 @@ class Synthese(SyntheseCruved):
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
 
-    # decoded_nomenclatures = relationship(
-    #     "VSyntheseDecodeNomenclatures",
-    #     lazy='joined'
-    # )
-
-    # municipalities = relationship(
-    #     "LiMunicipalities",
-    #     lazy='joined'
-    # )
-
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature('the_geom_4326', 'id_synthese', recursif)
+    def get_geofeature(self, recursif=True, columns=None):
+        return self.as_geofeature('the_geom_4326', 'id_synthese', recursif, columns=columns)
 
 
 @serializable
@@ -211,13 +219,6 @@ class CorAreaSynthese(DB.Model):
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     id_area = DB.Column(DB.Integer)
-
-
-class CorRoleSynthese(DB.Model):
-    __tablename__ = 'cor_role_synthese'
-    __table_args__ = {'schema': 'gn_synthese'}
-    id_synthese = DB.Column(DB.Integer, ForeignKey('gn_synthese.synthese.id_synthese'), primary_key=True)
-    id_role = DB.Column(DB.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
 
 
 @serializable
