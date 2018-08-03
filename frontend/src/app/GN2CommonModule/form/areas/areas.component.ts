@@ -16,6 +16,7 @@ export class AreasComponent implements OnInit {
   constructor(private _dfs: DataFormService) {}
 
   ngOnInit() {
+    console.log('areaaaaaaaaaaaas', this.idType);
     this._dfs.getAreas(this.idType).subscribe(data => (this.areas = data));
   }
 
