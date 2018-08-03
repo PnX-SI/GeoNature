@@ -114,8 +114,19 @@ def get_synthese(info_role):
         'observers' param (string) is filtered with ilike clause
     """
     filters = dict(request.get_json())
-    result_limit = filters.pop('limit', 100)
-    q = DB.session.query(VSyntheseForWebAppBis)
+    result_limit = filters.pop('limit', 10000)
+    from .models import Taxref, TSources, CorRoleSynthese
+
+    q = (
+        DB.session.query(Synthese, Taxref, TSources, TDatasets)
+        .join(
+            Taxref, Taxref.cd_nom == Synthese.cd_nom
+        ).join(
+            TSources, TSources.id_source == Synthese.id_source
+        ).join(
+            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
+        )
+    )
 
     user_cruved = get_or_fetch_user_cruved(
         session=session,
@@ -132,25 +143,32 @@ def get_synthese(info_role):
         nom_role='Administrateur',
         prenom_role='test'
     )
-    q = filter_query_with_cruved(q, user)
+
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    q = filter_query_with_cruved(q, user, allowed_datasets)
 
     if 'observers' in filters:
-        q = q.filter(VSyntheseForWebAppBis.observers.ilike('%'+filters.pop('observers')+'%'))
+        q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
 
     if 'date_min' in filters:
-        q = q.filter(VSyntheseForWebAppBis.date_min >= filters.pop('date_min'))
+        q = q.filter(Synthese.date_min >= filters.pop('date_min'))
 
     if 'date_max' in filters:
-        q = q.filter(VSyntheseForWebAppBis.date_min <= filters.pop('date_max'))
+        q = q.filter(Synthese.date_min <= filters.pop('date_max'))
 
     if 'id_acquisition_frameworks' in filters:
-        q = (q.join(TDatasets, VSyntheseForWebAppBis.id_dataset == TDatasets.id_dataset).join(
-            TAcquisitionFramework, TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework))
+        # print(dir(q))
+        joined_tables = [mapper.class_ for mapper in q._join_entities]
+        print(joined_tables)
+        q = q.join(
+            TAcquisitionFramework,
+            TDatasets.id_dataset == TAcquisitionFramework.id_acquisition_framework
+        )
 
         q = q.filter(TAcquisitionFramework.id_acquisition_framework.in_(filters.pop('id_acquisition_frameworks')))
 
     if 'municipalities' in filters:
-        q = q.filter(VSyntheseForWebAppBis.id_municipality.in_([com['insee_com'] for com in filters['municipalities']]))
+        q = q.filter(Synthese.id_municipality.in_([com['insee_com'] for com in filters['municipalities']]))
         filters.pop('municipalities')
 
     if 'geoIntersection' in filters:
@@ -161,7 +179,7 @@ def get_synthese(info_role):
             radius = filters['geoIntersection']['properties']['radius']
             geom_wkt = circle_from_point(geom_wkt, radius)
         geom_wkb = from_shape(geom_wkt, srid=4326)
-        q = q.filter(VSyntheseForWebAppBis.the_geom_4326.ST_Intersects(geom_wkb))
+        q = q.filter(Synthese.the_geom_4326.ST_Intersects(geom_wkb))
         filters.pop('geoIntersection')
         # print(q)
 
@@ -170,29 +188,32 @@ def get_synthese(info_role):
         if colname.startswith('area'):
             q = q.join(
                 CorAreaSynthese,
-                CorAreaSynthese.id_synthese == VSyntheseForWebAppBis.id_synthese
+                CorAreaSynthese.id_synthese == Synthese.id_synthese
             )
             q = q.filter(CorAreaSynthese.id_area.in_(
                 [a['id_area'] for a in value]
             ))
         else:
-            col = getattr(VSyntheseForWebAppBis.__table__.columns, colname)
+            col = getattr(Synthese.__table__.columns, colname)
             q = q.filter(col.in_(value))
 
     q = q.order_by(
-        VSyntheseForWebAppBis.date_min.desc()
+        Synthese.date_min.desc()
     )
-    data = q.limit(
-        result_limit
-    )
+    print(q)
+    data = q.limit(result_limit)
 
-    user_datasets = TDatasets.get_user_datasets(info_role)
+    # print(q.count())
+    # print(q)
 
     features = []
     for d in data:
-        feature = d.get_geofeature()
-        cruved = d.get_synthese_cruved(info_role, user_cruved, user_datasets)
+        feature = d[0].get_geofeature(columns=['data_min', 'observers'])
+        cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
         feature['properties']['cruved'] = cruved
+        feature['properties']['taxon'] = d[1].as_dict()
+        feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source'])
+        feature['properties']['dataset'] = d[3].as_dict(columns=['dataset_name'])
         features.append(feature)
     return FeatureCollection(features)
 
