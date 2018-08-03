@@ -50,12 +50,12 @@
 
   <fieldset>
     <legend> Ou ?</legend>
-    <pnx-municipalities label="Commubes" [parentFormControl]="formService.searchForm.controls.municipalities"></pnx-municipalities>
+    <pnx-municipalities label="Communes" [searchBar]="true" [parentFormControl]="formService.searchForm.controls.municipalities"></pnx-municipalities>
 
     <div *ngIf="formService.formBuilded">
       <div *ngFor="let area of AppConfig.SYNTHESE.AREA_FILTERS; let i = index;">
         {{areas}}
-        <pnx-areas [parentFormControl]="area.control" [label]="area.label" [idType]="area.id_type">
+        <pnx-areas [searchBar]="true" [parentFormControl]="area.control" [label]="area.label" [idType]="area.id_type">
         </pnx-areas>
       </div>
     </div>
