@@ -16,8 +16,8 @@ def filter_query_with_cruved(q, user):
         print('form repo')
         print(user.nom_role)
         print(user.prenom_role)
-        user_fullname1 = user.nom_role + ' ' + user.prenom_role
-        user_fullname2 = user.prenom_role + ' ' + user.nom_role
+        user_fullname1 = user.nom_role + ' ' + user.prenom_role + '%'
+        user_fullname2 = user.prenom_role + ' ' + user.nom_role + '%'
         ors_filter = [
             VSyntheseForWebAppBis.observers.ilike(user_fullname1),
             VSyntheseForWebAppBis.observers.ilike(user_fullname2),
