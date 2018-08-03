@@ -23,6 +23,7 @@ from geonature.core.gn_synthese.models import (
     VSyntheseDecodeNomenclatures,
     VSyntheseForWebAppBis
 )
+from geonature.core.gn_synthese.repositories import filter_query_with_cruved
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -121,6 +122,17 @@ def get_synthese(info_role):
         id_role=info_role.id_role,
         id_application_parent=14
     )
+    from geonature.core.users.models import TRoles, UserRigth
+    print(info_role.nom_role)
+    user = UserRigth(
+        id_role=info_role.id_role,
+        tag_object_code='2',
+        tag_action_code="R",
+        id_organisme=info_role.id_organisme,
+        nom_role='Administrateur',
+        prenom_role='test'
+    )
+    q = filter_query_with_cruved(q, user)
 
     if 'observers' in filters:
         q = q.filter(VSyntheseForWebAppBis.observers.ilike('%'+filters.pop('observers')+'%'))

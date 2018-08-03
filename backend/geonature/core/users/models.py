@@ -25,6 +25,7 @@ class BibOrganismes(DB.Model):
     fax_organisme = DB.Column(DB.Unicode)
     email_organisme = DB.Column(DB.Unicode)
 
+
 class TRoles (DB.Model):
     __tablename__ = 't_roles'
     __table_args__ = {'schema': 'utilisateurs'}
@@ -60,6 +61,7 @@ class CorRole(DB.Model):
         self.id_role_groupe = id_group
         self.id_role_utilisateur = id_role
 
+
 @serializable
 class TApplications(DB.Model):
     __tablename__ = 't_applications'
@@ -77,10 +79,15 @@ class UserRigth():
         id_organisme=None,
         tag_action_code=None,
         tag_object_code=None,
-        id_application=None
+        id_application=None,
+        nom_role=None,
+        prenom_role=None
+
     ):
         self.id_role = id_role
         self.id_organisme = id_organisme
         self.tag_action_code = tag_action_code
         self.tag_object_code = tag_object_code
         self.id_application = id_application
+        self.nom_role = nom_role
+        self.prenom_role = prenom_role

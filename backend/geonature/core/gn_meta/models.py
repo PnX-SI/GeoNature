@@ -128,7 +128,7 @@ class TDatasets(DB.Model):
 
     @staticmethod
     def get_user_datasets(user):
-        """get the dataset(s) where the user is actor
+        """get the dataset(s) where the user is actor (himself or with its organism)
             param: user from TRole model
             return: a list of id_dataset """
         q = DB.session.query(
