@@ -41,6 +41,7 @@ werkzeug==0.14.1
 xmltodict==0.11.0
 pyproj==1.9.5.1
 pyshp==1.2.12
+geog==0.0.2
 #pygdal==2.1.2.3
 # sur ubuntu 16 il faut installer la version 1.11.3.3
 pygdal>=1.10.1,<1.10.1.9999
