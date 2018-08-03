@@ -6,9 +6,13 @@ from sqlalchemy import distinct, func
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
 from geojson import FeatureCollection
+from shapely.geometry import asShape
+from geoalchemy2.shape import from_shape
+
 
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.utilsgeometry import circle_from_point
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -136,6 +140,18 @@ def get_synthese(info_role):
     if 'municipalities' in filters:
         q = q.filter(VSyntheseForWebAppBis.id_municipality.in_([com['insee_com'] for com in filters['municipalities']]))
         filters.pop('municipalities')
+
+    if 'geoIntersection' in filters:
+        # Insersect with the geom send from the map
+        geom_wkt = asShape(filters['geoIntersection']['geometry'])
+        # if the geom is a circle
+        if 'radius' in filters['geoIntersection']['properties']:
+            radius = filters['geoIntersection']['properties']['radius']
+            geom_wkt = circle_from_point(geom_wkt, radius)
+        geom_wkb = from_shape(geom_wkt, srid=4326)
+        q = q.filter(VSyntheseForWebAppBis.the_geom_4326.ST_Intersects(geom_wkb))
+        filters.pop('geoIntersection')
+        # print(q)
 
     # generic filters
     for colname, value in filters.items():
