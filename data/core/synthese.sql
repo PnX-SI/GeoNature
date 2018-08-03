@@ -569,8 +569,8 @@ SELECT
   s.entity_source_pk_value,
   so.url_source,
   d.dataset_name,
-  m.insee_com, --TODO attention changer le JOIN en prod
-  m.nom_com,
+  s.id_municipality,
+  s.id_dataset,
   s.count_min,
   s.count_max,
   s.cd_nom,
@@ -587,17 +587,13 @@ SELECT
   s.the_geom_4326,
   s.date_min,
   s.date_max,
-  v.prenom_role || ' ' || v.nom_role AS validateur,
   s.validation_comment,
-  s.meta_validation_date AS validation_date,
   s.observers,
   s.determiner,
   s.comments
 FROM gn_synthese.synthese s
 JOIN gn_synthese.t_sources so ON so.id_source = s.id_source
 JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-LEFT JOIN ref_geo.li_municipalities m ON m.insee_com = s.id_municipality --TODO attention changer le JOIN en prod
-LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
 
