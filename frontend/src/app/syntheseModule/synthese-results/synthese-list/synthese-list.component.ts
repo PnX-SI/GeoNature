@@ -49,6 +49,7 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     this.rowNumber = Math.trunc(h / 62);
   }
 
+  // update the number of row per page when resize the window
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.rowNumber = Math.trunc(event.target.innerHeight / 62);
@@ -61,15 +62,26 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   }
 
   toggleExpandRow(row) {
-    if (this.previousRow) {
+    // if click twice on same row
+    if (this.previousRow && this.previousRow === row) {
+      console.log('twice');
       this.table.rowDetail.toggleExpandRow(this.previousRow);
+      this.previousRow = null;
+      // if click on new row when expanded already activated
+    } else if (this.previousRow) {
+      console.log('new');
+      this.table.rowDetail.toggleExpandRow(this.previousRow);
+      this.table.rowDetail.toggleExpandRow(row);
+      this.previousRow = row;
+      // if its first time
+    } else {
+      console.log('first');
+      this.table.rowDetail.toggleExpandRow(row);
+      this.previousRow = row;
     }
-    this.table.rowDetail.toggleExpandRow(row);
-    this.previousRow = row;
   }
 
   openDeleteModal(event, modal, iElement, row) {
-    console.log('LAAAAAAAAA/*  */');
     this.mapListService.selectedRow = [];
     this.mapListService.selectedRow.push(row);
     this.ngbModal.open(modal);
@@ -90,6 +102,7 @@ export class SyntheseListComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('success', 'Synthese.DeleteSuccess');
       },
       error => {
+        this._ds.dataLoaded = true;
         if (error.status === 403) {
           this._commonService.translateToaster('error', 'NotAllowed');
         } else {
