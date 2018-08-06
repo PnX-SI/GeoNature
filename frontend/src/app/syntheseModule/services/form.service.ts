@@ -24,7 +24,6 @@ export class SyntheseFormService {
       date_max: null,
       municipalities: null,
       geoIntersection: null,
-      export_format: 'geojson',
       radius: null
     });
 

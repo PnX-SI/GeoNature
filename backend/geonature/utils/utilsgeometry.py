@@ -114,9 +114,7 @@ def shapeseralizable(cls):
             data = []
 
         file_name = file_name or datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
-
-        # TODO ? Pas compris ce que représentait co
-        co(
+        create_shapes(
             cls.__mapper__.c,
             columns, data, dir_path,
             file_name, geom_col, srid

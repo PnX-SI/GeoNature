@@ -9,20 +9,20 @@ export class DataService {
   public dataLoaded: Boolean = false;
   constructor(private _api: HttpClient) {}
 
-  getSyntheseData(params) {
-    console.log(params);
+  buildQueryUrl(params): HttpParams {
     let queryUrl = new HttpParams();
     for (let key in params) {
       if (isArray(params[key])) {
         queryUrl = queryUrl.append(key, params[key]);
-        console.log(params[key], 'laaaaaaaaaaa');
       } else {
-        console.log(params[key]);
         queryUrl = queryUrl.set(key, params[key]);
       }
     }
+    return queryUrl;
+  }
+  getSyntheseData(params) {
     return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese`, {
-      params: queryUrl
+      params: this.buildQueryUrl(params)
     });
   }
 
@@ -35,6 +35,8 @@ export class DataService {
   }
 
   exportData(params) {
-    return this._api.post<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/export`, params);
+    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/export`, {
+      params: this.buildQueryUrl(params)
+    });
   }
 }
