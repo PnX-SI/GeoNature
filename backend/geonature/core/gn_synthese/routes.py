@@ -133,7 +133,7 @@ def get_synthese(info_role):
         id_role=info_role.id_role,
         id_application_parent=14
     )
-    from geonature.core.users.models import TRoles, UserRigth
+    from geonature.core.users.models import UserRigth
     print(info_role.nom_role)
     user = UserRigth(
         id_role=info_role.id_role,
@@ -200,15 +200,12 @@ def get_synthese(info_role):
     q = q.order_by(
         Synthese.date_min.desc()
     )
-    print(q)
-    data = q.limit(result_limit)
 
-    # print(q.count())
-    # print(q)
+    data = q.limit(result_limit)
 
     features = []
     for d in data:
-        feature = d[0].get_geofeature(columns=['data_min', 'observers'])
+        feature = d[0].get_geofeature(columns=['date_min', 'observers', 'id_synthese'])
         cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
         feature['properties']['cruved'] = cruved
         feature['properties']['taxon'] = d[1].as_dict()
