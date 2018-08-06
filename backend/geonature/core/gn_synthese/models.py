@@ -1,7 +1,6 @@
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
-# from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
 
@@ -12,6 +11,7 @@ from pypnnomenclature.models import TNomenclatures
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
+from geonature.utils.utilsgeometry import shapeseralizable
 from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.ref_geo.models import LiMunicipalities
@@ -152,8 +152,13 @@ class Taxref(DB.Model):
     nom_valide = DB.Column(DB.Unicode)
 
 
+class GeometryUpdate(Geometry):
+    as_binary = ""
+
+
 @serializable
 @geoserializable
+@shapeseralizable
 class Synthese(SyntheseCruved):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}

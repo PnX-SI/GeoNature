@@ -1,18 +1,16 @@
 import json
 import logging
-from flask import Blueprint, request, session, current_app
+import datetime
+from flask import Blueprint, request, session, current_app, send_from_directory, render_template
 
 from sqlalchemy import distinct, func
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
 from geojson import FeatureCollection
-from shapely.geometry import asShape
-from geoalchemy2.shape import from_shape
 
-
-from geonature.utils.env import DB
+from geonature.utils import filemanager
+from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsgeometry import circle_from_point
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -23,11 +21,11 @@ from geonature.core.gn_synthese.models import (
     VSyntheseDecodeNomenclatures,
     VSyntheseForWebAppBis
 )
-from geonature.core.gn_synthese.repositories import filter_query_with_cruved
+from geonature.core.gn_synthese.repositories import get_all_synthese
 
 from geonature.core.gn_meta.models import (
     TDatasets,
-    TAcquisitionFramework
+
 )
 from geonature.core.ref_geo.models import (
     LiMunicipalities
@@ -38,9 +36,15 @@ from pypnusershub.db.tools import (
     get_or_fetch_user_cruved,
     cruved_for_user_in_app
 )
-from geonature.utils.utilssqlalchemy import json_resp, testDataType
+from geonature.utils.utilssqlalchemy import (
+    to_csv_resp, to_json_resp,
+    json_resp, testDataType
+)
+from geonature.utils.utilsgeometry import to_shape
 from geonature.core.gn_meta import mtd_utils
 
+# debug
+#current_app.config['SQLALCHEMY_ECHO'] = True
 
 routes = Blueprint('gn_synthese', __name__)
 
@@ -104,7 +108,7 @@ def getDefaultsNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
-@routes.route('', methods=['POST'])
+@routes.route('', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
 def get_synthese(info_role):
@@ -113,102 +117,20 @@ def get_synthese(info_role):
         Params must have same synthese fields names
         'observers' param (string) is filtered with ilike clause
     """
-    filters = dict(request.get_json())
-    result_limit = filters.pop('limit', 10000)
-    from .models import Taxref, TSources, CorRoleSynthese
 
-    q = (
-        DB.session.query(Synthese, Taxref, TSources, TDatasets)
-        .join(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        ).join(
-            TSources, TSources.id_source == Synthese.id_source
-        ).join(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        )
-    )
+    filters = dict(request.args)
 
-    user_cruved = get_or_fetch_user_cruved(
-        session=session,
-        id_role=info_role.id_role,
-        id_application_parent=14
-    )
-    from geonature.core.users.models import UserRigth
-    print(info_role.nom_role)
-    user = UserRigth(
-        id_role=info_role.id_role,
-        tag_object_code='2',
-        tag_action_code="R",
-        id_organisme=info_role.id_organisme,
-        nom_role='Administrateur',
-        prenom_role='test'
-    )
+    if 'export_format' in filters:
+        export_format = filters.pop('export_format')
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = filter_query_with_cruved(q, user, allowed_datasets)
-
-    if 'observers' in filters:
-        q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
-
-    if 'date_min' in filters:
-        q = q.filter(Synthese.date_min >= filters.pop('date_min'))
-
-    if 'date_max' in filters:
-        q = q.filter(Synthese.date_min <= filters.pop('date_max'))
-
-    if 'id_acquisition_frameworks' in filters:
-        # print(dir(q))
-        joined_tables = [mapper.class_ for mapper in q._join_entities]
-        print(joined_tables)
-        q = q.join(
-            TAcquisitionFramework,
-            TDatasets.id_dataset == TAcquisitionFramework.id_acquisition_framework
-        )
-
-        q = q.filter(TAcquisitionFramework.id_acquisition_framework.in_(filters.pop('id_acquisition_frameworks')))
-
-    if 'municipalities' in filters:
-        q = q.filter(Synthese.id_municipality.in_([com['insee_com'] for com in filters['municipalities']]))
-        filters.pop('municipalities')
-
-    if 'geoIntersection' in filters:
-        # Insersect with the geom send from the map
-        geom_wkt = asShape(filters['geoIntersection']['geometry'])
-        # if the geom is a circle
-        if 'radius' in filters['geoIntersection']['properties']:
-            radius = filters['geoIntersection']['properties']['radius']
-            geom_wkt = circle_from_point(geom_wkt, radius)
-        geom_wkb = from_shape(geom_wkt, srid=4326)
-        q = q.filter(Synthese.the_geom_4326.ST_Intersects(geom_wkb))
-        filters.pop('geoIntersection')
-        # print(q)
-
-    # generic filters
-    for colname, value in filters.items():
-        if colname.startswith('area'):
-            q = q.join(
-                CorAreaSynthese,
-                CorAreaSynthese.id_synthese == Synthese.id_synthese
-            )
-            q = q.filter(CorAreaSynthese.id_area.in_(
-                [a['id_area'] for a in value]
-            ))
-        else:
-            col = getattr(Synthese.__table__.columns, colname)
-            q = q.filter(col.in_(value))
-
-    q = q.order_by(
-        Synthese.date_min.desc()
-    )
-
-    data = q.limit(result_limit)
+    data = get_all_synthese(filters, info_role, allowed_datasets)
 
     features = []
     for d in data:
         feature = d[0].get_geofeature(columns=['date_min', 'observers', 'id_synthese'])
-        cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
-        feature['properties']['cruved'] = cruved
-        feature['properties']['taxon'] = d[1].as_dict()
+        # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
+        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide'])
         feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source'])
         feature['properties']['dataset'] = d[3].as_dict(columns=['dataset_name'])
         features.append(feature)
@@ -293,3 +215,61 @@ def delete_synthese(info_role, id_synthese):
     DB.session.commit()
 
     return {'message': 'delete with success'}, 200
+
+
+@routes.route('/export', methods=['POST'])
+@fnauth.check_auth_cruved('E', True)
+def export(info_role):
+    filters = dict(request.get_json())
+    export_format = filters.pop('export_format')
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    data = get_all_synthese(filters, info_role, allowed_datasets)
+
+    file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
+
+    export_columns = Synthese.__table__.columns.keys()
+    if export_format == 'csv':
+        return to_csv_resp(
+            file_name,
+            [d[0].as_dict() for d in data],
+            export_columns,
+            ';'
+        )
+
+    elif export_format == 'geojson':
+        results = FeatureCollection(
+            [d[0].get_geofeature(
+                columns=export_columns
+            ) for d in data]
+        )
+        return to_json_resp(
+            results,
+            as_file=True,
+            filename=file_name,
+            indent=4
+        )
+    else:
+        try:
+            dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+            Synthese.as_shape(
+                data=data,
+                dir_path=dir_path,
+                file_name=file_name,
+                columns=export_columns,
+            )
+
+            return send_from_directory(
+                dir_path,
+                file_name+'.zip',
+                as_attachment=True
+            )
+
+        except GeonatureApiError as e:
+            message = str(e)
+
+        return render_template(
+            'error.html',
+            error=message,
+            redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
+        )
