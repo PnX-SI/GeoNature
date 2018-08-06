@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DataService } from '../services/data.service';
-import { FormService } from '../services/form.service';
+import { SyntheseFormService } from '../services/form.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AppConfig } from '@geonature_config/app.config';
 import { MapService } from '@geonature_common/map/map.service';
@@ -174,7 +174,7 @@ export class SyntheseSearchComponent implements OnInit {
   constructor(
     private _fb: FormBuilder,
     public dataService: DataService,
-    public formService: FormService,
+    public formService: SyntheseFormService,
     public ngbModal: NgbModal,
     public mapService: MapService
   ) {}
@@ -182,27 +182,7 @@ export class SyntheseSearchComponent implements OnInit {
   ngOnInit() {}
 
   onSubmitForm() {
-    const params = Object.assign({}, this.formService.searchForm.value);
-    const updatedParams = {};
-    for (let key in params) {
-      // if cd_nom
-      if (params.cd_nom && params.cd_nom.length > 0) {
-        updatedParams['cd_nom'] = [];
-        params.cd_nom.forEach(el => {
-          params.cd_nom = params.cd_nom.cd_nom;
-          updatedParams['cd_nom'].push(el.cd_nom);
-        });
-        // if other key an value not null or undefined
-      } else if (params[key]) {
-        // if its an Array push only if > 0
-        if (Array.isArray(params[key]) && params[key].length > 0) {
-          updatedParams[key] = params[key];
-          // else if its not an array, alway send the parameter
-        } else if (!Array.isArray(params[key])) {
-          updatedParams[key] = params[key];
-        }
-      }
-    }
+    const updatedParams = this.formService.formatParams();
     this.searchClicked.emit(updatedParams);
   }
 

@@ -282,8 +282,6 @@ def insertOrUpdateOneReleve(info_role):
     data['properties']['id_digitiser'] = info_role.id_role
     releve = TRelevesOccurrence(**data['properties'])
 
-    print('LAAAAAAAAAaa')
-    print(data['geometry'])
     shape = asShape(data['geometry'])
     releve.geom_4326 = from_shape(shape, srid=4326)
 

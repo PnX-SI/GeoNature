@@ -3,6 +3,7 @@ import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { SYNTHESE_CONFIG } from '../../synthese.config';
 import { DataService } from '../../services/data.service';
+import { SyntheseFormService } from '../../services/form.service';
 import { window } from 'rxjs/operator/window';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -23,7 +24,8 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     public mapListService: MapListService,
     private _ds: DataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _fs: SyntheseFormService
   ) {}
 
   ngOnInit() {
@@ -102,7 +104,6 @@ export class SyntheseListComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('success', 'Synthese.DeleteSuccess');
       },
       error => {
-        this._ds.dataLoaded = true;
         if (error.status === 403) {
           this._commonService.translateToaster('error', 'NotAllowed');
         } else {
@@ -110,6 +111,15 @@ export class SyntheseListComponent implements OnInit, OnChanges {
         }
       }
     );
+  }
+
+  exportData() {
+    const formatedParams = this._fs.formatParams();
+    formatedParams['limit'] = 100;
+    console.log(formatedParams);
+    this._ds.exportData(formatedParams).subscribe(data => {
+      console.log(data);
+    });
   }
 
   ngOnChanges(changes) {

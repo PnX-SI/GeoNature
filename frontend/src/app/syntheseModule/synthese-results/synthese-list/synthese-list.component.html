@@ -46,7 +46,7 @@
   </ngx-datatable-column>
 
   <!-- ACTION COLUMNS -->
-  <ngx-datatable-column maxWidth="10">
+  <!-- <ngx-datatable-column maxWidth="10">
     <ng-template let-row="row" ngx-datatable-cell-template>
       <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.U" (click)="onEditReleve(row.url_source, row.entity_source_pk_value)">
         <i [ngClass]="{'disabled' : !row.cruved.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o"
@@ -62,7 +62,7 @@
           class="fa fa-trash-o" aria-hidden="true"></i>
       </button>
     </ng-template>
-  </ngx-datatable-column>
+  </ngx-datatable-column> -->
 
 
   <!-- DATA COLOMNS -->
@@ -82,3 +82,6 @@
       {{'Delete' | translate }} </button>
   </div>
 </ng-template>
+
+
+<button (click)="exportData()"> export </button>
