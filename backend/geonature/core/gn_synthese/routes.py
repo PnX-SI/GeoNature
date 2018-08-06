@@ -120,9 +120,6 @@ def get_synthese(info_role):
 
     filters = dict(request.args)
 
-    if 'export_format' in filters:
-        export_format = filters.pop('export_format')
-
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     data = get_all_synthese(filters, info_role, allowed_datasets)
 
@@ -217,11 +214,11 @@ def delete_synthese(info_role, id_synthese):
     return {'message': 'delete with success'}, 200
 
 
-@routes.route('/export', methods=['POST'])
+@routes.route('/export', methods=['GET'])
 @fnauth.check_auth_cruved('E', True)
 def export(info_role):
-    filters = dict(request.get_json())
-    export_format = filters.pop('export_format')
+    filters = dict(request.args)
+    export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     data = get_all_synthese(filters, info_role, allowed_datasets)
 
@@ -251,9 +248,12 @@ def export(info_role):
         )
     else:
         try:
+            update_data = [d[0] for d in data]
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             Synthese.as_shape(
-                data=data,
+                geom_col='the_geom_4326',
+                srid=4326,
+                data=update_data,
                 dir_path=dir_path,
                 file_name=file_name,
                 columns=export_columns,
@@ -271,5 +271,5 @@ def export(info_role):
         return render_template(
             'error.html',
             error=message,
-            redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
+            redirect=current_app.config['URL_APPLICATION']+"/#/synthese"
         )

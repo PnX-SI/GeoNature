@@ -7,6 +7,7 @@ import { SyntheseFormService } from '../../services/form.service';
 import { window } from 'rxjs/operator/window';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -113,13 +114,13 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     );
   }
 
-  exportData() {
+  downloadData(format) {
     const formatedParams = this._fs.formatParams();
-    formatedParams['limit'] = 100;
-    console.log(formatedParams);
-    this._ds.exportData(formatedParams).subscribe(data => {
-      console.log(data);
-    });
+    let urlQueryString = this._ds.buildQueryUrl(formatedParams);
+    urlQueryString = urlQueryString.set('export_format', format);
+    const url = `${AppConfig.API_ENDPOINT}/synthese/export?${urlQueryString.toString()}`;
+
+    document.location.href = url;
   }
 
   ngOnChanges(changes) {
