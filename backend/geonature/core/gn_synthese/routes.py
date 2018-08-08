@@ -304,10 +304,6 @@ def export(info_role):
                 row_as_list = []
                 synthese_row_as_list = row[0].as_list(columns=synthese_columns)
                 nomenclature_row_as_list = row[4].as_list(columns=nomenclature_columns)
-                # for n in nomenclature_row_as_list:
-                #     print(n)
-                #     print(type(n))
-                # print(*nomenclature_row_as_list)
                 taxon_row_as_list = row[1].as_list(columns=taxonomic_columns)
                 geom = row[0].the_geom_4326
                 row_as_list = synthese_row_as_list + nomenclature_row_as_list + taxon_row_as_list

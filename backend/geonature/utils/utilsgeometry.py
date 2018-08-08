@@ -140,8 +140,18 @@ def shapeseralizable(cls):
 
 
 class ShapeService():
+    """
+    Service to create shapefiles from sqlalchemy models
+    """
 
     def __init__(self, db_columns, srid):
+        """
+        Init the service
+        params:
+            - db_cols: column list of the sqlachemy models in the export
+              (type: MappedClass.__mapper__.c)
+            - srid: EPSG code: type integer
+        """
         self.point = shapefile.Writer(1)
         self.polyline = shapefile.Writer(3)
         self.polygon = shapefile.Writer(5)
@@ -163,6 +173,9 @@ class ShapeService():
         return row.as_list(columns=columns)
 
     def create_shape_struct(self):
+        """
+        Create the fields (columns) of the shapefiles 
+        """
         for db_col in self.db_cols:
             col_type = db_col.type.__class__.__name__.lower()
             if col_type != 'geometry':
@@ -174,7 +187,7 @@ class ShapeService():
         """
         Create a shapefile feature with:
         - row_as_list: the formated attribute in a list
-        - the geom of the row in WKT (shapely)
+        - the geom of the row in WKB (sqlachemy Geometry)
         """
         geom = to_shape(geom)
         # TODO: catch exception
@@ -189,6 +202,10 @@ class ShapeService():
             self.polyline.record(*row_as_list)
 
     def save_shape(self, dir_path, file_name):
+        """
+        Save the tree shapefiles
+        """
+        # TODO: save only if len(shapefile.records > 0)
         file_point = dir_path + "/POINT_" + file_name
         file_polygon = dir_path + "/POLYGON_" + file_name
         file_polyline = dir_path + "/POLYLINE_" + file_name
@@ -202,32 +219,6 @@ class ShapeService():
         self.point.save(file_point)
         self.polygon.save(file_polygon)
         self.polyline.save(file_polyline)
-
-    def create_shapes(self, data, dir_path, file_name, geom_col):
-        self.create_shape_struct()
-        for d in data:
-            row_as_list = self.get_fields_row(d, self.columns)
-            geom = getattr(d, geom_col)
-            self.create_features(row_as_list, geom)
-        self.save_shape(dir_path, file_name)
-        self.zip_it(
-            dir_path,
-            file_name,
-            ['POINT', 'POLYLINE', 'POLYGON']
-        )
-
-    def create_shapes_generic(self, mapped_table, data, dir_path, file_name, geom_col):
-        self.create_shape_struct()
-        for d in data:
-            row_fields = self.get_fields_row_generic(mapped_table, d, self.columns)
-            geom = getattr(d, geom_col)
-            self.create_features(row_fields, geom)
-        self.save_shape(dir_path, file_name)
-        self.zip_it(
-            dir_path,
-            file_name,
-            ['POINT', 'POLYLINE', 'POLYGON']
-        )
 
     def zip_it(self, dir_path, file_name, formats=['POINT', 'POLYLINE', 'POLYGON']):
         """
@@ -249,6 +240,51 @@ class ShapeService():
                     shape_format + "_" + file_name + "." + ext
                 )
         zp_file.close()
+
+    def create_shapes(self, data, dir_path, file_name, geom_col):
+        """
+        High level function to create the shapefiles
+        params:
+            data: data from sqlachemy. Type: array of model
+            dir_path: export directory path (static directory). Type: string
+            file_name:: export filename. Type: string
+            geom_col: name of the geomtry column of the sqlachemy model. Type: string
+
+        """
+        self.create_shape_struct()
+        for d in data:
+            row_as_list = self.get_fields_row(d, self.columns)
+            geom = getattr(d, geom_col)
+            self.create_features(row_as_list, geom)
+        self.save_shape(dir_path, file_name)
+        self.zip_it(
+            dir_path,
+            file_name,
+            ['POINT', 'POLYLINE', 'POLYGON']
+        )
+
+    def create_shapes_generic(self, mapped_table, data, dir_path, file_name, geom_col):
+        """
+        High level function to create the shapefiles from a non mapped table (GenericTable from utilsqlachemy)
+        params:
+            mapped_table: a GenericTable object from utilsqlachemy
+            data: data from sqlachemy. Type: array of model
+            dir_path: export directory path (static directory). Type: string
+            file_name:: export filename. Type: string
+            geom_col: name of the geomtry column of the sqlachemy model. Type: string
+
+        """
+        self.create_shape_struct()
+        for d in data:
+            row_fields = self.get_fields_row_generic(mapped_table, d, self.columns)
+            geom = getattr(d, geom_col)
+            self.create_features(row_fields, geom)
+        self.save_shape(dir_path, file_name)
+        self.zip_it(
+            dir_path,
+            file_name,
+            ['POINT', 'POLYLINE', 'POLYGON']
+        )
 
 
 def circle_from_point(point, radius, nb_point=20):
