@@ -133,11 +133,11 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                     DB.session.add(module)
                     DB.session.commit()
 
-                if build:
+                if build and frontend:
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
             else:
-                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_name)) # noqa
+                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_name))  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
@@ -281,4 +281,3 @@ def update_module_configuration(module_name, build):
     """
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_module_config(module_name, build=build)
-

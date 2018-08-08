@@ -184,9 +184,15 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
 
         - L'input ``label`` (string) permet d'afficher un label au dessus de l'input.
 
+        - L'input ``displayAll`` (boolean, défaut = false) permet d'ajouter un item 'tous' sur les inputs de type select (Exemple: pour selectionner tous les jeux de données de la liste)
+
+        - L'input ``multiSelect`` (boolean, défaut = false) permet de passer les composants de type select en "multiselect" (sélection multiple sur une liste déroulante). Le parentFormControl devient par conséquent un tableau
+
+        - L'input ``searchBar`` (boolean, défaut = false) permet de rajouter une barre de recherche sur les composants multiselect
+
         - L'input ``disabled`` (boolean) permet de rendre le composant non-saisissable
 
-        - L'input ``debounceTime`` définit un durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
+        - L'input ``debounceTime`` définit une durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
 
 - Outputs
         Plusieurs ``Output`` communs à ses composants permettent d'émettre des événements liés aux formulaires.
@@ -199,16 +205,23 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
 Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
 - **NomenclatureComponent**
-        Ce composant permet de créer un "input" de type "select" à partir d'une liste d'items définie dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+        Ce composant permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+
+        En mode "multiselect" (Input ``multiSelect=true``), une barre de recherche permet de filtrée les nomenclatures sur leur label.
 
         **Selector**: ``pnx-nomenclature``
 
         **Inputs**:
 
         :``codeNomenclatureType``:
-                Id_type des items de nomenclatures qui doivent être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
+                Mnémonique du type de nomenclature qui doit être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
                  
-                *Type*: ``number``
+                *Type*: ``string``
+
+        :``keyValue``:
+                Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``). Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API (ex: ``cd_nomenclature``, ``label_default`` etc...
+                *Type*: ``string``
+                 
         :``regne``:
                 Permet de filter les items de nomenclature corespondant à un règne (facultatif)
 
@@ -220,7 +233,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Valeur retourné par le FormControl**:
 
-        id_nomenclature de l'item séléctionné. *Type*: number
+        Dépend de la valeur passée à l'input ``keyValue`` (par défaut ``id_nomenclature`` donc ``number`` *Type*: any)
+        Si l'input ``multiSelect = true``, le FormControl est un tableau
 
 
         NB: La table ``ref_nomenclatures.cor_taxref_nomenclature`` permet de faire corespondre des items de nomenclature à des groupe INPN et des règne. A chaque fois que ces deux derniers input sont modifiés, la liste des items est rechargée. Ce composant peut ainsi être couplé au composant taxonomy qui renvoie le regne et le groupe INPN de l'espèce saisie.
@@ -231,6 +245,16 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 <pnx-nomenclature
                   [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
                   codeNomenclatureType="ETA_BIO"
+                  regne="Animalia"
+                  group2Inpn="Mammifères"
+                  >
+                </pnx-nomenclature>``
+
+                <pnx-nomenclature
+                  [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
+                  codeNomenclatureType="ETA_BIO"
+                  [multiSelect]=true
+                  keyValue='cd_nomenclature'
                   regne="Animalia"
                   group2Inpn="Mammifères"
                   >
@@ -276,18 +300,84 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
 
 - **DatasetComponent**
-        Ce composant permet de créer un "input" de type "select" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
+        Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
 
         **Selector**: ``pnx-dataset``
+
+        **Inputs**:
+
+        :``multiSelect``:
+                Passe le composant du mode select à multiselect (facultatif)
+
+                *Type*: ``boolean`` défaut ``false``
 
         :``displayAll``:
                 Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
 
                 *Type*: ``boolean``
+
+        :``idAcquisitionFrameworks``:
+                Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode multiselect.
+
+                *Type*: ``Array<number>``
+
+        :``idAcquisitionFramework``:
+                Permet de filtrer les JDD en fonction de l'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
+
+                *Type*: ``number``
+
         
         **Valeur retourné par le FormControl**:
 
-        Id du dataset sélectionné: *Type*: number
+        En mode select simple: Id du dataset sélectionné: *Type*: number
+ 
+        En mode multiselect: Tableau d'ID des datasets sélectionnés: *Type*: Array<number>
+
+        Exemple d'utilisation:
+        ::
+                
+                <pnx-datasets
+                  [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value" 
+                  [multiSelect]='true'
+                  [displayAll]="true" 
+                  [parentFormControl]="formService.searchForm.controls.id_dataset" 
+                  label="{{ 'Meta.Datasets' | translate}}">
+                </pnx-datasets>
+
+
+- **AcquisitionFrameworksComposant**
+        Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des cadres d'acquisition sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_acqusitions_framework`` et ``gn_meta.cor_acquisition_framework_actor``)
+
+        **Selector**: ``pnx-acqusitions-framework``
+
+        **Inputs**:
+
+        :``multiSelect``:
+                Passe le composant du mode select à multiselect (facultatif)
+
+                *Type*: ``boolean`` défaut ``false``
+        :``displayAll``:
+                Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
+
+                *Type*: ``boolean``
+
+        
+        **Valeur retourné par le FormControl**:
+
+        En mode select simple: Id du dataset sélectionné: *Type*: number
+ 
+        En mode multiselect: Tableau d'ID des datasets sélectionnés: *Type*: Array<number>
+
+
+        Exemple d'utilisation:
+        ::
+
+                <pnx-acquisition-frameworks 
+                  [multiSelect]='true'
+                  [displayAll]="true" 
+                  [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
+                  label="{{ 'Meta.AcquisitionFramework' | translate}}">
+                </pnx-acquisition-frameworks>
 
 - **DateComponent**
         Ce composant permet de créer un input de type "datepicker". Crée à parti de https://github.com/ng-bootstrap/ng-bootstrap
@@ -312,6 +402,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Selector**: ``pnx-observers``
 
+        **Inputs**:
+
         :``idMenu``:
                 Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
 
@@ -334,13 +426,76 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         
 
 - **ObserversTextComponent**
-        Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
+      Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
 
-        **Selector**: ``pnx-observers-text``        
+      **Selector**: ``pnx-observers-text``        
 
-        **Valeur retourné par le FormControl**:
-        
-        Valeur du champ. *Type*: string
+      **Valeur retourné par le FormControl**:
+      
+      Valeur du champ. *Type*: string
+
+
+- **MultiSelectComponent**
+      Ce composant permet d'afficher un input de type multiselect à partir d'une liste de valeurs passé en Input
+
+      **Selector**: ``pnx-observers-text``
+
+      **Inputs**:
+
+      :``values``:
+              Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire
+
+      *Type*: ``Array<any>`` *Obligatoire*
+
+      :``keyLabel``:
+              Clé du dictionnaire de valeur que le composant doit prendre pour l'affichage de la liste déroulante
+
+
+              Example, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour afficher "mon item", ``keyLabel`` doit valoir "label"
+
+      *Type*: ``string`` *Obligatoire*
+
+      :``keyValue``:
+          Clé du dictionnaire de valeur que le composant doit passer au formControl
+
+
+          Exemple, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour passer "1", ``keyValue`` doit valoir "id"
+
+      *Type*: ``string`` *Facultatif* (tout le dictionnaire est passé au formControl si l'input est absent)
+
+      :``displayAll``:
+              Est-ce que le composant doit afficher l'item "tous" dans les options du select ? 
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      :``displayAll``:
+              Est-ce que le composant doit afficher une barre de recherche dans la liste déroulante? 
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      **Ouputs**:
+
+      :``onSearch``:
+              Renvoie la saisie de l'utilisateur dans la barre de recherche
+
+      
+      **Valeur retourné par le FormControl**:
+      
+      Valeur du champ. *Type*: Array<any>
+
+      **Exemple d'utilisation**
+
+        ::
+
+                <pnx-multiselect
+                 [values]="organisms" 
+                 [parentFormControl]="form.controls.organisms" 
+                 [keyLabel]="'nom_organisme'" 
+                 [label]="'Organisme'"
+                 (onChange)="doWhatever($event)
+                 (onDelete)="deleteCallback($event)"
+                 (onSearch)="filterItems($event)">
+                </pnx-multiselect>
 
 
 

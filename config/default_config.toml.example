@@ -57,3 +57,19 @@ MULTILINGUAL = false
     MAIL_USERNAME = 'email username'
     MAIL_PASS = 'email to'
     MAIL_TO = 'email to'
+
+# Synthese configuration
+[SYNTHESE]
+    # Liste des entité géographique sur lesquel les filtres
+    # géographique de la synthese s'appuye (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
+    AREA_FILTERS = [
+        { label = "Zone natural 2000", id_type = 201 },
+        { label = "Secteurs", id_type = 202 }
+    ]
+
+default_maplist_columns = [
+    { prop = "taxons", name = "Taxon" },
+    { prop = "date_min", name = "Date début" },
+    { prop = "observateurs", name = "Observateurs" },
+    { prop = "dataset_name", name = "Jeu de données" }
+]

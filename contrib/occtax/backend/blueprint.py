@@ -65,6 +65,7 @@ try:
 except Exception as e:
     ID_MODULE = 'Error'
 
+
 @blueprint.route('/releves', methods=['GET'])
 @fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
 @json_resp
@@ -100,7 +101,7 @@ def getOneReleve(id_releve, info_role):
     return {
         'releve': data.get_geofeature(),
         'cruved': releve_cruved
-        }
+    }
 
 
 @blueprint.route('/vreleveocctax', methods=['GET'])
@@ -170,7 +171,6 @@ def getViewReleveOccurrence(info_role):
     return {'message': 'not found'}, 404
 
 
-    
 @blueprint.route('/vreleve', methods=['GET'])
 @fnauth.check_auth_cruved(
     'R',
@@ -332,11 +332,12 @@ def insertOrUpdateOneReleve(info_role):
             tag_action_code="U",
             id_organisme=info_role.id_organisme
         )
-        releve = releveRepository.update(releve, user)
+        print('PASSE LAAAAAAAAAA')
+        releve = releveRepository.update(releve, user, shape)
     else:
         if info_role.tag_object_code in ('0', '1', '2'):
             # Check if user can add a releve in the current dataset
-            allowed  = releve.user_is_in_dataset_actor(info_role)
+            allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
                 raise InsufficientRightsError(
                     'User {} has no right in dataset {}'.format(
@@ -474,7 +475,6 @@ def getDefaultNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
-
 @blueprint.route('/export', methods=['GET'])
 @fnauth.check_auth_cruved(
     'E',
@@ -482,28 +482,28 @@ def getDefaultNomenclatures():
     id_app=ID_MODULE,
     redirect_on_expiration=current_app.config.get('URL_APPLICATION')
 )
-def export(info_role):    
+def export(info_role):
     export_view_name = blueprint.config['export_view_name']
     export_geom_column = blueprint.config['export_geom_columns_name']
     export_id_column_name = blueprint.config['export_id_column_name']
     export_columns = blueprint.config['export_columns']
     export_srid = blueprint.config['export_srid']
-    
-    export_view = GenericTable(export_view_name, 'pr_occtax', export_geom_column, export_srid)	
 
+    export_view = GenericTable(export_view_name, 'pr_occtax', export_geom_column, export_srid)
 
     releve_repository = ReleveRepository(export_view)
-    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)    
+    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
     q = get_query_occtax_filters(request.args, export_view, q, from_generic_table=True)
 
     data = q.all()
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
-    
+
     export_format = request.args['format'] if 'format' in request.args else 'geojson'
     if export_format == 'csv':
-        columns = export_columns if len(export_columns) > 0 else export_view.__table__.columns.keys()
+        # print(export_view.meta.__table__.columns.keys())
+        columns = export_columns if len(export_columns) > 0 else [db_col.key for db_col in export_view.db_cols]
         return to_csv_resp(
             file_name,
             [export_view.as_dict(d) for d in data],
@@ -522,15 +522,16 @@ def export(info_role):
             as_file=True,
             filename=file_name,
             indent=4
-        )  
+        )
     else:
         try:
+            db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             export_view.as_shape(
+                db_cols=db_cols,
                 data=data,
                 dir_path=dir_path,
                 file_name=file_name,
-                columns=export_columns,
             )
 
             return send_from_directory(
@@ -538,10 +539,10 @@ def export(info_role):
                 file_name+'.zip',
                 as_attachment=True
             )
-            
+
         except GeonatureApiError as e:
             message = str(e)
-        
+
         return render_template(
             'error.html',
             error=message,
@@ -564,101 +565,75 @@ def export_sinp(info_role):
         params:	
         - id_dataset : integer	
         - uuid_dataset: uuid	
-    """	
-    viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)	
-    q = DB.session.query(viewSINP.tableDef)	
-    params = request.args	
-    allowed_datasets = TDatasets.get_user_datasets(info_role)	
-    # if params in empty and user not admin,	
-    #    get the data off all dataset allowed	
-    if not params.get('id_dataset') and not params.get('uuid_dataset'):	
-        if info_role.tag_object_code != '3':	
-            allowed_uuid = (	
-                str(TDatasets.get_uuid(id_dataset))	
-                for id_dataset in allowed_datasets	
-            )	
-            q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))	
-    # filter by dataset id or uuid	
-    else:	
-        if 'id_dataset' in params:	
-            id_dataset = int(params['id_dataset'])	
-            uuid_dataset = TDatasets.get_uuid(id_dataset)	
-        elif 'uuid_dataset' in params:	
-            id_dataset = TDatasets.get_id(params['uuid_dataset'])	
-            uuid_dataset = params['uuid_dataset']	
-        # if data_scope 1 or 2, check if the dataset requested is allorws	
-        if (	
-            info_role.tag_object_code == '1' or	
-            info_role.tag_object_code == '2'	
-        ):	
-            if id_dataset not in allowed_datasets:	
-                raise InsufficientRightsError(	
-                    (	
-                        'User "{}" cannot export dataset no "{}'	
-                    ).format(info_role.id_role, id_dataset),	
-                    403	
-                )	
-            elif info_role.tag_object_code == '1':	
-                # join on TCounting, TOccurrence, Treleve and corRoleOccurrence	
-                #   to get users	
-                q = q.outerjoin(	
-                    CorCountingOccurrence,	
-                    viewSINP.tableDef.columns.permId ==	
-                    CorCountingOccurrence.unique_id_sinp_occtax	
-                ).join(	
-                    TOccurrencesOccurrence,	
-                    CorCountingOccurrence.id_occurrence_occtax ==	
-                    TOccurrencesOccurrence.id_occurrence_occtax	
-                ).join(	
-                    TRelevesOccurrence,	
-                    TOccurrencesOccurrence.id_releve_occtax ==	
-                    TRelevesOccurrence.id_releve_occtax	
-                ).outerjoin(	
-                    corRoleRelevesOccurrence,	
-                    TRelevesOccurrence.id_releve_occtax ==	
-                    corRoleRelevesOccurrence.columns.id_releve_occtax	
-                )	
-                q = q.filter(	
-                    or_(	
-                        corRoleRelevesOccurrence.columns.id_role == info_role.id_role,	
-                        TRelevesOccurrence.id_digitiser == info_role.id_role	
-                    )	
-                )	
-        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))	
-    data = q.all()	
+    """
+    viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)
+    q = DB.session.query(viewSINP.tableDef)
+    params = request.args
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    # if params in empty and user not admin,
+    #    get the data off all dataset allowed
+    if not params.get('id_dataset') and not params.get('uuid_dataset'):
+        if info_role.tag_object_code != '3':
+            allowed_uuid = (
+                str(TDatasets.get_uuid(id_dataset))
+                for id_dataset in allowed_datasets
+            )
+            q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))
+    # filter by dataset id or uuid
+    else:
+        if 'id_dataset' in params:
+            id_dataset = int(params['id_dataset'])
+            uuid_dataset = TDatasets.get_uuid(id_dataset)
+        elif 'uuid_dataset' in params:
+            id_dataset = TDatasets.get_id(params['uuid_dataset'])
+            uuid_dataset = params['uuid_dataset']
+        # if data_scope 1 or 2, check if the dataset requested is allorws
+        if (
+            info_role.tag_object_code == '1' or
+            info_role.tag_object_code == '2'
+        ):
+            if id_dataset not in allowed_datasets:
+                raise InsufficientRightsError(
+                    (
+                        'User "{}" cannot export dataset no "{}'
+                    ).format(info_role.id_role, id_dataset),
+                    403
+                )
+            elif info_role.tag_object_code == '1':
+                # join on TCounting, TOccurrence, Treleve and corRoleOccurrence
+                #   to get users
+                q = q.outerjoin(
+                    CorCountingOccurrence,
+                    viewSINP.tableDef.columns.permId ==
+                    CorCountingOccurrence.unique_id_sinp_occtax
+                ).join(
+                    TOccurrencesOccurrence,
+                    CorCountingOccurrence.id_occurrence_occtax ==
+                    TOccurrencesOccurrence.id_occurrence_occtax
+                ).join(
+                    TRelevesOccurrence,
+                    TOccurrencesOccurrence.id_releve_occtax ==
+                    TRelevesOccurrence.id_releve_occtax
+                ).outerjoin(
+                    corRoleRelevesOccurrence,
+                    TRelevesOccurrence.id_releve_occtax ==
+                    corRoleRelevesOccurrence.columns.id_releve_occtax
+                )
+                q = q.filter(
+                    or_(
+                        corRoleRelevesOccurrence.columns.id_role == info_role.id_role,
+                        TRelevesOccurrence.id_digitiser == info_role.id_role
+                    )
+                )
+        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
+    data = q.all()
 
     export_columns = blueprint.config['export_columns']
-    
-    file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')	
-    return (	
-        filemanager.removeDisallowedFilenameChars(file_name),	
+
+    file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')
+    return (
+        filemanager.removeDisallowedFilenameChars(file_name),
         [viewSINP.as_dict(d) for d in data],
-        export_columns,	
-        ';'	
+        export_columns,
+        ';'
     )
-
-
-@blueprint.route('/test', methods=['GET'])
-def test():
-    # viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', 'geom_4326', srid=4326)
-    # q = DB.session.query(viewSINP.tableDef)
-    # data = q.all()
-
-    # viewSINP.as_shape(
-    #     data=data,
-    #     dir_path = str(ROOT_DIR / 'backend/static/shapefiles'),
-    #     file_name='lala',
-    # )
-
-    data = DB.session.query(VReleveList).all()
-
-    VReleveList.as_shape(
-        geom_col='geom_4326',
-        data=data,
-        dir_path = str(ROOT_DIR / 'backend/static/shapefiles'),
-        file_name='lala',
-        srid=blueprint.config['export_srid']
-    )
-
-
-    return 'la'

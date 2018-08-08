@@ -1,11 +1,15 @@
-.selected{
-    background-color:red;
+.selected {
+  background-color: red;
 }
-ngx-datatable{
-    position: absolute;
-    left:0;
-    bottom:0;
-    right:0;
-    top:0;
-    overflow:scroll;
+ngx-datatable {
+  // position: absolute;
+  // left:0;
+  // bottom:0;
+  // right:0;
+  // top:0;
+  // overflow:scroll;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
 }

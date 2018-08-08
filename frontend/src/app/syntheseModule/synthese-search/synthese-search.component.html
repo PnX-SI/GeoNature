@@ -1,76 +1,100 @@
 <div class="card">
-      <fieldset>
-              <legend> Quoi ?</legend>
-          <pnx-datasets
-              [parentFormControl]="formService.searchForm.controls.id_dataset"
-              label="{{ 'Datasets' | translate}}">
-          </pnx-datasets>
-          <pnx-taxonomy 
-              label="{{'Taxon.Taxon' | translate }} " 
-              [parentFormControl]="formService.searchForm.controls.cd_nom" 
-              [idList]="500" 
-              [charNumber]="3" 
-              [listLength]="20"
-              (onChange)=formService.getCurrentTaxon($event)>
-            </pnx-taxonomy>
-                <div class="alert alert-warning taxon-alert" *ngIf="formService.taxonsList.length > 0" >
-                <p class="taxon-list"> <b> Taxon(s) recherché(s):</b></p>
-                <p class="taxon-list" *ngFor="let taxon of formService.taxonsList; let i = index" > 
-                  - {{taxon.nom_valide}}
-                  <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
-                </p>
-          </div>
-            <button (click)="openModalCol($event, modalTaxon)" class="btn btn-sm btn-secondary"> Avancé</button>
-      </fieldset>
+  <fieldset>
+    <legend> Quoi ?</legend>
 
-      <fieldset>
-          <legend> Quand ?</legend>
-          <pnx-date
-          label = "Date min"
-          [parentFormControl]="formService.searchForm.controls.date_min">
-          </pnx-date>
+    <!-- <pnx-datasets [idAcquisitionFramework]="formService.searchForm.controls.id_acquisition_frameworks.value" [multiSelect]='true'
+      [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
+    </pnx-datasets> -->
 
-          <pnx-date
-          label = "Date max"
-          [parentFormControl]="formService.searchForm.controls.date_max">>
-            
-          </pnx-date>
-      </fieldset>
 
-      <fieldset>
-          <legend> Ou ?</legend>
-          <pnx-municipalities
-          label="Commubes"
-          [parentFormControl]="formService.searchForm.controls.municipalities"
-          ></pnx-municipalities>
-      </fieldset>
 
-      
-          <fieldset>
-            <legend> Qui ?</legend>
-            
-            <pnx-observers-text
-              label=" {{'Releve.Observer' | translate }} "
-              [parentFormControl]="formService.searchForm.controls.observers">
-            </pnx-observers-text>
+    <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom" [idList]="500"
+      [charNumber]="3" [listLength]="20" (onChange)=formService.getCurrentTaxon($event)>
+    </pnx-taxonomy>
+    <div class="alert alert-warning taxon-alert" *ngIf="formService.taxonsList.length > 0">
+      <p class="taxon-list">
+        <b> Taxon(s) recherché(s):</b>
+      </p>
+      <p class="taxon-list" *ngFor="let taxon of formService.taxonsList; let i = index">
+        - {{taxon.nom_valide}}
+        <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
+      </p>
+    </div>
+    <button (click)="openModalCol($event, modalTaxon)" class="btn btn-sm btn-primary advanced"> Avancé (Taxonomie)</button>
 
-            <!-- TODO: Organisme -->
-          </fieldset>
+    <button class="btn btn-sm btn-primary advanced" data-toggle="collapse" data-target="#OccAdvanved" aria-expanded="false" aria-controls="OccAdvanved">
+      Avancé (Occurrence de taxon)
+    </button>
 
-        
-          <fieldset>
-              <legend> Comment ?</legend>
+    <div class="collapse advanced" id="OccAdvanved">
+      <div class="card card-block">
+        <small> Filtres occurrence de taxon </small>
+        <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="nomenclaturesForms">
+        </pnx-dynamic-form-generator>
 
-            <pnx-dynamic-form-generator
-                [formGroup]="formService.searchForm"
-                [formsDefinition]="nomenclaturesForms"
-            >
+      </div>
+    </div>
 
-            </pnx-dynamic-form-generator>
-          </fieldset>
 
-        
-        <button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
-        
-        <pre>form value: <br>{{formService.searchForm.value | json}}</pre>
+  </fieldset>
+
+  <fieldset>
+    <legend> Quand ?</legend>
+    <pnx-date label="Date min" [parentFormControl]="formService.searchForm.controls.date_min">
+    </pnx-date>
+
+    <pnx-date label="Date max" [parentFormControl]="formService.searchForm.controls.date_max">>
+
+    </pnx-date>
+  </fieldset>
+
+  <fieldset>
+    <legend> Ou ?</legend>
+    <pnx-municipalities label="Communes" [searchBar]="true" [parentFormControl]="formService.searchForm.controls.municipalities"></pnx-municipalities>
+
+    <div *ngIf="formService.formBuilded">
+      <div *ngFor="let area of AppConfig.SYNTHESE.AREA_FILTERS; let i = index;">
+        {{areas}}
+        <pnx-areas [searchBar]="true" [parentFormControl]="area.control" [label]="area.label" [idType]="area.id_type">
+        </pnx-areas>
+      </div>
+    </div>
+
+
+  </fieldset>
+
+
+  <fieldset>
+    <legend> Qui ?</legend>
+
+    <pnx-observers-text label=" {{'Releve.Observer' | translate }} " [parentFormControl]="formService.searchForm.controls.observers">
+    </pnx-observers-text>
+
+    <!-- TODO: Organisme -->
+  </fieldset>
+
+
+  <fieldset>
+    <legend> Comment ?</legend>
+
+    <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
+      label="{{ 'Meta.AcquisitionFramework' | translate}}">
+    </pnx-acquisition-frameworks>
+
+
+    <pnx-datasets [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value" [multiSelect]='true'
+      [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
+    </pnx-datasets>
+
+
+
+  </fieldset>
+
+
+  <button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+  <button (click)="refreshFilters()" class="btn btn-danger" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
+    <i class="fa fa-trash-o"></i>
+  </button>
+
+  <pre>form value: <br>{{formService.searchForm.value | json}}</pre>
 </div>

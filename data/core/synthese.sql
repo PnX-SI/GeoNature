@@ -38,6 +38,39 @@ AS $$
   END;
 $$;
 
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+  $BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change ST_EQUALS(OLD.geom_local, NEW.geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+  
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT geom_change )) THEN
+        FOR id_area_loop IN (
+        SELECT a.id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese
+        )
+        LOOP
+          EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
+        END LOOP;
+    END IF;
+  RETURN NEW;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 ------------------------
 --TABLES AND SEQUENCES--
@@ -98,8 +131,8 @@ CREATE TABLE synthese (
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
     id_area integer,
-    date_min date NOT NULL,
-    date_max date NOT NULL,
+    date_min timestamp without time zone NOT NULL,
+    date_max timestamp without time zone NOT NULL,
     id_validator integer,
     validation_comment text,
     observers character varying(255),
@@ -134,6 +167,12 @@ CREATE TABLE cor_area_synthese (
     id_area integer
 );
 
+CREATE TABLE cor_role_synthese
+(
+  id_synthese integer NOT NULL,
+  id_role integer NOT NULL
+);
+
 CREATE TABLE defaults_nomenclatures_value (
     mnemonique_type character varying(50) NOT NULL,
     id_organism integer NOT NULL DEFAULT 0,
@@ -153,6 +192,8 @@ ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY K
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
+
+ALTER TABLE ONLY cor_role_synthese ADD CONSTRAINT pk_cor_role_synthese PRIMARY KEY (id_synthese, id_role);
 
 
 ---------------
@@ -185,6 +226,9 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY cor_role_synthese
+    ADD CONSTRAINT fk_gn_synthese_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese) ON UPDATE CASCADE;
+
 --------------
 --CONSTRAINS--
 --------------
@@ -198,7 +242,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_obs_technique,'METH_OBS')) NOT VALID;
+  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_obs_meth,'METH_OBS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_cd_nomenclature(cd_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID;
@@ -349,16 +393,66 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
-CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+
+-- A CREUSER : CAUSE A SYNTAXE ERROR 
+
+-- CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+--   RETURNS trigger AS
+-- $BODY$
+-- BEGIN
+--       EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
+-- END;
+-- $BODY$
+--   LANGUAGE plpgsql VOLATILE
+--   COST 100;
+
+
+----------------------
+--FUNCTIONS TRIGGERS--
+----------------------
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
   RETURNS trigger AS
 $BODY$
-begin
-        PERFORM REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
-end;
-$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+  
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+        FOR id_area_loop IN (
+        SELECT a.id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese
+        )
+        LOOP
+          EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
+        END LOOP;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_insert_cor_arera_synthese
+  AFTER INSERT OR UPDATE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
 
 ---------
 --VIEWS--
@@ -466,50 +560,67 @@ LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
 
-CREATE OR REPLACE VIEW v_synthese_decode_nomenclatures AS
- SELECT s.id_synthese,
-    n3.label_default AS nat_obj_geo,
-    n24.label_default AS grp_typ,
-    n14.label_default AS obs_meth,
-    n100.label_default AS obs_technique,
-    n13.label_default AS bio_status,
-    n7.label_default AS bio_condition,
-    n8.label_default AS naturalness,
-    n15.label_default AS exist_proof,
-    n101.label_default AS valid_status,
-    n5.label_default AS diffusion_level,
-    n10.label_default AS life_stage,
-    n9.label_default AS sex,
-    n6.label_default AS obj_count,
-    n21.label_default AS type_count,
-    n16.label_default AS sensitivity,
-    n18.label_default AS observation_status,
-    n4.label_default AS blurring,
-    n19.label_default AS source_status,
-    n20.label_default AS determination_method
-   FROM gn_synthese.synthese s
-     JOIN ref_nomenclatures.t_nomenclatures n3 ON n3.cd_nomenclature = s.cd_nomenclature_geo_object_nature
-     JOIN ref_nomenclatures.t_nomenclatures n24 ON n24.cd_nomenclature = s.cd_nomenclature_grp_typ
-     JOIN ref_nomenclatures.t_nomenclatures n14 ON n14.cd_nomenclature = s.cd_nomenclature_obs_meth
-     JOIN ref_nomenclatures.t_nomenclatures n100 ON n100.cd_nomenclature = s.cd_nomenclature_obs_technique
-     JOIN ref_nomenclatures.t_nomenclatures n13 ON n13.cd_nomenclature = s.cd_nomenclature_bio_status
-     JOIN ref_nomenclatures.t_nomenclatures n7 ON n7.cd_nomenclature = s.cd_nomenclature_bio_condition
-     JOIN ref_nomenclatures.t_nomenclatures n8 ON n8.cd_nomenclature = s.cd_nomenclature_naturalness
-     JOIN ref_nomenclatures.t_nomenclatures n15 ON n15.cd_nomenclature = s.cd_nomenclature_exist_proof
-     JOIN ref_nomenclatures.t_nomenclatures n101 ON n101.cd_nomenclature = s.cd_nomenclature_valid_status
-     JOIN ref_nomenclatures.t_nomenclatures n5 ON n5.cd_nomenclature = s.cd_nomenclature_diffusion_level
-     JOIN ref_nomenclatures.t_nomenclatures n10 ON n10.cd_nomenclature = s.cd_nomenclature_life_stage
-     JOIN ref_nomenclatures.t_nomenclatures n9 ON n9.cd_nomenclature = s.cd_nomenclature_sex
-     JOIN ref_nomenclatures.t_nomenclatures n6 ON n6.cd_nomenclature = s.cd_nomenclature_obj_count
-     JOIN ref_nomenclatures.t_nomenclatures n21 ON n21.cd_nomenclature = s.cd_nomenclature_type_count
-     JOIN ref_nomenclatures.t_nomenclatures n16 ON n16.cd_nomenclature = s.cd_nomenclature_sensitivity
-     JOIN ref_nomenclatures.t_nomenclatures n18 ON n18.cd_nomenclature = s.cd_nomenclature_observation_status
-     JOIN ref_nomenclatures.t_nomenclatures n4 ON n4.cd_nomenclature = s.cd_nomenclature_blurring
-     JOIN ref_nomenclatures.t_nomenclatures n19 ON n19.cd_nomenclature = s.cd_nomenclature_source_status
-     JOIN ref_nomenclatures.t_nomenclatures n20 ON n19.cd_nomenclature = s.cd_nomenclature_determination_method
-     ;
+CREATE OR REPLACE VIEW v_synthese_for_web_app_bis AS
+SELECT
+  s.id_synthese,
+  s.id_source,
+  so.name_source,
+  so.entity_source_pk_field,
+  s.entity_source_pk_value,
+  so.url_source,
+  d.dataset_name,
+  s.id_municipality,
+  s.id_dataset,
+  s.count_min,
+  s.count_max,
+  s.cd_nom,
+  t.nom_complet,
+  COALESCE(t.nom_vern, 'Null'::character varying(255)) AS nom_vern,
+  s.nom_cite,
+  s.meta_v_taxref AS taxref_version,
+  s.sample_number_proof,
+  s.digital_proof,
+  s.non_digital_proof,
+  s.altitude_min,
+  s.altitude_max,
+  s.the_geom_point,
+  s.the_geom_4326,
+  s.date_min,
+  s.date_max,
+  s.validation_comment,
+  s.observers,
+  s.determiner,
+  s.comments
+FROM gn_synthese.synthese s
+JOIN gn_synthese.t_sources so ON so.id_source = s.id_source
+JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+;
 
-
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS 
+SELECT
+s.id_synthese,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('NAT_OBJ_GEO', s.cd_nomenclature_geo_object_nature) AS nat_obj_geo,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('TYP_GRP', s.cd_nomenclature_grp_typ) AS grp_typ,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('METH_OBS', s.cd_nomenclature_obs_meth) AS obs_method,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('TECHNIQUE_OBS', s.cd_nomenclature_obs_technique) AS obs_technique,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('STATUT_BIO', s.cd_nomenclature_bio_status) AS bio_status,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('ETA_BIO', s.cd_nomenclature_bio_condition) AS bio_condition,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('NATURALITE', s.cd_nomenclature_naturalness) AS naturalness,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('PREUVE_EXIST', s.cd_nomenclature_exist_proof) AS exist_proof ,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('STATUT_VALID', s.cd_nomenclature_valid_status) AS valid_status,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('NIV_PRECIS', s.cd_nomenclature_diffusion_level) AS diffusion_level,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('STADE_VIE', s.cd_nomenclature_life_stage) AS life_stage,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('SEXE', s.cd_nomenclature_sex) AS sex,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('OBJ_DENBR', s.cd_nomenclature_obj_count) AS obj_count,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('TYP_DENBR', s.cd_nomenclature_type_count) AS type_count,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('SENSIBILITE', s.cd_nomenclature_sensitivity) AS sensitivity,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('STATUT_OBS', s.cd_nomenclature_observation_status) AS observation_status,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('DEE_FLOU', s.cd_nomenclature_blurring) AS blurring,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('STATUT_SOURCE', s.cd_nomenclature_source_status) AS source_status,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('TYP_INF_GEO', s.cd_nomenclature_info_geo_type) AS info_geo_type,
+ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('cd_nomenclature_determination_method', s.cd_nomenclature_determination_method) AS determination_method
+FROM gn_synthese.synthese s;
 ------------
 --TRIGGERS--
 ------------
@@ -531,6 +642,11 @@ CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
   FOR EACH ROW
   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
+CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER INSERT OR UPDATE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
 
 --------
 --DATA--

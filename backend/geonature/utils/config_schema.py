@@ -6,6 +6,11 @@ import os
 
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Regexp
+from geonature.core.gn_synthese.synthese_config import (
+    DEFAULT_SYNTHESE_COLUMNS,
+    DEFAULT_TAXONOMIC_COLUMNS,
+    DEFAULT_NOMENCLATURE_COLUMNS
+)
 
 
 class CasUserSchemaConf(Schema):
@@ -71,6 +76,20 @@ class GnFrontEndConf(Schema):
     MULTILINGUAL = fields.Boolean(missing=False)
 
 
+class SyntheseExportColumn(Schema):
+    TAXONOMIC_COLUMNS = fields.List(fields.String(), missing=DEFAULT_TAXONOMIC_COLUMNS)
+    SYNTHESE_COLUMNS = fields.List(fields.String(), missing=DEFAULT_SYNTHESE_COLUMNS)
+    NOMENCLATURE_COLUMNS = fields.List(fields.String(), missing=DEFAULT_NOMENCLATURE_COLUMNS)
+
+
+class Synthese(Schema):
+    AREA_FILTERS = fields.List(fields.Dict, missing=[])
+    EXPORT_COLUMNS = fields.Nested(
+        SyntheseExportColumn,
+        missing=dict()
+    )
+
+
 class MailErrorConf(Schema):
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_HOST = fields.String(missing="")
@@ -100,6 +119,7 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
+    SYNTHESE = fields.Nested(Synthese, missing=dict())
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
 
 
@@ -113,11 +133,10 @@ class ManifestSchemaConf(Schema):
 
 
 class ManifestSchemaProdConf(Schema):
-    #module_path = fields.String(required=True)
+    # module_path = fields.String(required=True)
     module_name = fields.String(required=True)
 
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
     id_application = fields.Integer(required=True)
-

@@ -12,55 +12,76 @@
 </table> -->
 
 <!--Table-->
-<ngx-datatable 
-    #table class="material striped margin-top-xs table-size expandable" 
-    [rows]="mapListService.tableData" 
-    [columns]="SYNTHESE_CONFIG.default_columns"
-    [columnMode]="'force'"
-    [loadingIndicator]="true"
-    [headerHeight]="50" 
-    [footerHeight]="35" 
-    [rowHeight]="50"
-    [scrollbarV]="false"
-    [draggable]="false" 
-    [selected]="mapListService.selectedRow"
-    [externalPaging]="false" 
-    [selectionType]="'single'" 
-    [count]="mapListService.tableData.length" 
-    [rowClass]="mapListService.getRowClass" 
-    (select)="mapListService.onRowSelect($event)">
-
-    <!-- ACTION COLUMNS 
-    <ngx-datatable-column maxWidth="50">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
-                <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o"
-                    aria-hidden="true"></i>
-            </button>
-        </ng-template>
-    </ngx-datatable-column>
-
-    <ngx-datatable-column maxWidth="50">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])">
-                <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle"
-                    aria-hidden="true"></i>
-            </button>
-        </ng-template>
-    </ngx-datatable-column>
-
-    <ngx-datatable-column maxWidth="50">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-secondary btn-no-padding" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
-                <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}"
-                    class="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-        </ng-template>
-    </ngx-datatable-column>
-    -->
+<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData"
+  [columns]="SYNTHESE_CONFIG.default_columns" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50"
+  [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
+  [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
 
 
-    <!-- DATA COLOMNS -->
-    <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
-    </ngx-datatable-column>
+  <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+      <div style="padding-left:35px;">
+        <div>
+          <small>
+            <b> Altitude </b>: entre {{row.atltude_min}}m - {{row.altitude_max}}m
+            <br/>
+            <b> Méthode d'observation: </b> {{selectedObs?.obs_method}}
+            <b> Stade de vie: </b> {{selectedObs?.life_stage}}
+            <br/>
+            <b> Denombrement </b> Entre {{row.count_min}}/{{row.count_min}} individu de sexe: {{selectedObs?.sex}}
+            <br/> Stade de vie : {{ selectedObs?.bio_condition}}
+            <br/>
+          </small>
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-row-detail>
+
+  <ngx-datatable-column [width]="10" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+      <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expand/Collapse Row"
+        (click)="toggleExpandRow(row)">
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- ACTION COLUMNS -->
+  <!-- <ngx-datatable-column maxWidth="10">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.U" (click)="onEditReleve(row.url_source, row.entity_source_pk_value)">
+        <i [ngClass]="{'disabled' : !row.cruved.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o"
+          aria-hidden="true"></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column maxWidth="10">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+        <i [ngClass]="{'disabled' : !row.cruved.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}"
+          class="fa fa-trash-o" aria-hidden="true"></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column> -->
+
+
+  <!-- DATA COLOMNS -->
+  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
+  </ngx-datatable-column>
 </ngx-datatable>
+
+
+
+<ng-template #modalConfirm let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel"> {{'Releve.Delete' | translate }} {{ mapListService.selectedRow[0][mapListService.idName]}} ?</h5>
+  </div>
+  <div class="modal-body">
+    <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
+    <button type="button" class="btn btn-danger" (click)="c(); onDeleteObservation(mapListService.selectedRow[0].id_synthese)">
+      {{'Delete' | translate }} </button>
+  </div>
+</ng-template>
+
+
+<button (click)="downloadData('geojson')"> export </button>

@@ -9,12 +9,11 @@ from geoalchemy2 import Geometry
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
-from geonature.utils.utilsshapefile import shapeseralizable
+from geonature.utils.utilsgeometry import shapeseralizable
 from geonature.utils.env import DB
 from geonature.utils.errors import InsufficientRightsError
 from geonature.core.users.models import TRoles
 from geonature.core.gn_meta.models import TDatasets
-
 
 
 class ReleveModel(DB.Model):
@@ -112,6 +111,7 @@ corRoleRelevesOccurrence = DB.Table(
     )
 )
 
+
 @serializable
 class CorCountingOccurrence(DB.Model):
     __tablename__ = 'cor_counting_occtax'
@@ -127,10 +127,6 @@ class CorCountingOccurrence(DB.Model):
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
-    unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()])
-    )
 
 
 @serializable
@@ -157,7 +153,7 @@ class TOccurrencesOccurrence(DB.Model):
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
-        default=select([func.gn_commons.get_default_parameter('taxref_version', 'NULL')])
+        default=select([func.gn_commons.get_default_parameter('taxref_version')])
     )
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
@@ -169,8 +165,6 @@ class TOccurrencesOccurrence(DB.Model):
         lazy='joined',
         cascade="all, delete-orphan"
     )
-
-
 
 
 @serializable
@@ -199,7 +193,6 @@ class TRelevesOccurrence(ReleveModel):
     geom_local = DB.Column(
         Geometry('GEOMETRY', current_app.config['LOCAL_SRID'])
     )
-    
 
     t_occurrences_occtax = relationship(
         "TOccurrencesOccurrence",
@@ -314,4 +307,3 @@ class DefaultNomenclaturesValue(DB.Model):
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)
-
