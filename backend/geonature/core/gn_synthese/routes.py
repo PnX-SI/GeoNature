@@ -19,7 +19,8 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VSyntheseDecodeNomenclatures,
-    VSyntheseForWebAppBis
+    VSyntheseForWebAppBis,
+    Taxref
 )
 from geonature.core.gn_synthese.repositories import get_all_synthese
 
@@ -40,11 +41,13 @@ from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,
     json_resp, testDataType
 )
-from geonature.utils.utilsgeometry import to_shape
+from geonature.utils.utilsgeometry import(
+    ShapeService
+)
 from geonature.core.gn_meta import mtd_utils
 
 # debug
-#current_app.config['SQLALCHEMY_ECHO'] = True
+# current_app.config['SQLALCHEMY_ECHO'] = True
 
 routes = Blueprint('gn_synthese', __name__)
 
@@ -120,8 +123,14 @@ def get_synthese(info_role):
 
     filters = dict(request.args)
 
+    if 'limit' in filters:
+        result_limit = filters.pop('limit')[0]
+    else:
+        result_limit = 10000
+
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    data = get_all_synthese(filters, info_role, allowed_datasets)
+    q = get_all_synthese(filters, info_role, allowed_datasets)
+    data = q.limit(result_limit)
 
     features = []
     for d in data:
@@ -191,7 +200,7 @@ def delete_synthese(info_role, id_synthese):
     synthese_releve = synthese_obs.get_observation_if_allowed(info_role, user_datasets)
 
     # get and delete source
-    # FIX
+    # TODO
     # est-ce qu'on peut supprimer les données historiques depuis la synthese
     source = DB.session.query(TSources).filter(TSources.id_source == synthese_obs.id_source).one()
     pk_field_source = source.entity_source_pk_field
@@ -218,27 +227,51 @@ def delete_synthese(info_role, id_synthese):
 @fnauth.check_auth_cruved('E', True)
 def export(info_role):
     filters = dict(request.args)
+    if 'limit' in filters:
+        result_limit = filters.pop('limit')[0]
+    else:
+        result_limit = 40000
+
     export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    data = get_all_synthese(filters, info_role, allowed_datasets)
+    q = get_all_synthese(filters, info_role, allowed_datasets)
+    q = q.join(
+        VSyntheseDecodeNomenclatures,
+        VSyntheseDecodeNomenclatures.id_synthese == Synthese.id_synthese
+    )
+    q = q.add_entity(VSyntheseDecodeNomenclatures)
+    data = q.limit(result_limit)
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
-    export_columns = Synthese.__table__.columns.keys()
+    synthese_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['SYNTHESE_COLUMNS']
+    nomenclature_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['NOMENCLATURE_COLUMNS']
+    taxonomic_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['TAXONOMIC_COLUMNS']
+    formated_data = []
+
+    for d in data:
+        synthese = d[0].as_dict(columns=synthese_columns)
+        taxon = d[1].as_dict(columns=taxonomic_columns)
+        dataset = d[3].as_dict(columns='dataset_name')
+        decoded = d[4].as_dict(columns=nomenclature_columns)
+        synthese.update(taxon)
+        synthese.update(dataset)
+        synthese.update(decoded)
+        formated_data.append(synthese)
+
+    export_columns = [key for key in formated_data[0]]
     if export_format == 'csv':
         return to_csv_resp(
             file_name,
-            [d[0].as_dict() for d in data],
-            export_columns,
-            ';'
+            formated_data,
+            separator=';',
+            columns=export_columns,
         )
 
     elif export_format == 'geojson':
         results = FeatureCollection(
-            [d[0].get_geofeature(
-                columns=export_columns
-            ) for d in data]
+            formated_data
         )
         return to_json_resp(
             results,
@@ -248,16 +281,39 @@ def export(info_role):
         )
     else:
         try:
-            update_data = [d[0] for d in data]
+
+            db_cols_synthese = [
+                db_col for db_col in Synthese.__mapper__.c
+                if not db_col.type.__class__.__name__ == 'Geometry' and
+                db_col.key in synthese_columns
+            ]
+            db_cols_nomenclature = [
+                db_col for db_col in VSyntheseDecodeNomenclatures.__mapper__.c
+                if db_col.key in nomenclature_columns
+            ]
+            db_cols_taxonomy = [
+                db_col for db_col in Taxref.__mapper__.c
+                if db_col.key in taxonomic_columns
+            ]
+
+            db_cols = db_cols_synthese + db_cols_nomenclature + db_cols_taxonomy
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-            Synthese.as_shape(
-                geom_col='the_geom_4326',
-                srid=4326,
-                data=update_data,
-                dir_path=dir_path,
-                file_name=file_name,
-                columns=export_columns,
-            )
+            shape_service = ShapeService(db_cols, srid=4326)
+            shape_service.create_shape_struct()
+            for row in data:
+                row_as_list = []
+                synthese_row_as_list = row[0].as_list(columns=synthese_columns)
+                nomenclature_row_as_list = row[4].as_list(columns=nomenclature_columns)
+                # for n in nomenclature_row_as_list:
+                #     print(n)
+                #     print(type(n))
+                # print(*nomenclature_row_as_list)
+                taxon_row_as_list = row[1].as_list(columns=taxonomic_columns)
+                geom = row[0].the_geom_4326
+                row_as_list = synthese_row_as_list + nomenclature_row_as_list + taxon_row_as_list
+                shape_service.create_features(row_as_list, geom)
+            shape_service.save_shape(dir_path, file_name)
+            shape_service.zip_it(dir_path, file_name)
 
             return send_from_directory(
                 dir_path,
