@@ -38,11 +38,15 @@ def filter_query_with_cruved(q, user, allowed_datasets):
 
 
 def get_all_synthese(filters, user, allowed_datasets):
-    if 'limit' in filters:
-        result_limit = filters.pop('limit')[0]
-    else:
-        result_limit = 10000
+    """
+    Return a query filtered with the cruved and all
+    the filters available in the synthese form
+    parameters:
+        - filters: a dict of filter
+        - user: a user object from TRoles
+        - allowed datasets: an array of ID dataset where the users have autorization
 
+    """
     q = (
         DB.session.query(Synthese, Taxref, TSources, TDatasets)
         .join(
@@ -69,7 +73,6 @@ def get_all_synthese(filters, user, allowed_datasets):
         q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')[0]+'%'))
 
     if 'date_min' in filters:
-        print(filters)
         q = q.filter(Synthese.date_min >= filters.pop('date_min')[0])
 
     if 'date_max' in filters:
@@ -89,9 +92,7 @@ def get_all_synthese(filters, user, allowed_datasets):
     if 'geoIntersection' in filters:
         # Insersect with the geom send from the map
         geom_wkt = loads(filters['geoIntersection'][0])
-        print(geom_wkt)
         # if the geom is a circle
-        print(filters)
         if 'radius' in filters:
             print('enter la')
             radius = filters.pop('radius')[0]
@@ -114,10 +115,7 @@ def get_all_synthese(filters, user, allowed_datasets):
         else:
             col = getattr(Synthese.__table__.columns, colname)
             q = q.filter(col.in_(value))
-    print(q)
     q = q.order_by(
         Synthese.date_min.desc()
     )
-    data = q.limit(result_limit)
-
-    return data
+    return q

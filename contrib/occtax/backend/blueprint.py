@@ -502,7 +502,8 @@ def export(info_role):
 
     export_format = request.args['format'] if 'format' in request.args else 'geojson'
     if export_format == 'csv':
-        columns = export_columns if len(export_columns) > 0 else export_view.__table__.columns.keys()
+        # print(export_view.meta.__table__.columns.keys())
+        columns = export_columns if len(export_columns) > 0 else [db_col.key for db_col in export_view.db_cols]
         return to_csv_resp(
             file_name,
             [export_view.as_dict(d) for d in data],
@@ -524,12 +525,13 @@ def export(info_role):
         )
     else:
         try:
+            db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             export_view.as_shape(
+                db_cols=db_cols,
                 data=data,
                 dir_path=dir_path,
                 file_name=file_name,
-                columns=export_columns,
             )
 
             return send_from_directory(
