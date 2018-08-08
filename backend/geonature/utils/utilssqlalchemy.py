@@ -154,7 +154,6 @@ class GenericTable:
             mapped_table=self,
             data=data,
             geom_col=self.geometry_field,
-            srid=self.srid,
             dir_path=dir_path,
             file_name=file_name
         )
