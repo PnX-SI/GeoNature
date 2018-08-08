@@ -90,6 +90,7 @@
         || fs.countingForm.invalid
         || fs.showOccurrence
         || (fs.showOccurrence && fs.occurrenceForm.invalid )
+        || disabledAfterPost
         )" (click)="submitData()">
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
       {{ 'Releve.SaveReleve' | translate }}
