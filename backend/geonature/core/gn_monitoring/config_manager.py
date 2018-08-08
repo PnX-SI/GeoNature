@@ -2,7 +2,10 @@
     Fonctions permettant de lire un fichier yml de configuration
     et de le parser
 '''
-from pypnnomenclature.repository import get_nomenclature_list_formated
+from pypnnomenclature.repository import (
+    get_nomenclature_list_formated,
+    get_nomenclature_id_term
+)
 from geonature.utils.utilstoml import load_toml
 
 from geonature.core.gn_commons.repositories import get_table_location_id
@@ -52,6 +55,13 @@ def parse_field(fieldlist):
                     'group2_inpn': field.get('group2_inpn'),
                 }
             )
+            if 'default' in field:
+                field['options']['default'] = get_nomenclature_id_term(
+                    str(field['thesaurus_code_type']),
+                    str(field['default']),
+                    False
+                )
+
         if 'thesaurusHierarchyID' in field:
             field['options']['choices'] = format_nomenclature_list(
                 {
@@ -64,6 +74,7 @@ def parse_field(fieldlist):
             field['options']['id_table_location'] = (
                 get_table_location_id(schema_name, table_name)
             )
+
         if 'fields' in field:
             field['fields'] = parse_field(field['fields'])
 
