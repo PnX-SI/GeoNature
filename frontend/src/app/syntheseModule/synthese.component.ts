@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-synthese',
@@ -9,16 +10,30 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
   templateUrl: 'synthese.component.html'
 })
 export class SyntheseComponent implements OnInit {
-  constructor(public searchService: DataService, private _mapListService: MapListService) {}
+  constructor(
+    public searchService: DataService,
+    private _mapListService: MapListService,
+    private _commonService: CommonService
+  ) {}
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
-    this.searchService.getSyntheseData(formParams).subscribe(data => {
-      this._mapListService.geojsonData = data;
-      this._mapListService.loadTableData(data, this.customColumns.bind(this));
-      this._mapListService.idName = 'id_synthese';
-      this.searchService.dataLoaded = true;
-    });
+    this.searchService.getSyntheseData(formParams).subscribe(
+      data => {
+        this._mapListService.geojsonData = data;
+        this._mapListService.loadTableData(data, this.customColumns.bind(this));
+        this._mapListService.idName = 'id_synthese';
+        this.searchService.dataLoaded = true;
+      },
+      error => {
+        this.searchService.dataLoaded = true;
+        if (error.status === 403) {
+          this._commonService.translateToaster('error', 'NotAllowed');
+        } else {
+          this._commonService.translateToaster('error', 'ErrorMessage');
+        }
+      }
+    );
   }
   ngOnInit() {
     const initialData = { limit: 100 };
