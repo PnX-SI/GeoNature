@@ -6,7 +6,7 @@ import os
 
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Regexp
-from geonature.core.gn_synthese.config import (
+from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_SYNTHESE_COLUMNS,
     DEFAULT_TAXONOMIC_COLUMNS,
     DEFAULT_NOMENCLATURE_COLUMNS
