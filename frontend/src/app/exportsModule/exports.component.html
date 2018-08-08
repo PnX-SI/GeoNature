@@ -9,7 +9,7 @@
       <div class="card">
         <div class="card-block">
 
-          <pnx-datasets appId="14" displayAll='false' [parentFormControl]="dataSetsControls.controls[i]" label="{{ 'Releve.Dataset' | translate }}">
+          <pnx-datasets appId="14" displayAll='false' [parentFormControl]="dataSetsControls.controls[i]" label="{{ 'Meta.Dataset' | translate }}">
           </pnx-datasets>
           <button type="button" class="btn btn-success download" (click)="exportCsv(view.id_view, dataSetsControls.controls[i].value)">
             <i class="fa fa-download" aria-hidden="true"></i>

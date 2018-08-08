@@ -1,4 +1,4 @@
-#redirect{
+#redirect {
   position: absolute;
   right: 1%;
   z-index: 1000;
@@ -10,7 +10,6 @@
   height: 40px;
   width: 40px;
   border-radius: 30px;
-
 
   //padding: 0px;
 }
@@ -25,26 +24,23 @@
   top: 25%;
   height: 35px;
   font-size: 15px;
-
-
 }
 
-#download-btn{
+#download-btn {
   margin-top: 5px;
-  padding: 5px
+  padding: 5px;
 }
 
-#add-btn { 
+#add-btn {
   float: right;
   margin-top: 5px;
   margin-right: 5px;
   padding: 5px;
 }
 
-#refresh-filter{
-  color:red;
+#refresh-filter {
+  color: red;
 }
-
 
 .actions {
   height: 35px;
@@ -57,7 +53,7 @@
   height: 2.1rem !important;
 }
 
-.dynamic-form{
+.dynamic-form {
   display: flex;
   margin-right: 5px;
   max-width: 15%;
@@ -77,12 +73,12 @@
   height: 2rem;
 }
 
-.col-list{
+.col-list {
   list-style: none;
 }
 
-.modal-body{
-  text-align: left!important;
+.modal-body {
+  text-align: left !important;
 }
 
 .tab-container {
@@ -90,21 +86,20 @@
   height: 80vh;
 }
 ngx-datatable {
-  max-height: 79vh!important;
-  box-shadow: none!important;
-   overflow-y: scroll;
+  max-height: 79vh !important;
+  box-shadow: none !important;
+  overflow-y: scroll;
 }
 
 .form-control-sm {
-  height: 5.0rem !important;
+  height: 5rem !important;
 }
 
-:host /deep/ #dataset-form {
+:host /deep/ #dataset-form  {
   height: 2.05rem !important;
 }
 
-
-:host /deep/ .ngx-datatable.material .datatable-footer .page-count{
+:host /deep/ .ngx-datatable.material .datatable-footer .page-count {
   padding: 5px;
   line-height: 1.2;
   height: 40px;
@@ -113,35 +108,29 @@ ngx-datatable {
 .modal-body {
   text-align: center;
 }
-
-
-
 :host /deep/ .datatable-body-row.active .datatable-row-group {
   background-color: rgb(117, 227, 118) !important;
 }
-
 .card-padding {
   background-color: white;
   padding: 10px;
-  
 }
 
 .ngx-datatable.material {
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12) !important;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12) !important;
 }
-
 
 .disabled {
-  cursor: not-allowed!important;
+  cursor: not-allowed !important;
 }
-
 
 .export-button {
   width: 70%;
   margin: 0 auto;
 }
 
-.modal-dialog{
+.modal-dialog {
   max-width: none !important;
   width: 50%;
 }
@@ -151,7 +140,7 @@ ngx-datatable {
   width: 50%;
 }
 
-.format-btn{
+.format-btn {
   margin-left: 5px;
 }
 

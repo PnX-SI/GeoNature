@@ -12,7 +12,6 @@ from geonature.utils.env import DB
 from geonature.core.users.models import TRoles, BibOrganismes
 
 
-
 @serializable
 class CorAcquisitionFrameworkActor(DB.Model):
     __tablename__ = 'cor_acquisition_framework_actor'
@@ -42,12 +41,11 @@ class CorDatasetActor(DB.Model):
     id_organism = DB.Column(
         DB.Integer,
         ForeignKey('utilisateurs.bib_organismes.id_organisme')
-        )
-    
+    )
+
     id_nomenclature_actor_role = DB.Column(DB.Integer)
     role = relationship("TRoles", foreign_keys=[id_role])
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
-    
 
 
 @serializable
@@ -102,7 +100,7 @@ class TDatasets(DB.Model):
 
     cor_dataset_actor = relationship(
         CorDatasetActor,
-        lazy='joined',
+        lazy='select',
         cascade="save-update, delete, delete-orphan"
     )
 
@@ -117,7 +115,6 @@ class TDatasets(DB.Model):
             return id_dataset[0]
         return id_dataset
 
-
     @staticmethod
     def get_uuid(id_dataset):
         uuid_dataset = DB.session.query(
@@ -129,10 +126,9 @@ class TDatasets(DB.Model):
             return uuid_dataset[0]
         return uuid_dataset
 
-
     @staticmethod
     def get_user_datasets(user):
-        """get the dataset(s) where the user is actor
+        """get the dataset(s) where the user is actor (himself or with its organism)
             param: user from TRole model
             return: a list of id_dataset """
         q = DB.session.query(
@@ -150,7 +146,7 @@ class TDatasets(DB.Model):
                     CorDatasetActor.id_role == user.id_role
                 )
             )
-        return [d.id_dataset for d in q.all()]
+        return list(set([d.id_dataset for d in q.all()]))
 
 
 @serializable

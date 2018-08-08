@@ -1,8 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DataService } from '../services/data.service';
-import { FormService } from '../services/form.service';
+import { SyntheseFormService } from '../services/form.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { AppConfig } from '@geonature_config/app.config';
+import { MapService } from '@geonature_common/map/map.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -10,127 +12,161 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['synthese-search.component.scss']
 })
 export class SyntheseSearchComponent implements OnInit {
-  public searchForm: FormGroup;
+  public AppConfig = AppConfig;
   public nomenclaturesForms = [
     {
       controlType: 'nomenclature',
       label: "Technique d'observation",
-      key: 'id_nomenclature_obs_technique',
-      idComponent: 100,
-      required: false
+      key: 'cd_nomenclature_obs_technique',
+      codeNomenclatureType: 'TECHNIQUE_OBS',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Type de regroupement',
-      key: 'id_nomenclature_grp_typ',
-      idComponent: 24,
-      required: false
+      key: 'cd_nomenclature_grp_typ',
+      codeNomenclatureType: 'TYP_GRP',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: "Statut d'observation",
-      key: 'id_nomenclature_observation_status',
-      idComponent: 18,
-      required: false
+      key: 'cd_nomenclature_observation_status',
+      codeNomenclatureType: 'STATUT_OBS',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: "Méthode d'observation",
-      key: 'id_nomenclature_obs_meth',
-      idComponent: 14,
-      required: false
+      key: 'cd_nomenclature_obs_meth',
+      codeNomenclatureType: 'METH_OBS',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Etat biologique',
-      key: 'id_nomenclature_bio_condition',
-      idComponent: 7,
-      required: false
+      key: 'cd_nomenclature_bio_condition',
+      codeNomenclatureType: 'ETA_BIO',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Statut biologique',
-      key: 'id_nomenclature_bio_status',
-      idComponent: 13,
-      required: false
+      key: 'cd_nomenclature_bio_status',
+      codeNomenclatureType: 'STATUT_BIO',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Naturalité',
-      key: 'id_nomenclature_naturalness',
-      idComponent: 8,
-      required: false
+      key: 'cd_nomenclature_naturalness',
+      codeNomenclatureType: 'NATURALITE',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Méthode de détermination',
-      key: 'id_nomenclature_determination_method',
-      idComponent: 106,
-      required: false
+      key: 'cd_nomenclature_determination_method',
+      codeNomenclatureType: 'METH_DETERMIN',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: "Preuve d'existence",
-      key: 'id_nomenclature_exist_proof',
-      idComponent: 15,
-      required: false
+      key: 'cd_nomenclature_exist_proof',
+      codeNomenclatureType: 'PREUVE_EXIST',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Niveau de diffusion',
-      key: 'id_nomenclature_diffusion_level',
-      idComponent: 5,
-      required: false
+      key: 'cd_nomenclature_diffusion_level',
+      codeNomenclatureType: 'NIV_PRECIS',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Statut source',
-      key: 'id_nomenclature_source_status',
-      idComponent: 19,
-      required: false
+      key: 'cd_nomenclature_source_status',
+      codeNomenclatureType: 'STATUT_SOURCE',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Floutage',
-      key: 'id_nomenclature_blurring',
-      idComponent: 4,
-      required: false
+      key: 'cd_nomenclature_blurring',
+      codeNomenclatureType: 'DEE_FLOU',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     // counting
     {
       controlType: 'nomenclature',
       label: 'Stade de vie',
-      key: 'id_nomenclature_life_stage',
-      idComponent: 10,
-      required: false
+      key: 'cd_nomenclature_life_stage',
+      codeNomenclatureType: 'STADE_VIE',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Sexe',
-      key: 'id_nomenclature_sex',
-      idComponent: 9,
-      required: false
+      key: 'cd_nomenclature_sex',
+      codeNomenclatureType: 'SEXE',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Objet du dénombrement',
-      key: 'id_nomenclature_obj_count',
-      idComponent: 6,
-      required: false
+      key: 'cd_nomenclature_obj_count',
+      codeNomenclatureType: 'OBJ_DENBR',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Type de dénombrement',
-      key: 'id_nomenclature_type_count',
-      idComponent: 21,
-      required: false
+      key: 'cd_nomenclature_type_count',
+      codeNomenclatureType: 'TYP_DENBR',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     },
     {
       controlType: 'nomenclature',
       label: 'Statut de validation',
-      key: 'id_nomenclature_valid_status',
-      idComponent: 101,
-      required: false
+      key: 'cd_nomenclature_valid_status',
+      codeNomenclatureType: 'STATUT_VALID',
+      required: false,
+      keyValue: 'cd_nomenclature',
+      multiSelect: true
     }
   ];
 
@@ -138,18 +174,24 @@ export class SyntheseSearchComponent implements OnInit {
   constructor(
     private _fb: FormBuilder,
     public dataService: DataService,
-    public formService: FormService,
-    public ngbModal: NgbModal
+    public formService: SyntheseFormService,
+    public ngbModal: NgbModal,
+    public mapService: MapService
   ) {}
 
   ngOnInit() {}
 
   onSubmitForm() {
-    const params = Object.assign({}, this.searchForm.value);
-    if (params.cd_nom) {
-      params.cd_nom = params.cd_nom.cd_nom;
-    }
-    this.searchClicked.emit(params);
+    const updatedParams = this.formService.formatParams();
+    this.searchClicked.emit(updatedParams);
+  }
+
+  refreshFilters() {
+    this.formService.taxonsList = [];
+    this.formService.searchForm.reset();
+    // remove layers draw in the map
+    console.log(this.mapService.releveFeatureGroup);
+    this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
   }
 
   openModalCol(e, modalName) {

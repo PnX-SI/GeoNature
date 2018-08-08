@@ -6,6 +6,7 @@ from cookies import Cookie
 
 from geonature.utils.errors import InsufficientRightsError
 
+
 @pytest.mark.usefixtures('client_class')
 class TestApiModulePrOcctax:
     """
@@ -18,7 +19,6 @@ class TestApiModulePrOcctax:
         'Accept': mimetype
     }
 
-
     def test_get_releves(self):
         token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
@@ -28,18 +28,15 @@ class TestApiModulePrOcctax:
 
         assert response.status_code == 200
 
-
     def test_insert_update_delete_releves(self, releve_data):
         token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
-
 
         response = post_json(
             self.client,
             url_for('pr_occtax.insertOrUpdateOneReleve'),
             releve_data
         )
-
 
         assert response.status_code == 200
 
@@ -48,13 +45,11 @@ class TestApiModulePrOcctax:
         update_data['properties']['comment'] = 'Super MODIIFF'
         update_data['properties']['observers'] = [1]
 
-
         response = post_json(
             self.client,
             url_for('pr_occtax.insertOrUpdateOneReleve'),
             update_data
         )
-
 
         assert response.status_code == 200
 
@@ -70,7 +65,6 @@ class TestApiModulePrOcctax:
 
         assert response.status_code == 200
 
-
     def test_get_export_sinp(self):
         token = get_token(self.client)
         self.client.set_cookie('/', 'token', token)
@@ -80,9 +74,9 @@ class TestApiModulePrOcctax:
         )
 
         assert response.status_code == 200
-    
+
     def test_export_sinp_multiformat(self):
-        # User agent est digitiser que d'un seul relevé
+        # User agent est digitiser que d'un seul relevé avec 2 counting
         token = get_token(
             self.client,
             login="agent",
@@ -90,8 +84,8 @@ class TestApiModulePrOcctax:
         )
 
         base_query_string = {
-            'id_dataset':1,
-            'cd_nom':67111,
+            'id_dataset': 1,
+            'cd_nom': 67111,
             'date_up': '2017-05-11',
             'date_low': '2009-05-01'
         }
@@ -105,7 +99,6 @@ class TestApiModulePrOcctax:
 
         assert response.status_code == 200
 
-
         # geojson
         geojson_query_string = base_query_string.copy()
         geojson_query_string['format'] = 'geojson'
@@ -115,8 +108,8 @@ class TestApiModulePrOcctax:
         )
         assert response.status_code == 200
         data = json_of_response(response)
-        assert len(data['features']) == 1        
-        #shapefile
+        assert len(data['features']) == 2
+        # shapefile
         shape_query_string = base_query_string.copy()
         shape_query_string['format'] = 'shapefile'
         response = self.client.get(
@@ -124,7 +117,6 @@ class TestApiModulePrOcctax:
             query_string=shape_query_string
         )
         assert response.status_code == 200
-        
 
     # ## Test des droits ####
     def test_get_and_delete_releve(self):
@@ -138,7 +130,6 @@ class TestApiModulePrOcctax:
             url_for('pr_occtax.getOneReleve', id_releve=1)
         )
         assert response.status_code == 200
-
 
     def test_user_cannot_delete_releve(self):
         """

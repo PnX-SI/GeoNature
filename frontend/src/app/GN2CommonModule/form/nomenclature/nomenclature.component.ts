@@ -30,14 +30,19 @@ export class NomenclatureComponent extends GenericFormComponent
   public valueSubscription: Subscription;
   public currentCdNomenclature = 'null';
   public currentIdNomenclature: number;
+  public savedLabels;
   @Input() codeNomenclatureType: string;
   @Input() regne: string;
   @Input() group2Inpn: string;
+  @Input() returnedValue: string;
+  @Input() keyValue;
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
 
   ngOnInit() {
+    this.keyValue = this.keyValue || 'id_nomenclature';
+    this.returnedValue = this.returnedValue || 'id_nomenclature';
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
@@ -95,11 +100,19 @@ export class NomenclatureComponent extends GenericFormComponent
       .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
       .subscribe(data => {
         this.labels = data.values;
+        this.savedLabels = data.values;
       });
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.valueSubscription.unsubscribe();
+  }
+
+  filterItems(event) {
+    this.labels = this.savedLabels.filter(el => {
+      const isIn = el.label_default.toUpperCase().indexOf(event.toUpperCase());
+      return isIn !== -1;
+    });
   }
 }

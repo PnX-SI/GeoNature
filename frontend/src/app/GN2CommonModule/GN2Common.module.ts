@@ -47,7 +47,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
-
+import { AreasComponent } from '@geonature_common/form/areas/areas.component';
+import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -63,8 +64,7 @@ import { FormService } from './form/form.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
-import { SelectSearchComponent } from './form/select-search/select-search.component';
-import { NomenclatureMultiSelectComponent } from './form/nomenclature-multi-select/nomenclature-multi-select.component';
+import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -107,9 +107,10 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     DynamicFormComponent,
     MunicipalitiesComponent,
-    SelectSearchComponent,
+    MultiSelectComponent,
     GenericFormGeneratorComponent,
-    NomenclatureMultiSelectComponent
+    AreasComponent,
+    AcquisitionFrameworksComponent
   ],
   providers: [
     TranslateService,
@@ -118,8 +119,8 @@ export function HttpLoaderFactory(http: Http) {
     MapListService,
     CommonService,
     FormService,
-    DynamicFormService,
-     ],
+    DynamicFormService
+  ],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
@@ -152,10 +153,10 @@ export function HttpLoaderFactory(http: Http) {
     TranslateModule,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
-    SelectSearchComponent,
+    MultiSelectComponent,
     GenericFormGeneratorComponent,
-    NomenclatureMultiSelectComponent
-    
+    AreasComponent,
+    AcquisitionFrameworksComponent
   ]
 })
 export class GN2CommonModule {}

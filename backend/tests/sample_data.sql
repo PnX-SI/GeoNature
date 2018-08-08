@@ -70,6 +70,7 @@ INSERT INTO pr_occtax.t_releves_occtax (id_releve_occtax,id_dataset,id_digitiser
 (1,1,1,'Obervateur test insert',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-01','2017-01-01','12:05:02','12:05:02',1500,1565,'web','Exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',10)
 ,(2,1,1,'Obervateur test insert',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,'web','Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100)
 ,(3,1,2,'Agent test',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,'web','Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
+
 SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', 3, true);
 
 
@@ -139,27 +140,6 @@ VALUES
   ),
   (
     3,
-    2,
-    ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
-    ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
-    ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'),
-    ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'),
-    ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'),
-    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '0'),
-    ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
-    ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
-  'Donovan M',
-  ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
-  67111,
-  'Ablette',
-  'Taxref V9.0',
-  '',
-  '',
-  'Poils de plumes',
-  'Troisieme test'
-  ),
-  (
-    4,
     3,
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
     ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
@@ -238,7 +218,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
   ),
   (
     5,
-    4,
+    3,
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '3') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
     ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),

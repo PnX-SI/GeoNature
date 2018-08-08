@@ -89,4 +89,14 @@ export class FormService {
       return null;
     }
   }
+
+  searchLocally(searchPatern, data) {
+    const savedData = data;
+    let filteredData = [];
+    filteredData = savedData.filter(el => {
+      const isIn = el.label_default.toUpperCase().indexOf(searchPatern.toUpperCase());
+      return isIn !== -1;
+    });
+    return filteredData;
+  }
 }
