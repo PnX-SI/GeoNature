@@ -90,7 +90,7 @@ geonature.utils.utilsgeometry.shapeserializable
 Décorateur pour les modèles SQLA:
 
 - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
-- Ajoute une méthode static ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
+- Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
 
 Fichier définition modèle ::
 
@@ -113,8 +113,8 @@ fichier utilisation modele ::
     # utilisation de as_shape()
     data = DB.session.query(MyShapeserializableClass).all()
     MyShapeserializableClass.as_shape(
-        geom_col = 'geom_4326',
-        srid: 4326,
+        geom_col='geom_4326',
+        srid=4326,
         data=data,
         dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
         file_name=file_name
