@@ -235,11 +235,11 @@ def export(info_role):
     export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     q = get_all_synthese(filters, info_role, allowed_datasets)
+    q = q.add_entity(VSyntheseDecodeNomenclatures)
     q = q.join(
         VSyntheseDecodeNomenclatures,
         VSyntheseDecodeNomenclatures.id_synthese == Synthese.id_synthese
     )
-    q = q.add_entity(VSyntheseDecodeNomenclatures)
     data = q.limit(result_limit)
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
@@ -248,8 +248,8 @@ def export(info_role):
     synthese_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['SYNTHESE_COLUMNS']
     nomenclature_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['NOMENCLATURE_COLUMNS']
     taxonomic_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['TAXONOMIC_COLUMNS']
-    formated_data = []
 
+    formated_data = []
     for d in data:
         synthese = d[0].as_dict(columns=synthese_columns)
         taxon = d[1].as_dict(columns=taxonomic_columns)
@@ -260,7 +260,7 @@ def export(info_role):
         synthese.update(decoded)
         formated_data.append(synthese)
 
-    export_columns = [key for key in formated_data[0]]
+    export_columns = formated_data[0].keys()
     if export_format == 'csv':
         return to_csv_resp(
             file_name,
@@ -309,7 +309,7 @@ def export(info_role):
                 row_as_list = synthese_row_as_list + nomenclature_row_as_list + taxon_row_as_list
                 shape_service.create_features(row_as_list, geom)
             shape_service.save_shape(dir_path, file_name)
-            shape_service.zip_it(dir_path, file_name)
+            shape_service.zip_it(dir_path, file_name, shape_service.saved_shapefiles)
 
             return send_from_directory(
                 dir_path,
