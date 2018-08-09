@@ -119,6 +119,7 @@ class CorRoleSynthese(DB.Model):
 
 
 @serializable
+@shapeseralizable
 class VSyntheseDecodeNomenclatures(DB.Model):
     __tablename__ = 'v_synthese_decode_nomenclatures'
     __table_args__ = {'schema': 'gn_synthese'}
@@ -144,6 +145,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 
 @serializable
+@shapeseralizable
 class Taxref(DB.Model):
     __tablename__ = 'taxref'
     __table_args__ = {'schema': 'taxonomie'}

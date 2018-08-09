@@ -142,15 +142,25 @@ def shapeseralizable(cls):
 class ShapeService():
     """
     Service to create shapefiles from sqlalchemy models
+    Init the service:
+    params:
+        - db_cols: column list of the sqlachemy models in the export
+            (type: List of SQLAlchemy Column class: returned by MappedClass.__mapper__.c)
+        - srid: EPSG code: type integer
+
+    Attributes:
+        point: shapefile Writter (shapefile librairy)
+        polyline: shapefile Writter (shapefile librairy)
+        polygon: shapefile Writter (shapefile librairy)
+        srid: EPSG code
+        db_cols: column list of the sqlachemy models in the export
+        saved_shapefiles: array of shapefiles written after call the save_shape method
+
     """
 
-    def __init__(self, db_columns, srid):
+    def __init__(self, db_columns, srid, format=['POINT', 'POLYLINE', 'POLYGON']):
         """
-        Init the service
-        params:
-            - db_cols: column list of the sqlachemy models in the export
-              (type: MappedClass.__mapper__.c)
-            - srid: EPSG code: type integer
+
         """
         self.point = shapefile.Writer(1)
         self.polyline = shapefile.Writer(3)
@@ -159,6 +169,7 @@ class ShapeService():
 
         self.db_cols = [db_col for db_col in db_columns]
         self.columns = [db_col.key for db_col in db_columns]
+        self.saved_shapefiles = []
 
     def get_fields_row_generic(self, mapped_table, data, columns=[]):
         """ return the fields of of row serialized in a table
@@ -212,13 +223,24 @@ class ShapeService():
 
         proj = osr.SpatialReference()
         proj.ImportFromEPSG(self.srid)
-        for shape in ['POINT', 'POLYLINE', 'POLYGON']:
-            path = dir_path + '/' + shape + '_' + file_name + '.prj'
+
+        # check if shape records is not empty
+        if len(self.point.records) > 0:
+            self.saved_shapefiles.append('POINT')
+        if len(self.polyline.records) > 0:
+            self.saved_shapefiles.append('POLYLINE')
+        if len(self.polygon.records) > 0:
+            self.saved_shapefiles.append('POLYGON')
+
+        # save only the shape which have records
+        for shape_format in self.saved_shapefiles:
+            # write the .prj file with the projection
+            path = dir_path + '/' + shape_format + '_' + file_name + '.prj'
             with open(path, "w") as prj_file:
                 prj_file.write(str(proj))
-        self.point.save(file_point)
-        self.polygon.save(file_polygon)
-        self.polyline.save(file_polyline)
+            # save the shapegile
+            shape_object = getattr(self, shape_format.lower())
+            shape_object.save(dir_path+'/'+shape_format + '_' + file_name)
 
     def zip_it(self, dir_path, file_name, formats=['POINT', 'POLYLINE', 'POLYGON']):
         """
@@ -260,7 +282,7 @@ class ShapeService():
         self.zip_it(
             dir_path,
             file_name,
-            ['POINT', 'POLYLINE', 'POLYGON']
+            self.saved_shapefiles
         )
 
     def create_shapes_generic(self, mapped_table, data, dir_path, file_name, geom_col):
@@ -283,7 +305,7 @@ class ShapeService():
         self.zip_it(
             dir_path,
             file_name,
-            ['POINT', 'POLYLINE', 'POLYGON']
+            self.saved_shapefiles
         )
 
 
