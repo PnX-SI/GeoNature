@@ -114,8 +114,10 @@ INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism,
 ,(5, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ,(6, 2, 3, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ,(7, 2, 2, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
+,(8, 1, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+,(9, 2, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ;
-SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', 8, true);
+SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', 9, true);
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),'Territoire du parc national des Ecrins et de ses environs immédiats')
@@ -132,7 +134,7 @@ INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_s
 (1, 'Contact faune flore', 'Données issues du occtax aléatoire', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '/occtax', NULL, NULL, 'CONTACT', true);
 
 
-INSERT INTO pr_occtax.t_releves_occtax (id_releve_occtax,id_dataset,id_digitiser,observers_txt,id_nomenclature_obs_technique,id_nomenclature_grp_typ,date_min,date_max,hour_min,hour_max,altitude_min,altitude_max,meta_device_entry,comment,geom_local,geom_4326,precision) VALUES 
+INSERT INTO pr_occtax.t_releves_occtax (id_releve_occtax,id_dataset,id_digitiser,observers_txt,id_nomenclature_obs_technique,id_nomenclature_grp_typ,date_min,date_max,hour_min,hour_max,altitude_min,altitude_max,meta_device_entry,comment,geom_local,geom_4326,precision) VALUES
 (1,1,1,'Obervateur test insert',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-01','2017-01-01','12:05:02','12:05:02',1500,1565,'web','Exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',10)
 ,(2,1,1,'Obervateur test insert',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,'web','Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
 SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', 3, true);
@@ -151,13 +153,13 @@ INSERT INTO pr_occtax.t_occurrences_occtax  (
     determiner,
     id_nomenclature_determination_method,
     cd_nom,
-    nom_cite, 
-    meta_v_taxref, 
-    sample_number_proof, 
-    digital_proof, 
-    non_digital_proof, 
+    nom_cite,
+    meta_v_taxref,
+    sample_number_proof,
+    digital_proof,
+    non_digital_proof,
     comment
-  ) 
+  )
 VALUES
   (
     1,
@@ -240,7 +242,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
   id_nomenclature_type_count,
   count_min,
   count_max
-  ) 
+  )
   VALUES
   (
     1,
