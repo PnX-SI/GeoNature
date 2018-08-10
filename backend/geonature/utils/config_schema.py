@@ -83,7 +83,7 @@ class SyntheseExportColumn(Schema):
 
 
 class Synthese(Schema):
-    AREA_FILTERS = fields.List(fields.Dict, missing=[])
+    AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": 101}])
     EXPORT_COLUMNS = fields.Nested(
         SyntheseExportColumn,
         missing=dict()
