@@ -53,8 +53,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
   IF (geom_change) THEN
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
   END IF;
-  
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT geom_change )) THEN
         FOR id_area_loop IN (
         SELECT a.id_area
@@ -394,7 +394,7 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
--- A CREUSER : CAUSE A SYNTAXE ERROR 
+-- A CREUSER : CAUSE A SYNTAXE ERROR
 
 -- CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
 --   RETURNS trigger AS
@@ -425,8 +425,8 @@ $BODY$
   IF (geom_change) THEN
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
   END IF;
-  
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
         FOR id_area_loop IN (
         SELECT a.id_area
@@ -443,16 +443,6 @@ $BODY$
   $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
-
-------------
---TRIGGERS--
-------------
-CREATE TRIGGER tri_insert_cor_arera_synthese
-  AFTER INSERT OR UPDATE
-  ON gn_synthese.synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
 
 ---------
 --VIEWS--
@@ -597,7 +587,7 @@ JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
 
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS 
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
 s.id_synthese,
 ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('NAT_OBJ_GEO', s.cd_nomenclature_geo_object_nature) AS nat_obj_geo,

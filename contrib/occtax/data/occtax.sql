@@ -56,24 +56,25 @@ END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
-
 CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
   RETURNS integer AS
 $BODY$
--- Function which return the id_releve from the id_counting
+-- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
 DECLARE the_id_releve integer;
 
 BEGIN
-SELECT INTO the_id_releve rel.id_releve_occtax
-FROM pr_occtax.t_releves_occtax rel
-JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
-WHERE counting.id_counting_occtax = my_id_counting;
-RETURN the_id_releve;
+  SELECT INTO the_id_releve rel.id_releve_occtax
+  FROM pr_occtax.t_releves_occtax rel
+  JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
+  JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+  WHERE counting.id_counting_occtax = my_id_counting;
+
+  RETURN the_id_releve;
 END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
+
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
@@ -103,7 +104,7 @@ SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_oc
 SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
 
 -- Récupération de la source
-SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
+SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE lower(name_source) = 'occtax';
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation * FROM gn_commons.t_validations v WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
@@ -175,7 +176,7 @@ observers,
 determiner,
 cd_nomenclature_determination_method,
 comments,
-last_action 
+last_action
 )
 
 VALUES(
@@ -203,7 +204,7 @@ VALUES(
   -- cd_nomenclature_sensitivity le trigger qui calcule la sensibilité doit remplir le champs niveau de sensibilité, qui n'est pas présent dans occtax ??
   '0',
   ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_observation_status),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_blurring),  
+  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_blurring),
   -- status_source récupéré depuis le JDD
   cd_nomenclature_source_status,
   -- cd_nomenclature_info_geo_type: type de rattachement = géoréferencement
@@ -233,7 +234,7 @@ VALUES(
   'I'
   );
 
-  RETURN observers.observers_id ;       
+  RETURN observers.observers_id ;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -620,36 +621,36 @@ BEGIN
 
 -- INSERTION DANS COR_ROLE_SYNTHESE
 IF observers IS NOT NULL THEN
-  FOREACH id_role_loop IN ARRAY observers 
+  FOREACH id_role_loop IN ARRAY observers
     LOOP
       INSERT INTO gn_synthese.cor_role_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
     END LOOP;
   END IF;
 
-  RETURN NULL;       
+  RETURN NULL;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
-  RETURNS integer AS
-$BODY$
--- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
-DECLARE the_id_releve integer[];
+-- CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
+--   RETURNS integer AS
+-- $BODY$
+-- -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+-- DECLARE the_id_releve integer[];
 
-BEGIN
-SELECT INTO the_id_releve rel.id_releve
-FROM pr_occtax.t_releves_occtax rel
-JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
-WHERE counting.cor_counting_occtax = my_id_counting;
-RETURN the_id_releve;
-END;
-$BODY$
-  LANGUAGE plpgsql IMMUTABLE
-  COST 100;
+-- BEGIN
+-- SELECT INTO the_id_releve rel.id_releve
+-- FROM pr_occtax.t_releves_occtax rel
+-- JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
+-- JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+-- WHERE counting.cor_counting_occtax = my_id_counting;
+-- RETURN the_id_releve;
+-- END;
+-- $BODY$
+--   LANGUAGE plpgsql IMMUTABLE
+--   COST 100;
 
 -- DELETE counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_counting()
@@ -662,8 +663,8 @@ DECLARE
 BEGIN
   -- recupération de l'id_source
   SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
-  SELECT INTO the_id_synthese id_synthese 
-  FROM gn_synthese.synthese 
+  SELECT INTO the_id_synthese id_synthese
+  FROM gn_synthese.synthese
   WHERE id_source = the_id_source AND entity_source_pk_value = to_char(OLD.id_counting_occtax, 'FM9999');
   -- suppression de l'obs dans le schéma gn_synthese
   DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
@@ -693,7 +694,7 @@ BEGIN
   SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
   -- update dans la synthese
   UPDATE gn_synthese.synthese
-  SET 
+  SET
   cd_nomenclature_life_stage = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_life_stage),
   cd_nomenclature_sex = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_sex),
   cd_nomenclature_obj_count = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obj_count),
@@ -725,7 +726,7 @@ BEGIN
 
   FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax LOOP
     UPDATE gn_synthese.synthese SET
-    cd_nomenclature_obs_meth = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obs_meth), 
+    cd_nomenclature_obs_meth = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obs_meth),
     cd_nomenclature_bio_condition = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_bio_condition),
     cd_nomenclature_bio_status = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_bio_status),
     cd_nomenclature_naturalness = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_naturalness),
@@ -943,7 +944,7 @@ BEGIN
       FROM gn_synthese.synthese
       WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
       -- suppression dans cor_role_synthese pour chaque counting
-      DELETE FROM gn_synthese.cor_role_synthese 
+      DELETE FROM gn_synthese.cor_role_synthese
       WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
     END LOOP;
   END IF;
@@ -1171,4 +1172,4 @@ INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
 ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 14 )
 ;
 
-INSERT INTO t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (1, 'Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', 'occtax/form/' , NULL, NULL, 'NONE', true);
+INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (1, 'Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', 'occtax/form/' , NULL, NULL, 'NONE', true);
