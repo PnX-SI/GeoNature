@@ -15,14 +15,15 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION get_default_cd_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+CREATE OR REPLACE FUNCTION get_default_cd_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0')
+RETURNS character varying(20)
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
 --Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
 --Return -1 if nothing matche with given parameters
   DECLARE
-    thenomenclaturecd integer;
+    thenomenclaturecd character varying(20);
   BEGIN
       SELECT INTO thenomenclaturecd cd_nomenclature
       FROM gn_synthese.defaults_nomenclatures_value

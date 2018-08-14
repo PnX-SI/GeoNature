@@ -292,6 +292,7 @@ def insertOrUpdateOneReleve(info_role):
             releve.observers.append(o)
 
     for occ in occurrences_occtax:
+        cor_counting_occtax=[]
         if occ['cor_counting_occtax']:
             cor_counting_occtax = occ['cor_counting_occtax']
             occ.pop('cor_counting_occtax')
@@ -559,12 +560,12 @@ def export(info_role):
 )
 @csv_resp
 def export_sinp(info_role):
-    """ Return the data (CSV) at SINP   
+    """ Return the data (CSV) at SINP
         from pr_occtax.export_occtax_sinp view
         If no paramater return all the dataset allowed of the user
-        params:	
-        - id_dataset : integer	
-        - uuid_dataset: uuid	
+        params:
+        - id_dataset : integer
+        - uuid_dataset: uuid
     """
     viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)
     q = DB.session.query(viewSINP.tableDef)
