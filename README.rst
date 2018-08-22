@@ -35,8 +35,10 @@ Modules et projets liés
 * Nomenclature API (gestion des nomenclatures) : https://github.com/PnX-SI/Nomenclature-api-module
 * GeoNature-atlas (portail web de diffusion des observations) : https://github.com/PnEcrins/GeoNature-atlas
 * GeoNature-mobile (saisie mobile dans les protocoles de GeoNature) : https://github.com/PnEcrins/GeoNature-mobile
-* GeoNature module Interopérabilité/export : https://github.com/PnX-SI/gn_module_interoperabilite
+* GeoNature module Interopérabilité/export : https://github.com/PnX-SI/gn_module_export
 * GeoNature module Validation : https://github.com/PnX-SI/gn_module_validation
 * GeoNature module Suivi des habitats : https://github.com/PnX-SI/gn_module_suivi_habitat_territoire
+* GeoNature module Suivi de la flore territoire : https://github.com/PnX-SI/gn_module_suivi_flore_territoire
 * GeoNature module Suivi chiroptères : https://github.com/PnCevennes/gn_module_suivi_chiro
 * Protocoles de suivi (frontend) : https://github.com/PnCevennes/projet_suivis_frontend
+* GeoNature-citizen (portail de collecte citoyenne) : https://github.com/PnX-SI/GeoNature-citizen
