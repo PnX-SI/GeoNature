@@ -15,14 +15,15 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION get_default_cd_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+CREATE OR REPLACE FUNCTION get_default_cd_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0')
+RETURNS character varying(20)
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
 --Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
 --Return -1 if nothing matche with given parameters
   DECLARE
-    thenomenclaturecd integer;
+    thenomenclaturecd character varying(20);
   BEGIN
       SELECT INTO thenomenclaturecd cd_nomenclature
       FROM gn_synthese.defaults_nomenclatures_value
@@ -53,8 +54,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
   IF (geom_change) THEN
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
   END IF;
-  
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT geom_change )) THEN
         FOR id_area_loop IN (
         SELECT a.id_area
@@ -129,7 +130,7 @@ CREATE TABLE synthese (
     altitude_max integer,
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
-    the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    the_geom_local public.geometry(Geometry,2154),
     id_area integer,
     date_min timestamp without time zone NOT NULL,
     date_max timestamp without time zone NOT NULL,
@@ -148,7 +149,7 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
     CONSTRAINT enforce_srid_the_geom_4326 CHECK ((public.st_srid(the_geom_4326) = 4326)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = 2154)),
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
@@ -394,17 +395,18 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
--- A CREUSER : CAUSE A SYNTAXE ERROR 
+-- A CREUSER : CAUSE A SYNTAXE ERROR
 
--- CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
---   RETURNS trigger AS
--- $BODY$
--- BEGIN
---       EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
--- END;
--- $BODY$
---   LANGUAGE plpgsql VOLATILE
---   COST 100;
+CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+      EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
+      RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 ----------------------
@@ -425,8 +427,8 @@ $BODY$
   IF (geom_change) THEN
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
   END IF;
-  
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese 
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
         FOR id_area_loop IN (
         SELECT a.id_area
@@ -443,16 +445,6 @@ $BODY$
   $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
-
-------------
---TRIGGERS--
-------------
-CREATE TRIGGER tri_insert_cor_arera_synthese
-  AFTER INSERT OR UPDATE
-  ON gn_synthese.synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
 
 ---------
 --VIEWS--
@@ -597,7 +589,7 @@ JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
 
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS 
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
 s.id_synthese,
 ref_nomenclatures.get_nomenclature_label_by_cdnom_mnemonique('NAT_OBJ_GEO', s.cd_nomenclature_geo_object_nature) AS nat_obj_geo,
@@ -636,11 +628,13 @@ CREATE TRIGGER tri_meta_dates_t_sources
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
-  AFTER INSERT OR UPDATE OR DELETE
-  ON synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
+
+-- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
+-- CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
+--   AFTER INSERT OR UPDATE OR DELETE
+--   ON synthese
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
 CREATE TRIGGER tri_insert_cor_area_synthese
   AFTER INSERT OR UPDATE
