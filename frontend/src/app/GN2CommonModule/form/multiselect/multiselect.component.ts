@@ -35,8 +35,8 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Input() disabled: boolean;
   // label displayed above the input
   @Input() label: any;
+  @Input() bindAllItem: false;
   // time before the output are triggered
-  @Input() onlyBindId: false;
   @Input() debounceTime: number;
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
@@ -95,10 +95,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     }
     // set the item for the formControl
     let updateItem;
-    if (this.onlyBindId) {
-      updateItem = item[this.keyValue];
-    } else {
+    if (this.bindAllItem) {
       updateItem = item;
+    } else {
+      updateItem = item[this.keyValue];
     }
     this.selectedItems.push(item);
     this.formControlValue.push(updateItem);
@@ -115,13 +115,13 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.selectedItems = this.selectedItems.filter(curItem => {
       return curItem[this.keyLabel] !== item[this.keyLabel];
     });
-    if (this.keyValue) {
+    if (this.bindAllItem) {
       this.formControlValue = this.parentFormControl.value.filter(el => {
-        return el !== item[this.keyValue];
+        return el !== item;
       });
     } else {
       this.formControlValue = this.parentFormControl.value.filter(el => {
-        return el !== item;
+        return el !== item[this.keyValue];
       });
     }
     this.parentFormControl.patchValue(this.formControlValue);

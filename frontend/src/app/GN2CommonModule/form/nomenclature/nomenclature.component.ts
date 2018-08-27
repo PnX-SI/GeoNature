@@ -36,6 +36,7 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() group2Inpn: string;
   @Input() returnedValue: string;
   @Input() keyValue;
+  @Input() bindAllItem: false;
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
