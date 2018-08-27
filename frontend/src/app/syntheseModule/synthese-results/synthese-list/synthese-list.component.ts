@@ -30,12 +30,15 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit() {
-    // Au clique sur la carte, selection dans la liste
+    // get wiewport height to set the number of rows in the table
+    const h = document.documentElement.clientHeight;
+    this.rowNumber = Math.trunc(h / 62);
+
+    // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe(id => {
       this.mapListService.selectedRow = []; // clear selected list
 
       const integerId = parseInt(id);
-      // const integerId = parseInt(id);
       let i;
       for (i = 0; i < this.mapListService.tableData.length; i++) {
         if (this.mapListService.tableData[i]['id_synthese'] === integerId) {
@@ -43,13 +46,9 @@ export class SyntheseListComponent implements OnInit, OnChanges {
           break;
         }
       }
-      const page = Math.trunc(i / 10);
+      const page = Math.trunc(i / this.rowNumber);
       this.table.offset = page;
     });
-
-    // get wiewport height to set the number of rows in the table
-    const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 62);
   }
 
   // update the number of row per page when resize the window
