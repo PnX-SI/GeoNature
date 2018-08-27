@@ -15,6 +15,7 @@ export class ObserversComponent implements OnInit {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
+  @Input() bindAllItem:true;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   public searchControl = new FormControl();
