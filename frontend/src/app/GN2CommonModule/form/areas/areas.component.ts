@@ -12,6 +12,7 @@ export class AreasComponent implements OnInit {
   @Input() label: string;
   @Input() searchBar = false;
   @Input() parentFormControl: FormControl;
+  @Input() bindAllItem: false;
   @Input() debounceTime: number;
   constructor(private _dfs: DataFormService) {}
 

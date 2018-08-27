@@ -8,6 +8,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 })
 export class AcquisitionFrameworksComponent extends GenericFormComponent implements OnInit {
   @Input() values: Array<any>;
+  @Input() bindAllItem: false;
   constructor(private _dfs: DataFormService) {
     super();
   }

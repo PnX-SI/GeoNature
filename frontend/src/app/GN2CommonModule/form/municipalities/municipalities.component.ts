@@ -17,6 +17,7 @@ export class MunicipalitiesComponent implements OnInit {
   @Input() label: string;
   @Input() searchBar = false;
   @Input() disabled: boolean;
+  @Input() bindAllItem: false;
   @Input() debounceTime: number;
   public currentValue: any;
   constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
