@@ -134,8 +134,14 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       this.values = changes.values.currentValue.filter(v => {
         let isInArray = false;
         this.formControlValue.forEach(element => {
-          if (v[this.keyValue] === element[this.keyValue]) {
-            isInArray = true;
+          if (this.bindAllItem) {
+            if (v === element) {
+              isInArray = true;
+            }
+          } else {
+            if (v[this.keyValue] === element[this.keyValue]) {
+              isInArray = true;
+            }
           }
         });
         return !isInArray;
