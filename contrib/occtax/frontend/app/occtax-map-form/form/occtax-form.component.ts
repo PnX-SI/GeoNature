@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { FormGroup, FormArray } from "@angular/forms";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { MapService } from "@geonature_common/map/map.service";
@@ -20,7 +20,8 @@ import { timeout } from "rxjs/operators/timeout";
 })
 export class OcctaxFormComponent implements OnInit {
   public disabledAfterPost = false;
-  @Input() id: number;
+  @Input()
+  id: number;
 
   constructor(
     public fs: OcctaxFormService,
@@ -51,7 +52,6 @@ export class OcctaxFormComponent implements OnInit {
     this.fs.editionMode = false;
 
     // remove disabled on geom selected
-
     this.fs.releveForm.controls.geometry.valueChanges.subscribe(data => {
       this.fs.disabled = false;
     });
@@ -129,6 +129,13 @@ export class OcctaxFormComponent implements OnInit {
           if (data.releve.geometry.type == "Point") {
             // set the input for the marker component
             this.fs.markerCoordinates = data.releve.geometry.coordinates;
+            this._ms.map.setView(
+              [
+                data.releve.geometry.coordinates[1],
+                data.releve.geometry.coordinates[0]
+              ],
+              15
+            );
           } else {
             // set the input for leafletdraw component
             this.fs.geojsonCoordinates = data.releve.geometry;
@@ -215,5 +222,10 @@ export class OcctaxFormComponent implements OnInit {
         }
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.fs.markerCoordinates = undefined;
+    this.fs.geojsonCoordinates = undefined;
   }
 }

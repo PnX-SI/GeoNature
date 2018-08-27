@@ -63,8 +63,6 @@ export class MarkerComponent implements OnInit, OnChanges {
     } else {
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
-      // zoom to the layer
-      this.map.setView(this.mapservice.marker.getLatLng(), 15);
     }
     // observable if map click
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));

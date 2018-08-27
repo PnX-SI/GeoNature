@@ -17,6 +17,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   private _currentDraw: any;
   private _Le: any;
   public drawnItems: any;
+  // coordinates of the entity to draw
   @Input() geojson: GeoJSON;
   @Input() options: any;
   @Input() zoomLevel: number;
@@ -104,7 +105,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polygon(myLatLong);
       this.mapservice.releveFeatureGroup.addLayer(layer);
     }
-    this.map.fitBounds(layer.getBounds());
+    this.mapservice.map.fitBounds(layer.getBounds());
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
     // send observable
@@ -114,6 +115,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
+    console.log(changes);
     if (changes.geojson && changes.geojson.currentValue) {
       this.loadDrawfromGeoJson(changes.geojson.currentValue);
     }
