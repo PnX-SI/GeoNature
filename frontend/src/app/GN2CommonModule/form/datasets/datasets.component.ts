@@ -25,6 +25,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   public iterableDiffer: IterableDiffer<any>;
   @Input() idAcquisitionFrameworks: Array<number> = [];
   @Input() idAcquisitionFramework: number;
+  @Input() bindAllItem: false;
   constructor(
     private _dfs: DataFormService,
     private _auth: AuthService,
