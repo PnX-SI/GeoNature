@@ -221,6 +221,10 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         :``keyValue``:
                 Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``). Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API (ex: ``cd_nomenclature``, ``label_default`` etc...
                 *Type*: ``string``
+
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
+                *Type*: ``boolean``
                  
         :``regne``:
                 Permet de filter les items de nomenclature corespondant à un règne (facultatif)
@@ -325,6 +329,10 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 Permet de filtrer les JDD en fonction de l'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
 
                 *Type*: ``number``
+        
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_dataset qui est renvoyé au formControl.
+                *Type*: ``boolean``
 
         
         **Valeur retourné par le FormControl**:
@@ -359,6 +367,10 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         :``displayAll``:
                 Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
 
+                *Type*: ``boolean``
+
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_acquisition_frameworks qui est passé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
                 *Type*: ``boolean``
 
         
@@ -408,6 +420,10 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
 
                 *Type*: ``number``
+
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_role qui est passé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
+                *Type*: ``boolean``
         
         **Valeur retourné par le FormControl**:
 
@@ -456,12 +472,16 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
       *Type*: ``string`` *Obligatoire*
 
       :``keyValue``:
-          Clé du dictionnaire de valeur que le composant doit passer au formControl
-
+          Clé du dictionnaire que le composant doit passer au formControl
 
           Exemple, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour passer "1", ``keyValue`` doit valoir "id"
 
-      *Type*: ``string`` *Facultatif* (tout le dictionnaire est passé au formControl si l'input est absent)
+      *Type*: ``string``
+
+      :``bindAllItem``:
+          Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
 
       :``displayAll``:
               Est-ce que le composant doit afficher l'item "tous" dans les options du select ? 
@@ -491,6 +511,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                  [values]="organisms" 
                  [parentFormControl]="form.controls.organisms" 
                  [keyLabel]="'nom_organisme'" 
+                 [keyValue]="'id_organisme"'
                  [label]="'Organisme'"
                  (onChange)="doWhatever($event)
                  (onDelete)="deleteCallback($event)"
