@@ -130,7 +130,7 @@ CREATE TABLE synthese (
     altitude_max integer,
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
-    the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    the_geom_local public.geometry(Geometry,2154),
     id_area integer,
     date_min timestamp without time zone NOT NULL,
     date_max timestamp without time zone NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
     CONSTRAINT enforce_srid_the_geom_4326 CHECK ((public.st_srid(the_geom_4326) = 4326)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = 2154)),
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
@@ -397,15 +397,16 @@ COST 100;
 
 -- A CREUSER : CAUSE A SYNTAXE ERROR
 
--- CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
---   RETURNS trigger AS
--- $BODY$
--- BEGIN
---       EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
--- END;
--- $BODY$
---   LANGUAGE plpgsql VOLATILE
---   COST 100;
+CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+      EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
+      RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 ----------------------
@@ -627,11 +628,13 @@ CREATE TRIGGER tri_meta_dates_t_sources
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
-  AFTER INSERT OR UPDATE OR DELETE
-  ON synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
+
+-- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
+-- CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
+--   AFTER INSERT OR UPDATE OR DELETE
+--   ON synthese
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
 CREATE TRIGGER tri_insert_cor_area_synthese
   AFTER INSERT OR UPDATE
