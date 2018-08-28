@@ -11,7 +11,7 @@ from pypnnomenclature.models import TNomenclatures
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
-from geonature.utils.utilsgeometry import shapeseralizable
+from geonature.utils.utilsgeometry import shape_serializable
 from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.ref_geo.models import LiMunicipalities
@@ -119,7 +119,6 @@ class CorRoleSynthese(DB.Model):
 
 
 @serializable
-@shapeseralizable
 class VSyntheseDecodeNomenclatures(DB.Model):
     __tablename__ = 'v_synthese_decode_nomenclatures'
     __table_args__ = {'schema': 'gn_synthese'}
@@ -145,7 +144,6 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 
 @serializable
-@shapeseralizable
 class Taxref(DB.Model):
     __tablename__ = 'taxref'
     __table_args__ = {'schema': 'taxonomie'}
@@ -160,7 +158,7 @@ class GeometryUpdate(Geometry):
 
 @serializable
 @geoserializable
-@shapeseralizable
+@shape_serializable
 class Synthese(SyntheseCruved):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}
