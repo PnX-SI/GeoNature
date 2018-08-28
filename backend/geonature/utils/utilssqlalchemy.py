@@ -18,9 +18,7 @@ from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsgeometry import(
-    ShapeService, SERIALIZERS as SHAPESERIALIZERS
-)
+from geonature.utils.utilsgeometry import create_shapes_generic
 
 
 def testDataType(value, sqlType, paramName):
@@ -130,28 +128,13 @@ class GenericTable:
                 properties=self.as_dict(data, columns)
             )
 
-    def as_list(self, data=None, columns=None):
-        serialize_columns, db_cols = self.get_serialized_columns(serializers=SHAPESERIALIZERS)
-        if columns:
-            fprops = list(
-                filter(lambda d: d[0] in columns, serialize_columns)
-            )
-        else:
-            fprops = serialize_columns
-
-        return [
-            _serializer(getattr(data, item)) for item, _serializer in fprops
-        ]
-
     def as_shape(self, db_cols, data=None, dir_path=None, file_name=None):
         if not data:
             data = []
-        shape_service = ShapeService(
-            db_cols,
-            self.srid
-        )
-        shape_service.create_shapes_generic(
-            mapped_table=self,
+        create_shapes_generic(
+            view=self,
+            db_cols=db_cols,
+            srid=self.srid,
             data=data,
             geom_col=self.geometry_field,
             dir_path=dir_path,

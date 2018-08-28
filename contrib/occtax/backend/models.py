@@ -9,7 +9,6 @@ from geoalchemy2 import Geometry
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
-from geonature.utils.utilsgeometry import shapeseralizable
 from geonature.utils.env import DB
 from geonature.utils.errors import InsufficientRightsError
 from geonature.core.users.models import TRoles
