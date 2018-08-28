@@ -43,5 +43,6 @@ pyproj==1.9.5.1
 pyshp==1.2.12
 #pygdal==2.1.2.3
 geog==0.0.2
+fiona==1.7.13
 # sur ubuntu il faut installer la version 1.11.3.3
 pygdal==1.11.3.3
