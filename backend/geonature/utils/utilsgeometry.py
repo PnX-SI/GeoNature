@@ -185,7 +185,7 @@ def create_shapes_generic(view, srid, db_cols, data, dir_path, file_name, geom_c
     FionaShapeService.save_and_zip_shapefiles()
 
 
-def shape_serializable(cls):
+def shapeserializable(cls):
 
     @classmethod
     def to_shape_fn(
