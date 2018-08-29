@@ -2,6 +2,8 @@
 Default columns for the export in synthese
 """
 
+
+#  EXPORT
 DEFAULT_TAXONOMIC_COLUMNS = [
     'cd_nom',
     'cd_ref',
@@ -45,4 +47,13 @@ DEFAULT_NOMENCLATURE_COLUMNS = [
     'source_status',
     'info_geo_type',
     'determination_method'
+]
+
+
+# CONFIG MAP-LIST
+DEFAULT_LIST_COLUMN = [
+    {'prop': 'taxon.nom_valide', 'name': 'Taxon'},
+    {'prop': 'date_min', 'name': 'Date obs'},
+    {'prop': 'dataset.dataset_name', 'name': 'JDD'},
+    {'prop': 'observers', 'name': 'observateur'}
 ]

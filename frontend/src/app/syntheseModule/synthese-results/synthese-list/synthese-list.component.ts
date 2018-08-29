@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ViewChild, HostListener, OnChanges } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { SYNTHESE_CONFIG } from '../../synthese.config';
 import { DataService } from '../../services/data.service';
 import { SyntheseFormService } from '../../services/form.service';
 import { window } from 'rxjs/operator/window';
@@ -15,10 +14,11 @@ import { AppConfig } from '@geonature_config/app.config';
   styleUrls: ['synthese-list.component.scss']
 })
 export class SyntheseListComponent implements OnInit, OnChanges {
-  public SYNTHESE_CONFIG = SYNTHESE_CONFIG;
+  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public selectedObs: any;
   public previousRow: any;
   public rowNumber: number;
+  public exportRoute = ` ${AppConfig.API_ENDPOINT}/synthese/`;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table') table: any;
   constructor(
@@ -120,6 +120,10 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     const url = `${AppConfig.API_ENDPOINT}/synthese/export?${urlQueryString.toString()}`;
 
     document.location.href = url;
+  }
+
+  setQueryString() {
+    console.log('tu as clické sur le boutton');
   }
 
   ngOnChanges(changes) {
