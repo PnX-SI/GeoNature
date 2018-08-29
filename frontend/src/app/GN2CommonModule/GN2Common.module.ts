@@ -111,7 +111,8 @@ export function HttpLoaderFactory(http: Http) {
     MultiSelectComponent,
     GenericFormGeneratorComponent,
     AreasComponent,
-    AcquisitionFrameworksComponent
+    AcquisitionFrameworksComponent,
+    ModalDownloadComponent
   ],
   providers: [
     TranslateService,
