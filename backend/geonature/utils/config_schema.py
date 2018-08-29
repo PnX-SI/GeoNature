@@ -9,7 +9,8 @@ from marshmallow.validate import OneOf, Regexp
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_SYNTHESE_COLUMNS,
     DEFAULT_TAXONOMIC_COLUMNS,
-    DEFAULT_NOMENCLATURE_COLUMNS
+    DEFAULT_NOMENCLATURE_COLUMNS,
+    DEFAULT_LIST_COLUMN
 )
 
 
@@ -84,10 +85,12 @@ class SyntheseExportColumn(Schema):
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": 101}])
+    LIST_COLUMNS = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.Nested(
         SyntheseExportColumn,
         missing=dict()
     )
+    EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
 
 
 class MailErrorConf(Schema):

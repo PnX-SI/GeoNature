@@ -13,7 +13,7 @@
 
 <!--Table-->
 <ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.default_columns" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50"
+  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50"
   [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
   [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
 
@@ -66,7 +66,7 @@
 
 
   <!-- DATA COLOMNS -->
-  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.default_columns" [name]="col.name" [prop]="col.prop">
+  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS" [name]="col.name" [prop]="col.prop">
   </ngx-datatable-column>
 </ngx-datatable>
 
@@ -83,5 +83,8 @@
   </div>
 </ng-template>
 
+<pnx-modal-download pathDownload="exportRoute" [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT" labelButton="Télécharger la synthese"
+  (buttonClicked)="setQueryString()">
 
+</pnx-modal-download>
 <button (click)="downloadData('shapefile')"> export </button>
