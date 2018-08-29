@@ -11,6 +11,7 @@ from geojson import FeatureCollection
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -296,18 +297,21 @@ def export(info_role):
 
             db_cols = db_cols_synthese + db_cols_nomenclature + db_cols_taxonomy
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-            shape_service = ShapeService(db_cols, srid=4326)
-            shape_service.create_shape_struct()
+            FionaShapeService.create_shapes_struct(
+                db_cols=db_cols,
+                srid=current_app.config['LOCAL_SRID'],
+                dir_path=dir_path,
+                file_name=file_name
+            )
             for row in data:
-                row_as_list = []
-                synthese_row_as_list = row[0].as_list(columns=synthese_columns)
-                nomenclature_row_as_list = row[4].as_list(columns=nomenclature_columns)
-                taxon_row_as_list = row[1].as_list(columns=taxonomic_columns)
-                geom = row[0].the_geom_4326
-                row_as_list = synthese_row_as_list + nomenclature_row_as_list + taxon_row_as_list
-                shape_service.create_features(row_as_list, geom)
-            shape_service.save_shape(dir_path, file_name)
-            shape_service.zip_it(dir_path, file_name, shape_service.saved_shapefiles)
+                synthese_row_as_dict = row[0].as_dict(columns=synthese_columns)
+                nomenclature_row_as_dict = row[4].as_dict(columns=nomenclature_columns)
+                taxon_row_as_dict = row[1].as_dict(columns=taxonomic_columns)
+                geom = row[0].the_geom_local
+                row_as_dict = {**synthese_row_as_dict, **nomenclature_row_as_dict, **taxon_row_as_dict}
+                FionaShapeService.create_feature(row_as_dict, geom)
+
+            FionaShapeService.save_and_zip_shapefiles()
 
             return send_from_directory(
                 dir_path,
