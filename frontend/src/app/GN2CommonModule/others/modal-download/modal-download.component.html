@@ -1,0 +1,29 @@
+<button type="button" class="btn btn-primary btn-sm box-shadow" id="download-btn"
+(click)="openIntesectionModal(loadContent)"> 
+         <i class="fa fa-download" aria-hidden="true"> </i>
+         Télécharger ces visites 
+</button>
+
+<ng-template #loadContent id="modal-download" let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="modalLabel"> Télécharger les données </h5>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+         <span aria-hidden="true">&times;</span> 
+      </button>
+   </div>
+   <div class="modal-body">
+      <span > <b> Attention: </b> </span> <br>
+      <span> Vous vous apprêtez à télécharger les données de  <b> toutes les visites </b> sur cette zone . </span><br>
+      <br><br><br>
+
+      <div class="export-button">
+      <button *ngFor="let format of exportFormat" class="buttonLoad"
+         (click)="loadData(format)"
+         type="button"
+         class="btn btn-success format-btn">
+         Format {{format}}
+      </button>
+      </div>
+
+   </div>
+</ng-template>
