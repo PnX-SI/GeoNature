@@ -94,10 +94,8 @@ def get_all_synthese(filters, user, allowed_datasets):
         geom_wkt = loads(filters['geoIntersection'][0])
         # if the geom is a circle
         if 'radius' in filters:
-            print('enter la')
             radius = filters.pop('radius')[0]
             geom_wkt = circle_from_point(geom_wkt, radius)
-            print(geom_wkt)
         geom_wkb = from_shape(geom_wkt, srid=4326)
         q = q.filter(Synthese.the_geom_4326.ST_Intersects(geom_wkb))
         filters.pop('geoIntersection')

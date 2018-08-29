@@ -77,35 +77,31 @@ class FionaShapeService():
         cls.polyline_shape = fiona.open(cls.file_line, 'w', 'ESRI Shapefile', cls.polyline_schema, crs=cls.source_crs)
 
     @classmethod
-    def create_features(cls, data, geom_col):
+    def create_feature(cls, data, geom):
         """
-        Create the features of the shapefiles by serializing the datas from SQLAlchemy model
+        Create a feature (a record of the shapefile) for the three shapefiles
+        by serializing an SQLAlchemy object
 
         Parameters:
-            data (list): Array of SQLA model
-            geom_col (str): name of the geometry column of the SQLA Model
+            data (dict): the SQLAlchemy model serialized as a dict
+            geom (WKB): the geom as WKB
+
 
         Returns:
             void
         """
-        for d in data:
-            geom = getattr(d, geom_col)
-            geom_wkt = to_shape(geom)
-            geom_geojson = mapping(geom_wkt)
-            feature = {'geometry': geom_geojson, 'properties': d.as_dict(columns=cls.columns)}
-            if isinstance(geom_wkt, Point):
-                cls.point_shape.write(feature)
-                cls.point_feature = True
-            elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
-                cls.polygone_shape.write(feature)
-                cls.polygon_feature = True
-            else:
-                cls.polyline_shape.write(feature)
-                cls.polyline_feature = True
-
-        cls.point_shape.close()
-        cls.polygone_shape.close()
-        cls.polyline_shape.close()
+        geom_wkt = to_shape(geom)
+        geom_geojson = mapping(geom_wkt)
+        feature = {'geometry': geom_geojson, 'properties': data}
+        if isinstance(geom_wkt, Point):
+            cls.point_shape.write(feature)
+            cls.point_feature = True
+        elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
+            cls.polygone_shape.write(feature)
+            cls.polygon_feature = True
+        else:
+            cls.polyline_shape.write(feature)
+            cls.polyline_feature = True
 
     @classmethod
     def create_features_generic(cls, view, data, geom_col):
@@ -136,19 +132,19 @@ class FionaShapeService():
                 cls.polyline_shape.write(feature)
                 cls.polyline_feature = True
 
-        cls.point_shape.close()
-        cls.polygone_shape.close()
-        cls.polyline_shape.close()
-
     @classmethod
     def save_and_zip_shapefiles(cls):
         """
         Save and zip the files
-        Only zip files where there is at leas on feature
+        Only zip files where there is at least on feature
 
         Returns:
             void
         """
+        cls.point_shape.close()
+        cls.polygone_shape.close()
+        cls.polyline_shape.close()
+
         format_to_save = []
         if cls.point_feature:
             format_to_save = ['POINT']
@@ -192,11 +188,14 @@ def shapeserializable(cls):
         """
         Class method to create 3 shapes from datas
         Parameters
-        -----------
-        geom_col: name of the geometry column (string)
-        data: list of datas (list)
-        file_name: (string)
-        columns: columns to be serialize (list)
+
+        geom_col (string): name of the geometry column 
+        data (list): list of datas 
+        file_name (string): 
+        columns (list): columns to be serialize
+
+        Returns:
+            void
         """
         if not data:
             data = []
@@ -214,10 +213,10 @@ def shapeserializable(cls):
             file_name=file_name,
             srid=srid
         )
-        FionaShapeService.create_features(
-            data=data,
-            geom_col=geom_col
-        )
+        for d in data:
+            d = d.as_dict(columns)
+            geom = getattr(d, geom_col)
+            FionaShapeService.create_feature(d, geom)
 
         FionaShapeService.save_and_zip_shapefiles()
 
