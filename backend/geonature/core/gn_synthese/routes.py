@@ -41,9 +41,7 @@ from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,
     json_resp, testDataType
 )
-from geonature.utils.utilsgeometry import(
-    ShapeService
-)
+
 from geonature.core.gn_meta import mtd_utils
 
 # debug
