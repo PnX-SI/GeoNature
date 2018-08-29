@@ -24,7 +24,7 @@ export class ModalDownloadComponent implements OnInit {
 
   loadData(format) {
     this.queryString = this.queryString.append('export_format', format);
-    document.location.href = this.pathDownload + this.queryString.toString();
+    document.location.href = `${this.pathDownload}?${this.queryString.toString()}`;
   }
 
   openModal(content) {
