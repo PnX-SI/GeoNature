@@ -3,7 +3,6 @@ import datetime
 import numpy as np
 import geog
 import zipfile
-import shapefile
 import fiona
 
 from fiona.crs import from_epsg
