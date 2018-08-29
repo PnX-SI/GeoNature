@@ -83,7 +83,7 @@
   </div>
 </ng-template>
 
-<pnx-modal-download pathDownload="exportRoute" [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT" labelButton="Télécharger la synthese"
+<pnx-modal-download [pathDownload]="exportRoute" [queryString]="queyrStringDownload" [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT"
   (buttonClicked)="setQueryString()">
 
 </pnx-modal-download>

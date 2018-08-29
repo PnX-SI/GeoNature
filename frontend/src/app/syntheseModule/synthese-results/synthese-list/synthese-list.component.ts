@@ -7,6 +7,7 @@ import { window } from 'rxjs/operator/window';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { HttpParams } from '@angular/common/http/src/params';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -18,7 +19,8 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   public selectedObs: any;
   public previousRow: any;
   public rowNumber: number;
-  public exportRoute = ` ${AppConfig.API_ENDPOINT}/synthese/`;
+  public exportRoute = `${AppConfig.API_ENDPOINT}/synthese/export`;
+  public queyrStringDownload: HttpParams;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table') table: any;
   constructor(
@@ -113,17 +115,13 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     );
   }
 
-  downloadData(format) {
+  setQueryString() {
     const formatedParams = this._fs.formatParams();
-    let urlQueryString = this._ds.buildQueryUrl(formatedParams);
-    urlQueryString = urlQueryString.set('export_format', format);
-    const url = `${AppConfig.API_ENDPOINT}/synthese/export?${urlQueryString.toString()}`;
-
-    document.location.href = url;
+    this.queyrStringDownload = this._ds.buildQueryUrl(formatedParams);
   }
 
-  setQueryString() {
-    console.log('tu as clické sur le boutton');
+  downloadData() {
+    document.location.href = 'http://127.0.0.1:8000/synthese/export?export_format=csv';
   }
 
   ngOnChanges(changes) {
