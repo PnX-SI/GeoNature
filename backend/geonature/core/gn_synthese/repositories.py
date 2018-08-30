@@ -86,7 +86,11 @@ def get_all_synthese(filters, user, allowed_datasets):
         q = q.filter(TAcquisitionFramework.id_acquisition_framework.in_(filters.pop('id_acquisition_frameworks')))
 
     if 'municipalities' in filters:
-        q = q.filter(Synthese.id_municipality.in_([com['insee_com'] for com in filters['municipalities']]))
+        q = q.filter(
+            Synthese.id_municipality.in_(
+                [com for com in filters['municipalities']]
+            )
+        )
         filters.pop('municipalities')
 
     if 'geoIntersection' in filters:
