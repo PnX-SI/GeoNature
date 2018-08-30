@@ -54,6 +54,10 @@ mat-sidenav-content {
   padding: 5px !important;
 }
 
+.table-sm td {
+  padding: 0.5rem;
+}
+
 /*
  * The /deep/ selector is simply to overcome view encapsulation
  * and be able to select the div.md-sidenav-content generated at runtime
@@ -170,4 +174,12 @@ padding-lg {
 
 li.no-bullet {
   list-style-type: none;
+}
+
+.large-modal > .modal-dialog {
+  max-width: 1500px !important;
+}
+
+.font-xs {
+  font-size: 13px;
 }

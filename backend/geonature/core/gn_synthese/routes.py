@@ -30,7 +30,7 @@ from geonature.core.gn_meta.models import (
 
 )
 from geonature.core.ref_geo.models import (
-    LiMunicipalities
+    LiMunicipalities, LAreas
 )
 from pypnusershub import routes as fnauth
 from pypnusershub.db.tools import (
@@ -135,7 +135,7 @@ def get_synthese(info_role):
     for d in data:
         feature = d[0].get_geofeature(columns=['date_min', 'observers', 'id_synthese'])
         # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
-        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide'])
+        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide', 'cd_nom'])
         feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source'])
         feature['properties']['dataset'] = d[3].as_dict(columns=['dataset_name'])
         features.append(feature)
@@ -180,12 +180,36 @@ def get_one_synthese(id_synthese):
         Retourne un enregistrement de la synthese
         avec les nomenclatures décodées pour la webapp
     """
-    q = DB.session.query(VSyntheseDecodeNomenclatures)
+    q = DB.session.query(
+        VSyntheseDecodeNomenclatures, Synthese, LiMunicipalities
+    ).join(
+        Synthese, Synthese.id_synthese == VSyntheseDecodeNomenclatures.id_synthese
+    ).join(
+        LiMunicipalities, LiMunicipalities.insee_com == Synthese.id_municipality
+    )
     q = q.filter(VSyntheseDecodeNomenclatures.id_synthese == id_synthese)
-
     try:
         data = q.one()
-        return data.as_dict()
+        # get areas expect municipalities
+        areas = DB.session.query(
+            LAreas
+        ).join(
+            CorAreaSynthese, CorAreaSynthese.id_area == LAreas.id_area
+        ).join(
+            Synthese, Synthese.id_synthese == CorAreaSynthese.id_synthese
+        ).filter(
+            Synthese.id_synthese == id_synthese
+        ).filter(
+            LAreas.id_type != 101
+        ).all()
+        areas_list = [area.as_dict() for area in areas]
+
+        return {
+            **data[0].as_dict(),
+            **data[1].as_dict(),
+            **data[2].as_dict(columns=['nom_com']),
+            'areas': areas_list
+        }
     except exc.NoResultFound:
         return None
 
