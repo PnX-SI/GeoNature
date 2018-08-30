@@ -18,6 +18,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class SyntheseListComponent implements OnInit, OnChanges {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public selectedObs: any;
+  public selectObsTaxonInfo: any;
+  public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;
   public exportRoute = `${AppConfig.API_ENDPOINT}/synthese/export`;
@@ -68,13 +70,18 @@ export class SyntheseListComponent implements OnInit, OnChanges {
       console.log(data);
       this.selectedObs = data;
       this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
-        this.selectedObs.cd_nom
+        this.selectedObs['cd_nom']
       }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
+    });
+
+    this.dataService.getTaxonAttributsAndMedia(row.taxon.cd_nom, [1, 2, 3]).subscribe(data => {
+      console.log(data);
+      this.selectObsTaxonInfo = data;
     });
 
     this.dataService.getTaxonInfo(row.taxon.cd_nom).subscribe(data => {
       console.log(data);
-      this.selectedObs['taxon'] = data;
+      this.selectedObsTaxonDetail = data;
     });
   }
 
@@ -135,7 +142,7 @@ export class SyntheseListComponent implements OnInit, OnChanges {
 
   openInfoModal(modal, row) {
     console.log(row);
-    this.ngbModal.open(modal, { size: 'lg', windowClass: 'large-modal', backdrop: 'static' });
+    this.ngbModal.open(modal, { size: 'lg', windowClass: 'large-modal' });
     this.loadOneSyntheseReleve(row);
   }
 

@@ -87,6 +87,19 @@ export class DataFormService {
     return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
   }
 
+  getTaxonAttributsAndMedia(cd_nom: number, id_themes?: Array<number>) {
+    let query_string = new HttpParams();
+    if (id_themes) {
+      id_themes.forEach(id => {
+        query_string = query_string.append('id_theme', id.toString());
+      });
+    }
+
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibnoms/taxoninfo/${cd_nom}`, {
+      params: query_string
+    });
+  }
+
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
     const response = await this._http
       .get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`)
