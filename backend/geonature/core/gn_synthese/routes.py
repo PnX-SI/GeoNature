@@ -18,9 +18,8 @@ from geonature.core.gn_synthese.models import (
     TSources,
     CorAreaSynthese,
     DefaultsNomenclaturesValue,
-    VSyntheseForWebApp,
     VSyntheseDecodeNomenclatures,
-    VSyntheseForWebAppBis,
+    SyntheseOneRecord,
     Taxref
 )
 from geonature.core.gn_synthese.repositories import get_all_synthese
@@ -142,37 +141,6 @@ def get_synthese(info_role):
     return FeatureCollection(features)
 
 
-@routes.route('/vsynthese', methods=['POST'])
-@json_resp
-def get_vsynthese():
-    """
-        return synthese row(s) filtered by form params
-        Params must have same synthese fields names
-        'observers' param (string) is filtered with ilike clause
-    """
-    filters = dict(request.get_json())
-    q = DB.session.query(VSyntheseForWebApp)
-
-    if 'observers' in filters and filters['observers']:
-        q = q.filter(VSyntheseForWebApp.observers.ilike('%'+filters.pop('observers')+'%'))
-
-    for colname, value in filters.items():
-        col = getattr(VSyntheseForWebApp.__table__.columns, colname)
-        testT = testDataType(value, col.type, colname)
-        if testT:
-            return {'error': testT}, 500
-        q = q.filter(col == value)
-    if 'limit' in filters:
-        q = q.limit(
-            filters['limit']
-        ).orderby(
-            VSyntheseForWebApp.date_min
-        )
-    else:
-        data = q.all()
-    return FeatureCollection([d.get_geofeature() for d in data])
-
-
 @routes.route('/vsynthese/<id_synthese>', methods=['GET'])
 @json_resp
 def get_one_synthese(id_synthese):
@@ -180,36 +148,13 @@ def get_one_synthese(id_synthese):
         Retourne un enregistrement de la synthese
         avec les nomenclatures décodées pour la webapp
     """
-    q = DB.session.query(
-        VSyntheseDecodeNomenclatures, Synthese, LiMunicipalities
-    ).join(
-        Synthese, Synthese.id_synthese == VSyntheseDecodeNomenclatures.id_synthese
-    ).join(
-        LiMunicipalities, LiMunicipalities.insee_com == Synthese.id_municipality
+
+    q = DB.session.query(SyntheseOneRecord).filter(
+        SyntheseOneRecord.id_synthese == id_synthese
     )
-    q = q.filter(VSyntheseDecodeNomenclatures.id_synthese == id_synthese)
     try:
         data = q.one()
-        # get areas expect municipalities
-        areas = DB.session.query(
-            LAreas
-        ).join(
-            CorAreaSynthese, CorAreaSynthese.id_area == LAreas.id_area
-        ).join(
-            Synthese, Synthese.id_synthese == CorAreaSynthese.id_synthese
-        ).filter(
-            Synthese.id_synthese == id_synthese
-        ).filter(
-            LAreas.id_type != 101
-        ).all()
-        areas_list = [area.as_dict() for area in areas]
-
-        return {
-            **data[0].as_dict(),
-            **data[1].as_dict(),
-            **data[2].as_dict(columns=['nom_com']),
-            'areas': areas_list
-        }
+        return data.as_dict(True)
     except exc.NoResultFound:
         return None
 
