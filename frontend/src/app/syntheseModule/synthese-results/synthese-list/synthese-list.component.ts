@@ -3,11 +3,12 @@ import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { DataService } from '../../services/data.service';
 import { SyntheseFormService } from '../../services/form.service';
-import { window } from 'rxjs/operator/window';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/src/params';
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -21,6 +22,7 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   public rowNumber: number;
   public exportRoute = `${AppConfig.API_ENDPOINT}/synthese/export`;
   public queyrStringDownload: HttpParams;
+  public inpnMapUrl: string;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table') table: any;
   constructor(
@@ -28,11 +30,13 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     private _ds: DataService,
     public ngbModal: NgbModal,
     private _commonService: CommonService,
-    private _fs: SyntheseFormService
+    private _fs: SyntheseFormService,
+    private dataService: DataFormService,
+    public sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
-    // get wiewport height to set the number of rows in the table
+    // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 62);
 
@@ -59,9 +63,18 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     this.rowNumber = Math.trunc(event.target.innerHeight / 62);
   }
 
-  loadOneSyntheseReleve(event) {
-    this._ds.getOneSyntheseObservation(event.value.id_synthese).subscribe(data => {
+  loadOneSyntheseReleve(row) {
+    this._ds.getOneSyntheseObservation(row.id_synthese).subscribe(data => {
+      console.log(data);
       this.selectedObs = data;
+      this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
+        this.selectedObs.cd_nom
+      }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
+    });
+
+    this.dataService.getTaxonInfo(row.taxon.cd_nom).subscribe(data => {
+      console.log(data);
+      this.selectedObs['taxon'] = data;
     });
   }
 
@@ -118,6 +131,12 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   setQueryString() {
     const formatedParams = this._fs.formatParams();
     this.queyrStringDownload = this._ds.buildQueryUrl(formatedParams);
+  }
+
+  openInfoModal(modal, row) {
+    console.log(row);
+    this.ngbModal.open(modal, { size: 'lg', windowClass: 'large-modal', backdrop: 'static' });
+    this.loadOneSyntheseReleve(row);
   }
 
   downloadData() {
