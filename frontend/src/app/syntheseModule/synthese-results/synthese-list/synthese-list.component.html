@@ -67,7 +67,7 @@
   <ngx-datatable-column maxWidth="10">
     <ng-template let-row="row" ngx-datatable-cell-template>
       <button class="btn btn-secondary btn-no-padding btn-ghost" (click)="openInfoModal(modalInfoObs, row);">
-        <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" " aria-hidden="true "></i>
+        <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
       </button>
     </ng-template>
   </ngx-datatable-column> -->
@@ -121,177 +121,177 @@
           </div>
 
           <div *ngIf="selectedObs?.areas> 0" class=" padding-sm col-xs-4 col-sm-4 col-md-4 col-lg-4">
-          <b> Autres espaces concernés par l'observation</b>
-          <li *ngFor="let area of selectedObs?.areas"> {{area.area_name}} </li>
+            <b> Autres espaces concernés par l'observation</b>
+            <li *ngFor="let area of selectedObs?.areas"> {{area.area_name}} </li>
           </div>
-          </div>
+        </div>
 
-          </div>
-          </div>
-
-
-          <div class="row">
-            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-              <h5 class="underlined main-color"> Détail de l'occurrence </h5>
-              <table class="font-xs table table-striped table-sm">
-                <tr>
-                  <td> Stade de vie: </td>
-                  <td> {{selectedObs?.life_stage}} </td>
-                </tr>
-                <tr>
-                  <td> Technique d'observation </td>
-                  <td> {{selectedObs?.obs_technique}} </td>
-                </tr>
-
-                <tr>
-                  <td> Niveau de diffusion </td>
-                  <td> {{selectedObs?.diffusion_level}} </td>
-                </tr>
-
-                <tr>
-                  <td> Preuve d'existance </td>
-                  <td> {{selectedObs?.exist_proof}} </td>
-                </tr>
-
-                <tr>
-                  <td> Méthode d'observation </td>
-                  <td> {{selectedObs?.obs_method}} </td>
-                </tr>
-                <tr>
-                  <td> Denombrement min </td>
-                  <td> {{selectedObs?.count_min}} </td>
-                </tr>
-                <tr>
-                  <td> Denombrement min </td>
-                  <td> {{selectedObs?.count_max}} </td>
-                </tr>
-                <tr>
-                  <td> Type de dénombrement </td>
-                  <td> {{selectedObs?.type_count}} </td>
-                </tr>
-
-                <tr>
-                  <td> Nature de l'objet géographique </td>
-                  <td> {{selectedObs?.nat_obj_geo}} </td>
-                </tr>
-
-                <tr>
-                  <td> Statut biologique </td>
-                  <td> {{selectedObs?.bio_status}} </td>
-                </tr>
-
-                <tr>
-                  <td> Sensibilité </td>
-                  <td> {{selectedObs?.sensitivity}} </td>
-                </tr>
-
-                <tr>
-                  <td> Stade de vie </td>
-                  <td> {{selectedObs?.life_stage}} </td>
-                </tr>
-
-                <tr>
-                  <td> Type de regroupement </td>
-                  <td> {{selectedObs?.grp_typ}} </td>
-                </tr>
-
-                <tr>
-                  <td> Naturalité </td>
-                  <td> {{selectedObs?.naturalness}} </td>
-                </tr>
-
-                <tr>
-                  <td> Objet du dénombrement </td>
-                  <td> {{selectedObs?.obj_count}} </td>
-                </tr>
-
-                <tr>
-                  <td> Statut de l'observation </td>
-                  <td> {{selectedObs?.observation_status}} </td>
-                </tr>
-
-                <tr>
-                  <td> Sexe </td>
-                  <td> {{selectedObs?.sex}} </td>
-                </tr>
-
-                <tr>
-                  <td> Source de la donnée </td>
-                  <td> {{selectedObs?.source_status}} </td>
-                </tr>
-
-                <tr>
-                  <td> Statut de validation </td>
-                  <td> {{selectedObs?.valid_status}} </td>
-                </tr>
-
-                <tr>
-                  <td> Floutage </td>
-                  <td> {{selectedObs?.valid_status}} </td>
-                </tr>
-
-                <tr>
-                  <td> Condition biologique </td>
-                  <td> {{selectedObs?.bio_condition}} </td>
-                </tr>
-              </table>
-
-            </div>
+      </div>
+    </div>
 
 
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <div class="row">
+      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <h5 class="underlined main-color"> Détail de l'occurrence </h5>
+        <table class="font-xs table table-striped table-sm">
+          <tr>
+            <td> Stade de vie: </td>
+            <td> {{selectedObs?.life_stage}} </td>
+          </tr>
+          <tr>
+            <td> Technique d'observation </td>
+            <td> {{selectedObs?.obs_technique}} </td>
+          </tr>
 
-              <h5 class="underlined main-color"> Taxonomie </h5>
+          <tr>
+            <td> Niveau de diffusion </td>
+            <td> {{selectedObs?.diffusion_level}} </td>
+          </tr>
 
-              <table class="size-xs table table-striped table-sm">
+          <tr>
+            <td> Preuve d'existance </td>
+            <td> {{selectedObs?.exist_proof}} </td>
+          </tr>
 
-                <tr>
-                  <td>
-                    <b>Groupe taxonomique </b>
-                  </td>
-                  <td> {{ selectedObs?.taxon?.classe }} </td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Ordre</b>
-                  </td>
-                  <td> {{ selectedObs?.taxon?.ordre }} </td>
-                </tr>
-                <tr>
-                  <td>
-                    <b> Famille</b>
-                  </td>
-                  <td> {{ selectedObs?.taxon?.famille }} </td>
-                </tr>
+          <tr>
+            <td> Méthode d'observation </td>
+            <td> {{selectedObs?.obs_method}} </td>
+          </tr>
+          <tr>
+            <td> Denombrement min </td>
+            <td> {{selectedObs?.count_min}} </td>
+          </tr>
+          <tr>
+            <td> Denombrement min </td>
+            <td> {{selectedObs?.count_max}} </td>
+          </tr>
+          <tr>
+            <td> Type de dénombrement </td>
+            <td> {{selectedObs?.type_count}} </td>
+          </tr>
 
-                <!-- TODO -->
-                <!-- Attribut Taxhub -->
+          <tr>
+            <td> Nature de l'objet géographique </td>
+            <td> {{selectedObs?.nat_obj_geo}} </td>
+          </tr>
 
-              </table>
+          <tr>
+            <td> Statut biologique </td>
+            <td> {{selectedObs?.bio_status}} </td>
+          </tr>
 
-              <h5 class="underlined main-color"> Réglementation</h5>
-              <table class="font-xs table table-striped table-sm">
+          <tr>
+            <td> Sensibilité </td>
+            <td> {{selectedObs?.sensitivity}} </td>
+          </tr>
 
-                <tr *ngFor="let arrete of selectedObs?.taxon?.statuts_protection">
-                  <td>
-                    <a [href]="arrete.url"> {{arrete.intitule}} </a>
-                  </td>
-                </tr>
-              </table>
+          <tr>
+            <td> Stade de vie </td>
+            <td> {{selectedObs?.life_stage}} </td>
+          </tr>
 
-              <!-- <object [data]="sanitizer.bypassSecurityTrustResourceUrl(inpnMapUrl)" type="image/svg+xml" width="90%" height="90%">
+          <tr>
+            <td> Type de regroupement </td>
+            <td> {{selectedObs?.grp_typ}} </td>
+          </tr>
+
+          <tr>
+            <td> Naturalité </td>
+            <td> {{selectedObs?.naturalness}} </td>
+          </tr>
+
+          <tr>
+            <td> Objet du dénombrement </td>
+            <td> {{selectedObs?.obj_count}} </td>
+          </tr>
+
+          <tr>
+            <td> Statut de l'observation </td>
+            <td> {{selectedObs?.observation_status}} </td>
+          </tr>
+
+          <tr>
+            <td> Sexe </td>
+            <td> {{selectedObs?.sex}} </td>
+          </tr>
+
+          <tr>
+            <td> Source de la donnée </td>
+            <td> {{selectedObs?.source_status}} </td>
+          </tr>
+
+          <tr>
+            <td> Statut de validation </td>
+            <td> {{selectedObs?.valid_status}} </td>
+          </tr>
+
+          <tr>
+            <td> Floutage </td>
+            <td> {{selectedObs?.valid_status}} </td>
+          </tr>
+
+          <tr>
+            <td> Condition biologique </td>
+            <td> {{selectedObs?.bio_condition}} </td>
+          </tr>
+        </table>
+
+      </div>
+
+
+      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+
+        <h5 class="underlined main-color"> Taxonomie </h5>
+
+        <table class="size-xs table table-striped table-sm">
+
+          <tr>
+            <td>
+              <b>Groupe taxonomique </b>
+            </td>
+            <td> {{ selectedObs?.taxon?.classe }} </td>
+          </tr>
+          <tr>
+            <td>
+              <b>Ordre</b>
+            </td>
+            <td> {{ selectedObs?.taxon?.ordre }} </td>
+          </tr>
+          <tr>
+            <td>
+              <b> Famille</b>
+            </td>
+            <td> {{ selectedObs?.taxon?.famille }} </td>
+          </tr>
+
+          <!-- TODO -->
+          <!-- Attribut Taxhub -->
+
+        </table>
+
+        <h5 class="underlined main-color"> Réglementation</h5>
+        <table class="font-xs table table-striped table-sm">
+
+          <tr *ngFor="let arrete of selectedObs?.taxon?.statuts_protection">
+            <td>
+              <a [href]="arrete.url"> {{arrete.intitule}} </a>
+            </td>
+          </tr>
+        </table>
+
+        <!-- <object [data]="sanitizer.bypassSecurityTrustResourceUrl(inpnMapUrl)" type="image/svg+xml" width="90%" height="90%">
           <param name="src" value="/cartosvg/couchegeo/repartition/atlas/{{selectedObs?.cd_nom}}/fr_light_l93,fr_light_mer_l93,fr_lit_l93">
           <param name="type" value="image/svg+xml">
           <param name="pluginspage" value="http://www.adobe.com/svg/viewer/install/">
         </object> -->
 
-            </div>
+      </div>
 
 
-          </div>
+    </div>
 
-          </div>
-    </ng-template>
+  </div>
+</ng-template>
 
 
-    <button (click)="downloadData('shapefile')"> export </button>
+<button (click)="downloadData('shapefile')"> export </button>
