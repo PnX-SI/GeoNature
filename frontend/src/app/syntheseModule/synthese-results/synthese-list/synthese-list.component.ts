@@ -67,20 +67,19 @@ export class SyntheseListComponent implements OnInit, OnChanges {
 
   loadOneSyntheseReleve(row) {
     this._ds.getOneSyntheseObservation(row.id_synthese).subscribe(data => {
-      console.log(data);
       this.selectedObs = data;
       this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
         this.selectedObs['cd_nom']
       }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
     });
 
-    this.dataService.getTaxonAttributsAndMedia(row.taxon.cd_nom, [1, 2, 3]).subscribe(data => {
-      console.log(data);
-      this.selectObsTaxonInfo = data;
-    });
+    this.dataService
+      .getTaxonAttributsAndMedia(row.taxon.cd_nom, this.SYNTHESE_CONFIG.ID_THEME_ATTRIBUT_TAXHUB)
+      .subscribe(data => {
+        this.selectObsTaxonInfo = data;
+      });
 
     this.dataService.getTaxonInfo(row.taxon.cd_nom).subscribe(data => {
-      console.log(data);
       this.selectedObsTaxonDetail = data;
     });
   }
@@ -88,18 +87,15 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   toggleExpandRow(row) {
     // if click twice on same row
     if (this.previousRow && this.previousRow === row) {
-      console.log('twice');
       this.table.rowDetail.toggleExpandRow(this.previousRow);
       this.previousRow = null;
       // if click on new row when expanded already activated
     } else if (this.previousRow) {
-      console.log('new');
       this.table.rowDetail.toggleExpandRow(this.previousRow);
       this.table.rowDetail.toggleExpandRow(row);
       this.previousRow = row;
       // if its first time
     } else {
-      console.log('first');
       this.table.rowDetail.toggleExpandRow(row);
       this.previousRow = row;
     }
@@ -141,7 +137,6 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   }
 
   openInfoModal(modal, row) {
-    console.log(row);
     this.ngbModal.open(modal, { size: 'lg', windowClass: 'large-modal' });
     this.loadOneSyntheseReleve(row);
   }
