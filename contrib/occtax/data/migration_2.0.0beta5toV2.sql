@@ -192,7 +192,7 @@ VALUES(
   COALESCE (observers.observers_name, releve.observers_txt),
   occurrence.determiner,
   ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_determination_method),
-  CONCAT('Relevé : ',releve.comment, ' Occurrence: ', occurrence.comment),
+  comments  = CONCAT('Relevé : ',COALESCE(releve.comment, "-" ), ' Occurrence: ', COALESCE(NEW.comment, "-" ))
   'I'
   );
 
