@@ -163,15 +163,6 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 
 @serializable
-class Taxref(DB.Model):
-    __tablename__ = 'taxref'
-    __table_args__ = {'schema': 'taxonomie'}
-    cd_nom = DB.Column(DB.Integer, primary_key=True)
-    cd_ref = DB.Column(DB.Integer)
-    nom_valide = DB.Column(DB.Unicode)
-
-
-@serializable
 @geoserializable
 @shapeserializable
 class Synthese(SyntheseCruved):
