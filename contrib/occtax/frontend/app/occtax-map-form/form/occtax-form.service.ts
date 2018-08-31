@@ -312,7 +312,7 @@ export class OcctaxFormService {
     this.isEdintingOccurrence = true;
     // set showOccurrence to true
     this.showOccurrence = true;
-    this.taxonsList.splice(index, 1);
+    const currentEditedTaxon = this.taxonsList.splice(index, 1)[0];
     // set the current index
     this.indexOccurrence = index;
     // get the occurrence data from releve form
@@ -326,22 +326,12 @@ export class OcctaxFormService {
 
     const countingData = occurenceData.cor_counting_occtax;
     const nbCounting = countingData.length;
-    // load the taxons info
-    this._dfs.getTaxonInfo(occurenceData.cd_nom).subscribe(taxon => {
-      this.savedCurrentTaxon = taxon;
-      occurenceData["cd_nom"] = {
-        cd_nom: taxon.cd_nom,
-        group2_inpn: taxon.group2_inpn,
-        lb_nom: taxon.lb_nom,
-        nom_valide: taxon.nom_valide,
-        regne: taxon.regne
-      };
-      // init occurence form with the data to edit
-      this.occurrenceForm.patchValue(occurenceData);
-      // set the current taxon
-      this.currentTaxon = taxon;
-      this.currentTaxon["lb_nom"] = taxon.nom_complet;
-    });
+    console.log("le current taxooooon", currentEditedTaxon);
+    this.currentTaxon = currentEditedTaxon;
+    // patch occurrence data
+    occurenceData["cd_nom"] = currentEditedTaxon;
+    this.occurrenceForm.patchValue(occurenceData);
+    this.savedCurrentTaxon = currentEditedTaxon;
     // init the counting form with the data to edit
     for (let i = 1; i < nbCounting; i++) {
       this.nbCounting.push("");
@@ -414,6 +404,9 @@ export class OcctaxFormService {
 
   onTaxonChanged($event) {
     this.currentTaxon = $event.item;
+    // set 'nom_cite'
+    console.log("$event", $event);
+    this.occurrenceForm.patchValue({ nom_cite: $event.item.search_name });
     // fetch default nomenclature value filtered by organism, regne, group2_inpn
     this.getDefaultValues(
       this.currentUser.organismId,
