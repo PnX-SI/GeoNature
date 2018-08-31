@@ -51,7 +51,7 @@ id_source integer;
 validation RECORD;
 cd_nomenclature_source_status character varying;
 observers RECORD;
-id_municipality integer;
+id_municipality character varying;
 id_role_loop integer;
 
 BEGIN
@@ -192,7 +192,7 @@ VALUES(
   COALESCE (observers.observers_name, releve.observers_txt),
   occurrence.determiner,
   ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_determination_method),
-  CONCAT('Relevé : ',releve.comment, 'Occurrence: ', occurrence.comment),
+  CONCAT('Relevé : ',releve.comment, ' Occurrence: ', occurrence.comment),
   'I'
   );
 
