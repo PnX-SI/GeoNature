@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GeoJSON } from 'leaflet';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';

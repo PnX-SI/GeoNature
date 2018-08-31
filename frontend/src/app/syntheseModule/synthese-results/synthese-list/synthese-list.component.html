@@ -18,7 +18,7 @@
   [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
 
 
-  <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
+  <!-- <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
     <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
       <div style="padding-left:35px;">
         <div>
@@ -35,15 +35,15 @@
         </div>
       </div>
     </ng-template>
-  </ngx-datatable-row-detail>
+  </ngx-datatable-row-detail> -->
 
-  <ngx-datatable-column [width]="10" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+  <!-- <ngx-datatable-column [width]="10" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
     <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
       <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expand/Collapse Row"
         (click)="toggleExpandRow(row)">
       </a>
     </ng-template>
-  </ngx-datatable-column>
+  </ngx-datatable-column> -->
 
   <!-- ACTION COLUMNS -->
   <!-- <ngx-datatable-column maxWidth="10">
@@ -107,16 +107,23 @@
         <div class="row row-sm ">
           <div class="padding-sm col-xs-5 col-sm-5 col-md-5 col-lg-5 ">
             <h5>
+              {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }}
               <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
-                {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }}</a>
+                <img src="assets/images/logo_inpn.png" width="150">
+              </a>
             </h5>
-            <span class="font-xs ">
-              <b> Observation de: </b> {{selectedObs?.observers}}
+            <span class="font-xs">
+              <b> Observation de : </b> {{selectedObs?.observers}}
               <br>
-              <b> Date: </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
+              <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
+                <b> Date : </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
+              </span>
+              <ng-template #elseBlock>
+                <b> Date : </b>{{selectedObs?.date_min}}
+              </ng-template>
               <br>
-              <b> Commune(s) </b>: {{selectedObs?.nom_com}}
-              <b> Altitude</b>: {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
+              <b> Commune(s) </b> : {{selectedObs?.nom_com}}
+              <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
             </span>
           </div>
 
@@ -243,7 +250,7 @@
 
           <tr>
             <td> Floutage </td>
-            <td> {{selectedObs?.occurrence_detail.valid_status}} </td>
+            <td> {{selectedObs?.occurrence_detail.blurring}} </td>
           </tr>
 
           <tr>
@@ -257,11 +264,11 @@
           </tr>
           <tr>
             <td> Determinateur </td>
-            <td> {{selectedObs?.digital_proof}} </td>
+            <td> {{selectedObs?.determiner}} </td>
           </tr>
           <tr>
             <td> Preuve numérique </td>
-            <td> {{selectedObs?.determiner}} </td>
+            <td> {{selectedObs?.digital_proof}} </td>
           </tr>
           <tr>
             <td> Preuve non numérique </td>
