@@ -89,7 +89,7 @@ id_source integer;
 validation RECORD;
 cd_nomenclature_source_status character varying;
 observers RECORD;
-id_municipality integer;
+id_municipality character varying;
 id_role_loop integer;
 
 BEGIN
@@ -743,7 +743,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',releve.comment, 'Occurrence: ', NEW.comment)
+    comments  = CONCAT('Relevé : ',releve.comment, ' Occurrence: ', NEW.comment)
     WHERE id_source = the_id_source AND entity_source_pk_value = counting.id_counting_occtax::text;
   END LOOP;
 
