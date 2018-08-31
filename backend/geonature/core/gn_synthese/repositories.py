@@ -6,8 +6,9 @@ from geoalchemy2.shape import from_shape
 
 from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import circle_from_point
+from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_synthese.models import (
-    Synthese, CorRoleSynthese, Taxref, TSources, CorRoleSynthese,
+    Synthese, CorRoleSynthese, TSources, CorRoleSynthese,
     CorAreaSynthese
 )
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
@@ -37,26 +38,18 @@ def filter_query_with_cruved(q, user, allowed_datasets):
     return q
 
 
-def get_all_synthese(filters, user, allowed_datasets):
+def filter_query_all_filters(q, filters, user, allowed_datasets):
     """
     Return a query filtered with the cruved and all
     the filters available in the synthese form
     parameters:
-        - filters: a dict of filter
-        - user: a user object from TRoles
-        - allowed datasets: an array of ID dataset where the users have autorization
+        - q (SQLAchemyQuery): an SQLAchemy query
+        - filters (dict): a dict of filter
+        - user (TRoles): a user object from TRoles
+        - allowed datasets (List<int>): an array of ID dataset where the users have autorization
 
     """
-    q = (
-        DB.session.query(Synthese, Taxref, TSources, TDatasets)
-        .join(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        ).join(
-            TSources, TSources.id_source == Synthese.id_source
-        ).join(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        )
-    )
+
     from geonature.core.users.models import UserRigth
 
     user = UserRigth(
@@ -117,7 +110,5 @@ def get_all_synthese(filters, user, allowed_datasets):
         else:
             col = getattr(Synthese.__table__.columns, colname)
             q = q.filter(col.in_(value))
-    q = q.order_by(
-        Synthese.date_min.desc()
-    )
+
     return q

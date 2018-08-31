@@ -1,8 +1,10 @@
 import json
 import logging
 import datetime
-from flask import Blueprint, request, session, current_app, send_from_directory, render_template
 
+from collections import OrderedDict
+
+from flask import Blueprint, request, session, current_app, send_from_directory, render_template
 from sqlalchemy import distinct, func
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
@@ -20,9 +22,13 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseDecodeNomenclatures,
     SyntheseOneRecord,
-    Taxref
 )
-from geonature.core.gn_synthese.repositories import get_all_synthese
+from geonature.core.taxonomie.models import (
+    Taxref,
+    TaxrefProtectionArticles,
+    TaxrefProtectionEspeces
+)
+from geonature.core.gn_synthese import repositories as synthese_repository
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -127,7 +133,20 @@ def get_synthese(info_role):
         result_limit = 10000
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = get_all_synthese(filters, info_role, allowed_datasets)
+    q = (
+        DB.session.query(Synthese, Taxref, TSources, TDatasets)
+        .join(
+            Taxref, Taxref.cd_nom == Synthese.cd_nom
+        ).join(
+            TSources, TSources.id_source == Synthese.id_source
+        ).join(
+            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
+        )
+    )
+    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = q.order_by(
+        Synthese.date_min.desc()
+    )
     data = q.limit(result_limit)
 
     features = []
@@ -202,11 +221,25 @@ def export(info_role):
 
     export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = get_all_synthese(filters, info_role, allowed_datasets)
+    q = (
+        DB.session.query(Synthese, Taxref, TSources, TDatasets)
+        .join(
+            Taxref, Taxref.cd_nom == Synthese.cd_nom
+        ).join(
+            TSources, TSources.id_source == Synthese.id_source
+        ).join(
+            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
+        )
+    )
+    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
     q = q.add_entity(VSyntheseDecodeNomenclatures)
     q = q.join(
         VSyntheseDecodeNomenclatures,
         VSyntheseDecodeNomenclatures.id_synthese == Synthese.id_synthese
+    )
+
+    q = q.order_by(
+        Synthese.date_min.desc()
     )
     data = q.limit(result_limit)
 
@@ -296,3 +329,56 @@ def export(info_role):
             error=message,
             redirect=current_app.config['URL_APPLICATION']+"/#/synthese"
         )
+
+
+@routes.route('/statuts', methods=['GET'])
+@fnauth.check_auth_cruved('E', True)
+def get_status(info_role):
+    """
+    Route to get all the protection status of a synthese search
+    """
+
+    filters = dict(request.args)
+
+    q = DB.session.query(distinct(Synthese.cd_nom), Taxref, TaxrefProtectionArticles).join(
+        Taxref, Taxref.cd_nom == Synthese.cd_nom
+    ).join(
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == Synthese.cd_nom
+    ).join(
+        TaxrefProtectionArticles, TaxrefProtectionArticles.cd_protection == TaxrefProtectionEspeces.cd_protection
+    )
+
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    data = q.all()
+
+    protection_status = []
+    for d in data:
+        taxon = d[1].as_dict()
+        protection = d[2].as_dict()
+        row = OrderedDict([
+            ('nom_complet', taxon['nom_complet']),
+            ('nom_vern', taxon['nom_vern']),
+            ('cd_nom', taxon['cd_nom']),
+            ('cd_ref', taxon['cd_ref']),
+            ('type_protection', protection['type_protection']),
+            ('article', protection['article']),
+            ('intitule', protection['intitule']),
+            ('arrete', protection['arrete']),
+            ('date_arrete', protection['date_arrete']),
+            ('url', protection['url']),
+        ])
+        protection_status.append(row)
+
+    export_columns = [
+        'nom_complet', 'nom_vern', 'cd_nom', 'cd_ref', 'type_protection',
+        'article', 'intitule', 'arrete', 'date_arrete', 'url'
+    ]
+
+    file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+    return to_csv_resp(
+        'lalala',
+        protection_status,
+        separator=';',
+        columns=export_columns,
+    )
