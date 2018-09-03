@@ -20,7 +20,8 @@ import { ModuleConfig } from "../../../module.config";
   encapsulation: ViewEncapsulation.None
 })
 export class ReleveComponent implements OnInit, OnDestroy {
-  @Input() releveForm: FormGroup;
+  @Input()
+  releveForm: FormGroup;
   public dateMin: Date;
   public dateMax: Date;
   public geojson: any;
@@ -76,9 +77,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
     (this.releveForm.controls
       .properties as FormGroup).controls.date_min.valueChanges.subscribe(
       value => {
-        if (this.releveForm.value.properties.date_max === null) {
-          this.releveForm.controls.properties.patchValue({ date_max: value });
-        }
+        this.releveForm.controls.properties.patchValue({ date_max: value });
       }
     );
   }
