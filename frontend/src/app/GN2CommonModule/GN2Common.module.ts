@@ -49,7 +49,8 @@ import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/m
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
 import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
-import { ModalDownloadComponent} from '@geonature_common/others/modal-download/modal-download.component'
+import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
+import { PeriodComponent } from '@geonature_common/form/date/period.component';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -112,7 +113,8 @@ export function HttpLoaderFactory(http: Http) {
     GenericFormGeneratorComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
-    ModalDownloadComponent
+    ModalDownloadComponent,
+    PeriodComponent
   ],
   providers: [
     TranslateService,
@@ -160,6 +162,7 @@ export function HttpLoaderFactory(http: Http) {
     GenericFormGeneratorComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
+    PeriodComponent
   ]
 })
 export class GN2CommonModule {}
