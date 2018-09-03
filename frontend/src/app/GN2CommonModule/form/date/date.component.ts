@@ -29,9 +29,10 @@ export class DateComponent implements OnInit, OnDestroy {
   dynamicId;
   public changeSub: Subscription;
   public today: NgbDateStruct;
-  constructor(private _dateParser: NgbDateParserFormatter, myElement: ElementRef) {
+  constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
     this.elementRef = myElement;
   }
+  //constructor(private _dateParser: NgbDateParserFormatter) {}
 
   ngOnInit() {
     const today = new Date();

@@ -13,7 +13,6 @@ export class SyntheseFormService {
 
   constructor(private _fb: FormBuilder, private _dateParser: NgbDateParserFormatter) {
     this.taxonsList = [];
-    const areasFormArray = this._fb.array([]);
 
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -22,6 +21,8 @@ export class SyntheseFormService {
       id_acquisition_frameworks: null,
       date_min: null,
       date_max: null,
+      period_min: null,
+      period_max: null,
       municipalities: null,
       geoIntersection: null,
       radius: null
@@ -29,7 +30,6 @@ export class SyntheseFormService {
 
     AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
       const control_name = 'area_' + area.id_type;
-      const new_area_control = new FormControl();
       this.searchForm.addControl(control_name, new FormControl());
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
