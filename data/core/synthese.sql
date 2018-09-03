@@ -117,7 +117,6 @@ CREATE TABLE synthese (
     cd_nomenclature_blurring character varying DEFAULT get_default_cd_nomenclature_value('DEE_FLOU'),
     cd_nomenclature_source_status character varying DEFAULT get_default_cd_nomenclature_value('STATUT_SOURCE'),
     cd_nomenclature_info_geo_type character varying DEFAULT get_default_cd_nomenclature_value('TYP_INF_GEO'),
-    id_municipality character varying(25),
     count_min integer,
     count_max integer,
     cd_nom integer,
@@ -519,7 +518,6 @@ SELECT
   n.blurring,
   n.source_status,
   m.insee_com, --TODO attention changer le JOIN en prod
-  m.nom_com,
   s.count_min,
   s.count_max,
   s.cd_nom,
@@ -547,7 +545,6 @@ FROM gn_synthese.synthese s
 JOIN gn_synthese.t_sources so ON so.id_source = s.id_source
 JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
 JOIN nomenclatures n ON n.id_synthese = s.id_synthese
-LEFT JOIN ref_geo.li_municipalities m ON m.insee_com = s.id_municipality --TODO attention changer le JOIN en prod
 LEFT JOIN utilisateurs.t_roles v ON v.id_role = s.id_validator
 JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 ;
@@ -561,7 +558,6 @@ SELECT
   s.entity_source_pk_value,
   so.url_source,
   d.dataset_name,
-  s.id_municipality,
   s.id_dataset,
   s.count_min,
   s.count_max,
