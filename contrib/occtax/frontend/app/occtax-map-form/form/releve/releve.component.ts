@@ -3,14 +3,12 @@ import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
 import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ViewEncapsulation } from "@angular/core";
 import {
   NgbDateStruct,
   NgbDateParserFormatter
 } from "@ng-bootstrap/ng-bootstrap";
-import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../../../module.config";
 
 @Component({
@@ -36,10 +34,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   constructor(
     private _ms: MapService,
     private _dfs: DataFormService,
-    public fs: OcctaxFormService,
-    private _commonService: CommonService,
-    private modalService: NgbModal,
-    private _dateFormater: NgbDateParserFormatter
+    public fs: OcctaxFormService
   ) {}
 
   ngOnInit() {
