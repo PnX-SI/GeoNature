@@ -51,7 +51,6 @@ id_source integer;
 validation RECORD;
 cd_nomenclature_source_status character varying;
 observers RECORD;
-id_municipality character varying;
 id_role_loop integer;
 
 BEGIN
@@ -74,11 +73,6 @@ SELECT INTO validation * FROM gn_commons.t_validations v WHERE uuid_attached_row
 -- Récupération du status_source depuis le JDD
 SELECT INTO cd_nomenclature_source_status ref_nomenclatures.get_cd_nomenclature(d.id_nomenclature_source_status) FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
 
--- Récupération de l'id_municipality par intersection avec ref_geo: pour les polygones on prend le centroid
-SELECT INTO id_municipality m.insee_com
-FROM ref_geo.li_municipalities m
-JOIN ref_geo.l_areas a ON a.id_area = m.id_area
-WHERE ST_INTERSECTS(ST_CENTROID(releve.geom_local), a.geom) AND a.id_type = 101;
 
 --Récupération et formatage des observateurs
 SELECT INTO observers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
@@ -115,7 +109,6 @@ cd_nomenclature_observation_status,
 cd_nomenclature_blurring,
 cd_nomenclature_source_status,
 cd_nomenclature_info_geo_type,
-id_municipality,
 count_min,
 count_max,
 cd_nom,
@@ -171,7 +164,6 @@ VALUES(
   cd_nomenclature_source_status,
   -- cd_nomenclature_info_geo_type: type de rattachement = géoréferencement
   '1'	,
-  id_municipality,
   new_count.count_min,
   new_count.count_max,
   occurrence.cd_nom,
