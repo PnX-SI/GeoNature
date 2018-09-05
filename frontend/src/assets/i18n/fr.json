@@ -159,6 +159,8 @@
   },
   "Synthese": {
     "DeleteObs": "Supprimer l'observations",
-    "DeleteSuccess": "Observation supprimée avec succès"
+    "DeleteSuccess": "Observation supprimée avec succès",
+    "PeriodError":
+      "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
   }
 }

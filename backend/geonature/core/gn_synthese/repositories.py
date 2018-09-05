@@ -1,8 +1,12 @@
+from datetime import datetime
+
 import sqlalchemy as sa
+
 from flask import request
 from shapely.geometry import asShape
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
+from sqlalchemy import func, between, or_
 
 from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import circle_from_point
@@ -12,6 +16,7 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese
 )
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
+from geonature.utils.errors import GeonatureApiError
 
 
 def filter_query_with_cruved(q, user, allowed_datasets):
@@ -50,16 +55,16 @@ def filter_query_all_filters(q, filters, user, allowed_datasets):
 
     """
 
-    from geonature.core.users.models import UserRigth
+    # from geonature.core.users.models import UserRigth
 
-    user = UserRigth(
-        id_role=user.id_role,
-        tag_object_code='3',
-        tag_action_code="R",
-        id_organisme=user.id_organisme,
-        nom_role='Administrateur',
-        prenom_role='test'
-    )
+    # user = UserRigth(
+    #     id_role=user.id_role,
+    #     tag_object_code='3',
+    #     tag_action_code="R",
+    #     id_organisme=user.id_organisme,
+    #     nom_role='Administrateur',
+    #     prenom_role='test'
+    # )
     q = filter_query_with_cruved(q, user, allowed_datasets)
 
     if 'observers' in filters:
@@ -97,6 +102,16 @@ def filter_query_all_filters(q, filters, user, allowed_datasets):
         q = q.filter(Synthese.the_geom_4326.ST_Intersects(geom_wkb))
         filters.pop('geoIntersection')
 
+    if 'period_start' in filters and 'period_end' in filters:
+        period_start = filters.pop('period_min')[0]
+        period_end = filters.pop('period_max')[0]
+        q = q.filter(
+            func.gn_commons.is_in_period(
+                func.date(Synthese.date_min),
+                func.to_date(period_start, 'DD-MM'),
+                func.to_date(period_end, 'DD-MM')
+            )
+        )
     # generic filters
     for colname, value in filters.items():
         if colname.startswith('area'):
