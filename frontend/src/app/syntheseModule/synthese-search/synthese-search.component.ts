@@ -20,7 +20,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_obs_technique',
       codeNomenclatureType: 'TECHNIQUE_OBS',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -29,7 +29,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_grp_typ',
       codeNomenclatureType: 'TYP_GRP',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -38,7 +38,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_observation_status',
       codeNomenclatureType: 'STATUT_OBS',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -47,7 +47,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_obs_meth',
       codeNomenclatureType: 'METH_OBS',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -56,7 +56,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_bio_condition',
       codeNomenclatureType: 'ETA_BIO',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -65,7 +65,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_bio_status',
       codeNomenclatureType: 'STATUT_BIO',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -74,7 +74,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_naturalness',
       codeNomenclatureType: 'NATURALITE',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -83,7 +83,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_determination_method',
       codeNomenclatureType: 'METH_DETERMIN',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -92,7 +92,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_exist_proof',
       codeNomenclatureType: 'PREUVE_EXIST',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -101,7 +101,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_diffusion_level',
       codeNomenclatureType: 'NIV_PRECIS',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -110,7 +110,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_source_status',
       codeNomenclatureType: 'STATUT_SOURCE',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -119,7 +119,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_blurring',
       codeNomenclatureType: 'DEE_FLOU',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     // counting
@@ -129,7 +129,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_life_stage',
       codeNomenclatureType: 'STADE_VIE',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -138,7 +138,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_sex',
       codeNomenclatureType: 'SEXE',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -147,7 +147,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_obj_count',
       codeNomenclatureType: 'OBJ_DENBR',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -156,7 +156,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_type_count',
       codeNomenclatureType: 'TYP_DENBR',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     },
     {
@@ -165,7 +165,7 @@ export class SyntheseSearchComponent implements OnInit {
       key: 'cd_nomenclature_valid_status',
       codeNomenclatureType: 'STATUT_VALID',
       required: false,
-      keyValue: 'cd_nomenclature',
+      keyValue: 'id_nomenclature',
       multiSelect: true
     }
   ];

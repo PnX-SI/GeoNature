@@ -34,7 +34,6 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() codeNomenclatureType: string;
   @Input() regne: string;
   @Input() group2Inpn: string;
-  @Input() returnedValue: string;
   @Input() keyValue;
   @Input() bindAllItem: false;
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
@@ -43,7 +42,6 @@ export class NomenclatureComponent extends GenericFormComponent
 
   ngOnInit() {
     this.keyValue = this.keyValue || 'id_nomenclature';
-    this.returnedValue = this.returnedValue || 'id_nomenclature';
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data

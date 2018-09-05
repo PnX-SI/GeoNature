@@ -13,12 +13,12 @@
     </select>
 
     <pnx-nomenclature *ngSwitchCase="'nomenclature'" [label]=formDef.label [parentFormControl]="form.controls[formDef.key]" [codeNomenclatureType]="formDef.codeNomenclatureType"
-      [returnedValue]="formDef.returnedValue" [multiSelect]="formDef.multiSelect" [keyValue]="formDef.keyValue">
+      [multiSelect]="formDef.multiSelect" [keyValue]="formDef.keyValue">
     </pnx-nomenclature>
 
     <div *ngSwitchCase="'checkbox'">
       <label *ngFor="let val of formDef.values">
-        <input [type]="formDef.type" [name]="formDef.key" [value]="val" [formControlName]="formDef.key" (change)="onCheckChange($event, form.controls[formDef.key])"> {{val}}
+        <input [type]="formDef.type" [name]="formDef.key" [value]="val" [formControlName]="formDef.key" (change)="onCheckChange($event, form.controls[formDef.key])">        {{val}}
       </label>
     </div>
 
