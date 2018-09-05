@@ -32,7 +32,7 @@ AS $$
       AND (regne = '0' OR regne = myregne)
       AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
       ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
-    IF (thenomenclaturecd IS NOT NULL) THEN
+    IF (theidnomenclature IS NOT NULL) THEN
       RETURN theidnomenclature;
     END IF;
     RETURN NULL;
@@ -178,7 +178,7 @@ CREATE TABLE defaults_nomenclatures_value (
     id_organism integer NOT NULL DEFAULT 0,
     regne character varying(20) NOT NULL DEFAULT '0',
     group2_inpn character varying(255) NOT NULL DEFAULT '0',
-    id_nomenclature character varying(20) NOT NULL
+    id_nomenclature integer NOT NULL
 );
 ---------------
 --PRIMARY KEY--
@@ -357,7 +357,6 @@ ALTER TABLE synthese
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_info_geo_type,'TYP_INF_GEO')) NOT VALID;
 
-
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
 
@@ -411,7 +410,7 @@ ORDER BY loc.cd_ref;
 -----------
 --INDEXES--
 -----------
-CREATE INDEX _synthese_t_sources ON synthese USING btree (id_source);
+CREATE INDEX i_synthese_t_sources ON synthese USING btree (id_source);
 
 CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
 
