@@ -105,13 +105,18 @@ def filter_query_all_filters(q, filters, user, allowed_datasets):
     if 'period_start' in filters and 'period_end' in filters:
         period_start = filters.pop('period_min')[0]
         period_end = filters.pop('period_max')[0]
-        q = q.filter(
+        q = q.filter(or_(
             func.gn_commons.is_in_period(
                 func.date(Synthese.date_min),
                 func.to_date(period_start, 'DD-MM'),
                 func.to_date(period_end, 'DD-MM')
+            ),
+            func.gn_commons.is_in_period(
+                func.date(Synthese.date_max),
+                func.to_date(period_start, 'DD-MM'),
+                func.to_date(period_end, 'DD-MM')
             )
-        )
+        ))
     # generic filters
     for colname, value in filters.items():
         if colname.startswith('area'):
