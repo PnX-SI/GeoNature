@@ -87,7 +87,7 @@ occurrence RECORD;
 releve RECORD;
 id_source integer;
 validation RECORD;
-cd_nomenclature_source_status character varying;
+id_nomenclature_source_status integer;
 observers RECORD;
 id_role_loop integer;
 
@@ -106,10 +106,13 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE lower(name_source) = 'occtax';
 
 -- Récupération du status de validation du counting dans la table t_validation
-SELECT INTO validation * FROM gn_commons.t_validations v WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
+SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
+FROM gn_commons.t_validations v
+JOIN utilisateurs.t_roles r ON v.id_validator = r.id_role
+WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 
 -- Récupération du status_source depuis le JDD
-SELECT INTO cd_nomenclature_source_status ref_nomenclatures.get_cd_nomenclature(d.id_nomenclature_source_status) FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
+SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
 
 
 --Récupération et formatage des observateurs
@@ -128,25 +131,24 @@ unique_id_sinp_grp,
 id_source,
 entity_source_pk_value,
 id_dataset,
-cd_nomenclature_geo_object_nature,
-cd_nomenclature_grp_typ,
-cd_nomenclature_obs_meth,
-cd_nomenclature_obs_technique,
-cd_nomenclature_bio_status,
-cd_nomenclature_bio_condition,
-cd_nomenclature_naturalness,
-cd_nomenclature_exist_proof,
-cd_nomenclature_valid_status,
-cd_nomenclature_diffusion_level,
-cd_nomenclature_life_stage,
-cd_nomenclature_sex,
-cd_nomenclature_obj_count,
-cd_nomenclature_type_count,
-cd_nomenclature_sensitivity,
-cd_nomenclature_observation_status,
-cd_nomenclature_blurring,
-cd_nomenclature_source_status,
-cd_nomenclature_info_geo_type,
+id_nomenclature_geo_object_nature,
+id_nomenclature_grp_typ,
+id_nomenclature_obs_meth,
+id_nomenclature_obs_technique,
+id_nomenclature_bio_status,
+id_nomenclature_bio_condition,
+id_nomenclature_naturalness,
+id_nomenclature_exist_proof,
+id_nomenclature_valid_status,
+id_nomenclature_diffusion_level,
+id_nomenclature_life_stage,
+id_nomenclature_sex,
+id_nomenclature_obj_count,
+id_nomenclature_type_count,
+id_nomenclature_observation_status,
+id_nomenclature_blurring,
+id_nomenclature_source_status,
+id_nomenclature_info_geo_type,
 count_min,
 count_max,
 cd_nom,
@@ -163,11 +165,11 @@ the_geom_local,
 -- id_area, TODO
 date_min,
 date_max,
-id_validator,
+validator,
 validation_comment,
 observers,
 determiner,
-cd_nomenclature_determination_method,
+id_nomenclature_determination_method,
 comments,
 last_action
 )
@@ -178,30 +180,28 @@ VALUES(
   id_source,
   new_count.id_counting_occtax,
   releve.id_dataset,
-  --nature de l'objet geo: cd_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - a ajouter dans default_nomenclature du schema occtax
-  'In',
-  ref_nomenclatures.get_cd_nomenclature(releve.id_nomenclature_grp_typ),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_obs_meth),
-  ref_nomenclatures.get_cd_nomenclature(releve.id_nomenclature_obs_technique),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_bio_status),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_bio_condition),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_naturalness),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_exist_proof),
-  -- statut de validation récupérer à partir de gn_commons.t_validations
-  ref_nomenclatures.get_cd_nomenclature(validation.id_nomenclature_valid_status),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_diffusion_level),
-  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_life_stage),
-  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_sex),
-  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_obj_count),
-  ref_nomenclatures.get_cd_nomenclature(new_count.id_nomenclature_type_count),
-  -- cd_nomenclature_sensitivity le trigger qui calcule la sensibilité doit remplir le champs niveau de sensibilité, qui n'est pas présent dans occtax ??
-  '0',
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_observation_status),
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_blurring),
+  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - a ajouter dans default_nomenclature du schema occtax
+  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'In') ,
+  releve.id_nomenclature_grp_typ,
+  occurrence.id_nomenclature_obs_meth,
+  releve.id_nomenclature_obs_technique,
+  occurrence.id_nomenclature_bio_status,
+  occurrence.id_nomenclature_bio_condition,
+  occurrence.id_nomenclature_naturalness,
+  occurrence.id_nomenclature_exist_proof,
+    -- statut de validation récupérer à partir de gn_commons.t_validations
+  validation.id_nomenclature_valid_status,
+  occurrence.id_nomenclature_diffusion_level,
+  new_count.id_nomenclature_life_stage,
+  new_count.id_nomenclature_sex,
+  new_count.id_nomenclature_obj_count,
+  new_count.id_nomenclature_type_count,
+  occurrence.id_nomenclature_observation_status,
+  occurrence.id_nomenclature_blurring,
   -- status_source récupéré depuis le JDD
-  cd_nomenclature_source_status,
-  -- cd_nomenclature_info_geo_type: type de rattachement = géoréferencement
-  '1'	,
+  id_nomenclature_source_status,
+  -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1')	,
   new_count.count_min,
   new_count.count_max,
   occurrence.cd_nom,
@@ -217,14 +217,14 @@ VALUES(
   releve.geom_local,
   (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || to_char(releve.date_min, 'hh:mm:ss'))::timestamp,
   (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || to_char(releve.date_max, 'hh:mm:ss'))::timestamp,
-  validation.id_validator,
+  validation.validator_full_name,
   validation.validation_comment,
   COALESCE (observers.observers_name, releve.observers_txt),
   occurrence.determiner,
-  ref_nomenclatures.get_cd_nomenclature(occurrence.id_nomenclature_determination_method),
+  occurrence.id_nomenclature_determination_method,
   CONCAT('Relevé : ',releve.comment, 'Occurrence: ', occurrence.comment),
   'I'
-  );
+);
 
   RETURN observers.observers_id ;
 END;
@@ -615,7 +615,7 @@ BEGIN
 IF observers IS NOT NULL THEN
   FOREACH id_role_loop IN ARRAY observers
     LOOP
-      INSERT INTO gn_synthese.cor_role_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
+      INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
     END LOOP;
   END IF;
 
@@ -625,24 +625,6 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-
--- CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
---   RETURNS integer AS
--- $BODY$
--- -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
--- DECLARE the_id_releve integer[];
-
--- BEGIN
--- SELECT INTO the_id_releve rel.id_releve
--- FROM pr_occtax.t_releves_occtax rel
--- JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
--- JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
--- WHERE counting.cor_counting_occtax = my_id_counting;
--- RETURN the_id_releve;
--- END;
--- $BODY$
---   LANGUAGE plpgsql IMMUTABLE
---   COST 100;
 
 -- DELETE counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_counting()
@@ -659,7 +641,7 @@ BEGIN
   FROM gn_synthese.synthese
   WHERE id_source = the_id_source AND entity_source_pk_value = to_char(OLD.id_counting_occtax, 'FM9999');
   -- suppression de l'obs dans le schéma gn_synthese
-  DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
+  DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = the_id_synthese;
   DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = the_id_synthese;
   DELETE FROM gn_synthese.synthese WHERE id_synthese = the_id_synthese;
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
@@ -687,10 +669,10 @@ BEGIN
   -- update dans la synthese
   UPDATE gn_synthese.synthese
   SET
-  cd_nomenclature_life_stage = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_life_stage),
-  cd_nomenclature_sex = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_sex),
-  cd_nomenclature_obj_count = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obj_count),
-  cd_nomenclature_type_count = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_type_count),
+  id_nomenclature_life_stage = NEW.id_nomenclature_life_stage,
+  id_nomenclature_sex = NEW.id_nomenclature_sex,
+  id_nomenclature_obj_count = NEW.id_nomenclature_obj_count,
+  id_nomenclature_type_count = NEW.id_nomenclature_type_count,
   count_min = NEW.count_min,
   count_max = NEW.count_max
   WHERE id_source = the_id_source AND entity_source_pk_value = NEW.id_counting_occtax::text;
@@ -718,17 +700,17 @@ BEGIN
 
   FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax LOOP
     UPDATE gn_synthese.synthese SET
-    cd_nomenclature_obs_meth = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obs_meth),
-    cd_nomenclature_bio_condition = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_bio_condition),
-    cd_nomenclature_bio_status = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_bio_status),
-    cd_nomenclature_naturalness = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_naturalness),
-    cd_nomenclature_exist_proof = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_exist_proof),
-    cd_nomenclature_diffusion_level = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_diffusion_level),
-    cd_nomenclature_observation_status = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_observation_status),
-    cd_nomenclature_blurring = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_blurring),
-    cd_nomenclature_source_status = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_source_status),
+    id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
+    id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
+    id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
+    id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
+    id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
+    id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
+    id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
+    id_nomenclature_blurring = NEW.id_nomenclature_blurring,
+    id_nomenclature_source_status = NEW.id_nomenclature_source_status,
     determiner = determiner,
-    cd_nomenclature_determination_method = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_determination_method),
+    id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
     cd_nom = NEW.cd_nom,
     nom_cite = NEW.nom_cite,
     meta_v_taxref = NEW.meta_v_taxref,
@@ -764,7 +746,7 @@ BEGIN
     FROM gn_synthese.id_synthese
     WHERE id_source = the_id_source AND entity_source_pk_value = to_char(counting.id_counting_occtax, 'FM9999');
      -- suppression de l'obs dans le schéma gn_synthese
-    DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
+    DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = the_id_synthese;
     DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = the_id_synthese;
     DELETE FROM gn_synthese.synthese WHERE id_synthese = the_id_synthese;  END LOOP;
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
@@ -796,8 +778,8 @@ BEGIN
       UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
       observers = NEW.observers_txt,
-      cd_nomenclature_obs_technique = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_obs_technique),
-      cd_nomenclature_grp_typ = ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_grp_typ),
+      id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
+      id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
       date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_min, 'hh:mm:ss'), '00:00:00'))::timestamp,
       date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
       altitude_min = NEW.altitude_min,
@@ -832,7 +814,7 @@ BEGIN
         FROM gn_synthese.id_synthese
         WHERE id_source = the_id_source AND entity_source_pk_value = to_char(counting.id_counting_occtax, 'FM9999');
      -- suppression de l'obs dans le schéma gn_synthese
-        DELETE FROM gn_synthese.cor_role_synthese WHERE id_synthese = the_id_synthese;
+        DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = the_id_synthese;
         DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = the_id_synthese;
         DELETE FROM gn_synthese.synthese WHERE id_synthese = the_id_synthese;
       END LOOP;
@@ -866,7 +848,7 @@ BEGIN
       FROM gn_synthese.synthese
       WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
       -- insertion dans cor_role_synthese pour chaque counting
-      INSERT INTO gn_synthese.cor_role_synthese(id_synthese, id_role) VALUES(
+      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) VALUES(
         the_id_synthese,
         NEW.id_role
       );
@@ -902,7 +884,7 @@ BEGIN
       FROM gn_synthese.synthese
       WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
       -- update dans cor_role_synthese pour chaque counting
-      UPDATE gn_synthese.cor_role_synthese SET
+      UPDATE gn_synthese.cor_observer_synthese SET
         id_synthese = the_id_synthese,
         id_role = NEW.id_role
         WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
@@ -936,7 +918,7 @@ BEGIN
       FROM gn_synthese.synthese
       WHERE id_source = the_id_source AND entity_source_pk_value = the_id_counting::text;
       -- suppression dans cor_role_synthese pour chaque counting
-      DELETE FROM gn_synthese.cor_role_synthese
+      DELETE FROM gn_synthese.cor_observer_synthese
       WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
     END LOOP;
   END IF;
