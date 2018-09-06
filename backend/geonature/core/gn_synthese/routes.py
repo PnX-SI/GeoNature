@@ -45,7 +45,7 @@ from pypnusershub.db.tools import (
 )
 from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,
-    json_resp, testDataType
+    json_resp, testDataType, GenericTable
 )
 
 from geonature.core.gn_meta import mtd_utils
@@ -148,9 +148,10 @@ def get_synthese(info_role):
         Synthese.date_min.desc()
     )
     data = q.limit(result_limit)
-
+    print(q)
     features = []
     for d in data:
+        print(d)
         feature = d[0].get_geofeature(columns=['date_min', 'observers', 'id_synthese'])
         # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
         feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide', 'cd_nom'])
@@ -377,8 +378,16 @@ def get_status(info_role):
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     return to_csv_resp(
-        'lalala',
+        file_name,
         protection_status,
         separator=';',
         columns=export_columns,
     )
+
+
+@routes.route('/taxons_tree', methods=['GET'])
+@json_resp
+def get_taxon_tree():
+    taxon_tree_table = GenericTable('v_tree_taxons_synthese', 'gn_synthese', geometry_field=None)
+    data = DB.session.query(taxon_tree_table.tableDef).order_by(taxon_tree_table.tableDef.c.nom_latin).all()
+    return [taxon_tree_table.as_dict(d) for d in data]

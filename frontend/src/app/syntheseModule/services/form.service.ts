@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, FormArray } from '@angular/forms';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
+import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
-  public taxonsList: Array<Taxon>;
+  public selectedCdNomFromComponent = [];
   public formBuilded = false;
+  public taxonTreeState: any;
+  public taxonTree: any;
+  public selectedCdNomFromTree = [];
 
-  constructor(private _fb: FormBuilder, private _dateParser: NgbDateParserFormatter) {
-    this.taxonsList = [];
-
+  constructor(
+    private _fb: FormBuilder,
+    private _dateParser: NgbDateParserFormatter,
+    private _periodFormatter: NgbDatePeriodParserFormatter
+  ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
       observers: null,
@@ -21,12 +26,14 @@ export class SyntheseFormService {
       id_acquisition_frameworks: null,
       date_min: null,
       date_max: null,
-      period_min: null,
-      period_max: null,
+      period_start: null,
+      period_end: null,
       municipalities: null,
       geoIntersection: null,
       radius: null
     });
+
+    this.searchForm.setValidators([this.periodValidator()]);
 
     AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
       const control_name = 'area_' + area.id_type;
@@ -43,13 +50,13 @@ export class SyntheseFormService {
   }
 
   getCurrentTaxon($event) {
-    this.taxonsList.push($event.item);
+    this.selectedCdNomFromComponent.push($event.item.cd_nom);
     $event.preventDefault();
     this.searchForm.controls.cd_nom.reset();
   }
 
   removeTaxon(index) {
-    this.taxonsList.splice(index, 1);
+    this.selectedCdNomFromComponent.splice(index, 1);
   }
 
   formatParams() {
@@ -57,20 +64,14 @@ export class SyntheseFormService {
     const updatedParams = {};
     // tslint:disable-next-line:forin
     for (let key in params) {
-      // if cd_nom
-      if (key === 'cd_nom' && params.cd_nom && params.cd_nom.length > 0) {
-        updatedParams['cd_nom'] = [];
-        params.cd_nom.forEach(el => {
-          params.cd_nom = params.cd_nom.cd_nom;
-          updatedParams['cd_nom'].push(el.cd_nom);
-        });
-      } else if (
-        (key === 'date_min' && params.date_min) ||
-        (key === 'date_max' && params.date_max)
-      ) {
-        console.log(key);
-        console.log(params[key]);
+      if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
+      } else if (
+        (key === 'period_max' && params.period_max) ||
+        (key === 'period_min' && params.period_min)
+      ) {
+        updatedParams[key] = this._periodFormatter.format(params[key]);
+        console.log(updatedParams);
       } else if (params['geoIntersection']) {
         updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
         // if other key an value not null or undefined
@@ -84,7 +85,22 @@ export class SyntheseFormService {
         }
       }
     }
-    console.log('le updated', updatedParams);
+    if (this.selectedCdNomFromComponent.length > 0) {
+      updatedParams['cd_nom'] = [...this.selectedCdNomFromComponent, ...this.selectedCdNomFromTree];
+    }
     return updatedParams;
+  }
+
+  periodValidator(): ValidatorFn {
+    return (formGroup: FormGroup): { [key: string]: boolean } => {
+      const perioStart = formGroup.controls.period_start.value;
+      const periodEnd = formGroup.controls.period_end.value;
+      if ((perioStart && !periodEnd) || (!perioStart && periodEnd)) {
+        return {
+          invalidPeriod: true
+        };
+      }
+      return null;
+    };
   }
 }

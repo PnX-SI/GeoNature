@@ -137,7 +137,10 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   }
 
   openInfoModal(modal, row) {
-    this.ngbModal.open(modal, { size: 'lg', windowClass: 'large-modal' });
+    this.ngbModal.open(modal, {
+      size: 'lg',
+      windowClass: 'large-modal'
+    });
     this.loadOneSyntheseReleve(row);
   }
 
