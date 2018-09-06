@@ -73,7 +73,7 @@ $BODY$
 DECLARE
 	theidtablelocation int;
 BEGIN
-	--retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
+--Retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
   SELECT INTO theidtablelocation id_table_location FROM gn_commons.bib_tables_location
 	WHERE "schema_name" = myschema AND "table_name" = mytable;
   RETURN theidtablelocation;
@@ -90,7 +90,7 @@ $BODY$
 DECLARE
 	theuuidfieldname character varying(50);
 BEGIN
-	--retrouver dans gn_commons.bib_tables_location l'id (PK) de la table passée en paramètre
+--Retrouver dans gn_commons.bib_tables_location le nom du champs UUID de la table passée en paramètre
   SELECT INTO theuuidfieldname uuid_field_name FROM gn_commons.bib_tables_location
 	WHERE "schema_name" = myschema AND "table_name" = mytable;
   RETURN theuuidfieldname;
@@ -112,13 +112,13 @@ DECLARE
 	theuuid uuid;
   thecomment text := 'auto = default value';
 BEGIN
-	--retrouver l'id de la table source stockant l'enregistrement en cours de validation
+  --Retrouver l'id de la table source stockant l'enregistrement en cours de validation
 	SELECT INTO theidtablelocation gn_commons.get_table_location_id(theschema,thetable);
-  --retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
+  --Retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
 	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
-  --récupérer l'uuid de l'enregistrement en cours de validation
+  --Récupérer l'uuid de l'enregistrement en cours de validation
 	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
-  --insertion du statut de validation et des informations associées dans t_validations
+  --Insertion du statut de validation et des informations associées dans t_validations
   INSERT INTO gn_commons.t_validations (id_table_location,uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
   VALUES(
     theidtablelocation,
@@ -146,25 +146,25 @@ DECLARE
 	theoperation character(1);
 	thecontent json;
 BEGIN
-	--retrouver l'id de la table source stockant l'enregistrement à tracer
+	--Retrouver l'id de la table source stockant l'enregistrement à tracer
 	SELECT INTO theidtablelocation gn_commons.get_table_location_id(theschema,thetable);
-	--retouver le nom du champ stockant l'uuid de l'enregistrement à tracer
+	--Retouver le nom du champ stockant l'uuid de l'enregistrement à tracer
 	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
 	--Retrouver la première lettre du type d'opération (C, U, ou D)
 	SELECT INTO theoperation LEFT(TG_OP,1);
 	--Construction du JSON du contenu de l'enregistrement tracé
 	IF(TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-		--construction du JSON
+		--Construction du JSON
 		thecontent :=  row_to_json(NEW.*);
-		--récupérer l'uuid de l'enregistrement à tracer
+		--Récupérer l'uuid de l'enregistrement à tracer
 		EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
 	ELSIF (TG_OP = 'DELETE') THEN
-		--construction du JSON
+		--Construction du JSON
 		thecontent :=  row_to_json(OLD.*);
-		--récupérer l'uuid de l'enregistrement à tracer
+		--Récupérer l'uuid de l'enregistrement à tracer
 		EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING OLD;
 	END IF;
-  --insertion du statut de validation et des informations associées dans t_validations
+  --Insertion du statut de validation et des informations associées dans t_validations
   INSERT INTO gn_commons.t_history_actions (id_table_location,uuid_attached_row,operation_type,operation_date,table_content)
   VALUES(
     theidtablelocation,
@@ -199,7 +199,6 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-
 CREATE OR REPLACE FUNCTION gn_commons.is_in_period(
     dateobs date,
     datebegin date,
@@ -213,17 +212,13 @@ day_obs int;
 begin_day int;
 end_day int;
 test int; 
-
 --Function to check if a date (dateobs) is in a period (datebegin, dateend)
 --USAGE : SELECT gn_commons.is_in_period(dateobs, datebegin, dateend);
- 
- 
 BEGIN
 day_obs = extract(doy FROM dateobs);--jour de la date passée
 begin_day = extract(doy FROM datebegin);--jour début
 end_day = extract(doy FROM dateend); --jour fin
 test = end_day - begin_day; --test si la période est sur 2 année ou pas
- 
 --si on est sur 2 années
 IF test < 0 then
 	IF day_obs BETWEEN begin_day AND 366 OR day_obs BETWEEN 1 AND end_day THEN RETURN true;
@@ -261,6 +256,7 @@ CREATE TABLE bib_tables_location
   pk_field character varying(50) NOT NULL,
   uuid_field_name character varying(50) NOT NULL
 );
+
 CREATE SEQUENCE bib_tables_location_id_table_location_seq
     START WITH 1
     INCREMENT BY 1
@@ -270,7 +266,6 @@ CREATE SEQUENCE bib_tables_location_id_table_location_seq
 ALTER SEQUENCE bib_tables_location_id_table_location_seq OWNED BY bib_tables_location.id_table_location;
 ALTER TABLE ONLY bib_tables_location ALTER COLUMN id_table_location SET DEFAULT nextval('bib_tables_location_id_table_location_seq'::regclass);
 SELECT pg_catalog.setval('bib_tables_location_id_table_location_seq', 1, false);
-
 
 
 CREATE TABLE t_medias
@@ -387,6 +382,7 @@ COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux a
 ---------------
 --PRIMARY KEY--
 ---------------
+
 ALTER TABLE ONLY t_parameters
     ADD CONSTRAINT pk_t_parameters PRIMARY KEY (id_parameter);
 
@@ -409,6 +405,7 @@ ALTER TABLE ONLY t_modules
 ----------------
 --FOREIGN KEYS--
 ----------------
+
 ALTER TABLE ONLY t_parameters
     ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
 
@@ -418,7 +415,6 @@ ALTER TABLE ONLY t_medias
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
 
-
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT fk_t_validations_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
@@ -427,7 +423,6 @@ ALTER TABLE ONLY t_validations
 
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT fk_t_validations_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
 
 ALTER TABLE ONLY t_history_actions
   ADD CONSTRAINT fk_t_history_actions_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
@@ -442,6 +437,7 @@ ALTER TABLE ONLY t_modules
 ---------------
 --CONSTRAINTS--
 ---------------
+
 --TODO revoir ces 2 fonctions qui ne fonctionnent plus car 'entity_name' a été déplacé et réorganisé dans t_tables_location
 --ALTER TABLE ONLY t_medias
   --ADD CONSTRAINT fk_t_medias_check_entity_exist CHECK (check_entity_field_exist(entity_name));
@@ -464,6 +460,7 @@ ALTER TABLE t_history_actions
 ------------
 --TRIGGERS--
 ------------
+
 CREATE TRIGGER tri_log_changes_t_medias
   AFTER INSERT OR UPDATE OR DELETE
   ON t_medias
@@ -474,11 +471,11 @@ CREATE TRIGGER tri_log_changes_t_medias
 ---------
 --DATAS--
 ---------
+
 INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 (1, 'Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
 ;
 SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 1, true);
-
 
 
 INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
@@ -491,6 +488,7 @@ INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_d
 ---------
 --VIEWS--
 ---------
+
 CREATE VIEW gn_commons.v_meta_actions_on_object AS
 WITH insert_a AS (
 	SELECT
