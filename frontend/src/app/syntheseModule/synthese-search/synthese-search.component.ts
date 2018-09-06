@@ -1,10 +1,19 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { DataService } from '../services/data.service';
 import { SyntheseFormService } from '../services/form.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppConfig } from '@geonature_config/app.config';
 import { MapService } from '@geonature_common/map/map.service';
+import {
+  TreeComponent,
+  TreeModel,
+  TreeNode,
+  TREE_ACTIONS,
+  IActionMapping,
+  ITreeOptions
+} from 'angular-tree-component';
+import { TaxonTreeModalComponent } from './taxon-tree/taxon-tree.component';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -170,6 +179,8 @@ export class SyntheseSearchComponent implements OnInit {
     }
   ];
 
+  public taxonTree: Array<any>;
+  public options: ITreeOptions;
   @Output() searchClicked = new EventEmitter();
   constructor(
     private _fb: FormBuilder,
@@ -179,7 +190,12 @@ export class SyntheseSearchComponent implements OnInit {
     public mapService: MapService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.dataService.getTaxonTree().subscribe(data => {
+      this.taxonTree = this.dataService.formatTaxonTree(data);
+      console.log(this.taxonTree);
+    });
+  }
 
   onSubmitForm() {
     const updatedParams = this.formService.formatParams();
@@ -187,14 +203,20 @@ export class SyntheseSearchComponent implements OnInit {
   }
 
   refreshFilters() {
-    this.formService.taxonsList = [];
+    this.formService.selectedCdNomFromComponent = [];
+    this.formService.selectedCdNomFromTree = [];
     this.formService.searchForm.reset();
     // remove layers draw in the map
     console.log(this.mapService.releveFeatureGroup);
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
   }
 
-  openModalCol(e, modalName) {
-    this.ngbModal.open(modalName, { size: 'lg' });
+  openModal(e, modalName) {
+    const taxonModal = this.ngbModal.open(TaxonTreeModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false
+    });
+    // this.taxonModal.componentInstance.closeBtnName = 'close';
   }
 }
