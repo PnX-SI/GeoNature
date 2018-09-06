@@ -252,7 +252,6 @@ class SyntheseOneRecord(SyntheseCruved):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
-    id_municipality = DB.Column(DB.Unicode)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
