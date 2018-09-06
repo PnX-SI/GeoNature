@@ -4,7 +4,7 @@ from geojson import FeatureCollection
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import (
-    TBaseSites, corSiteArea
+    TBaseSites, corSiteArea, corSiteApplication
 )
 from geonature.core.ref_geo.models import LAreas
 from geonature.utils.utilssqlalchemy import json_resp, get_geojson_feature
@@ -92,10 +92,9 @@ def get_site_areas(id_site):
     '''
     params = request.args
 
-
     q = DB.session.query(
         corSiteArea,
-        func.ST_Transform(LAreas.geom, 4326), 
+        func.ST_Transform(LAreas.geom, 4326),
     ).join(
         LAreas,
         LAreas.id_area == corSiteArea.c.id_area

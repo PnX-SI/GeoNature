@@ -11,20 +11,24 @@
     <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom" [idList]="500"
       [charNumber]="3" [listLength]="20" (onChange)=formService.getCurrentTaxon($event)>
     </pnx-taxonomy>
-    <div class="alert alert-warning taxon-alert" *ngIf="formService.taxonsList.length > 0">
+    <div class="alert alert-warning taxon-alert" *ngIf="formService.selectedCdNomFromComponent.length > 0">
       <p class="taxon-list">
         <b> Taxon(s) recherché(s):</b>
       </p>
-      <p class="taxon-list" *ngFor="let taxon of formService.taxonsList; let i = index">
+      <p class="taxon-list" *ngFor="let taxon of formService.selectedCdNomFromComponent; let i = index">
         - {{taxon.nom_valide}}
         <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
       </p>
     </div>
-    <button (click)="openModalCol($event, modalTaxon)" class="btn btn-sm btn-primary advanced"> Avancé (Taxonomie)</button>
+    <button (click)="openModal($event, taxonTreeModal)" class="btn btn-sm btn-primary advanced"> Avancé (Taxonomie)</button>
 
     <button class="btn btn-sm btn-primary advanced" data-toggle="collapse" data-target="#OccAdvanved" aria-expanded="false" aria-controls="OccAdvanved">
       Avancé (Occurrence de taxon)
     </button>
+    <br>
+    <span *ngIf="formService.selectedCdNomFromTree.length > 0">
+      <b> {{formService.selectedCdNomFromTree.length}} taxons séléctionnés</b>
+    </span>
 
     <div class="collapse advanced" id="OccAdvanved">
       <div class="card card-block">
@@ -61,11 +65,11 @@
     <div class="collapse " id="collapsePeriod">
       <div class="row row-sm">
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-          <pnx-period label="Periode début" [parentFormControl]="formService.searchForm.controls.period_start">>
+          <pnx-period class="form-sm" label="Periode début" [parentFormControl]="formService.searchForm.controls.period_start">>
           </pnx-period>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-          <pnx-period label="Periode max" [parentFormControl]="formService.searchForm.controls.period_end">>
+          <pnx-period label="Periode fin" [parentFormControl]="formService.searchForm.controls.period_end">>
           </pnx-period>
         </div>
         <small *ngIf="formService.searchForm.errors?.invalidPeriod" class="error" style="color:rgb(18, 32, 155)">
@@ -127,3 +131,17 @@
   <pre>form value: <br>{{formService.searchForm.value | json}}</pre>
   <pre>form value: <br>{{formService.searchForm.controls.period_start.valid | json}}</pre>
 </div>
+
+
+
+
+
+<ng-template #taxonTreeModal id="modal-download" let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalLabel"> Filtres taxonomiques avancés </h5>
+    <button type="button" class="close" aria-label="Close" (click)=" d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+</ng-template>
