@@ -77,7 +77,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
 --TABLES AND SEQUENCES--
 ------------------------
 CREATE TABLE t_sources (
-    id_source integer NOT NULL,
+    id_source serial NOT NULL,
     name_source character varying(255) NOT NULL,
     desc_source text,
     entity_source_pk_field character varying(255),
