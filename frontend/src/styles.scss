@@ -183,3 +183,27 @@ li.no-bullet {
 .font-xs {
   font-size: 13px;
 }
+
+.btn-outline-shadow:hover{
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.btn-outline-shadow {
+  color: #292b2c!important;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+
+.btn-outline-shadow.active, .btn-outline-shadow:active, .show>btn-outline-shadow.dropdown-toggle {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  background-image: none;
+  border-color: #adadad;
+}
+
+.btn-outline-shadow.focus, .btn-outline-shadow:focus {
+  box-shadow: 0 0 0 2px hsla(0,0%,80%,.5);
+}

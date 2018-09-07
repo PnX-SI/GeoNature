@@ -37,11 +37,11 @@
     </div>
 
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-md">
-      <button [disabled]="fs.disabled" class="btn btn-sm btn-secondary time-button" *ngIf="!showTime" (click)="toggleTime()" data-toggle="collapse"
+      <button [disabled]="fs.disabled" class="btn btn-sm btn-outline-shadow time-button" *ngIf="!showTime" (click)="toggleTime()" data-toggle="collapse"
         data-target="#collapseTime">
         <i class="fa fa-plus time-plus" aria-expanded="false"></i>
       </button>
-      <button class="btn btn-sm btn-secondary time-button" *ngIf="showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime">
+      <button class="btn btn-sm btn-outline-shadow time-button" *ngIf="showTime" (click)="toggleTime()" data-toggle="collapse" data-target="#collapseTime">
         <i class="fa fa-minus" aria-expanded="false"></i>
       </button>
       <br>
@@ -117,7 +117,7 @@
   </div>
   <div *ngIf="occtaxConfig.form_fields.releve.comment" class="row row-0">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-0">
-      <button id="comment" class="btn btn-sm btn-secondary input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire"
+      <button id="comment" class="btn btn-sm btn-outline-shadow input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire"
         aria-expanded="false" aria-controls="contexte" [disabled]="fs.disabled">
         <i class="fa fa-comment-o" aria-hidden="true"></i> {{ 'Releve.Comment' | translate }}
       </button>
