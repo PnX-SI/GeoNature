@@ -6,7 +6,10 @@
       [disableControl]="disabled"
       [maxDate]="today"
       (click)="d1.toggle(); openDatepicker(d1)">
-    <button class="input-group-addon" (click)="d1.toggle(); openDatepicker(d1)" type="button">
-    <i class="fa fa-calendar" aria-hidden="true"></i>
-    </button>
+      <div class="input-group-append">
+        <button class="btn btn-sm btn-outline-shadow" (click)="d1.toggle(); openDatepicker(d1)" type="button">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+        </button>
+      </div>
+
 </div>
