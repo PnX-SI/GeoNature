@@ -52,7 +52,7 @@ nano install_all.ini
 # Modification de la locale
 sudo apt-get install -y locales
 sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
-sudo locale-gen
+sudo locale-gen $my_local
 echo "export LC_ALL=$my_local" >> ~/.bashrc
 echo "export LANG=$my_local" >> ~/.bashrc
 echo "export LANGUAGE=$my_local" >> ~/.bashrc
