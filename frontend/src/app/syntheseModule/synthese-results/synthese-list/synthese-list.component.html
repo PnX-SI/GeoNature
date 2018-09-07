@@ -48,7 +48,7 @@
   <!-- ACTION COLUMNS -->
   <!-- <ngx-datatable-column maxWidth="10">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.U" (click)="onEditReleve(row.url_source, row.entity_source_pk_value)">
+      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" [disabled]="!row.cruved.U" (click)="onEditReleve(row.url_source, row.entity_source_pk_value)">
         <i [ngClass]="{'disabled' : !row.cruved.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o"
           aria-hidden="true"></i>
       </button>
@@ -57,7 +57,7 @@
 
   <ngx-datatable-column maxWidth="10">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.cruved.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" [disabled]="!row.cruved.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
         <i [ngClass]="{'disabled' : !row.cruved.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}"
           class="fa fa-trash-o" aria-hidden="true"></i>
       </button>
@@ -66,7 +66,7 @@
 
   <ngx-datatable-column maxWidth="10">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding btn-ghost" (click)="openInfoModal(modalInfoObs, row);">
+      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(modalInfoObs, row);">
         <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
       </button>
     </ng-template>

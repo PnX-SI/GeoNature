@@ -47,7 +47,7 @@
           </pnx-date>
       </div>
 
-      <button class="btn btn-secondary actions" (click)="refreshFilters()"
+      <button class="btn btn-outline-shadow actions" (click)="refreshFilters()"
          matTooltip="{{ 'Form.RefreshFilters' | translate }}">
         <i
           id="refresh-filter"
@@ -59,7 +59,7 @@
       </button>
 
 
-        <button class="btn btn-secondary actions" (click)="toggleAdvancedFilters()"
+        <button class="btn btn-outline-shadow actions" (click)="toggleAdvancedFilters()"
           matTooltip="{{ 'Form.AdvancedFilters' | translate }}">
           <i
           class="fa fa-filter"
@@ -140,7 +140,7 @@
             ></i>
          </ng-template>
       <ng-template let-row="row" ngx-datatable-cell-template>
-        <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
+        <button class="btn btn-outline-shadow btn-no-padding btn-ghost" [disabled]="!row.rights.U" (click)="onEditReleve(row[mapListService.idName])">
             <i [ngClass]="{'disabled' : !row.rights.U}" matTooltip="{{'Releve.Edit' | translate}} {{row[mapListService.idName]}}" class="fa fa-pencil-square-o" aria-hidden="true" ></i>
         </button>
       </ng-template>
@@ -148,7 +148,7 @@
 
     <ngx-datatable-column maxWidth="10">
       <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])">
+      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" [disabled]="!row.rights.R" (click)="onDetailReleve(row[mapListService.idName])">
           <i [ngClass]="{'disabled' : !row.rights.R}" matTooltip="{{ 'Releve.Info' | translate }} {{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true" ></i>
       </button>
       </ng-template>
@@ -156,7 +156,7 @@
 
     <ngx-datatable-column maxWidth="10">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        <button class="btn btn-secondary btn-no-padding btn-ghost" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
+        <button class="btn btn-outline-shadow btn-no-padding btn-ghost" [disabled]="!row.rights.D" (click)="openDeleteModal($event, modalConfirm, iElement, row)">
             <i [ngClass]="{'disabled' : !row.rights.D}" #iElement matTooltip="{{ 'Releve.Delete' | translate }} {{row[mapListService.idName]}}" class="fa fa-trash-o" aria-hidden="true"></i>
         </button>
       </ng-template>

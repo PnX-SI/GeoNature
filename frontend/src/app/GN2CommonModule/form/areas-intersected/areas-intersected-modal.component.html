@@ -7,12 +7,12 @@
     </div>
     <div class="modal-body">
       <p *ngFor="let area of areasIntersected">
-        <b> {{area.type_name}}:</b> {{area.areas}} 
+        <b> {{area.type_name}}:</b> {{area.areas}}
       </p>
     </div>
   </ng-template>
 
-  <button id="info-geo-button" class="btn btn-sm btn-secondary clickable" (click)="openIntesectionModal(content)"
-    matTooltip="{{'Releve.InfoGeo' | translate }} "> 
+  <button id="info-geo-button" class="btn btn-sm btn-outline-shadow clickable" (click)="openIntesectionModal(content)"
+    matTooltip="{{'Releve.InfoGeo' | translate }} ">
     <i class="fa fa-info-circle" aria-hidden="true"></i>
-  </button> 
+  </button>

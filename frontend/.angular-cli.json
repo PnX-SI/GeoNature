@@ -19,7 +19,6 @@
         "../node_modules/primeng/resources/themes/omega/theme.css",
         "../node_modules/primeng/resources/primeng.min.css",
         "../node_modules/font-awesome/css/font-awesome.min.css",
-        "../node_modules/tether/dist/css/tether.min.css",
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/ngx-toastr/toastr.css",
@@ -32,7 +31,6 @@
         "../node_modules/angular-tree-component/dist/angular-tree-component.css"
       ],
       "scripts": [
-        "../node_modules/tether/dist/js/tether.min.js",
         "../node_modules/popper.js/dist/umd/popper.min.js",
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/chart.js/dist/Chart.min.js",
