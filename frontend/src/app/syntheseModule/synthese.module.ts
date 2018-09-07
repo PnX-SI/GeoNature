@@ -15,7 +15,7 @@ import { TaxonTreeModalComponent } from './synthese-search/taxon-tree/taxon-tree
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule, TreeModule.forRoot()],
+  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule, TreeModule],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
