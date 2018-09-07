@@ -31,9 +31,12 @@
     [inputFormatter]="formatter"
     [resultTemplate]="rt"
     (selectItem)="taxonSelected($event)"/>
-    <span class="input-group-addon" id="filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-      <i class="fa fa-filter" aria-hidden="true"></i>
-    </span>
+    <div class="input-group-append">
+      <span class="input-group-addon" id="filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <button class="btn btn-sm btn-outline-shadow"> <i class="fa fa-filter" aria-hidden="true"></i> </button>
+      </span>
+    </div>
+
 
   <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r.search_name">  </span>
