@@ -34,17 +34,28 @@
     font-size: 10px;
 }
 
-:host /deep/ .input-group-addon{
-    padding: 5px;
+:host /deep/ .fa.fa-filter {
+    font-size: 10px;
 }
 
-:host /deep/ .fa.fa-filter{
-    font-size: 12px;
+// :host /deep/ .input-group-addon{
+//     padding: 5px;
+// }
+:host /deep/ .input-group-append {
+    height: 1.5rem !important;
 }
 
-:host /deep/ #taxonInput {
-    height: 1.8rem!important;
+:host /deep/ .input-group-append  button {
+    padding-top: 0px;
 }
+
+// :host /deep/ .fa.fa-filter{
+//     font-size: 12px;
+// }
+
+// :host /deep/ #taxonInput {
+//     height: 1.8rem!important;
+// }
 
 // fin style formulaire
 
@@ -186,9 +197,6 @@ button[disabled] {
 }
 
 .center{
-    // padding-top: 10px;
-    // width: 25%;
-    // margin: 0 auto;
     margin: 0px 0px 5px 0px;
     text-align: center;
     padding: 8px 0;
