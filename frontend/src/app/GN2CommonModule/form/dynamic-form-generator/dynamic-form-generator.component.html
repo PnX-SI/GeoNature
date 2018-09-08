@@ -3,11 +3,10 @@
   <select class="form-control form-control-sm" [formControl]="selectControl">
     <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
     <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
-      {{formDef.label}}
+      {{formDef.attribut_label}}
     </option>
   </select>
 </div>
-
 <div class="dynamic-form-wrapper">
     <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
         <pnx-dynamic-form

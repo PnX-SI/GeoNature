@@ -69,19 +69,6 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
 
-  searchTaxonomy(taxonName: string, idList: string, regne?: string, groupe2Inpn?: string) {
-    let params: HttpParams = new HttpParams();
-    params = params.set('search_name', taxonName);
-    if (regne) {
-      params = params.set('regne', regne);
-    }
-    if (groupe2Inpn) {
-      params = params.set('group2_inpn', groupe2Inpn);
-    }
-    return this._http.get<Taxon[]>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`, {
-      params: params
-    });
-  }
 
   autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {
     let queryString: HttpParams = new HttpParams();
@@ -122,6 +109,16 @@ export class DataFormService {
 
   getRegneAndGroup2Inpn() {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
+  }
+
+  getTaxhubBibAttributes(id_attribut?: number) {
+    // let url;
+    // if (id_attribut) {
+    //   url = `${AppConfig.API_TAXHUB}/bibattributs/${id_attribut}`
+    // } else {
+    //   url = `${AppConfig.API_TAXHUB}/bibattributs`;
+    // }
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibattributs/`);
   }
 
   getGeoInfo(geojson) {
