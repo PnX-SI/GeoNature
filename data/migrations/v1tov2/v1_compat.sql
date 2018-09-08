@@ -883,8 +883,6 @@ WHERE pk_source IN(5,6,7,8,9,11,13,14)
 AND entity_source = 'v1_compat.t_precisions' AND field_source = 'id_precision' AND entity_target = 'gn_synthese.synthese' AND field_target = 'id_nomenclature_info_geo_type';
 
 
-
-
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER USER;
 --DELETE FROM gn_synthese.synthese;
 INSERT INTO gn_synthese.synthese (
@@ -1028,7 +1026,7 @@ LEFT JOIN n23 ON s.id_precision = n23.pk_source
 LEFT JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
 WHERE supprime = false
 --AND id_source IN(107) -- voir table v1_compat.bib_sources
---LIMIT 10000
+--LIMIT 10
 ;
 --POST TRAITEMENT DES NOMENCLATURES SUR LA SYNTHESE
 --UPDATE sur les champs de nomenclatures ayant plusieurs champs sources depuis la synthese V1
