@@ -94,6 +94,25 @@ Données SIG :
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
 
+Fonctions : 
+"""""""""""
+
+La base de données contient de nombreuses fonctions.
+
+gn_synthese
+
++--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+| Fonction                             | Paramètres                    | Résultat             | Description                            |
++======================================+===============================+======================+========================================+
+| get_default_nomenclature_value       | id_type_nomenclature,         | Entier               | Function that return the default       |
+|                                      | idorganism, regne, group2inpn |                      | nomenclature id with a nomenclature    |
+|                                      |                               |                      | type, organism id, regne, group2_inpn  |
++--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+| fct_trig_insert_in_cor_area_synthese | geom                          | Trigger              | Trigger intersectant la géométrie      |
+|                                      |                               |                      | d'une observation avec tous les zonages|
++--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+
+A compléter... A voir si on mentionne les triggers ou pas...
 
 Modularité
 ----------
