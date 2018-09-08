@@ -198,8 +198,8 @@ export class SyntheseSearchComponent implements OnInit {
   }
 
   refreshFilters() {
-    this.formService.selectedCdNomFromComponent = [];
-    this.formService.selectedCdNomFromTree = [];
+    this.formService.selectedtaxonFromComponent = [];
+    this.formService.selectedCdRefFromTree = [];
     this.formService.searchForm.reset();
     // remove layers draw in the map
     console.log(this.mapService.releveFeatureGroup);

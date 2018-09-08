@@ -11,11 +11,11 @@
     <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom" [idList]="500"
       [charNumber]="3" [listLength]="20" [apiEndPoint]="taxonApiEndPoint" (onChange)=formService.getCurrentTaxon($event)>
     </pnx-taxonomy>
-    <div class="alert alert-warning taxon-alert" *ngIf="formService.selectedCdNomFromComponent.length > 0">
+    <div class="alert alert-warning taxon-alert" *ngIf="formService.selectedtaxonFromComponent.length > 0">
       <p class="taxon-list">
         <b> Taxon(s) recherché(s):</b>
       </p>
-      <p class="taxon-list" *ngFor="let taxon of formService.selectedCdNomFromComponent; let i = index">
+      <p class="taxon-list" *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index">
         - {{taxon.nom_valide}}
         <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
       </p>
@@ -26,8 +26,8 @@
       Avancé (Occurrence de taxon)
     </button>
     <br>
-    <span *ngIf="formService.selectedCdNomFromTree.length > 0">
-      <b> {{formService.selectedCdNomFromTree.length}} taxons séléctionnés</b>
+    <span *ngIf="formService.selectedCdRefFromTree.length > 0">
+      <b> {{formService.selectedCdRefFromTree.length}} taxons séléctionnés</b>
     </span>
 
     <div class="collapse advanced" id="OccAdvanved">
