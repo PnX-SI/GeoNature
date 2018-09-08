@@ -8,11 +8,11 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
-  public selectedCdNomFromComponent = [];
+  public selectedtaxonFromComponent = [];
   public formBuilded = false;
   public taxonTreeState: any;
   public taxonTree: any;
-  public selectedCdNomFromTree = [];
+  public selectedCdRefFromTree = [];
 
   constructor(
     private _fb: FormBuilder,
@@ -50,13 +50,13 @@ export class SyntheseFormService {
   }
 
   getCurrentTaxon($event) {
-    this.selectedCdNomFromComponent.push($event.item.cd_nom);
+    this.selectedtaxonFromComponent.push($event.item);
     $event.preventDefault();
     this.searchForm.controls.cd_nom.reset();
   }
 
   removeTaxon(index) {
-    this.selectedCdNomFromComponent.splice(index, 1);
+    this.selectedtaxonFromComponent.splice(index, 1);
   }
 
   formatParams() {
@@ -85,8 +85,9 @@ export class SyntheseFormService {
         }
       }
     }
-    if (this.selectedCdNomFromComponent.length > 0) {
-      updatedParams['cd_nom'] = [...this.selectedCdNomFromComponent, ...this.selectedCdNomFromTree];
+    if (this.selectedtaxonFromComponent.length > 0 || this.selectedCdRefFromTree.length > 0) {
+      // search on cd_ref to include synonyme from the synthese searchs
+      updatedParams['cd_ref'] = [...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref), ...this.selectedCdRefFromTree];
     }
     return updatedParams;
   }

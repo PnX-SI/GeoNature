@@ -88,12 +88,12 @@ export class TaxonTreeModalComponent implements OnInit, AfterContentInit {
   catchEvent(event) {
     if (event.eventName === 'select') {
       // push the cd_nom in taxonList
-      this.formService.selectedCdNomFromTree.push(event.node.data.id);
+      this.formService.selectedCdRefFromTree.push(event.node.data.id);
     }
     if (event.eventName === 'deselect') {
       // remove cd_nom from taxonlist
-      this.formService.selectedCdNomFromTree.splice(
-        this.formService.selectedCdNomFromTree.indexOf(event.node.data.id),
+      this.formService.selectedCdRefFromTree.splice(
+        this.formService.selectedCdRefFromTree.indexOf(event.node.data.id),
         1
       );
     }

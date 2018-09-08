@@ -430,7 +430,7 @@ UNION
     t1.group2_inpn
    FROM taxonomie.taxref t1
    JOIN taxon_synthese ON taxon_synthese.cd_nom = t1.cd_nom
-  WHERE t1.nom_vern IS NOT NULL AND t1.cd_nom = t1.cd_ref 
+  WHERE t1.nom_vern IS NOT NULL AND t1.cd_nom = t1.cd_ref;
 
 
 -----------
