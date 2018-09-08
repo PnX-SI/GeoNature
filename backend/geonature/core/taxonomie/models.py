@@ -1,3 +1,6 @@
+from sqlalchemy import ForeignKey
+
+
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
 
@@ -67,3 +70,36 @@ class Taxref(DB.Model):
 
     def __repr__(self):
         return '<Taxref %r>' % self.nom_complet
+
+class CorTaxonAttribut(DB.Model):
+    __tablename__ = 'cor_taxon_attribut'
+    __table_args__ = {'schema': 'taxonomie'}
+    id_attribut = DB.Column(
+        DB.Integer,
+        ForeignKey("taxonomie.bib_attributs.id_attribut"),
+        nullable=False,
+        primary_key=True
+    )
+    cd_ref = DB.Column(
+        DB.Integer,
+        ForeignKey("taxonomie.bib_noms.cd_ref"),
+        nullable=False,
+        primary_key=True
+    )
+    valeur_attribut = DB.Column(DB.Text, nullable=False)
+
+    def __repr__(self):
+        return '<CorTaxonAttribut %r>' % self.valeur_attribut
+
+class BibNoms(DB.Model):
+    __tablename__ = 'bib_noms'
+    __table_args__ = {'schema': 'taxonomie'}
+    id_nom = DB.Column(DB.Integer, primary_key=True)
+    cd_nom = DB.Column(
+        DB.Integer,
+        ForeignKey("taxonomie.taxref.cd_nom"),
+        nullable=True
+    )
+    cd_ref = DB.Column(DB.Integer)
+    nom_francais = DB.Column(DB.Unicode)
+    comments = DB.Column(DB.Unicode)

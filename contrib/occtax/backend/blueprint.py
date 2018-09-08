@@ -464,10 +464,16 @@ def getDefaultNomenclatures():
             group2_inpn
         )
     )
+    print(q)
+    print(organism)
+    print(regne)
+    print(group2_inpn)
     if len(types) > 0:
         q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
+        print('LAAAAAAAAAA')
+        print(data)
     except Exception:
         DB.session.rollback()
         raise

@@ -10,7 +10,7 @@ from sqlalchemy import func, between, or_
 
 from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import circle_from_point
-from geonature.core.taxonomie.models import Taxref
+from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, BibNoms
 from geonature.core.gn_synthese.models import (
     Synthese, CorRoleSynthese, TSources, CorRoleSynthese,
     CorAreaSynthese
@@ -41,6 +41,33 @@ def filter_query_with_cruved(q, user, allowed_datasets):
             )
             q = q.filter(sa.or_(*ors_filter))
     return q
+
+def filter_taxonomy(q, filters):
+    if 'cd_ref' in filters:
+        sub_query_synonym = DB.session.query(
+            Taxref.cd_nom
+            ).filter(
+                Taxref.cd_ref.in_(filters.pop('cd_ref'))
+            ).subquery('sub_query_synonym')
+        q = q.filter(Synthese.cd_nom.in_(sub_query_synonym))
+    
+    join_on_cor_attr = False
+    for colname, value in filters.items():
+        if colname.startswith('taxhub_attribut'):
+            if not join_on_cor_attr:
+                q = q.join(
+                        BibNoms.cd_nom == Synthese.cd_nom
+                    ).join(
+                        CorTaxonAttribut, CorTaxonAttribut.cd_ref == Taxref.cd_ref
+                    )
+            taxhub_id_attr = colname[16:]
+            q = q.filter(
+                CorTaxonAttribut.id_attribut == taxhub_id_attr and 
+                CorTaxonAttribut.valeur_attribut == value
+            )
+            filters.pop(colname)
+            join_on_cor_attr = True
+    
 
 
 def filter_query_all_filters(q, filters, user, allowed_datasets):
@@ -117,14 +144,9 @@ def filter_query_all_filters(q, filters, user, allowed_datasets):
                 func.to_date(period_end, 'DD-MM')
             )
         ))
-    if 'cd_ref' in filters:
-        print(filters['cd_ref'])
-        sub_query_synonym = DB.session.query(
-            Taxref.cd_nom
-            ).filter(
-                Taxref.cd_ref.in_(filters.pop('cd_ref'))
-            ).subquery('sub_query_synonym')
-        q = q.filter(Synthese.cd_nom.in_(sub_query_synonym))
+
+    filter_taxonomy(q, filters)
+
     # generic filters
     for colname, value in filters.items():
         if colname.startswith('area'):
