@@ -109,9 +109,9 @@
           </pnx-nomenclature>
         </div>
         <div *ngIf="occtaxConfig.form_fields.occurrence.digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : occurrenceForm.controls.digital_proof.invalid}">
+          <div class="form-group">
             <small> {{ 'Taxon.DigitalProof' | translate }} </small>
-            <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
+            <input [ngClass]="{'is-invalid' : occurrenceForm.controls.digital_proof.invalid}" class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
               type="text"
               >
           </div>
@@ -120,9 +120,9 @@
           </small>
         </div>
         <div *ngIf="occtaxConfig.form_fields.occurrence.non_digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : occurrenceForm.controls.non_digital_proof.invalid}">
+          <div class="form-group" >
             <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
-            <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
+            <input [ngClass]="{'is-invalid' : occurrenceForm.controls.non_digital_proof.invalid}" class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
               type="text"> 
           </div>
         </div>

@@ -7,8 +7,8 @@
 
 <ng-template #elseBlock>
   <small> {{ label }} </small>
-  <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
-    <select class="form-control form-control-sm" id="dataset-form " [formControl]="parentFormControl" [disableControl]="disabled">
+  <div class="input-group">
+    <select [ngClass]="{'is-invalid' : parentFormControl.invalid}" class="form-control form-control-sm" id="dataset-form " [formControl]="parentFormControl" [disableControl]="disabled">
       <option *ngIf="displayAll" [ngValue]="null"> Tous </option>
       <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option>
     </select>
