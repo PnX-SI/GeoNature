@@ -32,11 +32,7 @@
     "@types/geojson": "^1.0.2",
     "@types/leaflet": "^1.0.65",
     "@types/leaflet-draw": "^0.4.8",
-<<<<<<< HEAD
     "angular-tree-component": "7.1.0",
-=======
-    "angular-tree-component": "^7.2.1",
->>>>>>> a6935bca0d167f65eed5c06f1a33cc2a029a384b
     "angular2-chartjs": "^0.2.0",
     "bootstrap": "4.1.3",
     "chart.js": "^2.6.0",
