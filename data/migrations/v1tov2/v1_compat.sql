@@ -302,7 +302,8 @@ INSERT INTO taxonomie.bib_noms (id_nom, cd_nom, cd_ref, nom_francais, comments)
 SELECT * FROM  v1_compat.bib_noms;
 
 INSERT INTO taxonomie.cor_nom_liste (id_liste, id_nom)
-SELECT * FROM  v1_compat.cor_nom_liste;
+SELECT * FROM  v1_compat.cor_nom_liste; 
+--normalement le trigger sur ce table gère la table taxonomie.vm_taxref_list_forautocomplete
 
 TRUNCATE taxonomie.cor_taxon_attribut;
 INSERT INTO taxonomie.cor_taxon_attribut (id_attribut, valeur_attribut, cd_ref)
@@ -315,7 +316,10 @@ TRUNCATE  taxonomie.taxhub_admin_log;
 INSERT INTO taxonomie.taxhub_admin_log (id, action_time, id_role, object_type, object_id, object_repr, change_type, change_message)
 SELECT * FROM  v1_compat.taxhub_admin_log;
 
---TODO taxonomie.vm_taxref_hierarchie et taxonomie.vm_taxref_list_forautocomplete
+
+SELECT taxonomie.fct_build_bibtaxon_attributs_view('Animalia');
+SELECT taxonomie.fct_build_bibtaxon_attributs_view('Plantae');
+SELECT taxonomie.fct_build_bibtaxon_attributs_view('Fungi');
 
 
 ---------------
@@ -1106,7 +1110,16 @@ AND id_source = 7;
 
 ALTER TABLE gn_synthese.synthese ENABLE TRIGGER USER;
 
+--mettre à jour la séquence de id_synthese
+SELECT setval('gn_synthese.synthese_id_synthese_seq', (SELECT max(id_synthese) FROM gn_synthese.synthese), true);
+
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 
+--peupler cor_area_synthese
+INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
+SELECT s.id_synthese, a.id_area
+FROM ref_geo.l_areas a
+JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom);
 
---TODO : mettre à jour la séquence de id_synthese
+
+
