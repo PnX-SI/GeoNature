@@ -7,7 +7,7 @@ import { isArray } from 'util';
 @Injectable()
 export class DataService {
   public dataLoaded: Boolean = false;
-  constructor(private _api: HttpClient) {}
+  constructor(private _api: HttpClient) { }
 
   buildQueryUrl(params): HttpParams {
     let queryUrl = new HttpParams();
@@ -71,7 +71,6 @@ export class DataService {
 
     //on bouble sur les enregistrements du store des taxons issu de la base
     taxonTree.forEach(record => {
-      console.log('embr: ', record.nom_embranchement);
       if (kd === null) {
         kd = record.nom_regne;
       } //initialisation
@@ -90,7 +89,10 @@ export class DataService {
       if (fam === null) {
         fam = record.nom_famille;
       } //initialisation
+      console.log(kd);
+      console.log(record.nom_regne)
       if (kd !== record.nom_regne) {
+        console.log('nouveau regneeeee')
         nouveauRegne = true;
       } // si on a changé de niveau de règne
       if (emb !== record.nom_embranchement) {

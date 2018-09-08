@@ -10,7 +10,7 @@ import { DataService } from './services/data.service';
 import { SyntheseFormService } from './services/form.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { TreeModule } from 'angular-tree-component';
-import { TaxonTreeModalComponent } from './synthese-search/taxon-tree/taxon-tree.component';
+import { TaxonAdvancedModalComponent } from './synthese-search/taxon-advanced/taxon-advanced.component';
 
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
@@ -21,9 +21,9 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseSearchComponent,
-    TaxonTreeModalComponent
+    TaxonAdvancedModalComponent
   ],
-  entryComponents: [TaxonTreeModalComponent],
+  entryComponents: [TaxonAdvancedModalComponent],
   providers: [DataService, SyntheseFormService, MapService]
 })
 export class SyntheseModule { }
