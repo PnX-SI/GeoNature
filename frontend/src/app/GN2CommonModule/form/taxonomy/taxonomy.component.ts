@@ -6,6 +6,7 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { error } from 'util';
 import { of } from 'rxjs/observable/of';
 import { CommonService } from '@geonature_common/service/common.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 export interface Taxon {
   search_name: string;
@@ -41,6 +42,8 @@ export interface Taxon {
 export class TaxonomyComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
+  // api endpoint for the automplete ressource
+  @Input() apiEndPoint: string;
   @Input() idList: string;
   @Input() charNumber: number;
   @Input() listLength: number;
@@ -57,7 +60,7 @@ export class TaxonomyComponent implements OnInit {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
+  constructor(private _dfService: DataFormService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.parentFormControl.valueChanges
@@ -66,6 +69,8 @@ export class TaxonomyComponent implements OnInit {
         this.onDelete.emit();
         this.showResultList = false;
       });
+    // set default to apiEndPoint for retrocompatibility
+    this.apiEndPoint = this.apiEndPoint || `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
     // get regne and group2
     this._dfService.getRegneAndGroup2Inpn().subscribe(data => {
       this.regnesAndGroup = data;
@@ -92,13 +97,17 @@ export class TaxonomyComponent implements OnInit {
 
   searchTaxon = (text$: Observable<string>) =>
     text$
-      .do(value => (this.isLoading = true))
+      .do(search_name => (this.isLoading = true))
       .debounceTime(400)
       .distinctUntilChanged()
-      .switchMap(value => {
-        if (value.length >= this.charNumber && value.length <= 20) {
+      .switchMap(search_name => {
+        if (search_name.length >= this.charNumber && search_name.length <= 20) {
           return this._dfService
-            .searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value)
+            .autocompleteTaxon(
+            this.apiEndPoint,
+            search_name,
+            { 'regne': this.regneControl.value, 'group2_inpn': this.groupControl.value })
+            //.searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value)
             .catch(err => {
               this._commonService.translateToaster('error', 'ErrorMessage');
               return of([]);

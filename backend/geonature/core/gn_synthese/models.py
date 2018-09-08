@@ -305,3 +305,18 @@ class SyntheseOneRecord(SyntheseCruved):
 
     def get_geofeature(self, recursif=False):
         return self.as_geofeature('the_geom_4326', 'id_synthese', recursif)
+
+@serializable
+class VMTaxonsSyntheseAutocomplete(DB.Model):
+    __tablename__ = 'vm_taxons_synthese_autocomplete'
+    __table_args__ = {'schema': 'gn_synthese'}
+    cd_nom = DB.Column(DB.Integer, primary_key=True)
+    search_name = DB.Column(DB.Unicode, primary_key=True)
+    cd_ref = DB.Column(DB.Integer)    
+    nom_valide = DB.Column(DB.Unicode)
+    lb_nom = DB.Column(DB.Unicode)
+    regne = DB.Column(DB.Unicode)
+    group2_inpn = DB.Column(DB.Unicode)
+
+    def __repr__(self):
+        return '<VMTaxonsSyntheseAutocomplete  %r>' % self.search_name

@@ -9,7 +9,7 @@
 
 
     <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom" [idList]="500"
-      [charNumber]="3" [listLength]="20" (onChange)=formService.getCurrentTaxon($event)>
+      [charNumber]="3" [listLength]="20" [apiEndPoint]="taxonApiEndPoint" (onChange)=formService.getCurrentTaxon($event)>
     </pnx-taxonomy>
     <div class="alert alert-warning taxon-alert" *ngIf="formService.selectedCdNomFromComponent.length > 0">
       <p class="taxon-list">

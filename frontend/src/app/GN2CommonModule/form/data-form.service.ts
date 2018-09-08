@@ -7,7 +7,7 @@ import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
 export class DataFormService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -80,6 +80,19 @@ export class DataFormService {
     }
     return this._http.get<Taxon[]>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`, {
       params: params
+    });
+  }
+
+  autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {
+    let queryString: HttpParams = new HttpParams();
+    queryString = queryString.set('search_name', searh_name);
+    for (let key in params) {
+      if (params[key]) {
+        queryString = queryString.set(key, params[key]);
+      }
+    }
+    return this._http.get<Taxon[]>(`${api_endpoint}`, {
+      params: queryString
     });
   }
 
