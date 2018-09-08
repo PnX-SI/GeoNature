@@ -7,8 +7,8 @@
 <ng-template #elseBlock>
 
   <small> {{label}} </small>
-  <div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
-    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
+  <div class="input-group">
+    <select [ngClass]="{'is-invalid' : parentFormControl.invalid}" class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
       <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]"> {{label[labelLang]}} </option>
     </select>
   </div>

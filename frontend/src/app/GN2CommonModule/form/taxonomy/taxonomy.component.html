@@ -21,8 +21,8 @@
 
 </div>
 <small> {{label}} </small>
-<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}" >
-  <input type="text" class="form-control form-control-sm "
+<div class="input-group"  >
+  <input type="text" [ngClass]="{'is-invalid' : parentFormControl.invalid}" class="form-control form-control-sm "
     [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
     id="taxonInput"
     [formControl]="parentFormControl"

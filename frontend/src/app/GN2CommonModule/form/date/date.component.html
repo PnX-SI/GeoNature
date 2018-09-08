@@ -1,6 +1,6 @@
 <small> {{label}} </small>
-<div class="input-group" [ngClass]="{'has-danger' : parentFormControl.invalid}">
-    <input class="form-control form-control-sm"
+<div class="input-group">
+    <input [ngClass]="{'is-invalid' : parentFormControl.invalid}" class="form-control form-control-sm"
       ngbDatepicker #d1="ngbDatepicker"
       [formControl]="parentFormControl"
       [disableControl]="disabled"

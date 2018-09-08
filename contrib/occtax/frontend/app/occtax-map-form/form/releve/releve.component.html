@@ -59,16 +59,16 @@
         </pnx-date>
       </div>
       <div *ngIf="occtaxConfig.form_fields.releve.hour_min" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_min.invalid}">
+        <div class="form-group">
           <small> {{'Releve.HourMin' | translate }} </small>
-          <input [formControl]="releveForm.controls.properties.controls.hour_min" class="form-control form-control-sm" type="text"
+          <input [ngClass]="{'is-invalid' : releveForm.controls.properties.controls.hour_min.invalid}" [formControl]="releveForm.controls.properties.controls.hour_min" class="form-control form-control-sm" type="text"
             placeholder="{{'Releve.HourFormat' | translate }}" [disableControl]="fs.disabled">
         </div>
       </div>
       <div *ngIf="occtaxConfig.form_fields.releve.hour_max" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-        <div class="form-group" [ngClass]="{'has-danger' : releveForm.controls.properties.controls.hour_max.invalid}">
+        <div class="form-group">
           <small> {{'Releve.HourMax' | translate }} </small>
-          <input [formControl]="releveForm.controls.properties.controls.hour_max" class="form-control form-control-sm" type="text"
+          <input [ngClass]="{'is-invalid' : releveForm.controls.properties.controls.hour_max.invalid}" [formControl]="releveForm.controls.properties.controls.hour_max" class="form-control form-control-sm" type="text"
             placeholder="{{'Releve.HourFormat' | translate }}" [disableControl]="fs.disabled">
         </div>
       </div>
