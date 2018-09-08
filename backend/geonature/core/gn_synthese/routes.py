@@ -5,10 +5,11 @@ import datetime
 from collections import OrderedDict
 
 from flask import Blueprint, request, session, current_app, send_from_directory, render_template
-from sqlalchemy import distinct, func
+from sqlalchemy import distinct, func, desc
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
 from geojson import FeatureCollection
+
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
@@ -22,6 +23,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseDecodeNomenclatures,
     SyntheseOneRecord,
+    VMTaxonsSyntheseAutocomplete
 )
 from geonature.core.taxonomie.models import (
     Taxref,
@@ -389,5 +391,37 @@ def get_status(info_role):
 @json_resp
 def get_taxon_tree():
     taxon_tree_table = GenericTable('v_tree_taxons_synthese', 'gn_synthese', geometry_field=None)
-    data = DB.session.query(taxon_tree_table.tableDef).order_by(taxon_tree_table.tableDef.c.nom_latin).all()
+    data = DB.session.query(
+        taxon_tree_table.tableDef
+        ).order_by(
+            taxon_tree_table.tableDef.c.nom_latin
+        ).all()
     return [taxon_tree_table.as_dict(d) for d in data]
+
+
+@routes.route('/taxons_autocomplete', methods=['GET'])
+@json_resp
+def get_autocomplete_taxons_synthese():
+
+    search_name = request.args.get('search_name')
+    q = DB.session.query(VMTaxonsSyntheseAutocomplete)
+    if search_name:
+        search_name = search_name.replace(' ', '%')
+        q = q.filter(
+            VMTaxonsSyntheseAutocomplete.search_name.ilike(search_name+"%")
+        )
+    regne = request.args.get('regne')
+    if regne:
+        q = q.filter(VMTaxonsSyntheseAutocomplete.regne == regne)
+
+    group2_inpn = request.args.get('group2_inpn')
+    if group2_inpn:
+        q = q.filter(VMTaxonsSyntheseAutocomplete.group2_inpn == group2_inpn)
+
+    q = q.order_by(desc(
+        VMTaxonsSyntheseAutocomplete.cd_nom == 
+        VMTaxonsSyntheseAutocomplete.cd_ref
+    ))
+
+    data = q.limit(20).all()
+    return [d.as_dict() for d in data]

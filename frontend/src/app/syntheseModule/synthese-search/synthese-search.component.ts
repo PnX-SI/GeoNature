@@ -178,9 +178,7 @@ export class SyntheseSearchComponent implements OnInit {
       multiSelect: true
     }
   ];
-
-  public taxonTree: Array<any>;
-  public options: ITreeOptions;
+  public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   @Output() searchClicked = new EventEmitter();
   constructor(
     private _fb: FormBuilder,
@@ -188,13 +186,10 @@ export class SyntheseSearchComponent implements OnInit {
     public formService: SyntheseFormService,
     public ngbModal: NgbModal,
     public mapService: MapService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.dataService.getTaxonTree().subscribe(data => {
-      this.taxonTree = this.dataService.formatTaxonTree(data);
-      console.log(this.taxonTree);
-    });
+
   }
 
   onSubmitForm() {
