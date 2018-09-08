@@ -118,12 +118,13 @@ def filter_query_all_filters(q, filters, user, allowed_datasets):
             )
         ))
     if 'cd_ref' in filters:
+        print(filters['cd_ref'])
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
             ).filter(
                 Taxref.cd_ref.in_(filters.pop('cd_ref'))
             ).subquery('sub_query_synonym')
-        q = q.filter(Synthese.cd_nom.in_(sub_query_synonym.cd_nom))
+        q = q.filter(Synthese.cd_nom.in_(sub_query_synonym))
     # generic filters
     for colname, value in filters.items():
         if colname.startswith('area'):
