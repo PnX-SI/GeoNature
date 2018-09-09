@@ -12,6 +12,8 @@ external_assets/
 external_modules/*
 tmp/
 var/
+data/migrations/v1tov2/v1_compat.ini
+data/migrations/v1tov2/v1_compat.log
 
 config.py
 backend/static/medias/*
