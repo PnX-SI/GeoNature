@@ -8,6 +8,16 @@
   <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
   <tree-root #tree (event)="catchEvent($event)" [state]="formService.taxonTreeState" [nodes]="formService.taxonTree" [options]="treeOptions"></tree-root>
 
+  <pnx-multiselect [values]="formService.taxonomyLR" [parentFormControl]="formService.searchForm.controls.taxonomy_lr" keyLabel="nom_categorie_lr" keyValue="id_categorie_france" label="Liste rouge UICN">
+  </pnx-multiselect>
+
+  <pnx-multiselect [values]="formService.taxonomyHab" [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab" keyLabel="nom_habitat" keyValue="id_habitat" label="Habitat">
+  </pnx-multiselect>
+
+  <pnx-multiselect [values]="formService.taxonomyGroup2Inpn" [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn" keyLabel="value" keyValue="value" label="Groupe 2 INPN">
+    </pnx-multiselect>
+
+
 
   <h5> Attributs taxhub</h5>
   <div *ngIf="formBuilded">

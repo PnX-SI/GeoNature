@@ -13,6 +13,9 @@ export class SyntheseFormService {
   public taxonTreeState: any;
   public taxonTree: any;
   public selectedCdRefFromTree = [];
+  public taxonomyLR: Array<any>;
+  public taxonomyHab: Array<any>;
+  public taxonomyGroup2Inpn: Array<any>;
 
   constructor(
     private _fb: FormBuilder,
@@ -30,7 +33,10 @@ export class SyntheseFormService {
       period_end: null,
       municipalities: null,
       geoIntersection: null,
-      radius: null
+      radius: null,
+      taxonomy_lr: null,
+      taxonomy_id_hab: null,
+      taxonomy_group2_inpn: null
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
