@@ -24,7 +24,7 @@ VALUES (
     1, 1, 1, 475, 'test site',
     'Site description', 'TEST_000', '2018-01-01', '0101000020E610000062A67E7001980D40C24CD3511D2B4640'
 );
-SELECT pg_catalog.setval('gn_monitoring.t_base_sites_id_base_site_seq', 1, true);
+SELECT pg_catalog.setval('gn_monitoring.t_base_sites_id_base_site_seq', (SELECT max(id_base_site) FROM gn_monitoring.t_base_sites), true);
 
 INSERT INTO gn_monitoring.cor_site_application(id_base_site, id_application)
 VALUES (1, 101);
@@ -36,7 +36,7 @@ INSERT INTO gn_monitoring.t_base_visits(
 VALUES (
     1, 1, 1, '2018-01-01',  'Visite test pour l''exemple'
 );
-SELECT pg_catalog.setval('gn_monitoring.t_base_visits_id_base_visit_seq', 1, true);
+SELECT pg_catalog.setval('gn_monitoring.t_base_visits_id_base_visit_seq', (SELECT max(id_base_visit) FROM gn_monitoring.t_base_visits), true);
 
 
 INSERT INTO gn_monitoring.cor_visit_observer(id_base_visit, id_role)
