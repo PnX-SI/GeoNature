@@ -89,15 +89,10 @@ export class DataService {
       if (fam === null) {
         fam = record.nom_famille;
       } //initialisation
-      console.log(kd);
-      console.log(record.nom_regne)
       if (kd !== record.nom_regne) {
-        console.log('nouveau regneeeee')
         nouveauRegne = true;
       } // si on a changé de niveau de règne
       if (emb !== record.nom_embranchement) {
-        console.log('passe la: ', emb, record.nom_embranchement);
-
         nouvelEmbranchement = true;
       } // si on a changé de niveau d'embranchement
       if (cl !== record.nom_classe) {
