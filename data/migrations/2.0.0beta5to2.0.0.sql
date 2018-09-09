@@ -68,6 +68,3 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
---suppression du champ id_area inutile (gestion en nn dans cor_area_synthese)
-ALTER TABLE gn_synthese.synthese DROP COLUMN id_area;
