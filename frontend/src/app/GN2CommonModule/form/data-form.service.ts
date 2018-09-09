@@ -111,14 +111,16 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
   }
 
-  getTaxhubBibAttributes(id_attribut?: number) {
-    // let url;
-    // if (id_attribut) {
-    //   url = `${AppConfig.API_TAXHUB}/bibattributs/${id_attribut}`
-    // } else {
-    //   url = `${AppConfig.API_TAXHUB}/bibattributs`;
-    // }
+  getTaxhubBibAttributes() {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibattributs/`);
+  }
+
+  getTaxonomyLR() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/bib_lr`);
+  }
+
+  getTaxonomyHabitat() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/bib_habitats`);
   }
 
   getGeoInfo(geojson) {

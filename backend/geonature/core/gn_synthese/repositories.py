@@ -11,7 +11,7 @@ from sqlalchemy.orm import aliased
 
 from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import circle_from_point
-from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, BibNoms
+from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, BibNoms, TaxrefLR
 from geonature.core.gn_synthese.models import (
     Synthese, CorRoleSynthese, TSources, CorRoleSynthese,
     CorAreaSynthese
@@ -53,6 +53,7 @@ def filter_taxonomy(q, filters):
         -Tuple: the SQLAlchemy query and the filter dictionnary
     """
     if 'cd_ref' in filters:
+        # find all cd_nom where cd_ref = filter['cd_ref']
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
             ).filter(
@@ -60,6 +61,20 @@ def filter_taxonomy(q, filters):
             ).subquery('sub_query_synonym')
         q = q.filter(Synthese.cd_nom.in_(sub_query_synonym))
     
+    if 'taxonomy_group2_inpn' in filters:
+        q = q.filter(Taxref.group2_inpn.in_(filters.pop('taxonomy_group2_inpn')))
+
+    if 'taxonomy_id_hab' in filters:
+        q = q.filter(Taxref.id_habitat.in_(filters.pop('taxonomy_id_hab')))
+
+    if 'taxonomy_lr' in filters:
+        sub_query_lr = DB.session.query(TaxrefLR.cd_nom).filter(
+            TaxrefLR.id_categorie_france = filters.pop('taxonomy_lr')
+        ).subquery('sub_query_lr')
+        # est-ce qu'il faut pas filtrer sur le cd_ ref ?
+        # quid des protection définit à rand superieur de la saisie ?
+        q = q.filter(Synthese.cd_nom.in_(sub_query_lr))
+
     aliased_cor_taxon_attr = {}
     for colname, value in filters.items():
         if colname.startswith('taxhub_attribut'):

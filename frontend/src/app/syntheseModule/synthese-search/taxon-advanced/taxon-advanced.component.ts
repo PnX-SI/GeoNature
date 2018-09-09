@@ -14,6 +14,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
+import { FormControl } from '@angular/forms/src/model';
 
 @Component({
   selector: 'pnx-taxon-tree',
@@ -87,9 +88,32 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
         return attr;
       });
-      //this.attributForm = this._formGen.toFormGroup(this.taxhubAttributes);
       this.formBuilded = true;
       console.log(this.formService.searchForm)
+    });
+    // load LR,  habitat and group2inpn
+    this._dfs.getTaxonomyLR().subscribe(data => {
+      this.formService.taxonomyLR = data;
+    });
+
+    this._dfs.getTaxonomyHabitat().subscribe(data => {
+      this.formService.taxonomyHab = data;
+    });
+
+    const all_groups = [];
+    this._dfs.getRegneAndGroup2Inpn().subscribe(data => {
+      this.formService.taxonomyGroup2Inpn = data;
+      console.log(data);
+      // tslint:disable-next-line:forin
+      for (let regne in data) {
+        data[regne].forEach(group => {
+          if (group.length > 0) {
+            all_groups.push({ 'value': group });
+          }
+        });
+      }
+      this.formService.taxonomyGroup2Inpn = all_groups;
+
     });
   }
 
