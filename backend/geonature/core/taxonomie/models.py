@@ -1,6 +1,3 @@
-from sqlalchemy import ForeignKey
-
-
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
 
@@ -76,13 +73,11 @@ class CorTaxonAttribut(DB.Model):
     __table_args__ = {'schema': 'taxonomie'}
     id_attribut = DB.Column(
         DB.Integer,
-        ForeignKey("taxonomie.bib_attributs.id_attribut"),
         nullable=False,
         primary_key=True
     )
     cd_ref = DB.Column(
         DB.Integer,
-        ForeignKey("taxonomie.bib_noms.cd_ref"),
         nullable=False,
         primary_key=True
     )
@@ -97,7 +92,6 @@ class BibNoms(DB.Model):
     id_nom = DB.Column(DB.Integer, primary_key=True)
     cd_nom = DB.Column(
         DB.Integer,
-        ForeignKey("taxonomie.taxref.cd_nom"),
         nullable=True
     )
     cd_ref = DB.Column(DB.Integer)

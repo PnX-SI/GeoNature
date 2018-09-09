@@ -6,7 +6,8 @@ from flask import request
 from shapely.geometry import asShape
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
-from sqlalchemy import func, between, or_
+from sqlalchemy import func, between, or_, and_
+from sqlalchemy.orm import aliased
 
 from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import circle_from_point
@@ -43,6 +44,14 @@ def filter_query_with_cruved(q, user, allowed_datasets):
     return q
 
 def filter_taxonomy(q, filters):
+    """
+    Filters the query with taxonomic attributes
+    Parameters:
+        - q (SQLAchemyQuery): an SQLAchemy query
+        - filters (dict): a dict of filter
+    Returns:
+        -Tuple: the SQLAlchemy query and the filter dictionnary
+    """
     if 'cd_ref' in filters:
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
@@ -51,23 +60,25 @@ def filter_taxonomy(q, filters):
             ).subquery('sub_query_synonym')
         q = q.filter(Synthese.cd_nom.in_(sub_query_synonym))
     
-    join_on_cor_attr = False
+    aliased_cor_taxon_attr = {}
     for colname, value in filters.items():
         if colname.startswith('taxhub_attribut'):
-            if not join_on_cor_attr:
-                q = q.join(
-                        BibNoms.cd_nom == Synthese.cd_nom
-                    ).join(
-                        CorTaxonAttribut, CorTaxonAttribut.cd_ref == Taxref.cd_ref
-                    )
             taxhub_id_attr = colname[16:]
-            q = q.filter(
-                CorTaxonAttribut.id_attribut == taxhub_id_attr and 
-                CorTaxonAttribut.valeur_attribut == value
+            aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
+            q = q.join(
+                aliased_cor_taxon_attr[taxhub_id_attr],
+                and_(
+                    aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr, 
+                    aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == Taxref.cd_ref
+                )
+            ).filter(
+                aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)
             )
-            filters.pop(colname)
-            join_on_cor_attr = True
+            join_on_bibnoms = True
     
+    # remove attributes taxhub from filters
+    filters = {colname: value for colname, value in filters.items() if not colname.startswith('taxhub_attribut')}
+    return q, filters
 
 
 def filter_query_all_filters(q, filters, user, allowed_datasets):
@@ -145,7 +156,7 @@ def filter_query_all_filters(q, filters, user, allowed_datasets):
             )
         ))
 
-    filter_taxonomy(q, filters)
+    q, filters = filter_taxonomy(q, filters)
 
     # generic filters
     for colname, value in filters.items():
