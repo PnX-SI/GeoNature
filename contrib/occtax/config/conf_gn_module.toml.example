@@ -1,0 +1,151 @@
+# ----------- OCCTAX AVAILABLE AND DEFAULT PARAMETER ------------
+
+# ------------- FORM PARAMETER ---------------
+
+# Allow to hide or display some fields. If hidden, database default value is used
+[form_fields]
+	[form_fields.releve]
+		date_min = true
+		date_max = true
+		hour_min = true
+		hour_max = true
+		altitude_min = true
+		altitude_max = true
+		obs_technique = true
+		group_type = true
+		comment = true
+	[form_fields.occurrence]
+		obs_method = true
+		bio_condition = true
+		bio_status = true
+		naturalness = true
+		exist_proof = true
+		observation_status = true
+		diffusion_level = false
+		blurring = false
+		determiner = true
+		determination_method = true
+		sample_number_proof = true
+		digital_proof = true
+		non_digital_proof = true
+		source_status = false
+		comment = true
+	[form_fields.counting]
+		life_stage = true
+		sex = true
+		obj_count = true
+		type_count = true
+		count_min = true
+		count_max = true
+		validation_status = false
+
+# Switch the form input in free text input (true) or in select input (false)
+observers_txt = false
+
+# id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
+id_taxon_list = 500
+
+# Add a validation rule between Proof fields. If true, fulfil at least one proof in the form
+digital_proof_validator = true
+
+
+# -------- MAPLIST PARAMETER ------------
+
+# Zoom level on the map from which you can add point/line/polygon
+releve_map_zoom_level = 6
+
+# Columns which are default display in the list
+default_maplist_columns = [
+    { prop = "taxons", name = "Taxon" },
+    { prop = "date_min", name = "Date début" },
+    { prop = "observateurs", name = "Observateurs" },
+    { prop = "dataset_name", name = "Jeu de données" }
+]
+
+# Available columns which can be add manualy by user
+available_maplist_column = [
+	  { prop = "altitude_max", name = "altitude_max" },
+    { prop = "altitude_min", name = "altitude_min" },
+    { prop = "comment", name = "Commentaire" },
+    { prop = "date_max", name = "Date fin" },
+    { prop = "date_min", name = "Date début" },
+    { prop = "id_dataset", name = "ID dataset" },
+    { prop = "id_digitiser", name = "ID rédacteur" },
+    { prop = "id_releve_occtax", name = "ID relevé" },
+    { prop = "observateurs", name = "observateurs" },
+    { prop = "taxons", name = "taxons" }
+]
+
+# Message of the list of releve
+list_messages = { emptyMessage = "Aucune donnée à afficher", totalMessage = "observations au total" }
+
+# --------------- EXPORT PARAMETER ---------------------
+
+# Name of the view based export
+export_view_name = 'ViewExportDLB'
+
+# Name of the geometry columns of the view
+export_geom_columns_name = 'geom_4326'
+
+# Name of the primary key column of the view
+export_id_column_name = 'permId'
+
+# SRID for the shapefile
+export_srid = 4326
+
+# Export available format (Only csv, geojson and shapefile is possible)
+export_available_format = ['csv', 'geojson', 'shapefile']
+
+# Custom message to display in the export modal
+export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"
+
+# Max observations number the user is allowed to export at once
+MAX_EXPORT_NUMBER = 50000
+
+# Columns to display in the exports
+export_columns =  [
+  "permId",
+  "statObs",
+  "nomCite",
+  "dateDebut",
+  "dateFin",
+  "heureDebut",
+  "heureFin",
+  "altMax",
+  "altMin",
+  "cdNom",
+  "cdRef",
+  "dateDet",
+  "comment",
+  "dSPublique",
+  "statSource",
+  "idOrigine",
+  "jddId",
+  "refBiblio",
+  "obsMeth",
+  "ocEtatBio",
+  "ocNat",
+  "ocSex",
+  "ocStade",
+  "ocBiogeo",
+  "ocStatBio",
+  "preuveOui",
+  "ocMethDet",
+  "preuvNum",
+  "preuvNoNum",
+  "obsCtx",
+  "permIdGrp",
+  "methGrp",
+  "typGrp",
+  "denbrMax",
+  "denbrMin",
+  "objDenbr",
+  "typDenbr",
+  "obsId",
+  "obsNomOrg",
+  "detId",
+  "detNomOrg",
+  "orgGestDat",
+  "WKT",
+  "natObjGeo"
+ ]
