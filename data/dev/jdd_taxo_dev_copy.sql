@@ -6826,7 +6826,7 @@ COPY bib_noms (id_nom, cd_nom, cd_ref, nom_francais, comments) FROM stdin;
 -- Name: bib_noms_id_nom_seq; Type: SEQUENCE SET; Schema: taxonomie; Owner: -
 --
 
-SELECT pg_catalog.setval('bib_noms_id_nom_seq', (SELECT max(id_nom) FROM taxonomie.bib_noms), true);
+SELECT pg_catalog.setval('bib_noms_id_nom_seq', (SELECT max(id_nom)+1 FROM taxonomie.bib_noms), true);
 
 
 --

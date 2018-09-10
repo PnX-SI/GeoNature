@@ -245,6 +245,15 @@ CREATE TABLE t_parameters (
     parameter_extra_value character varying(255)
 );
 COMMENT ON TABLE t_parameters IS 'Allow to manage content configuration depending on organism or not (CRUD depending on privileges).';
+CREATE SEQUENCE t_parameters_id_parameter_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE t_parameters_id_parameter_seq OWNED BY t_parameters.id_parameter;
+ALTER TABLE ONLY t_parameters ALTER COLUMN id_parameter SET DEFAULT nextval('t_parameters_id_parameter_seq'::regclass);
+SELECT pg_catalog.setval('t_parameters_id_parameter_seq', 1, false);
 
 
 CREATE TABLE bib_tables_location
@@ -471,17 +480,15 @@ CREATE TRIGGER tri_log_changes_t_medias
 ---------
 --DATAS--
 ---------
-
-INSERT INTO bib_tables_location (id_table_location, table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
-(1, 'Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
+-- On ne défini pas d'id pour la PK, la séquence s'en charge
+INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
+('Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
 ;
-SELECT pg_catalog.setval('gn_commons.bib_tables_location_id_table_location_seq', 1, true);
 
-
-INSERT INTO t_parameters (id_parameter, id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(1,0,'taxref_version','Version du référentiel taxonomique','Taxref V11.0',NULL)
-,(2,0,'local_srid','Valeur du SRID local','2154',NULL)
-,(3,0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
+INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
+(0,'taxref_version','Version du référentiel taxonomique','Taxref V11.0',NULL)
+,(0,'local_srid','Valeur du SRID local','2154',NULL)
+,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
 
 
