@@ -99,7 +99,7 @@ Fonctions :
 
 La base de données contient de nombreuses fonctions.
 
-gn_synthese
+**gn_synthese**
 
 +--------------------------------------+-------------------------------+----------------------+----------------------------------------+
 | Fonction                             | Paramètres                    | Résultat             | Description                            |
@@ -111,6 +111,54 @@ gn_synthese
 | fct_trig_insert_in_cor_area_synthese | geom                          | Trigger              | Trigger intersectant la géométrie      |
 |                                      |                               |                      | d'une observation avec tous les zonages|
 +--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+
+**ref_nomenclatures**
+
+CREATE OR REPLACE FUNCTION get_id_nomenclature_type(mytype character varying) RETURNS integer
+IMMUTABLE
+--Function which return the id_type from the mnemonique of a nomenclature type
+
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
+--Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
+--Return -1 if nothing matche with given parameters
+
+CREATE OR REPLACE FUNCTION check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
+--Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+
+CREATE OR REPLACE FUNCTION check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
+--Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+
+CREATE OR REPLACE FUNCTION check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
+--Function that checks if an id_nomenclature matches with wanted nomenclature type (use id_type)
+
+CREATE OR REPLACE FUNCTION get_id_nomenclature(
+mytype character varying,
+mycdnomenclature character varying)
+RETURNS integer
+--Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
+
+CREATE OR REPLACE FUNCTION get_nomenclature_label(
+myidnomenclature integer,
+mylanguage character varying
+)
+RETURNS character varying
+--Function which return the label from the id_nomenclature and the language
+
+CREATE OR REPLACE FUNCTION get_cd_nomenclature(myidnomenclature integer)
+RETURNS character varying
+--Function which return the cd_nomenclature from an id_nomenclature
+
+CREATE FUNCTION get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying)
+RETURNS SETOF integer
+--Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
+
+CREATE OR REPLACE FUNCTION calculate_sensitivity(
+mycdnom integer,
+mynomenclatureid integer)
+RETURNS integer
+--Function to return id_nomenclature depending on observation sensitivity
+--USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
+
 
 A compléter... A voir si on mentionne les triggers ou pas...
 
