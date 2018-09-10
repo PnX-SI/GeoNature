@@ -349,7 +349,7 @@ WHERE nom_protocole IS NOT NULL
 AND id_protocole <> 0;
 --AND id_protocole IN (SELECT DISTINCT id_protocole FROM v1_compat.vm_syntheseff);
 --PNE
-SELECT setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', 147, true);
+SELECT setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', (SELECT max(id_protocol)+1 FROM gn_meta.sinp_datatype_protocols), true);
 
 --CADRE D'ACQUISITION (V2) = PROGRAMMES (V1)
 TRUNCATE gn_meta.t_acquisition_frameworks CASCADE;
@@ -385,7 +385,7 @@ UPDATE gn_meta.t_acquisition_frameworks SET id_nomenclature_territorial_level = 
 --mise à jour du type de financement
 UPDATE gn_meta.t_acquisition_frameworks SET id_nomenclature_financing_type = ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT','2') WHERE id_acquisition_framework = 111;
 UPDATE gn_meta.t_acquisition_frameworks SET id_nomenclature_financing_type = ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT','4') WHERE id_acquisition_framework = 16;
-SELECT setval('gn_meta.t_acquisition_frameworks_id_acquisition_framework_seq', 200, true);
+SELECT setval('gn_meta.t_acquisition_frameworks_id_acquisition_framework_seq', (SELECT max(id_acquisition_framework)+1 FROM gn_meta.t_acquisition_frameworks), true);
 
 --DATASETS (v2) - LOTS (V1)
 --DELETE FROM gn_meta.t_datasets WHERE id_dataset > 0;
@@ -420,7 +420,7 @@ SELECT DISTINCT
   ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP','1') AS id_nomenclature_resource_type --nomenclature 102 = "jeu de données"
 FROM v1_compat.bib_lots;
 --WHERE id_lot NOT IN (SELECT DISTINCT id_lot FROM v1_compat.vm_syntheseff);
-SELECT setval('gn_meta.t_datasets_id_dataset_seq', 200, true);
+SELECT setval('gn_meta.t_datasets_id_dataset_seq', (SELECT max(id_dataset)+1 FROM gn_meta.t_datasets), true);
 UPDATE gn_meta.t_acquisition_frameworks SET id_nomenclature_territorial_level = ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL','1') WHERE id_acquisition_framework = 3;
 --PNE : id_nomenclature_dataset_objectif
 UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','1.2') WHERE id_dataset IN (104,108); --"Inventaire pour étude d’espèces ou de communautés"
@@ -1111,7 +1111,7 @@ AND id_source = 7;
 ALTER TABLE gn_synthese.synthese ENABLE TRIGGER USER;
 
 --mettre à jour la séquence de id_synthese
-SELECT setval('gn_synthese.synthese_id_synthese_seq', (SELECT max(id_synthese) FROM gn_synthese.synthese), true);
+SELECT setval('gn_synthese.synthese_id_synthese_seq', (SELECT max(id_synthese)+1 FROM gn_synthese.synthese), true);
 
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 

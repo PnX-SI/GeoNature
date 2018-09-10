@@ -457,5 +457,5 @@ CREATE SEQUENCE ref_nomenclatures.bib_nomenclatures_types_id_type_seq;
 ALTER TABLE ref_nomenclatures.bib_nomenclatures_types  ALTER COLUMN id_type SET DEFAULT nextval('ref_nomenclatures.bib_nomenclatures_types_id_type_seq');
 ALTER SEQUENCE ref_nomenclatures.bib_nomenclatures_types_id_type_seq OWNED BY ref_nomenclatures.bib_nomenclatures_types.id_type;
 
-SELECT setval('ref_nomenclatures.bib_nomenclatures_types_id_type_seq', (SELECT max(id_type) FROM ref_nomenclatures.bib_nomenclatures_types), true);
+SELECT setval('ref_nomenclatures.bib_nomenclatures_types_id_type_seq', (SELECT max(id_type)+1 FROM ref_nomenclatures.bib_nomenclatures_types), true);
 

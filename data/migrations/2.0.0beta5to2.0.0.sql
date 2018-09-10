@@ -69,5 +69,14 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
---suppression du champ id_area inutile (gestion en nn dans cor_area_synthese)
-ALTER TABLE gn_synthese.synthese DROP COLUMN id_area;
+
+--Passage de t_parameters en serial
+CREATE SEQUENCE gn_commons.t_parameters_id_parameter_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE gn_commons.t_parameters_id_parameter_seq OWNED BY gn_commons.t_parameters.id_parameter;
+ALTER TABLE ONLY gn_commons.t_parameters ALTER COLUMN id_parameter SET DEFAULT nextval('gn_commons.t_parameters_id_parameter_seq'::regclass);
+SELECT pg_catalog.setval('gn_commons.t_parameters_id_parameter_seq', (SELECT max(id_parameter)+1 FROM gn_commons.t_parameters), false);

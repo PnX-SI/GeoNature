@@ -47,7 +47,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null
     )
 ;
-SELECT pg_catalog.setval('gn_meta.t_datasets_id_dataset_seq', 2, true);
+SELECT pg_catalog.setval('gn_meta.t_acquisition_frameworks_id_acquisition_framework_seq', (SELECT max(id_acquisition_framework)+1 FROM gn_meta.t_acquisition_frameworks), true);
 
 -- Insérer 2 jeux de données d'exemple
 
@@ -125,7 +125,7 @@ INSERT INTO gn_meta.t_datasets (
     null
     )
 ;
-SELECT pg_catalog.setval('gn_meta.t_acquisition_frameworks_id_acquisition_framework_seq', 2, true);
+SELECT pg_catalog.setval('gn_meta.t_datasets_id_dataset_seq', (SELECT max(id_dataset)+1 FROM gn_meta.t_datasets), true);
 
 -- Renseigner les tables de correspondance
 
@@ -142,7 +142,7 @@ INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_fra
 ,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ,(3, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ;
-SELECT pg_catalog.setval('gn_meta.cor_acquisition_framework_actor_id_cafa_seq', 4, true);
+SELECT pg_catalog.setval('gn_meta.cor_acquisition_framework_actor_id_cafa_seq', (SELECT max(id_cafa)+1 FROM gn_meta.cor_acquisition_framework_actor), true);
 
 INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
@@ -155,7 +155,7 @@ INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism,
 ,(8, 1, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ,(9, 2, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ;
-SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', 9, true);
+SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_cda)+1 FROM gn_meta.cor_dataset_actor), true);
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),'Territoire du parc national des Ecrins et de ses environs immédiats')
@@ -166,7 +166,7 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 (1,0)
 ,(2,0)
 ;
-SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', 2, true);
+SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', (SELECT max(id_protocol)+1 FROM gn_meta.cor_dataset_protocol), true);
 
 -- Insérer une source exemple
 
@@ -178,7 +178,7 @@ INSERT INTO gn_synthese.t_sources (name_source, desc_source, entity_source_pk_fi
 INSERT INTO pr_occtax.t_releves_occtax (id_releve_occtax,id_dataset,id_digitiser,observers_txt,id_nomenclature_obs_technique,id_nomenclature_grp_typ,date_min,date_max,hour_min,hour_max,altitude_min,altitude_max,meta_device_entry,comment,geom_local,geom_4326,precision) VALUES
 (1,1,1,'Obervateur test insert',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-01','2017-01-01','12:05:02','12:05:02',1500,1565,'web','Exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',10)
 ,(2,1,1,'Obervateur test insert',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,'web','Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
-SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', 3, true);
+SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
 
 -- Insérer 3 occurrences dans les 2 relevés Occtax
 
@@ -268,7 +268,7 @@ VALUES
   'Troisieme test'
   );
 
-SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', 4, true);
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
 
 -- Insérer 1 observateur pour chacun des 2 relevés Occtax
 
@@ -320,4 +320,4 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
-SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', 4, true);
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
