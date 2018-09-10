@@ -13,9 +13,13 @@ export class ObserversComponent implements OnInit {
   filteredObservers: Array<any>;
   @Input() idMenu: number;
   @Input() label: string;
-  @Input() disabled: boolean;
+  // Disable the input: default to false
+  @Input() disabled = false;
   @Input() parentFormControl: FormControl;
-  @Input() bindAllItem: false;
+  // display the value 'Tous' on the value list - default = false
+  @Input() bindAllItem = false;
+  // search bar default to true
+  @Input() searchBar = true;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   public searchControl = new FormControl();

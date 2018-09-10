@@ -1033,7 +1033,7 @@ COPY synthese (id_synthese, unique_id_sinp, unique_id_sinp_grp, id_source, entit
 -- Name: synthese_id_synthese_seq; Type: SEQUENCE SET; Schema: gn_synthese; Owner: -
 --
 
-SELECT pg_catalog.setval('synthese_id_synthese_seq', 1, false);
+SELECT pg_catalog.setval('synthese_id_synthese_seq', (SELECT max(id_synthese)+1 FROM gn_synthese.synthese), false);
 
 
 -- Completed on 2018-03-01 11:09:03 CET
