@@ -57,11 +57,11 @@ def filter_taxonomy(q, filters):
         # find all cd_nom where cd_ref = filter['cd_ref']
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
-            ).filter(
-                Taxref.cd_ref.in_(filters.pop('cd_ref'))
-            ).subquery('sub_query_synonym')
+        ).filter(
+            Taxref.cd_ref.in_(filters.pop('cd_ref'))
+        ).subquery('sub_query_synonym')
         q = q.filter(Synthese.cd_nom.in_(sub_query_synonym))
-    
+
     if 'taxonomy_group2_inpn' in filters:
         q = q.filter(Taxref.group2_inpn.in_(filters.pop('taxonomy_group2_inpn')))
 
@@ -70,7 +70,7 @@ def filter_taxonomy(q, filters):
 
     if 'taxonomy_lr' in filters:
         sub_query_lr = DB.session.query(TaxrefLR.cd_nom).filter(
-            TaxrefLR.id_categorie_france = filters.pop('taxonomy_lr')
+            TaxrefLR.id_categorie_france == filters.pop('taxonomy_lr')
         ).subquery('sub_query_lr')
         # est-ce qu'il faut pas filtrer sur le cd_ ref ?
         # quid des protection définit à rand superieur de la saisie ?
@@ -84,14 +84,14 @@ def filter_taxonomy(q, filters):
             q = q.join(
                 aliased_cor_taxon_attr[taxhub_id_attr],
                 and_(
-                    aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr, 
+                    aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr,
                     aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == Taxref.cd_ref
                 )
             ).filter(
                 aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)
             )
             join_on_bibnoms = True
-    
+
     # remove attributes taxhub from filters
     filters = {colname: value for colname, value in filters.items() if not colname.startswith('taxhub_attribut')}
     return q, filters
