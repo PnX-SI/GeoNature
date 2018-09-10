@@ -1,0 +1,75 @@
+# Database
+SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+SQLALCHEMY_TRACK_MODIFICATIONS = false
+
+# Application
+
+appName = 'GeoNature 2'                               # Application name in the home page
+DEFAULT_LANGUAGE = 'fr'
+PASS_METHOD = 'hash'                                    # Authentification password encoding method (hash or md5)
+DEBUG = true
+URL_APPLICATION = 'http://url.com/geonature'         # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com/geonature/api'        # Replace my_url.com by your domain or IP
+API_TAXHUB ='http://127.0.0.1:5000/api/'
+ID_APPLICATION_GEONATURE = 14                           # id_application of GeoNature in UsersHub
+SESSION_TYPE = 'filesystem'
+SECRET_KEY = 'super secret key'
+COOKIE_EXPIRATION = 7200
+COOKIE_AUTORENEW = true
+TRAP_ALL_EXCEPTIONS = false
+HTTPS = false
+# MTD
+XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
+MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
+
+# File
+# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = 'static/medias'
+
+# CAS authentification (Optional, instead of UsersHub local authentification)
+[CAS]
+    CAS_AUTHENTIFICATION = false
+    CAS_URL_LOGIN = 'https://preprod-inpn.mnhn.fr/auth/login'
+    CAS_URL_LOGOUT = 'https://preprod-inpn.mnhn.fr/auth/logout'
+    CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+    [CAS.CAS_USER_WS]
+        URL = 'https://inpn2.mnhn.fr/authentication/information'
+        ID = 'mon_id'
+        PASSWORD = 'mon_pass'
+
+[RIGHTS]
+    NOTHING = 0
+    MY_DATA = 1
+    MY_ORGANISM_DATA = 2
+    ALL_DATA = 3
+
+# Front end configuration
+[FRONTEND]
+PROD_MOD = false
+DISPLAY_FOOTER = false
+MULTILINGUAL = false
+
+[MAILERROR]
+    MAIL_ON_ERROR = false
+    MAIL_HOST = 'host mail'
+    HOST_PORT = host mail port
+    MAIL_FROM = 'Email from'
+    MAIL_USERNAME = 'email username'
+    MAIL_PASS = 'email to'
+    MAIL_TO = 'email to'
+
+# Synthese configuration
+[SYNTHESE]
+    # Liste des entité géographique sur lesquel les filtres
+    # géographique de la synthese s'appuye (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
+    AREA_FILTERS = [
+        { label = "Zone natural 2000", id_type = 201 },
+        { label = "Secteurs", id_type = 202 }
+    ]
+
+default_maplist_columns = [
+    { prop = "taxons", name = "Taxon" },
+    { prop = "date_min", name = "Date début" },
+    { prop = "observateurs", name = "Observateurs" },
+    { prop = "dataset_name", name = "Jeu de données" }
+]

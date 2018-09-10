@@ -1,0 +1,209 @@
+@import 'conf/names_variables.scss';
+@import 'custom/custom.scss';
+
+html,
+body,
+material-app,
+mat-sidenav-container {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+mat-sidenav-content {
+  height: 100%;
+  background-color: $solitude;
+}
+
+.mat-toolbar {
+  min-height: 5vh !important;
+}
+.mat-toolbar-row {
+  height: 5vh !important;
+}
+
+.app-content {
+  //background-color: $solitude;
+  //height: calc(100% - 5vh);
+  padding-top: 5px;
+}
+
+.row-sm {
+  margin: 0px;
+}
+
+.row-0 {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.padding-0 {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+.padding-sm {
+  padding-right: 2px !important;
+  padding-left: 2px !important;
+}
+.padding-md {
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+
+.padding-md-all {
+  padding: 5px !important;
+}
+
+.table-sm td {
+  padding: 0.5rem;
+}
+
+/*
+ * The /deep/ selector is simply to overcome view encapsulation
+ * and be able to select the div.md-sidenav-content generated at runtime
+*/
+md-sidenav-layout /deep/ .md-sidenav-content {
+  overflow: hidden;
+}
+
+.mat-autocomplete-panel {
+  position: absolute !important;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.btn-white {
+  background-color: white;
+}
+
+.label-sm {
+  margin-bottom: 0px;
+}
+
+.red {
+  color: red;
+}
+
+#map {
+  height: 100%;
+}
+
+.underlined {
+  border-bottom: 3px solid black !important;
+  display: inline-block;
+  padding-bottom: 10px;
+  padding-top: 5px;
+  margin-bottom: 20px;
+}
+
+.underlined.main-color {
+  border-bottom-color: $main-color !important;
+}
+
+.underlined.second-color {
+  border-bottom-color: $second-color !important;
+}
+
+footer {
+  margin-top: 50px;
+  padding: 10px;
+  border-top: 2px solid;
+  border-top-color: $second-color;
+}
+
+.unstyled {
+  padding-left: 0px;
+  list-style-type: none;
+}
+
+.footer-list {
+  margin-bottom: 2px;
+}
+
+.p-small {
+  margin-bottom: 2px;
+}
+
+.error {
+  color: red;
+}
+
+.btn-no-padding {
+  padding: 0px !important;
+}
+
+.btn-ghost {
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
+.input-sm {
+  height: 1.5rem;
+}
+
+.margin-top-sm {
+  margin-top: 5px;
+}
+
+.margin-top-lg {
+  margin-top: 10px;
+}
+
+padding-lg {
+  padding: 15px;
+}
+
+.center {
+  margin-left: 20%;
+}
+
+.center-in-div {
+  width: 50%;
+  margin: 0 auto;
+}
+
+li.no-bullet {
+  list-style-type: none;
+}
+
+.large-modal > .modal-dialog {
+  max-width: 1500px !important;
+}
+
+.font-xs {
+  font-size: 13px;
+}
+
+.btn-outline-shadow:hover{
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.btn-outline-shadow {
+  color: #292b2c!important;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+
+.btn-outline-shadow.active, .btn-outline-shadow:active, .show>btn-outline-shadow.dropdown-toggle {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  background-image: none;
+  border-color: #adadad;
+}
+
+.btn-outline-shadow.focus, .btn-outline-shadow:focus {
+  box-shadow: 0 0 0 2px hsla(0,0%,80%,.5);
+}

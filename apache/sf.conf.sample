@@ -1,8 +1,0 @@
-<Directory "/home/synthese/geonature/lib/symfony/1.4.6/data/web/sf">
- AllowOverride All
- Allow from All
-</Directory>
-
-Alias invertebre/sf /home/synthese/geonature/lib/symfony/1.4.6/data/web/sf
-Alias cf/sf /home/synthese/geonature/lib/symfony/1.4.6/data/web/sf
-Alias synthese/sf /home/synthese/geonature/lib/symfony/1.4.6/data/web/sf

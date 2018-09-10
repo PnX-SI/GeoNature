@@ -1,0 +1,18 @@
+<div id="cover-spin" *ngIf="!searchService.dataLoaded"></div>
+
+
+<div class="row row-0">
+  <div class="col-sm-12 col-md-3 padding-sm">
+    <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search>
+  </div>
+  <div class="col-sm-12 col-md-9 padding-sm">
+    <div class="row row-0">
+      <div class="col-sm-12 col-md-6 padding-sm">
+        <pnx-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-synthese-carte>
+      </div>
+      <div class="col-sm-12 col-md-6 padding-sm">
+        <pnx-synthese-list [inputSyntheseData]="_mapListService.tableData"></pnx-synthese-list>
+      </div>
+    </div>
+  </div>
+</div>

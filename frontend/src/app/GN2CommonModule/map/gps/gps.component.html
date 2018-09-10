@@ -1,0 +1,22 @@
+<ng-template #modalContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Coordonnées GPS</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p> Degrés décimaux (WGS84) </p>
+    <div class="form-inline">
+      <div class="form-group ">
+        <label > X </label>
+          <input class="form-control mx-sm-2" [(ngModel)]='x' type="number">
+        <label > Y </label>
+          <input class="form-control mx-sm-2" [(ngModel)]='y' type="number">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success"(click)="d()"  (click)="setMarkerFromGps(x, y)">Valider</button>
+  </div>
+</ng-template>

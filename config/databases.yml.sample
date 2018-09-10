@@ -1,7 +1,0 @@
-all:
-  doctrine:
-    class: sfDoctrineDatabase
-    param:
-      dsn: 'pgsql:host=localhost;dbname=geonaturedb'
-      username: geonatuser
-      password: monpassachanger
