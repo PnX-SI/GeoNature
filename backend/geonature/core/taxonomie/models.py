@@ -2,6 +2,7 @@ from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
 
 
+
 @serializable
 class TaxrefProtectionArticles(DB.Model):
     __tablename__ = 'taxref_protection_articles'

@@ -20,6 +20,7 @@ from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.utils.errors import GeonatureApiError
 
 
+
 def filter_query_with_cruved(q, user, allowed_datasets):
     """
     Filter the query with the cruved authorization of a user
