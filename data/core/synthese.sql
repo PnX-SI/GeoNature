@@ -628,13 +628,15 @@ $BODY$
 
 
 CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS 
- WITH taxon AS (
+WITH cd_synthese AS 
+	(SELECT DISTINCT cd_nom FROM gn_synthese.synthese)
+	,taxon AS (
          SELECT n.id_nom,
             t_1.cd_ref,
             t_1.lb_nom AS nom_latin,
                 CASE
                     WHEN n.nom_francais IS NULL THEN t_1.lb_nom
-                    WHEN n.nom_francais::text = ''::text THEN t_1.lb_nom
+                    WHEN n.nom_francais = '' THEN t_1.lb_nom
                     ELSE n.nom_francais
                 END AS nom_francais,
             t_1.cd_nom,
@@ -646,14 +648,16 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
             t_1.famille,
             t_1.lb_nom
            FROM taxonomie.taxref t_1
-             LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = t_1.cd_nom
-          WHERE (t_1.cd_nom IN ( SELECT DISTINCT synthese.cd_nom
-                   FROM gn_synthese.synthese))
+	    JOIN cd_synthese s ON s.cd_nom = t_1.cd_nom
+            LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = s.cd_nom
+             
+                   
         ), cd_regne AS (
-         SELECT DISTINCT t_1.cd_nom,
-            t_1.regne
-           FROM taxonomie.taxref t_1
-          WHERE t_1.id_rang::bpchar = 'KD'::bpchar AND t_1.cd_nom = t_1.cd_ref
+         SELECT DISTINCT taxref.cd_nom,
+            taxref.regne
+           FROM taxonomie.taxref
+          WHERE taxref.id_rang::text = 'KD'::text AND taxref.cd_nom = taxref.cd_ref
+       
         )
  SELECT t.id_nom,
     t.cd_ref,
@@ -662,21 +666,21 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
     t.id_regne,
     t.nom_regne,
     COALESCE(t.id_embranchement, t.id_regne) AS id_embranchement,
-    COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref'::character varying) AS nom_embranchement,
+    COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref') AS nom_embranchement,
     COALESCE(t.id_classe, t.id_embranchement) AS id_classe,
-    COALESCE(t.nom_classe, ' Sans classe dans taxref'::character varying) AS nom_classe,
-    COALESCE(t.desc_classe, ' Sans classe dans taxref'::character varying) AS desc_classe,
+    COALESCE(t.nom_classe, ' Sans classe dans taxref') AS nom_classe,
+    COALESCE(t.desc_classe, ' Sans classe dans taxref') AS desc_classe,
     COALESCE(t.id_ordre, t.id_classe) AS id_ordre,
-    COALESCE(t.nom_ordre, ' Sans ordre dans taxref'::character varying) AS nom_ordre,
+    COALESCE(t.nom_ordre, ' Sans ordre dans taxref') AS nom_ordre,
     COALESCE(t.id_famille, t.id_ordre) AS id_famille,
-    COALESCE(t.nom_famille, ' Sans famille dans taxref'::character varying) AS nom_famille
+    COALESCE(t.nom_famille, ' Sans famille dans taxref') AS nom_famille
    FROM ( SELECT DISTINCT t_1.id_nom,
             t_1.cd_ref,
             t_1.nom_latin,
             t_1.nom_francais,
             ( SELECT DISTINCT r.cd_nom
                    FROM cd_regne r
-                  WHERE r.regne::text = t_1.regne::text) AS id_regne,
+                  WHERE r.regne = t_1.regne) AS id_regne,
             t_1.regne AS nom_regne,
             ph.cd_nom AS id_embranchement,
             t_1.phylum AS nom_embranchement,
@@ -689,49 +693,14 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
             f.cd_nom AS id_famille,
             t_1.famille AS nom_famille
            FROM taxon t_1
-             LEFT JOIN taxonomie.taxref ph ON ph.id_rang::bpchar = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
-             LEFT JOIN taxonomie.taxref cl ON cl.id_rang::bpchar = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
-             LEFT JOIN taxonomie.taxref ord ON ord.id_rang::bpchar = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
-             LEFT JOIN taxonomie.taxref f ON f.id_rang::bpchar = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH' AND ph.cd_nom = ph.cd_ref AND ph.lb_nom = t_1.phylum AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL' AND cl.cd_nom = cl.cd_ref AND cl.lb_nom = t_1.classe AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR' AND ord.cd_nom = ord.cd_ref AND ord.lb_nom = t_1.ordre AND NOT t_1.ordre IS NULL
+             LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM' AND f.cd_nom = f.cd_ref AND f.lb_nom = t_1.famille AND f.phylum = t_1.phylum AND NOT t_1.famille IS NULL) t
+ORDER BY id_regne, id_embranchement, id_classe, id_ordre, id_famille;
 
-CREATE OR REPLACE VIEW v_taxons_synthese AS 
- SELECT DISTINCT n.nom_francais,
-    txr.lb_nom AS nom_latin,
-    CASE pat.valeur_attribut 
-	WHEN 'oui' THEN TRUE
-	WHEN 'non' THEN FALSE
-	ELSE NULL
-    END AS patrimonial,
-    CASE pr.valeur_attribut 
-	WHEN 'oui' THEN TRUE
-	WHEN 'non' THEN FALSE
-	ELSE NULL
-    END AS protection_stricte,
-    txr.cd_ref,
-    txr.cd_nom,
-    txr.nom_valide,
-    txr.famille,
-    txr.ordre,
-    txr.classe,
-    txr.regne,
-    prot.protections,
-    l.id_liste,
-    l.picto
-    FROM taxonomie.taxref txr
-    JOIN taxonomie.bib_noms n ON txr.cd_nom = n.cd_nom
-    LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
-    LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
-    JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
-    JOIN taxonomie.bib_listes l ON l.id_liste = cnl.id_liste AND (l.id_liste = ANY (ARRAY[1001, 1002, 1003, 1004]))
-    LEFT JOIN ( SELECT tpe.cd_nom,
-            string_agg((((tpa.arrete || ' '::text) || tpa.article::text) || '__'::text) || tpa.url::text, '#'::text) AS protections
-           FROM taxonomie.taxref_protection_especes tpe
-             JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection::text = tpe.cd_protection::text AND tpa.concerne_mon_territoire = true
-          GROUP BY tpe.cd_nom) prot ON prot.cd_nom = n.cd_nom
-    JOIN ( SELECT DISTINCT synthese.cd_nom
-           FROM gn_synthese.synthese) s ON s.cd_nom = n.cd_nom
-    ORDER BY n.nom_francais;
-        
+
+ 
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
