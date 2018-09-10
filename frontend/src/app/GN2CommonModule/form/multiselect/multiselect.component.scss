@@ -33,6 +33,8 @@ ul {
 .dropdown-menu {
   margin-top: -1rem;
   z-index: 2000;
+  overflow-y: scroll;
+  max-height: 300px;
 }
 
 .dropdown-toggle::after {
@@ -42,7 +44,7 @@ ul {
   top: 50%;
 }
 
-.is-invalid{
+.is-invalid {
   border-color: #d9534f !important;
 }
 
