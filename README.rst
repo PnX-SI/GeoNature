@@ -1,9 +1,13 @@
 GeoNature
 =========
 
-**Attention** : GeoNature est en cours de refonte totale depuis aout 2017 dans la branche ``develop`` : https://github.com/PnX-SI/GeoNature/tree/develop
+**Attention** : GeoNature a été totalement refondu entre aout 2017 et septembre 2018 pour sortir une nouvelle version en Python (Flask) et Angular. 
 
-Application de saisie et de synthèse des observations faune et flore.
+Cette branche conserve le code de la version 1 de GeoNature.
+
+Documentation de la V1 de GeoNature : https://geonature.readthedocs.io/fr/1.9.1/
+
+**Application de saisie et de synthèse des observations faune et flore.**
 
 GeoNature est une application permettant de regrouper l'ensemble des données provenant des **protocoles Faune et Flore**, de saisir les protocoles de **contact occasionnel faune** et **Flore station** et de consulter l'ensemble de ces données dans une application de **synthèse**.
 
@@ -112,13 +116,13 @@ Pour cela GeoNature s'appuie depuis sa version 1.4.0 sur l'application TaxHub et
 Installation
 ------------
 
-Consulter la documentation :  `<http://geonature.rtfd.org>`_
+Consulter la documentation de GeoNature V1 :  `<https://geonature.readthedocs.io/fr/1.9.1/>`_
 
 License
 -------
 
 * OpenSource - BSD
-* Copyright (c) 2014-2015 - Parc National des Écrins - Parc national des Cévennes
+* Copyright (c) 2014-2018 - Parc National des Écrins - Parc national des Cévennes
 
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
