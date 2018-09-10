@@ -3,7 +3,7 @@ MANUEL UTILISATEUR
 
 .. raw:: html
 
-   <video controls src="../../_static/processus_dbb_geonature.mp4" width=100% frameborder="0" allowfullscreen></video>
+   <video controls src="http://geonature.fr/docs/img/user-manual/2018-06-processus_dbb_geonature.mp4" width=100% frameborder="0" allowfullscreen></video>
 
 Authentification
 ----------------
