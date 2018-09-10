@@ -393,9 +393,7 @@ def get_taxon_tree():
     taxon_tree_table = GenericTable('v_tree_taxons_synthese', 'gn_synthese', geometry_field=None)
     data = DB.session.query(
         taxon_tree_table.tableDef
-        ).order_by(
-            taxon_tree_table.tableDef.c.nom_latin
-        ).all()
+    ).all()
     return [taxon_tree_table.as_dict(d) for d in data]
 
 
@@ -419,7 +417,7 @@ def get_autocomplete_taxons_synthese():
         q = q.filter(VMTaxonsSyntheseAutocomplete.group2_inpn == group2_inpn)
 
     q = q.order_by(desc(
-        VMTaxonsSyntheseAutocomplete.cd_nom == 
+        VMTaxonsSyntheseAutocomplete.cd_nom ==
         VMTaxonsSyntheseAutocomplete.cd_ref
     ))
 
