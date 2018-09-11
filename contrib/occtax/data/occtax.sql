@@ -76,7 +76,6 @@ $BODY$
   COST 100;
 
 
-
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
   $BODY$
@@ -1147,4 +1146,4 @@ INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
 ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 14 )
 ;
 
-INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (1, 'Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', 'occtax/form/' , NULL, NULL, 'NONE', true);
+INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (1, 'Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', 'occtax/info/id_counting' , NULL, NULL, 'NONE', true);
