@@ -45,34 +45,20 @@ export class OcctaxMapInfoComponent implements OnInit {
     this.occurrenceForm = this.fs.initOccurenceForm();
 
     this._sub = this._route.params.subscribe(params => {
-      this.id = +params["id"];
-      if (!isNaN(this.id)) {
-        // load one releve
-        this._occtaxService.getOneReleve(this.id).subscribe(data => {
-          this.userReleveCruved = data.cruved;
-
-          this.releveForm.patchValue(data.releve);
-          this.releve = data.releve;
-          if (!ModuleConfig.form_fields.releve.observers_txt) {
-            this.observers = data.releve.properties.observers
-              .map(obs => obs.nom_role + " " + obs.prenom_role)
-              .join(", ");
-          } else {
-            this.observers = data.releve.properties.observers_txt;
-          }
-          this.dateMin = data.releve.properties.date_min.substring(0, 10);
-          this.dateMax = data.releve.properties.date_max.substring(0, 10);
-
-          this._ms.loadGeometryReleve(data.releve, false);
-
-          // load taxonomy info
-          data.releve.properties.t_occurrences_occtax.forEach(occ => {
-            this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
-              occ["taxon"] = taxon;
-              this.showSpinner = false;
-            });
-          });
+      // check if the id in the URL is an id_releve or a id_counting
+      const inter = this._router.url.split("/");
+      const parsed_url = inter[inter.length - 2];
+      if (parsed_url === "id_counting") {
+        // get the id_releve from the id_counting
+        this._occtaxService.getOneCounting(params["id"]).subscribe(data => {
+          console.log(data);
+          this.id = data["id_releve"];
+          this.loadReleve(this.id);
         });
+      } else {
+        // get the id_releve from the url
+        this.id = +params["id"];
+        this.loadReleve(this.id);
       }
     });
   }
@@ -83,5 +69,36 @@ export class OcctaxMapInfoComponent implements OnInit {
     this.occurrenceForm.patchValue(occ);
     // init counting form with data
     this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_occtax);
+  }
+
+  loadReleve(id_releve) {
+    if (!isNaN(id_releve)) {
+      // load one releve
+      this._occtaxService.getOneReleve(id_releve).subscribe(data => {
+        this.userReleveCruved = data.cruved;
+
+        this.releveForm.patchValue(data.releve);
+        this.releve = data.releve;
+        if (!ModuleConfig.observers_txt) {
+          this.observers = data.releve.properties.observers
+            .map(obs => obs.nom_role + " " + obs.prenom_role)
+            .join(", ");
+        } else {
+          this.observers = data.releve.properties.observers_txt;
+        }
+        this.dateMin = data.releve.properties.date_min.substring(0, 10);
+        this.dateMax = data.releve.properties.date_max.substring(0, 10);
+
+        this._ms.loadGeometryReleve(data.releve, false);
+
+        // load taxonomy info
+        data.releve.properties.t_occurrences_occtax.forEach(occ => {
+          this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
+            occ["taxon"] = taxon;
+            this.showSpinner = false;
+          });
+        });
+      });
+    }
   }
 }
