@@ -10,6 +10,7 @@ GeoNature V2 en cours de développement. Refonte complète de la BDD et changeme
 * Python
 * Flask
 * Leaflet
+* Angular 4
 * Bootstrap
 
 Pour en savoir plus sur le projet de refonte : https://github.com/PnX-SI/GeoNature/issues/168.
