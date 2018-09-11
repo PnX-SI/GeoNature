@@ -292,7 +292,7 @@ def insertOrUpdateOneReleve(info_role):
             releve.observers.append(o)
 
     for occ in occurrences_occtax:
-        cor_counting_occtax=[]
+        cor_counting_occtax = []
         if occ['cor_counting_occtax']:
             cor_counting_occtax = occ['cor_counting_occtax']
             occ.pop('cor_counting_occtax')
@@ -532,6 +532,7 @@ def export(info_role):
         )
     else:
         try:
+            filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
             db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             export_view.as_shape(

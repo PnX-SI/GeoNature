@@ -1,7 +1,7 @@
 import json
 import logging
 import datetime
-
+import shutil
 from collections import OrderedDict
 
 from flask import Blueprint, request, session, current_app, send_from_directory, render_template
@@ -285,7 +285,7 @@ def export(info_role):
         )
     else:
         try:
-
+            filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
             db_cols_synthese = [
                 db_col for db_col in Synthese.__mapper__.c
                 if not db_col.type.__class__.__name__ == 'Geometry' and

@@ -1,9 +1,14 @@
 import os
 import unicodedata
 import re
+import shutil
+import logging
 
 from werkzeug.utils import secure_filename
 from flask import current_app
+
+# get the root logger
+log = logging.getLogger()
 
 
 def remove_file(filepath):
@@ -49,3 +54,18 @@ def removeDisallowedFilenameChars(uncleanString):
     cleanedString = re.sub('[ ]+', '_', cleanedString)
     cleanedString = re.sub('[^0-9a-zA-Z_-]', '', cleanedString)
     return cleanedString
+
+
+def delete_recursively(path_folder, excluded_files=[]):
+    """
+    Delete all the files and directory inside a directory
+    """
+    for the_file in os.listdir(path_folder):
+        file_path = os.path.join(path_folder, the_file)
+        try:
+            if os.path.isfile(file_path) and not the_file in excluded_files:
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            log.error(e)
