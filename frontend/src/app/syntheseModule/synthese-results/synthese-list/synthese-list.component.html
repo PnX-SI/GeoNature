@@ -73,6 +73,14 @@
     </ng-template>
   </ngx-datatable-column> -->
 
+  <ngx-datatable-column maxWidth="10">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button *ngIf="row.url_source" class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="onEditReleve(row.url_source, row.entity_source_pk_value)">
+        <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
 
   <!-- DATA COLOMNS -->
   <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS " [name]="col.name " [prop]="col.prop ">
