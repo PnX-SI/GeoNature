@@ -108,10 +108,10 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     this.ngbModal.open(modal);
   }
 
-  onEditReleve(url_source, id_source) {
+  backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
     link.target = '_blank';
-    link.href = url_source + '/' + id_source;
+    link.href = url_source + '/' + id_pk_source;
     link.setAttribute('visibility', 'hidden');
     link.click();
   }

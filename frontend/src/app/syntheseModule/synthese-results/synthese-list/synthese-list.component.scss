@@ -21,3 +21,7 @@ ngx-datatable {
 #download-btn {
   margin-top: 5px;
 }
+
+button[disabled] {
+  cursor: not-allowed;
+}
