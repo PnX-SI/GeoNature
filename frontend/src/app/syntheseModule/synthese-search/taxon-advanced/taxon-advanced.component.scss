@@ -5,7 +5,7 @@
 .tree-wrapper {
   padding: 15px;
   max-height: 300px;
-  overflow-y: scroll;
+  overflow: auto;
 }
 
 #button-refresh {

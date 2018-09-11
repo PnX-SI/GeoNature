@@ -60,3 +60,8 @@ legend {
 .search-btn {
   float: right;
 }
+
+.search-wrapper {
+  max-height: 92vh;
+  overflow: auto;
+}
