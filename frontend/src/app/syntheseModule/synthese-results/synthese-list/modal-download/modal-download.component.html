@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="modalLabel"> Téléchargement </h5>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <h5 class="underlined main-color"> Télécharger les observations </h5>
+  <div style="margin-bottom:5px;">
+    <button style="margin-left: 5px;" *ngFor="let format of SyntheseConfig.EXPORT_FORMAT" class="buttonLoad" (click)="loadData(format)"
+      type="button" class="btn btn-success format-btn">
+      Format {{format}}
+    </button>
+  </div>
+
+  <h5 class="underlined main-color"> Télécharger les status</h5>
+  <div>
+    <button class="btn btn-success" (click)="downloadStatus()"> Status <i class="fa fa-list-alt" aria-hidden="true"></i>
+
+    </button>
+  </div>
+
+</div>

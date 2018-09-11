@@ -10,7 +10,8 @@ import { TaxonAdvancedStoreService } from './taxon-advanced-store.service';
 @Component({
   selector: 'pnx-taxon-tree',
   templateUrl: './taxon-advanced.component.html',
-  providers: [DynamicFormService]
+  providers: [DynamicFormService],
+  styleUrls: ['./taxon-advanced.component.scss']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree') treeComponent: TreeComponent;
@@ -95,6 +96,14 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
         1
       );
     }
+  }
+
+  resetTree() {
+    this.storeService.treeModel.collapseAll();
+    this.storeService.treeModel.doForAll(node => {
+      node.setIsSelected(false);
+    });
+    this.formService.selectedCdRefFromTree = [];
   }
 
   onCloseModal() {
