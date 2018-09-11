@@ -40,8 +40,6 @@ export class SyntheseFormService {
       this.searchForm.addControl(control_name, new FormControl());
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
-      // const t = new FormArray([]);
-      // (this.searchForm.controls.areas as FormArray).push(new_area_control);
     });
   }
 

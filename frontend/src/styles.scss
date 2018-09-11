@@ -184,26 +184,32 @@ li.no-bullet {
   font-size: 13px;
 }
 
-.btn-outline-shadow:hover{
+.btn-outline-shadow:hover {
   color: #292b2c;
   background-color: #e6e6e6;
   border-color: #adadad;
 }
 
 .btn-outline-shadow {
-  color: #292b2c!important;
+  color: #292b2c !important;
   background-color: #fff;
   border-color: #ccc;
 }
 
-
-.btn-outline-shadow.active, .btn-outline-shadow:active, .show>btn-outline-shadow.dropdown-toggle {
+.btn-outline-shadow.active,
+.btn-outline-shadow:active,
+.show > btn-outline-shadow.dropdown-toggle {
   color: #292b2c;
   background-color: #e6e6e6;
   background-image: none;
   border-color: #adadad;
 }
 
-.btn-outline-shadow.focus, .btn-outline-shadow:focus {
-  box-shadow: 0 0 0 2px hsla(0,0%,80%,.5);
+.btn-outline-shadow.focus,
+.btn-outline-shadow:focus {
+  box-shadow: 0 0 0 2px hsla(0, 0%, 80%, 0.5);
+}
+
+.box-shadow {
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

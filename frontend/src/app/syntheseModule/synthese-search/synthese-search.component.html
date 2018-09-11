@@ -1,13 +1,6 @@
-<div class="card">
+<div class="card search-wrapper">
   <fieldset>
     <legend> Quoi ?</legend>
-
-    <!-- <pnx-datasets [idAcquisitionFramework]="formService.searchForm.controls.id_acquisition_frameworks.value" [multiSelect]='true'
-      [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
-    </pnx-datasets> -->
-
-
-
     <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom"
       [idList]="500" [charNumber]="3" [listLength]="20" [apiEndPoint]="taxonApiEndPoint" (onChange)=formService.getCurrentTaxon($event)>
     </pnx-taxonomy>
@@ -20,10 +13,10 @@
         <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
       </p>
     </div>
-    <button (click)="openModal($event, taxonTreeModal)" class="btn btn-sm btn-outline-primary advanced"> Avancé
+    <button (click)="openModal($event, taxonTreeModal)" class="btn btn-sm btn-outline-secondary advanced"> Avancé
       (Taxonomie)</button>
 
-    <button class="btn btn-sm btn-outline-primary advanced" data-toggle="collapse" data-target="#OccAdvanved"
+    <button class="btn btn-sm btn-outline-secondary advanced" data-toggle="collapse" data-target="#OccAdvanved"
       aria-expanded="false" aria-controls="OccAdvanved">
       Avancé (Occurrence de taxon)
     </button>
@@ -140,8 +133,6 @@
 
   </div>
 </div>
-
-
 
 
 
