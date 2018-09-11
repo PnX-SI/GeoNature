@@ -6,31 +6,32 @@
 </div>
 <div class="modal-body">
   <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
-  <tree-root #tree (event)="catchEvent($event)" [state]="formService.taxonTreeState" [nodes]="formService.taxonTree" [options]="treeOptions"></tree-root>
+  <tree-root #tree (event)="catchEvent($event)" [state]="storeService.taxonTreeState" [nodes]="storeService.taxonTree"
+    [options]="treeOptions"></tree-root>
 
-  <pnx-multiselect [values]="formService.taxonomyLR" [parentFormControl]="formService.searchForm.controls.taxonomy_lr" keyLabel="nom_categorie_lr" keyValue="id_categorie_france" label="Liste rouge UICN">
+  <pnx-multiselect [values]="storeService.taxonomyLR" [parentFormControl]="formService.searchForm.controls.taxonomy_lr"
+    keyLabel="nom_categorie_lr" keyValue="id_categorie_france" label="Liste rouge UICN">
   </pnx-multiselect>
 
-  <pnx-multiselect [values]="formService.taxonomyHab" [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab" keyLabel="nom_habitat" keyValue="id_habitat" label="Habitat">
+  <pnx-multiselect [values]="storeService.taxonomyHab" [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
+    keyLabel="nom_habitat" keyValue="id_habitat" label="Habitat">
   </pnx-multiselect>
 
-  <pnx-multiselect [values]="formService.taxonomyGroup2Inpn" [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn" keyLabel="value" keyValue="value" label="Groupe 2 INPN">
-    </pnx-multiselect>
+  <pnx-multiselect [values]="storeService.taxonomyGroup2Inpn" [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
+    keyLabel="value" keyValue="value" label="Groupe 2 INPN">
+  </pnx-multiselect>
 
 
 
   <h5> Attributs taxhub</h5>
-  <div *ngIf="formBuilded">
-          <div class="dynamic-form padding-sm" *ngFor="let formDef of taxhubAttributes; let i = index" >
-              <pnx-dynamic-form
-              [formDef]="formDef"
-              [form]="formService.searchForm"
-              >
-            </pnx-dynamic-form>
+  <div *ngIf="storeService.formBuilded">
+    <div class="dynamic-form padding-sm" *ngFor="let formDef of storeService.taxhubAttributes; let i = index">
+      <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm">
+      </pnx-dynamic-form>
+    </div>
+
+
   </div>
-
-
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="onCloseModal()">Valider et fermer</button>
-</div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="onCloseModal()">Valider et fermer</button>
+  </div>
