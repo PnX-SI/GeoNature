@@ -143,6 +143,7 @@ export class TaxonAdvancedStoreService {
       child = {
         id: record.cd_ref,
         name: record.nom_latin + ' - ' + record.nom_francais,
+        classes: ['leaf'],
         leaf: true,
         checked: false
       };

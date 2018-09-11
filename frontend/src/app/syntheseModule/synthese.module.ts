@@ -13,6 +13,7 @@ import { TreeModule } from 'angular-tree-component';
 import { TaxonAdvancedModalComponent } from './synthese-search/taxon-advanced/taxon-advanced.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { TaxonAdvancedStoreService } from './synthese-search/taxon-advanced/taxon-advanced-store.service';
+import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
@@ -23,9 +24,10 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    SyntheseModalDownloadComponent
   ],
-  entryComponents: [TaxonAdvancedModalComponent],
+  entryComponents: [TaxonAdvancedModalComponent, SyntheseModalDownloadComponent],
   providers: [
     DataService,
     SyntheseFormService,

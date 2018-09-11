@@ -12,10 +12,11 @@
 </table> -->
 
 <!--Table-->
-<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50"
-  [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
-  [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
+<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
+  [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.LIST_COLUMNS" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded"
+  [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'"
+  [count]="mapListService.tableData.length" [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'"
+  (select)="mapListService.onRowSelect($event)">
 
 
   <!-- <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
@@ -82,7 +83,8 @@
 
 <ng-template #modalConfirm let-c="close " let-d="dismiss ">
   <div class="modal-header ">
-    <h5 class="modal-title " id="exampleModalLabel "> {{'Releve.Delete' | translate }} {{ mapListService.selectedRow[0][mapListService.idName]}}
+    <h5 class="modal-title " id="exampleModalLabel "> {{'Releve.Delete' | translate }} {{
+      mapListService.selectedRow[0][mapListService.idName]}}
       ?
     </h5>
   </div>
@@ -93,10 +95,15 @@
   </div>
 </ng-template>
 
-<pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
+<button type="button" class="btn btn-primary btn-sm box-shadow" id="download-btn" (click)="openDownloadModal()">
+  <i class="fa fa-download" aria-hidden="true"> </i>
+  Télécharger
+</button>
+
+<!-- <pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
   (buttonClicked)="setQueryString() ">
 
-</pnx-modal-download>
+</pnx-modal-download> -->
 
 <!-- MODAL INFO OBS -->
 <ng-template #modalInfoObs let-c="close " let-d="dismiss ">
@@ -332,6 +339,7 @@
           </tr>
         </table>
 
+        <!-- CARTE INPN -->
         <!-- <object [data]="sanitizer.bypassSecurityTrustResourceUrl(inpnMapUrl)" type="image/svg+xml" width="90%" height="90%">
           <param name="src" value="/cartosvg/couchegeo/repartition/atlas/{{selectedObs?.cd_nom}}/fr_light_l93,fr_light_mer_l93,fr_lit_l93">
           <param name="type" value="image/svg+xml">
@@ -345,6 +353,3 @@
 
   </div>
 </ng-template>
-
-
-<button (click)="downloadData('shapefile')"> export </button>

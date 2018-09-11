@@ -9,6 +9,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/src/params';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -22,9 +23,9 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;
-  public exportRoute = `${AppConfig.API_ENDPOINT}/synthese/export`;
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
+  public downloadMessage: string;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table') table: any;
   constructor(
@@ -131,9 +132,9 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     );
   }
 
-  setQueryString() {
+  getQueryString(): HttpParams {
     const formatedParams = this._fs.formatParams();
-    this.queyrStringDownload = this._ds.buildQueryUrl(formatedParams);
+    return this._ds.buildQueryUrl(formatedParams);
   }
 
   openInfoModal(modal, row) {
@@ -142,6 +143,14 @@ export class SyntheseListComponent implements OnInit, OnChanges {
       windowClass: 'large-modal'
     });
     this.loadOneSyntheseReleve(row);
+  }
+
+  openDownloadModal() {
+    const modalRef = this.ngbModal.open(SyntheseModalDownloadComponent, {
+      size: 'lg'
+    });
+
+    modalRef.componentInstance.queryString = this.getQueryString();
   }
 
   downloadData() {
