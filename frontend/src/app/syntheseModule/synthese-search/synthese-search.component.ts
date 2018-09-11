@@ -19,7 +19,8 @@ import { DataFormService } from '../../GN2CommonModule/form/data-form.service';
 @Component({
   selector: 'pnx-synthese-search',
   templateUrl: 'synthese-search.component.html',
-  styleUrls: ['synthese-search.component.scss']
+  styleUrls: ['synthese-search.component.scss'],
+  providers: []
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
@@ -188,12 +189,12 @@ export class SyntheseSearchComponent implements OnInit {
     public ngbModal: NgbModal,
     public mapService: MapService,
     private _dfs: DataFormService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._dfs.getTaxhubBibAttributes().subscribe(data => {
       console.log('laaaaaaaaaaaaaaa', data);
-    })
+    });
   }
 
   onSubmitForm() {

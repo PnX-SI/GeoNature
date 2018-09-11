@@ -9,13 +9,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 export class SyntheseFormService {
   public searchForm: FormGroup;
   public selectedtaxonFromComponent = [];
-  public formBuilded = false;
-  public taxonTreeState: any;
-  public taxonTree: any;
   public selectedCdRefFromTree = [];
-  public taxonomyLR: Array<any>;
-  public taxonomyHab: Array<any>;
-  public taxonomyGroup2Inpn: Array<any>;
 
   constructor(
     private _fb: FormBuilder,
@@ -49,10 +43,6 @@ export class SyntheseFormService {
       // const t = new FormArray([]);
       // (this.searchForm.controls.areas as FormArray).push(new_area_control);
     });
-
-    console.log(this.searchForm);
-
-    this.formBuilded = true;
   }
 
   getCurrentTaxon($event) {
@@ -93,7 +83,10 @@ export class SyntheseFormService {
     }
     if (this.selectedtaxonFromComponent.length > 0 || this.selectedCdRefFromTree.length > 0) {
       // search on cd_ref to include synonyme from the synthese searchs
-      updatedParams['cd_ref'] = [...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref), ...this.selectedCdRefFromTree];
+      updatedParams['cd_ref'] = [
+        ...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref),
+        ...this.selectedCdRefFromTree
+      ];
     }
     return updatedParams;
   }
