@@ -94,6 +94,10 @@ class Synthese(Schema):
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[1, 2])
+    # nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filres dynamiques
+    # et de la modale d'information détaillée d'une observation
+    # example = "[non_digital_proof]"
+    EXCLUDED_COLUMNS = fields.List(fields.String(), missing=[])
 
 
 class MailErrorConf(Schema):

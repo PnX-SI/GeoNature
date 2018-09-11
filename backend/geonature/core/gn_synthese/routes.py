@@ -154,10 +154,11 @@ def get_synthese(info_role):
     features = []
     for d in data:
         print(d)
-        feature = d[0].get_geofeature(columns=['date_min', 'observers', 'id_synthese'])
+        feature = d[0].get_geofeature(columns=['date_min', 'date_max', 'observers',
+                                               'id_synthese', 'altitude_min', 'altitude_max'])
         # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
-        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide', 'cd_nom'])
-        feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source'])
+        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide', 'cd_nom', 'lb_nom', 'nom_vern'])
+        feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source', 'name_source'])
         feature['properties']['dataset'] = d[3].as_dict(columns=['dataset_name'])
         features.append(feature)
     return FeatureCollection(features)

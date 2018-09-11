@@ -4,12 +4,14 @@ import { AppConfig } from '@geonature_config/app.config';
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+import { DYNAMIC_FORM_DEF } from './dynamycFormConfig';
 
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
   public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
+  public dynamycFormDef: Array<any>;
 
   constructor(
     private _fb: FormBuilder,
@@ -40,6 +42,11 @@ export class SyntheseFormService {
       this.searchForm.addControl(control_name, new FormControl());
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
+    });
+    // init the dynamic form with the user parameters
+    // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
+    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
+      return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
   }
 
