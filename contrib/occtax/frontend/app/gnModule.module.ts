@@ -21,7 +21,12 @@ const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
   { path: "form", component: OcctaxMapFormComponent },
   { path: "form/:id", component: OcctaxMapFormComponent, pathMatch: "full" },
-  { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" }
+  { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
+  {
+    path: "info/id_counting/:id",
+    component: OcctaxMapInfoComponent,
+    pathMatch: "full"
+  }
 ];
 
 @NgModule({

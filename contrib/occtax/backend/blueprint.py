@@ -85,6 +85,33 @@ def getOccurrences():
     return ([n.as_dict() for n in data])
 
 
+@blueprint.route('/counting/<int:id_counting>', methods=['GET'])
+@json_resp
+def getOneCounting(id_counting):
+    """
+    Get a counting record, with its id_releve
+
+    Parameters:
+        id_counting(integer): the pr_occtax.cor_counting_occtax PK
+
+    Returns:
+        json: a json representing a counting record
+    """
+
+    data = DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax).join(
+        TOccurrencesOccurrence, TOccurrencesOccurrence.id_occurrence_occtax == CorCountingOccurrence.id_occurrence_occtax
+    ).join(
+        TRelevesOccurrence, TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax
+    ).filter(
+        CorCountingOccurrence.id_counting_occtax == id_counting
+    ).one()
+
+    counting = data[0].as_dict()
+    counting['id_releve'] = data[1]
+
+    return counting
+
+
 @blueprint.route('/releve/<int:id_releve>', methods=['GET'])
 @fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
 @json_resp
@@ -464,16 +491,10 @@ def getDefaultNomenclatures():
             group2_inpn
         )
     )
-    print(q)
-    print(organism)
-    print(regne)
-    print(group2_inpn)
     if len(types) > 0:
         q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
-        print('LAAAAAAAAAA')
-        print(data)
     except Exception:
         DB.session.rollback()
         raise
