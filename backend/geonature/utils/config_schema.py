@@ -91,9 +91,9 @@ class Synthese(Schema):
         missing=dict()
     )
     EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
-    # Liste des id_theme des attributs Taxhub à afficher sur la fiche détaile de la synthese
+    # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
-    ID_THEME_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[1])
+    ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[1, 2])
 
 
 class MailErrorConf(Schema):
