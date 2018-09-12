@@ -87,6 +87,8 @@ class Synthese(Schema):
     # et de la modale d'information détaillée d'une observation
     # example = "[non_digital_proof]"
     EXCLUDED_COLUMNS = fields.List(fields.String(), missing=[])
+    # Afficher ou non l'arbre taxonomique
+    DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
 
 
 class MailErrorConf(Schema):

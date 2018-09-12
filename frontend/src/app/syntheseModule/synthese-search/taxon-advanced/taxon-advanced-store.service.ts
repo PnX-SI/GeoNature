@@ -23,10 +23,11 @@ export class TaxonAdvancedStoreService {
     private _formService: SyntheseFormService,
     private _formGen: DynamicFormService
   ) {
-    console.log('INIT IT');
-    this._syntheseDateService.getTaxonTree().subscribe(data => {
-      this.taxonTree = this.formatTaxonTree(data);
-    });
+    if (AppConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
+      this._syntheseDateService.getTaxonTree().subscribe(data => {
+        this.taxonTree = this.formatTaxonTree(data);
+      });
+    }
 
     // get taxhub attributes
     this._dataService.getTaxhubBibAttributes().subscribe(attrs => {
