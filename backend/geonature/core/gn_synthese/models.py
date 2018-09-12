@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
@@ -345,7 +347,17 @@ def synthese_serialization(cls):
     def serializefn(self, recursif=False, columns=()):
         return {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item)) for item, _serializer in cls_db_columns}
 
+    def serialize_order_fn(self):
+        order_dict = OrderedDict()
+        for item, _serializer in cls_db_columns:
+            order_dict.update(
+                {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item))}
+            )
+        return order_dict
+        
+        
     cls.as_dict = serializefn
+    cls.as_dict_ordered = serialize_order_fn
 
     return cls
 

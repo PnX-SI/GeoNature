@@ -1,5 +1,7 @@
 import datetime
 
+from collections import OrderedDict
+
 import numpy as np
 import geog
 import zipfile
@@ -56,23 +58,25 @@ class FionaShapeService():
         cls.dir_path = dir_path
         cls.file_name = file_name
 
-        shp_properties = {}
         cls.columns = []
         # if we want to change to columns name of the SQLA class
         # in the export shapefiles structures
+        shp_properties = OrderedDict()
         if col_mapping:
             for db_col in db_cols:
                 if not db_col.type.__class__.__name__ == 'Geometry':
-                    shp_properties[col_mapping.get(db_col.key)] = FIONA_MAPPING.get(
-                        db_col.type.__class__.__name__.lower()
-                    )
+                    shp_properties.update({
+                        col_mapping.get(db_col.key): FIONA_MAPPING.get(
+                        db_col.type.__class__.__name__.lower())
+                    })
                     cls.columns.append(col_mapping.get(db_col.key))
         else:
             for db_col in db_cols:
                 if not db_col.type.__class__.__name__ == 'Geometry':
-                    shp_properties[db_col.key] = FIONA_MAPPING.get(
-                        db_col.type.__class__.__name__.lower()
-                    )
+                    shp_properties.update({
+                        db_col.key: FIONA_MAPPING.get(
+                        db_col.type.__class__.__name__.lower())
+                    })
                     cls.columns.append(db_col.key)
         cls.polygon_schema = {'geometry': 'MultiPolygon', 'properties': shp_properties, }
         cls.point_schema = {'geometry': 'Point', 'properties': shp_properties, }
@@ -104,7 +108,9 @@ class FionaShapeService():
             void
         """
         try:
-            geom_wkt = to_shape(geom)
+            # geom_wkt = to_shape(geom)
+            from shapely.geometry import Point
+            geom_wkt = Point(0.0, 0.0)
         except AssertionError:
             raise GeonatureApiError('Cannot create a shapefile record whithout a Geometry')
         geom_geojson = mapping(geom_wkt)
