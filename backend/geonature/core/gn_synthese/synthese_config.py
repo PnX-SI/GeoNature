@@ -2,52 +2,65 @@
 Default columns for the export in synthese
 """
 
-
-#  EXPORT
-DEFAULT_TAXONOMIC_COLUMNS = [
-    'cd_nom',
-    'cd_ref',
-    'nom_valide'
-]
-
-DEFAULT_SYNTHESE_COLUMNS = [
-    'id_synthese',
-    'unique_id_sinp',
-    'date_min',
-    'date_max',
-    'observers',
-    'altitude_min',
-    'altitude_max',
-    'count_min',
-    'count_max',
-    'sample_number_proof',
-    'digital_proof',
-    'non_digital_proof',
-    'comments'
-]
-
-DEFAULT_NOMENCLATURE_COLUMNS = [
-    'nat_obj_geo',
-    'grp_typ',
-    'obs_method',
-    'obs_technique',
-    'bio_status',
-    'bio_condition',
-    'naturalness',
-    'exist_proof',
-    'valid_status',
-    'diffusion_level',
-    'life_stage',
-    'sex',
-    'obj_count',
-    'type_count',
-    'sensitivity',
-    'observation_status',
-    'blurring',
-    'source_status',
-    'info_geo_type',
-    'determination_method'
-]
+DEFAULT_EXPORT_COLUMNS = {
+    'id_synthese': 'idSyn',
+    'unique_id_sinp': 'idUnique',
+    'date_min': 'dateMin',
+    'date_max': 'dateMax',
+    'observers': 'observers',
+    'altitude_min': 'altMin',
+    'altitude_max': 'altMax',
+    'count_min': "NbMin",
+    'count_max': 'nbMax',
+    'sample_number_proof': 'EchanPreuv',
+    'digital_proof': 'PreuvNum',
+    'non_digital_proof': 'PreuvNoNum',
+    'comments': 'comment',
+    'nat_obj_geo': 'natObjGeo',
+    'grp_typ': 'methGrp',
+    'obs_method': 'obsMeth',
+    'obs_technique': 'obsTech',
+    'bio_status': 'ocEtatBio',
+    'bio_condition': 'ocStatBio',
+    'naturalness': 'ocNat',
+    'exist_proof': 'preuveOui',
+    'valid_status': 'validStat',
+    'diffusion_level': 'nivDiffusi',
+    'life_stage': 'ocStade',
+    'sex': 'ocSex',
+    'obj_count': 'objDenbr',
+    'type_count': 'typDenbr',
+    'sensitivity': 'sensibilit',
+    'observation_status': 'statutObs',
+    'blurring': 'floutage',
+    'source_status': 'statutSour',
+    'info_geo_type': 'typeGeom',
+    'determination_method': 'methDeterm',
+    'nat_obj_geo': 'natObjGeo',
+    'grp_typ': 'methGrp',
+    'obs_method': 'obsMeth',
+    'obs_technique': 'obsTech',
+    'bio_status': 'ocEtatBio',
+    'bio_condition': 'ocStatBio',
+    'naturalness': 'ocNat',
+    'exist_proof': 'preuveOui',
+    'valid_status': 'validStat',
+    'diffusion_level': 'nivDiffusi',
+    'life_stage': 'ocStade',
+    'sex': 'ocSex',
+    'obj_count': 'objDenbr',
+    'type_count': 'typDenbr',
+    'sensitivity': 'sensibilit',
+    'observation_status': 'statutObs',
+    'blurring': 'floutage',
+    'source_status': 'statutSour',
+    'info_geo_type': 'typeGeom',
+    'determination_method': 'methDeterm',
+    'dataset_name': 'JDD',
+    'cd_nom': 'cdNom',
+    'cd_ref': 'cdRef',
+    'nom_valide': 'nomValide'
+}
 
 
 # CONFIG MAP-LIST
