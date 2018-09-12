@@ -45,7 +45,6 @@ touch  var/log/install_app.log
 
 echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
 
-sudo apt-get install -y nano 2> var/log/install_app.log
 
 # Modification de la locale
 sudo apt-get install -y locales
