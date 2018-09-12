@@ -9,6 +9,8 @@ from fiona.crs import from_epsg
 from geoalchemy2.shape import to_shape
 from shapely.geometry import Point, Polygon, MultiPolygon, mapping
 
+from geonature.utils.errors import GeonatureApiError
+
 # Creation des shapefiles avec la librairies fiona
 
 FIONA_MAPPING = {
@@ -90,7 +92,10 @@ class FionaShapeService():
         Returns:
             void
         """
-        geom_wkt = to_shape(geom)
+        try:
+            geom_wkt = to_shape(geom)
+        except AssertionError:
+            raise GeonatureApiError('Cannot create a shapefile record whithout a Geometry')
         geom_geojson = mapping(geom_wkt)
         feature = {'geometry': geom_geojson, 'properties': data}
         if isinstance(geom_wkt, Point):

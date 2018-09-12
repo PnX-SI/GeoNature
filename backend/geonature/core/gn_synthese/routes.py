@@ -1,7 +1,6 @@
 import json
 import logging
 import datetime
-import shutil
 from collections import OrderedDict
 
 from flask import Blueprint, request, session, current_app, send_from_directory, render_template
