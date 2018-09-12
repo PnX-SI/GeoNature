@@ -45,9 +45,6 @@ touch  var/log/install_app.log
 
 echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
 
-sudo apt-get install -y nano 2> var/log/install_app.log 
-nano install_all.ini
-. install_all.ini
 
 # Modification de la locale
 sudo apt-get install -y locales
@@ -145,10 +142,10 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 cd install/
 # Installation de la base de données GeoNature en root
-./install_db.sh
+. install_db.sh
 
 # Installation et configuration de l'application GeoNature
-./install_app.sh
+. install_app.sh
 
 cd ../
 
@@ -275,3 +272,5 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 sudo apache2ctl restart
+
+echo "L'installation est OK!"
