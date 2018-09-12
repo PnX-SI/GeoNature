@@ -31,7 +31,6 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionEspeces
 )
 from geonature.core.gn_synthese import repositories as synthese_repository
-from geonature.core.gn_synthese import utils as utils_synthese
 
 from geonature.core.gn_meta.models import (
     TDatasets,
