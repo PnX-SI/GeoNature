@@ -26,6 +26,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   @Input() idAcquisitionFrameworks: Array<number> = [];
   @Input() idAcquisitionFramework: number;
   @Input() bindAllItem: false;
+  @Input() displayOnlyActive = true;
   constructor(
     private _dfs: DataFormService,
     private _auth: AuthService,
@@ -41,6 +42,10 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   getDatasets(params?) {
+    params = {};
+    if (this.displayOnlyActive) {
+      params['active'] = true;
+    }
     this._dfs.getDatasets(params).subscribe(
       res => {
         this.dataSets = res;
@@ -60,7 +65,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnChanges(changes) {
-    // detetch change on input idAcquisitionFramework to reload datasets
+    // detetch change on input idAcquisitionFramework
+    // (the number, if the AFcomponent is not multiSelect) to reload datasets
     if (
       changes['idAcquisitionFramework'] &&
       changes['idAcquisitionFramework'].currentValue !== undefined

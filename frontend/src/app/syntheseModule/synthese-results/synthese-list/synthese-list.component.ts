@@ -36,7 +36,7 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     private _fs: SyntheseFormService,
     private dataService: DataFormService,
     public sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -71,11 +71,11 @@ export class SyntheseListComponent implements OnInit, OnChanges {
       this.selectedObs = data;
       this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
         this.selectedObs['cd_nom']
-      }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
+        }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
     });
 
     this.dataService
-      .getTaxonAttributsAndMedia(row.taxon.cd_nom, this.SYNTHESE_CONFIG.ID_THEME_ATTRIBUT_TAXHUB)
+      .getTaxonAttributsAndMedia(row.taxon.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
       .subscribe(data => {
         this.selectObsTaxonInfo = data;
       });
