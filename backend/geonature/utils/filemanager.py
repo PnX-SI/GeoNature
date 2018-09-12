@@ -1,8 +1,8 @@
 import os
 import unicodedata
-import re
 import shutil
 import logging
+import datetime
 
 from werkzeug.utils import secure_filename
 from flask import current_app
@@ -56,16 +56,25 @@ def removeDisallowedFilenameChars(uncleanString):
     return cleanedString
 
 
-def delete_recursively(path_folder, excluded_files=[]):
+def delete_recursively(path_folder, period=1, excluded_files=[]):
     """
     Delete all the files and directory inside a directory
+    which have been create before a certain period
+    Paramters:
+        path_folder(string): path to the fomlder to delete
+        period(integer): in days: delete the file older than this period
+        exluded_files(list<string>): list of files to not delete
     """
     for the_file in os.listdir(path_folder):
         file_path = os.path.join(path_folder, the_file)
         try:
-            if os.path.isfile(file_path) and not the_file in excluded_files:
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
+            now = datetime.datetime.now()
+            creation_date = datetime.datetime.utcfromtimestamp(os.path.getctime(path_to_file))
+            is_older_than_period = (now - creation_date).days >= period
+            if is_older_than_period:
+                if os.path.isfile(file_path) and not the_file in excluded_files:
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
         except Exception as e:
             log.error(e)
