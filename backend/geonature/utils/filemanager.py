@@ -3,6 +3,7 @@ import unicodedata
 import shutil
 import logging
 import datetime
+import re
 
 from werkzeug.utils import secure_filename
 from flask import current_app
@@ -69,7 +70,7 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
         file_path = os.path.join(path_folder, the_file)
         try:
             now = datetime.datetime.now()
-            creation_date = datetime.datetime.utcfromtimestamp(os.path.getctime(path_to_file))
+            creation_date = datetime.datetime.utcfromtimestamp(os.path.getctime(file_path))
             is_older_than_period = (now - creation_date).days >= period
             if is_older_than_period:
                 if os.path.isfile(file_path) and not the_file in excluded_files:
