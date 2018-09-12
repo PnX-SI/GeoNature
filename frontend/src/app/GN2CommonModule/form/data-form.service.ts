@@ -7,7 +7,7 @@ import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
 export class DataFormService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -53,9 +53,8 @@ export class DataFormService {
           params[key].forEach(id_af => {
             queryString = queryString.append('id_acquisition_framework', id_af);
           });
-          // if its a id_af alone
-        } else if (key === 'id_acquisition_framework' && params[key]) {
-          queryString = queryString.set('id_acquisition_framework', params[key]);
+        } else {
+          queryString = queryString.set(key, params[key].toString());
         }
       }
     }
