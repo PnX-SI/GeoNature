@@ -139,20 +139,22 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
 	
 	
 * Lancer l'installation
-
+ 
 ::
+    
     nano install_all.ini
 
 Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
 
+Pour la définition des numéros de version des dépendances, voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.
+
+* Lancer l'installation
+ 
 ::
+    
     . install_all.ini
     chmod +x install_all.sh
     . install_all.sh
-
-Pour le remplissage des numéros de version, voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances. 
-
-``nvm`` (node version manager) est utilisé pour installer les dernières versions de ``node`` et ``npm``.
 
 Une fois l'installation terminée, lancer cette commande pour ajouter ``nvm`` dans la path de votre serveur :
 
@@ -161,11 +163,12 @@ Une fois l'installation terminée, lancer cette commande pour ajouter ``nvm`` da
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
+``nvm`` (node version manager) est utilisé pour installer les dernières versions de ``node`` et ``npm``.
 
-Les applications sont disponibles aux adresses suivantes:
+Les applications sont disponibles aux adresses suivantes :
 
 - http://monip.com/geonature
-- http://monip.com/taxhub
+- http://monip.com/taxhub/
 
 Vous pouvez vous connecter avec l'utilisateur par défaut (admin/admin).
 
