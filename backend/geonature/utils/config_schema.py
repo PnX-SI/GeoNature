@@ -7,9 +7,7 @@ import os
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Regexp
 from geonature.core.gn_synthese.synthese_config import (
-    DEFAULT_SYNTHESE_COLUMNS,
-    DEFAULT_TAXONOMIC_COLUMNS,
-    DEFAULT_NOMENCLATURE_COLUMNS,
+    DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN
 )
 
@@ -77,19 +75,10 @@ class GnFrontEndConf(Schema):
     MULTILINGUAL = fields.Boolean(missing=False)
 
 
-class SyntheseExportColumn(Schema):
-    TAXONOMIC_COLUMNS = fields.List(fields.String(), missing=DEFAULT_TAXONOMIC_COLUMNS)
-    SYNTHESE_COLUMNS = fields.List(fields.String(), missing=DEFAULT_SYNTHESE_COLUMNS)
-    NOMENCLATURE_COLUMNS = fields.List(fields.String(), missing=DEFAULT_NOMENCLATURE_COLUMNS)
-
-
 class Synthese(Schema):
     AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": 101}])
     LIST_COLUMNS = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    EXPORT_COLUMNS = fields.Nested(
-        SyntheseExportColumn,
-        missing=dict()
-    )
+    EXPORT_COLUMNS = fields.Dict(missing=DEFAULT_EXPORT_COLUMNS)
     EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés

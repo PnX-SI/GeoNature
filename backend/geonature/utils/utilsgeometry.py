@@ -38,7 +38,7 @@ class FionaShapeService():
     """
 
     @classmethod
-    def create_shapes_struct(cls, db_cols, srid, dir_path, file_name):
+    def create_shapes_struct(cls, db_cols, srid, dir_path, file_name, col_mapping=None):
         """
         Create three shapefiles (point, line, polygon) with the attributes give by db_cols
         Parameters:
@@ -46,6 +46,7 @@ class FionaShapeService():
             srid (int): epsg code
             dir_path (str): directory path
             file_name (str): file of the shapefiles
+            col_mapping (dict): mapping between SQLA class attributes and 'beatifiul' columns name
 
         Returns:
             void
@@ -57,12 +58,22 @@ class FionaShapeService():
 
         shp_properties = {}
         cls.columns = []
-        for db_col in db_cols:
-            if not db_col.type.__class__.__name__ == 'Geometry':
-                shp_properties[db_col.key] = FIONA_MAPPING.get(
-                    db_col.type.__class__.__name__.lower()
-                )
-                cls.columns.append(db_col.key)
+        # if we want to change to columns name of the SQLA class
+        # in the export shapefiles structures
+        if col_mapping:
+            for db_col in db_cols:
+                if not db_col.type.__class__.__name__ == 'Geometry':
+                    shp_properties[col_mapping.get(db_col.key)] = FIONA_MAPPING.get(
+                        db_col.type.__class__.__name__.lower()
+                    )
+                    cls.columns.append(col_mapping.get(db_col.key))
+        else:
+            for db_col in db_cols:
+                if not db_col.type.__class__.__name__ == 'Geometry':
+                    shp_properties[db_col.key] = FIONA_MAPPING.get(
+                        db_col.type.__class__.__name__.lower()
+                    )
+                    cls.columns.append(db_col.key)
         cls.polygon_schema = {'geometry': 'MultiPolygon', 'properties': shp_properties, }
         cls.point_schema = {'geometry': 'Point', 'properties': shp_properties, }
         cls.polyline_schema = {'geometry': 'LineString', 'properties': shp_properties}

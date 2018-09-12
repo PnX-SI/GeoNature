@@ -22,7 +22,8 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseDecodeNomenclatures,
     SyntheseOneRecord,
-    VMTaxonsSyntheseAutocomplete
+    VMTaxonsSyntheseAutocomplete,
+    SyntheseForWebApp
 )
 from geonature.core.taxonomie.models import (
     Taxref,
@@ -30,6 +31,7 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionEspeces
 )
 from geonature.core.gn_synthese import repositories as synthese_repository
+from geonature.core.gn_synthese import utils as utils_synthese
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -149,10 +151,8 @@ def get_synthese(info_role):
         Synthese.date_min.desc()
     )
     data = q.limit(result_limit)
-    print(q)
     features = []
     for d in data:
-        print(d)
         feature = d[0].get_geofeature(columns=['date_min', 'date_max', 'observers',
                                                'id_synthese', 'altitude_min', 'altitude_max'])
         # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
@@ -224,45 +224,18 @@ def export(info_role):
 
     export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = (
-        DB.session.query(Synthese, Taxref, TSources, TDatasets)
-        .join(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        ).join(
-            TSources, TSources.id_source == Synthese.id_source
-        ).join(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        )
-    )
+
+    q = DB.session.query(SyntheseForWebApp)
     q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
-    q = q.add_entity(VSyntheseDecodeNomenclatures)
-    q = q.join(
-        VSyntheseDecodeNomenclatures,
-        VSyntheseDecodeNomenclatures.id_synthese == Synthese.id_synthese
-    )
 
     q = q.order_by(
-        Synthese.date_min.desc()
+        SyntheseForWebApp.date_min.desc()
     )
     data = q.limit(result_limit)
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    synthese_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['SYNTHESE_COLUMNS']
-    nomenclature_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['NOMENCLATURE_COLUMNS']
-    taxonomic_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['TAXONOMIC_COLUMNS']
-
-    formated_data = []
-    for d in data:
-        synthese = d[0].as_dict(columns=synthese_columns)
-        taxon = d[1].as_dict(columns=taxonomic_columns)
-        dataset = d[3].as_dict(columns='dataset_name')
-        decoded = d[4].as_dict(columns=nomenclature_columns)
-        synthese.update(taxon)
-        synthese.update(dataset)
-        synthese.update(decoded)
-        formated_data.append(synthese)
+    formated_data = [d.as_dict() for d in data]
 
     export_columns = formated_data[0].keys()
     if export_format == 'csv':
@@ -286,34 +259,18 @@ def export(info_role):
     else:
         try:
             filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
-            db_cols_synthese = [
-                db_col for db_col in Synthese.__mapper__.c
-                if not db_col.type.__class__.__name__ == 'Geometry' and
-                db_col.key in synthese_columns
-            ]
-            db_cols_nomenclature = [
-                db_col for db_col in VSyntheseDecodeNomenclatures.__mapper__.c
-                if db_col.key in nomenclature_columns
-            ]
-            db_cols_taxonomy = [
-                db_col for db_col in Taxref.__mapper__.c
-                if db_col.key in taxonomic_columns
-            ]
 
-            db_cols = db_cols_synthese + db_cols_nomenclature + db_cols_taxonomy
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             FionaShapeService.create_shapes_struct(
-                db_cols=db_cols,
+                db_cols=SyntheseForWebApp.db_cols,
                 srid=current_app.config['LOCAL_SRID'],
                 dir_path=dir_path,
-                file_name=file_name
+                file_name=file_name,
+                col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
             )
             for row in data:
-                synthese_row_as_dict = row[0].as_dict(columns=synthese_columns)
-                nomenclature_row_as_dict = row[4].as_dict(columns=nomenclature_columns)
-                taxon_row_as_dict = row[1].as_dict(columns=taxonomic_columns)
-                geom = row[0].the_geom_local
-                row_as_dict = {**synthese_row_as_dict, **nomenclature_row_as_dict, **taxon_row_as_dict}
+                geom = row.the_geom_local
+                row_as_dict = row.as_dict()
                 FionaShapeService.create_feature(row_as_dict, geom)
 
             FionaShapeService.save_and_zip_shapefiles()
@@ -324,7 +281,8 @@ def export(info_role):
                 as_attachment=True
             )
 
-        except GeonatureApiError as e:
+        except Exception as e:
+            log.error('Error while exporting shapefiles' + e)
             message = str(e)
 
         return render_template(
@@ -423,3 +381,14 @@ def get_autocomplete_taxons_synthese():
 
     data = q.limit(20).all()
     return [d.as_dict() for d in data]
+
+
+# @routes.route('/test', methods=['GET'])
+# @json_resp
+# def test():
+#     q = DB.session.query(SyntheseForWebApp)
+#     data = q.all()
+#     for d in data:
+#         print(d)
+#         print(d.as_dict())
+#     return 'la'
