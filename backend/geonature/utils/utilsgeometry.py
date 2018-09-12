@@ -108,8 +108,7 @@ class FionaShapeService():
             void
         """
         try:
-            # geom_wkt = to_shape(geom)
-            from shapely.geometry import Point
+            geom_wkt = to_shape(geom)
             geom_wkt = Point(0.0, 0.0)
         except AssertionError:
             raise GeonatureApiError('Cannot create a shapefile record whithout a Geometry')
