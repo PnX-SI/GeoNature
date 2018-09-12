@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { TreeModel, TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
+import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
 import { SyntheseFormService } from '../../services/form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
 import { TaxonAdvancedStoreService } from './taxon-advanced-store.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-taxon-tree',
@@ -22,6 +23,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public taxhubAttributes: any;
   public attributForm: FormGroup;
   public formBuilded = false;
+  public syntheseConfig = AppConfig.SYNTHESE;
   constructor(
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
@@ -37,7 +39,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
           if (!node.isExpanded) {
             node.toggleExpanded();
           }
-          this.expandNodeRecursively(node);
+          this.expandNodeRecursively(node, 5);
         }
       }
     };
@@ -55,22 +57,29 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   // Algo pour 'expand' tous les noeud fils recursivement à partir un noeud parent
-  expandNodeRecursively(node: TreeNode): void {
+  // depth : profondeur de l'arbre jusqu'ou on ouvre
+  expandNodeRecursively(node: TreeNode, depth: number): void {
+    depth = depth - 1;
     if (node.children) {
       node.children.forEach(subNode => {
         if (!subNode.isExpanded) {
           subNode.toggleExpanded();
         }
-        this.expandNodeRecursively(subNode);
+        if (depth > 0) {
+          this.expandNodeRecursively(subNode, depth);
+        }
       });
     }
   }
 
   // algo recursif pour retrouver tout les cd_ref sélectionné à partir de l'arbre
-  searchSelectedId(node): Array<any> {
+  searchSelectedId(node, depth): Array<any> {
     if (node.children) {
       node.children.forEach(subNode => {
-        this.searchSelectedId(subNode);
+        depth = depth - 1;
+        if (depth > 0) {
+          this.searchSelectedId(subNode, depth);
+        }
       });
     } else {
       this.selectedNodes.push(node);
@@ -79,7 +88,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    console.log('treeeeeeee model');
     this.storeService.treeModel = this.treeComponent.treeModel;
     console.log(this.storeService.treeModel);
   }
@@ -108,7 +116,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   onCloseModal() {
     this.storeService.taxonTreeState = this.storeService.treeModel.getState();
-    console.log('close modal', this.storeService.taxonTreeState);
     this.activeModal.close();
   }
 }

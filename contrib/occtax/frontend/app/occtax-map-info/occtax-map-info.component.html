@@ -169,8 +169,8 @@
               <div class="row row-0" id="row-commentaire">
                 <div *ngIf="occtaxConfig.form_fields.occurrence.comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">
                   <div class="input-group">
-                    <input [disableControl]="disabled" placeholder="{{ 'Releve.Comment' | translate }}" class="form-control" [formControl]="occurrenceForm.controls.comment"
-                      type="text">
+                    <input [disableControl]="disabled" placeholder="{{ 'Releve.Comment' | translate }}" class="form-control"
+                      [formControl]="occurrenceForm.controls.comment" type="text">
                   </div>
                 </div>
               </div>
@@ -204,7 +204,8 @@
                 </div>
                 <div class="form-group row row-sm">
                   <div *ngIf="occtaxConfig.form_fields.counting.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
-                    <pnx-nomenclature #typeDenombrement label="{{ 'Counting.CountingType' | translate }}" [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_type_count"
+                    <pnx-nomenclature #typeDenombrement label="{{ 'Counting.CountingType' | translate }}"
+                      [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_type_count"
                       codeNomenclatureType="TYP_DENBR" [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>
@@ -225,7 +226,8 @@
                 </div>
                 <div class="form-group row row-0">
                   <div *ngIf="occtaxConfig.form_fields.counting.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
-                    <pnx-nomenclature #typeDenombrement label="{{ 'Counting.ValidationStatus' | translate }}" [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_valid_status"
+                    <pnx-nomenclature #typeDenombrement label="{{ 'Counting.ValidationStatus' | translate }}"
+                      [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_valid_status"
                       codeNomenclatureType="STATUT_VALID" [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>

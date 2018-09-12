@@ -5,26 +5,30 @@
   </button>
 </div>
 <div class="modal-body">
-  <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
-  <div class="card">
-    <div class="card-body tree-wrapper">
-      <tree-root #tree (event)="catchEvent($event)" [state]="storeService.taxonTreeState" [nodes]="storeService.taxonTree"
-        [options]="treeOptions">
-        <ng-template #treeNodeTemplate let-node let-index="index">
+  <div [hidden]="!syntheseConfig.DISPLAY_TAXON_TREE">
+    <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
+    <div class="card">
+      <div class="card-body tree-wrapper">
+        <img *ngIf="!storeService.taxonTree" src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
+        <tree-root #tree (event)="catchEvent($event)" [state]="storeService.taxonTreeState" [nodes]="storeService.taxonTree"
+          [options]="treeOptions">
+          <ng-template #treeNodeTemplate let-node let-index="index">
 
-          <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
-          <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
+            <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
+            <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
 
-          <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
-        </ng-template>
-      </tree-root>
-      <button type="button" id="button-refresh" class="btn btn-sm btn-outline-danger" (click)="resetTree()">
-        <small> Réinitialiser la sélection </small>
-      </button>
+            <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
+          </ng-template>
+        </tree-root>
+        <button type="button" id="button-refresh" class="btn btn-sm btn-outline-danger" (click)="resetTree()">
+          <small> Réinitialiser la sélection </small>
+        </button>
+
+      </div>
 
     </div>
-
   </div>
+
 
 
 
@@ -43,8 +47,8 @@
 
 
 
-  <h5> Attributs taxhub</h5>
-  <div *ngIf="storeService.formBuilded">
+  <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">
+    <h5> Attributs taxhub</h5>
     <div class="dynamic-form padding-sm" *ngFor="let formDef of storeService.taxhubAttributes; let i = index">
       <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm">
       </pnx-dynamic-form>

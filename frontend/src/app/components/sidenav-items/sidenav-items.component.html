@@ -13,21 +13,21 @@
   </a>
 
 
-  <a *ngFor="let module of _sideNavService.modules" href="{{module.module_url}}" [target]="module.module_target">
+  <a *ngFor="let module of _sideNavService.modules" href="{{module.module_url}}" target="_self">
     <mat-list-item (click)="onSetApp(module)" class="sidenav-item">
       <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
       <h3 mat-line> {{module.module_label}} </h3>
     </mat-list-item>
   </a>
 
-  <a href="#{{_sideNavService.exportModule.module_url}}" target="_blank">
+  <a href="#{{_sideNavService.exportModule.module_url}}" target="_self">
     <mat-list-item (click)="onSetApp(_sideNavService.exportModule)" class="sidenav-item">
       <mat-icon mat-list-icon>{{_sideNavService.exportModule.module_picto}}</mat-icon>
       <h3 mat-line> {{_sideNavService.exportModule.module_label}} </h3>
     </mat-list-item>
   </a>
 
-  <a href="#{{_sideNavService.syntheseModule.module_url}}" target="_blank">
+  <a href="#{{_sideNavService.syntheseModule.module_url}}" target="_self">
     <mat-list-item (click)="onSetApp(_sideNavService.syntheseModule)" class="sidenav-item">
       <mat-icon mat-list-icon>{{_sideNavService.syntheseModule.module_picto}}</mat-icon>
       <h3 mat-line> {{_sideNavService.syntheseModule.module_label}} </h3>
