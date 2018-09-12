@@ -141,11 +141,14 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
 * Lancer l'installation
 
 ::
-    
-    chmod +x install_all.sh
-    ./install_all.sh
+    nano install_all.ini
 
-Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``. Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+
+::
+    . install_all.ini
+    chmod +x install_all.sh
+    . install_all.sh
 
 Pour le remplissage des numéros de version, voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances. 
 
