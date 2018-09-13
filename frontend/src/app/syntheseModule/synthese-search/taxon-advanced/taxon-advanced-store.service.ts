@@ -34,7 +34,7 @@ export class TaxonAdvancedStoreService {
       // display only the taxhub attributes set in the config
       this.taxhubAttributes = attrs
         .filter(attr => {
-          return AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_theme) !== -1;
+          return AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
         })
         .map(attr => {
           // format attributes to fit with the GeoNature dynamicFormComponent
