@@ -173,10 +173,6 @@ export class OcctaxFormComponent implements OnInit {
     // format nom_cite, update date, set id_releve_occtax and id_occurrence_occtax
     finalForm.properties.t_occurrences_occtax.forEach((occ, index) => {
       occ.id_releve_occtax = finalForm.properties.id_releve_occtax;
-      if (this.fs.taxonsList[index].search_name) {
-        occ.nom_cite = this.fs.taxonsList[index].search_name.replace("<i>", "");
-        occ.nom_cite = occ.nom_cite.replace("</i>", "");
-      }
       occ.cor_counting_occtax.forEach(count => {
         count.id_occurrence_occtax = occ.id_occurrence_occtax;
       });
