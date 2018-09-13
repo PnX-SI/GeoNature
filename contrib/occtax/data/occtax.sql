@@ -75,7 +75,7 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-
+-- Fonction utilisée pour les triggers vers synthese
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
   $BODY$
@@ -161,13 +161,13 @@ altitude_max,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
--- id_area, TODO
 date_min,
 date_max,
 validator,
 validation_comment,
 observers,
 determiner,
+id_digitiser,
 id_nomenclature_determination_method,
 comments,
 last_action
@@ -220,6 +220,7 @@ VALUES(
   validation.validation_comment,
   COALESCE (observers.observers_name, releve.observers_txt),
   occurrence.determiner,
+  releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
   CONCAT('Relevé : ',releve.comment, 'Occurrence: ', occurrence.comment),
   'I'
@@ -777,6 +778,7 @@ BEGIN
       UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
       observers = NEW.observers_txt,
+      id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
       date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_min, 'hh:mm:ss'), '00:00:00'))::timestamp,
