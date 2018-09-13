@@ -234,7 +234,7 @@ def export(info_role):
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
-    formated_data = [d.as_dict() for d in data]
+    formated_data = [d.as_dict_ordered() for d in data]
 
     export_columns = formated_data[0].keys()
     if export_format == 'csv':
@@ -269,7 +269,7 @@ def export(info_role):
             )
             for row in data:
                 geom = row.the_geom_local
-                row_as_dict = row.as_dict()
+                row_as_dict = row.as_dict_ordered()
                 FionaShapeService.create_feature(row_as_dict, geom)
 
             FionaShapeService.save_and_zip_shapefiles()
@@ -281,7 +281,7 @@ def export(info_role):
             )
 
         except Exception as e:
-            log.error('Error while exporting shapefiles' + e)
+            log.error('Error while exporting shapefiles' + str(e))
             message = str(e)
 
         return render_template(

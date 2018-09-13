@@ -334,7 +334,9 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_dataset qui est renvoyé au formControl.
                 *Type*: ``boolean``
 
-        
+        :``displayOnlyActive``:
+                Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
+                *Type*: ``boolean`` defaut: ``true``
         **Valeur retourné par le FormControl**:
 
         En mode select simple: Id du dataset sélectionné: *Type*: number
