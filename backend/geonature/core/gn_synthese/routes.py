@@ -19,7 +19,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     SyntheseOneRecord,
     VMTaxonsSyntheseAutocomplete,
-    SyntheseForWebApp
+    VSyntheseForWebApp, VSyntheseForExport
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -30,7 +30,6 @@ from geonature.core.taxonomie.models import (
 from geonature.core.gn_synthese import repositories as synthese_repository
 
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_meta import mtd_utils
 
 from pypnusershub import routes as fnauth
 
@@ -119,27 +118,32 @@ def get_synthese(info_role):
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:
-        result_limit = 10000
+        result_limit = current_app.config['SYNTHESE']['NB_MAX_OBS_MAP']
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
 
-    q = DB.session.query(SyntheseForWebApp)
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = DB.session.query(VSyntheseForWebApp)
+
+    q = synthese_repository.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     q = q.order_by(
-        SyntheseForWebApp.date_min.desc()
+        VSyntheseForWebApp.date_min.desc()
     )
+    nb_total = 0
+    if result_limit != '100':
+        nb_total = q.count()
     data = q.limit(result_limit)
-    features = []
     columns = current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
-    print(columns)
+    features = []
     for d in data:
         feature = d.get_geofeature(
             columns=current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
         )
-        print(feature)
-
         features.append(feature)
-    return FeatureCollection(features)
+    return {
+        'data': FeatureCollection(features),
+        'nb_obs_limited': nb_total >= current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
+        'nb_total': nb_total
+    }
 
 
 @routes.route('/vsynthese/<id_synthese>', methods=['GET'])
@@ -199,16 +203,16 @@ def export(info_role):
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:
-        result_limit = 40000
+        result_limit = current_app.config['SYNTHESE']['NB_MAX_OBS_EXPORT']
 
     export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
 
-    q = DB.session.query(SyntheseForWebApp)
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = DB.session.query(VSyntheseForExport)
+    q = synthese_repository.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
 
     q = q.order_by(
-        SyntheseForWebApp.date_min.desc()
+        VSyntheseForExport.date_min.desc()
     )
     data = q.limit(result_limit)
 
@@ -241,7 +245,7 @@ def export(info_role):
 
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             FionaShapeService.create_shapes_struct(
-                db_cols=SyntheseForWebApp.db_cols,
+                db_cols=VSyntheseForWebApp.db_cols,
                 srid=current_app.config['LOCAL_SRID'],
                 dir_path=dir_path,
                 file_name=file_name,
@@ -365,7 +369,7 @@ def get_autocomplete_taxons_synthese():
 # @routes.route('/test', methods=['GET'])
 # @json_resp
 # def test():
-#     q = DB.session.query(SyntheseForWebApp)
+#     q = DB.session.query(VSyntheseForWebApp)
 #     data = q.all()
 #     for d in data:
 #         #print(d.get_geofeature(columns=['id_synthese']))

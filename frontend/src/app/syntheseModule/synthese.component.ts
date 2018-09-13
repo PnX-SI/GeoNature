@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SyntheseFormService } from './services/form.service';
+import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 
 @Component({
   selector: 'pnx-synthese',
@@ -9,18 +12,30 @@ import { CommonService } from '@geonature_common/service/common.service';
   templateUrl: 'synthese.component.html'
 })
 export class SyntheseComponent implements OnInit {
+  @ViewChild('toManyObsModal') toManyObsModal: ElementRef;
   constructor(
     public searchService: DataService,
     private _mapListService: MapListService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _modalService: NgbModal,
+    private _fs: SyntheseFormService
   ) {}
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
-      data => {
-        this._mapListService.geojsonData = data;
-        this._mapListService.loadTableData(data, this.customColumns.bind(this));
+      result => {
+        console.log(result);
+        if (result['nb_obs_limited']) {
+          const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
+            size: 'lg'
+          });
+          const formatedParams = this._fs.formatParams();
+          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
+          modalRef.componentInstance.tooManyObs = true;
+        }
+        this._mapListService.geojsonData = result['data'];
+        this._mapListService.loadTableData(result['data'], this.customColumns.bind(this));
         this._mapListService.idName = 'id_synthese';
         this.searchService.dataLoaded = true;
       },

@@ -98,6 +98,10 @@ class Synthese(Schema):
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
     # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(missing=False)
+    # Nombre max d'observation à afficher sur la carte
+    NB_MAX_OBS_MAP = fields.Integer(missing=10000)
+    # Nombre max d'observation dans les exports
+    NB_MAX_OBS_EXPORT = fields.Integer(missing=40000)
 
 
 class MailErrorConf(Schema):
