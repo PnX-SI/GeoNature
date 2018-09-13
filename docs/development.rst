@@ -1,19 +1,19 @@
-DEVELOPMENT
-===========
+DEVELOPPEMENT
+=============
 
-General
+Général
 -------
 
-GeoNature has been developped by Gil Deluermoz since 2010 with PHP/Symfony/ExtJS.
+GeoNature a été développé par Gil Deluermoz depuis 2010 avec PHP/Symfony/ExtJS.
 
-In 2017, French national parks decided to rebuild GeoNature totally with a new version (V2) with Python/Flask/Angular 4. 
+En 2017, les parcs nationaux français ont décidé de refondre GeoNature complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular 4. 
 
-Maintainers : 
+Mainteneurs : 
 
-- Gil DELUERMOZ (PnEcrins) : Database / SQL / Installation / Update
+- Gil DELUERMOZ (PnEcrins) : Base de données / SQL / Installation / Mise à jour
 - Amandine SAHL (PnCevennes) : Backend / Python Flask / API
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular 4
-- Camille MONCHICOURT (PnEcrins) : Documentation / Project management
+- Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
 
 API
