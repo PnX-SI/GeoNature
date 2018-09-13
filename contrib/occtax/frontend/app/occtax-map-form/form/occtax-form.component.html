@@ -19,7 +19,8 @@
       <i class="fa fa-paw" aria-hidden="true"></i>
       Taxon
       <span>
-        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence();">
+        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn"
+          (click)="fs.toggleOccurrence();">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
 
@@ -38,8 +39,8 @@
       </pnx-occurrence>
       <div>
         <div>
-          <button id="counting-button" type="button" (click)="fs.toggleCounting()" class="btn btn-primary btn-sm" data-toggle="collapse"
-            data-target="#collapseCounting" [disabled]="fs.disabled">
+          <button id="counting-button" type="button" (click)="fs.toggleCounting()" class="btn btn-primary btn-sm"
+            data-toggle="collapse" data-target="#collapseCounting" [disabled]="fs.disabled">
             <span *ngIf="!fs.showCounting">
               <i class="fa fa-plus" aria-hidden="true"></i>
             </span>
@@ -64,7 +65,8 @@
         </div>
       </div>
       <div class="center">
-        <button class="btn btn-primary btn-sm " [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid" (click)="fs.addOccurrence(fs.indexOccurrence)">
+        <button class="btn btn-primary btn-sm " [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
+          (click)="fs.addOccurrence(fs.indexOccurrence)">
           <i id="check" class="fa fa-check" aria-hidden="true"></i>
 
           {{ 'Taxon.ValidateTaxon' | translate }} {{fs.currentTaxon.lb_nom}}
@@ -75,8 +77,8 @@
   </div>
 
   <!-- <pre>form value: <br>{{fs.countingForm.value | json}}</pre> -->
-  <!-- <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre> -->
-  <!-- <pre>form value: <br>{{fs.releveForm.value.properties | json}}</pre> -->
+  <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre>
+  <pre>form value: <br>{{fs.releveForm.value.properties | json}}</pre>
   <!-- <pre>taxon list: <br>{{fs.taxonsList | json}}</pre> -->
 
 
@@ -91,7 +93,8 @@
         || fs.showOccurrence
         || (fs.showOccurrence && fs.occurrenceForm.invalid )
         || disabledAfterPost
-        )" (click)="submitData()">
+        )"
+      (click)="submitData()">
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
       {{ 'Releve.SaveReleve' | translate }}
     </button>

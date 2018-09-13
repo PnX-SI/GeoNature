@@ -717,7 +717,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, "-" ), ' Occurrence: ', COALESCE(NEW.comment, "-" ))
+    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' ))
     WHERE id_source = the_id_source AND entity_source_pk_value = counting.id_counting_occtax::text;
   END LOOP;
 
