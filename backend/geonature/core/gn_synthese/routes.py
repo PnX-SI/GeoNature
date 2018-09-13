@@ -1,9 +1,8 @@
-import json
 import logging
 import datetime
 from collections import OrderedDict
 
-from flask import Blueprint, request, session, current_app, send_from_directory, render_template
+from flask import Blueprint, request, current_app, send_from_directory, render_template
 from sqlalchemy import distinct, func, desc
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
@@ -12,19 +11,17 @@ from geojson import FeatureCollection
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
-from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
-    CorAreaSynthese,
     DefaultsNomenclaturesValue,
-    VSyntheseDecodeNomenclatures,
     SyntheseOneRecord,
     VMTaxonsSyntheseAutocomplete,
     SyntheseForWebApp
 )
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
     Taxref,
     TaxrefProtectionArticles,
@@ -32,25 +29,16 @@ from geonature.core.taxonomie.models import (
 )
 from geonature.core.gn_synthese import repositories as synthese_repository
 
-from geonature.core.gn_meta.models import (
-    TDatasets,
+from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_meta import mtd_utils
 
-)
-from geonature.core.ref_geo.models import (
-    LiMunicipalities, LAreas
-)
 from pypnusershub import routes as fnauth
-from pypnusershub.db.tools import (
-    InsufficientRightsError,
-    get_or_fetch_user_cruved,
-    cruved_for_user_in_app
-)
+
 from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,
-    json_resp, testDataType, GenericTable
+    json_resp, GenericTable
 )
 
-from geonature.core.gn_meta import mtd_utils
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -124,7 +112,6 @@ def get_synthese(info_role):
     """
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
-        'observers' param (string) is filtered with ilike clause
     """
 
     filters = dict(request.args)
@@ -135,29 +122,22 @@ def get_synthese(info_role):
         result_limit = 10000
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = (
-        DB.session.query(Synthese, Taxref, TSources, TDatasets)
-        .join(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        ).join(
-            TSources, TSources.id_source == Synthese.id_source
-        ).join(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        )
-    )
+
+    q = DB.session.query(SyntheseForWebApp)
     q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
     q = q.order_by(
-        Synthese.date_min.desc()
+        SyntheseForWebApp.date_min.desc()
     )
     data = q.limit(result_limit)
     features = []
+    columns = current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
+    print(columns)
     for d in data:
-        feature = d[0].get_geofeature(columns=['date_min', 'date_max', 'observers',
-                                               'id_synthese', 'altitude_min', 'altitude_max'])
-        # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
-        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide', 'cd_nom', 'lb_nom', 'nom_vern'])
-        feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source', 'name_source'])
-        feature['properties']['dataset'] = d[3].as_dict(columns=['dataset_name'])
+        feature = d.get_geofeature(
+            columns=current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
+        )
+        print(feature)
+
         features.append(feature)
     return FeatureCollection(features)
 
@@ -388,6 +368,5 @@ def get_autocomplete_taxons_synthese():
 #     q = DB.session.query(SyntheseForWebApp)
 #     data = q.all()
 #     for d in data:
-#         print(d)
-#         print(d.as_dict())
+#         #print(d.get_geofeature(columns=['id_synthese']))
 #     return 'la'

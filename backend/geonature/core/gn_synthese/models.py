@@ -27,6 +27,9 @@ class SyntheseCruved(DB.Model):
         Abstract class to add method
         to control the data access according
         to the user rights
+
+        Currently not used, the cruved on data is managed
+        by the module himself when the user is redirect to the source module
     """
     __abstract__ = True
 
@@ -168,7 +171,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 @serializable
 @geoserializable
 @shapeserializable
-class Synthese(SyntheseCruved):
+class Synthese(DB.Model):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, ForeignKey(
@@ -215,6 +218,7 @@ class Synthese(SyntheseCruved):
     validation_comment = DB.Column(DB.Unicode)
     observers = DB.Column(DB.Unicode)
     determiner = DB.Column(DB.Unicode)
+    id_digitiser = DB.Column(DB.Integer)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     comments = DB.Column(DB.Unicode)
     meta_validation_date = DB.Column(DB.DateTime)
@@ -247,7 +251,7 @@ class DefaultsNomenclaturesValue(DB.Model):
 
 @serializable
 @geoserializable
-class SyntheseOneRecord(SyntheseCruved):
+class SyntheseOneRecord(DB.Model):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese', 'extend_existing': True}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
@@ -327,6 +331,13 @@ class VMTaxonsSyntheseAutocomplete(DB.Model):
 
 
 def synthese_serialization(cls):
+    """
+    Décorateur qui définit une sérialisation particulière pour la vue v_synthese_for_web_app
+    Il rajoute la fonction as_dict: qui renvoie un dictionnaire avec des noms d'attrbuts
+    définit en configuration (EXPORT_COLUMNS),
+    et la fonction as_dict_ordered qui conserve l'ordre des attributs tel que définit dans le model
+    (fonctions utilisés pour les exports)
+    """
     EXPORT_COLUMNS = current_app.config['SYNTHESE']['EXPORT_COLUMNS']
     default_columns = [key for key, value in EXPORT_COLUMNS.items()]
     cls_db_columns = [
@@ -344,8 +355,12 @@ def synthese_serialization(cls):
 
     cls.db_cols = [db_col for db_col in cls.__mapper__.c if db_col.key in default_columns]
 
-    def serializefn(self, recursif=False, columns=()):
-        return {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item)) for item, _serializer in cls_db_columns}
+    def serialize_mapped_fn(self, recursif=False, columns=()):
+        if columns:
+            fprops = list(filter(lambda d: d[0] in columns, cls_db_columns))
+        else:
+            fprops = cls_db_columns
+        return {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item)) for item, _serializer in fprops}
 
     def serialize_order_fn(self):
         order_dict = OrderedDict()
@@ -354,15 +369,16 @@ def synthese_serialization(cls):
                 {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item))}
             )
         return order_dict
-        
-        
-    cls.as_dict = serializefn
+
+    cls.as_dict_mapped = serialize_mapped_fn
     cls.as_dict_ordered = serialize_order_fn
 
     return cls
 
 
+@serializable
 @synthese_serialization
+@geoserializable
 class SyntheseForWebApp(DB.Model):
     __tablename__ = 'v_synthese_for_web_app'
     __table_args__ = {'schema': 'gn_synthese'}
@@ -373,10 +389,14 @@ class SyntheseForWebApp(DB.Model):
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
+    dataset_name = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
+    cd_ref = DB.Column(DB.Unicode)
     nom_cite = DB.Column(DB.Unicode)
+    nom_valide = DB.Column(DB.Unicode)
+    nom_vern = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(DB.Unicode)
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
@@ -392,6 +412,7 @@ class SyntheseForWebApp(DB.Model):
     validation_comment = DB.Column(DB.Unicode)
     observers = DB.Column(DB.Unicode)
     determiner = DB.Column(DB.Unicode)
+    id_digitiser = DB.Column(DB.Integer)
     comments = DB.Column(DB.Unicode)
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime)
@@ -415,3 +436,14 @@ class SyntheseForWebApp(DB.Model):
     observation_status = DB.Column(DB.Unicode)
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
+    name_source = DB.Column(DB.Unicode)
+    url_source = DB.Column(DB.Unicode)
+
+    def get_geofeature(self, recursif=False, columns=()):
+        print(columns)
+        return self.as_geofeature(
+            'the_geom_4326',
+            'id_synthese',
+            recursif,
+            columns=columns
+        )

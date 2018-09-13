@@ -75,7 +75,7 @@ MULTILINGUAL = false
     # champs disponible de la table t_dataset: 'dataset_name
     # champs disponible de la table gn_synthese.t_sources: 'name_source'
     
-    LIST_COLUMNS = [
+    LIST_COLUMNS_FRONTEND = [
         { prop = "taxons.nom_valide", name = "Taxon" },
         { prop = "date_min", name = "Date début" },
         { prop = "observateurs", name = "Observateurs" },

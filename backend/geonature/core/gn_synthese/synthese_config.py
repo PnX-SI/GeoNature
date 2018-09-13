@@ -63,10 +63,26 @@ DEFAULT_EXPORT_COLUMNS = {
 }
 
 
+#
+DEFAULT_COLUMNS_API_SYNTHESE = [
+    'id_synthese',
+    'date_min',
+    'observers',
+    'nom_valide',
+    'dataset_name'
+]
+
+# Colonnes renvoyer par l'API synthese qui sont obligatoires pour que les fonctionnalités
+#  front foncitonnent
+MANDATORY_COLUMNS = [
+    'entity_source_pk_value',
+    'url_source',
+]
+
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [
-    {'prop': 'taxon.nom_valide', 'name': 'Taxon'},
+    {'prop': 'nom_valide', 'name': 'Taxon'},
     {'prop': 'date_min', 'name': 'Date obs'},
-    {'prop': 'dataset.dataset_name', 'name': 'JDD'},
+    {'prop': 'dataset_name', 'name': 'JDD'},
     {'prop': 'observers', 'name': 'observateur'}
 ]
