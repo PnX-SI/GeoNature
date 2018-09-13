@@ -52,6 +52,7 @@ def get_datasets(info_role):
         id_acquisition_framework (integer)
 
     """
+    with_mtd_error = False
     if current_app.config['CAS']['CAS_AUTHENTIFICATION']:
         # synchronise the CA and JDD from the MTD WS
         try:
@@ -62,8 +63,12 @@ def get_datasets(info_role):
         except Exception as e:
             gunicorn_error_logger.info(e)
             log.error(e)
+            with_mtd_error = True
     params = dict(request.args)
-    return get_datasets_cruved(info_role, params)
+    datasets = {'data': get_datasets_cruved(info_role, params)}
+    if with_mtd_error:
+        datasets['with_mtd_errors'] = True
+    return datasets
 
 
 @routes.route('/dataset/<id_dataset>', methods=['GET'])
