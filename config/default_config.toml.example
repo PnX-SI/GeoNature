@@ -62,14 +62,75 @@ MULTILINGUAL = false
 [SYNTHESE]
     # Liste des entité géographique sur lesquel les filtres
     # géographique de la synthese s'appuye (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
+
     AREA_FILTERS = [
         { label = "Zone natural 2000", id_type = 201 },
         { label = "Secteurs", id_type = 202 }
     ]
+    # Colonne à afficher par défaut sur la liste des resultats de la synthese
+    # 'prop' corespond au nom de la colonne tel qu'il est écrit en BDD
+    # champs disponible de la table synthese : 'date_min', 'date_max', 'observers', 'id_synthese', 'altitude_min', 'altitude_max'
+    # champs disponible de la table taxon: 'nom_valide', 'cd_nom', 'lb_nom', 'nom_vern'
+    # champs disponible de la table t_dataset: 'dataset_name
+    # champs disponible de la table gn_synthese.t_sources: 'name_source'
+    
+    LIST_COLUMNS = [
+        { prop = "taxons.nom_valide", name = "Taxon" },
+        { prop = "date_min", name = "Date début" },
+        { prop = "observateurs", name = "Observateurs" },
+        { prop = "dataset.dataset_name", name = "Jeu de données" }
+    ]
+    # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
+    
+    ID_ATTRIBUT_TAXHUB = [1, 2]
 
-default_maplist_columns = [
-    { prop = "taxons", name = "Taxon" },
-    { prop = "date_min", name = "Date début" },
-    { prop = "observateurs", name = "Observateurs" },
-    { prop = "dataset_name", name = "Jeu de données" }
-]
+    # Colonne de la table gn_synthese.synthese que l'on veut masquer dans les filtres du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. Exemple: 
+    EXCLUDED_COLUMNS = ['non_digital_proof'] pour enlever le filtre 'preuve non numérique'
+    
+    EXCLUDED_COLUMNS = []
+
+    # Champs à afficher dans l'export
+    [EXPORT_COLUMNS]
+        [EXPORT_COLUMNS.SYNTHESE_COLUMNS] = [
+        'id_synthese',
+        'unique_id_sinp',
+        'date_min',
+        'date_max',
+        'observers',
+        'altitude_min',
+        'altitude_max',
+        'count_min',
+        'count_max',
+        'sample_number_proof',
+        'digital_proof',
+        'non_digital_proof',
+        'comments'
+        ]
+        [EXPORT_COLUMNS.NOMENCLATURE_COLUMNS] = [
+            'nat_obj_geo',
+            'grp_typ',
+            'obs_method',
+            'obs_technique',
+            'bio_status',
+            'bio_condition',
+            'naturalness',
+            'exist_proof',
+            'valid_status',
+            'diffusion_level',
+            'life_stage',
+            'sex',
+            'obj_count',
+            'type_count',
+            'sensitivity',
+            'observation_status',
+            'blurring',
+            'source_status',
+            'info_geo_type',
+            'determination_method'
+        ]
+        [EXPORT_COLUMNS.TAXONOMIC_COLUMNS] = [
+            'cd_nom',
+            'cd_ref',
+            'nom_valide'
+        ]
+
