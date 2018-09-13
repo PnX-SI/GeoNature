@@ -60,7 +60,8 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
     SESSION_TYPE = fields.String(missing='filesystem')
     SECRET_KEY = fields.String(required=True)
-    COOKIE_EXPIRATION = fields.Integer(missing=7200)
+    # le cookie expire toute les 30 minutes par défaut
+    COOKIE_EXPIRATION = fields.Integer(missing=108000)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
 
