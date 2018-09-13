@@ -245,7 +245,7 @@ def export(info_role):
 
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             FionaShapeService.create_shapes_struct(
-                db_cols=VSyntheseForWebApp.db_cols,
+                db_cols=VSyntheseForExport.db_cols,
                 srid=current_app.config['LOCAL_SRID'],
                 dir_path=dir_path,
                 file_name=file_name,

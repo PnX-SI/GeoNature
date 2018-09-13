@@ -19,7 +19,7 @@ export class SyntheseComponent implements OnInit {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService
-  ) {}
+  ) { }
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
