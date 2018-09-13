@@ -1,10 +1,6 @@
 MANUEL UTILISATEUR
 ==================
 
-.. raw:: html
-
-   <video controls src="http://geonature.fr/docs/img/user-manual/2018-06-processus_dbb_geonature.mp4" width=100% frameborder="0" allowfullscreen></video>
-
 Authentification
 ----------------
 
@@ -39,6 +35,8 @@ OccTax
 
 Ce module permet de saisir des données selon le standard Occurrence de taxon du SINP 
 (https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon). 
+
+.. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif
 
 Les données sont organisées en relevés (localisation, jeu de données, date, observateur...) qui sont composés d'observations 
 d'un ou plusieurs taxons (méthode, état, statut, détermination...).
