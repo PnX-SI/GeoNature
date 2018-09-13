@@ -546,6 +546,15 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 ------------
+--TABLE--
+------------
+
+ALTER TABLE gn_meta.t_datasets
+ADD COLUMN active boolean;
+UPDATE gn_meta.t_datasets SET active = true; 
+
+
+------------
 --TRIGGERS--
 ------------
 
