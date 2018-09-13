@@ -110,11 +110,9 @@
     </pnx-acquisition-frameworks>
 
 
-    <pnx-datasets [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
+    <pnx-datasets [displayOnlyActive]="false" [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
       [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
     </pnx-datasets>
-
-
 
   </fieldset>
 

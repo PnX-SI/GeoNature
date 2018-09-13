@@ -45,7 +45,11 @@ def get_datasets_list():
 @json_resp
 def get_datasets(info_role):
     """
-        Retourne la liste des datasets
+    Retourne la liste des datasets
+    Parameters:
+        info_role(TRole)
+        active (boolean)
+        id_acquisition_framework (integer)
 
     """
     if current_app.config['CAS']['CAS_AUTHENTIFICATION']:
