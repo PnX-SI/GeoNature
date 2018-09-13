@@ -8,7 +8,8 @@ from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Regexp
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
-    DEFAULT_LIST_COLUMN
+    DEFAULT_LIST_COLUMN,
+    DEFAULT_COLUMNS_API_SYNTHESE
 )
 
 
@@ -77,7 +78,13 @@ class GnFrontEndConf(Schema):
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": 101}])
-    LIST_COLUMNS = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
+    # Listes des champs renvoyés par l'API synthese '/synthese'
+    # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
+    # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
+    # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE)
+    # Colonnes affichées sur la liste des résultats de la sytnthese
+    LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.Dict(missing=DEFAULT_EXPORT_COLUMNS)
     EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -89,6 +96,8 @@ class Synthese(Schema):
     EXCLUDED_COLUMNS = fields.List(fields.String(), missing=[])
     # Afficher ou non l'arbre taxonomique
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
+    # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
+    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(missing=False)
 
 
 class MailErrorConf(Schema):
@@ -121,6 +130,7 @@ class GnGeneralSchemaConf(Schema):
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
     SYNTHESE = fields.Nested(Synthese, missing=dict())
+    # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
 
 
