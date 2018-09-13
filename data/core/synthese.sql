@@ -133,6 +133,7 @@ CREATE TABLE synthese (
     validation_comment text,
     observers character varying(1000),
     determiner character varying(1000),
+    id_digitiser integer,
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
     comments text,
     meta_validation_date timestamp without time zone DEFAULT now(),
@@ -231,7 +232,6 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_life_stage FOREIGN KEY (id_nomenclature_life_stage) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
@@ -261,6 +261,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_area_synthese
