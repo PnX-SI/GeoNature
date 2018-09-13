@@ -10,8 +10,6 @@ import {
   IterableDiffer
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { FormControl } from '@angular/forms';
-import { AuthService } from '../../../components/auth/auth.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
@@ -29,7 +27,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   @Input() displayOnlyActive = true;
   constructor(
     private _dfs: DataFormService,
-    private _auth: AuthService,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers
   ) {
@@ -48,7 +45,10 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     }
     this._dfs.getDatasets(params).subscribe(
       res => {
-        this.dataSets = res;
+        this.dataSets = res.data;
+        if (res['with_mtd_errors']) {
+          this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
+        }
       },
       error => {
         if (error.status === 500) {
