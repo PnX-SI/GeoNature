@@ -41,7 +41,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-  constructor(private _translate: TranslateService) {}
+  constructor(private _translate: TranslateService) { }
 
   // Component to generate a custom multiselect input with a search bar (which can be disabled)
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
@@ -109,7 +109,9 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.onChange.emit(item);
   }
 
-  removeItem(item) {
+  removeItem($event, item) {
+    // disable event propagation
+    $event.stopPropagation();
     // push the element in the items list
     this.values.push(item);
     this.selectedItems = this.selectedItems.filter(curItem => {
