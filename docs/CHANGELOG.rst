@@ -2,12 +2,37 @@
 CHANGELOG
 =========
 
-2.0.0.beta6 (unreleased)
+2.0.0 (unreleased)
 ------------------------
+
+**Nouveautés**
+
+* Synthese : Beaucoup de mises en forme et de fonctionnalités, recherche, recherche carto (polygone, rectangle, cercle), filtres avancés (nomenclatures, listes rouges, milieux, attributs TaxHub dynamiques et multi-taxon avec arbre taxonomique), fiche détail, retour à la données source dans son module, export des observations et des statuts, prise en compte du CRUVED, stabilisation du MCD, paramétrage (colonnes affichées et exportées, filtres affichés...)
+* Synthese : composant générique pour filtrer sur des areas en paramètre
+* Synthèse : Calcul automatique (trigger) des zonages de chaque observations (communes, zonages réglementaires et naturels)
+* Trigger Occtax >> Synthèse
+* gn_monitoring : Complément des routes
+* Composant Nomenclature paramétrable en multiselect
+* Ajout d'une recherche dans les composants Areas (zonages) et Municipalities (Communes)
+* Migration des export SHP pour utiliser Fiona
+* Occtax : Simplication date_min/date_max
+* Création des composants génériques Period et Download
+* Script de migration GeoNature V1 vers GeoNature V2
+* Install_all : Améliorations diverses et possibilité de ne pas intégrer les données exemples
 
 **Corrections**
 
-*
+* Désactivation temporaire du trigger min_max_for_taxon
+* Nombreuses corrections et compléments de la doc
+
+**Notes de version**
+
+Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
+
+* Passer à la dernière version 1 de GeoNature (1.9.1)
+* Idem pour UsersHub et TaxHub
+* Installer GeoNature standalone ou refaire une installation complète
+* Adaptez les scripts présents dans /data/migrations/v1tov2 et éxécutez les
 
 2.0.0.beta5 (2018-07-16)
 ------------------------
