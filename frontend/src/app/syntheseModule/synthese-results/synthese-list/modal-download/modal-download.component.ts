@@ -8,8 +8,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: 'modal-download.component.html'
 })
 export class SyntheseModalDownloadComponent implements OnInit {
-  public SyntheseConfig = AppConfig.SYNTHESE;
+  public syntheseConfig = AppConfig.SYNTHESE;
   @Input() queryString: HttpParams;
+  @Input() tooManyObs = false;
 
   constructor(public activeModal: NgbActiveModal) {}
 
