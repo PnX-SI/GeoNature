@@ -25,5 +25,8 @@ CONTRIBUTORS
 
 * Quang Pham
 * Claire Lagaye
+* Xavier Arbez
 * Kevin Samuel
 * Donovan Maillard
+* Khanh-Chau Nguyen
+* Etienne Trimaille
