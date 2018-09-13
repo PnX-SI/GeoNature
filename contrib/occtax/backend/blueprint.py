@@ -15,7 +15,9 @@ from flask import(
     Response,
     render_template
 )
-from sqlalchemy import exc, or_, func, distinct
+from sqlalchemy import or_, func, distinct
+from sqlalchemy.orm.exc import NoResultFound
+
 from geojson import FeatureCollection
 
 
@@ -97,15 +99,16 @@ def getOneCounting(id_counting):
     Returns:
         json: a json representing a counting record
     """
-
-    data = DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax).join(
-        TOccurrencesOccurrence, TOccurrencesOccurrence.id_occurrence_occtax == CorCountingOccurrence.id_occurrence_occtax
-    ).join(
-        TRelevesOccurrence, TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax
-    ).filter(
-        CorCountingOccurrence.id_counting_occtax == id_counting
-    ).one()
-
+    try:
+        data = DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax).join(
+            TOccurrencesOccurrence, TOccurrencesOccurrence.id_occurrence_occtax == CorCountingOccurrence.id_occurrence_occtax
+        ).join(
+            TRelevesOccurrence, TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax
+        ).filter(
+            CorCountingOccurrence.id_counting_occtax == id_counting
+        ).one()
+    except NoResultFound:
+        return None
     counting = data[0].as_dict()
     counting['id_releve'] = data[1]
 
