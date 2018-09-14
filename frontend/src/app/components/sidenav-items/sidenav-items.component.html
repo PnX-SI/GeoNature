@@ -7,30 +7,23 @@
   <a href="#{{_sideNavService.home_page.module_url}}">
     <mat-list-item (click)="onSetApp(_sideNavService.home_page)" [routerLink]="_sideNavService.home_page.module_url"
       routerLinkActive="active" class="sidenav-item">
-      <mat-icon mat-list-icon>{{_sideNavService.home_page.module_picto}}</mat-icon>
-      <h3 mat-line> {{_sideNavService.home_page.module_label}} </h3>
+      <i class="fa {{_sideNavService.home_page.module_picto}} picto" aria-hidden="true"> </i>
+      <span class="module-name">{{_sideNavService.home_page.module_label}} </span>
     </mat-list-item>
   </a>
 
 
   <a *ngFor="let module of _sideNavService.modules" href="{{module.module_url}}" target="_self">
     <mat-list-item (click)="onSetApp(module)" class="sidenav-item">
-      <mat-icon mat-list-icon>{{module.module_picto}}</mat-icon>
-      <h3 mat-line> {{module.module_label}} </h3>
+      <i class="fa {{module.module_picto}} picto" aria-hidden="true"> </i>
+       <span class="module-name">{{module.module_label}} </span>
     </mat-list-item>
   </a>
 
   <a href="#{{_sideNavService.exportModule.module_url}}" target="_self">
     <mat-list-item (click)="onSetApp(_sideNavService.exportModule)" class="sidenav-item">
-      <mat-icon mat-list-icon>{{_sideNavService.exportModule.module_picto}}</mat-icon>
-      <h3 mat-line> {{_sideNavService.exportModule.module_label}} </h3>
-    </mat-list-item>
-  </a>
-
-  <a href="#{{_sideNavService.syntheseModule.module_url}}" target="_self">
-    <mat-list-item (click)="onSetApp(_sideNavService.syntheseModule)" class="sidenav-item">
-      <mat-icon mat-list-icon>{{_sideNavService.syntheseModule.module_picto}}</mat-icon>
-      <h3 mat-line> {{_sideNavService.syntheseModule.module_label}} </h3>
+        <i class="fa {{_sideNavService.exportModule.module_picto}} picto" aria-hidden="true"> </i>
+        <span class="module-name">{{_sideNavService.exportModule.module_label}} </span>
     </mat-list-item>
   </a>
 
