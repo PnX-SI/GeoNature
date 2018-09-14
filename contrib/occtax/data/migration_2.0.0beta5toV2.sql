@@ -555,7 +555,7 @@ COST 100;
 ------------
 
 ALTER TABLE gn_meta.t_datasets
-ADD COLUMN active boolean DEFAULT true;
+ADD COLUMN active boolean NOT NULL DEFAULT true;
 UPDATE gn_meta.t_datasets SET active = true; 
 
 ------------
