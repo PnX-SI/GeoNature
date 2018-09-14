@@ -789,3 +789,8 @@ CREATE TRIGGER tri_insert_cor_area_synthese
 --DATA--
 --------
 INSERT INTO t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_source_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
+
+-- insertion dans utilisateurs.t_applications et gn_commons.t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'synthese', 'Application synthese de GeoNature' id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
