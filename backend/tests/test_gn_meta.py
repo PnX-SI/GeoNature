@@ -34,7 +34,7 @@ class TestGnMeta:
         assert response.status_code == 200
 
         dataset_list = json_of_response(response)
-        assert len(dataset_list) >= 2
+        assert len(dataset_list['data']) >= 2
 
     def test_dataset_cruved_2(self):
         """
@@ -46,8 +46,8 @@ class TestGnMeta:
         dataset_list = json_of_response(response)
         assert (
             response.status_code == 200 and
-            len(dataset_list) == 1 and
-            dataset_list[0]['id_dataset'] == 2
+            len(dataset_list['data']) == 1 and
+            dataset_list['data'][0]['id_dataset'] == 2
         )
 
     def test_dataset_cruved_1(self):
@@ -60,8 +60,8 @@ class TestGnMeta:
         dataset_list = json_of_response(response)
         assert (
             response.status_code == 200 and
-            len(dataset_list) == 1 and
-            dataset_list[0]['id_dataset'] == 1
+            len(dataset_list['data']) == 1 and
+            dataset_list['data'][0]['id_dataset'] == 1
         )
 
     def test_mtd_interraction(self):
