@@ -27,7 +27,7 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces
 )
-from geonature.core.gn_synthese import repositories as synthese_repository
+from geonature.core.gn_synthese.utils import query as synthese_query
 
 from geonature.core.gn_meta.models import TDatasets
 
@@ -124,7 +124,7 @@ def get_synthese(info_role):
 
     q = DB.session.query(VSyntheseForWebApp)
 
-    q = synthese_repository.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     q = q.order_by(
         VSyntheseForWebApp.date_min.desc()
     )
@@ -209,7 +209,7 @@ def export(info_role):
     allowed_datasets = TDatasets.get_user_datasets(info_role)
 
     q = DB.session.query(VSyntheseForExport)
-    q = synthese_repository.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
 
     q = q.order_by(
         VSyntheseForExport.date_min.desc()
@@ -293,7 +293,7 @@ def get_status(info_role):
     )
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(q, filters, info_role, allowed_datasets)
     data = q.all()
 
     protection_status = []
