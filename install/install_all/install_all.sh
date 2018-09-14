@@ -1,4 +1,5 @@
 #!/bin/bash
+. install_all.ini
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
