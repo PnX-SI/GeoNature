@@ -147,7 +147,7 @@ export class DatasetFormComponent implements OnInit {
     this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(
       data => {
         this._router.navigate(['/admin/datasets']);
-        this._commonService.translateToaster('success', 'Meta.Datasetadded');
+        this._commonService.translateToaster('success', 'MetaData.Datasetadded');
       },
       error => {
         this._commonService.translateToaster('error', 'ErrorMessage');
