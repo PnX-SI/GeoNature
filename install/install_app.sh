@@ -46,23 +46,6 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 BASE_DIR=$(readlink -e "${0%/*}")
 
-if [ ! -d 'tmp/geonature/' ]
-then
-  mkdir tmp/geonature
-  chmod -R 775 tmp/geonature
-fi
-
-if [ ! -d 'tmp/taxhub/' ]
-then
-  mkdir tmp/taxhub
-  chmod -R 775 tmp/taxhub
-fi
-
-if [ ! -d 'tmp/usershub/' ]
-then
-  mkdir tmp/usershub
-  chmod -R 775 tmp/usershub
-fi
 
 if [ ! -d 'var' ]
 then
