@@ -763,13 +763,13 @@ CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
   ON synthese
   FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  EXECUTE PROCEDURE public.tri_log_changes();
 
 CREATE TRIGGER tri_meta_dates_t_sources
   BEFORE INSERT OR UPDATE
   ON t_sources
   FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
 
 -- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
