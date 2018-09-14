@@ -31,7 +31,15 @@ def get_modules(info_role):
             id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
         )
         if app_cruved['R'] != '0':
-            allowed_modules.append(mod.as_dict())
+            module = mod.as_dict()
+            if mod.active_frontend:
+                module['module_url'] = '{}/#/{}'.format(
+                    current_app.config['URL_APPLICATION'],
+                    mod.module_path
+                )
+            else:
+                module['module_url'] = mod.module_external_url
+            allowed_modules.append(module)
     return allowed_modules
 
 
