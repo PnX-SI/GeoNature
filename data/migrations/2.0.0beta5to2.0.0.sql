@@ -72,7 +72,6 @@ $BODY$
 --fonction générique d'import csv
 CREATE OR REPLACE FUNCTION gn_commons.load_csv_file(csv_file text, target_table text)
 RETURNS text LANGUAGE plpgsql AS $$
-
 --This function create a table and her structure according to the CSV structure and the passed name.
 --CSV content is loaded in. 
 --Then, the function tries to define the type of columns according to the content.
