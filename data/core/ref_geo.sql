@@ -195,7 +195,6 @@ BEGIN
     SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
     FROM ref_geo.dem_vector, d
     WHERE st_intersects(a,geom);
-
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -222,12 +221,25 @@ BEGIN
   WHERE st_intersects(geom_trans, a.geom)
     AND (myIdType IS NULL OR a.id_type = myIdType)
     AND enable=true;
-
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100
 ROWS 1000;
+
+
+CREATE OR REPLACE FUNCTION ref_geo.get_id_area_type(mytype character varying)
+  RETURNS integer AS
+$BODY$
+--Function which return the id_type_area from the type_code of an area type
+DECLARE theidtype character varying;
+  BEGIN
+SELECT INTO theidtype id_type FROM ref_geo.bib_areas_types WHERE type_code = mytype;
+return theidtype;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
 
 --------
 --DATA--
