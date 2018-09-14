@@ -392,13 +392,13 @@ CREATE TRIGGER tri_meta_dates_change_t_datasets
   BEFORE INSERT OR UPDATE
   ON t_datasets
   FOR EACH ROW
-  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 CREATE TRIGGER tri_meta_dates_change_t_acquisition_frameworks
   BEFORE INSERT OR UPDATE
   ON t_acquisition_frameworks
   FOR EACH ROW
-  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 --------------
