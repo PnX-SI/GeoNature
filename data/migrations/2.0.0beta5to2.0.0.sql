@@ -101,3 +101,13 @@ CASE
   WHEN module_name='suivi_chiro' THEN 'suivi_chiro'
   WHEN module_name='suivi_flore_territoire' THEN 'suivi_flore_territoire'
 END;
+
+-- Ajout de synthese dans t_applications et t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'synthese', 'Application synthese de GeoNature', id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
+
+INSERT INTO gn_commons.t_modules (id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+SELECT id_application ,'synthese', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', '', 'true', 'true'
+FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
+
