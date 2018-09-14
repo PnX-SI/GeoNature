@@ -7,7 +7,7 @@ DELETE FROM pr_occtax.t_releves_occtax;
 DELETE FROM gn_meta.cor_dataset_protocol;
 DELETE FROM gn_meta.cor_dataset_territory;
 DELETE FROM gn_meta.cor_dataset_actor;
-DELETE FROM gn_meta.t_datasets;
+TRUNCATE gn_meta.t_datasets CASCADE;
 
 DELETE FROM gn_meta.cor_acquisition_framework_objectif;
 DELETE FROM gn_meta.cor_acquisition_framework_publication;
