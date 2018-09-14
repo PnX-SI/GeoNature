@@ -93,3 +93,11 @@ CASE
   WHEN module_picto='place' THEN 'fa-map-marker'
   WHEN module_picto='file_download' THEN 'fa-download'
 END;
+
+UPDATE gn_commons.t_modules SET module_path = 
+CASE 
+  WHEN module_name='occtax' THEN 'occtax'
+  WHEN module_name='admin' THEN 'admin'
+  WHEN module_name='suivi_chiro' THEN 'suivi_chiro'
+  WHEN module_name='suivi_flore_territoire' THEN 'suivi_flore_territoire'
+END;
