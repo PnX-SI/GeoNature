@@ -106,12 +106,12 @@
     <legend> Comment ?</legend>
 
     <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
-      label="{{ 'Meta.AcquisitionFramework' | translate}}">
+      label="{{ 'MetaData.AcquisitionFramework' | translate}}">
     </pnx-acquisition-frameworks>
 
 
     <pnx-datasets [displayOnlyActive]="false" [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
-      [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'Meta.Datasets' | translate}}">
+      [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset" label="{{ 'MetaData.Datasets' | translate}}">
     </pnx-datasets>
 
   </fieldset>
