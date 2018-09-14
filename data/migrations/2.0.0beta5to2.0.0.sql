@@ -80,3 +80,16 @@ CREATE SEQUENCE gn_commons.t_parameters_id_parameter_seq
 ALTER SEQUENCE gn_commons.t_parameters_id_parameter_seq OWNED BY gn_commons.t_parameters.id_parameter;
 ALTER TABLE ONLY gn_commons.t_parameters ALTER COLUMN id_parameter SET DEFAULT nextval('gn_commons.t_parameters_id_parameter_seq'::regclass);
 SELECT pg_catalog.setval('gn_commons.t_parameters_id_parameter_seq', (SELECT max(id_parameter)+1 FROM gn_commons.t_parameters), false);
+
+
+-- modification de la table gn_commons.t_modules
+ALTER TABLE gn_commons.t_modules RENAME COLUMN module_url TO module_path;
+ALTER TABLE gn_commons.t_modules ADD COLUMN module_external_url character varying(255);
+
+-- passage a fontawesome
+UPDATE gn_commons.t_modules SET module_picto = 
+CASE 
+  WHEN module_picto='extension' THEN 'fa-puzzle-piece'
+  WHEN module_picto='place' THEN 'fa-map-marker'
+  WHEN module_picto='file_download' THEN 'fa-download'
+END;

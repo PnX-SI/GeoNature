@@ -377,7 +377,8 @@ CREATE TABLE t_modules(
   module_picto character varying(255),
   module_desc text,
   module_group character varying(50),
-  module_url character(255) NOT NULL,
+  module_path character(255) NOT NULL,
+  module_external_url character(255) NOT NULL,
   module_target character(10),
   module_comment text,
   active_frontend boolean NOT NULL,
@@ -386,6 +387,8 @@ CREATE TABLE t_modules(
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
 COMMENT ON COLUMN t_modules.module_url IS 'URL absolue vers le chemin de l''application. On peux ainsi référencer des modules externes avec target = "blank".';
 COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';
+COMMENT ON COLUMN t_modules.module_path IS 'url absolue vers le module - si module interne';
+COMMENT ON COLUMN t_modules.external_url IS 'url relative vers le module - si module externe (active_frontend = false)';
 -- Ne surtout pas créer de séquence sur cette table pour associer librement id_module et id_application.
 
 ---------------
@@ -522,3 +525,14 @@ SELECT
 FROM insert_a i
 LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
 LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
+
+----------
+-- DATA --
+----------
+-- insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'synthese', 'Application synthese de GeoNature' id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
+
+INSERT INTO id_module, module_name, module_picto, module_desc, module_group, module_url, module_target, module_comment, active_frontend, active_backend
+id_application ,'Admin', 'extension', 'Backoffice de GeoNature', '', CONCAT('MYURL', 'geonature/#/admin', '_self')
