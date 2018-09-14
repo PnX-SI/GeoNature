@@ -355,12 +355,11 @@ def add_application_db(module_name, url, module_id=None):
                     TModules.module_name == module_name
                 ).one()
             except NoResultFound:
-                update_url = "/#/{}".format(url)
                 new_module = TModules(
                     id_module=module_id,
                     module_name=module_name,
                     module_label=module_name.title(),
-                    module_path=update_url,
+                    module_path=url,
                     module_target="_self",
                     module_picto="fa-puzzle-piece",
                     active_frontend=True,

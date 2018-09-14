@@ -15,23 +15,16 @@ export class SideNavService {
   public modules: Array<any>;
   public home_page;
   public exportModule;
-  public syntheseModule;
 
   constructor(private _api: HttpClient) {
     this.opened = false;
-    this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'home', id: '1' };
+    this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };
 
     this.exportModule = {
       module_url: '/exports',
       module_label: 'Export',
-      module_picto: 'file_download',
+      module_picto: 'fa-download',
       id: '2'
-    };
-    this.syntheseModule = {
-      module_url: '/synthese',
-      module_label: 'Synthese',
-      module_picto: 'extension',
-      id: '3'
     };
   }
 
