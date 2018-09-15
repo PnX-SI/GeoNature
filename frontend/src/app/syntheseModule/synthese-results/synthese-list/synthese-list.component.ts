@@ -157,6 +157,14 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     document.location.href = 'http://127.0.0.1:8000/synthese/export?export_format=csv';
   }
 
+  getRowClass() {
+    return 'row-sm clickable';
+  }
+
+  getHeight() {
+    return 100;
+  }
+
   ngOnChanges(changes) {
     if (changes && changes.inputSyntheseData.currentValue) {
       // reset page 0 when new data appear

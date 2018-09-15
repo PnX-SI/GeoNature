@@ -240,39 +240,30 @@ def export(info_role):
             indent=4
         )
     else:
-        try:
-            filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
+        filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
 
-            dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-            FionaShapeService.create_shapes_struct(
-                db_cols=VSyntheseForExport.db_cols,
-                srid=current_app.config['LOCAL_SRID'],
-                dir_path=dir_path,
-                file_name=file_name,
-                col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
-            )
-            for row in data:
-                geom = row.the_geom_local
-                row_as_dict = row.as_dict_ordered()
-                FionaShapeService.create_feature(row_as_dict, geom)
-
-            FionaShapeService.save_and_zip_shapefiles()
-
-            return send_from_directory(
-                dir_path,
-                file_name+'.zip',
-                as_attachment=True
-            )
-
-        except Exception as e:
-            log.error('Error while exporting shapefiles' + str(e))
-            message = str(e)
-
-        return render_template(
-            'error.html',
-            error=message,
-            redirect=current_app.config['URL_APPLICATION']+"/#/synthese"
+        dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+        FionaShapeService.create_shapes_struct(
+            db_cols=VSyntheseForExport.db_cols,
+            srid=current_app.config['LOCAL_SRID'],
+            dir_path=dir_path,
+            file_name=file_name,
+            col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
         )
+        for row in data:
+            geom = row.the_geom_local
+            row_as_dict = row.as_dict_ordered()
+            FionaShapeService.create_feature(row_as_dict, geom)
+
+        FionaShapeService.save_and_zip_shapefiles()
+
+        return send_from_directory(
+            dir_path,
+            file_name+'.zip',
+            as_attachment=True
+        )
+
+
 
 
 @routes.route('/statuts', methods=['GET'])
@@ -284,16 +275,16 @@ def get_status(info_role):
 
     filters = dict(request.args)
 
-    q = DB.session.query(distinct(Synthese.cd_nom), Taxref, TaxrefProtectionArticles).join(
-        Taxref, Taxref.cd_nom == Synthese.cd_nom
+    q = DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles).join(
+        Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
-        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == Synthese.cd_nom
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
         TaxrefProtectionArticles, TaxrefProtectionArticles.cd_protection == TaxrefProtectionEspeces.cd_protection
     )
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = synthese_query.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     data = q.all()
 
     protection_status = []
