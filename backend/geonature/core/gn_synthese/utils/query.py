@@ -50,6 +50,7 @@ def filter_taxonomy(model, q, filters):
         -Tuple: the SQLAlchemy query and the filter dictionnary
     """
     if 'cd_ref' in filters:
+        from flask import request
         # find all cd_nom where cd_ref = filter['cd_ref']
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
@@ -66,7 +67,7 @@ def filter_taxonomy(model, q, filters):
 
     if 'taxonomy_lr' in filters:
         sub_query_lr = DB.session.query(TaxrefLR.cd_nom).filter(
-            TaxrefLR.id_categorie_france == filters.pop('taxonomy_lr')
+            TaxrefLR.id_categorie_france.in_(filters.pop('taxonomy_lr'))
         ).subquery('sub_query_lr')
         # est-ce qu'il faut pas filtrer sur le cd_ ref ?
         # quid des protection définit à rand superieur de la saisie ?
@@ -167,7 +168,6 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
                 func.to_date(period_end, 'DD-MM')
             )
         ))
-
     q, filters = filter_taxonomy(model, q, filters)
 
     # generic filters
@@ -183,5 +183,5 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         else:
             col = getattr(model.__table__.columns, colname)
             q = q.filter(col.in_(value))
-
+    print(q)
     return q
