@@ -81,7 +81,7 @@ MANDATORY_COLUMNS = [
 
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [
-    {'prop': 'nom_valide', 'name': 'Taxon'},
+    {'prop': 'nom_vern_or_lb_nom', 'name': 'Taxon'},
     {'prop': 'date_min', 'name': 'Date obs'},
     {'prop': 'dataset_name', 'name': 'JDD'},
     {'prop': 'observers', 'name': 'observateur'}

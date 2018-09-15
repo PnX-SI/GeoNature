@@ -129,8 +129,7 @@ def get_synthese(info_role):
         VSyntheseForWebApp.date_min.desc()
     )
     nb_total = 0
-    if result_limit != '100':
-        nb_total = q.count()
+
     data = q.limit(result_limit)
     columns = current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
     features = []
@@ -138,10 +137,11 @@ def get_synthese(info_role):
         feature = d.get_geofeature(
             columns=current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
         )
+        feature['properties']['nom_vern_or_lb_nom'] = d.lb_nom if d.nom_vern is None else d.nom_vern
         features.append(feature)
     return {
         'data': FeatureCollection(features),
-        'nb_obs_limited': nb_total >= current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
+        'nb_obs_limited': nb_total == current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
         'nb_total': nb_total
     }
 
