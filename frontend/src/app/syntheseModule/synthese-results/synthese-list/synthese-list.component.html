@@ -15,7 +15,7 @@
 <ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
   [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'"
-  [count]="mapListService.tableData.length" [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'"
+  [count]="mapListService.tableData.length" [limit]="rowNumber" [rowHeight]="5" [rowClass]="getRowClass" [rowHeight]="'auto'"
   (select)="mapListService.onRowSelect($event)">
 
 
@@ -65,15 +65,15 @@
     </ng-template>
   </ngx-datatable-column> -->
 
-  <ngx-datatable-column maxWidth="10">
+  <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
       <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(modalInfoObs, row);">
         <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
       </button>
     </ng-template>
-  </ngx-datatable-column> -->
+  </ngx-datatable-column>
 
-  <ngx-datatable-column maxWidth="10">
+  <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
       <button *ngIf="row.url_source" class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="backToModule(row.url_source, row.entity_source_pk_value)">
         <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
