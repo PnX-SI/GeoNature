@@ -150,7 +150,13 @@ export class SyntheseListComponent implements OnInit, OnChanges {
       size: 'lg'
     });
 
-    modalRef.componentInstance.queryString = this.getQueryString();
+    let queryString = this.getQueryString();
+    // if the search form has not been touched, download the last 100 obs
+    if (this._fs.searchForm.pristine) {
+      queryString = queryString.set('limit', '100');
+    }
+    modalRef.componentInstance.queryString = queryString;
+
   }
 
   downloadData() {

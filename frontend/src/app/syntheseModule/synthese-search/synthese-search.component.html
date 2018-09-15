@@ -120,23 +120,13 @@
   <pre>form value: <br>{{formService.searchForm.controls.period_start.valid | json}}</pre> -->
   <div class="card-body">
     <div class="search-btn">
-      <button (click)="refreshFilters()" class="btn btn-danger" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
+      <button (click)="refreshFilters()" class="btn btn-sm btn-danger" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
         <i class="fa fa-trash-o"></i>
       </button>
-      <button class="btn btn-success" (click)="onSubmitForm()">Rechercher</button>
+      <button class="btn btn-sm btn-success" (click)="onSubmitForm()">Rechercher</button>
     </div>
 
   </div>
 </div>
 
 
-
-<ng-template #taxonTreeModal id="modal-download" let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h5 class="modal-title" id="modalLabel"> Filtres taxonomiques avancés </h5>
-    <button type="button" class="close" aria-label="Close" (click)=" d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-
-</ng-template>
