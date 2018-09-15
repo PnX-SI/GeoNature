@@ -9,7 +9,7 @@ import { TaxonAdvancedStoreService } from './taxon-advanced-store.service';
 import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
-  selector: 'pnx-taxon-tree',
+  selector: 'pnx-taxon-advanced',
   templateUrl: './taxon-advanced.component.html',
   providers: [DynamicFormService],
   styleUrls: ['./taxon-advanced.component.scss']
@@ -50,6 +50,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
+    console.log('init');
     // if the modal has already been open, reload the former state of the taxon tree
     if (this.storeService.taxonTreeState) {
       this.storeService.treeModel.setState(this.storeService.taxonTreeState);

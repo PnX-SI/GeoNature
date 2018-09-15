@@ -47,10 +47,29 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
 
   ngOnInit() {
+    console.log('init multi')
     this.debounceTime = this.debounceTime || 100;
     this.disabled = this.disabled || false;
     this.searchBar = this.searchBar || false;
     this.displayAll = this.displayAll || false;
+
+    // set the value
+    if (this.values && this.parentFormControl.value) {
+      if (this.bindAllItem) {
+        this.values.forEach(value => {
+          if (this.parentFormControl.value.indexOf(value) !== -1) {
+            this.selectedItems.push(value);
+          }
+        });
+      } else {
+        this.values.forEach(value => {
+          if (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1) {
+            this.selectedItems.push(value);
+          }
+        })
+      }
+
+    }
 
     // subscribe and output on the search bar
     this.searchControl.valueChanges
@@ -62,6 +81,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
+      console.log(value);
       // filter the list of options to not display twice an item
       if (value === null) {
         this.selectedItems = [];
