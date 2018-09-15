@@ -172,3 +172,5 @@ INSERT INTO gn_commons.t_modules (id_module, module_name, module_label, module_p
 SELECT id_application ,'synthese', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', '', 'true', 'true'
 FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
 
+--Création du schéma gn_imports
+CREATE SCHEMA gn_imports;
