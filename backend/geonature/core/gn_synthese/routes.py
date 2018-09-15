@@ -112,9 +112,7 @@ def get_synthese(info_role):
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
     """
-
-    filters = dict(request.args)
-
+    filters = {key: value[0].split(',') for key, value in dict(request.args).items()}
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:

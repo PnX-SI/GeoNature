@@ -36,11 +36,12 @@ export class DataService {
     let queryUrl = new HttpParams();
     for (let key in params) {
       if (isArray(params[key])) {
-        queryUrl = queryUrl.append(key, params[key]);
+        queryUrl = queryUrl.set(key, params[key]);
       } else {
         queryUrl = queryUrl.set(key, params[key]);
       }
     }
+    console.log(queryUrl.toString())
     return queryUrl;
   }
   getSyntheseData(params) {

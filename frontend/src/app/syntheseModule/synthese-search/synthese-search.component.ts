@@ -42,6 +42,7 @@ export class SyntheseSearchComponent implements OnInit {
     // mark as dirty to avoid set limit=100 when download
     this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
+    console.log(updatedParams);
     this.searchClicked.emit(updatedParams);
   }
 
@@ -60,6 +61,5 @@ export class SyntheseSearchComponent implements OnInit {
       backdrop: 'static',
       keyboard: false
     });
-    // this.taxonModal.componentInstance.closeBtnName = 'close';
   }
 }

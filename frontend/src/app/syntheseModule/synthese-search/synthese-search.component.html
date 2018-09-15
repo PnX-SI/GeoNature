@@ -13,8 +13,9 @@
         <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
       </p>
     </div>
-    <button (click)="openModal($event, taxonTreeModal)" class="btn btn-xs btn-outline-secondary advanced"> Avancé
-      (Taxonomie)</button>
+    <button (click)="openModal($event, advancedTaxon)" class="btn btn-xs btn-outline-secondary advanced"> Avancé
+      (Taxonomie)
+    </button>
 
     <button class="btn btn-xs btn-outline-secondary advanced" data-toggle="collapse" data-target="#OccAdvanved"
       aria-expanded="false" aria-controls="OccAdvanved">
@@ -26,8 +27,8 @@
     </span>
 
     <div class="collapse advanced" id="OccAdvanved">
-      <div class="card card-body">
-        <small> Filtres occurrence de taxon </small>
+      <div class="card card-body padding-sm">
+        <small> Sélectionner un filtre </small>
         <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="formService.dynamycFormDef">
         </pnx-dynamic-form-generator>
 
@@ -114,10 +115,7 @@
   </fieldset>
 
 
-
-
-  <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre>
-  <pre>form value: <br>{{formService.searchForm.controls.period_start.valid | json}}</pre> -->
+  <!-- <pre>form value: <br>{{formService.searchForm.controls.period_start.valid | json}}</pre> -->
   <div class="card-body">
     <div class="search-btn">
       <button (click)="refreshFilters()" class="btn btn-sm btn-danger" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
@@ -125,6 +123,7 @@
       </button>
       <button class="btn btn-sm btn-success" (click)="onSubmitForm()">Rechercher</button>
     </div>
+    form value: {{formService.searchForm.value | json}}
 
   </div>
 </div>
