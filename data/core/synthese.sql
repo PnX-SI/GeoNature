@@ -685,6 +685,7 @@ CREATE VIEW gn_synthese.v_synthese_for_web_app AS
     t.cd_nom,
     t.cd_ref,
     t.nom_valide,
+    t.lb_nom,
     t.nom_vern
   FROM gn_synthese.synthese s
   JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
