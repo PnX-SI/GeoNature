@@ -17,7 +17,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
-  ['rdf', 'application/rdf+xml'],
   ['shp', 'application/zip']
 ]);
 

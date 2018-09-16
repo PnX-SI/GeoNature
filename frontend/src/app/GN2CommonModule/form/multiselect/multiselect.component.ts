@@ -66,7 +66,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
           if (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1) {
             this.selectedItems.push(value);
           }
-        })
+        });
       }
 
     }
