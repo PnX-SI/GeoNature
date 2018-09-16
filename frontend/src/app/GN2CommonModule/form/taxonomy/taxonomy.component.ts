@@ -109,7 +109,9 @@ export class TaxonomyComponent implements OnInit {
             { 'regne': this.regneControl.value, 'group2_inpn': this.groupControl.value })
             //.searchTaxonomy(value, this.idList, this.regneControl.value, this.groupControl.value)
             .catch(err => {
-              this._commonService.translateToaster('error', 'ErrorMessage');
+              if (err.status_code === 500) {
+                this._commonService.translateToaster('error', 'ErrorMessage');
+              }
               return of([]);
             });
         } else {

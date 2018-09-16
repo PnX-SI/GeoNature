@@ -133,7 +133,7 @@ def get_synthese(info_role):
     features = []
     for d in data:
         feature = d.get_geofeature(
-            columns=current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
+            columns=columns
         )
         feature['properties']['nom_vern_or_lb_nom'] = d.lb_nom if d.nom_vern is None else d.nom_vern
         features.append(feature)

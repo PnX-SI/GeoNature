@@ -509,15 +509,12 @@ $BODY$
 
   -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
-        FOR id_area_loop IN (
-        SELECT a.id_area
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese,
+        a.id_area
         FROM ref_geo.l_areas a
         JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
-        WHERE s.id_synthese = NEW.id_synthese
-        )
-        LOOP
-          EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
-        END LOOP;
+        WHERE s.id_synthese = NEW.id_synthese;
     END IF;
   RETURN NULL;
   END;
