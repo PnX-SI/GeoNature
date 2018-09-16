@@ -107,7 +107,7 @@ SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE lower(name_
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
 FROM gn_commons.t_validations v
-JOIN utilisateurs.t_roles r ON v.id_validator = r.id_role
+LEFT JOIN utilisateurs.t_roles r ON v.id_validator = r.id_role
 WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 
 -- Récupération du status_source depuis le JDD
@@ -179,8 +179,8 @@ VALUES(
   id_source,
   new_count.id_counting_occtax,
   releve.id_dataset,
-  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - a ajouter dans default_nomenclature du schema occtax
-  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'In') ,
+  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
+  pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
   releve.id_nomenclature_grp_typ,
   occurrence.id_nomenclature_obs_meth,
   releve.id_nomenclature_obs_technique,
@@ -222,7 +222,7 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT('Relevé : ',releve.comment, 'Occurrence: ', occurrence.comment),
+  CONCAT('Relevé : ', COALESCE(releve.comment, ' aucun '), 'Occurrence: ', COALESCE(occurrence.comment, ' aucun')),
   'I'
 );
 
@@ -636,7 +636,7 @@ DECLARE
   nb_counting integer;
 BEGIN
   -- recupération de l'id_source
-  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
+  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'occtax';
   SELECT INTO the_id_synthese id_synthese
   FROM gn_synthese.synthese
   WHERE id_source = the_id_source AND entity_source_pk_value = to_char(OLD.id_counting_occtax, 'FM9999');
@@ -665,7 +665,7 @@ DECLARE
 BEGIN
 
   -- recupération de l'id_source
-  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
+  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'occtax';
   -- update dans la synthese
   UPDATE gn_synthese.synthese
   SET
@@ -694,7 +694,7 @@ DECLARE
   counting RECORD;
 BEGIN
   -- recupération de l'id_source
-  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
+  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'occtax';
   -- récupération du releve pour le commentaire à concatener
   SELECT INTO releve * FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = NEW.id_releve_occtax;
 
@@ -739,7 +739,7 @@ DECLARE
   counting RECORD;
 BEGIN
   -- recupération de l'id_source
-  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
+  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'occtax';
   -- suppression dans la synthese
   FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax LOOP
     SELECT INTO the_id_synthese id_synthese
@@ -769,15 +769,25 @@ DECLARE
   the_id_source integer;
   occurrence RECORD;
   counting RECORD;
+  theobservers character varying;
   role RECORD;
 BEGIN
+  IF NEW.observers_txt IS NULL THEN
+    SELECT INTO theobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+    FROM pr_occtax.cor_role_releves_occtax cor
+    JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+    JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = cor.id_releve_occtax
+    WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  ELSE 
+    theobservers:= observers_txt;
+  END IF;
   -- recupération de l'id_source
-  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
+  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'occtax';
   FOR occurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax LOOP
     FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = occurrence.id_occurrence_occtax LOOP
       UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
-      observers = NEW.observers_txt,
+      observers = theobservers,
       id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
@@ -808,7 +818,7 @@ DECLARE
   occurrence RECORD;
   counting RECORD;
 BEGIN
-  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source = 'occtax';
+  SELECT INTO the_id_source id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'occtax';
     FOR occurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = OLD.id_releve_occtax LOOP
       FOR counting IN SELECT * FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = occurrence.id_occurrence_occtax LOOP
         SELECT INTO the_id_synthese id_synthese
@@ -838,7 +848,7 @@ DECLARE
 
 BEGIN
 -- recupération de l'id_source
-  SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
+  SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_id_countings pr_occtax.get_id_counting_from_id_releve(NEW.id_releve_occtax::integer);
 
@@ -875,7 +885,7 @@ DECLARE
 BEGIN
 
 -- recupération de l'id_source
-  SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
+  SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_id_countings pr_occtax.get_id_counting_from_id_releve(NEW.id_releve_occtax::integer);
   IF the_id_countings IS NOT NULL THEN
@@ -909,7 +919,7 @@ DECLARE
 
 BEGIN
 -- recupération de l'id_source
-  SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source = 'occtax';
+  SELECT INTO the_id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_id_countings pr_occtax.get_id_counting_from_id_releve(OLD.id_releve_occtax::integer);
   IF the_id_countings IS NOT NULL THEN
