@@ -77,6 +77,7 @@ DEFAULT_COLUMNS_API_SYNTHESE = [
 MANDATORY_COLUMNS = [
     'entity_source_pk_value',
     'url_source',
+    'cd_nom'
 ]
 
 # CONFIG MAP-LIST

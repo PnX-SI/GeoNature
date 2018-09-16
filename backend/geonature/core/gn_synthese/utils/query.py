@@ -171,15 +171,16 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
     q, filters = filter_taxonomy(model, q, filters)
 
     # generic filters
+    join_on_cor_area = False
     for colname, value in filters.items():
         if colname.startswith('area'):
-            q = q.join(
-                CorAreaSynthese,
-                CorAreaSynthese.id_synthese == model.id_synthese
-            )
-            q = q.filter(CorAreaSynthese.id_area.in_(
-                [a['id_area'] for a in value]
-            ))
+            if not join_on_cor_area:
+                q = q.join(
+                    CorAreaSynthese,
+                    CorAreaSynthese.id_synthese == model.id_synthese
+                )
+            q = q.filter(CorAreaSynthese.id_area.in_(value))
+            join_on_cor_area = True
         else:
             col = getattr(model.__table__.columns, colname)
             q = q.filter(col.in_(value))

@@ -11,6 +11,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ModalInfoObsComponent } from './modal-info-obs/modal-info-obs.component';
 
 
 
@@ -84,24 +85,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(event.target.innerHeight / 62);
   }
 
-  loadOneSyntheseReleve(row) {
-    this._ds.getOneSyntheseObservation(row.id_synthese).subscribe(data => {
-      this.selectedObs = data;
-      this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
-        this.selectedObs['cd_nom']
-        }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
-    });
-
-    this.dataService
-      .getTaxonAttributsAndMedia(row.taxon.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
-      .subscribe(data => {
-        this.selectObsTaxonInfo = data;
-      });
-
-    this.dataService.getTaxonInfo(row.taxon.cd_nom).subscribe(data => {
-      this.selectedObsTaxonDetail = data;
-    });
-  }
 
   toggleExpandRow(row) {
     // if click twice on same row
@@ -120,11 +103,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     }
   }
 
-  openDeleteModal(event, modal, iElement, row) {
-    this.mapListService.selectedRow = [];
-    this.mapListService.selectedRow.push(row);
-    this.ngbModal.open(modal);
-  }
 
   backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
@@ -155,12 +133,13 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     return this._ds.buildQueryUrl(formatedParams);
   }
 
-  openInfoModal(modal, row) {
-    this.ngbModal.open(modal, {
+  openInfoModal(row) {
+    const modalRef = this.ngbModal.open(ModalInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal'
     });
-    this.loadOneSyntheseReleve(row);
+    console.log(row);
+    modalRef.componentInstance.oneObsSynthese = row;
   }
 
   openDownloadModal() {
