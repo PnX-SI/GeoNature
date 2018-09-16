@@ -154,21 +154,24 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
       // remove doublon in the dropdown lists
-      this.values = changes.values.currentValue.filter(v => {
-        let isInArray = false;
-        this.formControlValue.forEach(element => {
-          if (this.bindAllItem) {
-            if (v === element) {
-              isInArray = true;
+      if (this.formControlValue) {
+        this.values = changes.values.currentValue.filter(v => {
+          let isInArray = false;
+          this.formControlValue.forEach(element => {
+            if (this.bindAllItem) {
+              if (v === element) {
+                isInArray = true;
+              }
+            } else {
+              if (v[this.keyValue] === element[this.keyValue]) {
+                isInArray = true;
+              }
             }
-          } else {
-            if (v[this.keyValue] === element[this.keyValue]) {
-              isInArray = true;
-            }
-          }
+          });
+          return !isInArray;
         });
-        return !isInArray;
-      });
+      }
+
     }
   }
 }

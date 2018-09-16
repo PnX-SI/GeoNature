@@ -593,11 +593,11 @@ LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
 ----------
 -- DATA --
 ----------
--- insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
--- INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
--- SELECT 'admin', 'Application backoffice de GeoNature', id_application
--- FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
+--insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'admin', 'Application backoffice de GeoNature', id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
 
--- INSERT INTO id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend
--- SELECT id_application ,'admin', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', '', 'true', 'true'
--- FROM utilisateurs.t_applications WHERE nom_application = 'admin';
+INSERT INTO gn_commons.t_modules(id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+SELECT id_application ,'admin', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', '', 'true', 'true'
+FROM utilisateurs.t_applications WHERE nom_application = 'admin';

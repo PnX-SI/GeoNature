@@ -95,7 +95,7 @@ CREATE TABLE t_acquisition_frameworks (
     target_description text,
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
-    is_parent integer,
+    is_parent boolean,
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,
     meta_create_date timestamp without time zone NOT NULL,
