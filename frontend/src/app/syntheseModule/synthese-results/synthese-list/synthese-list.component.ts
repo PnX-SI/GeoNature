@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, HostListener, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, HostListener, AfterContentChecked, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { DataService } from '../../services/data.service';
@@ -10,13 +10,16 @@ import { HttpParams } from '@angular/common/http/src/params';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+
+
 
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
   styleUrls: ['synthese-list.component.scss']
 })
-export class SyntheseListComponent implements OnInit, OnChanges {
+export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public selectedObs: any;
   public selectObsTaxonInfo: any;
@@ -26,8 +29,11 @@ export class SyntheseListComponent implements OnInit, OnChanges {
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
   public downloadMessage: string;
+  //input the resize datatable on searchbar toggle
+  @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
-  @ViewChild('table') table: any;
+  @ViewChild('table') table: DatatableComponent;
+  private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
     private _ds: DataService,
@@ -35,7 +41,8 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     private _commonService: CommonService,
     private _fs: SyntheseFormService,
     private dataService: DataFormService,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    public ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -58,6 +65,17 @@ export class SyntheseListComponent implements OnInit, OnChanges {
       const page = Math.trunc(i / this.rowNumber);
       this.table.offset = page;
     });
+  }
+
+  ngAfterContentChecked() {
+    if (this.table && this.table.element.clientWidth !== this._latestWidth) {
+      this._latestWidth = this.table.element.clientWidth;
+      if (this.searchBarHidden) {
+        this.table.recalculate();
+        this.ref.markForCheck();
+      }
+
+    }
   }
 
   // update the number of row per page when resize the window
@@ -159,22 +177,17 @@ export class SyntheseListComponent implements OnInit, OnChanges {
 
   }
 
-  downloadData() {
-    document.location.href = 'http://127.0.0.1:8000/synthese/export?export_format=csv';
-  }
 
   getRowClass() {
     return 'row-sm clickable';
   }
 
-  getHeight() {
-    return 100;
-  }
 
   ngOnChanges(changes) {
-    if (changes && changes.inputSyntheseData.currentValue) {
+    if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
       // reset page 0 when new data appear
       this.table.offset = 0;
     }
   }
 }
+

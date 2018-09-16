@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ContentChildren } from '@angular/core';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -9,10 +9,12 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
-  templateUrl: 'synthese.component.html'
+  templateUrl: 'synthese.component.html',
 })
 export class SyntheseComponent implements OnInit {
-  @ViewChild('toManyObsModal') toManyObsModal: ElementRef;
+  public searchBarHidden = false;
+  public marginButton: number;
+
   constructor(
     public searchService: DataService,
     private _mapListService: MapListService,
@@ -25,7 +27,6 @@ export class SyntheseComponent implements OnInit {
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
       result => {
-        console.log(result);
         if (result['nb_obs_limited']) {
           const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
             size: 'lg'
@@ -52,6 +53,17 @@ export class SyntheseComponent implements OnInit {
   ngOnInit() {
     const initialData = { limit: 100 };
     this.loadAndStoreData(initialData);
+  }
+
+  mooveButton() {
+    this.searchBarHidden = !this.searchBarHidden;
+    const test = document.getElementById('sidebar');
+    if (test.classList.contains('show')) {
+      this.marginButton = 0;
+    } else {
+      this.marginButton = 248;
+    }
+
   }
 
   formatDate(unformatedDate) {

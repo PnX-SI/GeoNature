@@ -52,3 +52,65 @@
   -webkit-animation: spin 0.8s linear infinite;
   animation: spin 0.8s linear infinite;
 }
+
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+
+
+#sidebar {
+  width: 250px;
+  // min-width: 250px;
+  // max-width: 250px;
+}
+
+#sidebar.active {
+  margin-left: -250px;
+}
+
+
+.btn-toogle-sidenav {
+  z-index: 10000;
+  position: absolute;
+  left: 248px;
+  padding: 0px 5px;
+  padding: 0px 5px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+}
+.btn-toogle-sidenav:focus{
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+}
+
+
+#sidebar.active .btn-toogle-sidenav {
+  z-index: 10000;
+  position: absolute;
+  left: 0px;
+  padding: 0px 5px;
+  padding: 0px 5px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+}
+
+.page-content{
+  width: 100%;
+}
+
+
+
+a[data-toggle="collapse"] {
+  position: relative;
+}
+
+.dropdown-toggle::after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
