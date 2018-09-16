@@ -174,3 +174,10 @@ FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
 
 --Création du schéma gn_imports
 CREATE SCHEMA gn_imports;
+
+
+---------------
+----GN_META----
+---------------
+ALTER TABLE gn_meta.t_acquisition_frameworks
+ALTER COLUMN is_parent TYPE boolean USING is_parent::boolean;

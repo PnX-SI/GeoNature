@@ -127,7 +127,7 @@ def get_acquisition_framework(id_acquisition_framework):
     """
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if af:
-        return af.as_dict()
+        af_dict = af.as_dict(True)
     return None
 
 
@@ -141,7 +141,7 @@ def post_acquisition_framework():
     af = TAcquisitionFramework(**data)
 
     for cor in cor_af_actor:
-        af.cor_af_actor.append(cor_af_actor(**cor))
+        af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
 
     DB.session.add(af)
     DB.session.commit()
