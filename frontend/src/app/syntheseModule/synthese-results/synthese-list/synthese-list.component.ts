@@ -54,7 +54,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 36);
+    this.rowNumber = Math.trunc(h / 37);
 
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe(id => {
@@ -86,7 +86,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   // update the number of row per page when resize the window
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.rowNumber = Math.trunc(event.target.innerHeight / 36);
+    this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
   toggleExpandRow(row) {
