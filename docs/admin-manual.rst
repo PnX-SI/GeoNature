@@ -4,10 +4,10 @@ MANUEL ADMINISTRATEUR
 Architecture
 ------------
 
-GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner:
+GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner :
 
-- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (liste, organisme, droits) utilisable par les différentes applications de son système d'information.
-- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellemenet nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
+- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d'information.
+- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude et les intersections spatiales.
 
@@ -21,7 +21,7 @@ Base de données
 
 Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l'architecture du modèle de données a été complétement revue.
 
-La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183)
+La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183).
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
@@ -112,47 +112,57 @@ La base de données contient de nombreuses fonctions.
 |                                      |                               |                      | d'une observation avec tous les zonages|
 +--------------------------------------+-------------------------------+----------------------+----------------------------------------+
 
+**pr_occtax**
+
+pr_occtax.get_id_counting_from_id_releve(my_id_releve integer) RETURNS integer[]
+-- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+
+get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
+--Return -1 if nothing matche with given parameters
+
+pr_occtax.insert_in_synthese(my_id_counting integer) RETURNS integer[]
+
 **ref_nomenclatures**
 
-CREATE OR REPLACE FUNCTION get_id_nomenclature_type(mytype character varying) RETURNS integer
-IMMUTABLE
+get_id_nomenclature_type(mytype character varying) RETURNS integer
 --Function which return the id_type from the mnemonique of a nomenclature type
 
-CREATE OR REPLACE FUNCTION get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
+get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
 --Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
 --Return -1 if nothing matche with given parameters
 
-CREATE OR REPLACE FUNCTION check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
+check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
 --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
 
-CREATE OR REPLACE FUNCTION check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
+check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
 --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
 
-CREATE OR REPLACE FUNCTION check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
+check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
 --Function that checks if an id_nomenclature matches with wanted nomenclature type (use id_type)
 
-CREATE OR REPLACE FUNCTION get_id_nomenclature(
+get_id_nomenclature(
 mytype character varying,
 mycdnomenclature character varying)
 RETURNS integer
 --Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
 
-CREATE OR REPLACE FUNCTION get_nomenclature_label(
+get_nomenclature_label(
 myidnomenclature integer,
 mylanguage character varying
 )
 RETURNS character varying
 --Function which return the label from the id_nomenclature and the language
 
-CREATE OR REPLACE FUNCTION get_cd_nomenclature(myidnomenclature integer)
+get_cd_nomenclature(myidnomenclature integer)
 RETURNS character varying
 --Function which return the cd_nomenclature from an id_nomenclature
 
-CREATE FUNCTION get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying)
+get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying)
 RETURNS SETOF integer
 --Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
 
-CREATE OR REPLACE FUNCTION calculate_sensitivity(
+calculate_sensitivity(
 mycdnom integer,
 mynomenclatureid integer)
 RETURNS integer
