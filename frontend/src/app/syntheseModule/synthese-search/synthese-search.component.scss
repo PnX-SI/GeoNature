@@ -79,3 +79,12 @@ legend {
 .absolute {
   //position: absolute;
 }
+
+:host /deep/ ngb-typeahead-window > button > span {
+  font-size: 12px !important;
+  cursor: pointer;
+}
+
+:host /deep/ ngb-typeahead-window > button {
+  padding-left: 5px;
+}
