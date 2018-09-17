@@ -197,8 +197,10 @@ $BODY$
 
 -- Ajout de codes pour tous les bib_areas_types
 
-UPDATE ref_geo.bib_areas_types SET type_code = 'ZNIEFF2' WHERE type_name = 'ZNIEFF2';
-UPDATE ref_geo.bib_areas_types SET type_code = 'ZNIEFF1' WHERE type_name = 'ZNIEFF1';
+UPDATE ref_geo.bib_areas_types SET type_code = 'ZNIEFF2' WHERE type_name = 'znieff2';
+UPDATE ref_geo.bib_areas_types SET type_code = 'ZNIEFF1' WHERE type_name = 'znieff1';
+UPDATE ref_geo.bib_areas_types SET type_name = 'ZNIEFF2' WHERE type_name = 'znieff2';
+UPDATE ref_geo.bib_areas_types SET type_name = 'ZNIEFF1' WHERE type_name = 'znieff1';
 UPDATE ref_geo.bib_areas_types SET type_code = 'APB' WHERE type_name = 'Aires de protection de biotope';
 UPDATE ref_geo.bib_areas_types SET type_code = 'RNN' WHERE type_name = 'Réserves naturelles nationales';
 UPDATE ref_geo.bib_areas_types SET type_code = 'RNR' WHERE type_name = 'Réserves naturelles regionales';
