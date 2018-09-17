@@ -10,10 +10,11 @@
           <p class="taxon-list">
             <b> Taxon(s) recherché(s):</b>
           </p>
-          <p class="taxon-list" *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index">
-            - {{taxon.nom_valide}}
+          <li class="taxon-list" *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index">
+            {{taxon.nom_valide}}
             <i (click)="formService.removeTaxon(i)" class="fa fa-times clickable"></i>
-          </p>
+          </li>
+
         </div>
         <button (click)="openModal($event, advancedTaxon)" class="btn btn-xs btn-outline-secondary advanced"> Avancé
           (Taxonomie)
