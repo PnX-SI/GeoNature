@@ -256,3 +256,11 @@ CREATE SCHEMA gn_imports;
 ---------------
 ALTER TABLE gn_meta.t_acquisition_frameworks
 ALTER COLUMN is_parent TYPE boolean USING is_parent::boolean;
+
+
+-----------------
+--GN_MONITORING--
+-----------------
+
+ALTER TABLE gn_monitoring.t_base_visits ADD COLUMN visit_date_max date;
+ALTER TABLE gn_monitoring.t_base_visits RENAME COLUMN visit_date TO visit_date_min;
