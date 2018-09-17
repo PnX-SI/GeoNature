@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, ViewChild, HostListener, AfterContentChecked, OnChanges, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  HostListener,
+  AfterContentChecked,
+  OnChanges,
+  ChangeDetectorRef
+} from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { DataService } from '../../services/data.service';
@@ -7,13 +16,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/src/params';
-import { DataFormService } from '@geonature_common/form/data-form.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ModalInfoObsComponent } from './modal-info-obs/modal-info-obs.component';
-
-
 
 @Component({
   selector: 'pnx-synthese-list',
@@ -30,7 +36,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
   public downloadMessage: string;
-  //input the resize datatable on searchbar toggle
+  //input to resize datatable on searchbar toggle
   @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table') table: DatatableComponent;
@@ -41,15 +47,14 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public ngbModal: NgbModal,
     private _commonService: CommonService,
     private _fs: SyntheseFormService,
-    private dataService: DataFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 62);
+    this.rowNumber = Math.trunc(h / 36);
 
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe(id => {
@@ -75,16 +80,14 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
         this.table.recalculate();
         this.ref.markForCheck();
       }
-
     }
   }
 
   // update the number of row per page when resize the window
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.rowNumber = Math.trunc(event.target.innerHeight / 62);
+    this.rowNumber = Math.trunc(event.target.innerHeight / 36);
   }
-
 
   toggleExpandRow(row) {
     // if click twice on same row
@@ -102,7 +105,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       this.previousRow = row;
     }
   }
-
 
   backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
@@ -153,14 +155,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       queryString = queryString.set('limit', '100');
     }
     modalRef.componentInstance.queryString = queryString;
-
   }
-
 
   getRowClass() {
     return 'row-sm clickable';
   }
-
 
   ngOnChanges(changes) {
     if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
@@ -169,4 +168,3 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     }
   }
 }
-

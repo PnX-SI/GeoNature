@@ -9,7 +9,7 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
-  templateUrl: 'synthese.component.html',
+  templateUrl: 'synthese.component.html'
 })
 export class SyntheseComponent implements OnInit {
   public searchBarHidden = false;
@@ -21,7 +21,7 @@ export class SyntheseComponent implements OnInit {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService
-  ) { }
+  ) {}
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
@@ -56,12 +56,11 @@ export class SyntheseComponent implements OnInit {
   mooveButton() {
     this.searchBarHidden = !this.searchBarHidden;
     const test = document.getElementById('sidebar');
-    if (test.classList.contains('show')) {
-      this.marginButton = 0;
-    } else {
-      this.marginButton = 248;
-    }
-
+    // if (test.classList.contains('show')) {
+    //   this.marginButton = 0;
+    // } else {
+    //   this.marginButton = 248;
+    // }
   }
 
   formatDate(unformatedDate) {

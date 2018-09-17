@@ -1,10 +1,8 @@
-
 <!--Table-->
 <ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
-  [headerHeight]="50" [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'"
-  [count]="mapListService.tableData.length" [limit]="rowNumber" [rowHeight]="5" [rowClass]="getRowClass" [rowHeight]="'auto'"
-  (select)="mapListService.onRowSelect($event)">
+  [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
+  [limit]="rowNumber" [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)">
 
 
   <!-- <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
@@ -71,7 +69,8 @@
 
 
   <!-- DATA COLOMNS -->
-  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND " [name]="col.name " [prop]="col.prop ">
+  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND " [name]="col.name " [prop]="col.prop"
+    [maxWidth]="col.max_width">
   </ngx-datatable-column>
 </ngx-datatable>
 
@@ -102,6 +101,6 @@
 </pnx-modal-download> -->
 
 <!-- MODAL INFO OBS -->
-<ng-template #modalInfoObs let-c="close " let-d="dismiss" >
+<ng-template #modalInfoObs let-c="close " let-d="dismiss">
   <pnx-synthese-modal-info-obs></pnx-synthese-modal-info-obs>
 </ng-template>
