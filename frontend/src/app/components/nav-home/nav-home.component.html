@@ -3,17 +3,17 @@
     <mat-sidenav  class="appnav" id="app-sidenav" #sidenav mode="side" [opened]="_sideNavService.opened">
       <pnx-sidenav-items ></pnx-sidenav-items>
     </mat-sidenav>
-    
+
 
     <mat-sidenav-content>
       <mat-toolbar id="app-toolbar" class="row">
-        
+
             <mat-icon (click)="closeSideBar()" class="icon-toolbar clickable">apps</mat-icon>
             <span id="module-name"> {{moduleName}}</span>
-            <img src="custom/images/logo_structure.png" alt="" width="200px">
+            <img src="custom/images/logo_structure.png" alt="" width="50px">
             <span class="toolbar-spacer"></span>
             <div>
-              
+
             </div>
             <span id="appName"> <h3> {{appConfig.appName}}</h3> </span>
             <span class="toolbar-spacer"></span>
@@ -27,7 +27,7 @@
                 <a class="dropdown-item" (click)="changeLanguage('cn')" href="#">{{ 'Languages.Chinese' | translate }}</a>
               </div>
             </div>
-              <mat-icon class="clickable toolbar-rigth" (click)="_authService.logout()" matTooltip="{{ 'LogOut' | translate }}" >exit_to_app</mat-icon>    
+              <mat-icon class="clickable toolbar-rigth" (click)="_authService.logout()" matTooltip="{{ 'LogOut' | translate }}" >exit_to_app</mat-icon>
 
 
       </mat-toolbar>

@@ -14,7 +14,7 @@ import { TaxonAdvancedModalComponent } from './synthese-search/taxon-advanced/ta
 import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { TaxonAdvancedStoreService } from './synthese-search/taxon-advanced/taxon-advanced-store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-
+import { ModalInfoObsComponent } from './synthese-results/synthese-list/modal-info-obs/modal-info-obs.component';
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
 @NgModule({
@@ -25,9 +25,10 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     SyntheseCarteComponent,
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
-    SyntheseModalDownloadComponent
+    SyntheseModalDownloadComponent,
+    ModalInfoObsComponent
   ],
-  entryComponents: [TaxonAdvancedModalComponent, SyntheseModalDownloadComponent],
+  entryComponents: [TaxonAdvancedModalComponent, SyntheseModalDownloadComponent, ModalInfoObsComponent],
   providers: [
     DataService,
     SyntheseFormService,
@@ -36,4 +37,4 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     TaxonAdvancedStoreService
   ]
 })
-export class SyntheseModule {}
+export class SyntheseModule { }

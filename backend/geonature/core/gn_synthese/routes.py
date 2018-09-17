@@ -27,7 +27,7 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces
 )
-from geonature.core.gn_synthese import repositories as synthese_repository
+from geonature.core.gn_synthese.utils import query as synthese_query
 
 from geonature.core.gn_meta.models import TDatasets
 
@@ -112,9 +112,7 @@ def get_synthese(info_role):
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
     """
-
-    filters = dict(request.args)
-
+    filters = {key: value[0].split(',') for key, value in dict(request.args).items()}
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:
@@ -124,24 +122,24 @@ def get_synthese(info_role):
 
     q = DB.session.query(VSyntheseForWebApp)
 
-    q = synthese_repository.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     q = q.order_by(
         VSyntheseForWebApp.date_min.desc()
     )
     nb_total = 0
-    if result_limit != '100':
-        nb_total = q.count()
+
     data = q.limit(result_limit)
     columns = current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
     features = []
     for d in data:
         feature = d.get_geofeature(
-            columns=current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
+            columns=columns
         )
+        feature['properties']['nom_vern_or_lb_nom'] = d.lb_nom if d.nom_vern is None else d.nom_vern
         features.append(feature)
     return {
         'data': FeatureCollection(features),
-        'nb_obs_limited': nb_total >= current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
+        'nb_obs_limited': nb_total == current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
         'nb_total': nb_total
     }
 
@@ -209,7 +207,7 @@ def export(info_role):
     allowed_datasets = TDatasets.get_user_datasets(info_role)
 
     q = DB.session.query(VSyntheseForExport)
-    q = synthese_repository.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
 
     q = q.order_by(
         VSyntheseForExport.date_min.desc()
@@ -240,39 +238,30 @@ def export(info_role):
             indent=4
         )
     else:
-        try:
-            filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
+        filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
 
-            dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-            FionaShapeService.create_shapes_struct(
-                db_cols=VSyntheseForExport.db_cols,
-                srid=current_app.config['LOCAL_SRID'],
-                dir_path=dir_path,
-                file_name=file_name,
-                col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
-            )
-            for row in data:
-                geom = row.the_geom_local
-                row_as_dict = row.as_dict_ordered()
-                FionaShapeService.create_feature(row_as_dict, geom)
-
-            FionaShapeService.save_and_zip_shapefiles()
-
-            return send_from_directory(
-                dir_path,
-                file_name+'.zip',
-                as_attachment=True
-            )
-
-        except Exception as e:
-            log.error('Error while exporting shapefiles' + str(e))
-            message = str(e)
-
-        return render_template(
-            'error.html',
-            error=message,
-            redirect=current_app.config['URL_APPLICATION']+"/#/synthese"
+        dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+        FionaShapeService.create_shapes_struct(
+            db_cols=VSyntheseForExport.db_cols,
+            srid=current_app.config['LOCAL_SRID'],
+            dir_path=dir_path,
+            file_name=file_name,
+            col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
         )
+        for row in data:
+            geom = row.the_geom_local
+            row_as_dict = row.as_dict_ordered()
+            FionaShapeService.create_feature(row_as_dict, geom)
+
+        FionaShapeService.save_and_zip_shapefiles()
+
+        return send_from_directory(
+            dir_path,
+            file_name+'.zip',
+            as_attachment=True
+        )
+
+
 
 
 @routes.route('/statuts', methods=['GET'])
@@ -284,16 +273,16 @@ def get_status(info_role):
 
     filters = dict(request.args)
 
-    q = DB.session.query(distinct(Synthese.cd_nom), Taxref, TaxrefProtectionArticles).join(
-        Taxref, Taxref.cd_nom == Synthese.cd_nom
+    q = DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles).join(
+        Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
-        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == Synthese.cd_nom
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
         TaxrefProtectionArticles, TaxrefProtectionArticles.cd_protection == TaxrefProtectionEspeces.cd_protection
     )
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     data = q.all()
 
     protection_status = []

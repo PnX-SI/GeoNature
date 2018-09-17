@@ -42,7 +42,12 @@
     "JddErrorMTD": "Error lors de la récupération des JDD via l'application MTD",
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
     "NoJDDMTD":
-      "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD"
+      "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+      "Datasetadded": "Jeu de donnée ajouté avec succès",
+      "AFadded": "Cadre d'acquisition ajouté avec succès",
+      "Programs": "Programmes",
+      "Datasets": "Jeux de données",
+      "AcquisitionFramework": "Cadre d'acquisition"
   },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
@@ -151,12 +156,6 @@
 
   "Export": {
     "ExportModuleName": "Module d'export des données"
-  },
-  "Meta": {
-    "Datasetadded": "Jeu de donnée ajouté avec succès",
-    "Programs": "Programmes",
-    "Datasets": "Jeux de données",
-    "AcquisitionFramework": "Cadre d'acquisition"
   },
   "Synthese": {
     "DeleteObs": "Supprimer l'observations",

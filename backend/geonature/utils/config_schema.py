@@ -40,6 +40,9 @@ class CasSchemaConf(Schema):
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
 
 
+class BddConfig(Schema):
+    id_area_type_municipality = fields.Integer(missing=101)
+
 class RightsSchemaConf(Schema):
     NOTHING = fields.Integer(missing=0)
     MY_DATA = fields.Integer(missing=1)
@@ -137,6 +140,7 @@ class GnGeneralSchemaConf(Schema):
     SYNTHESE = fields.Nested(Synthese, missing=dict())
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
+    BDD = fields.Nested(BddConfig, missing=dict())
 
 
 class ManifestSchemaConf(Schema):

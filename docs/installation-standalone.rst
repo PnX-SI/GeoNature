@@ -107,7 +107,7 @@ Créer un utilisateur de base de données (cf ``settings.ini``) :
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
 ::
-
+    cd install
     ./install_db.sh
 
 La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :

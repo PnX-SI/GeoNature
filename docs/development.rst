@@ -351,7 +351,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                   [multiSelect]='true'
                   [displayAll]="true" 
                   [parentFormControl]="formService.searchForm.controls.id_dataset" 
-                  label="{{ 'Meta.Datasets' | translate}}">
+                  label="{{ 'MetaData.Datasets' | translate}}">
                 </pnx-datasets>
 
 
@@ -390,7 +390,7 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                   [multiSelect]='true'
                   [displayAll]="true" 
                   [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
-                  label="{{ 'Meta.AcquisitionFramework' | translate}}">
+                  label="{{ 'MetaData.AcquisitionFramework' | translate}}">
                 </pnx-acquisition-frameworks>
 
 - **DateComponent**

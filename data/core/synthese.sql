@@ -509,15 +509,12 @@ $BODY$
 
   -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
-        FOR id_area_loop IN (
-        SELECT a.id_area
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese,
+        a.id_area
         FROM ref_geo.l_areas a
         JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
-        WHERE s.id_synthese = NEW.id_synthese
-        )
-        LOOP
-          EXECUTE format('INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area) VALUES ($1, $2);') USING NEW.id_synthese, id_area_loop;
-        END LOOP;
+        WHERE s.id_synthese = NEW.id_synthese;
     END IF;
   RETURN NULL;
   END;
@@ -685,6 +682,7 @@ CREATE VIEW gn_synthese.v_synthese_for_web_app AS
     t.cd_nom,
     t.cd_ref,
     t.nom_valide,
+    t.lb_nom,
     t.nom_vern
   FROM gn_synthese.synthese s
   JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
@@ -789,3 +787,13 @@ CREATE TRIGGER tri_insert_cor_area_synthese
 --DATA--
 --------
 INSERT INTO t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_source_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
+
+-- insertion dans utilisateurs.t_applications et gn_commons.t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'synthese', 'Application synthese de GeoNature', id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
+
+INSERT INTO gn_commons.t_modules (id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+SELECT id_application ,'synthese', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', '', 'true', 'true'
+FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
+

@@ -95,7 +95,7 @@ CREATE TABLE t_acquisition_frameworks (
     target_description text,
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
-    is_parent integer,
+    is_parent boolean,
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,
     meta_create_date timestamp without time zone NOT NULL,
@@ -188,6 +188,7 @@ CREATE TABLE t_datasets (
     id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('RESOURCE_TYP'),
     default_validity boolean,
+    active boolean NOT NULL DEFAULT TRUE,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
 );

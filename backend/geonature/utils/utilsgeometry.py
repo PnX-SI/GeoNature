@@ -109,20 +109,23 @@ class FionaShapeService():
         """
         try:
             geom_wkt = to_shape(geom)
-            geom_wkt = Point(0.0, 0.0)
+            geom_geojson = mapping(geom_wkt)
+            feature = {'geometry': geom_geojson, 'properties': data}
+            if isinstance(geom_wkt, Point):
+                cls.point_shape.write(feature)
+                cls.point_feature = True
+            elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
+                cls.polygone_shape.write(feature)
+                cls.polygon_feature = True
+            else:
+                cls.polyline_shape.write(feature)
+                cls.polyline_feature = True
         except AssertionError:
+            cls.close_files()
             raise GeonatureApiError('Cannot create a shapefile record whithout a Geometry')
-        geom_geojson = mapping(geom_wkt)
-        feature = {'geometry': geom_geojson, 'properties': data}
-        if isinstance(geom_wkt, Point):
-            cls.point_shape.write(feature)
-            cls.point_feature = True
-        elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
-            cls.polygone_shape.write(feature)
-            cls.polygon_feature = True
-        else:
-            cls.polyline_shape.write(feature)
-            cls.polyline_feature = True
+        except Exception as e:
+            cls.close_files()
+            raise GeonatureApiError(e)
 
     @classmethod
     def create_features_generic(cls, view, data, geom_col):
@@ -162,9 +165,7 @@ class FionaShapeService():
         Returns:
             void
         """
-        cls.point_shape.close()
-        cls.polygone_shape.close()
-        cls.polyline_shape.close()
+        cls.close_files()
 
         format_to_save = []
         if cls.point_feature:
@@ -191,6 +192,12 @@ class FionaShapeService():
                     shape_format + "_" + cls.file_name + "." + ext
                 )
         zp_file.close()
+
+    @classmethod
+    def close_files(cls):
+        cls.point_shape.close()
+        cls.polygone_shape.close()
+        cls.polyline_shape.close()
 
 
 def create_shapes_generic(view, srid, db_cols, data, dir_path, file_name, geom_col):

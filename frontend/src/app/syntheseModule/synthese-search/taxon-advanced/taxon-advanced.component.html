@@ -36,7 +36,7 @@
   <pnx-multiselect [values]="storeService.taxonomyLR" [parentFormControl]="formService.searchForm.controls.taxonomy_lr"
     keyLabel="nom_categorie_lr" keyValue="id_categorie_france" label="Liste rouge UICN">
   </pnx-multiselect>
-
+  value = {{formService.searchForm.controls.taxonomy_id_hab.value }}
   <pnx-multiselect [values]="storeService.taxonomyHab" [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
     keyLabel="nom_habitat" keyValue="id_habitat" label="Habitat">
   </pnx-multiselect>
