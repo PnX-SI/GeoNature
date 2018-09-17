@@ -254,6 +254,10 @@ CREATE SCHEMA gn_imports;
 ---------------
 ----GN_META----
 ---------------
+ALTER TABLE gn_meta.t_datasets
+ADD COLUMN active boolean NOT NULL DEFAULT true;
+UPDATE gn_meta.t_datasets SET active = true; 
+
 ALTER TABLE gn_meta.t_acquisition_frameworks
 ALTER COLUMN is_parent TYPE boolean USING is_parent::boolean;
 
