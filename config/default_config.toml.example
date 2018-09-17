@@ -76,10 +76,10 @@ MULTILINGUAL = false
     # champs disponible de la table gn_synthese.t_sources: 'name_source'
     
     LIST_COLUMNS_FRONTEND = [
-        { prop = "taxons.nom_valide", name = "Taxon" },
+        { prop = "nom_vern_or_lb_nom", name = "Taxon" },
         { prop = "date_min", name = "Date début" },
         { prop = "observateurs", name = "Observateurs" },
-        { prop = "dataset.dataset_name", name = "Jeu de données" }
+        { prop = "dataset_name", name = "Jeu de données" }
     ]
     # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
     

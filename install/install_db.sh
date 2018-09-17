@@ -309,6 +309,15 @@ then
     echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> var/log/install_db.log
 
+    echo "Creating 'imports' schema..."
+    echo "" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating 'imports' schema" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/imports.sql  &>> var/log/install_db.log
+
 
     echo "Creating 'synthese' schema..."
     echo "" &>> var/log/install_db.log

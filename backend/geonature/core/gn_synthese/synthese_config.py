@@ -77,11 +77,12 @@ DEFAULT_COLUMNS_API_SYNTHESE = [
 MANDATORY_COLUMNS = [
     'entity_source_pk_value',
     'url_source',
+    'cd_nom'
 ]
 
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [
-    {'prop': 'nom_valide', 'name': 'Taxon'},
+    {'prop': 'nom_vern_or_lb_nom', 'name': 'Taxon'},
     {'prop': 'date_min', 'name': 'Date obs'},
     {'prop': 'dataset_name', 'name': 'JDD'},
     {'prop': 'observers', 'name': 'observateur'}
