@@ -36,12 +36,16 @@ export class SideNavService {
     localStorage.setItem('modules', JSON.stringify(modules));
   }
 
-  getModules(id_module) {
+  /**
+   * Get a module from the localstorage
+   * @param module_name: name of the module
+   */
+  getModule(module_name: string) {
     const modules = localStorage.getItem('modules');
     let searchModule = null;
     if (modules) {
       JSON.parse(modules).forEach(mod => {
-        if (mod.id_module === id_module) {
+        if (mod.module_name.toLocaleLowerCase() === module_name.toLocaleLowerCase()) {
           searchModule = mod;
         }
       });

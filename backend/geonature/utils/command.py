@@ -17,9 +17,10 @@ from geonature.utils.env import (
 )
 from geonature.utils.errors import ConfigError
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.config_schema import GnGeneralSchemaConf 
+from geonature.utils.config_schema import GnGeneralSchemaConf
 
 log = logging.getLogger(__name__)
+
 
 def start_gunicorn_cmd(uri, worker):
     cmd = 'gunicorn server:app -w {gun_worker} -b {gun_uri}'
@@ -66,13 +67,13 @@ def frontend_routes_templating():
         for conf, manifest in list_frontend_enabled_modules():
             location = Path(GN_EXTERNAL_MODULE / manifest['module_name'])
             # test if module have frontend
-            if (location / 'frontend').is_dir():   
+            if (location / 'frontend').is_dir():
                 path = conf['api_url'].lstrip('/')
                 location = '{}/{}#GeonatureModule'.format(
                     location.resolve(), GN_MODULE_FE_FILE
                 )
                 routes.append(
-                    {'path': path, 'location': location, 'id_module': conf['id_application']}
+                    {'path': path, 'location': location, 'module_name': manifest['module_name']}
                 )
 
             # TODO test if two modules with the same name is okay for Angular
@@ -83,6 +84,7 @@ def frontend_routes_templating():
             str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts'), 'w'
         ) as output_file:
             output_file.write(route_template)
+
 
 def tsconfig_templating():
     with open(
