@@ -55,7 +55,7 @@ mat-sidenav-content {
 }
 
 .table-sm td {
-  padding: 0.5rem;
+  padding: 0.2rem;
 }
 
 /*
@@ -109,6 +109,11 @@ md-sidenav-layout /deep/ .md-sidenav-content {
   padding-bottom: 10px;
   padding-top: 5px;
   margin-bottom: 20px;
+}
+
+.underlined.underlined-sm {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .underlined.main-color {
@@ -183,6 +188,7 @@ li.no-bullet {
 
 .large-modal > .modal-dialog {
   max-width: 1500px !important;
+  margin: 25px;
 }
 
 .font-xs {

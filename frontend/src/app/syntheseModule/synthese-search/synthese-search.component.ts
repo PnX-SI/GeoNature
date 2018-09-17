@@ -34,12 +34,15 @@ export class SyntheseSearchComponent implements OnInit {
     public ngbModal: NgbModal,
     public mapService: MapService,
     private _dfs: DataFormService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   onSubmitForm() {
+    // mark as dirty to avoid set limit=100 when download
+    this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
+    console.log(updatedParams);
     this.searchClicked.emit(updatedParams);
   }
 
@@ -58,6 +61,5 @@ export class SyntheseSearchComponent implements OnInit {
       backdrop: 'static',
       keyboard: false
     });
-    // this.taxonModal.componentInstance.closeBtnName = 'close';
   }
 }

@@ -232,6 +232,69 @@ END IF;
 END;
 $$;
 
+
+CREATE OR REPLACE FUNCTION gn_commons.load_csv_file(csv_file text, target_table text)
+RETURNS text LANGUAGE plpgsql AS $$
+--This function create a table and her structure according to the CSV structure and the passed name.
+--CSV content is loaded in. 
+--Then, the function tries to define the type of columns according to the content.
+--You must check and adapt result.
+--
+--USAGE (due to 'copy' function usage, use it with a superuser only).
+--SELECT gn_commons.load_csv_file('/path/to/file.csv', 'targetschema.targettable');
+DECLARE
+    col text; -- variable to keep the column name at each iteration
+    sname text; --destination schema name
+    tname text; --destination table name
+begin
+    create temp table import (line text) on commit drop;
+    --import all csv content
+    execute format('copy import from %L', csv_file);
+    -- if not blank, change the csv_temp_table name to the name given as parameter
+    IF length(target_table) > 0 THEN
+	--split schema.table to 2 strings
+	SELECT split_part(target_table, '.', 1) into sname;
+	SELECT split_part(target_table, '.', 2) into tname;
+	--if a schema name is given
+	IF(tname IS NOT NULL) THEN
+	    --drop if exists and create table with first line as columns name in given schema (before point in target_table string)
+	    EXECUTE format('DROP TABLE IF EXISTS %I.%I', sname, tname);
+	    EXECUTE format('create table %I.%I (%s);', 
+	        sname, tname, concat(replace(line, ';', ' text, '), ' text'))
+            from import limit 1;
+	    -- load data in target table
+	    EXECUTE format('copy %I.%I from %L WITH DELIMITER '';'' quote ''"'' csv header', sname, tname, csv_file);
+	--if no schema is given working with public schema
+	ELSE
+	    --drop if exists and create table with first line as columns name in public schema
+	    EXECUTE format('DROP TABLE IF EXISTS %I', target_table);
+	    EXECUTE format('create table %I (%s);', 
+	        target_table, concat(replace(line, ';', ' text, '), ' text'))
+            from import limit 1;
+            -- load data in target table
+	    EXECUTE format('copy %I from %L WITH DELIMITER '';'' quote ''"'' csv ', target_table, csv_file);
+        END IF;
+        --try to change convert numeric and date columns type. If error throw, do nothing, continue and keep 'text' type.
+        FOR col IN EXECUTE format('SELECT column_name FROM information_schema.columns WHERE table_schema  = %L AND table_name = %L', sname, tname)
+        LOOP
+	    BEGIN
+	        EXECUTE format('ALTER TABLE %I.%I ALTER COLUMN %s TYPE integer USING %s::integer', sname, tname, col, col);
+	        EXCEPTION WHEN OTHERS THEN 
+		    BEGIN
+		        EXECUTE format('ALTER TABLE %I.%I ALTER COLUMN %s TYPE real USING %s::real', sname, tname, col, col);
+		        EXCEPTION WHEN OTHERS THEN
+			    BEGIN
+			        EXECUTE format('ALTER TABLE %I.%I ALTER COLUMN %s TYPE date USING %s::date', sname, tname, col, col);
+			        EXCEPTION WHEN OTHERS THEN -- keep looping
+			    END;
+		    END;
+            END;
+        END LOOP;
+    END IF;
+    RETURN format('CREATE TABLE %I.%I FROM %L', sname, tname, csv_file);
+end $$;
+
+
 -------------
 --TABLES--
 -------------
@@ -377,15 +440,17 @@ CREATE TABLE t_modules(
   module_picto character varying(255),
   module_desc text,
   module_group character varying(50),
-  module_url character(255) NOT NULL,
+  module_path character(255),
+  module_external_url character(255),
   module_target character(10),
   module_comment text,
   active_frontend boolean NOT NULL,
   active_backend boolean NOT NULL
 );
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
-COMMENT ON COLUMN t_modules.module_url IS 'URL absolue vers le chemin de l''application. On peux ainsi référencer des modules externes avec target = "blank".';
 COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';
+COMMENT ON COLUMN t_modules.module_path IS 'url relative vers le module - si module interne';
+COMMENT ON COLUMN t_modules.module_external_url IS 'url absolue vers le module - si module externe (active_frontend = false)';
 -- Ne surtout pas créer de séquence sur cette table pour associer librement id_module et id_application.
 
 ---------------
@@ -465,7 +530,9 @@ ALTER TABLE t_validations
 ALTER TABLE t_history_actions
   ADD CONSTRAINT check_t_history_actions_operation_type CHECK (operation_type IN('I','U','D'));
 
-
+  ALTER TABLE ONLY t_modules 
+    ADD CONSTRAINT check_urls_not_null CHECK (module_path IS NOT NULL OR module_external_url IS NOT NULL);
+  
 ------------
 --TRIGGERS--
 ------------
@@ -522,3 +589,15 @@ SELECT
 FROM insert_a i
 LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
 LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
+
+----------
+-- DATA --
+----------
+--insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'admin', 'Application backoffice de GeoNature', id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'application geonature';
+
+INSERT INTO gn_commons.t_modules(id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+SELECT id_application ,'admin', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', '', 'true', 'true'
+FROM utilisateurs.t_applications WHERE nom_application = 'admin';

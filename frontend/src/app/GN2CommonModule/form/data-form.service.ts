@@ -183,6 +183,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
   }
 
+  getAcquisitionFramework(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
+  }
+
   getOrganisms() {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
   }

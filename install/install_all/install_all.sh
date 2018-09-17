@@ -1,4 +1,5 @@
 #!/bin/bash
+. install_all.ini
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
@@ -141,11 +142,11 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 
 cd install/
-# Installation de la base de données GeoNature en root
-. install_db.sh
+# Installation de la base de données GeoNature
+./install_db.sh
 
 # Installation et configuration de l'application GeoNature
-. install_app.sh
+./install_app.sh
 
 cd ../
 

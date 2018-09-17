@@ -9,6 +9,7 @@ import { DYNAMIC_FORM_DEF } from './dynamycFormConfig';
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
+  public formBuilded = false;
   public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
   public dynamycFormDef: Array<any>;
@@ -48,6 +49,7 @@ export class SyntheseFormService {
     this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
       return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
+    this.formBuilded = true;
   }
 
   getCurrentTaxon($event) {

@@ -20,9 +20,17 @@ class CorAcquisitionFrameworkActor(DB.Model):
     id_acquisition_framework = DB.Column(
         DB.Integer,
         ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'))
-    id_role = DB.Column(DB.Integer)
-    id_organism = DB.Column(DB.Integer)
+    id_role = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.t_roles.id_role')
+    )
+    id_organism = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
     id_nomenclature_actor_role = DB.Column(DB.Integer)
+    role = relationship("TRoles", foreign_keys=[id_role])
+    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
 
 @serializable
@@ -176,7 +184,7 @@ class TAcquisitionFramework(DB.Model):
 
     cor_af_actor = relationship(
         "CorAcquisitionFrameworkActor",
-        lazy='joined',
+        lazy='select',
         cascade="save-update, delete, delete-orphan"
     )
 
