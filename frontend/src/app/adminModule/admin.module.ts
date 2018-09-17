@@ -4,7 +4,6 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { AdminComponent } from './admin.component';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MetaComponent } from './meta/meta.component';
 import { DatasetListComponent } from './meta/datasets/dataset-list.component';
 import { DatasetFormComponent } from './meta/datasets/dataset-form.component';
 import { AfListComponent } from './meta/af/af-list.component';
@@ -27,7 +26,6 @@ const routes: Routes = [
   exports: [],
   declarations: [
     AdminComponent,
-    MetaComponent,
     DatasetListComponent,
     DatasetFormComponent,
     AfListComponent,
@@ -37,4 +35,4 @@ const routes: Routes = [
   ],
   providers: []
 })
-export class AdminModule { }
+export class AdminModule {}

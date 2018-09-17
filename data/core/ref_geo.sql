@@ -48,10 +48,18 @@ $BODY$
 ----------------------
 --TABLES & SEQUENCES--
 ----------------------
+
+CREATE SEQUENCE bib_areas_types_id_type_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 CREATE TABLE bib_areas_types (
     id_type integer NOT NULL,
-    type_name character varying(200),
-    type_code character varying(25),
+    type_name character varying(200) NOT NULL,
+    type_code character varying(25) NOT NULL,
     type_desc text,
     ref_name character varying(200),
     ref_version integer,
@@ -59,6 +67,8 @@ CREATE TABLE bib_areas_types (
 );
 COMMENT ON COLUMN bib_areas_types.ref_name IS 'Indique le nom du référentiel géographique utilisé pour ce type';
 COMMENT ON COLUMN bib_areas_types.ref_version IS 'Indique l''année du référentiel utilisé';
+ALTER SEQUENCE bib_areas_types_id_type_seq OWNED BY bib_areas_types.id_type;
+ALTER TABLE ONLY bib_areas_types ALTER COLUMN id_type SET DEFAULT nextval('bib_areas_types_id_type_seq'::regclass);
 
 CREATE SEQUENCE l_areas_id_area_seq
     START WITH 1
@@ -195,7 +205,6 @@ BEGIN
     SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
     FROM ref_geo.dem_vector, d
     WHERE st_intersects(a,geom);
-
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -222,12 +231,25 @@ BEGIN
   WHERE st_intersects(geom_trans, a.geom)
     AND (myIdType IS NULL OR a.id_type = myIdType)
     AND enable=true;
-
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100
 ROWS 1000;
+
+
+CREATE OR REPLACE FUNCTION ref_geo.get_id_area_type(mytype character varying)
+  RETURNS integer AS
+$BODY$
+--Function which return the id_type_area from the type_code of an area type
+DECLARE theidtype character varying;
+  BEGIN
+SELECT INTO theidtype id_type FROM ref_geo.bib_areas_types WHERE type_code = mytype;
+return theidtype;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
 
 -- Fonction trigger pour conserver l'intégriter entre deux champs géom
 -- A TERMINER
@@ -287,35 +309,35 @@ ROWS 1000;
 --DATA--
 --------
 
-INSERT INTO bib_areas_types (id_type, type_name, type_code, type_desc, ref_name, ref_version) VALUES
-(1, 'Coeurs des Parcs nationaux', 'ZC', NULL, NULL,NULL),
-(2, 'znieff2', NULL, NULL, NULL,NULL),
-(3, 'znieff1', NULL, NULL, NULL,NULL),
-(4, 'Aires de protection de biotope', NULL, NULL, NULL,NULL),
-(5, 'Réserves naturelles nationales', NULL, NULL, NULL,NULL),
-(6, 'Réserves naturelles regionales', NULL, NULL, NULL,NULL),
-(7, 'Natura 2000 - Zones de protection spéciales', 'ZPS', NULL, NULL,NULL),
-(8, 'Natura 2000 - Sites d''importance communautaire', 'SIC', NULL, NULL,NULL),
-(9, 'Zone d''importance pour la conservation des oiseaux', 'ZICO', NULL, NULL,NULL),
-(10, 'Réserves nationales de chasse et faune sauvage', NULL, NULL, NULL,NULL),
-(11, 'Réserves intégrales de parc national', NULL, NULL, NULL,NULL),
-(12, 'Sites acquis des Conservatoires d''espaces naturels', NULL, NULL, NULL,NULL),
-(13, 'Sites du Conservatoire du Littoral', NULL, NULL, NULL,NULL),
-(14, 'Parcs naturels marins', NULL, NULL, NULL,NULL),
-(15, 'Parcs naturels régionaux', 'PNR', NULL, NULL,NULL),
-(16, 'Réserves biologiques', NULL, NULL, NULL,NULL),
-(17, 'Réserves de biosphère', NULL, NULL, NULL,NULL),
-(18, 'Réserves naturelles de Corse', NULL, NULL, NULL,NULL),
-(19, 'Sites Ramsar', NULL, NULL, NULL,NULL),
-(20, 'Aire d''adhésion des Parcs nationaux', 'AA', NULL, NULL,NULL),
-(21, 'Natura 2000 - Zones spéciales de conservation', 'ZSC', NULL, NULL,NULL),
-(22, 'Natura 2000 - Proposition de sites d''intéret communautaire', 'pSIC', NULL, NULL,NULL),
-(23, 'Périmètre d''étude de la charte des Parcs nationaux', 'PEC', NULL, NULL,NULL),
-(24, 'Unités géographiques', NULL, 'Unités géographiques permettant une orientation des prospections', NULL, NULL),
-(101, 'Communes', NULL, 'type commune', 'IGN admin_express',2017),
-(102, 'Départements', NULL, 'type département', 'IGN admin_express',2017),
-(201, 'Mailles10*10', NULL, 'type maille inpn 10*10', NULL,NULL),
-(202, 'Mailles1*1', NULL, 'type maille inpn 1*1', NULL,NULL),
-(10001, 'Secteurs', NULL, NULL, NULL,NULL),
-(10002, 'Massifs', NULL, NULL, NULL,NULL),
-(10003, 'Zones biogéographiques', NULL, NULL, NULL,NULL);
+INSERT INTO bib_areas_types (type_name, type_code, type_desc, ref_name, ref_version) VALUES
+('Coeurs des Parcs nationaux', 'ZC', NULL, NULL,NULL),
+('ZNIEFF2', 'ZNIEFF2', NULL, NULL,NULL),
+('ZNIEFF1', 'ZNIEFF1', NULL, NULL,NULL),
+('Aires de protection de biotope', 'APB', NULL, NULL,NULL),
+('Réserves naturelles nationales', 'RNN', NULL, NULL,NULL),
+('Réserves naturelles regionales', 'RNR', NULL, NULL,NULL),
+('Natura 2000 - Zones de protection spéciales', 'ZPS', NULL, NULL,NULL),
+('Natura 2000 - Sites d''importance communautaire', 'SIC', NULL, NULL,NULL),
+('Zone d''importance pour la conservation des oiseaux', 'ZICO', NULL, NULL,NULL),
+('Réserves nationales de chasse et faune sauvage', 'RNCFS', NULL, NULL,NULL),
+('Réserves intégrales de parc national', 'RIPN', NULL, NULL,NULL),
+('Sites acquis des Conservatoires d''espaces naturels', 'SCEN', NULL, NULL,NULL),
+('Sites du Conservatoire du Littoral', 'SCL', NULL, NULL,NULL),
+('Parcs naturels marins', 'PNM', NULL, NULL,NULL),
+('Parcs naturels régionaux', 'PNR', NULL, NULL,NULL),
+('Réserves biologiques', 'RBIOL', NULL, NULL,NULL),
+('Réserves de biosphère', 'RBIOS', NULL, NULL,NULL),
+('Réserves naturelles de Corse', 'RNC', NULL, NULL,NULL),
+('Sites Ramsar', 'SRAM', NULL, NULL,NULL),
+('Aire d''adhésion des Parcs nationaux', 'AA', NULL, NULL,NULL),
+('Natura 2000 - Zones spéciales de conservation', 'ZSC', NULL, NULL,NULL),
+('Natura 2000 - Proposition de sites d''intéret communautaire', 'PSIC', NULL, NULL,NULL),
+('Périmètre d''étude de la charte des Parcs nationaux', 'PEC', NULL, NULL,NULL),
+('Unités géographiques', 'UG', 'Unités géographiques permettant une orientation des prospections', NULL, NULL),
+('Communes', 'COM', 'Type commune', 'IGN admin_express',2017),
+('Départements', 'DEP', 'Type département', 'IGN admin_express',2017),
+('Mailles10*10', 'M10', 'Type maille INPN 10*10km', NULL,NULL),
+('Mailles1*1', 'M1', 'Type maille INPN 1*1km', NULL,NULL),
+('Secteurs', 'SEC', NULL, NULL,NULL),
+('Massifs', 'MAS', NULL, NULL,NULL),
+('Zones biogéographiques', 'ZBIOG', NULL, NULL,NULL);

@@ -11,7 +11,7 @@ fieldset {
   border-radius: 3px;
 }
 
-.overflow-x-visible{
+.overflow-x-visible {
   overflow-x: visible;
 }
 
@@ -67,7 +67,7 @@ legend {
 
 .search-wrapper {
   max-height: 92vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .relative {

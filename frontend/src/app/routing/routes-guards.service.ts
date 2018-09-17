@@ -11,11 +11,11 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Injectable()
 export class ModuleGuardService implements CanActivate {
-  constructor(private _router: Router, private _sideNavService: SideNavService) { }
+  constructor(private _router: Router, private _sideNavService: SideNavService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const id_module = route.data['id_module'];
-    if (this._sideNavService.getModules(id_module)) {
+    const module_name = route.data['module_name'];
+    if (this._sideNavService.getModule(module_name)) {
       return true;
     } else {
       this._router.navigate(['/']);
@@ -26,7 +26,7 @@ export class ModuleGuardService implements CanActivate {
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
-  constructor(private _authService: AuthService, private _router: Router) { }
+  constructor(private _authService: AuthService, private _router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {

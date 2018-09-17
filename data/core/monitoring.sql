@@ -33,7 +33,8 @@ CREATE TABLE t_base_visits
   id_base_visit serial NOT NULL,
   id_base_site integer,
   id_digitiser integer,
-  visit_date date NOT NULL,
+  visit_date_min date NOT NULL,
+  visit_date_max date,
   comments text,
   uuid_base_visit UUID DEFAULT public.uuid_generate_v4()
 );
