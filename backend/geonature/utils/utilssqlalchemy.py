@@ -349,18 +349,15 @@ def serializable(cls):
         out = {
             item: _serializer(getattr(self, item)) for item, _serializer in fprops
         }
-
         if recursif is False:
             return out
 
         for (rel, uselist) in cls_db_relationships:
-            if getattr(self, rel) is None:
-                break
-
-            if uselist is True:
-                out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
-            else:
-                out[rel] = getattr(self, rel).as_dict(recursif)
+            if getattr(self, rel):
+                if uselist is True:
+                    out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
+                else:
+                    out[rel] = getattr(self, rel).as_dict(recursif)
 
         return out
 
