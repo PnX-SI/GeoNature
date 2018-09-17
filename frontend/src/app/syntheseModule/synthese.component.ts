@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, ContentChildren } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from './services/form.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-synthese',
@@ -49,13 +50,13 @@ export class SyntheseComponent implements OnInit {
     );
   }
   ngOnInit() {
-    const initialData = { limit: 100 };
+    const initialData = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
     this.loadAndStoreData(initialData);
   }
 
   mooveButton() {
     this.searchBarHidden = !this.searchBarHidden;
-    const test = document.getElementById('sidebar');
+    // const test = document.getElementById('sidebar');
     // if (test.classList.contains('show')) {
     //   this.marginButton = 0;
     // } else {

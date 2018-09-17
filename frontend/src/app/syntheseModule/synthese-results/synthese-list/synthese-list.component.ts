@@ -152,7 +152,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     let queryString = this.getQueryString();
     // if the search form has not been touched, download the last 100 obs
     if (this._fs.searchForm.pristine) {
-      queryString = queryString.set('limit', '100');
+      queryString = queryString.set('limit', AppConfig.SYNTHESE.NB_LAST_OBS.toString());
     }
     modalRef.componentInstance.queryString = queryString;
   }
