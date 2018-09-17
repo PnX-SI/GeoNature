@@ -163,6 +163,80 @@ CASE
   WHEN module_name='suivi_flore_territoire' THEN 'suivi_flore_territoire'
 END;
 
+------------------------------
+----- UPDATE REF_GEO ---------
+------------------------------
+
+-- Passage de ref_geo.bib_areas_types.id_type en serial
+
+CREATE SEQUENCE ref_geo.bib_areas_types_id_type_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE ref_geo.bib_areas_types_id_type_seq OWNED BY ref_geo.bib_areas_types.id_type;
+ALTER TABLE ONLY ref_geo.bib_areas_types ALTER COLUMN id_type SET DEFAULT nextval('ref_geo.bib_areas_types_id_type_seq'::regclass);
+SELECT pg_catalog.setval('ref_geo.bib_areas_types_id_type_seq', (SELECT max(id_type)+1 FROM ref_geo.bib_areas_types), false);	
+	
+
+-- Création d'une fonction pour retrouver l'id_type d'un type de zonage à partir de son code
+
+CREATE OR REPLACE FUNCTION ref_geo.get_id_area_type(mytype character varying)
+  RETURNS integer AS
+$BODY$
+--Function which return the id_type_area from the type_code of an area type
+DECLARE theidtype character varying;
+  BEGIN
+SELECT INTO theidtype id_type FROM ref_geo.bib_areas_types WHERE type_code = mytype;
+return theidtype;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+-- Ajout de codes pour tous les bib_areas_types
+
+UPDATE ref_geo.bib_areas_types SET type_code = 'ZNIEFF2' WHERE type_name = 'ZNIEFF2';
+UPDATE ref_geo.bib_areas_types SET type_code = 'ZNIEFF1' WHERE type_name = 'ZNIEFF1';
+UPDATE ref_geo.bib_areas_types SET type_code = 'APB' WHERE type_name = 'Aires de protection de biotope';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RNN' WHERE type_name = 'Réserves naturelles nationales';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RNR' WHERE type_name = 'Réserves naturelles regionales';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RNCFS' WHERE type_name = 'Réserves nationales de chasse et faune sauvage';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RIPN' WHERE type_name = 'Réserves intégrales de parc national';
+UPDATE ref_geo.bib_areas_types SET type_code = 'SCEN' WHERE type_name = 'Sites acquis des Conservatoires d''espaces naturels';
+UPDATE ref_geo.bib_areas_types SET type_code = 'SCL' WHERE type_name = 'Sites du Conservatoire du Littoral';
+UPDATE ref_geo.bib_areas_types SET type_code = 'PNM' WHERE type_name = 'Parcs naturels marins';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RBIOL' WHERE type_name = 'Réserves biologiques';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RBIOS' WHERE type_name = 'Réserves de biosphère';
+UPDATE ref_geo.bib_areas_types SET type_code = 'RNC' WHERE type_name = 'Réserves naturelles de Corse';
+UPDATE ref_geo.bib_areas_types SET type_code = 'SRAM' WHERE type_name = 'Sites Ramsar';
+UPDATE ref_geo.bib_areas_types SET type_code = 'UG' WHERE type_name = 'Unités géographiques';
+UPDATE ref_geo.bib_areas_types SET type_code = 'COM' WHERE type_name = 'Communes';
+UPDATE ref_geo.bib_areas_types SET type_code = 'DEP' WHERE type_name = 'Départements';
+UPDATE ref_geo.bib_areas_types SET type_code = 'M10' WHERE type_name = 'Mailles10*10';
+UPDATE ref_geo.bib_areas_types SET type_code = 'M1' WHERE type_name = 'Mailles1*1';
+UPDATE ref_geo.bib_areas_types SET type_code = 'SEC' WHERE type_name = 'Secteurs';
+UPDATE ref_geo.bib_areas_types SET type_code = 'MAS' WHERE type_name = 'Massifs';
+UPDATE ref_geo.bib_areas_types SET type_code = 'ZBIOG' WHERE type_name = 'Zones biogéographiques';
+
+-- Ajustement des descriptions de certains bib_areas_types
+
+UPDATE ref_geo.bib_areas_types SET type_desc = 'Type commune' WHERE type_name = 'Communes';
+UPDATE ref_geo.bib_areas_types SET type_desc = 'Type département' WHERE type_name = 'Départements';
+UPDATE ref_geo.bib_areas_types SET type_desc = 'Type maille INPN 10*10km' WHERE type_name = 'Mailles10*10';
+UPDATE ref_geo.bib_areas_types SET type_desc = 'Type maille INPN 1*1km' WHERE type_name = 'Mailles1*1';
+
+-- Passage de type_name et type_code en NOT NULL dans bib_areas_types
+
+ALTER TABLE ref_geo.bib_areas_types
+    ALTER COLUMN type_name SET NOT NULL, 
+	ALTER COLUMN type_code SET NOT NULL;
+
+---------------
+----AUTRES----
+---------------
+                               
 -- Ajout de synthese dans t_applications et t_modules
 INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
 SELECT 'synthese', 'Application synthese de GeoNature', id_application
@@ -174,7 +248,6 @@ FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
 
 --Création du schéma gn_imports
 CREATE SCHEMA gn_imports;
-
 
 ---------------
 ----GN_META----
