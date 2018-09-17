@@ -127,7 +127,7 @@ def get_acquisition_framework(id_acquisition_framework):
     """
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if af:
-        af_dict = af.as_dict(True)
+        return af.as_dict(True)
     return None
 
 
