@@ -59,7 +59,9 @@ export class AfFormComponent implements OnInit {
       acquisition_framework_parent_id: null,
       is_parent: false,
       acquisition_framework_start_date: [null, Validators.required],
-      acquisition_framework_end_date: null
+      acquisition_framework_end_date: null,
+      cor_objectifs: [new Array()],
+      cor_volets_sinp: [new Array()]
     });
 
 
@@ -71,10 +73,7 @@ export class AfFormComponent implements OnInit {
     this._dfs.getAcquisitionFramework(id_af).subscribe(data => {
       this.af = data;
       this.afForm.patchValue(data);
-      console.log(this.af)
       data.cor_af_actor.forEach((cor, index) => {
-        console.log(data.cor_af_actor[index].role)
-        console.log(data.cor_af_actor[index])
         const roles = data.cor_af_actor[index].role
           ? [data.cor_af_actor[index].role]
           : null;
@@ -86,7 +85,6 @@ export class AfFormComponent implements OnInit {
           organisms: organisms,
           roles: roles
         };
-        console.log(formData)
         if (index === 0) {
           this.cor_af_actor.controls[index].patchValue(formData);
         } else {
@@ -103,24 +101,30 @@ export class AfFormComponent implements OnInit {
 
   postAf() {
     const cor_af_actor = JSON.parse(JSON.stringify(this.cor_af_actor.value));
+    const af = Object.assign({}, this.afForm.value);
+
     const update_cor_af_actor = [];
     let formValid = true;
     cor_af_actor.forEach(element => {
-      element.organisms.forEach(org => {
-        const corOrg = {
-          id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-          id_organism: org.id_organisme
-        };
-        update_cor_af_actor.push(corOrg);
-      });
+      if (element.organism) {
+        element.organisms.forEach(org => {
+          const corOrg = {
+            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
+            id_organism: org.id_organisme
+          };
+          update_cor_af_actor.push(corOrg);
+        });
+      }
+      if (element.roles) {
+        element.roles.forEach(role => {
+          const corRole = {
+            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
+            id_role: role.id_role
+          };
+          update_cor_af_actor.push(corRole);
+        });
+      }
 
-      element.roles.forEach(role => {
-        const corRole = {
-          id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-          id_role: role.id_role
-        };
-        update_cor_af_actor.push(corRole);
-      });
       if (update_cor_af_actor.length === 0) {
         formValid = false;
         this._toaster.error('Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD', '',
@@ -129,8 +133,13 @@ export class AfFormComponent implements OnInit {
       }
     });
 
+    // format objectifs
+    af.cor_objectifs.map(obj => obj.id_nomenclature);
+    // format volets
+    af.cor_volets_sinp.map(obj => obj.id_nomenclature);
+
+
     if (formValid) {
-      const af = Object.assign({}, this.afForm.value);
 
       af.acquisition_framework_start_date = this._dateParser.format(
         af.acquisition_framework_start_date

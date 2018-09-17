@@ -18,6 +18,11 @@
             <input [ngClass]="{'is-invalid' : afForm.controls.acquisition_framework_desc.invalid}" class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.acquisition_framework_desc">
           </div>
 
+          <small>Mots clés </small>
+          <div class="input-group">
+            <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
+          </div>
+
           <small>Cadre d'acquisition parent </small>
           <div class="input-group">
             <select class="form-control form-control-sm" [formControl]="afForm.controls.acquisition_framework_parent_id">
@@ -40,25 +45,26 @@
           <div class="input-group">
             <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.territory_desc">
           </div>
-          <small>Mots clés </small>
-          <div class="input-group">
-            <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
-          </div>
+
+          <pnx-nomenclature [multiSelect]="true" label="Objectifs du cadre d'acquisition" [parentFormControl]="afForm.controls.cor_objectifs" codeNomenclatureType="CA_OBJECTIFS">
+          </pnx-nomenclature>
+
+          <pnx-nomenclature label="Volets SINP" [multiSelect]="true" [parentFormControl]="afForm.controls.cor_volets_sinp" codeNomenclatureType="VOLET_SINP">
+          </pnx-nomenclature>
 
           <pnx-nomenclature label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_financing_type" codeNomenclatureType="TYPE_FINANCEMENT">
           </pnx-nomenclature>
+
+
+          <small>Cibles écologiques ou géologiques </small>
+          <div class="input-group">
+            <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.ecologic_or_geologic_target">
+          </div>
 
           <small>Description de la cible </small>
           <div class="input-group">
             <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
           </div>
-
-          <small>Cibles écologiques ou géologiquess </small>
-          <div class="input-group">
-            <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.ecologic_or_geologic_target">
-          </div>
-
-
 
           <pnx-date label="Date début" [parentFormControl]="afForm.controls.acquisition_framework_start_date">
           </pnx-date>
@@ -67,7 +73,6 @@
           </pnx-date>
         </div>
       </div>
-
     </div>
 
 
