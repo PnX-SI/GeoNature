@@ -44,6 +44,7 @@
     "NoJDDMTD":
       "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
       "Datasetadded": "Jeu de donnée ajouté avec succès",
+      "AFadded": "Cadre d'acquisition ajouté avec succès",
       "Programs": "Programmes",
       "Datasets": "Jeux de données",
       "AcquisitionFramework": "Cadre d'acquisition"

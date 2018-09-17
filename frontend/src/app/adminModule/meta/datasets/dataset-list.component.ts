@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 })
 
 export class DatasetListComponent implements OnInit {
-  public datasets: Array<any>;
+  public datasets = [];
   public columns = [
     { prop: "id_dataset", name: "ID" },
     { prop: "dataset_name", name: "Nom" },
@@ -20,8 +20,8 @@ export class DatasetListComponent implements OnInit {
   constructor(private _dfs: DataFormService, private _router: Router) { }
 
   ngOnInit() {
-    this._dfs.getDatasets().subscribe(data => {
-      this.datasets = data;
+    this._dfs.getDatasets().subscribe(results => {
+      this.datasets = results['data'];
     });
   }
 

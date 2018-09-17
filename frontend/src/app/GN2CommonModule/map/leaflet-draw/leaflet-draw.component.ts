@@ -19,16 +19,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public drawnItems: any;
   // coordinates of the entity to draw
   @Input() geojson: GeoJSON;
-  @Input() options: any;
-  @Input() zoomLevel: number;
+  @Input() options = leafletDrawOption;
+  @Input() zoomLevel = MAP_CONFIG.ZOOM_LEVEL_RELEVE;
   @Output() layerDrawed = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
+    console.log(this.zoomLevel)
     this.map = this.mapservice.map;
-    this.zoomLevel = this.zoomLevel || MAP_CONFIG.ZOOM_LEVEL_RELEVE;
-    this.options = this.options || leafletDrawOption;
     this._Le = L as any;
     this.enableLeafletDraw();
   }
@@ -40,6 +39,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.map.addControl(drawControl);
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
+      console.log(this.map.getZoom());
+      console.log(this.zoomLevel)
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }
