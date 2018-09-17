@@ -23,10 +23,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Input() zoomLevel = MAP_CONFIG.ZOOM_LEVEL_RELEVE;
   @Output() layerDrawed = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) { }
+  constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
-    console.log(this.zoomLevel)
     this.map = this.mapservice.map;
     this._Le = L as any;
     this.enableLeafletDraw();
@@ -40,7 +39,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
       console.log(this.map.getZoom());
-      console.log(this.zoomLevel)
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }
