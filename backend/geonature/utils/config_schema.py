@@ -43,6 +43,7 @@ class CasSchemaConf(Schema):
 class BddConfig(Schema):
     id_area_type_municipality = fields.Integer(missing=101)
 
+
 class RightsSchemaConf(Schema):
     NOTHING = fields.Integer(missing=0)
     MY_DATA = fields.Integer(missing=1)
@@ -106,6 +107,8 @@ class Synthese(Schema):
     NB_MAX_OBS_MAP = fields.Integer(missing=10000)
     # Nombre max d'observation dans les exports
     NB_MAX_OBS_EXPORT = fields.Integer(missing=40000)
+    # Nombre des "dernières observations" affiché à l'arrive sur la synthese
+    NB_LAST_OBS = fields.Integer(missing=100)
 
 
 class MailErrorConf(Schema):

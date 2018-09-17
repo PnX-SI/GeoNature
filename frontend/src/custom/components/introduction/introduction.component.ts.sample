@@ -25,7 +25,7 @@ export class IntroductionComponent implements OnInit {
         const popup = `
         ${feature.properties.nom_vern_or_lb_nom} <br>
         <b> Observé le: </b> ${feature.properties.date_min} <br>
-        <b> Par </b>:  ${feature.properties.observers}
+        <b> Par</b>:  ${feature.properties.observers}
         `;
         layer.bindPopup(popup).openPopup();
       }
