@@ -183,7 +183,7 @@ class TAcquisitionFramework(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     cor_af_actor = relationship(
-        "CorAcquisitionFrameworkActor",
+        CorAcquisitionFrameworkActor,
         lazy='select',
         cascade="save-update, delete, delete-orphan"
     )
