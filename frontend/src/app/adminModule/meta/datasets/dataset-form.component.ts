@@ -118,22 +118,27 @@ export class DatasetFormComponent implements OnInit {
     const update_cor_dataset_actor = [];
     let formValid = true;
     cor_dataset_actor_array.forEach(element => {
-      element.organisms.forEach(org => {
-        const corOrg = {
-          id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-          id_organism: org.id_organisme
-        };
-        update_cor_dataset_actor.push(corOrg);
-        //TODO: la meme chose avec les observateur si c'est un multiselect
-      });
+      if (element.organisms) {
+        element.organisms.forEach(org => {
+          const corOrg = {
+            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
+            id_organism: org.id_organisme
+          };
+          update_cor_dataset_actor.push(corOrg);
+          //TODO: la meme chose avec les observateur si c'est un multiselect
+        });
+      }
 
-      element.roles.forEach(role => {
-        const corRole = {
-          id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-          id_role: role.id_role
-        };
-        update_cor_dataset_actor.push(corRole);
-      });
+      if (element.roles) {
+        element.roles.forEach(role => {
+          const corRole = {
+            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
+            id_role: role.id_role
+          };
+          update_cor_dataset_actor.push(corRole);
+        });
+      }
+
       if (update_cor_dataset_actor.length === 0) {
         formValid = false;
         this._toaster.error('Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD', '',
