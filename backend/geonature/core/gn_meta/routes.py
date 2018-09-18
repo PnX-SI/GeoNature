@@ -7,10 +7,13 @@ from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 
+from pypnnomenclature.models import TNomenclatures
+
 from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor, TAcquisitionFramework,
-    CorAcquisitionFrameworkActor
+    CorAcquisitionFrameworkActor, CorAcquisitionFrameworkObjectif,
+    CorAcquisitionFrameworkVoletSINP
 )
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
@@ -104,6 +107,7 @@ def post_dataset():
     for cor in cor_dataset_actor:
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
+
     DB.session.add(dataset)
     DB.session.commit()
     return dataset.as_dict(True)
@@ -137,11 +141,27 @@ def post_acquisition_framework():
     data = dict(request.get_json())
 
     cor_af_actor = data.pop('cor_af_actor')
+    cor_objectifs = data.pop('cor_objectifs')
+    cor_volets_sinp = data.pop('cor_volets_sinp')
 
     af = TAcquisitionFramework(**data)
 
     for cor in cor_af_actor:
         af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
+    
+    if cor_objectifs is not None:
+        objectif_nom = DB.session.query(TNomenclatures).filter(
+            TNomenclatures.id_nomenclature.in_(cor_objectifs)
+        ).all()
+        for obj in objectif_nom:
+            af.cor_objectifs.append(obj)
+
+    if cor_volets_sinp is not None:
+        volet_nom = DB.session.query(TNomenclatures).filter(
+            TNomenclatures.id_nomenclature.in_(cor_volets_sinp)
+        ).all()
+        for volet in volet_nom:
+            af.cor_volets_sinp.append(volet)
 
     DB.session.add(af)
     DB.session.commit()
