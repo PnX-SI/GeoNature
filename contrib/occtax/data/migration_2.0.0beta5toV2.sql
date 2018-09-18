@@ -222,6 +222,7 @@ $BODY$
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
+-- Insert counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
   RETURNS trigger AS
   $BODY$
@@ -354,7 +355,7 @@ DECLARE
 BEGIN
   -- suppression dans la synthese
     DELETE FROM gn_synthese.synthese WHERE unique_id_sinp IN (
-      SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax  ;
+      SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax 
     );
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
   SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
@@ -384,7 +385,7 @@ BEGIN
     JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = cor.id_releve_occtax
     WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
   ELSE 
-    theobservers:= observers_txt;
+    theobservers:= NEW.observers_txt;
   END IF;
   FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax LOOP
       UPDATE gn_synthese.synthese SET
@@ -440,10 +441,9 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  integer[];
-  the_uuid_counting integer;
+  the_uuid_countings  uuid[];
+  the_uuid_counting uuid;
   the_id_synthese integer;
-  the_id_source integer;
 
 BEGIN
   -- récupération des uuid_counting à partir de l'id_releve
@@ -474,8 +474,8 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_cor_role_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  integer[];
-  the_uuid_counting integer;
+  the_uuid_countings  uuid[];
+  the_uuid_counting uuid;
   the_id_synthese integer;
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
@@ -504,13 +504,13 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_cor_role_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  integer[];
-  the_uuid_counting integer;
+  the_uuid_countings  uuid[];
+  the_uuid_counting uuid;
   the_id_synthese integer;
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_uuid_countings pr_occtax.get_unique_id_sinp_from_id_releve(OLD.id_releve_occtax::integer);
-  IF the_id_countings IS NOT NULL THEN
+  IF the_uuid_countings IS NOT NULL THEN
   FOREACH the_uuid_counting IN ARRAY the_uuid_countings
     LOOP
       SELECT INTO the_id_synthese id_synthese
