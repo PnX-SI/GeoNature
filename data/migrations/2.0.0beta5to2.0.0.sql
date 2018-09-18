@@ -261,6 +261,16 @@ UPDATE gn_meta.t_datasets SET active = true;
 ALTER TABLE gn_meta.t_acquisition_frameworks
 ALTER COLUMN is_parent TYPE boolean USING is_parent::boolean;
 
+ALTER TABLE gn_meta.t_datasets 
+ALTER COLUMN bbox_west TYPE real USING bbox_west::real;
+ALTER TABLE gn_meta.t_datasets 
+ALTER COLUMN bbox_east TYPE real USING bbox_east::real;
+ALTER TABLE gn_meta.t_datasets 
+ALTER COLUMN bbox_south TYPE real USING bbox_south::real;
+ALTER TABLE gn_meta.t_datasets 
+ALTER COLUMN bbox_north TYPE real USING bbox_north::real;
+
+
 
 -----------------
 --GN_MONITORING--
