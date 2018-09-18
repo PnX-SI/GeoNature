@@ -137,6 +137,22 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 * Installer GeoNature standalone ou refaire une installation complète
 * Adaptez les scripts présents dans /data/migrations/v1tov2 et éxécutez les
 
+
+Les utilisateurs utilisant la version 2.0.0beta5
+
+* suivre la procédure habituelle
+
+* executer les commandes suivantes:
+
+    ::
+
+        cd geonature/backend
+        source venv/bin/activate
+        geonature generate_frontend_modules_route
+        geonature frontend_build
+
+
+
 #####################################################################################################
 
 **Nouveautés**
