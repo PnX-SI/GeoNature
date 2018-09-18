@@ -163,6 +163,29 @@ UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile
 
 Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le script ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installez donc que l'application et pas la BDD.
 
+Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisateur:
+::
+
+    cd ~
+    wget https://github.com/PnX-SI/TaxHub/archive/1.4.1.zip
+    
+en mode développeur: 
+
+``git clone https://github.com/PnX-SI/TaxHub/archive/1.4.1.zip``
+
+"Désamplez" le fichier ``settings.ini`` et remplissez la configuration avec les paramètres de connexion à la BDD GeoNature précedemment installée
+
+::
+
+    cp settings.ini.sample settings.ini
+    nano settings.ini
+
+Lancer le script d'installation de l'application:
+::
+
+    ./install_app.sh
+
+
 Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 
 Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
