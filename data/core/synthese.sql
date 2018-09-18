@@ -209,7 +209,7 @@ FROM (
 ) t
   WHERE t.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese);
 
-  COMMENT ON TABLE vm_taxref_list_forautocomplete
+  COMMENT ON TABLE taxons_synthese_autocomplete
      IS 'Table construite à partir d''une requete sur la base et mise à jour via le trigger trg_refresh_taxons_forautocomplete de la table gn_synthese';
 
 ---------------
@@ -573,7 +573,7 @@ IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom F
 	INSERT INTO gn_synthese.taxons_synthese_autocomplete
 	  SELECT t.cd_nom,
             t.cd_ref,
-		    concat(t.lb_nom, ' = ', t.nom_valide) AS search_name,
+		    concat(t.lb_nom, ' = <i>', t.nom_valide, , '</i>') AS search_name,
 		    t.nom_valide,
 		    t.lb_nom,
 		    t.regne,

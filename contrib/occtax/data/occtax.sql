@@ -1135,4 +1135,4 @@ INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
 ;
 
 INSERT INTO gn_synthese.t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active)
- VALUES (1, 'Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting' , NULL, NULL, 'NONE', true);
+ VALUES ('Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting' , NULL, NULL, 'NONE', true);
