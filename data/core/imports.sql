@@ -7,7 +7,7 @@ SET client_min_messages = warning;
 
 CREATE SCHEMA gn_imports;
 
-SET search_path = gn_commons, pg_catalog;
+SET search_path = imports, pg_catalog;
 SET default_with_oids = false;
 
 CREATE TABLE matching_tables
