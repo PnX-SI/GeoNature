@@ -113,10 +113,10 @@ class TDatasets(DB.Model):
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS")
     )
-    bbox_west = DB.Column(DB.Unicode)
-    bbox_east = DB.Column(DB.Unicode)
-    bbox_south = DB.Column(DB.Unicode)
-    bbox_north = DB.Column(DB.Unicode)
+    bbox_west = DB.Column(DB.Float)
+    bbox_east = DB.Column(DB.Float)
+    bbox_south = DB.Column(DB.Float)
+    bbox_north = DB.Column(DB.Float)
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL")
