@@ -21,7 +21,9 @@ CREATE TABLE matching_tables
   CONSTRAINT pk_matching_tables PRIMARY KEY (id_matching_table)
 );
 
-id_matching_field serial NOT NULL,
+CREATE TABLE matching_fields
+(
+  id_matching_field serial NOT NULL,
   source_field text,
   source_default_value text, -- Valeur par défaut à insérer si la valeur attendue dans le champ de la table de destination n'existe pas dans la table source
   target_field text NOT NULL,
@@ -30,7 +32,7 @@ id_matching_field serial NOT NULL,
   id_matching_table integer NOT NULL,
   CONSTRAINT pk_matching_fields PRIMARY KEY (id_matching_field)
 );
-COMMENT ON COLUMN gn_imports.matching_fields.source_default_value IS 'Valeur par défaut à insérer si la valeur attendue dans le champ de la table de destination n''existe pas dans la table source';
+COMMENT ON COLUMN matching_fields.source_default_value IS 'Valeur par défaut à insérer si la valeur attendue dans le champ de la table de destination n''existe pas dans la table source';
 
 
 CREATE TABLE matching_geoms
@@ -129,7 +131,7 @@ BEGIN
     RETURN format('CREATE TABLE %I.%I FROM %L', sname, tname, csv_file);
 END $$;
 
-CREATE OR REPLACE FUNCTION gn_imports.fct_generate_matching(
+CREATE OR REPLACE FUNCTION fct_generate_matching(
   mysource_table text, 
   mytarget_table text,
   forcedelete boolean DEFAULT false)  
@@ -224,7 +226,7 @@ BEGIN
     RETURN 'Insertion de tous les champs de la table de destination dans "gn_imports.matching_fields" ; vous devez maintenant adapter le contenu de cette table.';
 END $$;
 
-CREATE OR REPLACE FUNCTION gn_imports.fct_generate_import_query(
+CREATE OR REPLACE FUNCTION fct_generate_import_query(
   mysource_table text, 
   mytarget_table text) 
 RETURNS text LANGUAGE plpgsql AS
