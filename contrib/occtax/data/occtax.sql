@@ -47,9 +47,9 @@ DECLARE the_array_id_counting integer[];
 
 BEGIN
 SELECT INTO the_array_id_counting array_agg(counting.id_counting_occtax)
-FROM pr_occtax.t_releves_occtax rel
-JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+FROM pr_occtax.cor_counting_occtax counting
+JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_occurrence_occtax = counting.id_occurrence_occtax
+JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = occ.id_releve_occtax
 WHERE rel.id_releve_occtax = my_id_releve;
 RETURN the_array_id_counting;
 END;
@@ -59,16 +59,16 @@ $BODY$
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.get_unique_id_sinp_from_id_releve(my_id_releve integer)
-  RETURNS integer[] AS
+  RETURNS uuid[] AS
 $BODY$
 -- Function which return the unique_id_sinp_occtax in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
-DECLARE the_array_uuid_sinp integer[];
+DECLARE the_array_uuid_sinp uuid[];
 
 BEGIN
 SELECT INTO the_array_uuid_sinp array_agg(counting.unique_id_sinp_occtax)
-FROM pr_occtax.t_releves_occtax rel
-JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+FROM pr_occtax.cor_counting_occtax counting
+JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_occurrence_occtax = counting.id_occurrence_occtax
+JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = occ.id_releve_occtax
 WHERE rel.id_releve_occtax = my_id_releve;
 RETURN the_array_uuid_sinp;
 END;
@@ -743,7 +743,7 @@ DECLARE
 BEGIN
   -- suppression dans la synthese
     DELETE FROM gn_synthese.synthese WHERE unique_id_sinp IN (
-      SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax  ;
+      SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax 
     );
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
   SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
@@ -773,7 +773,7 @@ BEGIN
     JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = cor.id_releve_occtax
     WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
   ELSE 
-    theobservers:= observers_txt;
+    theobservers:= NEW.observers_txt;
   END IF;
   FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax LOOP
       UPDATE gn_synthese.synthese SET
@@ -829,10 +829,9 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  integer[];
-  the_uuid_counting integer;
+  the_uuid_countings  uuid[];
+  the_uuid_counting uuid;
   the_id_synthese integer;
-  the_id_source integer;
 
 BEGIN
   -- récupération des uuid_counting à partir de l'id_releve
@@ -863,8 +862,8 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_cor_role_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  integer[];
-  the_uuid_counting integer;
+  the_uuid_countings  uuid[];
+  the_uuid_counting uuid;
   the_id_synthese integer;
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
@@ -893,13 +892,13 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_cor_role_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  integer[];
-  the_uuid_counting integer;
+  the_uuid_countings  uuid[];
+  the_uuid_counting uuid;
   the_id_synthese integer;
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO the_uuid_countings pr_occtax.get_unique_id_sinp_from_id_releve(OLD.id_releve_occtax::integer);
-  IF the_id_countings IS NOT NULL THEN
+  IF the_uuid_countings IS NOT NULL THEN
   FOREACH the_uuid_counting IN ARRAY the_uuid_countings
     LOOP
       SELECT INTO the_id_synthese id_synthese

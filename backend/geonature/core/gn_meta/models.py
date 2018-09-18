@@ -15,7 +15,7 @@ from geonature.core.users.models import TRoles, BibOrganismes
 class CorAcquisitionFrameworkObjectif(DB.Model):
     __tablename__ = 'cor_acquisition_framework_objectif'
     __table_args__ = {'schema': 'gn_meta'}
-    id_acquisition_framework  = DB.Column(
+    id_acquisition_framework = DB.Column(
         DB.Integer,
         ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'),
         primary_key=True
@@ -30,7 +30,7 @@ class CorAcquisitionFrameworkObjectif(DB.Model):
 class CorAcquisitionFrameworkVoletSINP(DB.Model):
     __tablename__ = 'cor_acquisition_framework_voletsinp'
     __table_args__ = {'schema': 'gn_meta'}
-    id_acquisition_framework =  DB.Column(
+    id_acquisition_framework = DB.Column(
         DB.Integer,
         ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'),
         primary_key=True,
@@ -41,6 +41,7 @@ class CorAcquisitionFrameworkVoletSINP(DB.Model):
         ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature'),
         primary_key=True,
     )
+
 
 @serializable
 class CorAcquisitionFrameworkActor(DB.Model):
@@ -135,7 +136,7 @@ class TDatasets(DB.Model):
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
-    active = DB.Column(DB.Boolean)
+    active = DB.Column(DB.Boolean, default=True)
 
     cor_dataset_actor = relationship(
         CorDatasetActor,
@@ -217,7 +218,6 @@ class TAcquisitionFramework(DB.Model):
         lazy='select',
         cascade="save-update, delete, delete-orphan"
     )
-
 
     cor_objectifs = DB.relationship(
         TNomenclatures,
