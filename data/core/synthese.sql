@@ -177,6 +177,41 @@ CREATE TABLE defaults_nomenclatures_value (
     group2_inpn character varying(255) NOT NULL DEFAULT '0',
     id_nomenclature integer NOT NULL
 );
+
+CREATE TABLE gn_synthese.taxons_synthese_autocomplete AS
+SELECT t.cd_nom,
+  t.cd_ref,
+  t.search_name,
+  t.nom_valide,
+  t.lb_nom,
+  t.regne,
+  t.group2_inpn
+FROM (
+  SELECT t_1.cd_nom,
+        t_1.cd_ref,
+        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>' ) AS search_name,
+        t_1.nom_valide,
+        t_1.lb_nom,
+        t_1.regne,
+        t_1.group2_inpn
+  FROM taxonomie.taxref t_1
+
+  UNION
+  SELECT t_1.cd_nom,
+        t_1.cd_ref,
+        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>' ) AS search_name,
+        t_1.nom_valide,
+        t_1.lb_nom,
+        t_1.regne,
+        t_1.group2_inpn
+  FROM taxonomie.taxref t_1
+  WHERE t_1.nom_vern IS NOT NULL AND t_1.cd_nom = t_1.cd_ref
+) t
+  WHERE t.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese);
+
+  COMMENT ON TABLE vm_taxref_list_forautocomplete
+     IS 'Table construite à partir d''une requete sur la base et mise à jour via le trigger trg_refresh_taxons_forautocomplete de la table gn_synthese';
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -191,6 +226,9 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
 
 ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese PRIMARY KEY (id_synthese, id_role);
+
+ALTER TABLE ONLY taxons_synthese_autocomplete ADD CONSTRAINT pk_taxons_synthese_autocomplete PRIMARY KEY (cd_nom, search_name);
+
 
 
 ---------------
@@ -522,6 +560,41 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
+  RETURNS trigger AS
+$BODY$
+ DECLARE
+  BEGIN
+IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+		DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
+		WHERE auto.cd_nom = OLD.cd_nom;
+END IF;
+IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+	INSERT INTO gn_synthese.taxons_synthese_autocomplete
+	  SELECT t.cd_nom,
+            t.cd_ref,
+		    concat(t.lb_nom, ' = ', t.nom_valide) AS search_name,
+		    t.nom_valide,
+		    t.lb_nom,
+		    t.regne,
+		    t.group2_inpn
+		FROM taxonomie.taxref t  WHERE cd_nom = NEW.cd_nom;
+	INSERT INTO gn_synthese.taxons_synthese_autocomplete
+	  SELECT t.cd_nom,
+            t.cd_ref,
+	    concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>' ) AS search_name,
+	    t.nom_valide,
+	    t.lb_nom,
+	    t.regne,
+	    t.group2_inpn
+	FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+ END IF;
+  RETURN NULL;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 ---------
 --VIEWS--
 ---------
@@ -782,6 +855,12 @@ CREATE TRIGGER tri_insert_cor_area_synthese
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+
+CREATE TRIGGER trg_refresh_taxons_forautocomplete
+  AFTER INSERT OR UPDATE OR DELETE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
 
 --------
 --DATA--
