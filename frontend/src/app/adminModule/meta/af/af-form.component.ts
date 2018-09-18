@@ -9,8 +9,6 @@ import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
 
-
-
 @Component({
   selector: 'pnx-af-form',
   templateUrl: './af-form.component.html',
@@ -32,9 +30,8 @@ export class AfFormComponent implements OnInit {
     private _api: HttpClient,
     private _router: Router,
     private _toaster: ToastrService,
-    private _dateParser: NgbDateParserFormatter,
-
-  ) { }
+    private _dateParser: NgbDateParserFormatter
+  ) {}
 
   ngOnInit() {
     this._route.params.subscribe(params => {
@@ -64,7 +61,6 @@ export class AfFormComponent implements OnInit {
       cor_volets_sinp: [new Array()]
     });
 
-
     this.cor_af_actor = this._fb.array([]);
     this.cor_af_actor.push(this._formService.generateCorDatasetActorForm());
   }
@@ -74,9 +70,7 @@ export class AfFormComponent implements OnInit {
       this.af = data;
       this.afForm.patchValue(data);
       data.cor_af_actor.forEach((cor, index) => {
-        const roles = data.cor_af_actor[index].role
-          ? [data.cor_af_actor[index].role]
-          : null;
+        const roles = data.cor_af_actor[index].role ? [data.cor_af_actor[index].role] : null;
         const organisms = data.cor_af_actor[index].organism
           ? [data.cor_af_actor[index].organism]
           : null;
@@ -106,7 +100,7 @@ export class AfFormComponent implements OnInit {
     const update_cor_af_actor = [];
     let formValid = true;
     cor_af_actor.forEach(element => {
-      if (element.organism) {
+      if (element.organisms) {
         element.organisms.forEach(org => {
           const corOrg = {
             id_nomenclature_actor_role: element.id_nomenclature_actor_role,
@@ -127,8 +121,10 @@ export class AfFormComponent implements OnInit {
 
       if (update_cor_af_actor.length === 0) {
         formValid = false;
-        this._toaster.error('Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD', '',
-          { 'positionClass': 'toast-top-center' },
+        this._toaster.error(
+          'Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD',
+          '',
+          { positionClass: 'toast-top-center' }
         );
       }
     });
@@ -138,9 +134,7 @@ export class AfFormComponent implements OnInit {
     // format volets
     af.cor_volets_sinp.map(obj => obj.id_nomenclature);
 
-
     if (formValid) {
-
       af.acquisition_framework_start_date = this._dateParser.format(
         af.acquisition_framework_start_date
       );
@@ -150,7 +144,6 @@ export class AfFormComponent implements OnInit {
           af.acquisition_framework_end_date
         );
       }
-
 
       af['cor_af_actor'] = update_cor_af_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
@@ -163,6 +156,5 @@ export class AfFormComponent implements OnInit {
         }
       );
     }
-
   }
 }
