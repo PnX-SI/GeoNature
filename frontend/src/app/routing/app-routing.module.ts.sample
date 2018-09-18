@@ -19,7 +19,7 @@ const defaultRoutes: Routes = [
           path: '{{route.path}}',
           loadChildren: '{{route.location}}',
           canActivate: [ModuleGuardService],
-          data: { module_name: {{route.module_name}} }  },
+          data: { module_name: '{{route.module_name}}' }  },
         {% endfor %}
       { path: '', component: HomeContentComponent },
       { path: 'synthese', loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'},
@@ -28,7 +28,7 @@ const defaultRoutes: Routes = [
         path: 'admin',
         loadChildren: '@geonature/adminModule/admin.module#AdminModule',
         canActivate: [ModuleGuardService],
-        data: { module_name: 21 }
+        data: { module_name: 'admin' }
       },
 
       { path: '**',  component: PageNotFoundComponent },
