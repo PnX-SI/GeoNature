@@ -54,7 +54,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``. On ne se connectera plus en ``root``. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
-* Lancez les commandes suivantes pour installer les dépendances de GeoNature :
+* Lancez les commandes suivantes pour installer les dépendances de GeoNature (debian 9) :
 
   ::  
 
@@ -63,6 +63,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
     sudo apt-get install -y npm
     sudo apt-get install -y supervisor
+    
+ Sur ubuntu 18 installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``
 
 Installation de l'application
 -----------------------------
