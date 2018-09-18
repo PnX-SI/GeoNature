@@ -91,8 +91,9 @@ def copy_in_external_mods(module_path, module_name):
         Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
     '''
     # Suppression du lien symbolique s'il existe déja
-    cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_name)
-    subprocess.call(cmd.split(" "))
+    if (GN_EXTERNAL_MODULE / module_name).is_dir():
+        cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_name)
+        subprocess.call(cmd.split(" "))
     # creation du lien symbolique
     cmd = "ln -s {} {}/{}".format(
         module_path, GN_EXTERNAL_MODULE.resolve(), module_name
@@ -320,6 +321,7 @@ def create_external_assets_symlink(module_path, module_name):
         raise GeoNatureError(exp)
     return True
 
+
 def add_application_db(module_name, url, module_id=None):
     log.info('Register the module in t_application ... \n')
     app_conf = load_config(DEFAULT_CONFIG_FILE)
@@ -379,6 +381,7 @@ def add_application_db(module_name, url, module_id=None):
     log.info("...%s\n", MSG_OK)
     return module_id
 
+
 def create_module_config(module_name, mod_path=None, build=True):
     """
         Create the frontend config
@@ -395,16 +398,16 @@ def create_module_config(module_name, mod_path=None, build=True):
 
     # import du module dans le sys.path
     module_parent_dir = str(Path(mod_path).parent)
-    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name) # noqa
+    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)  # noqa
     sys.path.insert(0, module_parent_dir)
     module = __import__(module_schema_conf, globals=globals())
-    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml') # noqa
+    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml')  # noqa
     config_module = utilstoml.load_and_validate_toml(
         front_module_conf_file,
         module.config.conf_schema_toml.GnModuleSchemaConf
     )
 
-    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts') # noqa
+    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
     try:
         with open(
             str(ROOT_DIR / frontend_config_path), 'w'
