@@ -5,7 +5,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-CREATE SCHEMA imports;
+CREATE SCHEMA gn_imports;
 
 SET search_path = gn_imports, pg_catalog;
 SET default_with_oids = false;
