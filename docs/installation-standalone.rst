@@ -109,21 +109,21 @@ Créer un utilisateur de base de données (cf ``settings.ini``) :
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
 ::
+
     cd install
     ./install_db.sh
 
-La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
-
-- ``-s`` ou ``--settings-path`` pour spécifier un autre emplacement pour le fichier ``settings.ini``
-- ``-d`` ou ``--dev`` permet d'installer des dépendances python utile pour le développement de GeoNature
-- ``-h`` ou ``--help`` affiche l'aide pour cette commande ``install_app.sh``
 
 Installation de l'application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Lancer le script d'installation de l'application :
 
-Attention, si vous installez GeoNature sur Ubuntu, il est nécessaire de changer un numéro de version pour une librairie python. Editez le fichier ``backend/requirements.txt`` et remplacer la version de ``pygdal`` par celle indiquée dans le fichier
+La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
+
+- ``-s`` ou ``--settings-path`` pour spécifier un autre emplacement pour le fichier ``settings.ini``
+- ``-d`` ou ``--dev`` permet d'installer des dépendances python utile pour le développement de GeoNature
+- ``-h`` ou ``--help`` affiche l'aide pour cette commande ``install_app.sh``
 
 ::
 
