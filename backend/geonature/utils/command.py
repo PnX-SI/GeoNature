@@ -107,14 +107,14 @@ def tsconfig_templating():
 
 
 def create_frontend_config(conf_file):
-    log.infog('Generating configuration')
+    log.info('Generating configuration')
     configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
     with open(
         str(ROOT_DIR / 'frontend/src/conf/app.config.ts'), 'w'
     ) as outputfile:
         outputfile.write("export const AppConfig = ")
-        json.dump(configs_gn, outputfile, indent=True)*
+        json.dump(configs_gn, outputfile, indent=True)
     log.info("...%s\n", MSG_OK)
 
 
