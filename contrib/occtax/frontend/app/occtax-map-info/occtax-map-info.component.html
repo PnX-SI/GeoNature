@@ -5,11 +5,22 @@
   <div class="col-sm-12 col-md-7 padding-sm form-container">
     <div class="card">
       <div class="card-header">
-        <h4> Relevé</h4>
-        <button matTooltip="Edit relevé {{id}}" type="button" id="edit" class="btn btn-success" [disabled]="userReleveCruved?.E == false">
-          <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" (click)="fs.onEditReleve(id)">
-          </i>
-        </button>
+        <h4> Relevé
+
+          <button matTooltip="Editez le relevé {{id}}" type="button" (click)="fs.onEditReleve(id)" class="btn btn-success button-rounded"
+            [disabled]="userReleveCruved?.E == false">
+            <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true">
+            </i>
+          </button>
+
+          <button matTooltip="Supprimer le relevé {{id}}" type="button" (click)="openModalDelete(modalDelete)" class="btn btn-danger button-rounded"
+            [disabled]="userReleveCruved?.D == false">
+            <i class="fa fa-trash-o  fa-lg" aria-hidden="true">
+            </i>
+          </button>
+
+        </h4>
+
 
       </div>
 
@@ -178,8 +189,6 @@
 
 
 
-
-
             </div>
 
             <div class="tab-pane" id="counting" role="tabpanel">
@@ -239,3 +248,25 @@
         </div>
       </div>
     </div>
+
+
+    <ng-template #modalDelete let-d="dismiss" let-c="close">
+
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Suppression</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="c()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Attention vous vous apprêtez à supprimer un releve qui comporte
+          {{releve?.properties.t_occurrences_occtax.length}} occurrence(s) de taxon et {{nbCounting}} dénombrement(s).
+        </p>
+        <button type="button" (click)="c()" class="btn btn-secondary">Annuler</button>
+
+        <button type="button" (click)="deleteReleve(modalDelete); c()" class="btn btn-danger">Supprimer</button>
+      </div>
+
+
+    </ng-template>
