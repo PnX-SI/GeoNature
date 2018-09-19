@@ -19,7 +19,6 @@ from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
     get_af_cruved
 )
-from geonature.core.gn_commons.models import TParameters
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
@@ -150,7 +149,7 @@ def post_acquisition_framework():
 
     for cor in cor_af_actor:
         af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
-    
+
     if cor_objectifs is not None:
         objectif_nom = DB.session.query(TNomenclatures).filter(
             TNomenclatures.id_nomenclature.in_(cor_objectifs)
@@ -170,28 +169,6 @@ def post_acquisition_framework():
         DB.session.add(af)
     DB.session.commit()
     return af.as_dict()
-
-
-# @routes.route('/list/parameters', methods=['GET'])
-# @json_resp
-# def get_parameters_list():
-#     q = DB.session.query(TParameters)
-#     data = q.all()
-
-#     return [d.as_dict() for d in data]
-
-
-# @routes.route('/parameters/<param_name>', methods=['GET'])
-# @routes.route('/parameters/<param_name>/<int:id_org>', methods=['GET'])
-# @json_resp
-# def get_one_parameter(param_name, id_org=None):
-#     q = DB.session.query(TParameters)
-#     q = q.filter(TParameters.parameter_name == param_name)
-#     if id_org:
-#         q = q.filter(TParameters.id_organism == id_org)
-
-#     data = q.all()
-#     return [d.as_dict() for d in data]
 
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
