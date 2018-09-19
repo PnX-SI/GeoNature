@@ -123,7 +123,7 @@ Lancer le script d'installation de l'application :
 La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
 
 - ``-s`` ou ``--settings-path`` pour spécifier un autre emplacement pour le fichier ``settings.ini``
-- ``-d`` ou ``--dev`` permet d'installer des dépendances python utile pour le développement de GeoNature
+- ``-d`` ou ``--dev`` permet d'installer des dépendances python utile pour le développement de GeoNature et de ne pas compiler inutilement le frontend
 - ``-h`` ou ``--help`` affiche l'aide pour cette commande ``install_app.sh``
 
 ::
