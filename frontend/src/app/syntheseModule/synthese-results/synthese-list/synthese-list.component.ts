@@ -140,7 +140,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       size: 'lg',
       windowClass: 'large-modal'
     });
-    console.log(row);
     modalRef.componentInstance.oneObsSynthese = row;
   }
 

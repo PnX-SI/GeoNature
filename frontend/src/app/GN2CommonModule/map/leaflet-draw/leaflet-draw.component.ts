@@ -38,7 +38,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.map.addControl(drawControl);
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
-      console.log(this.map.getZoom());
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }
@@ -114,7 +113,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    console.log(changes);
     if (changes.geojson && changes.geojson.currentValue) {
       this.loadDrawfromGeoJson(changes.geojson.currentValue);
     }

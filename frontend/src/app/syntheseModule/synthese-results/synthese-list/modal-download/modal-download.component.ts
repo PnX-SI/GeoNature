@@ -11,15 +11,15 @@ import { Observable } from 'rxjs/Observable';
 })
 export class SyntheseModalDownloadComponent implements OnInit {
   public syntheseConfig = AppConfig.SYNTHESE;
-  progress$: Observable<number>
-  message = "Téléchargement en cours";
+  progress$: Observable<number>;
+  message = 'Téléchargement en cours';
   type = 'info';
   animated = true;
   public downloading: boolean = false;
   @Input() queryString: HttpParams;
   @Input() tooManyObs = false;
 
-  constructor(public activeModal: NgbActiveModal, private _dataService: DataService) { }
+  constructor(public activeModal: NgbActiveModal, private _dataService: DataService) {}
 
   ngOnInit() {
     this.progress$ = this._dataService.downloadProgress;
@@ -27,22 +27,21 @@ export class SyntheseModalDownloadComponent implements OnInit {
     //   (state === 100) ? this.done() : null;
     // )};
     this.progress$.subscribe(state => {
-      console.log(state);
       if (state === 100) {
         this.done();
       }
-    })
+    });
   }
 
   progress() {
     this._dataService.downloadProgress.next(0.0);
-    this.message = "Téléchargement en cours";
+    this.message = 'Téléchargement en cours';
     this.animated = true;
     this.type = 'info';
   }
 
   done() {
-    this.message = 'Export téléchargé.'
+    this.message = 'Export téléchargé.';
     this.type = 'success';
     this.animated = false;
   }
@@ -53,7 +52,6 @@ export class SyntheseModalDownloadComponent implements OnInit {
     const downloadURL = this.queryString.set('export_format', format);
     const url = `${AppConfig.API_ENDPOINT}/synthese/export`;
     this._dataService.downloadData(url, format, downloadURL, 'export_synthese_observations');
-
   }
 
   downloadStatus() {

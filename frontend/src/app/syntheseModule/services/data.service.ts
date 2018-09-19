@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
-  HttpParams, HttpEvent,
+  HttpParams,
+  HttpEvent,
   HttpHeaders,
   HttpRequest,
   HttpEventType,
@@ -13,13 +14,11 @@ import { isArray } from 'util';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CommonService } from '@geonature_common/service/common.service';
 
-
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
   ['shp', 'application/zip']
 ]);
-
 
 @Injectable()
 export class DataService {
@@ -40,7 +39,6 @@ export class DataService {
         queryUrl = queryUrl.set(key, params[key]);
       }
     }
-    console.log(queryUrl.toString())
     return queryUrl;
   }
   getSyntheseData(params) {
@@ -73,23 +71,23 @@ export class DataService {
       headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
       observe: 'events',
       responseType: 'blob',
-      reportProgress: true,
+      reportProgress: true
     });
 
     const subscription = source.subscribe(
       event => {
         switch (event.type) {
-          case (HttpEventType.DownloadProgress):
+          case HttpEventType.DownloadProgress:
             if (event.hasOwnProperty('total')) {
-              const percentage = Math.round((100 / event.total) * event.loaded);
+              const percentage = Math.round(100 / event.total * event.loaded);
               this.downloadProgress.next(percentage);
             } else {
               const kb = (event.loaded / 1024).toFixed(2);
               this.downloadProgress.next(parseFloat(kb));
             }
             break;
-          case (HttpEventType.Response):
-            this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') })
+          case HttpEventType.Response:
+            this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
             break;
         }
       },
@@ -103,10 +101,10 @@ export class DataService {
         // FIXME: const DATE_FORMAT, FILENAME_FORMAT
         // FIXME: (format, mimetype, extension)
         const extension = format !== 'shp' ? format : 'zip';
-        this.saveBlob(this._blob, `${filename}${date.toISOString()}.${extension}`)
+        this.saveBlob(this._blob, `${filename}${date.toISOString()}.${extension}`);
         this.isDownloading = false;
         subscription.unsubscribe();
-      },
+      }
     );
   }
   saveBlob(blob, filename) {
@@ -114,10 +112,11 @@ export class DataService {
     link.href = URL.createObjectURL(blob);
     link.setAttribute('visibility', 'hidden');
     link.download = filename;
-    link.onload = () => { URL.revokeObjectURL(link.href); };
+    link.onload = () => {
+      URL.revokeObjectURL(link.href);
+    };
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 }
-

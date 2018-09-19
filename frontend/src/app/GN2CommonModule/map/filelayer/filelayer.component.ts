@@ -15,7 +15,6 @@ export class LeafletFileLayerComponent implements OnInit {
   constructor(public mapService: MapService) {}
 
   ngOnInit() {
-    console.log((window as any).L);
     //console.log(L);
     this.map = this.mapService.getMap();
     //this.Le = L;

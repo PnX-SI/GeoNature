@@ -79,7 +79,6 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
-      console.log(value);
       // filter the list of options to not display twice an item
       if (value === null) {
         this.selectedItems = [];

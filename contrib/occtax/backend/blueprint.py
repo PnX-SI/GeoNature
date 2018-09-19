@@ -363,7 +363,6 @@ def insertOrUpdateOneReleve(info_role):
             tag_action_code="U",
             id_organisme=info_role.id_organisme
         )
-        print('PASSE LAAAAAAAAAA')
         releve = releveRepository.update(releve, user, shape)
     else:
         if info_role.tag_object_code in ('0', '1', '2'):
@@ -533,7 +532,6 @@ def export(info_role):
 
     export_format = request.args['format'] if 'format' in request.args else 'geojson'
     if export_format == 'csv':
-        # print(export_view.meta.__table__.columns.keys())
         columns = export_columns if len(export_columns) > 0 else [db_col.key for db_col in export_view.db_cols]
         return to_csv_resp(
             file_name,
