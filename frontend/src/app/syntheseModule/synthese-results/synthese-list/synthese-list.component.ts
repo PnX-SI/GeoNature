@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, ViewChild, HostListener, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  HostListener,
+  AfterContentChecked,
+  OnChanges,
+  ChangeDetectorRef
+} from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { DataService } from '../../services/data.service';
@@ -7,40 +16,45 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/src/params';
-import { DataFormService } from '@geonature_common/form/data-form.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ModalInfoObsComponent } from './modal-info-obs/modal-info-obs.component';
 
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
   styleUrls: ['synthese-list.component.scss']
 })
-export class SyntheseListComponent implements OnInit, OnChanges {
+export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public selectedObs: any;
   public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;
-  public exportRoute = `${AppConfig.API_ENDPOINT}/synthese/export`;
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
+  public downloadMessage: string;
+  //input to resize datatable on searchbar toggle
+  @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
-  @ViewChild('table') table: any;
+  @ViewChild('table') table: DatatableComponent;
+  private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
     private _ds: DataService,
     public ngbModal: NgbModal,
     private _commonService: CommonService,
     private _fs: SyntheseFormService,
-    private dataService: DataFormService,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    public ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 62);
+    this.rowNumber = Math.trunc(h / 37);
 
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe(id => {
@@ -59,29 +73,20 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     });
   }
 
+  ngAfterContentChecked() {
+    if (this.table && this.table.element.clientWidth !== this._latestWidth) {
+      this._latestWidth = this.table.element.clientWidth;
+      if (this.searchBarHidden) {
+        this.table.recalculate();
+        this.ref.markForCheck();
+      }
+    }
+  }
+
   // update the number of row per page when resize the window
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.rowNumber = Math.trunc(event.target.innerHeight / 62);
-  }
-
-  loadOneSyntheseReleve(row) {
-    this._ds.getOneSyntheseObservation(row.id_synthese).subscribe(data => {
-      this.selectedObs = data;
-      this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
-        this.selectedObs['cd_nom']
-      }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
-    });
-
-    this.dataService
-      .getTaxonAttributsAndMedia(row.taxon.cd_nom, this.SYNTHESE_CONFIG.ID_THEME_ATTRIBUT_TAXHUB)
-      .subscribe(data => {
-        this.selectObsTaxonInfo = data;
-      });
-
-    this.dataService.getTaxonInfo(row.taxon.cd_nom).subscribe(data => {
-      this.selectedObsTaxonDetail = data;
-    });
+    this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
   toggleExpandRow(row) {
@@ -101,18 +106,14 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     }
   }
 
-  openDeleteModal(event, modal, iElement, row) {
-    this.mapListService.selectedRow = [];
-    this.mapListService.selectedRow.push(row);
-    this.ngbModal.open(modal);
-  }
-
-  onEditReleve(url_source, id_source) {
+  backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
     link.target = '_blank';
-    link.href = url_source + '/' + id_source;
+    link.href = url_source + '/' + id_pk_source;
     link.setAttribute('visibility', 'hidden');
+    document.body.appendChild(link);
     link.click();
+    link.remove();
   }
 
   onDeleteObservation(id_synthese) {
@@ -131,25 +132,38 @@ export class SyntheseListComponent implements OnInit, OnChanges {
     );
   }
 
-  setQueryString() {
+  getQueryString(): HttpParams {
     const formatedParams = this._fs.formatParams();
-    this.queyrStringDownload = this._ds.buildQueryUrl(formatedParams);
+    return this._ds.buildQueryUrl(formatedParams);
   }
 
-  openInfoModal(modal, row) {
-    this.ngbModal.open(modal, {
+  openInfoModal(row) {
+    const modalRef = this.ngbModal.open(ModalInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal'
     });
-    this.loadOneSyntheseReleve(row);
+    modalRef.componentInstance.oneObsSynthese = row;
   }
 
-  downloadData() {
-    document.location.href = 'http://127.0.0.1:8000/synthese/export?export_format=csv';
+  openDownloadModal() {
+    const modalRef = this.ngbModal.open(SyntheseModalDownloadComponent, {
+      size: 'lg'
+    });
+
+    let queryString = this.getQueryString();
+    // if the search form has not been touched, download the last 100 obs
+    if (this._fs.searchForm.pristine) {
+      queryString = queryString.set('limit', AppConfig.SYNTHESE.NB_LAST_OBS.toString());
+    }
+    modalRef.componentInstance.queryString = queryString;
+  }
+
+  getRowClass() {
+    return 'row-sm clickable';
   }
 
   ngOnChanges(changes) {
-    if (changes && changes.inputSyntheseData.currentValue) {
+    if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
       // reset page 0 when new data appear
       this.table.offset = 0;
     }

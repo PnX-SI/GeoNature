@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SyntheseFormService } from './services/form.service';
+import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-synthese',
@@ -9,34 +13,55 @@ import { CommonService } from '@geonature_common/service/common.service';
   templateUrl: 'synthese.component.html'
 })
 export class SyntheseComponent implements OnInit {
+  public searchBarHidden = false;
+  public marginButton: number;
+
   constructor(
     public searchService: DataService,
     private _mapListService: MapListService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _modalService: NgbModal,
+    private _fs: SyntheseFormService
   ) {}
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
-      data => {
-        this._mapListService.geojsonData = data;
-        this._mapListService.loadTableData(data, this.customColumns.bind(this));
+      result => {
+        if (result['nb_obs_limited']) {
+          const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
+            size: 'lg'
+          });
+          const formatedParams = this._fs.formatParams();
+          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
+          modalRef.componentInstance.tooManyObs = true;
+        }
+        this._mapListService.geojsonData = result['data'];
+        this._mapListService.loadTableData(result['data'], this.customColumns.bind(this));
         this._mapListService.idName = 'id_synthese';
         this.searchService.dataLoaded = true;
       },
       error => {
         this.searchService.dataLoaded = true;
-        if (error.status === 403) {
-          this._commonService.translateToaster('error', 'NotAllowed');
-        } else {
+        if (error.status !== 403) {
           this._commonService.translateToaster('error', 'ErrorMessage');
         }
       }
     );
   }
   ngOnInit() {
-    const initialData = { limit: 100 };
+    const initialData = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
     this.loadAndStoreData(initialData);
+  }
+
+  mooveButton() {
+    this.searchBarHidden = !this.searchBarHidden;
+    // const test = document.getElementById('sidebar');
+    // if (test.classList.contains('show')) {
+    //   this.marginButton = 0;
+    // } else {
+    //   this.marginButton = 248;
+    // }
   }
 
   formatDate(unformatedDate) {

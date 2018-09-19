@@ -10,8 +10,6 @@ import {
   IterableDiffer
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { FormControl } from '@angular/forms';
-import { AuthService } from '../../../components/auth/auth.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
@@ -26,9 +24,9 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   @Input() idAcquisitionFrameworks: Array<number> = [];
   @Input() idAcquisitionFramework: number;
   @Input() bindAllItem: false;
+  @Input() displayOnlyActive = true;
   constructor(
     private _dfs: DataFormService,
-    private _auth: AuthService,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers
   ) {
@@ -41,9 +39,16 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   getDatasets(params?) {
+    params = {};
+    if (this.displayOnlyActive) {
+      params['active'] = true;
+    }
     this._dfs.getDatasets(params).subscribe(
       res => {
-        this.dataSets = res;
+        this.dataSets = res.data;
+        if (res['with_mtd_errors']) {
+          this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
+        }
       },
       error => {
         if (error.status === 500) {
@@ -60,7 +65,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnChanges(changes) {
-    // detetch change on input idAcquisitionFramework to reload datasets
+    // detetch change on input idAcquisitionFramework
+    // (the number, if the AFcomponent is not multiSelect) to reload datasets
     if (
       changes['idAcquisitionFramework'] &&
       changes['idAcquisitionFramework'].currentValue !== undefined

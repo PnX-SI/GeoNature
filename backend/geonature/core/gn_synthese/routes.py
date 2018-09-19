@@ -1,10 +1,8 @@
-import json
 import logging
 import datetime
-
 from collections import OrderedDict
 
-from flask import Blueprint, request, session, current_app, send_from_directory, render_template
+from flask import Blueprint, request, current_app, send_from_directory, render_template
 from sqlalchemy import distinct, func, desc
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
@@ -13,44 +11,33 @@ from geojson import FeatureCollection
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
-from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
-    CorAreaSynthese,
     DefaultsNomenclaturesValue,
-    VSyntheseDecodeNomenclatures,
     SyntheseOneRecord,
-    VMTaxonsSyntheseAutocomplete
+    VMTaxonsSyntheseAutocomplete,
+    VSyntheseForWebApp, VSyntheseForExport
 )
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
     Taxref,
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces
 )
-from geonature.core.gn_synthese import repositories as synthese_repository
+from geonature.core.gn_synthese.utils import query as synthese_query
 
-from geonature.core.gn_meta.models import (
-    TDatasets,
+from geonature.core.gn_meta.models import TDatasets
 
-)
-from geonature.core.ref_geo.models import (
-    LiMunicipalities, LAreas
-)
 from pypnusershub import routes as fnauth
-from pypnusershub.db.tools import (
-    InsufficientRightsError,
-    get_or_fetch_user_cruved,
-    cruved_for_user_in_app
-)
+
 from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,
-    json_resp, testDataType, GenericTable
+    json_resp, GenericTable
 )
 
-from geonature.core.gn_meta import mtd_utils
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -124,43 +111,37 @@ def get_synthese(info_role):
     """
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
-        'observers' param (string) is filtered with ilike clause
     """
-
-    filters = dict(request.args)
-
+    filters = {key: value[0].split(',') for key, value in dict(request.args).items()}
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:
-        result_limit = 10000
+        result_limit = current_app.config['SYNTHESE']['NB_MAX_OBS_MAP']
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = (
-        DB.session.query(Synthese, Taxref, TSources, TDatasets)
-        .join(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        ).join(
-            TSources, TSources.id_source == Synthese.id_source
-        ).join(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        )
-    )
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+
+    q = DB.session.query(VSyntheseForWebApp)
+
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     q = q.order_by(
-        Synthese.date_min.desc()
+        VSyntheseForWebApp.date_min.desc()
     )
+    nb_total = 0
+
     data = q.limit(result_limit)
-    print(q)
+    columns = current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
     features = []
     for d in data:
-        print(d)
-        feature = d[0].get_geofeature(columns=['date_min', 'observers', 'id_synthese'])
-        # cruved = d[0].get_synthese_cruved(info_role, user_cruved, allowed_datasets)
-        feature['properties']['taxon'] = d[1].as_dict(columns=['nom_valide', 'cd_nom'])
-        feature['properties']['sources'] = d[2].as_dict(columns=['entity_source_pk_field', 'url_source'])
-        feature['properties']['dataset'] = d[3].as_dict(columns=['dataset_name'])
+        feature = d.get_geofeature(
+            columns=columns
+        )
+        feature['properties']['nom_vern_or_lb_nom'] = d.lb_nom if d.nom_vern is None else d.nom_vern
         features.append(feature)
-    return FeatureCollection(features)
+    return {
+        'data': FeatureCollection(features),
+        'nb_obs_limited': nb_total == current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
+        'nb_total': nb_total
+    }
 
 
 @routes.route('/vsynthese/<id_synthese>', methods=['GET'])
@@ -220,49 +201,22 @@ def export(info_role):
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:
-        result_limit = 40000
+        result_limit = current_app.config['SYNTHESE']['NB_MAX_OBS_EXPORT']
 
     export_format = filters.pop('export_format')[0]
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = (
-        DB.session.query(Synthese, Taxref, TSources, TDatasets)
-        .join(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        ).join(
-            TSources, TSources.id_source == Synthese.id_source
-        ).join(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        )
-    )
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
-    q = q.add_entity(VSyntheseDecodeNomenclatures)
-    q = q.join(
-        VSyntheseDecodeNomenclatures,
-        VSyntheseDecodeNomenclatures.id_synthese == Synthese.id_synthese
-    )
+
+    q = DB.session.query(VSyntheseForExport)
+    q = synthese_query.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
 
     q = q.order_by(
-        Synthese.date_min.desc()
+        VSyntheseForExport.date_min.desc()
     )
     data = q.limit(result_limit)
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    synthese_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['SYNTHESE_COLUMNS']
-    nomenclature_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['NOMENCLATURE_COLUMNS']
-    taxonomic_columns = current_app.config['SYNTHESE']['EXPORT_COLUMNS']['TAXONOMIC_COLUMNS']
-
-    formated_data = []
-    for d in data:
-        synthese = d[0].as_dict(columns=synthese_columns)
-        taxon = d[1].as_dict(columns=taxonomic_columns)
-        dataset = d[3].as_dict(columns='dataset_name')
-        decoded = d[4].as_dict(columns=nomenclature_columns)
-        synthese.update(taxon)
-        synthese.update(dataset)
-        synthese.update(decoded)
-        formated_data.append(synthese)
+    formated_data = [d.as_dict_ordered() for d in data]
 
     export_columns = formated_data[0].keys()
     if export_format == 'csv':
@@ -284,53 +238,27 @@ def export(info_role):
             indent=4
         )
     else:
-        try:
+        filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
 
-            db_cols_synthese = [
-                db_col for db_col in Synthese.__mapper__.c
-                if not db_col.type.__class__.__name__ == 'Geometry' and
-                db_col.key in synthese_columns
-            ]
-            db_cols_nomenclature = [
-                db_col for db_col in VSyntheseDecodeNomenclatures.__mapper__.c
-                if db_col.key in nomenclature_columns
-            ]
-            db_cols_taxonomy = [
-                db_col for db_col in Taxref.__mapper__.c
-                if db_col.key in taxonomic_columns
-            ]
+        dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+        FionaShapeService.create_shapes_struct(
+            db_cols=VSyntheseForExport.db_cols,
+            srid=current_app.config['LOCAL_SRID'],
+            dir_path=dir_path,
+            file_name=file_name,
+            col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+        )
+        for row in data:
+            geom = row.the_geom_local
+            row_as_dict = row.as_dict_ordered()
+            FionaShapeService.create_feature(row_as_dict, geom)
 
-            db_cols = db_cols_synthese + db_cols_nomenclature + db_cols_taxonomy
-            dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
-            FionaShapeService.create_shapes_struct(
-                db_cols=db_cols,
-                srid=current_app.config['LOCAL_SRID'],
-                dir_path=dir_path,
-                file_name=file_name
-            )
-            for row in data:
-                synthese_row_as_dict = row[0].as_dict(columns=synthese_columns)
-                nomenclature_row_as_dict = row[4].as_dict(columns=nomenclature_columns)
-                taxon_row_as_dict = row[1].as_dict(columns=taxonomic_columns)
-                geom = row[0].the_geom_local
-                row_as_dict = {**synthese_row_as_dict, **nomenclature_row_as_dict, **taxon_row_as_dict}
-                FionaShapeService.create_feature(row_as_dict, geom)
+        FionaShapeService.save_and_zip_shapefiles()
 
-            FionaShapeService.save_and_zip_shapefiles()
-
-            return send_from_directory(
-                dir_path,
-                file_name+'.zip',
-                as_attachment=True
-            )
-
-        except GeonatureApiError as e:
-            message = str(e)
-
-        return render_template(
-            'error.html',
-            error=message,
-            redirect=current_app.config['URL_APPLICATION']+"/#/synthese"
+        return send_from_directory(
+            dir_path,
+            file_name+'.zip',
+            as_attachment=True
         )
 
 
@@ -343,16 +271,16 @@ def get_status(info_role):
 
     filters = dict(request.args)
 
-    q = DB.session.query(distinct(Synthese.cd_nom), Taxref, TaxrefProtectionArticles).join(
-        Taxref, Taxref.cd_nom == Synthese.cd_nom
+    q = DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles).join(
+        Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
-        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == Synthese.cd_nom
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
         TaxrefProtectionArticles, TaxrefProtectionArticles.cd_protection == TaxrefProtectionEspeces.cd_protection
     )
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = synthese_repository.filter_query_all_filters(q, filters, info_role, allowed_datasets)
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     data = q.all()
 
     protection_status = []

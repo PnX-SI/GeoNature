@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { ToastrConfig } from 'ngx-toastr';
 import { SideNavService } from './sidenav.service';
 
 @Component({
@@ -14,12 +12,7 @@ export class SidenavItemsComponent implements OnInit {
   public toastrConfig: ToastrConfig;
   public appConfig: any;
 
-  constructor(
-    private _authService: AuthService,
-    private router: Router,
-    private toastrService: ToastrService,
-    private _sideNavService: SideNavService
-  ) {
+  constructor(private _sideNavService: SideNavService) {
     this.toastrConfig = {
       positionClass: 'toast-top-center',
       tapToDismiss: true,

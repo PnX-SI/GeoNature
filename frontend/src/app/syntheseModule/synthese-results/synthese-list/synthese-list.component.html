@@ -1,21 +1,8 @@
-<!-- <table>
-    <tr *ngFor="let item of inputSyntheseData?.features" [ngClass]=" {'selected': mapListService.selectedRow[0]?.id_synthese == item.properties.id_synthese }">
-        <td class="button" (click)="mapListService.onRowSelect(item.properties.id_synthese)">onmap</td>
-        <td>{{item.properties.date_min}}</td>
-        <td>{{item.properties.date_max}}</td>
-        <td>{{item.properties.observers}}</td>
-        <td>{{item.properties.nom_cite}}</td>
-        <td>{{item.id}}</td>
-        <td> {{mapListService.selectedRow[0]?.id_synthese == item.properties.id_synthese}} </td>
-        <td>min : {{item.properties.count_min}} max : {{item.properties.count_max}}</td>
-    </tr>
-</table> -->
-
 <!--Table-->
-<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable" [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS" [columnMode]="'force'" [loadingIndicator]="!_ds.dataLoaded" [headerHeight]="50"
-  [footerHeight]="35" [rowHeight]="50" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
-  [limit]="rowNumber" [rowClass]="mapListService.getRowClass" [rowHeight]="'auto'" (select)="mapListService.onRowSelect($event)">
+<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
+  [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
+  [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
+  [limit]="rowNumber" [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)">
 
 
   <!-- <ngx-datatable-row-detail rowHeight="100" #myDetailRow (toggle)="loadOneSyntheseReleve($event)">
@@ -64,17 +51,26 @@
     </ng-template>
   </ngx-datatable-column> -->
 
-  <ngx-datatable-column maxWidth="10">
+  <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(modalInfoObs, row);">
+      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row);">
         <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
       </button>
     </ng-template>
-  </ngx-datatable-column> -->
+  </ngx-datatable-column>
+
+  <ngx-datatable-column [maxWidth]="5">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button *ngIf="row.url_source" class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="backToModule(row.url_source, row.entity_source_pk_value)">
+        <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
 
 
   <!-- DATA COLOMNS -->
-  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS " [name]="col.name " [prop]="col.prop ">
+  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND " [name]="col.name " [prop]="col.prop"
+    [maxWidth]="col.max_width">
   </ngx-datatable-column>
 </ngx-datatable>
 
@@ -82,7 +78,8 @@
 
 <ng-template #modalConfirm let-c="close " let-d="dismiss ">
   <div class="modal-header ">
-    <h5 class="modal-title " id="exampleModalLabel "> {{'Releve.Delete' | translate }} {{ mapListService.selectedRow[0][mapListService.idName]}}
+    <h5 class="modal-title " id="exampleModalLabel "> {{'Releve.Delete' | translate }} {{
+      mapListService.selectedRow[0][mapListService.idName]}}
       ?
     </h5>
   </div>
@@ -93,258 +90,17 @@
   </div>
 </ng-template>
 
-<pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
+<button type="button" class="btn btn-primary btn-sm box-shadow" id="download-btn" (click)="openDownloadModal()">
+  <i class="fa fa-download" aria-hidden="true"> </i>
+  Téléchargement
+</button>
+
+<!-- <pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
   (buttonClicked)="setQueryString() ">
 
-</pnx-modal-download>
+</pnx-modal-download> -->
 
 <!-- MODAL INFO OBS -->
-<ng-template #modalInfoObs let-c="close " let-d="dismiss ">
-  <div class="modal-body ">
-    <h5 class="underlined main-color "> Information observation </h5>
-    <div class="card " style="margin:0px; margin-bottom:10px; ">
-      <div class="card-body padding-md-all ">
-        <div class="row row-sm ">
-          <div class="padding-sm col-xs-5 col-sm-5 col-md-5 col-lg-5 ">
-            <h5>
-              {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }}
-              <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
-                <img src="assets/images/logo_inpn.png" width="150">
-              </a>
-            </h5>
-            <span class="font-xs">
-              <b> Observation de : </b> {{selectedObs?.observers}}
-              <br>
-              <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-                <b> Date : </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
-              </span>
-              <ng-template #elseBlock>
-                <b> Date : </b>{{selectedObs?.date_min}}
-              </ng-template>
-              <br>
-              <b> Commune(s) </b> : {{selectedObs?.nom_com}}
-              <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
-            </span>
-          </div>
-
-          <div *ngIf="selectedObs?.areas> 0" class=" padding-sm col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <b> Autres espaces concernés par l'observation</b>
-            <li *ngFor="let area of selectedObs?.areas"> {{area.area_name}} </li>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-
-
-    <div class="row">
-      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-        <h5 class="underlined main-color"> Métadonnées </h5>
-
-        <table class="font-xs table table-striped table-sm">
-          <tr>
-            <td> Jeu de données </td>
-            <td> {{selectedObs?.dataset.dataset_name}} </td>
-          </tr>
-          <tr>
-            <td> Cadre d'acquisition </td>
-            <td> {{selectedObs?.acquisition_framework.acquisition_framework_name}} </td>
-          </tr>
-          <tr>
-            <td> Protocole de provenance </td>
-            <td> {{selectedObs?.source.name_source}} </td>
-          </tr>
-        </table>
-
-      </div>
-      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-        <h5 class="underlined main-color"> Détail de l'occurrence </h5>
-        <table class="font-xs table table-striped table-sm">
-          <tr>
-            <td> Technique d'observation </td>
-            <td> {{selectedObs?.occurrence_detail.obs_technique}} </td>
-          </tr>
-
-          <tr>
-            <td> Niveau de diffusion </td>
-            <td> {{selectedObs?.occurrence_detail.diffusion_level}} </td>
-          </tr>
-
-          <tr>
-            <td> Preuve d'existance </td>
-            <td> {{selectedObs?.occurrence_detail.exist_proof}} </td>
-          </tr>
-
-          <tr>
-            <td> Méthode d'observation </td>
-            <td> {{selectedObs?.occurrence_detail.obs_method}} </td>
-          </tr>
-          <tr>
-            <td> Denombrement min </td>
-            <td> {{selectedObs?.count_min}} </td>
-          </tr>
-          <tr>
-            <td> Denombrement min </td>
-            <td> {{selectedObs?.count_max}} </td>
-          </tr>
-          <tr>
-            <td> Type de dénombrement </td>
-            <td> {{selectedObs?.occurrence_detail.type_count}} </td>
-          </tr>
-
-          <tr>
-            <td> Nature de l'objet géographique </td>
-            <td> {{selectedObs?.occurrence_detail.nat_obj_geo}} </td>
-          </tr>
-
-          <tr>
-            <td> Statut biologique </td>
-            <td> {{selectedObs?.occurrence_detail.bio_status}} </td>
-          </tr>
-
-          <tr>
-            <td> Sensibilité </td>
-            <td> {{selectedObs?.occurrence_detail.sensitivity}} </td>
-          </tr>
-
-          <tr>
-            <td> Stade de vie </td>
-            <td> {{selectedObs?.occurrence_detail.life_stage}} </td>
-          </tr>
-
-          <tr>
-            <td> Type de regroupement </td>
-            <td> {{selectedObs?.occurrence_detail.grp_typ}} </td>
-          </tr>
-
-          <tr>
-            <td> Naturalité </td>
-            <td> {{selectedObs?.occurrence_detail.naturalness}} </td>
-          </tr>
-
-          <tr>
-            <td> Objet du dénombrement </td>
-            <td> {{selectedObs?.occurrence_detail.obj_count}} </td>
-          </tr>
-
-          <tr>
-            <td> Statut de l'observation </td>
-            <td> {{selectedObs?.occurrence_detail.observation_status}} </td>
-          </tr>
-
-          <tr>
-            <td> Sexe </td>
-            <td> {{selectedObs?.occurrence_detail.sex}} </td>
-          </tr>
-
-          <tr>
-            <td> Source de la donnée </td>
-            <td> {{selectedObs?.occurrence_detail.source_status}} </td>
-          </tr>
-
-          <tr>
-            <td> Statut de validation </td>
-            <td> {{selectedObs?.occurrence_detail.valid_status}} </td>
-          </tr>
-
-          <tr>
-            <td> Floutage </td>
-            <td> {{selectedObs?.occurrence_detail.blurring}} </td>
-          </tr>
-
-          <tr>
-            <td> Condition biologique </td>
-            <td> {{selectedObs?.occurrence_detail.bio_condition}} </td>
-          </tr>
-
-          <tr>
-            <td> Commentaire </td>
-            <td> {{selectedObs?.comments}} </td>
-          </tr>
-          <tr>
-            <td> Determinateur </td>
-            <td> {{selectedObs?.determiner}} </td>
-          </tr>
-          <tr>
-            <td> Preuve numérique </td>
-            <td> {{selectedObs?.digital_proof}} </td>
-          </tr>
-          <tr>
-            <td> Preuve non numérique </td>
-            <td> {{selectedObs?.non_digital_proof}} </td>
-          </tr>
-          <tr>
-            <td> Echantillon de preuve </td>
-            <td> {{selectedObs?.sample_number_proof}} </td>
-          </tr>
-          <tr>
-            <td> Identifiant unique SINP </td>
-            <td> {{selectedObs?.unique_id_sinp}} </td>
-          </tr>
-        </table>
-
-      </div>
-
-
-      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-
-        <h5 class="underlined main-color"> Taxonomie </h5>
-
-        <table class="font-xs table table-striped table-sm">
-
-          <tr>
-            <td>
-              <b>Groupe taxonomique </b>
-            </td>
-            <td> {{ selectedObsTaxonDetail?.classe }} </td>
-          </tr>
-          <tr>
-            <td>
-              <b>Ordre</b>
-            </td>
-            <td> {{ selectedObsTaxonDetail?.ordre }} </td>
-          </tr>
-          <tr>
-            <td>
-              <b> Famille</b>
-            </td>
-            <td> {{ selectedObsTaxonDetail?.famille }} </td>
-          </tr>
-        </table>
-
-        <h5 class="underlined main-color"> Attribut(s) Taxonomique(s) locaux </h5>
-        <table class="table table-striped table-sm">
-          <tr class="font-xs" *ngFor="let attr of selectObsTaxonInfo?.attributs">
-            <td> <b>{{attr.label_attribut}} </b> </td>
-            <td> {{attr.valeur_attribut}} </td>
-          </tr>
-        </table>
-
-
-        <h5 class="underlined main-color"> Réglementation</h5>
-        <table class="font-xs table table-striped table-sm">
-
-          <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
-            <td>
-              <a [href]="arrete.url"> {{arrete.intitule}} </a>
-            </td>
-          </tr>
-        </table>
-
-        <!-- <object [data]="sanitizer.bypassSecurityTrustResourceUrl(inpnMapUrl)" type="image/svg+xml" width="90%" height="90%">
-          <param name="src" value="/cartosvg/couchegeo/repartition/atlas/{{selectedObs?.cd_nom}}/fr_light_l93,fr_light_mer_l93,fr_lit_l93">
-          <param name="type" value="image/svg+xml">
-          <param name="pluginspage" value="http://www.adobe.com/svg/viewer/install/">
-        </object> -->
-
-      </div>
-
-
-    </div>
-
-  </div>
+<ng-template #modalInfoObs let-c="close " let-d="dismiss">
+  <pnx-synthese-modal-info-obs></pnx-synthese-modal-info-obs>
 </ng-template>
-
-
-<button (click)="downloadData('shapefile')"> export </button>

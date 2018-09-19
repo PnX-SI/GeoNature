@@ -87,7 +87,8 @@ class TBaseVisits(DB.Model):
         ForeignKey('utilisateurs.t_roles.id_role')
     )
 
-    visit_date = DB.Column(DB.DateTime)
+    visit_date_min = DB.Column(DB.DateTime)
+    visit_date_max = DB.Column(DB.DateTime)
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(

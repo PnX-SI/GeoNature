@@ -33,7 +33,8 @@ CREATE TABLE t_base_visits
   id_base_visit serial NOT NULL,
   id_base_site integer,
   id_digitiser integer,
-  visit_date date NOT NULL,
+  visit_date_min date NOT NULL,
+  visit_date_max date,
   comments text,
   uuid_base_visit UUID DEFAULT public.uuid_generate_v4()
 );
@@ -183,12 +184,3 @@ CREATE TRIGGER trg_cor_site_area
   AFTER INSERT OR UPDATE OF geom ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE gn_monitoring.fct_trg_cor_site_area();
-
----------
---DATAS--
----------
--- On ne défini pas d'id pour la PK, la séquence s'en charge
-INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
-VALUES
-('Table centralisant les sites faisant l''objet de protocole de suivis', 'gn_monitoring', 't_base_sites', 'id_base_site', 'uuid_base_site'),
-('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit');

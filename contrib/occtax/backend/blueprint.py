@@ -15,7 +15,9 @@ from flask import(
     Response,
     render_template
 )
-from sqlalchemy import exc, or_, func, distinct
+from sqlalchemy import or_, func, distinct
+from sqlalchemy.orm.exc import NoResultFound
+
 from geojson import FeatureCollection
 
 
@@ -83,6 +85,34 @@ def getOccurrences():
     data = q.all()
 
     return ([n.as_dict() for n in data])
+
+
+@blueprint.route('/counting/<int:id_counting>', methods=['GET'])
+@json_resp
+def getOneCounting(id_counting):
+    """
+    Get a counting record, with its id_releve
+
+    Parameters:
+        id_counting(integer): the pr_occtax.cor_counting_occtax PK
+
+    Returns:
+        json: a json representing a counting record
+    """
+    try:
+        data = DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax).join(
+            TOccurrencesOccurrence, TOccurrencesOccurrence.id_occurrence_occtax == CorCountingOccurrence.id_occurrence_occtax
+        ).join(
+            TRelevesOccurrence, TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax
+        ).filter(
+            CorCountingOccurrence.id_counting_occtax == id_counting
+        ).one()
+    except NoResultFound:
+        return None
+    counting = data[0].as_dict()
+    counting['id_releve'] = data[1]
+
+    return counting
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['GET'])
@@ -292,7 +322,7 @@ def insertOrUpdateOneReleve(info_role):
             releve.observers.append(o)
 
     for occ in occurrences_occtax:
-        cor_counting_occtax=[]
+        cor_counting_occtax = []
         if occ['cor_counting_occtax']:
             cor_counting_occtax = occ['cor_counting_occtax']
             occ.pop('cor_counting_occtax')
@@ -333,7 +363,6 @@ def insertOrUpdateOneReleve(info_role):
             tag_action_code="U",
             id_organisme=info_role.id_organisme
         )
-        print('PASSE LAAAAAAAAAA')
         releve = releveRepository.update(releve, user, shape)
     else:
         if info_role.tag_object_code in ('0', '1', '2'):
@@ -464,16 +493,10 @@ def getDefaultNomenclatures():
             group2_inpn
         )
     )
-    print(q)
-    print(organism)
-    print(regne)
-    print(group2_inpn)
     if len(types) > 0:
         q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
-        print('LAAAAAAAAAA')
-        print(data)
     except Exception:
         DB.session.rollback()
         raise
@@ -509,7 +532,6 @@ def export(info_role):
 
     export_format = request.args['format'] if 'format' in request.args else 'geojson'
     if export_format == 'csv':
-        # print(export_view.meta.__table__.columns.keys())
         columns = export_columns if len(export_columns) > 0 else [db_col.key for db_col in export_view.db_cols]
         return to_csv_resp(
             file_name,
@@ -532,6 +554,7 @@ def export(info_role):
         )
     else:
         try:
+            filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
             db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
             dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
             export_view.as_shape(

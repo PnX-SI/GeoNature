@@ -52,6 +52,23 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.searchBar = this.searchBar || false;
     this.displayAll = this.displayAll || false;
 
+    // set the value
+    if (this.values && this.parentFormControl.value) {
+      if (this.bindAllItem) {
+        this.values.forEach(value => {
+          if (this.parentFormControl.value.indexOf(value) !== -1) {
+            this.selectedItems.push(value);
+          }
+        });
+      } else {
+        this.values.forEach(value => {
+          if (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1) {
+            this.selectedItems.push(value);
+          }
+        });
+      }
+    }
+
     // subscribe and output on the search bar
     this.searchControl.valueChanges
       .filter(value => value !== null)
@@ -109,7 +126,9 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.onChange.emit(item);
   }
 
-  removeItem(item) {
+  removeItem($event, item) {
+    // disable event propagation
+    $event.stopPropagation();
     // push the element in the items list
     this.values.push(item);
     this.selectedItems = this.selectedItems.filter(curItem => {
@@ -132,21 +151,23 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
       // remove doublon in the dropdown lists
-      this.values = changes.values.currentValue.filter(v => {
-        let isInArray = false;
-        this.formControlValue.forEach(element => {
-          if (this.bindAllItem) {
-            if (v === element) {
-              isInArray = true;
+      if (this.formControlValue) {
+        this.values = changes.values.currentValue.filter(v => {
+          let isInArray = false;
+          this.formControlValue.forEach(element => {
+            if (this.bindAllItem) {
+              if (v === element) {
+                isInArray = true;
+              }
+            } else {
+              if (v[this.keyValue] === element[this.keyValue]) {
+                isInArray = true;
+              }
             }
-          } else {
-            if (v[this.keyValue] === element[this.keyValue]) {
-              isInArray = true;
-            }
-          }
+          });
+          return !isInArray;
         });
-        return !isInArray;
-      });
+      }
     }
   }
 }

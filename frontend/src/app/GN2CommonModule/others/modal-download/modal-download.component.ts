@@ -23,7 +23,7 @@ export class ModalDownloadComponent implements OnInit {
   }
 
   loadData(format) {
-    this.queryString = this.queryString.append('export_format', format);
+    this.queryString = this.queryString.set('export_format', format);
     document.location.href = `${this.pathDownload}?${this.queryString.toString()}`;
   }
 

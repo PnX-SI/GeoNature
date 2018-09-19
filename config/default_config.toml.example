@@ -1,4 +1,5 @@
 # Database
+
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
 SQLALCHEMY_TRACK_MODIFICATIONS = false
 
@@ -6,18 +7,19 @@ SQLALCHEMY_TRACK_MODIFICATIONS = false
 
 appName = 'GeoNature 2'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
-PASS_METHOD = 'hash'                                    # Authentification password encoding method (hash or md5)
+PASS_METHOD = 'hash'                                  # Authentification password encoding method (hash or md5)
 DEBUG = true
-URL_APPLICATION = 'http://url.com/geonature'         # Replace my_url.com by your domain or IP
-API_ENDPOINT = 'http://url.com/geonature/api'        # Replace my_url.com by your domain or IP
+URL_APPLICATION = 'http://url.com/geonature'          # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com/geonature/api'         # Replace my_url.com by your domain or IP
 API_TAXHUB ='http://127.0.0.1:5000/api/'
-ID_APPLICATION_GEONATURE = 14                           # id_application of GeoNature in UsersHub
+ID_APPLICATION_GEONATURE = 14                         # id_application of GeoNature in UsersHub
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
 HTTPS = false
+
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
@@ -60,12 +62,78 @@ MULTILINGUAL = false
 
 # Synthese configuration
 [SYNTHESE]
-    # Liste des entité géographique sur lesquel les filtres
-    # géographique de la synthese s'appuye (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
+    # Liste des entités géographiques sur lesquels les filtres
+    # géographiques de la synthese s'appuient (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
     AREA_FILTERS = [
         { label = "Zone natural 2000", id_type = 201 },
         { label = "Secteurs", id_type = 202 }
     ]
+    # Colonne à afficher par défaut sur la liste des resultats de la synthese
+    # 'prop' corespond au nom de la colonne tel qu'il est écrit en BDD
+    # champs disponible de la table synthese : 'date_min', 'date_max', 'observers', 'id_synthese', 'altitude_min', 'altitude_max'
+    # champs disponible de la table taxon: 'nom_valide', 'cd_nom', 'lb_nom', 'nom_vern'
+    # champs disponible de la table t_dataset: 'dataset_name
+    # champs disponible de la table gn_synthese.t_sources: 'name_source'
+    
+    LIST_COLUMNS_FRONTEND = [
+        { prop = "nom_vern_or_lb_nom", name = "Taxon" },
+        { prop = "date_min", name = "Date début" },
+        { prop = "observateurs", name = "Observateurs" },
+        { prop = "dataset_name", name = "Jeu de données" }
+    ]
+    # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
+    
+    ID_ATTRIBUT_TAXHUB = [1, 2]
+
+    # Colonne de la table gn_synthese.synthese que l'on veut masquer dans les filtres du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. Exemple: 
+    EXCLUDED_COLUMNS = ['non_digital_proof'] pour enlever le filtre 'preuve non numérique'
+    
+    EXCLUDED_COLUMNS = []
+
+    # Champs à afficher dans l'export
+    [EXPORT_COLUMNS]
+        [EXPORT_COLUMNS.SYNTHESE_COLUMNS] = [
+        'id_synthese',
+        'unique_id_sinp',
+        'date_min',
+        'date_max',
+        'observers',
+        'altitude_min',
+        'altitude_max',
+        'count_min',
+        'count_max',
+        'sample_number_proof',
+        'digital_proof',
+        'non_digital_proof',
+        'comments'
+        ]
+        [EXPORT_COLUMNS.NOMENCLATURE_COLUMNS] = [
+            'nat_obj_geo',
+            'grp_typ',
+            'obs_method',
+            'obs_technique',
+            'bio_status',
+            'bio_condition',
+            'naturalness',
+            'exist_proof',
+            'valid_status',
+            'diffusion_level',
+            'life_stage',
+            'sex',
+            'obj_count',
+            'type_count',
+            'sensitivity',
+            'observation_status',
+            'blurring',
+            'source_status',
+            'info_geo_type',
+            'determination_method'
+        ]
+        [EXPORT_COLUMNS.TAXONOMIC_COLUMNS] = [
+            'cd_nom',
+            'cd_ref',
+            'nom_valide'
+        ]
 
 default_maplist_columns = [
     { prop = "taxons", name = "Taxon" },

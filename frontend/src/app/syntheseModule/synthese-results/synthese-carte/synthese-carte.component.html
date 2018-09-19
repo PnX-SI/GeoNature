@@ -6,6 +6,7 @@
     ></pnx-geojson>
     <pnx-leaflet-draw
     [options]="leafletDrawOptions"
+    [zoomLevel]="1"
     (layerDrawed)="bindGeojsonForm($event)" >
 </pnx-leaflet-draw>
 </pnx-map>
