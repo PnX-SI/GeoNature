@@ -54,7 +54,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``. On ne se connectera plus en ``root``. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
-* Lancez les commandes suivantes pour installer les dépendances de GeoNature :
+* Lancez les commandes suivantes pour installer les dépendances de GeoNature (debian 9) :
 
   ::  
 
@@ -63,6 +63,9 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
     sudo apt-get install -y npm
     sudo apt-get install -y supervisor
+    sudo apt-get install -y apache2
+    
+ Sur ubuntu 18 installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``
 
 Installation de l'application
 -----------------------------
@@ -107,21 +110,21 @@ Créer un utilisateur de base de données (cf ``settings.ini``) :
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
 ::
+
     cd install
     ./install_db.sh
 
-La commande ``install_db.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
-
-- ``-s`` ou ``--settings-path`` pour spécifier un autre emplacement pour le fichier ``settings.ini``
-- ``-d`` ou ``--dev`` permet d'installer des dépendances python utile pour le développement de GeoNature
-- ``-h`` ou ``--help`` affiche l'aide pour cette commande ``install_app.sh``
 
 Installation de l'application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Lancer le script d'installation de l'application :
 
-Attention, si vous installez GeoNature sur Ubuntu, il est nécessaire de changer un numéro de version pour une librairie python. Editez le fichier ``backend/requirements.txt`` et remplacer la version de ``pygdal`` par celle indiquée dans le fichier
+La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
+
+- ``-s`` ou ``--settings-path`` pour spécifier un autre emplacement pour le fichier ``settings.ini``
+- ``-d`` ou ``--dev`` permet d'installer des dépendances python utile pour le développement de GeoNature et de ne pas compiler inutilement le frontend
+- ``-h`` ou ``--help`` affiche l'aide pour cette commande ``install_app.sh``
 
 ::
 
@@ -142,11 +145,6 @@ L'application est disponible à l'adresse suivante :
 
 - http://monip.com/geonature
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
-
-- Pour ``/``: ``npm run build -- --base-href=/``
-- Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
-
 Editez ensuite le fichier de configuration Apache ``/etc/apache2/sites-available/geonature.conf`` en modifiant l'alias :
 
 - Pour ``/`` : ``Alias / /home/test/geonature/frontend/dist``
@@ -160,6 +158,31 @@ Lors de l'installation de la BDD (``install_db.sh``) le schéma ``utilisateurs``
 UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits. 
 
 Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le script ``install_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installez donc que l'application et pas la BDD.
+
+Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisateur:
+::
+
+    cd ~
+    wget https://github.com/PnX-SI/TaxHub/archive/X.Y.Z.zip
+    unzip X.Y.Z.zip
+    
+en mode développeur: 
+
+``https://github.com/PnX-SI/TaxHub.git``
+
+Rendez vous dans le répertoire téléchargé et dézippé, puis "désamplez" le fichier ``settings.ini`` et remplissez la configuration avec les paramètres de connexion à la BDD GeoNature précedemment installée
+
+::
+
+    cp settings.ini.sample settings.ini
+    nano settings.ini
+
+Lancer le script d'installation de l'application:
+::
+
+    ./install_app.sh
+
+Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000//api``)
 
 Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 
