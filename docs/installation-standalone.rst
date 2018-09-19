@@ -164,12 +164,13 @@ Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisat
 
     cd ~
     wget https://github.com/PnX-SI/TaxHub/archive/X.Y.Z.zip
+    unzip X.Y.Z.zip
     
 en mode développeur: 
 
 ``https://github.com/PnX-SI/TaxHub.git``
 
-"Désamplez" le fichier ``settings.ini`` et remplissez la configuration avec les paramètres de connexion à la BDD GeoNature précedemment installée
+Rendez vous dans le répertoire téléchargé et dézippé, puis "désamplez" le fichier ``settings.ini`` et remplissez la configuration avec les paramètres de connexion à la BDD GeoNature précedemment installée
 
 ::
 
