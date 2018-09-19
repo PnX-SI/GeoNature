@@ -322,6 +322,9 @@ ALTER TABLE ONLY cor_observer_synthese
 ALTER TABLE ONLY cor_observer_synthese
     ADD CONSTRAINT fk_gn_synthese_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY taxons_synthese_autocomplete
+    ADD CONSTRAINT fk_taxons_synthese_autocomplete FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
 --------------
 --CONSTRAINS--
 --------------
@@ -443,29 +446,6 @@ LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
 ORDER BY loc.cd_ref;
 
 
-CREATE MATERIALIZED VIEW gn_synthese.vm_taxons_synthese_autocomplete AS
-WITH taxon_synthese AS (SELECT DISTINCT cd_nom FROM gn_synthese.synthese)
- SELECT t.cd_ref,
-    t.cd_nom,
-    t.nom_valide,
-    t.lb_nom,
-    concat(t.lb_nom, ' = ', t.nom_valide) AS search_name,
-    t.regne,
-    t.group2_inpn
-   FROM taxonomie.taxref t
-   JOIN taxon_synthese ON taxon_synthese.cd_nom = t.cd_nom
-UNION
- SELECT t1.cd_ref,
-    t1.cd_nom,
-    t1.nom_valide,
-    t1.lb_nom,
-    concat(t1.nom_vern, ' = ', t1.nom_valide) AS search_name,
-    t1.regne,
-    t1.group2_inpn
-   FROM taxonomie.taxref t1
-   JOIN taxon_synthese ON taxon_synthese.cd_nom = t1.cd_nom
-  WHERE t1.nom_vern IS NOT NULL AND t1.cd_nom = t1.cd_ref;
-
 
 -----------
 --INDEXES--
@@ -565,15 +545,15 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
 $BODY$
  DECLARE
   BEGIN
-IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
 		DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
 		WHERE auto.cd_nom = OLD.cd_nom;
 END IF;
-IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
 	INSERT INTO gn_synthese.taxons_synthese_autocomplete
 	  SELECT t.cd_nom,
             t.cd_ref,
-		    concat(t.lb_nom, ' = <i>', t.nom_valide, , '</i>') AS search_name,
+		    concat(t.lb_nom, ' = <i>', t.nom_valide,'</i>') AS search_name,
 		    t.nom_valide,
 		    t.lb_nom,
 		    t.regne,
