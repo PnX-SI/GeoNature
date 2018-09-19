@@ -175,11 +175,14 @@ my_current_geonature_directory=$(pwd)
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
 
-cd frontend
-echo "Build du frontend..."
-npm rebuild node-sass --force
+if [[ $MODE != "dev" ]]
+then
+  cd frontend
+  echo "Build du frontend..."
+  npm rebuild node-sass --force
+  npm run build
+fi
 
-npm run build
 
 echo "désactiver le virtual env"
 deactivate
