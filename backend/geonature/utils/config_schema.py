@@ -41,7 +41,7 @@ class CasSchemaConf(Schema):
 
 
 class BddConfig(Schema):
-    id_area_type_municipality = fields.Integer(missing=101)
+    id_area_type_municipality = fields.Integer(missing=25)
 
 
 class RightsSchemaConf(Schema):
