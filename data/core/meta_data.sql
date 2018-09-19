@@ -1,4 +1,13 @@
--- INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = gn_meta, public, pg_catalog;
+
+-- INSERT INTO sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
 -- (1,'Parc nationaux de France',null,null)
 -- ,(2,'Parc national des Ecrins',null,null)
 -- ,(3,null,'Gerard Lambert',null)

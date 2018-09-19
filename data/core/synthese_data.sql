@@ -7,11 +7,6 @@ SET client_min_messages = warning;
 
 SET search_path = gn_synthese, public, pg_catalog;
 
-
----------
---DATAS--
----------
-
 INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 ('TYP_INF_GEO',0,0,0,ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'))
 ,('NAT_OBJ_GEO',0,0,0,ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','NSP'))
