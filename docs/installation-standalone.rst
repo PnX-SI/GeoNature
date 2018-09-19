@@ -182,6 +182,7 @@ Lancer le script d'installation de l'application:
 
     ./install_app.sh
 
+Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000//api``)
 
 Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 
