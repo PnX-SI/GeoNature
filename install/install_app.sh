@@ -167,17 +167,22 @@ geonature generate_frontend_tsconfig
 # generate the modules routing file by templating
 geonature generate_frontend_modules_route
 
+# retour à la racine de GeoNature
+cd ../
+my_current_geonature_directory=$(pwd)
 
-cd /home/$monuser/geonature
 # installation du module occtax
 source backend/venv/bin/activate
-geonature install_gn_module /home/$monuser/geonature/contrib/occtax occtax --build=false
+geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
 
-cd frontend
-echo "Build du frontend..."
-npm rebuild node-sass --force
+if [[ $MODE != "dev" ]]
+then
+  cd frontend
+  echo "Build du frontend..."
+  npm rebuild node-sass --force
+  npm run build
+fi
 
-npm run build
 
 echo "désactiver le virtual env"
 deactivate
