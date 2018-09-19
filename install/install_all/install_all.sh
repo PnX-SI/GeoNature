@@ -4,6 +4,12 @@
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 
+# format my_url to set a / at the end
+if [ "${my_url: -1}" != '/' ] 
+then
+my_url=$my_url/
+fi
+
 
 # Check os and versions
 if [ "$OS_NAME" != "debian" ]
