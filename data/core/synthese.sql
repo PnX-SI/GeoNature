@@ -540,35 +540,42 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
   RETURNS trigger AS
 $BODY$
  DECLARE
   BEGIN
-IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
-		DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
-		WHERE auto.cd_nom = OLD.cd_nom;
-END IF;
-IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
-	INSERT INTO gn_synthese.taxons_synthese_autocomplete
-	  SELECT t.cd_nom,
-            t.cd_ref,
-		    concat(t.lb_nom, ' = <i>', t.nom_valide,'</i>') AS search_name,
-		    t.nom_valide,
-		    t.lb_nom,
-		    t.regne,
-		    t.group2_inpn
-		FROM taxonomie.taxref t  WHERE cd_nom = NEW.cd_nom;
-	INSERT INTO gn_synthese.taxons_synthese_autocomplete
-	  SELECT t.cd_nom,
-            t.cd_ref,
-	    concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>' ) AS search_name,
-	    t.nom_valide,
-	    t.lb_nom,
-	    t.regne,
-	    t.group2_inpn
-	FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
- END IF;
+
+    IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+        DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
+        WHERE auto.cd_nom = OLD.cd_nom;
+    END IF;
+
+    IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
+      INSERT INTO gn_synthese.taxons_synthese_autocomplete
+      SELECT t.cd_nom,
+              t.cd_ref,
+          concat(t.lb_nom, ' = <i>', t.nom_valide, '</i>') AS search_name,
+          t.nom_valide,
+          t.lb_nom,
+          t.regne,
+          t.group2_inpn
+      FROM taxonomie.taxref t  WHERE cd_nom = NEW.cd_nom;
+      INSERT INTO gn_synthese.taxons_synthese_autocomplete
+      SELECT t.cd_nom,
+        t.cd_ref,
+        concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>' ) AS search_name,
+        t.nom_valide,
+        t.lb_nom,
+        t.regne,
+        t.group2_inpn
+      FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+
+      IF NOT OLD.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+        DELETE FROM  gn_synthese.taxons_synthese_autocomplete WHERE cd_nom = OLD.cd_nom;
+      END IF;
+    END IF;
   RETURN NULL;
   END;
 $BODY$
@@ -579,8 +586,8 @@ $BODY$
 --VIEWS--
 ---------
 
-CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS 
-WITH cd_synthese AS 
+CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
+WITH cd_synthese AS
 	(SELECT DISTINCT cd_nom FROM gn_synthese.synthese)
 	,taxon AS (
          SELECT n.id_nom,
@@ -602,14 +609,14 @@ WITH cd_synthese AS
            FROM taxonomie.taxref t_1
 	    JOIN cd_synthese s ON s.cd_nom = t_1.cd_nom
             LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = s.cd_nom
-             
-                   
+
+
         ), cd_regne AS (
          SELECT DISTINCT taxref.cd_nom,
             taxref.regne
            FROM taxonomie.taxref
           WHERE taxref.id_rang::text = 'KD'::text AND taxref.cd_nom = taxref.cd_ref
-       
+
         )
  SELECT t.id_nom,
     t.cd_ref,
@@ -652,7 +659,7 @@ WITH cd_synthese AS
 ORDER BY id_regne, id_embranchement, id_classe, id_ordre, id_famille;
 
 
- 
+
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
@@ -683,7 +690,7 @@ CREATE VIEW gn_synthese.v_synthese_for_web_app AS
    SELECT
     s.id_synthese,
     unique_id_sinp,
-    unique_id_sinp_grp, 
+    unique_id_sinp_grp,
     s.id_source ,
     entity_source_pk_value ,
     count_min ,
@@ -741,13 +748,13 @@ CREATE VIEW gn_synthese.v_synthese_for_web_app AS
   JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
   JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
   JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
-  ; 
+  ;
 
 CREATE VIEW gn_synthese.v_synthese_for_export AS
    SELECT
     s.id_synthese,
     unique_id_sinp,
-    unique_id_sinp_grp, 
+    unique_id_sinp_grp,
     s.id_source ,
     entity_source_pk_value ,
     count_min ,
@@ -806,7 +813,7 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
   JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
   JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
   JOIN gn_synthese.v_synthese_decode_nomenclatures deco ON deco.id_synthese = s.id_synthese
-  ; 
+  ;
 ------------
 --TRIGGERS--
 ------------
@@ -831,13 +838,13 @@ CREATE TRIGGER tri_meta_dates_t_sources
 --   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
 CREATE TRIGGER tri_insert_cor_area_synthese
-  AFTER INSERT OR UPDATE
+  AFTER INSERT OR UPDATE OF the_geom_local
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
 
 CREATE TRIGGER trg_refresh_taxons_forautocomplete
-  AFTER INSERT OR UPDATE OR DELETE
+  AFTER INSERT OR UPDATE OF cd_nom OR DELETE
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
