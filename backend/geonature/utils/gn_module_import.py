@@ -327,56 +327,55 @@ def add_application_db(module_name, url, module_id=None):
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
-    try:
-        with app.app_context():
-            # if module_id: try to insert in t_application
-            # check if the module in TApplications
-            if module_id is None:
+    with app.app_context():
+        # if module_id: try to insert in t_application
+        # check if the module in TApplications
+        if module_id is None:
+            try:
+                exist_app = None
+                exist_app = DB.session.query(TApplications).filter(
+                    TApplications.nom_application == module_name
+                ).one()
+            except NoResultFound:
+                # if no result, write in TApplication
+                new_application = TApplications(
+                    nom_application=module_name,
+                    id_parent=id_application_geonature
+                )
                 try:
-                    exist_app = None
-                    exist_app = DB.session.query(TApplications).filter(
-                        TApplications.nom_application == module_name
-                    ).one()
-                except NoResultFound:
-                    # if no result, write in TApplication
-                    new_application = TApplications(
-                        nom_application=module_name,
-                        id_parent=id_application_geonature
-                    )
                     DB.session.add(new_application)
                     DB.session.commit()
                     DB.session.flush()
                     module_id = new_application.id_application
-                else:
-                    log.info('the module is already in t_application')
-                finally:
-                    module_id = module_id if module_id is not None else exist_app.id_application
-            # try to write in gn_commons.t_module if not exist
-            try:
-                module = DB.session.query(TModules).filter(
-                    TModules.module_name == module_name
-                ).one()
-            except NoResultFound:
-                new_module = TModules(
-                    id_module=module_id,
-                    module_name=module_name,
-                    module_label=module_name.title(),
-                    module_path=url,
-                    module_target="_self",
-                    module_picto="fa-puzzle-piece",
-                    active_frontend=True,
-                    active_backend=True
-                )
-                DB.session.add(new_module)
-                DB.session.commit()
+                except Exception as e:
+                    raise e
             else:
-                log.info('the module is already in t_module, reactivate it')
-                module.active = True
-                DB.session.merge(module)
-                DB.session.commit()
-
-    except Exception as e:
-        raise GeoNatureError(e)
+                log.info('the module is already in t_application')
+            finally:
+                module_id = module_id if module_id is not None else exist_app.id_application
+        # try to write in gn_commons.t_module if not exist
+        try:
+            module = DB.session.query(TModules).filter(
+                TModules.module_name == module_name
+            ).one()
+        except NoResultFound:
+            new_module = TModules(
+                id_module=module_id,
+                module_name=module_name,
+                module_label=module_name.title(),
+                module_path=url,
+                module_target="_self",
+                module_picto="fa-puzzle-piece",
+                active_frontend=True,
+                active_backend=True
+            )
+            DB.session.add(new_module)
+            DB.session.commit()
+        else:
+            log.info('the module is already in t_module, reactivate it')
+            module.active = True
+            DB.session.merge(module)
+            DB.session.commit()
 
     log.info("...%s\n", MSG_OK)
     return module_id

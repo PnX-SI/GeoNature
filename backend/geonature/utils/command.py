@@ -21,6 +21,8 @@ from geonature.utils.config_schema import GnGeneralSchemaConf
 
 log = logging.getLogger(__name__)
 
+MSG_OK = "\033[92mok\033[0m\n"
+
 
 def start_gunicorn_cmd(uri, worker):
     cmd = 'gunicorn server:app -w {gun_worker} -b {gun_uri}'
@@ -56,6 +58,7 @@ def build_geonature_front(rebuild_sass=False):
 
 
 def frontend_routes_templating():
+    log.info('Generating frontend routing')
     from geonature.utils.env import list_frontend_enabled_modules
     from geonature.core.gn_commons.models import TModules
     with open(
@@ -84,9 +87,12 @@ def frontend_routes_templating():
             str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts'), 'w'
         ) as output_file:
             output_file.write(route_template)
+    
+    log.info("...%s\n", MSG_OK)
 
 
 def tsconfig_templating():
+    log.info('Generating tsconfig.json')
     with open(
         str(ROOT_DIR / 'frontend/tsconfig.json.sample'), 'r'
     ) as input_file:
@@ -97,9 +103,11 @@ def tsconfig_templating():
         str(ROOT_DIR / 'frontend/tsconfig.json'), 'w'
     ) as output_file:
         output_file.write(tsconfig_templated)
+    log.info("...%s\n", MSG_OK)
 
 
 def create_frontend_config(conf_file):
+    log.info('Generating configuration')
     configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
     with open(
@@ -107,10 +115,13 @@ def create_frontend_config(conf_file):
     ) as outputfile:
         outputfile.write("export const AppConfig = ")
         json.dump(configs_gn, outputfile, indent=True)
+    log.info("...%s\n", MSG_OK)
 
 
 def update_app_configuration(conf_file, build=True):
+    log.info('Update app configuration')
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
     if build:
         subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
+    log.info("...%s\n", MSG_OK)

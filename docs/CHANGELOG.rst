@@ -16,46 +16,55 @@ Présentation et suivi du projet : https://github.com/PnX-SI/GeoNature/issues/16
 
 **Accueil**
 
-* Message d'intro customisable
-* Idem sur CSS général surcouchable
+* Message d'introduction customisable
 * Carte des 100 dernières observations
+* CSS général de l'application surcouchable
 
 **Occtax**
 
 Module permettant de saisir, consulter, rechercher et exporter des données Faune, Flore et Fonge de type Contact selon le standard Occurrences de taxon du SINP (https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon).
 
-* Développement des formulaires de saisie, page de recherche, fiche détail, API, CRUVED, export basé sur une vue
+* Développement des formulaires de saisie, page de recherche, fiche détail, API, CRUVED et export
 * Possibilité de masquer ou afficher les différents champs dans le formulaire Occtax (#344)
-* Développement du formulaire de manière générique pour pouvoir réutiliser les éléments des formulaires dans d'autres modules sous forme de composants Angular
-* Configuration
-* Ajout des nomenclatures dans les filtres d'OccTax à partir du nouveau composant ``dynamicForm`` qui permet de créer dynamiquement un formulaire en déclarant les champs (#318)
-* Amélioration du composant de recherche d'un taxon en ne recherchant que sur les débuts de mot et en affichant en premier les noms de référence (ordrer_by cd_nom=cd_ref DESC) - #334
-* Multilingue
-* Mise en place d'un export CSV, SHP, GeoJSON paramétrable dans OccTax. #363 et #366
-* Ajout d'un message d'erreur si l'utilisateur n'a pas de JDD ou si il y a eu un problème lors de la récupération des JDD de MTD
-
+* Développement du formulaire de manière générique pour pouvoir réutiliser ses différents éléments dans d'autres modules sous forme de composants Angular
+* Configuration possible du module (Niveau de zoom, champs affichées, export...)
+* Ajout des nomenclatures dans les filtres d'Occtax à partir du composant ``dynamicForm`` qui permet de créer dynamiquement un formulaire en déclarant ses champs et leur type (#318)
+* Amélioration du composant de recherche d'un taxon en ne recherchant que sur les débuts de mot et en affichant en premier les noms de référence (``ordrer_by cd_nom=cd_ref DESC``) #334
+* Multilingue fourni avec français et anglais (extensible à d'autres langues)
+* Mise en place d'un export CSV, SHP, GeoJSON paramétrable dans Occtax. #363 et #366
+* Ajout d'un message d'erreur si l'utilisateur n'a pas de jeu de données ou si il y a eu un problème lors de la récupération des JDD depuis MTD
+* Prise en compte du CRUVED au niveau des routes et du front pour adapter les contenus et fonctionnalités aux droits de l'utilisateur
+* Mise en place des triggers alimentant la synthèse à partir des données saisies et modifiées dans Occtax
 
 **Synthèse**
 
+Module permettant de rechercher parmi les données des différentes sources présentes ou intégrées dans la base de données de GeoNature
+
 * Mise en place du backend, de l'API et du frontend #345
-* Synthèse : Calcul automatique (trigger) des zonages de chaque observations (communes, zonages réglementaires et naturels)
-* Trigger Occtax >> Synthèse
-* TreeTaxon
-* Retour à la fiche source
-* Fiche détail
-* Attributs TaxHub paramétrables
-* Paramètres
+* Interface de consultation, de recherche et d'export dans la Synthèse
+* Synthèse : Calcul automatique (trigger) des zonages de chaque observation (communes, zonages réglementaires et naturels)
+* Zonages paramétrables
+* Recherche par taxon, liste de taxons, par rang, groupe, liste rouge, milieu, attribut taxonomique, nomenclature, date, période, commune, zonage, cadre d'acquisition, jeu de données, observateur, polygone, rectange ou cercle dessiné
+* Retour à la fiche source possible si l'observation a été saisie dans un module de GeoNature
+* Affichage de la fiche détail de chaque observation
+* Attributs TaxHub dynamiques et paramétrables
+* Configuration possible du module (colonnes, limites de recherche et d'export, zoom, export...)
 * Export basé sur une vue (observations et statuts)
-* CRUVED
+* Prise en compte du CRUVED pour définir les données à afficher et à exporter #412
+* Liste des taxons basée sur une table alimentée automatiquement par les taxons présents au moins une fois dans la Synthèse
 
 **Export**
 
-* Export basé sur une vue s'appuyant sur les données de Occtax par jeu de données
-* A remplacer par module générique
+Module permettant de proposé des exports basés sur des vues
+
+* Mise en place d'un export basé sur une vue s'appuyant sur les données de Occtax, par jeu de données
+* A remplacer par le module générique https://github.com/PnX-SI/gn_module_export (en cours de développement) permettant de générer des exports à volonté en créant des vues et en les affectant à des utilisateurs ou des groupes. Chaque export sera accompagné de son API standardisée et documentée
 
 **Admin**
 
-* Début de mise en place d'un backoffice (métadonnées et nomenclatures)
+Module d'administration des tables centrales de GeoNature
+
+* Mise en place d'un module incomplet permettant de gérer les métadonnées et nomenclatures
 
 **Gestion des droits**
 
