@@ -111,7 +111,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     link.target = '_blank';
     link.href = url_source + '/' + id_pk_source;
     link.setAttribute('visibility', 'hidden');
+    document.body.appendChild(link);
     link.click();
+    link.remove();
   }
 
   onDeleteObservation(id_synthese) {
