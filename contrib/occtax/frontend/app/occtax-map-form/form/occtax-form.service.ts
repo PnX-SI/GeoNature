@@ -326,7 +326,6 @@ export class OcctaxFormService {
 
     const countingData = occurenceData.cor_counting_occtax;
     const nbCounting = countingData.length;
-    console.log("le current taxooooon", currentEditedTaxon);
     this.currentTaxon = currentEditedTaxon;
     // patch occurrence data
     occurenceData["cd_nom"] = currentEditedTaxon;
@@ -405,7 +404,6 @@ export class OcctaxFormService {
   onTaxonChanged($event) {
     this.currentTaxon = $event.item;
     // set 'nom_cite'
-    console.log("$event", $event);
     this.occurrenceForm.patchValue({ nom_cite: $event.item.search_name });
     // fetch default nomenclature value filtered by organism, regne, group2_inpn
     this.getDefaultValues(

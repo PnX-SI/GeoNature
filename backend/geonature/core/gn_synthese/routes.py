@@ -262,8 +262,6 @@ def export(info_role):
         )
 
 
-
-
 @routes.route('/statuts', methods=['GET'])
 @fnauth.check_auth_cruved('E', True)
 def get_status(info_role):
@@ -353,13 +351,3 @@ def get_autocomplete_taxons_synthese():
 
     data = q.limit(20).all()
     return [d.as_dict() for d in data]
-
-
-# @routes.route('/test', methods=['GET'])
-# @json_resp
-# def test():
-#     q = DB.session.query(VSyntheseForWebApp)
-#     data = q.all()
-#     for d in data:
-#         #print(d.get_geofeature(columns=['id_synthese']))
-#     return 'la'

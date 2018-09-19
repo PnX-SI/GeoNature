@@ -51,7 +51,6 @@ export class OcctaxMapInfoComponent implements OnInit {
       if (parsed_url === "id_counting") {
         // get the id_releve from the id_counting
         this._occtaxService.getOneCounting(params["id"]).subscribe(data => {
-          console.log(data);
           this.id = data["id_releve"];
           this.loadReleve(this.id);
         });

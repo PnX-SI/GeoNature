@@ -184,5 +184,4 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         else:
             col = getattr(model.__table__.columns, colname)
             q = q.filter(col.in_(value))
-    print(q)
     return q

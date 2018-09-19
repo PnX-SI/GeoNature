@@ -81,8 +81,11 @@ class GnFrontEndConf(Schema):
     MULTILINGUAL = fields.Boolean(missing=False)
 
 
+id_municipality = BddConfig().load({}).data.get('id_area_type_municipality')
+
+
 class Synthese(Schema):
-    AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": 101}])
+    AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}])
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
