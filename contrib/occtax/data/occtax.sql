@@ -1128,11 +1128,12 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ;
 
+-- @TODO fait dans l'install du schéma utilisateurs - a trancher
 
-INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
-('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 
-(SELECT id_application FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature') )
-;
+-- INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
+-- ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 
+-- (SELECT id_application FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature') )
+-- ;
 
 INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active)
  VALUES ('Occtax', 'Données issus du module Occtax)', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting' , NULL, NULL, 'NONE', true);
