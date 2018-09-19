@@ -299,7 +299,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     5
   ),
   (
-    1,
+    2,
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '4') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
     ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
