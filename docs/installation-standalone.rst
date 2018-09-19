@@ -63,6 +63,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
     sudo apt-get install -y npm
     sudo apt-get install -y supervisor
+    sudo apt-get install -y apache2
     
  Sur ubuntu 18 installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``
 
@@ -144,11 +145,6 @@ L'application est disponible à l'adresse suivante :
 
 - http://monip.com/geonature
 
-Si vous souhaitez que GeoNature soit à racine du serveur, ou à une autres adresse, placez-vous dans le répertoire ``frontend`` de GeoNature (``cd frontend``) puis lancer la commande :
-
-- Pour ``/``: ``npm run build -- --base-href=/``
-- Pour ``/saisie`` : ``npm run build -- --base-href=/saisie/``
-
 Editez ensuite le fichier de configuration Apache ``/etc/apache2/sites-available/geonature.conf`` en modifiant l'alias :
 
 - Pour ``/`` : ``Alias / /home/test/geonature/frontend/dist``
@@ -167,11 +163,11 @@ Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisat
 ::
 
     cd ~
-    wget https://github.com/PnX-SI/TaxHub/archive/1.4.1.zip
+    wget https://github.com/PnX-SI/TaxHub/archive/X.Y.Z.zip
     
 en mode développeur: 
 
-``git clone https://github.com/PnX-SI/TaxHub/archive/1.4.1.zip``
+``https://github.com/PnX-SI/TaxHub.git``
 
 "Désamplez" le fichier ``settings.ini`` et remplissez la configuration avec les paramètres de connexion à la BDD GeoNature précedemment installée
 
