@@ -85,12 +85,12 @@ SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_oc
 SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
 
 -- Récupération de la source
-SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE lower(name_source) = 'occtax';
+SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
 FROM gn_commons.t_validations v
-JOIN utilisateurs.t_roles r ON v.id_validator = r.id_role
+LEFT JOIN utilisateurs.t_roles r ON v.id_validator = r.id_role
 WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 
 -- Récupération du status_source depuis le JDD
@@ -162,8 +162,8 @@ VALUES(
   id_source,
   new_count.id_counting_occtax,
   releve.id_dataset,
-  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - a ajouter dans default_nomenclature du schema occtax
-  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'In') ,
+  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
+  pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
   releve.id_nomenclature_grp_typ,
   occurrence.id_nomenclature_obs_meth,
   releve.id_nomenclature_obs_technique,
@@ -205,7 +205,7 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT('Relevé : ',releve.comment, 'Occurrence: ', occurrence.comment),
+  CONCAT('Relevé : ', COALESCE(releve.comment, ' aucun '), 'Occurrence: ', COALESCE(occurrence.comment, ' aucun')),
   'I'
 );
 
@@ -222,7 +222,6 @@ $BODY$
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
--- Insert counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
   RETURNS trigger AS
   $BODY$
@@ -336,7 +335,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
+    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, 'aucun' ), ' Occurrence: ', COALESCE(NEW.comment, 'aucun' )),
     last_action = 'U'
     WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
 
@@ -398,7 +397,7 @@ BEGIN
       date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
-      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, 'aucun '), 'Occurrence: ', COALESCE(theoccurrence.comment, 'aucun')),
+      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, 'aucun '), ' Occurrence: ', COALESCE(theoccurrence.comment, 'aucun')),
       the_geom_local = NEW.geom_local,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),

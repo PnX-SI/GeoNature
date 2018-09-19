@@ -724,7 +724,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
+    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, 'aucun' ), ' Occurrence: ', COALESCE(NEW.comment, 'aucun' )),
     last_action = 'U'
     WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
 
@@ -786,7 +786,7 @@ BEGIN
       date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
-      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, 'aucun '), 'Occurrence: ', COALESCE(theoccurrence.comment, 'aucun')),
+      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, 'aucun '), ' Occurrence: ', COALESCE(theoccurrence.comment, 'aucun')),
       the_geom_local = NEW.geom_local,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
