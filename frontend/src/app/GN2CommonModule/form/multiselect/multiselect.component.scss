@@ -33,7 +33,7 @@ ul {
 .dropdown-menu {
   margin-top: -1rem;
   z-index: 2000;
-  overflow-y: scroll;
+  overflow: auto;
   max-height: 300px;
 }
 

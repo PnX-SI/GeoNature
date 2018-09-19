@@ -91,8 +91,9 @@ def copy_in_external_mods(module_path, module_name):
         Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
     '''
     # Suppression du lien symbolique s'il existe déja
-    cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_name)
-    subprocess.call(cmd.split(" "))
+    if (GN_EXTERNAL_MODULE / module_name).is_dir():
+        cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_name)
+        subprocess.call(cmd.split(" "))
     # creation du lien symbolique
     cmd = "ln -s {} {}/{}".format(
         module_path, GN_EXTERNAL_MODULE.resolve(), module_name
@@ -320,65 +321,65 @@ def create_external_assets_symlink(module_path, module_name):
         raise GeoNatureError(exp)
     return True
 
+
 def add_application_db(module_name, url, module_id=None):
     log.info('Register the module in t_application ... \n')
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
-    try:
-        with app.app_context():
-            # if module_id: try to insert in t_application
-            # check if the module in TApplications
-            if module_id is None:
+    with app.app_context():
+        # if module_id: try to insert in t_application
+        # check if the module in TApplications
+        if module_id is None:
+            try:
+                exist_app = None
+                exist_app = DB.session.query(TApplications).filter(
+                    TApplications.nom_application == module_name
+                ).one()
+            except NoResultFound:
+                # if no result, write in TApplication
+                new_application = TApplications(
+                    nom_application=module_name,
+                    id_parent=id_application_geonature
+                )
                 try:
-                    exist_app = None
-                    exist_app = DB.session.query(TApplications).filter(
-                        TApplications.nom_application == module_name
-                    ).one()
-                except NoResultFound:
-                    # if no result, write in TApplication
-                    new_application = TApplications(
-                        nom_application=module_name,
-                        id_parent=id_application_geonature
-                    )
                     DB.session.add(new_application)
                     DB.session.commit()
                     DB.session.flush()
                     module_id = new_application.id_application
-                else:
-                    log.info('the module is already in t_application')
-                finally:
-                    module_id = module_id if module_id is not None else exist_app.id_application
-            # try to write in gn_commons.t_module if not exist
-            try:
-                module = DB.session.query(TModules).filter(
-                    TModules.module_name == module_name
-                ).one()
-            except NoResultFound:
-                update_url = "{}/#/{}".format(app_conf['URL_APPLICATION'], url)
-                new_module = TModules(
-                    id_module=module_id,
-                    module_name=module_name,
-                    module_label=module_name.title(),
-                    module_url=update_url,
-                    module_target="_self",
-                    module_picto="extension",
-                    active_frontend=True,
-                    active_backend=True
-                )
-                DB.session.add(new_module)
-                DB.session.commit()
+                except Exception as e:
+                    raise e
             else:
-                log.info('the module is already in t_module, reactivate it')
-                module.active = True
-                DB.session.merge(module)
-                DB.session.commit()
-
-    except Exception as e:
-        raise GeoNatureError(e)
+                log.info('the module is already in t_application')
+            finally:
+                module_id = module_id if module_id is not None else exist_app.id_application
+        # try to write in gn_commons.t_module if not exist
+        try:
+            module = DB.session.query(TModules).filter(
+                TModules.module_name == module_name
+            ).one()
+        except NoResultFound:
+            new_module = TModules(
+                id_module=module_id,
+                module_name=module_name,
+                module_label=module_name.title(),
+                module_path=url,
+                module_target="_self",
+                module_picto="fa-puzzle-piece",
+                active_frontend=True,
+                active_backend=True
+            )
+            DB.session.add(new_module)
+            DB.session.commit()
+        else:
+            log.info('the module is already in t_module, reactivate it')
+            module.active = True
+            DB.session.merge(module)
+            DB.session.commit()
 
     log.info("...%s\n", MSG_OK)
     return module_id
+
 
 def create_module_config(module_name, mod_path=None, build=True):
     """
@@ -396,16 +397,16 @@ def create_module_config(module_name, mod_path=None, build=True):
 
     # import du module dans le sys.path
     module_parent_dir = str(Path(mod_path).parent)
-    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name) # noqa
+    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)  # noqa
     sys.path.insert(0, module_parent_dir)
     module = __import__(module_schema_conf, globals=globals())
-    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml') # noqa
+    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml')  # noqa
     config_module = utilstoml.load_and_validate_toml(
         front_module_conf_file,
         module.config.conf_schema_toml.GnModuleSchemaConf
     )
 
-    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts') # noqa
+    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
     try:
         with open(
             str(ROOT_DIR / frontend_config_path), 'w'

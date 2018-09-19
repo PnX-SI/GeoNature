@@ -1,15 +1,18 @@
+from collections import OrderedDict
+
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
+from flask import current_app
 
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.utilssqlalchemy import (
-    serializable, geoserializable
+    serializable, geoserializable, SERIALIZERS
 )
 from geonature.utils.utilsgeometry import shapeserializable
 from geonature.utils.env import DB
@@ -24,6 +27,9 @@ class SyntheseCruved(DB.Model):
         Abstract class to add method
         to control the data access according
         to the user rights
+
+        Currently not used, the cruved on data is managed
+        by the module himself when the user is redirect to the source module
     """
     __abstract__ = True
 
@@ -165,7 +171,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 @serializable
 @geoserializable
 @shapeserializable
-class Synthese(SyntheseCruved):
+class Synthese(DB.Model):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, ForeignKey(
@@ -212,6 +218,7 @@ class Synthese(SyntheseCruved):
     validation_comment = DB.Column(DB.Unicode)
     observers = DB.Column(DB.Unicode)
     determiner = DB.Column(DB.Unicode)
+    id_digitiser = DB.Column(DB.Integer)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     comments = DB.Column(DB.Unicode)
     meta_validation_date = DB.Column(DB.DateTime)
@@ -244,7 +251,7 @@ class DefaultsNomenclaturesValue(DB.Model):
 
 @serializable
 @geoserializable
-class SyntheseOneRecord(SyntheseCruved):
+class SyntheseOneRecord(DB.Model):
     __tablename__ = 'synthese'
     __table_args__ = {'schema': 'gn_synthese', 'extend_existing': True}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
@@ -306,13 +313,14 @@ class SyntheseOneRecord(SyntheseCruved):
     def get_geofeature(self, recursif=False):
         return self.as_geofeature('the_geom_4326', 'id_synthese', recursif)
 
+
 @serializable
 class VMTaxonsSyntheseAutocomplete(DB.Model):
-    __tablename__ = 'vm_taxons_synthese_autocomplete'
+    __tablename__ = 'taxons_synthese_autocomplete'
     __table_args__ = {'schema': 'gn_synthese'}
     cd_nom = DB.Column(DB.Integer, primary_key=True)
     search_name = DB.Column(DB.Unicode, primary_key=True)
-    cd_ref = DB.Column(DB.Integer)    
+    cd_ref = DB.Column(DB.Integer)
     nom_valide = DB.Column(DB.Unicode)
     lb_nom = DB.Column(DB.Unicode)
     regne = DB.Column(DB.Unicode)
@@ -320,3 +328,197 @@ class VMTaxonsSyntheseAutocomplete(DB.Model):
 
     def __repr__(self):
         return '<VMTaxonsSyntheseAutocomplete  %r>' % self.search_name
+
+
+@serializable
+@geoserializable
+class VSyntheseForWebApp(DB.Model):
+    __tablename__ = 'v_synthese_for_web_app'
+    __table_args__ = {'schema': 'gn_synthese'}
+
+    id_synthese = DB.Column(DB.Integer, ForeignKey(
+        'gn_synthese.v_synthese_decode_nomenclatures.id_synthese'), primary_key=True)
+    unique_id_sinp = DB.Column(UUID(as_uuid=True))
+    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
+    id_source = DB.Column(DB.Integer)
+    entity_source_pk_value = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer)
+    dataset_name = DB.Column(DB.Integer)
+    id_acquisition_framework = DB.Column(DB.Integer)
+    count_min = DB.Column(DB.Integer)
+    count_max = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer)
+    cd_ref = DB.Column(DB.Unicode)
+    nom_cite = DB.Column(DB.Unicode)
+    nom_valide = DB.Column(DB.Unicode)
+    nom_vern = DB.Column(DB.Unicode)
+    lb_nom = DB.Column(DB.Unicode)
+    meta_v_taxref = DB.Column(DB.Unicode)
+    sample_number_proof = DB.Column(DB.Unicode)
+    digital_proof = DB.Column(DB.Unicode)
+    non_digital_proof = DB.Column(DB.Unicode)
+    altitude_min = DB.Column(DB.Unicode)
+    altitude_max = DB.Column(DB.Unicode)
+    the_geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    date_min = DB.Column(DB.DateTime)
+    date_max = DB.Column(DB.DateTime)
+    validator = DB.Column(DB.Unicode)
+    validation_comment = DB.Column(DB.Unicode)
+    observers = DB.Column(DB.Unicode)
+    determiner = DB.Column(DB.Unicode)
+    id_digitiser = DB.Column(DB.Integer)
+    comments = DB.Column(DB.Unicode)
+    meta_validation_date = DB.Column(DB.DateTime)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    last_action = DB.Column(DB.Unicode)
+    id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
+    id_nomenclature_info_geo_type = DB.Column(DB.Integer)
+    id_nomenclature_grp_typ = DB.Column(DB.Integer)
+    id_nomenclature_obs_meth = DB.Column(DB.Integer)
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_bio_status = DB.Column(DB.Integer)
+    id_nomenclature_bio_condition = DB.Column(DB.Integer)
+    id_nomenclature_naturalness = DB.Column(DB.Integer)
+    id_nomenclature_exist_proof = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_diffusion_level = DB.Column(DB.Integer)
+    id_nomenclature_life_stage = DB.Column(DB.Integer)
+    id_nomenclature_sex = DB.Column(DB.Integer)
+    id_nomenclature_obj_count = DB.Column(DB.Integer)
+    id_nomenclature_type_count = DB.Column(DB.Integer)
+    id_nomenclature_sensitivity = DB.Column(DB.Integer)
+    id_nomenclature_observation_status = DB.Column(DB.Integer)
+    id_nomenclature_blurring = DB.Column(DB.Integer)
+    id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_source_status = DB.Column(DB.Integer)
+    name_source = DB.Column(DB.Unicode)
+    url_source = DB.Column(DB.Unicode)
+
+    def get_geofeature(self, recursif=False, columns=()):
+        return self.as_geofeature(
+            'the_geom_4326',
+            'id_synthese',
+            recursif,
+            columns=columns
+        )
+
+
+def synthese_export_serialization(cls):
+    """
+    Décorateur qui définit une sérialisation particulière pour la vue v_synthese_for_web_app
+    Il rajoute la fonction as_dict_mapped: qui renvoie un dictionnaire avec des noms d'attrbuts
+    définit en configuration (EXPORT_COLUMNS),
+    et la fonction as_dict_ordered qui conserve l'ordre des attributs tel que définit dans le model
+    (fonctions utilisées pour les exports)
+    """
+    EXPORT_COLUMNS = current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+    default_columns = [key for key, value in EXPORT_COLUMNS.items()]
+    cls_db_columns = [
+        (
+            db_col.key,
+            SERIALIZERS.get(
+                db_col.type.__class__.__name__.lower(),
+                lambda x: x
+            )
+        )
+        for db_col in cls.__mapper__.c
+        if not db_col.type.__class__.__name__ == 'Geometry' and
+        db_col.key in default_columns
+    ]
+
+    cls.db_cols = [db_col for db_col in cls.__mapper__.c if db_col.key in default_columns]
+
+    def serialize_mapped_fn(self, recursif=False, columns=()):
+        if columns:
+            fprops = list(filter(lambda d: d[0] in columns, cls_db_columns))
+        else:
+            fprops = cls_db_columns
+        return {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item)) for item, _serializer in fprops}
+
+    def serialize_order_fn(self):
+        order_dict = OrderedDict()
+        for item, _serializer in cls_db_columns:
+            order_dict.update(
+                {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item))}
+            )
+        return order_dict
+
+    cls.as_dict_mapped = serialize_mapped_fn
+    cls.as_dict_ordered = serialize_order_fn
+
+    return cls
+
+
+@serializable
+@synthese_export_serialization
+@geoserializable
+class VSyntheseForExport(DB.Model):
+    __tablename__ = 'v_synthese_for_export'
+    __table_args__ = {'schema': 'gn_synthese'}
+
+    id_synthese = DB.Column(DB.Integer, ForeignKey(
+        'gn_synthese.v_synthese_decode_nomenclatures.id_synthese'), primary_key=True)
+    unique_id_sinp = DB.Column(UUID(as_uuid=True))
+    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
+    id_source = DB.Column(DB.Integer)
+    entity_source_pk_value = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer)
+    dataset_name = DB.Column(DB.Integer)
+    id_acquisition_framework = DB.Column(DB.Integer)
+    count_min = DB.Column(DB.Integer)
+    count_max = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer)
+    cd_ref = DB.Column(DB.Unicode)
+    nom_cite = DB.Column(DB.Unicode)
+    nom_valide = DB.Column(DB.Unicode)
+    nom_vern = DB.Column(DB.Unicode)
+    meta_v_taxref = DB.Column(DB.Unicode)
+    sample_number_proof = DB.Column(DB.Unicode)
+    digital_proof = DB.Column(DB.Unicode)
+    non_digital_proof = DB.Column(DB.Unicode)
+    altitude_min = DB.Column(DB.Unicode)
+    altitude_max = DB.Column(DB.Unicode)
+    the_geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    the_geom_point = DB.Column(Geometry('GEOMETRY', 4326))
+    the_geom_local = DB.Column(Geometry('GEOMETRY', 2154))
+    date_min = DB.Column(DB.DateTime)
+    date_max = DB.Column(DB.DateTime)
+    validator = DB.Column(DB.Unicode)
+    validation_comment = DB.Column(DB.Unicode)
+    observers = DB.Column(DB.Unicode)
+    determiner = DB.Column(DB.Unicode)
+    id_digitiser = DB.Column(DB.Integer)
+    comments = DB.Column(DB.Unicode)
+    meta_validation_date = DB.Column(DB.DateTime)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    last_action = DB.Column(DB.Unicode)
+    nat_obj_geo = DB.Column(DB.Unicode)
+    grp_typ = DB.Column(DB.Unicode)
+    obs_method = DB.Column(DB.Unicode)
+    obs_technique = DB.Column(DB.Unicode)
+    bio_status = DB.Column(DB.Unicode)
+    bio_condition = DB.Column(DB.Unicode)
+    naturalness = DB.Column(DB.Unicode)
+    exist_proof = DB.Column(DB.Unicode)
+    valid_status = DB.Column(DB.Unicode)
+    diffusion_level = DB.Column(DB.Unicode)
+    life_stage = DB.Column(DB.Unicode)
+    sex = DB.Column(DB.Unicode)
+    obj_count = DB.Column(DB.Unicode)
+    type_count = DB.Column(DB.Unicode)
+    sensitivity = DB.Column(DB.Unicode)
+    observation_status = DB.Column(DB.Unicode)
+    blurring = DB.Column(DB.Unicode)
+    source_status = DB.Column(DB.Unicode)
+    name_source = DB.Column(DB.Unicode)
+    url_source = DB.Column(DB.Unicode)
+
+    def get_geofeature(self, recursif=False, columns=()):
+        return self.as_geofeature(
+            'the_geom_4326',
+            'id_synthese',
+            recursif,
+            columns=columns
+        )

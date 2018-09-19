@@ -1,7 +1,7 @@
 <small> {{selectLabel}} </small>
 <div class="input-group filter-control" >
   <select class="form-control form-control-sm" [formControl]="selectControl">
-    <option [ngValue]="null" > -- Selectionnez un filtre -- </option>
+    <option [ngValue]="null" > </option>
     <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">
       {{formDef.attribut_label}}
     </option>

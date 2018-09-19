@@ -11,6 +11,10 @@ fieldset {
   border-radius: 3px;
 }
 
+.overflow-x-visible {
+  overflow-x: visible;
+}
+
 legend {
   width: auto;
   font-size: inherit;
@@ -32,6 +36,7 @@ legend {
 
 .taxon-list {
   margin-bottom: 0px;
+  font-size: 12px;
 }
 .taxon-alert {
   margin-top: 5px;
@@ -55,4 +60,31 @@ legend {
   margin-top: 3px;
   margin-right: 1px;
   float: right;
+}
+
+.search-btn {
+  float: right;
+  margin-bottom: 15px;
+}
+
+.search-wrapper {
+  max-height: 92vh;
+  overflow: auto;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  //position: absolute;
+}
+
+:host /deep/ ngb-typeahead-window > button > span {
+  font-size: 12px !important;
+  cursor: pointer;
+}
+
+:host /deep/ ngb-typeahead-window > button {
+  padding-left: 5px;
 }

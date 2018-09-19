@@ -42,7 +42,6 @@ export class DataFormService {
     });
   }
 
-
   getDatasets(params?) {
     let queryString: HttpParams = new HttpParams();
     if (params) {
@@ -54,9 +53,8 @@ export class DataFormService {
           params[key].forEach(id_af => {
             queryString = queryString.append('id_acquisition_framework', id_af);
           });
-          // if its a id_af alone
-        } else if (key === 'id_acquisition_framework' && params[key]) {
-          queryString = queryString.set('id_acquisition_framework', params[key]);
+        } else {
+          queryString = queryString.set(key, params[key].toString());
         }
       }
     }
@@ -69,7 +67,6 @@ export class DataFormService {
   getObservers(idMenu) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
-
 
   autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {
     let queryString: HttpParams = new HttpParams();
@@ -88,11 +85,11 @@ export class DataFormService {
     return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
   }
 
-  getTaxonAttributsAndMedia(cd_nom: number, id_themes?: Array<number>) {
+  getTaxonAttributsAndMedia(cd_nom: number, id_attributs?: Array<number>) {
     let query_string = new HttpParams();
-    if (id_themes) {
-      id_themes.forEach(id => {
-        query_string = query_string.append('id_theme', id.toString());
+    if (id_attributs) {
+      id_attributs.forEach(id => {
+        query_string = query_string.append('id_attribut', id.toString());
       });
     }
 
@@ -184,6 +181,10 @@ export class DataFormService {
 
   getAcquisitionFrameworks() {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+  }
+
+  getAcquisitionFramework(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
   }
 
   getOrganisms() {

@@ -4,18 +4,15 @@ import { AppConfig } from '@geonature_config/app.config';
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+import { DYNAMIC_FORM_DEF } from './dynamycFormConfig';
 
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
-  public selectedtaxonFromComponent = [];
   public formBuilded = false;
-  public taxonTreeState: any;
-  public taxonTree: any;
+  public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
-  public taxonomyLR: Array<any>;
-  public taxonomyHab: Array<any>;
-  public taxonomyGroup2Inpn: Array<any>;
+  public dynamycFormDef: Array<any>;
 
   constructor(
     private _fb: FormBuilder,
@@ -46,12 +43,12 @@ export class SyntheseFormService {
       this.searchForm.addControl(control_name, new FormControl());
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
-      // const t = new FormArray([]);
-      // (this.searchForm.controls.areas as FormArray).push(new_area_control);
     });
-
-    console.log(this.searchForm);
-
+    // init the dynamic form with the user parameters
+    // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
+    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
+      return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
+    });
     this.formBuilded = true;
   }
 
@@ -93,7 +90,10 @@ export class SyntheseFormService {
     }
     if (this.selectedtaxonFromComponent.length > 0 || this.selectedCdRefFromTree.length > 0) {
       // search on cd_ref to include synonyme from the synthese searchs
-      updatedParams['cd_ref'] = [...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref), ...this.selectedCdRefFromTree];
+      updatedParams['cd_ref'] = [
+        ...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref),
+        ...this.selectedCdRefFromTree
+      ];
     }
     return updatedParams;
   }

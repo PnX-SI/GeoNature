@@ -1,4 +1,5 @@
 #!/bin/bash
+. install_all.ini
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
@@ -45,14 +46,11 @@ touch  var/log/install_app.log
 
 echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
 
-sudo apt-get install -y nano 2> var/log/install_app.log 
-nano install_all.ini
-. install_all.ini
 
 # Modification de la locale
 sudo apt-get install -y locales
 sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
-sudo locale-gen
+sudo locale-gen $my_local
 echo "export LC_ALL=$my_local" >> ~/.bashrc
 echo "export LANG=$my_local" >> ~/.bashrc
 echo "export LANGUAGE=$my_local" >> ~/.bashrc
@@ -144,7 +142,7 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 
 cd install/
-# Installation de la base de données GeoNature en root
+# Installation de la base de données GeoNature
 ./install_db.sh
 
 # Installation et configuration de l'application GeoNature
@@ -275,3 +273,5 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 sudo apache2ctl restart
+
+echo "L'installation est OK!"

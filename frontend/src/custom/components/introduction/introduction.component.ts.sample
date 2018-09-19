@@ -1,12 +1,34 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-introduction',
   templateUrl: 'introduction.component.html'
 })
-
 export class IntroductionComponent implements OnInit {
-  constructor() { }
+  public lastObs: any;
+  constructor(private _api: HttpClient) {}
 
-  ngOnInit() { }
+  ngOnInit() {
+    this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese?limit=100`).subscribe(result => {
+      this.lastObs = result.data;
+      console.log(result);
+    });
+  }
+
+  onEachFeature(feature, layer) {
+    // event from the map
+    layer.on({
+      click: () => {
+        // open popup
+        const popup = `
+        ${feature.properties.nom_vern_or_lb_nom} <br>
+        <b> Observé le: </b> ${feature.properties.date_min} <br>
+        <b> Par</b>:  ${feature.properties.observers}
+        `;
+        layer.bindPopup(popup).openPopup();
+      }
+    });
+  }
 }

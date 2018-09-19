@@ -1,17 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
-import { Http } from "@angular/http";
-import { GeoJSON } from "leaflet";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { Subscription } from "rxjs/Subscription";
 import { OcctaxService } from "../services/occtax.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
-import { FormControl } from "@angular/forms";
-import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { DynamicFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
@@ -41,16 +35,17 @@ export class OcctaxMapListComponent implements OnInit {
     totalMessage: "observation(s) au total"
   };
   advandedFilterOpen = false;
-  @ViewChild(NgbModal) public modalCol: NgbModal;
-  @ViewChild(TaxonomyComponent) public taxonomyComponent: TaxonomyComponent;
-  @ViewChild("dynamicForm") public dynamicForm: DynamicFormGeneratorComponent;
+  @ViewChild(NgbModal)
+  public modalCol: NgbModal;
+  @ViewChild(TaxonomyComponent)
+  public taxonomyComponent: TaxonomyComponent;
+  @ViewChild("dynamicForm")
+  public dynamicForm: DynamicFormGeneratorComponent;
 
   constructor(
-    private _http: Http,
     private mapListService: MapListService,
     private _occtaxService: OcctaxService,
     private _commonService: CommonService,
-    private _translate: TranslateService,
     private _router: Router,
     public ngbModal: NgbModal,
     private _fb: FormBuilder,
@@ -135,7 +130,6 @@ export class OcctaxMapListComponent implements OnInit {
   onDeleteReleve(id) {
     this._occtaxService.deleteReleve(id).subscribe(
       data => {
-
         this.mapListService.deleteObsFront(id);
         this._commonService.translateToaster(
           "success",

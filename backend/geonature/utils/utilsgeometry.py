@@ -1,5 +1,7 @@
 import datetime
 
+from collections import OrderedDict
+
 import numpy as np
 import geog
 import zipfile
@@ -8,6 +10,8 @@ import fiona
 from fiona.crs import from_epsg
 from geoalchemy2.shape import to_shape
 from shapely.geometry import Point, Polygon, MultiPolygon, mapping
+
+from geonature.utils.errors import GeonatureApiError
 
 # Creation des shapefiles avec la librairies fiona
 
@@ -36,7 +40,7 @@ class FionaShapeService():
     """
 
     @classmethod
-    def create_shapes_struct(cls, db_cols, srid, dir_path, file_name):
+    def create_shapes_struct(cls, db_cols, srid, dir_path, file_name, col_mapping=None):
         """
         Create three shapefiles (point, line, polygon) with the attributes give by db_cols
         Parameters:
@@ -44,6 +48,7 @@ class FionaShapeService():
             srid (int): epsg code
             dir_path (str): directory path
             file_name (str): file of the shapefiles
+            col_mapping (dict): mapping between SQLA class attributes and 'beatifiul' columns name
 
         Returns:
             void
@@ -53,14 +58,26 @@ class FionaShapeService():
         cls.dir_path = dir_path
         cls.file_name = file_name
 
-        shp_properties = {}
         cls.columns = []
-        for db_col in db_cols:
-            if not db_col.type.__class__.__name__ == 'Geometry':
-                shp_properties[db_col.key] = FIONA_MAPPING.get(
-                    db_col.type.__class__.__name__.lower()
-                )
-                cls.columns.append(db_col.key)
+        # if we want to change to columns name of the SQLA class
+        # in the export shapefiles structures
+        shp_properties = OrderedDict()
+        if col_mapping:
+            for db_col in db_cols:
+                if not db_col.type.__class__.__name__ == 'Geometry':
+                    shp_properties.update({
+                        col_mapping.get(db_col.key): FIONA_MAPPING.get(
+                        db_col.type.__class__.__name__.lower())
+                    })
+                    cls.columns.append(col_mapping.get(db_col.key))
+        else:
+            for db_col in db_cols:
+                if not db_col.type.__class__.__name__ == 'Geometry':
+                    shp_properties.update({
+                        db_col.key: FIONA_MAPPING.get(
+                        db_col.type.__class__.__name__.lower())
+                    })
+                    cls.columns.append(db_col.key)
         cls.polygon_schema = {'geometry': 'MultiPolygon', 'properties': shp_properties, }
         cls.point_schema = {'geometry': 'Point', 'properties': shp_properties, }
         cls.polyline_schema = {'geometry': 'LineString', 'properties': shp_properties}
@@ -90,18 +107,25 @@ class FionaShapeService():
         Returns:
             void
         """
-        geom_wkt = to_shape(geom)
-        geom_geojson = mapping(geom_wkt)
-        feature = {'geometry': geom_geojson, 'properties': data}
-        if isinstance(geom_wkt, Point):
-            cls.point_shape.write(feature)
-            cls.point_feature = True
-        elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
-            cls.polygone_shape.write(feature)
-            cls.polygon_feature = True
-        else:
-            cls.polyline_shape.write(feature)
-            cls.polyline_feature = True
+        try:
+            geom_wkt = to_shape(geom)
+            geom_geojson = mapping(geom_wkt)
+            feature = {'geometry': geom_geojson, 'properties': data}
+            if isinstance(geom_wkt, Point):
+                cls.point_shape.write(feature)
+                cls.point_feature = True
+            elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
+                cls.polygone_shape.write(feature)
+                cls.polygon_feature = True
+            else:
+                cls.polyline_shape.write(feature)
+                cls.polyline_feature = True
+        except AssertionError:
+            cls.close_files()
+            raise GeonatureApiError('Cannot create a shapefile record whithout a Geometry')
+        except Exception as e:
+            cls.close_files()
+            raise GeonatureApiError(e)
 
     @classmethod
     def create_features_generic(cls, view, data, geom_col):
@@ -141,9 +165,7 @@ class FionaShapeService():
         Returns:
             void
         """
-        cls.point_shape.close()
-        cls.polygone_shape.close()
-        cls.polyline_shape.close()
+        cls.close_files()
 
         format_to_save = []
         if cls.point_feature:
@@ -170,6 +192,12 @@ class FionaShapeService():
                     shape_format + "_" + cls.file_name + "." + ext
                 )
         zp_file.close()
+
+    @classmethod
+    def close_files(cls):
+        cls.point_shape.close()
+        cls.polygone_shape.close()
+        cls.polyline_shape.close()
 
 
 def create_shapes_generic(view, srid, db_cols, data, dir_path, file_name, geom_col):

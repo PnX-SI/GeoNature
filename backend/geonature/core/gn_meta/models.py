@@ -12,6 +12,37 @@ from geonature.utils.env import DB
 from geonature.core.users.models import TRoles, BibOrganismes
 
 
+class CorAcquisitionFrameworkObjectif(DB.Model):
+    __tablename__ = 'cor_acquisition_framework_objectif'
+    __table_args__ = {'schema': 'gn_meta'}
+    id_acquisition_framework = DB.Column(
+        DB.Integer,
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'),
+        primary_key=True
+    )
+    id_nomenclature_objectif = DB.Column(
+        DB.Integer,
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'),
+        primary_key=True,
+    )
+
+
+class CorAcquisitionFrameworkVoletSINP(DB.Model):
+    __tablename__ = 'cor_acquisition_framework_voletsinp'
+    __table_args__ = {'schema': 'gn_meta'}
+    id_acquisition_framework = DB.Column(
+        DB.Integer,
+        ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'),
+        primary_key=True,
+    )
+    id_nomenclature_voletsinp = DB.Column(
+        'id_nomenclature_voletsinp',
+        DB.Integer,
+        ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature'),
+        primary_key=True,
+    )
+
+
 @serializable
 class CorAcquisitionFrameworkActor(DB.Model):
     __tablename__ = 'cor_acquisition_framework_actor'
@@ -20,9 +51,17 @@ class CorAcquisitionFrameworkActor(DB.Model):
     id_acquisition_framework = DB.Column(
         DB.Integer,
         ForeignKey('gn_meta.t_acquisition_frameworks.id_acquisition_framework'))
-    id_role = DB.Column(DB.Integer)
-    id_organism = DB.Column(DB.Integer)
+    id_role = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.t_roles.id_role')
+    )
+    id_organism = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.bib_organismes.id_organisme')
+    )
     id_nomenclature_actor_role = DB.Column(DB.Integer)
+    role = relationship("TRoles", foreign_keys=[id_role])
+    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
 
 @serializable
@@ -74,10 +113,10 @@ class TDatasets(DB.Model):
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS")
     )
-    bbox_west = DB.Column(DB.Unicode)
-    bbox_east = DB.Column(DB.Unicode)
-    bbox_south = DB.Column(DB.Unicode)
-    bbox_north = DB.Column(DB.Unicode)
+    bbox_west = DB.Column(DB.Float)
+    bbox_east = DB.Column(DB.Float)
+    bbox_south = DB.Column(DB.Float)
+    bbox_north = DB.Column(DB.Float)
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
         default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL")
@@ -97,6 +136,7 @@ class TDatasets(DB.Model):
     default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
+    active = DB.Column(DB.Boolean, default=True)
 
     cor_dataset_actor = relationship(
         CorDatasetActor,
@@ -174,9 +214,37 @@ class TAcquisitionFramework(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     cor_af_actor = relationship(
-        "CorAcquisitionFrameworkActor",
-        lazy='joined',
+        CorAcquisitionFrameworkActor,
+        lazy='select',
         cascade="save-update, delete, delete-orphan"
+    )
+
+    cor_objectifs = DB.relationship(
+        TNomenclatures,
+        secondary=CorAcquisitionFrameworkObjectif.__table__,
+        primaryjoin=(
+            CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
+        ),
+        secondaryjoin=(CorAcquisitionFrameworkObjectif.id_nomenclature_objectif == TNomenclatures.id_nomenclature),
+        foreign_keys=[
+            CorAcquisitionFrameworkObjectif.id_acquisition_framework,
+            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif
+        ],
+        lazy='select',
+    )
+
+    cor_volets_sinp = DB.relationship(
+        TNomenclatures,
+        secondary=CorAcquisitionFrameworkVoletSINP.__table__,
+        primaryjoin=(
+            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework
+        ),
+        secondaryjoin=(CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp == TNomenclatures.id_nomenclature),
+        foreign_keys=[
+            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
+            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp
+        ],
+        lazy='select'
     )
 
     @staticmethod

@@ -38,8 +38,12 @@
   },
   "MetaData": {
     "JddError": "Error while fetching datasets",
+    "JddErrorMTD": "Error while get dataset - MTD",
     "NoJDD": "No dataset found, contact your administrator",
-    "NoJDDMTD": "No dataset found, first go to the MTD application"
+    "NoJDDMTD": "No dataset found, first go to the MTD application",
+    "Programs": "Program",
+    "Datasets": "Dataset",
+    "AcquisitionFramework": "Acquisition framework"
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
@@ -147,9 +151,6 @@
   "ErrorMessage": "Game over",
   "Export": {
     "ExportModuleName": "Export module",
-    "Programs": "Program",
-    "Datasets": "Dataset",
-    "AcquisitionFramework": "Acquisition framework"
   },
   "Synthese": {
     "DeleteObs": "Supprimer l'observations"

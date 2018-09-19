@@ -8,8 +8,8 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./nomenclature.component.scss']
 })
 export class NomenclatureComponent implements OnInit {
-  public nomenclatureURL = AppConfig.API_ENDPOINT + '/nomenclatures/admin/bibnomenclaturestypes/';
-  constructor(public sanitizer: DomSanitizer) {}
+  public nomenclatureURL = AppConfig.API_ENDPOINT + '/nomenclatures/admin/bibnomenclaturestypesadmin/';
+  constructor(public sanitizer: DomSanitizer) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

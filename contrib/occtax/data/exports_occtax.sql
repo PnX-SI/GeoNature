@@ -5,6 +5,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+SET search_path = public;
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
  SELECT ccc.unique_id_sinp_occtax AS "permId",
