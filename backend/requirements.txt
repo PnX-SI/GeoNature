@@ -28,7 +28,7 @@ jinja2==2.10
 markupsafe==1.0
 marshmallow==2.15.0
 packaging==16.8
-psycopg2-binary
+psycopg2==2.7.5
 pyparsing==2.2.0
 python-dateutil==2.6.1
 requests==2.18.4
