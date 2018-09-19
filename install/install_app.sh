@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#settings.ini file path. Default value overwriten by settings-path parameter
+# settings.ini file path. Default value overwriten by settings-path parameter
 cd ../
 SETTINGS='config/settings.ini'
 POSITIONAL=()
@@ -10,13 +10,13 @@ key="$1"
 case $key in
     -s|--settings-path)
     SETTINGS="$2"
-    shift # past argument
-    shift # past value
+    shift # Past argument
+    shift # Past value
     ;;
     -d|--dev)
     MODE='dev'
-    shift # past argument
-    shift # past value
+    shift # Past argument
+    shift # Past value
     ;;
     -h|--help)
     echo ""
@@ -30,18 +30,18 @@ case $key in
     echo "-d OR --dev to additionnally install python dev requirements."
     echo ""
     exit
-    shift # past argument
-    shift # past value
+    shift # Past argument
+    shift # Past value
     ;;
-    *)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
+    *)    # Unknown option
+    POSITIONAL+=("$1") # Save it in an array for later
     shift # past argument
     ;;
 esac
 done
-set -- "${POSITIONAL[@]}" # restore positional parameters
+set -- "${POSITIONAL[@]}" # Restore positional parameters
 
-# import settings file
+# Import settings file
 . ${SETTINGS}
 
 BASE_DIR=$(readlink -e "${0%/*}")
@@ -62,7 +62,7 @@ fi
 if [ ! -f config/geonature_config.toml ]; then
   echo "Création du fichier de configuration ..."
   cp config/geonature_config.toml.sample config/geonature_config.toml
-  echo "préparation du fichier de configuration..."
+  echo "Préparation du fichier de configuration..."
   echo $my_url
   my_url="${my_url//\//\\/}"
   echo $my_url
@@ -79,7 +79,7 @@ fi
 cd backend
 
 
-#Installation du virtual env
+# Installation du virtual env
 # Suppression du venv s'il existe
 if [ -d 'venv/' ]
 then
@@ -108,7 +108,7 @@ python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
 geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_config.toml --build=false
 
-#Lancement de l'application
+# Lancement de l'application
 echo "Configuration de l'application api backend dans supervisor..."
 DIR=$(readlink -e "${0%/*}")
 cp gunicorn_start.sh.sample gunicorn_start.sh
@@ -121,9 +121,9 @@ sudo -s supervisorctl reread
 sudo -s supervisorctl reload
 
 
-#Frontend installation
-#Node and npm instalation
-echo "Instalation de npm"
+# Frontend installation
+# Node and npm installation
+echo "Installation de npm"
 cd ../frontend
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
@@ -131,18 +131,18 @@ export NVM_DIR="$HOME/.nvm"
 nvm install 8.1.1
 
 echo " ############"
-echo "Instalation des paquets npm"
+echo "Installation des paquets npm"
 npm install
 
-# creation du dossier des assets externes
+# Creation du dossier des assets externes
 mkdir src/external_assets
 
-# creation du map config
+# Creation du map config
 if [ ! -f src/conf/map.config.ts ]; then
   cp src/conf/map.config.ts.sample src/conf/map.config.ts
 fi
 
-# copy the custom components
+# Copy the custom components
 echo "Création des fichiers de customisation du frontend..."
 if [ ! -f src/custom/custom.scss ]; then
   cp src/custom/custom.scss.sample src/custom/custom.scss
@@ -162,16 +162,16 @@ if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
 fi
 
 
-#generate the tsconfig.json 
+# Generate the tsconfig.json 
 geonature generate_frontend_tsconfig
-# generate the modules routing file by templating
+# Generate the modules routing file by templating
 geonature generate_frontend_modules_route
 
-# retour à la racine de GeoNature
+# Retour à la racine de GeoNature
 cd ../
 my_current_geonature_directory=$(pwd)
 
-# installation du module occtax
+# Installation du module Occtax
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
 
@@ -184,5 +184,5 @@ then
 fi
 
 
-echo "désactiver le virtual env"
+echo "Désactiver le virtual env"
 deactivate
