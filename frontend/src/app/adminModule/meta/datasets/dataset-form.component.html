@@ -76,38 +76,7 @@
         <div class="card">
 
           <div class="card-body">
-            <!-- <h5> Acteur(s) du jeu de données</h5>
-            <div *ngFor="let form of cor_dataset_actor_array.controls; let i=index;">
-              <h5> </h5>
-
-              <pnx-multiselect [values]="organisms" [parentFormControl]="form.controls.organisms" [keyLabel]="'nom_organisme'" keyValue="id_organisme"
-                [label]="'Organisme'" [bindAllItem]="true">
-              </pnx-multiselect>
-
-
-
-              <pnx-multiselect [values]="roles" [parentFormControl]="form.controls.roles" [keyLabel]="'nom_complet'" keyValue="id_role"
-                [label]="'Personne ou groupe'" [bindAllItem]="true" >
-              </pnx-multiselect>
-
-
-              <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" codeNomenclatureType="ROLE_ACTEUR">
-              </pnx-nomenclature>
-
-              <button *ngIf="i != 0" class="btn btn-sm btn-danger margin-top-sm" (click)="deleteFormArray(i)">
-                <i class="fa fa-trash" aria-hidden="true"></i>
-
-
-              </button>
-              <hr>
-
-            </div>
-
-            <button class="btn btn-primary btn-sm margin-top-sm" (click)="addFormArray()">
-              <i class="fa fa-plus"></i>
-
-            </button> -->
-
+          
             <pnx-metadata-actor [parentFormArray]="cor_dataset_actor_array"> </pnx-metadata-actor>
 
 
