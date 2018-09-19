@@ -45,6 +45,7 @@ export class AfFormComponent implements OnInit {
       this.acquisitionFrameworks = data;
     });
     this.afForm = this._fb.group({
+      id_acquisition_framework:null,
       acquisition_framework_name: [null, Validators.required],
       acquisition_framework_desc: [null, Validators.required],
       id_nomenclature_territorial_level: [null, Validators.required],
@@ -68,6 +69,8 @@ export class AfFormComponent implements OnInit {
   getAf(id_af) {
     this._dfs.getAcquisitionFramework(id_af).subscribe(data => {
       this.af = data;
+      data.acquisition_framework_start_date = this._dateParser.parse(data.acquisition_framework_start_date);
+      data.acquisition_framework_end_date = this._dateParser.parse(data.acquisition_framework_end_date);
       this.afForm.patchValue(data);
       data.cor_af_actor.forEach((cor, index) => {
         const roles = data.cor_af_actor[index].role ? [data.cor_af_actor[index].role] : null;

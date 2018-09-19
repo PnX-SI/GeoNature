@@ -107,8 +107,10 @@ def post_dataset():
     for cor in cor_dataset_actor:
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
-
-    DB.session.add(dataset)
+    if dataset.id_dataset:
+        DB.session.merge(dataset)
+    else:
+        DB.session.add(dataset)
     DB.session.commit()
     return dataset.as_dict(True)
 
@@ -162,8 +164,10 @@ def post_acquisition_framework():
         ).all()
         for volet in volet_nom:
             af.cor_volets_sinp.append(volet)
-
-    DB.session.add(af)
+    if af.id_acquisition_framework:
+        DB.session.merge(af)
+    else:
+        DB.session.add(af)
     DB.session.commit()
     return af.as_dict()
 
