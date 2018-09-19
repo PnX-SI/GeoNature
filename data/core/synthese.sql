@@ -572,9 +572,10 @@ $BODY$
         t.group2_inpn
       FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
 
-      IF NOT OLD.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
-        DELETE FROM  gn_synthese.taxons_synthese_autocomplete WHERE cd_nom = OLD.cd_nom;
-      END IF;
+    -- :@TODO Modif d'Amandine que je ne comprend pas et qui plante!
+      -- IF NOT OLD.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+      --   DELETE FROM  gn_synthese.taxons_synthese_autocomplete WHERE cd_nom = OLD.cd_nom;
+      -- END IF;
     END IF;
   RETURN NULL;
   END;
