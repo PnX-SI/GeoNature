@@ -316,7 +316,7 @@ class SyntheseOneRecord(DB.Model):
 
 @serializable
 class VMTaxonsSyntheseAutocomplete(DB.Model):
-    __tablename__ = 'vm_taxons_synthese_autocomplete'
+    __tablename__ = 'taxons_synthese_autocomplete'
     __table_args__ = {'schema': 'gn_synthese'}
     cd_nom = DB.Column(DB.Integer, primary_key=True)
     search_name = DB.Column(DB.Unicode, primary_key=True)
