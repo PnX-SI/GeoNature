@@ -800,6 +800,8 @@ BEGIN
   ELSE 
     theobservers:= NEW.observers_txt;
   END IF;
+
+
   --mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
@@ -820,7 +822,7 @@ BEGIN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
       LOOP
           UPDATE gn_synthese.synthese SET
-                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '-'), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
+                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
           WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
       END LOOP;
   END IF;

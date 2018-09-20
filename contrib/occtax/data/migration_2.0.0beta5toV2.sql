@@ -350,7 +350,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
+    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '- ' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
     last_action = 'U'
     WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
 

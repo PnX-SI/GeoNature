@@ -100,7 +100,7 @@ export class DataService {
         let date = new Date();
         // FIXME: const DATE_FORMAT, FILENAME_FORMAT
         // FIXME: (format, mimetype, extension)
-        const extension = format !== 'shp' ? format : 'zip';
+        const extension = format === 'shapefile' ? '.zip' : format;
         this.saveBlob(this._blob, `${filename}${date.toISOString()}.${extension}`);
         this.isDownloading = false;
         subscription.unsubscribe();
