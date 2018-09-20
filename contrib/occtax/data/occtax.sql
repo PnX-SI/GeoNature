@@ -790,13 +790,6 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
-  -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
-  SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
-  IF nb_counting < 1 THEN
-    DELETE FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = OLD.id_releve_occtax;
-  END IF;
-
-
 -- UPDATE Releve
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
@@ -960,6 +953,7 @@ COST 100;
 ------------
 --TRIGGERS--
 ------------
+
 
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
