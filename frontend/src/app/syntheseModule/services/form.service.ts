@@ -77,7 +77,8 @@ export class SyntheseFormService {
       } else if (params['geoIntersection']) {
         updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
         // if other key an value not null or undefined
-      } else if (params[key]) {
+      }
+      if (params[key]) {
         // if its an Array push only if > 0
         if (Array.isArray(params[key]) && params[key].length > 0) {
           updatedParams[key] = params[key];
