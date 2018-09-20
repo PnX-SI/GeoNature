@@ -28,6 +28,8 @@ export class MunicipalitiesComponent implements OnInit {
     });
   }
   refreshMunicipalities(municipality) {
+    console.log('LAAAAAAA');
+    console.log(municipality);
     if (municipality) {
       this._dfs.getMunicipalities(municipality).subscribe(
         data => {

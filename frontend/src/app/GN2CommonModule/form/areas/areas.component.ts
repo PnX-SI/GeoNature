@@ -21,6 +21,9 @@ export class AreasComponent implements OnInit {
   }
 
   refreshAreas(area_name) {
-    this._dfs.getAreas(this.idType, area_name).subscribe(data => (this.areas = data));
+    // refresh area API call only when area_name > 2 character
+    if (area_name && area_name.length > 2) {
+      this._dfs.getAreas(this.idType, area_name).subscribe(data => (this.areas = data));
+    }
   }
 }

@@ -157,8 +157,8 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         filters.pop('geoIntersection')
 
     if 'period_start' in filters and 'period_end' in filters:
-        period_start = filters.pop('period_min')[0]
-        period_end = filters.pop('period_max')[0]
+        period_start = filters.pop('period_start')[0]
+        period_end = filters.pop('period_end')[0]
         q = q.filter(or_(
             func.gn_commons.is_in_period(
                 func.date(model.date_min),

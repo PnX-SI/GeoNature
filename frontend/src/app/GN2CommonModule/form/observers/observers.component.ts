@@ -40,6 +40,8 @@ export class ObserversComponent implements OnInit {
       this.filteredObservers = this.observers.filter(obs => {
         return obs.nom_complet.toLowerCase().indexOf(event.toLowerCase()) === 0;
       });
+    } else {
+      this.filteredObservers = this.observers;
     }
   }
 }

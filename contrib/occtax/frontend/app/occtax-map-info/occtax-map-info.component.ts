@@ -57,7 +57,6 @@ export class OcctaxMapInfoComponent implements OnInit {
         // get the id_releve from the id_counting
         this._occtaxService.getOneCounting(params["id"]).subscribe(data => {
           this.id = data["id_releve"];
-          console.log(data);
           this.loadReleve(this.id);
         });
       } else {
@@ -83,8 +82,6 @@ export class OcctaxMapInfoComponent implements OnInit {
         this.userReleveCruved = data.cruved;
         // calculate the nbCounting
         data.releve.properties.t_occurrences_occtax.forEach(occ => {
-          console.log(occ);
-          console.log(occ.cor_counting_occtax.length);
           this.nbCounting += occ.cor_counting_occtax.length;
         });
 

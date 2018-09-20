@@ -41,7 +41,6 @@ export class SyntheseSearchComponent implements OnInit {
     // mark as dirty to avoid set limit=100 when download
     this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
-    console.log(updatedParams);
     this.searchClicked.emit(updatedParams);
   }
 

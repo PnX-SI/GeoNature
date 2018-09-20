@@ -31,9 +31,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   ) {
     const actionMapping: IActionMapping = {
       mouse: {
-        click: (tree, node, $event) => {
-          console.log('node', node);
-        },
+        click: (tree, node, $event) => {},
         checkboxClick: (tree, node, $event) => {
           node.toggleSelected();
           if (!node.isExpanded) {
@@ -50,7 +48,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    console.log('init');
     // if the modal has already been open, reload the former state of the taxon tree
     if (this.storeService.taxonTreeState) {
       this.storeService.treeModel.setState(this.storeService.taxonTreeState);
@@ -90,7 +87,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   ngAfterContentInit() {
     this.storeService.treeModel = this.treeComponent.treeModel;
-    console.log(this.storeService.treeModel);
   }
 
   catchEvent(event) {
