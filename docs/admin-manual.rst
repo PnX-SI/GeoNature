@@ -401,8 +401,8 @@ Opération à faire à chaque modification de la customisation de l'application.
     cd /home/<MY_USER>geonature/external_modules
     tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
 
-Restauration :
-""""""""""""""
+Restauration
+""""""""""""
 
 * Restauration de la base de données :
 
@@ -449,8 +449,29 @@ Restauration :
     sudo supervisorctl reload
 
 
-Intégrer des données externes
------------------------------
+Intégrer des données
+--------------------
+
+Référentiel géographique
+""""""""""""""""""""""""
+
+GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).
+
+Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
+
+* Videz le contenu de la table ``ref_geo.dem_vector``
+* Uploadez le fichier du MNT du serveur
+* Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
+TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235
+
+Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
+
+* Vérifiez que leur type existe dans la table ``ref_geo.bib_areas_types``, sinon ajoutez-les
+* Ajoutez vos zonages dans la table ``ref_geo.l_areas`` en faisant bien référence à un ``id_type`` de ``ref_geo.bib_areas_types``. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS
+* Pour les grilles et les communes, vous pouvez ensuite compléter leurs tables d'extension ``ref_geo.li_grids`` et ``ref_geo.li_municipalities``
+
+Données externes
+""""""""""""""""
 
 Il peut s'agir de données partenaires, de données historiques ou de données saisies dans d'autres outils. 
 
@@ -461,13 +482,16 @@ Il peut s'agir de données partenaires, de données historiques ou de données s
 
 Nous présenterons ici la première solution qui est privilégiée pour disposer des données brutes mais aussi les avoir dans la Synthèse.
 
-* Créer un JDD dédié. Eventuellement un CA si elles ne s'intègrent pas dans un CA déjà existant.
-* Ajouter une Source de données dans ``synthese.t_sources``.
+* Créer un JDD dédié (``gn_meta.t_datasets``) ou utilisez-en un existant. Eventuellement un CA si elles ne s'intègrent pas dans un CA déjà existant.
+* Ajouter une Source de données dans ``gn_synthese.t_sources`` ou utilisez en une existante.
 * Créer le schéma dédié à accueillir les données brutes.
 * Créer les tables nécessaires à accueillir les données brutes.
-* Intégrer les données dans ces tables.
+* Intégrer les données dans ces tables (avec les fonctions de ``gn_imports``, avec QGIS ou pgAdmin).
 * Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers (en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
 
+Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature.
+
+Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
 
 Module OCCTAX
 -------------
@@ -475,9 +499,9 @@ Module OCCTAX
 Installer le module
 """""""""""""""""""
 
-Le module est fourni par défaut avec l'instalation de GeoNature.
+Le module est fourni par défaut avec l'installation de GeoNature.
 
-Si vous l'avez supprimé, lancer les commandes suivantes depuis le repertoire ``backend`` de GeoNature
+Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``backend`` de GeoNature
 
 ::
 
