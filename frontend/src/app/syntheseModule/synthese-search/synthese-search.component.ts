@@ -14,7 +14,7 @@ import {
   ITreeOptions
 } from 'angular-tree-component';
 import { TaxonAdvancedModalComponent } from './taxon-advanced/taxon-advanced.component';
-import { DataFormService } from '../../GN2CommonModule/form/data-form.service';
+import { TaxonAdvancedStoreService } from './taxon-advanced/taxon-advanced-store.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -32,7 +32,7 @@ export class SyntheseSearchComponent implements OnInit {
     public formService: SyntheseFormService,
     public ngbModal: NgbModal,
     public mapService: MapService,
-    private _dfs: DataFormService
+    private _storeService: TaxonAdvancedStoreService
   ) {}
 
   ngOnInit() {}
@@ -49,8 +49,10 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedCdRefFromTree = [];
     this.formService.searchForm.reset();
 
+    // refresh taxon tree
+    this._storeService.taxonTreeState = {};
+
     // remove layers draw in the map
-    console.log(this.mapService.releveFeatureGroup);
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
   }
 
