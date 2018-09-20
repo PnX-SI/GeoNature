@@ -109,7 +109,7 @@ export class OcctaxMapListComponent implements OnInit {
         params.push({ param: key, value: value });
       } else if (key === "observers" && value) {
         this.dynamicFormGroup.value.observers.forEach(observer => {
-          params.push({ param: "observers", value: observer.id_role });
+          params.push({ param: "observers", value: observer });
         });
       } else if (value && value !== "") {
         params.push({ param: key, value: value });
