@@ -112,62 +112,106 @@ La base de données contient de nombreuses fonctions.
 |                                      |                               |                      | d'une observation avec tous les zonages|
 +--------------------------------------+-------------------------------+----------------------+----------------------------------------+
 
+**ref_geo**
+
+.. code:: sql
+
+  ref_geo.fct_get_altitude_intersection(IN mygeom geometry)
+  -- Fonction qui retourne l'altitude min et max de la géométrie passée en paramètre
+  
+.. code:: sql
+
+  ref_geo.fct_get_area_intersection(
+    IN mygeom geometry,
+    IN myidtype integer DEFAULT NULL::integer)
+  RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying)
+  -- Fonction qui retourne un tableau des zonages (id_area) intersectant la géométrie passée en paramètre
+
+.. code:: sql
+
+  ref_geo.get_id_area_type(mytype character varying) RETURNS integer
+  --Function which return the id_type_area from the type_code of an area type
+
 **pr_occtax**
 
-pr_occtax.get_id_counting_from_id_releve(my_id_releve integer) RETURNS integer[]
--- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+.. code:: sql
 
-get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
---Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
---Return -1 if nothing matche with given parameters
+  pr_occtax.get_id_counting_from_id_releve(my_id_releve integer) RETURNS integer[]
+  -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
 
-pr_occtax.insert_in_synthese(my_id_counting integer) RETURNS integer[]
+.. code:: sql
+
+  get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+  --Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inp  --Return -1 if nothing matche with given parameters
+
+.. code:: sql
+
+  pr_occtax.insert_in_synthese(my_id_counting integer) RETURNS integer[]
 
 **ref_nomenclatures**
 
-get_id_nomenclature_type(mytype character varying) RETURNS integer
---Function which return the id_type from the mnemonique of a nomenclature type
+  .. code:: sql
 
-get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
---Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
---Return -1 if nothing matche with given parameters
+  get_id_nomenclature_type(mytype character varying) RETURNS integer
+  --Function which return the id_type from the mnemonique of a nomenclature type
 
-check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
---Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+.. code:: sql
 
-check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
---Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+  get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
+  --Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
+  --Return -1 if nothing matche with given parameters
 
-check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
---Function that checks if an id_nomenclature matches with wanted nomenclature type (use id_type)
+.. code:: sql
 
-get_id_nomenclature(
-mytype character varying,
-mycdnomenclature character varying)
-RETURNS integer
---Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
+  check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
+  --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
 
-get_nomenclature_label(
-myidnomenclature integer,
-mylanguage character varying
-)
-RETURNS character varying
---Function which return the label from the id_nomenclature and the language
+.. code:: sql
 
-get_cd_nomenclature(myidnomenclature integer)
-RETURNS character varying
---Function which return the cd_nomenclature from an id_nomenclature
+  check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
+  --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
 
-get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying)
-RETURNS SETOF integer
---Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
+.. code:: sql
 
-calculate_sensitivity(
-mycdnom integer,
-mynomenclatureid integer)
-RETURNS integer
---Function to return id_nomenclature depending on observation sensitivity
---USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
+  check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
+  --Function that checks if an id_nomenclature matches with wanted nomenclature type (use id_type)
+
+.. code:: sql
+
+  get_id_nomenclature(
+  mytype character varying,
+  mycdnomenclature character varying)
+  RETURNS integer
+  --Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
+
+.. code:: sql
+
+  get_nomenclature_label(
+  myidnomenclature integer,
+  mylanguage character varying
+  )
+  RETURNS character varying
+  --Function which return the label from the id_nomenclature and the language
+
+.. code:: sql
+
+  get_cd_nomenclature(myidnomenclature integer) RETURNS character varying
+  --Function which return the cd_nomenclature from an id_nomenclature
+
+.. code:: sql
+
+  get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying)
+  RETURNS SETOF integer
+  --Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
+
+.. code:: sql
+
+  calculate_sensitivity(
+  mycdnom integer,
+  mynomenclatureid integer)
+  RETURNS integer
+  --Function to return id_nomenclature depending on observation sensitivity
+  --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
 
 
 A compléter... A voir si on mentionne les triggers ou pas...
