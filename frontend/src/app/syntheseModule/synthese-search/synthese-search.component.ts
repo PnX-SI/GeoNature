@@ -28,15 +28,14 @@ export class SyntheseSearchComponent implements OnInit {
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   @Output() searchClicked = new EventEmitter();
   constructor(
-    private _fb: FormBuilder,
     public dataService: DataService,
     public formService: SyntheseFormService,
     public ngbModal: NgbModal,
     public mapService: MapService,
     private _dfs: DataFormService
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   onSubmitForm() {
     // mark as dirty to avoid set limit=100 when download
@@ -50,12 +49,13 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedtaxonFromComponent = [];
     this.formService.selectedCdRefFromTree = [];
     this.formService.searchForm.reset();
+
     // remove layers draw in the map
     console.log(this.mapService.releveFeatureGroup);
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
   }
 
-  openModal(e, modalName) {
+  openModal() {
     const taxonModal = this.ngbModal.open(TaxonAdvancedModalComponent, {
       size: 'lg',
       backdrop: 'static',
