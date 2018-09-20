@@ -20,13 +20,14 @@
             <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
           </ng-template>
         </tree-root>
-        <button type="button" id="button-refresh" class="btn btn-sm btn-outline-danger" (click)="resetTree()">
-          <small> Réinitialiser la sélection </small>
-        </button>
+
 
       </div>
 
     </div>
+    <button type="button" id="button-refresh" class="btn btn-sm btn-outline-danger" (click)="resetTree()">
+      <small> Réinitialiser la sélection </small>
+    </button>
   </div>
 
 
