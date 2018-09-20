@@ -79,10 +79,6 @@ CREATE TABLE t_sources (
     desc_source text,
     entity_source_pk_field character varying(255),
     url_source character varying(255),
-    target character varying(10),
-    picto_source character varying(255),
-    groupe_source character varying(50) NOT NULL,
-    active boolean NOT NULL,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now()
 );
@@ -104,12 +100,12 @@ CREATE TABLE synthese (
     id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value('NATURALITE'),
     id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value('PREUVE_EXIST'),
     id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value('STATUT_VALID'),
-    id_nomenclature_diffusion_level integer,
+    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value('NIV_PRECIS'),
     id_nomenclature_life_stage integer DEFAULT get_default_nomenclature_value('STADE_VIE'),
     id_nomenclature_sex integer DEFAULT get_default_nomenclature_value('SEXE'),
     id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value('OBJ_DENBR'),
     id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value('TYP_DENBR'),
-    id_nomenclature_sensitivity integer,
+    id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value('SENSIBILITE'),
     id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value('STATUT_OBS'),
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
@@ -118,7 +114,7 @@ CREATE TABLE synthese (
     count_max integer,
     cd_nom integer,
     nom_cite character varying(1000) NOT NULL,
-    meta_v_taxref character varying(50) DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)',
+    meta_v_taxref character varying(50) DEFAULT gn_commons.get_default_parameter('taxref_version',NULL),
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
@@ -136,7 +132,7 @@ CREATE TABLE synthese (
     id_digitiser integer,
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
     comments text,
-    meta_validation_date timestamp without time zone DEFAULT now(),
+    meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
     last_action character(1),
@@ -571,10 +567,6 @@ $BODY$
         t.regne,
         t.group2_inpn
       FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
-
-      IF NOT OLD.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
-        DELETE FROM  gn_synthese.taxons_synthese_autocomplete WHERE cd_nom = OLD.cd_nom;
-      END IF;
     END IF;
   RETURN NULL;
   END;
@@ -852,7 +844,6 @@ CREATE TRIGGER trg_refresh_taxons_forautocomplete
 --------
 --DATA--
 --------
-INSERT INTO t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_source_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
 
 -- insertion dans utilisateurs.t_applications et gn_commons.t_modules
 INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)

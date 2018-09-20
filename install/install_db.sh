@@ -293,9 +293,9 @@ then
 	      unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
         #gdalwarp -t_srs EPSG:$srid_local /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc /tmp/geonature/dem.tif &>> var/log/install_db.log
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 100x100 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
-    	  echo "Vectorisation of dem raster. This may take a few minutes..."
+    	  echo "Vectorisation of DEM raster. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
-        echo "Refresh dem vector spatial index. This may take a few minutes..."
+        echo "Refresh DEM vector spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
     fi
 

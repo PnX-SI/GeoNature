@@ -109,10 +109,6 @@ class TSources(DB.Model):
     desc_source = DB.Column(DB.Unicode)
     entity_source_pk_field = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
-    target = DB.Column(DB.Unicode)
-    picto_source = DB.Column(DB.Unicode)
-    groupe_source = DB.Column(DB.Unicode)
-    active = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 

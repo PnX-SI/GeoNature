@@ -632,17 +632,13 @@ INSERT INTO gn_synthese.t_sources (
 	id_source,
   name_source,
   desc_source,
-  entity_source_pk_field,
-  groupe_source,
-  active
+  entity_source_pk_field
 )
 SELECT 
   id_source, 
   nom_source, 
   desc_source, 
   'historique.' || db_schema || '_' || db_table || '.' || db_field AS entity_source_pk_field,
-  'HISTORIQUE' AS groupe_source,
-  false AS active
 FROM v1_compat.bib_sources
 
 

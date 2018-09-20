@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-2.0.0 (unreleased)
-------------------------
+2.0.0-rc.1 (unreleased)
+-----------------------
 
 La version 2 de GeoNature est une refonte complète de l'application.
 
@@ -43,7 +43,7 @@ Module permettant de rechercher parmi les données des différentes sources pré
 * Mise en place du backend, de l'API et du frontend #345
 * Interface de consultation, de recherche et d'export dans la Synthèse
 * Synthèse : Calcul automatique (trigger) des zonages de chaque observation (communes, zonages réglementaires et naturels)
-* Zonages paramétrables
+* Recherche sur les zonages générique et paramétrable
 * Recherche par taxon, liste de taxons, par rang, groupe, liste rouge, milieu, attribut taxonomique, nomenclature, date, période, commune, zonage, cadre d'acquisition, jeu de données, observateur, polygone, rectange ou cercle dessiné
 * Retour à la fiche source possible si l'observation a été saisie dans un module de GeoNature
 * Affichage de la fiche détail de chaque observation
@@ -51,60 +51,55 @@ Module permettant de rechercher parmi les données des différentes sources pré
 * Configuration possible du module (colonnes, limites de recherche et d'export, zoom, export...)
 * Export basé sur une vue (observations et statuts)
 * Prise en compte du CRUVED pour définir les données à afficher et à exporter #412
-* Liste des taxons basée sur une table alimentée automatiquement par les taxons présents au moins une fois dans la Synthèse
+* Recherche de taxons : Liste basée sur une table alimentée automatiquement par les taxons présents au moins une fois dans la Synthèse
 
 **Export**
 
-Module permettant de proposé des exports basés sur des vues
+Module permettant de proposer des exports basés sur des vues
 
-* Mise en place d'un export basé sur une vue s'appuyant sur les données de Occtax, par jeu de données
+* Mise en place temporaire d'un export unique, basé sur une vue s'appuyant sur les données de Occtax, par jeu de données
 * A remplacer par le module générique https://github.com/PnX-SI/gn_module_export (en cours de développement) permettant de générer des exports à volonté en créant des vues et en les affectant à des utilisateurs ou des groupes. Chaque export sera accompagné de son API standardisée et documentée
 
 **Admin**
 
 Module d'administration des tables centrales de GeoNature
 
-* Mise en place d'un module incomplet permettant de gérer les métadonnées et nomenclatures
+* Mise en place d'un module (incomplet) permettant de gérer les métadonnées et les nomenclatures
 
 **Gestion des droits**
 
+* Mise en place d'un système baptisé CRUVED permettant de définir globalement ou par module 6 actions sont possibles (Create / Read / Update / Validate / Export / Delete) sur 3 portées possibles (Mes données / Les données de mon organisme / Toutes les données)
+* Ces évolutions ont été intégrées au niveau du schéma ``utilisateurs`` de la base de données de UsersHub, de son module (https://github.com/PnX-SI/UsersHub-authentification-module), des routes de l'API GeoNature et des interfaces
+
 **Bases de données**
 
-* ref_geo
 * Développement d'un module et d'une API générique et autonome pour la gestion des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module). Il permet d'avoir un mécanisme générique de centralisation des listes de valeurs (nomenclatures) pour ne pas créer des tables pour chaque liste : https://github.com/PnX-SI/Nomenclature-api-module. Les valeurs de chaque nomenclature s'adaptent en fonction des regnes et groupe 2 INPN des taxons.
-* Nombreuses fonctions au niveau de la BDD
-* Tables verticales
+* Mise en place de tables de stockage verticales (historique, médias et validation) #339
 * Mise en place d'un référentiel géographique avec un schéma dédié (``ref_geo``), partageable avec d'autres applications comprenant une table des communes, une table générique des zonages, une table pour le MNT et des fonctions pour intersecter point/ligne/polygones avec les zonages et le MNT (#228)
 * Evolution du schéma ``utilisateurs`` de UsersHub pour passer d'une gestion des droits avec 6 niveaux à un mécanisme plus générique, souple et complet. Il permet d'attribuer des actions possibles à un rôle (utilisateur ou groupe), sur une portée; dans une application ou un module. 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED). 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
-* Développement des métadonnées dans la BDD (schema ``gn_meta``) sur la base du standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/). Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles. Chaque relevé est associé à un jeu de données.
+* Droits CRUVED : La définition du CRUVED d'un rôle (utilisateur ou groupe) sur un module de GeoNature surcouche ses droits GeoNature même si ils sont inférieurs. Si une action du CRUVED n'est pas définie au niveau du module, on prend celle de l'application parente. #292
+* Si un rôle a un R du CRUVED à 0 pour un module, alors celui-ci ne lui est pas listé dans le Menu et il ne lui est pas accessible si il en connait l'URL. #360
+* Développement des métadonnées dans la BDD (schéma ``gn_meta``) sur la base du standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/). Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles. Chaque relevé est associé à un jeu de données.
 * Développement d'un mécanisme de calcul automatique de la sensibilité d'une espèce directement dans la BDD (sur la base des règles nationales et régionales du SINP + locales éventuellement)
 * Intégration du calcul automatique de l'identifiant permanent SINP (#209)
 * Création du schéma ``gn_monitoring`` pour gérer la partie générique des modules de suivi (sites et visites centralisés) et les routes associées
-* Droits CRUVED : La définition du CRUVED d'un rôle (utilisateur ou groupe) sur un module de GeoNature surcouche ses droits GeoNature même si ils sont inférieurs. Si une action du CRUVED n'est pas définie au niveau du module, on prend celle de l'application parente. #292
-* Si un rôle a un R du CRUVED à 0 pour un module, alors celui-ci ne lui est pas listé dans le Menu et il ne lui ai pas accessible si il en connait l'URL. #360
 * Mise en place d'un schéma ``gn_commons`` dans la BDD qui permet de stocker de manière générique des informations qui peuvent être communes aux autres modules : l'historique des actions sur chaque objet de la BDD, la validation d'une donnée et les médias associés à une donnée. Accompagné de fonctions génériques d'historisation et de validation des données mises en place sur le module Occtax. #339
-* Mise en place d'un script pour la customisation de la plateforme nationale (https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh)
-* Ajout d'une vue matérialisée (``gn_synthese.vm_min_max_for_taxons``) et d'une fonction (``gn_synthese.fct_calculate_min_max_for_taxon``) permettant de renvoyer des informations sur les observations existantes d'un taxon (étendue des observations, date min et max, altitude min et max, nombre d'observations) pour orienter la validation et la saisie (https://github.com/PnX-SI/gn_module_validation/issues/5)
+* Ajout d'une vue matérialisée (``gn_synthese.vm_min_max_for_taxons``) et d'une fonction (``gn_synthese.fct_calculate_min_max_for_taxon``) permettant de renvoyer des informations sur les observations existantes d'un taxon (étendue des observations, date min et max, altitude min et max, nombre d'observations) pour orienter la validation et la saisie (https://github.com/PnX-SI/gn_module_validation/issues/5). Désactivée pour le moment.
 * Ajout d'un trigger générique pour calculer la géométrie dans la projection locale à partir de la géométrie 4326 (#370)
 * Ajout d'un trigger pour calculer automatiquement les zonages des sites de suivi (``gn_monitoring.fct_trg_cor_site_area()``)
 * Gestion des conflits de nomenclatures en n'utilisant plus leur ``id_type`` ni leur ``id_nomenclature`` lors de la création de leur contenu (code_nomenclature) (#384)
-* Script de migration GeoNature V1 vers GeoNature V2
-* gn_imports
-
+* Mise en place d'un schéma ``gn_imports`` intégrant des fonctions SQL permettant d'importer un CSV dans la BDD et de mapper des champs de tables importées avec ceux d'une table de GeoNature pour générer le script ``INSERT INTO``
+* Début de script de migration GeoNature V1 vers GeoNature V2
+* Nombreuses fonctions intégrées dans les schémas de la BDD
 
 **Installation**
 
-* Scripts d'installation autonome ou globale de GeoNature sur Debian 8 et 9
-* Mise à jour des scripts de déploiement spécifiques de DEPOBIO (MTES)
-
+* Scripts d'installation autonome ou globale de GeoNature sur Debian (8 et 9) et Ubuntu (16 et 18)
+* Scripts de déploiement spécifiques de DEPOBIO (MTES-MNHN)
 
 **Documentation**
 
-* Installation globale de GeoNature (avec TaxHub et UsersHub) / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst
-* Installation autonome de GeoNature / https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst
-* Manuel utilisateur / https://github.com/PnX-SI/GeoNature/blob/develop/docs/user-manual.rst
-* Manuel administrateur / https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst
-* Développement (API, modules et composants) / https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst
+* Rédaction d'une documentation concernant l'installation (autonome ou globale), l'utilisation, l'administration et le développement : https://geonature.readthedocs.io
 
 **Développement**
 
@@ -112,46 +107,47 @@ Module d'administration des tables centrales de GeoNature
 * Multilingue au niveau de l'interface et des listes de valeurs avec français et anglais intégrés mais extensible à d'autres langues (#173)
 * Développement de composants Angular génériques pour pouvoir les utiliser dans plusieurs modules sans avoir à les redévelopper ni les dupliquer (composant CARTE, composant RECHERCHE TAXON, composant OBSERVATEURS, composant NOMENCLATURES, SelectSearch, Municipalities, Observers, DynamicForm, MapList...)
 * Implémentation de la gestion des droits au niveau de l'API (pour limiter les données affichées à un utilisateur en fonction de ses droits) et au niveau du Frontend (pour afficher ou non certains boutons aux utilisateurs en fonction de leurs droits).
-* Par défaut, l'authentification et les utilisateurs sont gérés localement dans UsersHub, mais il est aussi possible de connecter GeoNature au CAS de l'INPN, sans utiliser GeoNature (utilisé pour l'instance nationale INPN de GeoNature). GeoNature peut aussi se connecter au webservice METADONNEES de l'INPN pour y récupérer les jeux de données en fonction de l'utilisateur connecté.
-* Connexion à MTD INPN : Mise à jour des JDD à chaque appel de la route
+* Par défaut, l'authentification et les utilisateurs sont gérés localement dans UsersHub, mais il est aussi possible de connecter GeoNature directement au CAS de l'INPN, sans UsersHub (cas de l'instance nationale INPN de GeoNature).
+* Connexion possible au webservice METADONNEES de l'INPN pour y récupérer les jeux de données en fonction de l'utilisateur connecté, avec mise à jour des JDD à chaque appel de la route
 * Mise en place d'un mécanisme standardisé de développement de modules dans GeoNature (#306)
 * Ajout de tests unitaires au niveau du backend et du frontend
-* Ajout d'un mécanisme de log par email (paramètres MAILERROR) / Désactivé ?
-* Début de création du module de gestion des médias
-* Configuration globale et configuration par module
+* Ajout d'un mécanisme de log par email (paramètres MAILERROR)
+* Début de création du module de gestion des médias (backend uniquement)
+* Mise en place d'une configuration globale et d'une configuration par module
 * Fonction d'installation d'un module et de génération des fichiers de configuration
 * Gestion de l'installation d'un module qui n'a pas de Frontend dans GeoNature
 * Mise en place d'une route générique permettant de requêter dans une vue non mappée
+* Mise en place d'un script pour la customisation de la plateforme nationale (https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh)
 
 **Autres modules**
 
-* ref_nomenclatures
-* gn_export
-     * Mise en place d'un module d'export. Chaque export s'appuie sur une vue. Il sera possible à chaque administrateur d'ajouter autant de vues que nécessaires dans son GeoNature. Pour le moment, un export au format SINP Occurrence de taxons a été intégré par défaut.
-* gn_validation
-* gn_module_suivi_flore_territoire
-* gn_module_suivi_habitat
-* gn_module_suivi_chiro
-* Projet suivi
-* GeoNature-citizen
-* GeoNature-mobile
-* GeoNature-atlas
+* Module Export en cours de développement (https://github.com/PnX-SI/gn_module_export). Chaque export s'appuie sur une vue. Il sera possible aux administrateurs d'une GeoNature d'ajouter autant de vues que nécessaires dans son GeoNature.
+* Module de validation des données en cours de développement (https://github.com/PnX-SI/gn_module_validation/issues/4)
+* Module Suivi Flore territoire en cours de développement (https://github.com/PnX-SI/gn_module_suivi_flore_territoire)
+* Module Suivi Habitat en cours de développement (https://github.com/PnX-SI/gn_module_suivi_habitat_territoire/issues/1)
+* gn_module_suivi_chiro refondu pour devenir un module de GeoNature V2 (https://github.com/PnCevennes/gn_module_suivi_chiro)
+* Projet suivi utilisé comme Frontend générique et autonome pour le Suivi chiro (https://github.com/PnCevennes/projet_suivis_frontend)
+* GeoNature-citizen en cours de développement (https://github.com/PnX-SI/GeoNature-citizen/issues/2)
+* GeoNature-mobile en cours de refonte pour compatibilité avec GeoNature V2 (https://github.com/PnEcrins/GeoNature-mobile/issues/19)
+* GeoNature-atlas en cours d'ajustements pour compatibilité avec GeoNature V2 (https://github.com/PnEcrins/GeoNature-atlas/issues/162)
 
 **Notes de version**
+
+Pour les utilisateurs utilisant la version 1 : 
 
 Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
 
 * Passer à la dernière version 1 de GeoNature (1.9.1)
 * Idem pour UsersHub et TaxHub
 * Installer GeoNature standalone ou refaire une installation complète
-* Adaptez les scripts présents dans /data/migrations/v1tov2 et éxécutez les
+* Adaptez les scripts présents dans ``/data/migrations/v1tov2`` et éxécutez-les
 
+*TODO : MAJ depuis V1 à  tester et compléter*
 
-Les utilisateurs utilisant la version 2.0.0beta5
+Pour les utilisateurs utilisant la version 2.0.0.beta5 : 
 
-* suivre la procédure habituelle
-
-* executer les commandes suivantes:
+* Suivre la procédure habituelle de mise à jour
+* Exécuter les commandes suivantes:
 
     ::
 
@@ -160,29 +156,8 @@ Les utilisateurs utilisant la version 2.0.0beta5
         geonature generate_frontend_modules_route
         geonature frontend_build
 
+* Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5to2.0.0.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
 
-
-#####################################################################################################
-
-**Nouveautés**
-
-* Synthese : Beaucoup de mises en forme et de fonctionnalités, recherche, recherche carto (polygone, rectangle, cercle), filtres avancés (nomenclatures, listes rouges, milieux, attributs TaxHub dynamiques et multi-taxon avec arbre taxonomique), fiche détail, retour à la données source dans son module, export des observations et des statuts, prise en compte du CRUVED, stabilisation du MCD, paramétrage (colonnes affichées et exportées, filtres affichés...)
-* Synthese : composant générique pour filtrer sur des areas en paramètre
-* Synthèse : Calcul automatique (trigger) des zonages de chaque observations (communes, zonages réglementaires et naturels)
-* Trigger Occtax >> Synthèse
-* gn_monitoring : Complément des routes
-* Composant Nomenclature paramétrable en multiselect
-* Ajout d'une recherche dans les composants Areas (zonages) et Municipalities (Communes)
-* Migration des export SHP pour utiliser Fiona
-* Occtax : Simplication date_min/date_max
-* Création des composants génériques Period et Download
-* Script de migration GeoNature V1 vers GeoNature V2
-* Install_all : Améliorations diverses et possibilité de ne pas intégrer les données exemples
-
-**Corrections**
-
-* Désactivation temporaire du trigger min_max_for_taxon
-* Nombreuses corrections et compléments de la doc
 
 2.0.0.beta5 (2018-07-16)
 ------------------------

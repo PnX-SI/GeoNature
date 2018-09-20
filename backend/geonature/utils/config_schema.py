@@ -25,7 +25,7 @@ class CasUserSchemaConf(Schema):
     )
 
 
-class CasSchemaConf(Schema):
+class CasFrontend(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing='false')
     CAS_URL_LOGIN = fields.Url(
         missing='https://preprod-inpn.mnhn.fr/auth/login'
@@ -33,6 +33,9 @@ class CasSchemaConf(Schema):
     CAS_URL_LOGOUT = fields.Url(
         missing='https://preprod-inpn.mnhn.fr/auth/logout'
     )
+
+
+class CasSchemaConf(Schema):
     CAS_URL_VALIDATION = fields.String(
         missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
     )
@@ -51,6 +54,17 @@ class RightsSchemaConf(Schema):
     ALL_DATA = fields.Integer(missing=3)
 
 
+class MailErrorConf(Schema):
+    MAIL_ON_ERROR = fields.Boolean(missing=False)
+    MAIL_HOST = fields.String(missing="")
+    HOST_PORT = fields.Integer(missing=465)
+    MAIL_FROM = fields.String(missing="")
+    MAIL_USERNAME = fields.String(missing="")
+    MAIL_PASS = fields.String(missing="")
+    MAIL_TO = fields.List(fields.String(), missing=list())
+
+
+# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -73,6 +87,8 @@ class GnPySchemaConf(Schema):
     BASE_DIR = fields.String(
         missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
+    MAILERROR = fields.Nested(MailErrorConf, missing=dict())
+    CAS = fields.Nested(CasSchemaConf, missing=dict())
 
 
 class GnFrontEndConf(Schema):
@@ -113,15 +129,7 @@ class Synthese(Schema):
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
 
-
-class MailErrorConf(Schema):
-    MAIL_ON_ERROR = fields.Boolean(missing=False)
-    MAIL_HOST = fields.String(missing="")
-    HOST_PORT = fields.Integer(missing=465)
-    MAIL_FROM = fields.String(missing="")
-    MAIL_USERNAME = fields.String(missing="")
-    MAIL_PASS = fields.String(missing="")
-    MAIL_TO = fields.List(fields.String(), missing=list())
+# class a utiliser pour les paramètres que l'on veut passer au frontend
 
 
 class GnGeneralSchemaConf(Schema):
@@ -139,10 +147,9 @@ class GnGeneralSchemaConf(Schema):
     ID_APPLICATION_GEONATURE = fields.Integer(missing=3)
     XML_NAMESPACE = fields.String(missing="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
-    CAS = fields.Nested(CasSchemaConf, missing=dict())
+    CAS_PUBLIC = fields.Nested(CasFrontend, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
-    MAILERROR = fields.Nested(MailErrorConf, missing=dict())
     SYNTHESE = fields.Nested(Synthese, missing=dict())
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)

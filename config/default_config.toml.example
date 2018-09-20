@@ -29,15 +29,17 @@ MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 UPLOAD_FOLDER = 'static/medias'
 
 # CAS authentification (Optional, instead of UsersHub local authentification)
-[CAS]
+[CAS_PUBLIC]
     CAS_AUTHENTIFICATION = false
     CAS_URL_LOGIN = 'https://preprod-inpn.mnhn.fr/auth/login'
     CAS_URL_LOGOUT = 'https://preprod-inpn.mnhn.fr/auth/logout'
-    CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
-    [CAS.CAS_USER_WS]
-        URL = 'https://inpn2.mnhn.fr/authentication/information'
-        ID = 'mon_id'
-        PASSWORD = 'mon_pass'
+
+[CAS]
+CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+[CAS.CAS_USER_WS]
+    URL = 'https://inpn2.mnhn.fr/authentication/information'
+    ID = 'mon_id'
+    PASSWORD = 'mon_pass'
 
 [RIGHTS]
     NOTHING = 0
