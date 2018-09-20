@@ -305,6 +305,7 @@ BEGIN
   -- update dans la synthese
   UPDATE gn_synthese.synthese
   SET
+  entity_source_pk_value = NEW.id_counting_occtax,
   id_nomenclature_life_stage = NEW.id_nomenclature_life_stage,
   id_nomenclature_sex = NEW.id_nomenclature_sex,
   id_nomenclature_obj_count = NEW.id_nomenclature_obj_count,
@@ -313,6 +314,13 @@ BEGIN
   count_max = NEW.count_max,
   last_action = 'U'
   WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
+  IF(NEW.unique_id_sinp_occtax <> OLD.unique_id_sinp_occtax) THEN
+      RAISE EXCEPTION 'ATTENTION : %', 'Le champ "unique_id_sinp_occtax" est généré par GeoNature et ne doit pas être changé.'
+		       || chr(10) || 'Il est utilisé par le SINP pour identifier de manière unique une observation.'
+		       || chr(10) || 'Si vous le changez, le SINP considérera cette observation comme une nouvelle observation.'
+		       || chr(10) || 'Si vous souhaitez vraiment le changer, désactivez ce trigger, faite le changement, réactiez ce trigger'
+		       || chr(10) || 'ET répercutez manuellement les changements dans "gn_synthese.synthese".';
+  END IF;
   RETURN NULL;
 END;
 $BODY$
@@ -402,13 +410,13 @@ COST 100;
 
 -- UPDATE Releve
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
-RETURNS trigger AS
+  RETURNS trigger AS
 $BODY$
 DECLARE
   theoccurrence RECORD;
   theobservers character varying;
 BEGIN
- -- récupération de l'occurrence pour le releve
+ 
   IF NEW.observers_txt IS NULL THEN
     SELECT INTO theobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
     FROM pr_occtax.cor_role_releves_occtax cor
@@ -418,8 +426,8 @@ BEGIN
   ELSE 
     theobservers:= NEW.observers_txt;
   END IF;
-  FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax LOOP
-      UPDATE gn_synthese.synthese SET
+  --mise à jour en synthese des informations correspondant au relevé uniquement
+  UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
       observers = theobservers,
       id_digitiser = NEW.id_digitiser,
@@ -429,24 +437,28 @@ BEGIN
       date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
-      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), ' Occurrence: ', COALESCE(theoccurrence.comment, '-')),
-      the_geom_local = NEW.geom_local,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       last_action = 'U'
-      WHERE unique_id_sinp IN (
-        SELECT unique_id_sinp_occtax
-        FROM pr_occtax.cor_counting_occtax cor 
-        JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_occurrence_occtax = cor.id_occurrence_occtax
-        JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = occ.id_releve_occtax
-        WHERE rel.id_releve_occtax = NEW.id_releve_occtax
-      );
-  END LOOP;
+  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax)));
+  -- récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
+  IF(NEW.comment <> OLD.comment) THEN
+      FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
+      LOOP
+          UPDATE gn_synthese.synthese SET
+                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '-'), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
+          WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax)));
+      END LOOP;
+  END IF;
   RETURN NULL;
 END;
 $BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+
+
 
 -- suppression d'un relevé
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_releve()
@@ -455,11 +467,7 @@ $BODY$
 DECLARE
 BEGIN
     DELETE FROM gn_synthese.synthese WHERE unique_id_sinp IN (
-      SELECT unique_id_sinp_occtax
-      FROM pr_occtax.cor_counting_occtax cor 
-      JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_occurrence_occtax = cor.id_occurrence_occtax
-      JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = occ.id_releve_occtax
-      WHERE rel.id_releve_occtax = OLD.id_releve_occtax
+      SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(OLD.id_releve_occtax))
     );
   RETURN OLD;
 END;
@@ -563,20 +571,6 @@ COST 100;
 ------------
 --TRIGGERS--
 ------------
--- Trigger d'insertion automatique du niveau de sensibilité à partir de la fonction
--- calculate_sensitivity
-
--- CREATE TRIGGER tri_insert_occurrences_occtax
---   BEFORE INSERT
---   ON t_occurrences_occtax
---   FOR EACH ROW
---   EXECUTE PROCEDURE insert_occurrences_occtax();
-
--- CREATE TRIGGER tri_update_occurrences_occtax
---   BEFORE INSERT
---   ON t_occurrences_occtax
---   FOR EACH ROW
---   EXECUTE PROCEDURE update_occurrences_occtax();
 
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
@@ -616,78 +610,89 @@ CREATE TRIGGER tri_calculate_geom_local
 
   -- triggers vers la synthese
 
+DROP TRIGGER IF EXISTS tri_insert_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_insert_synthese_cor_counting_occtax
     AFTER INSERT
     ON pr_occtax.cor_counting_occtax
     FOR EACH ROW
     EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_counting();
 
+DROP TRIGGER IF EXISTS tri_update_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_update_synthese_cor_counting_occtax
   AFTER UPDATE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_update_counting();
 
+DROP TRIGGER IF EXISTS tri_delete_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_delete_synthese_cor_counting_occtax
   AFTER DELETE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_counting();
 
+DROP TRIGGER IF EXISTS tri_delete_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_delete_cor_counting_occtax
   AFTER DELETE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_delete_counting();
 
+DROP TRIGGER IF EXISTS tri_update_synthese_t_occurrence_occtax ON pr_occtax.t_occurrences_occtax;
 CREATE TRIGGER tri_update_synthese_t_occurrence_occtax
   AFTER UPDATE
   ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_update_occ();
 
+DROP TRIGGER IF EXISTS tri_delete_synthese_t_occurrence_occtax ON pr_occtax.t_occurrences_occtax;
 CREATE TRIGGER tri_delete_synthese_t_occurrence_occtax
   AFTER DELETE
   ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_occ();
 
+DROP TRIGGER IF EXISTS tri_delete_t_occurrence_occtax ON pr_occtax.t_occurrences_occtax;
 CREATE TRIGGER tri_delete_t_occurrence_occtax
   AFTER DELETE
   ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_delete_occ();
 
+DROP TRIGGER IF EXISTS tri_update_synthese_t_releve_occtax ON pr_occtax.t_releves_occtax;
 CREATE TRIGGER tri_update_synthese_t_releve_occtax
   AFTER UPDATE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_update_releve();
 
+DROP TRIGGER IF EXISTS tri_delete_synthese_t_releve_occtax ON pr_occtax.t_releves_occtax;
 CREATE TRIGGER tri_delete_synthese_t_releve_occtax
   AFTER DELETE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_releve();
 
+DROP TRIGGER IF EXISTS tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_insert_synthese_cor_role_releves_occtax
   AFTER INSERT
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
+DROP TRIGGER IF EXISTS tri_update_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_update_synthese_cor_role_releves_occtax
   AFTER UPDATE
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_update_cor_role_releve();
 
+DROP TRIGGER IF EXISTS tri_delete_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
   AFTER DELETE
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_cor_role_releve();
-
 
 --------------------
 -- ASSOCIATED DATA--
