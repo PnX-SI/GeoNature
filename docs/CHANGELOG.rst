@@ -160,7 +160,7 @@ Les utilisateurs utilisant la version 2.0.0beta5
         geonature generate_frontend_modules_route
         geonature frontend_build
 
-
+* Executer l'update de la BDD GeoNature (+ update BDD nomenclatures ?)
 
 #####################################################################################################
 
