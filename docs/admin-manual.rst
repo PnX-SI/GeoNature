@@ -150,7 +150,7 @@ La base de données contient de nombreuses fonctions.
 
 **ref_nomenclatures**
 
-  .. code:: sql
+.. code:: sql
 
   get_id_nomenclature_type(mytype character varying) RETURNS integer
   --Function which return the id_type from the mnemonique of a nomenclature type
@@ -504,7 +504,7 @@ GeoNature est fourni avec des données géographiques de base sur la métropôle
 Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
 
 * Videz le contenu de la table ``ref_geo.dem_vector``
-* Uploadez le fichier du MNT du serveur
+* Uploadez le fichier du MNT sur le serveur
 * Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
 TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235
 
