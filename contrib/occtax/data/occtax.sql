@@ -1181,5 +1181,5 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 -- (SELECT id_application FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature') )
 -- ;
 
-INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active)
- VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting' , NULL, NULL, 'NONE', true);
+INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
+ VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
