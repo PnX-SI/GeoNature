@@ -16,7 +16,6 @@ INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, g
 ,('NATURALITE',0,0,0,ref_nomenclatures.get_id_nomenclature('NATURALITE','0'))
 ,('PREUVE_EXIST',0,0,0,ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','0'))
 ,('STATUT_VALID',0,0,0,ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2'))
-,('NIV_PRECIS',0,0,0,ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5'))
 ,('STADE_VIE',0,0,0,ref_nomenclatures.get_id_nomenclature('STADE_VIE','0'))
 ,('SEXE',0,0,0,ref_nomenclatures.get_id_nomenclature('SEXE','6'))
 ,('OBJ_DENBR',0,0,0,ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'))
