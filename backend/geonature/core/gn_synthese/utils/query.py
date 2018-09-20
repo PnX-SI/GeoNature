@@ -50,7 +50,6 @@ def filter_taxonomy(model, q, filters):
         -Tuple: the SQLAlchemy query and the filter dictionnary
     """
     if 'cd_ref' in filters:
-        from flask import request
         # find all cd_nom where cd_ref = filter['cd_ref']
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
@@ -74,15 +73,19 @@ def filter_taxonomy(model, q, filters):
         q = q.filter(model.cd_nom.in_(sub_query_lr))
 
     aliased_cor_taxon_attr = {}
+    join_on_taxref = False
     for colname, value in filters.items():
         if colname.startswith('taxhub_attribut'):
+            if not join_on_taxref:
+                q = q.join(Taxref, Taxref.cd_nom == model.cd_nom)
+                join_on_taxref = True
             taxhub_id_attr = colname[16:]
             aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
             q = q.join(
                 aliased_cor_taxon_attr[taxhub_id_attr],
                 and_(
                     aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr,
-                    aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == Taxref.cd_ref
+                    aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == func.taxonomie.find_cdref(model.cd_nom)
                 )
             ).filter(
                 aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)

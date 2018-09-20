@@ -88,7 +88,7 @@ class GnPySchemaConf(Schema):
         missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
-    CAS_PUBLIC = fields.Nested(CasSchemaConf, missing=dict())
+    CAS = fields.Nested(CasSchemaConf, missing=dict())
 
 
 class GnFrontEndConf(Schema):
