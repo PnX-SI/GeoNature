@@ -19,6 +19,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   public selectedItems = [];
   public searchControl = new FormControl();
   public formControlValue = [];
+  public savedValues = [];
 
   @Input() parentFormControl: FormControl;
   // value of the dropddown
@@ -41,7 +42,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-  constructor(private _translate: TranslateService) {}
+  constructor(private _translate: TranslateService) { }
 
   // Component to generate a custom multiselect input with a search bar (which can be disabled)
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
@@ -82,6 +83,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = [];
+        this.values = this.savedValues;
       } else {
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
@@ -153,6 +155,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
+      this.savedValues = changes.values.currentValue;
       // remove doublon in the dropdown lists
       if (this.formControlValue) {
         this.values = changes.values.currentValue.filter(v => {
