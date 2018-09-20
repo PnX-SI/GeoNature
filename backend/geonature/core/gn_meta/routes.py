@@ -55,7 +55,7 @@ def get_datasets(info_role):
 
     """
     with_mtd_error = False
-    if current_app.config['CAS']['CAS_AUTHENTIFICATION']:
+    if current_app.config['CAS_PUBLIC']['CAS_AUTHENTIFICATION']:
         # synchronise the CA and JDD from the MTD WS
         try:
             mtd_utils.post_jdd_from_user(

@@ -59,7 +59,7 @@ def loginCas():
                 log.error("Error with the inpn authentification service")
                 raise CasAuthentificationError(
                     'Error with the inpn authentification service',
-                     status_code=500
+                    status_code=500
                 )
 
             info_user = response.json()
@@ -80,7 +80,7 @@ def loginCas():
                 )
                 raise CasAuthentificationError(
                     'CAS ERROR: no ID or LOGIN provided',
-                     status_code=500
+                    status_code=500
                 )
             # Reconciliation avec base GeoNature
             if organism_id:
@@ -153,8 +153,7 @@ def loginCas():
             )
             return render_template(
                 'cas_login_error.html',
-                cas_logout=current_app.config['CAS']['CAS_URL_LOGOUT'],
+                cas_logout=current_app.config['CAS_PUBLIC']['CAS_URL_LOGOUT'],
                 url_geonature=current_app.config['URL_APPLICATION']
             )
     return jsonify({'message': 'Authentification error'}, 500)
-
