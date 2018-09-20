@@ -90,8 +90,9 @@ fi
 
 if [ "$OS_VERSION" == "16.04" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.5 2> var/log/install_app.log 
-    sudo apt install postgis 2> var/log/install_app.log
+    sudo apt-get install libatlas3-base
+    sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log 
+    sudo apt install postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
 fi
 
 sudo apt-get install -y python3 2> var/log/install_app.log 
