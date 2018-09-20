@@ -271,13 +271,14 @@ def get_status(info_role):
 
     filters = dict(request.args)
 
-    q = DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles).join(
+    q = (DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles)
+    .join(
         Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
         TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
         TaxrefProtectionArticles, TaxrefProtectionArticles.cd_protection == TaxrefProtectionEspeces.cd_protection
-    )
+    ))
 
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)

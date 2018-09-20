@@ -19,13 +19,10 @@ export class SyntheseModalDownloadComponent implements OnInit {
   @Input() queryString: HttpParams;
   @Input() tooManyObs = false;
 
-  constructor(public activeModal: NgbActiveModal, private _dataService: DataService) {}
+  constructor(public activeModal: NgbActiveModal, private _dataService: DataService) { }
 
   ngOnInit() {
     this.progress$ = this._dataService.downloadProgress;
-    // this.progress$.subscribe( state =>  {
-    //   (state === 100) ? this.done() : null;
-    // )};
     this.progress$.subscribe(state => {
       if (state === 100) {
         this.done();
@@ -57,6 +54,7 @@ export class SyntheseModalDownloadComponent implements OnInit {
   downloadStatus() {
     this.downloading = true;
     this.progress();
+    this.queryString = this.queryString.delete('limit');
     const url = `${AppConfig.API_ENDPOINT}/synthese/statuts`;
     this._dataService.downloadData(url, 'csv', this.queryString, 'export_synthese_statuts');
   }
