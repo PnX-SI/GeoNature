@@ -79,10 +79,6 @@ CREATE TABLE t_sources (
     desc_source text,
     entity_source_pk_field character varying(255),
     url_source character varying(255),
-    target character varying(10),
-    picto_source character varying(255),
-    groupe_source character varying(50) NOT NULL,
-    active boolean NOT NULL,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now()
 );
@@ -118,7 +114,7 @@ CREATE TABLE synthese (
     count_max integer,
     cd_nom integer,
     nom_cite character varying(1000) NOT NULL,
-    meta_v_taxref character varying(50) DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)',
+    meta_v_taxref character varying(50) DEFAULT gn_commons.get_default_parameter('taxref_version',NULL),
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
@@ -136,7 +132,7 @@ CREATE TABLE synthese (
     id_digitiser integer,
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
     comments text,
-    meta_validation_date timestamp without time zone DEFAULT now(),
+    meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
     last_action character(1),
@@ -848,7 +844,6 @@ CREATE TRIGGER trg_refresh_taxons_forautocomplete
 --------
 --DATA--
 --------
-INSERT INTO t_sources (id_source, name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active) VALUES (0, 'API', 'Donnée externe non définie (insérée dans la synthese à partir du service REST de l''API sans entity_source_pk_value fourni)', NULL, NULL, NULL, NULL, 'NONE', false);
 
 -- insertion dans utilisateurs.t_applications et gn_commons.t_modules
 INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
