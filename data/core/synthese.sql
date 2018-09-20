@@ -109,7 +109,7 @@ CREATE TABLE synthese (
     id_nomenclature_sex integer DEFAULT get_default_nomenclature_value('SEXE'),
     id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value('OBJ_DENBR'),
     id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value('TYP_DENBR'),
-    id_nomenclature_sensitivity integer, DEFAULT get_default_nomenclature_value('SENSIBILITE'),
+    id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value('SENSIBILITE'),
     id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value('STATUT_OBS'),
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
