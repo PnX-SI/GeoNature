@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, request
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func, or_, and_
@@ -147,7 +147,7 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
 
     if 'geoIntersection' in filters:
         # Insersect with the geom send from the map
-        geom_wkt = loads(filters['geoIntersection'][0])
+        geom_wkt = loads(request.args['geoIntersection'])
         # if the geom is a circle
         if 'radius' in filters:
             radius = filters.pop('radius')[0]
