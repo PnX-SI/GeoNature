@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-2.0.0 (unreleased)
-------------------------
+2.0.0-rc.1 (unreleased)
+-----------------------
 
 La version 2 de GeoNature est une refonte complète de l'application.
 
