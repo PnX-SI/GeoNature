@@ -51,6 +51,7 @@
       {{ 'Releve.DateMaxError' | translate }}
     </small>
   </div>
+  
 
   <div class="collapse" id="collapseTime">
     <div class="row row-0">
@@ -94,12 +95,16 @@
         <input class="form-control form-control-sm" type="number" [formControl]="releveForm.controls.properties.controls.altitude_max"
           [disableControl]="fs.disabled">
       </div>
+
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2 padding-md">
         <div class="">
           <!-- Modal intersections  -->
           <pnx-areas-intersected-modal [geojson]="geojson"> </pnx-areas-intersected-modal>
         </div>
       </div>
+      <small *ngIf="releveForm.errors?.invalidAlt" class="error" style="color:red">
+        {{ 'Releve.AltitudeError' | translate }}
+      </small>
     </div>
   </div>
 

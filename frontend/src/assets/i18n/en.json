@@ -80,6 +80,7 @@
     "Comment": "Comment",
     "SaveReleve": "Save releve",
     "DateMaxError": "Max date can't be inferior to the date min",
+    "AltitudeError": "Altitude max cannot be less than altitude min",
     "HourMaxError": "End hour can't be inferior to start hour",
     "SavedTaxon": "Saved taxon(s)",
     "InfoGeo": "Geographic informations of the releve",

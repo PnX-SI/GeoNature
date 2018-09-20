@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms/src/model';
 
 @Injectable()
 export class FormService {
-  constructor() {}
+  constructor() { }
 
   dateValidator(dateMinControl: AbstractControl, dateMaxControl: AbstractControl): ValidatorFn {
     return (formGroup: FormGroup): { [key: string]: boolean } => {
@@ -25,6 +25,20 @@ export class FormService {
     };
   }
 
+  altitudeValidator(altiMinControl: AbstractControl, altMaxControl: AbstractControl): ValidatorFn {
+    return (formGroup: FormGroup): { [key: string]: boolean } => {
+      const altMin = altiMinControl.value;
+      const altMax = altMaxControl.value;
+      if (altMin && altMax && (altMin > altMax)) {
+        return {
+          invalidAlt: true
+        };
+      } else {
+        return null;
+      }
+    };
+  }
+
   hourAndDateValidator(
     dateMinControl: AbstractControl,
     dateMaxControl: AbstractControl,
@@ -40,8 +54,8 @@ export class FormService {
       );
       return invalidHour
         ? {
-            invalidHour: true
-          }
+          invalidHour: true
+        }
         : null;
     };
   }

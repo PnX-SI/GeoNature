@@ -135,6 +135,10 @@ export class OcctaxFormService {
         (releveForm.controls.properties as FormGroup).get("date_max"),
         (releveForm.controls.properties as FormGroup).get("hour_min"),
         (releveForm.controls.properties as FormGroup).get("hour_max")
+      ),
+      this._formService.altitudeValidator(
+        (releveForm.controls.properties as FormGroup).get("altitude_min"),
+        (releveForm.controls.properties as FormGroup).get("altitude_max"),
       )
     ]);
     return releveForm;

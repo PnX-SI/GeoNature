@@ -81,6 +81,7 @@
     "Comment": "Commentaire",
     "SaveReleve": "Enregistrer le relevé",
     "DateMaxError": "La date de début ne peut pas être superieure à la date de fin",
+    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
     "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
     "SavedTaxon": "Taxon(s) enregistré(s)",
     "InfoGeo": "Informations géographiques du relevé",
