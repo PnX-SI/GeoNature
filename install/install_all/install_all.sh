@@ -4,6 +4,12 @@
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 
+# format my_url to set a / at the end
+if [ "${my_url: -1}" != '/' ] 
+then
+my_url=$my_url/
+fi
+
 
 # Check os and versions
 if [ "$OS_NAME" != "debian" ]
@@ -68,10 +74,10 @@ sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 2> var/log/install_app.log
-    sudo apt install -y postgis-2.3 postgresql-9.6-postgis-2.3 2> var/log/install_app.log
+    sudo apt install -y postgis-2.3 postgis postgresql-9.6-postgis-2.3 2> var/log/install_app.log
 else
     sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
-    sudo apt install postgis-2.3 2> var/log/install_app.log
+    sudo apt install postgis-2.3 postgis 2> var/log/install_app.log
 fi
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 

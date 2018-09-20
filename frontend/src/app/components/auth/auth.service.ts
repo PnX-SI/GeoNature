@@ -104,9 +104,9 @@ export class AuthService {
 
   logout() {
     this._cookie.delete('token', '/');
-    if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
+    if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       this.deleteTokenCookie();
-      document.location.href = AppConfig.CAS.CAS_URL_LOGOUT;
+      document.location.href = AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT;
     } else {
       this.router.navigate(['/login']);
     }

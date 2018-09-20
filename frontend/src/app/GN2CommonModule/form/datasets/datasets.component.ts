@@ -54,7 +54,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
         if (error.status === 500) {
           this._commonService.translateToaster('error', 'MetaData.JddError');
         } else if (error.status === 404) {
-          if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
+          if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
             this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
           } else {
             this._commonService.translateToaster('warning', 'MetaData.NoJDD');

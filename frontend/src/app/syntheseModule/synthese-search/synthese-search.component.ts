@@ -14,7 +14,7 @@ import {
   ITreeOptions
 } from 'angular-tree-component';
 import { TaxonAdvancedModalComponent } from './taxon-advanced/taxon-advanced.component';
-import { DataFormService } from '../../GN2CommonModule/form/data-form.service';
+import { TaxonAdvancedStoreService } from './taxon-advanced/taxon-advanced-store.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -28,21 +28,19 @@ export class SyntheseSearchComponent implements OnInit {
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   @Output() searchClicked = new EventEmitter();
   constructor(
-    private _fb: FormBuilder,
     public dataService: DataService,
     public formService: SyntheseFormService,
     public ngbModal: NgbModal,
     public mapService: MapService,
-    private _dfs: DataFormService
-  ) { }
+    private _storeService: TaxonAdvancedStoreService
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   onSubmitForm() {
     // mark as dirty to avoid set limit=100 when download
     this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
-    console.log(updatedParams);
     this.searchClicked.emit(updatedParams);
   }
 
@@ -50,12 +48,15 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedtaxonFromComponent = [];
     this.formService.selectedCdRefFromTree = [];
     this.formService.searchForm.reset();
+
+    // refresh taxon tree
+    this._storeService.taxonTreeState = {};
+
     // remove layers draw in the map
-    console.log(this.mapService.releveFeatureGroup);
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
   }
 
-  openModal(e, modalName) {
+  openModal() {
     const taxonModal = this.ngbModal.open(TaxonAdvancedModalComponent, {
       size: 'lg',
       backdrop: 'static',

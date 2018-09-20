@@ -40,7 +40,7 @@ export class SyntheseFormService {
 
     AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
       const control_name = 'area_' + area.id_type;
-      this.searchForm.addControl(control_name, new FormControl());
+      this.searchForm.addControl(control_name, new FormControl(new Array()));
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
     });
@@ -70,11 +70,10 @@ export class SyntheseFormService {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
       } else if (
-        (key === 'period_max' && params.period_max) ||
-        (key === 'period_min' && params.period_min)
+        (key === 'period_end' && params.period_end) ||
+        (key === 'period_start' && params.period_start)
       ) {
         updatedParams[key] = this._periodFormatter.format(params[key]);
-        console.log(updatedParams);
       } else if (params['geoIntersection']) {
         updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
         // if other key an value not null or undefined

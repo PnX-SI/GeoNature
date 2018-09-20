@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, request
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func, or_, and_
@@ -50,7 +50,6 @@ def filter_taxonomy(model, q, filters):
         -Tuple: the SQLAlchemy query and the filter dictionnary
     """
     if 'cd_ref' in filters:
-        from flask import request
         # find all cd_nom where cd_ref = filter['cd_ref']
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
@@ -74,15 +73,19 @@ def filter_taxonomy(model, q, filters):
         q = q.filter(model.cd_nom.in_(sub_query_lr))
 
     aliased_cor_taxon_attr = {}
+    join_on_taxref = False
     for colname, value in filters.items():
         if colname.startswith('taxhub_attribut'):
+            if not join_on_taxref:
+                q = q.join(Taxref, Taxref.cd_nom == model.cd_nom)
+                join_on_taxref = True
             taxhub_id_attr = colname[16:]
             aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
             q = q.join(
                 aliased_cor_taxon_attr[taxhub_id_attr],
                 and_(
                     aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr,
-                    aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == Taxref.cd_ref
+                    aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == func.taxonomie.find_cdref(model.cd_nom)
                 )
             ).filter(
                 aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)
@@ -144,7 +147,7 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
 
     if 'geoIntersection' in filters:
         # Insersect with the geom send from the map
-        geom_wkt = loads(filters['geoIntersection'][0])
+        geom_wkt = loads(request.args['geoIntersection'])
         # if the geom is a circle
         if 'radius' in filters:
             radius = filters.pop('radius')[0]
@@ -154,8 +157,8 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         filters.pop('geoIntersection')
 
     if 'period_start' in filters and 'period_end' in filters:
-        period_start = filters.pop('period_min')[0]
-        period_end = filters.pop('period_max')[0]
+        period_start = filters.pop('period_start')[0]
+        period_end = filters.pop('period_end')[0]
         q = q.filter(or_(
             func.gn_commons.is_in_period(
                 func.date(model.date_min),
