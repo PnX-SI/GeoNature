@@ -80,9 +80,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
     this.parentFormControl.valueChanges.subscribe(value => {
       // filter the list of options to not display twice an item
+      console.log(this.label);
       if (value === null) {
         this.selectedItems = [];
-        this.formControlValue = value;
+        this.formControlValue = [];
       } else {
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
