@@ -109,9 +109,12 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   filterItems(event) {
-    this.labels = this.savedLabels.filter(el => {
-      const isIn = el.label_default.toUpperCase().indexOf(event.toUpperCase());
-      return isIn !== -1;
-    });
+    if (this.searchBar && event) {
+      this.labels = this.savedLabels.filter(el => {
+        console.log(el);
+        const isIn = el.label_default.toUpperCase().indexOf(event.toUpperCase());
+        return isIn !== -1;
+      });
+    }
   }
 }
