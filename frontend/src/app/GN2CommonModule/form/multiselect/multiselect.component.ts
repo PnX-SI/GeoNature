@@ -71,7 +71,6 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
     // subscribe and output on the search bar
     this.searchControl.valueChanges
-      .filter(value => value !== null)
       .debounceTime(this.debounceTime)
       .distinctUntilChanged()
       .subscribe(value => {
@@ -80,7 +79,6 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
     this.parentFormControl.valueChanges.subscribe(value => {
       // filter the list of options to not display twice an item
-      console.log(this.label);
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = [];
@@ -128,6 +126,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   }
 
   removeItem($event, item) {
+    // remove element from the items list to avoid doublon
+    this.values = this.values.filter(curItem => {
+      return curItem[this.keyLabel] !== item[this.keyLabel];
+    });
     // disable event propagation
     $event.stopPropagation();
     // push the element in the items list

@@ -70,11 +70,10 @@ export class SyntheseFormService {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
       } else if (
-        (key === 'period_max' && params.period_max) ||
-        (key === 'period_min' && params.period_min)
+        (key === 'period_end' && params.period_end) ||
+        (key === 'period_start' && params.period_start)
       ) {
         updatedParams[key] = this._periodFormatter.format(params[key]);
-        console.log(updatedParams);
       } else if (params['geoIntersection']) {
         updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
         // if other key an value not null or undefined

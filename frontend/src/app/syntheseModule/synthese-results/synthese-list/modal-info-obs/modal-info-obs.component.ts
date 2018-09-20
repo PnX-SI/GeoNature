@@ -4,26 +4,25 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
   selector: 'pnx-synthese-modal-info-obs',
   templateUrl: 'modal-info-obs.component.html'
 })
-
 export class ModalInfoObsComponent implements OnInit {
   @Input() oneObsSynthese: any;
   public selectObsTaxonInfo;
   public selectedObs;
   public selectedObsTaxonDetail;
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
-  constructor(private _gnDataService: DataFormService, private _dataService: DataService,
+  constructor(
+    private _gnDataService: DataFormService,
+    private _dataService: DataService,
     public activeModal: NgbActiveModal
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.oneObsSynthese);
   }
-
 
   loadOneSyntheseReleve(oneObsSynthese) {
     this._dataService.getOneSyntheseObservation(oneObsSynthese.id_synthese).subscribe(data => {
@@ -37,7 +36,6 @@ export class ModalInfoObsComponent implements OnInit {
           this.selectedObs['other_areas'].push(area);
         }
       });
-      console.log(this.selectedObs)
       // this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
       //   this.selectedObs['cd_nom']
       //   }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
