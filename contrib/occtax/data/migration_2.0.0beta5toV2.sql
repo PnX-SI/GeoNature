@@ -205,7 +205,7 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT('Relevé : ', COALESCE(releve.comment, ' aucun '), 'Occurrence: ', COALESCE(occurrence.comment, ' aucun')),
+  CONCAT('Relevé : ', COALESCE(releve.comment, ' - '), 'Occurrence: ', COALESCE(occurrence.comment, ' -')),
   'I'
 );
 
@@ -219,9 +219,11 @@ $BODY$
 
 
 
+
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
+-- Insert counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
   RETURNS trigger AS
   $BODY$
@@ -401,13 +403,6 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
-  -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
-  SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
-  IF nb_counting < 1 THEN
-    DELETE FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = OLD.id_releve_occtax;
-  END IF;
-
-
 -- UPDATE Releve
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
@@ -572,6 +567,7 @@ COST 100;
 --TRIGGERS--
 ------------
 
+
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
   ON cor_counting_occtax
@@ -693,6 +689,7 @@ CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_cor_role_releve();
+
 
 --------------------
 -- ASSOCIATED DATA--
