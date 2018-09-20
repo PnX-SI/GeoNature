@@ -110,7 +110,7 @@ releve RECORD;
 id_source integer;
 validation RECORD;
 id_nomenclature_source_status integer;
-observers RECORD;
+myobservers RECORD;
 id_role_loop integer;
 
 BEGIN
@@ -138,7 +138,7 @@ SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM g
 
 
 --Récupération et formatage des observateurs
-SELECT INTO observers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
+SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
 array_agg(rol.id_role) AS observers_id
 FROM pr_occtax.cor_role_releves_occtax cor
 JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
@@ -241,7 +241,7 @@ VALUES(
   (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || to_char(releve.date_max, 'hh:mm:ss'))::timestamp,
   validation.validator_full_name,
   validation.validation_comment,
-  COALESCE (observers.observers_name, releve.observers_txt),
+  COALESCE (myobservers.observers_name, releve.observers_txt),
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
@@ -249,7 +249,7 @@ VALUES(
   'I'
 );
 
-  RETURN observers.observers_id ;
+  RETURN myobservers.observers_id ;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -610,44 +610,36 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 --   LANGUAGE plpgsql VOLATILE
 --   COST 100;
 
--- Insert counting
+
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
   RETURNS trigger AS
-  $BODY$
+$BODY$
 DECLARE
-  observers integer[];
-  the_id_synthese integer;
+  myobservers integer[];
   the_id_releve integer;
-  id_role_loop integer;
-
 BEGIN
-
   -- recupération de l'id_releve_occtax
   SELECT INTO the_id_releve pr_occtax.id_releve_from_id_counting(NEW.id_counting_occtax::integer);
   -- recupération des observateurs
-  SELECT INTO observers array_agg(id_role)
+  SELECT INTO myobservers array_agg(id_role)
   FROM pr_occtax.cor_role_releves_occtax
   WHERE id_releve_occtax = the_id_releve;
-
   -- insertion en synthese du counting + occ + releve
   PERFORM pr_occtax.insert_in_synthese(NEW.id_counting_occtax::integer);
-
-  -- recupération de l'id_synthese nouvelement créé
-  SELECT INTO the_id_synthese id_synthese FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
-
 -- INSERTION DANS COR_ROLE_SYNTHESE
-IF observers IS NOT NULL THEN
-  FOREACH id_role_loop IN ARRAY observers
-    LOOP
-      INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES (the_id_synthese, id_role_loop);
-    END LOOP;
+IF myobservers IS NOT NULL THEN
+      INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) 
+      SELECT 
+        id_synthese,
+        unnest(myobservers)
+      FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
   END IF;
-
   RETURN NULL;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
 
 
 -- DELETE counting
@@ -859,29 +851,20 @@ COST 100;
 
 -- trigger insertion cor_role_releve_occtax
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
-RETURNS trigger AS
+  RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  uuid[];
-  the_uuid_counting uuid;
-  the_id_synthese integer;
-
+  uuids_counting integer;
 BEGIN
-  -- récupération des uuid_counting à partir de l'id_releve
-  SELECT INTO the_uuid_countings pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
-
-  IF the_uuid_countings IS NOT NULL THEN
-    FOREACH the_uuid_counting IN ARRAY the_uuid_countings
-    LOOP
-      SELECT INTO the_id_synthese id_synthese
-      FROM gn_synthese.synthese
-      WHERE  unique_id_sinp = the_uuid_counting;
+  -- récupération des id_counting à partir de l'id_releve
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
+  
+  IF uuids_counting IS NOT NULL THEN
       -- insertion dans cor_role_synthese pour chaque counting
-      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) VALUES(
-        the_id_synthese,
-        NEW.id_role
-      );
-    END LOOP;
+      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+      SELECT id_synthese, NEW.id_role 
+      FROM gn_synthese.synthese 
+      WHERE unique_id_sinp IN(SELECT unnest(uuids_counting));
   END IF;
 RETURN NULL;
 END;
@@ -892,59 +875,50 @@ COST 100;
 
 -- trigger update cor_role_releve_occtax
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_cor_role_releve()
-RETURNS trigger AS
+  RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  uuid[];
-  the_uuid_counting uuid;
-  the_id_synthese integer;
+  uuids_counting  uuid[];
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
-  SELECT INTO the_uuid_countings pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
-  IF the_uuid_countings IS NOT NULL THEN
-    FOREACH the_uuid_counting IN ARRAY the_uuid_countings
-    LOOP
-      SELECT INTO the_id_synthese id_synthese
-      FROM gn_synthese.synthese
-      WHERE unique_id_sinp = the_uuid_counting;
-      -- update dans cor_role_synthese pour chaque counting
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
+  IF uuids_counting IS NOT NULL THEN
       UPDATE gn_synthese.cor_observer_synthese SET
-        id_synthese = the_id_synthese,
         id_role = NEW.id_role
-        WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
-    END LOOP;
+      WHERE id_role = OLD.id_role
+      AND id_synthese IN (
+          SELECT id_synthese 
+          FROM gn_synthese.synthese
+          WHERE unique_id_sinp IN (SELECT unnest(uuids_counting))
+      );
   END IF;
 RETURN NULL;
 END;
 $BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- delete cor_role
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_cor_role_releve()
-RETURNS trigger AS
+  RETURNS trigger AS
 $BODY$
 DECLARE
-  the_uuid_countings  uuid[];
-  the_uuid_counting uuid;
-  the_id_synthese integer;
+  uuids_counting  uuid[];
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
-  SELECT INTO the_uuid_countings pr_occtax.get_unique_id_sinp_from_id_releve(OLD.id_releve_occtax::integer);
-  IF the_uuid_countings IS NOT NULL THEN
-  FOREACH the_uuid_counting IN ARRAY the_uuid_countings
-    LOOP
-      SELECT INTO the_id_synthese id_synthese
-      FROM gn_synthese.synthese
-      WHERE unique_id_sinp = the_uuid_counting;
-      -- suppression dans cor_role_synthese pour chaque counting
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(OLD.id_releve_occtax::integer);
+  IF uuids_counting IS NOT NULL THEN
+      --suppression des enregistrements dans cor_observer_synthese
       DELETE FROM gn_synthese.cor_observer_synthese
-      WHERE id_synthese = the_id_synthese AND id_role = OLD.id_role;
-    END LOOP;
+      WHERE id_role = OLD.id_role 
+      AND id_synthese IN (
+          SELECT id_synthese 
+          FROM gn_synthese.synthese
+          WHERE unique_id_sinp IN (SELECT unnest(uuids_counting))
+      );
   END IF;
 RETURN NULL;
 END;
-
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
