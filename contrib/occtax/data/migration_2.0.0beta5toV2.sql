@@ -266,11 +266,23 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_counting()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  the_id_synthese integer;
-  nb_counting integer;
 BEGIN
   -- suppression de l'obs dans le schéma gn_synthese
   DELETE FROM gn_synthese.synthese WHERE unique_id_sinp = OLD.unique_id_sinp_occtax;
+  RETURN NULL;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+
+-- DELETE counting
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_delete_counting()
+RETURNS trigger AS
+$BODY$
+DECLARE
+  nb_counting integer;
+BEGIN
   -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
   SELECT INTO nb_counting count(*) FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax;
   IF nb_counting < 1 THEN
@@ -281,6 +293,7 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
+
 
   -- UPDATE counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
@@ -327,7 +340,7 @@ BEGIN
     id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
     id_nomenclature_blurring = NEW.id_nomenclature_blurring,
     id_nomenclature_source_status = NEW.id_nomenclature_source_status,
-    determiner = determiner,
+    determiner = NEW.determiner,
     id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
     cd_nom = NEW.cd_nom,
     nom_cite = NEW.nom_cite,
@@ -335,7 +348,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, 'aucun' ), ' Occurrence: ', COALESCE(NEW.comment, 'aucun' )),
+    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
     last_action = 'U'
     WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
 
@@ -350,15 +363,26 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_occ()
 RETURNS trigger AS
 $BODY$
 DECLARE
-  nb_counting integer;
 BEGIN
   -- suppression dans la synthese
     DELETE FROM gn_synthese.synthese WHERE unique_id_sinp IN (
       SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax 
     );
-  -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
-  SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
-  IF nb_counting < 1 THEN
+  RETURN OLD;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_delete_occ()
+RETURNS trigger AS
+$BODY$
+DECLARE
+nb_occ integer;
+BEGIN
+  -- suppression du releve s'il n'y a plus d'occurrence
+  SELECT INTO nb_occ count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = OLD.id_releve_occtax;
+  IF nb_occ < 1 THEN
     DELETE FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = OLD.id_releve_occtax;
   END IF;
 
@@ -367,6 +391,14 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
+
+
+  -- suppression de l'occurrence s'il n'y a plus de dénomenbrement
+  SELECT INTO nb_counting count(*) FROM pr_occtax.t_occurrences_occtax WHERE id_occurrence_occtax = OLD.id_releve_occtax;
+  IF nb_counting < 1 THEN
+    DELETE FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = OLD.id_releve_occtax;
+  END IF;
+
 
 -- UPDATE Releve
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
@@ -397,7 +429,7 @@ BEGIN
       date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
-      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, 'aucun '), ' Occurrence: ', COALESCE(theoccurrence.comment, 'aucun')),
+      comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), ' Occurrence: ', COALESCE(theoccurrence.comment, '-')),
       the_geom_local = NEW.geom_local,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
@@ -531,6 +563,58 @@ COST 100;
 ------------
 --TRIGGERS--
 ------------
+-- Trigger d'insertion automatique du niveau de sensibilité à partir de la fonction
+-- calculate_sensitivity
+
+-- CREATE TRIGGER tri_insert_occurrences_occtax
+--   BEFORE INSERT
+--   ON t_occurrences_occtax
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE insert_occurrences_occtax();
+
+-- CREATE TRIGGER tri_update_occurrences_occtax
+--   BEFORE INSERT
+--   ON t_occurrences_occtax
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE update_occurrences_occtax();
+
+CREATE TRIGGER tri_insert_default_validation_status
+  AFTER INSERT
+  ON cor_counting_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_add_default_validation_status();
+
+CREATE TRIGGER tri_log_changes_cor_counting_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON cor_counting_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_t_occurrences_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON t_occurrences_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_t_releves_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON t_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_cor_role_releves_occtax
+  AFTER INSERT OR UPDATE OR DELETE
+  ON cor_role_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_calculate_geom_local
+  BEFORE INSERT OR UPDATE
+  ON pr_occtax.t_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
+  -- triggers vers la synthese
 
 CREATE TRIGGER tri_insert_synthese_cor_counting_occtax
     AFTER INSERT
@@ -538,17 +622,23 @@ CREATE TRIGGER tri_insert_synthese_cor_counting_occtax
     FOR EACH ROW
     EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_counting();
 
+CREATE TRIGGER tri_update_synthese_cor_counting_occtax
+  AFTER UPDATE
+  ON pr_occtax.cor_counting_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_update_counting();
+
 CREATE TRIGGER tri_delete_synthese_cor_counting_occtax
   AFTER DELETE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_counting();
 
-CREATE TRIGGER tri_update_synthese_cor_counting_occtax
-  AFTER UPDATE
+CREATE TRIGGER tri_delete_cor_counting_occtax
+  AFTER DELETE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
-  EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_update_counting();
+  EXECUTE PROCEDURE pr_occtax.fct_tri_delete_counting();
 
 CREATE TRIGGER tri_update_synthese_t_occurrence_occtax
   AFTER UPDATE
@@ -561,6 +651,12 @@ CREATE TRIGGER tri_delete_synthese_t_occurrence_occtax
   ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_occ();
+
+CREATE TRIGGER tri_delete_t_occurrence_occtax
+  AFTER DELETE
+  ON pr_occtax.t_occurrences_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE pr_occtax.fct_tri_delete_occ();
 
 CREATE TRIGGER tri_update_synthese_t_releve_occtax
   AFTER UPDATE
@@ -591,3 +687,16 @@ CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_cor_role_releve();
+
+
+--------------------
+-- ASSOCIATED DATA--
+--------------------
+
+INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source, target, picto_source, groupe_source, active)
+ VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting' , NULL, NULL, 'NONE', true);
+
+
+
+INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'));
