@@ -467,7 +467,7 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  uuids_counting integer;
+  uuids_counting uuid[];
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
