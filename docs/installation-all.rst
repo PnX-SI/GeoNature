@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18) disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
@@ -59,7 +59,7 @@ Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une aut
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
 
-* Mettre à jour les sources-list : 
+* Mettre à jour les sources-list (Debian uniquement) : 
 
 A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours correctes.
 
@@ -113,7 +113,7 @@ Pour Debian 8 :
 
     adduser geonatureadmin sudo
 
-* L'ajouter aussi aux groupes ``www-data`` et ``root`` :
+* L'ajouter aussi aux groupes ``www-data`` :
 
 ::
 
