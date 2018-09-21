@@ -25,7 +25,8 @@ FIONA_MAPPING = {
     'unicode': 'str',
     'varchar': 'str',
     'integer': 'int',
-    'float': 'float'
+    'float': 'float',
+    'boolean': 'str'
 }
 
 
@@ -67,7 +68,7 @@ class FionaShapeService():
                 if not db_col.type.__class__.__name__ == 'Geometry':
                     shp_properties.update({
                         col_mapping.get(db_col.key): FIONA_MAPPING.get(
-                        db_col.type.__class__.__name__.lower())
+                            db_col.type.__class__.__name__.lower())
                     })
                     cls.columns.append(col_mapping.get(db_col.key))
         else:
@@ -75,10 +76,16 @@ class FionaShapeService():
                 if not db_col.type.__class__.__name__ == 'Geometry':
                     shp_properties.update({
                         db_col.key: FIONA_MAPPING.get(
-                        db_col.type.__class__.__name__.lower())
+                            db_col.type.__class__.__name__.lower())
                     })
                     cls.columns.append(db_col.key)
+                    print('nana ', cls.columns)
+                    print('et ici ', {
+                        db_col.key: FIONA_MAPPING.get(
+                            db_col.type.__class__.__name__.lower())
+                    })
         cls.polygon_schema = {'geometry': 'MultiPolygon', 'properties': shp_properties, }
+        print('toto ',  cls.polygon_schema)
         cls.point_schema = {'geometry': 'Point', 'properties': shp_properties, }
         cls.polyline_schema = {'geometry': 'LineString', 'properties': shp_properties}
 
@@ -92,6 +99,7 @@ class FionaShapeService():
         cls.point_shape = fiona.open(cls.file_point, 'w', 'ESRI Shapefile', cls.point_schema, crs=cls.source_crs)
         cls.polygone_shape = fiona.open(cls.file_poly, 'w', 'ESRI Shapefile', cls.polygon_schema, crs=cls.source_crs)
         cls.polyline_shape = fiona.open(cls.file_line, 'w', 'ESRI Shapefile', cls.polyline_schema, crs=cls.source_crs)
+        print('je passe ici ')
 
     @classmethod
     def create_feature(cls, data, geom):
@@ -109,6 +117,7 @@ class FionaShapeService():
         """
         try:
             geom_wkt = to_shape(geom)
+            print('pass? ', geom_wkt)
             geom_geojson = mapping(geom_wkt)
             feature = {'geometry': geom_geojson, 'properties': data}
             if isinstance(geom_wkt, Point):
@@ -116,6 +125,7 @@ class FionaShapeService():
                 cls.point_feature = True
             elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
                 cls.polygone_shape.write(feature)
+                print('my feature ', feature)
                 cls.polygon_feature = True
             else:
                 cls.polyline_shape.write(feature)
