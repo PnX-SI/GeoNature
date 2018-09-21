@@ -67,6 +67,7 @@ export class SyntheseFormService {
     const updatedParams = {};
     // tslint:disable-next-line:forin
     for (let key in params) {
+      console.log(params[key])
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
       } else if (
@@ -74,11 +75,9 @@ export class SyntheseFormService {
         (key === 'period_start' && params.period_start)
       ) {
         updatedParams[key] = this._periodFormatter.format(params[key]);
-      } else if (params['geoIntersection']) {
+      } else if (key === 'geoIntersection' && params['geoIntersection']) {
         updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
-        // if other key an value not null or undefined
-      }
-      if (params[key]) {
+      } else if (params[key]) {
         // if its an Array push only if > 0
         if (Array.isArray(params[key]) && params[key].length > 0) {
           updatedParams[key] = params[key];
