@@ -33,7 +33,7 @@ export class OcctaxFormComponent implements OnInit {
     private router: Router,
     private occtaxService: OcctaxService,
     private _commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // set show occurrence to false:
@@ -214,6 +214,7 @@ export class OcctaxFormComponent implements OnInit {
         } else {
           console.error(error.error.message);
           this._commonService.translateToaster("error", "ErrorMessage");
+          this.disabledAfterPost = false;
         }
       }
     );
