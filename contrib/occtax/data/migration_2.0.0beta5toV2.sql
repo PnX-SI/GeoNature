@@ -705,8 +705,8 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
     rel.geom_4326,
     rel."precision",
    dataset.dataset_name,
-    string_agg(t.nom_valide::text, ','::text) AS taxons,
-    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
+    string_agg(DISTINCT t.nom_valide::text, ','::text) AS taxons,
+    (((string_agg(DISTINCT t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
     COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
