@@ -216,11 +216,6 @@ $BODY$
   COST 100;
 
 
-
-
-
-
-
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
@@ -448,9 +443,6 @@ $BODY$
   COST 100;
 
 
-
-
-
 -- suppression d'un relevé
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_releve()
 RETURNS trigger AS
@@ -668,6 +660,61 @@ CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_cor_role_releve();
 
+---------
+--VIEWS--
+---------
+DROP VIEW IF EXISTS v_releve_occtax;
+CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
+ SELECT rel.id_releve_occtax,
+    rel.id_dataset,
+    rel.id_digitiser,
+    rel.date_min,
+    rel.date_max,
+    rel.altitude_min,
+    rel.altitude_max,
+    rel.meta_device_entry,
+    rel.comment,
+    rel.geom_4326,
+    rel."precision",
+    occ.id_occurrence_occtax,
+    occ.cd_nom,
+    occ.nom_cite,
+    t.lb_nom,
+    t.nom_valide,
+    t.nom_vern,
+    (((t.nom_complet_html::text || ' '::text) || rel.date_min::date) || '<br/>'::text) || string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS leaflet_popup,
+    COALESCE ( string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text),rel.observers_txt) AS observateurs
+   FROM pr_occtax.t_releves_occtax rel
+     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
+     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+     LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
+     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+
+--Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
+CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
+ SELECT rel.id_releve_occtax,
+    rel.id_dataset,
+    rel.id_digitiser,
+    rel.date_min,
+    rel.date_max,
+    rel.altitude_min,
+    rel.altitude_max,
+    rel.meta_device_entry,
+    rel.comment,
+    rel.geom_4326,
+    rel."precision",
+   dataset.dataset_name,
+    string_agg(t.nom_valide::text, ','::text) AS taxons,
+    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
+    COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs
+   FROM pr_occtax.t_releves_occtax rel
+     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
+     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+     LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
+     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+     LEFT JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
+  GROUP BY dataset.dataset_name, rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry;
 
 --------------------
 -- ASSOCIATED DATA--
