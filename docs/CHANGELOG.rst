@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.0.0-rc.1 (unreleased)
+2.0.0-rc.1 (2018-09-21)
 -----------------------
 
 La version 2 de GeoNature est une refonte complète de l'application.
@@ -12,7 +12,7 @@ La version 2 de GeoNature est une refonte complète de l'application.
 * Refonte de la base de données pour la rendre plus standarde, plus générique et modulaire
 * Refonte ergonomique pour moderniser l'application
 
-Présentation et suivi du projet : https://github.com/PnX-SI/GeoNature/issues/168
+Présentation et suivi des développements : https://github.com/PnX-SI/GeoNature/issues/168
 
 **Accueil**
 
