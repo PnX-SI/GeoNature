@@ -156,7 +156,7 @@ Pour les utilisateurs utilisant la version 2.0.0.beta5 :
         geonature generate_frontend_modules_route
         geonature frontend_build
 
-* Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5to2.0.0.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
+* Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5to2.0.0.sql``), celui de Occtax (``contrib/occtax/data/migration_2.0.0beta5toV2.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
 
 
 2.0.0.beta5 (2018-07-16)
