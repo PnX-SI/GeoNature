@@ -5,7 +5,7 @@ GeoNature
 .. image:: https://travis-ci.org/PnX-SI/GeoNature.svg?branch=develop
     :target: https://travis-ci.org/PnX-SI/GeoNature
 
-GeoNature V2 en cours de développement. Refonte complète de la BDD et changement de technologies : 
+GeoNature V2 est en refonte complète de la BDD et changement de technologies : 
 
 * Python
 * Flask
@@ -16,8 +16,6 @@ GeoNature V2 en cours de développement. Refonte complète de la BDD et changeme
 Pour en savoir plus sur le projet de refonte : https://github.com/PnX-SI/GeoNature/issues/168.
 
 Documentation sur https://geonature.readthedocs.io.
-
-Les développements sont réalisés dans la branche ``develop``. En attendant une version stable, des versions beta sont testées et disponibles dans la branche ``geonature2beta``.
 
 **Application de saisie, de gestion, de synthèse et de diffusion d'observations faune et flore.**
 
