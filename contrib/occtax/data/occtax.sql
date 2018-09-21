@@ -237,8 +237,8 @@ VALUES(
   releve.geom_4326,
   ST_CENTROID(releve.geom_4326),
   releve.geom_local,
-  (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || to_char(releve.date_min, 'hh:mm:ss'))::timestamp,
-  (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || to_char(releve.date_max, 'hh:mm:ss'))::timestamp,
+  (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
+  (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
   validation.validator_full_name,
   validation.validation_comment,
   COALESCE (myobservers.observers_name, releve.observers_txt),
@@ -641,7 +641,6 @@ $BODY$
   COST 100;
 
 
-
 -- DELETE counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_counting()
 RETURNS trigger AS
@@ -655,7 +654,6 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
-
 
 -- DELETE counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_delete_counting()
@@ -674,7 +672,6 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
-
 
   -- UPDATE counting
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
@@ -718,7 +715,6 @@ DECLARE
 BEGIN
   -- récupération du releve pour le commentaire à concatener
   SELECT INTO releve * FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = NEW.id_releve_occtax;
-
     UPDATE gn_synthese.synthese SET
     id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
     id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
@@ -740,7 +736,6 @@ BEGIN
     comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
     last_action = 'U'
     WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
-
   RETURN NULL;
 END;
 $BODY$
@@ -800,6 +795,7 @@ BEGIN
   ELSE 
     theobservers:= NEW.observers_txt;
   END IF;
+
   --mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
@@ -807,8 +803,8 @@ BEGIN
       id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
-      date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_min, 'hh:mm:ss'), '00:00:00'))::timestamp,
-      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
+      date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
+      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
       the_geom_4326 = NEW.geom_4326,
@@ -820,7 +816,7 @@ BEGIN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
       LOOP
           UPDATE gn_synthese.synthese SET
-                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '-'), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
+                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
           WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
       END LOOP;
   END IF;
@@ -829,9 +825,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
-
-
 
 
 -- suppression d'un relevé
@@ -854,7 +847,7 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  uuids_counting integer;
+  uuids_counting uuid[];
 BEGIN
   -- récupération des id_counting à partir de l'id_releve
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
@@ -927,8 +920,6 @@ COST 100;
 ------------
 --TRIGGERS--
 ------------
-
-
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
   ON cor_counting_occtax
@@ -1052,9 +1043,6 @@ CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_cor_role_releve();
 
 
-
-
-
 ------------
 --VIEWS--
 ------------
@@ -1078,8 +1066,8 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
     t.lb_nom,
     t.nom_valide,
     t.nom_vern,
-    (((t.nom_complet_html::text || ' '::text) || rel.date_min::date) || '<br/>'::text) || string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS leaflet_popup,
-    COALESCE ( string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text),rel.observers_txt) AS observateurs
+    (((t.nom_complet_html::text || ' '::text) || rel.date_min::date) || '<br/>'::text) || string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS leaflet_popup,
+    COALESCE ( string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text),rel.observers_txt) AS observateurs
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
@@ -1103,9 +1091,9 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
     rel.geom_4326,
     rel."precision",
    dataset.dataset_name,
-    string_agg(t.nom_valide::text, ','::text) AS taxons,
-    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
-    COALESCE(string_agg((obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs
+    string_agg(DISTINCT t.nom_valide::text, ','::text) AS taxons,
+    (((string_agg(DISTINCT t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
+    COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
@@ -1113,6 +1101,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
      LEFT JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
   GROUP BY dataset.dataset_name, rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry;
+
 
 --------------------
 -- ASSOCIATED DATA--

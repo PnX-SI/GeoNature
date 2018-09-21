@@ -2,13 +2,14 @@
 
 
 cp /home/$USER/geonature_old/config/settings.ini config/settings.ini
+cp /home/$USER/geonature_old/config/geonature_config.toml config/geonature_config.toml
 cp /home/$USER/geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
 cp -r /home/$USER/geonature_old/frontend/src/custom/* frontend/src/custom/
 cp -r /home/$USER/geonature_old/external_modules/* external_modules
 cp -r /home/$USER/geonature_old/frontend/src/external_assets/* frontend/src/external_assets/
 
-mkdir $geonature_dir/var
-mkdir $geonature_dir/var/log
+mkdir /home/$USER/geonature/var
+mkdir /home/$USER/geonature/var/log
 
 # Création du répertoitre static et rapattriement des médias
 if [ ! -d 'backend/static/' ]
