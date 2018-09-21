@@ -12,13 +12,14 @@ DEBUG = true
 URL_APPLICATION = 'http://url.com/geonature'          # Replace my_url.com by your domain or IP
 API_ENDPOINT = 'http://url.com/geonature/api'         # Replace my_url.com by your domain or IP
 API_TAXHUB ='http://127.0.0.1:5000/api/'
-ID_APPLICATION_GEONATURE = 14                         # id_application of GeoNature in UsersHub
+ID_APPLICATION_GEONATURE = 3                         # id_application of GeoNature in UsersHub
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
-HTTPS = false
+# code EPSG des geom local de la BDD
+LOCAL_SRID = 
 
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
@@ -41,6 +42,9 @@ CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
     ID = 'mon_id'
     PASSWORD = 'mon_pass'
 
+[BDD]
+id_area_type_municipality = 25
+
 [RIGHTS]
     NOTHING = 0
     MY_DATA = 1
@@ -49,8 +53,11 @@ CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
 
 # Front end configuration
 [FRONTEND]
+# passe le frontend en mode production (message de la console moins parlant en développement)
 PROD_MOD = false
+# Affiche me composant 'custom/components/footer' sur la page d'accueil
 DISPLAY_FOOTER = false
+# Passe le frontend en mode multilingue
 MULTILINGUAL = false
 
 [MAILERROR]
@@ -67,15 +74,10 @@ MULTILINGUAL = false
     # Liste des entités géographiques sur lesquels les filtres
     # géographiques de la synthese s'appuient (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
     AREA_FILTERS = [
-        { label = "Zone natural 2000", id_type = 201 },
-        { label = "Secteurs", id_type = 202 }
+        { label = "Communes", id_type = 25 },
     ]
     # Colonne à afficher par défaut sur la liste des resultats de la synthese
-    # 'prop' corespond au nom de la colonne tel qu'il est écrit en BDD
-    # champs disponible de la table synthese : 'date_min', 'date_max', 'observers', 'id_synthese', 'altitude_min', 'altitude_max'
-    # champs disponible de la table taxon: 'nom_valide', 'cd_nom', 'lb_nom', 'nom_vern'
-    # champs disponible de la table t_dataset: 'dataset_name
-    # champs disponible de la table gn_synthese.t_sources: 'name_source'
+    # 'prop' corespond au nom de la colonne tel qu'il est écrit en BDD (gn_synthese.v_synthese_for_web_app)
     
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
@@ -83,15 +85,23 @@ MULTILINGUAL = false
         { prop = "observateurs", name = "Observateurs" },
         { prop = "dataset_name", name = "Jeu de données" }
     ]
+
     # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
-    
     ID_ATTRIBUT_TAXHUB = [1, 2]
 
     # Colonne de la table gn_synthese.synthese que l'on veut masquer dans les filtres du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. Exemple: 
     EXCLUDED_COLUMNS = ['non_digital_proof'] pour enlever le filtre 'preuve non numérique'
-    
-    EXCLUDED_COLUMNS = []
-
+    # Affiche ou masque l'arbre de recherche taxonomique (recherche taxonommique avancé)
+    # Cette fonctionnalité n'est actuallement pas stable sur un grand nombre de taxon, passer à false si le temps de chargement est trop long
+    DISPLAY_TAXON_TREE = true
+    # Active le fait de rechercher sur le nom d'observateur en ILIKE sur les portée 1 et 2 du CRUVED
+    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
+    # Nombre d'observation maximum à afficher sur la carte après une recherche
+    NB_MAX_OBS_MAP = 10000
+    # Nombre des dernières observations affichées par défaut quand on arrive sur la synthese 
+    NB_LAST_OBS = 100
+    # Nombre max d'observation dans les exports
+    NB_MAX_OBS_EXPORT = 40000
     # Champs à afficher dans l'export
     [EXPORT_COLUMNS]
         [EXPORT_COLUMNS.SYNTHESE_COLUMNS] = [
@@ -137,9 +147,3 @@ MULTILINGUAL = false
             'nom_valide'
         ]
 
-default_maplist_columns = [
-    { prop = "taxons", name = "Taxon" },
-    { prop = "date_min", name = "Date début" },
-    { prop = "observateurs", name = "Observateurs" },
-    { prop = "dataset_name", name = "Jeu de données" }
-]
