@@ -202,8 +202,8 @@ Mise à jour de l'application
 
   ::
 
-    mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
-    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
+    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
+    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
     cd geonature
 
 * Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
