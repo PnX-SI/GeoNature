@@ -151,7 +151,7 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         # if the geom is a circle
         if 'radius' in filters:
             radius = filters.pop('radius')[0]
-            geom_wkt = circle_from_point(geom_wkt, radius)
+            geom_wkt = circle_from_point(geom_wkt, float(radius))
         geom_wkb = from_shape(geom_wkt, srid=4326)
         q = q.filter(model.the_geom_4326.ST_Intersects(geom_wkb))
         filters.pop('geoIntersection')

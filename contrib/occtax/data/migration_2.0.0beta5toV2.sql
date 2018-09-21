@@ -197,8 +197,8 @@ VALUES(
   releve.geom_4326,
   ST_CENTROID(releve.geom_4326),
   releve.geom_local,
-  (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || to_char(releve.date_min, 'hh:mm:ss'))::timestamp,
-  (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || to_char(releve.date_max, 'hh:mm:ss'))::timestamp,
+  (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
+  (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
   validation.validator_full_name,
   validation.validation_comment,
   COALESCE (myobservers.observers_name, releve.observers_txt),
@@ -214,6 +214,7 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
 
 
 
@@ -396,6 +397,7 @@ COST 100;
 
 
 -- UPDATE Releve
+-- UPDATE Releve
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
@@ -413,6 +415,8 @@ BEGIN
   ELSE 
     theobservers:= NEW.observers_txt;
   END IF;
+
+
   --mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
@@ -420,8 +424,8 @@ BEGIN
       id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
-      date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_min, 'hh:mm:ss'), '00:00:00'))::timestamp,
-      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'hh:mm:ss'), '00:00:00'))::timestamp,
+      date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
+      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || '00:00:00')::timestamp,
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
       the_geom_4326 = NEW.geom_4326,
@@ -433,7 +437,7 @@ BEGIN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
       LOOP
           UPDATE gn_synthese.synthese SET
-                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '-'), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
+                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
           WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
       END LOOP;
   END IF;

@@ -22,8 +22,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Input() options = leafletDrawOption;
   @Input() zoomLevel = MAP_CONFIG.ZOOM_LEVEL_RELEVE;
   @Output() layerDrawed = new EventEmitter<any>();
+  @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -84,6 +85,11 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       geojson = (geojson as any).features[0];
       // output
       this.layerDrawed.emit(geojson);
+    });
+
+    // on layer deleted
+    this.map.on(this._Le.Draw.Event.DELETED, (e) => {
+      this.layerDeleted.emit();
     });
   }
 

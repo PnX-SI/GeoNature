@@ -587,6 +587,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         
         :``layerDrawed``:
                 Output renvoyant le geojson de l'objet dessiné.
+        :``layerDeleted``:
+                Output renvoyant les layers sont supprimées.
 
 - **GPSComponent**
         Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.

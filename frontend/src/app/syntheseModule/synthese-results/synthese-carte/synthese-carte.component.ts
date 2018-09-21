@@ -18,12 +18,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
     this.leafletDrawOptions.draw.circle = true;
     this.leafletDrawOptions.draw.polyline = false;
+    this.leafletDrawOptions.edit.remove = true;
   }
 
   ngAfterViewInit() {
@@ -49,5 +50,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
   bindGeojsonForm(geojson) {
     this.formService.searchForm.controls.radius.setValue(geojson.properties['radius']);
     this.formService.searchForm.controls.geoIntersection.setValue(geojson);
+  }
+
+  deleteControlValue() {
+    console.log('deleeeete')
+    this.formService.searchForm.controls.geoIntersection.reset();
+    this.formService.searchForm.controls.radius.reset();
   }
 }
