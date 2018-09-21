@@ -113,7 +113,7 @@ Pour Debian 8 :
 
     adduser geonatureadmin sudo
 
-* L'ajouter aussi aux groupes ``www-data`` et ``root`` :
+* L'ajouter aussi aux groupes ``www-data`` :
 
 ::
 
