@@ -20,5 +20,18 @@
       </button>
     </div>
 
+    <br/>
+    <div *ngIf="isDownloading" class="telechargement"> {{message}}
+      <p>
+        <ngb-progressbar [type]="type" [value]="downloadProgress$ | async" [striped]="true" [animated]="animated"></ngb-progressbar>
+      </p>
+    </div>
+
+    <div *ngIf="endLoad" class="telechargement"> {{message}}
+      <p>
+        <ngb-progressbar [type]="type" [value]="downloadProgress$ | async" [striped]="false" [animated]="animated"></ngb-progressbar>
+      </p>
+    </div>
+
   </div>
 </ng-template>
