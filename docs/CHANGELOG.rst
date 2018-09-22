@@ -5,9 +5,24 @@ CHANGELOG
 2.0.0-rc.2 (unreleased)
 -----------------------
 
+**Nouveautés**
+
+* Amélioration du composant Download
+* Amélioration du ShapeService
+* Compléments de la documentation
+* Nettoyage du code
+* Mise à jour de la doc de l'API : https://documenter.getpostman.com/view/2640883/RWaPskTw
+* Configuration de la carte (frontend/src/conf/map.config.ts) : OSM par défaut car OpenTopoMap ne s'affiche pas à petite échelle
+
 **Corrections**
 
-* 
+* Ne pas afficher le debug dans le recherche de la synthèse
+* Correction du bug de déconnexion entre TaxHub et GeoNature (#423)
+* Champs Multiselect : Ne pas afficher les valeurs selectionnées dans la liste quand on modifie un objet
+* Trigger Occtax vers Synthèse : Correction des problèmes d'heure de relevés mal copiés dans la Synthèse
+* Correction des altitudes (non abouti) (#424)
+* Données exemple : Suppression de l'observer_txt
+* Suppression d'un ``id_municipality`` en dur dans une route
 
 2.0.0-rc.1 (2018-09-21)
 -----------------------
