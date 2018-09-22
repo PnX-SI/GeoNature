@@ -52,7 +52,6 @@ export class TaxonAdvancedStoreService {
           return attr;
         });
       this.formBuilded = true;
-      console.log(this._formService.searchForm);
     });
     // load LR,  habitat and group2inpn
     this._dataService.getTaxonomyLR().subscribe(data => {
@@ -66,7 +65,6 @@ export class TaxonAdvancedStoreService {
     const all_groups = [];
     this._dataService.getRegneAndGroup2Inpn().subscribe(data => {
       this.taxonomyGroup2Inpn = data;
-      console.log(data);
       // tslint:disable-next-line:forin
       for (let regne in data) {
         data[regne].forEach(group => {

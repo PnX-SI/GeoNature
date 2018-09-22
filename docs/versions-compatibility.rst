@@ -1,5 +1,7 @@
+COMPATIBILITE
+=============
+
 Compatibilité des versions de GeoNature
-=======================================
 
 GeoNature2 RC1
 --------------

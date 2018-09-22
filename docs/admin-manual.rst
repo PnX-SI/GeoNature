@@ -33,19 +33,24 @@ Autres standards:
 - Pas de nom de table dans les noms de champs
 - Nom de schema éventuellement dans nom de table
 
-Dernière version de la base de données (2018-03-19) : 
+Schéma simplifié de la BDD : 
+
+.. image :: http://geonature.fr/docs/img/admin-manual/GN-schema-BDD.jpg
+
+- En jaune, les schémas des réferentiels.
+- En rose, les schémas du coeur de GeoNature
+- En bleu, les schémas des protocoles et sources de données
+- En vert, les schémas des applications pouvant interagir avec le coeur de GeoNature
+
+Modèle simplifié de la BDD (2017-12-15) : 
+
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
+
+Dernière version complète de la base de données (2018-03-19), à mettre à jour : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
 
 Désolé pour les relations complexes entre tables...
-
-Voici un modèle simplifié de la BDD (2017-12-15) : 
-
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
-
-Et un autre schéma simplifié : 
-
-.. image :: http://geonature.fr/docs/img/admin-manual/bdd-geonature-v2.jpg
 
 Gestion des droits :
 """"""""""""""""""""
@@ -62,6 +67,9 @@ Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en pla
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
+
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
+
 
 Nomenclatures :
 """""""""""""""
@@ -622,9 +630,9 @@ Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore
 Personnaliser la liste des taxons saisissables dans le module
 *************************************************************
 
-Le module est fourni avec une liste restreinte de taxons (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
-Le paramètre ``id_taxon_list = 500`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 500 correspond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
 Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
@@ -642,7 +650,7 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
       'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 500,n.id_nom FROM taxonomie.bib_noms n
+    SELECT 100,n.id_nom FROM taxonomie.bib_noms n
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
