@@ -1,8 +1,6 @@
 Bienvenue dans la documentation de GeoNature
 ============================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
    
