@@ -81,7 +81,6 @@ fichier utilisation modele ::
 
 - ``geonature.utils.utilsgeometry.shapeserializable``
 
-
 Décorateur pour les modèles SQLA:
 
 - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
