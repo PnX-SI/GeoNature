@@ -28,6 +28,9 @@ GeoNature utilise :
 
 Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/RWaPskTw
 
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
+
+
 *@TODO : Doc API à mettre à jour*
 
 Release
