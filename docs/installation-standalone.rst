@@ -218,7 +218,7 @@ Mise à jour de l'application
 Passer en mode développement
 ----------------------------
 
-Si vous avez téléchargé GeoNature zippé (via la procédure ``install_all.sh`` en en suivant la documentation d'installation standalone), il est necessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
+Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
 
 ::
 
