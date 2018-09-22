@@ -47,7 +47,7 @@ Pratiques
 ---------
 
 - Ne jamais faire de commit dans la branche ``master`` mais dans la branche ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité
-- Faire des pull request regroupant plusieurs depuis la branche de sa fonctionnalité pour plus de lisibilité, éviter les conflits et déclencher les tests automatiques Travis avant d'intégrer la branche ``develop``
+- Faire des pull request vers la branche ``develop`` regroupant plusieurs commits depuis la branche de sa fonctionnalité pour plus de lisibilité, éviter les conflits et déclencher les tests automatiques Travis avant d'intégrer la branche ``develop``
 - Faire des ``git pull`` avant chaque développement et avant chaque commit
 - Les messages de commits font référence à ticket ou le ferme (``ref #12`` ou ``fixes #23``)
 
