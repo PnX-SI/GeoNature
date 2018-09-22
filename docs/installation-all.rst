@@ -175,6 +175,10 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
 - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
 
+:Note:
+
+    Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd.
+
 
 Installation d'un module GeoNature
 ----------------------------------
