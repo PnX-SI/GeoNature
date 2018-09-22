@@ -1,5 +1,7 @@
-Mise en place du  HTTPS
-=======================
+HTTPS
+=====
+
+**Mise en place du  HTTPS**
 
 La procédure décrit la certification HTTPS du sous-domaine ``test.ecrins-parcnational.fr`` grâce au service `Let's Encrypt <https://letsencrypt.org/>`_. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.
 
