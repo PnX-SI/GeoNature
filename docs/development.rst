@@ -26,9 +26,33 @@ GeoNature utilise :
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
-Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/geonature-v2/7TDmFuN
+Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/RWaPskTw
 
-@TODO : Doc API à mettre à jour
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
+
+
+*@TODO : Doc API à mettre à jour*
+
+Release
+-------
+
+Pour sortir une nouvelle version de GeoNature : 
+
+- Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, GeoNature-atlas)
+- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements.txt`` et ``backend/requirements-travis.txt``
+- Compléter le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
+- Mettez à jour le fichier ``VERSION``
+- Mergez la branche ``develop`` dans la branche ``master``
+- Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
+- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
+
+Pratiques
+---------
+
+- Ne jamais faire de commit dans la branche ``master`` mais dans la branche ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité
+- Faire des pull request vers la branche ``develop`` regroupant plusieurs commits depuis la branche de sa fonctionnalité pour plus de lisibilité, éviter les conflits et déclencher les tests automatiques Travis avant d'intégrer la branche ``develop``
+- Faire des ``git pull`` avant chaque développement et avant chaque commit
+- Les messages de commits font référence à ticket ou le ferme (``ref #12`` ou ``fixes #23``)
 
 Développer et installer un gn_module
 ------------------------------------
@@ -157,6 +181,278 @@ Cette commande exécute les actions suivantes :
 - Re-build du frontend pour une mise en production
 
 
+
+
+Développement Backend
+----------------------
+
+Démarrage du serveur de dev backend
+"""""""""""""""""""""""""""""""""""
+
+    ::
+
+    (venv)...$ geonature dev_back
+
+
+Base de données
+"""""""""""""""
+
+Session sqlalchemy
+******************
+
+- ``geonature.utils.env.DB``
+
+
+Fournit l'instance de connexion SQLAlchemy
+
+
+Python ::
+
+    from geonature.utils.env import DB
+
+    result = DB.session.query(MyModel).get(1)
+
+
+Serialisation des modèles
+"""""""""""""""""""""""""
+
+
+- ``geonature.utils.utilssqlalchemy.serializable``
+
+Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un dictionnaire des données de l'objet sérialisable json
+
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilssqlalchemy import serializable
+
+    @serializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
+
+
+Fichier utilisation modele ::
+
+    instance = DB.session.query(MyModel).get(1)
+    result = instance.as_dict()
+
+
+
+- ``geonature.utils.utilssqlalchemy.geoserializable``
+
+
+Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui retourne un dictionnaire serialisable sous forme de Feature geojson.
+
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilssqlalchemy import geoserializable
+
+    @geoserializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
+
+
+Fichier utilisation modele ::
+
+    instance = DB.session.query(MyModel).get(1)
+    result = instance.as_geofeature()
+
+- ``geonature.utils.utilsgeometry.shapeserializable``
+
+Décorateur pour les modèles SQLA:
+
+- Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
+- Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilsgeometry import shapeserializable
+
+    @shapeserializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
+
+
+Fichier utilisation modele ::
+
+
+    # utilisation de as_shape()
+    data = DB.session.query(MyShapeserializableClass).all()
+    MyShapeserializableClass.as_shape(
+        geom_col='geom_4326',
+        srid=4326,
+        data=data,
+        dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+        file_name=file_name
+    )
+
+- ``geonature.utils.utilsgeometry.FionaShapeService``
+
+Classe utilitaire pour crer des shapefiles.
+
+La classe contient 3 méthode de classe:
+
+- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geom passé en paramètre
+
+- FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles
+
+- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles qui ont au moin un enregistrement
+
+::
+
+        data = DB.session.query(MySQLAModel).all()
+        
+        for d in data:
+                FionaShapeService.create_shapes_struct(
+                        db_cols=db_cols,
+                        srid=current_app.config['LOCAL_SRID'],
+                        dir_path=dir_path,
+                        file_name=file_name,
+                        col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+                )
+        FionaShapeService.create_feature(row_as_dict, geom)
+                FionaShapeService.save_and_zip_shapefiles()
+
+
+
+- ``geonature.utils.utilssqlalchemy.json_resp``
+
+
+Décorateur pour les routes : les données renvoyées par la route sont automatiquement serialisées en json (ou geojson selon la structure des données)
+
+S'insère entre le décorateur de route flask et la signature de fonction
+
+
+Fichier routes ::
+
+    from flask import Blueprint
+    from geonature.utils.utilssqlalchemy import json_resp
+
+    blueprint = Blueprint(__name__)
+
+    @blueprint.route('/myview')
+    @json_resp
+    def my_view():
+        return {'result': 'OK'}
+
+
+    @blueprint.route('/myerrview')
+    @json_resp
+    def my_err_view():
+        return {'result': 'Not OK'}, 400
+
+
+
+Export des données
+""""""""""""""""""
+
+TODO
+
+
+Authentification avec pypnusershub
+""""""""""""""""""""""""""""""""""
+
+
+Vérification des droits des utilisateurs
+****************************************
+
+
+- ``pypnusershub.routes.check_auth``
+
+
+Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirige en cas de niveau insuffisant ou d'informations de session erronés
+(deprecated) Privilegier `check_auth_cruved`
+
+params :
+
+* level <int>: niveau de droits requis pour accéder à la vue
+* get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
+* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+
+
+    ::
+
+        from flask import Blueprint
+        from pypnusershub.routes import check_auth
+        from geonature.utils.utilssqlalchemy import json_resp
+
+        blueprint = Blueprint(__name__)
+
+        @blueprint.route('/myview')
+        @check_auth(
+                1,
+                True,
+                redirect_on_expiration='my_reconnexion_handler',
+                redirect_on_invalid_token='my_affreux_pirate_handler'
+                )
+        @json_resp
+        def my_view(id_role):
+                return {'result': 'id_role = {}'.format(id_role)}
+
+
+
+- ``pypnusershub.routes.check_auth_cruved``
+
+Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer une action sur la donnée et le redirige en cas de niveau insuffisant ou d'informations de session erronées
+
+params :
+
+* action <str:['C','R','U','V','E','D']> type d'action effectuée par la route (Create, Read, Update, Validate, Export, Delete)
+* get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
+* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+
+
+    ::
+
+        from flask import Blueprint
+        from pypnusershub.routes import check_auth_cruved
+        from geonature.utils.utilssqlalchemy import json_resp
+
+        blueprint = Blueprint(__name__)
+
+        @blueprint.route('/mysensibleview', methods=['GET'])
+        @check_auth_cruved(
+                'R',
+                True,
+                redirect_on_expiration='my_reconnexion_handler',
+                redirect_on_invalid_token='my_affreux_pirate_handler'
+                )
+        @json_resp
+        def my_sensible_view(id_role):
+                return {'result': 'id_role = {}'.format(id_role)}
+
+
+
+- ``pypnusershub.routes.db.tools.cruved_for_user_in_app``
+
+
+Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
+Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.
+Le cruved de l'application enfant surcharge toujours celui de l'application mère.
+
+params :
+* id_role <integer:None>
+* id_application: id du module surlequel on veut avoir le cruved
+* id_application_parent: id l'application parent du module
+
+Valeur retournée : <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+
+    ::
+
+    from pypnusershub.db.tools import cruved_for_user_in_app
+
+    cruved = cruved_for_user_in_app(id_role=5, id_application=18, id_application_parent=14)
+
+
 Développement Frontend
 ----------------------
 
@@ -175,7 +471,7 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 """"""""""""""""""""""""""""""
 Les composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type ``input`` ou ``select`` et seront souvent réutilisés dans les différents module de GeoNature.
 
-*Input et Output communs*:
+*Input et Output communs* :
 
 Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 

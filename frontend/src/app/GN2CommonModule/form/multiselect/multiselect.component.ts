@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { id } from '@swimlane/ngx-datatable/release/utils';
 
 @Component({
   selector: 'pnx-multiselect',
@@ -42,7 +43,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-  constructor(private _translate: TranslateService) { }
+  constructor(private _translate: TranslateService) {}
 
   // Component to generate a custom multiselect input with a search bar (which can be disabled)
   // you can pass whatever callback to the onSearch output, to trigger database research or simple search on an array
@@ -153,27 +154,35 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.onDelete.emit(item);
   }
 
+  removeDoublon() {
+    if (this.values && this.formControlValue) {
+      this.values = this.values.filter(v => {
+        let isInArray = false;
+
+        this.formControlValue.forEach(element => {
+          if (this.bindAllItem) {
+            if (v[this.keyValue] === element[this.keyValue]) {
+              isInArray = true;
+            }
+          } else {
+            if (v[this.keyValue] === element) {
+              isInArray = true;
+            }
+          }
+        });
+        return !isInArray;
+      });
+    }
+  }
+
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
       this.savedValues = changes.values.currentValue;
       // remove doublon in the dropdown lists
-      if (this.formControlValue) {
-        this.values = changes.values.currentValue.filter(v => {
-          let isInArray = false;
-          this.formControlValue.forEach(element => {
-            if (this.bindAllItem) {
-              if (v === element) {
-                isInArray = true;
-              }
-            } else {
-              if (v[this.keyValue] === element[this.keyValue]) {
-                isInArray = true;
-              }
-            }
-          });
-          return !isInArray;
-        });
-      }
+      // @FIXME: timeout to wait for the formcontrol to be updated
+      setTimeout(() => {
+        this.removeDoublon();
+      }, 2000);
     }
   }
 }

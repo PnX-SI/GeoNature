@@ -5,7 +5,6 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
-import { Location } from '@angular/common';
 
 export class User {
   constructor(public userName: string, public userId: number, public organismId: number) {
@@ -23,13 +22,7 @@ export class AuthService {
   toastrConfig: ToastrConfig;
   loginError: boolean;
   public isLoading = false;
-  constructor(
-    private router: Router,
-    private toastrService: ToastrService,
-    private _http: HttpClient,
-    private _cookie: CookieService,
-    private _router: Router
-  ) {}
+  constructor(private router: Router, private _http: HttpClient, private _cookie: CookieService) {}
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));

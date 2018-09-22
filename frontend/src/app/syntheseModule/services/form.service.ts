@@ -67,7 +67,6 @@ export class SyntheseFormService {
     const updatedParams = {};
     // tslint:disable-next-line:forin
     for (let key in params) {
-      console.log(params[key])
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
       } else if (

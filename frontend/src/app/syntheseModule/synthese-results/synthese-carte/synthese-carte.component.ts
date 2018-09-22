@@ -18,7 +18,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
@@ -53,7 +53,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
   }
 
   deleteControlValue() {
-    console.log('deleeeete')
     this.formService.searchForm.controls.geoIntersection.reset();
     this.formService.searchForm.controls.radius.reset();
   }
