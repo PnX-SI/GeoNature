@@ -33,19 +33,24 @@ Autres standards:
 - Pas de nom de table dans les noms de champs
 - Nom de schema éventuellement dans nom de table
 
-Dernière version de la base de données (2018-03-19) : 
+Schéma simplifié de la BDD : 
+
+.. image :: http://geonature.fr/docs/img/admin-manual/GN-schema-BDD.jpg
+
+- En jaune, les schémas des réferentiels.
+- En rose, les schémas du coeur de GeoNature
+- En bleu, les schémas des protocoles et sources de données
+- En vert, les schémas des applications pouvant interagir avec le coeur de GeoNature
+
+Modèle simplifié de la BDD (2017-12-15) : 
+
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
+
+Dernière version complète de la base de données (2018-03-19), à mettre à jour : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
 
 Désolé pour les relations complexes entre tables...
-
-Voici un modèle simplifié de la BDD (2017-12-15) : 
-
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
-
-Et un autre schéma simplifié : 
-
-.. image :: http://geonature.fr/docs/img/admin-manual/bdd-geonature-v2.jpg
 
 Gestion des droits :
 """"""""""""""""""""
