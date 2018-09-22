@@ -163,6 +163,9 @@ Une fois l'installation terminée, les applications sont disponibles aux adresse
 
 Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin).
 
+:Note:
+
+    Ne prenez pas en compte les messages de UsersHub indiqués à la fin de l'installation. Ce sont des restes d'anciennes vers de UsersHub et GeoNature V1.
 
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
