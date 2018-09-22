@@ -69,10 +69,10 @@ export class OcctaxFormComponent implements OnInit {
       finalForm.properties.date_max
     );
     // set hour_min/hour_max to null
-    if (finalForm.properties.hour_min.length == 0) {
+    if (finalForm.properties.hour_min && finalForm.properties.hour_min.length == 0) {
       finalForm.properties.hour_min = null;
     };
-    if (finalForm.properties.hour_max.length == 0) {
+    if (finalForm.properties.hour_max && finalForm.properties.hour_max.length == 0) {
       finalForm.properties.hour_max = null;
     };
     // format nom_cite, update date, set id_releve_occtax and id_occurrence_occtax
