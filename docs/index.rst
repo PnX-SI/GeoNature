@@ -9,6 +9,8 @@ Bienvenue dans la documentation de GeoNature
    installation-mtes
    user-manual
    admin-manual
+   https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/readme.rst
+   https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-avance/readme.rst
    development
    versions-compatibility
    https
