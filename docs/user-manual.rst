@@ -261,6 +261,8 @@ Il permet aussi d'afficher la fiche détaillée de chaque occurrence et de reven
 
 .. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif
 
+.. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif
+
 Admin
 -----
 
