@@ -185,13 +185,9 @@ Cette commande exécute les actions suivantes :
 
 Développement Backend
 ----------------------
-====================================================
-Aide mémoire pour l'utilisation du core de geonature
-====================================================
-
 
 Démarrage du serveur de dev backend
-===================================
+"""""""""""""""""""""""""""""""""""
 
     ::
 
@@ -199,10 +195,10 @@ Démarrage du serveur de dev backend
 
 
 Base de données
-===============
+"""""""""""""""
 
 Session sqlalchemy
-------------------
+******************
 
 - ``geonature.utils.env.DB``
 
@@ -218,7 +214,7 @@ Python ::
 
 
 Serialisation des modèles
-=========================
+"""""""""""""""""""""""""
 
 
 - ``geonature.utils.utilssqlalchemy.serializable``
@@ -237,7 +233,7 @@ Fichier définition modèle ::
         ...
 
 
-fichier utilisation modele ::
+Fichier utilisation modele ::
 
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_dict()
@@ -261,7 +257,7 @@ Fichier définition modèle ::
         ...
 
 
-fichier utilisation modele ::
+Fichier utilisation modele ::
 
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
@@ -284,7 +280,7 @@ Fichier définition modèle ::
         ...
 
 
-fichier utilisation modele ::
+Fichier utilisation modele ::
 
 
     # utilisation de as_shape()
@@ -334,7 +330,7 @@ Décorateur pour les routes : les données renvoyées par la route sont automati
 S'insère entre le décorateur de route flask et la signature de fonction
 
 
-fichier routes ::
+Fichier routes ::
 
     from flask import Blueprint
     from geonature.utils.utilssqlalchemy import json_resp
@@ -355,17 +351,17 @@ fichier routes ::
 
 
 Export des données
-==================
+""""""""""""""""""
 
 TODO
 
 
 Authentification avec pypnusershub
-==================================
+""""""""""""""""""""""""""""""""""
 
 
 Vérification des droits des utilisateurs
-----------------------------------------
+****************************************
 
 
 - ``pypnusershub.routes.check_auth``
@@ -443,12 +439,12 @@ Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
 Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.
 Le cruved de l'application enfant surcharge toujours celui de l'application mère.
 
-params:
+params :
 * id_role <integer:None>
 * id_application: id du module surlequel on veut avoir le cruved
 * id_application_parent: id l'application parent du module
 
-Valeur retourné: <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+Valeur retournée : <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
 
     ::
 
@@ -475,7 +471,7 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 """"""""""""""""""""""""""""""
 Les composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type ``input`` ou ``select`` et seront souvent réutilisés dans les différents module de GeoNature.
 
-*Input et Output communs*:
+*Input et Output communs* :
 
 Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 

@@ -625,9 +625,9 @@ Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore
 Personnaliser la liste des taxons saisissables dans le module
 *************************************************************
 
-Le module est fourni avec une liste restreinte de taxons (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
-Le paramètre ``id_taxon_list = 500`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 500 correspond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
 Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
@@ -645,7 +645,7 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
       'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 500,n.id_nom FROM taxonomie.bib_noms n
+    SELECT 100,n.id_nom FROM taxonomie.bib_noms n
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
