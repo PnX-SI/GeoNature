@@ -182,10 +182,6 @@ Cette commande exécute les actions suivantes :
 
 Développement Backend
 ----------------------
-====================================================
-Aide mémoire pour l'utilisation du core de geonature
-====================================================
-
 
 Démarrage du serveur de dev backend
 ===================================
