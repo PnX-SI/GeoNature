@@ -1,7 +1,7 @@
 #!/bin/bash
 myrootpath=`pwd`/..
 
-. $myrootpath/geonature_old/install/migration/config/settings.ini
+. $myrootpath/geonature_old/config/settings.ini
 
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
