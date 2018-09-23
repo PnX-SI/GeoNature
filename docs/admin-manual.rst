@@ -579,41 +579,38 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 
 ::
 
-  [form_fields]
-	[form_fields.releve]
-		date_min = true
-		date_max = true
-		hour_min = true
-		hour_max = true
-		altitude_min = true
-		altitude_max = true
-		obs_technique = true
-		group_type = true
-		comment = true
-	[form_fields.occurrence]
-		obs_method = true
-		bio_condition = true
-		bio_status = true
-		naturalness = true
-		exist_proof = true
-		observation_status = true
-		diffusion_level = false
-		blurring = false
-		determiner = true
-		determination_method = true
-		sample_number_proof = true
-		digital_proof = true
-		non_digital_proof = true
-		source_status = false
-		comment = true
-	[form_fields.counting]
-		life_stage = true
-		sex = true
-		obj_count = true
-		type_count = true
-		count_min = true
-		count_max = true
-		validation_status = false
+    [form_fields]
+        date_min = true
+        date_max = true
+        hour_min = true
+        hour_max = true
+        altitude_min = true
+        altitude_max = true
+        obs_technique = true
+        group_type = true
+        comment_releve = true
+        obs_method = true
+        bio_condition = true
+        bio_status = true
+        naturalness = true
+        exist_proof = true
+        observation_status = true
+        diffusion_level = false
+        blurring = false
+        determiner = true
+        determination_method = true
+        sample_number_proof = true
+        digital_proof = true
+        non_digital_proof = true
+        source_status = false
+        comment_occ = true
+        life_stage = true
+        sex = true
+        obj_count = true
+        type_count = true
+        count_min = true
+        count_max = true
+        validation_status = false
 
 Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 

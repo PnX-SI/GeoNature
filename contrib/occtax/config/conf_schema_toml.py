@@ -9,7 +9,7 @@ class MapListConfig(Schema):
 
 
 
-class ReleveFormConfig(Schema):
+class FormConfig(Schema):
     date_min = fields.Boolean(missing=True)
     date_max = fields.Boolean(missing=True)
     hour_min = fields.Boolean(missing=True)
@@ -18,38 +18,30 @@ class ReleveFormConfig(Schema):
     altitude_max = fields.Boolean(missing=True)
     obs_technique = fields.Boolean(missing=False)
     group_type = fields.Boolean(missing=False)
-    comment = fields.Boolean(missing=True)
+    comment_releve = fields.Boolean(missing=True)
+    obs_method = fields.Boolean(missing=True)
+    bio_condition = fields.Boolean(missing=True)
+    bio_status = fields.Boolean(missing=True)
+    naturalness = fields.Boolean(missing=True)
+    exist_proof = fields.Boolean(missing=True)
+    observation_status = fields.Boolean(missing=True)
+    diffusion_level = fields.Boolean(missing=False)
+    blurring = fields.Boolean(missing=False)
+    determiner = fields.Boolean(missing=True)
+    determination_method = fields.Boolean(missing=True)
+    sample_number_proof = fields.Boolean(missing=True)
+    digital_proof = fields.Boolean(missing=True)
+    non_digital_proof = fields.Boolean(missing=True)
+    source_status = fields.Boolean(missing=False)
+    comment_occ = fields.Boolean(missing=True)
+    life_stage = fields.Boolean(missing=True)
+    sex = fields.Boolean(missing=True)
+    obj_count = fields.Boolean(missing=True)
+    type_count = fields.Boolean(missing=True)
+    count_min = fields.Boolean(missing=True)
+    count_max = fields.Boolean(missing=True)
+    validation_status = fields.Boolean(missing=False)
 
-class OccurrenceFormConfig(Schema):
-      obs_method = fields.Boolean(missing=True)
-      bio_condition = fields.Boolean(missing=True)
-      bio_status = fields.Boolean(missing=True)
-      naturalness = fields.Boolean(missing=True)
-      exist_proof = fields.Boolean(missing=True)
-      observation_status = fields.Boolean(missing=True)
-      diffusion_level = fields.Boolean(missing=False)
-      blurring = fields.Boolean(missing=False)
-      determiner = fields.Boolean(missing=True)
-      determination_method = fields.Boolean(missing=True)
-      sample_number_proof = fields.Boolean(missing=True)
-      digital_proof = fields.Boolean(missing=True)
-      non_digital_proof = fields.Boolean(missing=True)
-      source_status = fields.Boolean(missing=False)
-      comment = fields.Boolean(missing=True)
-
-class CountingFormConfig(Schema):
-      life_stage = fields.Boolean(missing=True)
-      sex = fields.Boolean(missing=True)
-      obj_count = fields.Boolean(missing=True)
-      type_count = fields.Boolean(missing=True)
-      count_min = fields.Boolean(missing=True)
-      count_max = fields.Boolean(missing=True)
-      validation_status = fields.Boolean(missing=False)
-
-class FormConfig(Schema):
-    releve = fields.Nested(ReleveFormConfig, missing=dict())
-    occurrence = fields.Nested(OccurrenceFormConfig, missing=dict())
-    counting = fields.Nested(CountingFormConfig, missing=dict())
 
 default_map_list_conf = [
     { "prop": "taxons", "name": "Taxon" },
