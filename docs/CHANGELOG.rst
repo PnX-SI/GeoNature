@@ -10,6 +10,7 @@ CHANGELOG
 * Amélioration du composant Download
 * Amélioration du ShapeService
 * Compléments de la documentation
+* Intégration de la documentation Développement backend dans la documentation
 * Nettoyage du code
 * Mise à jour de la doc de l'API : https://documenter.getpostman.com/view/2640883/RWaPskTw
 * Configuration de la carte (frontend/src/conf/map.config.ts) : OSM par défaut car OpenTopoMap ne s'affiche pas à petite échelle

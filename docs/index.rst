@@ -1,8 +1,6 @@
 Bienvenue dans la documentation de GeoNature
 ============================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
    
@@ -11,6 +9,8 @@ Contents:
    installation-mtes
    user-manual
    admin-manual
+   import-level-1
+   import-level-2
    development
    versions-compatibility
    https
