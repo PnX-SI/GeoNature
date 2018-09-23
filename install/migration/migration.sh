@@ -11,7 +11,7 @@ cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
 rm -r external_modules/occtax
 # rapatrier le fichier de conf de occtax
-cp $myrootpath/geonature_old/contrib/occtax/conf_gn_module.toml $myrootpath/geonature/contrib/occtax/conf_gn_module.toml
+cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/geonature/contrib/occtax/config/conf_gn_module.toml
 # on recrée le lien symbolique sur le nouveau répertoire geonature
 ln -s $myrootpath/geonature/contrib/occtax external_modules/occtax
 
