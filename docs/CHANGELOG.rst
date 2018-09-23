@@ -2,7 +2,14 @@
 CHANGELOG
 =========
 
-2.0.0-rc.2 (2018-09-23)
+2.0.0-rc.3 (unreleased)
+-----------------------
+
+**Corrections**
+
+*
+
+2.0.0-rc.2 (2018-09-24)
 -----------------------
 
 **Nouveautés**
@@ -14,7 +21,7 @@ CHANGELOG
 * Intégration de la documentation Développement backend dans la documentation
 * Nettoyage du code
 * Mise à jour de la doc de l'API : https://documenter.getpostman.com/view/2640883/RWaPskTw
-* Configuration de la carte (frontend/src/conf/map.config.ts) : OSM par défaut car OpenTopoMap ne s'affiche pas à petite échelle
+* Configuration de la carte (``frontend/src/conf/map.config.ts``) : OSM par défaut car OpenTopoMap ne s'affiche pas à petite échelle
 
 **Corrections**
 
@@ -25,7 +32,7 @@ CHANGELOG
 * Champs Multiselect : Ne pas afficher les valeurs selectionnées dans la liste quand on modifie un objet
 * Trigger Occtax vers Synthèse : Correction des problèmes d'heure de relevés mal copiés dans la Synthèse
 * Correction des altitudes (non abouti) (#424)
-* Données exemple : Suppression de l'observer_txt
+* Données exemple : Suppression de l'``observers_txt`` dans la synthèse
 * Suppression d'un ``id_municipality`` en dur dans une route
 * Suppression de la librairie Certifi non utilisée
 
