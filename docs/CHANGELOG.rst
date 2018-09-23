@@ -2,11 +2,12 @@
 CHANGELOG
 =========
 
-2.0.0-rc.2 (unreleased)
+2.0.0-rc.2 (2018-09-23)
 -----------------------
 
 **Nouveautés**
 
+* Script ``install_all.sh`` compatible Ubuntu (16 et 18)
 * Amélioration du composant Download
 * Amélioration du ShapeService
 * Compléments de la documentation
@@ -17,13 +18,16 @@ CHANGELOG
 
 **Corrections**
 
+* Correction du script ``install/migration/migration.sh``
 * Ne pas afficher le debug dans le recherche de la synthèse
 * Correction du bug de déconnexion entre TaxHub et GeoNature (#423)
+* Correction de la fiche info d'Occtax
 * Champs Multiselect : Ne pas afficher les valeurs selectionnées dans la liste quand on modifie un objet
 * Trigger Occtax vers Synthèse : Correction des problèmes d'heure de relevés mal copiés dans la Synthèse
 * Correction des altitudes (non abouti) (#424)
 * Données exemple : Suppression de l'observer_txt
 * Suppression d'un ``id_municipality`` en dur dans une route
+* Suppression de la librairie Certifi non utilisée
 
 2.0.0-rc.1 (2018-09-21)
 -----------------------
