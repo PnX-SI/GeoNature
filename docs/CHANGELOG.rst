@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.0.0-rc.2 (unreleased)
+2.0.0-rc.2 (2018-09-23)
 -----------------------
 
 **Nouveautés**
@@ -18,6 +18,7 @@ CHANGELOG
 
 **Corrections**
 
+* Correction du script ``install/migration/migration.sh``
 * Ne pas afficher le debug dans le recherche de la synthèse
 * Correction du bug de déconnexion entre TaxHub et GeoNature (#423)
 * Correction de la fiche info d'Occtax
