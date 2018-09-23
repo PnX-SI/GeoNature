@@ -41,7 +41,7 @@ Problèmes liés au frontend
 
     ::
 
-        "@angular/*": ["/home/<my_user>/geonaturefrontend/node_modules/@angular/*"],
-        "@geonature_common/*" : ["/home/<my_user>/geonaturefrontend/src/app/GN2CommonModule/*"],
-        "@geonature/*" : ["/home/<my_user>/geonaturefrontend/src/app/*"],
+        "@angular/*": ["/home/<my_user>/geonature/frontend/node_modules/@angular/*"],
+        "@geonature_common/*" : ["/home/<my_user>/geonature/frontend/src/app/GN2CommonModule/*"],
+        "@geonature/*" : ["/home/<my_user>/geonature/frontend/src/app/*"],
         "@geonature_config/*" : ["/home/<my_user>/geonaturefrontend/src/conf/*"],
