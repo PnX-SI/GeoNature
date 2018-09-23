@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="row row-0">
-      <div *ngIf="occtaxConfig.form_fields.occurrence.observation_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.observation_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             label="{{ 'Taxon.ObservationStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_observation_status"
@@ -22,7 +22,7 @@
             >
           </pnx-nomenclature>
       </div>
-      <div *ngIf="occtaxConfig.form_fields.occurrence.obs_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.obs_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature 
           label="{{ 'Taxon.ObsMethod' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
@@ -32,7 +32,7 @@
           > 
         </pnx-nomenclature>
       </div>
-      <div *ngIf="occtaxConfig.form_fields.occurrence.bio_condition" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.bio_condition" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature 
           label="{{ 'Taxon.BiologicalCondition' | translate }}"
           [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
@@ -55,7 +55,7 @@
   
     <div class="collapse" id="collapseAvance">
       <div class="row row-0">
-        <div *ngIf="occtaxConfig.form_fields.occurrence.determination_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.determination_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
             <pnx-nomenclature 
               label="{{ 'Taxon.DeterminationMethod' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
@@ -65,7 +65,7 @@
               >
             </pnx-nomenclature>
         </div>
-        <div *ngIf="occtaxConfig.form_fields.occurrence.bio_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.bio_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             label="{{ 'Taxon.BiologicalStatus' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
@@ -75,7 +75,7 @@
             > 
           </pnx-nomenclature> 
         </div>          
-        <div *ngIf="occtaxConfig.form_fields.occurrence.naturalness" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.naturalness" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             label="{{ 'Taxon.Naturalness' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
@@ -88,7 +88,7 @@
       </div>
 
       <div class="row row-0">
-        <div *ngIf="occtaxConfig.form_fields.occurrence.determiner" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.determiner" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <small> {{ 'Taxon.Determiner' | translate }} </small>
             <input class="form-control form-control-sm" [formControl]="occurrenceForm.controls.determiner"
               type="text">
@@ -96,7 +96,7 @@
       </div>
 
       <div class="row row-0">
-        <div *ngIf="occtaxConfig.form_fields.occurrence.exist_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.exist_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <pnx-nomenclature 
             label="{{ 'Taxon.ExistProof' | translate }}"
             [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
@@ -108,7 +108,7 @@
             >
           </pnx-nomenclature>
         </div>
-        <div *ngIf="occtaxConfig.form_fields.occurrence.digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <div class="form-group">
             <small> {{ 'Taxon.DigitalProof' | translate }} </small>
             <input [ngClass]="{'is-invalid' : occurrenceForm.controls.digital_proof.invalid}" class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
@@ -119,7 +119,7 @@
             {{ 'Taxon.ExistProofValidation' | translate }}
           </small>
         </div>
-        <div *ngIf="occtaxConfig.form_fields.occurrence.non_digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.non_digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
           <div class="form-group" >
             <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
             <input [ngClass]="{'is-invalid' : occurrenceForm.controls.non_digital_proof.invalid}" class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
@@ -128,7 +128,7 @@
         </div>
       </div>
       <div class="row row-0">
-          <div *ngIf="occtaxConfig.form_fields.occurrence.diffusion_level" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div *ngIf="occtaxConfig.form_fields.diffusion_level" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
             <pnx-nomenclature 
               label="{{ 'Taxon.DiffusionLevel' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_diffusion_level"
@@ -136,7 +136,7 @@
               >
             </pnx-nomenclature>
           </div>
-          <div *ngIf="occtaxConfig.form_fields.occurrence.blurring" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div *ngIf="occtaxConfig.form_fields.blurring" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
             <pnx-nomenclature 
               label="{{ 'Taxon.Blurring' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_blurring"
@@ -144,7 +144,7 @@
               >
             </pnx-nomenclature>
           </div>
-          <div *ngIf="occtaxConfig.form_fields.occurrence.source_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div *ngIf="occtaxConfig.form_fields.source_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
             <pnx-nomenclature 
               label="{{ 'Taxon.StatusSource' | translate }}"
               [parentFormControl]="occurrenceForm.controls.id_nomenclature_source_status"
@@ -154,7 +154,7 @@
           </div>
       </div>
       <div class="row row-0" id="row-commentaire">
-        <div *ngIf="occtaxConfig.form_fields.occurrence.comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">               
+        <div *ngIf="occtaxConfig.form_fields.comment_occ" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">               
             <textarea placeholder="{{ 'Releve.Comment' | translate }}" class="form-control" [formControl]="occurrenceForm.controls.comment" 
               rows="2" id="commentaire">
             </textarea>
