@@ -10,20 +10,22 @@ cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
 rm -r external_modules/occtax
+# rapatrier le fichier de conf de occtax
+cp $myrootpath/geonature_old/contrib/occtax/conf_gn_module.toml $myrootpath/geonature/contrib/occtax/conf_gn_module.toml
 # on recrée le lien symbolique sur le nouveau répertoire geonature
-ln -s contrib/occtax external_modules/occtax
+ln -s $myrootpath/geonature/contrib/occtax external_modules/occtax
 
-cp -r $myrootpath/geonature_old/frontend/src/external_assets/* frontend/src/external_assets/
+cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/geonature/frontend/src/external_assets/
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax/frontend/assets
 rm frontend/src/external_assets/occtax
 # on recrée le lien symbolique sur le nouveau répertoire geonature
-ln -s contrib/occtax/frontend/assets frontend/src/external_assets/occtax
+ln -s $myrootpath/geonature/contrib/occtax/frontend/assets $myrootpath/geonature/frontend/src/external_assets/occtax
 
 
 mkdir $myrootpath/geonature/var
 mkdir $myrootpath/geonature/var/log
 
-# Création du répertoitre static et rapattriement des médias
+# Création du répertoitre static et rapatriement des médias
 if [ ! -d 'backend/static/' ]
 then
   mkdir backend/static
