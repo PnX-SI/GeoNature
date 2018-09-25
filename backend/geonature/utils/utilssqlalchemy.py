@@ -388,7 +388,7 @@ def geoserializable(cls):
            columns: liste
             liste des columns qui doivent être prisent en compte
         """
-        if getattr(self, geoCol) : 
+        if not getattr(self, geoCol) is None: 
             geometry = to_shape(getattr(self, geoCol))
         else:
             geometry = {"type": "Point", "coordinates": [0,0]}
