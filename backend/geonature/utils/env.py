@@ -29,9 +29,6 @@ GEONATURE_ETC = Path('/etc/geonature')
 
 DB = SQLAlchemy()
 
-# L'import doit être réalisé après la déclaration de DB
-from geonature.core.gn_commons.models import TModules
-
 
 GN_MODULE_FILES = (
     'manifest.toml',
@@ -169,6 +166,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
         Get all the module enabled from gn_commons.t_modules
     """
     with app.app_context():
+        from geonature.core.gn_commons.models import TModules
         data = DB.session.query(TModules).filter(
             TModules.active_backend == True
         )

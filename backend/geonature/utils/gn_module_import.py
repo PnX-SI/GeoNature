@@ -40,8 +40,6 @@ from geonature.utils.env import (
 from geonature.utils.config_schema import (
     ManifestSchemaConf
 )
-from geonature.core.users.models import TApplications
-from geonature.core.gn_commons.models import TModules
 
 log = logging.getLogger(__name__)
 
@@ -156,6 +154,8 @@ def gn_module_import_requirements(module_path):
 
 
 def gn_module_activate(module_name, activ_front, activ_back):
+    from geonature.core.gn_commons.models import TModules
+
     # TODO utiliser les commande os de python
     log.info("Activate module")
 
@@ -324,6 +324,7 @@ def create_external_assets_symlink(module_path, module_name):
 
 def add_application_db(module_name, url, module_id=None):
     log.info('Register the module in t_application ... \n')
+    from geonature.core.users.models import TApplications
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
