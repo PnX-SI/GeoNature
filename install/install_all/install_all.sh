@@ -12,11 +12,7 @@ fi
 
 
 # Check os and versions
-<<<<<<< HEAD
-if [ "$OS_NAME" != "debian" ] || [ "$OS_NAME" != "ubuntu" ] 
-=======
 if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ] 
->>>>>>> 7451dabd6d95c6e0bc09337cd49e3ba88ed558e6
 then
     echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour les distributions Debian et Ubuntu\e[0m" >&2
     exit 1
@@ -98,23 +94,7 @@ then
     sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log 
     sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
 fi
-<<<<<<< HEAD
-
-if [ "$OS_VERSION" == "18.04" ]
-then
-    sudo apt-get install -y postgresql-server-dev-10 2> var/log/install_app.log 
-    sudo apt install postgis 2> var/log/install_app.log
-fi
-
-if [ "$OS_VERSION" == "16.04" ]
-then
-    sudo apt-get install libatlas3-base
-    sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log 
-    sudo apt install postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
-fi
-=======
 sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
->>>>>>> 7451dabd6d95c6e0bc09337cd49e3ba88ed558e6
 
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 
