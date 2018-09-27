@@ -25,7 +25,8 @@ FIONA_MAPPING = {
     'unicode': 'str',
     'varchar': 'str',
     'integer': 'int',
-    'float': 'float'
+    'float': 'float',
+    'boolean': 'str'
 }
 
 
@@ -67,7 +68,7 @@ class FionaShapeService():
                 if not db_col.type.__class__.__name__ == 'Geometry':
                     shp_properties.update({
                         col_mapping.get(db_col.key): FIONA_MAPPING.get(
-                        db_col.type.__class__.__name__.lower())
+                            db_col.type.__class__.__name__.lower())
                     })
                     cls.columns.append(col_mapping.get(db_col.key))
         else:
@@ -75,9 +76,10 @@ class FionaShapeService():
                 if not db_col.type.__class__.__name__ == 'Geometry':
                     shp_properties.update({
                         db_col.key: FIONA_MAPPING.get(
-                        db_col.type.__class__.__name__.lower())
+                            db_col.type.__class__.__name__.lower())
                     })
                     cls.columns.append(db_col.key)
+
         cls.polygon_schema = {'geometry': 'MultiPolygon', 'properties': shp_properties, }
         cls.point_schema = {'geometry': 'Point', 'properties': shp_properties, }
         cls.polyline_schema = {'geometry': 'LineString', 'properties': shp_properties}

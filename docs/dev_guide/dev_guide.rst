@@ -17,8 +17,8 @@ Base de données
 Session sqlalchemy
 ------------------
 
-geonature.utils.env.DB
-~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.env.DB``
+
 
 Fournit l'instance de connexion SQLAlchemy
 
@@ -30,16 +30,11 @@ Python ::
     result = DB.session.query(MyModel).get(1)
 
 
-
-
-
-
 Serialisation des modèles
 =========================
 
 
-geonature.utils.utilssqlalchemy.serializable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.utilssqlalchemy.serializable``
 
 Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un dictionnaire des données de l'objet sérialisable json
 
@@ -62,8 +57,8 @@ fichier utilisation modele ::
 
 
 
-geonature.utils.utilssqlalchemy.geoserializable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.utilssqlalchemy.geoserializable``
+
 
 Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui retourne un dictionnaire serialisable sous forme de Feature geojson.
 
@@ -84,8 +79,7 @@ fichier utilisation modele ::
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
 
-geonature.utils.utilsgeometry.shapeserializable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.utilsgeometry.shapeserializable``
 
 Décorateur pour les modèles SQLA:
 
@@ -105,10 +99,6 @@ Fichier définition modèle ::
 
 fichier utilisation modele ::
 
-    # utilisation de as_list()
-    instance = DB.session.query(MyModel).get(1)
-    result = instance.as_list()
-    ...
 
     # utilisation de as_shape()
     data = DB.session.query(MyShapeserializableClass).all()
@@ -120,10 +110,34 @@ fichier utilisation modele ::
         file_name=file_name
     )
 
+- ``geonature.utils.utilsgeometry.FionaShapeService``
+
+Classe utilitaire pour crer des shapefiles.
+
+La classe contient 3 méthode de classe:
+- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geom passé en paramètre
+- FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles
+- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles qui ont au moin un enregistrement
+
+::
+
+        data = DB.session.query(MySQLAModel).all()
+        
+        for d in data:
+                FionaShapeService.create_shapes_struct(
+                        db_cols=db_cols,
+                        srid=current_app.config['LOCAL_SRID'],
+                        dir_path=dir_path,
+                        file_name=file_name,
+                        col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+                )
+        FionaShapeService.create_feature(row_as_dict, geom)
+                FionaShapeService.save_and_zip_shapefiles()
 
 
-geonature.utils.utilssqlalchemy.json_resp
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- ``geonature.utils.utilssqlalchemy.json_resp``
+
 
 Décorateur pour les routes : les données renvoyées par la route sont automatiquement serialisées en json (ou geojson selon la structure des données)
 
@@ -164,8 +178,8 @@ Vérification des droits des utilisateurs
 ----------------------------------------
 
 
-pypnusershub.routes.check_auth
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``pypnusershub.routes.check_auth``
+
 
 Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirige en cas de niveau insuffisant ou d'informations de session erronés
 (deprecated) Privilegier `check_auth_cruved`
@@ -199,8 +213,7 @@ params :
 
 
 
-pypnusershub.routes.check_auth_cruved
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``pypnusershub.routes.check_auth_cruved``
 
 Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer une action sur la donnée et le redirige en cas de niveau insuffisant ou d'informations de session erronées
 
@@ -233,8 +246,8 @@ params :
 
 
 
-pypnusershub.routes.db.tools.cruved_for_user_in_app
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``pypnusershub.routes.db.tools.cruved_for_user_in_app``
+
 
 Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
 Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.

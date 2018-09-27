@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
@@ -11,13 +11,21 @@ routes = Blueprint('ref_geo', __name__)
 @routes.route('/info', methods=['POST'])
 @json_resp
 def getGeoInfo():
+    """
+    From a posted geojson, the route return the municipalities intersected
+    and the altitude min/max
+    """
     data = dict(request.get_json())
     sql = text(
         """SELECT (ref_geo.fct_get_area_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*"""
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_area_municipality)).*"""
     )
     try:
-        result = DB.engine.execute(sql, geom=str(data['geometry']))
+        result = DB.engine.execute(
+            sql,
+            geom=str(data['geometry']),
+            id_area_municipality=current_app.config['BDD']['id_area_type_municipality']
+            )
     except Exception as e:
         DB.session.rollback()
         raise
@@ -51,6 +59,10 @@ def getGeoInfo():
 @routes.route('/areas', methods=['POST'])
 @json_resp
 def getAreasIntersection():
+    """
+    From a posted geojson, the route return all the area intersected
+    from l_areas
+    """
     data = dict(request.get_json())
 
     if 'id_type' in data:

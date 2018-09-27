@@ -165,4 +165,4 @@ class TBaseSites(DB.Model):
     )
 
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature('geom_4326', 'id_base_site', recursif)
+        return self.as_geofeature('geom', 'id_base_site', recursif)

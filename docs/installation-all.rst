@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18) disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
@@ -59,7 +59,7 @@ Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une aut
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
 
-* Mettre à jour les sources-list : 
+* Mettre à jour les sources-list (Debian uniquement) : 
 
 A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours correctes.
 
@@ -113,7 +113,7 @@ Pour Debian 8 :
 
     adduser geonatureadmin sudo
 
-* L'ajouter aussi aux groupes ``www-data`` et ``root`` :
+* L'ajouter aussi aux groupes ``www-data`` :
 
 ::
 
@@ -163,6 +163,20 @@ Une fois l'installation terminée, les applications sont disponibles aux adresse
 
 Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin).
 
+:Note:
+
+    Ne prenez pas en compte les messages de UsersHub indiqués à la fin de l'installation. Ce sont des restes d'anciennes vers de UsersHub et GeoNature V1.
+    
+:Note:
+
+    * **GeoNature-atlas** : Comme dans la V1, le script ``install_all.sh`` permettra d'installer automatiquement GeoNature-atlas (en option)
+    * Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible dans sa branche ``develop`` : https://github.com/PnEcrins/GeoNature-atlas/issues/162
+    * Suivez la procédure d'installation classique de GeoNature-atlas mais exécutez le script ``install_db_gn2.sh`` à la place de ``install_db.sh``
+    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au prélable.
+    
+:Note:
+
+    Une version expérimentale du calcul automatique de la sensibilité est disponible : https://github.com/PnX-SI/GeoNature/issues/284
 
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
@@ -174,6 +188,10 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
 - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
+
+:Note:
+
+    Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd.
 
 
 Installation d'un module GeoNature

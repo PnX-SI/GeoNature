@@ -1,9 +1,10 @@
 {
+	"variables": [],
 	"info": {
 		"name": "Geonature v2",
-		"_postman_id": "e0c72971-0e47-7e8e-6751-ddf48f08399c",
+		"_postman_id": "cded4135-a800-2752-4888-307196ec8f51",
 		"description": "GeoNature is a web application for naturalist data management developed by Ecrins National Park and Cevennes Nation Park.\nHere is the documentation about its web API.\n\nMore information :\nhttp://geonature.fr/\nhttps://github.com/PnX-SI/GeoNature",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
@@ -11,14 +12,8 @@
 			"description": "Routes of 'Occurrence de taxon' module.\n\nAccess to the naturalist observations entered in the 'Occurrence de taxon' module.\n\nAll data are exchanges in GeoJson format",
 			"item": [
 				{
-					"name": "contact/vreleve?cd_nom=351",
+					"name": "occtax/vreleve?cd_nom=351",
 					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://localhost:8000/contact/vreleve?cd_nom=351&date_up=2016-01-01&date_low=2018-01-01&date_eq=2017-01-01&observer=1&observer=3",
 							"protocol": "http",
@@ -61,21 +56,22 @@
 									"value": "3",
 									"equals": true
 								}
-							]
+							],
+							"variable": []
 						},
-						"description": "Return all the observations in GeoJson format with the current filter"
-					},
-					"response": []
-				},
-				{
-					"name": "contact/vrelevecontact",
-					"request": {
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
+						"description": "Return all the observations in GeoJson format with the current filter"
+					},
+					"response": []
+				},
+				{
+					"name": "occtax/vrelevecontact",
+					"request": {
 						"url": {
 							"raw": "http://localhost:8000/contact/vrelevecontact?cd_nom=67111&orderby=cd_nom&order=desc&limit=1",
 							"protocol": "http",
@@ -108,91 +104,65 @@
 									"value": "1",
 									"equals": true
 								}
-							]
+							],
+							"variable": []
 						},
-						"description": null
-					},
-					"response": []
-				},
-				{
-					"name": "contact/releve/1",
-					"request": {
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releve/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releve",
-								"1"
-							]
-						},
-						"description": null
+						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "contact/releves",
+					"name": "occtax/releve/1",
 					"request": {
+						"url": "http://localhost:8000/contact/releve/1",
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releves",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releves"
-							]
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "occtax/releves",
+					"request": {
+						"url": "http://localhost:8000/contact/releves",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
 						"description": "Return all releves"
 					},
 					"response": []
 				},
 				{
-					"name": "contact/occurrences",
+					"name": "occtax/occurrences",
 					"request": {
+						"url": "http://localhost:8000/contact/occurrences",
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/occurrences",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"occurrences"
-							]
-						},
 						"description": "Return all occurences"
 					},
 					"response": []
 				},
 				{
-					"name": "contact/releve",
+					"name": "occtax/releve",
 					"request": {
+						"url": "http://localhost:8000/contact/releve",
 						"method": "POST",
 						"header": [
 							{
@@ -208,25 +178,14 @@
 							"mode": "raw",
 							"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [4.563980749, 45.19474135]},\n  \"properties\": {   \n    \"id_dataset\": 1,\n    \"id_digitiser\": 1,  \n    \"date_min\": \"2017-01-01 00:00:00\",\n    \"date_max\": \"2017-01-01 00:00:00\", \n    \"altitude_min\": 1500,\n    \"altitude_max\": 1565, \n    \"meta_device_entry\": \"web\",\n    \"comment\": \"exemple test comment\",\n    \"observers\": [1,2,3],\n    \"id_releve_contact\": 7,\n    \"t_occurrences_contact\": [\n      {\n        \"id_nomenclature_obs_technique\": 343,\n        \"id_nomenclature_obs_meth\": 65,\n        \"id_nomenclature_bio_condition\": 177,\n        \"id_nomenclature_bio_status\": 30,\n        \"id_nomenclature_naturalness\": 182,\n        \"id_nomenclature_exist_proof\": 91,\n        \"id_nomenclature_valid_status\": 347, \n        \"id_nomenclature_diffusion_level\": 163,\n        \"id_validator\": 1,\n        \"determiner\": \"gil\",\n        \"determination_method\": \"gees\",  \n        \"cd_nom\": 60612,\n        \"nom_cite\": \"Lynx Bor\\u00e9al\",\n        \"meta_v_taxref\": \"Taxref V9.0\",\n        \"sample_number_proof\": \"Herbier_Dentant-15-37869\", \n        \"digital_proof\": \"\", \n        \"non_digital_proof\": \"plante en herbier\",\n        \"comment\": \"MODIF\",\n        \"cor_counting_contact\": [\n          {\n            \"id_nomenclature_life_stage\": 4,\n            \"id_nomenclature_sex\": 190,\n            \"id_nomenclature_obj_count\": 166,\n            \"id_nomenclature_type_count\": 107, \n            \"count_min\": 15,\n            \"count_max\": 20\n          },\n          {\n            \"id_nomenclature_life_stage\": 4,\n            \"id_nomenclature_sex\": 191,\n            \"id_nomenclature_obj_count\": 166,\n            \"id_nomenclature_type_count\": 107, \n            \"count_min\": 1,\n            \"count_max\": 1\n          }\n        ] \n      }\n    ] \n  }\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releve",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releve"
-							]
-						},
-						"description": null
+						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "contact/releveWithObserversTxt",
+					"name": "occtax/releveWithObserversTxt",
 					"request": {
+						"url": "http://localhost:8000/contact/releve",
 						"method": "POST",
 						"header": [
 							{
@@ -242,123 +201,51 @@
 							"mode": "raw",
 							"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [4.563980749, 45.19474135]},\n  \"properties\": {   \n    \"id_dataset\": 1,\n    \"id_digitiser\": 1,  \n    \"date_min\": \"2017-01-01 00:00:00\",\n    \"date_max\": \"2017-01-01 00:00:00\", \n    \"altitude_min\": 1500,\n    \"altitude_max\": 1565, \n    \"meta_device_entry\": \"web\",\n    \"comment\": \"exemple test comment\",\n    \"observers_txt\":\"Super Obs, Pouet\",\n    \"id_releve_contact\": 7,\n    \"t_occurrences_contact\": [\n      {\n        \"id_nomenclature_obs_technique\": 343,\n        \"id_nomenclature_obs_meth\": 65,\n        \"id_nomenclature_bio_condition\": 177,\n        \"id_nomenclature_bio_status\": 30,\n        \"id_nomenclature_naturalness\": 182,\n        \"id_nomenclature_exist_proof\": 91,\n        \"id_nomenclature_valid_status\": 347, \n        \"id_nomenclature_diffusion_level\": 163,\n        \"id_validator\": 1,\n        \"determiner\": \"gil\",\n        \"determination_method\": \"gees\",  \n        \"cd_nom\": 60612,\n        \"nom_cite\": \"Lynx Bor\\u00e9al\",\n        \"meta_v_taxref\": \"Taxref V9.0\",\n        \"sample_number_proof\": \"Herbier_Dentant-15-37869\", \n        \"digital_proof\": \"\", \n        \"non_digital_proof\": \"plante en herbier\",\n        \"comment\": \"MODIF\",\n        \"cor_counting_contact\": [\n          {\n            \"id_nomenclature_life_stage\": 4,\n            \"id_nomenclature_sex\": 190,\n            \"id_nomenclature_obj_count\": 166,\n            \"id_nomenclature_type_count\": 107, \n            \"count_min\": 15,\n            \"count_max\": 20\n          },\n          {\n            \"id_nomenclature_life_stage\": 4,\n            \"id_nomenclature_sex\": 191,\n            \"id_nomenclature_obj_count\": 166,\n            \"id_nomenclature_type_count\": 107, \n            \"count_min\": 1,\n            \"count_max\": 1\n          }\n        ] \n      }\n    ] \n  }\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releve",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releve"
-							]
-						},
-						"description": null
+						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "contact/releve/7",
+					"name": "occtax/releve/7",
 					"request": {
+						"url": "http://localhost:8000/contact/releve/7",
 						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releve/7",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releve",
-								"7"
-							]
-						},
-						"description": null
+						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "/contact/releve/occurrence_counting/21",
+					"name": "/occtax/releve/occurrence_counting/21",
 					"request": {
+						"url": "http://localhost:8000/contact/releve/occurrence_counting/21",
 						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releve/occurrence_counting/21",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releve",
-								"occurrence_counting",
-								"21"
-							]
-						},
-						"description": null
+						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "contact/releve/occurrence/21",
+					"name": "occtax/releve/occurrence/21",
 					"request": {
+						"url": "http://localhost:8000/contact/releve/occurrence/21",
 						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/contact/releve/occurrence/21",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"contact",
-								"releve",
-								"occurrence",
-								"21"
-							]
-						},
-						"description": null
+						"description": ""
 					},
 					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "22c247cd-7317-40c2-8b83-342dea8d0b16",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "51beeef5-6af2-4a58-9bb4-e777c86d70ef",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
 				}
 			]
 		},
@@ -369,21 +256,12 @@
 				{
 					"name": "meta/parameters/<param_name>/<id_org>",
 					"request": {
+						"url": "http://localhost:8000/meta/parameters/taxref_version",
 						"method": "GET",
 						"header": [],
-						"body": {},
-						"url": {
-							"raw": "http://localhost:8000/meta/parameters/taxref_version",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"meta",
-								"parameters",
-								"taxref_version"
-							]
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
 						"description": "Return the value of the parameter for an organism.\nThe second parameter is optional (return the default paramater value)"
 					},
@@ -392,6 +270,7 @@
 				{
 					"name": "meta/datasets",
 					"request": {
+						"url": "http://localhost:8000/meta/datasets",
 						"method": "GET",
 						"header": [
 							{
@@ -403,18 +282,6 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/meta/datasets",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"meta",
-								"datasets"
-							]
-						},
 						"description": "Liste des datasets"
 					},
 					"response": []
@@ -422,21 +289,12 @@
 				{
 					"name": "meta/aquisition_framework_mtd/<uuid_af>",
 					"request": {
+						"url": "http://localhost:8000/meta/aquisition_framework_mtd/60dac805-2568-13eb-e053-2614a8c0d040",
 						"method": "POST",
 						"header": [],
-						"body": {},
-						"url": {
-							"raw": "http://localhost:8000/meta/aquisition_framework_mtd/60dac805-2568-13eb-e053-2614a8c0d040",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"meta",
-								"aquisition_framework_mtd",
-								"60dac805-2568-13eb-e053-2614a8c0d040"
-							]
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
 						"description": "Post an acquisition framework using the MTD webservice\nParameter:\nuuid_af: uuid of the acquisition framework"
 					},
@@ -445,47 +303,16 @@
 				{
 					"name": "meta/dataset_mtd/<id_user>/<id_organism>",
 					"request": {
+						"url": "http://localhost:8000/meta/dataset_mtd/9188",
 						"method": "POST",
 						"header": [],
-						"body": {},
-						"url": {
-							"raw": "http://localhost:8000/meta/dataset_mtd/9188",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"meta",
-								"dataset_mtd",
-								"9188"
-							]
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
 						"description": "Post all the datasets created by a user using the MTD webservice\nparameter:\nid_user: an user ID send back by INPN CAS authentification\nid_organism:(Optional) a organism ID send back by INPN CAS authentification "
 					},
 					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "b0cd844c-c6cd-433f-9cd8-ff44e1e4ee94",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "42ac51f0-65bc-4384-914f-ff98c02db3aa",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
 				}
 			]
 		},
@@ -494,16 +321,10 @@
 			"description": "Routes of the nomenclature sub module.\n\nThis submodule is use to get the dropdown list's values of the differents forms.\nIn GeoNature we use the nomenclature of the SINP: http://standards-sinp.mnhn.fr/nomenclature/\n\nhttps://github.com/PnX-SI/Nomenclature-api-module",
 			"item": [
 				{
-					"name": "nomenclatures/nomenclature/6?regne=Animalia",
+					"name": "nomenclatures/nomenclature/STADE_VIE?regne=Animalia",
 					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "http://localhost:8000/nomenclatures/nomenclature/6?regne=Animalia",
+							"raw": "http://localhost:8000/nomenclatures/nomenclature/STADE_VIE?regne=Animalia",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -512,7 +333,7 @@
 							"path": [
 								"nomenclatures",
 								"nomenclature",
-								"6"
+								"STADE_VIE"
 							],
 							"query": [
 								{
@@ -520,23 +341,24 @@
 									"value": "Animalia",
 									"equals": true
 								}
-							]
+							],
+							"variable": []
 						},
-						"description": "Return all nomenclature for one type"
-					},
-					"response": []
-				},
-				{
-					"name": "nomenclatures/nomenclatures?id_type=22&id_type=6",
-					"request": {
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
+						"description": "Return all nomenclatures for one type from its mnemonique code "
+					},
+					"response": []
+				},
+				{
+					"name": "nomenclatures/nomenclatures?code_type=TYP_DENBR&code_type=STADE_VIE",
+					"request": {
 						"url": {
-							"raw": "http://localhost:8000/nomenclatures/nomenclatures?id_type=22&id_type=6",
+							"raw": "http://localhost:8000/nomenclatures/nomenclatures?code_type=TYP_DENBR&code_type=STADE_VIE",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -548,52 +370,38 @@
 							],
 							"query": [
 								{
-									"key": "id_type",
-									"value": "22",
+									"key": "code_type",
+									"value": "TYP_DENBR",
 									"equals": true
 								},
 								{
-									"key": "id_type",
-									"value": "6",
+									"key": "code_type",
+									"value": "STADE_VIE",
 									"equals": true
 								}
-							]
+							],
+							"variable": []
 						},
-						"description": "Return all nomenclature for several types"
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Return all nomenclature for several code types"
 					},
 					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "3677ae1b-98d8-44ff-bef0-cb79da48ecda",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "37a8ef02-58c2-469d-884e-9626d27e06a0",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
 				}
 			]
 		},
 		{
-			"name": "Geographic",
+			"name": "Ref_geo",
 			"description": "Routes of the geographic referential module",
 			"item": [
 				{
 					"name": "geo/info",
 					"request": {
+						"url": "http://localhost:8000/geo/info",
 						"method": "POST",
 						"header": [
 							{
@@ -609,25 +417,14 @@
 							"mode": "raw",
 							"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]}\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/geo/info",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"geo",
-								"info"
-							]
-						},
-						"description": null
+						"description": "From a posted geojson, the route return the municipalities intersected and the altitude min/max"
 					},
 					"response": []
 				},
 				{
 					"name": "geo/areas - alltype",
 					"request": {
+						"url": "http://localhost:8000/geo/areas",
 						"method": "POST",
 						"header": [
 							{
@@ -639,25 +436,14 @@
 							"mode": "raw",
 							"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]}\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/geo/areas",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"geo",
-								"areas"
-							]
-						},
-						"description": null
+						"description": "From a posted geojson, the route return all the area intersected from l_areas"
 					},
 					"response": []
 				},
 				{
 					"name": "geo/areas - filterby communes",
 					"request": {
+						"url": "http://localhost:8000/geo/areas",
 						"method": "POST",
 						"header": [
 							{
@@ -667,45 +453,11 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]},\n  \"id_type\":101\n}"
+							"raw": "{\n  \"geometry\": {\"type\": \"Point\", \"coordinates\": [3.6054, 44.31736339]},\n  \"id_type\":25\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/geo/areas",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"geo",
-								"areas"
-							]
-						},
-						"description": null
+						"description": "From a posted geojson, the route return all the municipalities intersected"
 					},
 					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "5e16e2e6-522b-49f8-8ea6-040f7ae4f561",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c562ec1d-e09f-4f93-9056-83242bdef88c",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
 				}
 			]
 		},
@@ -716,24 +468,12 @@
 				{
 					"name": "users/menu/9",
 					"request": {
+						"url": "http://localhost:8000/users/menu/9",
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8000/users/menu/9",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"users",
-								"menu",
-								"9"
-							]
 						},
 						"description": "Return all role for one menu"
 					},
@@ -742,6 +482,7 @@
 				{
 					"name": "users/role",
 					"request": {
+						"url": "http://localhost:8000/users/role",
 						"method": "POST",
 						"header": [
 							{
@@ -753,67 +494,83 @@
 							"mode": "raw",
 							"raw": "{\n\t\"id_role\":45,\n\t\"identifiant\": \"test\",\n\t\"nom_role\": \"test.test\",\n\t\"prenom_role\": \"nom test\",\n\t\"id_organisme\": 1\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/users/role",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"users",
-								"role"
-							]
-						},
 						"description": "Post a user"
 					},
 					"response": []
 				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "437e0679-2a0a-421c-80f2-032fe6843ec1",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "e9f5ad7f-06af-4539-a801-5e81ca497b2f",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
 			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"id": "bcde5528-42f9-454a-8f3e-c27dac05c2c7",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
 		},
 		{
-			"listen": "test",
-			"script": {
-				"id": "bab6d4ab-669d-4672-934c-90a1bdc8bd5c",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
+			"name": "Taxonomy",
+			"description": "Routes of Taxhub app.\nFrom taxonomie schema in database",
+			"item": [
+				{
+					"name": "Taxon autocomplete",
+					"request": {
+						"url": {
+							"raw": "http://localhost:5000/api/taxref/allnamebylist/100?search_name=abl%20an",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"taxref",
+								"allnamebylist",
+								"100"
+							],
+							"query": [
+								{
+									"key": "search_name",
+									"value": "abl%20an",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Return all taxons matching with \"search_name\"='abl' in the list 102"
+					},
+					"response": []
+				},
+				{
+					"name": "Kingdom and group2Inpn",
+					"request": {
+						"url": "http://localhost:5000/api/taxref/regnewithgroupe2",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Retunr all the kingdom and their 'group2_inpn'"
+					},
+					"response": []
+				},
+				{
+					"name": "Taxon info",
+					"request": {
+						"url": "http://localhost:5000/api/taxref/212",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Return the info of a taxon from its cd_nom"
+					},
+					"response": []
+				},
+				{
+					"name": "Bib_nom info",
+					"request": {
+						"url": "http://localhost:5000/api/taxref/212",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Return attributes info from a cd_nom.\nAttributes are complementary info of a taxon for each structure (ex: patrimonial, description locale...)\nWithout the id_attribut parameter, return all the attributes"
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
