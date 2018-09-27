@@ -3,6 +3,13 @@
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
+OS_BITS="$(getconf LONG_BIT)"
+
+# test the server architecture
+if [ !"$OS_BITS" == "64" ]; then
+   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   exit 1
+fi
 
 # format my_url to set a / at the end
 if [ "${my_url: -1}" != '/' ] 

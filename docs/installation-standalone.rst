@@ -9,7 +9,7 @@ Prérequis
 
 Ressources minimum serveur :
 
-- Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+- Un serveur Linux **architecture 64-bits** disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 GeoNature utilise les technologies suivantes:
 
