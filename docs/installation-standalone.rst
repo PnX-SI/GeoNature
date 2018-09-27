@@ -218,6 +218,25 @@ Mise à jour de l'application
 Passer en mode développement
 ----------------------------
 
+Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
+
+::
+
+    --- Se créer un répertoire .git ---
+    mkdir .git
+    ---  récupérer l'historique du dépôt --- 
+    git clone --depth=2 --bare https://github.com/PnX-SI/GeoNature.git .git
+    --- initialiser un dépôt git à partir de l'historique téléchargé --- 
+    git init
+    --- vérifier que le dépôt distant et le contenu local sont synchronisés --- 
+    git pull
+    --- Reset sur HEAD pour mettre à jour les status --- 
+    git reset HEAD
+    -> vous êtes à jour sur la branche master
+
+    
+    
+    
 @TODO : A relire et à basculer dans DOC DEVELOPEMENT ?
 
 Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``) de la manière suivante :
