@@ -1,5 +1,10 @@
 '''
     Fonctions permettant d'ajouter un module tiers à GN
+    Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
+    dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    un paquet PIP du requirement GeoNature n'a pas été bien installé
 '''
 
 import os
@@ -41,7 +46,6 @@ from geonature.utils.errors import (
     ConfigError, GNModuleInstallError, GeoNatureError
 )
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.core.gn_commons.models import TModules
 
 
 log = logging.getLogger(__name__)
@@ -71,6 +75,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
     """
         Installation d'un module gn
     """
+    from geonature.core.gn_commons.models import TModules
     # Installation du module
     module_name = ''
     try:
