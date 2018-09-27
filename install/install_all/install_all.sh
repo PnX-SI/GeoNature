@@ -95,6 +95,7 @@ then
     sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
 fi
 sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
+sudo service postgresql restart
 
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 
