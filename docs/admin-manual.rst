@@ -513,7 +513,6 @@ Relancez la construction de l’interface :
 
     cd /home/MONUSER/geonature/frontend
     npm run build
-    sudo supervisorctl reload
 
 
 Customiser le contenu
@@ -530,7 +529,6 @@ Afin que ces modifications soient prises en compte dans l'interface, il est néc
 
     cd /home/MONUSER/geonature/frontend
     npm run build
-    sudo supervisorctl reload
 
 
 * Customiser le contenu du pied de page :
@@ -542,7 +540,6 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
 
     cd /home/MONUSER/geonature/frontend
     npm run build
-    sudo supervisorctl reload
     
     
 Customiser l'aspect esthétique
@@ -568,7 +565,6 @@ Comme pour la modification des contenus, il est nécessaire de relancer la comma
 
     cd /home/MONUSER/geonature/frontend
     npm run build
-    sudo supervisorctl reload
 
 
 Intégrer des données
