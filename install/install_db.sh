@@ -289,10 +289,32 @@ then
     	#echo "Refresh DEM spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
         if $vectorise_dem
-            #echo "Vectorisation of DEM raster. This may take a few minutes..."
+            echo "Vectorisation of DEM raster. This may take a few minutes..."
+            echo "" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "Vectorisation of DEM raster. This may take a few minutes" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
             sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
-            #echo "Refresh DEM vector spatial index. This may take a few minutes..."
+            
+            echo "Refresh DEM vector spatial index. This may take a few minutes..."
+            echo "" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "Refresh DEM vector spatial index. This may take a few minutes" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
             sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
+            
+            echo "Use right function to calculate the altitude..."
+            echo "" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "Use right function to calculate the altitude" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            sudo -n -u postgres -s psql -d $db_name -c "ALTER FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry) RENAME TO fct_get_altitude_intersection_with_dem_raster;" &>> var/log/install_db.log
+            sudo -n -u postgres -s psql -d $db_name -c "ALTER FUNCTION ref_geo.fct_get_altitude_intersection_with_dem_vector(IN mygeom public.geometry) RENAME TO fct_get_altitude_intersection;" &>> var/log/install_db.log
         fi
     fi
 
