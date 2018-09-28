@@ -288,8 +288,7 @@ A chaque modification de ce fichier, lancer les commandes suivantes depuis le ba
 Compléments après installation
 ------------------------------
 
-Si vous n'avez pas choisi d'installer de raster MNT lors de l'installation ou que vous soutez remplacer le MNT national à 250m mise en place lors de l'installation initiale,
-voici les commandes qui vous permettrons de la faire.
+Si vous n'avez pas choisi d'installer de raster MNT lors de l'installation ou que vous souhaitez remplacer le MNT national à 250m mise en place lors de l'installation initiale, voici les commandes qui vous permettrons de le faire.
 
 Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME).
 
@@ -298,13 +297,13 @@ Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
 
-Placer votre propre fichier MNT dans le répertoire '/tmp/geonature' (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscules).
+Placer votre propre fichier MNT dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscules).
 Ou télécharger le MNT par défaut.
 
 ::
 
     wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp/geonature
-	  unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
+    unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
 
@@ -316,7 +315,7 @@ vous pouvez le faire en lançant les commandes ci-dessous. Sachez que cela prend
     sudo -n -u postgres -s psql -d MYDBNAME -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.index_dem_vector_geom;"
 
-Pour un usage ponctuel, utiliser la fonction `ref_geo.fct_get_altitude_intersection_with_dem_vector(geometry)`.
+Pour un usage ponctuel, utiliser la fonction ``ref_geo.fct_get_altitude_intersection_with_dem_vector(geometry)``.
 Pour que toute l'application utilise la vectorisation du raster MNT (recommandé), lancer les commandes ci-dessous. 
 
 ::
