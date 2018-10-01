@@ -133,10 +133,37 @@ Gil propose de rajouter une PK et de faire un lien entre les données de la tabl
   ALTER TABLE gn_imports.obs_faune_2008_2010
      ADD CONSTRAINT pk_obs_faune_2008_2010 PRIMARY KEY(gid);
 
-Ajouter le champ ``entity_source_pk_value`` dans ton INSERT et ``gid`` dans le SELECT
+Ajouter le champ ``entity_source_pk_value`` dans ton INSERT et ``gid`` dans le SELECT.
 
 On pourrait aussi remplir ``cor_observers_synthese`` si on le veut et si on a les observateurs présents dans les données, 
 en les faisant correspondre avec leurs ``id_role``.
+
+L'intégration de données dans la Synthèse peut faire apparaitre des nouveaux taxons présents sur le territoire. Si vous souhaitez les proposer à la saisie dans Occtax, il faut les ajouter dans ``taxonomie.bib_noms`` puis dans la liste "Saisie Occtax".
+
+.. code:: sql
+
+  -- Remplir taxonomie.bib_noms avec les nouveaux noms présents dans la synthèse 
+  INSERT INTO taxonomie.bib_noms (cd_nom, cd_ref)
+  SELECT DISTINCT s.cd_nom, t.cd_ref
+  FROM gn_synthese.synthese s
+  JOIN taxonomie.taxref t
+  ON s.cd_nom = t.cd_nom
+  WHERE not s.cd_nom IN (SELECT DISTINCT cd_nom FROM taxonomie.bib_noms);
+
+Il faudrait ensuite les ajouter à la liste "Saisie Occtax", pour que ces nouveaux noms soient proposés à la saisie dans le module Occtax de GeoNature.
+
+L'installation de GeoNature intègre les communes de toute la France métropolitaine. Pour alléger la table ``ref_geo.l_areas``, il peut être pertinent de supprimer les communes en dehors du territoire de travail. Par exemple, supprimer toutes les communes en dehors du département. 
+
+Pour retrouver le détail de toutes les communes du département Bouches-du-Rhône : 
+
+.. code:: sql
+
+  SELECT * FROM ref_geo.l_areas la
+  JOIN ref_geo.bib_areas_types ba ON ba.id_type = la.id_type
+  JOIN ref_geo.li_municipalities lm ON lm.id_area = la.id_area
+  WHERE ba.type_code = 'COM' AND lm.insee_dep = '13'
+
+A utiliser dans une requête de suppression, en gérant les cascades entre les tables.
 
 Insertion depuis un shapefile
 -----------------------------
