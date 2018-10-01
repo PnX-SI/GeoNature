@@ -219,13 +219,11 @@ def export(info_role):
 
     if export_format == 'csv':
         formated_data = [d.as_dict_ordered() for d in data]
-        export_columns = formated_data[0].keys()
-
         return to_csv_resp(
             file_name,
             formated_data,
             separator=';',
-            columns=export_columns,
+            columns=[value for key, value in current_app.config['SYNTHESE']['EXPORT_COLUMNS'].items()]
         )
 
     elif export_format == 'geojson':
