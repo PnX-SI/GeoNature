@@ -405,10 +405,8 @@ class VSyntheseForWebApp(DB.Model):
 def synthese_export_serialization(cls):
     """
     Décorateur qui définit une sérialisation particulière pour la vue v_synthese_for_web_app
-    Il rajoute la fonction as_dict_mapped: qui renvoie un dictionnaire avec des noms d'attrbuts
-    définit en configuration (EXPORT_COLUMNS),
-    et la fonction as_dict_ordered qui conserve l'ordre des attributs tel que définit dans le model
-    (fonctions utilisées pour les exports)
+    Il rajoute la fonction as_dict_ordered qui conserve l'ordre des attributs tel que définit dans le model
+    (fonctions utilisées pour les exports) et qui redéfinit le nom des colonnes tel qu'il sont nommé en configuration
     """
     EXPORT_COLUMNS = current_app.config['SYNTHESE']['EXPORT_COLUMNS']
     default_columns = [key for key, value in EXPORT_COLUMNS.items()]
@@ -426,13 +424,6 @@ def synthese_export_serialization(cls):
     ]
 
     cls.db_cols = [db_col for db_col in cls.__mapper__.c if db_col.key in default_columns]
-
-    def serialize_mapped_fn(self, recursif=False, columns=()):
-        if columns:
-            fprops = list(filter(lambda d: d[0] in columns, cls_db_columns))
-        else:
-            fprops = cls_db_columns
-        return {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item)) for item, _serializer in fprops}
 
     def serialize_order_fn(self):
         order_dict = OrderedDict()
@@ -455,14 +446,12 @@ def synthese_export_serialization(cls):
         )
         return feature
 
-    cls.as_dict_mapped = serialize_mapped_fn
     cls.as_dict_ordered = serialize_order_fn
     cls.as_geofeature_ordered = serialize_geofn
 
     return cls
 
 
-@serializable
 @synthese_export_serialization
 class VSyntheseForExport(DB.Model):
     __tablename__ = 'v_synthese_for_export'
