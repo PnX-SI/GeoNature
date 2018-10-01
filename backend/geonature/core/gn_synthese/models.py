@@ -1,11 +1,13 @@
 from collections import OrderedDict
 
+from flask import current_app
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
-from flask import current_app
+from geoalchemy2.shape import to_shape
+from geojson import Feature
 
 from werkzeug.exceptions import NotFound
 
@@ -440,15 +442,28 @@ def synthese_export_serialization(cls):
             )
         return order_dict
 
+    def serialize_geofn(self, geoCol, idCol):
+        if not getattr(self, geoCol) is None:
+            geometry = to_shape(getattr(self, geoCol))
+        else:
+            geometry = {"type": "Point", "coordinates": [0, 0]}
+
+        feature = Feature(
+            id=str(getattr(self, idCol)),
+            geometry=geometry,
+            properties=self.as_dict_ordered()
+        )
+        return feature
+
     cls.as_dict_mapped = serialize_mapped_fn
     cls.as_dict_ordered = serialize_order_fn
+    cls.as_geofeature_ordered = serialize_geofn
 
     return cls
 
 
 @serializable
 @synthese_export_serialization
-@geoserializable
 class VSyntheseForExport(DB.Model):
     __tablename__ = 'v_synthese_for_export'
     __table_args__ = {'schema': 'gn_synthese'}
@@ -511,10 +526,8 @@ class VSyntheseForExport(DB.Model):
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
 
-    def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature(
-            'the_geom_4326',
+    def get_geofeature_ordered(self):
+        return self.as_geofeature_ordered(
+            'the_geom_local',
             'id_synthese',
-            recursif,
-            columns=columns
         )
