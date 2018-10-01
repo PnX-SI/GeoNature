@@ -5,9 +5,31 @@ CHANGELOG
 2.0.0-rc.3 (unreleased)
 -----------------------
 
+**Nouveautés**
+
+* MNT raster ou vecteur (+ doc MNT) #439 (merci @mathieubossaert)
+* INSTALL_ALL - gestion du format date du serveur PostgreSQL #435
+* Prise en compte des géométries nulles dans la fonction ``serializegeofn``
+* Complément FAQ #441
+* Gestion plus complète des données exemple intégrées ou non lors de l'installation #446
+* Doc customisation (merci @DonovanMaillard)
+
 **Corrections**
 
-*
+* Doc Import niveau 2 : Corrections
+* Correction coquille dans model ``gn_monitoring`` et fonction ``serializegeofn``
+* Installation uniquement sur un environnement 32 bits (documentation + vérification) #442 (merci @jbrieuclp et @sig-pnrnm)
+
+**Autres**
+
+* Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences
+* Script de migration des données SICEN (Obs Occ) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
+* Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
+
+**Notes de version**
+
+* Mettre à jour TaxHub ?
+* Script SQL BDD (fonction altitude avec MNT raster) ?
 
 2.0.0-rc.2 (2018-09-24)
 -----------------------
