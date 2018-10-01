@@ -145,12 +145,13 @@ class TBaseSites(DB.Model):
 
     t_base_visits = relationship(
         "TBaseVisits",
-        lazy='joined',
+        lazy='select',
         cascade="all,delete-orphan"
     )
 
     applications = DB.relationship(
         'TApplications',
+        lazy='select',
         secondary=corSiteApplication,
         primaryjoin=(
             corSiteApplication.c.id_base_site == id_base_site
