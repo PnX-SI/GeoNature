@@ -22,14 +22,15 @@ CHANGELOG
 
 **Autres**
 
-* Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences
+* Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences)
 * Script de migration des données SICEN (Obs Occ) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
 
 **Notes de version**
 
 * Mettre à jour TaxHub ?
-* Script SQL BDD (fonction altitude avec MNT raster) ?
+* Script SQL BDD (fonction altitude avec MNT raster) ? 
+* Attention rc1torc2 dans beta5torc1 ? Pas de rc2torc3 ?
 
 2.0.0-rc.2 (2018-09-24)
 -----------------------
