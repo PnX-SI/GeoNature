@@ -412,9 +412,10 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse :
 Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompues)
 
 
-- Opération du PostgreSQL
+- Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui necessite un redémarrage du SGBD (`sudo service postgresql restart`), il faut impérativemenyt lancer un redémarrage des API Geonature et Taxhub pour que celle-ci continue de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``. 
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``. 
+  
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
 
