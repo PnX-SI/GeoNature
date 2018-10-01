@@ -3,6 +3,13 @@
 . /etc/os-release
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
+OS_BITS="$(getconf LONG_BIT)"
+
+# test the server architecture
+if [ !"$OS_BITS" == "64" ]; then
+   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   exit 1
+fi
 
 # format my_url to set a / at the end
 if [ "${my_url: -1}" != '/' ] 
@@ -95,6 +102,7 @@ then
     sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
 fi
 sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
+sudo service postgresql restart
 
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 
@@ -164,6 +172,7 @@ sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
 sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
+sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini

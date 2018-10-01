@@ -116,12 +116,13 @@ A creuser pour calculer les altitudes non renseignées :
 
 .. code:: sql
 
-  SELECT b.toto->'altitude_min' 
-  FROM(SELECT row_to_json(a.alts) AS toto 
-  FROM (SELECT (ref_geo.fct_get_altitude_intersection(geom_local)) AS alts 
-  FROM pr_occtax.t_releves_occtax) a) b
+  SELECT id_synthese, 
+  (ref_geo.fct_get_altitude_intersection(the_geom_local)).altitude_min
+  (ref_geo.fct_get_altitude_intersection(the_geom_local)).altitude_max
+  FROM gn_synthese.synthese
+  LIMIT 1000;
 
-Gil propose de rajouter une PK et de faire un lien entre ta table et la synthese avec ``entity_source_pk_value`` :
+Gil propose de rajouter une PK et de faire un lien entre les données de la table importée et celles dans la synthèse avec ``entity_source_pk_value`` :
 
 .. code:: sql
 
