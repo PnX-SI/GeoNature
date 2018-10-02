@@ -469,7 +469,7 @@ BEGIN
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   
   IF uuids_counting IS NOT NULL THEN
-      -- insertion dans cor_role_synthese pour chaque counting
+      -- insertion dans cor_observer_synthese pour chaque counting
       INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
       SELECT id_synthese, NEW.id_role 
       FROM gn_synthese.synthese 
