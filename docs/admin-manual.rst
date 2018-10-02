@@ -550,14 +550,7 @@ Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors 
     sudo -n -u postgres -s psql -d MYDBNAME -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.index_dem_vector_geom;"
 
-Pour un usage ponctuel, utiliser la fonction ``ref_geo.fct_get_altitude_intersection_with_dem_vector(geometry)``.
-
-Pour que toute l'application utilise la vectorisation du raster MNT (recommandé), lancer les commandes ci-dessous. 
-
-::
-
-    sudo -n -u postgres -s psql -d MYDBNAME -c "ALTER FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry) RENAME TO fct_get_altitude_intersection_with_dem_raster;"
-    sudo -n -u postgres -s psql -d MYDBNAME -c "ALTER FUNCTION ref_geo.fct_get_altitude_intersection_with_dem_vector(IN mygeom public.geometry) RENAME TO fct_get_altitude_intersection;"
+Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul de l'altitude à la place de la table ``ref_geo.dem``
 
 Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
 

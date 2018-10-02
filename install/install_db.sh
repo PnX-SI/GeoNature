@@ -306,15 +306,6 @@ then
             echo "--------------------" &>> var/log/install_db.log
             echo "" &>> var/log/install_db.log
             sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
-            
-            echo "Use right function to calculate the altitude..."
-            echo "" &>> var/log/install_db.log
-            echo "" &>> var/log/install_db.log
-            echo "--------------------" &>> var/log/install_db.log
-            echo "Use right function to calculate the altitude" &>> var/log/install_db.log
-            echo "--------------------" &>> var/log/install_db.log
-            sudo -n -u postgres -s psql -d $db_name -c "ALTER FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry) RENAME TO fct_get_altitude_intersection_with_dem_raster;" &>> var/log/install_db.log
-            sudo -n -u postgres -s psql -d $db_name -c "ALTER FUNCTION ref_geo.fct_get_altitude_intersection_with_dem_vector(IN mygeom public.geometry) RENAME TO fct_get_altitude_intersection;" &>> var/log/install_db.log
         fi
     fi
 
