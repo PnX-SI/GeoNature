@@ -34,7 +34,7 @@ fi
 # Make sure this script is NOT run as root
 if [ "$(id -u)" == "0" ]; then
    echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
-   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
+   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : `whoami`\e[0m" >&2
    exit 1
 fi
 
@@ -154,16 +154,15 @@ cd /tmp
 wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
-mv GeoNature-$geonature_release /home/$monuser/geonature/
-sudo chown $monuser /home/$monuser/geonature/
+mv GeoNature-$geonature_release /home/`whoami`/geonature/
+sudo chown `whoami` /home/`whoami`/geonature/
 
-cd /home/$monuser/geonature
+cd /home/`whoami`/geonature
 
 # Configuration des settings de GeoNature
 cp config/settings.ini.sample config/settings.ini
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
 my_url="${my_url//\//\\/}"
-sed -i "s/monuser=.*$/monuser=$monuser/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
@@ -194,10 +193,10 @@ cd ../
 sudo touch /etc/apache2/sites-available/geonature.conf
 
 sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
-conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
+conf="Alias /geonature /home/`whoami`/geonature/frontend/dist"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
-conf="<Directory /home/$monuser/geonature/frontend/dist>"
+conf="<Directory /home/`whoami`/geonature/frontend/dist>"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
@@ -213,10 +212,10 @@ sudo a2ensite geonature
 # Configuration Apache de la page de maintenance de GeoNature
 sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
 
-conf="Alias /geonature /home/"$monuser"/geonature/frontend/src/app/maintenance"
+conf="Alias /geonature /home/`whoami`/geonature/frontend/src/app/maintenance"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature_maintenance.conf'
-conf="<Directory /home/$monuser/geonature/frontend/src/app/maintenance>"
+conf="<Directory /home/`whoami`/geonature/frontend/src/app/maintenance>"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
@@ -227,9 +226,9 @@ cd /tmp
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
 rm $taxhub_release.zip
-mv TaxHub-$taxhub_release /home/$monuser/taxhub/
-sudo chown -R $monuser /home/$monuser/taxhub/
-cd /home/$monuser/taxhub
+mv TaxHub-$taxhub_release /home/`whoami`/taxhub/
+sudo chown -R `whoami` /home/`whoami`/taxhub/
+cd /home/`whoami`/taxhub
 
 # Configuration des settings de TaxHub
 echo "Configuration de l'application TaxHub ..."
@@ -287,9 +286,9 @@ if [ "$install_usershub_app" = true ]; then
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
-    mv UsersHub-$usershub_release /home/$monuser/usershub/
-    sudo chown -R $monuser /home/$monuser/usershub/
-    cd /home/$monuser/usershub
+    mv UsersHub-$usershub_release /home/`whoami`/usershub/
+    sudo chown -R `whoami` /home/`whoami`/usershub/
+    cd /home/`whoami`/usershub
     echo "Installation de la base de données et configuration de l'application UsersHub ..."
     cp config/settings.ini.sample config/settings.ini
     sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
@@ -303,9 +302,9 @@ if [ "$install_usershub_app" = true ]; then
     # Conf Apache de UsersHub
     sudo touch /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
-    conf="Alias /usershub /home/$monuser/usershub/web"
+    conf="Alias /usershub /home/`whoami`/usershub/web"
     echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf 
-    conf="<Directory /home/$monuser/usershub/web>"
+    conf="<Directory /home/`whoami`/usershub/web>"
     echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/usershub.conf'
     sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/usershub.conf'

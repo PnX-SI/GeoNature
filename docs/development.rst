@@ -42,6 +42,7 @@ Pour sortir une nouvelle version de GeoNature :
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements.txt`` et ``backend/requirements-travis.txt``
 - Compléter le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
+- Remplir le tableau de compatibilité des dépendances (``docs/versions-compatibility.rst``)
 - Mergez la branche ``develop`` dans la branche ``master``
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
 - Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
