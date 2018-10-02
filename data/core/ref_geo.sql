@@ -200,7 +200,7 @@ CREATE TRIGGER tri_meta_dates_change_li_municipalities BEFORE INSERT OR UPDATE O
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom geometry)
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry)
   RETURNS TABLE(altitude_min integer, altitude_max integer) AS
 $BODY$
 DECLARE
