@@ -18,6 +18,7 @@ import { OcctaxService } from "../services/occtax.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { MarkerComponent } from "@geonature_common/map/marker/marker.component";
 import { LeafletDrawComponent } from "@geonature_common/map/leaflet-draw/leaflet-draw.component";
+import { AuthService } from "@geonature/components/auth/auth.service";
 
 @Component({
   selector: "pnx-occtax-map-form",
@@ -43,13 +44,22 @@ export class OcctaxMapFormComponent
     private _commonService: CommonService,
     public fs: OcctaxFormService,
     private occtaxService: OcctaxService,
-    private _dfs: DataFormService
+    private _dfs: DataFormService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
     // overight the leaflet draw object to set options
     // examples: enable circle =>  leafletDrawOption.draw.circle = true;
     this.leafletDrawOptions = leafletDrawOption;
+
+    // refresh the forms
+    this.fs.releveForm = this.fs.initReleveForm();
+    this.fs.occurrenceForm = this.fs.initOccurenceForm();
+    this.fs.countingForm = this.fs.initCountingArray();
+
+    // patch default values in ajax
+    this.fs.patchAllDefaultNomenclature();
   }
 
   ngAfterViewInit() {
@@ -168,6 +178,10 @@ export class OcctaxMapFormComponent
         if (this.fs.previousBoundingBox) {
           this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
         }
+        // set digitiser as default observers
+        this.fs.releveForm.patchValue({
+          properties: { observers: [this._authService.getCurrentUser()] }
+        });
       }
     });
   }

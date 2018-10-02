@@ -7,6 +7,7 @@ import { Router } from "@angular/router";
 import * as L from "leaflet";
 import { OcctaxService } from "../../services/occtax.service";
 import { MapService } from "@geonature_common/map/map.service";
+import { AuthService } from "@geonature/components/auth/auth.service";
 
 @Component({
   selector: "pnx-occtax-form",
@@ -24,20 +25,13 @@ export class OcctaxFormComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private _commonService: CommonService,
-    private _mapService: MapService
+    private _mapService: MapService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
     // set show occurrence to false:
     this.fs.showOccurrence = false;
-    // refresh the forms
-    this.fs.releveForm = this.fs.initReleveForm();
-    this.fs.occurrenceForm = this.fs.initOccurenceForm();
-    this.fs.countingForm = this.fs.initCountingArray();
-
-    // patch default values in ajax
-    this.fs.patchAllDefaultNomenclature();
-
     // reset taxon list of service
     this.fs.taxonsList = [];
     this.fs.indexOccurrence = 0;

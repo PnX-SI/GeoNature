@@ -6,12 +6,13 @@ import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
 
-export class User {
-  constructor(public userName: string, public userId: number, public organismId: number) {
-    this.userName = userName;
-    this.userId = userId;
-    this.organismId = organismId;
-  }
+export interface User {
+  user_login: string;
+  id_role: string;
+  id_organisme: string;
+  prenom_role?: string;
+  nom_role?: string;
+  nom_complet?: string;
 }
 
 @Injectable()
@@ -65,10 +66,14 @@ export class AuthService {
       .finally(() => (this.isLoading = false))
       .subscribe(
         data => {
+          console.log(data.user);
           const userForFront = {
-            userName: data.user.identifiant,
-            userId: data.user.id_role,
-            organismId: data.user.id_organisme
+            user_login: data.user.identifiant,
+            prenom_role: data.user.prenom_role,
+            id_role: data.user.id_role,
+            nom_role: data.user.nom_role,
+            nom_complet: data.user.nom_role + ' ' + data.user.prenom_role,
+            id_organisme: data.user.id_organisme
           };
           this.setCurrentUser(userForFront);
           this.loginError = false;
