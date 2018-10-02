@@ -116,8 +116,8 @@ class TSources(DB.Model):
 
 
 @serializable
-class CorRoleSynthese(DB.Model):
-    __tablename__ = 'cor_role_synthese'
+class CorObserverSynthese(DB.Model):
+    __tablename__ = 'cor_observer_synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, ForeignKey('gn_synthese.synthese.id_synthese'), primary_key=True)
     id_role = DB.Column(DB.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
