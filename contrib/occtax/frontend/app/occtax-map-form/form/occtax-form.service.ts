@@ -23,6 +23,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 export class OcctaxFormService {
   public markerCoordinates: Array<any>;
   public geojsonCoordinates: GeoJSON;
+  public previousBoundingBox: any;
   public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
@@ -138,7 +139,7 @@ export class OcctaxFormService {
       ),
       this._formService.altitudeValidator(
         (releveForm.controls.properties as FormGroup).get("altitude_min"),
-        (releveForm.controls.properties as FormGroup).get("altitude_max"),
+        (releveForm.controls.properties as FormGroup).get("altitude_max")
       )
     ]);
     return releveForm;
