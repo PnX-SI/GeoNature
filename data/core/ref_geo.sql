@@ -136,7 +136,7 @@ CREATE TABLE li_grids (
 CREATE TABLE dem
 (
   rid serial NOT NULL,
-  rast raster
+  rast public.raster
 );
 
 CREATE TABLE dem_vector
