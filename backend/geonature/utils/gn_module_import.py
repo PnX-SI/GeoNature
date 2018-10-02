@@ -332,6 +332,8 @@ def add_application_db(module_name, url, module_id=None):
     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
     if url[0] == '/':
         url = url[1:]
+    if url[-1:] == '/':
+        url = url[:-1]
     with app.app_context():
         # if module_id: try to insert in t_application
         # check if the module in TApplications
