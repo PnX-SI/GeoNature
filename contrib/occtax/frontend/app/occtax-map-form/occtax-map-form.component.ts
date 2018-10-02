@@ -50,6 +50,9 @@ export class OcctaxMapFormComponent
     // overight the leaflet draw object to set options
     // examples: enable circle =>  leafletDrawOption.draw.circle = true;
     this.leafletDrawOptions = leafletDrawOption;
+  }
+
+  ngAfterViewInit() {
     // get the id from the route
     this._sub = this._route.params.subscribe(params => {
       this.id = +params["id"];
@@ -160,13 +163,14 @@ export class OcctaxMapFormComponent
             this._router.navigate(["/occtax"]);
           }
         ); // end subscribe
+        // if not edition mode, zoom to the previous releve bounding-box
+      } else {
+        if (this.fs.previousBoundingBox) {
+          this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
+        }
       }
     });
   }
-
-  // ngAfterViewInit() {
-  //   this.occtaxFormComponent.markerComponent
-  // }
 
   sendGeoInfo(geojson) {
     this._ms.setGeojsonCoord(geojson);
