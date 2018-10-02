@@ -265,12 +265,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
   
-  
-
-
-
 -- UPDATE Releve
-
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
@@ -306,3 +301,23 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+----------------------------
+----------------------------
+-------- MONITORING --------
+----------------------------
+----------------------------
+DROP TRIGGER trg_cor_site_area ON gn_monitoring.t_base_sites;;
+DROP TRIGGER tri_log_changes ON gn_monitoring.t_base_sites;
+ALTER TABLE gn_monitoring.t_base_sites ALTER COLUMN geom SET DATA TYPE geometry(geometry,4326);
+CREATE TRIGGER trg_cor_site_area
+  AFTER INSERT OR UPDATE OF geom
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_monitoring.fct_trg_cor_site_area();
+CREATE TRIGGER tri_log_changes
+  AFTER INSERT OR UPDATE OR DELETE
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
