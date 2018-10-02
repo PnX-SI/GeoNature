@@ -9,10 +9,14 @@ CHANGELOG
 
 * MNT raster ou vecteur (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL #435
+* Dessin cartographique d'une autre couleur (rouge) que les observations (bleu)
+* Occtax : retour au zoom precedent lors de l'enchainement de relevé #436
+* Occtax : observateur rempli par défaut avec l'utilisateur connecté #438
 * Prise en compte des géométries nulles dans la fonction ``serializegeofn``
 * Complément FAQ #441
 * Gestion plus complète des données exemple intégrées ou non lors de l'installation #446
 * Doc customisation (merci @DonovanMaillard)
+* Clarification de la configuration des gn_modules
 
 **Corrections**
 
@@ -24,13 +28,14 @@ CHANGELOG
 
 * Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences)
 * Script de migration des données SICEN (Obs Occ) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
+* Module Suivi Flore Territoire fonctionnel et installable ()
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
 
 **Notes de version**
 
-* Mettre à jour TaxHub ?
-* Script SQL BDD (fonction altitude avec MNT raster) ? 
-* Attention rc1torc2 dans beta5torc1 ? Pas de rc2torc3 ?
+* Suivez la procédure standard de mise à jour de GeoNature
+* Exécutez l'update de la BDD GeoNature (``data/migrations/2.0.0rc2-to-2.0.0rc3.sql``)
+* Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases)
 
 2.0.0-rc.2 (2018-09-24)
 -----------------------
@@ -58,6 +63,12 @@ CHANGELOG
 * Données exemple : Suppression de l'``observers_txt`` dans la synthèse
 * Suppression d'un ``id_municipality`` en dur dans une route
 * Suppression de la librairie Certifi non utilisée
+
+**Notes de version**
+
+* Suivez la procédure standard de mise à jour de GeoNature
+* Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0rc1-to-2.0.0rc2.sql``)
+
 
 2.0.0-rc.1 (2018-09-21)
 -----------------------
@@ -213,7 +224,7 @@ Pour les utilisateurs utilisant la version 2.0.0.beta5 :
         geonature generate_frontend_modules_route
         geonature frontend_build
 
-* Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5to2.0.0.sql``), celui de Occtax (``contrib/occtax/data/migration_2.0.0beta5toV2.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
+* Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5-to-2.0.0rc1.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
 
 
 2.0.0.beta5 (2018-07-16)
