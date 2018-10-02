@@ -310,7 +310,7 @@ $BODY$
 ----------------------------
 DROP TRIGGER trg_cor_site_area ON gn_monitoring.t_base_sites;
 DROP TRIGGER tri_log_changes ON gn_monitoring.t_base_sites;
-ALTER TABLE gn_monitoring.t_base_sites ALTER COLUMN geom SET DATA TYPE geometry(geometry,4326);
+ALTER TABLE gn_monitoring.t_base_sites ALTER COLUMN geom SET DATA TYPE public.geometry(geometry,4326);
 CREATE TRIGGER trg_cor_site_area
   AFTER INSERT OR UPDATE OF geom
   ON gn_monitoring.t_base_sites
