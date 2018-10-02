@@ -81,7 +81,6 @@ SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occ
 SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
 
 -- Récupération du relevé
-
 SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
 
 -- Récupération de la source
@@ -96,15 +95,12 @@ WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 -- Récupération du status_source depuis le JDD
 SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
 
-
 --Récupération et formatage des observateurs
 SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
 array_agg(rol.id_role) AS observers_id
 FROM pr_occtax.cor_role_releves_occtax cor
 JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
-JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = cor.id_releve_occtax
 WHERE cor.id_releve_occtax = releve.id_releve_occtax;
-
 
 -- insertion dans la synthese
 INSERT INTO gn_synthese.synthese (
