@@ -1,11 +1,4 @@
 #!/bin/bash
-OS_BITS="$(getconf LONG_BIT)"
-
-# test the server architecture
-if [ !"$OS_BITS" == "64" ]; then
-   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
-   exit 1
-fi
 
 # settings.ini file path. Default value overwriten by settings-path parameter
 cd ../
@@ -50,13 +43,6 @@ set -- "${POSITIONAL[@]}" # Restore positional parameters
 
 # Import settings file
 . ${SETTINGS}
-
-# Make sure this script is NOT run as root
-if [ "$(id -u)" == "0" ]; then
-   echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
-   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
-   exit 1
-fi
 
 BASE_DIR=$(readlink -e "${0%/*}")
 
@@ -179,7 +165,7 @@ fi
 # Generate the tsconfig.json 
 geonature generate_frontend_tsconfig
 # Generate the modules routing file by templating
-geonature generate_frontend_modules_route
+geonature generate_frontend_modules_route  
 
 # Retour à la racine de GeoNature
 cd ../
