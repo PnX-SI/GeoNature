@@ -133,6 +133,12 @@ CREATE TABLE li_grids (
     cymax integer
 );
 
+CREATE TABLE dem
+(
+  rid serial NOT NULL,
+  rast raster
+);
+
 CREATE TABLE dem_vector
 (
   gid serial NOT NULL,
@@ -157,6 +163,9 @@ ALTER TABLE ONLY l_areas
 ALTER TABLE ONLY bib_areas_types
     ADD CONSTRAINT pk_bib_areas_types PRIMARY KEY (id_type);
 
+ALTER TABLE ONLY dem
+  ADD CONSTRAINT pk_dem PRIMARY KEY (rid);
+  
 ALTER TABLE ONLY dem_vector
     ADD CONSTRAINT pk_dem_vector PRIMARY KEY (gid);
 
