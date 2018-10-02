@@ -51,6 +51,14 @@ EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 ---------------------------
 ---------------------------
 
+--création de la table ref_geo.dem si elle n'existe pas
+CREATE TABLE IF NOT EXISTS ref_geo.dem
+(
+  rid serial NOT NULL,
+  rast raster,
+  CONSTRAINT dem_pkey PRIMARY KEY (rid)
+);
+
 -- La fonction altitude sait désormais interroger le DEM ou le dem_vector
 -- selon si dem_vector est rempli ou non
 -- TODO : tester si dem vector est rempli sur la zone du geom transmis, sinon utiliser dem
