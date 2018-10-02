@@ -7,21 +7,23 @@ CHANGELOG
 
 **Nouveautés**
 
-* MNT raster ou vecteur (+ doc MNT) #439 (merci @mathieubossaert)
-* INSTALL_ALL - gestion du format date du serveur PostgreSQL #435
+* Possibilité d'utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci @mathieubossaert)
+* INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)
 * Dessin cartographique d'une autre couleur (rouge) que les observations (bleu)
-* Occtax : retour au zoom precedent lors de l'enchainement de relevé #436
-* Occtax : observateur rempli par défaut avec l'utilisateur connecté #438
+* Occtax : retour au zoom precedent lors de l'enchainement de relevé (#436)
+* Occtax : observateur rempli par défaut avec l'utilisateur connecté (#438)
 * Prise en compte des géométries nulles dans la fonction ``serializegeofn``
 * Complément FAQ #441
-* Gestion plus complète des données exemple intégrées ou non lors de l'installation #446
+* Gestion plus complète des données exemple intégrées ou non lors de l'installation (#446)
 * Doc customisation (merci @DonovanMaillard)
 * Clarification de la configuration des gn_modules
 
 **Corrections**
 
-* Doc Import niveau 2 : Corrections
-* Correction coquille dans model ``gn_monitoring`` et fonction ``serializegeofn``
+* Doc Import niveau 2 : Corrections et compléments
+* Correction du trigger Occtax > Synthèse qui met à jour le champs gn_synthese.observers_txt (#448)
+* Correction et amélioration de la fonction ``install_gn_module``
+* Correction coquille dans le modèle ``gn_monitoring`` et la fonction ``serializegeofn``
 * Installation uniquement sur un environnement 32 bits (documentation + vérification) #442 (merci @jbrieuclp et @sig-pnrnm)
 
 **Autres**
