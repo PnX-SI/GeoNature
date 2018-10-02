@@ -9,10 +9,14 @@ CHANGELOG
 
 * MNT raster ou vecteur (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL #435
+* Dessin cartographique d'une autre couleur (rouge) que les observations (bleu)
+* Occtax: retour au zoom precedent lors de l'enchainement de relevé #436
+* Occtax: observateur rempli par défaut avec l'utilisateur connecté #438
 * Prise en compte des géométries nulles dans la fonction ``serializegeofn``
 * Complément FAQ #441
 * Gestion plus complète des données exemple intégrées ou non lors de l'installation #446
 * Doc customisation (merci @DonovanMaillard)
+* Clarification de la configuration des gn_modules
 
 **Corrections**
 
@@ -24,6 +28,7 @@ CHANGELOG
 
 * Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences)
 * Script de migration des données SICEN (Obs Occ) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
+* Module Suivi Flore Territoire fonctionnel et installable ()
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
 
 **Notes de version**
