@@ -13,8 +13,13 @@ export class ObserversComponent implements OnInit {
   filteredObservers: Array<any>;
   @Input() idMenu: number;
   @Input() label: string;
-  @Input() disabled: boolean;
+  // Disable the input: default to false
+  @Input() disabled = false;
   @Input() parentFormControl: FormControl;
+  // display the value 'Tous' on the value list - default = false
+  @Input() bindAllItem = false;
+  // search bar default to true
+  @Input() searchBar = true;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   public searchControl = new FormControl();
@@ -35,6 +40,8 @@ export class ObserversComponent implements OnInit {
       this.filteredObservers = this.observers.filter(obs => {
         return obs.nom_complet.toLowerCase().indexOf(event.toLowerCase()) === 0;
       });
+    } else {
+      this.filteredObservers = this.observers;
     }
   }
 }

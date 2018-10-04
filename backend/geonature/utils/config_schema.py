@@ -6,6 +6,11 @@ import os
 
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Regexp
+from geonature.core.gn_synthese.synthese_config import (
+    DEFAULT_EXPORT_COLUMNS,
+    DEFAULT_LIST_COLUMN,
+    DEFAULT_COLUMNS_API_SYNTHESE
+)
 
 
 class CasUserSchemaConf(Schema):
@@ -20,7 +25,7 @@ class CasUserSchemaConf(Schema):
     )
 
 
-class CasSchemaConf(Schema):
+class CasFrontend(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing='false')
     CAS_URL_LOGIN = fields.Url(
         missing='https://preprod-inpn.mnhn.fr/auth/login'
@@ -28,11 +33,18 @@ class CasSchemaConf(Schema):
     CAS_URL_LOGOUT = fields.Url(
         missing='https://preprod-inpn.mnhn.fr/auth/logout'
     )
+
+
+class CasSchemaConf(Schema):
     CAS_URL_VALIDATION = fields.String(
         missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
+
+
+class BddConfig(Schema):
+    id_area_type_municipality = fields.Integer(missing=25)
 
 
 class RightsSchemaConf(Schema):
@@ -42,6 +54,17 @@ class RightsSchemaConf(Schema):
     ALL_DATA = fields.Integer(missing=3)
 
 
+class MailErrorConf(Schema):
+    MAIL_ON_ERROR = fields.Boolean(missing=False)
+    MAIL_HOST = fields.String(missing="")
+    HOST_PORT = fields.Integer(missing=465)
+    MAIL_FROM = fields.String(missing="")
+    MAIL_USERNAME = fields.String(missing="")
+    MAIL_PASS = fields.String(missing="")
+    MAIL_TO = fields.List(fields.String(), missing=list())
+
+
+# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -55,7 +78,8 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
     SESSION_TYPE = fields.String(missing='filesystem')
     SECRET_KEY = fields.String(required=True)
-    COOKIE_EXPIRATION = fields.Integer(missing=7200)
+    # le cookie expire toute les 30 minutes par défaut
+    COOKIE_EXPIRATION = fields.Integer(missing=108000)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
 
@@ -63,6 +87,8 @@ class GnPySchemaConf(Schema):
     BASE_DIR = fields.String(
         missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
+    MAILERROR = fields.Nested(MailErrorConf, missing=dict())
+    CAS = fields.Nested(CasSchemaConf, missing=dict())
 
 
 class GnFrontEndConf(Schema):
@@ -71,14 +97,39 @@ class GnFrontEndConf(Schema):
     MULTILINGUAL = fields.Boolean(missing=False)
 
 
-class MailErrorConf(Schema):
-    MAIL_ON_ERROR = fields.Boolean(missing=False)
-    MAIL_HOST = fields.String(missing="")
-    HOST_PORT = fields.Integer(missing=465)
-    MAIL_FROM = fields.String(missing="")
-    MAIL_USERNAME = fields.String(missing="")
-    MAIL_PASS = fields.String(missing="")
-    MAIL_TO = fields.List(fields.String(), missing=list())
+id_municipality = BddConfig().load({}).data.get('id_area_type_municipality')
+
+
+class Synthese(Schema):
+    AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}])
+    # Listes des champs renvoyés par l'API synthese '/synthese'
+    # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
+    # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
+    # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE)
+    # Colonnes affichées sur la liste des résultats de la sytnthese
+    LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
+    EXPORT_COLUMNS = fields.Dict(missing=DEFAULT_EXPORT_COLUMNS)
+    EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
+    # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
+    # et sur les filtres taxonomiques avancés
+    ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[1, 2])
+    # nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filres dynamiques
+    # et de la modale d'information détaillée d'une observation
+    # example = "[non_digital_proof]"
+    EXCLUDED_COLUMNS = fields.List(fields.String(), missing=[])
+    # Afficher ou non l'arbre taxonomique
+    DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
+    # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
+    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(missing=False)
+    # Nombre max d'observation à afficher sur la carte
+    NB_MAX_OBS_MAP = fields.Integer(missing=10000)
+    # Nombre max d'observation dans les exports
+    NB_MAX_OBS_EXPORT = fields.Integer(missing=40000)
+    # Nombre des "dernières observations" affiché à l'arrive sur la synthese
+    NB_LAST_OBS = fields.Integer(missing=100)
+
+# class a utiliser pour les paramètres que l'on veut passer au frontend
 
 
 class GnGeneralSchemaConf(Schema):
@@ -93,14 +144,16 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     LOCAL_SRID = fields.Integer(required=True, missing=2154)
-    ID_APPLICATION_GEONATURE = fields.Integer(missing=14)
+    ID_APPLICATION_GEONATURE = fields.Integer(missing=3)
     XML_NAMESPACE = fields.String(missing="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(missing="https://preprod-inpn.mnhn.fr/mtd")
-    CAS = fields.Nested(CasSchemaConf, missing=dict())
+    CAS_PUBLIC = fields.Nested(CasFrontend, missing=dict())
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
-    MAILERROR = fields.Nested(MailErrorConf, missing=dict())
+    SYNTHESE = fields.Nested(Synthese, missing=dict())
+    # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
+    BDD = fields.Nested(BddConfig, missing=dict())
 
 
 class ManifestSchemaConf(Schema):
@@ -113,11 +166,10 @@ class ManifestSchemaConf(Schema):
 
 
 class ManifestSchemaProdConf(Schema):
-    #module_path = fields.String(required=True)
+    # module_path = fields.String(required=True)
     module_name = fields.String(required=True)
 
 
 class GnModuleProdConf(Schema):
     api_url = fields.String(required=True)
     id_application = fields.Integer(required=True)
-

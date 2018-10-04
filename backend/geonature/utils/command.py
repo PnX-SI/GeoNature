@@ -1,3 +1,11 @@
+'''   
+    Fichier de création des commandes geonature
+    Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
+    dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    un paquet PIP du requirement GeoNature n'a pas été bien installé
+'''
 import sys
 import logging
 import subprocess
@@ -17,9 +25,12 @@ from geonature.utils.env import (
 )
 from geonature.utils.errors import ConfigError
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.config_schema import GnGeneralSchemaConf 
+from geonature.utils.config_schema import GnGeneralSchemaConf
 
 log = logging.getLogger(__name__)
+
+MSG_OK = "\033[92mok\033[0m\n"
+
 
 def start_gunicorn_cmd(uri, worker):
     cmd = 'gunicorn server:app -w {gun_worker} -b {gun_uri}'
@@ -55,6 +66,7 @@ def build_geonature_front(rebuild_sass=False):
 
 
 def frontend_routes_templating():
+    log.info('Generating frontend routing')
     from geonature.utils.env import list_frontend_enabled_modules
     from geonature.core.gn_commons.models import TModules
     with open(
@@ -66,13 +78,13 @@ def frontend_routes_templating():
         for conf, manifest in list_frontend_enabled_modules():
             location = Path(GN_EXTERNAL_MODULE / manifest['module_name'])
             # test if module have frontend
-            if (location / 'frontend').is_dir():   
+            if (location / 'frontend').is_dir():
                 path = conf['api_url'].lstrip('/')
                 location = '{}/{}#GeonatureModule'.format(
                     location.resolve(), GN_MODULE_FE_FILE
                 )
                 routes.append(
-                    {'path': path, 'location': location, 'id_module': conf['id_application']}
+                    {'path': path, 'location': location, 'module_name': manifest['module_name']}
                 )
 
             # TODO test if two modules with the same name is okay for Angular
@@ -84,7 +96,11 @@ def frontend_routes_templating():
         ) as output_file:
             output_file.write(route_template)
 
+    log.info("...%s\n", MSG_OK)
+
+
 def tsconfig_templating():
+    log.info('Generating tsconfig.json')
     with open(
         str(ROOT_DIR / 'frontend/tsconfig.json.sample'), 'r'
     ) as input_file:
@@ -95,9 +111,11 @@ def tsconfig_templating():
         str(ROOT_DIR / 'frontend/tsconfig.json'), 'w'
     ) as output_file:
         output_file.write(tsconfig_templated)
+    log.info("...%s\n", MSG_OK)
 
 
 def create_frontend_config(conf_file):
+    log.info('Generating configuration')
     configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
     with open(
@@ -105,10 +123,13 @@ def create_frontend_config(conf_file):
     ) as outputfile:
         outputfile.write("export const AppConfig = ")
         json.dump(configs_gn, outputfile, indent=True)
+    log.info("...%s\n", MSG_OK)
 
 
 def update_app_configuration(conf_file, build=True):
+    log.info('Update app configuration')
     subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
     if build:
         subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
+    log.info("...%s\n", MSG_OK)

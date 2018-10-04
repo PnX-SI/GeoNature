@@ -1,10 +1,10 @@
-
-
 @import 'conf/names_variables.scss';
 @import 'custom/custom.scss';
 
-
-html, body, material-app, mat-sidenav-container{
+html,
+body,
+material-app,
+mat-sidenav-container {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -15,20 +15,20 @@ mat-sidenav-content {
   background-color: $solitude;
 }
 
-.mat-toolbar{
+.mat-toolbar {
   min-height: 5vh !important;
 }
-.mat-toolbar-row{
-  height:5vh !important;
+.mat-toolbar-row {
+  height: 5vh !important;
 }
 
 .app-content {
-    //background-color: $solitude;
-    //height: calc(100% - 5vh);
-    padding-top: 5px;
+  //background-color: $solitude;
+  //height: calc(100% - 5vh);
+  padding-top: 5px;
 }
 
-.row-sm{
+.row-sm {
   margin: 0px;
 }
 
@@ -38,20 +38,24 @@ mat-sidenav-content {
 }
 
 .padding-0 {
-   padding-right: 0 !important;
-   padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 .padding-sm {
-   padding-right: 2px !important;
-   padding-left: 2px !important;
+  padding-right: 2px !important;
+  padding-left: 2px !important;
 }
 .padding-md {
-   padding-right: 5px !important;
-   padding-left: 5px !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
 }
 
-.padding-md-all{
+.padding-md-all {
   padding: 5px !important;
+}
+
+.table-sm td {
+  padding: 0.2rem;
 }
 
 /*
@@ -62,9 +66,9 @@ md-sidenav-layout /deep/ .md-sidenav-content {
   overflow: hidden;
 }
 
- .mat-autocomplete-panel {
-   position: absolute !important;
- }
+.mat-autocomplete-panel {
+  position: absolute !important;
+}
 
 .toolbar-spacer {
   flex: 1 1 auto;
@@ -78,19 +82,24 @@ md-sidenav-layout /deep/ .md-sidenav-content {
   cursor: pointer;
 }
 
-.btn-white{
+.btn-xs {
+  font-size: 10px;
+  padding: 3px;
+}
+
+.btn-white {
   background-color: white;
 }
 
 .label-sm {
-  margin-bottom:0px;
+  margin-bottom: 0px;
 }
 
 .red {
-  color:red;
+  color: red;
 }
 
-#map{
+#map {
   height: 100%;
 }
 
@@ -100,6 +109,11 @@ md-sidenav-layout /deep/ .md-sidenav-content {
   padding-bottom: 10px;
   padding-top: 5px;
   margin-bottom: 20px;
+}
+
+.underlined.underlined-sm {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .underlined.main-color {
@@ -122,11 +136,11 @@ footer {
   list-style-type: none;
 }
 
-.footer-list{
+.footer-list {
   margin-bottom: 2px;
 }
 
-.p-small{
+.p-small {
   margin-bottom: 2px;
 }
 
@@ -134,15 +148,14 @@ footer {
   color: red;
 }
 
-.btn-no-padding{
-  padding: 0px!important;
+.btn-no-padding {
+  padding: 0px !important;
 }
 
 .btn-ghost {
-  border-color: transparent!important;
-  background-color: transparent!important;
+  border-color: transparent !important;
+  background-color: transparent !important;
 }
-
 
 .input-sm {
   height: 1.5rem;
@@ -156,7 +169,7 @@ footer {
   margin-top: 10px;
 }
 
-padding-lg{
+padding-lg {
   padding: 15px;
 }
 
@@ -169,6 +182,45 @@ padding-lg{
   margin: 0 auto;
 }
 
-li.no-bullet{
+li.no-bullet {
   list-style-type: none;
+}
+
+.large-modal > .modal-dialog {
+  max-width: 1500px !important;
+  margin: 25px;
+}
+
+.font-xs {
+  font-size: 13px;
+}
+
+.btn-outline-shadow:hover {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.btn-outline-shadow {
+  color: #292b2c !important;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-outline-shadow.active,
+.btn-outline-shadow:active,
+.show > btn-outline-shadow.dropdown-toggle {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  background-image: none;
+  border-color: #adadad;
+}
+
+.btn-outline-shadow.focus,
+.btn-outline-shadow:focus {
+  box-shadow: 0 0 0 2px hsla(0, 0%, 80%, 0.5);
+}
+
+.box-shadow {
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

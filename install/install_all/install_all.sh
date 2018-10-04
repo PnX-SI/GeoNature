@@ -1,26 +1,40 @@
 #!/bin/bash
+. install_all.ini
 . /etc/os-release
 OS_NAME=$ID
-OS_VERSION=$VERSION_I
+OS_VERSION=$VERSION_ID
+OS_BITS="$(getconf LONG_BIT)"
+
+# test the server architecture
+if [ !"$OS_BITS" == "64" ]; then
+   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   exit 1
+fi
+
+# format my_url to set a / at the end
+if [ "${my_url: -1}" != '/' ] 
+then
+my_url=$my_url/
+fi
 
 
 # Check os and versions
-if [ "$OS_NAME" != "debian" ]
+if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ] 
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour les distributions Debian\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour les distributions Debian et Ubuntu\e[0m" >&2
     exit 1
 fi
 
-if [ "$OS_VERSION" != "8" ] && [ "$OS_VERSION" != "9" ]
+if [ "$OS_VERSION" != "8" ] && [ "$OS_VERSION" != "9" ] && [ "$OS_VERSION" != "18.04" ] && [ "$OS_VERSION" != "16.04" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8 ou 9\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8/9 et ubuntu 16.04/18.04\e[0m" >&2
     exit 1
 fi
 
 # Make sure this script is NOT run as root
 if [ "$(id -u)" == "0" ]; then
    echo -e "\e[91m\e[1mThis script should NOT be run as root\e[0m" >&2
-   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : '$monuser'\e[0m" >&2
+   echo -e "\e[91m\e[1mLancez ce script avec l'utilisateur courant : `whoami`\e[0m" >&2
    exit 1
 fi
 
@@ -45,14 +59,11 @@ touch  var/log/install_app.log
 
 echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
 
-sudo apt-get install -y nano 2> var/log/install_app.log 
-nano install_all.ini
-. install_all.ini
 
 # Modification de la locale
 sudo apt-get install -y locales
 sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
-sudo locale-gen
+sudo locale-gen $my_local
 echo "export LC_ALL=$my_local" >> ~/.bashrc
 echo "export LANG=$my_local" >> ~/.bashrc
 echo "export LANGUAGE=$my_local" >> ~/.bashrc
@@ -70,11 +81,29 @@ sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 2> var/log/install_app.log
-    sudo apt install -y postgis-2.3 postgresql-9.6-postgis-2.3 2> var/log/install_app.log
-else
-    sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
-    sudo apt install postgis-2.3 2> var/log/install_app.log
+    sudo apt install -y postgis-2.3 postgis postgresql-9.6-postgis-2.3 2> var/log/install_app.log
 fi
+if [ "$OS_VERSION" == "8" ]
+then
+    sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
+    sudo apt install -y postgis-2.3 postgis 2> var/log/install_app.log
+fi
+
+if [ "$OS_VERSION" == "18.04" ]
+then
+    sudo apt-get install -y postgresql-server-dev-10 2> var/log/install_app.log 
+    sudo apt install -y postgis 2> var/log/install_app.log
+fi
+
+if [ "$OS_VERSION" == "16.04" ]
+then
+    sudo apt-get install -y libatlas3-base
+    sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log 
+    sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
+fi
+sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
+sudo service postgresql restart
+
 sudo apt-get install -y python3 2> var/log/install_app.log 
 sudo apt-get install -y python3-dev 2> var/log/install_app.log 
 sudo apt-get install -y python3-setuptools 2> var/log/install_app.log 
@@ -90,8 +119,16 @@ if [ "$OS_VERSION" == "9" ]
 then
     sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install nodejs
-else
+    fi
+if [ "$OS_VERSION" == "8" ]
+then
     sudo apt-get install -y npm 2> var/log/install_app.log 
+fi
+
+if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
+then
+    sudo apt-get install -y nodejs
+    sudo apt-get install -y npm
 fi
 
 sudo apt-get install -y supervisor 2> var/log/install_app.log 
@@ -117,16 +154,15 @@ cd /tmp
 wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
-mv GeoNature-$geonature_release /home/$monuser/geonature/
-sudo chown $monuser /home/$monuser/geonature/
+mv GeoNature-$geonature_release /home/`whoami`/geonature/
+sudo chown `whoami` /home/`whoami`/geonature/
 
-cd /home/$monuser/geonature
+cd /home/`whoami`/geonature
 
 # Configuration des settings de GeoNature
 cp config/settings.ini.sample config/settings.ini
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
 my_url="${my_url//\//\\/}"
-sed -i "s/monuser=.*$/monuser=$monuser/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
@@ -135,6 +171,7 @@ sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
 sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
+sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
@@ -144,7 +181,7 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 
 cd install/
-# Installation de la base de données GeoNature en root
+# Installation de la base de données GeoNature
 ./install_db.sh
 
 # Installation et configuration de l'application GeoNature
@@ -156,10 +193,10 @@ cd ../
 sudo touch /etc/apache2/sites-available/geonature.conf
 
 sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
-conf="Alias /geonature /home/"$monuser"/geonature/frontend/dist"
+conf="Alias /geonature /home/`whoami`/geonature/frontend/dist"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
-conf="<Directory /home/$monuser/geonature/frontend/dist>"
+conf="<Directory /home/`whoami`/geonature/frontend/dist>"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
@@ -175,10 +212,10 @@ sudo a2ensite geonature
 # Configuration Apache de la page de maintenance de GeoNature
 sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
 
-conf="Alias /geonature /home/"$monuser"/geonature/frontend/src/app/maintenance"
+conf="Alias /geonature /home/`whoami`/geonature/frontend/src/app/maintenance"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature_maintenance.conf'
-conf="<Directory /home/$monuser/geonature/frontend/src/app/maintenance>"
+conf="<Directory /home/`whoami`/geonature/frontend/src/app/maintenance>"
 echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
@@ -189,9 +226,9 @@ cd /tmp
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
 rm $taxhub_release.zip
-mv TaxHub-$taxhub_release /home/$monuser/taxhub/
-sudo chown -R $monuser /home/$monuser/taxhub/
-cd /home/$monuser/taxhub
+mv TaxHub-$taxhub_release /home/`whoami`/taxhub/
+sudo chown -R `whoami` /home/`whoami`/taxhub/
+cd /home/`whoami`/taxhub
 
 # Configuration des settings de TaxHub
 echo "Configuration de l'application TaxHub ..."
@@ -249,9 +286,9 @@ if [ "$install_usershub_app" = true ]; then
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
-    mv UsersHub-$usershub_release /home/$monuser/usershub/
-    sudo chown -R $monuser /home/$monuser/usershub/
-    cd /home/$monuser/usershub
+    mv UsersHub-$usershub_release /home/`whoami`/usershub/
+    sudo chown -R `whoami` /home/`whoami`/usershub/
+    cd /home/`whoami`/usershub
     echo "Installation de la base de données et configuration de l'application UsersHub ..."
     cp config/settings.ini.sample config/settings.ini
     sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
@@ -265,9 +302,9 @@ if [ "$install_usershub_app" = true ]; then
     # Conf Apache de UsersHub
     sudo touch /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
-    conf="Alias /usershub /home/$monuser/usershub/web"
+    conf="Alias /usershub /home/`whoami`/usershub/web"
     echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf 
-    conf="<Directory /home/$monuser/usershub/web>"
+    conf="<Directory /home/`whoami`/usershub/web>"
     echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/usershub.conf'
     sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/usershub.conf'
@@ -275,3 +312,5 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 sudo apache2ctl restart
+
+echo "L'installation est OK!"

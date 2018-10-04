@@ -1,0 +1,6 @@
+#duplicate this file to v1_compt.ini and adapt it with your context.
+geonature1host=localhost
+geonature1port=5432
+geonature1db=geonaturedb
+geonature1user=geonatuser
+geonature1userpass=monpassachanger

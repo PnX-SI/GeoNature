@@ -1,5 +1,5 @@
     <div class="row row-0 row-counting">
-      <div *ngIf="occtaxConfig.form_fields.counting.life_stage" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.life_stage" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting padding-sm">
           <pnx-nomenclature
             label="{{ 'Counting.LifeStage' | translate }}" 
             [parentFormControl]="formArray.controls[index].controls.id_nomenclature_life_stage"
@@ -8,7 +8,7 @@
             [group2Inpn]="fs.currentTaxon.group2_inpn"> 
           </pnx-nomenclature>
       </div>
-      <div *ngIf="occtaxConfig.form_fields.counting.sex" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.sex" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
             <pnx-nomenclature
               label="{{ 'Counting.Sex' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_sex"
@@ -17,7 +17,7 @@
               [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature>
       </div>
-      <div *ngIf="occtaxConfig.form_fields.counting.obj_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.obj_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
             <pnx-nomenclature 
               label="{{ 'Counting.CountingObject' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_obj_count"
@@ -29,7 +29,7 @@
 
     </div>
     <div class="form-group row row-0">
-        <div *ngIf="occtaxConfig.form_fields.counting.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
+        <div *ngIf="occtaxConfig.form_fields.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
             <pnx-nomenclature
               #typeDenombrement
               label="{{ 'Counting.CountingType' | translate }}"
@@ -39,17 +39,17 @@
               [group2Inpn]="fs.currentTaxon.group2_inpn">
             </pnx-nomenclature> 
         </div>
-        <div *ngIf="occtaxConfig.form_fields.counting.count_min" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].errors?.invalidCount}">
+        <div *ngIf="occtaxConfig.form_fields.count_min" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
+          <div class="form-group" >
             <small> {{ 'Counting.NumberMin' | translate }} </small>
-            <input class="form-control form-control-sm" type="number" min="0"
+            <input [ngClass]="{'is-invalid' : formArray.controls[index].errors?.invalidCount}" class="form-control form-control-sm" type="number" min="0"
             [formControl]="formArray.controls[index].controls.count_min">
           </div>
         </div>
-        <div *ngIf="occtaxConfig.form_fields.counting.count_max" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
-          <div class="form-group" [ngClass]="{'has-danger' : formArray.controls[index].errors?.invalidCount}">
+        <div *ngIf="occtaxConfig.form_fields.count_max" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
+          <div class="form-group">
               <small> {{ 'Counting.NumberMax' | translate }} </small>
-            <input class="form-control form-control-sm" type="number" min="0"
+            <input [ngClass]="{'is-invalid' : formArray.controls[index].errors?.invalidCount}" class="form-control form-control-sm" type="number" min="0"
             [formControl]="formArray.controls[index].controls.count_max">
           </div>
         </div>
@@ -66,7 +66,7 @@
         </small>
     </div>
     <div class="form-group row row-0">
-      <div *ngIf="occtaxConfig.form_fields.counting.validation_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
+      <div *ngIf="occtaxConfig.form_fields.validation_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
           <pnx-nomenclature
             #typeDenombrement
             label="{{ 'Counting.ValidationStatus' | translate }}"

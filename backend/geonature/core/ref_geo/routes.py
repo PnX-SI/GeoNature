@@ -1,9 +1,9 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities
+from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 
 routes = Blueprint('ref_geo', __name__)
 
@@ -11,13 +11,21 @@ routes = Blueprint('ref_geo', __name__)
 @routes.route('/info', methods=['POST'])
 @json_resp
 def getGeoInfo():
+    """
+    From a posted geojson, the route return the municipalities intersected
+    and the altitude min/max
+    """
     data = dict(request.get_json())
     sql = text(
         """SELECT (ref_geo.fct_get_area_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), 101)).*"""
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_area_municipality)).*"""
     )
     try:
-        result = DB.engine.execute(sql, geom=str(data['geometry']))
+        result = DB.engine.execute(
+            sql,
+            geom=str(data['geometry']),
+            id_area_municipality=current_app.config['BDD']['id_area_type_municipality']
+            )
     except Exception as e:
         DB.session.rollback()
         raise
@@ -51,6 +59,10 @@ def getGeoInfo():
 @routes.route('/areas', methods=['POST'])
 @json_resp
 def getAreasIntersection():
+    """
+    From a posted geojson, the route return all the area intersected
+    from l_areas
+    """
     data = dict(request.get_json())
 
     if 'id_type' in data:
@@ -122,5 +134,33 @@ def get_municipalities():
     limit = int(parameters.get('limit')) if parameters.get('limit') else 100
 
     data = q.limit(limit)
-    return [ d.as_dict() for d in data ]
+    return [ d.as_dict() for d in data]
 
+
+@routes.route('/areas', methods=['GET'])
+@json_resp
+def get_areas():
+    """
+        Return the areas of ref_geo.l_areas without geometry
+    """
+    params = request.args
+
+    q = DB.session.query(LAreas).order_by(
+            LAreas.area_name.asc()
+        )
+
+    if 'id_type' in params:
+        q = q.filter(LAreas.id_type == params['id_type'])
+    
+    if 'area_name' in params:
+        q = q.filter(
+            LAreas.area_name.ilike(
+                '{}%'.format(params.get('area_name'))
+            )
+        )
+
+    limit = int(params.get('limit')) if params.get('limit') else 100
+
+    data = q.limit(limit)
+    return [d.as_dict() for d in data]
+    

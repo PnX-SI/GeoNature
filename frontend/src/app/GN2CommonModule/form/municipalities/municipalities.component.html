@@ -1,10 +1,4 @@
-<pnx-select-search
-  [values]="municipalities"
-  [parentFormControl]="parentFormControl"
-  key="nom_com"
-  [label]="'Geo.Municipalities' | translate"
-  debounceTime="500"
-  (onSearch)="refreshMunicipalities($event)"
-  multiselect="true"
+<pnx-multiselect [values]="municipalities" [parentFormControl]="parentFormControl" keyLabel="nom_com" keyValue="insee_com"
+  [label]="'Geo.Municipalities' | translate" debounceTime="500" [searchBar]="searchBar" (onSearch)="refreshMunicipalities($event)"
   [disabled]="disabled">
-</pnx-select-search>
+</pnx-multiselect>

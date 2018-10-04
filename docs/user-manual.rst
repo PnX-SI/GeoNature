@@ -1,10 +1,6 @@
 MANUEL UTILISATEUR
 ==================
 
-.. raw:: html
-
-   <video controls src="../../_static/processus_dbb_geonature.mp4" width=100% frameborder="0" allowfullscreen></video>
-
 Authentification
 ----------------
 
@@ -39,6 +35,8 @@ OccTax
 
 Ce module permet de saisir des données selon le standard Occurrence de taxon du SINP 
 (https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon). 
+
+.. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif
 
 Les données sont organisées en relevés (localisation, jeu de données, date, observateur...) qui sont composés d'observations 
 d'un ou plusieurs taxons (méthode, état, statut, détermination...).
@@ -228,7 +226,7 @@ Une fois que vous avez saisi vos relevés et observations depuis le formulaire, 
 
 Deux méthodes sont possibles pour exporter les données :
 
-- Depuis le module "OccTax"
+- Depuis le module "Occtax"
 
 Depuis la liste de vos relevés de l'interface carte-liste, filtrez d'abord vos relevés par **jeu de données** (ou autre) et cliquez sur le bouton ``Rechercher``. 
 
@@ -253,3 +251,22 @@ Vous obtenez alors un CSV par jeu de données.
 Pour disposer dans l'export de toutes les informations saisies, une ligne correspond à un dénombrement d'un taxon. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/06-export-csv.jpg
+
+Synthèse
+--------
+
+Ce module permet de consulter, rechercher et exporter les données provenant des différentes sources et protocoles avec leur tronc commun, basé sur le standard Occurrences de taxon du SINP (https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon).
+
+Il permet aussi d'afficher la fiche détaillée de chaque occurrence et de revenir à sa fiche source si elle a été saisie dans un module de GeoNature.
+
+.. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif
+
+Admin
+-----
+
+Ce module permet de gérer les métadonnées (Cadres d'acquisition et jeux de données), basées sur le standard Métadonnées du SINP
+(http://standards-sinp.mnhn.fr/category/standards/metadonnees/).
+
+Il permet aussi de gérer les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature
+
+.. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-admin.gif

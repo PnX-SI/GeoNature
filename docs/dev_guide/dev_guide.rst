@@ -17,8 +17,8 @@ Base de données
 Session sqlalchemy
 ------------------
 
-geonature.utils.env.DB
-~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.env.DB``
+
 
 Fournit l'instance de connexion SQLAlchemy
 
@@ -30,16 +30,11 @@ Python ::
     result = DB.session.query(MyModel).get(1)
 
 
-
-
-
-
 Serialisation des modèles
 =========================
 
 
-geonature.utils.utilssqlalchemy.serializable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.utilssqlalchemy.serializable``
 
 Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un dictionnaire des données de l'objet sérialisable json
 
@@ -62,8 +57,8 @@ fichier utilisation modele ::
 
 
 
-geonature.utils.utilssqlalchemy.geoserializable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``geonature.utils.utilssqlalchemy.geoserializable``
+
 
 Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui retourne un dictionnaire serialisable sous forme de Feature geojson.
 
@@ -84,10 +79,65 @@ fichier utilisation modele ::
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
 
+- ``geonature.utils.utilsgeometry.shapeserializable``
+
+Décorateur pour les modèles SQLA:
+
+- Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
+- Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilsgeometry import shapeserializable
+
+    @shapeserializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
 
 
-geonature.utils.utilssqlalchemy.json_resp
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fichier utilisation modele ::
+
+
+    # utilisation de as_shape()
+    data = DB.session.query(MyShapeserializableClass).all()
+    MyShapeserializableClass.as_shape(
+        geom_col='geom_4326',
+        srid=4326,
+        data=data,
+        dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+        file_name=file_name
+    )
+
+- ``geonature.utils.utilsgeometry.FionaShapeService``
+
+Classe utilitaire pour crer des shapefiles.
+
+La classe contient 3 méthode de classe:
+- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geom passé en paramètre
+- FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles
+- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles qui ont au moin un enregistrement
+
+::
+
+        data = DB.session.query(MySQLAModel).all()
+        
+        for d in data:
+                FionaShapeService.create_shapes_struct(
+                        db_cols=db_cols,
+                        srid=current_app.config['LOCAL_SRID'],
+                        dir_path=dir_path,
+                        file_name=file_name,
+                        col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+                )
+        FionaShapeService.create_feature(row_as_dict, geom)
+                FionaShapeService.save_and_zip_shapefiles()
+
+
+
+- ``geonature.utils.utilssqlalchemy.json_resp``
+
 
 Décorateur pour les routes : les données renvoyées par la route sont automatiquement serialisées en json (ou geojson selon la structure des données)
 
@@ -114,7 +164,10 @@ fichier routes ::
 
 
 
+Export des données
+==================
 
+TODO
 
 
 Authentification avec pypnusershub
@@ -125,8 +178,8 @@ Vérification des droits des utilisateurs
 ----------------------------------------
 
 
-pypnusershub.routes.check_auth
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``pypnusershub.routes.check_auth``
+
 
 Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirige en cas de niveau insuffisant ou d'informations de session erronés
 (deprecated) Privilegier `check_auth_cruved`
@@ -160,8 +213,7 @@ params :
 
 
 
-pypnusershub.routes.check_auth_cruved
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``pypnusershub.routes.check_auth_cruved``
 
 Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer une action sur la donnée et le redirige en cas de niveau insuffisant ou d'informations de session erronées
 
@@ -193,3 +245,23 @@ params :
         return {'result': 'id_role = {}'.format(id_role)}
 
 
+
+- ``pypnusershub.routes.db.tools.cruved_for_user_in_app``
+
+
+Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
+Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.
+Le cruved de l'application enfant surcharge toujours celui de l'application mère.
+
+params:
+* id_role <integer:None>
+* id_application: id du module surlequel on veut avoir le cruved
+* id_application_parent: id l'application parent du module
+
+Valeur retourné: <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+
+    ::
+
+    from pypnusershub.db.tools import cruved_for_user_in_app
+
+    cruved = cruved_for_user_in_app(id_role=5, id_application=18, id_application_parent=14)

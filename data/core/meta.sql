@@ -95,7 +95,7 @@ CREATE TABLE t_acquisition_frameworks (
     target_description text,
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
-    is_parent integer,
+    is_parent boolean,
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,
     meta_create_date timestamp without time zone NOT NULL,
@@ -179,15 +179,16 @@ CREATE TABLE t_datasets (
     marine_domain boolean NOT NULL,
     terrestrial_domain boolean NOT NULL,
     id_nomenclature_dataset_objectif integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_OBJECTIFS'),
-    bbox_west character varying(10),
-    bbox_east character varying(10),
-    bbox_south character varying(10),
-    bbox_north character varying(10),
+    bbox_west real,
+    bbox_east real,
+    bbox_south real,
+    bbox_north real,
     id_nomenclature_collecting_method integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('METHO_RECUEIL'),
     id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('DS_PUBLIQUE'),
     id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('RESOURCE_TYP'),
     default_validity boolean,
+    active boolean NOT NULL DEFAULT TRUE,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
 );
@@ -485,21 +486,3 @@ CREATE OR REPLACE VIEW v_acquisition_frameworks_territories AS
 	FROM gn_meta.t_acquisition_frameworks taf
 	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
 	JOIN gn_meta.cor_dataset_territory cdt ON cdt.id_dataset = d.id_dataset;
-
-
----------------
---SAMPLE DATA--
----------------
-
--- INSERT INTO gn_meta.sinp_datatype_actors (id_actor, actor_organism, actor_fullname, actor_mail) VALUES
--- (1,'Parc nationaux de France',null,null)
--- ,(2,'Parc national des Ecrins',null,null)
--- ,(3,null,'Gerard Lambert',null)
--- ,(4,null,'Pierre Paul-Jacques',null)
--- ;
--- SELECT pg_catalog.setval('sinp_datatype_actors_id_actor_seq', 5, false);
-
-INSERT INTO sinp_datatype_protocols (id_protocol, unique_protocol_id, protocol_name, protocol_desc, id_nomenclature_protocol_type, protocol_url) VALUES
-(0, '9ed37cb1-803b-4eec-9ecd-31880475bbe9', 'hors protocole','observation réalisées hors protocole',ref_nomenclatures.get_id_nomenclature('TYPE_PROTOCOLE','1'),null)
-;
-SELECT pg_catalog.setval('sinp_datatype_protocols_id_protocol_seq', 1, false);

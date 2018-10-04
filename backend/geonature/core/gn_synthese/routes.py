@@ -1,28 +1,46 @@
-import json
 import logging
-from flask import Blueprint, request
+import datetime
+from collections import OrderedDict
 
-from sqlalchemy import distinct, func
+from flask import Blueprint, request, current_app, send_from_directory, render_template
+from sqlalchemy import distinct, func, desc
+from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
 from geojson import FeatureCollection
 
-from geonature.utils.env import DB
+
+from geonature.utils import filemanager
+from geonature.utils.env import DB, ROOT_DIR
+from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
-    Synthese, 
-    TSources, 
-    CorAreaSynthese, 
+    Synthese,
+    TSources,
     DefaultsNomenclaturesValue,
-    VSyntheseForWebApp,
-    VSyntheseDecodeNomenclatures
+    SyntheseOneRecord,
+    VMTaxonsSyntheseAutocomplete,
+    VSyntheseForWebApp, VSyntheseForExport
 )
-from geonature.core.ref_geo.models import (
-    LiMunicipalities
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+from geonature.core.taxonomie.models import (
+    Taxref,
+    TaxrefProtectionArticles,
+    TaxrefProtectionEspeces
 )
-from pypnusershub import routes as fnauth
-from geonature.utils.utilssqlalchemy import json_resp, testDataType
-from geonature.core.gn_meta import mtd_utils
+from geonature.core.gn_synthese.utils import query as synthese_query
 
+from geonature.core.gn_meta.models import TDatasets
+
+from pypnusershub import routes as fnauth
+
+from geonature.utils.utilssqlalchemy import (
+    to_csv_resp, to_json_resp,
+    json_resp, GenericTable
+)
+
+
+# debug
+# current_app.config['SQLALCHEMY_ECHO'] = True
 
 routes = Blueprint('gn_synthese', __name__)
 
@@ -86,169 +104,251 @@ def getDefaultsNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
-@routes.route('/synthese', methods=['POST'])
+@routes.route('', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def get_synthese():
+def get_synthese(info_role):
     """
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
-        'observers' param (string) is filtered with ilike clause
     """
-    filters = dict(request.get_json())
-    result_limit = None
+    filters = {key: value[0].split(',') for key, value in dict(request.args).items()}
     if 'limit' in filters:
-        result_limit = filters.pop('limit')
-    q = DB.session.query(Synthese)
-    q = q.join(
-        VSyntheseDecodeNomenclatures,
-        VSyntheseDecodeNomenclatures.id_synthese ==
-        Synthese.id_synthese
-    )
-    q = q.join(
-        LiMunicipalities,
-        LiMunicipalities.insee_com ==
-        Synthese.id_municipality
-    )
-
-    if 'observers' in filters:
-        q = q.filter(Synthese.observers.ilike('%'+filters.pop('observers')+'%'))
-    
-    if 'date_min' in filters:
-        q = q.filter(Synthese.date_min >= filters.pop('date_min'))
-    
-    if 'date_max' in filters:
-        q = q.filter(Synthese.date_min <= filters.pop('date_max'))
-
-    for colname, value in filters.items():
-        col = getattr(Synthese.__table__.columns, colname)
-        testT = testDataType(value, col.type, colname)
-        if testT:
-            return {'error': testT}, 500
-        q = q.filter(col == value)
-    if result_limit:
-        q = q.order_by(
-            Synthese.date_min
-            )
-        data = q.limit(
-                result_limit
-            )
+        result_limit = filters.pop('limit')[0]
     else:
-        data = q.all()
-    return FeatureCollection([d.get_geofeature() for d in data])
+        result_limit = current_app.config['SYNTHESE']['NB_MAX_OBS_MAP']
 
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
 
-@routes.route('/vsynthese', methods=['POST'])
-@json_resp
-def get_vsynthese():
-    """
-        return synthese row(s) filtered by form params
-        Params must have same synthese fields names
-        'observers' param (string) is filtered with ilike clause
-    """
-    filters = dict(request.get_json())
     q = DB.session.query(VSyntheseForWebApp)
-    
-    if 'observers' in filters and filters['observers']:
-        q = q.filter(VSyntheseForWebApp.observers.ilike('%'+filters.pop('observers')+'%'))
 
-    for colname, value in filters.items():
-        col = getattr(VSyntheseForWebApp.__table__.columns, colname)
-        testT = testDataType(value, col.type, colname)
-        if testT:
-            return {'error': testT}, 500
-        q = q.filter(col == value)
-    if 'limit' in filters:
-        q = q.limit(
-            filters['limit']
-            ).orderby(
-                VSyntheseForWebApp.date_min
-            )
-    else:
-        data = q.all()
-    return FeatureCollection([d.get_geofeature() for d in data])
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
+    q = q.order_by(
+        VSyntheseForWebApp.date_min.desc()
+    )
+    nb_total = 0
+
+    data = q.limit(result_limit)
+    columns = current_app.config['SYNTHESE']['COLUMNS_API_SYNTHESE_WEB_APP'] + MANDATORY_COLUMNS
+    features = []
+    for d in data:
+        feature = d.get_geofeature(
+            columns=columns
+        )
+        feature['properties']['nom_vern_or_lb_nom'] = d.lb_nom if d.nom_vern is None else d.nom_vern
+        features.append(feature)
+    return {
+        'data': FeatureCollection(features),
+        'nb_obs_limited': nb_total == current_app.config['SYNTHESE']['NB_MAX_OBS_MAP'],
+        'nb_total': nb_total
+    }
 
 
-@routes.route('/synthese/<synthese_id>', methods=['GET'])
+@routes.route('/vsynthese/<id_synthese>', methods=['GET'])
 @json_resp
-def get_one_synthese(synthese_id):
+def get_one_synthese(id_synthese):
     """
-        return all synthese rows
-        only use for test with a few rows in synthese table
+        Retourne un enregistrement de la synthese
+        avec les nomenclatures décodées pour la webapp
     """
-    q = DB.session.query(Synthese)
-    q = q.filter(Synthese.id_synthese == synthese_id)
 
+    q = DB.session.query(SyntheseOneRecord).filter(
+        SyntheseOneRecord.id_synthese == id_synthese
+    )
+    try:
+        data = q.one()
+        return data.as_dict(True)
+    except exc.NoResultFound:
+        return None
+
+
+@routes.route('/<id_synthese>', methods=['DELETE'])
+@fnauth.check_auth_cruved('D', True)
+@json_resp
+def delete_synthese(info_role, id_synthese):
+    synthese_obs = DB.session.query(Synthese).get(id_synthese)
+    user_datasets = TDatasets.get_user_datasets(info_role)
+    synthese_releve = synthese_obs.get_observation_if_allowed(info_role, user_datasets)
+
+    # get and delete source
+    # TODO
+    # est-ce qu'on peut supprimer les données historiques depuis la synthese
+    source = DB.session.query(TSources).filter(TSources.id_source == synthese_obs.id_source).one()
+    pk_field_source = source.entity_source_pk_field
+    inter = pk_field_source.split('.')
+    pk_field = inter.pop()
+    table_source = inter.join('.')
+    sql = text("DELETE FROM {table} WHERE {pk_field} = :id".format(
+        table=table_source,
+        pk_field=pk_field)
+    )
+    result = DB.engine.execute(
+        sql,
+        id=synthese_obs.entity_source_pk_value
+    )
+
+    # delete synthese obs
+    DB.session.delete(synthese_releve)
+    DB.session.commit()
+
+    return {'message': 'delete with success'}, 200
+
+
+@routes.route('/export', methods=['GET'])
+@fnauth.check_auth_cruved('E', True)
+def export(info_role):
+    filters = dict(request.args)
+    if 'limit' in filters:
+        result_limit = filters.pop('limit')[0]
+    else:
+        result_limit = current_app.config['SYNTHESE']['NB_MAX_OBS_EXPORT']
+
+    export_format = filters.pop('export_format')[0]
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+
+    q = DB.session.query(VSyntheseForExport)
+    q = synthese_query.filter_query_all_filters(VSyntheseForExport, q, filters, info_role, allowed_datasets)
+
+    q = q.order_by(
+        VSyntheseForExport.date_min.desc()
+    )
+    data = q.limit(result_limit)
+
+    file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
+
+    if export_format == 'csv':
+        formated_data = [d.as_dict_ordered() for d in data]
+        return to_csv_resp(
+            file_name,
+            formated_data,
+            separator=';',
+            columns=[value for key, value in current_app.config['SYNTHESE']['EXPORT_COLUMNS'].items()]
+        )
+
+    elif export_format == 'geojson':
+        formated_data = [d.get_geofeature_ordered() for d in data]
+        results = FeatureCollection(
+            formated_data
+        )
+        return to_json_resp(
+            results,
+            as_file=True,
+            filename=file_name,
+            indent=4
+        )
+    else:
+        filemanager.delete_recursively(str(ROOT_DIR / 'backend/static/shapefiles'), excluded_files=['.gitkeep'])
+
+        dir_path = str(ROOT_DIR / 'backend/static/shapefiles')
+        FionaShapeService.create_shapes_struct(
+            db_cols=VSyntheseForExport.db_cols,
+            srid=current_app.config['LOCAL_SRID'],
+            dir_path=dir_path,
+            file_name=file_name,
+            col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+        )
+        for row in data:
+            geom = row.the_geom_local
+            row_as_dict = row.as_dict_ordered()
+            FionaShapeService.create_feature(row_as_dict, geom)
+
+        FionaShapeService.save_and_zip_shapefiles()
+
+        return send_from_directory(
+            dir_path,
+            file_name+'.zip',
+            as_attachment=True
+        )
+
+
+@routes.route('/statuts', methods=['GET'])
+@fnauth.check_auth_cruved('E', True)
+def get_status(info_role):
+    """
+    Route to get all the protection status of a synthese search
+    """
+
+    filters = dict(request.args)
+
+    q = (DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles)
+         .join(
+        Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom
+    ).join(
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom
+    ).join(
+        TaxrefProtectionArticles, TaxrefProtectionArticles.cd_protection == TaxrefProtectionEspeces.cd_protection
+    ))
+
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role, allowed_datasets)
     data = q.all()
+
+    protection_status = []
+    for d in data:
+        taxon = d[1].as_dict()
+        protection = d[2].as_dict()
+        row = OrderedDict([
+            ('nom_complet', taxon['nom_complet']),
+            ('nom_vern', taxon['nom_vern']),
+            ('cd_nom', taxon['cd_nom']),
+            ('cd_ref', taxon['cd_ref']),
+            ('type_protection', protection['type_protection']),
+            ('article', protection['article']),
+            ('intitule', protection['intitule']),
+            ('arrete', protection['arrete']),
+            ('date_arrete', protection['date_arrete']),
+            ('url', protection['url']),
+        ])
+        protection_status.append(row)
+
+    export_columns = [
+        'nom_complet', 'nom_vern', 'cd_nom', 'cd_ref', 'type_protection',
+        'article', 'intitule', 'arrete', 'date_arrete', 'url'
+    ]
+
+    file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+    return to_csv_resp(
+        file_name,
+        protection_status,
+        separator=';',
+        columns=export_columns,
+    )
+
+
+@routes.route('/taxons_tree', methods=['GET'])
+@json_resp
+def get_taxon_tree():
+    taxon_tree_table = GenericTable('v_tree_taxons_synthese', 'gn_synthese', geometry_field=None)
+    data = DB.session.query(
+        taxon_tree_table.tableDef
+    ).all()
+    return [taxon_tree_table.as_dict(d) for d in data]
+
+
+@routes.route('/taxons_autocomplete', methods=['GET'])
+@json_resp
+def get_autocomplete_taxons_synthese():
+
+    search_name = request.args.get('search_name')
+    q = DB.session.query(VMTaxonsSyntheseAutocomplete)
+    if search_name:
+        search_name = search_name.replace(' ', '%')
+        q = q.filter(
+            VMTaxonsSyntheseAutocomplete.search_name.ilike(search_name+"%")
+        )
+    regne = request.args.get('regne')
+    if regne:
+        q = q.filter(VMTaxonsSyntheseAutocomplete.regne == regne)
+
+    group2_inpn = request.args.get('group2_inpn')
+    if group2_inpn:
+        q = q.filter(VMTaxonsSyntheseAutocomplete.group2_inpn == group2_inpn)
+
+    q = q.order_by(desc(
+        VMTaxonsSyntheseAutocomplete.cd_nom ==
+        VMTaxonsSyntheseAutocomplete.cd_ref
+    ))
+
+    data = q.limit(20).all()
     return [d.as_dict() for d in data]
-
-
-# data = {
-#     id_dataset: 1,
-#     id_nomenclature_geo_object_nature: 3,
-#     id_nomenclature_grp_typ,
-#     id_nomenclature_obs_meth,
-#     id_nomenclature_obs_technique,
-#     id_nomenclature_bio_status,
-#     id_nomenclature_bio_condition
-#     id_nomenclature_naturalness
-#     id_nomenclature_exist_proof
-#     id_nomenclature_valid_status
-#     id_nomenclature_diffusion_level
-#     id_nomenclature_life_stage
-#     id_nomenclature_sex
-#     id_nomenclature_obj_count
-#     id_nomenclature_type_count
-#     id_nomenclature_sensitivity
-#     id_nomenclature_observation_status
-#     id_nomenclature_blurring
-#     id_nomenclature_source_status
-#     id_nomenclature_info_geo_type
-#     id_municipality
-#     count_min
-#     count_max
-#     cd_nom
-
-
-# }
-
-# import copy
-# from datetime import datetime
-# @blueprint.route('/test/insert', methods=['POST'])
-# def insertData():
-#     for i in range(10000):
-#         data = copy.deepcopy(sample_data)
-#         taxon_val = [351,60612,67111,18437,8326,11165,81065,95186]
-#         life_stage_val = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]
-#         naturality_val = [181,182,183,184,185]
-
-#         # d1 = datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y')
-#         # d2 = datetime.strptime('1/1/20018 4:50 AM', '%m/%d/%Y')
-
-#         # date_max = random_date(d1, d2)
-#         # date_min = date_max
-
-#         occurrences_occtax = data['properties']['t_occurrences_occtax']
-#         data['properties'].pop('t_occurrences_occtax')
-
-
-#         releve = TRelevesOccurrence(**data['properties'])
-#         releve.geom_4326 = from_shape(generate_random_point(), srid=4326)
-        
-        
-
-#         for occ in occurrences_occtax:
-#             occ['id_nomenclature_naturalness'] = get_random_value(naturality_val)
-#             occ['cd_nom'] = get_random_value(taxon_val)
-#             counting = occ.pop('cor_counting_occtax')
-#             occurrence = TOccurrencesOccurrence(**occ)
-
-#             for count in counting:
-#                 count['id_nomenclature_life_stage'] = get_random_value(life_stage_val)
-#                 occurrence.cor_counting_occtax.append(CorCountingOccurrence(**count))
-#         releve.t_occurrences_occtax.append(occurrence)
-
-#         DB.session.add(releve)
-#     DB.session.commit()
-#     DB.session.flush()
-
-#     return 'ça marche bien'

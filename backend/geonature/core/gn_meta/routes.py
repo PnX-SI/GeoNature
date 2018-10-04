@@ -7,12 +7,18 @@ from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 
+from pypnnomenclature.models import TNomenclatures
+
 from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor, TAcquisitionFramework,
-    CorAcquisitionFrameworkActor
+    CorAcquisitionFrameworkActor, CorAcquisitionFrameworkObjectif,
+    CorAcquisitionFrameworkVoletSINP
 )
-from geonature.core.gn_commons.models import TParameters
+from geonature.core.gn_meta.repositories import (
+    get_datasets_cruved,
+    get_af_cruved
+)
 from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
@@ -41,10 +47,15 @@ def get_datasets_list():
 @json_resp
 def get_datasets(info_role):
     """
-        Retourne la liste des datasets
+    Retourne la liste des datasets
+    Parameters:
+        info_role(TRole)
+        active (boolean)
+        id_acquisition_framework (integer)
 
     """
-    if current_app.config['CAS']['CAS_AUTHENTIFICATION']:
+    with_mtd_error = False
+    if current_app.config['CAS_PUBLIC']['CAS_AUTHENTIFICATION']:
         # synchronise the CA and JDD from the MTD WS
         try:
             mtd_utils.post_jdd_from_user(
@@ -54,35 +65,13 @@ def get_datasets(info_role):
         except Exception as e:
             gunicorn_error_logger.info(e)
             log.error(e)
+            with_mtd_error = True
+    params = dict(request.args)
+    datasets = {'data': get_datasets_cruved(info_role, params)}
+    if with_mtd_error:
+        datasets['with_mtd_errors'] = True
+    return datasets
 
-    q = DB.session.query(TDatasets)
-    if info_role.tag_object_code == '2':
-        q = q.join(
-            CorDatasetActor,
-            CorDatasetActor.id_dataset == TDatasets.id_dataset
-        )
-        # if organism is None => do not filter on id_organism even if level = 2
-        if info_role.id_organisme is None:
-            q = q.filter(
-                CorDatasetActor.id_role == info_role.id_role
-            )
-        else:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_organism == info_role.id_organisme,
-                    CorDatasetActor.id_role == info_role.id_role
-                )
-            )
-    elif info_role.tag_object_code == '1':
-        q = q.join(
-            CorDatasetActor,
-            CorDatasetActor.id_dataset == TDatasets.id_dataset
-        ).filter(
-            CorDatasetActor.id_role == info_role.id_role
-        )
-    data = q.all()
-
-    return [d.as_dict(True) for d in data]
 
 @routes.route('/dataset/<id_dataset>', methods=['GET'])
 @json_resp
@@ -93,18 +82,16 @@ def get_dataset(id_dataset):
     data = DB.session.query(TDatasets).get(id_dataset)
     cor = data.cor_dataset_actor
     dataset = data.as_dict(True)
-    print(dataset)
     organisms = []
     for c in cor:
         if c.organism:
             organisms.append(c.organism.as_dict())
         else:
             organisms.append(None)
-    i=0
+    i = 0
     for o in organisms:
         dataset['cor_dataset_actor'][i]['organism'] = o
-        i = i +1
-    print(dataset)
+        i = i + 1
     return dataset
 
 
@@ -118,19 +105,24 @@ def post_dataset():
 
     for cor in cor_dataset_actor:
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
-    
-    DB.session.add(dataset)
+
+    if dataset.id_dataset:
+        DB.session.merge(dataset)
+    else:
+        DB.session.add(dataset)
     DB.session.commit()
     return dataset.as_dict(True)
 
+
 @routes.route('/acquisition_frameworks', methods=['GET'])
+@fnauth.check_auth_cruved('R', True)
 @json_resp
-def get_acquisition_frameworks():
+def get_acquisition_frameworks(info_role):
     """
-    Retourne tous les cadres d'acquisition
+    Retourne tous les cadres d'acquisition filtrés avec le cruved
     """
-    data = DB.session.query(TAcquisitionFramework).all()
-    return [af.as_dict(True) for af in data]
+    return get_af_cruved(info_role)
+
 
 @routes.route('/acquisition_framework/<id_acquisition_framework>', methods=['GET'])
 @json_resp
@@ -140,46 +132,43 @@ def get_acquisition_framework(id_acquisition_framework):
     """
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if af:
-        return af.as_dict()
+        return af.as_dict(True)
     return None
+
 
 @routes.route('/acquisition_framework', methods=['POST'])
 @json_resp
-def post_acquisition_framework():   
+def post_acquisition_framework():
     data = dict(request.get_json())
 
     cor_af_actor = data.pop('cor_af_actor')
+    cor_objectifs = data.pop('cor_objectifs')
+    cor_volets_sinp = data.pop('cor_volets_sinp')
 
     af = TAcquisitionFramework(**data)
 
     for cor in cor_af_actor:
-        af.cor_af_actor.append(cor_af_actor(**cor))
-    
-    DB.session.add(af)
+        af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
+
+    if cor_objectifs is not None:
+        objectif_nom = DB.session.query(TNomenclatures).filter(
+            TNomenclatures.id_nomenclature.in_(cor_objectifs)
+        ).all()
+        for obj in objectif_nom:
+            af.cor_objectifs.append(obj)
+
+    if cor_volets_sinp is not None:
+        volet_nom = DB.session.query(TNomenclatures).filter(
+            TNomenclatures.id_nomenclature.in_(cor_volets_sinp)
+        ).all()
+        for volet in volet_nom:
+            af.cor_volets_sinp.append(volet)
+    if af.id_acquisition_framework:
+        DB.session.merge(af)
+    else:
+        DB.session.add(af)
     DB.session.commit()
     return af.as_dict()
-
-
-# @routes.route('/list/parameters', methods=['GET'])
-# @json_resp
-# def get_parameters_list():
-#     q = DB.session.query(TParameters)
-#     data = q.all()
-
-#     return [d.as_dict() for d in data]
-
-
-# @routes.route('/parameters/<param_name>', methods=['GET'])
-# @routes.route('/parameters/<param_name>/<int:id_org>', methods=['GET'])
-# @json_resp
-# def get_one_parameter(param_name, id_org=None):
-#     q = DB.session.query(TParameters)
-#     q = q.filter(TParameters.parameter_name == param_name)
-#     if id_org:
-#         q = q.filter(TParameters.id_organism == id_org)
-
-#     data = q.all()
-#     return [d.as_dict() for d in data]
 
 
 def get_cd_nomenclature(id_type, cd_nomenclature):

@@ -13,7 +13,7 @@ export class GenericFormGeneratorComponent implements OnInit {
   @Input() formsDefinition: Array<any>;
   @Input() selectLabel: string;
   public formsSelected = [];
-  constructor(private _dynformService: DynamicFormService) {}
+  constructor(private _dynformService: DynamicFormService) { }
 
   ngOnInit() {
     this.selectControl.valueChanges.filter(value => value !== null).subscribe(formDef => {
@@ -25,14 +25,14 @@ export class GenericFormGeneratorComponent implements OnInit {
     const formDef = this.formsSelected[i];
     this.formsSelected.splice(i, 1);
     this.formsDefinition.push(formDef);
-    this.formGroup.removeControl(formDef.key);
+    this.formGroup.removeControl(formDef.attribut_name);
     this.selectControl.setValue(null);
   }
 
   addFormControl(formDef) {
     this.formsSelected.push(formDef);
     this.formsDefinition = this.formsDefinition.filter(form => {
-      return form.key !== formDef.key;
+      return form.attribut_name !== formDef.attribut_name;
     });
     this._dynformService.addNewControl(formDef, this.formGroup);
   }

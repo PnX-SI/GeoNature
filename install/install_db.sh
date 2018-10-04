@@ -142,7 +142,7 @@ then
     echo "Getting 'taxonomie' schema creation scripts..."
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql -P /tmp/taxhub
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql -P /tmp/taxhub
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxon_example.sql -P /tmp/taxhub
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_atlas.sql -P /tmp/taxhub
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql -P /tmp/taxhub
 
     echo "Creating 'taxonomie' schema..."
@@ -172,14 +172,14 @@ then
     echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdata.sql  &>> var/log/install_db.log
 
-    echo "Inserting sample dataset of taxons for taxonomic schema..."
+    echo "Inserting sample dataset  - atlas attributes..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    echo "Inserting sample dataset of taxons for taxonomic schema" &>> var/log/install_db.log
+    echo "Inserting sample dataset  - atlas attributes" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdata_taxon_example.sql  &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdata_atlas.sql  &>> var/log/install_db.log
 
     echo "Creating a view that represent the taxonomic hierarchy..."
     echo "" &>> var/log/install_db.log
@@ -285,11 +285,29 @@ then
         fi
 	      unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
         #gdalwarp -t_srs EPSG:$srid_local /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc /tmp/geonature/dem.tif &>> var/log/install_db.log
-        export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 100x100 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
-    	  echo "Vectorisation of dem raster. This may take a few minutes..."
-        sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
-        echo "Refresh dem vector spatial index. This may take a few minutes..."
-        sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
+    	#echo "Refresh DEM spatial index. This may take a few minutes..."
+        sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
+        if $vectorise_dem 
+        then
+            echo "Vectorisation of DEM raster. This may take a few minutes..."
+            echo "" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "Vectorisation of DEM raster. This may take a few minutes" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
+            
+            echo "Refresh DEM vector spatial index. This may take a few minutes..."
+            echo "" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "Refresh DEM vector spatial index. This may take a few minutes" &>> var/log/install_db.log
+            echo "--------------------" &>> var/log/install_db.log
+            echo "" &>> var/log/install_db.log
+            sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
+        fi
     fi
 
 
@@ -302,6 +320,15 @@ then
     echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> var/log/install_db.log
 
+    echo "Creating 'imports' schema..."
+    echo "" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating 'imports' schema" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/imports.sql  &>> var/log/install_db.log
+
 
     echo "Creating 'synthese' schema..."
     echo "" &>> var/log/install_db.log
@@ -313,7 +340,7 @@ then
     cp data/core/synthese.sql /tmp/geonature/synthese.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/geonature/synthese.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/synthese.sql  &>> var/log/install_db.log
-
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_default_values.sql  &>> var/log/install_db.log
 
     echo "Creating 'exports' schema..."
     echo "" &>> var/log/install_db.log
@@ -342,6 +369,37 @@ then
     sudo rm /tmp/taxhub/*.sql
     sudo rm /tmp/taxhub/*.csv
     sudo rm /tmp/nomenclatures/*.sql
+
+    #Installation des données exemples
+    if $add_sample_data
+    then
+        echo "Inserting sample datasets..."
+        echo "" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "Inserting sample dataset for meta schema..."
+        echo "--------------------" &>> var/log/install_db.log
+        echo "Inserting sample dataset for meta schema" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta_data.sql  &>> var/log/install_db.log
+        
+        echo "" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "Inserting sample dataset for monitoring schema..."
+        echo "--------------------" &>> var/log/install_db.log
+        echo "Inserting sample dataset for monitoring schema" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring_data.sql  &>> var/log/install_db.log
+        
+        echo "Inserting sample dataset of taxons for taxonomic schema..."
+        echo "" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        echo "Inserting sample dataset of taxons for taxonomic schema" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxons_example.sql -P /tmp/taxhub
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/taxhub/taxhubdata_taxons_example.sql  &>> var/log/install_db.log
+    fi
 
     if $install_default_dem
     then

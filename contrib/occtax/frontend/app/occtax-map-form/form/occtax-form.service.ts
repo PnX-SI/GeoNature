@@ -7,6 +7,8 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
+import { GeoJSON } from "leaflet";
+
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { DataFormService } from "@geonature_common/form/data-form.service";
@@ -19,6 +21,9 @@ import { CommonService } from "@geonature_common/service/common.service";
 
 @Injectable()
 export class OcctaxFormService {
+  public markerCoordinates: Array<any>;
+  public geojsonCoordinates: GeoJSON;
+  public previousBoundingBox: any;
   public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
@@ -88,7 +93,7 @@ export class OcctaxFormService {
       properties: this._fb.group({
         id_releve_occtax: null,
         id_dataset: [null, Validators.required],
-        id_digitiser: this.currentUser.userId,
+        id_digitiser: this.currentUser.id_role,
         date_min: [null, Validators.required],
         date_max: [null, Validators.required],
         hour_min: [
@@ -131,6 +136,10 @@ export class OcctaxFormService {
         (releveForm.controls.properties as FormGroup).get("date_max"),
         (releveForm.controls.properties as FormGroup).get("hour_min"),
         (releveForm.controls.properties as FormGroup).get("hour_max")
+      ),
+      this._formService.altitudeValidator(
+        (releveForm.controls.properties as FormGroup).get("altitude_min"),
+        (releveForm.controls.properties as FormGroup).get("altitude_max")
       )
     ]);
     return releveForm;
@@ -139,6 +148,7 @@ export class OcctaxFormService {
   initOccurenceForm(): FormGroup {
     const occForm = this._fb.group({
       id_releve_occtax: null,
+      id_occurrence_occtax: null,
       id_nomenclature_obs_meth: [null, Validators.required],
       id_nomenclature_bio_condition: [null, Validators.required],
       id_nomenclature_bio_status: null,
@@ -152,7 +162,7 @@ export class OcctaxFormService {
       id_nomenclature_determination_method: null,
       cd_nom: null,
       nom_cite: null,
-      meta_v_taxref: "Taxref V9.0",
+      meta_v_taxref: null,
       sample_number_proof: null,
       digital_proof: [{ value: null, disabled: true }],
       non_digital_proof: [{ value: null, disabled: true }],
@@ -170,10 +180,12 @@ export class OcctaxFormService {
 
   initCounting(): FormGroup {
     const countForm = this._fb.group({
+      id_counting_occtax: null,
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
       id_nomenclature_obj_count: [null, Validators.required],
       id_nomenclature_type_count: null,
+      id_occurrence_occtax: null,
       count_min: [
         1,
         Validators.compose([
@@ -305,7 +317,7 @@ export class OcctaxFormService {
     this.isEdintingOccurrence = true;
     // set showOccurrence to true
     this.showOccurrence = true;
-    this.taxonsList.splice(index, 1);
+    const currentEditedTaxon = this.taxonsList.splice(index, 1)[0];
     // set the current index
     this.indexOccurrence = index;
     // get the occurrence data from releve form
@@ -319,22 +331,11 @@ export class OcctaxFormService {
 
     const countingData = occurenceData.cor_counting_occtax;
     const nbCounting = countingData.length;
-    // load the taxons info
-    this._dfs.getTaxonInfo(occurenceData.cd_nom).subscribe(taxon => {
-      this.savedCurrentTaxon = taxon;
-      occurenceData["cd_nom"] = {
-        cd_nom: taxon.cd_nom,
-        group2_inpn: taxon.group2_inpn,
-        lb_nom: taxon.lb_nom,
-        nom_valide: taxon.nom_valide,
-        regne: taxon.regne
-      };
-      // init occurence form with the data to edit
-      this.occurrenceForm.patchValue(occurenceData);
-      // set the current taxon
-      this.currentTaxon = taxon;
-      this.currentTaxon["lb_nom"] = taxon.nom_complet;
-    });
+    this.currentTaxon = currentEditedTaxon;
+    // patch occurrence data
+    occurenceData["cd_nom"] = currentEditedTaxon;
+    this.occurrenceForm.patchValue(occurenceData);
+    this.savedCurrentTaxon = currentEditedTaxon;
     // init the counting form with the data to edit
     for (let i = 1; i < nbCounting; i++) {
       this.nbCounting.push("");
@@ -407,6 +408,8 @@ export class OcctaxFormService {
 
   onTaxonChanged($event) {
     this.currentTaxon = $event.item;
+    // set 'nom_cite'
+    this.occurrenceForm.patchValue({ nom_cite: $event.item.search_name });
     // fetch default nomenclature value filtered by organism, regne, group2_inpn
     this.getDefaultValues(
       this.currentUser.organismId,

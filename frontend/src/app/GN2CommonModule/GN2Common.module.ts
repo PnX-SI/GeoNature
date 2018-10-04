@@ -47,7 +47,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
-
+import { AreasComponent } from '@geonature_common/form/areas/areas.component';
+import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
+import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
+import { PeriodComponent } from '@geonature_common/form/date/period.component';
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -60,11 +63,11 @@ import { DataFormService } from './form/data-form.service';
 import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
 import { FormService } from './form/form.service';
+import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 
 // add all rxjs operators
 import 'rxjs/Rx';
-import { SelectSearchComponent } from './form/select-search/select-search.component';
-import { NomenclatureMultiSelectComponent } from './form/nomenclature-multi-select/nomenclature-multi-select.component';
+import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -107,9 +110,12 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     DynamicFormComponent,
     MunicipalitiesComponent,
-    SelectSearchComponent,
+    MultiSelectComponent,
     GenericFormGeneratorComponent,
-    NomenclatureMultiSelectComponent
+    AreasComponent,
+    AcquisitionFrameworksComponent,
+    ModalDownloadComponent,
+    PeriodComponent
   ],
   providers: [
     TranslateService,
@@ -119,7 +125,8 @@ export function HttpLoaderFactory(http: Http) {
     CommonService,
     FormService,
     DynamicFormService,
-     ],
+    NgbDatePeriodParserFormatter
+  ],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
@@ -138,6 +145,7 @@ export function HttpLoaderFactory(http: Http) {
     DisableControlDirective,
     ReadablePropertiePipe,
     DatasetsComponent,
+    ModalDownloadComponent,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
@@ -152,10 +160,11 @@ export function HttpLoaderFactory(http: Http) {
     TranslateModule,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
-    SelectSearchComponent,
+    MultiSelectComponent,
     GenericFormGeneratorComponent,
-    NomenclatureMultiSelectComponent
-    
+    AreasComponent,
+    AcquisitionFrameworksComponent,
+    PeriodComponent
   ]
 })
 export class GN2CommonModule {}

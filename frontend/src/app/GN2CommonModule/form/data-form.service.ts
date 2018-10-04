@@ -7,7 +7,7 @@ import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
 export class DataFormService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -42,13 +42,25 @@ export class DataFormService {
     });
   }
 
-  getDatasets(idOrganism?) {
-    let params: HttpParams = new HttpParams();
-    if (idOrganism) {
-      params = params.set('organisme', idOrganism);
+  getDatasets(params?) {
+    let queryString: HttpParams = new HttpParams();
+    if (params) {
+      for (const key in params) {
+        if (key === 'idOrganism') {
+          queryString = queryString.set('organisme', params[key]);
+          // is its an array of id_af
+        } else if (key === 'id_acquisition_frameworks') {
+          params[key].forEach(id_af => {
+            queryString = queryString.append('id_acquisition_framework', id_af);
+          });
+        } else {
+          queryString = queryString.set(key, params[key].toString());
+        }
+      }
     }
+
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {
-      params: params
+      params: queryString
     });
   }
 
@@ -56,22 +68,34 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
 
-  searchTaxonomy(taxonName: string, idList: string, regne?: string, groupe2Inpn?: string) {
-    let params: HttpParams = new HttpParams();
-    params = params.set('search_name', taxonName);
-    if (regne) {
-      params = params.set('regne', regne);
+  autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {
+    let queryString: HttpParams = new HttpParams();
+    queryString = queryString.set('search_name', searh_name);
+    for (let key in params) {
+      if (params[key]) {
+        queryString = queryString.set(key, params[key]);
+      }
     }
-    if (groupe2Inpn) {
-      params = params.set('group2_inpn', groupe2Inpn);
-    }
-    return this._http.get<Taxon[]>(`${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`, {
-      params: params
+    return this._http.get<Taxon[]>(`${api_endpoint}`, {
+      params: queryString
     });
   }
 
   getTaxonInfo(cd_nom: number) {
     return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
+  }
+
+  getTaxonAttributsAndMedia(cd_nom: number, id_attributs?: Array<number>) {
+    let query_string = new HttpParams();
+    if (id_attributs) {
+      id_attributs.forEach(id => {
+        query_string = query_string.append('id_attribut', id.toString());
+      });
+    }
+
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibnoms/taxoninfo/${cd_nom}`, {
+      params: query_string
+    });
   }
 
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
@@ -83,6 +107,18 @@ export class DataFormService {
 
   getRegneAndGroup2Inpn() {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
+  }
+
+  getTaxhubBibAttributes() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibattributs/`);
+  }
+
+  getTaxonomyLR() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/bib_lr`);
+  }
+
+  getTaxonomyHabitat() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/bib_habitats`);
   }
 
   getGeoInfo(geojson) {
@@ -129,8 +165,26 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
   }
 
+  getAreas(id_type?, area_name?) {
+    let params: HttpParams = new HttpParams();
+
+    if (id_type) {
+      params = params.set('id_type', id_type);
+    }
+
+    if (area_name) {
+      params = params.set('area_name', area_name);
+    }
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
+  }
+
   getAcquisitionFrameworks() {
-    return this._http.get(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+  }
+
+  getAcquisitionFramework(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
   }
 
   getOrganisms() {

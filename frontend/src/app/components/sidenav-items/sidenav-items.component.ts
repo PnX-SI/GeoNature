@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { ToastrConfig } from 'ngx-toastr';
 import { SideNavService } from './sidenav.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'pnx-sidenav-items',
@@ -14,12 +13,7 @@ export class SidenavItemsComponent implements OnInit {
   public toastrConfig: ToastrConfig;
   public appConfig: any;
 
-  constructor(
-    private _authService: AuthService,
-    private router: Router,
-    private toastrService: ToastrService,
-    private _sideNavService: SideNavService
-  ) {
+  constructor(private _sideNavService: SideNavService, private _authService: AuthService) {
     this.toastrConfig = {
       positionClass: 'toast-top-center',
       tapToDismiss: true,
@@ -27,10 +21,18 @@ export class SidenavItemsComponent implements OnInit {
     };
   }
   ngOnInit() {
-    this._sideNavService.fetchModules().subscribe(data => {
-      this._sideNavService.modules = data;
-      this._sideNavService.setModulesLocalStorage(data);
-    });
+    this._sideNavService.fetchModules().subscribe(
+      data => {
+        this._sideNavService.modules = data;
+        this._sideNavService.setModulesLocalStorage(data);
+      },
+      error => {
+        // @FIXME fix temporaire pour pallier au conflit de token entre geonature et taxhub
+        if (error.status === 403) {
+          this._authService.logout();
+        }
+      }
+    );
   }
 
   onSetApp(app) {

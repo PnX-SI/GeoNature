@@ -17,4 +17,10 @@ export class OcctaxService {
   postOcctax(form) {
     return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
   }
+
+  getOneCounting(id_counting) {
+    return this._api.get<any>(
+      `${AppConfig.API_ENDPOINT}/occtax/counting/${id_counting}`
+    );
+  }
 }

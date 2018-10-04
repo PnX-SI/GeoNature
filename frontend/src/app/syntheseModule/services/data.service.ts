@@ -1,14 +1,122 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+  HttpEvent,
+  HttpHeaders,
+  HttpRequest,
+  HttpEventType,
+  HttpErrorResponse
+} from '@angular/common/http';
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
+import { isArray } from 'util';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { CommonService } from '@geonature_common/service/common.service';
+
+export const FormatMapMime = new Map([
+  ['csv', 'text/csv'],
+  ['json', 'application/json'],
+  ['shp', 'application/zip']
+]);
 
 @Injectable()
 export class DataService {
   public dataLoaded: Boolean = false;
-  constructor(private _api: HttpClient) {}
+  public isDownloading: Boolean = false;
+  public downloadProgress: BehaviorSubject<number>;
+  private _blob: Blob;
+  constructor(private _api: HttpClient, private _commonService: CommonService) {
+    this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
+  }
 
+  buildQueryUrl(params): HttpParams {
+    let queryUrl = new HttpParams();
+    for (let key in params) {
+      if (isArray(params[key])) {
+        queryUrl = queryUrl.set(key, params[key]);
+      } else {
+        queryUrl = queryUrl.set(key, params[key]);
+      }
+    }
+    return queryUrl;
+  }
   getSyntheseData(params) {
-    return this._api.post<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/synthese`, params);
+    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese`, {
+      params: this.buildQueryUrl(params)
+    });
+  }
+
+  getOneSyntheseObservation(id_synthese) {
+    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
+  }
+
+  deleteOneSyntheseObservation(id_synthese) {
+    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/synthese/${id_synthese}`);
+  }
+
+  exportData(params) {
+    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/export`, {
+      params: this.buildQueryUrl(params)
+    });
+  }
+
+  getTaxonTree() {
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxons_tree`);
+  }
+
+  downloadData(url: string, format: string, queryString: HttpParams, filename: string) {
+    this.isDownloading = true;
+    const source = this._api.get(`${url}?${queryString.toString()}`, {
+      headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
+      observe: 'events',
+      responseType: 'blob',
+      reportProgress: true
+    });
+
+    const subscription = source.subscribe(
+      event => {
+        switch (event.type) {
+          case HttpEventType.DownloadProgress:
+            if (event.hasOwnProperty('total')) {
+              const percentage = Math.round(100 / event.total * event.loaded);
+              this.downloadProgress.next(percentage);
+            } else {
+              const kb = (event.loaded / 1024).toFixed(2);
+              this.downloadProgress.next(parseFloat(kb));
+            }
+            break;
+          case HttpEventType.Response:
+            this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
+            break;
+        }
+      },
+      (e: HttpErrorResponse) => {
+        this._commonService.translateToaster('error', 'ErrorMessage');
+        this.isDownloading = false;
+      },
+      // response OK
+      () => {
+        let date = new Date();
+        // FIXME: const DATE_FORMAT, FILENAME_FORMAT
+        // FIXME: (format, mimetype, extension)
+        const extension = format === 'shapefile' ? '.zip' : format;
+        this.saveBlob(this._blob, `${filename}${date.toISOString()}.${extension}`);
+        this.isDownloading = false;
+        subscription.unsubscribe();
+      }
+    );
+  }
+  saveBlob(blob, filename) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('visibility', 'hidden');
+    link.download = filename;
+    link.onload = () => {
+      URL.revokeObjectURL(link.href);
+    };
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }
