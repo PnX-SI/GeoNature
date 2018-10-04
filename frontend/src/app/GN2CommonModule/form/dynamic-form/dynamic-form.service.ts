@@ -3,19 +3,19 @@ import { FormControl, FormArray, FormGroup, Validators, AbstractControl } from '
 
 @Injectable()
 export class DynamicFormService {
-  constructor() {}
+  constructor() { }
 
   toFormGroup(formsDef: Array<any>) {
-    let group: any = {};
+    const group: any = {};
     formsDef.forEach(form => {
-      group[form.key] = this.createControl(form);
+      group[form.attribut_name] = this.createControl(form);
     });
     return new FormGroup(group);
   }
 
   createControl(formDef): AbstractControl {
     let abstractForm;
-    if (formDef.controlType === 'checkbox') {
+    if (formDef.type_widget === 'checkbox') {
       abstractForm = formDef.required
         ? new FormControl([], Validators.required)
         : new FormControl([]);
@@ -28,6 +28,6 @@ export class DynamicFormService {
   }
 
   addNewControl(formDef, formGroup: FormGroup) {
-    formGroup.addControl(formDef.key, this.createControl(formDef));
+    formGroup.addControl(formDef.attribut_name, this.createControl(formDef));
   }
 }

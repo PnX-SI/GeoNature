@@ -18,9 +18,7 @@ from geoalchemy2.shape import to_shape
 
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsshapefile import(
-    create_shapes, create_shapes_generic
-)
+from geonature.utils.utilsgeometry import create_shapes_generic
 
 
 def testDataType(value, sqlType, paramName):
@@ -73,6 +71,7 @@ class GenericTable:
         Classe permettant de créer à la volée un mapping
             d'une vue avec la base de données par rétroingénierie
     """
+
     def __init__(self, tableName, schemaName, geometry_field, srid=None):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
@@ -87,8 +86,7 @@ class GenericTable:
         # Mise en place d'un mapping des colonnes en vue d'une sérialisation
         self.serialize_columns, self.db_cols = self.get_serialized_columns()
 
-
-    def get_serialized_columns(self):
+    def get_serialized_columns(self, serializers=SERIALIZERS):
         """
             Return a tuple of serialize_columns, and db_cols
             from the generic table
@@ -99,7 +97,7 @@ class GenericTable:
             if not db_col.type.__class__.__name__ == 'Geometry':
                 serialize_attr = (
                     name,
-                    SERIALIZERS.get(
+                    serializers.get(
                         db_col.type.__class__.__name__.lower(),
                         lambda x: x
                     )
@@ -130,30 +128,17 @@ class GenericTable:
                 properties=self.as_dict(data, columns)
             )
 
-    def as_list(self, data=None, columns=None):
-        if columns:
-            fprops = list(
-                filter(lambda d: d[0] in columns, self.serialize_columns)
-            )
-        else:
-            fprops = self.serialize_columns
-
-        return [
-            _serializer(getattr(data, item)) for item, _serializer in fprops
-        ]
-
-    def as_shape(self, data=None, dir_path=None, file_name=None, columns=None):
+    def as_shape(self, db_cols, data=None, dir_path=None, file_name=None):
         if not data:
             data = []
         create_shapes_generic(
-            mapped_table=self,
-            db_cols=self.db_cols,
+            view=self,
+            db_cols=db_cols,
+            srid=self.srid,
             data=data,
             geom_col=self.geometry_field,
-            srid=self.srid,
             dir_path=dir_path,
-            file_name=file_name,
-            columns=columns
+            file_name=file_name
         )
 
 
@@ -161,6 +146,7 @@ class GenericQuery:
     '''
         Classe permettant de manipuler des objets GenericTable
     '''
+
     def __init__(
             self,
             db_session,
@@ -275,6 +261,7 @@ class GenericQuery:
             'items': results
         }
 
+
 def serializeQuery(data, columnDef):
     rows = [
         {
@@ -283,6 +270,7 @@ def serializeQuery(data, columnDef):
         } for row in data
     ]
     return rows
+
 
 def serializeQueryOneResult(row, column_def):
     row = {
@@ -361,18 +349,15 @@ def serializable(cls):
         out = {
             item: _serializer(getattr(self, item)) for item, _serializer in fprops
         }
-
         if recursif is False:
             return out
 
         for (rel, uselist) in cls_db_relationships:
-            if getattr(self, rel) is None:
-                break
-
-            if uselist is True:
-                out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
-            else:
-                out[rel] = getattr(self, rel).as_dict(recursif)
+            if getattr(self, rel):
+                if uselist is True:
+                    out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
+                else:
+                    out[rel] = getattr(self, rel).as_dict(recursif)
 
         return out
 
@@ -403,7 +388,11 @@ def geoserializable(cls):
            columns: liste
             liste des columns qui doivent être prisent en compte
         """
-        geometry = to_shape(getattr(self, geoCol))
+        if not getattr(self, geoCol) is None: 
+            geometry = to_shape(getattr(self, geoCol))
+        else:
+            geometry = {"type": "Point", "coordinates": [0,0]}
+
         feature = Feature(
             id=str(getattr(self, idCol)),
             geometry=geometry,

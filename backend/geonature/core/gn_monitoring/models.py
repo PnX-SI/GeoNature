@@ -87,7 +87,8 @@ class TBaseVisits(DB.Model):
         ForeignKey('utilisateurs.t_roles.id_role')
     )
 
-    visit_date = DB.Column(DB.DateTime)
+    visit_date_min = DB.Column(DB.DateTime)
+    visit_date_max = DB.Column(DB.DateTime)
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(
@@ -144,12 +145,13 @@ class TBaseSites(DB.Model):
 
     t_base_visits = relationship(
         "TBaseVisits",
-        lazy='joined',
+        lazy='select',
         cascade="all,delete-orphan"
     )
 
     applications = DB.relationship(
         'TApplications',
+        lazy='select',
         secondary=corSiteApplication,
         primaryjoin=(
             corSiteApplication.c.id_base_site == id_base_site
@@ -164,4 +166,4 @@ class TBaseSites(DB.Model):
     )
 
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature('geom_4326', 'id_base_site', recursif)
+        return self.as_geofeature('geom', 'id_base_site', recursif)

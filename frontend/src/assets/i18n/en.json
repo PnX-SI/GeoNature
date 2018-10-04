@@ -17,8 +17,6 @@
   "IntroText": "",
   "Observations": "Observations",
   "Species": "Species",
-  "Programs": "Programs",
-  "Datasets": "Datasets",
   "LatestObservations": "Latest observations",
   "Search": "Search",
   "By": "By",
@@ -28,7 +26,9 @@
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
-  "DownloadOverflow": "The number of items is too important to be downloaded, please modify your request or contact your administrator",
+  "DownloadOverflow":
+    "The number of items is too important to be downloaded, please modify your request or contact your administrator",
+  "AllItems": "all",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
     "NoColumnSelected": "Please select a column to filter",
@@ -38,8 +38,12 @@
   },
   "MetaData": {
     "JddError": "Error while fetching datasets",
+    "JddErrorMTD": "Error while get dataset - MTD",
     "NoJDD": "No dataset found, contact your administrator",
-    "NoJDDMTD": "No dataset found, first go to the MTD application"
+    "NoJDDMTD": "No dataset found, first go to the MTD application",
+    "Programs": "Program",
+    "Datasets": "Dataset",
+    "AcquisitionFramework": "Acquisition framework"
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
@@ -76,6 +80,7 @@
     "Comment": "Comment",
     "SaveReleve": "Save releve",
     "DateMaxError": "Max date can't be inferior to the date min",
+    "AltitudeError": "Altitude max cannot be less than altitude min",
     "HourMaxError": "End hour can't be inferior to start hour",
     "SavedTaxon": "Saved taxon(s)",
     "InfoGeo": "Geographic informations of the releve",
@@ -134,18 +139,21 @@
     "Phenology": "Phénology",
     "CountingObject": "Counting object",
     "CountingType": "Counting type",
-    "ValidationStatus": "Validation status",    
+    "ValidationStatus": "Validation status",
     "Numbers": "Numbers",
     "Total": "Total",
     "CountError": "Max counting can't be inferior to counting min"
   },
-  "Geo" : {
+  "Geo": {
     "Municipalities": "Cities"
   },
   "IntroMessage":
     "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",
   "ErrorMessage": "Game over",
   "Export": {
-    "ExportModuleName": "Export module"
+    "ExportModuleName": "Export module",
+  },
+  "Synthese": {
+    "DeleteObs": "Supprimer l'observations"
   }
 }

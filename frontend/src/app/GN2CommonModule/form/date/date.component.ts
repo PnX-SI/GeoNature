@@ -10,13 +10,15 @@ import {
 import { FormControl } from '@angular/forms';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Subscription';
+import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
 
 @Component({
   selector: 'pnx-date',
   host: {
     '(document:click)': 'onClick($event)'
   },
-  templateUrl: 'date.component.html'
+  templateUrl: 'date.component.html',
+  providers: [{ provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter }]
 })
 export class DateComponent implements OnInit, OnDestroy {
   public elementRef: ElementRef;
@@ -29,7 +31,7 @@ export class DateComponent implements OnInit, OnDestroy {
   dynamicId;
   public changeSub: Subscription;
   public today: NgbDateStruct;
-  constructor(private _dateParser: NgbDateParserFormatter, myElement: ElementRef) {
+  constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
     this.elementRef = myElement;
   }
 
@@ -64,6 +66,8 @@ export class DateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.changeSub.unsubscribe();
+    if (this.changeSub) {
+      this.changeSub.unsubscribe();
+    }
   }
 }

@@ -17,8 +17,6 @@
   "IntroText": "",
   "Observations": "Observations",
   "Species": "Espèces",
-  "Programs": "Programmes",
-  "Datasets": "Jeux de données",
   "LatestObservations": "Dernières observations",
   "Search": "Rechercher",
   "By": "Par",
@@ -28,7 +26,9 @@
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
   "DownloadData": "Télécharger les données",
-  "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
+  "DownloadOverflow":
+    "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
+  "AllItems": "Tous",
   "Map": {
     "SearchLocation": "Rechercher un lieu",
     "LocationError": "Localisation non trouvée",
@@ -39,8 +39,15 @@
   },
   "MetaData": {
     "JddError": "Erreur lors de la récupération des jeux de données",
+    "JddErrorMTD": "Error lors de la récupération des JDD via l'application MTD",
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
-    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD"
+    "NoJDDMTD":
+      "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+      "Datasetadded": "Jeu de donnée ajouté avec succès",
+      "AFadded": "Cadre d'acquisition ajouté avec succès",
+      "Programs": "Programmes",
+      "Datasets": "Jeux de données",
+      "AcquisitionFramework": "Cadre d'acquisition"
   },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
@@ -74,6 +81,7 @@
     "Comment": "Commentaire",
     "SaveReleve": "Enregistrer le relevé",
     "DateMaxError": "La date de début ne peut pas être superieure à la date de fin",
+    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
     "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
     "SavedTaxon": "Taxon(s) enregistré(s)",
     "InfoGeo": "Informations géographiques du relevé",
@@ -89,7 +97,6 @@
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas"
-
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
@@ -133,7 +140,7 @@
     "Type": "Type",
     "LifeStage": "Stade de vie",
     "Sex": "Sexe",
-    "ValidationStatus": "Statut de validation",    
+    "ValidationStatus": "Statut de validation",
     "Phenology": "Phénologie",
     "CountingObject": "Objet du dénombrement",
     "CountingType": "Type de dénombrement",
@@ -141,7 +148,7 @@
     "Total": "Total",
     "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
   },
-  "Geo" : {
+  "Geo": {
     "Municipalities": "Communes"
   },
   "IntroMessage":
@@ -151,7 +158,10 @@
   "Export": {
     "ExportModuleName": "Module d'export des données"
   },
-  "Meta": {
-      "Datasetadded": "Jeu de donnée ajouté avec succès"
+  "Synthese": {
+    "DeleteObs": "Supprimer l'observations",
+    "DeleteSuccess": "Observation supprimée avec succès",
+    "PeriodError":
+      "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
   }
 }

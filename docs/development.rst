@@ -1,19 +1,19 @@
-DEVELOPMENT
-===========
+DEVELOPPEMENT
+=============
 
-General
+Général
 -------
 
-GeoNature has been developped by Gil Deluermoz since 2010 with PHP/Symfony/ExtJS.
+GeoNature a été développé par Gil Deluermoz depuis 2010 avec PHP/Symfony/ExtJS.
 
-In 2017, French national parks decided to rebuild GeoNature totally with a new version (V2) with Python/Flask/Angular 4. 
+En 2017, les parcs nationaux français ont décidé de refondre GeoNature complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular 4. 
 
-Maintainers : 
+Mainteneurs : 
 
-- Gil DELUERMOZ (PnEcrins) : Database / SQL / Installation / Update
+- Gil DELUERMOZ (PnEcrins) : Base de données / SQL / Installation / Mise à jour
 - Amandine SAHL (PnCevennes) : Backend / Python Flask / API
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular 4
-- Camille MONCHICOURT (PnEcrins) : Documentation / Project management
+- Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
 
 API
@@ -26,9 +26,34 @@ GeoNature utilise :
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
-Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/geonature-v2/7TDmFuN
+Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/RWaPskTw
 
-@TODO : Doc API à mettre à jour
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
+
+
+*@TODO : Doc API à mettre à jour*
+
+Release
+-------
+
+Pour sortir une nouvelle version de GeoNature : 
+
+- Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, GeoNature-atlas)
+- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements.txt`` et ``backend/requirements-travis.txt``
+- Compléter le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
+- Mettez à jour le fichier ``VERSION``
+- Remplir le tableau de compatibilité des dépendances (``docs/versions-compatibility.rst``)
+- Mergez la branche ``develop`` dans la branche ``master``
+- Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
+- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
+
+Pratiques
+---------
+
+- Ne jamais faire de commit dans la branche ``master`` mais dans la branche ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité
+- Faire des pull request vers la branche ``develop`` regroupant plusieurs commits depuis la branche de sa fonctionnalité pour plus de lisibilité, éviter les conflits et déclencher les tests automatiques Travis avant d'intégrer la branche ``develop``
+- Faire des ``git pull`` avant chaque développement et avant chaque commit
+- Les messages de commits font référence à ticket ou le ferme (``ref #12`` ou ``fixes #23``)
 
 Développer et installer un gn_module
 ------------------------------------
@@ -157,6 +182,278 @@ Cette commande exécute les actions suivantes :
 - Re-build du frontend pour une mise en production
 
 
+
+
+Développement Backend
+----------------------
+
+Démarrage du serveur de dev backend
+"""""""""""""""""""""""""""""""""""
+
+    ::
+
+    (venv)...$ geonature dev_back
+
+
+Base de données
+"""""""""""""""
+
+Session sqlalchemy
+******************
+
+- ``geonature.utils.env.DB``
+
+
+Fournit l'instance de connexion SQLAlchemy
+
+
+Python ::
+
+    from geonature.utils.env import DB
+
+    result = DB.session.query(MyModel).get(1)
+
+
+Serialisation des modèles
+"""""""""""""""""""""""""
+
+
+- ``geonature.utils.utilssqlalchemy.serializable``
+
+Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un dictionnaire des données de l'objet sérialisable json
+
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilssqlalchemy import serializable
+
+    @serializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
+
+
+Fichier utilisation modele ::
+
+    instance = DB.session.query(MyModel).get(1)
+    result = instance.as_dict()
+
+
+
+- ``geonature.utils.utilssqlalchemy.geoserializable``
+
+
+Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui retourne un dictionnaire serialisable sous forme de Feature geojson.
+
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilssqlalchemy import geoserializable
+
+    @geoserializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
+
+
+Fichier utilisation modele ::
+
+    instance = DB.session.query(MyModel).get(1)
+    result = instance.as_geofeature()
+
+- ``geonature.utils.utilsgeometry.shapeserializable``
+
+Décorateur pour les modèles SQLA:
+
+- Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
+- Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
+
+Fichier définition modèle ::
+
+    from geonature.utils.env import DB
+    from geonature.utils.utilsgeometry import shapeserializable
+
+    @shapeserializable
+    class MyModel(DB.Model):
+        __tablename__ = 'bla'
+        ...
+
+
+Fichier utilisation modele ::
+
+
+    # utilisation de as_shape()
+    data = DB.session.query(MyShapeserializableClass).all()
+    MyShapeserializableClass.as_shape(
+        geom_col='geom_4326',
+        srid=4326,
+        data=data,
+        dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+        file_name=file_name
+    )
+
+- ``geonature.utils.utilsgeometry.FionaShapeService``
+
+Classe utilitaire pour crer des shapefiles.
+
+La classe contient 3 méthode de classe:
+
+- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geom passé en paramètre
+
+- FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles
+
+- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles qui ont au moin un enregistrement
+
+::
+
+        data = DB.session.query(MySQLAModel).all()
+        
+        for d in data:
+                FionaShapeService.create_shapes_struct(
+                        db_cols=db_cols,
+                        srid=current_app.config['LOCAL_SRID'],
+                        dir_path=dir_path,
+                        file_name=file_name,
+                        col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
+                )
+        FionaShapeService.create_feature(row_as_dict, geom)
+                FionaShapeService.save_and_zip_shapefiles()
+
+
+
+- ``geonature.utils.utilssqlalchemy.json_resp``
+
+
+Décorateur pour les routes : les données renvoyées par la route sont automatiquement serialisées en json (ou geojson selon la structure des données)
+
+S'insère entre le décorateur de route flask et la signature de fonction
+
+
+Fichier routes ::
+
+    from flask import Blueprint
+    from geonature.utils.utilssqlalchemy import json_resp
+
+    blueprint = Blueprint(__name__)
+
+    @blueprint.route('/myview')
+    @json_resp
+    def my_view():
+        return {'result': 'OK'}
+
+
+    @blueprint.route('/myerrview')
+    @json_resp
+    def my_err_view():
+        return {'result': 'Not OK'}, 400
+
+
+
+Export des données
+""""""""""""""""""
+
+TODO
+
+
+Authentification avec pypnusershub
+""""""""""""""""""""""""""""""""""
+
+
+Vérification des droits des utilisateurs
+****************************************
+
+
+- ``pypnusershub.routes.check_auth``
+
+
+Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirige en cas de niveau insuffisant ou d'informations de session erronés
+(deprecated) Privilegier `check_auth_cruved`
+
+params :
+
+* level <int>: niveau de droits requis pour accéder à la vue
+* get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
+* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+
+
+    ::
+
+        from flask import Blueprint
+        from pypnusershub.routes import check_auth
+        from geonature.utils.utilssqlalchemy import json_resp
+
+        blueprint = Blueprint(__name__)
+
+        @blueprint.route('/myview')
+        @check_auth(
+                1,
+                True,
+                redirect_on_expiration='my_reconnexion_handler',
+                redirect_on_invalid_token='my_affreux_pirate_handler'
+                )
+        @json_resp
+        def my_view(id_role):
+                return {'result': 'id_role = {}'.format(id_role)}
+
+
+
+- ``pypnusershub.routes.check_auth_cruved``
+
+Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer une action sur la donnée et le redirige en cas de niveau insuffisant ou d'informations de session erronées
+
+params :
+
+* action <str:['C','R','U','V','E','D']> type d'action effectuée par la route (Create, Read, Update, Validate, Export, Delete)
+* get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
+* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+
+
+    ::
+
+        from flask import Blueprint
+        from pypnusershub.routes import check_auth_cruved
+        from geonature.utils.utilssqlalchemy import json_resp
+
+        blueprint = Blueprint(__name__)
+
+        @blueprint.route('/mysensibleview', methods=['GET'])
+        @check_auth_cruved(
+                'R',
+                True,
+                redirect_on_expiration='my_reconnexion_handler',
+                redirect_on_invalid_token='my_affreux_pirate_handler'
+                )
+        @json_resp
+        def my_sensible_view(id_role):
+                return {'result': 'id_role = {}'.format(id_role)}
+
+
+
+- ``pypnusershub.routes.db.tools.cruved_for_user_in_app``
+
+
+Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
+Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.
+Le cruved de l'application enfant surcharge toujours celui de l'application mère.
+
+params :
+* id_role <integer:None>
+* id_application: id du module surlequel on veut avoir le cruved
+* id_application_parent: id l'application parent du module
+
+Valeur retournée : <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+
+    ::
+
+    from pypnusershub.db.tools import cruved_for_user_in_app
+
+    cruved = cruved_for_user_in_app(id_role=5, id_application=18, id_application_parent=14)
+
+
 Développement Frontend
 ----------------------
 
@@ -175,7 +472,7 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 """"""""""""""""""""""""""""""
 Les composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type ``input`` ou ``select`` et seront souvent réutilisés dans les différents module de GeoNature.
 
-*Input et Output communs*:
+*Input et Output communs* :
 
 Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
@@ -184,9 +481,15 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
 
         - L'input ``label`` (string) permet d'afficher un label au dessus de l'input.
 
+        - L'input ``displayAll`` (boolean, défaut = false) permet d'ajouter un item 'tous' sur les inputs de type select (Exemple: pour selectionner tous les jeux de données de la liste)
+
+        - L'input ``multiSelect`` (boolean, défaut = false) permet de passer les composants de type select en "multiselect" (sélection multiple sur une liste déroulante). Le parentFormControl devient par conséquent un tableau
+
+        - L'input ``searchBar`` (boolean, défaut = false) permet de rajouter une barre de recherche sur les composants multiselect
+
         - L'input ``disabled`` (boolean) permet de rendre le composant non-saisissable
 
-        - L'input ``debounceTime`` définit un durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
+        - L'input ``debounceTime`` définit une durée en ms après laquelle les évenements ``onChange`` et ``onDelete`` sont déclenchés suite à un changement d'un formulaire. (Par défault à 0)
 
 - Outputs
         Plusieurs ``Output`` communs à ses composants permettent d'émettre des événements liés aux formulaires.
@@ -199,16 +502,27 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
 Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
 - **NomenclatureComponent**
-        Ce composant permet de créer un "input" de type "select" à partir d'une liste d'items définie dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+        Ce composant permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+
+        En mode "multiselect" (Input ``multiSelect=true``), une barre de recherche permet de filtrée les nomenclatures sur leur label.
 
         **Selector**: ``pnx-nomenclature``
 
         **Inputs**:
 
         :``codeNomenclatureType``:
-                Id_type des items de nomenclatures qui doivent être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
+                Mnémonique du type de nomenclature qui doit être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
                  
-                *Type*: ``number``
+                *Type*: ``string``
+
+        :``keyValue``:
+                Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``). Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API (ex: ``cd_nomenclature``, ``label_default`` etc...
+                *Type*: ``string``
+
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
+                *Type*: ``boolean``
+                 
         :``regne``:
                 Permet de filter les items de nomenclature corespondant à un règne (facultatif)
 
@@ -220,7 +534,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Valeur retourné par le FormControl**:
 
-        id_nomenclature de l'item séléctionné. *Type*: number
+        Dépend de la valeur passée à l'input ``keyValue`` (par défaut ``id_nomenclature`` donc ``number`` *Type*: any)
+        Si l'input ``multiSelect = true``, le FormControl est un tableau
 
 
         NB: La table ``ref_nomenclatures.cor_taxref_nomenclature`` permet de faire corespondre des items de nomenclature à des groupe INPN et des règne. A chaque fois que ces deux derniers input sont modifiés, la liste des items est rechargée. Ce composant peut ainsi être couplé au composant taxonomy qui renvoie le regne et le groupe INPN de l'espèce saisie.
@@ -231,6 +546,16 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 <pnx-nomenclature
                   [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
                   codeNomenclatureType="ETA_BIO"
+                  regne="Animalia"
+                  group2Inpn="Mammifères"
+                  >
+                </pnx-nomenclature>``
+
+                <pnx-nomenclature
+                  [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
+                  codeNomenclatureType="ETA_BIO"
+                  [multiSelect]=true
+                  keyValue='cd_nomenclature'
                   regne="Animalia"
                   group2Inpn="Mammifères"
                   >
@@ -276,18 +601,94 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
 
 - **DatasetComponent**
-        Ce composant permet de créer un "input" de type "select" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
+        Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
 
         **Selector**: ``pnx-dataset``
+
+        **Inputs**:
+
+        :``multiSelect``:
+                Passe le composant du mode select à multiselect (facultatif)
+
+                *Type*: ``boolean`` défaut ``false``
 
         :``displayAll``:
                 Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
 
                 *Type*: ``boolean``
+
+        :``idAcquisitionFrameworks``:
+                Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode multiselect.
+
+                *Type*: ``Array<number>``
+
+        :``idAcquisitionFramework``:
+                Permet de filtrer les JDD en fonction de l'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
+
+                *Type*: ``number``
+        
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_dataset qui est renvoyé au formControl.
+                *Type*: ``boolean``
+
+        :``displayOnlyActive``:
+                Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
+                *Type*: ``boolean`` defaut: ``true``
+        **Valeur retourné par le FormControl**:
+
+        En mode select simple: Id du dataset sélectionné: *Type*: number
+ 
+        En mode multiselect: Tableau d'ID des datasets sélectionnés: *Type*: Array<number>
+
+        Exemple d'utilisation:
+        ::
+                
+                <pnx-datasets
+                  [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value" 
+                  [multiSelect]='true'
+                  [displayAll]="true" 
+                  [parentFormControl]="formService.searchForm.controls.id_dataset" 
+                  label="{{ 'MetaData.Datasets' | translate}}">
+                </pnx-datasets>
+
+
+- **AcquisitionFrameworksComposant**
+        Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des cadres d'acquisition sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_acqusitions_framework`` et ``gn_meta.cor_acquisition_framework_actor``)
+
+        **Selector**: ``pnx-acqusitions-framework``
+
+        **Inputs**:
+
+        :``multiSelect``:
+                Passe le composant du mode select à multiselect (facultatif)
+
+                *Type*: ``boolean`` défaut ``false``
+        :``displayAll``:
+                Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
+
+                *Type*: ``boolean``
+
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_acquisition_frameworks qui est passé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
+                *Type*: ``boolean``
+
         
         **Valeur retourné par le FormControl**:
 
-        Id du dataset sélectionné: *Type*: number
+        En mode select simple: Id du dataset sélectionné: *Type*: number
+ 
+        En mode multiselect: Tableau d'ID des datasets sélectionnés: *Type*: Array<number>
+
+
+        Exemple d'utilisation:
+        ::
+
+                <pnx-acquisition-frameworks 
+                  [multiSelect]='true'
+                  [displayAll]="true" 
+                  [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
+                  label="{{ 'MetaData.AcquisitionFramework' | translate}}">
+                </pnx-acquisition-frameworks>
 
 - **DateComponent**
         Ce composant permet de créer un input de type "datepicker". Crée à parti de https://github.com/ng-bootstrap/ng-bootstrap
@@ -312,10 +713,16 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 
         **Selector**: ``pnx-observers``
 
+        **Inputs**:
+
         :``idMenu``:
                 Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
 
                 *Type*: ``number``
+
+        :``bindAllItem``:
+                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_role qui est passé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
+                *Type*: ``boolean``
         
         **Valeur retourné par le FormControl**:
 
@@ -334,13 +741,81 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         
 
 - **ObserversTextComponent**
-        Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
+      Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
 
-        **Selector**: ``pnx-observers-text``        
+      **Selector**: ``pnx-observers-text``        
 
-        **Valeur retourné par le FormControl**:
-        
-        Valeur du champ. *Type*: string
+      **Valeur retourné par le FormControl**:
+      
+      Valeur du champ. *Type*: string
+
+
+- **MultiSelectComponent**
+      Ce composant permet d'afficher un input de type multiselect à partir d'une liste de valeurs passé en Input
+
+      **Selector**: ``pnx-observers-text``
+
+      **Inputs**:
+
+      :``values``:
+              Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire
+
+      *Type*: ``Array<any>`` *Obligatoire*
+
+      :``keyLabel``:
+              Clé du dictionnaire de valeur que le composant doit prendre pour l'affichage de la liste déroulante
+
+
+              Example, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour afficher "mon item", ``keyLabel`` doit valoir "label"
+
+      *Type*: ``string`` *Obligatoire*
+
+      :``keyValue``:
+          Clé du dictionnaire que le composant doit passer au formControl
+
+          Exemple, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour passer "1", ``keyValue`` doit valoir "id"
+
+      *Type*: ``string``
+
+      :``bindAllItem``:
+          Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      :``displayAll``:
+              Est-ce que le composant doit afficher l'item "tous" dans les options du select ? 
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      :``displayAll``:
+              Est-ce que le composant doit afficher une barre de recherche dans la liste déroulante? 
+
+      *Type*: ``boolean`` *Facultatif*  défaut ``false``
+
+      **Ouputs**:
+
+      :``onSearch``:
+              Renvoie la saisie de l'utilisateur dans la barre de recherche
+
+      
+      **Valeur retourné par le FormControl**:
+      
+      Valeur du champ. *Type*: Array<any>
+
+      **Exemple d'utilisation**
+
+        ::
+
+                <pnx-multiselect
+                 [values]="organisms" 
+                 [parentFormControl]="form.controls.organisms" 
+                 [keyLabel]="'nom_organisme'" 
+                 [keyValue]="'id_organisme"'
+                 [label]="'Organisme'"
+                 (onChange)="doWhatever($event)
+                 (onDelete)="deleteCallback($event)"
+                 (onSearch)="filterItems($event)">
+                </pnx-multiselect>
 
 
 
@@ -409,6 +884,8 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
         
         :``layerDrawed``:
                 Output renvoyant le geojson de l'objet dessiné.
+        :``layerDeleted``:
+                Output renvoyant les layers sont supprimées.
 
 - **GPSComponent**
         Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.

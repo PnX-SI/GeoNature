@@ -1,158 +1,66 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { DataService } from '../services/data.service';
-import { FormService } from '../services/form.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { SyntheseFormService } from '../services/form.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AppConfig } from '@geonature_config/app.config';
+import { MapService } from '@geonature_common/map/map.service';
+import {
+  TreeComponent,
+  TreeModel,
+  TreeNode,
+  TREE_ACTIONS,
+  IActionMapping,
+  ITreeOptions
+} from 'angular-tree-component';
+import { TaxonAdvancedModalComponent } from './taxon-advanced/taxon-advanced.component';
+import { TaxonAdvancedStoreService } from './taxon-advanced/taxon-advanced-store.service';
 
 @Component({
   selector: 'pnx-synthese-search',
   templateUrl: 'synthese-search.component.html',
-  styleUrls: ['synthese-search.component.scss']
+  styleUrls: ['synthese-search.component.scss'],
+  providers: []
 })
 export class SyntheseSearchComponent implements OnInit {
-  public searchForm: FormGroup;
-  public nomenclaturesForms = [
-    {
-      controlType: 'nomenclature',
-      label: "Technique d'observation",
-      key: 'id_nomenclature_obs_technique',
-      idComponent: 100,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Type de regroupement',
-      key: 'id_nomenclature_grp_typ',
-      idComponent: 24,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: "Statut d'observation",
-      key: 'id_nomenclature_observation_status',
-      idComponent: 18,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: "Méthode d'observation",
-      key: 'id_nomenclature_obs_meth',
-      idComponent: 14,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Etat biologique',
-      key: 'id_nomenclature_bio_condition',
-      idComponent: 7,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Statut biologique',
-      key: 'id_nomenclature_bio_status',
-      idComponent: 13,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Naturalité',
-      key: 'id_nomenclature_naturalness',
-      idComponent: 8,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Méthode de détermination',
-      key: 'id_nomenclature_determination_method',
-      idComponent: 106,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: "Preuve d'existence",
-      key: 'id_nomenclature_exist_proof',
-      idComponent: 15,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Niveau de diffusion',
-      key: 'id_nomenclature_diffusion_level',
-      idComponent: 5,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Statut source',
-      key: 'id_nomenclature_source_status',
-      idComponent: 19,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Floutage',
-      key: 'id_nomenclature_blurring',
-      idComponent: 4,
-      required: false
-    },
-    // counting
-    {
-      controlType: 'nomenclature',
-      label: 'Stade de vie',
-      key: 'id_nomenclature_life_stage',
-      idComponent: 10,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Sexe',
-      key: 'id_nomenclature_sex',
-      idComponent: 9,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Objet du dénombrement',
-      key: 'id_nomenclature_obj_count',
-      idComponent: 6,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Type de dénombrement',
-      key: 'id_nomenclature_type_count',
-      idComponent: 21,
-      required: false
-    },
-    {
-      controlType: 'nomenclature',
-      label: 'Statut de validation',
-      key: 'id_nomenclature_valid_status',
-      idComponent: 101,
-      required: false
-    }
-  ];
+  public AppConfig = AppConfig;
 
+  public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   @Output() searchClicked = new EventEmitter();
   constructor(
-    private _fb: FormBuilder,
     public dataService: DataService,
-    public formService: FormService,
-    public ngbModal: NgbModal
+    public formService: SyntheseFormService,
+    public ngbModal: NgbModal,
+    public mapService: MapService,
+    private _storeService: TaxonAdvancedStoreService
   ) {}
 
   ngOnInit() {}
 
   onSubmitForm() {
-    const params = Object.assign({}, this.searchForm.value);
-    if (params.cd_nom) {
-      params.cd_nom = params.cd_nom.cd_nom;
-    }
-    this.searchClicked.emit(params);
+    // mark as dirty to avoid set limit=100 when download
+    this.formService.searchForm.markAsDirty();
+    const updatedParams = this.formService.formatParams();
+    this.searchClicked.emit(updatedParams);
   }
 
-  openModalCol(e, modalName) {
-    this.ngbModal.open(modalName, { size: 'lg' });
+  refreshFilters() {
+    this.formService.selectedtaxonFromComponent = [];
+    this.formService.selectedCdRefFromTree = [];
+    this.formService.searchForm.reset();
+
+    // refresh taxon tree
+    this._storeService.taxonTreeState = {};
+
+    // remove layers draw in the map
+    this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
+  }
+
+  openModal() {
+    const taxonModal = this.ngbModal.open(TaxonAdvancedModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 }

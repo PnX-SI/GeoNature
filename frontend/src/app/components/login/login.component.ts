@@ -11,19 +11,14 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LoginComponent implements OnInit {
   public casLogin: boolean;
-  constructor(
-    private _authService: AuthService,
-    private _router: Router,
-    private _location: Location,
-    private _http: HttpClient
-  ) {
-    this.casLogin = AppConfig.CAS.CAS_AUTHENTIFICATION;
+  constructor(private _authService: AuthService) {
+    this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
   }
 
   ngOnInit() {
-    if (AppConfig.CAS.CAS_AUTHENTIFICATION) {
+    if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${AppConfig.CAS.CAS_URL_LOGIN}?service=${
+      const url_redirection_cas = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${
         AppConfig.API_ENDPOINT
       }/auth_cas/login`;
       document.location.href = url_redirection_cas;

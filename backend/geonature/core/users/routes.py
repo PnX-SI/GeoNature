@@ -31,7 +31,7 @@ def getRolesByMenuId(id_menu):
                 '{}%'.format(parameters.get('nom_complet'))
             )
         )
-    data = q.all()
+    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
     return [n.as_dict() for n in data]
 
 
@@ -128,6 +128,7 @@ def get_roles():
     '''
     users = DB.session.query(TRoles).all()
     return [user.as_dict() for user in users]
+
 
 @routes.route('/organisms', methods=['GET'])
 @json_resp

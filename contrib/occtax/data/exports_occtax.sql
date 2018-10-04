@@ -5,6 +5,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+SET search_path = public;
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
  SELECT ccc.unique_id_sinp_occtax AS "permId",
@@ -48,8 +49,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     ccc.count_min AS "denbrMin",
     ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count) AS "objDenbr",
     ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count) AS "typDenbr",
-    COALESCE(string_agg((r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
-    COALESCE(string_agg(r.organisme::text, ','::text), o.nom_organisme::text, 'NSP'::text) AS "obsNomOrg",
+    COALESCE(string_agg(DISTINCT(r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
+    COALESCE(string_agg(DISTINCT r.organisme::text, ','::text), o.nom_organisme::text, 'NSP'::text) AS "obsNomOrg",
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     'NSP'::text AS "detNomOrg",
     'NSP'::text AS "orgGestDat",
@@ -103,8 +104,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS
     ccc.count_min AS "denbrMin",
     ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count) AS "objDenbr",
     ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count) AS "typDenbr",
-    COALESCE(string_agg((r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
-    COALESCE(string_agg(r.organisme::text, ','::text), o.nom_organisme::text, 'NSP'::text) AS "obsNomOrg",
+    COALESCE(string_agg(DISTINCT(r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
+    COALESCE(string_agg(DISTINCT r.organisme::text, ','::text), o.nom_organisme::text, 'NSP'::text) AS "obsNomOrg",
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     'NSP'::text AS "detNomOrg",
     'NSP'::text AS "orgGestDat",

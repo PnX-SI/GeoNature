@@ -19,17 +19,17 @@ const defaultRoutes: Routes = [
           path: '{{route.path}}',
           loadChildren: '{{route.location}}',
           canActivate: [ModuleGuardService],
-          data: { id_module: {{route.id_module}} }  },
+          data: { module_name: '{{route.module_name}}' }  },
         {% endfor %}
       { path: '', component: HomeContentComponent },
       { path: 'synthese', loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'},
       { path: 'exports', loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
-      //{
-      //  path: 'admin',
-      //  loadChildren: '@geonature/adminModule/admin.module#AdminModule',
-      //  canActivate: [ModuleGuardService],
-      //  data: { id_module: 21 }
-      //},
+      {
+        path: 'admin',
+        loadChildren: '@geonature/adminModule/admin.module#AdminModule',
+        canActivate: [ModuleGuardService],
+        data: { module_name: 'admin' }
+      },
 
       { path: '**',  component: PageNotFoundComponent },
      ] },

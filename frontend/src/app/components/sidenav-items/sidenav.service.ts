@@ -15,23 +15,16 @@ export class SideNavService {
   public modules: Array<any>;
   public home_page;
   public exportModule;
-  public syntheseModule;
 
   constructor(private _api: HttpClient) {
     this.opened = false;
-    this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'home', id: '1' };
+    this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };
 
     this.exportModule = {
       module_url: '/exports',
       module_label: 'Export',
-      module_picto: 'file_download',
+      module_picto: 'fa-download',
       id: '2'
-    };
-    this.syntheseModule = {
-      module_url: '/synthese',
-      module_label: 'Synthese',
-      module_picto: 'extension',
-      id: '3'
     };
   }
 
@@ -43,12 +36,16 @@ export class SideNavService {
     localStorage.setItem('modules', JSON.stringify(modules));
   }
 
-  getModules(id_module) {
+  /**
+   * Get a module from the localstorage
+   * @param module_name: name of the module
+   */
+  getModule(module_name: string) {
     const modules = localStorage.getItem('modules');
     let searchModule = null;
     if (modules) {
       JSON.parse(modules).forEach(mod => {
-        if (mod.id_module === id_module) {
+        if (mod.module_name.toLocaleLowerCase() === module_name.toLocaleLowerCase()) {
           searchModule = mod;
         }
       });

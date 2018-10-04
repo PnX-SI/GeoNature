@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18 **architecture 64-bits**) disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
@@ -59,9 +59,9 @@ Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une aut
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
 
-* Mettre à jour les sources-list
+* Mettre à jour les sources-list (Debian uniquement) : 
 
-A l'installation de l'OS, les sources-list (liste des sources à partir duquel sont téléchargés les paquets) ne sont pas toujours correctes.
+A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours correctes.
 
 ::
         
@@ -88,32 +88,32 @@ Pour Debian 8 :
         deb http://security.debian.org/ jessie/updates main contrib non-free
         deb http://deb.debian.org/debian/ jessie-updates main contrib non-free
 
-* Mettre à jour de la liste des dépôts Linux
+* Mettre à jour de la liste des dépôts Linux :
 
 ::
 
     apt-get update
     apt-get upgrade
 
-* Installer sudo
+* Installer sudo :
 
 ::
 
     apt-get install -y sudo ca-certificates
     
-* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root``
+* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
 
 ::
 
     adduser geonatureadmin
 
-* Lui donner ensuite des droits ``sudo``
+* Lui donner ensuite des droits ``sudo`` :
 
 ::
 
     adduser geonatureadmin sudo
 
-* L'ajouter aussi aux groupes ``www-data`` et ``root``
+* L'ajouter aussi aux groupes ``www-data`` :
 
 ::
 
@@ -130,7 +130,7 @@ Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informat
 
 Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour crypter le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
 
-* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). GeoNature 2 est actuellement en développement dans la branche ``geonature2beta``, remplacez donc ``X.Y.Z`` par ``geonature2beta``. Ces scripts installent les applications GeoNature, TaxHub ainsi que leurs bases de données (uniquement les schémas du coeur) :
+* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
 ::
     
@@ -138,39 +138,50 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
     wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 	
 	
-* Lancer l'installation
+* Configurez votre installation en adaptant le fichier ``install_all.ini`` :
+ 
+::
+    
+    nano install_all.ini
 
+Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur (avec un ``/`` à la fin) ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+
+Pour la définition des numéros de version des dépendances, voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.
+
+* Lancer l'installation :
+ 
 ::
     
     chmod +x install_all.sh
     ./install_all.sh
 
-Pendant l'installation, vous serez invité à renseigner le fichier de configuration ``install_all.ini``. Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
-
-Pour le remplissage des numéros de version, voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances. 
-
-``nvm`` (node version manager) est utilisé pour installer les dernières versions de ``node`` et ``npm``.
-
-Une fois l'installation terminée, lancer cette commande pour ajouter ``nvm`` dans la path de votre serveur :
-
-::
-
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-
-Les applications sont disponibles aux adresses suivantes:
+Une fois l'installation terminée, les applications sont disponibles aux adresses suivantes :
 
 - http://monip.com/geonature
-- http://monip.com/taxhub
+- http://monip.com/taxhub/
+- http://monip.com/usershub (en option)
 
-Vous pouvez vous connecter avec l'utilisateur par défaut (admin/admin).
+Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin).
 
+:Note:
+
+    Ne prenez pas en compte les messages de UsersHub indiqués à la fin de l'installation. Ce sont des restes d'anciennes vers de UsersHub et GeoNature V1.
+    
+:Note:
+
+    * **GeoNature-atlas** : Comme dans la V1, le script ``install_all.sh`` permettra d'installer automatiquement GeoNature-atlas (en option)
+    * Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible dans sa branche ``develop`` : https://github.com/PnEcrins/GeoNature-atlas/issues/162
+    * Suivez la procédure d'installation classique de GeoNature-atlas mais exécutez le script ``install_db_gn2.sh`` à la place de ``install_db.sh``
+    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au prélable.
+    
+:Note:
+
+    Une version expérimentale du calcul automatique de la sensibilité est disponible : https://github.com/PnX-SI/GeoNature/issues/284
 
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
-- Logs de l'instalation de la base de données : ``var/log/geonature/install_db.log``
-- Log général de l'installation de l'application : ``var/log/geonature/install_app.log``
+- Logs de l'installation de la base de données : ``/home/myuser/geonature/var/log/geonature/install_db.log``
+- Log général de l'installation de l'application : ``/home/myuser/var/log/geonature/install_app.log``
 
 
 Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :
@@ -178,11 +189,15 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
 - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
 
+:Note:
+
+    Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd. Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API GeoNature et TaxHub (``sudo supervisorctl reload``).
+
 
 Installation d'un module GeoNature
 ----------------------------------
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB: le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
+L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
 Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
 
@@ -190,9 +205,9 @@ Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualen
 
     source venv/bin/activate
 
-Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>``
+Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_relative_du_module>``
 
-Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on retrouvera les routes de l'API du module.
+Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.
 
 Exemple pour un module de validation :
 

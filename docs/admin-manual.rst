@@ -4,10 +4,10 @@ MANUEL ADMINISTRATEUR
 Architecture
 ------------
 
-GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner:
+GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner :
 
-- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (liste, organisme, droits) utilisable par les différentes applications de son système d'information.
-- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellemenet nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
+- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d'information.
+- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude et les intersections spatiales.
 
@@ -21,7 +21,7 @@ Base de données
 
 Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l'architecture du modèle de données a été complétement revue.
 
-La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183)
+La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183).
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
@@ -33,19 +33,24 @@ Autres standards:
 - Pas de nom de table dans les noms de champs
 - Nom de schema éventuellement dans nom de table
 
-Dernière version de la base de données (2018-03-19) : 
+Schéma simplifié de la BDD : 
+
+.. image :: http://geonature.fr/docs/img/admin-manual/GN-schema-BDD.jpg
+
+- En jaune, les schémas des réferentiels.
+- En rose, les schémas du coeur de GeoNature
+- En bleu, les schémas des protocoles et sources de données
+- En vert, les schémas des applications pouvant interagir avec le coeur de GeoNature
+
+Modèle simplifié de la BDD (2017-12-15) : 
+
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
+
+Dernière version complète de la base de données (2018-03-19), à mettre à jour : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
 
 Désolé pour les relations complexes entre tables...
-
-Voici un modèle simplifié de la BDD (2017-12-15) : 
-
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
-
-Et un autre schéma simplifié : 
-
-.. image :: http://geonature.fr/docs/img/admin-manual/bdd-geonature-v2.jpg
 
 Gestion des droits :
 """"""""""""""""""""
@@ -62,6 +67,9 @@ Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en pla
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
+
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
+
 
 Nomenclatures :
 """""""""""""""
@@ -94,6 +102,127 @@ Données SIG :
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
 
+Fonctions : 
+"""""""""""
+
+La base de données contient de nombreuses fonctions.
+
+**gn_synthese**
+
++--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+| Fonction                             | Paramètres                    | Résultat             | Description                            |
++======================================+===============================+======================+========================================+
+| get_default_nomenclature_value       | id_type_nomenclature,         | Entier               | Function that return the default       |
+|                                      | idorganism, regne, group2inpn |                      | nomenclature id with a nomenclature    |
+|                                      |                               |                      | type, organism id, regne, group2_inpn  |
++--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+| fct_trig_insert_in_cor_area_synthese | geom                          | Trigger              | Trigger intersectant la géométrie      |
+|                                      |                               |                      | d'une observation avec tous les zonages|
++--------------------------------------+-------------------------------+----------------------+----------------------------------------+
+
+**ref_geo**
+
+.. code:: sql
+
+  ref_geo.fct_get_altitude_intersection(IN mygeom geometry)
+  -- Fonction qui retourne l'altitude min et max de la géométrie passée en paramètre
+  
+.. code:: sql
+
+  ref_geo.fct_get_area_intersection(
+    IN mygeom geometry,
+    IN myidtype integer DEFAULT NULL::integer)
+  RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying)
+  -- Fonction qui retourne un tableau des zonages (id_area) intersectant la géométrie passée en paramètre
+
+.. code:: sql
+
+  ref_geo.get_id_area_type(mytype character varying) RETURNS integer
+  --Function which return the id_type_area from the type_code of an area type
+
+**pr_occtax**
+
+.. code:: sql
+
+  pr_occtax.get_id_counting_from_id_releve(my_id_releve integer) RETURNS integer[]
+  -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+
+.. code:: sql
+
+  get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+  --Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inp  --Return -1 if nothing matche with given parameters
+
+.. code:: sql
+
+  pr_occtax.insert_in_synthese(my_id_counting integer) RETURNS integer[]
+
+**ref_nomenclatures**
+
+.. code:: sql
+
+  get_id_nomenclature_type(mytype character varying) RETURNS integer
+  --Function which return the id_type from the mnemonique of a nomenclature type
+
+.. code:: sql
+
+  get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
+  --Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id
+  --Return -1 if nothing matche with given parameters
+
+.. code:: sql
+
+  check_nomenclature_type_by_mnemonique(id integer , mytype character varying) RETURNS boolean
+  --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+
+.. code:: sql
+
+  check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
+  --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
+
+.. code:: sql
+
+  check_nomenclature_type_by_id(id integer, myidtype integer) RETURNS boolean
+  --Function that checks if an id_nomenclature matches with wanted nomenclature type (use id_type)
+
+.. code:: sql
+
+  get_id_nomenclature(
+  mytype character varying,
+  mycdnomenclature character varying)
+  RETURNS integer
+  --Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature
+
+.. code:: sql
+
+  get_nomenclature_label(
+  myidnomenclature integer,
+  mylanguage character varying
+  )
+  RETURNS character varying
+  --Function which return the label from the id_nomenclature and the language
+
+.. code:: sql
+
+  get_cd_nomenclature(myidnomenclature integer) RETURNS character varying
+  --Function which return the cd_nomenclature from an id_nomenclature
+
+.. code:: sql
+
+  get_filtered_nomenclature(mytype character varying, myregne character varying, mygroup character varying)
+  RETURNS SETOF integer
+  --Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.
+
+.. code:: sql
+
+  calculate_sensitivity(
+  mycdnom integer,
+  mynomenclatureid integer)
+  RETURNS integer
+  --Function to return id_nomenclature depending on observation sensitivity
+  --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
+
+
+A compléter... A voir si on mentionne les triggers ou pas...
 
 Modularité
 ----------
@@ -124,7 +253,7 @@ Pour configurer GeoNature, actuellement il y a :
 Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
-L'installation de GeoNature génère le fichier de configuration globale ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts`` à ne pas modifier).
+L'installation de GeoNature génère le fichier de configuration globale ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts``), à ne pas modifier.
 
 Par défaut, le fichier ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
 
@@ -143,18 +272,17 @@ Ainsi après chaque modification des fichiers de configuration globale, placez-v
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
 
-Lors de l'installation d'un module, un fichier de configuration est créé : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml``.
+Lors de l'installation d'un module, un fichier de configuration est créé : ``<MODULE_DIRECTORY>/config/conf_gn_module.toml``.
 
 Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example``, situé dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
 
-A chaque modification de ce fichier, lancer les commandes suivantes (le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé)
+A chaque modification de ce fichier, lancer les commandes suivantes depuis le backend de GeoNature (``/home/monuser/GeoNature/backend``). Le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé automatiquement.
 
 ::
 
     source venv/bin/activate
     geonature update_module_configuration <NOM_DE_MODULE>
     deactivate
-
 
 Exploitation
 ------------
@@ -284,6 +412,13 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse :
 Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompues)
 
 
+- Redémarrage de PostgreSQL
+
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``. 
+  
+  **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
+
+
 Sauvegarde et restauration
 --------------------------
 
@@ -324,8 +459,8 @@ Opération à faire à chaque modification de la customisation de l'application.
     cd /home/<MY_USER>geonature/external_modules
     tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
 
-Restauration :
-""""""""""""""
+Restauration
+""""""""""""
 
 * Restauration de la base de données :
 
@@ -372,8 +507,59 @@ Restauration :
     sudo supervisorctl reload
 
 
-Intégrer des données externes
------------------------------
+Intégrer des données
+--------------------
+
+Référentiel géographique
+""""""""""""""""""""""""
+
+GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).
+
+Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
+
+* Videz le contenu de la table ``ref_geo.dem_vector``
+* Uploadez le fichier du MNT sur le serveur
+* Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
+
+*TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
+
+
+
+Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
+
+Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME).
+
+::
+
+    sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
+    sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
+
+Placer votre propre fichier MNT dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). Ou télécharger le MNT par défaut.
+
+::
+
+    wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp/geonature
+    unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
+    export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
+    sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
+
+Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors des calculs en masse de l'altitude à partir de la localisation des observations, vous pouvez le faire en lançant les commandes ci-dessous. Sachez que cela prendra du temps et beaucoup d'espace disque (2.8Go supplémentaires environ pour le fichier DEM France à 250m).
+
+::
+
+    sudo -n -u postgres -s psql -d MYDBNAME -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;"
+    sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.index_dem_vector_geom;"
+
+Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul de l'altitude à la place de la table ``ref_geo.dem``
+
+Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
+
+* Vérifiez que leur type existe dans la table ``ref_geo.bib_areas_types``, sinon ajoutez-les
+* Ajoutez vos zonages dans la table ``ref_geo.l_areas`` en faisant bien référence à un ``id_type`` de ``ref_geo.bib_areas_types``. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS
+* Pour les grilles et les communes, vous pouvez ensuite compléter leurs tables d'extension ``ref_geo.li_grids`` et ``ref_geo.li_municipalities``
+
+Données externes
+""""""""""""""""
 
 Il peut s'agir de données partenaires, de données historiques ou de données saisies dans d'autres outils. 
 
@@ -384,13 +570,16 @@ Il peut s'agir de données partenaires, de données historiques ou de données s
 
 Nous présenterons ici la première solution qui est privilégiée pour disposer des données brutes mais aussi les avoir dans la Synthèse.
 
-* Créer un JDD dédié. Eventuellement un CA si elles ne s'intègrent pas dans un CA déjà existant.
-* Ajouter une Source de données dans ``synthese.t_sources``.
+* Créer un JDD dédié (``gn_meta.t_datasets``) ou utilisez-en un existant. Eventuellement un CA si elles ne s'intègrent pas dans un CA déjà existant.
+* Ajouter une Source de données dans ``gn_synthese.t_sources`` ou utilisez en une existante.
 * Créer le schéma dédié à accueillir les données brutes.
 * Créer les tables nécessaires à accueillir les données brutes.
-* Intégrer les données dans ces tables.
+* Intégrer les données dans ces tables (avec les fonctions de ``gn_imports``, avec QGIS ou pgAdmin).
 * Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers (en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
 
+Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter les 2 exemples d'import dans cette documentation.
+
+Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
 
 Module OCCTAX
 -------------
@@ -398,9 +587,9 @@ Module OCCTAX
 Installer le module
 """""""""""""""""""
 
-Le module est fourni par défaut avec l'instalation de GeoNature.
+Le module est fourni par défaut avec l'installation de GeoNature.
 
-Si vous l'avez supprimé, lancer les commandes suivantes depuis le repertoire ``backend`` de GeoNature
+Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``backend`` de GeoNature
 
 ::
 
@@ -426,41 +615,38 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 
 ::
 
-  [form_fields]
-	[form_fields.releve]
-		date_min = true
-		date_max = true
-		hour_min = true
-		hour_max = true
-		altitude_min = true
-		altitude_max = true
-		obs_technique = true
-		group_type = true
-		comment = true
-	[form_fields.occurrence]
-		obs_method = true
-		bio_condition = true
-		bio_status = true
-		naturalness = true
-		exist_proof = true
-		observation_status = true
-		diffusion_level = false
-		blurring = false
-		determiner = true
-		determination_method = true
-		sample_number_proof = true
-		digital_proof = true
-		non_digital_proof = true
-		source_status = false
-		comment = true
-	[form_fields.counting]
-		life_stage = true
-		sex = true
-		obj_count = true
-		type_count = true
-		count_min = true
-		count_max = true
-		validation_status = false
+    [form_fields]
+        date_min = true
+        date_max = true
+        hour_min = true
+        hour_max = true
+        altitude_min = true
+        altitude_max = true
+        obs_technique = true
+        group_type = true
+        comment_releve = true
+        obs_method = true
+        bio_condition = true
+        bio_status = true
+        naturalness = true
+        exist_proof = true
+        observation_status = true
+        diffusion_level = false
+        blurring = false
+        determiner = true
+        determination_method = true
+        sample_number_proof = true
+        digital_proof = true
+        non_digital_proof = true
+        source_status = false
+        comment_occ = true
+        life_stage = true
+        sex = true
+        obj_count = true
+        type_count = true
+        count_min = true
+        count_max = true
+        validation_status = false
 
 Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 
@@ -477,9 +663,9 @@ Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore
 Personnaliser la liste des taxons saisissables dans le module
 *************************************************************
 
-Le module est fourni avec une liste restreinte de taxons (3 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
-Le paramètre ``id_taxon_list = 500`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 500 correspond à la liste "Saisie possible"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
 Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
@@ -497,7 +683,7 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
       'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 500,n.id_nom FROM taxonomie.bib_noms n
+    SELECT 100,n.id_nom FROM taxonomie.bib_noms n
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 

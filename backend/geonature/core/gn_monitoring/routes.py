@@ -4,7 +4,7 @@ from geojson import FeatureCollection
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import (
-    TBaseSites, corSiteArea
+    TBaseSites, corSiteArea, corSiteApplication
 )
 from geonature.core.ref_geo.models import LAreas
 from geonature.utils.utilssqlalchemy import json_resp, get_geojson_feature
@@ -84,7 +84,7 @@ def get_onelist_site(id_site):
 @json_resp
 def get_site_areas(id_site):
     '''
-    Retourne un site et les entités géographiques qu'il contient depuis la table
+    Retourne les entités géographiques d'un site depuis la table
     cor_site_area sous forme de geojson
     params:
         - id_module: int
@@ -93,28 +93,29 @@ def get_site_areas(id_site):
     params = request.args
 
     q = DB.session.query(
-        TBaseSites, func.ST_Transform(LAreas.geom, 4326), corSiteArea
-    ).join(
         corSiteArea,
-        TBaseSites.id_base_site == corSiteArea.c.id_base_site
+        func.ST_Transform(LAreas.geom, 4326),
     ).join(
         LAreas,
         LAreas.id_area == corSiteArea.c.id_area
     ).filter(
-        TBaseSites.id_base_site == id_site
+        corSiteArea.c.id_base_site == id_site
     )
 
     if 'id_area_type' in params:
         q = q.filter(LAreas.id_type == params['id_area_type'])
     if 'id_module' in params:
-        q = q.filter(TBaseSites.applications.any(id_application=params['id_module']))
+        q = q.join(
+            corSiteApplication,
+            corSiteApplication.c.id_base_site == id_site
+        ).filter(
+            corSiteApplication.c.id_application == params['id_module']
+        )
 
     data = q.all()
-
     features = []
     for d in data:
-        feature = get_geojson_feature(d[1])
-        feature['properties'] = d[0].as_dict(True)
-        feature['id'] = d[3]
+        feature = get_geojson_feature(d[2])
+        feature['id'] = d[1]
         features.append(feature)
     return FeatureCollection(features)

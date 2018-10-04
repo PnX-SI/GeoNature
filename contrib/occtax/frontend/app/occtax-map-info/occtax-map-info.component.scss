@@ -3,15 +3,15 @@
   list-style-type: none;
 }
 
-.card-block.releve label {
+.card-body.releve label {
   font-weight: bold;
 }
 
 .info-occurrence {
-  margin-top: 10px; 
+  margin-top: 10px;
 }
 
-.map-container{
+.map-container {
   margin-top: -5px;
 }
 
@@ -20,20 +20,29 @@
   overflow: auto;
 }
 
-#edit {
-  position: absolute;
-  right: 2%;
-  top: 2%;
+.button-rounded {
   border-radius: 30px;
   box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding-right: 10px;
   padding-left: 10px;
+  float: right;
+  margin-left: 15px;
+}
+
+#edit {
+  // position: absolute;
+  // right: 2%;
+  // top: 2%;
+  // border-radius: 30px;
+  // box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  // padding-right: 10px;
+  // padding-left: 10px;
 }
 
 #info-geo {
   margin-top: 5px;
 }
 
-#row-commentaire{
-  margin-top: 10px
+#row-commentaire {
+  margin-top: 10px;
 }

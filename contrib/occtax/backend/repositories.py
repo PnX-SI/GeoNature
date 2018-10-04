@@ -17,12 +17,12 @@ from .models import (
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 
 
-
 class ReleveRepository():
     """
         Repository: classe permettant l'acces au données
         d'un modèle de type 'releve'
         """
+
     def __init__(self, model):
         self.model = model
 
@@ -34,17 +34,13 @@ class ReleveRepository():
         """
         try:
             releve = DB.session.query(self.model).get(id_releve)
-        except Exception:
-            DB.session.rollback()
-            raise
-        if releve:
-            return releve.get_releve_if_allowed(info_user)
+        except NotFound:
+            raise NotFound(
+                'The releve "{}" does not exist'.format(id_releve)
+            )
+        return releve.get_releve_if_allowed(info_user)
 
-        raise NotFound(
-            'The releve "{}" does not exist'.format(id_releve)
-        )
-
-    def update(self, releve, info_user):
+    def update(self, releve, info_user, geom):
         """ Update the current releve if allowed
         params:
         - releve: a Releve object model
@@ -53,7 +49,6 @@ class ReleveRepository():
         releve = releve.get_releve_if_allowed(info_user)
         DB.session.merge(releve)
         DB.session.commit()
-        DB.session.rollback()
         return releve
 
     def delete(self, id_releve, info_user):
@@ -67,7 +62,6 @@ class ReleveRepository():
             releve = releve.get_releve_if_allowed(info_user)
             DB.session.delete(releve)
             DB.session.commit()
-            DB.session.rollback()
             return releve
         raise NotFound('The releve "{}" does not exist'.format(id_releve))
 
@@ -98,7 +92,8 @@ class ReleveRepository():
         """
         q = DB.session.query(self.model.tableDef)
         if user.tag_object_code in ('1', '2'):
-            q = q.outerjoin(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax == corRoleRelevesOccurrence.columns.id_releve_occtax)
+            q = q.outerjoin(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax ==
+                            corRoleRelevesOccurrence.columns.id_releve_occtax)
             if user.tag_object_code == '2':
                 allowed_datasets = TDatasets.get_user_datasets(user)
                 q = q.filter(
@@ -116,7 +111,6 @@ class ReleveRepository():
                     )
                 )
         return q
-
 
     def get_all(self, info_user):
         """
@@ -138,7 +132,6 @@ class ReleveRepository():
             return self.filter_query_with_autorization(info_user)
         else:
             return self.filter_query_generic_table(info_user)
-
 
 
 def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
@@ -228,7 +221,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
         table_columns = mappedView
     else:
         table_columns = mappedView.__table__.columns
-    
+
     # Generic Filters
     for param in params:
         if param in table_columns:
@@ -237,7 +230,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             if testT:
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
-    
+
     releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(params)
     if len(releve_filters) > 0:
         q = q.join(
@@ -246,7 +239,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             TRelevesOccurrence.id_releve_occtax
         )
         for nomenclature in releve_filters:
-            col = getattr(TRelevesOccurrence.__table__.columns, nomenclature)            
+            col = getattr(TRelevesOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
 
     if len(occurrence_filters) > 0:
@@ -258,7 +251,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
         for nomenclature in occurrence_filters:
             col = getattr(TOccurrencesOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
-            
+
     if len(counting_filters) > 0:
         if len(occurrence_filters) > 0:
             q = q.join(

@@ -15,7 +15,9 @@ export class MunicipalitiesComponent implements OnInit {
   public searchControl = new FormControl();
   @Input() parentFormControl: FormControl;
   @Input() label: string;
+  @Input() searchBar = false;
   @Input() disabled: boolean;
+  @Input() bindAllItem: false;
   @Input() debounceTime: number;
   public currentValue: any;
   constructor(private _dfs: DataFormService, private _commonService: CommonService) {}

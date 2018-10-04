@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
-import {
-  FormControl,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-  ValidatorFn
-} from '@angular/forms';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { FormGroup } from '@angular/forms/src/model';
 
 @Injectable()
 export class FormService {
-  constructor() {}
+  constructor() { }
 
   dateValidator(dateMinControl: AbstractControl, dateMaxControl: AbstractControl): ValidatorFn {
     return (formGroup: FormGroup): { [key: string]: boolean } => {
@@ -31,6 +25,20 @@ export class FormService {
     };
   }
 
+  altitudeValidator(altiMinControl: AbstractControl, altMaxControl: AbstractControl): ValidatorFn {
+    return (formGroup: FormGroup): { [key: string]: boolean } => {
+      const altMin = altiMinControl.value;
+      const altMax = altMaxControl.value;
+      if (altMin && altMax && (altMin > altMax)) {
+        return {
+          invalidAlt: true
+        };
+      } else {
+        return null;
+      }
+    };
+  }
+
   hourAndDateValidator(
     dateMinControl: AbstractControl,
     dateMaxControl: AbstractControl,
@@ -46,8 +54,8 @@ export class FormService {
       );
       return invalidHour
         ? {
-            invalidHour: true
-          }
+          invalidHour: true
+        }
         : null;
     };
   }
@@ -88,5 +96,15 @@ export class FormService {
     } else {
       return null;
     }
+  }
+
+  searchLocally(searchPatern, data) {
+    const savedData = data;
+    let filteredData = [];
+    filteredData = savedData.filter(el => {
+      const isIn = el.label_default.toUpperCase().indexOf(searchPatern.toUpperCase());
+      return isIn !== -1;
+    });
+    return filteredData;
   }
 }

@@ -1,4 +1,4 @@
-AUTHORS
+AUTEURS
 =======
 
 Parc national des Ecrins
@@ -19,11 +19,13 @@ Parc national des Cevennes
 .. image:: http://geonature.fr/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
 
-============
-CONTRIBUTORS
-============
+Contributeurs
+-------------
 
 * Quang Pham
 * Claire Lagaye
+* Xavier Arbez
 * Kevin Samuel
 * Donovan Maillard
+* Khanh-Chau Nguyen
+* Etienne Trimaille
