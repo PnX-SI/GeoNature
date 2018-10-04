@@ -1,0 +1,144 @@
+<div (click)="fs.formDisabled()" [formGroup]="releveForm">
+  <div class="row row-0">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+      <div *ngIf="!occtaxConfig.observers_txt; else elseBlock">
+        <pnx-observers [parentFormControl]="releveForm.controls.properties.controls.observers" [idMenu]="occtaxConfig.id_observers_list"
+          [disabled]="fs.disabled" label="{{ 'Releve.Observers' | translate }}" [disabled]="fs.disabled" [bindAllItem]="true">
+        </pnx-observers>
+      </div>
+      <ng-template #elseBlock>
+        <pnx-observers-text [parentFormControl]="releveForm.controls.properties.controls.observers_txt" [disabled]="fs.disabled">
+        </pnx-observers-text>
+      </ng-template>
+    </div>
+
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm taxon-list">
+      <img *ngIf="fs.editionMode && !fs.isEdintingOccurrence && fs.taxonsList.length === 0" src="assets/images/Spinner.gif"
+        alt="Chargement..." height="40" width="40">
+      <div id="taxon-list" *ngIf="fs.taxonsList.length > 0">
+        <b id=taxon-list-title> {{fs.taxonsList.length}} {{'Releve.SavedTaxon' | translate}} </b>
+        <pnx-taxons-list [list]="fs.taxonsList" (taxonEdited)="fs.editOccurence($event)" (taxonRemoved)="fs.removeOneOccurrence($event)">
+        </pnx-taxons-list>
+      </div>
+    </div>
+  </div>
+  <div class="row row-0">
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
+      <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+        appId="14" [disabled]="fs.disabled">
+      </pnx-datasets>
+    </div>
+  </div>
+  <div class="form-group row row-0">
+    <div *ngIf="occtaxConfig.form_fields.date_min" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <pnx-date label="{{ 'Releve.MinDate' | translate }}" defaultDate="today" [parentFormControl]="releveForm.controls.properties.controls.date_min"
+        [disabled]="fs.disabled">
+      </pnx-date>
+    </div>
+
+    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-md">
+      <button [disabled]="fs.disabled" class="btn btn-sm btn-outline-shadow time-button" *ngIf="!showTime" (click)="toggleTime()"
+        data-toggle="collapse" data-target="#collapseTime">
+        <i class="fa fa-plus time-plus" aria-expanded="false"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-shadow time-button" *ngIf="showTime" (click)="toggleTime()" data-toggle="collapse"
+        data-target="#collapseTime">
+        <i class="fa fa-minus" aria-expanded="false"></i>
+      </button>
+      <br>
+    </div>
+    <small *ngIf="releveForm.errors?.invalidDate" class="error" style="color:red">
+      {{ 'Releve.DateMaxError' | translate }}
+    </small>
+  </div>
+  
+
+  <div class="collapse" id="collapseTime">
+    <div class="row row-0">
+      <div *ngIf="occtaxConfig.form_fields.date_max" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+        <pnx-date label="{{ 'Releve.MaxDate' | translate }} " [parentFormControl]="releveForm.controls.properties.controls.date_max"
+          [disabled]="fs.disabled">
+        </pnx-date>
+      </div>
+      <div *ngIf="occtaxConfig.form_fields.hour_min" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <div class="form-group">
+          <small> {{'Releve.HourMin' | translate }} </small>
+          <input [ngClass]="{'is-invalid' : releveForm.controls.properties.controls.hour_min.invalid}" [formControl]="releveForm.controls.properties.controls.hour_min"
+            class="form-control form-control-sm" type="text" placeholder="{{'Releve.HourFormat' | translate }}"
+            [disableControl]="fs.disabled">
+        </div>
+      </div>
+      <div *ngIf="occtaxConfig.form_fields.hour_max" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <div class="form-group">
+          <small> {{'Releve.HourMax' | translate }} </small>
+          <input [ngClass]="{'is-invalid' : releveForm.controls.properties.controls.hour_max.invalid}" [formControl]="releveForm.controls.properties.controls.hour_max"
+            class="form-control form-control-sm" type="text" placeholder="{{'Releve.HourFormat' | translate }}"
+            [disableControl]="fs.disabled">
+        </div>
+      </div>
+    </div>
+    <small *ngIf="releveForm.errors?.invalidHour" class="error" style="color:red">
+      {{ 'Releve.HourMaxError' | translate }}
+    </small>
+  </div>
+
+
+  <div class="form-group">
+    <div class="row row-0">
+      <div *ngIf="occtaxConfig.form_fields.altitude_min" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <small> {{ 'Releve.MinAltitude' | translate }} </small>
+        <input class="form-control form-control-sm" type="number" [formControl]="releveForm.controls.properties.controls.altitude_min"
+          [disableControl]="fs.disabled">
+      </div>
+      <div *ngIf="occtaxConfig.form_fields.altitude_max" class="col-xs-12 col-sm-2 col-md-2 col-lg-2 padding-sm">
+        <small> {{ 'Releve.MaxAltitude' | translate }} </small>
+        <input class="form-control form-control-sm" type="number" [formControl]="releveForm.controls.properties.controls.altitude_max"
+          [disableControl]="fs.disabled">
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2 padding-md">
+        <div class="">
+          <!-- Modal intersections  -->
+          <pnx-areas-intersected-modal [geojson]="geojson"> </pnx-areas-intersected-modal>
+        </div>
+      </div>
+      <small *ngIf="releveForm.errors?.invalidAlt" class="error" style="color:red">
+        {{ 'Releve.AltitudeError' | translate }}
+      </small>
+    </div>
+  </div>
+
+  <div class="row row-0">
+
+    <div *ngIf="occtaxConfig.form_fields.obs_technique" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_obs_technique"
+        codeNomenclatureType="TECHNIQUE_OBS" [disabled]="fs.disabled">
+      </pnx-nomenclature>
+    </div>
+
+    <div *ngIf="occtaxConfig.form_fields.group_type" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <pnx-nomenclature label="{{ 'Releve.GroupType' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_grp_typ"
+        codeNomenclatureType="TYP_GRP" [disabled]="fs.disabled">
+      </pnx-nomenclature>
+    </div>
+
+  </div>
+  <div *ngIf="occtaxConfig.form_fields.comment_releve" class="row row-0">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-0">
+      <button id="comment" class="btn btn-sm btn-outline-shadow input-alignment-xs" data-toggle="collapse" data-target="#collapseContexteCommentaire"
+        aria-expanded="false" aria-controls="contexte" [disabled]="fs.disabled">
+        <i class="fa fa-comment-o" aria-hidden="true"></i> {{ 'Releve.Comment' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="row row-0 collapse" id="collapseContexteCommentaire">
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-0">
+      <div class="form-group">
+        <textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

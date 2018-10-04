@@ -1,0 +1,149 @@
+# Database
+
+SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+SQLALCHEMY_TRACK_MODIFICATIONS = false
+
+# Application
+
+appName = 'GeoNature 2'                               # Application name in the home page
+DEFAULT_LANGUAGE = 'fr'
+PASS_METHOD = 'hash'                                  # Authentification password encoding method (hash or md5)
+DEBUG = true
+URL_APPLICATION = 'http://url.com/geonature'          # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com/geonature/api'         # Replace my_url.com by your domain or IP
+API_TAXHUB ='http://127.0.0.1:5000/api/'
+ID_APPLICATION_GEONATURE = 3                         # id_application of GeoNature in UsersHub
+SESSION_TYPE = 'filesystem'
+SECRET_KEY = 'super secret key'
+COOKIE_EXPIRATION = 7200
+COOKIE_AUTORENEW = true
+TRAP_ALL_EXCEPTIONS = false
+# code EPSG des geom local de la BDD
+LOCAL_SRID = 
+
+# MTD
+XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
+MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
+
+# File
+# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = 'static/medias'
+
+# CAS authentification (Optional, instead of UsersHub local authentification)
+[CAS_PUBLIC]
+    CAS_AUTHENTIFICATION = false
+    CAS_URL_LOGIN = 'https://preprod-inpn.mnhn.fr/auth/login'
+    CAS_URL_LOGOUT = 'https://preprod-inpn.mnhn.fr/auth/logout'
+
+[CAS]
+CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+[CAS.CAS_USER_WS]
+    URL = 'https://inpn2.mnhn.fr/authentication/information'
+    ID = 'mon_id'
+    PASSWORD = 'mon_pass'
+
+[BDD]
+id_area_type_municipality = 25
+
+[RIGHTS]
+    NOTHING = 0
+    MY_DATA = 1
+    MY_ORGANISM_DATA = 2
+    ALL_DATA = 3
+
+# Front end configuration
+[FRONTEND]
+# passe le frontend en mode production (message de la console moins parlant en développement)
+PROD_MOD = false
+# Affiche me composant 'custom/components/footer' sur la page d'accueil
+DISPLAY_FOOTER = false
+# Passe le frontend en mode multilingue
+MULTILINGUAL = false
+
+[MAILERROR]
+    MAIL_ON_ERROR = false
+    MAIL_HOST = 'host mail'
+    HOST_PORT = host mail port
+    MAIL_FROM = 'Email from'
+    MAIL_USERNAME = 'email username'
+    MAIL_PASS = 'email to'
+    MAIL_TO = 'email to'
+
+# Synthese configuration
+[SYNTHESE]
+    # Liste des entités géographiques sur lesquels les filtres
+    # géographiques de la synthese s'appuient (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
+    AREA_FILTERS = [
+        { label = "Communes", id_type = 25 },
+    ]
+    # Colonne à afficher par défaut sur la liste des resultats de la synthese
+    # 'prop' corespond au nom de la colonne tel qu'il est écrit en BDD (gn_synthese.v_synthese_for_web_app)
+    
+    LIST_COLUMNS_FRONTEND = [
+        { prop = "nom_vern_or_lb_nom", name = "Taxon" },
+        { prop = "date_min", name = "Date début" },
+        { prop = "observateurs", name = "Observateurs" },
+        { prop = "dataset_name", name = "Jeu de données" }
+    ]
+
+    # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
+    ID_ATTRIBUT_TAXHUB = [1, 2]
+
+    # Colonne de la table gn_synthese.synthese que l'on veut masquer dans les filtres du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. Exemple: 
+    EXCLUDED_COLUMNS = ['non_digital_proof'] pour enlever le filtre 'preuve non numérique'
+    # Affiche ou masque l'arbre de recherche taxonomique (recherche taxonommique avancé)
+    # Cette fonctionnalité n'est actuallement pas stable sur un grand nombre de taxon, passer à false si le temps de chargement est trop long
+    DISPLAY_TAXON_TREE = true
+    # Active le fait de rechercher sur le nom d'observateur en ILIKE sur les portée 1 et 2 du CRUVED
+    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
+    # Nombre d'observation maximum à afficher sur la carte après une recherche
+    NB_MAX_OBS_MAP = 10000
+    # Nombre des dernières observations affichées par défaut quand on arrive sur la synthese 
+    NB_LAST_OBS = 100
+    # Nombre max d'observation dans les exports
+    NB_MAX_OBS_EXPORT = 40000
+    # Champs à afficher dans l'export
+    [EXPORT_COLUMNS]
+        [EXPORT_COLUMNS.SYNTHESE_COLUMNS] = [
+        'id_synthese',
+        'unique_id_sinp',
+        'date_min',
+        'date_max',
+        'observers',
+        'altitude_min',
+        'altitude_max',
+        'count_min',
+        'count_max',
+        'sample_number_proof',
+        'digital_proof',
+        'non_digital_proof',
+        'comments'
+        ]
+        [EXPORT_COLUMNS.NOMENCLATURE_COLUMNS] = [
+            'nat_obj_geo',
+            'grp_typ',
+            'obs_method',
+            'obs_technique',
+            'bio_status',
+            'bio_condition',
+            'naturalness',
+            'exist_proof',
+            'valid_status',
+            'diffusion_level',
+            'life_stage',
+            'sex',
+            'obj_count',
+            'type_count',
+            'sensitivity',
+            'observation_status',
+            'blurring',
+            'source_status',
+            'info_geo_type',
+            'determination_method'
+        ]
+        [EXPORT_COLUMNS.TAXONOMIC_COLUMNS] = [
+            'cd_nom',
+            'cd_ref',
+            'nom_valide'
+        ]
+

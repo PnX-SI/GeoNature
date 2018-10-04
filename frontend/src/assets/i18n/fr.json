@@ -1,0 +1,167 @@
+{
+  "Title": "GeoNature",
+  "Home": "Accueil",
+  "Sel_lang": "Choisissez la langue",
+  "Language": "Langue",
+  "Languages": {
+    "English": "Anglais",
+    "French": "Français",
+    "Chinese": "Chinois"
+  },
+  "Email": "Email",
+  "Username": "Nom d'utilisateur",
+  "Password": "Mot de passe",
+  "LogIn": "Connexion",
+  "LogOut": "Déconnexion",
+  "IntroTitle": "Bienvenue dans GeoNature V2",
+  "IntroText": "",
+  "Observations": "Observations",
+  "Species": "Espèces",
+  "LatestObservations": "Dernières observations",
+  "Search": "Rechercher",
+  "By": "Par",
+  "Columns": "Colonnes",
+  "Cancel": "Annuler",
+  "Delete": "Supprimer",
+  "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
+  "LoginError": "Identifiant ou mot de passe incorrect",
+  "DownloadData": "Télécharger les données",
+  "DownloadOverflow":
+    "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
+  "AllItems": "Tous",
+  "Map": {
+    "SearchLocation": "Rechercher un lieu",
+    "LocationError": "Localisation non trouvée",
+    "AddPoint": "Localisez l'observation (point)",
+    "AddLine": "Localisez l'observation (ligne)",
+    "AddPolygon": "Localisez l'observation (polygone)",
+    "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé"
+  },
+  "MetaData": {
+    "JddError": "Erreur lors de la récupération des jeux de données",
+    "JddErrorMTD": "Error lors de la récupération des JDD via l'application MTD",
+    "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
+    "NoJDDMTD":
+      "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+      "Datasetadded": "Jeu de donnée ajouté avec succès",
+      "AFadded": "Cadre d'acquisition ajouté avec succès",
+      "Programs": "Programmes",
+      "Datasets": "Jeux de données",
+      "AcquisitionFramework": "Cadre d'acquisition"
+  },
+  "Form": {
+    "RefreshFilters": "Rafraichir les filtres",
+    "AdvancedFilters": "Filtres avancés",
+    "OtherFilters": "Autres filtres"
+  },
+  "List": {
+    "Columns": "Colonnes",
+    "DisplayColumns": "Colonnes à afficher"
+  },
+  "MapList": {
+    "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
+    "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer",
+    "ObservationNumber": "Nombre d'observation(s) :"
+  },
+  "Releve": {
+    "Releve": "Relevé",
+    "AddReleve": "Ajouter un relevé",
+    "Observer": "Observateur",
+    "Observers": "Observateur(s)",
+    "MinDate": "Date début",
+    "MaxDate": "Date fin",
+    "HourMin": "Heure début",
+    "HourMax": "Heure fin",
+    "HourFormat": "hh:mm",
+    "MinAltitude": "Alt min",
+    "MaxAltitude": "Alt max",
+    "Municipality": "Commune",
+    "Municipalities": "Commune(s)",
+    "Dataset": "Jeu de données",
+    "Comment": "Commentaire",
+    "SaveReleve": "Enregistrer le relevé",
+    "DateMaxError": "La date de début ne peut pas être superieure à la date de fin",
+    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+    "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
+    "SavedTaxon": "Taxon(s) enregistré(s)",
+    "InfoGeo": "Informations géographiques du relevé",
+    "Edit": "Editer le relevé",
+    "Info": "Informations relevé",
+    "Delete": "Supprimer le relevé",
+    "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
+    "Validate": "Valider le releve",
+    "UnValidate": "Invalider le releve",
+    "ObsTechnique": "Technique d'observation",
+    "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
+    "CancelTaxon": "Annuler la saisie du taxon",
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
+    "GroupType": "Type de regroupement",
+    "DoesNotExist": "Ce relevé n'existe pas"
+  },
+  "Taxon": {
+    "ObservedTaxon": "Taxon(s) observé(s)",
+    "Observation": "Observation",
+    "Observations": "Observations",
+    "Group": "Groupe",
+    "New": "Nouveau",
+    "Priority": "Prioritaire",
+    "Optional": "Facultatif",
+    "Taxon": "Taxon",
+    "Taxons": "Taxons",
+    "TaxonName": "Nom du taxon",
+    "ObsMethod": "Méthode d'observation",
+    "Advanced": "Avancé",
+    "BiologicalCondition": "Etat biologique",
+    "BiologicalStatus": "Statut biologique",
+    "Naturalness": "Naturalite",
+    "DeterminationMethod": "Méthode de détermination",
+    "DeterminationMethodComplement": "Complément méthode de détermination",
+    "Determiner": "Déterminateur",
+    "ExistProof": "Preuve d'existence",
+    "SampleNumber": "Numéro du prélevement",
+    "DigitalProof": "Preuve numérique",
+    "NonDigitalProof": "Preuve non numérique",
+    "SaveTaxon": "Enregistrer le taxon",
+    "AddTaxon": "Ajouter le taxon",
+    "ValidateTaxon": "Valider le taxon",
+    "DiffusionLevel": "Niveau de diffusion",
+    "ObservationStatus": "Statut d'observation",
+    "Blurring": "Floutage",
+    "CurrentlyEditing":
+      "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
+    "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
+    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
+    "StatusSource": "Statut source"
+  },
+  "Counting": {
+    "Counting": "Dénombrement",
+    "NumberMin": "Nombre min",
+    "NumberMax": "Nombre max",
+    "Type": "Type",
+    "LifeStage": "Stade de vie",
+    "Sex": "Sexe",
+    "ValidationStatus": "Statut de validation",
+    "Phenology": "Phénologie",
+    "CountingObject": "Objet du dénombrement",
+    "CountingType": "Type de dénombrement",
+    "Numbers": "Effectif",
+    "Total": "Total",
+    "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
+  },
+  "Geo": {
+    "Municipalities": "Communes"
+  },
+  "IntroMessage":
+    "Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
+  "ErrorMessage": "Une erreur s'est produite",
+
+  "Export": {
+    "ExportModuleName": "Module d'export des données"
+  },
+  "Synthese": {
+    "DeleteObs": "Supprimer l'observations",
+    "DeleteSuccess": "Observation supprimée avec succès",
+    "PeriodError":
+      "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
+  }
+}

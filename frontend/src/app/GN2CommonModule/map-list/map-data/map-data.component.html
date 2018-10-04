@@ -1,0 +1,33 @@
+  <ngx-datatable
+    #table
+    class="material striped margin-top-xs table-size expandable"
+    [rows]="mapListService.tableData"
+    [columns]="displayColumns"
+    [columnMode]="'force'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="50"
+    [draggable]="false"
+    [selected]="mapListService.selectedRow"
+    [externalPaging]="true"
+    [selectionType]="'single'"
+    [count]="mapListService.page.totalElements"
+    [offset]="mapListService.page.pageNumber"
+    [limit]="mapListService.page.size"
+    [rowClass]="getRowClass"
+    (page)="mapListService.setTablePage($event)"
+    (select)="mapListService.onRowSelect($event)"
+    >
+
+    <ngx-datatable-column
+      *ngFor="let col of displayColumns"
+      [name]="col.name"
+      [prop]="col.prop">
+    </ngx-datatable-column>
+    
+</ngx-datatable>
+  
+
+
+
+

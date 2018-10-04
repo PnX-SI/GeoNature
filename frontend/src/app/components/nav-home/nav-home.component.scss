@@ -1,0 +1,33 @@
+.toolbar-icon {
+    padding: 0 15px;
+}
+
+.appnav {
+    width: 220px;
+    min-width: 65px;
+}
+
+.sidenav-container{
+    height: 100%;
+}
+
+.list {
+    list-style-type: none;
+}
+mat-menu > li {
+    cursor: pointer;
+    list-style-type: none;
+    padding: 10px;
+}
+
+mat-icon {
+    margin: 10px;
+}
+
+.module-name {
+    color: black;
+}
+
+#module-name{
+    margin-right: 15px;;
+}

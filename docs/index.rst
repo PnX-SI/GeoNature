@@ -1,18 +1,19 @@
-Bienvenue dans la doc de GeoNature
-==================================
-
-Contenu:
+Bienvenue dans la documentation de GeoNature
+============================================
 
 .. toctree::
    :maxdepth: 2
-
-   server
-   installation
-   update
-   webapi
-   export
-   sauvegardes/readme
-   install_all/README
-   install_all/2016-12-exemple-deploiement-pnr
-   auteurs
-   changelog
+   
+   installation-all
+   installation-standalone
+   installation-mtes
+   user-manual
+   admin-manual
+   import-level-1
+   import-level-2
+   development
+   versions-compatibility
+   https
+   FAQ
+   authors
+   CHANGELOG

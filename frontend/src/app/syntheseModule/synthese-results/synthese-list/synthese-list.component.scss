@@ -1,0 +1,47 @@
+.selected {
+  background-color: red;
+}
+ngx-datatable {
+  // position: absolute;
+  // left:0;
+  // bottom:0;
+  // right:0;
+  // top:0;
+  // overflow:scroll;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
+}
+
+:host /deep/ .datatable-body-row {
+  height: 30px !important;
+}
+
+:host /deep/ .datatable-body-cell {
+  font-size: 12px !important;
+  //padding: 5px 5px !important;
+  padding-bottom: 15px !important;
+  padding-top: 8px !important;
+  padding-left: 15px !important;
+}
+:host /deep/ .datatable-body-cell i {
+  font-size: 12px;
+}
+
+ngx-datatable {
+  box-shadow: none !important;
+}
+
+#download-btn {
+  margin-top: 5px;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+}
+
+.row-sm {
+  height: 20px !important;
+  font-size: 10px !important;
+}

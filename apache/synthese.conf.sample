@@ -1,6 +1,0 @@
-<Directory /var/www/geonature>
-    Options Indexes FollowSymLinks MultiViews
-    AllowOverride All
-    Order allow,deny
-    allow from all
-</Directory>

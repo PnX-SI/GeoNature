@@ -1,764 +1,593 @@
---
---
--- PostgreSQL database dump
---
-
 SET statement_timeout = 0;
+SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
---
--- Name: layers; Type: SCHEMA; Schema: -; Owner: -
---
+CREATE SCHEMA gn_synthese;
 
-CREATE SCHEMA layers;
-
-
---
--- Name: SCHEMA layers; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON SCHEMA layers IS 'schéma contenant les couches SIG nécéssaires au fonctionnement de la base ou des applications qui s''y connectent. (exemple, communes, secteurs, zone à statut...)';
-
-
---
--- Name: meta; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA meta;
-
-
---
--- Name: synthese; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA synthese;
-
-
---
--- Name: synchronomade; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA synchronomade;
-
-
-SET search_path = public, pg_catalog;
-
---function visant à restaurer le fonctionnement du wms dans l'application fonctionnant avec un mapserver non compatible avec st_geomfromtext
-CREATE OR REPLACE FUNCTION geomfromtext(text, integer)
-  RETURNS geometry AS
-'SELECT st_geometryfromtext($1, $2)'
-  LANGUAGE sql IMMUTABLE STRICT
-  COST 100;
-
--- Function: public.periode(date, date, date)
-
--- DROP FUNCTION public.periode(date, date, date);
-
-CREATE OR REPLACE FUNCTION public.periode(dateobs date, datedebut date, datefin date)
-  RETURNS boolean AS
-$BODY$
-declare
- 
-jo int; jd int; jf int; test int; 
- 
- 
-BEGIN
-jo = extract(doy FROM dateobs);--jour de la date passée
-jd = extract(doy FROM datedebut);--jour début
-jf = extract(doy FROM datefin); --jour fin
-test = jf - jd; --test si la période est sur 2 année ou pas
- 
---si on est sur 2 années
-IF test < 0 then
-	IF jo BETWEEN jd AND 366 OR jo BETWEEN 1 AND jf THEN RETURN true;
-	END IF;
--- si on est dans la même année
-else 
-	IF jo BETWEEN jd AND jf THEN RETURN true;
-	END IF;
-END IF;
-	RETURN false;	
-END;
- 
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-  
-
-CREATE OR REPLACE FUNCTION public.application_aggregate_taxons_rang_sp(id integer)
-  RETURNS text AS
-$BODY$
---fonction permettant de regroupper dans un tableau tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
---si le cd_nom passé est d'un rang différent de l'espèce (genre, famille... ou sous-espèce, variété...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
---
---Gil DELUERMOZ septembre 2011
-  DECLARE
-  rang character(4);
-  rangsup character(4);
-  ref integer;
-  sup integer;
-  cd integer;
-  tab integer;
-  r text; 
-  BEGIN
-	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
-	IF(rang='ES') THEN
-		cd = taxonomie.find_cdref(id);
-		--SELECT INTO tab cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = taxonomie.find_cdref(id);
-		SELECT INTO r array_agg(a.cd_nom) FROM (
-		SELECT cd_nom FROM taxonomie.taxref WHERE cd_ref = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
-		) a;   
-	ELSE
-	   SELECT INTO r array_agg(cd_ref) FROM taxonomie.taxref WHERE cd_nom = id;
-	END IF;
-	return r;
-  END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-
-CREATE OR REPLACE FUNCTION public.application_aggregate_taxons_all_rang_sp(id integer)
-  RETURNS text AS
-$BODY$
---fonction permettant de regroupper dans un tableau au rang espèce tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
---si le cd_nom passé est d'un rang supérieur à l'espèce (genre, famille...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
---
---Gil DELUERMOZ septembre 2011
-  DECLARE
-  rang character(4);
-  rangsup character(4);
-  ref integer;
-  sup integer;
-  cd integer;
-  tab integer;
-  r text; 
-  BEGIN
-	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
-	IF(rang='ES' OR rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
-	    IF(rang = 'ES') THEN
-		cd = taxonomie.find_cdref(id);
-	    END IF;
-	    IF(rang = 'SSES') THEN
-		SELECT INTO cd cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(id);
-	    END IF;
-	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
-		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(id);
-		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(sup);
-		IF(rangsup = 'ES') THEN
-			cd = sup;
-		ELSE
-			SELECT INTO cd cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(sup);
-		END IF;
-	    END IF;
-
-		--SELECT INTO tab cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = taxonomie.find_cdref(id);
-		SELECT INTO r array_agg(a.cd_nom) FROM (
-		SELECT cd_nom FROM taxonomie.taxref WHERE cd_ref = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup = cd
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
-		UNION
-		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
-		) a;   
-	ELSE
-	   SELECT INTO r cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
-	END IF;
-	return r;
-  END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-
-SET search_path = layers, pg_catalog;
-
---
--- Name: f_dist_maille_commune(public.geometry, character); Type: FUNCTION; Schema: layers; Owner: -
---
-
-CREATE FUNCTION f_dist_maille_commune(mon_geom public.geometry, mon_insee character) RETURNS real
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-ma_distance real;
-ma_commune geometry;
-BEGIN
--- vérif si le code insee saisi est bien dans la couche commune
-IF mon_insee IN (SELECT insee FROM layers.l_communes) THEN
-	-- calcul la distance entre la maille et la commune (vérifie d'abord si la maille intersect la commune)
-	SELECT INTO ma_commune lc.the_geom FROM layers.l_communes lc WHERE lc.insee = mon_insee;
-	IF public.st_intersects(mon_geom, ma_commune) THEN
-		  RETURN  0;		-- on est bon la maille est dans la commune saisie a la main
-	ELSE
-		 SELECT INTO ma_distance ST_Distance(mon_geom, ma_commune);
-		 RETURN ma_distance;
-	END IF;
-ELSE
-	RETURN  -1; -- le code insee saisi est mauvais
-END IF;
-
-END
-$$;
-
-
---
--- Name: f_insee(public.geometry); Type: FUNCTION; Schema: layers; Owner: -
---
-
-CREATE FUNCTION f_insee(mongeom public.geometry) RETURNS character
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-mavariableinsee char(5);
-BEGIN
-
-select insee into mavariableinsee from 
-layers.l_communes c where public.st_intersects(c.the_geom, mongeom)= true;
-
-if mavariableinsee ISNULL then
-	return null;
-else
-	return mavariableinsee; 
-end if;
-
-END
-$$;
-
-
---
--- Name: f_isolines20(public.geometry); Type: FUNCTION; Schema: layers; Owner: -
---
-
-CREATE FUNCTION f_isolines20(mongeom public.geometry) RETURNS integer
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-mavariableiso integer;
-BEGIN
-select iso into mavariableiso from 
-(
-select i.iso, st_distance(mongeom, i.the_geom) 
-from layers.l_isolines20 i
-where mongeom&&i.the_geom  -- && renvoit true quand la bouding box de mon geom intersect la bounding box d'isolines20
-order by st_distance asc limit 1
-) SR;
-
-if mavariableiso ISNULL then 	
-	return  0;
-else
-	return mavariableiso; 
-end if;
-
-END
-$$;
-
-
---
--- Name: f_nomcommune(public.geometry); Type: FUNCTION; Schema: layers; Owner: -
---
-
-CREATE FUNCTION f_nomcommune(mongeom public.geometry) RETURNS character varying
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-macommmune character varying(40);
-BEGIN
-
-select commune_min into macommmune from 
-layers.l_communes c where public.st_intersects(c.the_geom, mongeom)= true;
-
-if macommmune ISNULL then
-	return null;
-else
-	return macommmune; 
-end if;
-
-END
-$$;
-
-
-SET search_path = synthese, public, pg_catalog;
-
---
--- Name: insert_syntheseff(); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE FUNCTION insert_syntheseff() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-	new.date_insert= 'now';
-	new.date_update= 'now';
-	RETURN NEW; 			
-END;
-$$;
-
-
---
--- Name: maj_cor_unite_synthese(); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE FUNCTION maj_cor_unite_synthese() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
--- apres travail dans la table synthèsefaune on supprime la donnée correspondante dans la table cor_unite_synthese
-IF (TG_OP = 'DELETE') or (TG_OP = 'UPDATE') THEN
-	DELETE FROM synthese.cor_unite_synthese WHERE id_synthese = old.id_synthese;
-END IF;
--- insert la donnée depuis la table synthèsefaune dans la table cor_unite_synthese :
--- La donnée dans la table synthèsefaune doit etre en supprime = FALSE sinon on ne l'insert pas,
--- S'il n'y a pas d'intersection avec une ou des unité geographique on ne l'insert pas.
-IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
-	IF new.supprime = FALSE THEN
-		INSERT INTO synthese.cor_unite_synthese (id_synthese, cd_nom, dateobs, id_unite_geo)
-		SELECT s.id_synthese, s.cd_nom, s.dateobs,u.id_unite_geo 
-        FROM synthese.syntheseff s, layers.l_unites_geo u
-		WHERE public.st_intersects(u.the_geom, s.the_geom_local) 
-		AND s.id_synthese = new.id_synthese;
-	END IF;
-END IF;	
-RETURN NULL;	
-END;
-$$;
-
-
---
--- Name: maj_cor_zonesstatut_synthese(); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE FUNCTION maj_cor_zonesstatut_synthese() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
--- apres travail dans la table synthèsefaune on supprime la donnée correspondante dans la table cor_zonesstatut_synthese
-IF (TG_OP = 'DELETE') or (TG_OP = 'UPDATE') THEN
-	DELETE FROM synthese.cor_zonesstatut_synthese WHERE id_synthese = old.id_synthese;
-END IF;
--- insert la donnée depuis la table synthèsefaune dans la table cor_zonesstatut_synthese :
--- La donnée dans la table synthèsefaune doit etre en supprime = FALSE sinon on ne l'insert pas,
--- on calcul la ou les zones à statuts correspondant à la donnée.
--- ces intersections  servent à eviter des intersect lourd en requete spatiale dans l'appli web, ainsi
--- les intersections avec les zones à statut principales sont déja calculées en tables relationelles
-IF (TG_OP = 'INSERT') or (TG_OP = 'UPDATE') THEN
-	IF new.supprime = FALSE THEN
-		INSERT INTO synthese.cor_zonesstatut_synthese (id_zone,id_synthese)
-		SELECT z.id_zone,s.id_synthese FROM synthese.syntheseff s, layers.l_zonesstatut z 
-		WHERE public.st_intersects(z.the_geom, s.the_geom_local)
-		AND z.id_type IN(1,4,5,6,7,8,9,10,11) -- typologie limitée au coeur, reserve, natura2000 etc...
-		AND s.id_synthese = new.id_synthese;
-	END IF;
-END IF;
-RETURN NULL; 
-END;
-$$;
-
-
---
--- Name: update_syntheseff(); Type: FUNCTION; Schema: synthese; Owner: -
---
-
-CREATE FUNCTION update_syntheseff() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-	new.date_update= 'now';
-	RETURN NEW; 			
-END;
-$$;
-
-
-SET search_path = public, pg_catalog;
-
-SET default_tablespace = '';
+SET search_path = gn_synthese, public, pg_catalog;
 
 SET default_with_oids = false;
 
---
--- Name: cor_boolean; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
 
-CREATE TABLE cor_boolean
-(
-  expression character varying(25) NOT NULL,
-  bool boolean NOT NULL
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0')
+RETURNS integer
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
+--Return -1 if nothing matche with given parameters
+  DECLARE
+    theidnomenclature integer;
+  BEGIN
+      SELECT INTO theidnomenclature id_nomenclature
+      FROM gn_synthese.defaults_nomenclatures_value
+      WHERE mnemonique_type = myidtype
+      AND (id_organism = 0 OR id_organism = myidorganism)
+      AND (regne = '0' OR regne = myregne)
+      AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
+      ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
+    IF (theidnomenclature IS NOT NULL) THEN
+      RETURN theidnomenclature;
+    END IF;
+    RETURN NULL;
+  END;
+$$;
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+  $BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change ST_EQUALS(OLD.geom_local, NEW.geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT geom_change )) THEN
+      INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
+      SELECT s.id_synthese, a.id_area
+      FROM ref_geo.l_areas a
+      JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+      WHERE s.id_synthese = NEW.id_synthese;
+
+    END IF;
+  RETURN NEW;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+------------------------
+--TABLES AND SEQUENCES--
+------------------------
+CREATE TABLE t_sources (
+    id_source serial NOT NULL,
+    name_source character varying(255) NOT NULL,
+    desc_source text,
+    entity_source_pk_field character varying(255),
+    url_source character varying(255),
+    meta_create_date timestamp without time zone DEFAULT now(),
+    meta_update_date timestamp without time zone DEFAULT now()
 );
 
 
-SET search_path = layers, pg_catalog;
-
---
--- Name: l_unites_geo; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE l_unites_geo (
-    id_unite_geo integer NOT NULL,
-    coeur character varying(80),
-    secteur character varying(80),
-    code_insee character varying(80),
-    commune character varying(80),
-    reserve character varying(80),
-    surface_ha character varying(80),
-    n2000 character varying(50),
-    the_geom public.geometry(Geometry,MYLOCALSRID),
-    CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
-);
-
-
-SET search_path = layers, pg_catalog;
-
---
--- Name: bib_typeszones; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_typeszones (
-    id_type integer NOT NULL,
-    typezone character varying(200)
-);
-
-
---
--- Name: l_aireadhesion; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE l_aireadhesion (
-    gid integer NOT NULL,
-    id integer,
-    nouveaucha integer,
-    count integer,
-    length double precision,
-    the_geom public.geometry(Linestring,MYLOCALSRID),
-    CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'LINESTRING'::text) OR (public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (public.geometrytype(the_geom) = 'POLYGON'::text) OR the_geom IS NULL)),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
-);
-
-
---
--- Name: l_communes; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE l_communes (
-    insee character(5) NOT NULL,
-    idbdcarto bigint,
-    commune_maj character varying(50),
-    commune_min character varying(50),
-    inseedep character varying(3),
-    nomdep character varying(30),
-    inseereg character varying(2),
-    nomreg character varying(30),
-    inseearr character varying(1),
-    inseecan character varying(2),
-    statut character varying(20),
-    xcom bigint,
-    ycom bigint,
-    surface bigint,
-    epci character varying(40),
-    coeur_aoa character varying(5),
-    codenum integer,
-    pays character varying(50),
-    id_secteur integer,
-    saisie boolean,
-    organisme boolean,
-    id_secteur_fp integer,
-    the_geom public.geometry(MultiPolygon,MYLOCALSRID),
-    CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
-);
-
---
--- Name: l_isolines20; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE l_isolines20 (
-    gid integer NOT NULL,
-    iso bigint,
-    the_geom public.geometry(MultiLinestring,MYLOCALSRID),
-    CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTILINESTRING'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
-);
-
-
---
--- Name: l_isolines20_gid_seq; Type: SEQUENCE; Schema: layers; Owner: -
---
-
-CREATE SEQUENCE l_isolines20_gid_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: l_isolines20_gid_seq; Type: SEQUENCE OWNED BY; Schema: layers; Owner: -
---
-
-ALTER SEQUENCE l_isolines20_gid_seq OWNED BY l_isolines20.gid;
-
-
---
--- Name: l_secteurs; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE l_secteurs (
-    nom_secteur character varying(50),
-    id_secteur integer NOT NULL,
-    the_geom public.geometry(MultiPolygon,MYLOCALSRID),
-    CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
-);
-
-
---
--- Name: l_zonesstatut; Type: TABLE; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE TABLE l_zonesstatut (
-    id_zone integer NOT NULL,
-    id_type integer NOT NULL,
-    id_mnhn character varying(20),
-    nomzone character varying(250),
-    the_geom public.geometry(MultiPolygon,MYLOCALSRID),
-    --CONSTRAINT enforce_dims_the_geom CHECK ((public.st_ndims(the_geom) = 2) OR (public.st_ndims(the_geom) = 4)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((public.geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((public.st_srid(the_geom) = MYLOCALSRID))
-);
-
-
-SET search_path = meta, pg_catalog;
-
---
--- Name: bib_lots; Type: TABLE; Schema: meta; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_lots (
-    id_lot integer NOT NULL,
-    nom_lot character varying(255),
-    desc_lot text,
-    menu_cf boolean DEFAULT false,
-    pn boolean DEFAULT true,
-    menu_inv boolean DEFAULT false,
-    id_programme integer NOT NULL
-);
-
-
---
--- Name: bib_programmes; Type: TABLE; Schema: meta; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_programmes (
-    id_programme integer NOT NULL,
-    nom_programme character varying(255),
-    desc_programme text,
-    actif boolean,
-    programme_public boolean,
-    desc_programme_public text
-);
-
---
--- Name: bib_supports; Type: TABLE; Schema: meta; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_supports
-(
-  id_support integer NOT NULL,
-  nom_support character varying(20) NOT NULL
-);
-
-
---
--- Name: t_precisions; Type: TABLE; Schema: meta; Owner: -; Tablespace: 
---
-
-CREATE TABLE t_precisions (
-    id_precision integer NOT NULL,
-    nom_precision character varying(50),
-    desc_precision text
-);
-
-
---
--- Name: t_protocoles; Type: TABLE; Schema: meta; Owner: -; Tablespace: 
---
-
-CREATE TABLE t_protocoles (
-    id_protocole integer NOT NULL,
-    nom_protocole character varying(250),
-    question text,
-    objectifs text,
-    methode text,
-    avancement character varying(50),
-    date_debut date,
-    date_fin date
-);
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: bib_criteres_synthese; Type: TABLE; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_criteres_synthese (
-    id_critere_synthese integer NOT NULL,
-    code_critere_synthese character varying(3),
-    nom_critere_synthese character varying(90),
-    tri integer
-);
-
-
---
--- Name: syntheseff; Type: TABLE; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE TABLE syntheseff (
+CREATE TABLE synthese (
     id_synthese integer NOT NULL,
+    unique_id_sinp uuid,
+    unique_id_sinp_grp uuid,
     id_source integer,
-    id_fiche_source character varying(50),
-    code_fiche_source character varying(50),
-    id_organisme integer,
-    id_protocole integer,
-    id_precision integer,
+    entity_source_pk_value character varying,
+    id_dataset integer,
+    id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
+    id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value('TYP_GRP'),
+    id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value('METH_OBS'),
+    id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('TECHNIQUE_OBS'),
+    id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value('STATUT_BIO'),
+    id_nomenclature_bio_condition integer DEFAULT get_default_nomenclature_value('ETA_BIO'),
+    id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value('NATURALITE'),
+    id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value('PREUVE_EXIST'),
+    id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value('STATUT_VALID'),
+    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value('NIV_PRECIS'),
+    id_nomenclature_life_stage integer DEFAULT get_default_nomenclature_value('STADE_VIE'),
+    id_nomenclature_sex integer DEFAULT get_default_nomenclature_value('SEXE'),
+    id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value('OBJ_DENBR'),
+    id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value('TYP_DENBR'),
+    id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value('SENSIBILITE'),
+    id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value('STATUT_OBS'),
+    id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
+    id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
+    id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
+    count_min integer,
+    count_max integer,
     cd_nom integer,
-    insee character(5),
-    dateobs date NOT NULL,
-    observateurs character varying(255),
-    determinateur character varying(255),
-    altitude_retenue integer,
-    remarques text,
-    date_insert timestamp without time zone,
-    date_update timestamp without time zone,
-    derniere_action character(1),
-    supprime boolean,
-    the_geom_point public.geometry(Point,3857),
-    id_lot integer,
-    id_critere_synthese integer,
-    the_geom_3857 public.geometry(Geometry,3857),
-    effectif_total integer,
+    nom_cite character varying(1000) NOT NULL,
+    meta_v_taxref character varying(50) DEFAULT gn_commons.get_default_parameter('taxref_version',NULL),
+    sample_number_proof text,
+    digital_proof text,
+    non_digital_proof text,
+    altitude_min integer,
+    altitude_max integer,
+    the_geom_4326 public.geometry(Geometry,4326),
+    the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
-    diffusable boolean DEFAULT true,
+    date_min timestamp without time zone NOT NULL,
+    date_max timestamp without time zone NOT NULL,
+    validator character varying(1000),
+    validation_comment text,
+    observers character varying(1000),
+    determiner character varying(1000),
+    id_digitiser integer,
+    id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
+    comments text,
+    meta_validation_date timestamp without time zone,
+    meta_create_date timestamp without time zone DEFAULT now(),
+    meta_update_date timestamp without time zone DEFAULT now(),
+    last_action character(1),
+    CONSTRAINT enforce_dims_the_geom_4326 CHECK ((public.st_ndims(the_geom_4326) = 2)),
     CONSTRAINT enforce_dims_the_geom_local CHECK ((public.st_ndims(the_geom_local) = 2)),
-    CONSTRAINT enforce_dims_the_geom_3857 CHECK ((public.st_ndims(the_geom_3857) = 2)),
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
+    CONSTRAINT enforce_srid_the_geom_4326 CHECK ((public.st_srid(the_geom_4326) = 4326)),
     CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
-    CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
-    CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 3857))
+    CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
+COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
 
-
---
--- Name: TABLE syntheseff; Type: COMMENT; Schema: synthese; Owner: -
---
-
-COMMENT ON TABLE syntheseff IS 'Table de synthèse destinée à recevoir les données de tous les schémas.Pour consultation uniquement';
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: bib_sources; Type: TABLE; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE TABLE bib_sources (
-    id_source integer NOT NULL,
-    nom_source character varying(255),
-    desc_source text,
-    host character varying(100),
-    port integer,
-    username character varying(50),
-    pass character varying(50),
-    db_name character varying(50),
-    db_schema character varying(50),
-    db_table character varying(50),
-    db_field character varying(50),
-    url character varying(255),
-    target character varying(10),
-    picto character varying(255),
-    groupe character varying(50) NOT NULL,
-    actif boolean NOT NULL
-);
-
-
---
--- Name: cor_unite_synthese; Type: TABLE; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE TABLE cor_unite_synthese (
-    id_unite_geo integer NOT NULL,
-    id_synthese integer NOT NULL,
-    dateobs date,
-    cd_nom integer
-);
-
-
---
--- Name: cor_zonesstatut_synthese; Type: TABLE; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE TABLE cor_zonesstatut_synthese (
-    id_zone integer NOT NULL,
-    id_synthese integer NOT NULL
-);
-
-
---
--- Name: syntheseff_id_synthese_seq; Type: SEQUENCE; Schema: synthese; Owner: -
---
-
-CREATE SEQUENCE syntheseff_id_synthese_seq
+CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
+ALTER SEQUENCE synthese_id_synthese_seq OWNED BY synthese.id_synthese;
+ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese_id_synthese_seq'::regclass);
+
+CREATE TABLE cor_area_synthese (
+    id_synthese integer,
+    id_area integer
+);
+
+CREATE TABLE cor_observer_synthese
+(
+  id_synthese integer NOT NULL,
+  id_role integer NOT NULL
+);
+
+CREATE TABLE defaults_nomenclatures_value (
+    mnemonique_type character varying(50) NOT NULL,
+    id_organism integer NOT NULL DEFAULT 0,
+    regne character varying(20) NOT NULL DEFAULT '0',
+    group2_inpn character varying(255) NOT NULL DEFAULT '0',
+    id_nomenclature integer NOT NULL
+);
+
+CREATE TABLE gn_synthese.taxons_synthese_autocomplete AS
+SELECT t.cd_nom,
+  t.cd_ref,
+  t.search_name,
+  t.nom_valide,
+  t.lb_nom,
+  t.regne,
+  t.group2_inpn
+FROM (
+  SELECT t_1.cd_nom,
+        t_1.cd_ref,
+        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>' ) AS search_name,
+        t_1.nom_valide,
+        t_1.lb_nom,
+        t_1.regne,
+        t_1.group2_inpn
+  FROM taxonomie.taxref t_1
+
+  UNION
+  SELECT t_1.cd_nom,
+        t_1.cd_ref,
+        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>' ) AS search_name,
+        t_1.nom_valide,
+        t_1.lb_nom,
+        t_1.regne,
+        t_1.group2_inpn
+  FROM taxonomie.taxref t_1
+  WHERE t_1.nom_vern IS NOT NULL AND t_1.cd_nom = t_1.cd_ref
+) t
+  WHERE t.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese);
+
+  COMMENT ON TABLE taxons_synthese_autocomplete
+     IS 'Table construite à partir d''une requete sur la base et mise à jour via le trigger trg_refresh_taxons_forautocomplete de la table gn_synthese';
+
+---------------
+--PRIMARY KEY--
+---------------
+
+ALTER TABLE ONLY t_sources ADD CONSTRAINT pk_t_sources PRIMARY KEY (id_source);
+
+ALTER TABLE ONLY synthese ADD CONSTRAINT pk_synthese PRIMARY KEY (id_synthese);
+
+ALTER TABLE ONLY cor_area_synthese ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area);
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
+
+ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese PRIMARY KEY (id_synthese, id_role);
+
+ALTER TABLE ONLY taxons_synthese_autocomplete ADD CONSTRAINT pk_taxons_synthese_autocomplete PRIMARY KEY (cd_nom, search_name);
 
 
---
--- Name: syntheseff_id_synthese_seq; Type: SEQUENCE OWNED BY; Schema: synthese; Owner: -
---
 
-ALTER SEQUENCE syntheseff_id_synthese_seq OWNED BY syntheseff.id_synthese;
+---------------
+--FOREIGN KEY--
+---------------
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_bio_status FOREIGN KEY (id_nomenclature_bio_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_bio_condition FOREIGN KEY (id_nomenclature_bio_condition) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_life_stage FOREIGN KEY (id_nomenclature_life_stage) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_sex FOREIGN KEY (id_nomenclature_sex) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_obj_count FOREIGN KEY (id_nomenclature_obj_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_type_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_sensitivity FOREIGN KEY (id_nomenclature_sensitivity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_observation_status FOREIGN KEY (id_nomenclature_observation_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_info_geo_type FOREIGN KEY (id_nomenclature_info_geo_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
 
---
--- Name: v_tree_taxons_synthese; Type: VIEW; Schema: synthese; Owner: -
---
+ALTER TABLE ONLY cor_area_synthese
+    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
-CREATE OR REPLACE VIEW v_tree_taxons_synthese AS 
- WITH taxon AS (
+ALTER TABLE ONLY cor_area_synthese
+    ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY cor_observer_synthese
+    ADD CONSTRAINT fk_gn_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY cor_observer_synthese
+    ADD CONSTRAINT fk_gn_synthese_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY taxons_synthese_autocomplete
+    ADD CONSTRAINT fk_taxons_synthese_autocomplete FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
+--------------
+--CONSTRAINS--
+--------------
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT check_synthese_altitude_max CHECK (altitude_max >= altitude_min);
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT check_synthese_date_max CHECK (date_max >= date_min);
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_meth,'METH_OBS')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_typ_grp CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_bio_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_bio_status,'STATUT_BIO')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_bio_condition CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_bio_condition,'ETA_BIO')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_naturalness CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_naturalness,'NATURALITE')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_exist_proof,'PREUVE_EXIST')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_valid_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_valid_status,'STATUT_VALID')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_diffusion_level CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_diffusion_level,'NIV_PRECIS')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_life_stage CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_life_stage,'STADE_VIE')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_sex CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sex,'SEXE')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_obj_count CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obj_count,'OBJ_DENBR')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_type_count CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_count,'TYP_DENBR')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity,'SENSIBILITE')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_observation_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_observation_status,'STATUT_OBS')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_blurring CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_blurring,'DEE_FLOU')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_info_geo_type,'TYP_INF_GEO')) NOT VALID;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isgroup2inpn CHECK (taxonomie.check_is_group2inpn(group2_inpn::text) OR group2_inpn::text = '0'::text) NOT VALID;
+
+ALTER TABLE ONLY defaults_nomenclatures_value
+    ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
+
+
+
+
+----------------------
+--MATERIALIZED VIEWS--
+----------------------
+--DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons;
+CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
+WITH
+s as (
+  SELECT synt.cd_nom, t.cd_ref, the_geom_local, date_min, date_max, altitude_min, altitude_max
+  FROM gn_synthese.synthese synt
+  LEFT JOIN taxonomie.taxref t ON t.cd_nom = synt.cd_nom
+  WHERE id_nomenclature_valid_status IN('1','2')
+)
+,loc AS (
+  SELECT cd_ref,
+	count(*) AS nbobs,
+	ST_Transform(ST_SetSRID(box2d(st_extent(s.the_geom_local))::geometry,MYLOCALSRID), 4326) AS bbox4326
+  FROM  s
+  GROUP BY cd_ref
+)
+,dat AS (
+  SELECT cd_ref,
+	min(TO_CHAR(date_min, 'DDD')::int) AS daymin,
+	max(TO_CHAR(date_max, 'DDD')::int) AS daymax
+  FROM s
+  GROUP BY cd_ref
+)
+,alt AS (
+  SELECT cd_ref,
+	min(altitude_min) AS altitudemin,
+	max(altitude_max) AS altitudemax
+  FROM s
+  GROUP BY cd_ref
+)
+SELECT loc.cd_ref, nbobs,  daymin, daymax, altitudemin, altitudemax, bbox4326
+FROM loc
+LEFT JOIN alt ON alt.cd_ref = loc.cd_ref
+LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
+ORDER BY loc.cd_ref;
+
+
+
+-----------
+--INDEXES--
+-----------
+CREATE INDEX i_synthese_t_sources ON synthese USING btree (id_source);
+
+CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
+
+CREATE INDEX i_synthese_date_min ON synthese USING btree (date_min DESC);
+
+CREATE INDEX i_synthese_date_max ON synthese USING btree (date_max DESC);
+
+CREATE INDEX i_synthese_altitude_min ON synthese USING btree (altitude_min);
+
+CREATE INDEX i_synthese_altitude_max ON synthese USING btree (altitude_max);
+
+CREATE INDEX i_synthese_id_dataset ON synthese USING btree (id_dataset);
+
+CREATE INDEX i_synthese_the_geom_local ON synthese USING gist (the_geom_local);
+
+CREATE INDEX i_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
+
+CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
+
+CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
+--REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
+
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
+  RETURNS TABLE(cd_ref int, nbobs bigint,  daymin int, daymax int, altitudemin int, altitudemax int, bbox4326 geometry) AS
+$BODY$
+  BEGIN
+    --USAGE (getting all fields): SELECT * FROM gn_synthese.fct_calculate_min_max_for_taxon(351);
+    --USAGE (getting one or more field) : SELECT cd_ref, bbox4326 FROM gn_synthese.fct_calculate_min_max_for_taxon(351)
+    --See field names and types in TABLE declaration above
+    --RETURN one row for the supplied cd_ref or cd_nom
+    --This function can be use in a FROM clause, like a table or a view
+	RETURN QUERY SELECT * FROM gn_synthese.vm_min_max_for_taxons WHERE cd_ref = taxonomie.find_cdref(mycdnom);
+  END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+
+-- A CREUSER : CAUSE A SYNTAXE ERROR
+
+CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+      EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
+      RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+----------------------
+--FUNCTIONS TRIGGERS--
+----------------------
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese,
+        a.id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
+  RETURNS trigger AS
+$BODY$
+ DECLARE
+  BEGIN
+
+    IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
+        DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
+        WHERE auto.cd_nom = OLD.cd_nom;
+    END IF;
+
+    IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
+      INSERT INTO gn_synthese.taxons_synthese_autocomplete
+      SELECT t.cd_nom,
+              t.cd_ref,
+          concat(t.lb_nom, ' = <i>', t.nom_valide, '</i>') AS search_name,
+          t.nom_valide,
+          t.lb_nom,
+          t.regne,
+          t.group2_inpn
+      FROM taxonomie.taxref t  WHERE cd_nom = NEW.cd_nom;
+      INSERT INTO gn_synthese.taxons_synthese_autocomplete
+      SELECT t.cd_nom,
+        t.cd_ref,
+        concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>' ) AS search_name,
+        t.nom_valide,
+        t.lb_nom,
+        t.regne,
+        t.group2_inpn
+      FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+    END IF;
+  RETURN NULL;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+---------
+--VIEWS--
+---------
+
+CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
+WITH cd_synthese AS
+	(SELECT DISTINCT cd_nom FROM gn_synthese.synthese)
+	,taxon AS (
          SELECT n.id_nom,
             t_1.cd_ref,
             t_1.lb_nom AS nom_latin,
                 CASE
                     WHEN n.nom_francais IS NULL THEN t_1.lb_nom
-                    WHEN n.nom_francais::text = ''::text THEN t_1.lb_nom
+                    WHEN n.nom_francais = '' THEN t_1.lb_nom
                     ELSE n.nom_francais
                 END AS nom_francais,
             t_1.cd_nom,
@@ -770,14 +599,16 @@ CREATE OR REPLACE VIEW v_tree_taxons_synthese AS
             t_1.famille,
             t_1.lb_nom
            FROM taxonomie.taxref t_1
-             LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = t_1.cd_nom
-          WHERE (t_1.cd_nom IN ( SELECT DISTINCT syntheseff.cd_nom
-                   FROM synthese.syntheseff))
+	    JOIN cd_synthese s ON s.cd_nom = t_1.cd_nom
+            LEFT JOIN taxonomie.bib_noms n ON n.cd_nom = s.cd_nom
+
+
         ), cd_regne AS (
-         SELECT DISTINCT t_1.cd_nom,
-            t_1.regne
-           FROM taxonomie.taxref t_1
-          WHERE t_1.id_rang::bpchar = 'KD'::bpchar AND t_1.cd_nom = t_1.cd_ref
+         SELECT DISTINCT taxref.cd_nom,
+            taxref.regne
+           FROM taxonomie.taxref
+          WHERE taxref.id_rang::text = 'KD'::text AND taxref.cd_nom = taxref.cd_ref
+
         )
  SELECT t.id_nom,
     t.cd_ref,
@@ -786,21 +617,21 @@ CREATE OR REPLACE VIEW v_tree_taxons_synthese AS
     t.id_regne,
     t.nom_regne,
     COALESCE(t.id_embranchement, t.id_regne) AS id_embranchement,
-    COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref'::character varying) AS nom_embranchement,
+    COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref') AS nom_embranchement,
     COALESCE(t.id_classe, t.id_embranchement) AS id_classe,
-    COALESCE(t.nom_classe, ' Sans classe dans taxref'::character varying) AS nom_classe,
-    COALESCE(t.desc_classe, ' Sans classe dans taxref'::character varying) AS desc_classe,
+    COALESCE(t.nom_classe, ' Sans classe dans taxref') AS nom_classe,
+    COALESCE(t.desc_classe, ' Sans classe dans taxref') AS desc_classe,
     COALESCE(t.id_ordre, t.id_classe) AS id_ordre,
-    COALESCE(t.nom_ordre, ' Sans ordre dans taxref'::character varying) AS nom_ordre,
+    COALESCE(t.nom_ordre, ' Sans ordre dans taxref') AS nom_ordre,
     COALESCE(t.id_famille, t.id_ordre) AS id_famille,
-    COALESCE(t.nom_famille, ' Sans famille dans taxref'::character varying) AS nom_famille
+    COALESCE(t.nom_famille, ' Sans famille dans taxref') AS nom_famille
    FROM ( SELECT DISTINCT t_1.id_nom,
             t_1.cd_ref,
             t_1.nom_latin,
             t_1.nom_francais,
             ( SELECT DISTINCT r.cd_nom
                    FROM cd_regne r
-                  WHERE r.regne::text = t_1.regne::text) AS id_regne,
+                  WHERE r.regne = t_1.regne) AS id_regne,
             t_1.regne AS nom_regne,
             ph.cd_nom AS id_embranchement,
             t_1.phylum AS nom_embranchement,
@@ -813,525 +644,213 @@ CREATE OR REPLACE VIEW v_tree_taxons_synthese AS
             f.cd_nom AS id_famille,
             t_1.famille AS nom_famille
            FROM taxon t_1
-             LEFT JOIN taxonomie.taxref ph ON ph.id_rang::bpchar = 'PH'::bpchar AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
-             LEFT JOIN taxonomie.taxref cl ON cl.id_rang::bpchar = 'CL'::bpchar AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
-             LEFT JOIN taxonomie.taxref ord ON ord.id_rang::bpchar = 'OR'::bpchar AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL
-             LEFT JOIN taxonomie.taxref f ON f.id_rang::bpchar = 'FM'::bpchar AND f.cd_nom = f.cd_ref AND f.lb_nom::text = t_1.famille::text AND f.phylum::text = t_1.phylum::text AND NOT t_1.famille IS NULL) t;
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH' AND ph.cd_nom = ph.cd_ref AND ph.lb_nom = t_1.phylum AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL' AND cl.cd_nom = cl.cd_ref AND cl.lb_nom = t_1.classe AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR' AND ord.cd_nom = ord.cd_ref AND ord.lb_nom = t_1.ordre AND NOT t_1.ordre IS NULL
+             LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM' AND f.cd_nom = f.cd_ref AND f.lb_nom = t_1.famille AND f.phylum = t_1.phylum AND NOT t_1.famille IS NULL) t
+ORDER BY id_regne, id_embranchement, id_classe, id_ordre, id_famille;
+
+
+
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
+SELECT
+s.id_synthese,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_meth) AS obs_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_naturalness) AS naturalness,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_exist_proof) AS exist_proof ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_valid_status) AS valid_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_diffusion_level) AS diffusion_level,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_life_stage) AS life_stage,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sex) AS sex,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obj_count) AS obj_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_type_count) AS type_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sensitivity) AS sensitivity,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_observation_status) AS observation_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method
+FROM gn_synthese.synthese s;
+
+CREATE VIEW gn_synthese.v_synthese_for_web_app AS
+   SELECT
+    s.id_synthese,
+    unique_id_sinp,
+    unique_id_sinp_grp,
+    s.id_source ,
+    entity_source_pk_value ,
+    count_min ,
+    count_max ,
+    nom_cite ,
+    meta_v_taxref ,
+    sample_number_proof ,
+    digital_proof ,
+    non_digital_proof ,
+    altitude_min ,
+    altitude_max ,
+    the_geom_4326,
+    date_min,
+    date_max,
+    validator ,
+    validation_comment ,
+    observers ,
+    id_digitiser,
+    determiner ,
+    comments ,
+    meta_validation_date,
+    s.meta_create_date,
+    s.meta_update_date,
+    last_action,
+    d.id_dataset,
+    d.dataset_name,
+    d.id_acquisition_framework,
+    id_nomenclature_geo_object_nature,
+    id_nomenclature_info_geo_type,
+    id_nomenclature_grp_typ,
+    id_nomenclature_obs_meth,
+    id_nomenclature_obs_technique,
+    id_nomenclature_bio_status,
+    id_nomenclature_bio_condition,
+    id_nomenclature_naturalness,
+    id_nomenclature_exist_proof,
+    id_nomenclature_valid_status,
+    id_nomenclature_diffusion_level,
+    id_nomenclature_life_stage,
+    id_nomenclature_sex,
+    id_nomenclature_obj_count,
+    id_nomenclature_type_count,
+    id_nomenclature_sensitivity,
+    id_nomenclature_observation_status,
+    id_nomenclature_blurring,
+    s.id_nomenclature_source_status,
+    sources.name_source,
+    sources.url_source,
+    t.cd_nom,
+    t.cd_ref,
+    t.nom_valide,
+    t.lb_nom,
+    t.nom_vern
+  FROM gn_synthese.synthese s
+  JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+  JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+  JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+  ;
+
+CREATE VIEW gn_synthese.v_synthese_for_export AS
+   SELECT
+    s.id_synthese,
+    unique_id_sinp,
+    unique_id_sinp_grp,
+    s.id_source ,
+    entity_source_pk_value ,
+    count_min ,
+    count_max ,
+    nom_cite ,
+    meta_v_taxref ,
+    sample_number_proof ,
+    digital_proof ,
+    non_digital_proof ,
+    altitude_min ,
+    altitude_max ,
+    the_geom_4326,
+    the_geom_point,
+    the_geom_local,
+    date_min,
+    date_max,
+    validator ,
+    validation_comment ,
+    observers ,
+    id_digitiser,
+    determiner ,
+    comments ,
+    meta_validation_date,
+    s.meta_create_date,
+    s.meta_update_date,
+    last_action,
+    d.id_dataset,
+    d.dataset_name,
+    d.id_acquisition_framework,
+    deco.nat_obj_geo,
+    deco.grp_typ,
+    deco.obs_method,
+    deco.obs_technique,
+    deco.bio_status,
+    deco.bio_condition,
+    deco.naturalness,
+    deco.exist_proof,
+    deco.valid_status,
+    deco.diffusion_level,
+    deco.life_stage,
+    deco.sex,
+    deco.obj_count,
+    deco.type_count,
+    deco.sensitivity,
+    deco.observation_status,
+    deco.blurring,
+    deco.source_status,
+    sources.name_source,
+    sources.url_source,
+    t.cd_nom,
+    t.cd_ref,
+    t.nom_valide,
+    t.nom_vern
+  FROM gn_synthese.synthese s
+  JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+  JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+  JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+  JOIN gn_synthese.v_synthese_decode_nomenclatures deco ON deco.id_synthese = s.id_synthese
+  ;
+------------
+--TRIGGERS--
+------------
+CREATE TRIGGER tri_meta_dates_change_synthese
+  BEFORE INSERT OR UPDATE
+  ON synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+CREATE TRIGGER tri_meta_dates_t_sources
+  BEFORE INSERT OR UPDATE
+  ON t_sources
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+
+-- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
+-- CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
+--   AFTER INSERT OR UPDATE OR DELETE
+--   ON synthese
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
+
+CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER INSERT OR UPDATE OF the_geom_local
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+
+CREATE TRIGGER trg_refresh_taxons_forautocomplete
+  AFTER INSERT OR UPDATE OF cd_nom OR DELETE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
+
+--------
+--DATA--
+--------
+
+-- insertion dans utilisateurs.t_applications et gn_commons.t_modules
+INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
+SELECT 'synthese', 'Application synthese de GeoNature', id_application
+FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature';
+
+INSERT INTO gn_commons.t_modules (id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+SELECT id_application ,'synthese', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', '', 'true', 'true'
+FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
 
-CREATE OR REPLACE VIEW v_taxons_synthese AS 
- SELECT DISTINCT n.nom_francais,
-    txr.lb_nom AS nom_latin,
-    CASE pat.valeur_attribut 
-	WHEN 'oui' THEN TRUE
-	WHEN 'non' THEN FALSE
-	ELSE NULL
-    END AS patrimonial,
-    CASE pr.valeur_attribut 
-	WHEN 'oui' THEN TRUE
-	WHEN 'non' THEN FALSE
-	ELSE NULL
-    END AS protection_stricte,
-    txr.cd_ref,
-    txr.cd_nom,
-    txr.nom_valide,
-    txr.famille,
-    txr.ordre,
-    txr.classe,
-    txr.regne,
-    prot.protections,
-    l.id_liste,
-    l.picto
-    FROM taxonomie.taxref txr
-    JOIN taxonomie.bib_noms n ON txr.cd_nom = n.cd_nom
-    LEFT JOIN taxonomie.cor_taxon_attribut pat ON pat.cd_ref = n.cd_ref AND pat.id_attribut = 1
-    LEFT JOIN taxonomie.cor_taxon_attribut pr ON pr.cd_ref = n.cd_ref AND pr.id_attribut = 2
-    JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom
-    JOIN taxonomie.bib_listes l ON l.id_liste = cnl.id_liste AND (l.id_liste = ANY (ARRAY[1001, 1002, 1003, 1004]))
-    LEFT JOIN ( SELECT tpe.cd_nom,
-            string_agg((((tpa.arrete || ' '::text) || tpa.article::text) || '__'::text) || tpa.url::text, '#'::text) AS protections
-           FROM taxonomie.taxref_protection_especes tpe
-             JOIN taxonomie.taxref_protection_articles tpa ON tpa.cd_protection::text = tpe.cd_protection::text AND tpa.concerne_mon_territoire = true
-          GROUP BY tpe.cd_nom) prot ON prot.cd_nom = n.cd_nom
-    JOIN ( SELECT DISTINCT syntheseff.cd_nom
-           FROM synthese.syntheseff) s ON s.cd_nom = n.cd_nom
-    ORDER BY n.nom_francais;
-                
-CREATE OR REPLACE VIEW v_export_sinp AS 
- SELECT s.id_synthese,
-    o.nom_organisme,
-    s.dateobs,
-    s.observateurs,
-    n.cd_nom,
-    tx.lb_nom AS nom_latin,
-    c.nom_critere_synthese AS critere,
-    s.effectif_total,
-    s.remarques,
-    p.nom_programme,
-    s.insee,
-    s.altitude_retenue AS altitude,
-    public.st_x(public.st_transform(s.the_geom_point, MYLOCALSRID))::integer AS x,
-    public.st_y(public.st_transform(s.the_geom_point, MYLOCALSRID))::integer AS y,
-    s.derniere_action,
-    s.date_insert,
-    s.date_update
-   FROM synthese.syntheseff s
-     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
-     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = s.id_organisme
-     JOIN taxonomie.bib_noms n ON n.cd_nom = s.cd_nom
-     LEFT JOIN synthese.bib_criteres_synthese c ON c.id_critere_synthese = s.id_critere_synthese
-     LEFT JOIN meta.bib_lots l ON l.id_lot = s.id_lot
-     LEFT JOIN meta.bib_programmes p ON p.id_programme = l.id_programme
-  WHERE s.supprime = false;
-  
-CREATE OR REPLACE VIEW v_export_sinp_deleted AS 
- SELECT s.id_synthese
-   FROM synthese.syntheseff s
-     JOIN taxonomie.taxref tx ON tx.cd_nom = s.cd_nom
-  WHERE s.supprime = true;
-
-  
-SET search_path = layers, pg_catalog;
-
---
--- Name: gid; Type: DEFAULT; Schema: layers; Owner: -
---
-
-ALTER TABLE ONLY l_isolines20 ALTER COLUMN gid SET DEFAULT nextval('l_isolines20_gid_seq'::regclass);
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: id_synthese; Type: DEFAULT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff ALTER COLUMN id_synthese SET DEFAULT nextval('syntheseff_id_synthese_seq'::regclass);
-
-
-SET search_path = public, pg_catalog;
-
---
--- Name: pk_cor_boolean; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE cor_boolean
-  ADD CONSTRAINT pk_cor_boolean PRIMARY KEY(expression);
-
-
-SET search_path = layers, pg_catalog;
-
---
--- Name: aireadhesion_pkey; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY l_aireadhesion
-    ADD CONSTRAINT aireadhesion_pkey PRIMARY KEY (gid);
-
-
---
--- Name: l_communes_pkey; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY l_communes
-    ADD CONSTRAINT l_communes_pkey PRIMARY KEY (insee);
-
-
---
--- Name: l_isolines20_pkey; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY l_isolines20
-    ADD CONSTRAINT l_isolines20_pkey PRIMARY KEY (gid);
-
-
---
--- Name: pk_l_secteurs; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY l_secteurs
-    ADD CONSTRAINT pk_l_secteurs PRIMARY KEY (id_secteur);
-
-
---
--- Name: pk_l_unites_geo; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY l_unites_geo
-    ADD CONSTRAINT pk_l_unites_geo PRIMARY KEY (id_unite_geo);
-
-
---
--- Name: pk_l_zonesstatut; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY l_zonesstatut
-    ADD CONSTRAINT pk_l_zonesstatut PRIMARY KEY (id_zone);
-
-
---
--- Name: pk_typeszones; Type: CONSTRAINT; Schema: layers; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_typeszones
-    ADD CONSTRAINT pk_typeszones PRIMARY KEY (id_type);
-
-
-SET search_path = meta, pg_catalog;
-
---
--- Name: bib_lots_pkey; Type: CONSTRAINT; Schema: meta; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_lots
-    ADD CONSTRAINT bib_lots_pkey PRIMARY KEY (id_lot);
-
-
---
--- Name: bib_programmes_pkey; Type: CONSTRAINT; Schema: meta; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_programmes
-    ADD CONSTRAINT bib_programmes_pkey PRIMARY KEY (id_programme);
-
-
---
--- Name: bib_supports_pkey; Type: CONSTRAINT; Schema: meta; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_supports
-    ADD CONSTRAINT bib_supports_pkey PRIMARY KEY (id_support);
-
-
---
--- Name: pk_bib_precision; Type: CONSTRAINT; Schema: meta; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY t_precisions
-    ADD CONSTRAINT pk_bib_precision PRIMARY KEY (id_precision);
-
-
---
--- Name: pk_bib_protocoles; Type: CONSTRAINT; Schema: meta; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY t_protocoles
-    ADD CONSTRAINT pk_bib_protocoles PRIMARY KEY (id_protocole);
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: bib_sources_pkey; Type: CONSTRAINT; Schema: synthese; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_sources
-    ADD CONSTRAINT bib_sources_pkey PRIMARY KEY (id_source);
-
-
---
--- Name: pk_bib_criteres_synthese; Type: CONSTRAINT; Schema: synthese; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bib_criteres_synthese
-    ADD CONSTRAINT pk_bib_criteres_synthese PRIMARY KEY (id_critere_synthese);
-
-
---
--- Name: pk_cor_unite_synthese; Type: CONSTRAINT; Schema: synthese; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY cor_unite_synthese
-    ADD CONSTRAINT pk_cor_unite_synthese PRIMARY KEY (id_unite_geo, id_synthese);
-
-
---
--- Name: pk_cor_zonesstatut_synthese; Type: CONSTRAINT; Schema: synthese; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY cor_zonesstatut_synthese
-    ADD CONSTRAINT pk_cor_zonesstatut_synthese PRIMARY KEY (id_zone, id_synthese);
-
-
---
--- Name: syntheseff_pkey; Type: CONSTRAINT; Schema: synthese; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT syntheseff_pkey PRIMARY KEY (id_synthese);
-
-
-SET search_path = layers, pg_catalog;
-
---
--- Name: fki_; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE INDEX fki_ ON l_communes USING btree (id_secteur);
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: fki_synthese_bib_proprietaires; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX fki_synthese_bib_proprietaires ON syntheseff USING btree (id_organisme);
-
-
---
--- Name: fki_synthese_bib_protocoles_id; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX fki_synthese_bib_protocoles_id ON syntheseff USING btree (id_protocole);
-
-
---
--- Name: fki_synthese_insee_fkey; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX fki_synthese_insee_fkey ON syntheseff USING btree (insee);
-
-
---
--- Name: fki_syntheseff_bib_sources; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX fki_syntheseff_bib_sources ON syntheseff USING btree (id_source);
-
-
---
--- Name: i_fk_cor_cor_zonesstatut_synthese_l_zonesstatut; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_fk_cor_cor_zonesstatut_synthese_l_zonesstatut ON cor_zonesstatut_synthese USING btree (id_zone);
-
-
---
--- Name: i_fk_cor_cor_zonesstatut_synthese_syntheseff; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_fk_cor_cor_zonesstatut_synthese_syntheseff ON cor_zonesstatut_synthese USING btree (id_synthese);
-
-
---
--- Name: i_fk_cor_unite_synthese_l_unites; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_fk_cor_unite_synthese_l_unites ON cor_unite_synthese USING btree (id_unite_geo);
-
-
---
--- Name: i_fk_cor_unite_synthese_syntheseff; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_fk_cor_unite_synthese_syntheseff ON cor_unite_synthese USING btree (id_synthese);
-
-
---
--- Name: i_synthese_cd_nom; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_synthese_cd_nom ON syntheseff USING btree (cd_nom);
-
-
---
--- Name: i_synthese_dateobs; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_synthese_dateobs ON syntheseff USING btree (dateobs DESC);
-
-
---
--- Name: i_synthese_id_lot; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX i_synthese_id_lot ON syntheseff USING btree (id_lot);
-
-
---
--- Name: index_gist_synthese_the_geom_point; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_synthese_the_geom_point ON syntheseff USING gist (the_geom_point);
-
-
---
--- Name: index_gist_synthese_the_geom_local; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_synthese_the_geom_local ON syntheseff USING gist (the_geom_local);
-
-
---
--- Name: index_gist_synthese_the_geom_3857; Type: INDEX; Schema: synthese; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_synthese_the_geom_3857 ON syntheseff USING gist (the_geom_3857);
-
-
-SET search_path = layers, pg_catalog;
-
---
--- Name: index_gist_l_communes_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_l_communes_the_geom ON l_communes USING gist (the_geom);
-
-
---
--- Name: index_gist_l_unites_geo_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_l_unites_geo_the_geom ON l_unites_geo USING gist (the_geom);
-
-
---
--- Name: index_gist_l_secteurs_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-
-CREATE INDEX index_gist_l_secteurs_the_geom ON l_secteurs USING gist (the_geom);
-
---
--- Name: index_gist_l_zonesstatut_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_l_zonesstatut_the_geom ON l_zonesstatut USING gist (the_geom);
-
-
---
--- Name: index_gist_l_aireadhesion_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_l_aireadhesion_the_geom ON l_aireadhesion USING gist (the_geom);
-
-
---
--- Name: index_gist_l_isolines20_the_geom; Type: INDEX; Schema: layers; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_gist_l_isolines20_the_geom ON l_isolines20 USING gist (the_geom);
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: tri_insert_syntheseff; Type: TRIGGER; Schema: synthese; Owner: -
---
-
-CREATE TRIGGER tri_insert_syntheseff BEFORE INSERT ON syntheseff FOR EACH ROW EXECUTE PROCEDURE insert_syntheseff();
-
-
---
--- Name: tri_maj_cor_unite_synthese; Type: TRIGGER; Schema: synthese; Owner: -
---
-
-CREATE TRIGGER tri_maj_cor_unite_synthese AFTER INSERT OR DELETE OR UPDATE ON syntheseff FOR EACH ROW EXECUTE PROCEDURE maj_cor_unite_synthese();
-
-
---
--- Name: tri_maj_cor_zonesstatut_synthese; Type: TRIGGER; Schema: synthese; Owner: -
---
-
-CREATE TRIGGER tri_maj_cor_zonesstatut_synthese AFTER INSERT OR DELETE OR UPDATE ON syntheseff FOR EACH ROW EXECUTE PROCEDURE maj_cor_zonesstatut_synthese();
-
-
---
--- Name: tri_update_syntheseff; Type: TRIGGER; Schema: synthese; Owner: -
---
-
-CREATE TRIGGER tri_update_syntheseff BEFORE UPDATE ON syntheseff FOR EACH ROW EXECUTE PROCEDURE update_syntheseff();
-
-
-SET search_path = layers, pg_catalog;
-
---
--- Name: l_communes_id_secteur_fkey; Type: FK CONSTRAINT; Schema: layers; Owner: -
---
-
-ALTER TABLE ONLY l_communes
-    ADD CONSTRAINT l_communes_id_secteur_fkey FOREIGN KEY (id_secteur) REFERENCES l_secteurs(id_secteur);
-
-
---
--- Name: l_zonesstatut_id_type_fkey; Type: FK CONSTRAINT; Schema: layers; Owner: -
---
-
-ALTER TABLE ONLY l_zonesstatut
-    ADD CONSTRAINT l_zonesstatut_id_type_fkey FOREIGN KEY (id_type) REFERENCES bib_typeszones(id_type) ON UPDATE CASCADE;
-
-
-SET search_path = meta, pg_catalog;
-
---
--- Name: fk_bib_programmes_bib_lots; Type: FK CONSTRAINT; Schema: meta; Owner: -
---
-
-ALTER TABLE ONLY bib_lots
-    ADD CONSTRAINT fk_bib_programmes_bib_lots FOREIGN KEY (id_programme) REFERENCES bib_programmes(id_programme) ON UPDATE CASCADE;
-
-
-SET search_path = synthese, pg_catalog;
-
---
--- Name: fk_cor_unite_synthese_syntheseff; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY cor_unite_synthese
-    ADD CONSTRAINT fk_cor_unite_synthese_syntheseff FOREIGN KEY (id_synthese) REFERENCES syntheseff(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
-
-  
---
--- Name: fk_cor_zonesstatut_synthese_syntheseff; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY cor_zonesstatut_synthese
-    ADD CONSTRAINT fk_cor_zonesstatut_synthese_syntheseff FOREIGN KEY (id_synthese) REFERENCES syntheseff(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: fk_synthese_bib_organismes; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT fk_synthese_bib_organismes FOREIGN KEY (id_organisme) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-
-
---
--- Name: synthese_id_critere_synthese_fkey; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT synthese_id_critere_synthese_fkey FOREIGN KEY (id_critere_synthese) REFERENCES bib_criteres_synthese(id_critere_synthese) ON UPDATE CASCADE;
-
-
---
--- Name: synthese_id_lot_fkey; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT synthese_id_lot_fkey FOREIGN KEY (id_lot) REFERENCES meta.bib_lots(id_lot) ON UPDATE CASCADE;
-
-
---
--- Name: synthese_id_precision_fkey; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT synthese_id_precision_fkey FOREIGN KEY (id_precision) REFERENCES meta.t_precisions(id_precision) ON UPDATE CASCADE;
-
-
---
--- Name: synthese_id_protocole_fkey; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT synthese_id_protocole_fkey FOREIGN KEY (id_protocole) REFERENCES meta.t_protocoles(id_protocole) ON UPDATE CASCADE;
-
-
---
--- Name: synthese_id_source_fkey; Type: FK CONSTRAINT; Schema: synthese; Owner: -
---
-
-ALTER TABLE ONLY syntheseff
-    ADD CONSTRAINT synthese_id_source_fkey FOREIGN KEY (id_source) REFERENCES bib_sources(id_source) ON UPDATE CASCADE;
