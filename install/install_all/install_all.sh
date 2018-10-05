@@ -7,7 +7,7 @@ OS_BITS="$(getconf LONG_BIT)"
 
 # test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
-   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
    exit 1
 fi
 
@@ -27,7 +27,7 @@ fi
 
 if [ "$OS_VERSION" != "8" ] && [ "$OS_VERSION" != "9" ] && [ "$OS_VERSION" != "18.04" ] && [ "$OS_VERSION" != "16.04" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8/9 et ubuntu 16.04/18.04\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8/9 et Ubuntu 16.04/18.04\e[0m" >&2
     exit 1
 fi
 
