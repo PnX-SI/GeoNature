@@ -464,7 +464,7 @@ Restauration
 
 * Restauration de la base de données :
 
-  - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
+  - Créer une base de données vierge (on part du principe que la base de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
 
     ::
 
@@ -505,6 +505,75 @@ Restauration
     cd /<MY_USER>/geonature/frontend
     npm run build
     sudo supervisorctl reload
+
+Customisation
+-------------
+
+Intégrer son logo
+"""""""""""""""""
+
+Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. 
+
+Relancez la construction de l’interface :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
+
+Customiser le contenu
+"""""""""""""""""""""
+
+* Customiser le contenu de la page d’introduction :
+
+Le texte d'introduction et le titre de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application. Il en est de même pour le bouton d’accès à la synthèse.
+
+Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``. 
+
+Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
+
+* Customiser le contenu du pied de page :
+
+Le pied de page peut être customisé de la même manière, en renseignant le fichier ``footer.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/footer``
+
+De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+    
+    
+Customiser l'aspect esthétique
+""""""""""""""""""""""""""""""
+
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptés en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``. 
+
+Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
+
+::
+
+    html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
+   {
+      background :
+      url(bandeau_test.jpg)
+   }
+
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``>geonature/frontend/src`` .
+
+Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
 
 
 Intégrer des données
