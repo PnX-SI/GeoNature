@@ -650,6 +650,8 @@ Pour des exemples plus précis, illustrées et commentées, vous pouvez consulte
 
 Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
 
+Import depuis SICEN (ObsOcc) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen ou import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
+
 Module OCCTAX
 -------------
 
