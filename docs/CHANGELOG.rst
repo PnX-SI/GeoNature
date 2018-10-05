@@ -30,6 +30,7 @@ CHANGELOG
 
 * Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences)
 * Script de migration des données SICEN (Obs Occ) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
+* Script d'import continu depuis une BDD externe (avec exemple SICEN) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Module Suivi Flore Territoire fonctionnel et installable ()
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
 
