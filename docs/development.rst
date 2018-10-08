@@ -155,6 +155,8 @@ Backend
 Installer un gn_module
 """"""""""""""""""""""
 
+Renseignez l'éventuel fichier ``config/settings.ini`` du module.
+
 Pour installer un module, rendez vous dans le dossier ``backend`` de GeoNature.
 
 Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature :
@@ -181,7 +183,7 @@ Cette commande exécute les actions suivantes :
 - Génération du routing Angular pour le frontend
 - Re-build du frontend pour une mise en production
 
-
+Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration nom_du_module``)
 
 
 Développement Backend
