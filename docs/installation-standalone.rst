@@ -58,7 +58,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
   ::  
 
-    sudo apt-get install -y postgresql postgis postgresql-server-dev-9.4
+    sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
     sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
     sudo apt-get install -y npm
@@ -72,7 +72,7 @@ Installation de l'application
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de développement. Elle n'est pas encore stable et se trouve sur la branche ``geonature2beta`` (remplacer ``X.Y.Z`` par ``geonature2beta``). Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de développement, et propose des versions 2.0.0-rc.X. Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
 
   ::
 
