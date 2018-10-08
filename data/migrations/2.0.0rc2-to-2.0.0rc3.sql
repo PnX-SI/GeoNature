@@ -115,22 +115,21 @@ ALTER FUNCTION ref_geo.fct_get_altitude_intersection(geometry)
 -- Fonction utilisée pour les triggers vers synthese
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
-  $BODY$
+$BODY$
 DECLARE
-
-new_count RECORD;
-occurrence RECORD;
-releve RECORD;
-id_source integer;
-validation RECORD;
-id_nomenclature_source_status integer;
-myobservers RECORD;
-id_role_loop integer;
+  new_count RECORD;
+  occurrence RECORD;
+  releve RECORD;
+  id_source integer;
+  validation RECORD;
+  id_nomenclature_source_status integer;
+  myobservers RECORD;
+  id_role_loop integer;
 
 BEGIN
-
 --recupération du counting à partir de son ID
 SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
+
 -- Récupération de l'occurrence
 SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
 
@@ -255,11 +254,49 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT('Relevé : ', COALESCE(releve.comment, ' - '), 'Occurrence: ', COALESCE(occurrence.comment, ' -')),
+  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||occurrence.comment, NULL)),
   'I'
 );
 
   RETURN myobservers.observers_id ;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+--UPDATE Occurrence
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  releve RECORD;
+BEGIN
+  -- récupération du releve pour le commentaire à concatener
+  SELECT INTO releve * FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = NEW.id_releve_occtax;
+  IF releve.comment = '' THEN releve.comment = NULL; END IF;
+  IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
+  UPDATE gn_synthese.synthese SET
+    id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
+    id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
+    id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
+    id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
+    id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
+    id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
+    id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
+    id_nomenclature_blurring = NEW.id_nomenclature_blurring,
+    id_nomenclature_source_status = NEW.id_nomenclature_source_status,
+    determiner = NEW.determiner,
+    id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
+    cd_nom = NEW.cd_nom,
+    nom_cite = NEW.nom_cite,
+    meta_v_taxref = NEW.meta_v_taxref,
+    sample_number_proof = NEW.sample_number_proof,
+    digital_proof = NEW.digital_proof,
+    non_digital_proof = NEW.non_digital_proof,
+    comments  = CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||NEW.comment, NULL)),
+    last_action = 'U'
+  WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
+  RETURN NULL;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -280,7 +317,7 @@ BEGIN
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
       date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_min, 'HH24:MI:SS'),'00:00:00'))::timestamp,
-      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'HH24:MI:SS'),'00:00:00'))::timestamp,
+      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'HH24:MI:SS'),'00:00:00'))::timestamp, 
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
       the_geom_4326 = NEW.geom_4326,
@@ -288,11 +325,12 @@ BEGIN
       last_action = 'U'
   WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
   -- récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
-  IF(NEW.comment <> OLD.comment) THEN
+  IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
+  IF(NEW.comment <> OLD.comment OR (NEW.comment IS NULL AND OLD.comment IS NOT NULL)) THEN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
       LOOP
           UPDATE gn_synthese.synthese SET
-                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
+                comments = CONCAT(COALESCE('Relevé : '||NEW.comment || ' / ', NULL ), COALESCE('Occurrence: '||theoccurrence.comment, NULL))
           WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
       END LOOP;
   END IF;

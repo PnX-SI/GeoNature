@@ -103,20 +103,19 @@ CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
 $BODY$
 DECLARE
-
-new_count RECORD;
-occurrence RECORD;
-releve RECORD;
-id_source integer;
-validation RECORD;
-id_nomenclature_source_status integer;
-myobservers RECORD;
-id_role_loop integer;
+  new_count RECORD;
+  occurrence RECORD;
+  releve RECORD;
+  id_source integer;
+  validation RECORD;
+  id_nomenclature_source_status integer;
+  myobservers RECORD;
+  id_role_loop integer;
 
 BEGIN
-
 --recupération du counting à partir de son ID
 SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
+
 -- Récupération de l'occurrence
 SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
 
@@ -704,7 +703,7 @@ $BODY$
 -- UPDATE Occurrence
 -- TODO: SENSIBILITE NON GEREE
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
-RETURNS trigger AS
+  RETURNS trigger AS
 $BODY$
 DECLARE
   releve RECORD;
@@ -737,8 +736,8 @@ BEGIN
   RETURN NULL;
 END;
 $BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- DELETE OCCURRENCE
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_occ()
