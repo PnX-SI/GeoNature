@@ -241,7 +241,7 @@ CREATE TABLE gn_imports.matching_tables
   CONSTRAINT pk_matching_tables PRIMARY KEY (id_matching_table)
 );
 
-CREATE TABLE gn_imports.matching_tables
+CREATE TABLE gn_imports.matching_fields
 (
   id_matching_field serial NOT NULL,
   source_field text,
@@ -1111,31 +1111,31 @@ COST 100;
 
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
-  ON cor_counting_occtax
+  ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_add_default_validation_status();
 
 CREATE TRIGGER tri_log_changes_cor_counting_occtax
   AFTER INSERT OR UPDATE OR DELETE
-  ON cor_counting_occtax
+  ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
 CREATE TRIGGER tri_log_changes_t_occurrences_occtax
   AFTER INSERT OR UPDATE OR DELETE
-  ON t_occurrences_occtax
+  ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
 CREATE TRIGGER tri_log_changes_t_releves_occtax
   AFTER INSERT OR UPDATE OR DELETE
-  ON t_releves_occtax
+  ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
 CREATE TRIGGER tri_log_changes_cor_role_releves_occtax
   AFTER INSERT OR UPDATE OR DELETE
-  ON cor_role_releves_occtax
+  ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
