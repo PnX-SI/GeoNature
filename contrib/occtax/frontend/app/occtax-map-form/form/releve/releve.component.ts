@@ -68,11 +68,16 @@ export class ReleveComponent implements OnInit, OnDestroy {
   } // END INIT
 
   autoCompleteDate() {
+    
     // date max autocomplete
-    (this.releveForm.controls
-      .properties as FormGroup).controls.date_min.valueChanges.subscribe(
-      value => {
-        this.releveForm.controls.properties.patchValue({ date_max: value });
+    (this.releveForm.controls.properties as FormGroup)
+      .controls.date_min.valueChanges.subscribe(
+        value => {
+          let oldmindate = (this.releveForm.controls.properties as FormGroup).value['date_min'];
+          let oldmaxdate = (this.releveForm.controls.properties as FormGroup).controls.date_max.value;
+          if (oldmaxdate == oldmindate || oldmaxdate == null) {
+            this.releveForm.controls.properties.patchValue({ date_max: value })
+          };
       }
     );
   }
