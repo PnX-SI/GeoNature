@@ -517,6 +517,6 @@ class VSyntheseForExport(DB.Model):
 
     def get_geofeature_ordered(self):
         return self.as_geofeature_ordered(
-            'the_geom_local',
+            'the_geom_4326',
             'id_synthese',
         )
