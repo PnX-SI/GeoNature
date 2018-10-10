@@ -103,14 +103,14 @@ CREATE OR REPLACE FUNCTION insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
 $BODY$
 DECLARE
-  new_count RECORD;
-  occurrence RECORD;
-  releve RECORD;
-  id_source integer;
-  validation RECORD;
-  id_nomenclature_source_status integer;
-  myobservers RECORD;
-  id_role_loop integer;
+new_count RECORD;
+occurrence RECORD;
+releve RECORD;
+id_source integer;
+validation RECORD;
+id_nomenclature_source_status integer;
+myobservers RECORD;
+id_role_loop integer;
 
 BEGIN
 --recupération du counting à partir de son ID
