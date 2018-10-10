@@ -308,11 +308,21 @@ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
 $BODY$
 DECLARE
   theoccurrence RECORD;
+  myobservers text;
 BEGIN
+  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  --Récupération et formatage des observateurs
+  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+  FROM pr_occtax.cor_role_releves_occtax cor
+  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  IF myobservers IS NULL THEN
+    myobservers = NEW.observers_txt;
+  END IF;
   --mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
-      observers = NEW.observers_txt,
+      observers = myobservers,
       id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
