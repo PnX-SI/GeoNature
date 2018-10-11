@@ -35,7 +35,7 @@ export class OcctaxMapFormComponent
   public markerComponent: MarkerComponent;
   @ViewChild(LeafletDrawComponent)
   public leafletDrawComponent: LeafletDrawComponent;
-
+  
   public occtaxConfig = ModuleConfig;
   constructor(
     private _ms: MapService,
@@ -46,6 +46,7 @@ export class OcctaxMapFormComponent
     private occtaxService: OcctaxService,
     private _dfs: DataFormService,
     private _authService: AuthService
+    // public _occtaxConfig: ModuleConfig
   ) {}
 
   ngOnInit() {
@@ -75,12 +76,18 @@ export class OcctaxMapFormComponent
         // load one releve
         this.occtaxService.getOneReleve(this.id).subscribe(
           data => {
-            data.releve.properties.observers = data.releve.properties.observers.map(
-              obs => {
-                obs["nom_complet"] = obs.nom_role + " " + obs.prenom_role;
-                return obs;
-              }
-            );
+            //test if observers exist. 
+            //Case when some releves was create with 'observers_txt : true' and others with 'observers_txt : false'
+            //if this case comes up with 'observers_txt : false', the form is load with an empty 'observers' input
+            //indeed, the application can not make the correspondence between an observer_txt and an id_role
+            if (data.releve.properties.observers) {
+              data.releve.properties.observers = data.releve.properties.observers.map(
+                obs => {
+                  obs["nom_complet"] = obs.nom_role + " " + obs.prenom_role;
+                  return obs;
+                }
+              );
+            }
 
             // pre fill the form
             this.fs.releveForm.patchValue({
@@ -178,10 +185,14 @@ export class OcctaxMapFormComponent
         if (this.fs.previousBoundingBox) {
           this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
         }
-        // set digitiser as default observers
-        this.fs.releveForm.patchValue({
-          properties: { observers: [this._authService.getCurrentUser()] }
-        });
+        // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
+        if (!this.occtaxConfig.observers_txt) {
+          this.fs.releveForm.patchValue({
+            properties: { 
+              observers: [this._authService.getCurrentUser()]
+            }
+          });
+        }
       }
     });
   }
