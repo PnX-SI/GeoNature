@@ -46,7 +46,6 @@ export class OcctaxMapFormComponent
     private occtaxService: OcctaxService,
     private _dfs: DataFormService,
     private _authService: AuthService
-    // public _occtaxConfig: ModuleConfig
   ) {}
 
   ngOnInit() {

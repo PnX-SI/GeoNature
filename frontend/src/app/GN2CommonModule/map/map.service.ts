@@ -22,6 +22,7 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
+  public justLoaded = true;
   originStyle = {
     color: '#3388ff',
     fill: true,
@@ -100,7 +101,9 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-    this._geojsonCoord.next(geojsonCoord);
+    if (!this.justLoaded){
+      this._geojsonCoord.next(geojsonCoord);
+    }
   }
 
   setEditingMarker(isEditing) {
