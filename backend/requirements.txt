@@ -25,7 +25,7 @@ idna==2.6
 itsdangerous==0.24
 jinja2==2.10
 markupsafe==1.0
-marshmallow==2.15.0
+marshmallow==2.15.1
 packaging==16.8
 psycopg2==2.7.5
 pyparsing==2.2.0
