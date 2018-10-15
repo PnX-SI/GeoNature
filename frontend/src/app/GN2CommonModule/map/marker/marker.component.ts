@@ -67,6 +67,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     }
     // observable if map click
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
+    this.mapservice.justLoaded = false;
   }
 
   markerMoveEvent(marker: Marker) {
