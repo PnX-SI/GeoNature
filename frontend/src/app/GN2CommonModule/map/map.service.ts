@@ -101,7 +101,7 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-    if (!this.justLoaded){
+    if (!this.justLoaded) {
       this._geojsonCoord.next(geojsonCoord);
     }
   }
