@@ -305,7 +305,8 @@ class SyntheseOneRecord(DB.Model):
         uselist=False,
         secondary=TDatasets.__table__,
         primaryjoin=(TDatasets.id_dataset == id_dataset),
-        secondaryjoin=(TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework),
+        secondaryjoin=(TDatasets.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework)
     )
 
     def get_geofeature(self, recursif=False):
@@ -404,9 +405,9 @@ class VSyntheseForWebApp(DB.Model):
 
 def synthese_export_serialization(cls):
     """
-    Décorateur qui définit une sérialisation particulière pour la vue v_synthese_for_web_app
-    Il rajoute la fonction as_dict_ordered qui conserve l'ordre des attributs tel que définit dans le model
-    (fonctions utilisées pour les exports) et qui redéfinit le nom des colonnes tel qu'il sont nommé en configuration
+    Décorateur qui definit une serialisation particuliere pour la vue v_synthese_for_export
+    Il rajoute la fonction as_dict_ordered qui conserve l'ordre des attributs tel que definit dans le model
+    (fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu'ils sont nommes en configuration
     """
     EXPORT_COLUMNS = current_app.config['SYNTHESE']['EXPORT_COLUMNS']
     default_columns = [key for key, value in EXPORT_COLUMNS.items()]
@@ -482,6 +483,7 @@ class VSyntheseForExport(DB.Model):
     the_geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
     the_geom_point = DB.Column(Geometry('GEOMETRY', 4326))
     the_geom_local = DB.Column(Geometry('GEOMETRY', 2154))
+    wkt = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
