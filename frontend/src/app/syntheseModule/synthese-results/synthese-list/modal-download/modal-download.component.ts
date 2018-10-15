@@ -13,7 +13,7 @@ export class SyntheseModalDownloadComponent implements OnInit {
   public syntheseConfig = AppConfig.SYNTHESE;
   progress$: Observable<number>;
   message = 'Téléchargement en cours';
-  type = 'info';
+  bstype = 'secondary';
   animated = true;
   public downloading: boolean = false;
   @Input() queryString: HttpParams;
@@ -34,12 +34,12 @@ export class SyntheseModalDownloadComponent implements OnInit {
     this._dataService.downloadProgress.next(0.0);
     this.message = 'Téléchargement en cours';
     this.animated = true;
-    this.type = 'info';
+    this.bstype = 'secondary';
   }
 
   done() {
     this.message = 'Export téléchargé.';
-    this.type = 'success';
+    this.bstype = 'success';
     this.animated = false;
   }
 
