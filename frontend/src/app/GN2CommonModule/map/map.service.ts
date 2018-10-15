@@ -152,6 +152,7 @@ export class MapService {
     return L.geoJSON(geojson, {
       style: (feature) => {
         switch (feature.geometry.type) {
+          // No color nor opacity for linestrings
           case 'LineString': return {
             color: '#3388ff',
             weight: 3
