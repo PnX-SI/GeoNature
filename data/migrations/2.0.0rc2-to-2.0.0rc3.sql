@@ -350,6 +350,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+DROP VIEW pr_occtax.export_occtax_sinp;
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
@@ -457,6 +458,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , rel.observers_txt
     , rel.geom_4326;
 
+
+DROP VIEW pr_occtax.export_occtax_dlb;
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
