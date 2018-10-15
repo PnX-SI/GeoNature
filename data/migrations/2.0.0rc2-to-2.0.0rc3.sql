@@ -336,7 +336,7 @@ BEGIN
   WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
   -- récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
   IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
-  IF(NEW.comment <> OLD.comment OR (NEW.comment IS NULL AND OLD.comment IS NOT NULL)) THEN
+  IF(NEW.comment IS DISTINCT FROM OLD.comment) THEN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
       LOOP
           UPDATE gn_synthese.synthese SET
