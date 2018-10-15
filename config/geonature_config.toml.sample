@@ -12,3 +12,5 @@ SECRET_KEY = 'super secret key'
 LOCAL_SRID = 2154
 
 DEFAULT_LANGUAGE='fr'
+
+GEONATURE_VERSION = 'dev'

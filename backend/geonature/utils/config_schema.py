@@ -134,6 +134,7 @@ class Synthese(Schema):
 
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='GeoNature2')
+    GEONATURE_VERSION = fields.String(missing='dev')
     DEFAULT_LANGUAGE = fields.String(missing='fr')
     PASS_METHOD = fields.String(
         missing='hash',

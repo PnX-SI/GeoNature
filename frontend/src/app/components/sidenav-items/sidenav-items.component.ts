@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppConfig } from '@geonature_config/app.config';
 import { ToastrConfig } from 'ngx-toastr';
 import { SideNavService } from './sidenav.service';
 import { AuthService } from '../auth/auth.service';
@@ -12,6 +13,7 @@ export class SidenavItemsComponent implements OnInit {
   public nav = [{}];
   public toastrConfig: ToastrConfig;
   public appConfig: any;
+  public version = AppConfig.GEONATURE_VERSION;
 
   constructor(private _sideNavService: SideNavService, private _authService: AuthService) {
     this.toastrConfig = {

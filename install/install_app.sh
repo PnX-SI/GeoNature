@@ -81,6 +81,7 @@ if [ ! -f config/geonature_config.toml ]; then
   sed -i "s/API_TAXHUB = .*$/API_TAXHUB = '${my_url}taxhub\/api'/g" config/geonature_config.toml
   sed -i "s/DEFAULT_LANGUAGE = .*$/DEFAULT_LANGUAGE = '${default_language}'/g" config/geonature_config.toml
   sed -i "s/LOCAL_SRID = .*$/LOCAL_SRID = '${srid_local}'/g" config/geonature_config.toml
+  sed -i "s/GEONATURE_VERSION = .*$/GEONATURE_VERSION = '`cat VERSION`'/g" config/geonature_config.toml
 else
   echo "Le fichier de configuration existe déjà"
 fi
