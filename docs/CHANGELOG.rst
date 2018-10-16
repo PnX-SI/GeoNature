@@ -37,7 +37,6 @@ CHANGELOG
 
 **Notes de version**
 
-* Ajouter le paramètre ``GEONATURE_VERSION`` dans le fichier ``config/geonature_config.toml`` ; voir ``config/geonature_config.toml.sample``
 * Suivez la procédure standard de mise à jour de GeoNature
 * Exécutez l'update de la BDD GeoNature (``data/migrations/2.0.0rc2-to-2.0.0rc3.sql``)
 * Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases)
