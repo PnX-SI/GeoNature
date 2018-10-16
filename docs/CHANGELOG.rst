@@ -13,22 +13,33 @@ CHANGELOG
 * Occtax : retour au zoom précédent lors de l'enchainement de relevé (#436)
 * Occtax : observateur rempli par défaut avec l'utilisateur connecté (#438)
 * Prise en compte des géométries nulles dans la fonction ``serializegeofn``
-* Complément FAQ (#441)
 * Gestion plus complète des données exemple intégrées ou non lors de l'installation (#446)
+* Complément des différentes documentations
+* Complément FAQ (#441)
 * Documentation de la customisation (merci @DonovanMaillard)
 * Amélioration de l'architecture du gn_module d'exemple
 * Clarification de la configuration des gn_modules
-* Lire le fichier ``VERSION`` pour l'afficher dans l'interface
+* Lire le fichier ``VERSION`` pour l'afficher dans l'interface (#421)
+* Utilisation de la vue ``export_occtax_sinp`` et non plus ``export_occtax_dlb`` par défaut pour les exports Occtax (#462)
+* Complément et correction des vues ``export_occtax_sinp`` et ``export_occtax_dlb`` (#462)
+* Mise à jour de Marshmallow (2.5.0 => 2.5.1)
+* Export Synthèse - Remplacement de la barre de téléchargement par un spinner (#451)
 
 **Corrections**
 
 * Doc Import niveau 2 : Corrections et compléments
-* Correction du trigger Occtax > Synthèse qui met à jour le champs gn_synthese.observers_txt et les commentaires (#448)
+* Correction du trigger Occtax > Synthèse qui met à jour le champs ``gn_synthese.observers_txt`` et les commentaires (#448 et #459)
 * Correction et amélioration de la fonction ``install_gn_module``
 * Correction coquille dans le modèle ``gn_monitoring`` et la fonction ``serializegeofn``
 * Installation uniquement sur un environnement 64 bits (documentation + vérification) #442 (merci @jbrieuclp et @sig-pnrnm)
 * Correction et découpage des scripts de mise à jour de la BDD depuis la version Beta5
 * Correction de l'édition des date_debut et date_fin de Occtax (#457)
+* Correction des exports depuis la Synthèse et intégration de la géométrie des observations (#461 et #456)
+* Ne pas remplir ``pr_occtax.cor_role_releves_occtax`` si ``observers_txt = true`` (#463)
+* Edition d'un relevé Occtax - Ne pas recalculer l'altitude existante (#424)
+* Correction de l'activation du formulaire Occtax après localisation du relevé (#469 et #471)
+* Enlever le remplissage des lignes (#458)
+* Amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#465)
 
 **Autres**
 
@@ -40,6 +51,7 @@ CHANGELOG
 * MCD du module Suivi Habitat Territoire (https://github.com/PnX-SI/gn_module_suivi_habitat_territoire)
 * MCD du module Flore Prioritaire (https://github.com/PnX-SI/gn_module_flore_prioritaire)
 * Consolidation du backend et premiers développements du frontend de GeoNature-citizen (https://github.com/PnX-SI/GeoNature-citizen)
+* Création d'un script expérimental d'installation de GeoNature-atlas compatible avec GeoNature V2 dt pouvant utiliser son schéma ``ref_geo`` pour les communes, le territoire et les mailles (https://github.com/PnEcrins/GeoNature-atlas/blob/develop/install_db_gn2.sh)
 
 **Notes de version**
 
