@@ -38,7 +38,7 @@ CHANGELOG
 * Ne pas remplir ``pr_occtax.cor_role_releves_occtax`` si ``observers_txt = true`` (#463)
 * Edition d'un relevé Occtax - Ne pas recalculer l'altitude existante (#424)
 * Correction de l'activation du formulaire Occtax après localisation du relevé (#469 et #471)
-* Enlever le remplissage des lignes (#458)
+* Carte - Enlever le remplissage des lignes (#458)
 * Amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#465)
 
 **Autres**
