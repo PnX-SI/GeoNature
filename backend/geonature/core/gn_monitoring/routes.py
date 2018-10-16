@@ -31,6 +31,12 @@ def get_list_sites():
     )
     parameters = request.args
 
+    if parameters.get('name_app'):
+        q = q.filter(
+            TBaseSites.applications.any(nom_application=parameters.get('name_app'))
+        )
+
+
     if parameters.get('id_app'):
         q = q.filter(
             TBaseSites.applications.any(id_application=parameters.get('id_app'))
