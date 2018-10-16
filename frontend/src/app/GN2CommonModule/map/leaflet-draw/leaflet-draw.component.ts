@@ -24,7 +24,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Output() layerDrawed = new EventEmitter<any>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) { }
+  constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -64,7 +64,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
-        this._currentDraw = (e as any).layer;
+        this._currentDraw = (e as any).layer.setStyle(this.mapservice.selectedStyle);
         const layerType = (e as any).layerType;
         this.mapservice.releveFeatureGroup.addLayer(this._currentDraw);
         let geojson: any = this.mapservice.releveFeatureGroup.toGeoJSON();
@@ -75,6 +75,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
           const radius = this._currentDraw.getRadius();
           geojson.properties.radius = radius;
         }
+        this.mapservice.justLoaded = false;
         this.layerDrawed.emit(geojson);
       }
     });
@@ -84,11 +85,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
       geojson = (geojson as any).features[0];
       // output
+      this.mapservice.justLoaded = false;
       this.layerDrawed.emit(geojson);
     });
 
     // on layer deleted
-    this.map.on(this._Le.Draw.Event.DELETED, (e) => {
+    this.map.on(this._Le.Draw.Event.DELETED, e => {
       this.layerDeleted.emit();
     });
   }

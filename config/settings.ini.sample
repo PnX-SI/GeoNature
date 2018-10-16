@@ -1,6 +1,3 @@
-# Linux Config
-monuser=test
-
 # URL Configuration
 ###################
 
@@ -45,6 +42,9 @@ install_sig_layers=true
 
 # Install default French DEM (Mainland France only - BD alti 250m))
 install_default_dem=true
+
+# Vectorise dem raster for more performance. This will increse installation duration and take more disk space
+vectorise_dem=false
 
 # Insert sample data (available only in Mainland France with srid_local=2154 ; false otherwise)
 add_sample_data=true

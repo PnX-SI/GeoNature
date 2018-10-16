@@ -8,7 +8,7 @@ from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import circle_from_point
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
-    Synthese, CorRoleSynthese, TSources,
+    Synthese, CorObserverSynthese, TSources,
     CorAreaSynthese
 )
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
@@ -19,9 +19,9 @@ def filter_query_with_cruved(model, q, user, allowed_datasets):
     Filter the query with the cruved authorization of a user
     """
     if user.tag_object_code in ('1', '2'):
-        q = q.outerjoin(CorRoleSynthese, CorRoleSynthese.id_synthese == model.id_synthese)
+        q = q.outerjoin(CorObserverSynthese, CorObserverSynthese.id_synthese == model.id_synthese)
         ors_filters = [
-            CorRoleSynthese.id_role == user.id_role,
+            CorObserverSynthese.id_role == user.id_role,
             model.id_digitiser == user.id_role
         ]
         if current_app.config['SYNTHESE']['CRUVED_SEARCH_WITH_OBSERVER_AS_TXT']:

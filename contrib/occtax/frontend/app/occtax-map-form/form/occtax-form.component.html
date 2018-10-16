@@ -85,7 +85,7 @@
 
 
   <div class=center>
-    <button class="btn btn-danger" routerLink="/occtax"> {{ 'Cancel' | translate }} </button>
+    <button class="btn btn-danger" (click)="fs.disabled = true;" routerLink="/occtax"> {{ 'Cancel' | translate }} </button>
     <button class="btn btn-success" [disabled]="(
         fs.releveForm.invalid
         || fs.taxonsList == 0 

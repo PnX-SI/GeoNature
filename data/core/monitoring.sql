@@ -24,7 +24,7 @@ CREATE TABLE t_base_sites
   base_site_description text,
   base_site_code character varying(25) DEFAULT NULL::character varying,
   first_use_date date,
-  geom public.geometry NOT NULL,
+  geom public.geometry(Geometry,4326) NOT NULL,
   uuid_base_site UUID DEFAULT public.uuid_generate_v4()
 );
 

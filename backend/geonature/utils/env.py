@@ -7,30 +7,26 @@ import sys
 from pathlib import Path
 from collections import ChainMap, namedtuple
 
-
 from flask_sqlalchemy import SQLAlchemy
 
 import pip
 
+# Define GEONATURE_VERSION before import config_shema module 
+# because GEONATURE_VERSION is imported in this module
+ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
+with open(str((ROOT_DIR / 'VERSION'))) as v:
+    GEONATURE_VERSION = v.read()
 from geonature.utils.config_schema import (
     GnGeneralSchemaConf, GnPySchemaConf,
     GnModuleProdConf, ManifestSchemaProdConf
 )
 from geonature.utils.utilstoml import load_and_validate_toml
 
-ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / 'backend'
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
-with open(str((ROOT_DIR / 'VERSION'))) as v:
-    GEONATURE_VERSION = v.read()
 DEFAULT_CONFIG_FILE = ROOT_DIR / 'config/geonature_config.toml'
 
-GEONATURE_ETC = Path('/etc/geonature')
-
 DB = SQLAlchemy()
-
-# L'import doit être réalisé après la déclaration de DB
-from geonature.core.gn_commons.models import TModules
 
 
 GN_MODULE_FILES = (
@@ -169,6 +165,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
         Get all the module enabled from gn_commons.t_modules
     """
     with app.app_context():
+        from geonature.core.gn_commons.models import TModules
         data = DB.session.query(TModules).filter(
             TModules.active_backend == True
         )

@@ -133,6 +133,12 @@ CREATE TABLE li_grids (
     cymax integer
 );
 
+CREATE TABLE dem
+(
+  rid serial NOT NULL,
+  rast public.raster
+);
+
 CREATE TABLE dem_vector
 (
   gid serial NOT NULL,
@@ -157,6 +163,9 @@ ALTER TABLE ONLY l_areas
 ALTER TABLE ONLY bib_areas_types
     ADD CONSTRAINT pk_bib_areas_types PRIMARY KEY (id_type);
 
+ALTER TABLE ONLY dem
+  ADD CONSTRAINT pk_dem PRIMARY KEY (rid);
+  
 ALTER TABLE ONLY dem_vector
     ADD CONSTRAINT pk_dem_vector PRIMARY KEY (gid);
 
@@ -191,26 +200,41 @@ CREATE TRIGGER tri_meta_dates_change_li_municipalities BEFORE INSERT OR UPDATE O
 -------------
 --FUNCTIONS--
 -------------
-CREATE OR REPLACE FUNCTION fct_get_altitude_intersection(IN mygeom public.geometry)
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry)
   RETURNS TABLE(altitude_min integer, altitude_max integer) AS
 $BODY$
 DECLARE
-    isrid int;
+    thesrid int;
+    is_vectorized int;
 BEGIN
-    SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
+  SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
+	
+  IF is_vectorized IS NULL THEN
+    -- Use dem
+    RETURN QUERY
+    SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
+    FROM (
+	SELECT ST_DumpAsPolygons(ST_clip(rast, 1
+	, st_transform(myGeom,thesrid), true)) AS altitude
+	FROM ref_geo.dem AS altitude 
+	WHERE st_intersects(rast,st_transform(myGeom,thesrid))
+    ) AS a;		
+  -- Use dem_vector
+  ELSE
     RETURN QUERY
     WITH d  as (
-        SELECT st_transform(myGeom,isrid) a
+        SELECT st_transform(myGeom,thesrid) a
      )
     SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
     FROM ref_geo.dem_vector, d
     WHERE st_intersects(a,geom);
+  END IF;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
-
 
 
 CREATE OR REPLACE FUNCTION fct_get_area_intersection(
