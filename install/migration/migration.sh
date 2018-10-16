@@ -18,7 +18,7 @@ else
   exit
 fi
 
-echo "Ok, on migre..."
+echo "OK, let's migrate GeoNature version..."
 
 . $myrootpath/geonature_old/config/settings.ini
 
@@ -27,11 +27,11 @@ cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_confi
 cp $myrootpath/geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
-# on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
+# On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
 rm -r external_modules/occtax
-# rapatrier le fichier de conf de occtax
+# Rapatrier le fichier de conf de Occtax
 cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
-# on recrée le lien symbolique sur le nouveau répertoire geonature
+# on recrée le lien symbolique sur le nouveau répertoire de GeoNature
 ln -s $myrootpath/$currentdir/contrib/occtax external_modules/occtax
 
 cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$currentdir/frontend/src/external_assets/
@@ -85,7 +85,7 @@ pip install -r requirements.txt
 
 python ../geonature_cmd.py install_command
 
-echo "Update configurations "
+echo "Update configurations"
 geonature update_configuration --build=false
 #geonature generate_frontend_config --build=false
 geonature generate_frontend_modules_route
