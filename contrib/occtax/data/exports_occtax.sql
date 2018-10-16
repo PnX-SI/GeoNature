@@ -54,6 +54,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     'NSP'::text AS "detNomOrg",
     'NSP'::text AS "orgGestDat",
+    rel.geom_4326,
     st_astext(rel.geom_4326) AS "WKT",
     'In'::text AS "natObjGeo"
    FROM pr_occtax.t_releves_occtax rel
@@ -181,7 +182,6 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS
     , rel.unique_id_sinp_grp
     , occ.id_occurrence_occtax
     , rel.id_digitiser
-    , rel.geom_4326
     , ccc.unique_id_sinp_occtax
     , d.unique_dataset_id
     , occ.id_nomenclature_bio_condition
