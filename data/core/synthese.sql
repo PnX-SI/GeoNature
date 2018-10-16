@@ -788,6 +788,7 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
     the_geom_4326,
     the_geom_point,
     the_geom_local,
+    st_astext(the_geom_4326) AS wkt,
     date_min,
     date_max,
     validator ,
