@@ -45,6 +45,72 @@ FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
+CREATE VIEW gn_synthese.v_synthese_for_export AS
+   SELECT
+    s.id_synthese,
+    unique_id_sinp,
+    unique_id_sinp_grp,
+    s.id_source ,
+    entity_source_pk_value ,
+    count_min ,
+    count_max ,
+    nom_cite ,
+    meta_v_taxref ,
+    sample_number_proof ,
+    digital_proof ,
+    non_digital_proof ,
+    altitude_min ,
+    altitude_max ,
+    the_geom_4326,
+    the_geom_point,
+    the_geom_local,
+    date_min,
+    date_max,
+    validator ,
+    validation_comment ,
+    observers ,
+    id_digitiser,
+    determiner ,
+    comments ,
+    meta_validation_date,
+    s.meta_create_date,
+    s.meta_update_date,
+    last_action,
+    d.id_dataset,
+    d.dataset_name,
+    d.id_acquisition_framework,
+    deco.nat_obj_geo,
+    deco.grp_typ,
+    deco.obs_method,
+    deco.obs_technique,
+    deco.bio_status,
+    deco.bio_condition,
+    deco.naturalness,
+    deco.exist_proof,
+    deco.valid_status,
+    deco.diffusion_level,
+    deco.life_stage,
+    deco.sex,
+    deco.obj_count,
+    deco.type_count,
+    deco.sensitivity,
+    deco.observation_status,
+    deco.blurring,
+    deco.source_status,
+    sources.name_source,
+    sources.url_source,
+    t.cd_nom,
+    t.cd_ref,
+    t.nom_valide,
+    t.nom_vern
+  FROM gn_synthese.synthese s
+  JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+  JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+  JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+  JOIN gn_synthese.v_synthese_decode_nomenclatures deco ON deco.id_synthese = s.id_synthese
+  ;
+
+
 ---------------------------
 ---------------------------
 -------- REF_GEO ----------
@@ -99,9 +165,6 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
-ALTER FUNCTION ref_geo.fct_get_altitude_intersection(geometry)
-  OWNER TO geonatuser;
-
 
 
 ---------------------------
