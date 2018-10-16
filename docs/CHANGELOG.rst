@@ -10,30 +10,36 @@ CHANGELOG
 * Possibilité d'utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)
 * Dessin cartographique d'une autre couleur (rouge) que les observations (bleu)
-* Occtax : retour au zoom precedent lors de l'enchainement de relevé (#436)
+* Occtax : retour au zoom précédent lors de l'enchainement de relevé (#436)
 * Occtax : observateur rempli par défaut avec l'utilisateur connecté (#438)
 * Prise en compte des géométries nulles dans la fonction ``serializegeofn``
-* Complément FAQ #441
+* Complément FAQ (#441)
 * Gestion plus complète des données exemple intégrées ou non lors de l'installation (#446)
-* Doc customisation (merci @DonovanMaillard)
+* Documentation de la customisation (merci @DonovanMaillard)
+* Amélioration de l'architecture du gn_module d'exemple
 * Clarification de la configuration des gn_modules
 * Lire le fichier ``VERSION`` pour l'afficher dans l'interface
 
 **Corrections**
 
 * Doc Import niveau 2 : Corrections et compléments
-* Correction du trigger Occtax > Synthèse qui met à jour le champs gn_synthese.observers_txt (#448)
+* Correction du trigger Occtax > Synthèse qui met à jour le champs gn_synthese.observers_txt et les commentaires (#448)
 * Correction et amélioration de la fonction ``install_gn_module``
 * Correction coquille dans le modèle ``gn_monitoring`` et la fonction ``serializegeofn``
-* Installation uniquement sur un environnement 32 bits (documentation + vérification) #442 (merci @jbrieuclp et @sig-pnrnm)
+* Installation uniquement sur un environnement 64 bits (documentation + vérification) #442 (merci @jbrieuclp et @sig-pnrnm)
+* Correction et découpage des scripts de mise à jour de la BDD depuis la version Beta5
+* Correction de l'édition des date_debut et date_fin de Occtax (#457)
 
 **Autres**
 
-* Mise à jour de TaxHub (Script d'import des médias depuis API INPN et remise à zéro des séquences)
-* Script de migration des données SICEN (Obs Occ) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
-* Script d'import continu depuis une BDD externe (avec exemple SICEN) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
-* Module Suivi Flore Territoire fonctionnel et installable ()
+* Mise à jour de TaxHub (Doc utilisateur, script d'import des médias depuis API INPN Taxref et remise à zéro des séquences)
+* Script de migration des données SICEN (ObsOcc) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
+* Script d'import continu depuis une BDD externe vivante (avec exemple SICEN) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
+* Module Suivi Flore Territoire fonctionnel et installable (https://github.com/PnX-SI/gn_module_suivi_flore_territoire)
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
+* MCD du module Suivi Habitat Territoire (https://github.com/PnX-SI/gn_module_suivi_habitat_territoire)
+* MCD du module Flore Prioritaire (https://github.com/PnX-SI/gn_module_flore_prioritaire)
+* Consolidation du backend et premiers développements du frontend de GeoNature-citizen (https://github.com/PnX-SI/GeoNature-citizen)
 
 **Notes de version**
 
