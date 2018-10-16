@@ -1,5 +1,24 @@
 #!/bin/bash
+parentdir="$(dirname "$(pwd)")"
+currentdir=${PWD##*/} 
 myrootpath=`pwd`/..
+
+echo 'You are executing this script FROM '`pwd`' AND your oldgeonature directory is in '$parentdir'/geonature_old'
+read -p "Press any key to exit. Press Y or y to continue."  choice
+echo 
+if [ $choice ] 
+then
+  if [ $choice != 'y' ] && [ $choice != 'Y' ] && [ $choice ]
+  then
+    echo "Exit"
+    exit
+  fi
+else
+  echo "Exit"
+  exit
+fi
+
+echo "Ok, on migre..."
 
 . $myrootpath/geonature_old/config/settings.ini
 
@@ -11,19 +30,19 @@ cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
 rm -r external_modules/occtax
 # rapatrier le fichier de conf de occtax
-cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/geonature/contrib/occtax/config/conf_gn_module.toml
+cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
 # on recrée le lien symbolique sur le nouveau répertoire geonature
-ln -s $myrootpath/geonature/contrib/occtax external_modules/occtax
+ln -s $myrootpath/$currentdir/contrib/occtax external_modules/occtax
 
-cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/geonature/frontend/src/external_assets/
+cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$currentdir/frontend/src/external_assets/
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax/frontend/assets
 rm frontend/src/external_assets/occtax
 # on recrée le lien symbolique sur le nouveau répertoire geonature
-ln -s $myrootpath/geonature/contrib/occtax/frontend/assets $myrootpath/geonature/frontend/src/external_assets/occtax
+ln -s $myrootpath/$currentdir/contrib/occtax/frontend/assets $myrootpath/$currentdir/frontend/src/external_assets/occtax
 
 
-mkdir $myrootpath/geonature/var
-mkdir $myrootpath/geonature/var/log
+mkdir $myrootpath/$currentdir/var
+mkdir $myrootpath/$currentdir/var/log
 
 # Création du répertoitre static et rapatriement des médias
 if [ ! -d 'backend/static/' ]
@@ -43,10 +62,10 @@ then
 fi
 
 
-cd $myrootpath/geonature/frontend
+cd $myrootpath/$currentdir/frontend
 npm install
 
-cd $myrootpath/geonature/backend
+cd $myrootpath/$currentdir/backend
 
 if [ -d 'venv/' ]
 then
