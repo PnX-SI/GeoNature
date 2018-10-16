@@ -45,7 +45,8 @@ FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
-CREATE VIEW gn_synthese.v_synthese_for_export AS
+DROP VIEW gn_synthese.v_synthese_for_export;
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
    SELECT
     s.id_synthese,
     unique_id_sinp,
@@ -64,6 +65,7 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
     the_geom_4326,
     the_geom_point,
     the_geom_local,
+    st_astext(the_geom_4326) AS wkt,
     date_min,
     date_max,
     validator ,
@@ -414,7 +416,6 @@ $BODY$
   COST 100;
 
 DROP VIEW pr_occtax.export_occtax_sinp;
-
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
@@ -462,6 +463,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     'NSP'::text AS "detNomOrg",
     'NSP'::text AS "orgGestDat",
+    rel.geom_4326,
     st_astext(rel.geom_4326) AS "WKT",
     'In'::text AS "natObjGeo"
    FROM pr_occtax.t_releves_occtax rel
@@ -521,9 +523,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , rel.observers_txt
     , rel.geom_4326;
 
-
 DROP VIEW pr_occtax.export_occtax_dlb;
-
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
@@ -591,7 +591,6 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS
     , rel.unique_id_sinp_grp
     , occ.id_occurrence_occtax
     , rel.id_digitiser
-    , rel.geom_4326
     , ccc.unique_id_sinp_occtax
     , d.unique_dataset_id
     , occ.id_nomenclature_bio_condition
@@ -633,7 +632,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS
     , ccc.count_min
     , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count)
     , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)
-    , rel.observers_txt   
+    , rel.observers_txt  
     , rel.geom_4326;
 
 
