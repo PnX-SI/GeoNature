@@ -39,7 +39,7 @@ AS $$
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+CREATE OR REPLACE FUNCTION fct_trig_insert_in_cor_area_synthese()
   RETURNS trigger AS
   $BODY$
   DECLARE
@@ -67,6 +67,33 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
   RETURN NEW;
   END;
   $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION fct_tri_maj_observers_txt()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  theobservers text;
+  theidsynthese integer;
+BEGIN
+  IF (TG_OP = 'UPDATE') OR (TG_OP = 'INSERT') THEN
+    theidsynthese = NEW.id_synthese; 
+  END IF;
+  IF (TG_OP = 'DELETE') THEN
+    theidsynthese = OLD.id_synthese;
+  END IF;
+  --Construire le texte pour le champ observers de la synthese
+  SELECT INTO theobservers array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ')
+  FROM utilisateurs.t_roles r
+  WHERE r.id_role IN(SELECT id_role FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese);
+  --mise à jour du champ observers dans la table synthese
+  UPDATE gn_synthese.synthese 
+  SET observers = theobservers
+  WHERE id_synthese =  theidsynthese;
+RETURN NULL;
+END;
+$BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
@@ -761,6 +788,7 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
     the_geom_4326,
     the_geom_point,
     the_geom_local,
+    st_astext(the_geom_4326) AS wkt,
     date_min,
     date_max,
     validator ,
@@ -820,6 +848,12 @@ CREATE TRIGGER tri_meta_dates_t_sources
   ON t_sources
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+CREATE TRIGGER trg_maj_synthese_observers_txt
+AFTER INSERT OR UPDATE OR DELETE
+ON cor_observer_synthese
+FOR EACH ROW
+EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
 -- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE

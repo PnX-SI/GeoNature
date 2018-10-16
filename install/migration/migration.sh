@@ -1,5 +1,24 @@
 #!/bin/bash
+parentdir="$(dirname "$(pwd)")"
+currentdir=${PWD##*/} 
 myrootpath=`pwd`/..
+
+echo 'You are executing this script FROM '`pwd`' AND your oldgeonature directory is in '$parentdir'/geonature_old'
+read -p "Press any key to exit. Press Y or y to continue."  choice
+echo 
+if [ $choice ] 
+then
+  if [ $choice != 'y' ] && [ $choice != 'Y' ] && [ $choice ]
+  then
+    echo "Exit"
+    exit
+  fi
+else
+  echo "Exit"
+  exit
+fi
+
+echo "OK, let's migrate GeoNature version..."
 
 . $myrootpath/geonature_old/config/settings.ini
 
@@ -8,22 +27,22 @@ cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_confi
 cp $myrootpath/geonature_old/frontend/src/conf/map.config.ts frontend/src/conf/map.config.ts
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
-# on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
+# On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
 rm -r external_modules/occtax
-# rapatrier le fichier de conf de occtax
-cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/geonature/contrib/occtax/config/conf_gn_module.toml
-# on recrée le lien symbolique sur le nouveau répertoire geonature
-ln -s $myrootpath/geonature/contrib/occtax external_modules/occtax
+# Rapatrier le fichier de conf de Occtax
+cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
+# on recrée le lien symbolique sur le nouveau répertoire de GeoNature
+ln -s $myrootpath/$currentdir/contrib/occtax external_modules/occtax
 
-cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/geonature/frontend/src/external_assets/
+cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$currentdir/frontend/src/external_assets/
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax/frontend/assets
 rm frontend/src/external_assets/occtax
 # on recrée le lien symbolique sur le nouveau répertoire geonature
-ln -s $myrootpath/geonature/contrib/occtax/frontend/assets $myrootpath/geonature/frontend/src/external_assets/occtax
+ln -s $myrootpath/$currentdir/contrib/occtax/frontend/assets $myrootpath/$currentdir/frontend/src/external_assets/occtax
 
 
-mkdir $myrootpath/geonature/var
-mkdir $myrootpath/geonature/var/log
+mkdir $myrootpath/$currentdir/var
+mkdir $myrootpath/$currentdir/var/log
 
 # Création du répertoitre static et rapatriement des médias
 if [ ! -d 'backend/static/' ]
@@ -43,10 +62,10 @@ then
 fi
 
 
-cd $myrootpath/geonature/frontend
+cd $myrootpath/$currentdir/frontend
 npm install
 
-cd $myrootpath/geonature/backend
+cd $myrootpath/$currentdir/backend
 
 if [ -d 'venv/' ]
 then
@@ -66,7 +85,7 @@ pip install -r requirements.txt
 
 python ../geonature_cmd.py install_command
 
-echo "Update configurations "
+echo "Update configurations"
 geonature update_configuration --build=false
 #geonature generate_frontend_config --build=false
 geonature generate_frontend_modules_route

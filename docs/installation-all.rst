@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18) disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18 **architecture 64-bits**) disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
@@ -55,7 +55,7 @@ Les applications suivantes seront installées :
 - `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
 - `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour disposer d'une interface pour gérer les utilisateurs dans GeoNature)
 
-Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
+Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation INSTALLATION AUTONOME.
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
 
@@ -191,7 +191,7 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 
 :Note:
 
-    Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd.
+    Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd. Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API GeoNature et TaxHub (``sudo supervisorctl reload``).
 
 
 Installation d'un module GeoNature
@@ -199,7 +199,11 @@ Installation d'un module GeoNature
 
 L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
-Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
+**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le.
+
+**2.** Renseignez l'éventuel fichier ``config/settings.ini`` du module.
+
+**3.** Installez le module. Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
 
 ::
 
@@ -226,3 +230,5 @@ Cette commande éxecute les actions suivantes :
 - Vérification de la conformité des paramètres utilisateurs
 - Génération du routing Angular pour le frontend
 - Re-build du frontend pour une mise en production
+
+**4.** Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration nom_du_module``)

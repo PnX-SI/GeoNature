@@ -1,11 +1,13 @@
 from collections import OrderedDict
 
+from flask import current_app
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
-from flask import current_app
+from geoalchemy2.shape import to_shape
+from geojson import Feature
 
 from werkzeug.exceptions import NotFound
 
@@ -114,8 +116,8 @@ class TSources(DB.Model):
 
 
 @serializable
-class CorRoleSynthese(DB.Model):
-    __tablename__ = 'cor_role_synthese'
+class CorObserverSynthese(DB.Model):
+    __tablename__ = 'cor_observer_synthese'
     __table_args__ = {'schema': 'gn_synthese'}
     id_synthese = DB.Column(DB.Integer, ForeignKey('gn_synthese.synthese.id_synthese'), primary_key=True)
     id_role = DB.Column(DB.Integer, ForeignKey('utilisateurs.t_roles.id_role'), primary_key=True)
@@ -303,7 +305,8 @@ class SyntheseOneRecord(DB.Model):
         uselist=False,
         secondary=TDatasets.__table__,
         primaryjoin=(TDatasets.id_dataset == id_dataset),
-        secondaryjoin=(TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework),
+        secondaryjoin=(TDatasets.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework)
     )
 
     def get_geofeature(self, recursif=False):
@@ -402,11 +405,9 @@ class VSyntheseForWebApp(DB.Model):
 
 def synthese_export_serialization(cls):
     """
-    Décorateur qui définit une sérialisation particulière pour la vue v_synthese_for_web_app
-    Il rajoute la fonction as_dict_mapped: qui renvoie un dictionnaire avec des noms d'attrbuts
-    définit en configuration (EXPORT_COLUMNS),
-    et la fonction as_dict_ordered qui conserve l'ordre des attributs tel que définit dans le model
-    (fonctions utilisées pour les exports)
+    Décorateur qui definit une serialisation particuliere pour la vue v_synthese_for_export
+    Il rajoute la fonction as_dict_ordered qui conserve l'ordre des attributs tel que definit dans le model
+    (fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu'ils sont nommes en configuration
     """
     EXPORT_COLUMNS = current_app.config['SYNTHESE']['EXPORT_COLUMNS']
     default_columns = [key for key, value in EXPORT_COLUMNS.items()]
@@ -425,13 +426,6 @@ def synthese_export_serialization(cls):
 
     cls.db_cols = [db_col for db_col in cls.__mapper__.c if db_col.key in default_columns]
 
-    def serialize_mapped_fn(self, recursif=False, columns=()):
-        if columns:
-            fprops = list(filter(lambda d: d[0] in columns, cls_db_columns))
-        else:
-            fprops = cls_db_columns
-        return {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item)) for item, _serializer in fprops}
-
     def serialize_order_fn(self):
         order_dict = OrderedDict()
         for item, _serializer in cls_db_columns:
@@ -440,15 +434,26 @@ def synthese_export_serialization(cls):
             )
         return order_dict
 
-    cls.as_dict_mapped = serialize_mapped_fn
+    def serialize_geofn(self, geoCol, idCol):
+        if not getattr(self, geoCol) is None:
+            geometry = to_shape(getattr(self, geoCol))
+        else:
+            geometry = {"type": "Point", "coordinates": [0, 0]}
+
+        feature = Feature(
+            id=str(getattr(self, idCol)),
+            geometry=geometry,
+            properties=self.as_dict_ordered()
+        )
+        return feature
+
     cls.as_dict_ordered = serialize_order_fn
+    cls.as_geofeature_ordered = serialize_geofn
 
     return cls
 
 
-@serializable
 @synthese_export_serialization
-@geoserializable
 class VSyntheseForExport(DB.Model):
     __tablename__ = 'v_synthese_for_export'
     __table_args__ = {'schema': 'gn_synthese'}
@@ -478,6 +483,7 @@ class VSyntheseForExport(DB.Model):
     the_geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
     the_geom_point = DB.Column(Geometry('GEOMETRY', 4326))
     the_geom_local = DB.Column(Geometry('GEOMETRY', 2154))
+    wkt = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -511,10 +517,8 @@ class VSyntheseForExport(DB.Model):
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
 
-    def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature(
+    def get_geofeature_ordered(self):
+        return self.as_geofeature_ordered(
             'the_geom_4326',
             'id_synthese',
-            recursif,
-            columns=columns
         )

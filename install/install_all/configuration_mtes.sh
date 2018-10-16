@@ -20,9 +20,9 @@ unzip configuration_dlb.zip
 echo "Ecriture de la liste de taxons" >> /var/log/geonature/install_db.log
 export PGPASSWORD=$user_pg_pass;psql -h $pg_host -U $user_pg -d $geonaturedb_name -f /tmp/update_db.sql  &>> /var/log/geonature/install_db.log
 
-rm -r /home/$monuser/geonature/frontend/src/custom
-cp -r custom /home/$monuser/geonature/frontend/src/
-cp configuration/map.config.ts /home/$monuser/geonature/frontend/src/conf/map.config.ts
+rm -r /home/`whoami`/geonature/frontend/src/custom
+cp -r custom /home/`whoami`/geonature/frontend/src/
+cp configuration/map.config.ts /home/`whoami`/geonature/frontend/src/conf/map.config.ts
 
 
 url_app=https://depot-legal-biodiversite.naturefrance.fr/saisie
@@ -41,7 +41,7 @@ cat configuration/occtax.config.toml | sudo tee -a /etc/geonature/mods-enabled/o
 cat configuration/geonature.config.toml | sudo tee -a /etc/geonature/geonature_config.toml
  
 
-cd /home/$monuser/geonature/backend
+cd /home/`whoami`/geonature/backend
 source venv/bin/activate
 geonature update_configuration --build=false
 geonature update_module_configuration occtax

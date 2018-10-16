@@ -284,7 +284,6 @@ A chaque modification de ce fichier, lancer les commandes suivantes depuis le ba
     geonature update_module_configuration <NOM_DE_MODULE>
     deactivate
 
-
 Exploitation
 ------------
 
@@ -413,6 +412,13 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse :
 Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompues)
 
 
+- Redémarrage de PostgreSQL
+
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``. 
+  
+  **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
+
+
 Sauvegarde et restauration
 --------------------------
 
@@ -458,7 +464,7 @@ Restauration
 
 * Restauration de la base de données :
 
-  - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
+  - Créer une base de données vierge (on part du principe que la base de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
 
     ::
 
@@ -500,6 +506,75 @@ Restauration
     npm run build
     sudo supervisorctl reload
 
+Customisation
+-------------
+
+Intégrer son logo
+"""""""""""""""""
+
+Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. 
+
+Relancez la construction de l’interface :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
+
+Customiser le contenu
+"""""""""""""""""""""
+
+* Customiser le contenu de la page d’introduction :
+
+Le texte d'introduction et le titre de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application. Il en est de même pour le bouton d’accès à la synthèse.
+
+Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``. 
+
+Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
+
+* Customiser le contenu du pied de page :
+
+Le pied de page peut être customisé de la même manière, en renseignant le fichier ``footer.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/footer``
+
+De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+    
+    
+Customiser l'aspect esthétique
+""""""""""""""""""""""""""""""
+
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptés en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``. 
+
+Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
+
+::
+
+    html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
+   {
+      background :
+      url(bandeau_test.jpg)
+   }
+
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``>geonature/frontend/src`` .
+
+Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
 
 Intégrer des données
 --------------------
@@ -514,7 +589,37 @@ Si vous souhaitez modifier le MNT pour mettre celui de votre territoire :
 * Videz le contenu de la table ``ref_geo.dem_vector``
 * Uploadez le fichier du MNT sur le serveur
 * Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
-TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235
+
+*TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
+
+
+
+Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
+
+Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME).
+
+::
+
+    sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
+    sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
+
+Placer votre propre fichier MNT dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). Ou télécharger le MNT par défaut.
+
+::
+
+    wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp/geonature
+    unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
+    export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
+    sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
+
+Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors des calculs en masse de l'altitude à partir de la localisation des observations, vous pouvez le faire en lançant les commandes ci-dessous. Sachez que cela prendra du temps et beaucoup d'espace disque (2.8Go supplémentaires environ pour le fichier DEM France à 250m).
+
+::
+
+    sudo -n -u postgres -s psql -d MYDBNAME -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;"
+    sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.index_dem_vector_geom;"
+
+Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul de l'altitude à la place de la table ``ref_geo.dem``
 
 Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
 
@@ -541,9 +646,11 @@ Nous présenterons ici la première solution qui est privilégiée pour disposer
 * Intégrer les données dans ces tables (avec les fonctions de ``gn_imports``, avec QGIS ou pgAdmin).
 * Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers (en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
 
-Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature.
+Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter les 2 exemples d'import dans cette documentation.
 
 Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
+
+Import depuis SICEN (ObsOcc) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen ou import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 
 Module OCCTAX
 -------------

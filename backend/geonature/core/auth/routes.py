@@ -134,9 +134,9 @@ def loginCas():
 
             # User cookie
             current_user = {
-                'userName': user_login,
-                'user_id': user_id,
-                'organism_id': organism_id if organism_id else -1
+                'user_login': user_login,
+                'id_role': user_id,
+                'id_organisme': organism_id if organism_id else -1
             }
             response.set_cookie(
                 'current_user',

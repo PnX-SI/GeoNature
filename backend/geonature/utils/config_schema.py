@@ -11,7 +11,7 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE
 )
-
+from geonature.utils.env import (GEONATURE_VERSION)
 
 class CasUserSchemaConf(Schema):
     URL = fields.Url(
@@ -134,6 +134,7 @@ class Synthese(Schema):
 
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='GeoNature2')
+    GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing='fr')
     PASS_METHOD = fields.String(
         missing='hash',

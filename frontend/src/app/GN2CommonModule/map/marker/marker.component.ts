@@ -46,6 +46,7 @@ export class MarkerComponent implements OnInit, OnChanges {
 
   enableMarkerOnClick() {
     this.map.on('click', (e: any) => {
+      this.mapservice.justLoaded = false;
       // check zoom level
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
@@ -66,6 +67,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     }
     // observable if map click
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
+    this.mapservice.justLoaded = false;
   }
 
   markerMoveEvent(marker: Marker) {

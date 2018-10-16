@@ -1,5 +1,14 @@
 #!/bin/bash
 
+OS_BITS="$(getconf LONG_BIT)"
+
+# test the server architecture
+if [ !"$OS_BITS" == "64" ]; then
+   echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   exit 1
+fi
+
+
 # settings.ini file path. Default value overwriten by settings-path parameter
 cd ../
 SETTINGS='config/settings.ini'
@@ -96,7 +105,7 @@ fi
 
 echo "Activation du virtual env..."
 source venv/bin/activate
-echo "Installation des dépendances python..."
+echo "Installation des dépendances Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
 if [[ $MODE == "dev" ]]
@@ -165,7 +174,7 @@ fi
 # Generate the tsconfig.json 
 geonature generate_frontend_tsconfig
 # Generate the modules routing file by templating
-geonature generate_frontend_modules_route
+geonature generate_frontend_modules_route  
 
 # Retour à la racine de GeoNature
 cd ../

@@ -216,18 +216,18 @@ def export(info_role):
 
     file_name = datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
-    formated_data = [d.as_dict_ordered() for d in data]
 
-    export_columns = formated_data[0].keys()
     if export_format == 'csv':
+        formated_data = [d.as_dict_ordered() for d in data]
         return to_csv_resp(
             file_name,
             formated_data,
             separator=';',
-            columns=export_columns,
+            columns=[value for key, value in current_app.config['SYNTHESE']['EXPORT_COLUMNS'].items()]
         )
 
     elif export_format == 'geojson':
+        formated_data = [d.get_geofeature_ordered() for d in data]
         results = FeatureCollection(
             formated_data
         )
@@ -272,7 +272,7 @@ def get_status(info_role):
     filters = dict(request.args)
 
     q = (DB.session.query(distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles)
-    .join(
+         .join(
         Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom
     ).join(
         TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom

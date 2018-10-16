@@ -39,7 +39,7 @@ AS $$
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION pr_occtax.get_id_counting_from_id_releve(my_id_releve integer)
+CREATE OR REPLACE FUNCTION get_id_counting_from_id_releve(my_id_releve integer)
   RETURNS integer[] AS
 $BODY$
 -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
@@ -58,7 +58,7 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION pr_occtax.get_unique_id_sinp_from_id_releve(my_id_releve integer)
+CREATE OR REPLACE FUNCTION get_unique_id_sinp_from_id_releve(my_id_releve integer)
   RETURNS uuid[] AS
 $BODY$
 -- Function which return the unique_id_sinp_occtax in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
@@ -79,7 +79,7 @@ $BODY$
 
 
 
-CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
+CREATE OR REPLACE FUNCTION id_releve_from_id_counting(my_id_counting integer)
   RETURNS integer AS
 $BODY$
 -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
@@ -99,11 +99,10 @@ $BODY$
   COST 100;
 
 -- Fonction utilisée pour les triggers vers synthese
-CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
+CREATE OR REPLACE FUNCTION insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
-  $BODY$
+$BODY$
 DECLARE
-
 new_count RECORD;
 occurrence RECORD;
 releve RECORD;
@@ -114,14 +113,13 @@ myobservers RECORD;
 id_role_loop integer;
 
 BEGIN
-
 --recupération du counting à partir de son ID
 SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
+
 -- Récupération de l'occurrence
 SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
 
 -- Récupération du relevé
-
 SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
 
 -- Récupération de la source
@@ -136,15 +134,12 @@ WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 -- Récupération du status_source depuis le JDD
 SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
 
-
 --Récupération et formatage des observateurs
 SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
 array_agg(rol.id_role) AS observers_id
 FROM pr_occtax.cor_role_releves_occtax cor
 JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
-JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = cor.id_releve_occtax
 WHERE cor.id_releve_occtax = releve.id_releve_occtax;
-
 
 -- insertion dans la synthese
 INSERT INTO gn_synthese.synthese (
@@ -245,7 +240,7 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT('Relevé : ', COALESCE(releve.comment, ' - '), 'Occurrence: ', COALESCE(occurrence.comment, ' -')),
+  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||occurrence.comment, NULL)),
   'I'
 );
 
@@ -611,7 +606,7 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 --   COST 100;
 
 
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_insert_counting()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -642,7 +637,7 @@ $BODY$
 
 
 -- DELETE counting
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_counting()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_counting()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -656,7 +651,7 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 -- DELETE counting
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_delete_counting()
+CREATE OR REPLACE FUNCTION fct_tri_delete_counting()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -674,7 +669,7 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
   -- UPDATE counting
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_update_counting()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -707,15 +702,17 @@ $BODY$
 
 -- UPDATE Occurrence
 -- TODO: SENSIBILITE NON GEREE
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
-RETURNS trigger AS
+CREATE OR REPLACE FUNCTION fct_tri_synthese_update_occ()
+  RETURNS trigger AS
 $BODY$
 DECLARE
   releve RECORD;
 BEGIN
   -- récupération du releve pour le commentaire à concatener
   SELECT INTO releve * FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = NEW.id_releve_occtax;
-    UPDATE gn_synthese.synthese SET
+  IF releve.comment = '' THEN releve.comment = NULL; END IF;
+  IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
+  UPDATE gn_synthese.synthese SET
     id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
     id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
     id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
@@ -733,17 +730,17 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT('Relevé : ',COALESCE(releve.comment, '-' ), ' Occurrence: ', COALESCE(NEW.comment, '-' )),
+    comments  = CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||NEW.comment, NULL)),
     last_action = 'U'
-    WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
+  WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
   RETURN NULL;
 END;
 $BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- DELETE OCCURRENCE
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_occ()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_occ()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -758,7 +755,7 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_delete_occ()
+CREATE OR REPLACE FUNCTION fct_tri_delete_occ()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -778,28 +775,26 @@ COST 100;
 
 
 -- UPDATE Releve
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
   theoccurrence RECORD;
-  theobservers character varying;
+  myobservers text;
 BEGIN
- 
-  IF NEW.observers_txt IS NULL THEN
-    SELECT INTO theobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
-    FROM pr_occtax.cor_role_releves_occtax cor
-    JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
-    JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = cor.id_releve_occtax
-    WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
-  ELSE 
-    theobservers:= NEW.observers_txt;
+  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  --Récupération et formatage des observateurs
+  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+  FROM pr_occtax.cor_role_releves_occtax cor
+  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  IF myobservers IS NULL THEN
+    myobservers = NEW.observers_txt;
   END IF;
-
   --mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
-      observers = theobservers,
+      observers = myobservers,
       id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
@@ -812,11 +807,12 @@ BEGIN
       last_action = 'U'
   WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
   -- récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
-  IF(NEW.comment <> OLD.comment) THEN
+  IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
+  IF(NEW.comment IS DISTINCT FROM OLD.comment) THEN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
       LOOP
           UPDATE gn_synthese.synthese SET
-                comments = CONCAT('Relevé: ',COALESCE(NEW.comment, '- '), 'Occurrence: ', COALESCE(theoccurrence.comment, '-'))
+                comments = CONCAT(COALESCE('Relevé : '||NEW.comment || ' / ', NULL ), COALESCE('Occurrence: '||theoccurrence.comment, NULL))
           WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
       END LOOP;
   END IF;
@@ -828,7 +824,7 @@ $BODY$
 
 
 -- suppression d'un relevé
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_releve()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_releve()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -843,7 +839,7 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 -- trigger insertion cor_role_releve_occtax
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_insert_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -853,7 +849,7 @@ BEGIN
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   
   IF uuids_counting IS NOT NULL THEN
-      -- insertion dans cor_role_synthese pour chaque counting
+      -- insertion dans cor_observer_synthese pour chaque counting
       INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
       SELECT id_synthese, NEW.id_role 
       FROM gn_synthese.synthese 
@@ -867,7 +863,7 @@ COST 100;
 
 
 -- trigger update cor_role_releve_occtax
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_cor_role_releve()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_update_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -892,7 +888,7 @@ $BODY$
   COST 100;
 
 -- delete cor_role
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_delete_cor_role_releve()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE

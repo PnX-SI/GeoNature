@@ -9,7 +9,7 @@ Prérequis
 
 Ressources minimum serveur :
 
-- Un serveur Linux disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+- Un serveur Linux **architecture 64-bits** disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
 
 GeoNature utilise les technologies suivantes:
 
@@ -65,7 +65,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo apt-get install -y supervisor
     sudo apt-get install -y apache2
     
- Sur ubuntu 18 installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``
+Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu
 
 Installation de l'application
 -----------------------------
@@ -206,7 +206,7 @@ Mise à jour de l'application
     mv GeoNature-X.Y.Z /home/`whoami`/geonature/
     cd geonature
 
-* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
+* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases. Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions et notamment les scripts de mise à jour de la base de données à exécuter successivement. 
 
 * Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
 

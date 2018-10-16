@@ -1,3 +1,11 @@
+'''   
+    Fichier de création des commandes geonature
+    Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
+    dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    un paquet PIP du requirement GeoNature n'a pas été bien installé
+'''
 import sys
 import logging
 import subprocess
@@ -87,7 +95,7 @@ def frontend_routes_templating():
             str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts'), 'w'
         ) as output_file:
             output_file.write(route_template)
-    
+
     log.info("...%s\n", MSG_OK)
 
 

@@ -40,8 +40,6 @@ from geonature.utils.env import (
 from geonature.utils.config_schema import (
     ManifestSchemaConf
 )
-from geonature.core.users.models import TApplications
-from geonature.core.gn_commons.models import TModules
 
 log = logging.getLogger(__name__)
 
@@ -156,6 +154,8 @@ def gn_module_import_requirements(module_path):
 
 
 def gn_module_activate(module_name, activ_front, activ_back):
+    from geonature.core.gn_commons.models import TModules
+
     # TODO utiliser les commande os de python
     log.info("Activate module")
 
@@ -192,6 +192,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
 
 def gn_module_deactivate(module_name, activ_front, activ_back):
     log.info('Desactivate module')
+    from geonature.core.gn_commons.models import TModules
     try:
         app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
         with app.app_context():
@@ -324,9 +325,15 @@ def create_external_assets_symlink(module_path, module_name):
 
 def add_application_db(module_name, url, module_id=None):
     log.info('Register the module in t_application ... \n')
+    from geonature.core.users.models import TApplications
+    from geonature.core.gn_commons.models import TModules
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+    if url[0] == '/':
+        url = url[1:]
+    if url[-1:] == '/':
+        url = url[:-1]
     with app.app_context():
         # if module_id: try to insert in t_application
         # check if the module in TApplications
@@ -358,6 +365,7 @@ def add_application_db(module_name, url, module_id=None):
             module = DB.session.query(TModules).filter(
                 TModules.module_name == module_name
             ).one()
+        # remove '/' before url_path if exist
         except NoResultFound:
             new_module = TModules(
                 id_module=module_id,

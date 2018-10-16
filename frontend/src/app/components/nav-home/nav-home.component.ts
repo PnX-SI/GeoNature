@@ -4,7 +4,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
-import * as test from '../../../conf/settings.default.json';
 import { MatSidenav } from '@angular/material/sidenav';
 import { SideNavService } from '../../components/sidenav-items/sidenav.service';
 import { Location } from '@angular/common';
