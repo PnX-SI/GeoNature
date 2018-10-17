@@ -17,7 +17,6 @@ then
 my_url=$my_url/
 fi
 
-
 # Check os and versions
 if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ] 
 then
@@ -255,7 +254,7 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 sudo sh -c 'echo "<VirtualHost *:80>" >> /etc/apache2/sites-available/taxhub.conf'
 dom="${my_url:7}"
 dom=${dom%?}
-sudo sh -c 'echo "Servername '$dom'" >> /etc/apache2/sites-available/taxhub.conf'
+sudo sh -c 'echo "Servername "'$dom' >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
