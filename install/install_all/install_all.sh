@@ -11,13 +11,13 @@ if [ !"$OS_BITS" == "64" ]; then
    exit 1
 fi
 
-# format my_url to set a / at the end
+# Format my_url to set a / at the end
 if [ "${my_url: -1}" != '/' ] 
 then
 my_url=$my_url/
 fi
 
-# Check os and versions
+# Check OS and versions
 if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ] 
 then
     echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour les distributions Debian et Ubuntu\e[0m" >&2
@@ -252,9 +252,11 @@ sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<VirtualHost *:80>" >> /etc/apache2/sites-available/taxhub.conf'
-dom="${my_url:7}"
-dom=${dom%?}
-sudo sh -c 'echo "Servername "'$dom' >> /etc/apache2/sites-available/taxhub.conf'
+# Eclater la variable my_url pour supprimer le http://
+IFS='/'
+domain=($my_url)
+domain=(${domain[2]})
+sudo sh -c 'echo "Servername "'$domain' >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
