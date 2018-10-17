@@ -284,7 +284,7 @@ CREATE TABLE t_medias
   unique_id_media uuid NOT NULL DEFAULT public.uuid_generate_v4(),
   id_nomenclature_media_type integer NOT NULL,
   id_table_location integer NOT NULL,
-  uuid_attached_row uuid NOT NULL,
+  uuid_attached_row uuid,
   title_fr character varying(255),
   title_en character varying(255),
   title_it character varying(255),
