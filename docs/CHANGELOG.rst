@@ -24,6 +24,7 @@ CHANGELOG
 * Utilisation de la vue ``export_occtax_sinp`` et non plus ``export_occtax_dlb`` par défaut pour les exports Occtax (#462)
 * Complément et correction des vues ``export_occtax_sinp`` et ``export_occtax_dlb`` (#462)
 * Mise à jour de Marshmallow (2.5.0 => 2.5.1)
+* Améliorations des routes de ``gn_monitoring`` et de la configuration des modules de suivi pour pouvoir utiliser le nom d'une application plutôt que son identifiant
 * Export Synthèse - Remplacement de la barre de téléchargement par un spinner (#451)
 
 **Corrections**
@@ -41,6 +42,7 @@ CHANGELOG
 * Correction de l'activation du formulaire Occtax après localisation du relevé (#469 et #471)
 * Carte - Enlever le remplissage des lignes (#458)
 * Amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#465)
+* Suppression d'un doublon dans le modèle de ``gn_commons.t_modules`` (merci @lpofredc)
 
 **Autres**
 
@@ -224,7 +226,7 @@ Module d'administration des tables centrales de GeoNature
 
 **Notes de version**
 
-Pour les utilisateurs utilisant la version 1 : 
+**1.** Pour les utilisateurs utilisant la version 1 de GeoNature : 
 
 Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
 
@@ -235,19 +237,19 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 
 *TODO : MAJ depuis V1 à  tester et compléter*
 
-Pour les utilisateurs utilisant la version 2.0.0.beta5 : 
+**2.** Pour les utilisateurs utilisant la version 2.0.0.beta5 : 
 
-* Suivre la procédure habituelle de mise à jour
-* Exécuter les commandes suivantes:
-
-    ::
-
-        cd geonature/backend
-        source venv/bin/activate
-        geonature generate_frontend_modules_route
-        geonature frontend_build
-
+* Supprimer le schéma ``gn_synthese`` puis le recréer dans sa version RC1 (#430)
 * Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5-to-2.0.0rc1.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
+* Suivre la procédure habituelle de mise à jour
+* Exécuter les commandes suivantes :
+
+  ::
+
+    cd geonature/backend
+    source venv/bin/activate
+    geonature generate_frontend_modules_route
+    geonature frontend_build
 
 
 2.0.0.beta5 (2018-07-16)
