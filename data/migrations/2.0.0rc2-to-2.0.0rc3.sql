@@ -653,3 +653,12 @@ CREATE TRIGGER tri_log_changes
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+
+----------------------------
+----------------------------
+--------- COMMONS ----------
+----------------------------
+----------------------------
+
+ALTER TABLE gn_commons.t_medias ALTER COLUMN uuid_attached_row DROP NOT NULL;
