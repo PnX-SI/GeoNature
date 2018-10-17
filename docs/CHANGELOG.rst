@@ -9,6 +9,7 @@ CHANGELOG
 
 * Possibilité d'utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)
+* INSTALL_ALL - Amélioration de la conf Apache de TaxHub pour gérer son URL sans ``/`` à la fin
 * Dessin cartographique d'une autre couleur (rouge) que les observations (bleu)
 * Occtax : retour au zoom précédent lors de l'enchainement de relevé (#436)
 * Occtax : observateur rempli par défaut avec l'utilisateur connecté (#438)
@@ -43,7 +44,7 @@ CHANGELOG
 
 **Autres**
 
-* Mise à jour de TaxHub (Doc utilisateur, script d'import des médias depuis API INPN Taxref et remise à zéro des séquences)
+* Mise à jour de TaxHub (Doc utilisateur, configuration Apache, script d'import des médias depuis API INPN Taxref et remise à zéro des séquences)
 * Script de migration des données SICEN (ObsOcc) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
 * Script d'import continu depuis une BDD externe vivante (avec exemple SICEN) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Module Suivi Flore Territoire fonctionnel et installable (https://github.com/PnX-SI/gn_module_suivi_flore_territoire)
@@ -57,7 +58,7 @@ CHANGELOG
 
 * Suivez la procédure standard de mise à jour de GeoNature
 * Exécutez l'update de la BDD GeoNature (``data/migrations/2.0.0rc2-to-2.0.0rc3.sql``)
-* Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases)
+* Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases) ainsi que sa configuration pour qu'il fonctionne sans ``/`` à la fin de son URL
 
 2.0.0-rc.2 (2018-09-24)
 -----------------------
