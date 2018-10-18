@@ -44,7 +44,7 @@ Pour chaque certificat, 4 fichiers sont générés :
 Configuration Apache
 --------------------
 
-Ouvrir le fichier ``/etc/apache2/sites-availables/000-default.conf`` et le modifier de la manière suivante :
+Ouvrir le fichier ``/etc/apache2/sites-available/000-default.conf`` et le modifier de la manière suivante :
 
 ::
     
