@@ -19,7 +19,7 @@ Lancer la commande suivant pour générer des certificats et des clés pour l’
 
 ::
   
-    sudo certbot certonly --webroot --webroot-path /var/html/www --domain test.ecrins-parcnational.net --email monemail@ecrins-parcnational.fr
+    sudo certbot certonly --webroot --webroot-path /var/www/html --domain test.ecrins-parcnational.net --email monemail@ecrins-parcnational.fr
 
 - ``certonly`` : demander la création du certificat uniquement.
 - ``--webroot`` : utiliser le plugin webroot qui se contente d’ajouter des fichiers dans le dossier défini via ``--webroot-path``.
