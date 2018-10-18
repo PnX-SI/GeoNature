@@ -234,9 +234,7 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
     git reset HEAD
     -> vous êtes à jour sur la branche master
 
-    
-    
-    
+
 @TODO : A relire et à basculer dans DOC DEVELOPEMENT ?
 
 Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``) de la manière suivante :
@@ -246,7 +244,7 @@ Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/
     URL_APPLICATION = 'http://127.0.0.1:4200'
     API_ENDPOINT = 'http://127.0.0.1:8000'
     API_TAXHUB =  'http://127.0.0.1:5000/api'
-    ID_APPLICATION_GEONATURE = 14
+    ID_APPLICATION_GEONATURE = 3
 
 Puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` :
 
@@ -255,7 +253,7 @@ Puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` :
     URL_APPLICATION: 'http://127.0.0.1:4200',
     API_ENDPOINT: 'http://127.0.0.1:8000',
     API_TAXHUB:  'http://127.0.0.1:5000/api',
-    ID_APPLICATION_GEONATURE: 14
+    ID_APPLICATION_GEONATURE: 3
 
 * Lancer le serveur de développement du frontend grâce à Angular-CLI :
 
@@ -289,4 +287,4 @@ Puis lancer le backend en mode développement :
 
 **Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
 
-Vous pouvez vous connecter à l'application avec les identifiants 'admin/admin'.
+Vous pouvez vous connecter à l'application avec l'identifiant ``admin`` et le mot de passe ``admin``.

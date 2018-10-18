@@ -16,6 +16,7 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
+
 CREATE OR REPLACE FUNCTION get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql
@@ -44,7 +45,6 @@ CREATE OR REPLACE FUNCTION get_id_counting_from_id_releve(my_id_releve integer)
 $BODY$
 -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
 DECLARE the_array_id_counting integer[];
-
 BEGIN
 SELECT INTO the_array_id_counting array_agg(counting.id_counting_occtax)
 FROM pr_occtax.cor_counting_occtax counting
@@ -63,7 +63,6 @@ CREATE OR REPLACE FUNCTION get_unique_id_sinp_from_id_releve(my_id_releve intege
 $BODY$
 -- Function which return the unique_id_sinp_occtax in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
 DECLARE the_array_uuid_sinp uuid[];
-
 BEGIN
 SELECT INTO the_array_uuid_sinp array_agg(counting.unique_id_sinp_occtax)
 FROM pr_occtax.cor_counting_occtax counting
@@ -77,21 +76,17 @@ $BODY$
   COST 100;
 
 
-
-
 CREATE OR REPLACE FUNCTION id_releve_from_id_counting(my_id_counting integer)
   RETURNS integer AS
 $BODY$
 -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
 DECLARE the_id_releve integer;
-
 BEGIN
   SELECT INTO the_id_releve rel.id_releve_occtax
   FROM pr_occtax.t_releves_occtax rel
   JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
   JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
   WHERE counting.id_counting_occtax = my_id_counting;
-
   RETURN the_id_releve;
 END;
 $BODY$
@@ -240,7 +235,7 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||occurrence.comment, NULL)),
+  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence : '||occurrence.comment, NULL)),
   'I'
 );
 
@@ -383,9 +378,10 @@ CREATE TABLE defaults_nomenclatures_value (
 );
 
 
----------------
---PRIMARY KEY--
----------------
+----------------
+--PRIMARY KEYS--
+----------------
+
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT pk_t_occurrences_occtax PRIMARY KEY (id_occurrence_occtax);
 
@@ -402,9 +398,10 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_pr_occtax_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
 
 
----------------
---FOREIGN KEY--
----------------
+----------------
+--FOREIGN KEYS--
+----------------
+
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT fk_t_releves_occtax_t_datasets FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
@@ -416,8 +413,6 @@ ALTER TABLE ONLY t_releves_occtax
 
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT fk_t_releves_occtax_regroupement_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_t_releves_occtax FOREIGN KEY (id_releve_occtax) REFERENCES t_releves_occtax(id_releve_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -454,7 +449,6 @@ ALTER TABLE ONLY t_occurrences_occtax
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-
 ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_occtax) REFERENCES t_occurrences_occtax(id_occurrence_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -470,13 +464,11 @@ ALTER TABLE ONLY cor_counting_occtax
 ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT fk_cor_counting_occtax_typ_count FOREIGN KEY (id_nomenclature_type_count) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-
 ALTER TABLE ONLY cor_role_releves_occtax
     ADD CONSTRAINT fk_cor_role_releves_occtax_t_releves_occtax FOREIGN KEY (id_releve_occtax) REFERENCES t_releves_occtax(id_releve_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_role_releves_occtax
     ADD CONSTRAINT fk_cor_role_releves_occtax_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occtax_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
@@ -488,9 +480,10 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occtax_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
---------------
---CONSTRAINS--
---------------
+---------------
+--CONSTRAINTS--
+---------------
+
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT check_t_releves_occtax_altitude_max CHECK (altitude_max >= altitude_min);
 
@@ -505,7 +498,6 @@ ALTER TABLE t_releves_occtax
 
 ALTER TABLE t_releves_occtax
   ADD CONSTRAINT check_t_releves_occtax_regroupement_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
-
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT check_t_occurrences_occtax_cd_nom_isinbib_noms CHECK (taxonomie.check_is_inbibnoms(cd_nom)) NOT VALID;
@@ -540,7 +532,6 @@ ALTER TABLE t_occurrences_occtax
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'METH_DETERMIN')) NOT VALID;
 
-
 ALTER TABLE cor_counting_occtax
   ADD CONSTRAINT check_cor_counting_occtax_life_stage CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_life_stage,'STADE_VIE')) NOT VALID;
 
@@ -559,7 +550,6 @@ ALTER TABLE cor_counting_occtax
 ALTER TABLE cor_counting_occtax
     ADD CONSTRAINT check_cor_counting_occtax_count_max CHECK (count_max >= count_min AND count_max > 0);
 
-
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
 
@@ -573,6 +563,7 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
+
 -- Calcul de la sensibilité à affiner
 
 -- CREATE OR REPLACE FUNCTION insert_occurrences_occtax()
@@ -668,14 +659,14 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
-  -- UPDATE counting
+-- UPDATE counting
 CREATE OR REPLACE FUNCTION fct_tri_synthese_update_counting()
 RETURNS trigger AS
 $BODY$
 DECLARE
 BEGIN
 
-  -- update dans la synthese
+-- Update dans la synthese
   UPDATE gn_synthese.synthese
   SET
   entity_source_pk_value = NEW.id_counting_occtax,
@@ -745,7 +736,7 @@ RETURNS trigger AS
 $BODY$
 DECLARE
 BEGIN
-  -- suppression dans la synthese
+  -- Suppression dans la synthese
     DELETE FROM gn_synthese.synthese WHERE unique_id_sinp IN (
       SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = OLD.id_occurrence_occtax 
     );
@@ -823,7 +814,7 @@ $BODY$
   COST 100;
 
 
--- suppression d'un relevé
+-- Suppression d'un relevé
 CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_releve()
 RETURNS trigger AS
 $BODY$
@@ -838,18 +829,18 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
--- trigger insertion cor_role_releve_occtax
+-- Trigger insertion cor_role_releve_occtax
 CREATE OR REPLACE FUNCTION fct_tri_synthese_insert_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
   uuids_counting uuid[];
 BEGIN
-  -- récupération des id_counting à partir de l'id_releve
+  -- Récupération des id_counting à partir de l'id_releve
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   
   IF uuids_counting IS NOT NULL THEN
-      -- insertion dans cor_observer_synthese pour chaque counting
+      -- Insertion dans cor_observer_synthese pour chaque counting
       INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
       SELECT id_synthese, NEW.id_role 
       FROM gn_synthese.synthese 
@@ -862,14 +853,14 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
--- trigger update cor_role_releve_occtax
+-- Trigger update cor_role_releve_occtax
 CREATE OR REPLACE FUNCTION fct_tri_synthese_update_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
   uuids_counting  uuid[];
 BEGIN
-  -- récupération des id_counting à partir de l'id_releve
+  -- Récupération des id_counting à partir de l'id_releve
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   IF uuids_counting IS NOT NULL THEN
       UPDATE gn_synthese.cor_observer_synthese SET
@@ -887,17 +878,17 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
--- delete cor_role
+-- Delete cor_role
 CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_cor_role_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
   uuids_counting  uuid[];
 BEGIN
-  -- récupération des id_counting à partir de l'id_releve
+  -- Récupération des id_counting à partir de l'id_releve
   SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(OLD.id_releve_occtax::integer);
   IF uuids_counting IS NOT NULL THEN
-      --suppression des enregistrements dans cor_observer_synthese
+      -- Suppression des enregistrements dans cor_observer_synthese
       DELETE FROM gn_synthese.cor_observer_synthese
       WHERE id_role = OLD.id_role 
       AND id_synthese IN (
@@ -916,6 +907,7 @@ COST 100;
 ------------
 --TRIGGERS--
 ------------
+
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
   ON cor_counting_occtax
@@ -952,7 +944,7 @@ CREATE TRIGGER tri_calculate_geom_local
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
 
-  -- triggers vers la synthese
+-- Triggers vers la synthese
 
 DROP TRIGGER IF EXISTS tri_insert_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_insert_synthese_cor_counting_occtax
@@ -1042,7 +1034,8 @@ CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
 ------------
 --VIEWS--
 ------------
---Vue représentant l'ensemble des observations du protocole occtax pour la représentation du module carte liste
+
+-- Vue représentant l'ensemble des observations du protocole Occtax pour la représentation du module carte liste
 DROP VIEW IF EXISTS v_releve_occtax;
 CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
  SELECT rel.id_releve_occtax,
@@ -1072,8 +1065,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
   GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
-
---Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
+-- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
@@ -1102,6 +1094,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
 --------------------
 -- ASSOCIATED DATA--
 --------------------
+                    
 -- Liste et structure des tables dont le contenu est tracé dans t_history_actions
 -- On ne défini pas d'id pour la PK car au moment de la création du module on ne sais pas où en est la séquence
 INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
