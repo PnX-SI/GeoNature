@@ -52,6 +52,14 @@ Editez le fichier ``/home/<my_user>/geonature/frontend/tsconfig.json`` et rensei
     "@geonature/*" : ["/home/<my_user>/geonature/frontend/src/app/*"],
     "@geonature_config/*" : ["/home/<my_user>/geonaturefrontend/src/conf/*"],
 
+- **Problème d'affichage du Frontend**
+
+Si vous rencontrez des problèmes de librairies Frontend qui n'ont pas bien été installées ou non accessibles, vous pouvez les réinstaller
+
+- Supprimer le répertoire ``frontend/node_modules``
+- Réinstaller les dépendances du Frontend : Dans le répertoire frontend, lancez la commande ``npm install``
+- Reconstruire le Frontend : Dans le répertoire frontend, lancez la commande ``npm run build``
+
 Problèmes liés à la BDD
 -----------------------
 

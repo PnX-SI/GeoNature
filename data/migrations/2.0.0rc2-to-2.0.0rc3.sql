@@ -1,5 +1,3 @@
-
-
 --------------------------
 --------------------------
 ------- GN_SYNTHESE ------
@@ -21,11 +19,11 @@ BEGIN
   IF (TG_OP = 'DELETE') THEN
     theidsynthese = OLD.id_synthese;
   END IF;
-  --Construire le texte pour le champ observers de la synthese
+  -- Construire le texte pour le champ observers de la synthese
   SELECT INTO theobservers array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ')
   FROM utilisateurs.t_roles r
   WHERE r.id_role IN(SELECT id_role FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese);
-  --mise à jour du champ observers dans la table synthese
+  -- Mise à jour du champ observers dans la table synthese
   UPDATE gn_synthese.synthese 
   SET observers = theobservers
   WHERE id_synthese =  theidsynthese;
@@ -119,7 +117,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
 ---------------------------
 ---------------------------
 
---création de la table ref_geo.dem si elle n'existe pas
+-- Création de la table ref_geo.dem si elle n'existe pas
 CREATE TABLE IF NOT EXISTS ref_geo.dem
 (
   rid serial NOT NULL,
@@ -143,7 +141,7 @@ BEGIN
     SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
 	
   IF is_vectorized IS NULL THEN
-    -- Use dem
+    -- Use DEM
     RETURN QUERY
     SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
     FROM (
@@ -192,7 +190,7 @@ myobservers RECORD;
 id_role_loop integer;
 
 BEGIN
---recupération du counting à partir de son ID
+-- Recupération du counting à partir de son ID
 SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
 
 -- Récupération de l'occurrence
@@ -220,7 +218,7 @@ FROM pr_occtax.cor_role_releves_occtax cor
 JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
 WHERE cor.id_releve_occtax = releve.id_releve_occtax;
 
--- insertion dans la synthese
+-- Insertion dans la synthese
 INSERT INTO gn_synthese.synthese (
 unique_id_sinp,
 unique_id_sinp_grp,
@@ -276,7 +274,7 @@ VALUES(
   id_source,
   new_count.id_counting_occtax,
   releve.id_dataset,
-  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
+  -- Nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
   pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
   releve.id_nomenclature_grp_typ,
   occurrence.id_nomenclature_obs_meth,
@@ -285,7 +283,7 @@ VALUES(
   occurrence.id_nomenclature_bio_condition,
   occurrence.id_nomenclature_naturalness,
   occurrence.id_nomenclature_exist_proof,
-    -- statut de validation récupérer à partir de gn_commons.t_validations
+    -- Statut de validation récupérer à partir de gn_commons.t_validations
   validation.id_nomenclature_valid_status,
   occurrence.id_nomenclature_diffusion_level,
   new_count.id_nomenclature_life_stage,
@@ -294,7 +292,7 @@ VALUES(
   new_count.id_nomenclature_type_count,
   occurrence.id_nomenclature_observation_status,
   occurrence.id_nomenclature_blurring,
-  -- status_source récupéré depuis le JDD
+  -- Status_source récupéré depuis le JDD
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
   ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1')	,
@@ -319,7 +317,7 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||occurrence.comment, NULL)),
+  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence : '||occurrence.comment, NULL)),
   'I'
 );
 
@@ -336,7 +334,7 @@ $BODY$
 DECLARE
   releve RECORD;
 BEGIN
-  -- récupération du releve pour le commentaire à concatener
+  -- Récupération du releve pour le commentaire à concatener
   SELECT INTO releve * FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = NEW.id_releve_occtax;
   IF releve.comment = '' THEN releve.comment = NULL; END IF;
   IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
@@ -375,8 +373,8 @@ DECLARE
   theoccurrence RECORD;
   myobservers text;
 BEGIN
-  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
-  --Récupération et formatage des observateurs
+  -- Calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  -- Récupération et formatage des observateurs
   SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
   FROM pr_occtax.cor_role_releves_occtax cor
   JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
@@ -384,7 +382,7 @@ BEGIN
   IF myobservers IS NULL THEN
     myobservers = NEW.observers_txt;
   END IF;
-  --mise à jour en synthese des informations correspondant au relevé uniquement
+  -- Mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese SET
       id_dataset = NEW.id_dataset,
       observers = myobservers,
@@ -399,7 +397,7 @@ BEGIN
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       last_action = 'U'
   WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
-  -- récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
+  -- Récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
   IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
   IF(NEW.comment IS DISTINCT FROM OLD.comment) THEN
       FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
@@ -641,6 +639,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS
 -------- MONITORING --------
 ----------------------------
 ----------------------------
+
 DROP TRIGGER trg_cor_site_area ON gn_monitoring.t_base_sites;
 DROP TRIGGER tri_log_changes ON gn_monitoring.t_base_sites;
 ALTER TABLE gn_monitoring.t_base_sites ALTER COLUMN geom SET DATA TYPE public.geometry(geometry,4326);
@@ -654,3 +653,12 @@ CREATE TRIGGER tri_log_changes
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+
+----------------------------
+----------------------------
+--------- COMMONS ----------
+----------------------------
+----------------------------
+
+ALTER TABLE gn_commons.t_medias ALTER COLUMN uuid_attached_row DROP NOT NULL;

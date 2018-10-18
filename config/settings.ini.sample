@@ -1,7 +1,7 @@
 # URL Configuration
 ###################
 
-# Url of the server must end with /
+# URL of the server must end with /
 my_url=http://url.com/
 
 
@@ -24,7 +24,7 @@ db_port=5432
 db_name=geonature2db
 
 # GeoNature database owner username
-user_pg=geonatuser
+user_pg=geonatadmin
 
 # GeoNature database owner password
 user_pg_pass=monpassachanger
@@ -54,16 +54,16 @@ add_sample_data=true
 #################################################
 
 # Les scripts SQL de création des schémas 'utilisateurs', 'taxonomie' et 'nomenclature' de GeoNature sont téléchargés depuis le dépôt github des projets UsersHub et TaxHub
-# Les trois paramètres ci-dessous visent à indiquer dans quelle version (release, branche ou tag) les scripts doivent être récupés
+# Les trois paramètres ci-dessous visent à indiquer dans quelle version (release, branche ou tag) les scripts doivent être récupérés
 
 # Définir dans quelle version de UsersHub (release, branche ou tag) prendre le code SQL permettant la création du schéma utilisateurs de la base de données de GeoNature
-usershub_release=1.3.2
+usershub_release=1.3.3
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.5.0
+taxhub_release=1.5.1
 
-# Définir dans quelle version du sous-module des nomenclatures (realease, branche ou tag) prendre le code SQL permettant la création du schéma 'ref_nomenvclature' de la base de données GeoNature
-nomenclature_release=1.2.1
+# Définir dans quelle version du sous-module des nomenclatures (release, branche ou tag) prendre le code SQL permettant la création du schéma 'ref_nomenclatures' de la base de données GeoNature
+nomenclature_release=1.2.2
 
 
 #Configuration python

@@ -2,13 +2,14 @@
 CHANGELOG
 =========
 
-2.0.0-rc.3 (unreleased)
+2.0.0-rc.3 (2018-10-18)
 -----------------------
 
 **Nouveautés**
 
 * Possibilité d'utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)
+* INSTALL_ALL - Amélioration de la conf Apache de TaxHub pour gérer son URL sans ``/`` à la fin
 * Dessin cartographique d'une autre couleur (rouge) que les observations (bleu)
 * Occtax : retour au zoom précédent lors de l'enchainement de relevé (#436)
 * Occtax : observateur rempli par défaut avec l'utilisateur connecté (#438)
@@ -23,6 +24,7 @@ CHANGELOG
 * Utilisation de la vue ``export_occtax_sinp`` et non plus ``export_occtax_dlb`` par défaut pour les exports Occtax (#462)
 * Complément et correction des vues ``export_occtax_sinp`` et ``export_occtax_dlb`` (#462)
 * Mise à jour de Marshmallow (2.5.0 => 2.5.1)
+* Améliorations des routes de ``gn_monitoring`` et de la configuration des modules de suivi pour pouvoir utiliser le nom d'une application plutôt que son identifiant
 * Export Synthèse - Remplacement de la barre de téléchargement par un spinner (#451)
 
 **Corrections**
@@ -38,15 +40,17 @@ CHANGELOG
 * Ne pas remplir ``pr_occtax.cor_role_releves_occtax`` si ``observers_txt = true`` (#463)
 * Edition d'un relevé Occtax - Ne pas recalculer l'altitude existante (#424)
 * Correction de l'activation du formulaire Occtax après localisation du relevé (#469 et #471)
-* Enlever le remplissage des lignes (#458)
+* Carte - Enlever le remplissage des lignes (#458)
 * Amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#465)
+* Suppression d'un doublon dans le modèle de ``gn_commons.t_modules`` (merci @lpofredc)
 
 **Autres**
 
-* Mise à jour de TaxHub (Doc utilisateur, script d'import des médias depuis API INPN Taxref et remise à zéro des séquences)
+* Mise à jour de TaxHub (Doc utilisateur, configuration Apache, script d'import des médias depuis API INPN Taxref et remise à zéro des séquences)
 * Script de migration des données SICEN (ObsOcc) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
 * Script d'import continu depuis une BDD externe vivante (avec exemple SICEN) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Module Suivi Flore Territoire fonctionnel et installable (https://github.com/PnX-SI/gn_module_suivi_flore_territoire)
+* Module Suivi Chiro fonctionnel et installable (https://github.com/PnCevennes/gn_module_suivi_chiro) ainsi que son Frontend générique pour les protocoles de suivi (https://github.com/PnCevennes/projet_suivis_frontend/)
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
 * MCD du module Suivi Habitat Territoire (https://github.com/PnX-SI/gn_module_suivi_habitat_territoire)
 * MCD du module Flore Prioritaire (https://github.com/PnX-SI/gn_module_flore_prioritaire)
@@ -55,9 +59,10 @@ CHANGELOG
 
 **Notes de version**
 
-* Suivez la procédure standard de mise à jour de GeoNature
+* Suivez la procédure standard de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 * Exécutez l'update de la BDD GeoNature (``data/migrations/2.0.0rc2-to-2.0.0rc3.sql``)
-* Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases)
+* Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases) ainsi que sa configuration pour qu'il fonctionne sans ``/`` à la fin de son URL
+
 
 2.0.0-rc.2 (2018-09-24)
 -----------------------
@@ -223,7 +228,7 @@ Module d'administration des tables centrales de GeoNature
 
 **Notes de version**
 
-Pour les utilisateurs utilisant la version 1 : 
+**1.** Pour les utilisateurs utilisant la version 1 de GeoNature : 
 
 Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
 
@@ -234,19 +239,19 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 
 *TODO : MAJ depuis V1 à  tester et compléter*
 
-Pour les utilisateurs utilisant la version 2.0.0.beta5 : 
+**2.** Pour les utilisateurs utilisant la version 2.0.0.beta5 : 
 
-* Suivre la procédure habituelle de mise à jour
-* Exécuter les commandes suivantes:
-
-    ::
-
-        cd geonature/backend
-        source venv/bin/activate
-        geonature generate_frontend_modules_route
-        geonature frontend_build
-
+* Supprimer le schéma ``gn_synthese`` puis le recréer dans sa version RC1 (#430)
 * Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5-to-2.0.0rc1.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
+* Suivre la procédure habituelle de mise à jour
+* Exécuter les commandes suivantes :
+
+  ::
+
+    cd geonature/backend
+    source venv/bin/activate
+    geonature generate_frontend_modules_route
+    geonature frontend_build
 
 
 2.0.0.beta5 (2018-07-16)
