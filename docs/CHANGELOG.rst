@@ -50,6 +50,7 @@ CHANGELOG
 * Script de migration des données SICEN (ObsOcc) vers GeoNature : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
 * Script d'import continu depuis une BDD externe vivante (avec exemple SICEN) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Module Suivi Flore Territoire fonctionnel et installable (https://github.com/PnX-SI/gn_module_suivi_flore_territoire)
+* Module Suivi Chiro fonctionnel et installable (https://github.com/PnCevennes/gn_module_suivi_chiro) ainsi que son Frontend générique pour les protocoles de suivi (https://github.com/PnCevennes/projet_suivis_frontend/)
 * Ebauche d'un module pour les protocoles CMR (Capture-Marquage-Recapture) : https://github.com/PnX-SI/gn_module_cmr
 * MCD du module Suivi Habitat Territoire (https://github.com/PnX-SI/gn_module_suivi_habitat_territoire)
 * MCD du module Flore Prioritaire (https://github.com/PnX-SI/gn_module_flore_prioritaire)
@@ -58,9 +59,10 @@ CHANGELOG
 
 **Notes de version**
 
-* Suivez la procédure standard de mise à jour de GeoNature
+* Suivez la procédure standard de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 * Exécutez l'update de la BDD GeoNature (``data/migrations/2.0.0rc2-to-2.0.0rc3.sql``)
 * Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases) ainsi que sa configuration pour qu'il fonctionne sans ``/`` à la fin de son URL
+
 
 2.0.0-rc.2 (2018-09-24)
 -----------------------
