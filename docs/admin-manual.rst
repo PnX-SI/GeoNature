@@ -97,7 +97,7 @@ Données SIG :
 """""""""""""
 
 - Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
-- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
+- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT raster ou vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
 - La fonction ``ref_geo.fct_get_area_intersection`` permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
@@ -584,9 +584,9 @@ Référentiel géographique
 
 GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).
 
-Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
+**1.** Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
 
-* Videz le contenu de la table ``ref_geo.dem_vector``
+* Videz le contenu des tables ``ref_geo.dem`` et éventuellement ``ref_geo.dem_vector``
 * Uploadez le fichier du MNT sur le serveur
 * Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
 
@@ -621,7 +621,7 @@ Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors 
 
 Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul de l'altitude à la place de la table ``ref_geo.dem``
 
-Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
+**2.** Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
 
 * Vérifiez que leur type existe dans la table ``ref_geo.bib_areas_types``, sinon ajoutez-les
 * Ajoutez vos zonages dans la table ``ref_geo.l_areas`` en faisant bien référence à un ``id_type`` de ``ref_geo.bib_areas_types``. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS
