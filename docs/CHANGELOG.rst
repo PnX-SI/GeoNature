@@ -7,7 +7,7 @@ CHANGELOG
 
 **Corrections**
 
-* Correction du script ``ìnstall_all.sh`` au niveau de la génération de la configuration Apache de UsersHub
+* Correction du script ``ìnstall_all.sh`` au niveau de la génération de la configuration Apache de TaxHub et UsersHub
 * Correction de la version de version de PostGIS pour Debian 8 dans le script ``install_all.sh``
 * Complément de la documentation de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
