@@ -188,7 +188,7 @@ cd install/
 
 cd ../
 
-# Configuration Apache de Geonature
+# Configuration Apache de GeoNature
 sudo touch /etc/apache2/sites-available/geonature.conf
 
 sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
@@ -254,7 +254,7 @@ sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub
 sudo sh -c 'echo "<VirtualHost *:80>" >> /etc/apache2/sites-available/taxhub.conf'
 
 # Eclater la variable my_url pour supprimer le http://
-domain=$(echo $my_url | sed -r 's|.*\/\/(.*)$|\1|')
+domain=$(echo $my_url | sed -r 's|^.*\/\/(.*)$|\1|')
 
 sudo sh -c 'echo "Servername "'$domain' >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
@@ -266,7 +266,7 @@ sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</VirtualHost>" >> /etc/apache2/sites-available/taxhub.conf'
 
-# Création des fichiers systèmes liés à Taxhub
+# Création des fichiers systèmes liés à TaxHub
 . create_sys_dir.sh
 create_sys_dir
 
