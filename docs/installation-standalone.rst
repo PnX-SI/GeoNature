@@ -191,6 +191,8 @@ Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
 Mise à jour de l'application
 ----------------------------
 
+Attention, avec chaque mise à jour, il est important de sauvegarde l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
+
 * Télécharger la dernière version de GeoNature :
 
   ::
