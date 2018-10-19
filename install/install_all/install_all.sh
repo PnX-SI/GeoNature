@@ -18,7 +18,7 @@ my_url=$my_url/
 fi
 
 # Split my_url to remove http:// (for TaxHub Apache configuration)
-domain=$(echo $my_url | sed -r 's|^.*\/\/(.*)$|\1|')
+my_domain=$(echo $my_url | sed -r 's|^.*\/\/(.*)$|\1|')
 
 # Check OS and versions
 if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ]
