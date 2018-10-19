@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.0.0-rc.3.1 (unreleased)
+-------------------------
+
+**Corrections**
+
+* Correction du script ``ìnstall_all.sh`` au niveau de la génération de la configuration Apache de UsersHub
+* Correction de la version de version de PostGIS pour Debian 8 dans le script ``install_all.sh``
+* Complément de la documentation de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
+
+**Notes de version**
+
+* Installez directement cette version corrective plutôt que la 2.0.0-rc.3, mais en suivant les notes de versions de la 2.0.0-rc.3 si vous migrez depuis une version 2.0.0-rc.2
+
 2.0.0-rc.3 (2018-10-18)
 -----------------------
 
@@ -62,6 +75,7 @@ CHANGELOG
 * Suivez la procédure standard de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 * Exécutez l'update de la BDD GeoNature (``data/migrations/2.0.0rc2-to-2.0.0rc3.sql``)
 * Il est aussi conseillé de mettre à jour TaxHub en 1.5.1 (https://github.com/PnX-SI/TaxHub/releases) ainsi que sa configuration pour qu'il fonctionne sans ``/`` à la fin de son URL
+* Attention, si vous installez cette version avec le script global ``install_all.sh``, il créé un problème dans la configuration Apache de UserHub (``/etc/apache2/sites-available/usershub.conf``) et supprime tous les ``/``. Les ajouter sur la page de la documentation de UsersHub (https://github.com/PnEcrins/UsersHub/blob/master/docs/installation.rst#configuration-apache) puis relancer Apache (``https://github.com/PnEcrins/GeoNature-atlas/blob/develop/docs/installation.rst``). Il est conseillé d'installer plutôt la version corrective.
 
 
 2.0.0-rc.2 (2018-09-24)
