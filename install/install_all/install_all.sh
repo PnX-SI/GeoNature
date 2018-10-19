@@ -307,12 +307,13 @@ if [ "$install_usershub_app" = true ]; then
 
     # Conf Apache de UsersHub
     sudo touch /etc/apache2/sites-available/usershub.conf
-    echo "
-    #Configuration usershub
-    Alias /usershub /home/`whoami`/usershub/web
-    <Directory /home/`whoami`/usershub/web>
-        Require all granted
-    </Directory>  " | sudo tee -a /etc/apache2/sites-available/usershub.conf
+    sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
+    conf="Alias /usershub /home/`whoami`/usershub/web"
+    echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf 
+    conf="<Directory /home/`whoami`/usershub/web>"
+    echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf
+    sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/usershub.conf'
     sudo a2ensite usershub
 fi
 
