@@ -7,13 +7,13 @@ CHANGELOG
 
 **Corrections**
 
-* Correction du script ``ìnstall_all.sh`` au niveau de la génération de la configuration Apache de TaxHub et UsersHub
-* Correction de la version de version de PostGIS pour Debian 8 dans le script ``install_all.sh``
+* Correction du script ``ìnstall_all.sh`` au niveau de la génération de la configuration Apache de TaxHub et UsersHub (#493)
 * Complément de la documentation de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 **Notes de version**
 
 * Installez directement cette version corrective plutôt que la 2.0.0-rc.3, mais en suivant les notes de versions de la 2.0.0-rc.3 si vous migrez depuis une version 2.0.0-rc.2
+* La script ``install_all.sh`` actuel ne fonctionne pas sur Debian 8, problème de version de PostGIS qui ne s'installe pas correctement
 
 2.0.0-rc.3 (2018-10-18)
 -----------------------
