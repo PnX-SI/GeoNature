@@ -2,18 +2,20 @@
 CHANGELOG
 =========
 
-2.0.0-rc.3.1 (unreleased)
+2.0.0-rc.3.1 (2018-10-21)
 -------------------------
 
 **Corrections**
 
 * Correction du script ``ìnstall_all.sh`` au niveau de la génération de la configuration Apache de TaxHub et UsersHub (#493)
+* Suppression du Servername dans la configuration Apache de TaxHub du script ``install_all.sh``
 * Complément de la documentation de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 **Notes de version**
 
-* Installez directement cette version corrective plutôt que la 2.0.0-rc.3, mais en suivant les notes de versions de la 2.0.0-rc.3 si vous migrez depuis une version 2.0.0-rc.2
-* La script ``install_all.sh`` actuel ne fonctionne pas sur Debian 8, problème de version de PostGIS qui ne s'installe pas correctement
+* Si vous migrez depuis une version 2.0.0-rc.2, installez directement cette version corrective plutôt que la 2.0.0-rc.3, mais en suivant les notes de versions de la 2.0.0-rc.3
+* Pour mettre en place la redirection de TaxHub sans ``/``, consultez sa documentation https://taxhub.readthedocs.io/fr/latest/installation.html#configuration-apache
+* Le script ``install_all.sh`` actuel ne semble pas fonctionner sur Debian 8, problème de version de PostGIS qui ne s'installe pas correctement
 
 2.0.0-rc.3 (2018-10-18)
 -----------------------
