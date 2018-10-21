@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.0.0-rc.4 (unreleased)
+-----------------------
+
+**Corrections**
+
+*
+
+
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
 
@@ -16,6 +24,7 @@ CHANGELOG
 * Si vous migrez depuis une version 2.0.0-rc.2, installez directement cette version corrective plutôt que la 2.0.0-rc.3, mais en suivant les notes de versions de la 2.0.0-rc.3
 * Pour mettre en place la redirection de TaxHub sans ``/``, consultez sa documentation https://taxhub.readthedocs.io/fr/latest/installation.html#configuration-apache
 * Le script ``install_all.sh`` actuel ne semble pas fonctionner sur Debian 8, problème de version de PostGIS qui ne s'installe pas correctement
+
 
 2.0.0-rc.3 (2018-10-18)
 -----------------------
