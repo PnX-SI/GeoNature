@@ -427,9 +427,24 @@ Sauvegarde
 
 * Sauvegarde de la base de données :
 
-  ::
+Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront fait les sauvegardes.
 
-    pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
+::
+
+    # Créer le répertoire pour stocker les sauvegardes
+    mkdir /home/`whoami`/backup
+    # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
+    sudo adduser postgres `whoami`
+
+Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
+
+::
+
+    sudo su postgres
+    pg_dump -Fc geonature2db  > backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
+    exit
+
+Si la sauvegarde ne se fait pas, c'est qu'il faut revoir les droits du répertoire où sont faites les sauvegardes pour que l'utilisateur ``postgres`` puisse y écrire
 
 Opération à faire régulièrement grâce à une tâche cron.
 

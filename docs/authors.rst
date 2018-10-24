@@ -15,6 +15,7 @@ Parc national des Cevennes
 --------------------------
 
 * Amandine Sahl
+* Frédéric Fidon
 
 .. image:: http://geonature.fr/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
@@ -31,3 +32,4 @@ Contributeurs
 * Etienne Trimaille (Parc national de Guadeloupe))
 * Fred Cloitre (LPO Ardèche)
 * Richard Vergely (Parc national des Ecrins)
+* Sylvain Montagner (Parc naturel régional de Normandie-Maine)
