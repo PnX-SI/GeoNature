@@ -427,7 +427,7 @@ Sauvegarde
 
 * Sauvegarde de la base de données :
 
-Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront fait les sauvegardes.
+Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront faites les sauvegardes.
 
 ::
 
