@@ -26,8 +26,6 @@ class ReleveModel(DB.Model):
 
     def user_is_observer_or_digitiser(self, user):
         observers = [d.id_role for d in self.observers]
-        print(user)
-        print(observers)
         return user.id_role == self.id_digitiser or user.id_role in observers
 
     def user_is_in_dataset_actor(self, user):
@@ -57,7 +55,6 @@ class ReleveModel(DB.Model):
             self.user_is_in_dataset_actor(user) and
             level in ('2', '3')
         ):
-            print('actor and 2 or 3')
             return True
         return False
 
