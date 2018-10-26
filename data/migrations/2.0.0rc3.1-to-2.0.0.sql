@@ -1,11 +1,8 @@
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
 
-SET search_path = public;
+
+DROP VIEW pr_occtax.export_occtax_dlb;
+DROP VIEW pr_occtax.export_occtax_sinp;
+
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
@@ -113,4 +110,3 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)
     , rel.observers_txt
     , rel.geom_4326;
-
