@@ -26,6 +26,8 @@ class ReleveModel(DB.Model):
 
     def user_is_observer_or_digitiser(self, user):
         observers = [d.id_role for d in self.observers]
+        print(user)
+        print(observers)
         return user.id_role == self.id_digitiser or user.id_role in observers
 
     def user_is_in_dataset_actor(self, user):
@@ -37,7 +39,7 @@ class ReleveModel(DB.Model):
             peu ou non agir sur une donnée
         """
         # Si l'utilisateur n'a pas de droit d'accès aux données
-        if level not in ('1', '2', '3'):
+        if level == '0' or level not in ('1', '2', '3'):
             return False
 
         # Si l'utilisateur à le droit d'accéder à toutes les données
@@ -55,6 +57,7 @@ class ReleveModel(DB.Model):
             self.user_is_in_dataset_actor(user) and
             level in ('2', '3')
         ):
+            print('actor and 2 or 3')
             return True
         return False
 
