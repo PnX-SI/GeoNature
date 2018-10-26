@@ -204,17 +204,13 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   downloadData(format) {
+    let queryString = this.mapListService.urlQuery.delete("limit");
+    queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-    }/occtax/export?${this.mapListService.urlQuery.toString()}&format=${format}`;
+    }/occtax/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
-  }
-
-  onChangeFilterOps(col) {
-    // reset url query
-    this.mapListService.urlQuery.delete(this.mapListService.colSelected.prop);
-    this.mapListService.colSelected = col; // change filter selected
   }
 
   isChecked(col) {
