@@ -523,7 +523,6 @@ def export(info_role):
     export_srid = blueprint.config['export_srid']
 
     export_view = GenericTable(export_view_name, 'pr_occtax', export_geom_column, export_srid)
-
     releve_repository = ReleveRepository(export_view)
     q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
     q = get_query_occtax_filters(request.args, export_view, q, from_generic_table=True)
@@ -581,92 +580,3 @@ def export(info_role):
             error=message,
             redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
         )
-
-
-@blueprint.route('/export/sinp', methods=['GET'])
-@fnauth.check_auth_cruved(
-    'E',
-    True,
-    id_app=ID_MODULE,
-    redirect_on_expiration=current_app.config.get('URL_APPLICATION')
-)
-@csv_resp
-def export_sinp(info_role):
-    """ Return the data (CSV) at SINP
-        from pr_occtax.export_occtax_sinp view
-        If no paramater return all the dataset allowed of the user
-        params:
-        - id_dataset : integer
-        - uuid_dataset: uuid
-    """
-    viewSINP = GenericTable('export_occtax_dlb', 'pr_occtax', None)
-    q = DB.session.query(viewSINP.tableDef)
-    params = request.args
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-    # if params in empty and user not admin,
-    #    get the data off all dataset allowed
-    if not params.get('id_dataset') and not params.get('uuid_dataset'):
-        if info_role.tag_object_code != '3':
-            allowed_uuid = (
-                str(TDatasets.get_uuid(id_dataset))
-                for id_dataset in allowed_datasets
-            )
-            q = q.filter(viewSINP.tableDef.columns.jddId.in_(allowed_uuid))
-    # filter by dataset id or uuid
-    else:
-        if 'id_dataset' in params:
-            id_dataset = int(params['id_dataset'])
-            uuid_dataset = TDatasets.get_uuid(id_dataset)
-        elif 'uuid_dataset' in params:
-            id_dataset = TDatasets.get_id(params['uuid_dataset'])
-            uuid_dataset = params['uuid_dataset']
-        # if data_scope 1 or 2, check if the dataset requested is allorws
-        if (
-            info_role.tag_object_code == '1' or
-            info_role.tag_object_code == '2'
-        ):
-            if id_dataset not in allowed_datasets:
-                raise InsufficientRightsError(
-                    (
-                        'User "{}" cannot export dataset no "{}'
-                    ).format(info_role.id_role, id_dataset),
-                    403
-                )
-            elif info_role.tag_object_code == '1':
-                # join on TCounting, TOccurrence, Treleve and corRoleOccurrence
-                #   to get users
-                q = q.outerjoin(
-                    CorCountingOccurrence,
-                    viewSINP.tableDef.columns.permId ==
-                    CorCountingOccurrence.unique_id_sinp_occtax
-                ).join(
-                    TOccurrencesOccurrence,
-                    CorCountingOccurrence.id_occurrence_occtax ==
-                    TOccurrencesOccurrence.id_occurrence_occtax
-                ).join(
-                    TRelevesOccurrence,
-                    TOccurrencesOccurrence.id_releve_occtax ==
-                    TRelevesOccurrence.id_releve_occtax
-                ).outerjoin(
-                    corRoleRelevesOccurrence,
-                    TRelevesOccurrence.id_releve_occtax ==
-                    corRoleRelevesOccurrence.columns.id_releve_occtax
-                )
-                q = q.filter(
-                    or_(
-                        corRoleRelevesOccurrence.columns.id_role == info_role.id_role,
-                        TRelevesOccurrence.id_digitiser == info_role.id_role
-                    )
-                )
-        q = q.filter(viewSINP.tableDef.columns.jddId == str(uuid_dataset))
-    data = q.all()
-
-    export_columns = blueprint.config['export_columns']
-
-    file_name = datetime.datetime.now().strftime('%Y-%m-%d-%Hh%Mm%S')
-    return (
-        filemanager.removeDisallowedFilenameChars(file_name),
-        [viewSINP.as_dict(d) for d in data],
-        export_columns,
-        ';'
-    )
