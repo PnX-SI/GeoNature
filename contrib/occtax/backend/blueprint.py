@@ -308,8 +308,7 @@ def insertOrUpdateOneReleve(info_role):
     for att in attliste:
         if not getattr(TRelevesOccurrence, att, False):
             data['properties'].pop(att)
-    # set id_digitiser
-    data['properties']['id_digitiser'] = info_role.id_role
+
     releve = TRelevesOccurrence(**data['properties'])
 
     shape = asShape(data['geometry'])
@@ -347,6 +346,7 @@ def insertOrUpdateOneReleve(info_role):
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
 
+    # if its a update
     if releve.id_releve_occtax:
         # get update right of the user
         user_cruved = get_or_fetch_user_cruved(
@@ -364,7 +364,10 @@ def insertOrUpdateOneReleve(info_role):
             id_organisme=info_role.id_organisme
         )
         releve = releveRepository.update(releve, user, shape)
+    # if its a simple post
     else:
+        # set id_digitiser
+        releve.id_digitiser = info_role.id_role
         if info_role.tag_object_code in ('0', '1', '2'):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
