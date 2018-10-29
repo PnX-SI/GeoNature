@@ -4,6 +4,15 @@ DROP VIEW pr_occtax.export_occtax_dlb;
 DROP VIEW pr_occtax.export_occtax_sinp;
 
 
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = public;
+
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
@@ -18,7 +27,6 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     taxonomie.find_cdref(occ.cd_nom) AS "cdRef",
     gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "versionTAXREF",
     rel.date_min AS datedet,
-    occ.comment,
     'NSP'::text AS "dSPublique",
     d.unique_dataset_id AS "jddMetadonneeDEEId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status) AS "statSource",
@@ -39,6 +47,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     occ.digital_proof AS "preuvNum",
     occ.non_digital_proof AS "preuvNoNum",
     rel.comment AS "obsCtx",
+    occ.comment as "obsDescr",
     rel.unique_id_sinp_grp AS "permIdGrp",
     'Relevé'::text AS "methGrp",
     'OBS'::text AS "typGrp",
@@ -110,3 +119,5 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)
     , rel.observers_txt
     , rel.geom_4326;
+
+
