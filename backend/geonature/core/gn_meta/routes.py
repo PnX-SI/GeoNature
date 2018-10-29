@@ -67,10 +67,13 @@ def get_datasets(info_role):
             log.error(e)
             with_mtd_error = True
     params = dict(request.args)
-    datasets = {'data': get_datasets_cruved(info_role, params)}
+    datasets = get_datasets_cruved(info_role, params)
+    datasets_resp = {'data': datasets}
     if with_mtd_error:
-        datasets['with_mtd_errors'] = True
-    return datasets
+        datasets_resp['with_mtd_errors'] = True
+    if not datasets:
+        return datasets_resp, 404
+    return datasets_resp
 
 
 @routes.route('/dataset/<id_dataset>', methods=['GET'])
