@@ -54,9 +54,15 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     'NSP'::text AS "detNomOrg",
     'NSP'::text AS "orgGestDat",
-    rel.geom_4326,
     st_astext(rel.geom_4326) AS "WKT",
-    'In'::text AS "natObjGeo"
+    'In'::text AS "natObjGeo",
+    rel.date_min,
+    rel.date_max,
+    rel.id_dataset,
+    rel.id_releve_occtax,
+    occ.id_occurrence_occtax,
+    rel.id_digitiser,
+    rel.geom_4326
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
      LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
@@ -67,7 +73,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
   GROUP BY 
     ccc.unique_id_sinp_occtax
-    ,d.unique_dataset_id
+    , d.unique_dataset_id
+    , occ.id_occurrence_occtax
     , occ.id_nomenclature_bio_condition
     , occ.id_nomenclature_naturalness
     , ccc.id_nomenclature_sex
@@ -80,12 +87,14 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , occ.id_nomenclature_blurring
     , occ.id_nomenclature_diffusion_level
     , occ.nom_cite
+    , rel.id_releve_occtax
     , rel.date_min
     , rel.date_max
     , rel.hour_min
     , rel.hour_max
     , rel.altitude_max
     , rel.altitude_min
+    , rel.id_digitiser
     , occ.cd_nom
     , occ.id_nomenclature_observation_status
     , taxonomie.find_cdref(occ.cd_nom)
