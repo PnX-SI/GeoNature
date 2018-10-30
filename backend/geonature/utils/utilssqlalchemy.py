@@ -183,7 +183,7 @@ class GenericQuery:
                 query = query.filter(col.ilike('%{}%'.format(param_value)))
 
         if param_name.startswith('filter_d_'):
-            col = self.view.tableDef.columns[f[12:]]
+            col = self.view.tableDef.columns[param_name[12:]]
             col_type = col.type.__class__.__name__
             test_type = testDataType(param_value, DB.DateTime, col)
             if test_type:
@@ -197,7 +197,7 @@ class GenericQuery:
                     query = query.filter(col == param_value)
 
         if param_name.startswith('filter_n_'):
-            col = self.view.tableDef.columns[f[12:]]
+            col = self.view.tableDef.columns[param_name[12:]]
             col_type = col.type.__class__.__name__
             test_type = testDataType(param_value, DB.Numeric, col)
             if test_type:
@@ -388,7 +388,7 @@ def geoserializable(cls):
            columns: liste
             liste des columns qui doivent être prisent en compte
         """
-        if not getattr(self, geoCol) is None: 
+        if not getattr(self, geoCol) is None:
             geometry = to_shape(getattr(self, geoCol))
         else:
             geometry = {"type": "Point", "coordinates": [0,0]}
