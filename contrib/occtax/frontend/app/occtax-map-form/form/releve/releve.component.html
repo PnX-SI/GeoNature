@@ -1,5 +1,5 @@
-<div (click)="fs.formDisabled()" [formGroup]="releveForm">
-  <div class="row row-0">
+<div (click)="fs.formDisabled()">
+  <div class=" row row-0">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
       <div *ngIf="!occtaxConfig.observers_txt; else elseBlock">
         <pnx-observers [parentFormControl]="releveForm.controls.properties.controls.observers" [idMenu]="occtaxConfig.id_observers_list"

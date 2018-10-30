@@ -1,6 +1,6 @@
 <small> {{label }} </small>
 <div class="input-group">
-  <div class="dropdown-toggle btn-white full-width clickable" data-toggle="dropdown" aria-expanded="true" [ngClass]="{'disabled': disabled, 'is-invalid' : parentFormControl.invalid && !disabled}"
+  <div class="dropdown-toggle btn-white full-width clickable" data-toggle="dropdown" aria-expanded="true" [ngClass]="{'disabled': disabled, 'custom-invalid' : parentFormControl.invalid && !disabled}"
     id="button-input">
     <span *ngFor="let item of selectedItems" class="filter-option input-value pull-left"> {{item[keyLabel]}}
       <div (click)="removeItem($event, item)" class="fa fa-times clickable remove-button"> </div>
@@ -14,7 +14,8 @@
       <input class="form-control" type="text" placeholder="{{'Search' | translate}}" [formControl]="searchControl" id="search-input">
     </div>
     <ul>
-      <li *ngIf="displayAll" (click)="addItem('all')" class="clickable li-dropdown li-label padded-multiline"> {{'AllItems' | translate}} </li>
+      <li *ngIf="displayAll" (click)="addItem('all')" class="clickable li-dropdown li-label padded-multiline">
+        {{'AllItems' | translate}} </li>
       <li *ngFor="let val of values" (click)="addItem(val)" class="clickable li-dropdown padded-multiline">
         <span class="li-label">{{val[keyLabel]}} </span>
       </li>
