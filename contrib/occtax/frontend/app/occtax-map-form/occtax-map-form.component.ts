@@ -161,15 +161,6 @@ export class OcctaxMapFormComponent
             }
 
             this.fs.releveForm.patchValue({ geometry: data.releve.geometry });
-
-            // activation of the output of markerComponent and leafletDraw to set altitude
-            this.markerComponent.markerChanged.subscribe(geojson => {
-              this._ms.setGeojsonCoord(geojson);
-            });
-
-            this.leafletDrawComponent.layerDrawed.subscribe(geojson => {
-              this._ms.setGeojsonCoord(geojson);
-            });
           },
           error => {
             this._commonService.translateToaster(

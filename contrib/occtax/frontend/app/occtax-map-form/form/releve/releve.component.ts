@@ -44,7 +44,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
     this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {
       this.releveForm.patchValue({ geometry: geojson.geometry });
       this.geojson = geojson;
-      // subscribe to geo info
+      // get to geo info from API
       this._dfs.getGeoInfo(geojson).subscribe(res => {
         this.releveForm.controls.properties.patchValue({
           altitude_min: res.altitude.altitude_min,
