@@ -43,6 +43,9 @@ def get_app(config, _app=None, with_external_mods=True):
 
     # Bind app to DB
     DB.init_app(app)
+    
+    # Bind DB to app config
+    app.config['DB'] = DB
 
     with app.app_context():
         from geonature.utils.logs import mail_handler
