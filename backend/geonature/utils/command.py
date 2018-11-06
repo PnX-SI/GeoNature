@@ -126,9 +126,10 @@ def create_frontend_config(conf_file):
     log.info("...%s\n", MSG_OK)
 
 
-def update_app_configuration(conf_file, build=True):
+def update_app_configuration(conf_file, build=True, prod=True):
     log.info('Update app configuration')
-    subprocess.call(['sudo', 'supervisorctl', 'reload'])
+    if prod:
+        subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
     if build:
         subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
