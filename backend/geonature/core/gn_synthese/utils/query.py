@@ -104,7 +104,7 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
     parameters:
         - q (SQLAchemyQuery): an SQLAchemy query
         - filters (dict): a dict of filter
-        - user (TRoles): a user object from TRoles
+        - user (User): a user object from User
         - allowed datasets (List<int>): an array of ID dataset where the users have autorization
 
     """

@@ -1,97 +1,116 @@
-<div class=" row row-0 center">
-  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
-
-    <div class="card ">
-      <div class="card-body">
-        <h3>
-          Cadre d'acquisition
-        </h3>
-
-
-        <small>Nom </small>
-        <div class="input-group ">
-          <input [ngClass]="{'is-invalid' : afForm.controls.acquisition_framework_name.invalid}" class="form-control form-control-sm"
-            type="text" name="" id="" [formControl]="afForm.controls.acquisition_framework_name">
+<div class="container">
+    <button class="btn btn-secondary" routerLink="/admin/afs">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    </button>
+    <div class=" row row-0">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
+      
+          <div class="card ">
+            <div class="card-body">
+              <h3>
+                Cadre d'acquisition
+              </h3>
+      
+      
+              <small>Nom </small>
+              <div class="input-group ">
+                <input class="form-control form-control-sm"
+                  type="text" name="" id="" [formControl]="afForm.controls.acquisition_framework_name">
+              </div>
+      
+              <small>Description</small>
+              <div class="input-group">
+                <input class="form-control form-control-sm"
+                  type="text" name="" id="" [formControl]="afForm.controls.acquisition_framework_desc">
+              </div>
+      
+              <small>Mots clés </small>
+              <div class="input-group">
+                <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
+              </div>
+      
+              <br>
+              <div class="">
+                  <input   [formControl]="afForm.controls.is_parent" type="checkbox">
+                  <small>
+                      Est un cadre d'acquisition parent
+                  </small>
+              </div>
+      
+              <small>Cadre d'acquisition parent </small>
+              <div class="input-group">
+                <select [disableControl]="!afForm.value.is_parent" class="form-control form-control-sm" [formControl]="afForm.controls.acquisition_framework_parent_id">
+                  <option [ngValue]="null"></option>
+                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
+                    {{ac.acquisition_framework_name}}
+                  </option>
+                </select>
+              </div>
+      
+      
+      
+              <pnx-nomenclature label="Niveau territorial" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level"
+                codeNomenclatureType="NIVEAU_TERRITORIAL">
+              </pnx-nomenclature>
+      
+              <small>Description du territoire </small>
+              <div class="input-group">
+                <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.territory_desc">
+              </div>
+      
+              <pnx-nomenclature [multiSelect]="true" label="Objectifs du cadre d'acquisition" [parentFormControl]="afForm.controls.cor_objectifs"
+                codeNomenclatureType="CA_OBJECTIFS">
+              </pnx-nomenclature>
+      
+              <pnx-nomenclature label="Volets SINP" [multiSelect]="true" [parentFormControl]="afForm.controls.cor_volets_sinp"
+                codeNomenclatureType="VOLET_SINP">
+              </pnx-nomenclature>
+      
+              <pnx-nomenclature label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_financing_type"
+                codeNomenclatureType="TYPE_FINANCEMENT">
+              </pnx-nomenclature>
+      
+      
+              <small>Cibles écologiques ou géologiques </small>
+              <div class="input-group">
+                <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.ecologic_or_geologic_target">
+              </div>
+      
+              <small>Description de la cible </small>
+              <div class="input-group">
+                <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
+              </div>
+      
+              <pnx-date label="Date début" [parentFormControl]="afForm.controls.acquisition_framework_start_date">
+              </pnx-date>
+      
+              <pnx-date label="Date fin" [parentFormControl]="afForm.controls.acquisition_framework_end_date">
+              </pnx-date>
+      
+              <small *ngIf="afForm.errors?.invalidDate" class="error" style="color:red">
+                  {{ 'Releve.DateMaxError' | translate }}
+                </small>
+            </div>
+          </div>
         </div>
-
-        <small>Description</small>
-        <div class="input-group">
-          <input [ngClass]="{'is-invalid' : afForm.controls.acquisition_framework_desc.invalid}" class="form-control form-control-sm"
-            type="text" name="" id="" [formControl]="afForm.controls.acquisition_framework_desc">
+      
+      
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
+          <div class="card">
+            <div class="card-body">
+      
+              <pnx-metadata-actor [parentFormArray]="cor_af_actor"> </pnx-metadata-actor>
+              <button class="btn btn-primary btn-sm margin-top-sm" (click)="addFormArray()">
+                  <i class="fa fa-plus"></i>
+                </button>
+      
+            </div>
+          </div>
         </div>
-
-        <small>Mots clés </small>
-        <div class="input-group">
-          <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
-        </div>
-
-        <small>Cadre d'acquisition parent </small>
-        <div class="input-group">
-          <select class="form-control form-control-sm" [formControl]="afForm.controls.acquisition_framework_parent_id">
-            <option [value]="null"></option>
-            <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
-              {{ac.acquisition_framework_name}}
-            </option>
-          </select>
-        </div>
-
-        <small>Est un cadre d'acquisition parent </small>
-        <div class="input-group">
-          <input class="form-control form-control-sm" type="checkbox" name="" id="" [formControl]="afForm.controls.is_parent">
-        </div>
-
-        <pnx-nomenclature label="Niveau territorial" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level"
-          codeNomenclatureType="NIVEAU_TERRITORIAL">
-        </pnx-nomenclature>
-
-        <small>Description du territoire </small>
-        <div class="input-group">
-          <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.territory_desc">
-        </div>
-
-        <pnx-nomenclature [multiSelect]="true" label="Objectifs du cadre d'acquisition" [parentFormControl]="afForm.controls.cor_objectifs"
-          codeNomenclatureType="CA_OBJECTIFS">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature label="Volets SINP" [multiSelect]="true" [parentFormControl]="afForm.controls.cor_volets_sinp"
-          codeNomenclatureType="VOLET_SINP">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_financing_type"
-          codeNomenclatureType="TYPE_FINANCEMENT">
-        </pnx-nomenclature>
-
-
-        <small>Cibles écologiques ou géologiques </small>
-        <div class="input-group">
-          <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.ecologic_or_geologic_target">
-        </div>
-
-        <small>Description de la cible </small>
-        <div class="input-group">
-          <input class="form-control form-control-sm" type="text" name="" id="" [formControl]="afForm.controls.keywords">
-        </div>
-
-        <pnx-date label="Date début" [parentFormControl]="afForm.controls.acquisition_framework_start_date">
-        </pnx-date>
-
-        <pnx-date label="Date fin" [parentFormControl]="afForm.controls.acquisition_framework_end_date">
-        </pnx-date>
       </div>
+      
+      
+      <button [disabled]="afForm.invalid || cor_af_actor.invalid" class="btn btn-success margin-top-sm" (click)="postAf()">  Enregistrer le cadre d'acquisition</button>
+      <button class="btn btn-danger margin-top-sm" routerLink="/admin/afs"> Annuler </button>
     </div>
-  </div>
 
 
-  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
-    <div class="card">
-      <div class="card-body">
-
-        <pnx-metadata-actor [parentFormArray]="cor_af_actor"> </pnx-metadata-actor>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<button [disabled]="afForm.invalid && cor_af_actor.invalid" class="btn btn-success margin-top-sm center" (click)="postAf()">
-  Enregistrer le cadre d'acquisition</button>

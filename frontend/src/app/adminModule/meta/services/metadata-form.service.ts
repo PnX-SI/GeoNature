@@ -9,9 +9,19 @@ export class MetadataFormService {
 
   generateCorDatasetActorForm(): FormGroup {
     return this._fb.group({
+      id_cda: null,
       id_nomenclature_actor_role: [null, Validators.required],
-      organisms: [new Array()],
-      roles: [new Array()]
+      id_organism: null,
+      id_role: null
+    });
+  }
+
+  generateCorAfActorForm(): FormGroup {
+    return this._fb.group({
+      id_cafa: null,
+      id_nomenclature_actor_role: [null, Validators.required],
+      id_organism: null,
+      id_role: null
     });
   }
 }

@@ -128,7 +128,7 @@ def get_roles():
     '''
         Retourne tous les roles
     '''
-    users = DB.session.query(TRoles).all()
+    users = DB.session.query(User).all()
     return [user.as_dict() for user in users]
 
 
