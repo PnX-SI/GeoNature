@@ -210,7 +210,13 @@ def generate_frontend_tsconfig():
     required=False,
     default=True
 )
-def update_configuration(conf_file, build):
+@click.option(
+    '--prod',
+    type=bool,
+    required=False,
+    default=True
+)
+def update_configuration(conf_file, build, prod):
     """
         Regénère la configuration de l'application
 
@@ -221,4 +227,4 @@ def update_configuration(conf_file, build):
         - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
 
     """
-    update_app_configuration(conf_file, build)
+    update_app_configuration(conf_file, build, prod)
