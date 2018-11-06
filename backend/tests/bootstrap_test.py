@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from flask import url_for
+from flask import url_for, current_app
 from cookies import Cookie
 
 import server
@@ -41,7 +41,7 @@ def get_token(client, login="admin", password="admin"):
     data = {
         'login': login,
         'password': password,
-        'id_application': 14,
+        'id_application': current_app.config['ID_APPLICATION_GEONATURE'],
         'with_cruved': True
     }
     response = client.post(
@@ -116,7 +116,6 @@ def releve_data(client):
                     "non_digital_proof": None,
                     "id_nomenclature_exist_proof": default_nomenclatures['PREUVE_EXIST'],
                     "cd_nom": 67111,
-                    "id_nomenclature_diffusion_level": default_nomenclatures['NIV_PRECIS'],
                     "sample_number_proof": None,
                     "determiner": None
                 }
