@@ -10,8 +10,8 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.2.1.zip
-https://github.com/PnX-SI/Nomenclature-api-module/archive/1.2.2.zip
+https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
+https://github.com/PnX-SI/Nomenclature-api-module/archive/develop.zip
 chardet==3.0.4
 click==6.7
 flask-cors==3.0.3
