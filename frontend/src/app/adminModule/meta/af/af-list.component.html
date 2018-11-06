@@ -1,32 +1,37 @@
-<div class="row row-0 card">
+<div class="container">
+  <button class="btn btn-secondary" routerLink="/admin">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+  </button>
+  <div class="row row-0 card">
 
-  <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
-    <div class="card-body">
-      <h3>Liste des cadres d'acquisitions</h3>
-      <table class="table table-striped">
-        <thead>
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
+      <div class="card-body">
+        <h3>Liste des cadres d'acquisitions</h3>
+        <table class="table table-striped">
+          <thead>
 
-          <td> <b>ID </b> </td>
-          <td> <b> Nom</b> </td>
-          <td> <b> Description</b> </td>
+            <td> <b>ID </b> </td>
+            <td> <b> Nom</b> </td>
+            <td> <b> Description</b> </td>
 
-        </thead>
-        <tr *ngFor="let af of acquisitionFrameworks">
-          <td>
-            {{af.id_acquisition_framework}}
-          </td>
-          <td>
-            {{af.acquisition_framework_name}}
-          </td>
-          <td>
-            {{af.acquisition_framework_desc}}
-          </td>
-          <td class="clickable" (click)="afEdit(af.id_acquisition_framework)"> <i class="fa fa-pencil-square-o"
-              aria-hidden="true"></i></td>
-        </tr>
+          </thead>
+          <tr *ngFor="let af of acquisitionFrameworks">
+            <td>
+              {{af.id_acquisition_framework}}
+            </td>
+            <td>
+              {{af.acquisition_framework_name}}
+            </td>
+            <td>
+              {{af.acquisition_framework_desc}}
+            </td>
+            <td class="clickable" (click)="afEdit(af.id_acquisition_framework)"> <i class="fa fa-pencil-square-o"
+                aria-hidden="true"></i></td>
+          </tr>
 
-      </table>
+        </table>
+      </div>
     </div>
   </div>
-</div>
-<button routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
+  <button routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
+
+  </div>

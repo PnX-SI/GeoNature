@@ -1,99 +1,112 @@
-<div class=" row row-0 center ">
-  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
-    <div class="card ">
-      <div class="card-body">
-        <h3>
-          Jeu de données
-        </h3>
+<div class="container">
+    <button class="btn btn-secondary" routerLink="/admin/datasets">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    </button>
+    <div class=" row row-0 ">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
+          <div class="card ">
+            <div class="card-body">
+              <h3>
+                Jeu de données
+              </h3>
+      
+  
+              <small>Cadre d'acquisition </small>
+              <div class="input-group">
+                <select class="form-control form-control-sm"
+                  [disableControl]="disabled" [formControl]="datasetForm.controls.id_acquisition_framework">
+                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
+                    {{ac.acquisition_framework_name}}
+                  </option>
+                </select>
+              </div>
+      
+      
+              <small>Nom du JDD </small>
+              <div class="input-group ">
+                <input class="form-control form-control-sm"
+                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_name">
+              </div>
+      
+              <small>Nom court du JDD </small>
+              <div class="input-group">
+                <input class="form-control form-control-sm"
+                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_shortname">
+              </div>
+              <small>Description</small>
+              <div class="input-group">
+                <input class="form-control form-control-sm"
+                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_desc">
+              </div>
+      
+              <small>Domaine</small>
+              <div class="form-check" padding-lg>
+                <input [formControl]="datasetForm.controls.marine_domain" class="" type="checkbox" name="domaine" id="terrestre"
+                  value="true">
+                <small class="" for="terrestre">
+                  Domaine terrestre
+                </small>
+              </div>
+              <div class="form-check">
+                <input [formControl]="datasetForm.controls.terrestrial_domain" type="checkbox" name="domaine" id="marin">
+                <small class="" for="marin">
+                  Domaine marin
+                </small>
+              </div>
+              
+            <pnx-nomenclature label="Type de donnée" [parentFormControl]="datasetForm.controls.id_nomenclature_data_type"
+              codeNomenclatureType="DATA_TYP">
+            </pnx-nomenclature>
 
-
-        <small>Cadre d'acquisition </small>
-        <div class="input-group">
-          <select [ngClass]="{'is-invalid' : datasetForm.controls.id_acquisition_framework.invalid}" class="form-control form-control-sm"
-            [disableControl]="disabled" [formControl]="datasetForm.controls.id_acquisition_framework">
-            <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
-              {{ac.acquisition_framework_name}}
-            </option>
-          </select>
+              <pnx-nomenclature label="Objectif" [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif"
+                codeNomenclatureType="JDD_OBJECTIFS">
+              </pnx-nomenclature>
+      
+              <pnx-nomenclature label="Méthode de collècte" [parentFormControl]="datasetForm.controls.id_nomenclature_collecting_method"
+                codeNomenclatureType="METHO_RECUEIL">
+              </pnx-nomenclature>
+      
+              <pnx-nomenclature label="Origine des données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin"
+                codeNomenclatureType="DS_PUBLIQUE">
+              </pnx-nomenclature>
+      
+              <pnx-nomenclature label="Statut source" [parentFormControl]="datasetForm.controls.id_nomenclature_source_status"
+                codeNomenclatureType="STATUT_SOURCE">
+              </pnx-nomenclature>
+      
+              <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type"
+                codeNomenclatureType="RESOURCE_TYP">
+              </pnx-nomenclature>
+      
+              <input [formControl]="datasetForm.controls.active" type="checkbox" name="active" id="active" [value]="true">
+              <small class="" for="active">
+                Actif
+              </small>
+            </div>
+      
+          </div>
         </div>
-
-
-        <small>Nom du JDD </small>
-        <div class="input-group ">
-          <input [ngClass]="{'is-invalid' : datasetForm.controls.dataset_name.invalid}" class="form-control form-control-sm"
-            type="text" name="" id="" [formControl]="datasetForm.controls.dataset_name">
+      
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
+      
+      
+          <div class="card">
+      
+            <div class="card-body">
+      
+              <pnx-metadata-actor [parentFormArray]="cor_dataset_actor_array"> </pnx-metadata-actor>
+              <button class="btn btn-primary btn-sm margin-top-sm" (click)="addFormArray()">
+                  <i class="fa fa-plus"></i>
+                </button>
+      
+            </div>
+          </div>
         </div>
-
-        <small>Nom court du JDD </small>
-        <div class="input-group">
-          <input [ngClass]="{'is-invalid' : datasetForm.controls.dataset_shortname.invalid}" class="form-control form-control-sm"
-            type="text" name="" id="" [formControl]="datasetForm.controls.dataset_shortname">
-        </div>
-        <small>Description</small>
-        <div class="input-group">
-          <input [ngClass]="{'is-invalid' : datasetForm.controls.dataset_desc.invalid}" class="form-control form-control-sm"
-            type="text" name="" id="" [formControl]="datasetForm.controls.dataset_desc">
-        </div>
-
-        <small>Domaine</small>
-        <div class="form-check" padding-lg>
-          <input [formControl]="datasetForm.controls.marine_domain" class="" type="checkbox" name="domaine" id="terrestre"
-            value="true">
-          <small class="" for="terrestre">
-            Domaine terrestre
-          </small>
-        </div>
-        <div class="form-check">
-          <input [formControl]="datasetForm.controls.terrestrial_domain" type="checkbox" name="domaine" id="marin">
-          <small class="" for="marin">
-            Domaine marin
-          </small>
-        </div>
-
-        <pnx-nomenclature label="Objectif" [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif"
-          codeNomenclatureType="JDD_OBJECTIFS">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature label="Méthode de collècte" [parentFormControl]="datasetForm.controls.id_nomenclature_collecting_method"
-          codeNomenclatureType="METHO_RECUEIL">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature label="Origine des données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin"
-          codeNomenclatureType="DS_PUBLIQUE">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature label="Statut source" [parentFormControl]="datasetForm.controls.id_nomenclature_source_status"
-          codeNomenclatureType="STATUT_SOURCE">
-        </pnx-nomenclature>
-
-        <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type"
-          codeNomenclatureType="RESOURCE_TYP">
-        </pnx-nomenclature>
-
-        <input [formControl]="datasetForm.controls.active" type="checkbox" name="active" id="active" [value]="true">
-        <small class="" for="active">
-          Actif
-        </small>
+      
       </div>
-
-    </div>
-  </div>
-
-  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
-
-
-    <div class="card">
-
-      <div class="card-body">
-
-        <pnx-metadata-actor [parentFormArray]="cor_dataset_actor_array"> </pnx-metadata-actor>
-
-
-      </div>
-    </div>
-  </div>
-
+      
+      <button [disabled]="datasetForm.invalid || cor_dataset_actor_array.invalid" class="btn btn-success margin-top-sm"
+        (click)="postDataset()"> Enregistrer le jeu de données</button>
+      <button class="btn btn-danger margin-top-sm" routerLink="/admin/datasets"> Annuler</button>
+      
 </div>
 
-<button [disabled]="datasetForm.invalid && cor_dataset_actor_array.invalid" class="btn btn-success margin-top-sm center"
-  (click)="postDataset()"> Enregistrer le jeu de données</button>

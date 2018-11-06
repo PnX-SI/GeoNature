@@ -62,13 +62,6 @@ class CorAcquisitionFrameworkActor(DB.Model):
         ForeignKey('utilisateurs.bib_organismes.id_organisme')
     )
     id_nomenclature_actor_role = DB.Column(DB.Integer)
-    role = relationship(
-        User,
-        foreign_keys=[id_role],
-        primaryjoin=(User.id_role == id_role),
-        )
-    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
-
 
 @serializable
 class CorDatasetActor(DB.Model):
@@ -153,7 +146,7 @@ class TDatasets(DB.Model):
     cor_dataset_actor = relationship(
         CorDatasetActor,
         lazy='select',
-        cascade="save-update, delete, delete-orphan"
+        cascade="save-update, merge, delete, delete-orphan"
     )
 
     @staticmethod
@@ -228,7 +221,7 @@ class TAcquisitionFramework(DB.Model):
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
         lazy='select',
-        cascade="save-update, delete, delete-orphan"
+        cascade="save-update, merge, delete, delete-orphan"
     )
 
     cor_objectifs = DB.relationship(

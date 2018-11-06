@@ -89,25 +89,14 @@ export class DatasetFormComponent implements OnInit {
       this.datasetForm.patchValue(data);
 
       data.cor_dataset_actor.forEach((cor, index) => {
-        const roles = data.cor_dataset_actor[index].role
-          ? [data.cor_dataset_actor[index].role]
-          : null;
-        const organisms = data.cor_dataset_actor[index].organism
-          ? [data.cor_dataset_actor[index].organism]
-          : null;
-        const formData = {
-          id_nomenclature_actor_role: cor.id_nomenclature_actor_role,
-          organisms: organisms,
-          roles: roles
-        };
         if (index === 0) {
-          this.cor_dataset_actor_array.controls[index].patchValue(formData);
+          this.cor_dataset_actor_array.controls[index].patchValue(cor);
         } else {
           const formCor = this._formService.generateCorDatasetActorForm();
           this.cor_dataset_actor_array.push(formCor);
           //hack pour attendre que le template soit rendu avant de mettre les valeurs au formulaire
           setTimeout(() => {
-            this.cor_dataset_actor_array.controls[index].patchValue(formData);
+            this.cor_dataset_actor_array.controls[index].patchValue(cor);
           }, 2000);
         }
       });
@@ -119,34 +108,17 @@ export class DatasetFormComponent implements OnInit {
     const update_cor_dataset_actor = [];
     let formValid = true;
     cor_dataset_actor_array.forEach(element => {
-      if (element.organisms) {
-        element.organisms.forEach(org => {
-          const corOrg = {
-            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-            id_organism: org.id_organisme
-          };
-          update_cor_dataset_actor.push(corOrg);
-          //TODO: la meme chose avec les observateur si c'est un multiselect
-        });
-      }
 
-      if (element.roles) {
-        element.roles.forEach(role => {
-          const corRole = {
-            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-            id_role: role.id_role
-          };
-          update_cor_dataset_actor.push(corRole);
-        });
-      }
-
-      if (update_cor_dataset_actor.length === 0) {
+      update_cor_dataset_actor.push(element);
+      if (!element.id_nomenclature_actor_role) {
         formValid = false;
-        this._toaster.error('Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD', '',
-          { 'positionClass': 'toast-top-center' },
-        )
+        this._toaster.error(
+          'Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD',
+          '',
+          { positionClass: 'toast-top-center' }
+        );
       }
-    });
+  });
 
     if (formValid) {
       const dataset = this.datasetForm.value;

@@ -1,33 +1,35 @@
-<div class="row row-0 card">
+<div class="container">
+    <button class="btn btn-secondary" routerLink="/admin">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    </button>
+  <div class="row row-0 card">
+      <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
+          <div class="card-body">
+            <h3>Liste des jeux de données</h3>
+            <table class="table table-striped">
+              <thead>
+                <td>ID</td>
+                <td>Nom</td>
+                <td>Description</td>
 
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
-        <div class="card-body">
-          <h3>Liste des jeux de données</h3>
-          <table class="table table-striped">
-            <thead>
-              <td>ID</td>
-              <td>Nom</td>
-              <td>Description</td>
+              </thead>
+              <tr *ngFor="let dataset of datasets">
+                <td>
+                  {{dataset.id_dataset}}
+                </td>
+                <td>
+                  {{dataset.dataset_name}}
+                </td>
+                <td>
+                    {{dataset.dataset_decription}}
+                </td>
+                <td class="clickable" (click)="datasetEdit(dataset.id_dataset)"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+              </tr>
 
-            </thead>
-            <tr *ngFor="let dataset of datasets">
-              <td>
-                {{dataset.id_dataset}}
-              </td>
-              <td>
-                {{dataset.dataset_name}}
-              </td>
-              <td>
-                  {{dataset.dataset_decription}}
-              </td>
-              <td class="clickable" (click)="datasetEdit(dataset.id_dataset)"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
-            </tr>
-
-          </table>
+            </table>
+        </div>
       </div>
-    </div>
+  </div>
+  <button routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
 </div>
-<button routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
-
 
 
