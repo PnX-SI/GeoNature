@@ -128,8 +128,11 @@ def get_roles():
     '''
         Retourne tous les roles
     '''
-    users = DB.session.query(User).all()
-    return [user.as_dict() for user in users]
+    params = request.args
+    q = DB.session.query(User)
+    if 'group' in params:
+        q = q.filter(User.groupe == params['group'])
+    return [user.as_dict() for user in q.all()]
 
 
 @routes.route('/organisms', methods=['GET'])

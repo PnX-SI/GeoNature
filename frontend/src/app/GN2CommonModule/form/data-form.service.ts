@@ -7,7 +7,7 @@ import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
 export class DataFormService {
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -191,8 +191,16 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
   }
 
-  getRoles() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`);
+  getRoles(params?: any) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (let key in params) {
+      if (params[key] !== null) {
+        queryString = queryString.set(key, params[key]);
+      }
+    }
+    console.log(queryString.toString());
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`, { params: queryString } );
   }
 
   getDataset(id) {
