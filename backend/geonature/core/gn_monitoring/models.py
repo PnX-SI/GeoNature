@@ -15,7 +15,8 @@ from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
 from geonature.utils.env import DB
-from geonature.core.users.models import TRoles, TApplications
+from geonature.core.users.models import TApplications
+from pypnusershub.db.models import User
 
 
 corVisitObserver = DB.Table(
@@ -96,15 +97,19 @@ class TBaseVisits(DB.Model):
         default=select([func.uuid_generate_v4()])
     )
 
-    digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
+    digitiser = relationship(
+        User,
+        primaryjoin=(User.id_role == id_digitiser),
+        foreign_keys=[id_digitiser]
+    )
 
     observers = DB.relationship(
-        'TRoles',
+        User,
         secondary=corVisitObserver,
         primaryjoin=(
             corVisitObserver.c.id_base_visit == id_base_visit
         ),
-        secondaryjoin=(corVisitObserver.c.id_role == TRoles.id_role),
+        secondaryjoin=(corVisitObserver.c.id_role == User.id_role),
         foreign_keys=[
             corVisitObserver.c.id_base_visit,
             corVisitObserver.c.id_role
@@ -140,8 +145,16 @@ class TBaseSites(DB.Model):
         default=select([func.uuid_generate_v4()])
     )
 
-    digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
-    inventor = relationship("TRoles", foreign_keys=[id_digitiser])
+    digitiser = relationship(
+        User,
+        primaryjoin=(User.id_role == id_digitiser),
+        foreign_keys=[id_digitiser]
+    )
+    inventor = relationship(
+        User,
+        primaryjoin=(User.id_role == id_inventor),
+        foreign_keys=[id_inventor]
+    )
 
     t_base_visits = relationship(
         "TBaseVisits",

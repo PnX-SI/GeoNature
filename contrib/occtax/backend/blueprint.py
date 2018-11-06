@@ -45,7 +45,8 @@ from geonature.utils.utilssqlalchemy import (
 )
 
 from geonature.utils.errors import GeonatureApiError
-from geonature.core.users.models import TRoles, UserRigth
+from geonature.core.users.models import UserRigth
+from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from pypnusershub.db.tools import (
     InsufficientRightsError,
@@ -315,8 +316,8 @@ def insertOrUpdateOneReleve(info_role):
     releve.geom_4326 = from_shape(shape, srid=4326)
 
     if observersList is not None:
-        observers = DB.session.query(TRoles).\
-            filter(TRoles.id_role.in_(observersList)).all()
+        observers = DB.session.query(User).\
+            filter(User.id_role.in_(observersList)).all()
         for o in observers:
             releve.observers.append(o)
 

@@ -26,30 +26,6 @@ class BibOrganismes(DB.Model):
     email_organisme = DB.Column(DB.Unicode)
 
 
-class TRoles (DB.Model):
-    __tablename__ = 't_roles'
-    __table_args__ = {'schema': 'utilisateurs'}
-    id_role = DB.Column(DB.Integer, primary_key=True)
-    identifiant = DB.Column(DB.Unicode)
-    nom_role = DB.Column(DB.Unicode)
-    prenom_role = DB.Column(DB.Unicode)
-    id_organisme = DB.Column(DB.Integer)
-    groupe = DB.Column(DB.Boolean, default=False)
-
-    def as_dict(self, recursif=False, columns=()):
-        nom_role = self.nom_role or ''
-        prenom_role = self.prenom_role or ''
-        return {
-            'id_role': self.id_role,
-            'identifiant': self.identifiant,
-            'nom_role': self.nom_role,
-            'prenom_role': self.prenom_role,
-            'id_organisme': self.id_organisme,
-            'groupe': self.groupe,
-            'nom_complet': nom_role+' '+prenom_role
-        }
-
-
 @serializable
 class CorRole(DB.Model):
     __tablename__ = 'cor_roles'
@@ -65,7 +41,7 @@ class CorRole(DB.Model):
 @serializable
 class TApplications(DB.Model):
     __tablename__ = 't_applications'
-    __table_args__ = {'schema': 'utilisateurs'}
+    __table_args__ = {'schema': 'utilisateurs', 'extend_existing': True}
     id_application = DB.Column(DB.Integer, primary_key=True)
     nom_application = DB.Column(DB.Unicode)
     desc_application = DB.Column(DB.Unicode)
