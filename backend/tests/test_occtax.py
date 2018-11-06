@@ -70,7 +70,7 @@ class TestApiModulePrOcctax:
         self.client.set_cookie('/', 'token', token)
 
         response = self.client.get(
-            url_for('pr_occtax.export_sinp')
+            url_for('pr_occtax.export')
         )
 
         assert response.status_code == 200

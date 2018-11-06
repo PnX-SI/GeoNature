@@ -1,6 +1,6 @@
 import pytest
 
-from flask import url_for
+from flask import url_for, current_app
 
 from .bootstrap_test import app, post_json, json_of_response, get_token
 
@@ -89,7 +89,7 @@ class TestGnMeta:
         assert resp.status_code == 200
 
         resp = users.insert_role(user)
-        users.insert_in_cor_role(20003, user['id_role'])
+        users.insert_in_cor_role(current_app.config['BDD']['ID_USER_SOCLE_1'], user['id_role'])
         assert resp.status_code == 200
 
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)

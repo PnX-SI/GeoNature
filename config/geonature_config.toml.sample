@@ -1,5 +1,4 @@
 # GeoNature backend global configuration file
-# Don't change this
 
 # Database
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:5432/mabase"
