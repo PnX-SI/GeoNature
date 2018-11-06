@@ -46,8 +46,6 @@
                 </select>
               </div>
       
-      
-      
               <pnx-nomenclature label="Niveau territorial" [parentFormControl]="afForm.controls.id_nomenclature_territorial_level"
                 codeNomenclatureType="NIVEAU_TERRITORIAL">
               </pnx-nomenclature>
@@ -58,11 +56,11 @@
               </div>
       
               <pnx-nomenclature [multiSelect]="true" label="Objectifs du cadre d'acquisition" [parentFormControl]="afForm.controls.cor_objectifs"
-                codeNomenclatureType="CA_OBJECTIFS">
+                codeNomenclatureType="CA_OBJECTIFS" [bindAllItem]="true">
               </pnx-nomenclature>
       
               <pnx-nomenclature label="Volets SINP" [multiSelect]="true" [parentFormControl]="afForm.controls.cor_volets_sinp"
-                codeNomenclatureType="VOLET_SINP">
+                codeNomenclatureType="VOLET_SINP" [bindAllItem]="true">
               </pnx-nomenclature>
       
               <pnx-nomenclature label="Type de financement" [parentFormControl]="afForm.controls.id_nomenclature_financing_type"
@@ -114,3 +112,4 @@
     </div>
 
 
+{{ afForm.value | json}}

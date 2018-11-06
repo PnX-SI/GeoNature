@@ -6,7 +6,6 @@ import { FormArray } from '@angular/forms/src/model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ToastrService } from 'ngx-toastr';
 import { MetadataFormService } from '../services/metadata-form.service';
 
 
@@ -33,7 +32,6 @@ export class DatasetFormComponent implements OnInit {
     private _router: Router,
     private _commonService: CommonService,
     private _dfs: DataFormService,
-    private _toaster: ToastrService,
     private _formService: MetadataFormService
   ) { }
 
@@ -106,22 +104,16 @@ export class DatasetFormComponent implements OnInit {
   postDataset() {
     const cor_dataset_actor_array = JSON.parse(JSON.stringify(this.cor_dataset_actor_array.value));
     const update_cor_dataset_actor = [];
-    let formValid = true;
-    cor_dataset_actor_array.forEach(element => {
+    this._formService.formValid = true;
 
+    cor_dataset_actor_array.forEach(element => {
       update_cor_dataset_actor.push(element);
-      if (!element.id_nomenclature_actor_role) {
-        formValid = false;
-        this._toaster.error(
-          'Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD',
-          '',
-          { positionClass: 'toast-top-center' }
-        );
-      }
+      this._formService.checkFormValidity(element);
+
   });
 
-    if (formValid) {
-      const dataset = this.datasetForm.value;
+    if (this._formService.formValid) {
+      const dataset = Object.assign(this.datasetForm.value, {});
 
       dataset['cor_dataset_actor'] = update_cor_dataset_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(
