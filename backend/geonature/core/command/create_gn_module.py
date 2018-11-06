@@ -276,13 +276,24 @@ def deactivate_gn_module(module_name, frontend, backend):
     required=False,
     default=True
 )
-def update_module_configuration(module_name, build):
+@click.option(
+    '--prod',
+    type=bool,
+    required=False,
+    default=True
+)
+def update_module_configuration(module_name, build, prod):
     """
         Génère la config frontend d'un module
 
         Example:
 
-        geonature update_module_configuration occtax
+        - geonature update_module_configuration occtax
+
+        - geonature update_module_configuration --build False --prod False occtax
+
     """
-    subprocess.call(['sudo', 'supervisorctl', 'reload'])
+    if prod:
+        subprocess.call(['sudo', 'supervisorctl', 'reload'])
+
     create_module_config(module_name, build=build)
