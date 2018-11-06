@@ -106,26 +106,19 @@ export class AfFormComponent implements OnInit {
     const af = Object.assign({}, this.afForm.value);
 
     const update_cor_af_actor = [];
-    let formValid = true;
+    this._formService.formValid = true;
     cor_af_actor.forEach(element => {
-          console.log(element)
           update_cor_af_actor.push(element);
-          if (!element.id_nomenclature_actor_role) {
-            formValid = false;
-            this._toaster.error(
-              'Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD',
-              '',
-              { positionClass: 'toast-top-center' }
-            );
-          }
+        this._formService.checkFormValidity(element);
       });
 
     // format objectifs
-    af.cor_objectifs.map(obj => obj.id_nomenclature);
+    af.cor_objectifs = af.cor_objectifs.map(obj => obj.id_nomenclature);
     // format volets
-    af.cor_volets_sinp.map(obj => obj.id_nomenclature);
+    af.cor_volets_sinp = af.cor_volets_sinp.map(obj => obj.id_nomenclature);
+    
 
-    if (formValid) {
+    if (this._formService.formValid) {
       af.acquisition_framework_start_date = this._dateParser.format(
         af.acquisition_framework_start_date
       );
@@ -137,6 +130,7 @@ export class AfFormComponent implements OnInit {
       }
 
       af['cor_af_actor'] = update_cor_af_actor;
+      console.log(af)
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
         data => {
           this._router.navigate(['/admin/afs']);

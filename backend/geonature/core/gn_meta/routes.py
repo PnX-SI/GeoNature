@@ -146,6 +146,8 @@ def post_acquisition_framework():
 
     cor_af_actor = data.pop('cor_af_actor')
     cor_objectifs = data.pop('cor_objectifs')
+    print(cor_objectifs)
+    print(data)
     cor_volets_sinp = data.pop('cor_volets_sinp')
 
     af = TAcquisitionFramework(**data)

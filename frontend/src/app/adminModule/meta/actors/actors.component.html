@@ -9,18 +9,23 @@
       <option *ngFor="let org of organisms" [ngValue]="org.id_organisme" >
         {{org.nom_organisme}} </option>
     </select>
-  </div>
-  <!-- Role -->
-  <small> Personne </small>
-  <div class="input-group">
-    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="form.controls.id_role">
-      <option [ngValue]="null"></option>
-      <option *ngFor="let role of roles" [ngValue]="role.id_role">
-        {{role.nom_complet}} </option>
-    </select>
+    <button id="advanced-button" type="button" class="btn btn-outline-shadow btn-sm" data-toggle="collapse"
+    data-target="#collapseAvance">
+    <i class="fa fa-cog" aria-hidden="true"></i>
+    </button>
   </div>
 
-
+  <div class="collapse" id="collapseAvance">
+    <small> Un jeu de données ou un cadre d'acquisition peut être rattaché à un organisme  <b> et/ou </b> à une personne </small>
+    <small> Personne </small>
+    <div class="input-group">
+      <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="form.controls.id_role">
+        <option [ngValue]="null"></option>
+        <option *ngFor="let role of roles" [ngValue]="role.id_role">
+          {{role.nom_complet}} </option>
+      </select>
+    </div>
+  </div>
 
   <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" codeNomenclatureType="ROLE_ACTEUR">
   </pnx-nomenclature>
