@@ -27,18 +27,18 @@ INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework
 ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
-(1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '7'))
-,(3, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+(1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(2, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '7'))
+,(3, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ;
 SELECT pg_catalog.setval('gn_meta.cor_acquisition_framework_actor_id_cafa_seq', (SELECT max(id_cafa)+1 FROM gn_meta.cor_acquisition_framework_actor), true);
 
 INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
-(1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+(1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(2, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ,(3, 1, 3, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(4, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
-,(5, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(4, 2, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
+,(5, 2, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ,(7, 2, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ;
 SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_cda)+1 FROM gn_meta.cor_dataset_actor), true);
@@ -48,7 +48,7 @@ SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_
 UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3);
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
 INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
-(12,21,14,3);
+(12,21,3,3);
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP') ,'Territoire du parc national des Ecrins et de ses environs immédiats')

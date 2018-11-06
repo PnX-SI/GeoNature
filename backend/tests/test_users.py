@@ -14,7 +14,7 @@ class TestApiUsersMenu:
     """
 
     def test_menu_exists(self):
-        resp = self.client.get(url_for('users.getRolesByMenuId', id_menu=10))
+        resp = self.client.get(url_for('users.getRolesByMenuId', id_menu=1))
         assert resp.status_code == 200
 
     def test_menu_notexists(self):

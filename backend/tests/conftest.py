@@ -3,12 +3,24 @@ import os
 import psycopg2
 
 from geonature.utils.env import load_config, get_config_file_path
+import server
+
 
 
 def pytest_sessionstart(session):
     """ before session.main() is called. """
+    config_path = get_config_file_path()
+    config = load_config(config_path)
+    app = server.get_app(config)
+    app.config['TESTING'] = True
+    # push the app_context
+    ctx = app.app_context()
+    ctx.push()
+    
+    # setup test data
     execute_script('delete_sample_data.sql')
     execute_script('sample_data.sql')
+
 
 def execute_script(file_name):
     """ 
