@@ -188,8 +188,3 @@ class ManifestSchemaConf(Schema):
 class ManifestSchemaProdConf(Schema):
     # module_path = fields.String(required=True)
     module_name = fields.String(required=True)
-
-
-class GnModuleProdConf(Schema):
-    api_url = fields.String(required=True)
-    id_application = fields.Integer(required=True)

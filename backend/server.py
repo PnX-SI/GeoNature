@@ -100,9 +100,5 @@ def get_app(config, _app=None, with_external_mods=True):
                     module.backend.blueprint.blueprint,
                     url_prefix=conf['api_url']
                 )
-                #chargement de la configuration du module dans le blueprint.config
-                module.backend.blueprint.blueprint.config = conf
-                app.config[manifest['module_name']] = conf
-
         _app = app
     return app

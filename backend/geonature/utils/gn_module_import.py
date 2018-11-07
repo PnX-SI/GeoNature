@@ -16,7 +16,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from geonature.utils.config_schema import (
     GnGeneralSchemaConf,
     ManifestSchemaProdConf,
-    GnModuleProdConf
 )
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
@@ -334,6 +333,8 @@ def add_application_db(module_name, url, module_id=None):
         url = url[1:]
     if url[-1:] == '/':
         url = url[:-1]
+    # remove white space
+    url.replace(" ", "")
     with app.app_context():
         # if module_id: try to insert in t_application
         # check if the module in TApplications

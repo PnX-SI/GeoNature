@@ -21,7 +21,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from geojson import FeatureCollection
 
 
-from geonature.utils.env import DB, ROOT_DIR, get_module_id
+from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
@@ -63,11 +63,8 @@ blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
 
 
-try:
-    ID_MODULE = get_module_id('occtax')
-except Exception as e:
-    ID_MODULE = 'Error'
 
+ID_MODULE = current_app.config['occtax']['id_module']
 
 @blueprint.route('/releves', methods=['GET'])
 @fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
@@ -581,3 +578,8 @@ def export(info_role):
             error=message,
             redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
         )
+
+@blueprint.route('/test', methods=['GET'])
+def test():
+    print(blueprint.config['id_application'])
+    return 'la'
