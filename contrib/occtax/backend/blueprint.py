@@ -63,7 +63,6 @@ blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
 
 
-
 ID_MODULE = current_app.config['occtax']['id_module']
 
 @blueprint.route('/releves', methods=['GET'])
