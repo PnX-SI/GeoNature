@@ -282,6 +282,9 @@ ALTER TABLE ONLY cor_acquisition_framework_objectif
 ALTER TABLE ONLY cor_acquisition_framework_actor
     ADD CONSTRAINT pk_cor_acquisition_framework_actor PRIMARY KEY (id_cafa);
 
+ALTER TABLE ONLY cor_acquisition_framework_actor
+    ADD CONSTRAINT check_id_role_not_group CHECK (NOT gn_commons.role_is_group(id_role));
+
 ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT pk_cor_acquisition_framework_publication PRIMARY KEY (id_acquisition_framework, id_publication);
 
@@ -291,6 +294,9 @@ ALTER TABLE ONLY t_datasets
 
 ALTER TABLE ONLY cor_dataset_actor
     ADD CONSTRAINT pk_cor_dataset_actor PRIMARY KEY (id_cda);
+
+ALTER TABLE ONLY cor_dataset_actor
+    ADD CONSTRAINT check_id_role_not_group CHECK (NOT gn_commons.role_is_group(id_role));
 
 ALTER TABLE ONLY cor_dataset_territory
     ADD CONSTRAINT pk_cor_dataset_territory PRIMARY KEY (id_dataset, id_nomenclature_territory);
@@ -486,3 +492,5 @@ CREATE OR REPLACE VIEW v_acquisition_frameworks_territories AS
 	FROM gn_meta.t_acquisition_frameworks taf
 	JOIN gn_meta.t_datasets d ON d.id_acquisition_framework = taf.id_acquisition_framework
 	JOIN gn_meta.cor_dataset_territory cdt ON cdt.id_dataset = d.id_dataset;
+
+
