@@ -13,6 +13,9 @@ SET client_min_messages = warning;
 
 SET search_path = public;
 
+----------
+--OCCTAX--
+----------
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
@@ -121,18 +124,18 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , rel.geom_4326;
 
 
-
-
+-----------
+--COMMONS--
+-----------
 -- Check actor is not a group
-
-CREATE OR REPLACE FUNCTION gn_commons.role_is_group(the_id_role integer)
+CREATE OR REPLACE FUNCTION gn_commons.role_is_group(myidrole integer)
   RETURNS boolean AS
 $BODY$
 DECLARE
 	is_group boolean;
 BEGIN
   SELECT INTO is_group groupe FROM utilisateurs.t_roles
-	WHERE id_role = the_id_role;
+	WHERE id_role = myidrole;
   RETURN is_group;
 END;
 $BODY$
@@ -141,7 +144,47 @@ COST 100;
 --USAGE
 --SELECT gn_commons.role_is_group(1);
 
+CREATE OR REPLACE FUNCTION gn_commons.get_id_module_byname(mymodule text)
+  RETURNS integer AS
+$BODY$
+DECLARE
+	theidmodule integer;
+BEGIN
+  --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
+  SELECT INTO theidmodule id_module FROM gn_commons.t_modules
+	WHERE "module_name" ILIKE mymodule;
+  RETURN theidmodule;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
+
+------------
+--SYNTHESE--
+------------
+ALTER TABLE gn_synthese.synthese
+  ADD COLUMN id_module integer;
+
+COMMENT ON COLUMN gn_synthese.synthese.id_module
+  IS 'Permet d''identifier le module qui a permis la création de l''enregistrement. Ce champ est en lien avec utilisateurs.t_applications et permet de gérer le CRUVED grace à la table utilisateurs.cor_app_privileges';
+
+COMMENT ON COLUMN gn_synthese.synthese.id_source
+  IS 'Permet d''identifier la localisation de l''enregistrement correspondant dans les schémas et tables de la base';
+
+ALTER TABLE ONLY gn_synthese.synthese
+    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
+
+UPDATE gn_synthese.synthese 
+SET id_module = (SELECT gn_commons.get_id_module_byname('occtax'))
+WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Occtax');
+--Si vous avez insérer des données provenant d'une autre source que occtax, 
+--vous devez gérer vous même le champ id_module des enregistrements correspondants.
+
+
+--------
+--META--
+--------
 ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
     ADD CONSTRAINT check_id_role_not_group CHECK (NOT gn_commons.role_is_group(id_role));
 
