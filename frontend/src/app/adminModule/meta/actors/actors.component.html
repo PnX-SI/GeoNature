@@ -10,12 +10,12 @@
         {{org.nom_organisme}} </option>
     </select>
     <button id="advanced-button" type="button" class="btn btn-outline-shadow btn-sm" data-toggle="collapse"
-    data-target="#collapseAvance">
+    [attr.data-target]="'#collapse'+i">
     <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
   </div>
 
-  <div class="collapse" id="collapseAvance">
+  <div class="collapse" [attr.id]="'collapse'+i">
     <small> Un jeu de données ou un cadre d'acquisition peut être rattaché à un organisme  <b> et/ou </b> à une personne </small>
     <small> Personne </small>
     <div class="input-group">
