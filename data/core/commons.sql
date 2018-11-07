@@ -232,15 +232,14 @@ END IF;
 END;
 $$;
 
-
-CREATE OR REPLACE FUNCTION role_is_group(the_id_role integer)
+CREATE OR REPLACE FUNCTION role_is_group(myidrole integer)
   RETURNS boolean AS
 $BODY$
 DECLARE
 	is_group boolean;
 BEGIN
   SELECT INTO is_group groupe FROM utilisateurs.t_roles
-	WHERE id_role = the_id_role;
+	WHERE id_role = myidrole;
   RETURN is_group;
 END;
 $BODY$
@@ -248,6 +247,21 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 --USAGE
 --SELECT gn_commons.role_is_group(1);
+
+CREATE OR REPLACE FUNCTION get_id_module_byname(mymodule text)
+  RETURNS integer AS
+$BODY$
+DECLARE
+	theidmodule integer;
+BEGIN
+  --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
+  SELECT INTO theidmodule id_module FROM gn_commons.t_modules
+	WHERE "module_name" ILIKE mymodule;
+  RETURN theidmodule;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 
 -------------
