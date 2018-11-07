@@ -121,3 +121,29 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     , rel.geom_4326;
 
 
+
+
+-- Check actor is not a group
+
+CREATE OR REPLACE FUNCTION gn_commons.role_is_group(the_id_role integer)
+  RETURNS boolean AS
+$BODY$
+DECLARE
+	is_group boolean;
+BEGIN
+  SELECT INTO is_group groupe FROM utilisateurs.t_roles
+	WHERE id_role = the_id_role;
+  RETURN is_group;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+--USAGE
+--SELECT gn_commons.role_is_group(1);
+
+
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+    ADD CONSTRAINT check_id_role_not_group CHECK (NOT gn_commons.role_is_group(id_role));
+
+ALTER TABLE ONLY gn_meta.cor_dataset_actor
+    ADD CONSTRAINT check_id_role_not_group CHECK (NOT gn_commons.role_is_group(id_role));

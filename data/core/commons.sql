@@ -233,6 +233,23 @@ END;
 $$;
 
 
+CREATE OR REPLACE FUNCTION role_is_group(the_id_role integer)
+  RETURNS boolean AS
+$BODY$
+DECLARE
+	is_group boolean;
+BEGIN
+  SELECT INTO is_group groupe FROM utilisateurs.t_roles
+	WHERE id_role = the_id_role;
+  RETURN is_group;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+--USAGE
+--SELECT gn_commons.role_is_group(1);
+
+
 -------------
 --TABLES--
 -------------
