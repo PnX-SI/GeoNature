@@ -116,6 +116,7 @@ CREATE TABLE synthese (
     unique_id_sinp uuid,
     unique_id_sinp_grp uuid,
     id_source integer,
+    id_module integer,
     entity_source_pk_value character varying,
     id_dataset integer,
     id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
@@ -172,6 +173,10 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
+COMMENT ON COLUMN gn_synthese.synthese.id_source
+  IS 'Permet d''identifier la localisation de l''enregistrement correspondant dans les schémas et tables de la base';
+COMMENT ON COLUMN gn_synthese.synthese.id_module
+  IS 'Permet d''identifier le module qui a permis la création de l''enregistrement. Ce champ est en lien avec utilisateurs.t_applications et permet de gérer le CRUVED grace à la table utilisateurs.cor_app_privileges';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -262,6 +267,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
