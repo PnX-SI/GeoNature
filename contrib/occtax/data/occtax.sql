@@ -102,6 +102,7 @@ new_count RECORD;
 occurrence RECORD;
 releve RECORD;
 id_source integer;
+id_module integer;
 validation RECORD;
 id_nomenclature_source_status integer;
 myobservers RECORD;
@@ -119,6 +120,9 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 
 -- Récupération de la source
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
+
+-- Récupération de l'id_module
+SELECT INTO id_module gn_commons.get_id_module_byname('occtax');
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
@@ -143,6 +147,7 @@ unique_id_sinp_grp,
 id_source,
 entity_source_pk_value,
 id_dataset,
+id_module,
 id_nomenclature_geo_object_nature,
 id_nomenclature_grp_typ,
 id_nomenclature_obs_meth,
@@ -185,13 +190,13 @@ id_nomenclature_determination_method,
 comments,
 last_action
 )
-
 VALUES(
   new_count.unique_id_sinp_occtax,
   releve.unique_id_sinp_grp,
   id_source,
   new_count.id_counting_occtax,
   releve.id_dataset,
+  id_module,
   --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
   pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
   releve.id_nomenclature_grp_typ,
