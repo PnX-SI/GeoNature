@@ -68,23 +68,22 @@ def build_geonature_front(rebuild_sass=False):
 def frontend_routes_templating():
     log.info('Generating frontend routing')
     from geonature.utils.env import list_frontend_enabled_modules
-    from geonature.core.gn_commons.models import TModules
     with open(
         str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts.sample'),
         'r'
     ) as input_file:
         template = Template(input_file.read())
         routes = []
-        for conf, manifest in list_frontend_enabled_modules():
-            location = Path(GN_EXTERNAL_MODULE / manifest['module_name'])
+        for url_path, module_name in list_frontend_enabled_modules():
+            location = Path(GN_EXTERNAL_MODULE / module_name)
             # test if module have frontend
             if (location / 'frontend').is_dir():
-                path = conf['api_url'].lstrip('/')
+                path = url_path.lstrip('/')
                 location = '{}/{}#GeonatureModule'.format(
                     location.resolve(), GN_MODULE_FE_FILE
                 )
                 routes.append(
-                    {'path': path, 'location': location, 'module_name': manifest['module_name']}
+                    {'path': path, 'location': location, 'module_name': module_name}
                 )
 
             # TODO test if two modules with the same name is okay for Angular
