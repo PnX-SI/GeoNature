@@ -39,6 +39,47 @@ AS $$
   END;
 $$;
 
+CREATE OR REPLACE FUNCTION get_ids_synthese_for_user_action(myuser integer, myaction text)
+  RETURNS integer[] AS
+$BODY$
+-- The fonction return a array of id_synthese for the given id_role and CRUVED action
+-- USAGE : SELECT gn_synthese.get_ids_synthese_for_user_action(1,'U');
+DECLARE
+  idssynthese integer[];
+BEGIN
+WITH apps_avalaible AS(
+	SELECT id_application, max(tag_object_code) AS portee FROM (
+	  SELECT a.id_application, v.tag_object_code
+	  FROM utilisateurs.t_applications a
+	  JOIN utilisateurs.v_usersaction_forall_gn_modules v ON a.id_parent = v.id_application
+	  WHERE id_role = myuser
+	  AND tag_action_code = myaction
+	  UNION
+	  SELECT id_application, tag_object_code
+	  FROM utilisateurs.v_usersaction_forall_gn_modules
+	  WHERE id_role = myuser
+	  AND tag_action_code = myaction
+	) a
+	GROUP BY id_application
+)
+SELECT INTO idssynthese array_agg(DISTINCT s.id_synthese)
+FROM gn_synthese.synthese s
+LEFT JOIN gn_synthese.cor_observer_synthese cos ON cos.id_synthese = s.id_synthese
+LEFT JOIN gn_meta.cor_dataset_actor cda ON cda.id_dataset = s.id_dataset
+--JOIN apps_avalaible a ON a.id_application = s.id_module
+WHERE s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 3::text)
+OR (cda.id_organism = (SELECT id_organisme FROM utilisateurs.t_roles WHERE id_role = myuser) AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 2::text))
+OR (s.id_digitiser = myuser AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 1::text))
+OR (cos.id_role = myuser AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 1::text))
+OR (cda.id_role = myuser AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 1::text))
+;
+
+RETURN idssynthese;
+END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
 CREATE OR REPLACE FUNCTION fct_trig_insert_in_cor_area_synthese()
   RETURNS trigger AS
   $BODY$
