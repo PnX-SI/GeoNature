@@ -11,7 +11,8 @@ before_install:
 # install dependencies
 install:
   - cd backend
-  - pip install -r requirements-travis.txt
+  - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
   - cd tests/travis_test
   - ./travis_test.sh
   - cd ../../
