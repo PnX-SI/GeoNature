@@ -45,6 +45,8 @@ from geonature.utils.utilssqlalchemy import (
 )
 
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.env import get_id_module
+
 from geonature.core.users.models import UserRigth
 from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
@@ -63,7 +65,7 @@ blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
 
 
-ID_MODULE = current_app.config['occtax']['id_module']
+ID_MODULE = get_id_module(current_app, 'occtax')
 
 @blueprint.route('/releves', methods=['GET'])
 @fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)

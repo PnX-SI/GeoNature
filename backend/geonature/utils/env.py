@@ -227,3 +227,13 @@ def list_frontend_enabled_modules(mod_path=GN_EXTERNAL_MODULE):
         ).all()
         for mod in enabled_modules:
             yield mod.module_path.replace(" ", ""), mod.module_name
+
+
+def get_id_module(app, module_name):
+    # return the id_module
+    # don't raise an exeption to avoid error on install of the module
+    # will cause an error if a string is returned later in the program
+    try:
+        return app.config[module_name]['id_module']
+    except KeyError:
+        return "Impossible de récupérer l'id du module"
