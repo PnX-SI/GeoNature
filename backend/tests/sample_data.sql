@@ -154,6 +154,8 @@ VALUES
   'Troisieme test'
   );
 
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
+
 
 INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
 (1,1)
@@ -221,3 +223,6 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
+
+
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);

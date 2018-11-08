@@ -76,7 +76,7 @@ ALTER TABLE ONLY gn_synthese.synthese
 
 UPDATE gn_synthese.synthese 
 SET id_module = (SELECT gn_commons.get_id_module_byname('occtax'))
-WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Occtax');
+WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Occtax' LIMIT 1);
 --Si vous avez insérer des données provenant d'une autre source que occtax, 
 --vous devez gérer vous même le champ id_module des enregistrements correspondants.
 
