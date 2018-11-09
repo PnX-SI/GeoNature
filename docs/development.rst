@@ -473,9 +473,9 @@ params :
         @json_resp
         def my_sensible_view(info_role):
             # Récupérer l'id de l'utilisateur qui demande la route
-            id_role = user.id_role
+            id_role = info_role.id_role
             # Récupérer la portée autorisée à l'utilisateur pour l'action 'R' (read)
-            read_scope = user.tag_object_code
+            read_scope = info_role.tag_object_code
             #récupérer le CRUVED complet de l'utilisateur courant
             user_cruved = get_or_fetch_user_cruved(
                     session=session,
