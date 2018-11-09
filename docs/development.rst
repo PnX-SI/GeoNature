@@ -359,6 +359,46 @@ Export des données
 TODO
 
 
+Utilisation de la configuration
+"""""""""""""""""""""""""""""""
+
+La configuration globale de l'application est controlée par le fichier ``config/geonature_config.toml`` qui contient un nombre limité de paramètre. De nombreux paramètres sont néammoins passés à l'application via un schéma Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py).
+Dans l'application flask, l'ensemble des paramètres de configuration sont utilisables via le dictionnaire ``config`` de l'application Flask:
+
+    ::
+
+        from flask import current_app
+        MY_PARAMETER = current_app.config['MY_PARAMETER']
+
+Chaque module GeoNature dispose de son propre fichier de configuration, (``module/config/cong_gn_module.toml``) contrôlé de la même manière par un schéma Marshmallow (``module/config/conf_schema_toml.py``).
+Pour récupérer la configuration du module dans l'application Flask, il existe deux méthodes:
+
+Dans le fichier ``blueprint.py``: 
+    ::
+        # Methode 1: 
+
+        from flask import current_app
+        MY_MODULE_PARAMETER = current_app.config['MY_MODULE_NAME']['MY_PARAMETER]
+        # ou MY_MODULE_NAME est le nom du module tel qu'il est définit dans le fichier ``manifest.toml`` et la table ``gn_commons.t_modules``
+
+        #Méthode 2
+        MY_MODULE_PARAMETER = blueprint.config['MY_MODULE_PARAMETER']
+
+Il peut-être utile de récupérer l'ID du module GeoNature (notamment pour des questions droits). De la même manière que précédement, à l'interieur d'une route, on peut récupérer l'ID du module ce la manière suivante:
+
+    ::
+
+        ID_MODULE = blueprint.config['ID_MODULE']
+        # ou
+        ID_MODULE = current_app.config['MODULE_NAME']['ID_MODULE']
+
+Si on souhaite récupérer l'ID du module en dehors du contexte d'une route, il faut utiliser la méthode suivante:
+
+    ::
+        from geonature.utils.env import get_id_module
+        ID_MODULE = get_id_module(current_app, 'occtax')
+
+
 Authentification avec pypnusershub
 """"""""""""""""""""""""""""""""""
 
@@ -418,6 +458,7 @@ params :
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth_cruved
+        from pypnusershub.db.tools import get_or_fetch_user_cruved
         from geonature.utils.utilssqlalchemy import json_resp
 
         blueprint = Blueprint(__name__)
@@ -430,8 +471,19 @@ params :
                 redirect_on_invalid_token='my_affreux_pirate_handler'
                 )
         @json_resp
-        def my_sensible_view(id_role):
-                return {'result': 'id_role = {}'.format(id_role)}
+        def my_sensible_view(info_role):
+            # Récupérer l'id de l'utilisateur qui demande la route
+            id_role = user.id_role
+            # Récupérer la portée autorisée à l'utilisateur pour l'action 'R' (read)
+            read_scope = user.tag_object_code
+            #récupérer le CRUVED complet de l'utilisateur courant
+            user_cruved = get_or_fetch_user_cruved(
+                    session=session,
+                    id_role=info_role.id_role,
+                    id_application=ID_MODULE,
+                    id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+            )
+            return {'result': 'id_role = {}'.format(info_role.id_role)}
 
 
 
