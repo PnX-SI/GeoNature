@@ -76,19 +76,8 @@ export class DataService {
 
     const subscription = source.subscribe(
       event => {
-        switch (event.type) {
-          case HttpEventType.DownloadProgress:
-            if (event.hasOwnProperty('total')) {
-              const percentage = Math.round(100 / event.total * event.loaded);
-              this.downloadProgress.next(percentage);
-            } else {
-              const kb = (event.loaded / 1024).toFixed(2);
-              this.downloadProgress.next(parseFloat(kb));
-            }
-            break;
-          case HttpEventType.Response:
+        if (event.type === HttpEventType.Response) {
             this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
-            break;
         }
       },
       (e: HttpErrorResponse) => {
@@ -97,9 +86,8 @@ export class DataService {
       },
       // response OK
       () => {
-        console.log('response OKKKKKKKKKKKKKK ???????????,')
         this.isDownloading = false;
-        let date = new Date();
+        const date = new Date();
         // FIXME: const DATE_FORMAT, FILENAME_FORMAT
         // FIXME: (format, mimetype, extension)
         const extension = format === 'shapefile' ? '.zip' : format;
