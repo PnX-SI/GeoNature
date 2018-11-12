@@ -224,8 +224,8 @@ button[disabled] {
   z-index: 1000;
 }
 
-.disabled {
-  background-color: "#00000052";
+.disabled-form {
+  background-color: #000000;
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.3;
 }
