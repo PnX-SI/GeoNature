@@ -96,6 +96,7 @@ CREATE TABLE l_areas (
 );
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
+ALTER TABLE l_areas ALTER COLUMN geom SET STORAGE EXTERNAL;
 
 CREATE TABLE li_municipalities (
     id_municipality character varying(25) NOT NULL,

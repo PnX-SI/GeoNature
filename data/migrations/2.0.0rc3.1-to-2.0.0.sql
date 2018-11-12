@@ -143,6 +143,18 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
+
+-----------
+--REF_GEO--
+-----------
+-- Change the storage type to improve performance
+ALTER TABLE ref_geo.l_areas ALTER COLUMN geom SET STORAGE EXTERNAL;
+-- Force the column to rewrite = 5s
+UPDATE ref_geo.l_areas SET geom = ST_SetSRID(geom, 2154);
+-- Minimize table size (with pgAdmin, use this sql commande separately)
+-- VACUUM FULL ref_geo.l_areas;
+
+
 ----------
 --OCCTAX--
 ----------
