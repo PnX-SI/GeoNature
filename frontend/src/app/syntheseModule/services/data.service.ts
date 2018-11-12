@@ -97,12 +97,13 @@ export class DataService {
       },
       // response OK
       () => {
+        console.log('response OKKKKKKKKKKKKKK ???????????,')
+        this.isDownloading = false;
         let date = new Date();
         // FIXME: const DATE_FORMAT, FILENAME_FORMAT
         // FIXME: (format, mimetype, extension)
         const extension = format === 'shapefile' ? '.zip' : format;
         this.saveBlob(this._blob, `${filename}${date.toISOString()}.${extension}`);
-        this.isDownloading = false;
         subscription.unsubscribe();
       }
     );
