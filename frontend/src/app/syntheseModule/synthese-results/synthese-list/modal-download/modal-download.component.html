@@ -40,7 +40,7 @@
   </div>
 
 
-  <div *ngIf="downloading" class="telechargement card border-{{bstype}}" style="margin-top: 30px;">
+  <div *ngIf="_dataService.downloading" class="telechargement card" style="margin-top: 30px;">
     <div class="card-body text-{{bstype}}" >
       {{message}}
       <img *ngIf="animated" src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
