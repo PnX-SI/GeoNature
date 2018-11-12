@@ -5,11 +5,8 @@ import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ViewEncapsulation } from "@angular/core";
-import {
-  NgbDateStruct,
-  NgbDateParserFormatter
-} from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../../../module.config";
+import { DateStruc } from "@geonature_common/form/date.component";
 
 @Component({
   selector: "pnx-releve",
@@ -26,7 +23,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   public dataSets: any;
   public geoInfo: any;
   public showTime: boolean = false;
-  public today: NgbDateStruct;
+  public today: DateStruc;
   public areasIntersected = new Array();
   public occtaxConfig: any;
   private geojsonSubscription$: Subscription;
