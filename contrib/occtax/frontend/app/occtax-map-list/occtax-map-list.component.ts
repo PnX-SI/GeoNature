@@ -7,7 +7,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { DynamicFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
+import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
@@ -40,7 +40,7 @@ export class OcctaxMapListComponent implements OnInit {
   @ViewChild(TaxonomyComponent)
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild("dynamicForm")
-  public dynamicForm: DynamicFormGeneratorComponent;
+  public dynamicForm: GenericFormGeneratorComponent;
 
   constructor(
     private mapListService: MapListService,

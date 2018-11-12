@@ -1,7 +1,8 @@
 // FR parser
 
 import { Injectable } from '@angular/core';
-import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { DateStruc } from './date.component';
 
 function padNumber(value: number) {
   if (isNumber(value)) {
@@ -21,7 +22,7 @@ function toInteger(value: any): number {
 
 @Injectable()
 export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
-  parse(value: string): NgbDateStruct {
+  parse(value: string): DateStruc {
     if (value) {
       const dateParts = value.trim().split('/');
       if (dateParts.length === 1 && isNumber(dateParts[0])) {
@@ -44,7 +45,7 @@ export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     return null;
   }
 
-  format(date: NgbDateStruct): string {
+  format(date: DateStruc): string {
     let stringDate: string = '';
     if (date) {
       stringDate += isNumber(date.day) ? padNumber(date.day) + '/' : '';
@@ -58,7 +59,7 @@ export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
 
 @Injectable()
 export class NgbDatePeriodParserFormatter extends NgbDateParserFormatter {
-  parse(value: string): NgbDateStruct {
+  parse(value: string): DateStruc {
     if (value) {
       const dateParts = value.trim().split('/');
       if (dateParts.length === 1 && isNumber(dateParts[0])) {
@@ -80,7 +81,7 @@ export class NgbDatePeriodParserFormatter extends NgbDateParserFormatter {
     }
     return null;
   }
-  format(date: NgbDateStruct): string {
+  format(date: DateStruc): string {
     let stringDate: string = '';
     if (date) {
       stringDate += isNumber(date.day) ? padNumber(date.day) + '/' : '';
