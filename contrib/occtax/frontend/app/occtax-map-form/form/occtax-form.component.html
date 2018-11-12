@@ -1,4 +1,4 @@
-<div *ngIf="fs.disabled" id="overlay" [class.disabled]="fs.disabled" (click)="fs.formDisabled()">
+<div *ngIf="fs.disabled" id="overlay" [class.disabled-form]="fs.disabled" (click)="fs.formDisabled()">
 </div>
 
 <div id="form">
@@ -26,8 +26,6 @@
           (click)="fs.toggleOccurrence();">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
-
-
         </button>
         <button *ngIf="fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
           <i class="fa fa-minus" aria-hidden="true"></i>
