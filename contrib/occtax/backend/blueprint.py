@@ -261,6 +261,9 @@ def getViewReleveList(info_role):
 
     q = get_query_occtax_filters(request.args, VReleveList, q)
 
+    #order by date
+    q = q.order_by(VReleveList.date_min.asc())
+
     nbResults = q.count()
 
     data = q.limit(limit).offset(page * limit).all()
