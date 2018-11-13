@@ -8,6 +8,7 @@ from sqlalchemy.sql import text
 from geonature.utils.env import DB
 
 from pypnnomenclature.models import TNomenclatures
+from geonature.utils.errors import InsufficientRightsError
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -15,6 +16,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor, CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP
 )
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
     get_af_cruved
@@ -31,6 +33,8 @@ log = logging.getLogger()
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
 
 
+ID_MODULE = DB.session.query(TModules.id_module).filter(TModules.module_name == 'admin').one()[0]
+
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
 def get_datasets_list():
@@ -41,7 +45,8 @@ def get_datasets_list():
         d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
     ]
 
-
+#TODO: quel cruved on recupère sur une route comme celle là
+# celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
 @routes.route('/datasets', methods=['GET'])
 @fnauth.check_auth_cruved('R', True)
 @json_resp
@@ -99,8 +104,16 @@ def get_dataset(id_dataset):
 
 
 @routes.route('/dataset', methods=['POST'])
+@fnauth.check_auth_cruved('C', True, id_app=ID_MODULE)
 @json_resp
-def post_dataset():
+def post_dataset(info_role):
+    if info_role.tag_object_code == '0':
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataser')
+            .format(info_role.id_role, info_role.tag_action_code),
+            403
+        )
+
     data = dict(request.get_json())
     cor_dataset_actor = data.pop('cor_dataset_actor')
 
@@ -140,8 +153,17 @@ def get_acquisition_framework(id_acquisition_framework):
 
 
 @routes.route('/acquisition_framework', methods=['POST'])
+@fnauth.check_auth_cruved('C', True, id_app=ID_MODULE)
 @json_resp
-def post_acquisition_framework():
+def post_acquisition_framework(info_role):
+    print(info_role)
+    print(info_role.tag_object_code)
+    if info_role.tag_object_code == '0':
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataser')
+            .format(info_role.id_role, info_role.tag_action_code),
+            403
+        )
     data = dict(request.get_json())
 
     cor_af_actor = data.pop('cor_af_actor')
