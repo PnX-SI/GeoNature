@@ -36,6 +36,6 @@
 
 
     </ngx-datatable>
-    <button routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
+    <button [disabled]="adminStoreService.currentModule?.cruved.C === '0'" routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
 
 </div>

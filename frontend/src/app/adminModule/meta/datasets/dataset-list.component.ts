@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router } from "@angular/router";
+import { AdminStoreService } from '../../services/admin-store.service';
+
 
 
 
@@ -21,7 +23,7 @@ export class DatasetListComponent implements OnInit {
   ]
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
-  constructor(private _dfs: DataFormService, private _router: Router) { }
+  constructor(private _dfs: DataFormService, private _router: Router, public adminStoreService: AdminStoreService) { }
 
   ngOnInit() {
     this._dfs.getDatasets().subscribe(results => {

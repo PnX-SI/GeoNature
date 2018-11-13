@@ -14,7 +14,6 @@ import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.compon
 // Service
 import { OcctaxFormService } from "./occtax-map-form/form/occtax-form.service";
 import { OcctaxDataService } from "./services/occtax-data.service";
-import { OcctaxStoreService } from "./services/occtax-store.service";
 
 
 const routes: Routes = [
@@ -41,7 +40,7 @@ const routes: Routes = [
     TaxonsListComponent,
     OcctaxMapListComponent
   ],
-  providers: [OcctaxFormService, OcctaxDataService, OcctaxStoreService],
+  providers: [OcctaxFormService, OcctaxDataService],
   bootstrap: [OcctaxMapFormComponent]
 })
 export class GeonatureModule {}

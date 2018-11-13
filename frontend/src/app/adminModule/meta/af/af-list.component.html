@@ -37,6 +37,6 @@
 
 
 </ngx-datatable>
-  <button routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
-
+  <button [disabled]="adminStoreService.currentModule?.cruved.C === '0'" routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
   </div>
+

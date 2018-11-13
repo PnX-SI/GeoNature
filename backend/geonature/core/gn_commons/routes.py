@@ -32,6 +32,7 @@ def get_modules(info_role):
         )
         if app_cruved['R'] != '0':
             module = mod.as_dict()
+            module['cruved'] = app_cruved
             if mod.active_frontend:
                 module['module_url'] = '{}/#/{}'.format(
                     current_app.config['URL_APPLICATION'],
