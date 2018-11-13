@@ -123,12 +123,9 @@
       </i>
       <small> {{ 'DownloadData' | translate }} </small>
     </button>
-    <button [disabled]="occtaxStoreService.userCruved?.C == '0'" id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
+    <button [disabled]="userCruved?.C == '0'" id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
       <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
     </button>
-
-
-
 
     <!-- MODAL COLUMNS -->
     <ng-template #modalCol let-c="close" let-d="dismiss">

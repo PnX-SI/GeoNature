@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppConfig } from '../../../conf/app.config';
 import { MapService } from '@geonature_common/map/map.service';
-import { SideNavService } from '../sidenav-items/sidenav.service';
+import { SideNavService } from '../sidenav-items/sidenav-service';
+
 
 @Component({
   selector: 'pnx-home-content',

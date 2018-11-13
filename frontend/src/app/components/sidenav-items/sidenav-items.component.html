@@ -4,30 +4,28 @@
   </a>
 </mat-card>
 <mat-nav-list class="appnav">
-  <a href="#{{_sideNavService.home_page.module_url}}">
-    <mat-list-item (click)="onSetApp(_sideNavService.home_page)" [routerLink]="_sideNavService.home_page.module_url"
+  <a href="#{{home_page.module_url}}">
+    <mat-list-item (click)="onSetApp(home_page)" [routerLink]="home_page.module_url"
       routerLinkActive="active" class="sidenav-item">
-      <i class="fa {{_sideNavService.home_page.module_picto}} picto" aria-hidden="true"> </i>
-      <span class="module-name">{{_sideNavService.home_page.module_label}} </span>
+      <i class="fa {{home_page.module_picto}} picto" aria-hidden="true"> </i>
+      <span class="module-name">{{home_page.module_label}} </span>
     </mat-list-item>
   </a>
 
 
-  <a *ngFor="let module of _sideNavService.modules" href="{{module.module_url}}" target="_self">
+  <a *ngFor="let module of moduleService.modules" href="{{module.module_url}}" target="_self">
     <mat-list-item (click)="onSetApp(module)" class="sidenav-item">
       <i class="fa {{module.module_picto}} picto" aria-hidden="true"> </i>
        <span class="module-name">{{module.module_label}} </span>
     </mat-list-item>
   </a>
 
-  <a href="#{{_sideNavService.exportModule.module_url}}" target="_self">
-    <mat-list-item (click)="onSetApp(_sideNavService.exportModule)" class="sidenav-item">
-        <i class="fa {{_sideNavService.exportModule.module_picto}} picto" aria-hidden="true"> </i>
-        <span class="module-name">{{_sideNavService.exportModule.module_label}} </span>
+  <a href="#{{exportModule.module_url}}" target="_self">
+    <mat-list-item (click)="onSetApp(exportModule)" class="sidenav-item">
+        <i class="fa {{exportModule.module_picto}} picto" aria-hidden="true"> </i>
+        <span class="module-name">{{exportModule.module_label}} </span>
     </mat-list-item>
   </a>
-
-
 </mat-nav-list>
 
 

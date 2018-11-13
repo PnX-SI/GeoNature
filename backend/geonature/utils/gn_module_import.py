@@ -394,35 +394,37 @@ def create_module_config(module_name, mod_path=None, build=True):
     """
         Create the frontend config
     """
-    if not mod_path:
-        mod_path = str(GN_EXTERNAL_MODULE / module_name)
-    manifest_path = os.path.join(mod_path, 'manifest.toml')
+    from geonature.core.gn_commons.models import TModules
+    app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+    with app.app_context():
+        if not mod_path:
+            mod_path = str(GN_EXTERNAL_MODULE / module_name)
 
-    # Create the frontend config for a module and rebuild if build=True
-    conf_manifest = utilstoml.load_and_validate_toml(
-        manifest_path,
-        ManifestSchemaProdConf
-    )
+        # fetch the module in the DB from its name
+        module_object = DB.session.query(TModules).filter(TModules.module_name == module_name).one()
 
-    # import du module dans le sys.path
-    module_parent_dir = str(Path(mod_path).parent)
-    module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)  # noqa
-    sys.path.insert(0, module_parent_dir)
-    module = __import__(module_schema_conf, globals=globals())
-    front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml')  # noqa
-    config_module = utilstoml.load_and_validate_toml(
-        front_module_conf_file,
-        module.config.conf_schema_toml.GnModuleSchemaConf
-    )
+        # import du module dans le sys.path
+        module_parent_dir = str(Path(mod_path).parent)
+        module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)  # noqa
+        sys.path.insert(0, module_parent_dir)
+        module = __import__(module_schema_conf, globals=globals())
+        front_module_conf_file = os.path.join(mod_path, 'config/conf_gn_module.toml')  # noqa
+        config_module = utilstoml.load_and_validate_toml(
+            front_module_conf_file,
+            module.config.conf_schema_toml.GnModuleSchemaConf
+        )
+        # set id_module and module_name
+        config_module['ID_MODULE'] = module_object.id_module
+        config_module['MODULE_NAME'] = module_object.module_name
 
-    frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
-    try:
-        with open(
-            str(ROOT_DIR / frontend_config_path), 'w'
-        ) as outputfile:
-            outputfile.write("export const ModuleConfig = ")
-            json.dump(config_module, outputfile, indent=True, sort_keys=True)
-    except FileNotFoundError:
-        log.info('No frontend config file')
-    if build:
-        build_geonature_front()
+        frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
+        try:
+            with open(
+                str(ROOT_DIR / frontend_config_path), 'w'
+            ) as outputfile:
+                outputfile.write("export const ModuleConfig = ")
+                json.dump(config_module, outputfile, indent=True, sort_keys=True)
+        except FileNotFoundError:
+            log.info('No frontend config file')
+        if build:
+            build_geonature_front()

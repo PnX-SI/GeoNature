@@ -204,4 +204,9 @@ export class DataFormService {
   getDataset(id) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
+
+  getModulesList() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`);
+  }
+
 }
