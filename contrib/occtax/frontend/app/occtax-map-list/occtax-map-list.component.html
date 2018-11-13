@@ -123,9 +123,10 @@
       </i>
       <small> {{ 'DownloadData' | translate }} </small>
     </button>
-    <button id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
+    <button [disabled]="occtaxStoreService.userCruved?.C == '0'" id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
       <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
     </button>
+
 
 
 

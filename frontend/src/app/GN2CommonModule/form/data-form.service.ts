@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
-import { Observable } from 'rxjs/Rx';
 import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
@@ -199,7 +198,6 @@ export class DataFormService {
         queryString = queryString.set(key, params[key]);
       }
     }
-    console.log(queryString.toString());
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`, { params: queryString } );
   }
 

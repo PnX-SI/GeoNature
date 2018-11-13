@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { AppConfig } from "@geonature_config/app.config";
 
 @Injectable()
-export class OcctaxService {
+export class OcctaxDataService {
   constructor(private _api: HttpClient) {}
 
   getOneReleve(id) {

@@ -5,7 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { OcctaxFormService } from "./occtax-form.service";
 import { Router } from "@angular/router";
 import * as L from "leaflet";
-import { OcctaxService } from "../../services/occtax.service";
+import { OcctaxDataService } from "../../services/occtax-data.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { AuthService } from "@geonature/components/auth/auth.service";
 
@@ -21,7 +21,7 @@ export class OcctaxFormComponent implements OnInit {
   constructor(
     public fs: OcctaxFormService,
     private _dateParser: NgbDateParserFormatter,
-    private _cfs: OcctaxService,
+    private _cfs: OcctaxDataService,
     private toastr: ToastrService,
     private router: Router,
     private _commonService: CommonService,
