@@ -5,7 +5,7 @@ import { OcctaxFormService } from "../occtax-map-form/form/occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { FormGroup, FormArray, FormControl } from "@angular/forms";
-import { OcctaxService } from "../services/occtax.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
 import { ModuleConfig } from "../module.config";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -39,7 +39,7 @@ export class OcctaxMapInfoComponent implements OnInit {
     private _ms: MapService,
     private _dfs: DataFormService,
     private _router: Router,
-    private _occtaxService: OcctaxService,
+    private _occtaxService: OcctaxDataService,
     private _modalService: NgbModal,
     private _commonService: CommonService
   ) {}

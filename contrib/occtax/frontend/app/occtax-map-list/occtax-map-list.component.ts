@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { OcctaxService } from "../services/occtax.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -11,6 +11,7 @@ import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-fo
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
+import { OcctaxStoreService } from "../services/occtax-store.service"
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -19,6 +20,7 @@ import { AppConfig } from "@geonature_config/app.config";
   providers: [MapListService]
 })
 export class OcctaxMapListComponent implements OnInit {
+  public userCruved = {};
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public pathEdit: string;
@@ -44,7 +46,9 @@ export class OcctaxMapListComponent implements OnInit {
 
   constructor(
     private mapListService: MapListService,
-    private _occtaxService: OcctaxService,
+    private _occtaxService: OcctaxDataService,
+    // instancie occtaxStoreService to get user Cruved
+    public occtaxStoreService: OcctaxStoreService,
     private _commonService: CommonService,
     private _router: Router,
     public ngbModal: NgbModal,

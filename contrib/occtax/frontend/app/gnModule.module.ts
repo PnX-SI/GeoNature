@@ -2,8 +2,6 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { Http } from "@angular/http";
 // Components
 import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
 import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
@@ -15,7 +13,9 @@ import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.compon
 import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 // Service
 import { OcctaxFormService } from "./occtax-map-form/form/occtax-form.service";
-import { OcctaxService } from "./services/occtax.service";
+import { OcctaxDataService } from "./services/occtax-data.service";
+import { OcctaxStoreService } from "./services/occtax-store.service";
+
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
@@ -41,7 +41,7 @@ const routes: Routes = [
     TaxonsListComponent,
     OcctaxMapListComponent
   ],
-  providers: [OcctaxFormService, OcctaxService],
+  providers: [OcctaxFormService, OcctaxDataService, OcctaxStoreService],
   bootstrap: [OcctaxMapFormComponent]
 })
 export class GeonatureModule {}

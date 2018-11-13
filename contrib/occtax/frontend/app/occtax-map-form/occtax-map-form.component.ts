@@ -14,11 +14,12 @@ import { Subscription } from "rxjs/Subscription";
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./form/occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { OcctaxService } from "../services/occtax.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { MarkerComponent } from "@geonature_common/map/marker/marker.component";
 import { LeafletDrawComponent } from "@geonature_common/map/leaflet-draw/leaflet-draw.component";
 import { AuthService } from "@geonature/components/auth/auth.service";
+
 
 @Component({
   selector: "pnx-occtax-map-form",
@@ -43,9 +44,9 @@ export class OcctaxMapFormComponent
     private _router: Router,
     private _commonService: CommonService,
     public fs: OcctaxFormService,
-    private occtaxService: OcctaxService,
+    private occtaxService: OcctaxDataService,
     private _dfs: DataFormService,
-    private _authService: AuthService
+    private _authService: AuthService,
   ) {}
 
   ngOnInit() {
