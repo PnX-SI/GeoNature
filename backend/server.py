@@ -51,7 +51,7 @@ def get_app(config, _app=None, with_external_mods=True):
         from geonature.utils.logs import mail_handler
         if app.config['MAILERROR']['MAIL_ON_ERROR']:
             logging.getLogger().addHandler(mail_handler)
-        DB.create_all()
+        #DB.create_all()
 
         from pypnusershub.routes import routes
         app.register_blueprint(routes, url_prefix='/auth')
