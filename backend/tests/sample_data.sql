@@ -50,6 +50,53 @@ UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4
 INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
 (12,21,3,3);
 
+-- Reset original privileges
+INSERT INTO utilisateurs.cor_app_privileges (id_tag_action, id_tag_object, id_application, id_role) VALUES
+--Administrateur sur UsersHub et TaxHub / Non utilisé
+(6,23,1,1)
+,(6,23,2,1)
+--- Groupe administrateur sur UsersHub et TaxHub / Non utilisé
+,(6,23,1,9)
+,(6,23,2,9)
+--Administrateur sur GeoNature
+,(11, 23, 3, 1)
+,(12, 23, 3, 1)
+,(13, 23, 3, 1)
+,(14, 23, 3, 1)
+,(15, 23, 3, 1)
+,(16, 23, 3, 1)
+--- Groupe administrateur sur GeoNature
+,(11, 23, 3, 9)
+,(12, 23, 3, 9)
+,(13, 23, 3, 9)
+,(14, 23, 3, 9)
+,(15, 23, 3, 9)
+,(16, 23, 3, 9)
+--Validateur général sur tout GeoNature
+,(14, 23, 3, 5)
+--Validateur pour son organisme sur Occtax
+--,(14, 22, 4, 4) -- Droits Occtax supprimés car c'est l'installation du module qui créé l'application
+--CRUVED du groupe en poste sur tout GeoNature
+,(11, 23, 3, 7)
+,(12, 22, 3, 7)
+,(13, 21, 3, 7)
+,(15, 22, 3, 7)
+,(16, 21, 3, 7)
+--Groupe bureau d''étude socle 2 sur tout GeoNature
+,(11, 23, 3, 6)
+,(12, 22, 3, 6)
+,(13, 21, 3, 6)
+,(15, 22, 3, 6)
+,(16, 21, 3, 6)
+--Groupe bureau d''étude socle 1 sur tout GeoNature
+,(11, 23, 3, 8)
+,(12, 21, 3, 8)
+,(13, 21, 3, 8)
+,(15, 21, 3, 8)
+,(16, 21, 3, 8)
+;
+
+
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP') ,'Territoire du parc national des Ecrins et de ses environs immédiats')
 ,(2, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),'Réserve intégrale de lauvitel')
