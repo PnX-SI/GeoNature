@@ -30,7 +30,7 @@ packaging==16.8
 psycopg2==2.7.5
 pyparsing==2.2.0
 python-dateutil==2.6.1
-requests==2.18.4
+requests==2.20.0
 shapely==1.5.16
 six==1.11.0
 sqlalchemy==1.1.13
