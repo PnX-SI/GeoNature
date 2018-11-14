@@ -164,10 +164,19 @@ export class OcctaxMapFormComponent
             this.fs.releveForm.patchValue({ geometry: data.releve.geometry });
           },
           error => {
-            this._commonService.translateToaster(
-              "error",
-              "Releve.DoesNotExist"
-            );
+            if(error.status === 403) {
+              this._commonService.translateToaster(
+                "error",
+                "NotAllowed"
+              );
+            }
+            else if(error.status === 404) {
+              this._commonService.translateToaster(
+                "error",
+                "Releve.DoesNotExist"
+              );
+            }
+
             this._router.navigate(["/occtax"]);
           }
         ); // end subscribe
