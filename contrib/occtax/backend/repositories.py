@@ -32,9 +32,8 @@ class ReleveRepository():
          - id_releve: integer
          - info_user: TRole object model
         """
-        try:
-            releve = DB.session.query(self.model).get(id_releve)
-        except NotFound:
+        releve = DB.session.query(self.model).get(id_releve)
+        if not releve:
             raise NotFound(
                 'The releve "{}" does not exist'.format(id_releve)
             )

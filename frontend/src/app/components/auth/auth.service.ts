@@ -72,7 +72,6 @@ export class AuthService {
       .finally(() => (this.isLoading = false))
       .subscribe(
         data => {
-          console.log(data.user);
           const userForFront = {
             user_login: data.user.identifiant,
             prenom_role: data.user.prenom_role,

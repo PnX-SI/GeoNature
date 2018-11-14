@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrConfig } from 'ngx-toastr';
 import { SideNavService } from './sidenav-service';
-import { AuthService } from '../auth/auth.service';
 import { ModuleService } from '../../services/module.service';
 
 @Component({
   selector: 'pnx-sidenav-items',
   templateUrl: './sidenav-items.component.html',
-  styleUrls: ['./sidenav-items.component.scss']
+  styleUrls: ['./sidenav-items.component.scss'],
+  providers: [ModuleService]
 })
 export class SidenavItemsComponent implements OnInit {
   public nav = [{}];
@@ -21,7 +21,6 @@ export class SidenavItemsComponent implements OnInit {
 
   constructor(
     private _sideNavService: SideNavService,
-    private _authService: AuthService,
     public moduleService: ModuleService
     ) {
     this.toastrConfig = {

@@ -16,13 +16,11 @@ export class ModuleService {
   public currentModule: any;
 
   constructor(private _api: DataFormService) {
-
-
-  this._api.getModulesList().subscribe(data => {
-      this.modules = data;
-      this.setModulesLocalStorage(data);
-      this.modulesSubject.next(data);
-    });
+    this._api.getModulesList().subscribe(data => {
+        this.modules = data;
+        this.setModulesLocalStorage(data);
+        this.modulesSubject.next(data);
+      });
   }
 
   setModulesLocalStorage(modules) {
