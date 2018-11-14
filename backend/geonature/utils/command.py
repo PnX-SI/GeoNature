@@ -65,7 +65,9 @@ def build_geonature_front(rebuild_sass=False):
     subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
 
 
-def frontend_routes_templating():
+def frontend_routes_templating(app=None):
+    if not app:
+        app = get_app_for_cmd(with_external_mods=False)
     log.info('Generating frontend routing')
     from geonature.utils.env import list_frontend_enabled_modules
     with open(
@@ -74,7 +76,7 @@ def frontend_routes_templating():
     ) as input_file:
         template = Template(input_file.read())
         routes = []
-        for url_path, module_name in list_frontend_enabled_modules():
+        for url_path, module_name in list_frontend_enabled_modules(app):
             location = Path(GN_EXTERNAL_MODULE / module_name)
             # test if module have frontend
             if (location / 'frontend').is_dir():

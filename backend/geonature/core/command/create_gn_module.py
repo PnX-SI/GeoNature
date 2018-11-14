@@ -127,9 +127,9 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
 
                 if frontend:
                     # generation du du routing du frontend
-                    frontend_routes_templating()
+                    frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
-                    create_module_config(module_name, module_path, build=False)
+                    create_module_config(app, module_name, module_path, build=False)
                 else:
                     module = DB.session.query(TModules).filter(
                         TModules.id_module == module_id
@@ -295,5 +295,5 @@ def update_module_configuration(module_name, build, prod):
     """
     if prod:
         subprocess.call(['sudo', 'supervisorctl', 'reload'])
-
-    create_module_config(module_name, build=build)
+    app = get_app_for_cmd(with_external_mods=False)
+    create_module_config(app, module_name, build=build)

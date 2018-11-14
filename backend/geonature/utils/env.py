@@ -212,15 +212,12 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 yield update_module_config, conf_manifest, module_blueprint
 
 
-def list_frontend_enabled_modules(mod_path=GN_EXTERNAL_MODULE):
+def list_frontend_enabled_modules(app, mod_path=GN_EXTERNAL_MODULE):
     """
         Get all the module frontend enabled from gn_commons.t_modules
         and return the conf and the manifest
     """
-    from geonature.utils.command import get_app_for_cmd
     from geonature.core.gn_commons.models import TModules
-
-    app = get_app_for_cmd(DEFAULT_CONFIG_FILE, with_external_mods=False)
     with app.app_context():
         enabled_modules = DB.session.query(TModules).filter(
             TModules.active_frontend == True

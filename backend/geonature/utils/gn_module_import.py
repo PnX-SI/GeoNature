@@ -158,6 +158,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
     # TODO utiliser les commande os de python
     log.info("Activate module")
 
+    app = None
     # TODO gestion des erreurs
     if not (GN_EXTERNAL_MODULE / module_name).is_dir():
         raise GeoNatureError(
@@ -182,7 +183,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
                 )
     log.info("Generate frontend routes")
     try:
-        frontend_routes_templating()
+        frontend_routes_templating(app)
         log.info("...%s\n", MSG_OK)
     except Exception:
         log.error('Error while generating frontend routing')
@@ -192,6 +193,7 @@ def gn_module_activate(module_name, activ_front, activ_back):
 def gn_module_deactivate(module_name, activ_front, activ_back):
     log.info('Desactivate module')
     from geonature.core.gn_commons.models import TModules
+    app=None
     try:
         app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
         with app.app_context():
@@ -209,7 +211,7 @@ def gn_module_deactivate(module_name, activ_front, activ_back):
         )
     log.info("Regenerate frontend routes")
     try:
-        frontend_routes_templating()
+        frontend_routes_templating(app)
         log.info("...%s\n", MSG_OK)
     except Exception as e:
         raise GeoNatureError(e)
@@ -390,12 +392,11 @@ def add_application_db(module_name, url, module_id=None):
     return module_id
 
 
-def create_module_config(module_name, mod_path=None, build=True):
+def create_module_config(app, module_name, mod_path=None, build=True):
     """
         Create the frontend config
     """
     from geonature.core.gn_commons.models import TModules
-    app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
     with app.app_context():
         if not mod_path:
             mod_path = str(GN_EXTERNAL_MODULE / module_name)
