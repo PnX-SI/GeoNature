@@ -30,8 +30,8 @@ Lancer la commande suivant pour générer des certificats et des clés pour l’
 ::
   
     sudo certbot certonly --webroot --webroot-path /var/www/html --domain geonature.mondomaine.fr --email monemail@domaine.fr
-	sudo certbot certonly --webroot --webroot-path /var/www/html --domain taxhub.mondomaine.fr --email monemail@domaine.fr
-	sudo certbot certonly --webroot --webroot-path /var/www/html --domain usershub.mondomaine.fr --email monemail@domaine.fr
+    sudo certbot certonly --webroot --webroot-path /var/www/html --domain taxhub.mondomaine.fr --email monemail@domaine.fr
+    sudo certbot certonly --webroot --webroot-path /var/www/html --domain usershub.mondomaine.fr --email monemail@domaine.fr
 
 
 - ``certonly`` : demander la création du certificat uniquement.
@@ -68,7 +68,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 
 **Mise à jour des configuration apache et configuration de l'application GeoNature**
 
-Les fichiers de configuration Apache des différentes applications ainsi que la configuration de GeoNature doivent être mis à jour en conséquence. Dans chaque configuration, le premier VirtualHost (*:80) sert à faire la redirection du http vers le https. Le second (*:443) est la configuration du https. Pensez à remplacer "mondomaine" et les chemins des fichiers de certification de cerbot.  
+Les fichiers de configuration Apache des différentes applications ainsi que la configuration de GeoNature doivent être mis à jour en conséquence. Dans chaque configuration, le premier VirtualHost (``*:80``) sert à faire la redirection du http vers le https. Le second (``*:443``) est la configuration du https. Pensez à remplacer "mondomaine" et les chemins des fichiers de certification de cerbot.  
 
 
 Configuration apache de GeoNature
@@ -126,10 +126,10 @@ Modifier le fichier de configuration de GeoNature : ``/etc/apache2/sites-availab
 	    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 	</VirtualHost>
 
-# FIN Configuration GeoNature
+	# FIN Configuration GeoNature
 
 
-Configuration apache de Taxhub
+Configuration apache de TaxHub
 ------------------------------
 
 Modifier le fichier de configuration de taxhub : ``/etc/apache2/sites-available/taxhub.conf``
@@ -176,13 +176,14 @@ Modifier le fichier de configuration de taxhub : ``/etc/apache2/sites-available/
 	#FIN Configuration TaxHub
 
 
-Configuration apache de Usershub
+Configuration apache de UsersHub
 --------------------------------
 
 Modifier le fichier de configuration de usershub : ``/etc/apache2/sites-available/usershub.conf``
 
 ::
-	#Configuration originale de usershub
+	
+        #Configuration originale de usershub
 	#Alias /usershub /home/geonatureadmin/usershub/web
 	#<Directory /home/geonatureadmin/usershub/web>
 	#Require all granted
@@ -245,14 +246,16 @@ Configuration de l'application GeoNature
 Il est nécessaire de mettre à jour le fichier de configuration geonature_config.toml situé dans le répertoire ``geonature/config`` :
 
 :: 
-	cd geonature/config
+	
+        cd geonature/config
 	nano geonature_config.toml
 
 
 Modifier les éléments suivants : 
 
 :: 
-	URL_APPLICATION = 'https://geonature.mondomaine.fr'
+	
+        URL_APPLICATION = 'https://geonature.mondomaine.fr'
 	API_ENDPOINT = 'https://geonature.mondomaine.fr/api'
 	API_TAXHUB = 'https://taxhub.mondomaine.fr/api'
 
@@ -260,7 +263,8 @@ Modifier les éléments suivants :
 Pour que ces modifications soient prises en compte, lancer les commandes suivantes dans le répertoire ``geonature/backend`` :
 
 ::
-	cd geonature/backend
+	
+        cd geonature/backend
 	source venv/bin/activate
 	geonature update_configuration
 	deactivate
@@ -274,10 +278,11 @@ Configuration des sous-domaines sans https
 Pour disposer de sous-domaines sans certification https, , la procédure est la même mais il faut supprimer la réécriture du virtualhost 80, et supprimer la configuration du *:443. 
 La configuration des applications doit, dans ce cas, être directement faite sur le virtualhost *:80. La configuration de GeoNature doit être remise à jour comme expliqué ci-dessus.
 
-Pour taxhub : 
+Pour TaxHub : 
 
 :: 
-	# Configuration TaxHub sur sous-domaine
+	
+        # Configuration TaxHub sur sous-domaine
 	<VirtualHost *:80>
 		ServerName taxhub.mondomaine.fr
 
@@ -288,10 +293,11 @@ Pour taxhub :
 	</VirtualHost>
 
 
-Pour Userhsub : 
+Pour UsersHub : 
 
 ::
-	# Configuration Usershub sur sous-domaine
+	
+        # Configuration Usershub sur sous-domaine
 	<VirtualHost *:80>
 		ServerName usershub.mondomaine.fr
 		DocumentRoot /home/geonatureadmin/usershub/web
@@ -306,7 +312,8 @@ Pour Userhsub :
 Pour GeoNature (apache): 
 
 ::
-	#Configuration GeoNature sur sous-domaine
+	
+        #Configuration GeoNature sur sous-domaine
 	<VirtualHost *:80>
 		ServerName geonature.mondomaine.fr
 		DocumentRoot /home/geonatureadmin/geonature/frontend/dist
@@ -322,9 +329,10 @@ Pour GeoNature (apache):
 	</VirtualHost>
 
 
-Pour geonature (configuration de l'application) :
+Pour GeoNature (configuration de l'application) :
 
 :: 
-	URL_APPLICATION = 'http://geonature.mondomaine.fr'
+	
+        URL_APPLICATION = 'http://geonature.mondomaine.fr'
 	API_ENDPOINT = 'http://geonature.mondomaine.fr/api'
 	API_TAXHUB = 'http://taxhub.mondomaine.fr/api'
