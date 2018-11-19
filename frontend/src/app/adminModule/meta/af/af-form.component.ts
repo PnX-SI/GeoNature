@@ -47,7 +47,7 @@ export class AfFormComponent implements OnInit {
       this.acquisitionFrameworks = data;
     });
     this.afForm = this._fb.group({
-      id_acquisition_framework:null,
+      id_acquisition_framework: null,
       acquisition_framework_name: [null, Validators.required],
       acquisition_framework_desc: [null, Validators.required],
       id_nomenclature_territorial_level: [null, Validators.required],
@@ -72,16 +72,18 @@ export class AfFormComponent implements OnInit {
         this.afForm.get('acquisition_framework_start_date'),
         this.afForm.get('acquisition_framework_end_date')
       )
-      ]);
+    ]);
   }
-
-
 
   getAf(id_af) {
     this._dfs.getAcquisitionFramework(id_af).subscribe(data => {
       this.af = data;
-      data.acquisition_framework_start_date = this._dateParser.parse(data.acquisition_framework_start_date);
-      data.acquisition_framework_end_date = this._dateParser.parse(data.acquisition_framework_end_date);
+      data.acquisition_framework_start_date = this._dateParser.parse(
+        data.acquisition_framework_start_date
+      );
+      data.acquisition_framework_end_date = this._dateParser.parse(
+        data.acquisition_framework_end_date
+      );
       this.afForm.patchValue(data);
       data.cor_af_actor.forEach((cor, index) => {
         if (index === 0) {
@@ -99,7 +101,7 @@ export class AfFormComponent implements OnInit {
   }
 
   addFormArray(): void {
-    this.cor_af_actor.push(this._formService.generateCorDatasetActorForm());
+    this.cor_af_actor.push(this._formService.generateCorAfActorForm());
   }
   postAf() {
     const cor_af_actor = JSON.parse(JSON.stringify(this.cor_af_actor.value));
@@ -108,15 +110,14 @@ export class AfFormComponent implements OnInit {
     const update_cor_af_actor = [];
     this._formService.formValid = true;
     cor_af_actor.forEach(element => {
-          update_cor_af_actor.push(element);
-        this._formService.checkFormValidity(element);
-      });
+      update_cor_af_actor.push(element);
+      this._formService.checkFormValidity(element);
+    });
 
     // format objectifs
     af.cor_objectifs = af.cor_objectifs.map(obj => obj.id_nomenclature);
     // format volets
     af.cor_volets_sinp = af.cor_volets_sinp.map(obj => obj.id_nomenclature);
-    
 
     if (this._formService.formValid) {
       af.acquisition_framework_start_date = this._dateParser.format(
@@ -130,7 +131,7 @@ export class AfFormComponent implements OnInit {
       }
 
       af['cor_af_actor'] = update_cor_af_actor;
-      console.log(af)
+      console.log(af);
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
         data => {
           this._router.navigate(['/admin/afs']);
@@ -138,8 +139,8 @@ export class AfFormComponent implements OnInit {
         },
         error => {
           if (error.status === 403) {
-           this._commonService.translateToaster('error', 'NotAllowed');
-          }else {
+            this._commonService.translateToaster('error', 'NotAllowed');
+          } else {
             this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }
