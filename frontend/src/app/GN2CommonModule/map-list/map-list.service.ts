@@ -43,7 +43,8 @@ export class MapListService {
 
   selectedStyle = {
     color: '#ff0000',
-    weight: 3
+    weight: 3,
+    fill: true
   };
   constructor(
     private _http: HttpClient,
@@ -194,11 +195,16 @@ export class MapListService {
 
   toggleStyle(selectedLayer) {
     // togle the style of selected layer
+
     if (this.selectedLayer !== undefined) {
+      this.originStyle.fill =
+        this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
       this.selectedLayer.setStyle(this.originStyle);
       this.selectedLayer.closePopup();
     }
     this.selectedLayer = selectedLayer;
+    this.selectedStyle.fill =
+      this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
     this.selectedLayer.setStyle(this.selectedStyle);
   }
 
