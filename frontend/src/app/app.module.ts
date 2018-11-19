@@ -40,8 +40,8 @@ import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.
 import { ModuleService } from './services/module.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
 
-
 import { MyCustomInterceptor } from './services/http.interceptor';
+import { GlobalSubService } from './services/global-sub.service';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -81,6 +81,7 @@ export function HttpLoaderFactory(http: Http) {
     AuthService,
     AuthGuard,
     ModuleService,
+    GlobalSubService,
     CookieService,
     HttpClient,
     ModuleGuardService,

@@ -11,7 +11,7 @@ import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-fo
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
-import { ModuleService } from "@geonature/services/module.service";
+import { GlobalSubService } from "@geonature/services/global-sub.service";
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -52,7 +52,7 @@ export class OcctaxMapListComponent implements OnInit {
     public ngbModal: NgbModal,
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    public moduleService: ModuleService
+    public globalSub: GlobalSubService
   ) {}
 
   ngOnInit() {
@@ -68,11 +68,11 @@ export class OcctaxMapListComponent implements OnInit {
     });
 
     // get user cruved
-    this.moduleService.currentModuleSub
+    this.globalSub.currentModuleSub
       .filter(mod => mod !== undefined)
       .subscribe(mod => {
         this.userCruved = mod.cruved;
-    })
+      });
 
     this.occtaxConfig = ModuleConfig;
 
