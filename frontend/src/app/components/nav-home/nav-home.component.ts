@@ -1,12 +1,13 @@
 import { Component, NgModule, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
 import { MatSidenav } from '@angular/material/sidenav';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { Location } from '@angular/common';
+import { GlobalSubService } from '../../services/global-sub.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -26,7 +27,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     private _authService: AuthService,
     private activatedRoute: ActivatedRoute,
     private _sideNavService: SideNavService,
-    private _location: Location
+    private _location: Location,
+    private _globalSub: GlobalSubService
   ) {
     translate.addLangs(['en', 'fr', 'cn']);
     translate.setDefaultLang(AppConfig.DEFAULT_LANGUAGE);
@@ -42,9 +44,12 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.translate.use(locale);
       }
     });
-    // subscribe to the app name
-    this._sideNavService.gettingCurrentModule.subscribe(module => {
-      this.moduleName = module.moduleName;
+    this._globalSub.currentModuleSub.subscribe(module => {
+      if (module) {
+        this.moduleName = module.module_label;
+      } else {
+        this.moduleName = 'Accueil';
+      }
     });
     // init the sidenav instance in sidebar service
     this._sideNavService.setSideNav(this.sidenav);

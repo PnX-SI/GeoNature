@@ -22,8 +22,8 @@ const defaultRoutes: Routes = [
           data: { module_name: '{{route.module_name}}' }  },
         {% endfor %}
       { path: '', component: HomeContentComponent },
-      { path: 'synthese', loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'},
-      { path: 'exports', loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
+      { path: 'synthese',data: { module_name: 'synthese' }, canActivate: [ModuleGuardService], loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'},
+      { path: 'exports', canActivate: [ModuleGuardService],  loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
       {
         path: 'admin',
         loadChildren: '@geonature/adminModule/admin.module#AdminModule',

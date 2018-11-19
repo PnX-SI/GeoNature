@@ -1,46 +1,44 @@
 <mat-card class="logo">
   <a routerLink="/" routerLinkActive="active">
-    <img mat-card-image src="assets/images/LogoGeonature.png">
+    <img mat-card-image src="assets/images/LogoGeonature.png" />
   </a>
 </mat-card>
 <mat-nav-list class="appnav">
   <a href="#{{home_page.module_url}}">
-    <mat-list-item (click)="onSetApp(home_page)" [routerLink]="home_page.module_url"
-      routerLinkActive="active" class="sidenav-item">
+    <mat-list-item
+      (click)="setHome()"
+      [routerLink]="home_page.module_url"
+      routerLinkActive="active"
+      class="sidenav-item"
+    >
       <i class="fa {{home_page.module_picto}} picto" aria-hidden="true"> </i>
-      <span class="module-name">{{home_page.module_label}} </span>
+      <span class="module-name">{{ home_page.module_label }} </span>
     </mat-list-item>
   </a>
 
-
   <a *ngFor="let module of moduleService.modules" href="{{module.module_url}}" target="_self">
-    <mat-list-item (click)="onSetApp(module)" class="sidenav-item">
+    <mat-list-item class="sidenav-item" (click)="_sidenavService.toggleSideNav()">
       <i class="fa {{module.module_picto}} picto" aria-hidden="true"> </i>
-       <span class="module-name">{{module.module_label}} </span>
+      <span class="module-name">{{ module.module_label }} </span>
     </mat-list-item>
   </a>
 
   <a href="#{{exportModule.module_url}}" target="_self">
-    <mat-list-item (click)="onSetApp(exportModule)" class="sidenav-item">
-        <i class="fa {{exportModule.module_picto}} picto" aria-hidden="true"> </i>
-        <span class="module-name">{{exportModule.module_label}} </span>
+    <mat-list-item class="sidenav-item" (click)="_sidenavService.toggleSideNav()">
+      <i class="fa {{exportModule.module_picto}} picto" aria-hidden="true"> </i>
+      <span class="module-name">{{ exportModule.module_label }} </span>
     </mat-list-item>
   </a>
 </mat-nav-list>
 
-
 <div class="navbar-footer">
   <p class="p-small">
-    Réalisé avec
-    <a target="_blank" href="http://geonature.fr"> GeoNature</a>
-  Version
-    <a target="_blank" href="https://github.com/PnX-SI/GeoNature/releases">{{version}}</a>
+    Réalisé avec <a target="_blank" href="http://geonature.fr"> GeoNature</a> Version
+    <a target="_blank" href="https://github.com/PnX-SI/GeoNature/releases">{{ version }}</a>
   </p>
   <p class="p-small">
     Développé par le
-    <a target="_blank" href="http://www.ecrins-parcnational.fr "> Parc national des Ecrins</a>
-    et le
+    <a target="_blank" href="http://www.ecrins-parcnational.fr "> Parc national des Ecrins</a> et le
     <a target="_blank" href="http://www.cevennes-parcnational.fr"> Parc national des Cévennes</a>
   </p>
-
 </div>
