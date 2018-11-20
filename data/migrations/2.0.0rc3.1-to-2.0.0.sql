@@ -476,11 +476,232 @@ CASE
 END AS id_filter,
 id_application,
 1
-FROM utilisateurs.cor_app_privileges
+FROM save.cor_app_privileges
 WHERE id_application = 3;
 
 
--- Deplacement des tables utilisateurs.t_tags et utilisateurs.bib_tags_type vers le schéma save
--- TODO: a mettre dans le changelog que l'administrateur de BDD peut supprimer les tables de ce schéma s'il veut
-ALTER TABLE utilisateurs.t_tags SET schema save;
-ALTER TABLE utilisateurs.bib_tag_types SET schema save;
+
+
+-- migration utilisateurs vers gn_permissions:
+
+
+
+-- Vue permettant de retourner les utilisateurs et leur CRUVED pour chaque modules GeoNature
+CREATE OR REPLACE VIEW v_userspermissions_forall_gn_modules AS 
+ WITH p_user_tag AS (
+ SELECT 
+ u.id_role,
+ u.nom_role,
+ u.prenom_role,
+ u.id_organisme,
+ c_1.id_action,
+ c_1.id_filter,
+ c_1.id_module
+ FROM utilisateurs.t_roles u
+ JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
+ WHERE u.groupe = false
+ ), p_groupe_permission AS (
+ SELECT 
+ u.id_role,
+ u.nom_role,
+ u.prenom_role,
+ u.id_organisme,
+ c_1.id_action,
+ c_1.id_filter,
+ c_1.id_module
+ FROM utilisateurs.t_roles u
+ JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe=u.id_role
+ JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
+ WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe
+ FROM utilisateurs.cor_roles))
+ ), all_user_permission AS (
+ SELECT
+ v_1.id_role,
+ v_1.nom_role,
+ v_1.prenom_role,
+ v_1.id_organisme,
+ v_1.id_module,
+ v_1.id_action,
+ v_1.id_filter,
+ t1.code_action AS action_code,
+ t2.code_filter AS filter_code,
+ max(t2.code_filter::text) OVER (PARTITION BY v_1.id_role, v_1.id_application, t1.code_action) AS max_filter_code
+ FROM ( 
+ SELECT
+ a1.id_role,
+ a1.nom_role,
+ a1.prenom_role,
+ a1.id_organisme,
+ a1.id_action,
+ a1.id_filter,
+ a1.id_module
+ FROM p_user_tag a1
+ UNION
+ SELECT 
+ a2.id_role,
+ a2.nom_role,
+ a2.prenom_role,
+ a2.id_organisme,
+ a2.id_action,
+ a2.id_filter,
+ a2.id_module
+ FROM p_groupe_permission a2
+ ) v_1
+ JOIN utilisateurs.t_tags t1 ON t1.id_tag = v_1.id_tag_action
+ JOIN utilisateurs.t_tags t2 ON t2.id_tag = v_1.id_tag_object
+ )
+ SELECT v.id_role,
+ v.identifiant,
+ v.nom_role,
+ v.prenom_role,
+ v.id_organisme,
+ v.id_module,
+ v.id_action,
+ v.id_object,
+ v.code_action,
+ v.max_filter_code::character varying(25) AS code_filter
+ FROM all_user_permission v
+ WHERE v.max_filter_code = v.object_code::text;
+
+
+
+
+-- TODO
+
+
+
+--With action id
+CREATE OR REPLACE FUNCTION can_user_do_in_module(
+ myuser integer,
+ mymodule integer,
+ myaction integer,
+ mydataextend integer)
+ RETURNS boolean AS
+$BODY$
+-- the function say if the given user can do the requested action in the requested module on the requested data
+-- USAGE : SELECT utilisateurs.can_user_do_in_module(requested_userid,requested_actionid,requested_moduleid,requested_dataextendid);
+-- SAMPLE : SELECT utilisateurs.can_user_do_in_module(2,15,3,22);
+ BEGIN
+ IF myaction IN (SELECT id_tag_action FROM utilisateurs.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
+ RETURN true;
+ END IF;
+ RETURN false;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+--With action code
+CREATE OR REPLACE FUNCTION can_user_do_in_module(
+ myuser integer,
+ mymodule integer,
+ myaction character varying,
+ mydataextend integer)
+ RETURNS boolean AS
+$BODY$
+-- the function say if the given user can do the requested action in the requested module on the requested data
+-- USAGE : SELECT utilisateurs.can_user_do_in_module(requested_userid,requested_actioncode,requested_moduleid,requested_dataextendid);
+-- SAMPLE : SELECT utilisateurs.can_user_do_in_module(2,15,3,22);
+ BEGIN
+ IF myaction IN (SELECT tag_action_code FROM utilisateurs.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_object >= mydataextend) THEN
+ RETURN true;
+ END IF;
+ RETURN false;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+--With action id
+CREATE OR REPLACE FUNCTION user_max_accessible_data_level_in_module(
+ myuser integer,
+ myaction integer,
+ mymodule integer)
+ RETURNS integer AS
+$BODY$
+DECLARE
+ themaxleveldatatype integer;
+-- the function return the max accessible extend of data the given user can access in the requested module
+-- USAGE : SELECT utilisateurs.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
+-- SAMPLE :SELECT utilisateurs.user_max_accessible_data_level_in_module(2,14,3);
+ BEGIN
+ SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM utilisateurs.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND id_tag_action = myaction;
+ RETURN themaxleveldatatype;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+--With action code
+CREATE OR REPLACE FUNCTION user_max_accessible_data_level_in_module(
+ myuser integer,
+ myaction character varying,
+ mymodule integer)
+ RETURNS integer AS
+$BODY$
+DECLARE
+ themaxleveldatatype integer;
+-- the function return the max accessible extend of data the given user can access in the given module
+-- USAGE : SELECT utilisateurs.user_max_accessible_data_level_in_module(requested_userid,requested_actioncode,requested_moduleid);
+-- SAMPLE : SELECT utilisateurs.user_max_accessible_data_level_in_module(2,14,3);
+ BEGIN
+ SELECT max(tag_object_code::int) INTO themaxleveldatatype FROM utilisateurs.v_usersaction_forall_gn_modules WHERE id_role = myuser AND id_application = mymodule AND tag_action_code = myaction;
+ RETURN themaxleveldatatype;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+CREATE OR REPLACE FUNCTION find_all_modules_childs(myidapplication integer)
+ RETURNS SETOF integer AS
+$BODY$
+ --Param : id_application d'un module ou d'une application quelque soit son rang
+ --Retourne le id_application de tous les modules enfants + le module lui-même sous forme d'un jeu de données utilisable comme une table
+ --Usage : SELECT utilisateurs.find_all_modules_childs(3);
+ --ou SELECT * FROM utilisateurs.t_applications WHERE id_application IN(SELECT * FROM utilisateurs.find_all_modules_childs(3));
+ DECLARE
+ inf RECORD;
+ c integer;
+ BEGIN
+ SELECT INTO c count(*) FROM utilisateurs.t_applications WHERE id_parent = myidapplication;
+ IF c > 0 THEN
+ FOR inf IN
+ WITH RECURSIVE modules AS (
+ SELECT a1.id_application FROM utilisateurs.t_applications a1 WHERE a1.id_application = myidapplication
+ UNION ALL
+ SELECT a2.id_application FROM modules m JOIN utilisateurs.t_applications a2 ON a2.id_parent = m.id_application
+ )
+ SELECT id_application FROM modules
+ LOOP
+ RETURN NEXT inf.id_application;
+ END LOOP;
+ END IF;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100
+ ROWS 1000;
+
+CREATE OR REPLACE FUNCTION cruved_for_user_in_module(
+ myuser integer,
+ mymodule integer
+ )
+ RETURNS json AS
+$BODY$
+-- the function return user's CRUVED in the requested module
+-- USAGE : SELECT utilisateurs.cruved_for_user_in_module(requested_userid,requested_moduleid);
+-- SAMPLE : SELECT utilisateurs.cruved_for_user_in_module(2,3);
+DECLARE
+ thecruved json;
+ BEGIN
+  SELECT array_to_json(array_agg(row)) INTO thecruved
+  FROM (
+  SELECT tag_action_code AS action, max(tag_object_code) AS level
+  FROM utilisateurs.v_usersaction_forall_gn_modules
+  WHERE id_role = myuser AND id_application = mymodule
+  GROUP BY tag_action_code) row;
+ RETURN thecruved;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
