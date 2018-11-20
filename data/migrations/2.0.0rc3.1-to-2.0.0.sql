@@ -487,7 +487,7 @@ WHERE id_application = 3;
 
 
 -- Vue permettant de retourner les utilisateurs et leur CRUVED pour chaque modules GeoNature
-CREATE OR REPLACE VIEW v_userspermissions_forall_gn_modules AS 
+CREATE OR REPLACE VIEW v_users_permissions_forall_gn_modules AS 
  WITH p_user_tag AS (
  SELECT 
  u.id_role,
