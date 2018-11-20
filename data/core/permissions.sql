@@ -22,6 +22,12 @@ CREATE TABLE t_actions(
     description_action text
 );
 
+CREATE TABLE bib_filters_type(
+    id_filter_type serial NOT NULL,
+    code_filter_type character varying(50) NOT NULL,
+    description_filter_type text
+);
+
 CREATE TABLE t_filters(
     id_filter serial NOT NULL,
     code_filter character varying(50) NOT NULL,
@@ -29,11 +35,6 @@ CREATE TABLE t_filters(
     id_filter_type integer NOT NULL
 );
 
-CREATE TABLE bib_filters_type(
-    id_filter_type serial NOT NULL,
-    code_filte_typer character varying(50) NOT NULL,
-    description_filter_type text
-);
 
 CREATE TABLE t_objects(
     id_object serial NOT NULL,

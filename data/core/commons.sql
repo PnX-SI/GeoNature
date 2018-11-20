@@ -420,8 +420,8 @@ SELECT pg_catalog.setval('t_history_actions_id_history_action_seq', 1, false);
 
 
 CREATE TABLE t_modules(
-  id_module integer NOT NULL,
-  module_name character varying(255) NOT NULL,
+  id_module serial NOT NULL,
+  module_code character varying(50) NOT NULL,
   module_label character varying(255) NOT NULL,
   module_picto character varying(255),
   module_desc text,
@@ -585,11 +585,17 @@ LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
 ----------
 -- DATA --
 ----------
+-- insertion du module parent à tous: GeoNature
+
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+()
+;
+
 --insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
 INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
 SELECT 'admin', 'Application backoffice de GeoNature', id_application
 FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature';
 
-INSERT INTO gn_commons.t_modules(id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
 SELECT id_application ,'admin', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', '', 'true', 'true'
 FROM utilisateurs.t_applications WHERE nom_application = 'admin';
