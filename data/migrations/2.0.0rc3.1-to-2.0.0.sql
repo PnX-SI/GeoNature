@@ -71,6 +71,37 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
   EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
 
+ALTER TABLE gn_commons.t_modules ADD COLUMN module_code character varying(50);
+
+-- UPDATE colonne module_code
+UPDATE gn_commons.t_module SET module_code = 'OCCTAX' WHERE module_name ILIKE 'occtax'; 
+UPDATE gn_commons.t_module SET module_code = 'ADMIN' WHERE module_name ILIKE 'admin'; 
+UPDATE gn_commons.t_module SET module_code = 'EXPORTS' WHERE module_name ILIKE 'exports'; 
+UPDATE gn_commons.t_module SET module_code = 'VALIDATION' WHERE module_name ILIKE 'gn_module_validation'; 
+UPDATE gn_commons.t_module SET module_code = 'SFT' WHERE module_name ILIKE 'suivi_flore_territoire'; 
+UPDATE gn_commons.t_module SET module_code = 'SUIVI_OEDIC' WHERE module_name ILIKE 'suivi_oedic'; 
+UPDATE gn_commons.t_module SET module_code = 'SUIVI_CHIRO' WHERE module_name ILIKE 'suivi_chiro'; 
+UPDATE gn_commons.t_module SET module_code = 'SYNTHESE' WHERE module_name ILIKE 'synthese'; 
+
+ALTER TABLE gn_commons.t_modules DROP COLUMN module_name;
+ALTER TABLE gn_commons.t_modules DROP CONSTRAINT fk_t_modules_utilisateurs_t_applications
+ALTER TABLE gn_commons.t_modules
+ALTER COLUMN id_module SERIAL;
+
+
+
+CREATE SEQUENCE gn_commons.t_modules_id_module_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE gn_commons.t_modules_id_module_seq OWNED BY gn_commons.t_modules.id_module;
+ALTER TABLE ONLY gn_commons.t_modules ALTER COLUMN id_module SET DEFAULT nextval('gn_commons.t_modules_id_module_seq'::regclass);
+
+SELECT pg_catalog.setval('gn_commons.t_modules_id_module_seq', (SELECT MAX(id_module + 1) FROM gn_commons.t_modules), TRUE);
+
+
 --------
 --META--
 --------
@@ -420,3 +451,36 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+
+-- Utilisateurs.cor_app_privileges vers gn_persmissions.cor_role_action_filter_module_object
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_action, id_filter, id_module, id_object)
+SELECT 
+id_role,
+CASE 
+  WHEN id_tag_action =  11 THEN 1
+  WHEN id_tag_action =  12 THEN 2
+  WHEN id_tag_action =  13 THEN 3
+  WHEN id_tag_action =  14 THEN 4
+  WHEN id_tag_action =  15 THEN 5
+  WHEN id_tag_action =  16 THEN 6
+END AS id_action
+,
+CASE 
+  WHEN id_tag_object = 20 THEN 1
+  WHEN id_tag_object = 21 THEN 2
+  WHEN id_tag_object = 22 THEN 3
+  WHEN id_tag_object = 23 THEN 4
+END AS id_filter,
+id_application,
+1
+FROM utilisateurs.cor_app_privileges
+WHERE id_application = 3;
+
+
+-- Deplacement des tables utilisateurs.t_tags et utilisateurs.bib_tags_type vers le schéma save
+-- TODO: a mettre dans le changelog que l'administrateur de BDD peut supprimer les tables de ce schéma s'il veut
+ALTER TABLE utilisateurs.t_tags SET schema save;
+ALTER TABLE utilisateurs.bib_tag_types SET schema save;
