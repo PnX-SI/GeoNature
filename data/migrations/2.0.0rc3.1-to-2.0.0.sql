@@ -71,7 +71,7 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
   EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
 
-ALTER TABLE gn_commons.t_modules ADD COLUMN module_code character varying(50) NOT NULL;
+ALTER TABLE gn_commons.t_modules ADD COLUMN module_code character varying(50);
 
 -- UPDATE colonne module_code
 UPDATE gn_commons.t_modules SET module_code = 'OCCTAX' WHERE module_name ILIKE 'occtax'; 
@@ -98,7 +98,7 @@ ALTER TABLE ONLY gn_commons.t_modules ALTER COLUMN id_module SET DEFAULT nextval
 
 SELECT pg_catalog.setval('gn_commons.t_modules_id_module_seq', (SELECT MAX(id_module + 1) FROM gn_commons.t_modules), TRUE);
 
-
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_code SET NOT NULL;
 --------
 --META--
 --------

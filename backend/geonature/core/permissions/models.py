@@ -9,7 +9,7 @@ class VUsersPermissions(DB.Model):
     id_role = DB.Column(DB.Integer, primary_key=True)
     nom_role = DB.Column(DB.Unicode)
     prenom_role = DB.Column(DB.Unicode)
-    id_organism = DB.Column(DB.Integer)
+    id_organisme = DB.Column(DB.Integer)
     id_module = DB.Column(DB.Integer, primary_key=True)
     module_code = DB.Column(DB.Unicode)
     id_action = DB.Column(DB.Integer, primary_key=True)

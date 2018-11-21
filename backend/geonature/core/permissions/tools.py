@@ -1,9 +1,13 @@
-from flask import current_app
+import logging, json
+
+from flask import current_app, redirect, Response
 
 from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
                           SignatureExpired, BadSignature)
 
 import sqlalchemy as sa
+from sqlalchemy.sql.expression import func
+
 
 from pypnusershub.db.tools import (
     InsufficientRightsError,
@@ -12,7 +16,9 @@ from pypnusershub.db.tools import (
 ) 
 
 from geonature.core.permissions.models import VUsersPermissions
+from geonature.utils.env import DB
 
+log = logging.getLogger(__name__)
 
 def user_from_token(token, secret_key=None):
     secret_key = secret_key or current_app.config['SECRET_KEY']
@@ -38,7 +44,7 @@ def get_user_from_token_and_raise(
     catch excetpion and return appropriate Response(403, 302 ...)
     """
     try:
-        user = user_from_token(token, secret_key)
+        return user_from_token(token, secret_key)
 
     except AccessRightsExpiredError:
         if redirect_on_expiration:
@@ -89,7 +95,7 @@ def get_user_permissions(user, code_action, code_filter_type, code_module=None):
         Get all the filters code of a user (could be multiples)
         for an action, a module and a filter_type
         Parameters:
-            token(str)
+            user(dict)
             code_action(str): <C,R,U,V,E,D>
             code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
             code_module(str): 'GEONATURE', 'OCCTAX'
@@ -97,20 +103,19 @@ def get_user_permissions(user, code_action, code_filter_type, code_module=None):
             Array<VUsersPermissions>
     """
     id_role = user['id_role']
-    id_app_parent = user['id_application']
 
-    ors = [VUsersPermissions.id_application == id_app_parent]
+    ors = [VUsersPermissions.module_code.ilike('GEONATURE')]
+
     q = (
         VUsersPermissions
         .query
         .filter(VUsersPermissions.id_role == id_role)
         .filter(VUsersPermissions.code_action == code_action)
         .filter(VUsersPermissions.code_filter_type == code_filter_type)
-        .filter(VUsersPermissions.module_code.ilike('GEONATURE'))
     )
     module_code_for_error = 'GEONATURE'
     if code_module:
-        q = q.filter(VUsersPermissions.module_code == code_module)
+        ors.append(VUsersPermissions.module_code.ilike(code_module))
         module_code_for_error = code_module
     
     user_cruved = q.filter(sa.or_(*ors)).all()
@@ -121,7 +126,51 @@ def get_user_permissions(user, code_action, code_filter_type, code_module=None):
     except AssertionError:
         raise InsufficientRightsError(
             'User "{}" cannot "{}" in module/app "{}"'.format(
-                id_role, action, module_code_for_error
+                id_role, code_action, module_code_for_error
             )
         )
 
+def cruved_scope_for_user_in_module(
+    id_role=None,
+    module_code=None,
+):
+    """
+    Return the user cruved for an application
+    if no cruved for an app, the cruved parent module is taken
+    Child app cruved alway overright parent module cruved 
+    """
+    ors = [VUsersPermissions.module_code == 'GEONATURE']
+
+    q = DB.session.query(
+        VUsersPermissions.code_action,
+        func.max(VUsersPermissions.code_filter)
+    ).distinct(VUsersPermissions.code_action).filter(
+        VUsersPermissions.id_role == id_role
+    ).filter(
+        VUsersPermissions.code_filter_type == 'SCOPE'
+    ).group_by(VUsersPermissions.code_action)
+
+    # get max scope cruved for module GEONATURE
+    parent_cruved = {
+        action_scope[0]: action_scope[1]
+        for action_scope in q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all() 
+    }
+    # get max scope cruved for module passed in parameter
+    module_cruved = {}
+    if module_code:
+        module_cruved = {
+            action_scope[0]: action_scope[1]
+            for action_scope in q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
+        }
+        
+    # update cruved with child module if action exist, otherwise take geonature cruved
+    update_cruved = {}
+    cruved = ['C', 'R', 'U', 'V', 'E', 'D']
+    for action in cruved:
+        if action in module_cruved:
+            update_cruved[action] = module_cruved[action]
+        elif action in parent_cruved:
+            update_cruved[action] = parent_cruved[action]
+        else:
+            update_cruved[action] = '0'
+    return update_cruved
