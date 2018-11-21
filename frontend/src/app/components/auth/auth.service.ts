@@ -64,8 +64,7 @@ export class AuthService {
     const user = {
       login: username,
       password: password,
-      id_application: AppConfig.ID_APPLICATION_GEONATURE,
-      with_cruved: true
+      id_application: AppConfig.ID_APPLICATION_GEONATURE
     };
     this._http
       .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, user)
