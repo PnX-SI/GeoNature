@@ -15,7 +15,7 @@ SET default_with_oids = false;
 --FUNCTIONS--
 -------------
 
-CREATE OR REPLACE FUNCTION is_user_has_scope_permission(
+CREATE OR REPLACE FUNCTION does_user_have_scope_permission(
  myuser integer,
  mycodemodule character varying,
  myactioncode character varying,
@@ -25,8 +25,8 @@ CREATE OR REPLACE FUNCTION is_user_has_scope_permission(
 $BODY$
 -- the function say if the given user can do the requested action in the requested module with its scope level
 -- warning: NO heritage between parent and child module
--- USAGE : SELECT gn_persmissions.is_user_has_scope_permission(requested_userid,requested_actionid,requested_module_code,requested_scope);
--- SAMPLE : SELECT gn_permissions.is_user_has_scope_permission(2,'OCCTAX','R',3);
+-- USAGE : SELECT gn_persmissions.does_user_have_scope_permission(requested_userid,requested_actionid,requested_module_code,requested_scope);
+-- SAMPLE : SELECT gn_permissions.does_user_have_scope_permission(2,'OCCTAX','R',3);
  BEGIN
  IF myactioncode IN (
   SELECT code_action
