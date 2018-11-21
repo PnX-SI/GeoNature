@@ -163,8 +163,8 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
         module_info = {}
         enabled_modules_name = []
         for mod in modules:
-            enabled_modules_name.append(mod.module_name)
-            module_info[mod.module_name] = {
+            enabled_modules_name.append(mod.module_code)
+            module_info[mod.module_code] = {
                 'id_module': mod.id_module,
                 'id_application':mod.id_module,
                 'api_url': '/'+ mod.module_path.replace(" ", "")

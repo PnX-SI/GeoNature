@@ -22,6 +22,7 @@ from geonature.core.gn_meta.repositories import (
     get_af_cruved
 )
 from pypnusershub import routes as fnauth
+from geonature.core.permissions import decorators as permissions
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
@@ -33,7 +34,7 @@ log = logging.getLogger()
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
 
 
-ID_MODULE = DB.session.query(TModules.id_module).filter(TModules.module_name == 'admin').one()[0]
+ID_MODULE = DB.session.query(TModules.id_module).filter(TModules.module_code == 'ADMIN').one()[0]
 
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
@@ -48,7 +49,8 @@ def get_datasets_list():
 #TODO: quel cruved on recupère sur une route comme celle là
 # celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
 @routes.route('/datasets', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@permissions.check_cruved_scope('R', True)
+# @fnauth.check_auth_cruved('R', True)
 @json_resp
 def get_datasets(info_role):
     """
