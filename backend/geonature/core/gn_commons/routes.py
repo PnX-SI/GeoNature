@@ -11,6 +11,7 @@ from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
 from pypnusershub import routes as fnauth
 from pypnusershub.db.tools import cruved_for_user_in_app
+from geonature.core.permissions.tools import cruved_scope_for_user_in_module
 
 routes = Blueprint('gn_commons', __name__)
 
@@ -25,10 +26,9 @@ def get_modules(info_role):
     modules = DB.session.query(TModules).all()
     allowed_modules = []
     for mod in modules:
-        app_cruved = cruved_for_user_in_app(
+        app_cruved = cruved_scope_for_user_in_module(
             id_role=info_role.id_role,
-            id_application=mod.id_module,
-            id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+            module_code=mod.module_code,
         )
         if app_cruved['R'] != '0':
             module = mod.as_dict()
