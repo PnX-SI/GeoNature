@@ -62,8 +62,8 @@ Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en pla
 - Dans GeoNature V2 cela permet d'attribuer des actions possibles à un rôle sur une portée dans une application ou un module (définis dans ``utilisateurs.cor_app_privileges``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
 - 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
-- Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``utilisateurs.v_usersaction_forall_gn_modules``)
-- Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``utilisateurs.cruved_for_user_in_module``, ``utilisateurs.can_user_do_in_module``, ...)
+- Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``gn_permissions.v_users_permissions``)
+- Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.is_user_has_scope_permission``, ...)
 - Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
