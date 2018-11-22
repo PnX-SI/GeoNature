@@ -588,14 +588,13 @@ LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
 -- insertion du module parent à tous: GeoNature
 
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-()
+('GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE),
+('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE)
 ;
 
 --insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
-INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
-SELECT 'admin', 'Application backoffice de GeoNature', id_application
-FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature';
 
-INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
+
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
 SELECT id_application ,'admin', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', '', 'true', 'true'
 FROM utilisateurs.t_applications WHERE nom_application = 'admin';
