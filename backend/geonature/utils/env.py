@@ -177,11 +177,11 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 str(f / 'manifest.toml'),
                 ManifestSchemaProdConf
             )
-            module_name = conf_manifest['module_name']
-            if module_name in enabled_modules_name:
+            module_code = conf_manifest['module_code']
+            if module_code in enabled_modules_name:
 
                 # import du module dans le sys.path
-                module_path = Path(GN_EXTERNAL_MODULE / module_name)
+                module_path = Path(GN_EXTERNAL_MODULE / module_code.lower())
                 module_parent_dir = str(module_path.parent)
                 module_import_name = "{}.config.conf_schema_toml".format(module_path.name)
                 sys.path.insert(0, module_parent_dir)
@@ -198,13 +198,13 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 )
 
                 # add id_module and url_path to the module config
-                update_module_config = dict(conf_module, **module_info.get(module_name))
+                update_module_config = dict(conf_module, **module_info.get(module_code))
                 # register the module conf in the app config
-                app.config[module_name] = update_module_config        
+                app.config[module_code] = update_module_config        
 
                 # import the blueprint
-                module_name = "{}.backend.blueprint".format(module_path.name)
-                module_blueprint = __import__(module_name, globals=globals())
+                python_module_name = "{}.backend.blueprint".format(module_path.name)
+                module_blueprint = __import__(python_module_name, globals=globals())
                 # register the confif in bluprint.config
                 module_blueprint.backend.blueprint.blueprint.config = update_module_config
                 sys.path.pop(0)
@@ -223,14 +223,4 @@ def list_frontend_enabled_modules(app, mod_path=GN_EXTERNAL_MODULE):
             TModules.active_frontend == True
         ).all()
         for mod in enabled_modules:
-            yield mod.module_path.replace(" ", ""), mod.module_name
-
-
-def get_id_module(app, module_name):
-    # return the id_module
-    # don't raise an exeption to avoid error on install of the module
-    # will cause an error if a string is returned later in the program
-    try:
-        return app.config[module_name]['id_module']
-    except KeyError:
-        return "Impossible de récupérer l'id du module"
+            yield mod.module_path.replace(" ", ""), mod.module_code

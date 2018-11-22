@@ -92,10 +92,10 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
 
             #   Vérification de la version de geonature par rapport au manifest
             try:
-                module_name = check_manifest(module_path)
+                module_code = check_manifest(module_path)
                 # Vérification que le module n'est pas déjà activé
                 mod = DB.session.query(TModules).filter(
-                    TModules.module_name == module_name
+                    TModules.module_code == module_code
                 ).one()
 
             except NoResultFound:
@@ -106,52 +106,44 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                 #   installation
                 #   front end
                 #   backend
-                check_codefile_validity(module_path, module_name)
+                check_codefile_validity(module_path, module_code)
 
                 # Installation du module
-                run_install_gn_module(app, module_path, module_name, url)
-
-                # ajout du module dans la table utilisateurs.t_application and gn_commons.t_modules
-                module_id = add_application_db(module_name, url, module_id)
+                run_install_gn_module(app, module_path, module_code, url)
 
                 # copie dans external mods:
-                copy_in_external_mods(module_path, module_name)
-
-                # Enregistrement de la config du module
-                gn_module_register_config(module_name, url, module_id)
+                copy_in_external_mods(module_path, module_code.lower())
 
                 # creation du lien symbolique des assets externes
-                frontend = create_external_assets_symlink(
-                    module_path, module_name
+                enable_frontend = create_external_assets_symlink(
+                    module_path, module_code.lower()
                 )
+                # ajout du module dans la table gn_commons.t_modules
+                add_application_db(module_code, url, enable_frontend)
+                
+                # Enregistrement de la config du module
+                gn_module_register_config(module_code.lower())
 
-                if frontend:
+                if enable_frontend:
                     # generation du du routing du frontend
                     frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
-                    create_module_config(app, module_name, module_path, build=False)
-                else:
-                    module = DB.session.query(TModules).filter(
-                        TModules.id_module == module_id
-                    ).one()
-                    module.active_frontend = False
-                    DB.session.add(module)
-                    DB.session.commit()
+                    create_module_config(app, module_code.lower(), module_path, build=False)
 
-                if build and frontend:
+                if build and enable_frontend:
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
             else:
-                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_name))  # noqa
+                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_code))  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
             "\n\n\033[91mError while installing GN module '{}'\033[0m.The process returned:\n\t{}"
-        ).format(module_name, ex))
+        ).format(module_code, ex))
         sys.exit(1)
 
 
-def run_install_gn_module(app, module_path, module_name, url):
+def run_install_gn_module(app, module_path, module_code, url):
     '''
         Installation du module en executant :
             configurations
@@ -195,7 +187,6 @@ def run_install_gn_module(app, module_path, module_name, url):
             # TODO: try to make it executable
             # TODO: change exception type
             # TODO: make error message
-            # TODO: change print to log
             raise GNModuleInstallError(
                 "File {} not excecutable".format(str(gn_file))
             )

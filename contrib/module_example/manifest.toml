@@ -1,5 +1,5 @@
 package_format_version = '1'
-module_name = 'occtax'
+module_code = 'occtax'
 module_version = '1.0.0'
 min_geonature_version = '2.0.0'
 max_geonature_version = '2.0.0'
