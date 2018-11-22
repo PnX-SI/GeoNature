@@ -105,7 +105,7 @@ def getDefaultsNomenclatures():
 
 
 @routes.route('', methods=['GET'])
-@permissions.check_cruved_scope('R', True)
+@permissions.check_cruved_scope('R', True, code_module='SYNTHESE')
 @json_resp
 def get_synthese(info_role):
     """
@@ -163,7 +163,7 @@ def get_one_synthese(id_synthese):
 
 
 @routes.route('/<id_synthese>', methods=['DELETE'])
-@permissions.check_cruved_scope('D', True)
+@permissions.check_cruved_scope('D', True, code_module='SYNTHESE')
 @json_resp
 def delete_synthese(info_role, id_synthese):
     synthese_obs = DB.session.query(Synthese).get(id_synthese)
@@ -195,7 +195,7 @@ def delete_synthese(info_role, id_synthese):
 
 
 @routes.route('/export', methods=['GET'])
-@permissions.check_cruved_scope('E', True)
+@permissions.check_cruved_scope('E', True, code_module='SYNTHESE')
 def export(info_role):
     filters = dict(request.args)
     if 'limit' in filters:
@@ -263,7 +263,7 @@ def export(info_role):
 
 
 @routes.route('/statuts', methods=['GET'])
-@permissions.check_cruved_scope('E', True)
+@permissions.check_cruved_scope('E', True, code_module='SYNTHESE')
 def get_status(info_role):
     """
     Route to get all the protection status of a synthese search

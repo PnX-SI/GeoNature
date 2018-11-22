@@ -5,7 +5,7 @@ from geonature.utils.env import get_id_module
 
 # import des fonctions utiles depuis le sous-module d'authentification
 from pypnusershub import routes as fnauth
-from pypnusershub.db.tools import get_or_fetch_user_cruved
+from geonature.core.permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint('<MY_MODULE_NAME>', __name__)
 

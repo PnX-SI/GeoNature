@@ -17,11 +17,15 @@ from flask import(
 )
 from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm.exc import NoResultFound
-
 from geojson import FeatureCollection
+from shapely.geometry import asShape
+from geoalchemy2.shape import from_shape
 
 
 from geonature.utils.env import DB, ROOT_DIR
+from pypnusershub.db.models import User
+from pypnusershub.db.tools import InsufficientRightsError
+
 from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
@@ -41,25 +45,16 @@ from geonature.utils.utilssqlalchemy import (
     GenericTable,
     to_json_resp,
     to_csv_resp,
-    serializeQueryTest
 )
-
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.env import get_id_module
-
 from geonature.core.users.models import UserRigth
-from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
-from pypnusershub.db.tools import (
-    InsufficientRightsError,
-    get_or_fetch_user_cruved,
-)
 from geonature.core.permissions import decorators as permissions
+from geonature.core.permissions.tools import get_or_fetch_user_cruved
 
 
-from geojson import FeatureCollection
-from shapely.geometry import asShape
-from geoalchemy2.shape import from_shape
+
 
 blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
