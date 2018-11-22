@@ -86,6 +86,12 @@ UPDATE gn_commons.t_modules SET module_code = 'SYNTHESE' WHERE module_name ILIKE
 ALTER TABLE gn_commons.t_modules DROP COLUMN module_name;
 ALTER TABLE gn_commons.t_modules DROP CONSTRAINT fk_t_modules_utilisateurs_t_applications;
 
+-- Insertion du module parent: GEONATURE
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+('GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED.
+NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules',
+'geonature', '', '', FALSE, FALSE)
+
 
 CREATE SEQUENCE gn_commons.t_modules_id_module_seq
     START WITH 1

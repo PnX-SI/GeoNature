@@ -9,15 +9,14 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TModules, TParameters
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from pypnusershub import routes as fnauth
-from pypnusershub.db.tools import cruved_for_user_in_app
+from geonature.core.permissions import decorators as permissions
 from geonature.core.permissions.tools import cruved_scope_for_user_in_module
 
 routes = Blueprint('gn_commons', __name__)
 
 
 @routes.route('/modules', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@permissions.check_cruved_scope('R', True)
 @json_resp
 def get_modules(info_role):
     '''
