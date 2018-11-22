@@ -108,6 +108,12 @@ WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source
 --Si vous avez insérer des données provenant d'une autre source que occtax, 
 --vous devez gérer vous même le champ id_module des enregistrements correspondants.
 
+ALTER TABLE gn_synthese.t_sources ADD COLUMN validable boolean;
+ALTER TABLE gn_synthese.t_sources ALTER COLUMN validable SET DEFAULT true;
+COMMENT ON COLUMN gn_synthese.t_sources.validable IS 'Définir si la validation des données d''une source est possile ou non';
+UPDATE gn_synthese.t_sources SET validable = true;
+ALTER TABLE gn_synthese.t_sources ALTER COLUMN validable SET NOT NULL;
+
 CREATE OR REPLACE FUNCTION gn_synthese.get_ids_synthese_for_user_action(myuser integer, myaction text)
   RETURNS integer[] AS
 $BODY$
