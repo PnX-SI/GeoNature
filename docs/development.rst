@@ -458,7 +458,7 @@ params :
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth_cruved
-        from pypnusershub.db.tools import get_or_fetch_user_cruved
+        from geonature.core.permissions.tools import get_or_fetch_user_cruved
         from geonature.utils.utilssqlalchemy import json_resp
 
         blueprint = Blueprint(__name__)

@@ -174,3 +174,26 @@ def cruved_scope_for_user_in_module(
         else:
             update_cruved[action] = '0'
     return update_cruved
+
+
+
+def get_or_fetch_user_cruved(
+    session=None,
+    id_role=None,
+    module_code=None,
+):
+    """
+        Check if the cruved is in the session
+        if not, get the cruved from the DB with 
+        cruved_for_user_in_app()
+    """
+    if module_code in session and 'user_cruved' in session[module_code]:
+        return session[module_code]['user_cruved']
+    else:
+        user_cruved = cruved_scope_for_user_in_module(
+            id_role=id_role,
+            module_code=module_code,
+        )
+        session[module_code] = {}
+        session[module_code]['user_cruved'] = user_cruved
+    return user_cruved
