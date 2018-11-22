@@ -1,7 +1,4 @@
-import os
 import datetime
-import json
-import psycopg2
 import logging
 
 from flask import(
@@ -47,18 +44,13 @@ from geonature.utils.utilssqlalchemy import (
     to_csv_resp,
 )
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.env import get_id_module
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from geonature.core.permissions import decorators as permissions
 from geonature.core.permissions.tools import get_or_fetch_user_cruved
 
-
-
-
 blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
-
 
 @blueprint.route('/releves', methods=['GET'])
 @permissions.check_cruved_scope('R', True, code_module="OCCTAX")
@@ -75,7 +67,6 @@ def getReleves(info_role):
 def getOccurrences():
     q = DB.session.query(TOccurrencesOccurrence)
     data = q.all()
-
     return ([n.as_dict() for n in data])
 
 
@@ -103,7 +94,6 @@ def getOneCounting(id_counting):
         return None
     counting = data[0].as_dict()
     counting['id_releve'] = data[1]
-
     return counting
 
 
@@ -116,8 +106,7 @@ def getOneReleve(id_releve, info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
-        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+        module_code='OCCTAX',
     )
     releve_cruved = data.get_releve_cruved(info_role, user_cruved)
     return {
@@ -170,7 +159,7 @@ def getViewReleveOccurrence(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
+        module_code='OCCTAX',
         id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     featureCollection = []
@@ -257,7 +246,7 @@ def getViewReleveList(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
+        module_code='OCCTAX',
         id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     featureCollection = []
@@ -339,7 +328,7 @@ def insertOrUpdateOneReleve(info_role):
         user_cruved = get_or_fetch_user_cruved(
             session=session,
             id_role=info_role.id_role,
-            id_application=ID_MODULE,
+            module_code='OCCTAX',
             id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
         )
         update_data_scope = user_cruved['U']

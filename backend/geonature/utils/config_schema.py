@@ -178,7 +178,7 @@ class GnGeneralSchemaConf(Schema):
 
 class ManifestSchemaConf(Schema):
     package_format_version = fields.String(required=True)
-    module_name = fields.String(required=True)
+    module_code = fields.String(required=True)
     module_version = fields.String(required=True)
     min_geonature_version = fields.String(required=True)
     max_geonature_version = fields.String(required=True)
@@ -186,5 +186,4 @@ class ManifestSchemaConf(Schema):
 
 
 class ManifestSchemaProdConf(Schema):
-    # module_path = fields.String(required=True)
-    module_name = fields.String(required=True)
+    module_code = fields.String(required=True)
