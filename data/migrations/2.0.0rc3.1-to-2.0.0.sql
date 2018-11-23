@@ -86,12 +86,6 @@ UPDATE gn_commons.t_modules SET module_code = 'SYNTHESE' WHERE module_name ILIKE
 ALTER TABLE gn_commons.t_modules DROP COLUMN module_name;
 ALTER TABLE gn_commons.t_modules DROP CONSTRAINT fk_t_modules_utilisateurs_t_applications;
 
--- Insertion du module parent: GEONATURE
-INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-('GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED.
-NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules',
-'geonature', '', '', FALSE, FALSE)
-
 
 CREATE SEQUENCE gn_commons.t_modules_id_module_seq
     START WITH 1
@@ -105,6 +99,14 @@ ALTER TABLE ONLY gn_commons.t_modules ALTER COLUMN id_module SET DEFAULT nextval
 SELECT pg_catalog.setval('gn_commons.t_modules_id_module_seq', (SELECT MAX(id_module + 1) FROM gn_commons.t_modules), TRUE);
 
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_code SET NOT NULL;
+
+-- Insertion du module parent: GEONATURE
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+('GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED.
+NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules',
+'geonature', '', '', FALSE, FALSE);
+
+
 --------
 --META--
 --------
@@ -485,7 +487,116 @@ WHERE id_application = 3;
 
 
 
+-- Creation de GN_PERMISSIONS
+
+CREATE SCHEMA gn_permissions;
+---------
+--TABLE--
+---------
+
+CREATE TABLE gn_permissions.t_actions(
+    id_action serial NOT NULL,
+    code_action character varying(50) NOT NULL,
+    description_action text
+);
+
+CREATE TABLE gn_permissions.bib_filters_type(
+    id_filter_type serial NOT NULL,
+    code_filter_type character varying(50) NOT NULL,
+    description_filter_type text
+);
+
+CREATE TABLE gn_permissions.t_filters(
+    id_filter serial NOT NULL,
+    code_filter character varying(50) NOT NULL,
+    description_filter text,
+    id_filter_type integer NOT NULL
+);
+
+CREATE TABLE gn_permissions.t_objects(
+    id_object serial NOT NULL,
+    code_object character varying(50) NOT NULL,
+    description_object text
+);
+
+-- un objet peut être utilisé dans plusieurs modules
+-- ex: TDataset en lecture dans occtax, admin ...
+CREATE TABLE gn_permissions.cor_object_module(
+    id_cor_object_module serial NOT NULL,
+    id_object integer NOT NULL,
+    id_module integer NOT NULL
+);
+
+CREATE TABLE gn_permissions.cor_role_action_filter_module_object(
+    id_role integer NOT NULL,
+    id_action integer NOT NULL,
+    id_filter integer NOT NULL,
+    id_module integer NOT NULL,
+    id_object integer NOT NULL
+);
+
+
+---------------
+--PRIMARY KEY--
+---------------
+
+ALTER TABLE ONLY gn_permissions.t_actions
+    ADD CONSTRAINT pk_t_actions PRIMARY KEY (id_action);
+
+ALTER TABLE ONLY gn_permissions.t_filters
+    ADD CONSTRAINT pk_t_filters PRIMARY KEY (id_filter);
+
+ALTER TABLE ONLY gn_permissions.bib_filters_type
+    ADD CONSTRAINT pk_bib_filters_type PRIMARY KEY (id_filter_type);
+
+ALTER TABLE ONLY gn_permissions.t_objects
+    ADD CONSTRAINT pk_t_objects PRIMARY KEY (id_object);
+
+ALTER TABLE ONLY gn_permissions.cor_object_module
+    ADD CONSTRAINT pk_cor_object_module PRIMARY KEY (id_cor_object_module);
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+    ADD CONSTRAINT pk_cor_r_a_f_m_o PRIMARY KEY (id_role, id_action, id_filter, id_module, id_object);
+
+
+---------------
+--FOREIGN KEY--
+---------------
+
+ALTER TABLE ONLY gn_permissions.t_filters
+  ADD CONSTRAINT  fk_t_filters_id_filter_type FOREIGN KEY (id_filter_type) REFERENCES gn_permissions.bib_filters_type(id_filter_type) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_object_module
+  ADD CONSTRAINT  fk_cor_object_module_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_object_module
+  ADD CONSTRAINT  fk_cor_object_module_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_action FOREIGN KEY (id_action) REFERENCES gn_permissions.t_actions(id_action) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_filter FOREIGN KEY (id_filter) REFERENCES gn_permissions.t_filters(id_filter) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE;
+
+
+
+
+
+
+
+
+
 -- migration utilisateurs vers gn_permissions:
+
+
+
+
 
 
 
