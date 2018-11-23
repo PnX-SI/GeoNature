@@ -64,7 +64,7 @@ class ReleveModel(DB.Model):
             params:
                 user: object from TRole
         """
-        if self.user_is_allowed_to(user, user.tag_object_code):
+        if self.user_is_allowed_to(user, user.code_action):
             return self
 
         raise InsufficientRightsError(

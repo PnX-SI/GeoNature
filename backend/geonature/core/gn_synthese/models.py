@@ -78,7 +78,7 @@ class SyntheseCruved(DB.Model):
             params:
                 user: object from TRole
         """
-        if self.user_is_allowed_to(user, user.tag_object_code, user_datasets):
+        if self.user_is_allowed_to(user, user.code_action, user_datasets):
             return self
 
         raise InsufficientRightsError(

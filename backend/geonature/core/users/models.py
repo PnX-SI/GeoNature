@@ -54,7 +54,7 @@ class UserRigth():
         id_role=None,
         id_organisme=None,
         tag_action_code=None,
-        tag_object_code=None,
+        code_action=None,
         id_application=None,
         nom_role=None,
         prenom_role=None
@@ -63,7 +63,7 @@ class UserRigth():
         self.id_role = id_role
         self.id_organisme = id_organisme
         self.tag_action_code = tag_action_code
-        self.tag_object_code = tag_object_code
+        self.code_action = code_action
         self.id_application = id_application
         self.nom_role = nom_role
         self.prenom_role = prenom_role

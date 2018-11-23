@@ -71,13 +71,12 @@ log = logging.getLogger(__name__)
     required=False,
     default=None
 )
-def install_gn_module(module_path, url, conf_file, build, module_id):
+def install_gn_module(module_path, url, conf_file, build):
     """
         Installation d'un module gn
     """
     from geonature.core.gn_commons.models import TModules
     # Installation du module
-    module_name = ''
     try:
         # Vérification que le chemin module path soit correct
         if not Path(module_path).is_dir():
@@ -143,7 +142,7 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
         sys.exit(1)
 
 
-def run_install_gn_module(app, module_path, module_code, url):
+def run_install_gn_module(app, module_path):
     '''
         Installation du module en executant :
             configurations
@@ -213,8 +212,8 @@ def run_install_gn_module(app, module_path, module_code, url):
     default=True
 )
 @main.command()
-@click.argument('module_name')
-def activate_gn_module(module_name, frontend, backend):
+@click.argument('module_code')
+def activate_gn_module(module_code, frontend, backend):
     """
         Active un module gn installé
 
@@ -226,7 +225,7 @@ def activate_gn_module(module_name, frontend, backend):
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_activate(module_name, frontend, backend)
+    gn_module_activate(module_code.upper(), frontend, backend)
 
 
 @click.option(
@@ -242,8 +241,8 @@ def activate_gn_module(module_name, frontend, backend):
     default=True
 )
 @main.command()
-@click.argument('module_name')
-def deactivate_gn_module(module_name, frontend, backend):
+@click.argument('module_code')
+def deactivate_gn_module(module_code, frontend, backend):
     """
         Desactive un module gn activé
 
@@ -256,11 +255,11 @@ def deactivate_gn_module(module_name, frontend, backend):
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_deactivate(module_name, frontend, backend)
+    gn_module_deactivate(module_code.upper(), frontend, backend)
 
 
 @main.command()
-@click.argument('module_name')
+@click.argument('module_code')
 @click.option(
     '--build',
     type=bool,
@@ -273,7 +272,7 @@ def deactivate_gn_module(module_name, frontend, backend):
     required=False,
     default=True
 )
-def update_module_configuration(module_name, build, prod):
+def update_module_configuration(module_code, build, prod):
     """
         Génère la config frontend d'un module
 
@@ -287,4 +286,4 @@ def update_module_configuration(module_name, build, prod):
     if prod:
         subprocess.call(['sudo', 'supervisorctl', 'reload'])
     app = get_app_for_cmd(with_external_mods=False)
-    create_module_config(app, module_name, build=build)
+    create_module_config(app, module_code.lower(), build=build)

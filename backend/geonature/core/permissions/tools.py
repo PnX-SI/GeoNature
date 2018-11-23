@@ -90,7 +90,7 @@ def get_user_from_token_and_raise(
 
 
 
-def get_user_permissions(user, code_action, code_filter_type, code_module=None):
+def get_user_permissions(user, code_action, code_filter_type, module_code=None):
     """
         Get all the filters code of a user (could be multiples)
         for an action, a module and a filter_type
@@ -98,7 +98,7 @@ def get_user_permissions(user, code_action, code_filter_type, code_module=None):
             user(dict)
             code_action(str): <C,R,U,V,E,D>
             code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
-            code_module(str): 'GEONATURE', 'OCCTAX'
+            module_code(str): 'GEONATURE', 'OCCTAX'
         Return:
             Array<VUsersPermissions>
     """
@@ -114,9 +114,9 @@ def get_user_permissions(user, code_action, code_filter_type, code_module=None):
         .filter(VUsersPermissions.code_filter_type == code_filter_type)
     )
     module_code_for_error = 'GEONATURE'
-    if code_module:
-        ors.append(VUsersPermissions.module_code.ilike(code_module))
-        module_code_for_error = code_module
+    if module_code:
+        ors.append(VUsersPermissions.module_code.ilike(module_code))
+        module_code_for_error = module_code
     
     user_cruved = q.filter(sa.or_(*ors)).all()
 

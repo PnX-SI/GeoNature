@@ -9,9 +9,6 @@ from geonature.core.permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint('<MY_MODULE_NAME>', __name__)
 
-# Récupérer l'ID du module
-ID_MODULE = get_id_module(current_app, '<MY_MODULE_NAME>')
-
 
 # Exemple d'une route simple
 @blueprint.route('/test', methods=['GET'])
@@ -24,13 +21,13 @@ def get_view():
 
 # Exemple d'une route protégée le CRUVED du sous module d'authentification
 @blueprint.route('/test_cruved', methods=['GET'])
-@fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
+@fnauth.check_auth_cruved('R', True, module_code='MY_MODULE_CODE')
 @json_resp
 def get_sensitive_view(info_role):
     # Récupérer l'id de l'utilisateur qui demande la route
     id_role = info_role.id_role
     # Récupérer la portée autorisée à l'utilisateur pour l'acton 'R' (read)
-    read_scope = info_role.tag_object_code
+    read_scope = info_role.code_action
 
     #récupérer le CRUVED complet de l'utilisateur courant
     user_cruved = get_or_fetch_user_cruved(
