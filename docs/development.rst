@@ -136,7 +136,7 @@ Pour les utiliser à l'interieur du module, utiliser la syntaxe suivante :
 
 ::
 
-    <img src="external_assets/<MY_MODULE_NAME>/afb.png">
+    <img src="external_assets/<MY_MODULE_CODE>/afb.png">
 
 Exemple pour le module de validation :
 
@@ -475,7 +475,7 @@ params :
             # Récupérer l'id de l'utilisateur qui demande la route
             id_role = info_role.id_role
             # Récupérer la portée autorisée à l'utilisateur pour l'action 'R' (read)
-            read_scope = info_role.tag_object_code
+            read_scope = info_role.code_action
             #récupérer le CRUVED complet de l'utilisateur courant
             user_cruved = get_or_fetch_user_cruved(
                     session=session,

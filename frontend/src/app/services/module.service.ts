@@ -19,15 +19,14 @@ export class ModuleService {
 
   /**
    * Get a module from the localstorage
-   * @param module_name: name of the module
+   * @param module_code: name of the module
    */
-  getModule(module_name: string) {
+  getModule(module_code: string) {
     const modules = localStorage.getItem('modules');
     let searchModule = null;
     if (modules) {
-      console.log(JSON.parse(modules));
       JSON.parse(modules).forEach(mod => {
-        if (mod.module_name.toLowerCase() === module_name.toLowerCase()) {
+        if (mod.module_code.toLowerCase() === module_code.toLowerCase()) {
           searchModule = mod;
         }
       });

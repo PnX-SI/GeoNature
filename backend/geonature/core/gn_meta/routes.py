@@ -104,10 +104,10 @@ def get_dataset(id_dataset):
 
 
 @routes.route('/dataset', methods=['POST'])
-@permissions.check_cruved_scope('C', True, code_module="ADMIN")
+@permissions.check_cruved_scope('C', True, module_code="ADMIN")
 @json_resp
 def post_dataset(info_role):
-    if info_role.tag_object_code == '0':
+    if info_role.code_action == '0':
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataser')
             .format(info_role.id_role, info_role.tag_action_code),
@@ -153,12 +153,12 @@ def get_acquisition_framework(id_acquisition_framework):
 
 
 @routes.route('/acquisition_framework', methods=['POST'])
-@permissions.check_cruved_scope('C', True, code_module="ADMIN")
+@permissions.check_cruved_scope('C', True, module_code="ADMIN")
 @json_resp
 def post_acquisition_framework(info_role):
     print(info_role)
-    print(info_role.tag_object_code)
-    if info_role.tag_object_code == '0':
+    print(info_role.code_action)
+    if info_role.code_action == '0':
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataser')
             .format(info_role.id_role, info_role.tag_action_code),

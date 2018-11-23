@@ -53,7 +53,7 @@ blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
 
 @blueprint.route('/releves', methods=['GET'])
-@permissions.check_cruved_scope('R', True, code_module="OCCTAX")
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getReleves(info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
@@ -62,7 +62,7 @@ def getReleves(info_role):
 
 
 @blueprint.route('/occurrences', methods=['GET'])
-@permissions.check_cruved_scope('R', code_module="OCCTAX")
+@permissions.check_cruved_scope('R', module_code="OCCTAX")
 @json_resp
 def getOccurrences():
     q = DB.session.query(TOccurrencesOccurrence)
@@ -98,7 +98,7 @@ def getOneCounting(id_counting):
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['GET'])
-@permissions.check_cruved_scope('R', True, code_module="OCCTAX")
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
@@ -116,7 +116,7 @@ def getOneReleve(id_releve, info_role):
 
 
 @blueprint.route('/vreleveocctax', methods=['GET'])
-@permissions.check_cruved_scope('R', True, code_module="OCCTAX")
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getViewReleveOccurrence(info_role):
     releve_repository = ReleveRepository(VReleveOccurrence)
@@ -179,7 +179,7 @@ def getViewReleveOccurrence(info_role):
 
 
 @blueprint.route('/vreleve', methods=['GET'])
-@permissions.check_cruved_scope('R', True, code_module="OCCTAX")
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getViewReleveList(info_role):
     """
@@ -223,6 +223,7 @@ def getViewReleveList(info_role):
 
 
     """
+    print(info_role)
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 
@@ -265,7 +266,7 @@ def getViewReleveList(info_role):
 
 
 @blueprint.route('/releve', methods=['POST'])
-@permissions.check_cruved_scope('C', True, code_module="OCCTAX")
+@permissions.check_cruved_scope('C', True, module_code="OCCTAX")
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesOccurrence)
@@ -332,10 +333,10 @@ def insertOrUpdateOneReleve(info_role):
             id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
         )
         update_data_scope = user_cruved['U']
-        # info_role.tag_object_code = update_data_scope
+        # info_role.code_action = update_data_scope
         user = UserRigth(
             id_role=info_role.id_role,
-            tag_object_code=update_data_scope,
+            code_action=update_data_scope,
             tag_action_code="U",
             id_organisme=info_role.id_organisme
         )
@@ -344,7 +345,7 @@ def insertOrUpdateOneReleve(info_role):
     else:
         # set id_digitiser
         releve.id_digitiser = info_role.id_role
-        if info_role.tag_object_code in ('0', '1', '2'):
+        if info_role.code_action in ('0', '1', '2'):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
@@ -361,7 +362,7 @@ def insertOrUpdateOneReleve(info_role):
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['DELETE'])
-@permissions.check_cruved_scope('D', True, code_module="OCCTAX")
+@permissions.check_cruved_scope('D', True, module_code="OCCTAX")
 @json_resp
 def deleteOneReleve(id_releve, info_role):
     """Suppression d'une données d'un relevé et des occurences associés
@@ -380,7 +381,7 @@ def deleteOneReleve(id_releve, info_role):
 
 
 @blueprint.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
-@permissions.check_cruved_scope('D', code_module="OCCTAX")
+@permissions.check_cruved_scope('D', module_code="OCCTAX")
 @json_resp
 def deleteOneOccurence(id_occ):
     """Suppression d'une données d'occurrence et des dénombrements associés
@@ -414,7 +415,7 @@ def deleteOneOccurence(id_occ):
 
 
 @blueprint.route('/releve/occurrence_counting/<int:id_count>', methods=['DELETE'])
-@permissions.check_cruved_scope('R', code_module="OCCTAX")
+@permissions.check_cruved_scope('R', module_code="OCCTAX")
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Suppression d'une données de dénombrement
@@ -488,7 +489,7 @@ def getDefaultNomenclatures():
 @permissions.check_cruved_scope(
     'E',
     True,
-    code_module="OCCTAX",
+    module_code="OCCTAX",
     redirect_on_expiration=current_app.config.get('URL_APPLICATION')
 )
 def export(info_role):

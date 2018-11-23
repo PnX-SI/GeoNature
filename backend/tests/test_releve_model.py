@@ -39,7 +39,7 @@ user_admin = {
     'id_role': 1,
     'id_organisme': 1,
     'tag_action_code': 'R',
-    'tag_object_code': '3',
+    'code_action': '3',
     'id_application': 3
 }
 
@@ -48,7 +48,7 @@ user_agent = {
     'id_role': 2,
     'id_organisme': -1,
     'tag_action_code': 'R',
-    'tag_object_code': '2',
+    'code_action': '2',
     'id_application': 3
 }
 
@@ -57,7 +57,7 @@ user_low = {
     'id_role': 125,
     'id_organisme': -1,
     'tag_action_code': 'R',
-    'tag_object_code': '1',
+    'code_action': '1',
     'id_application': 3
 }
 
